@@ -90,7 +90,6 @@ public class MenuController extends Menubar {
         Menuitem query = (Menuitem) this.menuB.getFellow("queryPQL");
 
         Menu filteringM = (Menu) this.menuB.getFellow("filtering");
-        Menuitem similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
         Menuitem similarityClustersMI = (Menuitem) this.menuB.getFellow("similarityClusters");
         Menuitem compareMI = (Menuitem) this.menuB.getFellow("compare");
         //Menuitem exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
@@ -100,7 +99,6 @@ public class MenuController extends Menubar {
         Menuitem proDriftMI = (Menuitem) this.menuB.getFellow("ProDriftDetection");
 
         Menu designM = (Menu) this.menuB.getFellow("design");
-        Menuitem mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
         Menuitem cmapMI = (Menuitem) this.menuB.getFellow("designCmap");
         Menuitem configureMI = (Menuitem) this.menuB.getFellow("designConfiguration");
         Menuitem bpmnMinerMI = (Menuitem) this.menuB.getFellow("miningBPMNMiner");
@@ -155,12 +153,6 @@ public class MenuController extends Menubar {
                 deleteSelectedProcessVersions();
             }
         });
-        similaritySearchMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                searchSimilarProcesses();
-            }
-        });
         similarityClustersMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
@@ -177,12 +169,6 @@ public class MenuController extends Menubar {
             @Override
             public void onEvent(final Event event) throws Exception {
                 createQuery();
-            }
-        });
-        mergeMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                mergeSelectedProcessVersions();
             }
         });
         cmapMI.addEventListener("onClick", new EventListener<Event>() {
@@ -254,53 +240,6 @@ public class MenuController extends Menubar {
 
 
     /**
-     * Search for similar processes to the one currently selected
-     * @throws SuspendNotAllowedException
-     * @throws InterruptedException
-     */
-    protected void searchSimilarProcesses() throws SuspendNotAllowedException, InterruptedException, ParseException, DialogException {
-        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
-        this.mainC.eraseMessage();
-
-        int countSelected=0;
-        TabQuery tabQuery = null;
-        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
-
-        for(Tab tab : tabs){
-            if(tab.isSelected() && tab instanceof TabQuery){
-                tabQuery=(TabQuery)tab;
-                List<Listitem> items=tabQuery.getListBox().getItems();
-                TabListitem tabItem=null;
-                for(Listitem item : items){
-                    if(item.isSelected()){
-                        countSelected++;
-                        tabItem=(TabListitem) item;
-                    }
-                }
-
-                if(countSelected==1){
-                    new SimilaritySearchController(this.mainC, this, tabItem.getProcessSummaryType(), tabItem.getVersionSummaryType().get(0));
-                    return;
-                }
-                break;
-            }
-        }
-
-
-        if (selectedProcessVersions.size() == 1 && selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()).size() == 1) {
-            ProcessSummaryType process = selectedProcessVersions.keySet().iterator().next();
-            VersionSummaryType version = selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()).get(0);
-            new SimilaritySearchController(this.mainC, this, process, version);
-        } else if (selectedProcessVersions.size() == 0) {
-            this.mainC.displayMessage("No process version selected, should be exactly one.");
-        } else {
-            this.mainC.displayMessage("Too many versions selected (should be exactly one).");
-        }
-
-    }
-
-
-    /**
      * Cluster similar processes in the whole repository
      * @throws InterruptedException
      * @throws SuspendNotAllowedException
@@ -358,67 +297,6 @@ public class MenuController extends Menubar {
     protected void createQuery() throws InterruptedException, DialogException {
         this.mainC.eraseMessage();
         new PQLFilterController(this.mainC);
-    }
-
-    protected void mergeSelectedProcessVersions() throws InterruptedException, ExceptionDomains, ParseException {
-        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
-        this.mainC.eraseMessage();
-
-        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
-
-        for(Tab tab : tabs){
-            if(tab.isSelected() && tab instanceof TabQuery){
-
-                TabQuery tabQuery=(TabQuery)tab;
-                List<Listitem> items=tabQuery.getListBox().getItems();
-                HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersion=new HashMap<>();
-                for(Listitem item : items){
-                    if(item.isSelected() && item instanceof TabListitem){
-                        TabListitem tabItem=(TabListitem)item;
-                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
-                    }
-                }
-                if(processVersion.keySet().size()<2) {
-                    this.mainC.displayMessage("Select at least 2 process models for merge.");
-                    return;
-                }else {
-                    try {
-                        new ProcessMergeController(this.mainC, processVersion);
-                    } catch (SuspendNotAllowedException e) {
-                        Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-                    } catch (ExceptionAllUsers e) {
-                        String message;
-                        if (e.getMessage() == null) {
-                            message = "Couldn't retrieve users reference list.";
-                        } else {
-                            message = e.getMessage();
-                        }
-                        Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
-                    }
-                    return;
-                }
-            }
-        }
-
-        Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
-        // At least 2 process versions must be selected. Not necessarily of different processes
-        if (selectedProcessVersions.size() == 1 && selectedVersions.next().size() > 1 || selectedProcessVersions.size() > 1) {
-            try {
-                new ProcessMergeController(this.mainC, selectedProcessVersions);
-            } catch (SuspendNotAllowedException e) {
-                Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-            } catch (ExceptionAllUsers e) {
-                String message;
-                if (e.getMessage() == null) {
-                    message = "Couldn't retrieve users reference list.";
-                } else {
-                    message = e.getMessage();
-                }
-                Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
-            }
-        } else {
-            this.mainC.displayMessage("Select at least 2 process models for merge.");
-        }
     }
 
     //proDrift

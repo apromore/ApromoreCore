@@ -799,8 +799,6 @@ public class MainController extends BaseController {
         Window mainW = (Window) this.getFellow("mainW");
 
         Tabbox tabbox = (Tabbox) mainW.getFellow("tabbox");
-//        Tabs tabs = tabbox.getTabs();
-//        Tabpanels tabpanels = tabbox.getTabpanels();
 
         List<Tab> tabList = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
         if(tabList.isEmpty()) {
@@ -815,13 +813,15 @@ public class MainController extends BaseController {
         tabList = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
         if(tabbox.getTabs().getChildren().size() < tabList.size() + 1) {
             for (Tab tab : tabList) {
-                if (!tabbox.getTabs().getChildren().contains(tab)) {
+                try {
                     AbstractPortalTab portalTab = ((PortalTabImpl) tab).clone();
                     SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userId, tab);
                     SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, portalTab);
 
                     portalTab.getTab().setParent(tabbox.getTabs());
                     portalTab.getTabpanel().setParent(tabbox.getTabpanels());
+                }catch (Exception e) {
+                    Executions.sendRedirect(null);
                 }
             }
         }
