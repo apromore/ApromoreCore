@@ -31,11 +31,11 @@ ORYX.Plugins.ApromoreMeasurement = ORYX.Plugins.AbstractPlugin.extend({
         this.facade = facade;
 
         this.facade.offer({
-            'name': ORYX.I18N.Measurement.upload,
+            'name': 'Calculate Metrics of a BPMN proces model',
             'functionality': this.measure.bind(this, false),
-            'group': ORYX.I18N.Bimp.group,
+            'group': 'bpmn-toolkit',
             'icon': ORYX.PATH + "images/Measurement.png",
-            'description': ORYX.I18N.Measurement.uploadDesc,
+            'description': 'Calculate Metrics of a BPMN proces model',
             'index': 1
         });
     },

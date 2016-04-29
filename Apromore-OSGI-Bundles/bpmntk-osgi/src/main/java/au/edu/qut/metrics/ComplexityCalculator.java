@@ -41,27 +41,27 @@ public class ComplexityCalculator {
                                                    boolean duplicates) {
         diagram = model;
 
-        if(size) result.put("size", Integer.toString(computeSize()));
+        if(size) result.put("Size", Integer.toString(computeSize()));
 
-        if(cfc) result.put("cfc", Integer.toString(computeCFC()));
+        if(cfc) result.put("CFC", Integer.toString(computeCFC()));
 
-        if(acd) result.put("acd", Double.toString(computeACD()));
+        if(acd) result.put("ACD", String.format( "%.3f", computeACD()));
 
-        if(mcd) result.put("mcd", Integer.toString(computeMCD()));
+        if(mcd) result.put("MCD", Integer.toString(computeMCD()));
 
-        if(cnc) result.put("cnc", Double.toString(computeCNC()));
+        if(cnc) result.put("CNC", String.format( "%.3f", computeCNC()));
 
-        if(density) result.put("density", Double.toString(computeDensity()));
+        if(density) result.put("Density",  String.format( "%.3f", computeDensity()));
 
         if(structuredness) {
-            result.put("structuredness", Double.toString(computeStructuredness()));
-            result.put("bonds", Integer.toString(this.bonds.size()));
-            result.put("rigids", Integer.toString(this.rigids.size()));
+            result.put("Structuredness",  String.format( "%.3f", computeStructuredness()));
+            result.put("Bonds", Integer.toString(this.bonds.size()));
+            result.put("Rigids", Integer.toString(this.rigids.size()));
         }
 
-        if(separability)  result.put("separability", Double.toString(computeSeparability()));
+        if(separability)  result.put("Separability", String.format( "%.3f", computeSeparability()));
 
-        if(duplicates) result.put("duplicates", Double.toString(computeDuplicates()));
+        if(duplicates) result.put("Duplicates", Integer.toString(computeDuplicates()));
 
         return result;
     }

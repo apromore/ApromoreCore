@@ -22,6 +22,7 @@ package org.apromore.plugin.portal.ibpstruct;
 
 // Java 2 Standard Edition packages
 
+import au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
@@ -101,6 +102,7 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
     private Slider maxDepth;
     private Button cancelButton;
     private Button okButton;
+    private Groupbox advancedOptions;
 
     @Inject
     public IBPStructPlugin(final IBPStructService    ibpstructService,
@@ -127,11 +129,23 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
     public void execute(PortalContext context) {
         this.portalContext = context;
         portalContext.getMessageHandler().displayInfo("Executing iBPStruct service!");
+        processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
+
+        if( processVersions.size() != 1 ) {
+            Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
+            return;
+        }
 
         try {
             this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/ibpstruct.zul", null, null);
 
+            this.advancedOptions = (Groupbox) this.settings.getFellow("advancedOptions");
+            this.advancedOptions.setOpen(false);
+            this.advancedOptions.setClosable(true);
+
             this.structProcName = (Textbox) this.settings.getFellow("structProcName");
+            this.structProcName.setValue("structured_process");
+
             this.structPolicies = (Selectbox) this.settings.getFellow("structPolicies");
             this.structPolicies.setModel(new ListModelArray<Object>(structPoliciesArray));
             this.timeBounded = (Radiogroup) this.settings.getFellow("timeBounded");
@@ -214,7 +228,6 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
             this.domainCB.setAttribute("hflex", "1");
 
 
-            processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
             for (ProcessSummaryType process : processVersions.keySet()) {
                 for (VersionSummaryType vst : processVersions.get(process)) {
                     int procID = process.getId();
@@ -238,24 +251,7 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
                                                                                         pullup,
                                                                                         forceStructuring);
 
-                    UIContext context = new UIContext();
-                    UIPluginContext uiPluginContext = context.getMainPluginContext();
-                    BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, structuredDiagram);
-                    BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
-
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                            "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
-                            "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
-                            "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
-                            "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
-                            "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
-                            "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
-                            "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">");
-                    sb.append(definitions.exportElements());
-                    sb.append("</definitions>");
-
-                    String structuredModel = sb.toString();
+                    String structuredModel = (new BPMNDiagramExporterImpl()).exportBPMNDiagram(structuredDiagram);
 
                     version = new Version(1, 0);
                     Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
