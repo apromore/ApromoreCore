@@ -67,7 +67,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>ibpstruct-api</artifactId>
+            <artifactId>ibpstruct-logic</artifactId>
             <version>1.1</version>
         </dependency>
         <dependency>

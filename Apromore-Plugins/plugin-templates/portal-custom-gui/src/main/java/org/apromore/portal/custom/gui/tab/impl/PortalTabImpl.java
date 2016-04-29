@@ -107,7 +107,7 @@ public class PortalTabImpl extends AbstractPortalTab {
         }
 
         if(item == null) {
-            item = new TabItem("", null, null);
+            item = new TabItem("", new TabRowValue(), null);
             list.appendChild(item);
         }
 

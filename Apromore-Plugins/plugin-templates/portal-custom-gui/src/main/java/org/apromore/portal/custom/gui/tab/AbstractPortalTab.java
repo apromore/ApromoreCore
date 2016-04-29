@@ -44,8 +44,8 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
 
         this.setClosable(true);
         this.setSelected(true);
-        this.setTooltiptext("Double click to show more info");
-        this.setImage("img/info25.png");
+//        this.setTooltiptext("Double click to show more info");
+//        this.setImage("img/info25.png");
 
         this.addEventListener(Events.ON_CLOSE,new EventListener<Event>() {
             @Override
