@@ -33,6 +33,7 @@ import javax.xml.bind.JAXBContext;
 import au.edu.qut.metrics.ComplexityCalculator;
 
 import org.apache.log4j.Logger;
+import org.apromore.manager.client.ManagerService;
 import org.json.JSONObject;
 
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
@@ -45,6 +46,8 @@ import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * Servlet to access the BPStruct service.
@@ -119,26 +122,12 @@ public class MeasurementServlet extends HttpServlet {
         jaxbContext.createMarshaller().marshal(bpmn, baos);
         String process = baos.toString("utf-8");
 
-//        ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
-//        ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
+        ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
+        ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
 
         /* result already in json format */
-//        BPMNDiagramImporter importer = new BPMNDiagramImporterImpl();
-//        BPMNDiagram bpmnDiagram = importer.importBPMNDiagram(process);
+        String result = manager.computeMeasurements(process);
 
-        ComplexityCalculator cc = new ComplexityCalculator();
-        Map<String, String> metrics = cc.computeComplexity(null, true, true, true, true, true, true, true, true, true);
-
-        JSONObject result = new JSONObject();
-        for (String key : metrics.keySet()) {
-//            LOGGER.info(key + " : " + metrics.get(key));
-            result.put(key, metrics.get(key));
-        }
-        LOGGER.info("metrics: " + metrics);
-        if( metrics == null ) {
-            LOGGER.info("Error computing measurements.");
-        }
-
-        return result.toString();
+        return result;
     }
 }
