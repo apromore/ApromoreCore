@@ -65,4 +65,6 @@ public interface PortalContext {
     UserType getCurrentUser();
 
     void refreshContent();
+
+    MainControllerInterface getMainController();
 }

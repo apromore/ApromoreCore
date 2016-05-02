@@ -64,7 +64,7 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
             tabHeader = createTabHeader("Name", "Id", "Original language", "Domain", "Ranking", "Latest version", "Owner");
         }
 
-        addTab(tabName, "img/icon/bpmn-22x22.png", rows, tabHeader, null, portalContext);
+        addTab(tabName, "img/icon/bpmn-22x22.png", rows, tabHeader, new ProcessTabItemExecutor(portalContext.getMainController()), portalContext);
     }
 
 //    protected TabItemExecutor createTabItemExecutor(final PortalContext portalContext) {
