@@ -134,13 +134,16 @@ public class StructuringServiceImpl implements StructuringService {
 
 	@Override
 	public String structureBPMNModel(String xmlProcess) throws Exception {
+		au.edu.qut.structuring.StructuringService ss = new au.edu.qut.structuring.StructuringService();
+		au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl exporter = new au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl();
 		BPMNDiagramImporter diagramImporter = new BPMNDiagramImporterImpl();
-        isValid = false;
+
+		isValid = false;
 		diagram = diagramImporter.importBPMNDiagram(xmlProcess);
-		LOGGER.info("Diagram parsed! Found: " + diagram.getPools().size() + " pools AND " + diagram.getNodes().size() + " nodes AND " + diagram.getEdges().size() + " edges.");
-		structureDiagram();
+		BPMNDiagram structuredDiagram = ss.structureDiagram(diagram);
 		isValid = true;
-		return transformToXml();
+
+		return exporter.exportBPMNDiagram(structuredDiagram);
 	}
 
 	private String transformToXml() {
