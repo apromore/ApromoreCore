@@ -55,6 +55,7 @@
                             org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]"
                         </Import-Bundle>
                         <Import-Package>
+                            org.springframework.beans.factory.aspectj,
                             !hub.top.*,
                             !junit.framework,
                             !org.junit,
@@ -96,10 +97,6 @@
             <version>${editor-platform-extension.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>manager-client</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
         </dependency>
@@ -112,10 +109,6 @@
             <groupId>org.apromore</groupId>
             <artifactId>bpmntk-osgi</artifactId>
             <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>manager-client</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
