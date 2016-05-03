@@ -28,10 +28,6 @@ public interface StructuringService {
 
 	Map<Long, String> getErrors();
 
-	BPMNDiagram getStructuredDiagram();
-
-	BPMNDiagram structureDiagram(BPMNDiagram diagram) throws Exception;
-
 	String structureBPMNModel(BPMNDiagram diagram) throws Exception;
 
 	String structureBPMNModel(String xmlProcess) throws Exception;
