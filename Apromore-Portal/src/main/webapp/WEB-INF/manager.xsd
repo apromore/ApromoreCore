@@ -23,72 +23,11 @@
            xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            targetNamespace="urn:qut-edu-au:schema:apromore:manager"
            elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0"
-           xsi:schemaLocation="http://www.w3.org/2005/05/xmlmime ">
-
-    <xs:element name="TabAPQLRequest" type="tns:TabAPQLInputMsgType"/>
-    <xs:element name="TabAPQLResponse" type="tns:TabAPQLOutputMsgType"/>
-
-    <xs:element name="DBRequest" type="tns:DBInputMsgType"/>
-    <xs:element name="DBResponse" type="tns:DBOutputMsgType"/>
-
-    <xs:complexType name="DBInputMsgType">
-        <xs:attribute name="table" type="xs:string"/>
-        <xs:attribute name="columnName" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="DBOutputMsgType">
-        <xs:sequence>
-            <xs:element name="labels" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="TabAPQLInputMsgType">
-        <xs:sequence>
-            <xs:element name="results" type="tns:ResultPQL" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="details" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="userID" type="xs:string"/>
-        <xs:attribute name="query" type="xs:string"/>
-        <xs:attribute name="nameQuery" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="TabAPQLOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="userID" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="ResultPQL">
-        <xs:sequence>
-            <xs:element name="attributesToShow" type="xs:boolean" minOccurs="0" maxOccurs="8"/>
-            <xs:element name="pst" type="tns:ProcessSummaryType"/>
-            <xs:element name="vst" type="tns:VersionSummaryType"/>
-        </xs:sequence>
-
-    </xs:complexType>
-
-    <xs:complexType name="Detail">
-        <xs:sequence>
-            <xs:element name="detail" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="labelOne" type="xs:string"/>
-        <xs:attribute name="similarityLabelOne" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:element name="DetailRequest" type="tns:DetailInputMsgType"/>
-    <xs:element name="DetailResponse" type="tns:DetailOutputMsgType"/>
-
-    <xs:complexType name="DetailInputMsgType">
-    </xs:complexType>
-
-    <xs:complexType name="DetailOutputMsgType">
-        <xs:sequence>
-            <xs:element name="detail" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
+           xsi:schemaLocation="http://www.w3.org/2005/05/xmlmime" >
 
     <!-- Manager -->
+    <xs:element name="IsGEDReadyRequest" type="tns:IsGEDReadyInputMsgType"/>
+    <xs:element name="ISGEDReadyResponse" type="tns:IsGEDReadyOutputMsgType"/>
     <xs:element name="ReadDomainsRequest" type="tns:ReadDomainsInputMsgType"/>
     <xs:element name="ReadDomainsResponse" type="tns:ReadDomainsOutputMsgType"/>
     <xs:element name="ReadNativeTypesRequest" type="tns:ReadNativeTypesInputMsgType"/>
@@ -152,6 +91,182 @@
     <xs:element name="AddProcessToFolderRequest" type="tns:AddProcessToFolderInputMsgType"/>
     <xs:element name="AddProcessToFolderResponse" type="tns:AddProcessToFolderOutputMsgType"/>
 
+
+    <!-- ComputeMeasurements -->
+    <xs:element name="ComputeMeasurementsRequest" type="tns:ComputeMeasurementsInputMsgType"/>
+    <xs:element name="ComputeMeasurementsResponse" type="tns:ComputeMeasurementsOutputMsgType"/>
+
+    <xs:complexType name="ComputeMeasurementsInputMsgType">
+        <xs:sequence>
+            <xs:element name="Process" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ComputeMeasurementsOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- DiagramStructuring from Editor -->
+    <xs:element name="StructureBPMNModelRequest" type="tns:StructureBPMNModelInputMsgType"/>
+    <xs:element name="StructureBPMNModelResponse" type="tns:StructureBPMNModelOutputMsgType"/>
+
+    <xs:complexType name="StructureBPMNModelInputMsgType">
+        <xs:sequence>
+            <xs:element name="Process" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="StructureBPMNModelOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- DiagramStructuring from Manager -->
+    <xs:element name="StructureBPMNProcessRequest" type="tns:StructureBPMNProcessInputMsgType"/>
+    <xs:element name="StructureBPMNProcessResponse" type="tns:StructureBPMNProcessOutputMsgType"/>
+
+    <xs:complexType name="StructureBPMNProcessInputMsgType">
+        <xs:attribute name="ProcessId" type="xs:int"/>
+        <xs:attribute name="ProcessName" type="xs:string"/>
+        <xs:attribute name="BranchName" type="xs:string"/>
+        <xs:attribute name="VersionNumber" type="xs:string"/>
+        <xs:attribute name="Username" type="xs:string"/>
+        <xs:attribute name="FolderId" type="xs:int"/>
+        <xs:attribute name="Domain" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="StructureBPMNProcessOutputMsgType">
+        <xs:sequence>
+            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- APQL -->
+    <xs:element name="TabAPQLRequest" type="tns:TabAPQLInputMsgType"/>
+    <xs:element name="TabAPQLResponse" type="tns:TabAPQLOutputMsgType"/>
+
+    <xs:element name="DBRequest" type="tns:DBInputMsgType"/>
+    <xs:element name="DBResponse" type="tns:DBOutputMsgType"/>
+
+    <xs:complexType name="DBInputMsgType">
+        <xs:attribute name="table" type="xs:string"/>
+        <xs:attribute name="columnName" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="DBOutputMsgType">
+        <xs:sequence>
+            <xs:element name="labels" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="TabAPQLInputMsgType">
+        <xs:sequence>
+            <xs:element name="results" type="tns:ResultPQL" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="details" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="userID" type="xs:string"/>
+        <xs:attribute name="query" type="xs:string"/>
+        <xs:attribute name="nameQuery" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="TabAPQLOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="userID" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="ResultPQL">
+        <xs:sequence>
+            <xs:element name="attributesToShow" type="xs:boolean" minOccurs="0" maxOccurs="8"/>
+            <xs:element name="pst" type="tns:ProcessSummaryType"/>
+            <xs:element name="vst" type="tns:VersionSummaryType"/>
+        </xs:sequence>
+
+    </xs:complexType>
+
+    <xs:complexType name="Detail">
+        <xs:sequence>
+            <xs:element name="detail" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="labelOne" type="xs:string"/>
+        <xs:attribute name="similarityLabelOne" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:element name="DetailRequest" type="tns:DetailInputMsgType"/>
+    <xs:element name="DetailResponse" type="tns:DetailOutputMsgType"/>
+
+    <xs:complexType name="DetailInputMsgType">
+    </xs:complexType>
+
+    <xs:complexType name="DetailOutputMsgType">
+        <xs:sequence>
+            <xs:element name="detail" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- BPMNMiner -->
+    <xs:element name="DiscoverBPMNModelRequest" type="tns:DiscoverBPMNModelInputMsgType"/>
+    <xs:element name="DiscoverBPMNModelResponse" type="tns:DiscoverBPMNModelOutputMsgType"/>
+
+    <xs:complexType name="DiscoverBPMNModelInputMsgType">
+        <xs:sequence>
+            <xs:element name="XESGZLog" type="xs:base64Binary"/>
+            <xs:element name="miningAlgorithm" type="xs:int"/>
+            <xs:element name="dependencyAlgorithm" type="xs:int"/>
+            <xs:element name="sortLog" type="xs:boolean"/>
+            <xs:element name="structProcess" type="xs:boolean"/>
+            <xs:element name="interruptingEventTolerance" type="xs:double"/>
+            <xs:element name="multiInstancePercentage" type="xs:double"/>
+            <xs:element name="multiInstanceTolerance" type="xs:double"/>
+            <xs:element name="timerEventPercentage" type="xs:double"/>
+            <xs:element name="timerEventTolerance" type="xs:double"/>
+            <xs:element name="noiseThreshold" type="xs:double"/>
+            <xs:element name="canditateEntities" type="tns:BPMNMinerList" minOccurs="0"/>
+            <xs:element name="primaryKeySelections" type="tns:BPMNMinerMap" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DiscoverBPMNModelOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="BPMNMinerMap">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="entries" type="tns:BPMNMinerEntry"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="BPMNMinerEntry">
+        <xs:sequence minOccurs="1" maxOccurs="1">
+            <xs:element name="key" type="tns:BPMNMinerSet"/>
+            <xs:element name="value" type="tns:BPMNMinerSet"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="BPMNMinerSet">
+        <xs:sequence maxOccurs="unbounded">
+            <xs:element name="elements" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="BPMNMinerList">
+        <xs:sequence>
+            <xs:element name="elements" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Selection">
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="selected" type="xs:boolean"/>
+    </xs:complexType>
+
     <!-- Clustering -->
     <xs:element name="CreateGEDMatrixRequest" type="tns:CreateGEDMatrixInputMsgType"/>
     <xs:element name="CreateGEDMatrixResponse" type="tns:CreateGEDMatrixOutputMsgType"/>
@@ -184,6 +299,10 @@
     <xs:element name="SearchForSimilarProcessesResponse" type="tns:SearchForSimilarProcessesOutputMsgType"/>
     <xs:element name="MergeProcessesRequest" type="tns:MergeProcessesInputMsgType"/>
     <xs:element name="MergeProcessesResponse" type="tns:MergeProcessesOutputMsgType"/>
+
+
+    <xs:element name="ProDriftDetectorRequest" type="tns:ProDriftDetectorInputMsgType"/>
+    <xs:element name="ProDriftDetectorResponse" type="tns:ProDriftDetectorOutputMsgType"/>
 
     <!-- Plugins -->
     <xs:element name="ReadInstalledPluginsRequest" type="tns:ReadInstalledPluginsInputMsgType"/>
@@ -510,6 +629,8 @@
             <xs:element minOccurs="0" maxOccurs="unbounded" name="ProcessSummary" type="tns:ProcessSummaryType"/>
         </xs:sequence>
         <xs:attribute name="total_process_count" type="xs:long"/>
+        <xs:attribute name="process_count" type="xs:long"/>
+        <xs:attribute name="offset" type="xs:long"/>
     </xs:complexType>
 
     <xs:complexType name="ProcessSummaryType">
@@ -528,7 +649,18 @@
         <xs:attribute name="hasRead" type="xs:boolean"/>
         <xs:attribute name="hasWrite" type="xs:boolean"/>
         <xs:attribute name="hasOwnership" type="xs:boolean"/>
+        <xs:attribute name="pqlIndexerStatus" type="tns:IndexStatus"/>
     </xs:complexType>
+
+    <!-- These enumeration names correspond to org.pql.index.IndexStatus. -->
+    <xs:simpleType name="IndexStatus">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="UNINDEXED"/>
+            <xs:enumeration value="INDEXING"/>
+            <xs:enumeration value="INDEXED"/>
+            <xs:enumeration value="CANNOTINDEX"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:complexType name="VersionSummaryType">
         <xs:sequence>
@@ -650,6 +782,14 @@
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="Users" type="tns:UserType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="IsGEDReadyInputMsgType">
+        <xs:attribute name="folderId" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="IsGEDReadyOutputMsgType">
+        <xs:attribute name="GEDReady" type="xs:boolean" />
     </xs:complexType>
 
     <xs:complexType name="ReadDomainsInputMsgType">
@@ -796,6 +936,8 @@
     <xs:complexType name="GetProcessesInputMsgType">
         <xs:attribute name="userId" type="xs:string"/>
         <xs:attribute name="folderId" type="xs:int"/>
+        <xs:attribute name="pageIndex" type="xs:int"/>
+        <xs:attribute name="pageSize" type="xs:int"/>
     </xs:complexType>
 
     <xs:complexType name="GetProcessesOutputMsgType">
@@ -810,6 +952,7 @@
         <xs:attribute name="userId" type="xs:string"/>
         <xs:attribute name="folderName" type="xs:string"/>
         <xs:attribute name="parentFolderId" type="xs:int"/>
+        <xs:attribute name="GEDMatrixReady" type="xs:boolean" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="CreateFolderOutputMsgType">
@@ -832,6 +975,7 @@
     <xs:complexType name="UpdateFolderInputMsgType">
         <xs:attribute name="folderId" type="xs:int"/>
         <xs:attribute name="folderName" type="xs:string"/>
+        <xs:attribute name="GEDMatrixReady" type="xs:boolean" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="UpdateFolderOutputMsgType">
@@ -989,17 +1133,17 @@
 
     <xs:complexType name="RunAPQLInputMsgType">
         <xs:sequence>
-            <xs:element name="ids" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="ids" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="APQLExpression" type="xs:string"/>
         <xs:attribute name="UserID" type="xs:string"/>
-    </xs:complexType>
 
+    </xs:complexType>
 
     <xs:complexType name="RunAPQLOutputMsgType">
         <xs:sequence>
+            <xs:element name="processResult" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="ProcessSummaries" type="tns:ProcessSummariesType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1046,6 +1190,29 @@
             <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:complexType name="ProDriftDetectorInputMsgType">
+        <xs:sequence>
+            <xs:element name="logByteArray" minOccurs="0" type="xs:base64Binary"/>
+            <xs:element name="winSize" minOccurs="0" type="xs:int"/>
+            <xs:element name="fWinorAwin" minOccurs="0" type="xs:string"/>
+            <xs:element name="logFileName" minOccurs="0" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ProDriftDetectorOutputMsgType">
+        <xs:sequence>
+            <xs:element name="pValuesDiagram" minOccurs="0" type="xs:base64Binary" xmime:expectedContentTypes="image/png"/>
+            <xs:element name="driftPoints" minOccurs="0" type="tns:listofintegers"/>
+            <xs:element name="lastReadTrace" minOccurs="0" type="tns:listofintegers"/>
+            <xs:element name="startOfTransitionPoints" minOccurs="0" type="tns:listofintegers"/>
+            <xs:element name="endOfTransitionPoints" minOccurs="0" type="tns:listofintegers"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="listofintegers">
+        <xs:list itemType="xs:integer"/>
+    </xs:simpleType>
 
     <xs:complexType name="SearchForSimilarProcessesInputMsgType">
         <xs:sequence>

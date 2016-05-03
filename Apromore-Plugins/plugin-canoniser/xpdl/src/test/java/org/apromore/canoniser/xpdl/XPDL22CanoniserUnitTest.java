@@ -33,7 +33,7 @@ public class XPDL22CanoniserUnitTest {
 
     @Test
     public void testGetType() {
-        assertEquals("Canoniser", new XPDL22Canoniser().getType());
+        assertEquals("Manager Plugin", new XPDL22Canoniser().getType());
     }
 
 }
