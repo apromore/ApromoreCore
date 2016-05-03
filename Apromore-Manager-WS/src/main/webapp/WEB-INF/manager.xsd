@@ -25,70 +25,6 @@
            elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0"
            xsi:schemaLocation="http://www.w3.org/2005/05/xmlmime" >
 
-    <xs:element name="TabAPQLRequest" type="tns:TabAPQLInputMsgType"/>
-    <xs:element name="TabAPQLResponse" type="tns:TabAPQLOutputMsgType"/>
-
-    <xs:element name="DBRequest" type="tns:DBInputMsgType"/>
-    <xs:element name="DBResponse" type="tns:DBOutputMsgType"/>
-
-    <xs:complexType name="DBInputMsgType">
-        <xs:attribute name="table" type="xs:string"/>
-        <xs:attribute name="columnName" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="DBOutputMsgType">
-        <xs:sequence>
-            <xs:element name="labels" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="TabAPQLInputMsgType">
-        <xs:sequence>
-            <xs:element name="results" type="tns:ResultPQL" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="details" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="userID" type="xs:string"/>
-        <xs:attribute name="query" type="xs:string"/>
-        <xs:attribute name="nameQuery" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="TabAPQLOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="userID" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="ResultPQL">
-        <xs:sequence>
-            <xs:element name="attributesToShow" type="xs:boolean" minOccurs="0" maxOccurs="8"/>
-            <xs:element name="pst" type="tns:ProcessSummaryType"/>
-            <xs:element name="vst" type="tns:VersionSummaryType"/>
-        </xs:sequence>
-
-    </xs:complexType>
-
-    <xs:complexType name="Detail">
-        <xs:sequence>
-            <xs:element name="detail" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="labelOne" type="xs:string"/>
-        <xs:attribute name="similarityLabelOne" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:element name="DetailRequest" type="tns:DetailInputMsgType"/>
-    <xs:element name="DetailResponse" type="tns:DetailOutputMsgType"/>
-
-    <xs:complexType name="DetailInputMsgType">
-    </xs:complexType>
-
-    <xs:complexType name="DetailOutputMsgType">
-        <xs:sequence>
-            <xs:element name="detail" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-
     <!-- Manager -->
     <xs:element name="IsGEDReadyRequest" type="tns:IsGEDReadyInputMsgType"/>
     <xs:element name="ISGEDReadyResponse" type="tns:IsGEDReadyOutputMsgType"/>
@@ -181,7 +117,7 @@
             <xs:element name="Process" type="xs:string" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="StructureBPMNModelOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
@@ -206,6 +142,70 @@
         <xs:sequence>
             <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- APQL -->
+    <xs:element name="TabAPQLRequest" type="tns:TabAPQLInputMsgType"/>
+    <xs:element name="TabAPQLResponse" type="tns:TabAPQLOutputMsgType"/>
+
+    <xs:element name="DBRequest" type="tns:DBInputMsgType"/>
+    <xs:element name="DBResponse" type="tns:DBOutputMsgType"/>
+
+    <xs:complexType name="DBInputMsgType">
+        <xs:attribute name="table" type="xs:string"/>
+        <xs:attribute name="columnName" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="DBOutputMsgType">
+        <xs:sequence>
+            <xs:element name="labels" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="TabAPQLInputMsgType">
+        <xs:sequence>
+            <xs:element name="results" type="tns:ResultPQL" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="details" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="userID" type="xs:string"/>
+        <xs:attribute name="query" type="xs:string"/>
+        <xs:attribute name="nameQuery" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="TabAPQLOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="userID" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="ResultPQL">
+        <xs:sequence>
+            <xs:element name="attributesToShow" type="xs:boolean" minOccurs="0" maxOccurs="8"/>
+            <xs:element name="pst" type="tns:ProcessSummaryType"/>
+            <xs:element name="vst" type="tns:VersionSummaryType"/>
+        </xs:sequence>
+
+    </xs:complexType>
+
+    <xs:complexType name="Detail">
+        <xs:sequence>
+            <xs:element name="detail" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="labelOne" type="xs:string"/>
+        <xs:attribute name="similarityLabelOne" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:element name="DetailRequest" type="tns:DetailInputMsgType"/>
+    <xs:element name="DetailResponse" type="tns:DetailOutputMsgType"/>
+
+    <xs:complexType name="DetailInputMsgType">
+    </xs:complexType>
+
+    <xs:complexType name="DetailOutputMsgType">
+        <xs:sequence>
+            <xs:element name="detail" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -299,6 +299,7 @@
     <xs:element name="SearchForSimilarProcessesResponse" type="tns:SearchForSimilarProcessesOutputMsgType"/>
     <xs:element name="MergeProcessesRequest" type="tns:MergeProcessesInputMsgType"/>
     <xs:element name="MergeProcessesResponse" type="tns:MergeProcessesOutputMsgType"/>
+
 
     <xs:element name="ProDriftDetectorRequest" type="tns:ProDriftDetectorInputMsgType"/>
     <xs:element name="ProDriftDetectorResponse" type="tns:ProDriftDetectorOutputMsgType"/>
