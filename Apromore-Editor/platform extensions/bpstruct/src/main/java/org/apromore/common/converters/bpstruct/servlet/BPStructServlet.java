@@ -45,7 +45,6 @@ import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociatio
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import org.apache.log4j.Logger;
-import org.apromore.manager.client.ManagerService;
 import org.json.JSONObject;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
@@ -136,9 +135,9 @@ public class BPStructServlet extends HttpServlet {
 
         // Ask the manager to restructure the BPMN-formatted String
         ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
-        ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
+        org.apromore.service.StructuringService structuringService = (org.apromore.service.StructuringService) applicationContext.getAutowireCapableBeanFactory().getBean("structuringService");
 
-        String structuredBpmnModelString = manager.structureBPMNModel(unstructuredBpmnModelString);
+        String structuredBpmnModelString = structuringService.structureBPMNModel(unstructuredBpmnModelString);
 
 //        LOGGER.info("PROCESS STRUCTURED:\n" + structuredBpmnModelString);
 

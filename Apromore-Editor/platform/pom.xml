@@ -211,6 +211,7 @@
                         <Import-Package>
                             org.eclipse.virgo.web.dm,
                             org.aopalliance.aop,
+                            org.omg.spec.bpmn._20100524.model,
                             org.springframework.aop,
                             org.springframework.aop.framework,
                             org.apache.tools.ant.types,
@@ -218,6 +219,9 @@
                             net.sf.cglib.proxy,
                             net.sf.cglib.core,
                             net.sf.cglib.reflect,
+                            !net.sf.saxon,
+                            !org.apache.xml.resolver,
+                            !org.apache.xml.resolver.helpers,
                             !com.sun.image.codec.jpeg,
                             !javax.media.jai,
                             !junit.framework,

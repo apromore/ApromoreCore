@@ -34,6 +34,8 @@ public class BPMNDiagramExporterImpl implements BPMNDiagramExporter {
 
     @Override
     public String exportBPMNDiagram(BPMNDiagram diagram) throws Exception {
+        String result;
+
         UIContext context = new UIContext();
         UIPluginContext uiPluginContext = context.getMainPluginContext();
         BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
@@ -51,7 +53,13 @@ public class BPMNDiagramExporterImpl implements BPMNDiagramExporter {
         sb.append(definitions.exportElements());
         sb.append("</definitions>");
 
-        return sb.toString();
+        result = sb.toString();
+
+        result = result.replaceAll("\n", "&#10;");
+        result = result.replaceAll(">&#10;", ">\n");
+        result = result.replaceAll("\"&#10;", "\"\n");
+
+        return result;
     }
 
 }

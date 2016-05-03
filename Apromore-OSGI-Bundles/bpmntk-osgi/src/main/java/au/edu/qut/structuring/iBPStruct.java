@@ -44,7 +44,6 @@ public class iBPStruct {
     private Map<Integer, LinkedList<String>> originalPaths;
 
     private BPMNDiagram diagram;
-    private Set<BPMNNode> newNodes;
     private HashMap<String, BPMNNode> knownGates = new HashMap<>();
 
 
@@ -315,7 +314,6 @@ public class iBPStruct {
         BPMNNode unfoldedPathExit;
 
         diagram = new BPMNDiagramImpl("process");
-        newNodes = new HashSet<>();
         knownGates = new HashMap<>();
 
         System.out.println("DEBUG - starting building diagram (" + graph.getAlivePaths().size() + ")");
@@ -496,22 +494,18 @@ public class iBPStruct {
 
     private BPMNNode createNode(String id) {
         BPMNNode node;
+        BPMNNode duplicate = null;
+        String label = id;
 
         if( !nodes.containsKey(id) ) {
             System.out.println("ERROR - looked up for a node that does not exist.");
             return null;
         }
 
-        node = duplicateNode(nodes.get(id));
-        newNodes.add(node);
-        return node;
-    }
+        node = nodes.get(id);
 
-    private BPMNNode duplicateNode(BPMNNode node) {
-        BPMNNode duplicate = null;
-
-        if( node instanceof Activity) {
-            duplicate = diagram.addActivity( node.getLabel(),
+        if( node instanceof SubProcess) {
+            duplicate = diagram.addSubProcess( label,
                     ((Activity) node).isBLooped(),
                     ((Activity) node).isBAdhoc(),
                     ((Activity) node).isBCompensation(),
@@ -519,11 +513,17 @@ public class iBPStruct {
                     ((Activity) node).isBCollapsed(),
                     (SubProcess) null);
 
-            duplicate.setParentSwimlane(node.getParentSwimlane());
-            ((Activity) duplicate).setDecorator(((Activity) node).getDecorator());
+        } else if( node instanceof Activity) {
+            duplicate = diagram.addActivity( label,
+                    ((Activity) node).isBLooped(),
+                    ((Activity) node).isBAdhoc(),
+                    ((Activity) node).isBCompensation(),
+                    ((Activity) node).isBMultiinstance(),
+                    ((Activity) node).isBCollapsed(),
+                    (SubProcess) null);
 
         } else if( node instanceof CallActivity) {
-            duplicate = diagram.addCallActivity(node.getLabel(),
+            duplicate = diagram.addCallActivity( label,
                     ((CallActivity) node).isBLooped(),
                     ((CallActivity) node).isBAdhoc(),
                     ((CallActivity) node).isBCompensation(),
@@ -531,11 +531,8 @@ public class iBPStruct {
                     ((CallActivity) node).isBCollapsed(),
                     (SubProcess) null);
 
-            duplicate.setParentSwimlane(node.getParentSwimlane());
-            ((CallActivity) duplicate).setDecorator(((CallActivity) node).getDecorator());
-
         } else if( node instanceof Event ) {
-            duplicate = diagram.addEvent(node.getLabel(),
+            duplicate = diagram.addEvent( label,
                     ((Event) node).getEventType(),
                     ((Event) node).getEventTrigger(),
                     ((Event) node).getEventUse(),
@@ -543,12 +540,9 @@ public class iBPStruct {
                     true,
                     null);
 
-            duplicate.setParentSwimlane(node.getParentSwimlane());
-            ((Event) duplicate).setDecorator(((Event) node).getDecorator());
-
         } else if( node instanceof Gateway ) {
             g++;
-            duplicate = diagram.addGateway( Integer.toString(g),
+            duplicate = diagram.addGateway( label,
                     ((Gateway) node).getGatewayType(),
                     (SubProcess) null);
 
