@@ -54,7 +54,7 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
     protected void displayProcessSummaries(String tabName, ProcessSummariesType processSummaries, PortalContext portalContext) {
         List<TabRowValue> rows = new ArrayList<>();
         for(ProcessSummaryType processSummaryType : processSummaries.getProcessSummary()) {
-            rows.add(createProcessSummaryRowValue(processSummaryType));
+            rows.add(createProcessSummaryRowValue(processSummaryType, processSummaryType.getVersionSummaries().get(0)));
         }
 
         TabHeader tabHeader = null;
@@ -145,11 +145,11 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         return max.toString();
     }
 
-    protected ProcessSummaryRowValue createProcessSummaryRowValue(ProcessSummaryType processSummaryType) {
+    protected ProcessSummaryRowValue createProcessSummaryRowValue(ProcessSummaryType processSummaryType, VersionSummaryType versionSummaryType) {
         decimalFormat.setGroupingUsed(false);
         decimalFormat.setMaximumFractionDigits(3);
 
-        ProcessSummaryRowValue processSummaryRowValue = new ProcessSummaryRowValue();
+        ProcessSummaryRowValue processSummaryRowValue = new ProcessSummaryRowValue(processSummaryType, versionSummaryType);
         if(processSummaryType.getVersionSummaries().get(0).getScore() != null) {
             processSummaryRowValue.add(Double.parseDouble(decimalFormat.format(processSummaryType.getVersionSummaries().get(0).getScore())));
         }

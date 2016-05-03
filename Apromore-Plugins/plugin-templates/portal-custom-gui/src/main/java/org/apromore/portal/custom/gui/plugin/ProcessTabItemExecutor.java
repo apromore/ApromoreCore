@@ -34,34 +34,37 @@ public class ProcessTabItemExecutor implements TabItemExecutor {
     }
 
     protected ProcessSummaryType createProcessSummaryType(ProcessSummaryRowValue rowValue) {
-        ProcessSummaryType processSummaryType = new ProcessSummaryType();
-
-        int pos = 0;
-        if(rowValue.size() > 7) {
-            pos++;
-        }
-        processSummaryType.setName((String) rowValue.get(pos++));
-        processSummaryType.setId((Integer) rowValue.get(pos++));
-        processSummaryType.setOriginalNativeType((String) rowValue.get(pos++));
-        processSummaryType.setDomain((String) rowValue.get(pos++));
-        processSummaryType.setRanking((String) rowValue.get(pos++));
-        processSummaryType.setLastVersion((String) rowValue.get(pos++));
-        processSummaryType.setOwner((String) rowValue.get(pos++));
-
-        return processSummaryType;
+//        ProcessSummaryType processSummaryType = new ProcessSummaryType();
+//
+//        int pos = 0;
+//        if(rowValue.size() > 7) {
+//            pos++;
+//        }
+//        processSummaryType.setName((String) rowValue.get(pos++));
+//        processSummaryType.setId((Integer) rowValue.get(pos++));
+//        processSummaryType.setOriginalNativeType((String) rowValue.get(pos++));
+//        processSummaryType.setDomain((String) rowValue.get(pos++));
+//        processSummaryType.setRanking((String) rowValue.get(pos++));
+//        processSummaryType.setLastVersion((String) rowValue.get(pos++));
+//        processSummaryType.setOwner((String) rowValue.get(pos++));
+//
+//        return processSummaryType;
+        return rowValue.getProcessSummaryType();
     }
 
     protected VersionSummaryType createVersionSummaryType(ProcessSummaryRowValue rowValue) {
-        VersionSummaryType processSummaryType = new VersionSummaryType();
+//        VersionSummaryType processSummaryType = new VersionSummaryType();
+//
+//        int pos = 0;
+//        if(rowValue.size() > 7) {
+//            pos++;
+//        }
+//        processSummaryType.setName((String) rowValue.get(pos++));
+//        pos += 4;
+//        processSummaryType.setVersionNumber((String) rowValue.get(pos));
+//
+//        return processSummaryType;
 
-        int pos = 0;
-        if(rowValue.size() > 7) {
-            pos++;
-        }
-        processSummaryType.setName((String) rowValue.get(pos++));
-        pos += 4;
-        processSummaryType.setVersionNumber((String) rowValue.get(pos));
-
-        return processSummaryType;
+        return rowValue.getVersionSummaryType();
     }
 }
