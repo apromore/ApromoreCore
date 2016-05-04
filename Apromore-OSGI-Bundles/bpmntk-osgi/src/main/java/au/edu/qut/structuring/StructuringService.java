@@ -216,7 +216,7 @@ public class StructuringService {
         parsePool(null);
         parseSubProcesses(null);
 
-        System.out.println("Total gateways before structuring: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
+//        System.out.println("Total gateways before structuring: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
 
         xorGates = 0;
         andGates = 0;
@@ -236,7 +236,7 @@ public class StructuringService {
             if( err ) throw new Exception("Unable to rebuild the subProcess_" + idp);
         }
 
-        System.out.println("Total gateways after structuring: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
+//        System.out.println("Total gateways after structuring: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
         System.out.println("Total duplicates: " + matrices.size());
 
         /**** STEP5: restore edges and boundary, start, end events where feasible ****/
@@ -631,7 +631,7 @@ public class StructuringService {
             nodes.add(tgt);
             flows.add(flow);
 
-            if ((src instanceof Gateway) && (((Gateway) src).getGatewayType() == Gateway.GatewayType.PARALLEL)) {
+            if( (!tryClassicBPStruct) && (src instanceof Gateway) && (((Gateway) src).getGatewayType() == Gateway.GatewayType.PARALLEL) ) {
                 System.out.println("DEBUG - BPStruct enabled.");
                 tryClassicBPStruct = true;
             }
