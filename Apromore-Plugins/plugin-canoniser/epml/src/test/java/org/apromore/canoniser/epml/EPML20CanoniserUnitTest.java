@@ -105,7 +105,7 @@ public class EPML20CanoniserUnitTest {
 
     @Test
     public void testGetType() {
-        assertEquals("Canoniser", epml20Canoniser.getType());
+        assertEquals("Manager Plugin", epml20Canoniser.getType());
     }
 
     @Test
