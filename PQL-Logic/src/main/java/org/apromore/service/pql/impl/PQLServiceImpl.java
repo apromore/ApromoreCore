@@ -32,6 +32,8 @@ import org.apromore.model.Detail;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.DefaultPlugin;
+import org.apromore.plugin.process.ProcessPlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.PluginService;
@@ -71,7 +73,7 @@ import java.util.concurrent.Semaphore;
  * Created by corno on 22/07/2014.
  */
 @Service
-public class PQLServiceImpl implements PQLService {
+public class PQLServiceImpl extends DefaultPlugin implements PQLService, ProcessPlugin {
     private static final Logger LOGGER = LoggerFactory.getLogger(PQLServiceImpl.class);
 
     private final String admin = "admin";
@@ -269,5 +271,12 @@ public class PQLServiceImpl implements PQLService {
     @Override
     public boolean isIndexingEnabled() {
         return pqlBean.isIndexingEnabled();
+    }
+
+    // Implementation of the ProcessPlugin interface
+
+    /** {@inheritDoc} */
+    public void processChanged(int processId /*, ProcessService processService*/) throws ProcessChangedException {
+        LOGGER.info("PQL index needs to be undated for process with external ID " + processId);
     }
 }
