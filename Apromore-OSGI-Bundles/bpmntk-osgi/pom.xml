@@ -43,7 +43,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=de-jbpt|bpmn-schema
+                            artifactId=bpmn-schema
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
@@ -82,14 +82,19 @@
             <groupId>org.apromore</groupId>
             <artifactId>prom6-osgi</artifactId>
         </dependency>
-        <dependency>
-            <groupId>de.hpi.jbpt</groupId>
-            <artifactId>de-jbpt</artifactId>
-            <version>0.2.77</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>de.hpi.jbpt</groupId>-->
+            <!--<artifactId>de-jbpt</artifactId>-->
+            <!--<version>0.2.77</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpmn-schema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpstruct-osgi</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
