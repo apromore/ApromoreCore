@@ -93,7 +93,7 @@ public class iBPStruct {
         System.out.println("DEBUG - [Final Rigid] keep bisimulation: " + keepBisimulation);
     }
 
-    public boolean setProcess(Collection<BPMNNode> nodes, Collection<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> flows) {
+    public boolean setProcess(Collection<BPMNNode> nodes, Collection<Flow> flows) {
         HashSet<String> starts = new HashSet<>();
         HashSet<String> ends = new HashSet<>();
         String nodeID;
@@ -117,7 +117,7 @@ public class iBPStruct {
         starts.addAll(this.nodes.keySet());
         ends.addAll(this.nodes.keySet());
 
-        for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> f : flows ) {
+        for( Flow f : flows ) {
 
             srcID = f.getSource().getId().toString();
             tgtID = f.getTarget().getId().toString();
