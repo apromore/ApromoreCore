@@ -1,6 +1,7 @@
 package au.edu.qut.structuring;
 
 import au.edu.qut.structuring.core.StructuringCore;
+import au.edu.qut.structuring.wrapper.BPStructWrapper;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.annotations.Plugin;
@@ -113,7 +114,7 @@ public class StructuringService {
         return this.diagram;
     }
 
-/*
+
     @Plugin(
             name = "Structure Diagram",
             parameterLabels = { "BPMNDiagram" },
@@ -131,45 +132,25 @@ public class StructuringService {
         BPMNDiagram structuredDiagram;
         iBPStructUI gui = new iBPStructUI();
         iBPStructUIResult result = gui.showGUI(context);
-        long start, end;
-        int gates = diagram.getGateways().size();
-
-        start = System.currentTimeMillis();
-
-        while(  removeDoubleEdges(diagram) || removeFakeGateways(diagram) ||
-                collapseSplitGateways(diagram) || collapseJoinGateways(diagram) );
-
+        StructuringService ss = new StructuringService();
         try {
-            iBPStruct spi = new iBPStruct(  result.getPolicy(),
-                                            result.getMaxDepth(),
-                                            result.getMaxSol(),
-                                            result.getMaxChildren(),
-                                            result.getMaxStates(),
-                                            result.getMaxMinutes(),
-                                            result.isTimeBounded(),
-                                            result.isKeepBisimulation(),
-                                            result.isForceStructuring());
-
-            spi.setProcess(diagram.getNodes(), diagram.getEdges());
-            spi.structure();
-            structuredDiagram = spi.getDiagram();
-            if(structuredDiagram == null) return diagram;
+            structuredDiagram = ss.structureDiagram(diagram,
+                                                    result.getPolicy().toString(),
+                                                    result.getMaxDepth(),
+                                                    result.getMaxSol(),
+                                                    result.getMaxChildren(),
+                                                    result.getMaxStates(),
+                                                    result.getMaxMinutes(),
+                                                    result.isTimeBounded(),
+                                                    result.isKeepBisimulation(),
+                                                    result.isForceStructuring());
         } catch(Exception e) {
             context.log(e);
             System.err.print(e);
             return diagram;
         }
-
-        while(  removeDoubleEdges(structuredDiagram) || removeFakeGateways(structuredDiagram) ||
-                collapseSplitGateways(structuredDiagram) || collapseJoinGateways(structuredDiagram) );
-
-        end = System.currentTimeMillis() - start;
-        System.out.println("TEST - gateways: " + gates);
-        System.out.println("TEST - total time: " + end + " ms");
-
         return structuredDiagram;
     }
-*/
 
 
     private void structureDiagram() throws Exception {
@@ -626,10 +607,12 @@ public class StructuringService {
         if( edges.size() == 0 ) return;
 
         Collection<BPMNNode> nodes = new HashSet<>();
-        Collection<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> flows = new HashSet<>();
+        Collection<Flow> flows = new HashSet<>();
 
         BPMNNode src, tgt;
         BPMNDiagram structuredDiagram = null;
+
+        boolean tryClassicBPStruct = false;
 
         for( Flow flow : edges ) {
 
@@ -637,9 +620,9 @@ public class StructuringService {
             tgt = flow.getTarget();
 
             /**** we cannot map these elements within the json scheme and so neither the current flow, this SHOULD NOT HAPPEN ****/
-            if( src instanceof DataObject || src instanceof Swimlane || src instanceof TextAnnotation ||
-                    tgt instanceof DataObject || tgt instanceof Swimlane || tgt instanceof TextAnnotation ) {
-                System.out.println("WARNING - unmappable flow: " + src.getId() +  " > " + tgt.getId());
+            if (src instanceof DataObject || src instanceof Swimlane || src instanceof TextAnnotation ||
+                    tgt instanceof DataObject || tgt instanceof Swimlane || tgt instanceof TextAnnotation) {
+                System.out.println("WARNING - unmappable flow: " + src.getId() + " > " + tgt.getId());
                 unmappableEdges.add(flow);
                 continue;
             }
@@ -648,20 +631,32 @@ public class StructuringService {
             nodes.add(tgt);
             flows.add(flow);
 
-            if( !originalNodes.containsKey(src.getId().toString()) ) originalNodes.put(src.getId().toString(), src);
-            if( !originalNodes.containsKey(tgt.getId().toString()) ) originalNodes.put(tgt.getId().toString(), tgt);
+            if ((src instanceof Gateway) && (((Gateway) src).getGatewayType() == Gateway.GatewayType.PARALLEL)) {
+                System.out.println("DEBUG - BPStruct enabled.");
+                tryClassicBPStruct = true;
+            }
 
-            try {
+            if (!originalNodes.containsKey(src.getId().toString())) originalNodes.put(src.getId().toString(), src);
+            if (!originalNodes.containsKey(tgt.getId().toString())) originalNodes.put(tgt.getId().toString(), tgt);
+        }
+
+        try {
+            if( tryClassicBPStruct ) {
+                BPStructWrapper bpsw = new BPStructWrapper();
+                structuredDiagram = bpsw.getStructured(flows);
+            }
+
+            if( structuredDiagram == null ) {
                 iBPStruct spi = new iBPStruct(  StructuringCore.Policy.valueOf(policy),
-                                                maxDepth, maxSolutions, maxChildren, maxStates,
-                                                maxMinutes, timeBounded, keepBisimulation, forceStructuring);
+                        maxDepth, maxSolutions, maxChildren, maxStates,
+                        maxMinutes, timeBounded, keepBisimulation, forceStructuring);
                 spi.setProcess(nodes, flows);
                 spi.structure();
                 structuredDiagram = spi.getDiagram();
-            } catch(Exception e) {
-                System.err.print(e);
-                structuredDiagram = null;
             }
+        } catch(Exception e) {
+            System.err.print(e);
+            structuredDiagram = null;
         }
 
         idToDiagram.put(processID, structuredDiagram);
