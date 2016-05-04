@@ -73,6 +73,7 @@ import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.plugin.process.ProcessPlugin;
 import org.apromore.service.*;
 import org.apromore.service.helper.AnnotationHelper;
 import org.apromore.service.helper.OperationContext;
@@ -94,6 +95,7 @@ import org.w3c.dom.Element;
 import org.wfmc._2009.xpdl2.PackageType;
 
 import javax.activation.DataHandler;
+//import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBContext;
@@ -142,6 +144,9 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
     private DecomposerService decomposerSrv;
     private UserInterfaceHelper ui;
     private WorkspaceService workspaceSrv;
+
+    @javax.annotation.Resource
+    private Set<ProcessPlugin> processPlugins;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -264,6 +269,17 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
 
             // Index for PQL
             notifyUpdate(pmv);
+
+            // Notify process plugin providers
+            LOGGER.info("Notifying " + processPlugins.size() + " process plugins");
+            for (ProcessPlugin processPlugin: processPlugins) {
+                LOGGER.info("Notifying process plugin " + processPlugin);
+                try {
+                    processPlugin.processChanged(process.getId());
+                } catch (ProcessPlugin.ProcessChangedException e) {
+                    LOGGER.warn("Process plugin " + processPlugin + " failed to change process", e);
+                }
+            }
 
         } catch (UserNotFoundException | JAXBException | IOException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);

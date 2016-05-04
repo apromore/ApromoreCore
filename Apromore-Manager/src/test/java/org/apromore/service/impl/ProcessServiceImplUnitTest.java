@@ -25,7 +25,9 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
@@ -43,6 +45,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.plugin.property.RequestParameterType;
+//import org.apromore.plugin.process.ProcessPlugin;
 import org.apromore.service.AnnotationService;
 import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
@@ -99,6 +102,8 @@ public class ProcessServiceImplUnitTest {
         FragmentService fSrv = createMock(FragmentService.class);
         WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
         PQLService pqlSrv = createMock(PQLService.class);
+
+        //List<ProcessPlugin> processPlugins = new ArrayList<>();
 
         service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, convertor, annSrv, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv, pqlSrv);
     }

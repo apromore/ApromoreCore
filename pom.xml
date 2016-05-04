@@ -576,6 +576,11 @@
                 <artifactId>metric-api-provider</artifactId>
                 <version>${apromore.plugin.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
+                <artifactId>process-plugin-api</artifactId>
+                <version>${apromore.plugin.version}</version>
+            </dependency>
 
             <!-- Portal Plugin API -->
             <dependency>
