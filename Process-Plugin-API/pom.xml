@@ -25,15 +25,15 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apromore</groupId>
-        <artifactId>apromore</artifactId>
+        <groupId>org.apromore.plugin</groupId>
+        <artifactId>plugin</artifactId>
         <version>1.1</version>
-        <relativePath>../</relativePath>
+        <relativePath>../Apromore-Plugins/</relativePath>
     </parent>
 
-    <artifactId>pql-logic</artifactId>
+    <artifactId>process-plugin-api</artifactId>
     <packaging>bundle</packaging>
-    <name>PQL query service</name>
+    <name>Process store service plugin API</name>
 
     <build>
         <plugins>
@@ -50,11 +50,10 @@
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
                         <Import-Package>
-                            org.springframework.beans.factory.aspectj,
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.pql
+                            org.apromore.plugin.process
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -64,49 +63,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>com.springsource.javax.inject</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>manager-ws-model</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>process-plugin-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.pql</groupId>
-            <artifactId>pql-osgi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.transaction</artifactId>
+            <artifactId>plugin-api</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -144,6 +144,9 @@
         <ref bean="yawlCanoniser" />
     </util:set>
 
+    <util:set id="processPlugins">
+    </util:set>
+
     <!-- Just test the provider outside of OSGi -->
     <bean id="pluginProvider" class="org.apromore.plugin.provider.impl.PluginProviderImpl"/>
     <bean id="canoniserProvider" class="org.apromore.canoniser.provider.impl.CanoniserProviderImpl" p:canoniserSet-ref="canonisers"/>
