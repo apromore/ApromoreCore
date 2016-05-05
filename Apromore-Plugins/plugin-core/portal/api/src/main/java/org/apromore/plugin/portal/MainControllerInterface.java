@@ -18,13 +18,17 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.portal.custom.gui.tab.impl;
+package org.apromore.plugin.portal;
 
-import java.util.ArrayList;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.property.RequestParameterType;
+import java.util.*;
 
-/**
- * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 19/03/2016.
- */
-public class TabRowValue extends ArrayList<Comparable> {
+public interface MainControllerInterface {
+
+    void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
+                     final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException;
 
 }
+

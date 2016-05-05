@@ -138,6 +138,11 @@ public class PluginPortalContext implements PortalContext {
     }
 
     @Override
+    public MainControllerInterface getMainController() {
+        return mainController;
+    }
+
+    @Override
     public void refreshContent() {
         mainController.loadWorkspace();
     }
