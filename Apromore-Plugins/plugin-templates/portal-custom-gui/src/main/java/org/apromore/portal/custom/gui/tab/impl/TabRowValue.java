@@ -25,6 +25,6 @@ import java.util.ArrayList;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 19/03/2016.
  */
-public class TabRowValue extends ArrayList<Object> {
+public class TabRowValue extends ArrayList<Comparable> {
 
 }

@@ -20,6 +20,7 @@
 
 package org.apromore.portal.custom.gui.tab.impl;
 
+import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
 import org.apromore.portal.custom.gui.tab.TabItemExecutor;
@@ -62,7 +63,7 @@ public class PortalTabImpl extends AbstractPortalTab {
         return tabpanel;
     }
 
-    public AbstractPortalTab clone() {
+    public PortalTabImpl clone() {
         return new PortalTabImpl(tabName, tabRowImage, tabRowValues, tabHeader, tabItemExecutor, portalContext);
     }
 
@@ -83,15 +84,17 @@ public class PortalTabImpl extends AbstractPortalTab {
             Listheader idListHeader = createListHeader("1", valueLabel, null, "auto", null);
 
             idListHeader.setSortAscending(new java.util.Comparator<TabItem>() {
+                int position = pos;
                 @Override
                 public int compare(TabItem o1, TabItem o2) {
-                    return o1.getValue(pos).compareTo(o2.getValue(pos));
+                    return o1.getValue(position).compareTo(o2.getValue(position));
                 }
             });
             idListHeader.setSortDescending(new java.util.Comparator<TabItem>() {
+                int position = pos;
                 @Override
                 public int compare(TabItem o1, TabItem o2) {
-                    return o2.getValue(pos).compareTo(o1.getValue(pos));
+                    return o2.getValue(position).compareTo(o1.getValue(position));
                 }
             });
 

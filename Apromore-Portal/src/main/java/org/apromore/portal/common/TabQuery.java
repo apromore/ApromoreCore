@@ -22,9 +22,11 @@ package org.apromore.portal.common;
 
 import org.apromore.model.*;
 import org.apromore.model.Detail;
+import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
+import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.DetailsTabController;
 import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zk.ui.event.Event;
@@ -191,7 +193,7 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
     }
 
     @Override
-    public AbstractPortalTab clone() {
+    public PortalTab clone() {
         return null;
     }
 }

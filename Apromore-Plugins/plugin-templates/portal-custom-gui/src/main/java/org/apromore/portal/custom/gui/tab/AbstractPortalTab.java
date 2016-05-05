@@ -34,13 +34,7 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
 //        this.tab.setSelected(true);
 //        this.tab.setTooltiptext("Double click to show more info");
 //        this.tab.setImage("img/info25.png");
-//
-//        this.tab.addEventListener(Events.ON_CLOSE,new EventListener<Event>() {
-//            @Override
-//            public void onEvent(Event event) throws Exception {
-//                AbstractPortalTab.this.remove();
-//            }
-//        });
+
 
         this.setClosable(true);
         this.setSelected(true);
@@ -55,7 +49,8 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
         });
     }
 
-    public abstract AbstractPortalTab clone();
+    @Override
+    public abstract PortalTab clone();
 
     @Override
     public Tabpanel getTabpanel(){

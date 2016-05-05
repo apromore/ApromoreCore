@@ -1,5 +1,6 @@
 package org.apromore.portal.custom.gui.tab;
 
+import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.portal.custom.gui.tab.impl.TabItem;
 
 /**
