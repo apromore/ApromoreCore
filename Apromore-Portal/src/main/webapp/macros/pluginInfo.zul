@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="pluginInfo" height="450px" width="800px" sizable="true">
+<window id="pluginInfo" height="500px" width="800px" sizable="true">
     <listbox id="pluginInfoListBox" vflex="true" span="true" autopaging="true" mold="paging">
         <listhead sizable="true">
             <listheader hflex="min" label="Name" sort="auto(name)"/>
