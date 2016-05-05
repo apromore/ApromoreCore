@@ -198,7 +198,6 @@ public class MetricsPlugin extends PluginCustomGui {
                     }
 
                     LOGGER.info("Metrics - done!");
-                    this.portalContext.refreshContent();
                 }
             }
         } catch(Exception e) {

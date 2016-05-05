@@ -8,20 +8,20 @@ import org.apromore.model.VersionSummaryType;
  */
 public class ProcessSummaryRowValue extends TabRowValue {
 
-    public ProcessSummaryType getProcessSummaryType() {
-        return processSummaryType;
-    }
-
-    public VersionSummaryType getVersionSummaryType() {
-        return versionSummaryType;
-    }
-
     private ProcessSummaryType processSummaryType;
     private VersionSummaryType versionSummaryType;
 
     public ProcessSummaryRowValue(ProcessSummaryType processSummaryType, VersionSummaryType versionSummaryType) {
         this.processSummaryType = processSummaryType;
         this.versionSummaryType = versionSummaryType;
+    }
+
+    public ProcessSummaryType getProcessSummaryType() {
+        return processSummaryType;
+    }
+
+    public VersionSummaryType getVersionSummaryType() {
+        return versionSummaryType;
     }
 
 }

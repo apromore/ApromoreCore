@@ -58,7 +58,7 @@ public class TabItem extends Listitem {
     }
 
     public String getValue(int pos) {
-        return listcells[pos - 1].getLabel();
+        return listcells[pos].getLabel();
     }
 
     private void buildListitem(){
@@ -67,8 +67,9 @@ public class TabItem extends Listitem {
         appendChild(imageCell);
 
         int pos = 0;
-        for(Object value : tabRowValue) {
+        for(Comparable value : tabRowValue) {
             Listcell listcell = new Listcell();
+
             if(value != null && value.toString() != null) {
                 listcell.setLabel(value.toString());
             }
