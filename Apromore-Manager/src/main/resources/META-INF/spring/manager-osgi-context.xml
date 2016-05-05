@@ -35,6 +35,8 @@
     <!--<osgi:reference id="searchByTextProvider" interface="org.apromore.plugin.search.provider.SearchByTextPluginProvider"/>-->
     <osgi:reference id="metricProvider" interface="org.apromore.plugin.metric.provider.MetricPluginProvider"/>
 
+    <osgi:set id="processPlugins" interface="org.apromore.plugin.process.ProcessPlugin" availability="optional" />
+
     <osgi:service ref="entityManagerFactory" interface="javax.persistence.EntityManagerFactory" auto-export="interfaces"/>
 
     <osgi:service ref="deploymentServiceImpl" interface="org.apromore.service.DeploymentService" auto-export="interfaces"/>
