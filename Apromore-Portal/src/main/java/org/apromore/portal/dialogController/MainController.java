@@ -23,6 +23,7 @@ package org.apromore.portal.dialogController;
 import org.apromore.helper.Version;
 import org.apromore.model.*;
 import org.apromore.model.Detail;
+import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.property.RequestParameterType;
@@ -60,7 +61,7 @@ import java.util.Set;
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
  */
-public class MainController extends BaseController {
+public class MainController extends BaseController implements MainControllerInterface {
 
     private static final long serialVersionUID = 5147685906484044300L;
 	private static MainController controller = null;
@@ -801,25 +802,17 @@ public class MainController extends BaseController {
         Tabbox tabbox = (Tabbox) mainW.getFellow("tabbox");
 
         List<Tab> tabList = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
-        if(tabList.isEmpty()) {
-            for(Component component : tabbox.getTabs().getChildren()) {
-                Tab tab = (Tab) component;
-                if(tab instanceof PortalTab) {
-                    SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, tab);
-                }
-            }
-        }
-
-        tabList = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
         if(tabbox.getTabs().getChildren().size() < tabList.size() + 1) {
             for (Tab tab : tabList) {
                 try {
-                    AbstractPortalTab portalTab = ((PortalTabImpl) tab).clone();
-                    SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userId, tab);
-                    SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, portalTab);
+                    if(!tabbox.getTabs().getChildren().contains(tab)) {
+                        AbstractPortalTab portalTab = ((PortalTabImpl) tab).clone();
+                        SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userId, tab);
+                        SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, portalTab);
 
-                    portalTab.getTab().setParent(tabbox.getTabs());
-                    portalTab.getTabpanel().setParent(tabbox.getTabpanels());
+                        portalTab.getTab().setParent(tabbox.getTabs());
+                        portalTab.getTabpanel().setParent(tabbox.getTabpanels());
+                    }
                 }catch (Exception e) {
                     Executions.sendRedirect(null);
                 }

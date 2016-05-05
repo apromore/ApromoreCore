@@ -22,6 +22,7 @@ package org.apromore.plugin.similaritysearch.portal;
 
 import org.apromore.model.*;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.similaritysearch.logic.SimilarityService;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
 import org.apromore.portal.dialogController.FolderTreeController;
@@ -47,7 +48,8 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
     private final String GREEDY_ALGORITHM = "Greedy";
 
-    private int count = 1;
+    private Map<String, Integer> countMap = new HashMap<>();
+
     private PortalContext context;
     private Window similaritySearchW;
     private Listbox algosLB;
@@ -169,8 +171,8 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
             Boolean latestVersions = "latestVersions".compareTo(allVersionsChoiceRG.getSelectedItem().getId()) == 0;
 
             Integer folderId = 0;
-            if(context.getCurrentFolder() != null) {
-               folderId = context.getCurrentFolder().getId();
+            if (context.getCurrentFolder() != null) {
+                folderId = context.getCurrentFolder().getId();
             }
             if (folderId == null) {
                 folderId = 0;
@@ -196,13 +198,26 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
                 message += " process.";
             }
 
-            if (result.getProcessSummary()!= null && result.getProcessSummary().size() > 1) {
+            if (result.getProcessSummary() != null && result.getProcessSummary().size() > 1) {
                 resultToDisplay = sort(process, result);
             } else {
                 resultToDisplay = result;
             }
 
-            if(result.getTotalProcessCount() > 1) displayProcessSummaries("Sim Search " + count++, resultToDisplay, context);
+            Integer count;
+            if ((count = countMap.get(context.getCurrentUser().getId())) == null) {
+                count = 1;
+            }
+
+            if (SessionTab.getSessionTab(context).getTabsSession(context.getCurrentUser().getId()).size() == 0) {
+                count = 1;
+            }
+
+            if(result.getTotalProcessCount() > 1) {
+                displayProcessSummaries(process.getName() + ": Sim Search " + count++, resultToDisplay, context);
+                countMap.put(context.getCurrentUser().getId(), count);
+            }
+
             Messagebox.show(message);
         } catch (Exception e) {
             StringBuilder sb = new StringBuilder();

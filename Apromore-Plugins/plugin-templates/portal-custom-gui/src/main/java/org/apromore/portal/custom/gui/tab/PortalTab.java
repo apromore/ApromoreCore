@@ -20,6 +20,7 @@
 
 package org.apromore.portal.custom.gui.tab;
 
+import org.apromore.plugin.portal.MainControllerInterface;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanel;
 
@@ -31,6 +32,8 @@ import java.util.List;
 public interface PortalTab {
 
     Tabpanel getTabpanel();
+
+    PortalTab clone();
 
     Tab getTab();
 
