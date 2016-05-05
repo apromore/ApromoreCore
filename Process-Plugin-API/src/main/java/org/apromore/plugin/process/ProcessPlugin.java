@@ -27,6 +27,16 @@ import org.apromore.plugin.Plugin;
 public interface ProcessPlugin extends Plugin {
 
     /**
+     * Notifies a client that it has been attached to the process store.
+     */
+    void bindToProcessService();
+
+    /**
+     * Notifies a client that it is about to be detached from the process store.
+     */
+    void unbindFromProcessService();
+
+    /**
      * Notifies a client that the process store has changed.
      *
      * In most cases a follow-up call to the process service will be needed to determine the nature of the change.
