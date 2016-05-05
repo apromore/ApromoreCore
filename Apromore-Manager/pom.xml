@@ -240,6 +240,10 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>metric-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>process-plugin-api</artifactId>
+        </dependency>
 
         <!-- Schema -->
         <dependency>
@@ -668,6 +672,7 @@
             <artifactId>annotation-pnml</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>metric-size</artifactId>

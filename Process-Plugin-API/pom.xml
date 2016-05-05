@@ -25,35 +25,35 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apromore</groupId>
-        <artifactId>apromore</artifactId>
+        <groupId>org.apromore.plugin</groupId>
+        <artifactId>plugin</artifactId>
         <version>1.1</version>
-        <relativePath>../</relativePath>
+        <relativePath>../Apromore-Plugins/</relativePath>
     </parent>
 
-    <artifactId>ibpstruct-logic</artifactId>
+    <artifactId>process-plugin-api</artifactId>
     <packaging>bundle</packaging>
-    <name>iBPSruct service</name>
+    <name>Process store service plugin API</name>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <!--
+                    There is some problem in the bpstruct JAR that causes the newer version to throw an error!
+                    So we use the older version as workaround
+                -->
                 <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
                         <Import-Package>
-                            org.springframework.beans.factory.aspectj,
-                            au.edu.qut.structuring,
-                            au.edu.qut.bpmn.exporter.*,
-                            au.edu.qut.bpmn.exporter.impl.*,
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.ibpstruct
+                            org.apromore.plugin.process
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -63,22 +63,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager</artifactId>
-            <version>${manager-client.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmntk-osgi</artifactId>
-            <version>1.0</version>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
         </dependency>
     </dependencies>
 </project>
