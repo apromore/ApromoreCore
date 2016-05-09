@@ -35,7 +35,11 @@
     <!--<osgi:reference id="searchByTextProvider" interface="org.apromore.plugin.search.provider.SearchByTextPluginProvider"/>-->
     <osgi:reference id="metricProvider" interface="org.apromore.plugin.metric.provider.MetricPluginProvider"/>
 
-    <osgi:set id="processPlugins" interface="org.apromore.plugin.process.ProcessPlugin" availability="optional" />
+    <osgi:set id="processPlugins" interface="org.apromore.plugin.process.ProcessPlugin" availability="optional">
+        <osgi:reference-listener bind-method="onProcessPluginBind" unbind-method="onProcessPluginUnbind">
+            <beans:bean class="org.apromore.service.impl.ProcessPluginListener"/>
+        </osgi:reference-listener>
+    </osgi:set>
 
     <osgi:service ref="entityManagerFactory" interface="javax.persistence.EntityManagerFactory" auto-export="interfaces"/>
 
@@ -67,6 +71,5 @@
     <osgi:service ref="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository" auto-export="interfaces"/>
     <osgi:service ref="folderRepository" interface="org.apromore.dao.FolderRepository" auto-export="interfaces"/>
     <osgi:service ref="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper" auto-export="interfaces"/>
-
 
 </beans:beans>
