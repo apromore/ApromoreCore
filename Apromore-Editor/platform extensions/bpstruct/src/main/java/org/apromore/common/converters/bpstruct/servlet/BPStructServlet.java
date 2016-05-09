@@ -31,11 +31,6 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.transform.stream.StreamSource;
 
-import au.edu.qut.bpmn.importer.BPMNDiagramImporter;
-import au.edu.qut.bpmn.importer.impl.BPMNDiagramImporterImpl;
-import au.edu.qut.structuring.StructuringService;
-import au.edu.qut.bpmn.exporter.BPMNDiagramExporter;
-import au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl;
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
@@ -48,8 +43,6 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 

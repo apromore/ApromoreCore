@@ -21,19 +21,13 @@
 package org.apromore.common.converters.measurement.servlet;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 
-//import au.edu.qut.bpmn.importer.BPMNDiagramImporter;
-//import au.edu.qut.bpmn.importer.impl.BPMNDiagramImporterImpl;
-import au.edu.qut.metrics.ComplexityCalculator;
-
 import org.apache.log4j.Logger;
-import org.apromore.manager.client.ManagerService;
 import org.json.JSONObject;
 
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
@@ -45,7 +39,6 @@ import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -123,10 +116,10 @@ public class MeasurementServlet extends HttpServlet {
         String process = baos.toString("utf-8");
 
         ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletConfig().getServletContext());
-        ManagerService manager = (ManagerService) applicationContext.getAutowireCapableBeanFactory().getBean("managerClient");
+        org.apromore.service.MeasurementsService measurementsService = (org.apromore.service.MeasurementsService) applicationContext.getAutowireCapableBeanFactory().getBean("measurementsService");
 
         /* result already in json format */
-        String result = manager.computeMeasurements(process);
+        String result = measurementsService.computeSimplicity(process);
 
         return result;
     }

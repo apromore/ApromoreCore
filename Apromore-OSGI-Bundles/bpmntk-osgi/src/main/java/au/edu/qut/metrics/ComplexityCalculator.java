@@ -24,10 +24,10 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class ComplexityCalculator {
-    HashSet<RPSTNode> rigids = new HashSet<>();
-    HashSet<RPSTNode> bonds = new HashSet<>();
-    Map<String, String> result;
-    BPMNDiagram diagram;
+    private String bonds;
+    private String rigids;
+    private Map<String, String> result;
+    private BPMNDiagram diagram;
 
     public ComplexityCalculator() { result = new HashMap<>(); }
     public ComplexityCalculator(BPMNDiagram diagram) {
@@ -41,27 +41,27 @@ public class ComplexityCalculator {
                                                    boolean duplicates) {
         diagram = model;
 
-        if(size) result.put("Size", Integer.toString(computeSize()));
+        if(size) result.put("Size", computeSize());
 
-        if(cfc) result.put("CFC", Integer.toString(computeCFC()));
+        if(cfc) result.put("CFC", computeCFC());
 
-        if(acd) result.put("ACD", String.format( "%.3f", computeACD()));
+        if(acd) result.put("ACD", computeACD());
 
-        if(mcd) result.put("MCD", Integer.toString(computeMCD()));
+        if(mcd) result.put("MCD", computeMCD());
 
-        if(cnc) result.put("CNC", String.format( "%.3f", computeCNC()));
+        if(cnc) result.put("CNC", computeCNC());
 
-        if(density) result.put("Density",  String.format( "%.3f", computeDensity()));
+        if(density) result.put("Density",  computeDensity());
 
         if(structuredness) {
-            result.put("Structuredness",  String.format( "%.3f", computeStructuredness()));
-            result.put("Bonds", Integer.toString(this.bonds.size()));
-            result.put("Rigids", Integer.toString(this.rigids.size()));
+            result.put("Structuredness",  computeStructuredness());
+            result.put("Bonds", this.bonds);
+            result.put("Rigids", this.rigids);
         }
 
-        if(separability)  result.put("Separability", String.format( "%.3f", computeSeparability()));
+        if(separability)  result.put("Separability", computeSeparability());
 
-        if(duplicates) result.put("Duplicates", Integer.toString(computeDuplicates()));
+        if(duplicates) result.put("Duplicates", computeDuplicates());
 
         return result;
     }
@@ -94,15 +94,15 @@ public class ComplexityCalculator {
         measures += ("Structuredness: \t" + cc.computeStructuredness() + "\r\n\n");
         measures += ("Separability: \t" + cc.computeSeparability() + "\r\n\n");
         measures += ("Duplicates: \t" + cc.computeDuplicates() + "\r\n\n");
-        measures += ("Bonds: \t" + Integer.toString(cc.bonds.size()) + "\r\n\n");
-        measures += ("Rigids: \t" + Integer.toString(cc.rigids.size()) + "\r\n\n");
+        measures += ("Bonds: \t" + cc.bonds + "\r\n\n");
+        measures += ("Rigids: \t" + cc.rigids + "\r\n\n");
 
         return measures;
     }
 
-    private int computeSize() {
+    private String computeSize() {
         int size = 0;
-        if(diagram == null) return -1;
+        if(diagram == null) return "n/a";
 
         size += diagram.getGateways().size();
         size += diagram.getActivities().size();
@@ -110,13 +110,13 @@ public class ComplexityCalculator {
         size += diagram.getSubProcesses().size();
         size += diagram.getEvents().size();
 
-        return size;
+        return Integer.toString(size);
     }
 
-    private int computeCFC() {
+    private String computeCFC() {
         int cfc = 0;
         int outgoingEdges;
-        if(diagram == null) return -1;
+        if(diagram == null) return "n/a";
 
         for(Gateway g : diagram.getGateways()) {
             if( (outgoingEdges = diagram.getOutEdges(g).size()) > 1 )
@@ -138,36 +138,36 @@ public class ComplexityCalculator {
                 }
         }
 
-        return cfc;
+        return Integer.toString(cfc);
     }
 
-    private double computeACD() {
+    private String computeACD() {
         double acd = 0;
-        if(diagram == null) return -1;
+        if(diagram == null) return "n/a";
 
         for(Gateway g : diagram.getGateways()) acd += (diagram.getOutEdges(g).size() + diagram.getInEdges(g).size());
 
-        if( acd == 0 ) return 0;    //this means no gateways!
+        if( acd == 0 ) return "0";    //this means no gateways!
 
         acd = acd / (double)diagram.getGateways().size();
-        return acd;
+        return String.format("%.3f", acd);
     }
 
-    private int computeMCD() {
+    private String computeMCD() {
         int mcd = 0;
         int tmp;
-        if(diagram == null) return -1;
+        if(diagram == null) return "n/a";
 
         for(Gateway g : diagram.getGateways())
             if( mcd < (tmp = (diagram.getOutEdges(g).size() + diagram.getInEdges(g).size())) ) mcd = tmp;
 
-        return mcd;
+        return Integer.toString(mcd);
     }
 
-    private double computeCNC() {
+    private String computeCNC() {
         int nodes = 0;
         double cnc;
-        if(diagram == null) return -1;
+        if(diagram == null) return "n/a";
 
         nodes += diagram.getGateways().size();
         nodes += diagram.getActivities().size();
@@ -175,16 +175,16 @@ public class ComplexityCalculator {
         nodes += diagram.getSubProcesses().size();
         nodes += diagram.getEvents().size();
 
-        if(nodes == 0) return 0;
+        if(nodes == 0) return "0";
 
         cnc = (double)diagram.getFlows().size() / (double)nodes;
-        return cnc;
+        return String.format( "%.3f", cnc);
     }
 
-    private double computeDensity() {
+    private String computeDensity() {
         int nodes = 0;
         double density;
-        if(diagram == null) return -1;
+        if(diagram == null) return "n/a";
 
         nodes += diagram.getGateways().size();
         nodes += diagram.getActivities().size();
@@ -193,16 +193,22 @@ public class ComplexityCalculator {
         for(Event e : diagram.getEvents())
             if((e.getEventType() != Event.EventType.END) && (e.getEventType() != Event.EventType.START)) nodes++;
 
-        if(nodes == 1 || nodes == 0) return 0;
+        if(nodes == 1 || nodes == 0) return "0";
 
         density = (double) diagram.getFlows().size() / (double) (nodes * (nodes - 1));
-        return density;
+        return String.format( "%.3f", density);
     }
 
-    private double computeStructuredness() {
+    private String computeStructuredness() {
         double structuredness;
         double nodes = 0;
-        if(diagram == null) return -1;
+        HashSet<RPSTNode> rigids = new HashSet<>();
+        HashSet<RPSTNode> bonds = new HashSet<>();
+
+        this.rigids = "n/a";
+        this.bonds = "n/a";
+
+        if(diagram == null) return "n/a";
 
         try {
             HashMap<BPMNNode, Vertex> mapping = new HashMap<BPMNNode, Vertex>();
@@ -230,8 +236,6 @@ public class ComplexityCalculator {
             }
 
             RPST rpst = new RPST(graph);
-            rigids = new HashSet<>();
-            bonds = new HashSet<>();
 
             RPSTNode root = rpst.getRoot();
             LinkedList<RPSTNode> toAnalize = new LinkedList<RPSTNode>();
@@ -308,16 +312,19 @@ public class ComplexityCalculator {
             //structuredness += "\r\n\nRigid's Nodes: " + rChildren.size();
 
         } catch (Exception e) {
-            return -1;
+            return "n/a";
         }
 
-        return structuredness;
+        this.rigids = Integer.toString(rigids.size());
+        this.bonds = Integer.toString(bonds.size());
+
+        return String.format( "%.3f", structuredness);
     }
 
-    private double computeSeparability() {
+    private String computeSeparability() {
         double separability;
         double nodes = 0;
-        if(diagram == null) return -1;
+        if(diagram == null) return "n/a";
 
         try {
             HashMap<BPMNNode, Vertex> mapping = new HashMap<BPMNNode, Vertex>();
@@ -374,17 +381,17 @@ public class ComplexityCalculator {
 
             separability = (articulationPoints.size() - 2) / (nodes - 2);
         } catch( Exception e ) {
-            return -1;
+            return "n/a";
         }
 
-        return separability;
+        return String.format( "%.3f", separability);
     }
 
-    private int computeDuplicates() {
+    private String computeDuplicates() {
         int duplicates = 0;
         HashSet<String> nodes = new HashSet<>();
         String label;
-        if(diagram == null) return -1;
+        if(diagram == null) return "n/a";
 
         for( Activity a : diagram.getActivities() ) {
             label = a.getLabel();
@@ -392,6 +399,6 @@ public class ComplexityCalculator {
             else nodes.add(label);
         }
 
-        return duplicates;
+        return Integer.toString(duplicates);
     }
 }

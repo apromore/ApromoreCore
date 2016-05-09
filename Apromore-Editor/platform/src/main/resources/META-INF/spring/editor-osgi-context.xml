@@ -29,6 +29,7 @@
 
     <!-- Other OSGi services this component consumes -->
     <reference id="structuringService" interface="org.apromore.service.StructuringService"/>
+    <reference id="measurementsService" interface="org.apromore.service.MeasurementsService"/>
 
     <!-- enable classpath scanning -->
     <context:component-scan base-package="com.signavio.editor.handler" />

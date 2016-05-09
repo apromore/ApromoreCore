@@ -12,8 +12,6 @@ import org.processmining.models.graphbased.directed.bpmn.elements.*;
 import au.edu.qut.structuring.ui.iBPStructUI;
 import au.edu.qut.structuring.ui.iBPStructUIResult;
 import org.processmining.plugins.bpmn.BpmnAssociation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -39,36 +37,28 @@ public class StructuringService {
     private boolean forceStructuring;
 
     private BPMNDiagram diagram;		//initial diagram
-    private long taskCounter = 0;		//id for processes and tasks
 
-    private long xorGates;
-    private long andGates;
-    private long orGates;
-
-    /**** not mappable elements on bpStruct json scheme ****/
     private Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> unmappableEdges;
     private Set<BPMNNode> unmappableNodes;
-
-    /**** mappable elements on bpStruct json scheme ****/
     private Map<String, BPMNNode> originalNodes;
-    private Map<Long, Swimlane> idToPool;
-    private Set<SubProcess> subProcessesToParse;
 
-    /**** support maps to restore the diagram's edges correctly ****/
-    private Map<SubProcess, Long> subProcessToID;
-    private LinkedList<Long> rebuildOrder;
-    private Map<Event, Activity> boundToFix;
+    private Set<SubProcess> subProcessesToParse;
+    private LinkedList<String> rebuildOrder;
+
     private Set<Event> startEvents;
     private Set<Event> fakeStartEvents;
     private Set<Event> endEvents;
     private Set<Event> fakeEndEvents;
+
+    private Map<Event, Activity> boundToFix;
     private Map<Event, BPMNNode> compensationActivities;
+
     private Map<String, Set<BPMNNode>> blackList;
     private Map<String, Set<BPMNNode>> whiteList;
     private Map<BPMNNode, BPMNNode> matrices;
 
-    /**** mapping between processes' IDs and their .json structured version ****/
-    private Map<Long, BPMNDiagram> idToDiagram;
+    /**** mapping between processes' IDs and their structured diagram version ****/
+    private Map<String, BPMNDiagram> idToDiagram;
 
     public StructuringService(){}
 
@@ -154,28 +144,26 @@ public class StructuringService {
 
 
     private void structureDiagram() throws Exception {
-        taskCounter = 0;
         unmappableEdges = new HashSet<>();
         unmappableNodes = new HashSet<>();
         originalNodes = new HashMap<>();
-        idToPool = new HashMap<>();
+
         subProcessesToParse = new HashSet<>();
-        subProcessToID = new HashMap<>();
         rebuildOrder = new LinkedList<>();
+
         startEvents = new HashSet<>();
         fakeStartEvents = new HashSet<>();
         endEvents = new HashSet<>();
         fakeEndEvents = new HashSet<>();
+
         boundToFix = new HashMap<>();
         compensationActivities = new HashMap<>();
+
         blackList = new HashMap<>();
         whiteList = new HashMap<>();
         matrices = new HashMap<>();
-        idToDiagram = new HashMap<>();
 
-        xorGates = 0;
-        andGates = 0;
-        orGates = 0;
+        idToDiagram = new HashMap<>();
 
         Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> edgeToRemove = new HashSet<>();
         Set<BPMNNode> nodeToRemove = new HashSet<>();
@@ -198,6 +186,7 @@ public class StructuringService {
         removeDoubleEdges();
 
         collapseSplitGateways();
+        removeDoubleEdges();
 
         removeMultipleStartEvents();
         removeMultipleEndEvents();
@@ -205,22 +194,14 @@ public class StructuringService {
 
         /**** STEP2: get all the structured version for each subProcess ****/
         for( SubProcess sp : diagram.getSubProcesses() ) {
-            taskCounter++;
             subProcessesToParse.add(sp);
             originalNodes.put(sp.getId().toString(), sp);
-            subProcessToID.put(sp, taskCounter);
-            System.out.println("SubProcess: " + sp.getId() + " aka:  subProcess_" + taskCounter);
+            System.out.println("SubProcess: " + sp.getId());
         }
 
         for( Swimlane pool : diagram.getPools() ) parsePool(pool);
         parsePool(null);
         parseSubProcesses(null);
-
-//        System.out.println("Total gateways before structuring: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
-
-        xorGates = 0;
-        andGates = 0;
-        orGates = 0;
 
         /**** STEP3: remove all the edges and not mappable nodes from the diagram ****/
         for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getEdges() ) edgeToRemove.add(e);
@@ -231,9 +212,9 @@ public class StructuringService {
 
         /**** STEP4: reconnect all the elements inside the diagram exploiting .json files and support maps ****/
         while( !rebuildOrder.isEmpty() ) {
-            long idp = rebuildOrder.removeLast();
-            boolean err = rebuildProcess(idp);
-            if( err ) throw new Exception("Unable to rebuild the subProcess_" + idp);
+            String idp = rebuildOrder.removeLast();
+            boolean err = rebuildSubProcess(idp);
+            if( err ) throw new Exception("Unable to rebuild the subProcess: " + idp);
         }
 
 //        System.out.println("Total gateways after structuring: " + xorGates + "(xor) + " + andGates + "(and) + " + orGates + "(or)." );
@@ -251,21 +232,18 @@ public class StructuringService {
     }
 
     private void parsePool(Swimlane pool) {
-        System.out.println("Analyzing Pool: " + (pool == null ? "Top-Level" : pool.getLabel()) + "(" + (pool == null ? "null" : pool.getId()) + ")");
-        taskCounter++;
-        idToPool.put(taskCounter, pool);
-        structureSubProcess(taskCounter, diagram.getFlows(pool));
+        String id = (pool == null ? "null" : pool.getId().toString());
+        System.out.println("Analyzing Pool: " + id );
+        structureSubProcess(id, diagram.getFlows(pool));
     }
 
     private void parseSubProcesses(SubProcess parent) {
-        //System.out.println("Analyzing subProcess of the Parent Process: " + (parent == null ? "null" : subProcessToID.get(parent)));
 
         HashSet<SubProcess> analyzed = new HashSet<>();
 
         for( SubProcess sp : subProcessesToParse )
             if( sp.getParentSubProcess() == parent ) {
-                structureSubProcess(subProcessToID.get(sp), diagram.getFlows(sp));
-                //System.out.println("Analyzed: subProcess_" + subProcessToID.get(sp));
+                structureSubProcess(sp.getId().toString(), diagram.getFlows(sp));
                 analyzed.add(sp);
             }
 
@@ -603,7 +581,7 @@ public class StructuringService {
             }
     }
 
-    private void structureSubProcess(long processID, Collection<Flow> edges) {
+    private void structureSubProcess(String processID, Collection<Flow> edges) {
         if( edges.size() == 0 ) return;
 
         Collection<BPMNNode> nodes = new HashSet<>();
@@ -663,8 +641,7 @@ public class StructuringService {
         rebuildOrder.addLast(processID);
     }
 
-    private boolean rebuildProcess(long processID) {
-        System.out.println("Rebuilding: Process_" + processID);
+    private boolean rebuildSubProcess(String processID) {
         SubProcess parentProcess;
 
         Set<String> greyList = new HashSet<>();
@@ -674,6 +651,7 @@ public class StructuringService {
 
         Collection<BPMNNode> nodes = structuredProcess.getNodes();
         Collection<Flow> flows = structuredProcess.getFlows();
+        System.out.println("Rebuilding: Process_" + processID + " with nodes(" + nodes.size() + ") flows(" + flows.size() + ")");
 
         BPMNNode node, src, tgt;
         String srcID;
@@ -725,7 +703,8 @@ public class StructuringService {
                 else throw new Exception("ERROR - parsing flows target not found: " + tgtID);
 
                 diagram.addFlow(src, tgt, "");
-                //System.out.println("diagram- added flow: " + src.getId() +  " > " + tgt.getId());
+
+                System.out.println("diagram- added flow: " + src.getId() +  " -> " + tgt.getId());
             }
         } catch(Exception e) {
             System.out.println("Error rebuilding subProcess: " + processID);
