@@ -32,7 +32,7 @@
 
     <groupId>org.pql</groupId>
     <artifactId>pql-osgi</artifactId>
-    <version>1.1.0</version>
+    <version>1.2</version>
     <packaging>bundle</packaging>
 
     <repositories>
@@ -53,7 +53,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=pql|themis|lucene-analyzers-common|lucene-core|lucene-queryparser
+                            artifactId=pql|themis|lucene-analyzers-common|lucene-core|lucene-queries|lucene-queryparser|lucene-sandbox
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
@@ -74,10 +74,10 @@
                             org.pql.label,
                             org.pql.logic,
                             org.pql.mc,
-                            org.pql.query,
-                            org.pql.test
+                            org.pql.query
                         </Export-Package>
                         <Import-Package>
+<!--
                             org.jbpt.automaton,
                             org.jbpt.graph.abs,
                             org.jbpt.algo.graph,
@@ -141,7 +141,15 @@
                             org.postgresql.xa,
                             org.postgresql.xa.jdbc3,
                             org.postgresql.xa.jdbc4,
+                            org.pql.label,
                             org.processmining.models.graphbased.directed.petrinet,
+-->
+                            com.mysql.jdbc,
+                            !nl.tue.astar,
+                            !org.apache.regexp,
+                            !org.processmining.plugins.InductiveMiner.mining,
+                            !org.processmining.plugins.InductiveMiner.plugins,
+                            *
                         </Import-Package>
                     </instructions>
                 </configuration>
@@ -163,13 +171,23 @@
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-queries</artifactId>
+            <version>5.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-queryparser</artifactId>
+            <version>5.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-sandbox</artifactId>
             <version>5.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.pql</groupId>
             <artifactId>pql</artifactId>
-            <version>1.1.0</version>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
