@@ -501,6 +501,17 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
         return getCanonicalFormat(pmv, processName, branchName, false);
     }
 
+    /**
+     * @see ProcessService#getCanonicalFormat(org.apromore.dao.model.ProcessModelVersion)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public Canonical getCanonicalFormat(Integer processId, String branchName, String versionNumber) {
+        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, versionNumber);
+        CanonicalProcessType cpf = getCanonicalFormat(pmv);
+        return converter.convert(cpf);
+    }
 
     /**
      * @see ProcessService#getCanonicalFormat(ProcessModelVersion, String, String, boolean)
