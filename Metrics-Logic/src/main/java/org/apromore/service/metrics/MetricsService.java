@@ -20,6 +20,7 @@
 
 package org.apromore.service.metrics;
 
+import org.apromore.graph.canonical.Canonical;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
 import java.util.Map;
@@ -33,5 +34,7 @@ public interface MetricsService {
                                        boolean mcd, boolean cnc, boolean density,
                                        boolean structuredness, boolean separability,
                                        boolean duplicates);
+
+    Map<String, String> computeCanonicalMetrics(Canonical diagram);
 
 }

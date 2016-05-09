@@ -22,6 +22,7 @@ package org.apromore.plugin.portal.metrics;
 
 // Java 2 Standard Edition packages
 
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
@@ -82,9 +83,9 @@ public class MetricsPlugin extends PluginCustomGui {
     private Button cancelButton;
 
     @Inject
-    public MetricsPlugin(  final MetricsService    metricsService,
-                           final ProcessService processService,
-                           final BPMNDiagramImporter importerService) {
+    public MetricsPlugin(final MetricsService    metricsService,
+                         final ProcessService processService,
+                         final BPMNDiagramImporter importerService) {
 
         this.metricsService      = metricsService;
         this.processService      = processService;
@@ -148,7 +149,8 @@ public class MetricsPlugin extends PluginCustomGui {
     }
 
     protected void runComputation() {
-        Map<String, String> metrics;
+        Map<String, String> bpmnMetrics;
+        Map<String, String> canonicalMetrics;
 
 //        this.settings.detach();
 //
@@ -181,20 +183,21 @@ public class MetricsPlugin extends PluginCustomGui {
                     Version version = new Version(vst.getVersionNumber());
 
                     String model = processService.getBPMNRepresentation(procName, procID, branch, version);
-//                    Canonical canonical = processService.getCanonicalFormat();
-                    BPMNDiagram diagram = importerService.importBPMNDiagram(model);
+                    BPMNDiagram bpmnDiagram = importerService.importBPMNDiagram(model);
+                    bpmnMetrics = metricsService.computeMetrics(bpmnDiagram, size, cfc, acd, mcd, cnc, density,
+                                                                structuredness, separability, duplicates);
 
-                    metrics = metricsService.computeMetrics(  diagram, size, cfc, acd, mcd, cnc, density,
-                                                    structuredness, separability, duplicates);
+                    Canonical cpfDiagram = processService.getCanonicalFormat(procID, branch, vst.getVersionNumber());
+                    canonicalMetrics = metricsService.computeCanonicalMetrics(cpfDiagram);
 
-                    if(metrics == null) LOGGER.info("GOT NULL!");
+                    if(bpmnMetrics == null) LOGGER.info("GOT NULL!");
                     else {
                         List<TabRowValue> rows = new ArrayList<>();
-                        for (String key : metrics.keySet()) {
-                            LOGGER.info(key + " : " + metrics.get(key));
-                            rows.add(createTabRowValue(key, metrics.get(key)));
+                        for (String key : bpmnMetrics.keySet()) {
+                            LOGGER.info(key + " : " + bpmnMetrics.get(key));
+                            rows.add(createTabRowValue(key, bpmnMetrics.get(key), canonicalMetrics.get(key)));
                         }
-                        TabHeader tabHeader = createTabHeader("Metric", "Value");
+                        TabHeader tabHeader = createTabHeader("Metric", "value on BPMN", "value on CPF");
                         addTab(procName + ": metrics", "", rows, tabHeader, null, portalContext);
                     }
 
