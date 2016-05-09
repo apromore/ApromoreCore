@@ -175,7 +175,7 @@ public class ComplexityCalculator {
         nodes += diagram.getSubProcesses().size();
         nodes += diagram.getEvents().size();
 
-        if(nodes == 0) return "0";
+        if(nodes == 0) return "n/a";
 
         cnc = (double)diagram.getFlows().size() / (double)nodes;
         return String.format( "%.3f", cnc);
@@ -193,7 +193,7 @@ public class ComplexityCalculator {
         for(Event e : diagram.getEvents())
             if((e.getEventType() != Event.EventType.END) && (e.getEventType() != Event.EventType.START)) nodes++;
 
-        if(nodes == 1 || nodes == 0) return "0";
+        if(nodes == 1 || nodes == 0) return "n/a";
 
         density = (double) diagram.getFlows().size() / (double) (nodes * (nodes - 1));
         return String.format( "%.3f", density);
@@ -306,10 +306,6 @@ public class ComplexityCalculator {
             nodes += diagram.getEvents().size();
 
             structuredness = 1 - ((nodes - removed.size()) / nodes);
-            //structuredness += "\r\n\nBonds: " + bonds.size();
-            //structuredness += "\r\n\nBond's Nodes: " + bChildren.size();
-            //structuredness += "\r\n\nRigids: " + rigids.size();
-            //structuredness += "\r\n\nRigid's Nodes: " + rChildren.size();
 
         } catch (Exception e) {
             return "n/a";

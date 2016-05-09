@@ -35,6 +35,7 @@ import org.apromore.exception.ImportException;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.UpdateProcessException;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
@@ -151,6 +152,16 @@ public interface ProcessService {
      * @return the built Canonical
      */
     CanonicalProcessType getCanonicalFormat(ProcessModelVersion pmv);
+
+    /**
+     * Using the ProcessID, its branchName and its versionNumber passed in we can get the Canonical Object.
+     * Used by a lot of methods in repoService and external.
+     * @param processId is the ID of the process to retrieve from the database
+     * @param branchName the branch name
+     * @param versionNumber the versione of the process
+     * @return the built Canonical
+     */
+    Canonical getCanonicalFormat(Integer processId, String branchName, String versionNumber);
 
     /**
      * Using the Process Model Version passed in we can get the Canonical format.

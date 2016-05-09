@@ -619,7 +619,7 @@ public class StructuringService {
         }
 
         try {
-            if( tryClassicBPStruct ) {
+            if( tryClassicBPStruct && !forceStructuring ) {
                 BPStructWrapper bpsw = new BPStructWrapper();
                 structuredDiagram = bpsw.getStructured(flows);
             }
