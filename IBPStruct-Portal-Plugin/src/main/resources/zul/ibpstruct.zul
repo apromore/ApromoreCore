@@ -28,7 +28,7 @@
             <caption label="Advanced Options"/>
             <groupbox width="270px">
                 <caption label="Select Structuring Policy"/>
-                <selectbox name="Select Structuring Policy" id="structPolicies" model="${win$composer.structuringPolicies}" width="270px">
+                <selectbox name="Select Structuring Policy" id="structPolicies" model="${win$composer.structuringPolicies}" width="255px">
                     <template name="policy">
                         <label value="${each}" />
                     </template>
@@ -108,7 +108,7 @@
         </groupbox>
         <div align="center">
             <button id="ibpsCancelButton" label="Cancel" image="img/cancel2.png"></button>
-            <button id="ibpsOKButton" label="OK" image="img/ok.png"></button>
+            <button id="ibpsOKButton" label="Structure" image="img/ok.png"></button>
         </div>
     </vbox>
 </window>

@@ -60,7 +60,7 @@ ORYX.Plugins.IBPStruct = ORYX.Plugins.AbstractPlugin.extend({
             html: '<style>.format p { margin-bottom: 10px; } </style><div class="format" style="width: 100%; position: relative; left: 0; top: 0; float: left;"><p style="text-align: justify;">iBPStruct is a tool for transforming unstructured programs/service compositions/(business) process models (models of concurrency) into well-structured ones. A model is well-structured, if for every node with multiple outgoing arcs (a split) there is a corresponding node with multiple incoming arcs (a join), and vice versa, such that the fragment of the model between the split and the join forms a single-entry-single-exit (SESE) component; otherwise the model is unstructured. The transformation preserves concurrency in resulting well-structured models.</p></div><div style="clear: both;"></div>',
             buttons: [
                 {
-                    text: "Transform",
+                    text: "Structure",
                     handler: this.structure.bind(this)
                 },
                 {

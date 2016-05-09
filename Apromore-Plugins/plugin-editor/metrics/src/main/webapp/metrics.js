@@ -100,80 +100,80 @@ ORYX.Plugins.Metrics = ORYX.Plugins.AbstractPlugin.extend({
     showMetrics: function (responseJson) {
 
         var measures = [];
-        if (responseJson.hasOwnProperty('size')) {
+        if (responseJson.hasOwnProperty('Size')) {
             measures.push( new Ext.form.TextField({
                                     fieldLabel: 'Size',
-                                    value: responseJson['size'],
+                                    value: responseJson['Size'],
                                     width: 150
                                 }));
         }
-        if (responseJson.hasOwnProperty('cfc')) {
+        if (responseJson.hasOwnProperty('CFC')) {
             measures.push( new Ext.form.TextField({
                                     fieldLabel: 'CFC',
-                                    value: responseJson['cfc'],
+                                    value: responseJson['CFC'],
                                     width: 150
                                 }));
         }
-        if (responseJson.hasOwnProperty('acd')) {
+        if (responseJson.hasOwnProperty('ACD')) {
             measures.push( new Ext.form.TextField({
                                     fieldLabel: 'ACD',
-                                    value: responseJson['acd'],
+                                    value: responseJson['ACD'],
                                     width: 150
                                 }));
         }
-        if (responseJson.hasOwnProperty('mcd')) {
+        if (responseJson.hasOwnProperty('MCD')) {
             measures.push( new Ext.form.TextField({
                                     fieldLabel: 'MCD',
-                                    value: responseJson['mcd'],
+                                    value: responseJson['MCD'],
                                     width: 150
                                 }));
         }
-        if (responseJson.hasOwnProperty('cnc')) {
+        if (responseJson.hasOwnProperty('CNC')) {
             measures.push( new Ext.form.TextField({
                                     fieldLabel: 'CNC',
-                                    value: responseJson['cnc'],
+                                    value: responseJson['CNC'],
                                     width: 150
                                 }));
         }
-        if (responseJson.hasOwnProperty('density')) {
+        if (responseJson.hasOwnProperty('Density')) {
             measures.push( new Ext.form.TextField({
                                     fieldLabel: 'Density',
-                                    value: responseJson['density'],
+                                    value: responseJson['Density'],
                                     width: 150
                                 }));
         }
-        if (responseJson.hasOwnProperty('structuredness')) {
+        if (responseJson.hasOwnProperty('Structuredness')) {
                     measures.push( new Ext.form.TextField({
                                             fieldLabel: 'Structuredness',
-                                            value: responseJson['structuredness'],
+                                            value: responseJson['Structuredness'],
                                             width: 150
                                         }));
         }
-        if (responseJson.hasOwnProperty('bonds')) {
+        if (responseJson.hasOwnProperty('Bonds')) {
                     measures.push( new Ext.form.TextField({
                                             fieldLabel: '#Bonds',
-                                            value: responseJson['bonds'],
+                                            value: responseJson['Bonds'],
                                             width: 150
                                         }));
         }
-        if (responseJson.hasOwnProperty('rigids')) {
+        if (responseJson.hasOwnProperty('Rigids')) {
                     measures.push( new Ext.form.TextField({
                                             fieldLabel: '#Rigids',
-                                            value: responseJson['rigids'],
+                                            value: responseJson['Rigids'],
                                             width: 150
                                         }));
         }
-        if (responseJson.hasOwnProperty('separability')) {
+        if (responseJson.hasOwnProperty('Separability')) {
                             measures.push( new Ext.form.TextField({
-                                                    fieldLabel: 'separability',
-                                                    value: responseJson['separability'],
+                                                    fieldLabel: 'Separability',
+                                                    value: responseJson['Separability'],
                                                     width: 150
                                                 }));
         }
-        if (responseJson.hasOwnProperty('duplicates')) {
+        if (responseJson.hasOwnProperty('Duplicates')) {
                             measures.push( new Ext.form.TextField({
                                                     fieldLabel: '#Duplicates',
-                                                    value: responseJson['duplicates'],
+                                                    value: responseJson['Duplicates'],
                                                     width: 150
                                                 }));
         }

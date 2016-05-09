@@ -93,13 +93,12 @@ public class MetricsPlugin extends PluginCustomGui {
 
     @Override
     public String getLabel(Locale locale) {
-        return "BPMN Metrics";
+        return "Measure";
     }
 
     @Override
     public void execute(PortalContext context) {
         this.portalContext = context;
-        portalContext.getMessageHandler().displayInfo("Executing Metrics service!");
         processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
 
         if( processVersions.size() != 1 ) {
@@ -107,6 +106,7 @@ public class MetricsPlugin extends PluginCustomGui {
             return;
         }
 
+        portalContext.getMessageHandler().displayInfo("Executing Metrics service...");
         runComputation();
 //
 //        try {
@@ -181,6 +181,7 @@ public class MetricsPlugin extends PluginCustomGui {
                     Version version = new Version(vst.getVersionNumber());
 
                     String model = processService.getBPMNRepresentation(procName, procID, branch, version);
+//                    Canonical canonical = processService.getCanonicalFormat();
                     BPMNDiagram diagram = importerService.importBPMNDiagram(model);
 
                     metrics = metricsService.computeMetrics(  diagram, size, cfc, acd, mcd, cnc, density,

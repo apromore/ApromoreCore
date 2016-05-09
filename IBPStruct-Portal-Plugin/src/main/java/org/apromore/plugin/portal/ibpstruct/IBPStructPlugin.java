@@ -23,6 +23,7 @@ package org.apromore.plugin.portal.ibpstruct;
 // Java 2 Standard Edition packages
 
 //import au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl;
+import au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
@@ -78,6 +79,9 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
     private SelectDynamicListController domainCB;
 
+    private ProcessSummaryType psm;
+    private VersionSummaryType vst;
+
     private String[] structPoliciesArray = new String[] {
             "A*",
             "Limited A*",
@@ -119,19 +123,24 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "iBPStruct";
+        return "Structure";
     }
 
     @Override
     public void execute(PortalContext context) {
         this.portalContext = context;
-        portalContext.getMessageHandler().displayInfo("Executing iBPStruct service!");
         processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
 
         if( processVersions.size() != 1 ) {
             Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
             return;
         }
+
+
+        portalContext.getMessageHandler().displayInfo("Executing iBPStruct service...");
+
+        for (ProcessSummaryType process : processVersions.keySet()) this.psm = process;
+        for (VersionSummaryType version : processVersions.get(psm)) this.vst = version;
 
         try {
             this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/ibpstruct.zul", null, null);
@@ -141,7 +150,7 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
             this.advancedOptions.setClosable(true);
 
             this.structProcName = (Textbox) this.settings.getFellow("structProcName");
-            this.structProcName.setValue("structured_process");
+            this.structProcName.setValue("structured_" + psm.getName());
 
             this.structPolicies = (Selectbox) this.settings.getFellow("structPolicies");
             this.structPolicies.setModel(new ListModelArray<Object>(structPoliciesArray));
@@ -186,7 +195,7 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
 
         String finalProcName = structProcName.getValue();
         String policy = null;
-        boolean pullup = this.pullup.getSelectedIndex() == 0 ? true : false;
+        boolean keepBisimulation = this.pullup.getSelectedIndex() == 0 ? false : true;
         boolean timeBounded = this.timeBounded.getSelectedIndex() == 0 ? true : false;
         boolean forceStructuring  = this.forceStructuring.getSelectedIndex() == 0 ? true : false;
         int maxMinutes = this.maxMinutes.getCurpos();
@@ -195,7 +204,7 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
         int maxSolutions = this.maxSolutions.getCurpos();
         int maxDepth = this.maxDepth.getCurpos();
 
-        LOGGER.info("flags: " + pullup + " - " + timeBounded + " - " + forceStructuring);
+        LOGGER.info("flags: " + keepBisimulation + " - " + timeBounded + " - " + forceStructuring);
         LOGGER.info("numbers: " + maxMinutes + " - " + maxChildren + " - " + maxStates + " - " + maxSolutions);
 
         switch( structPolicies.getSelectedIndex() ) {
@@ -224,20 +233,30 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
             this.domainCB.setHeight("100%");
             this.domainCB.setAttribute("hflex", "1");
 
+            int procID = psm.getId();
+            String procName = psm.getName();
+            String branch = vst.getName();
+            Version version = new Version(vst.getVersionNumber());
+            String username = portalContext.getCurrentUser().getUsername();
+            int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
 
-            for (ProcessSummaryType process : processVersions.keySet()) {
-                for (VersionSummaryType vst : processVersions.get(process)) {
-                    int procID = process.getId();
-                    String procName = process.getName();
-                    String branch = vst.getName();
-                    Version version = new Version(vst.getVersionNumber());
-                    String username = portalContext.getCurrentUser().getUsername();
-                    int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+            String model = processService.getBPMNRepresentation(procName, procID, branch, version);
 
-                    String model = processService.getBPMNRepresentation(procName, procID, branch, version);
+            BPMNDiagram unstructuredDiagram = importerService.importBPMNDiagram(model);
+            BPMNDiagram structuredDiagram = ibpstructService.structureProcess(  unstructuredDiagram,
+                                                                                policy,
+                                                                                maxDepth,
+                                                                                maxSolutions,
+                                                                                maxChildren,
+                                                                                maxStates,
+                                                                                maxMinutes,
+                                                                                timeBounded,
+                                                                                keepBisimulation,
+                                                                                forceStructuring);
 
-                    BPMNDiagram unstructuredDiagram = importerService.importBPMNDiagram(model);
-//                    BPMNDiagram structuredDiagram = ibpstructService.structureProcess(  unstructuredDiagram,
+            String structuredModel = (new BPMNDiagramExporterImpl()).exportBPMNDiagram(structuredDiagram);
+
+//                    String structuredModel = ibpstructService.structureProcess(  unstructuredDiagram,
 //                                                                                        policy,
 //                                                                                        maxDepth,
 //                                                                                        maxSolutions,
@@ -245,54 +264,39 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
 //                                                                                        maxStates,
 //                                                                                        maxMinutes,
 //                                                                                        timeBounded,
-//                                                                                        pullup,
+//                                                                                        keepBisimulation,
 //                                                                                        forceStructuring);
-//
-//                    String structuredModel = (new BPMNDiagramExporterImpl()).exportBPMNDiagram(structuredDiagram);
 
-                    String structuredModel = ibpstructService.structureProcess(  unstructuredDiagram,
-                                                                                        policy,
-                                                                                        maxDepth,
-                                                                                        maxSolutions,
-                                                                                        maxChildren,
-                                                                                        maxStates,
-                                                                                        maxMinutes,
-                                                                                        timeBounded,
-                                                                                        pullup,
-                                                                                        forceStructuring);
+            version = new Version(1, 0);
+            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
+            String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
+            boolean publicModel = true;
+            if( finalProcName == null || finalProcName.isEmpty() ) finalProcName = "structured_" + procName;
 
-                    version = new Version(1, 0);
-                    Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
-                    String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-                    boolean publicModel = true;
-                    if( finalProcName == null || finalProcName.isEmpty() ) finalProcName = "structured_" + procName;
+            ProcessModelVersion pmv = processService.importProcess(username,
+                    folderId,
+                    finalProcName,
+                    version,
+                    this.nativeType,
+                    canoniserService.canonise(this.nativeType, new ByteArrayInputStream(structuredModel.getBytes()), canoniserProperties),
+                    domainCB.getValue(),
+                    "Model generated by the Apromore BPMN process mining service.",
+                    now,  // creation timestamp
+                    now,  // last update timestamp
+                    publicModel);
 
-                    ProcessModelVersion pmv = processService.importProcess(username,
-                            folderId,
-                            finalProcName,
-                            version,
-                            this.nativeType,
-                            canoniserService.canonise(this.nativeType, new ByteArrayInputStream(structuredModel.getBytes()), canoniserProperties),
-                            domainCB.getValue(),
-                            "Model generated by the Apromore BPMN process mining service.",
-                            now,  // creation timestamp
-                            now,  // last update timestamp
-                            publicModel);
+            this.portalContext.displayNewProcess(userInterfaceHelper.createProcessSummary(
+                    pmv.getProcessBranch().getProcess(),
+                    pmv.getProcessBranch(),
+                    pmv,
+                    this.nativeType,
+                    domainCB.getValue(),
+                    now,  // creation timestamp
+                    now,  // last update timestamp
+                    username,
+                    publicModel));
 
-                    this.portalContext.displayNewProcess(userInterfaceHelper.createProcessSummary(
-                            pmv.getProcessBranch().getProcess(),
-                            pmv.getProcessBranch(),
-                            pmv,
-                            this.nativeType,
-                            domainCB.getValue(),
-                            now,  // creation timestamp
-                            now,  // last update timestamp
-                            username,
-                            publicModel));
-
-                    this.portalContext.refreshContent();
-                }
-            }
+            this.portalContext.refreshContent();
         } catch(Exception e) {
             Messagebox.show("Something went wrong (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
