@@ -322,7 +322,7 @@ public class ContextController {
         if (testProcessLabels != null) {
             return testProcessLabels;
         } else {
-            return manager.getProcessesLabels("pql.jbpt_labels","label");
+            return manager.getProcessesLabels("jbpt_labels","label");
         }
     }
 
