@@ -44,7 +44,7 @@ public class ProcessPluginListener {
     public void onProcessPluginBind(ProcessPlugin processPlugin, Map properties) {
         System.out.println("New process plugin bound (2): " + processPlugin + " with properties + " + properties);
         LOGGER.info("New process plugin bound: " + processPlugin + " with properties " + properties);
-        processPlugin.bind();
+        processPlugin.bindToProcessService();
     }
 
     /**
@@ -54,6 +54,6 @@ public class ProcessPluginListener {
      */
     public void onProcessPluginUnbind(ProcessPlugin processPlugin, Map properties) {
         LOGGER.info("Process plugin unbound: " + processPlugin + " with properties " + properties);
-        processPlugin.unbind();
+        processPlugin.unbindFromProcessService();
     }
 }
