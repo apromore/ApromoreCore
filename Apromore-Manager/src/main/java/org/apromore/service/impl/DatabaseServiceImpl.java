@@ -41,8 +41,8 @@ import java.util.List;
 @Service
 public class DatabaseServiceImpl implements DatabaseService {
     private MySqlBean mySqlBean;
-    private static final String tableLabels = "pql.jbpt_labels";
-    private static final String tableNets = "pql.jbpt_petri_nets";
+    private static final String tableLabels = "jbpt_labels";
+    private static final String tableNets = "jbpt_petri_nets";
     private static final String columnLabel = "label";
     private static final String columIdentifier = "identifier";
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseServiceImpl.class);
