@@ -27,6 +27,7 @@ import org.processmining.models.graphbased.directed.DirectedGraphNode;
 import org.processmining.models.graphbased.directed.bpmn.*;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
 
+import com.processconfiguration.*;
 import org.omg.spec.bpmn._20100524.model.*;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.*;
@@ -41,7 +42,6 @@ import org.processmining.plugins.bpmn.BpmnAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 
 /**
  * Created by Adriano on 29/10/2015.
@@ -87,7 +87,9 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
 
 			/* Creating the JAXBContext from the xsd file */
             //LOGGER.info("importBPMNDiagram: Creating JAXBcontext...");
-            jaxbContext = JAXBContext.newInstance( "org.omg.spec.bpmn._20100524.model" );
+            jaxbContext = JAXBContext.newInstance( TDefinitions.class, Configurable.class,
+                                                ConfigurationAnnotationAssociation.class,
+                                                ConfigurationAnnotationShape.class, Variants.class );
             //LOGGER.info("Created JAXBcontext!");
 
             //LOGGER.info("importBPMNDiagram: Creating Unmarshaller...");
