@@ -276,7 +276,17 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
     // Implementation of the ProcessPlugin interface
 
     /** {@inheritDoc} */
+    public void bindToProcessService() {
+        LOGGER.info("Bound to process service " + processService);
+    }
+
+    /** {@inheritDoc} */
+    public void unbindFromProcessService() {
+        LOGGER.info("Unbound from process service " + processService);
+    }
+
+    /** {@inheritDoc} */
     public void processChanged(int processId /*, ProcessService processService*/) throws ProcessChangedException {
-        LOGGER.info("PQL index needs to be undated for process with external ID " + processId);
+        LOGGER.info("PQL index needs to be undated for process with external ID " + processId + " in process service " + processService);
     }
 }
