@@ -22,7 +22,6 @@ package org.apromore.plugin.portal.ibpstruct;
 
 // Java 2 Standard Edition packages
 
-//import au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl;
 import au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
@@ -255,17 +254,6 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
                                                                                 forceStructuring);
 
             String structuredModel = (new BPMNDiagramExporterImpl()).exportBPMNDiagram(structuredDiagram);
-
-//                    String structuredModel = ibpstructService.structureProcess(  unstructuredDiagram,
-//                                                                                        policy,
-//                                                                                        maxDepth,
-//                                                                                        maxSolutions,
-//                                                                                        maxChildren,
-//                                                                                        maxStates,
-//                                                                                        maxMinutes,
-//                                                                                        timeBounded,
-//                                                                                        keepBisimulation,
-//                                                                                        forceStructuring);
 
             version = new Version(1, 0);
             Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();

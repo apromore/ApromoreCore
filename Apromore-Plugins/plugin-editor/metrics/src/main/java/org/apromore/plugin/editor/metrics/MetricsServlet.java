@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 
-import au.edu.qut.metrics.ComplexityCalculator;
 import org.apache.log4j.Logger;
 import org.apromore.service.BPMNDiagramImporter;
+import org.apromore.service.metrics.MetricsService;
 import org.json.JSONObject;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
@@ -36,11 +36,15 @@ public class MetricsServlet extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(MetricsServlet.class);
 
     private BPMNDiagramImporter importerService;
+    private MetricsService metricsService;
 
     public void init(ServletConfig config) throws ServletException {
-        Object o = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext()).getAutowireCapableBeanFactory().getBean("importerService");
+        Object o;
+        o = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext()).getAutowireCapableBeanFactory().getBean("importerService");
         if(o instanceof  BPMNDiagramImporter) importerService = (BPMNDiagramImporter) o;
-        else throw new ServletException("still not working!");
+
+        o = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext()).getAutowireCapableBeanFactory().getBean("metricsService");
+        if(o instanceof  MetricsService) metricsService = (MetricsService) o;
     }
 
     @Override
@@ -103,8 +107,7 @@ public class MetricsServlet extends HttpServlet {
         BPMNDiagram bpmnDiagram = importerService.importBPMNDiagram(process);
 
         /* result already in json format */
-        ComplexityCalculator cc = new ComplexityCalculator();
-        Map<String, String> metrics = cc.computeComplexity(bpmnDiagram, true, true, true, true, true, true, true, true, true);
+        Map<String, String> metrics = metricsService.computeMetrics(bpmnDiagram, true, true, true, true, true, true, true, true, true);
 
         JSONObject result = new JSONObject();
 

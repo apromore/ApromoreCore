@@ -58,8 +58,6 @@
                         <Export-Package>
                             au.edu.qut.structuring,
                             au.edu.qut.metrics,
-                            <!--au.edu.qut.bpmn.importer,-->
-                            <!--au.edu.qut.bpmn.importer.impl,-->
                             au.edu.qut.bpmn.exporter,
                             au.edu.qut.bpmn.exporter.impl
                         </Export-Package>
@@ -82,11 +80,6 @@
             <groupId>org.apromore</groupId>
             <artifactId>prom6-osgi</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>de.hpi.jbpt</groupId>-->
-            <!--<artifactId>de-jbpt</artifactId>-->
-            <!--<version>0.2.77</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpmn-schema</artifactId>

@@ -38,15 +38,6 @@ public interface IBPStructService {
                                  boolean keepBisimulation,
                                  boolean forceStructuring);
 
-//    String structureProcess(    BPMNDiagram model,
-//                                 String  policy,
-//                                 int     maxDepth,
-//                                 int     maxSolutions,
-//                                 int     maxChildren,
-//                                 int     maxStates,
-//                                 int     maxMinutes,
-//                                 boolean timeBounded,
-//                                 boolean keepBisimulation,
-//                                 boolean forceStructuring);
+    BPMNDiagram structureProcess(BPMNDiagram model);
 
 }
