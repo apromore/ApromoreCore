@@ -55,46 +55,11 @@ public class IBPStructServiceImpl implements IBPStructService {
                                     maxStates, maxMinutes, timeBounded, keepBisimulation, forceStructuring);
     }
 
-//    @Override
-//    public String structureProcess( BPMNDiagram model,
-//                                         String  policy,
-//                                         int     maxDepth,
-//                                         int     maxSolutions,
-//                                         int     maxChildren,
-//                                         int     maxStates,
-//                                         int     maxMinutes,
-//                                         boolean timeBounded,
-//                                         boolean keepBisimulation,
-//                                         boolean forceStructuring )
-//    {
-//        StructuringService ss = new StructuringService();
-//
-//        BPMNDiagram structuredDiagram = ss.structureDiagram( model, policy, maxDepth, maxSolutions, maxChildren, maxStates, maxMinutes, timeBounded, keepBisimulation, forceStructuring);
-//        String structuredModel;
-//
-//        UIContext context = new UIContext();
-//        UIPluginContext uiPluginContext = context.getMainPluginContext();
-//        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, structuredDiagram);
-//        BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
-//
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-//                "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
-//                "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
-//                "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
-//                "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
-//                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
-//                "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
-//                "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">");
-//        sb.append(definitions.exportElements());
-//        sb.append("</definitions>");
-//
-//        structuredModel = sb.toString();
-//
-//        structuredModel = structuredModel.replaceAll("\n", "&#10;");
-//        structuredModel = structuredModel.replaceAll(">&#10;", ">\n");
-//        structuredModel = structuredModel.replaceAll("\"&#10;", "\"\n");
-//
-//        return structuredModel;
-//    }
+
+    @Override
+    public BPMNDiagram structureProcess(BPMNDiagram model) {
+        StructuringService ss = new StructuringService();
+        return ss.structureDiagram(model);
+    }
+
 }

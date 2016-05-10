@@ -15,12 +15,11 @@ import java.io.StringReader;
 import java.util.List;
 import javax.xml.transform.stream.StreamSource;
 
-import au.edu.qut.structuring.StructuringService;
-import au.edu.qut.bpmn.exporter.BPMNDiagramExporter;
 import au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 import org.apache.log4j.Logger;
 import org.apromore.service.BPMNDiagramImporter;
+import org.apromore.service.ibpstruct.IBPStructService;
 import org.json.JSONObject;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
@@ -33,18 +32,22 @@ import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class IBPStructServlet extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(IBPStructServlet.class);
+
     private BPMNDiagramImporter importerService;
+    private IBPStructService ibpstructService;
 
     public void init(ServletConfig config) throws ServletException {
-        Object o = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext()).getAutowireCapableBeanFactory().getBean("importerService");
-        if(o instanceof org.apromore.service.BPMNDiagramImporter) importerService = (org.apromore.service.BPMNDiagramImporter) o;
-        else throw new ServletException("still not working!");
+        Object o;
+        o = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext()).getAutowireCapableBeanFactory().getBean("importerService");
+        if(o instanceof  BPMNDiagramImporter) importerService = (BPMNDiagramImporter) o;
+
+        o = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext()).getAutowireCapableBeanFactory().getBean("ibpstructService");
+        if(o instanceof  IBPStructService) ibpstructService = (IBPStructService) o;
     }
 
     @Override
@@ -106,17 +109,11 @@ public class IBPStructServlet extends HttpServlet {
         jaxbContext.createMarshaller().marshal(bpmn, baos);
         String unstructuredBpmnModelString = baos.toString("utf-8");
 
-//        LOGGER.info("PROCESS TO STRUCTURE:\n" + unstructuredBpmnModelString);
-
         BPMNDiagram unstructuredDiagram = importerService.importBPMNDiagram(unstructuredBpmnModelString);
+        BPMNDiagram structuredDiagram = ibpstructService.structureProcess(unstructuredDiagram);
 
-        StructuringService ss = new StructuringService();
-        BPMNDiagram structuredDiagram = ss.structureDiagram(unstructuredDiagram);
-
-        BPMNDiagramExporter exporterService = new BPMNDiagramExporterImpl();
+        BPMNDiagramExporterImpl exporterService = new BPMNDiagramExporterImpl();
         String structuredBpmnModelString = exporterService.exportBPMNDiagram(structuredDiagram);
-
-        LOGGER.info("PROCESS STRUCTURED:\n" + structuredBpmnModelString);
 
         // BPMN-formatted String -> BPMN DOM
         StreamSource source = new StreamSource(new StringReader(structuredBpmnModelString));
