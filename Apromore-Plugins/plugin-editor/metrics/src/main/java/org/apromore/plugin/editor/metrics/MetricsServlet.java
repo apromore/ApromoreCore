@@ -93,19 +93,18 @@ public class MetricsServlet extends HttpServlet {
         Definitions bpmn = diagram2BpmnConverter.getDefinitionsFromDiagram();
 
         // BPMN DOM -> BPMN-formatted String
-//        JAXBContext jaxbContext = JAXBContext.newInstance(  Definitions.class, Configurable.class,
-//                                                            ConfigurationAnnotationAssociation.class,
-//                                                            ConfigurationAnnotationShape.class, Variants.class );
-//
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        jaxbContext.createMarshaller().marshal(bpmn, baos);
-//        String process = baos.toString("utf-8");
-//        BPMNDiagram bpmnDiagram = importerService.importBPMNDiagram(process);
+        JAXBContext jaxbContext = JAXBContext.newInstance(  Definitions.class, Configurable.class,
+                                                            ConfigurationAnnotationAssociation.class,
+                                                            ConfigurationAnnotationShape.class, Variants.class );
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        jaxbContext.createMarshaller().marshal(bpmn, baos);
+        String process = baos.toString("utf-8");
+        BPMNDiagram bpmnDiagram = importerService.importBPMNDiagram(process);
 
         /* result already in json format */
         ComplexityCalculator cc = new ComplexityCalculator();
-//        Map<String, String> metrics = cc.computeComplexity(bpmnDiagram, true, true, true, true, true, true, true, true, true);
-        Map<String, String> metrics = cc.computeComplexity(null, true, true, true, true, true, true, true, true, true);
+        Map<String, String> metrics = cc.computeComplexity(bpmnDiagram, true, true, true, true, true, true, true, true, true);
 
         JSONObject result = new JSONObject();
 
