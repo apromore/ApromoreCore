@@ -43,7 +43,6 @@
     <aop:aspectj-autoproxy />
 
     <!-- Other OSGi services this component consumes -->
-    <!--<osgi:reference id="structuringService" interface="org.apromore.service.StructuringService"/>-->
 
     <!-- Dynamically instantiate a Spring bean for classes within the given package with the @Service annotation -->
     <context:component-scan base-package="org.apromore.service.ibpstruct.impl"/>
