@@ -98,22 +98,20 @@ public class IBPStructServlet extends HttpServlet {
         JAXBContext jaxbContext = null;
 
         // BPMN DOM -> BPMN-formatted String
-//        jaxbContext = JAXBContext.newInstance(  Definitions.class, Configurable.class,
-//                                                ConfigurationAnnotationAssociation.class,
-//                                                ConfigurationAnnotationShape.class, Variants.class );
-//
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        jaxbContext.createMarshaller().marshal(bpmn, baos);
-//        String process = baos.toString("utf-8");
-//        BPMNDiagram bpmnDiagram = importerService.importBPMNDiagram(process);
+        jaxbContext = JAXBContext.newInstance(  Definitions.class, Configurable.class,
+                                                ConfigurationAnnotationAssociation.class,
+                                                ConfigurationAnnotationShape.class, Variants.class );
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        jaxbContext.createMarshaller().marshal(bpmn, baos);
+        String unstructuredBpmnModelString = baos.toString("utf-8");
 
 //        LOGGER.info("PROCESS TO STRUCTURE:\n" + unstructuredBpmnModelString);
 
-//        BPMNDiagram unstructuredDiagram = importerService.importBPMNDiagram(unstructuredBpmnModelString);
+        BPMNDiagram unstructuredDiagram = importerService.importBPMNDiagram(unstructuredBpmnModelString);
 
         StructuringService ss = new StructuringService();
-//        BPMNDiagram structuredDiagram = ss.structureDiagram(unstructuredDiagram);
-        BPMNDiagram structuredDiagram = ss.structureDiagram(new BPMNDiagramImpl("test_bpmn"));
+        BPMNDiagram structuredDiagram = ss.structureDiagram(unstructuredDiagram);
 
         BPMNDiagramExporter exporterService = new BPMNDiagramExporterImpl();
         String structuredBpmnModelString = exporterService.exportBPMNDiagram(structuredDiagram);
