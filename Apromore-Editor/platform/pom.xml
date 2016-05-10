@@ -180,12 +180,10 @@
                         <Import-Bundle>
                             org.apache.catalina;version="[7.0.35.v201302131125,7.0.35.v201302131125]",
                             org.apromore.editor-platform-extension-bpmn2_0;version="[1.2,2)",
-                            org.apromore.editor-platform-extension-bpstruct;version="[1.2,2)",
                             org.apromore.editor-platform-extension-diagram;version="[1.2,2)",
                             org.apromore.editor-platform-extension-downloader;version="[1.2,2)",
                             org.apromore.editor-platform-extension-epc;version="[1.2,2)",
                             org.apromore.editor-platform-extension-jpdl;version="[1.2,2)",
-                            org.apromore.editor-platform-extension-measurement;version="[1.2,2)",
                             org.apromore.editor-platform-extension-pdf;version="[1.2,2)",
                             org.apromore.editor-platform-extension-petrinet;version="[1.2,2)",
                             org.apromore.editor-platform-extension-syntaxchecker;version="[1.2,2)",
@@ -462,11 +460,6 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>editor-platform-extension-bpstruct</artifactId>
-            <version>${editor-platform-extension.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-diagram</artifactId>
             <version>${editor-platform-extension.version}</version>
         </dependency>
@@ -483,11 +476,6 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-jpdl</artifactId>
-            <version>${editor-platform-extension.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>editor-platform-extension-measurement</artifactId>
             <version>${editor-platform-extension.version}</version>
         </dependency>
         <dependency>

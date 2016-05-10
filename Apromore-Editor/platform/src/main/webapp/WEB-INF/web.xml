@@ -332,28 +332,6 @@
     </servlet-mapping>
 
     <servlet>
-        <display-name>BPStruct</display-name>
-        <servlet-name>BPStructServlet</servlet-name>
-        <servlet-class>org.apromore.common.converters.bpstruct.servlet.BPStructServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>BPStructServlet</servlet-name>
-        <url-pattern>/editor/bpstruct</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <display-name>Measurement</display-name>
-        <servlet-name>MeasurementServlet</servlet-name>
-        <servlet-class>org.apromore.common.converters.measurement.servlet.MeasurementServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>MeasurementServlet</servlet-name>
-        <url-pattern>/editor/measurement</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <display-name>PDFServlet</display-name>
         <servlet-name>PDFServlet</servlet-name>
         <servlet-class>org.apromore.editor.server.AlternativesRenderer</servlet-class>
