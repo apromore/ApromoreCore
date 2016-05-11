@@ -432,43 +432,6 @@ public interface ManagerService {
      */
     void updateSearchHistories(UserType currentUser, List<SearchHistoriesType> searchHist) throws Exception;
 
-    /**
-     * Mine BPMN Model from Log.
-     * @param log input log for mining.
-     * @param sortLog should the log be sorted based on timestamp.
-     * @param structProcess should the resulting Process Model be structured or not.
-     * @param miningAlgorithm the mining algorithm (@see).
-     * @param dependencyAlgorithm the algorithm for dependency discovery (1 normal, 2 noise tollerant).
-     * @param interruptingEventTolerance the tolerance level for detecting interrupting events, a value between 0.0 and 1.0.
-     * @param timerEventPercentage the percentage of times a timer event must be detected to model it, a value between 0.0 and 1.0.
-     * @param timerEventTolerance the tolerance level for detecting timer events, a value between 0.0 and 1.0.
-     * @param multiInstancePercentage the percentage of times an activity must occur in parallel to model it as multi-instance, a value between 0.0 and 1.0.
-     * @param multiInstanceTolerance the tolerance level for detecting multi-instance activities, a value between 0.0 and 1.0.
-     * @param noiseThreshold the noise threshold, a value between 0.0 and 1.0.
-     * @param listCandidates the list of candidates primary keys.
-     * @param primaryKeySelections the selection of primary key for each activity.
-     * @throws Exception ... change to be something more relevant
-     */
-    String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
-                             double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
-                             double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception;
-    /**
-     * Structure a BPMN process from its XML(BPMN 2.0) representation.
-     * @param process the XML(BPMN 2.0) representation of the process to be structured
-     */
-    String structureBPMNModel(String process) throws Exception;
-
-    /**
-     * Structure a BPMN process retrieved from the filestore.
-     * @param processId the Id of the process in the filestore
-     * @param processName the Name of the process in the filestore
-     * @param branchName the Branch of the process in the filestore
-     * @param versionNumber the Version of the process in the filestore
-     */
-    StructureBPMNProcessOutputMsgType structureBPMNProcess(final int processId, final String processName,
-                                final String branchName, final String versionNumber, final String username,
-                                final int folderId, final String domain) throws Exception;
-
 /**
      * Detect drifts in the log
      * @param logByteArray the log as a byte array
@@ -479,10 +442,5 @@ public interface ManagerService {
      */
     ProDriftDetectionResult proDriftDetector(byte[] logByteArray, int winSize, String fWinorAwin, String logFileName);
 
-    /**
-     * Compute measurements on a BPMN process from its XML(BPMN 2.0) representation.
-     * @param process the XML(BPMN 2.0) representation of the process on which compute the measurements
-     */
-    String computeMeasurements(String process) throws Exception;
 
 }

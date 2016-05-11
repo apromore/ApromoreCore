@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import org.apromore.service.bpmnminer.BPMNMinerService;
-import org.apromore.service.StructuringService;
+import org.apromore.service.ibpstruct.IBPStructService;
 
 /**
  * Created by Raffaele Conforti on 17/04/2015.
@@ -53,11 +53,11 @@ import org.apromore.service.StructuringService;
 public class BPMNMinerServiceImpl implements BPMNMinerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BPMNMinerServiceImpl.class);
 
-    private final StructuringService structuringService;
+    private final IBPStructService ibpstructService;
 
     @Inject
-    public BPMNMinerServiceImpl(final StructuringService structuringService) {
-        this.structuringService = structuringService;
+    public BPMNMinerServiceImpl(final IBPStructService ibpstructService) {
+        this.ibpstructService = ibpstructService;
     }
 
     @Override
@@ -127,34 +127,28 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
         BPMNDiagram diagram = bpmnSubProcessMiner.mineBPMNModel(fakePluginContext, log, sortLog, selectMinerResult, dependencyAlgorithm, concModel,
                 groupEntities, candidatesEntities, selectedEntities, true);
 
-        if( structProcess ) {
-            try {
-                xmlProcessModel = structuringService.structureBPMNModel(diagram);
-            } catch (Exception e) {
-                LOGGER.error("Exception got while structuring the process!", e);
-                throw e;
-            }
-        } else {
-            System.out.println("Output file:");
-            UIContext context = new UIContext();
-            UIPluginContext uiPluginContext = context.getMainPluginContext();
-            BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
-            BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
+//        if( structProcess ) diagram = ibpstructService.structureProcess(diagram);
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
-                    "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
-                    "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
-                    "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
-                    "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
-                    "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
-                    "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">");
+        System.out.println("Output file:");
+        UIContext context = new UIContext();
+        UIPluginContext uiPluginContext = context.getMainPluginContext();
+        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
+        BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
-            sb.append(definitions.exportElements());
-            sb.append("</definitions>");
-            xmlProcessModel = sb.toString();
-        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
+                "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
+                "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
+                "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
+                "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
+                "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">");
+
+        sb.append(definitions.exportElements());
+        sb.append("</definitions>");
+        xmlProcessModel = sb.toString();
+
         return xmlProcessModel;
     }
 

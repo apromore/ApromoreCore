@@ -49,11 +49,9 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     /**
      * Default Constructor.
-     * @param metWorker the Metric Worker for the metric Calculations.
      */
     @Inject
-    public SchedulerServiceImpl(final @Qualifier("metricWorker") Worker metWorker, final @Qualifier("gedMatrixWorker") Worker gedWorker) {
-        metricWorker = metWorker;
+    public SchedulerServiceImpl(final @Qualifier("gedMatrixWorker") Worker gedWorker) {
         gedMatrixWorker = gedWorker;
     }
 

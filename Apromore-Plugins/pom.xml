@@ -82,10 +82,6 @@
         <module>plugin-deployment/core/api</module>
         <module>plugin-deployment/core/provider</module>
 
-        <!-- Metric Interface -->
-        <module>plugin-toolbox/plugin-metric/core/api</module>
-        <module>plugin-toolbox/plugin-metric/core/provider</module>
-
         <!-- Plugin Implementations -->
         <!-- Common Plugins -->
         <module>plugin-core/plugin-graph</module>
@@ -104,9 +100,6 @@
         <module>plugin-annotation/epml</module>
         <module>plugin-annotation/yawl</module>
         <module>plugin-annotation/pnml</module>
-
-        <!-- Metrics Plugins -->
-        <module>plugin-toolbox/plugin-metric/size</module>
 
         <!-- Deployment Plugins -->
         <module>plugin-deployment/deployment-yawl</module>

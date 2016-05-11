@@ -662,13 +662,6 @@
                 <version>${apromore.annotation.plugin.version}</version>
             </dependency>
 
-            <!-- Metric Calculations -->
-            <dependency>
-                <groupId>org.apromore.plugin</groupId>
-                <artifactId>metric-size</artifactId>
-                <version>${apromore.metric.plugin.version}</version>
-            </dependency>
-
             <!-- Deployment -->
             <dependency>
                 <groupId>org.apromore.plugin</groupId>

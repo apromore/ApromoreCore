@@ -59,10 +59,7 @@
     <osgi:service ref="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper" auto-export="interfaces"/>
     <osgi:service ref="PQLServiceImpl" interface="org.apromore.service.PQLService" auto-export="interfaces"/>
     <osgi:service ref="databaseServiceImpl" interface="org.apromore.service.DatabaseService" auto-export="interfaces"/>
-    <osgi:service ref="BPMNMinerServiceImpl" interface="org.apromore.service.BPMNMinerService" auto-export="interfaces"/>
     <osgi:service ref="proDriftDetectionServiceImpl" interface="org.apromore.service.ProDriftDetectionService" auto-export="interfaces"/>
-    <osgi:service ref="structuringServiceImpl" interface="org.apromore.service.StructuringService" auto-export="interfaces"/>
-    <osgi:service ref="measurementsServiceImpl" interface="org.apromore.service.MeasurementsService" auto-export="interfaces"/>
     <osgi:service ref="BPMNDiagramImporterImpl" interface="org.apromore.service.BPMNDiagramImporter" auto-export="interfaces"/>
 
     <osgi:service ref="userDetailsServiceImpl" interface="org.springframework.security.core.userdetails.UserDetailsService" auto-export="interfaces"/>

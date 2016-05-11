@@ -51,13 +51,6 @@
                             org.springframework.beans.factory.aspectj,
                             *
                         </Import-Package>
-                        <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGi bundle
-                        <Embed-Dependency>
-                            artifactId=fooBar
-                        </Embed-Dependency>
-                        <Embed-Transitive>true</Embed-Transitive>
-                        <Embed-Directory>lib</Embed-Directory>
-                        -->
                     </instructions>
                 </configuration>
             </plugin>
@@ -77,9 +70,6 @@
         <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES</artifactId>
-            <!--
-            <version>2.0</version>
-            -->
         </dependency>
     </dependencies>
 

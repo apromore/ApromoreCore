@@ -47,10 +47,7 @@ public abstract class AbstractEndpointUnitTest {
     protected UserInterfaceHelper uiHelper;
     protected PQLService pqlSrv;
     protected DatabaseService dbSrv;
-    protected BPMNMinerService bpmnMinerSrv;
     protected ProDriftDetectionService proDriftSrv;
-    protected StructuringService structuringServ;
-    protected MeasurementsService measurementsServ;
 
     @Before
     public void setUp() throws Exception {
@@ -68,13 +65,10 @@ public abstract class AbstractEndpointUnitTest {
         uiHelper = createMock(UIHelper.class);
         pqlSrv = createMock(PQLServiceImpl.class);
         dbSrv = createMock(DatabaseServiceImpl.class);
-        bpmnMinerSrv = createMock(BPMNMinerServiceImpl.class);
         proDriftSrv = createMock(ProDriftDetectionServiceImpl.class);
-        structuringServ = createMock(StructuringServiceImpl.class);
-        measurementsServ = createMock(MeasurementsServiceImpl.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
                 clusterService, frmSrv, domSrv, userSrv, secSrv, wrkSrv, uiHelper,
-                pqlSrv, dbSrv, bpmnMinerSrv, proDriftSrv, structuringServ, measurementsServ);
+                pqlSrv, dbSrv, proDriftSrv);
     }
 }
