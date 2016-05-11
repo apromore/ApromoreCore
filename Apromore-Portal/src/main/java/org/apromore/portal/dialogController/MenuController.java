@@ -101,22 +101,7 @@ public class MenuController extends Menubar {
         Menu designM = (Menu) this.menuB.getFellow("design");
         Menuitem cmapMI = (Menuitem) this.menuB.getFellow("designCmap");
         Menuitem configureMI = (Menuitem) this.menuB.getFellow("designConfiguration");
-        Menuitem bpmnMinerMI = (Menuitem) this.menuB.getFellow("miningBPMNMiner");
 
-        Menuitem structMI = (Menuitem) this.menuB.getFellow("structProcess");
-        structMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                structureProcess();
-            }
-        });
-
-        bpmnMinerMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                mineBPMNMinerModel();
-            }
-        });
         createMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
@@ -199,29 +184,6 @@ public class MenuController extends Menubar {
         });
     }
 
-    /**
-     * Structure a list of selected processes
-     * @throws InterruptedException
-     * @throws ParseException
-     */
-    protected void structureProcess() throws InterruptedException, ParseException  {
-        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedProcessVersions();
-        if( selectedProcessVersions.size() == 1 ) {
-            new StructureProcessController(this.mainC, selectedProcessVersions);
-        } else {
-            Messagebox.show("Select exactly one process.", "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-
-    /**
-     * Mine a BPMN model using BPMNMiner
-     * @throws InterruptedException
-     * @throws SuspendNotAllowedException
-     */
-    protected void mineBPMNMinerModel() throws SuspendNotAllowedException, InterruptedException {
-//        this.mainC.eraseMessage();
-        new BPMNMinerController(this.mainC);
-    }
 
     /**
      * Deploy process mdel to a running process engine

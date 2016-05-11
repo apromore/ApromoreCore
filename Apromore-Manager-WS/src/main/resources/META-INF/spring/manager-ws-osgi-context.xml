@@ -61,10 +61,7 @@
     <osgi:reference id="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
     <osgi:reference id="PQLServiceImpl" interface="org.apromore.service.PQLService"/>
     <osgi:reference id="databaseServiceImpl" interface="org.apromore.service.DatabaseService"/>
-    <osgi:reference id="BPMNMinerServiceImpl" interface="org.apromore.service.BPMNMinerService"/>
     <osgi:reference id="proDriftDetectionServiceImpl" interface="org.apromore.service.ProDriftDetectionService"/>
-    <osgi:reference id="structuringServiceImpl" interface="org.apromore.service.StructuringService"/>
-    <osgi:reference id="measurementsServiceImpl" interface="org.apromore.service.MeasurementsService"/>
 
     <osgi:reference id="userDetailsServiceImpl" interface="org.springframework.security.core.userdetails.UserDetailsService"/>
     <osgi:reference id="usernamePasswordAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider"/>

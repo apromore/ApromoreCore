@@ -13,10 +13,7 @@ import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
-import org.processmining.models.graphbased.directed.bpmn.elements.Event;
-import org.processmining.models.graphbased.directed.bpmn.elements.Flow;
-import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+import org.processmining.models.graphbased.directed.bpmn.elements.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -219,7 +216,7 @@ public class ComplexityCalculator {
             Vertex src;
             Vertex tgt;
 
-            for (Flow f : diagram.getFlows()) {
+            for (Flow f : diagram.getFlows((Swimlane) null)) {
                 if (!mapping.containsKey(f.getSource())) {
                     src = new Vertex(f.getSource().getId().toString());
                     if (f.getSource() instanceof Gateway) gates.put(f.getSource().getId().toString(), (Gateway) f.getSource());
@@ -299,11 +296,11 @@ public class ComplexityCalculator {
                 toAnalize.remove(root);
             }
 
-            nodes += diagram.getGateways().size();
-            nodes += diagram.getActivities().size();
-            nodes += diagram.getCallActivities().size();
-            nodes += diagram.getSubProcesses().size();
-            nodes += diagram.getEvents().size();
+            nodes += diagram.getGateways((Swimlane) null).size();
+            nodes += diagram.getActivities((Swimlane) null).size();
+            nodes += diagram.getCallActivities((Swimlane) null).size();
+            nodes += diagram.getSubProcesses((Swimlane) null).size();
+            nodes += diagram.getEvents((Swimlane) null).size();
 
             structuredness = 1 - ((nodes - removed.size()) / nodes);
 
@@ -328,7 +325,7 @@ public class ComplexityCalculator {
             Vertex src;
             Vertex tgt;
 
-            for (Flow f : diagram.getFlows()) {
+            for (Flow f : diagram.getFlows((Swimlane) null)) {
                 if (!mapping.containsKey(f.getSource())) {
                     src = new Vertex(f.getSource().getLabel());
                     mapping.put(f.getSource(), src);
@@ -369,11 +366,11 @@ public class ComplexityCalculator {
                 }
             }
 
-            nodes += diagram.getGateways().size();
-            nodes += diagram.getActivities().size();
-            nodes += diagram.getCallActivities().size();
-            nodes += diagram.getSubProcesses().size();
-            nodes += diagram.getEvents().size();
+            nodes += diagram.getGateways((Swimlane) null).size();
+            nodes += diagram.getActivities((Swimlane) null).size();
+            nodes += diagram.getCallActivities((Swimlane) null).size();
+            nodes += diagram.getSubProcesses((Swimlane) null).size();
+            nodes += diagram.getEvents((Swimlane) null).size();
 
             separability = (articulationPoints.size() - 2) / (nodes - 2);
         } catch( Exception e ) {

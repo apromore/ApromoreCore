@@ -866,12 +866,6 @@
             <artifactId>annotation-pnml</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>metric-size</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>
