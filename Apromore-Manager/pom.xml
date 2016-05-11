@@ -238,10 +238,6 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>metric-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
             <artifactId>process-plugin-api</artifactId>
         </dependency>
 
@@ -572,16 +568,6 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>deployment-api-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apromore.plugin</groupId>-->
-            <!--<artifactId>search-api-provider</artifactId>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>metric-api-provider</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
