@@ -61,19 +61,6 @@ public class MenuController extends Menubar {
         this.portalContext = new PluginPortalContext(mainC);
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
 
-
-        for (final PortalPlugin plugin: PortalPluginResolver.resolve()) {
-            Menuitem menuitem = new Menuitem();
-            menuitem.setLabel(plugin.getLabel(Locale.getDefault()));
-            menuB.getChildren().add(menuitem);
-            menuitem.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    plugin.execute(new PluginPortalContext(mainC));
-                }
-            });
-        }
-
         Menuitem createMI = (Menuitem) this.menuB.getFellow("createProcess");
         Menuitem importMI = (Menuitem) this.menuB.getFellow("fileImport");
         Menuitem exportMI = (Menuitem) this.menuB.getFellow("fileExport");
@@ -182,6 +169,26 @@ public class MenuController extends Menubar {
                 proDriftGetParameters();
             }
         });
+
+        // If there are portal plugins, create a menu for launching them
+        if (!PortalPluginResolver.resolve().isEmpty()) {
+            Menu menu = new Menu("Plugins");
+            menuB.appendChild(menu);
+            menu.appendChild(new Menupopup());
+
+            for (final PortalPlugin plugin: PortalPluginResolver.resolve()) {
+                Menuitem menuitem = new Menuitem();
+                menuitem.setImage("img/icon/bpmn-22x22.png");
+                menuitem.setLabel(plugin.getLabel(Locale.getDefault()));
+                menu.getMenupopup().appendChild(menuitem);
+                menuitem.addEventListener("onClick", new EventListener<Event>() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        plugin.execute(new PluginPortalContext(mainC));
+                    }
+                });
+            }
+        }
     }
 
 
