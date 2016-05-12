@@ -33,7 +33,7 @@ public class PNML132CanoniserUnitTest {
 
     @Test
     public void testGetType() {
-        assertEquals("Manager Plugin", new PNML132Canoniser().getType());
+        assertEquals("Logic", new PNML132Canoniser().getType());
     }
 
 }

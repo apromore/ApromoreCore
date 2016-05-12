@@ -48,8 +48,6 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
     private final String GREEDY_ALGORITHM = "Greedy";
 
-    private Map<String, Integer> countMap = new HashMap<>();
-
     private PortalContext context;
     private Window similaritySearchW;
     private Listbox algosLB;
@@ -67,7 +65,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Similarity Search";
+        return "Search Similar Models";
     }
 
     @Override
@@ -204,18 +202,8 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
                 resultToDisplay = result;
             }
 
-            Integer count;
-            if ((count = countMap.get(context.getCurrentUser().getId())) == null) {
-                count = 1;
-            }
-
-            if (SessionTab.getSessionTab(context).getTabsSession(context.getCurrentUser().getId()).size() == 0) {
-                count = 1;
-            }
-
             if(result.getTotalProcessCount() > 1) {
-                displayProcessSummaries(process.getName() + ": Sim Search " + count++, resultToDisplay, context);
-                countMap.put(context.getCurrentUser().getId(), count);
+                displayProcessSummaries(process.getName() + ": Sim Search", resultToDisplay, context);
             }
 
             Messagebox.show(message);
