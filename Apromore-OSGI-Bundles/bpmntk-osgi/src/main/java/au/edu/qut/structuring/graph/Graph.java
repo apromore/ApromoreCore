@@ -238,13 +238,22 @@ public class Graph {
                         bigBrother = allPaths.get(brotherhood.get(0));
                         twinBrother = allPaths.get(twinBrotherhood.get(0));
 
-                        if( bigBrother.isLoop() ) {
+                        if( bigBrother.isLoop() && twinBrother.isLoop() ) {
+                            System.out.println("WARNING - got double loop, merging is dangerous.");
+                            if( outgoing.get(entry).size() == 1 ) {
+                                bigBrother.addReverseBrother(twinBrother);
+                                removePath(twinBrotherhood.get(0));
+                            } else {
+                                twinBrother.addReverseBrother(bigBrother);
+                                removePath(brotherhood.get(0));
+                            }
+                        } else if( bigBrother.isLoop() ) {
                             twinBrother.addReverseBrother(bigBrother);
                             removePath(brotherhood.get(0));
-                        } else {
+                        } else if( twinBrother.isLoop() ) {
                             bigBrother.addReverseBrother(twinBrother);
                             removePath(twinBrotherhood.get(0));
-                        }
+                        } else System.out.println("ERROR - impossible merge loop brothers.");
                     }
                 }
             }
@@ -392,7 +401,7 @@ public class Graph {
             if( gates.contains(path.getEntry()) && gates.contains(path.getExit()) ) {
                 erasePath(e);
                 graph.addPath(new Path(e, path));
-            } else System.out.println("ERROR - detected path inbetween the rigid!");
+            } else System.out.println("WARNING - detected path inbetween the rigid.");
         }
 
         //System.out.println("DEBUG - graph detached [incoming(entry): " + incoming.get(entry).size() + "][outgoing(entry): " + outgoing.get(entry).size() + "]");
@@ -603,7 +612,8 @@ public class Graph {
                     }
             }
         } catch (NullPointerException npe) {
-            System.out.println("ERROR - detected a gateway without outgoing or incoming paths.");
+            System.out.println("WARNING - detected a gateway without outgoing or incoming paths.");
+            return false;
         }
 
         simplify();

@@ -2,6 +2,13 @@ package au.edu.qut.structuring;
 
 import au.edu.qut.structuring.core.StructuringCore;
 import au.edu.qut.structuring.wrapper.BPStructWrapper;
+import de.hpi.bpt.graph.DirectedEdge;
+import de.hpi.bpt.graph.DirectedGraph;
+import de.hpi.bpt.graph.abs.IDirectedGraph;
+import de.hpi.bpt.graph.algo.rpst.RPST;
+import de.hpi.bpt.graph.algo.rpst.RPSTNode;
+import de.hpi.bpt.graph.algo.tctree.TCType;
+import de.hpi.bpt.hypergraph.abs.Vertex;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.annotations.Plugin;
@@ -64,7 +71,7 @@ public class StructuringService {
 
     public BPMNDiagram structureDiagram(BPMNDiagram diagram) {
         this.diagram = diagram;
-        return structureDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, true, true);
+        return structureDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, true, false);
     }
 
     public BPMNDiagram structureDiagram(BPMNDiagram diagram,
@@ -631,7 +638,10 @@ public class StructuringService {
                 spi.setProcess(nodes, flows);
                 spi.structure();
                 structuredDiagram = spi.getDiagram();
+            } else {
+                matchGateways(structuredDiagram);
             }
+
         } catch(Exception e) {
             System.err.print(e);
             structuredDiagram = null;
@@ -1042,6 +1052,70 @@ public class StructuringService {
                 if( whiteList.containsKey(eID) )
                     for( BPMNNode wde : whiteList.get(eID) )
                         if( wde instanceof Event ) ((Event)wde).setEventType(Event.EventType.INTERMEDIATE);
+            }
+    }
+
+    private void matchGateways(BPMNDiagram diagram) {
+            if(diagram == null) return;
+
+            try {
+                HashMap<BPMNNode, Vertex> mapping = new HashMap<BPMNNode, Vertex>();
+                HashMap<String, Gateway> gates = new HashMap<String, Gateway>();
+                HashSet<String> removed = new HashSet<String>();
+
+                IDirectedGraph<DirectedEdge, Vertex> graph = new DirectedGraph();
+                Vertex src;
+                Vertex tgt;
+
+                for (Flow f : diagram.getFlows((Swimlane) null)) {
+                    if (!mapping.containsKey(f.getSource())) {
+                        src = new Vertex(f.getSource().getId().toString());
+                        if (f.getSource() instanceof Gateway) gates.put(f.getSource().getId().toString(), (Gateway) f.getSource());
+                        mapping.put(f.getSource(), src);
+                    } else src = mapping.get(f.getSource());
+
+                    if (!mapping.containsKey(f.getTarget())) {
+                        tgt = new Vertex(f.getTarget().getId().toString());
+                        if (f.getTarget() instanceof Gateway) gates.put(f.getTarget().getId().toString(), (Gateway) f.getTarget());
+                        mapping.put(f.getTarget(), tgt);
+                    } else tgt = mapping.get(f.getTarget());
+
+                    graph.addEdge(src, tgt);
+                }
+
+                RPST rpst = new RPST(graph);
+
+                RPSTNode root = rpst.getRoot();
+                LinkedList<RPSTNode> toAnalize = new LinkedList<RPSTNode>();
+                toAnalize.add(root);
+
+                while (toAnalize.size() != 0) {
+                    root = toAnalize.pollFirst();
+
+                    for (RPSTNode n : new HashSet<RPSTNode>(rpst.getChildren(root))) {
+                        switch (n.getType()) {
+                            case R:
+                                toAnalize.add(n);
+                                break;
+                            case T:
+                                break;
+                            case P:
+                                toAnalize.add(n);
+                                break;
+                            case B:
+                                Gateway entry = gates.get(n.getEntry().getName());
+                                Gateway exit = gates.get(n.getExit().getName());
+                                exit.setGatewayType(entry.getGatewayType());
+                                toAnalize.add(n);
+                                break;
+                            default:
+                        }
+                    }
+                    toAnalize.remove(root);
+                }
+
+            } catch (Exception e) {
+                System.out.println("WARNING = impossible match gateways.");
             }
     }
 
