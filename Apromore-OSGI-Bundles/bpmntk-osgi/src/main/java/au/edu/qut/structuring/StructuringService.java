@@ -25,6 +25,16 @@ import java.util.*;
 /**
  * Created by Adriano on 29/02/2016.
  */
+
+
+@Plugin(
+        name = "Structure BPMNDiagram",
+        parameterLabels = { "BPMNDiagram" },
+        returnLabels = { "Structured Diagram" },
+        returnTypes = { BPMNDiagram.class },
+        userAccessible = true,
+        help = "Structure a BPMNDiagram"
+)
 public class StructuringService {
 
     private static final int MAX_DEPTH = 100;
@@ -111,15 +121,6 @@ public class StructuringService {
         return this.diagram;
     }
 
-
-    @Plugin(
-            name = "Structure Diagram",
-            parameterLabels = { "BPMNDiagram" },
-            returnLabels = { "Structured Diagram" },
-            returnTypes = { BPMNDiagram.class },
-            userAccessible = true,
-            help = "Structure a BPMNDiagram"
-    )
     @UITopiaVariant(
             affiliation = "Queensland University of Technology",
             author = "Adriano Augusto",
