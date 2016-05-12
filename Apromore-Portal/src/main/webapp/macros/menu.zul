@@ -56,10 +56,6 @@
     </menu>
     <menu id="design" label="Design">
         <menupopup>
-            <menuitem id="structProcess" label="Structure process" disabled="true" image="img/BPStruct.png"/>
-            <menuseparator/>
-            <menuitem id="miningBPMNMiner" label="Automated discovery" disabled="true" image="img/icon/bpmn-22x22.png"/>
-            <menuseparator/>
             <menuitem id="designConfiguration" label="Questionnaire-driven configuration" disabled="true" image="/img/configuration.png"/>
             <menuitem id="designCmap" label="Define model:questionnaire mapping" disabled="true" image="/img/cmap.png"/>
         </menupopup>

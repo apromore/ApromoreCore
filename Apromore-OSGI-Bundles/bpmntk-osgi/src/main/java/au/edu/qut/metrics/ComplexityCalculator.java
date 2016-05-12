@@ -20,6 +20,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
+
+@Plugin(
+        name = "Compute Complexity",
+        parameterLabels = { "BPMNDiagram" },
+        returnLabels = { "Complexity" },
+        returnTypes = { String.class },
+        userAccessible = true,
+        help = "Compute complexity of a BPMN process model."
+)
 public class ComplexityCalculator {
     private String bonds;
     private String rigids;
@@ -63,15 +72,6 @@ public class ComplexityCalculator {
         return result;
     }
 
-
-    @Plugin(
-            name = "Compute Complexity",
-            parameterLabels = { "BPMNDiagram" },
-            returnLabels = { "Complexity" },
-            returnTypes = { String.class },
-            userAccessible = true,
-            help = "Compute complexity of a BPMN process model."
-    )
     @UITopiaVariant(
             affiliation = "Queensland University of Technology",
             author = "Adriano Augusto",
