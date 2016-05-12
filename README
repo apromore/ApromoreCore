@@ -105,6 +105,9 @@ The workaround is to force-quit the server from the OS.
 COMMON PROBLEMS
 ===============
 
+Out of memory while building.
+* Either invoke "mvn" as "mvn -Xmx1G -XX:MaxPermSize=256m" or set the system property MAVEN_OPTS to "-Xmx1G -XX:MaxPermSize=256m"
+
 Server fails to start.
 * If either Apromore or PQL are configured to use MySQL, confirm that the database server is running.
 * If you already run another server (e.g. OS X Server) may need to change the port number 8443 in Supplements/Virgo/tomcat-server.xml.

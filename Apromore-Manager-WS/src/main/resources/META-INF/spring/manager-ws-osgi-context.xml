@@ -39,9 +39,6 @@
     <osgi:reference id="canoniserProvider" interface="org.apromore.canoniser.provider.CanoniserProvider"/>
     <osgi:reference id="annotationProcessorProvider" interface="org.apromore.annotation.provider.AnnotationProcessorProvider"/>
     <osgi:reference id="deploymentProvider" interface="org.apromore.plugin.deployment.provider.DeploymentPluginProvider"/>
-    <!--<osgi:reference id="searchByModelProvider" interface="org.apromore.plugin.search.provider.SearchByModelPluginProvider"/>-->
-    <!--<osgi:reference id="searchByTextProvider" interface="org.apromore.plugin.search.provider.SearchByTextPluginProvider"/>-->
-    <osgi:reference id="metricProvider" interface="org.apromore.plugin.metric.provider.MetricPluginProvider"/>
 
     <osgi:reference id="entityManagerFactory" interface="javax.persistence.EntityManagerFactory"/>
 

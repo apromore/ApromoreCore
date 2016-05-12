@@ -139,11 +139,6 @@
             <artifactId>deployment-api-provider</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>metric-api-provider</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <!-- MYSQL,Postgres and Oracle Bundles -->
         <dependency>

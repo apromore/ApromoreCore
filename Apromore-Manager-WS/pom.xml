@@ -150,7 +150,6 @@
                             <!-- org.apromore.plugin.deployment.exception, -->
                             org.apromore.plugin.deployment.provider,
                             org.apromore.plugin.exception,
-                            org.apromore.plugin.metric.provider,
                             org.apromore.plugin.property,
                             org.apromore.scheduler,
                             org.apromore.security,
@@ -421,42 +420,6 @@
             <artifactId>deployment-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apromore.plugin</groupId>-->
-            <!--<artifactId>search-api</artifactId>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>metric-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Schema -->
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>anf-schema</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>cpf-schema</artifactId>
-        </dependency>
--->
-
-        <!-- 
-            Depreciated dependencies, REMOVE AS SOON AS POSSIBLE
-            Manager should not know about process formats 
-        -->
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmn-schema</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>xpdl-schema</artifactId>
-        </dependency>
--->
 
         <!-- Blueprint OSGi -->
         <dependency>
@@ -467,50 +430,6 @@
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.core</artifactId>
         </dependency>
-
-        <!-- BPM Imports -->
-        <!--
-        <dependency>
-            <groupId>org.jbpt</groupId>
-            <artifactId>jbpt-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jbpt</groupId>
-            <artifactId>jbpt-deco</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>tu</groupId>
-            <artifactId>taskmapping</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mathCollection</groupId>
-            <artifactId>mathCollection</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>lpsolve</groupId>
-            <artifactId>lpsolve</artifactId>
-        </dependency>
-        -->
-
-        <!-- Commons -->
-        <!--
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        -->
 
         <!-- logging -->
         <dependency>
@@ -768,28 +687,11 @@
             <artifactId>deployment-api-provider</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apromore.plugin</groupId>-->
-            <!--<artifactId>search-api-provider</artifactId>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>metric-api-provider</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>aris-schema</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmn-schema</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>epml-schema</artifactId>
