@@ -127,7 +127,7 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
         BPMNDiagram diagram = bpmnSubProcessMiner.mineBPMNModel(fakePluginContext, log, sortLog, selectMinerResult, dependencyAlgorithm, concModel,
                 groupEntities, candidatesEntities, selectedEntities, true);
 
-//        if( structProcess ) diagram = ibpstructService.structureProcess(diagram);
+        if( structProcess ) diagram = ibpstructService.structureProcess(diagram);
 
         System.out.println("Output file:");
         UIContext context = new UIContext();
