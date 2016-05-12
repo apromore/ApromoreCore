@@ -144,7 +144,7 @@ public class PluginPortalContext implements PortalContext {
 
     @Override
     public void refreshContent() {
-        mainController.loadWorkspace();
+        mainController.refresh();
     }
 
 }

@@ -184,6 +184,10 @@ public class MainController extends BaseController implements MainControllerInte
         controller=this;
     }
 
+    public void refresh() {
+        Executions.sendRedirect(null);
+    }
+
     public void loadWorkspace() {
         setHeaderText((Toolbarbutton) this.getFellow("releaseNotes"));
 
@@ -801,8 +805,11 @@ public class MainController extends BaseController implements MainControllerInte
 
         Tabbox tabbox = (Tabbox) mainW.getFellow("tabbox");
 
+        int size = tabbox.getTabs().getChildren().size();
+        boolean added = false;
+
         List<Tab> tabList = SessionTab.getSessionTab(portalContext).getTabsSession(userId);
-        if(tabbox.getTabs().getChildren().size() < tabList.size() + 1) {
+        if(size < tabList.size() + 1) {
             for (Tab tab : tabList) {
                 try {
                     if(!tabbox.getTabs().getChildren().contains(tab)) {
@@ -817,6 +824,7 @@ public class MainController extends BaseController implements MainControllerInte
                     Executions.sendRedirect(null);
                 }
             }
+
         }
     }
 

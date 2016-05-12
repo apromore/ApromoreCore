@@ -71,7 +71,7 @@ public class ProDriftDetectionPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Process Drift Detection";
+        return "Detect Process Drifts";
     }
 
     @Override
