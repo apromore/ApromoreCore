@@ -19,6 +19,7 @@
  */
 package org.apromore.plugin.process;
 
+import org.apromore.helper.Version;
 import org.apromore.plugin.Plugin;
 
 /**
@@ -40,16 +41,18 @@ public interface ProcessPlugin extends Plugin {
      * Notifies a client that the process store has changed.
      *
      * In most cases a follow-up call to the process service will be needed to determine the nature of the change.
-     * This should only be accomplished using the passed <var>processService</var> instance, which is read-only
+     *
+     * TODO: Accomplish the lookup using a passed <var>processService</var> instance, which is read-only
      * and therefore prevents endless cascades of process change notifications.
      *
-     * If an exception is thrown by this method, the process store will roll back the current transaction.
+     * If an exception is thrown by this method, the process store will log that fact but disregard your tears.
      *
-     * @param processId  the identifier of a process which is either newly created, modified, or deleted.
-     * @param processService  a read-only view of the process store
+     * @param processId  the process identifier of a process model version which is either newly created, modified, or deleted.
+     * @param branch  the branch of a process model version which is either newly created, modified, or deleted.
+     * @param version  the version of a process model version which is either newly created, modified, or deleted.
      * @throws ProcessPluginException
      */
-    void processChanged(int processId /*, ProcessService processService*/) throws ProcessChangedException;
+    void processChanged(int processId, String branch, Version version) throws ProcessChangedException;
 
     /** Requests rollback by implementations of the {@link #processChanged} method. */
     static class ProcessChangedException extends Exception {}

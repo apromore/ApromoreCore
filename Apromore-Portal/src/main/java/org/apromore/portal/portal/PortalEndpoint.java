@@ -67,15 +67,10 @@ public class PortalEndpoint {
 
             result.setCode(0);
             result.setMessage("");
-//            LOGGER.trace("-------------------PortalEndpoint: MainController "+MainController.getController());
+
         } catch (Exception ex) {
-            for (StackTraceElement ste : ex.getStackTrace())
-                LOGGER.debug("-------------------------ERRORE: " + ste.getFileName() + " " + ste.getMethodName() + " " + ste.getLineNumber() + " " + ex.getMessage() + " " + ex.getClass());
-//            if(MainController.getController() == null) {
-//                result.setCode(-1);
-//            }else {
+            LOGGER.debug("Unable to add new PQL result tab", ex);
             result.setCode(-2);
-//            }
             result.setMessage(ex.getMessage());
         }
 

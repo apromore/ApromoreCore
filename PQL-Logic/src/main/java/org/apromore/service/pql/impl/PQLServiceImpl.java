@@ -27,6 +27,7 @@ import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.dao.dataObject.FolderTreeNode;
 import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
+import org.apromore.exception.ExportFormatException;
 import org.apromore.helper.Version;
 import org.apromore.model.Detail;
 import org.apromore.model.ExportFormatResultType;
@@ -56,6 +57,7 @@ import org.pql.query.PQLQueryResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -67,7 +69,6 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.Semaphore;
 
 /**
  * Created by corno on 22/07/2014.
@@ -75,38 +76,26 @@ import java.util.concurrent.Semaphore;
 @Service
 public class PQLServiceImpl extends DefaultPlugin implements PQLService, ProcessPlugin {
     private static final Logger LOGGER = LoggerFactory.getLogger(PQLServiceImpl.class);
-
+    private final String PNML_NATIVE_TYPE = "PNML 1.3.2";
     private final String admin = "admin";
-    private String PNMLCanoniser;
-    @Inject
-    private WorkspaceService workspaceService;
-    @Inject
-    private ProcessService processService;
-    @Inject
-    private PluginService pluginService;
-    @Inject
-    private CanoniserService canoniserService;
-    @Inject
-    private UserService userService;
-    @Inject
-    private UserInterfaceHelper helperService;
-    @Inject
-    @Qualifier("canoniserProvider")
-    private CanoniserProvider canoniserProviderService;
-    @Inject
-    private ProcessModelVersionRepository processModelVersionRepository;
 
-    @Inject
-    private LolaDirImpl lolaDir;
-    @Inject
-    private MySqlBeanImpl mySqlBean;
-    @Inject
-    private PGBeanImpl pgBean;
+    private String pnmlCanoniser;
+    private final List<ExternalId> queue = Collections.synchronizedList(new ArrayList<ExternalId>());
 
-    @Inject
-    private PqlBeanImpl pqlBean;
-    private int numberOfCore = Runtime.getRuntime().availableProcessors();
-    private Semaphore sem= new Semaphore(numberOfCore-1);
+    @Inject private WorkspaceService workspaceService;
+    @Inject private ProcessService processService;
+    @Inject private PluginService pluginService;
+    @Inject private CanoniserService canoniserService;
+    @Inject private UserService userService;
+    @Inject private UserInterfaceHelper helperService;
+    @Inject @Qualifier("canoniserProvider") private CanoniserProvider canoniserProviderService;
+    @Inject private ProcessModelVersionRepository processModelVersionRepository;
+
+    @Inject private LolaDirImpl lolaDir;
+    @Inject private MySqlBeanImpl mySqlBean;
+    @Inject private PGBeanImpl pgBean;
+
+    @Inject private PqlBeanImpl pqlBean;
 
     @Override
     public void indexAllModels() {
@@ -140,16 +129,16 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
     }
 
     private String getPNMLCanoniser() {
-        if (PNMLCanoniser != null) {
-            LOGGER.info("RECALLED " + PNMLCanoniser);
-            return PNMLCanoniser;
+        if (pnmlCanoniser != null) {
+            LOGGER.info("RECALLED " + pnmlCanoniser);
+            return pnmlCanoniser;
         }
 
         for(Canoniser canoniser : canoniserProviderService.listAll()){
             if(canoniser.getNativeType().startsWith("PNML")) {
-                PNMLCanoniser=canoniser.getNativeType();
-                LOGGER.info("INITIALIZED " + PNMLCanoniser);
-                return PNMLCanoniser;
+                pnmlCanoniser=canoniser.getNativeType();
+                LOGGER.info("INITIALIZED " + pnmlCanoniser);
+                return pnmlCanoniser;
             }
         }
 
@@ -286,7 +275,67 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
     }
 
     /** {@inheritDoc} */
-    public void processChanged(int processId /*, ProcessService processService*/) throws ProcessChangedException {
-        LOGGER.info("PQL index needs to be undated for process with external ID " + processId + " in process service " + processService);
+    public void processChanged(int processId, String branch, Version version) throws ProcessChangedException {
+        ExternalId externalId = new ExternalId(processId, branch, version);
+        LOGGER.info("PQL index needs to be updated for process with external ID " + externalId + " in process service " + processService);
+        queue.add(externalId);
+    }
+
+    // Asynchronous indexing
+
+    @Scheduled(cron="*/${pql.defaultBotSleepTime} * * * * ?")
+    public void indexQueuedProcesses() {
+        //LOGGER.info("Indexing queued processes");
+        try {
+            while(!queue.isEmpty()) {
+                ExternalId externalId = queue.remove(0);
+                indexProcess(externalId);
+            }
+        } catch (IndexOutOfBoundsException e) {
+            // if there wasn't a 0th element of the queue, we're done
+        }
+        //LOGGER.info("Indexing queue empty");
+    }
+
+    private void indexProcess(ExternalId externalId) {
+        //LOGGER.info("Indexing queued process " + externalId);
+        try {
+            ExportFormatResultType exportResult = processService.exportProcess("dummy process name",
+                externalId.getProcessId(), externalId.getBranch(), externalId.getVersion(),
+                PNML_NATIVE_TYPE, null, false, readPluginProperties(Canoniser.DECANONISE_PARAMETER));
+
+            byte[] bytes = IOUtils.toByteArray(exportResult.getNative().getInputStream());
+            IPQLAPI api = pqlBean.getApi();
+            int internalId = api.storeModel(bytes, externalId.toString());
+            LOGGER.info("Stored " + (api.checkModel(internalId) ? "sound" : "unsound") + " process " + externalId + " for PQL indexing as id " + internalId);
+
+        } catch (ExportFormatException | IOException | SQLException e) {
+            LOGGER.warn("Unable to index " + externalId + " for PQL indexing", e);
+        }
+    }
+
+    /**
+     * Hold the composite key of a process model version
+     */
+    private static class ExternalId {
+        private int processId;
+        private String branch;
+        private Version version;
+
+        ExternalId(int processId, String branch, Version version) {
+            this.processId = processId;
+            this.branch    = branch;
+            this.version   = version;
+        }
+
+        int     getProcessId() { return processId; }
+        String  getBranch()    { return branch; }
+        Version getVersion()   { return version; }
+
+        @Override
+        public String toString() {
+            return processId + "/" + branch + "/" + version;
+        }
     }
 }
+

@@ -45,5 +45,6 @@
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal" />
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+    <service ref="queryableProcessAttributePlugin" interface="org.apromore.plugin.portal.PortalProcessAttributePlugin" auto-export="interfaces" />
        
 </beans:beans>

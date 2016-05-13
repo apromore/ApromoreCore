@@ -52,23 +52,25 @@
         <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
         <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
-        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
-
-        <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
-        <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
 
         <include name="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar"/>
         <include name="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar"/>
 
+        <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
+        <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
+
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
 
-        <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
-        <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
-
         <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
         <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
+
+        <!--
+        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
+        <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
+        <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
+        -->
     </fileset>
 
     <fileset id="usrRepo" dir=".">

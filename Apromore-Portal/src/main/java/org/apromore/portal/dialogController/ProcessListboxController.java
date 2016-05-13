@@ -23,14 +23,17 @@ package org.apromore.portal.dialogController;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -52,9 +55,10 @@ public class ProcessListboxController extends BaseListboxController {
 
         this.columnScore = (Listheader) this.getListBox().getFellow("columnScore");
 
-        // Hide the "Queryable?" column if PQL indexing is disabled
-        Listheader queryable = (Listheader) this.getListBox().getFellow("queryable");
-        queryable.setVisible(config.isPQLIndexingEnabled());
+        // Add plugin attributes as additional columns
+        for (PortalProcessAttributePlugin plugin: (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins")) {
+            this.getListBox().getListhead().appendChild(new Listheader(plugin.getLabel(Locale.getDefault())));
+        }
 
         // TODO should be replaced by ListModel listener in zk 6
         getListBox().addEventListener(Events.ON_SELECT, new EventListener<Event>() {

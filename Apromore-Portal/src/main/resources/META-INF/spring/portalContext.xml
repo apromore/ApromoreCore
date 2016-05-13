@@ -43,7 +43,6 @@
         <constructor-arg type="String" value="${site.portal}"/>
         <constructor-arg type="String" value="${version.number}"/>
         <constructor-arg type="String" value="${version.builddate}"/>
-        <constructor-arg type="boolean" value="${pql.enableIndexing}"/>
     </bean>
 
     <import resource="portal-osgi-context.xml" />
