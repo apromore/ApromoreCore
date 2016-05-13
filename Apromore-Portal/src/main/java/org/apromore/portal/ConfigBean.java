@@ -33,9 +33,8 @@ public class ConfigBean {
     private String  sitePortal;
     private String  versionNumber;
     private String  versionBuildDate;
-    private boolean pqlIndexingEnabled;
 
-    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String versionNumber, String versionBuildDate, boolean pqlEnableIndexing) {
+    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String versionNumber, String versionBuildDate) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -45,8 +44,7 @@ public class ConfigBean {
             " site.manager=" + siteManager +
             " site.portal=" + sitePortal +
             " version.number=" + versionNumber +
-            " version.builddate=" + versionBuildDate +
-            " pql.enableIndexing=" + pqlEnableIndexing);
+            " version.builddate=" + versionBuildDate);
 
         this.siteEditor         = siteEditor;
         this.siteExternalHost   = siteExternalHost;
@@ -56,7 +54,6 @@ public class ConfigBean {
         this.sitePortal         = sitePortal;
         this.versionNumber      = versionNumber;
         this.versionBuildDate   = versionBuildDate;
-        this.pqlIndexingEnabled = pqlEnableIndexing;
     }
 
     public String getSiteEditor()       { return siteEditor; }
@@ -67,5 +64,4 @@ public class ConfigBean {
     public String getSitePortal()       { return sitePortal; }
     public String getVersionNumber()    { return versionNumber; }
     public String getVersionBuildDate() { return versionBuildDate; }
-    public boolean isPQLIndexingEnabled() { return pqlIndexingEnabled; }
 }
