@@ -65,6 +65,9 @@
 
         <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
         <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
+        
+        <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
+        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.jar"/>
 
         <!--
         <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
@@ -202,6 +205,9 @@
             <fileset dir="${dir-osgi}">
                 <include name="**/target/bpmntk-osgi-1.0.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
+                <include name="**/target/eventstr-confchecking-osgi-1.0.jar"/>
+                <include name="**/target/uma-bpdiff-osgi-1.0"/>
+                <include name="**/target/pnapi-bpdiff-osgi-1.0"/>
             </fileset>
         </copy>
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
