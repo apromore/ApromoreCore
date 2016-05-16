@@ -12,6 +12,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.annotations.Plugin;
+import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
@@ -126,6 +127,7 @@ public class StructuringService {
             author = "Adriano Augusto",
             email = "adriano.augusto@qut.edu.au"
     )
+    @PluginVariant(variantLabel = "Structure BPMNDiagram", requiredParameterLabels = {0})
     public static BPMNDiagram structureDiagram(UIPluginContext context, BPMNDiagram diagram) {
         BPMNDiagram structuredDiagram;
         iBPStructUI gui = new iBPStructUI();
