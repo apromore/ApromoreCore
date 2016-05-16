@@ -80,26 +80,29 @@ Stop and restart the server so that it picks up the changes to site.properties.
 PQL SETUP
 =========
 
-PQL requires its own MySQL database, distinct from the main Apromore database.  You can run both on the same server.
-
-Create a database named 'pql' in your MySQL server
-$ mysqladmin --user=root --password=MAcri create pql
-
-Grant the appropriate permissions to the 'apromore' user
-$ mysql --user=root --password=MAcri
-	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES ON pql.* TO 'apromore'@'localhost';
-
-Create and populate the database tables.
-$ mysql --user=root --password=MAcri < Supplements/database/pql.sql
+PQL queries over the process store are only supported on MySQL.  Create and populate the database tables with the additional PQL instructions:
+$ cat Supplements/database/db-mysql.sql Supplements/database/PQL.MySQL-1.2.sql | mysql --user=root --password=MAcri
 
 In site.properties, perform the following changes:
 * Change pql.enableIndexing to "true".
 * Change pql.lola.dir to the location of your LoLA 2.0 executable
 * Change the various pql.mysql.* properties to match your MySQL database
 
-Stop and restart the server so that it picks up the changes to site.properties.
-NOTE: a known bug prevents the server from shutting down cleanly while PQL indexing is enabled.
-The workaround is to force-quit the server from the OS.
+In build.xml, uncomment the includes for the three following PQL components in the "pickupRepo" fileset:
+* Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan
+* PQL-Logic/target/pql-logic-1.1.jar
+* PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar
+
+
+SAMPLE DATA
+===========
+
+You can upload some sample data into the system with the following command:
+$ ant install-sample-data
+
+/airport contains a Configurable BPMN process models which demonstrate configurability
+/pql contains Petri nets in PNML format from the PQL test suite
+/repair contains a BPMN model which demonstrates log animation
 
 
 COMMON PROBLEMS
@@ -120,3 +123,6 @@ Models always show up in the log as unable to be indexed.
 
 Where is the server log?
 * Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE/serviceability/logs/log.log
+
+I grabbed the PQL.MySQL-1.2.sql file directly from the PQL sources and it doesn't work!
+* Edit the file and change the uuid attribute of the jbpt_petri_nodes table from VARCHAR(50) to VARCHAR(100) in two places
