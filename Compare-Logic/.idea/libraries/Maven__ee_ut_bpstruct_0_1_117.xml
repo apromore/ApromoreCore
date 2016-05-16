@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: ee.ut:bpstruct:0.1.117">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/ee/ut/bpstruct/0.1.117/bpstruct-0.1.117.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/ee/ut/bpstruct/0.1.117/bpstruct-0.1.117-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/ee/ut/bpstruct/0.1.117/bpstruct-0.1.117-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.jbpt:jbpt-deco:0.2.433">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jbpt/jbpt-deco/0.2.433/jbpt-deco-0.2.433.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jbpt/jbpt-deco/0.2.433/jbpt-deco-0.2.433-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jbpt/jbpt-deco/0.2.433/jbpt-deco-0.2.433-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

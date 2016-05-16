@@ -1,0 +1,35 @@
+<!--
+  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<window id="win" width="300px" closable="false" position="center" title="New compare plugin">
+    <vbox>
+        <groupbox width="285px">
+            <label value="Log File(.mxml, .xes, .mxml.gz, .xes.gz)" width="100%"/>
+            <hbox align="center">
+                <button id="bpmnMinerUpload" label="Upload" upload="true,maxsize=-1,multiple=false,native"/>
+                <label id="fileName" value="File Name" width="100%"/>
+            </hbox>
+        </groupbox>
+        <div align="center">
+            <button id="bpmnMinerCancelButton" label="Cancel" image="img/cancel2.png"></button>
+            <button id="bpmnMinerOKButton" label="OK" image="img/ok.png"></button>
+        </div>
+    </vbox>
+</window>

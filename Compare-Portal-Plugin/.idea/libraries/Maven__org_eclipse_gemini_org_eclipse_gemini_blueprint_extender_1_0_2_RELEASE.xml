@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.eclipse.gemini:org.eclipse.gemini.blueprint.extender:1.0.2.RELEASE">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/gemini/org.eclipse.gemini.blueprint.extender/1.0.2.RELEASE/org.eclipse.gemini.blueprint.extender-1.0.2.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/gemini/org.eclipse.gemini.blueprint.extender/1.0.2.RELEASE/org.eclipse.gemini.blueprint.extender-1.0.2.RELEASE-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/gemini/org.eclipse.gemini.blueprint.extender/1.0.2.RELEASE/org.eclipse.gemini.blueprint.extender-1.0.2.RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
