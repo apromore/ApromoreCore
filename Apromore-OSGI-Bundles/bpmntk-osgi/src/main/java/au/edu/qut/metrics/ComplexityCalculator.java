@@ -11,6 +11,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
+import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
@@ -77,6 +78,7 @@ public class ComplexityCalculator {
             author = "Adriano Augusto",
             email = "a.augusto@qut.edu.au"
     )
+    @PluginVariant(variantLabel = "Compute Complexity", requiredParameterLabels = {0})
     public static String computeComplexity(PluginContext context, BPMNDiagram diagram) {
         String measures = "";
 
