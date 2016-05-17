@@ -42,14 +42,8 @@
     <task:annotation-driven/>
 
     <!-- Other OSGi services this component consumes -->
-    <osgi:reference id="canoniserProvider"             interface="org.apromore.canoniser.provider.CanoniserProvider"/>
     <osgi:reference id="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository"/>
-    <osgi:reference id="canoniserService"              interface="org.apromore.service.CanoniserService"/>
-    <osgi:reference id="pluginService"                 interface="org.apromore.service.PluginService"/>
     <osgi:reference id="processService"                interface="org.apromore.service.ProcessService"/>
-    <osgi:reference id="userService"                   interface="org.apromore.service.UserService"/>
-    <osgi:reference id="UIHelper"                      interface="org.apromore.service.helper.UserInterfaceHelper"/>
-    <osgi:reference id="workspaceService"              interface="org.apromore.service.WorkspaceService"/>
 
     <!-- Access the site.properties configuration artifact -->
     <osgi-compendium:cm-properties id="properties" persistent-id="site" init-timeout="60"/>
