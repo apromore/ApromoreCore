@@ -30,6 +30,7 @@
 						<Bundle-Name>Event structure based OSGi component</Bundle-Name>
 						<Bundle-SymbolicName>org.eventstr-confchecking-osgi</Bundle-SymbolicName>
 						<Import-Package>
+							!com.google.gwt.dev.util.collect,
 							!junit.framework.*,
 							!org.junit.*,
 							!hub.top.test,
@@ -38,9 +39,9 @@
 							*
 						</Import-Package>
 						<Export-Package>
+							ee.ut.eventstr.comparison,
 							ee.ut.eventstr.*,
 							hub.top.*,
-							com.google.gwt.dev.util.collect.*,
 							org.deckfour.xes.model
 						</Export-Package>
 					</instructions>
