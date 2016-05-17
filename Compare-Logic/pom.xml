@@ -70,7 +70,6 @@
                         <Export-Package>
                             org.apromore.service.compare,
                             hub.top.petrinet,
-                            com.google.gwt.dev.util.collect.*,
                             org.deckfour.xes.model
                         </Export-Package>
                     </instructions>
