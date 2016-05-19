@@ -50,11 +50,11 @@ public interface PQLService {
     /**
      * Check whether a particular process is indexed for PQL querying.
      *
-     * @param id  the external identifier of a process model, which is a process model version string of the form "14/MAIN/1.0"
+     * @param id  the external identifier of a process model
      * @return the PQL indexing status of the process model with the given external identifier
      * @throws SQLException if the status can't be read from the PQL index
      */
-    IndexStatus getIndexStatus(String id) throws SQLException;
+    IndexStatus getIndexStatus(ExternalId id) throws SQLException;
 
     /**
      * Thrown by {@link #query} if the PQL query doesn't return results.
