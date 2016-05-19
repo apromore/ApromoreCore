@@ -23,6 +23,7 @@ package org.apromore.service.pql.impl;
 // Java 2 Standard
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -57,6 +58,7 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.DefaultPlugin;
 import org.apromore.plugin.process.ProcessPlugin;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.service.pql.ExternalId;
 import org.apromore.service.pql.PQLService;
 import org.apromore.service.ProcessService;
 
@@ -113,9 +115,9 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
             // Compose process summaries for the query results
             ProcessSummariesType processSummaries = new ProcessSummariesType();
             for (String result: pqlQueryResult.getSearchResults()) {
-                String[] fields = result.split("/", 3);
+                ExternalId id = new ExternalId(result);
 
-                ProcessModelVersion pmv = processModelVersionRepository.getProcessModelVersion(Integer.parseInt(fields[0]), fields[1], fields[2]);
+                ProcessModelVersion pmv = processModelVersionRepository.getProcessModelVersion(id.getProcessId(), id.getBranch(), id.getVersion().toString());
                 ProcessBranch pb = pmv.getProcessBranch();
                 Process p = pb.getProcess();
 
@@ -149,9 +151,9 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
      * @return the indexing status of the identified process in the PQL index
      */
     @Override
-    public IndexStatus getIndexStatus(String id) throws SQLException {
+    public IndexStatus getIndexStatus(ExternalId id) throws SQLException {
         IPQLAPI api = pqlBean.getApi();
-        int internalId = api.getInternalID(id);
+        int internalId = api.getInternalID(id.toString());
         return api.getIndexStatus(internalId);
     }
 
@@ -208,30 +210,6 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
 
         } catch (ExportFormatException | IOException | SQLException e) {
             LOGGER.warn("Unable to index " + externalId + " for PQL indexing", e);
-        }
-    }
-
-    /**
-     * Hold the composite key of a process model version
-     */
-    private static class ExternalId {
-        private int processId;
-        private String branch;
-        private Version version;
-
-        ExternalId(int processId, String branch, Version version) {
-            this.processId = processId;
-            this.branch    = branch;
-            this.version   = version;
-        }
-
-        int     getProcessId() { return processId; }
-        String  getBranch()    { return branch; }
-        Version getVersion()   { return version; }
-
-        @Override
-        public String toString() {
-            return processId + "/" + branch + "/" + version;
         }
     }
 }

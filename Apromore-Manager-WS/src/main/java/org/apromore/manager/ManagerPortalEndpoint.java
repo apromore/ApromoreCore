@@ -803,12 +803,13 @@ public class ManagerPortalEndpoint {
             List<String> results=pqlService.runAPQLQuery(input.getAPQLExpression(), input.getIds(), input.getUserID());
 //            List<Detail> details=pqlService.getDetails();
 
-            if(!results.isEmpty() && !results.get(0).matches("([0-9]+[/]([0-9]+([.][0-9]+){1,2})[/][a-zA-Z0-9]+[;]?)+")) {
-                LOGGER.error("Results Contains Errors: ");
+            if(!results.isEmpty() && !results.get(0).matches("([0-9]+[/][a-zA-Z0-9]+[;]?)+[/]([0-9]+([.][0-9]+){1,2})")) {
+                LOGGER.error("PQL results contains errors " + results);
                 resultType.setMessage("ERRORS");
                 resultType.setCode(0);
 
             }else {
+                LOGGER.error("PQL Results: " + results);
                 resultType.setMessage("RESULTS");
                 resultType.setCode(1);
             }
