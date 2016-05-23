@@ -126,7 +126,7 @@ public class CommandListener implements ActionListener {
                     List<String> results = manager.runAPQLExpression(variables + " " + query, idsNets, user.getId());
                     long endTime=System.currentTimeMillis();
 
-                    if (!results.isEmpty() && !results.get(0).matches("([0-9]+[/]([0-9]+([.][0-9]+){1,2})[/][a-zA-Z0-9]+[;]?)+")) {
+                    if (!results.isEmpty() && !results.get(0).matches("[0-9]+[/][a-zA-Z0-9]+[/]([0-9]+([.][0-9]+){1,2})")) {
 //                        frame.setModal(false);
                         newContentPane.setProgress(100);
 
@@ -137,7 +137,7 @@ public class CommandListener implements ActionListener {
                             sb.append(error + "\n");
                         }
                         errorPane.setText(sb.toString());
-                    } else if (!results.isEmpty() && results.get(0).matches("([0-9]+[/]([0-9]+([.][0-9]+){1,2})[/][a-zA-Z0-9]+[;]?)+") || results.isEmpty()) {
+                    } else if (!results.isEmpty() && results.get(0).matches("[0-9]+[/][a-zA-Z0-9]+[/]([0-9]+([.][0-9]+){1,2})") || results.isEmpty()) {
                         queryController.getErrorPane().setText("Query successfull in "+(endTime-startTime)+" msec;");
                         List<Detail> details = manager.getDetails();
                         System.out.println(details);
