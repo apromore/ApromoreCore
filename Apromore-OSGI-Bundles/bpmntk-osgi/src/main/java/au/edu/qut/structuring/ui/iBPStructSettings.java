@@ -53,6 +53,7 @@ public class iBPStructSettings extends ProMPropertiesPanel {
         policies.addLast("Limited A* Search");
         policies.addLast("Depth-First Search");
         policies.addLast("Breadth-First Search");
+        policies.addLast("Fast-Depth Search");
 
         structPolicy = this.addComboBox("Structuring Policy", policies);
         structPolicy.addActionListener(bpsil);
@@ -96,7 +97,7 @@ public class iBPStructSettings extends ProMPropertiesPanel {
         result.setMaxSol(MAX_SOL);
         result.setMaxChildren(MAX_CHILDREN);
         result.setMaxStates(MAX_STATES);
-        result.setMaxStates(MAX_MINUTES);
+        result.setMaxMinutes(MAX_MINUTES);
         result.setKeepBisimulation(true);
         result.setTimeBounded(true);
         result.setForceStructuring(true);
@@ -158,6 +159,15 @@ public class iBPStructSettings extends ProMPropertiesPanel {
                         maxChildren.setVisible(false);
                         maxStates.setVisible(false);
                         maxMinutes.setVisible(false);
+                        timeBounded.getParent().setVisible(false);
+                        break;
+                    case 4:
+                        result.setPolicy(StructuringCore.Policy.LIM_DEPTH);
+                        maxDepth.setVisible(false);
+                        maxSol.setVisible(false);
+                        maxChildren.setVisible(true);
+                        maxStates.setVisible(true);
+                        maxMinutes.setVisible(true);
                         timeBounded.getParent().setVisible(false);
                         break;
                 }
