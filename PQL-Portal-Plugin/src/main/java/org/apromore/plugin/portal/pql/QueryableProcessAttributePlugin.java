@@ -35,10 +35,12 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Listcell;
 
 // First party
+import org.apromore.helper.Version;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
+import org.apromore.service.pql.ExternalId;
 import org.apromore.service.pql.PQLService;
 
 /**
@@ -74,7 +76,7 @@ public class QueryableProcessAttributePlugin extends DefaultParameterAwarePlugin
 
         List<VersionSummaryType> list = process.getVersionSummaries();
         VersionSummaryType lastVersion = list.get(list.size() - 1);  // get the last version
-        String externalId = process.getId() + "/MAIN/" + lastVersion.getVersionNumber();
+        ExternalId externalId = new ExternalId(process.getId(), "MAIN", new Version(lastVersion.getVersionNumber()));
 
         // Associate an icon with the indexing status
         String iconPath;
