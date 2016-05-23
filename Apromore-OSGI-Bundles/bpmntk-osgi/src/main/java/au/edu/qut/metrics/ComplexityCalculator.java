@@ -99,7 +99,7 @@ public class ComplexityCalculator {
         return measures;
     }
 
-    private String computeSize() {
+    public String computeSize() {
         int size = 0;
         if(diagram == null) return "n/a";
 
@@ -112,7 +112,7 @@ public class ComplexityCalculator {
         return Integer.toString(size);
     }
 
-    private String computeCFC() {
+    public String computeCFC() {
         int cfc = 0;
         int outgoingEdges;
         if(diagram == null) return "n/a";
@@ -140,7 +140,7 @@ public class ComplexityCalculator {
         return Integer.toString(cfc);
     }
 
-    private String computeACD() {
+    public String computeACD() {
         double acd = 0;
         if(diagram == null) return "n/a";
 
@@ -152,7 +152,7 @@ public class ComplexityCalculator {
         return String.format("%.3f", acd);
     }
 
-    private String computeMCD() {
+    public String computeMCD() {
         int mcd = 0;
         int tmp;
         if(diagram == null) return "n/a";
@@ -163,7 +163,7 @@ public class ComplexityCalculator {
         return Integer.toString(mcd);
     }
 
-    private String computeCNC() {
+    public String computeCNC() {
         int nodes = 0;
         double cnc;
         if(diagram == null) return "n/a";
@@ -180,7 +180,7 @@ public class ComplexityCalculator {
         return String.format( "%.3f", cnc);
     }
 
-    private String computeDensity() {
+    public String computeDensity() {
         int nodes = 0;
         double density;
         if(diagram == null) return "n/a";
@@ -198,7 +198,7 @@ public class ComplexityCalculator {
         return String.format( "%.3f", density);
     }
 
-    private String computeStructuredness() {
+    public String computeStructuredness() {
         double structuredness;
         double nodes = 0;
         HashSet<RPSTNode> rigids = new HashSet<>();
@@ -316,7 +316,7 @@ public class ComplexityCalculator {
         return String.format( "%.3f", structuredness);
     }
 
-    private String computeSeparability() {
+    public String computeSeparability() {
         double separability;
         double nodes = 0;
         if(diagram == null) return "n/a";
@@ -382,7 +382,7 @@ public class ComplexityCalculator {
         return String.format( "%.3f", separability);
     }
 
-    private String computeDuplicates() {
+    public String computeDuplicates() {
         int duplicates = 0;
         HashSet<String> nodes = new HashSet<>();
         String label;
