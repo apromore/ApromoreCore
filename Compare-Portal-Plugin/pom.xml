@@ -75,7 +75,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>compare-Logic</artifactId>
+            <artifactId>compare-logic</artifactId>
             <version>1.1</version>
         </dependency>
         <dependency>
