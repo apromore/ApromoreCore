@@ -21,7 +21,7 @@
 package org.apromore.portal.dialogController;
 
 import ee.ut.eventstr.model.ProDriftDetectionResult;
-import ee.ut.eventstr.test.AlphaBasedPosetReaderTest;
+import ee.ut.eventstr.util.XLogManager;
 import org.apromore.portal.showresult.ProDriftShowResult;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -66,7 +66,7 @@ public class ProDriftController extends BaseController {
                 logFile = uEvent.getMedia();
 
 
-                boolean isValid = AlphaBasedPosetReaderTest.validateLog(logFile.getStreamData(), logFile.getName());
+                boolean isValid = XLogManager.validateLog(logFile.getStreamData(), logFile.getName());
                 if (!isValid) {
 
                     l.setStyle("color: red");

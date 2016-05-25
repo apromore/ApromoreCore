@@ -20,9 +20,7 @@
 
 package org.apromore.portal.showresult;
 
-import ee.ut.eventstr.test.AlphaBasedPosetReaderTest;
-import ee.ut.mining.log.XLogReader;
-import org.apache.commons.io.FileUtils;
+import ee.ut.eventstr.util.XLogManager;
 import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
@@ -106,7 +104,7 @@ public class ProDriftShowResult extends Window {
         List<ByteArrayOutputStream> eventLogList = null;
         try {
 
-            eventLogList = AlphaBasedPosetReaderTest.getSubLogs(log, logName, startOfTransitionPoints, endOfTransitionPoints);
+            eventLogList = XLogManager.getSubLogs(log, logName, startOfTransitionPoints, endOfTransitionPoints, false);
 
         }catch (Exception ex)
         {
@@ -134,16 +132,16 @@ public class ProDriftShowResult extends Window {
                 ByteArrayOutputStream outputStream;
                 String filename;
 
-                if(XLogReader.getExtension(logName).endsWith("gz")) {
+                if(XLogManager.getExtension(logName).endsWith("gz")) {
                     outputStream = eventLogList.get(i);
-                    filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogReader.getExtension(logName);
+                    filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogManager.getExtension(logName);
                 }else {
                     byte[] b = ba.toByteArray();
                     outputStream = new ByteArrayOutputStream(b.length);
                     GZIPOutputStream gzOS = new GZIPOutputStream(outputStream);
                     gzOS.write(b);
                     gzOS.close();
-                    filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogReader.getExtension(logName) + "gz";
+                    filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogManager.getExtension(logName) + "gz";
                 }
 
                 ZipEntry entry = new ZipEntry(filename);

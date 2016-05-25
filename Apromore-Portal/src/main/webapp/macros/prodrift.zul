@@ -37,15 +37,13 @@
 
                 </row>
 
-
-
                 <row id="winsize" visible="true">
                     <label value="Window Size" width="100%"/>
                     <intbox value="100" width="100%" constraint="no negative,no zero,no empty: it shall not be negative, zero or empty."/>
                 </row>
                 <row id="fWinOrAwinChoice">
-                    <label value="Window Type (please choose one)" width="100%"/>
-                    <listbox width="100%"/>
+                    <label value="Window Type" width="100%"/>
+                    <listbox width="100%" multiple="false" checkmark="true"/>
                 </row>
 
 
