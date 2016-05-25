@@ -20,8 +20,8 @@
 
 package org.apromore.service.impl;
 
+import ee.ut.eventstr.driftdetector.ControlFlowDriftDetector_RunStream;
 import ee.ut.eventstr.model.ProDriftDetectionResult;
-import ee.ut.eventstr.test.AlphaBasedPosetReaderTest;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.exception.ExceptionProDriftDetection;
 import org.apromore.plugin.provider.PluginProvider;
@@ -68,10 +68,11 @@ public class ProDriftDetectionServiceImpl implements ProDriftDetectionService {
 
         InputStream is = new ByteArrayInputStream(logByteArray);
 
-        AlphaBasedPosetReaderTest driftTest0 = new AlphaBasedPosetReaderTest(is, logFileName, winSize, fWinorAwin);
+        boolean isAdwin = fWinorAwin.startsWith("A") ? true : false;
 
-        ProDriftDetectionResult pddRes = driftTest0.proDriftRun();
+        ControlFlowDriftDetector_RunStream driftDertector = new ControlFlowDriftDetector_RunStream(is, winSize, isAdwin, logFileName, true);
 
+        ProDriftDetectionResult pddRes = driftDertector.ControlFlowDriftDetectorStart();
 
         return pddRes;
     }
