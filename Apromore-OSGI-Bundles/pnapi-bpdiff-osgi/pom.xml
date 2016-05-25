@@ -43,17 +43,20 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=pnapi
+                            artifactId=pnapi|antlr-rt
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,/lib/pnapi-1.0.jar</Bundle-ClassPath>
                         <Bundle-Name>PNAPI BPDiff OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.pnapi-bpdiff-osgi</Bundle-SymbolicName>
+                        <Import-Package>
+                            !org.antlr.stringtemplate,
+                            *
+                        </Import-Package>
                         <Export-Package>
                             hub.top.petrinet,
                             hub.top.petrinet.util
                         </Export-Package>
-                        <Import-Package>*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

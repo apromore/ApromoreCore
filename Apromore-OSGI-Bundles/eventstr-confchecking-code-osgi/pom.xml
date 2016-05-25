@@ -22,15 +22,11 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<!--<Embed-Dependency>-->
-							 <!--artifactId=pnapi-bpdiff-osgi|uma-bpdiff-osgi|OpenXES|OpenXES-Stream-->
-						<!--</Embed-Dependency>-->
 						<Embed-Transitive>false</Embed-Transitive>
 						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 						<Bundle-Name>Event structure based OSGi component</Bundle-Name>
 						<Bundle-SymbolicName>org.eventstr-confchecking-osgi</Bundle-SymbolicName>
 						<Import-Package>
-							!com.google.gwt.dev.util.collect,
 							!junit.framework.*,
 							!org.junit.*,
 							!hub.top.test,
@@ -40,9 +36,9 @@
 						</Import-Package>
 						<Export-Package>
 							ee.ut.eventstr.comparison,
-							ee.ut.eventstr.*,
-							hub.top.*,
-							org.deckfour.xes.model
+							ee.ut.eventstr.folding,
+							ee.ut.eventstr.freq,
+							ee.ut.eventstr.unfolding
 						</Export-Package>
 					</instructions>
 				</configuration>
@@ -52,16 +48,15 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.gwt-dev</artifactId>
+			<version>2.6.0_1</version>
 		</dependency>
 		<dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
 			<version>1.1.6</version>
 		</dependency>
-		<!-- <dependency> <groupId>de.hpi.jbpt</groupId> <artifactId>de-jbpt</artifactId> 
-			<version>0.2.77</version> </dependency> -->
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom2</artifactId>
@@ -72,11 +67,6 @@
 			<artifactId>jdom</artifactId>
 			<version>1.1</version>
 		</dependency>
-		<!-- <dependency> <groupId>ut.ee</groupId> <artifactId>umabpdiff</artifactId> 
-			<scope>system</scope> <version>1.0</version> <systemPath>${basedir}/lib/umaBPDiff-1.0.jar</systemPath> 
-			</dependency> <dependency> <groupId>ut.ee</groupId> <artifactId>pnapi</artifactId> 
-			<scope>system</scope> <version>1.0</version> <systemPath>${basedir}/lib/pnapi-1.0.jar</systemPath> 
-			</dependency> -->
 		<dependency>
 			<groupId>org.apromore</groupId>
 			<artifactId>uma-bpdiff-osgi</artifactId>
@@ -97,14 +87,6 @@
 			<artifactId>antlr-rt</artifactId>
 			<version>3.2.0</version>
 		</dependency>
-		<!-- <dependency> <groupId>ut.ee</groupId> <artifactId>openxes</artifactId> 
-			<scope>system</scope> <version>1.0</version> <systemPath>${basedir}/lib/OpenXES-XStream.jar</systemPath> 
-			</dependency> -->
-		<!--<dependency> <groupId>ut.ee</groupId> <artifactId>xstream</artifactId> 
-			<scope>system</scope> <version>1.0</version> <systemPath>${basedir}/lib/OpenXES.jar</systemPath> 
-			</dependency> -->
-		<!-- <dependency> <groupId>org.deckfour.xes</groupId> <artifactId>OpenXES</artifactId> 
-			<version>2.0</version> </dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
