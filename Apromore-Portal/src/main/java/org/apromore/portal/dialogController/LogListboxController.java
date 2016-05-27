@@ -20,14 +20,7 @@
 
 package org.apromore.portal.dialogController;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.portal.common.Constants;
+import org.apromore.model.*;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
 import org.zkoss.zk.ui.event.Event;
@@ -36,22 +29,19 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listheader;
 
-import org.apromore.model.UserType;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ProcessListboxController extends BaseListboxController {
+public class LogListboxController extends BaseListboxController {
 
     private static final long serialVersionUID = -6874531673992239378L;
 
     private Listheader columnScore;
 
-    public ProcessListboxController(MainController mainController) {
-        super(mainController, "macros/listbox/processSummaryListbox.zul", new ProcessSummaryItemRenderer(mainController));
+    public LogListboxController(MainController mainController) {
+        super(mainController, "macros/listbox/logSummaryListbox.zul", new ProcessSummaryItemRenderer(mainController));
 
         this.columnScore = (Listheader) this.getListBox().getFellow("columnScore");
-
-        // Hide the "Queryable?" column if PQL indexing is disabled
-        Listheader queryable = (Listheader) this.getListBox().getFellow("queryable");
-        queryable.setVisible(config.isPQLIndexingEnabled());
 
         // TODO should be replaced by ListModel listener in zk 6
         getListBox().addEventListener(Events.ON_SELECT, new EventListener<Event>() {
@@ -59,19 +49,19 @@ public class ProcessListboxController extends BaseListboxController {
             public void onEvent(Event event) throws Exception {
                 if (getListBox().getSelectedItems().size() == 1) {
                     Object obj = getListModel().getSelection().iterator().next();
-                    if (obj instanceof ProcessSummaryType) {
+                    if (obj instanceof LogSummaryType) {
                         UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
-                        getMainController().displayProcessVersions((ProcessSummaryType) obj);
+                        getMainController().displayLogVersions((LogSummaryType) obj);
                     } if (obj instanceof FolderType) {
                         List<Integer> folders = new ArrayList<>();
                         folders.add(((FolderType) obj).getId());
                         UserSessionManager.setSelectedFolderIds(folders);
                     }
                 } else if (getListBox().getSelectedItems().size() == 0) {
-                    getMainController().clearProcessVersions();
+                    getMainController().clearLogVersions();
                     UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
                 } else {
-                    getMainController().clearProcessVersions();
+                    getMainController().clearLogVersions();
                     List<Integer> folders = new ArrayList<>();
                     for (Object obj : getListModel().getSelection()) {
                        if (obj instanceof FolderType) {
@@ -103,43 +93,29 @@ public class ProcessListboxController extends BaseListboxController {
      */
     @Override
     protected void refreshContent() {
-        getMainController().reloadProcessSummaries();
+        getMainController().reloadLogSummaries();
     }
 
     /**
-     * Display process versions given in processSummaries. If isQueryResult this
+     * Display process versions given in logSummaries. If isQueryResult this
      * results from a search whose query is versionQ, given processQ
      * @param subFolders list of folders to display.
-     * @param processSummaries the list of processes to display.
-     * @param isQueryResult is this a query result from a search or process.
+     * @param logSummaries the list of processes to display.
      */
     @SuppressWarnings("unchecked")
-    public void displayProcessSummaries(List<FolderType> subFolders, ProcessSummariesType processSummaries, Boolean isQueryResult) {
-        this.columnScore.setVisible(isQueryResult);
-
+    public void displayLogSummaries(List<FolderType> subFolders, LogSummariesType logSummaries) {
         getListBox().clearSelection();
         getListBox().setModel(new ListModelList<>());
         getListModel().setMultiple(true);
 
-        if (!isQueryResult) {
-            getListModel().addAll(subFolders);
-        }
-        getListModel().addAll(processSummaries.getProcessSummary());
-        if (isQueryResult && getListBox().getItemCount() > 0) {
-            getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
-        }
+        getListModel().addAll(subFolders);
+        getListModel().addAll(logSummaries.getLogSummary());
     }
 
-    public ProcessSummaryListModel displayProcessSummaries(List<FolderType> subFolders, boolean isQueryResult) {
-        this.columnScore.setVisible(isQueryResult);
-
+    public LogSummaryListModel displayLogSummaries(List<FolderType> subFolders) {
         getListBox().clearSelection();
-        ProcessSummaryListModel model = new ProcessSummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);
+        LogSummaryListModel model = new LogSummaryListModel(subFolders);
         getListBox().setModel(model);
-
-            if (isQueryResult && getListBox().getItemCount() > 0) {
-                getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
-            }
 
         return model;
     }
@@ -149,10 +125,10 @@ public class ProcessListboxController extends BaseListboxController {
      *
      * @see http://books.zkoss.org/wiki/ZK_Developer%27s_Reference/MVC/Model/List_Model#Huge_Amount_of_Data
      */
-    class ProcessSummaryListModel extends ListModelList {
+    class LogSummaryListModel extends ListModelList {
 	final int pageSize = 10;  // TODO: ought to be externally configurable
 
-	private ProcessSummariesType processSummaries;
+	private LogSummariesType logSummaries;
 	private int currentPageIndex = 0;
         private List<FolderType> subFolders;
 
@@ -161,7 +137,7 @@ public class ProcessListboxController extends BaseListboxController {
          *
          * @param subFolders  will be displayed before processes
          */
-        ProcessSummaryListModel(List<FolderType> subFolders) {
+        LogSummaryListModel(List<FolderType> subFolders) {
             this.subFolders = subFolders;
             setMultiple(true);
         }
@@ -170,27 +146,27 @@ public class ProcessListboxController extends BaseListboxController {
             if (index < subFolders.size()) {
                 return subFolders.get(index);
             } else {
-                int processIndex = index - subFolders.size();
-	        return getProcessSummaries(processIndex / pageSize).getProcessSummary().get(processIndex % pageSize);
+                int logIndex = index - subFolders.size();
+	        return getLogSummaries(logIndex / pageSize).getLogSummary().get(logIndex % pageSize);
             }
 	}
 
 	public int getSize() {
-	    return subFolders.size() + getProcessSummaries(currentPageIndex).getProcessCount().intValue();
+	    return subFolders.size() + getLogSummaries(currentPageIndex).getLogCount().intValue();
 	}
 
-	public int getTotalProcessCount() {
-	    return getProcessSummaries(currentPageIndex).getTotalProcessCount().intValue();
+	public int getTotalLogCount() {
+	    return getLogSummaries(currentPageIndex).getTotalLogCount().intValue();
 	}
 
-	private ProcessSummariesType getProcessSummaries(int pageIndex) {
-	    if (processSummaries == null || currentPageIndex != pageIndex) {
+	private LogSummariesType getLogSummaries(int pageIndex) {
+	    if (logSummaries == null || currentPageIndex != pageIndex) {
 		UserType user = UserSessionManager.getCurrentUser();
 		FolderType currentFolder = UserSessionManager.getCurrentFolder();
-		processSummaries = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
+		logSummaries = getService().getLogs(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
 		currentPageIndex = pageIndex;
 	    }
-	    return processSummaries;
+	    return logSummaries;
 	}
     }
 
@@ -210,7 +186,7 @@ public class ProcessListboxController extends BaseListboxController {
 
         FolderType currentFolder = UserSessionManager.getCurrentFolder();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
-        ProcessListboxController.ProcessSummaryListModel model = displayProcessSummaries(subFolders, false);
+        LogListboxController.LogSummaryListModel model = displayLogSummaries(subFolders);
     }
 
 }

@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
+import org.apromore.dao.*;
+import org.apromore.dao.model.*;
+import org.apromore.dao.model.Process;
+import org.apromore.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -35,25 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.apromore.common.Constants;
-import org.apromore.dao.AnnotationRepository;
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.ProcessModelVersionRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.model.Annotation;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Native;
-import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
-import org.apromore.model.AnnotationsType;
-import org.apromore.model.IndexStatus;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionType;
-import org.apromore.model.ProcessVersionsType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.service.PQLService;
 import org.apromore.service.WorkspaceService;
 
@@ -70,6 +56,7 @@ public class UIHelper implements UserInterfaceHelper {
 
     private AnnotationRepository aRepository;
     private ProcessRepository pRepository;
+    private ProcessLogRepository lRepository;
     private GroupProcessRepository gpRepository;
     private ProcessModelVersionRepository pmvRepository;
     private FolderRepository fRepository;
@@ -90,6 +77,7 @@ public class UIHelper implements UserInterfaceHelper {
     @Inject
     public UIHelper(final AnnotationRepository annotationRepository,
                     final ProcessRepository processRepository,
+                    final ProcessLogRepository processLogRepository,
                     final GroupProcessRepository groupProcessRepository,
                     final ProcessModelVersionRepository processModelVersionRepository,
                     final FolderRepository folderRepository,
@@ -97,6 +85,7 @@ public class UIHelper implements UserInterfaceHelper {
 
         this.aRepository = annotationRepository;
         this.pRepository = processRepository;
+        this.lRepository = processLogRepository;
         this.gpRepository = groupProcessRepository;
         this.pmvRepository = processModelVersionRepository;
         this.fRepository = folderRepository;
@@ -239,6 +228,24 @@ public class UIHelper implements UserInterfaceHelper {
         return processSummaries;
     }
 
+    @Override
+    public LogSummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
+        assert pageSize != null;
+        assert pageIndex != null;
+
+        Page<Log> logs = workspaceService.getLogs(userId, folderId, new PageRequest(pageIndex, pageSize));
+
+        LogSummariesType logSummaries = new LogSummariesType();
+        logSummaries.setTotalLogCount(lRepository.count());
+        logSummaries.setOffset(new Long(pageIndex * pageSize));
+        logSummaries.setLogCount(new Long(logs.getTotalElements()));
+        for (Log log: logs.getContent()) {
+            logSummaries.getLogSummary().add(buildLogSummary(log));
+        }
+
+        return logSummaries;
+    }
+
     /**
      * Populate a process summary.
      *
@@ -282,6 +289,38 @@ public class UIHelper implements UserInterfaceHelper {
 	return processSummary;
     }
 
+    private LogSummaryType buildLogSummary(final Log log) {
+        LogSummaryType logSummaryType = new LogSummaryType();
+        logSummaryType.setId(log.getId());
+        logSummaryType.setName(log.getName());
+        logSummaryType.setDomain(log.getDomain());
+        logSummaryType.setRanking(log.getRanking());
+        logSummaryType.setMakePublic(log.getPublicLog());
+
+//        ProcessModelVersion latestVersion = pmvRepository.getLatestProcessModelVersion(log.getId(), "MAIN");
+//        if (latestVersion != null) {
+//            logSummaryType.setLastVersion(latestVersion.getVersionNumber());
+//        }
+
+        if (log.getUser() != null) {
+            logSummaryType.setOwner(log.getUser().getUsername());
+        }
+
+//        buildVersionSummaryTypeList(logSummaryType, null, process);
+
+//        List<GroupLog> groupLogs = gpRepository.findByProcessId(log.getId());
+        boolean hasRead = true, hasWrite = true, hasOwnership = true;
+//        for (GroupProcess groupProcess: groupProcesses) {
+//            hasRead = hasRead || groupProcess.getHasRead();
+//            hasWrite = hasWrite || groupProcess.getHasWrite();
+//            hasOwnership = hasOwnership || groupProcess.getHasOwnership();
+//        }
+        logSummaryType.setHasRead(hasRead);
+        logSummaryType.setHasWrite(hasWrite);
+        logSummaryType.setHasOwnership(hasOwnership);
+
+        return logSummaryType;
+    }
 
     /* Builds the list from a process record. */
     private ProcessSummaryType buildProcessList(List<Integer> proIds, ProcessVersionsType similarProcesses, Process process) {

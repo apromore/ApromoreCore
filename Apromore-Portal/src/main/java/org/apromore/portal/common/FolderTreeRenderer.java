@@ -131,6 +131,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
                         UserSessionManager.setCurrentFolder(selectedFolder);
 
                         mainC.reloadProcessSummaries();
+                        mainC.reloadLogSummaries();
                     }
                 } catch (Exception ex) {
                     LOGGER.error("FolderTree Renderer failed to render an item", ex);

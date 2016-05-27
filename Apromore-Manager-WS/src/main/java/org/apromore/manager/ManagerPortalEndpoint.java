@@ -1263,6 +1263,20 @@ public class ManagerPortalEndpoint {
         return new ObjectFactory().createGetProcessesResponse(res);
     }
 
+    @PayloadRoot(localPart = "GetLogsRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<GetLogsOutputMsgType> getLogs(@RequestPayload final JAXBElement<GetLogsInputMsgType> req) {
+        LOGGER.trace("Executing operation getLogs");
+        GetLogsInputMsgType payload = req.getValue();
+        GetLogsOutputMsgType res = new GetLogsOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+
+        res.setLogs(uiHelper.buildLogSummaryList(payload.getUserId(), payload.getFolderId(), payload.getPageIndex(), payload.getPageSize()));
+
+        return new ObjectFactory().createGetLogsResponse(res);
+    }
+
     @PayloadRoot(localPart = "CreateFolderRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<CreateFolderOutputMsgType> createFolder(@RequestPayload final JAXBElement<CreateFolderInputMsgType> req) {

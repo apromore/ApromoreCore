@@ -175,10 +175,14 @@
                     <tabbox id="tabbox" vflex="true" height="100%">
                         <tabs id="tabs" >
                             <tab label="Processes"/>
+                            <tab label="Logs"/>
                         </tabs>
                         <tabpanels id="tabpanels" >
                             <tabpanel vflex="true">
-                                <BaseListbox id="baseListbox" vflex="true"/>
+                                <BaseListbox id="baseListboxProcesses" vflex="true"/>
+                            </tabpanel>
+                            <tabpanel vflex="true">
+                                <BaseListbox id="baseListboxLogs" vflex="true"/>
                             </tabpanel>
                         </tabpanels>
                     </tabbox>

@@ -125,6 +125,7 @@ public class AddFolderController extends BaseController {
                 }
 
                 this.mainController.reloadProcessSummaries();
+                this.mainController.reloadLogSummaries();
             }
         } catch (Exception ex) {
             LOGGER.warning("Exception ");

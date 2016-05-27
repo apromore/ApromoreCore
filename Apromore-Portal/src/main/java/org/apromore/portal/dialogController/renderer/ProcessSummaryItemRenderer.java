@@ -121,6 +121,7 @@ public class ProcessSummaryItemRenderer implements ListitemRenderer {
             public void onEvent(Event event) throws Exception {
                 UserSessionManager.setCurrentFolder(folder);
                 mainController.reloadProcessSummaries();
+                mainController.reloadLogSummaries();
             }
         });
     }
