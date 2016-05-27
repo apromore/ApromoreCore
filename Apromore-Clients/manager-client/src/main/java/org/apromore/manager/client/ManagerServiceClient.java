@@ -377,6 +377,22 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     @Override
+    public LogSummariesType getLogs(String userId, int folderId, int pageIndex, int pageSize) {
+        LOGGER.debug("Preparing GetLogsRequest.....");
+
+        GetLogsInputMsgType msg = new GetLogsInputMsgType();
+        msg.setUserId(userId);
+        msg.setFolderId(folderId);
+        msg.setPageIndex(pageIndex);
+        msg.setPageSize(pageSize);
+
+        JAXBElement<GetLogsInputMsgType> request = WS_CLIENT_FACTORY.createGetLogsRequest(msg);
+
+        JAXBElement<GetLogsOutputMsgType> response = (JAXBElement<GetLogsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getLogs();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public void createFolder(String userId, String folderName, int parentFolderId, Boolean isGEDMatrixReady) {
         LOGGER.debug("Preparing createFolderRequest.....");

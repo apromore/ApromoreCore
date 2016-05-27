@@ -168,6 +168,7 @@ public class FolderController extends GenericForwardComposer {
                 UserSessionManager.setCurrentFolder(selectedFolder);
 
                 UserSessionManager.getMainController().reloadProcessSummaries();
+                UserSessionManager.getMainController().reloadLogSummaries();
                 //loadWorkspace(html, selectedFolder.getFolders(), availableProcesses);
                 //Clients.evalJavaScript("bindTiles();");
             }

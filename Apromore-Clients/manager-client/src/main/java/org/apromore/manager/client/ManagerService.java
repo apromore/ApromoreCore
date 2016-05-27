@@ -87,6 +87,8 @@ public interface ManagerService {
 
     ProcessSummariesType getProcesses(String userId, int folderId, int pageIndex, int pageSize);
 
+    LogSummariesType getLogs(String userId, int folderId, int pageIndex, int pageSize);
+
     void createFolder(String userId, String folderName, int parentFolderId, Boolean isGEDMatrixReady);
 
     void addProcessToFolder(int processId, int folderId);
