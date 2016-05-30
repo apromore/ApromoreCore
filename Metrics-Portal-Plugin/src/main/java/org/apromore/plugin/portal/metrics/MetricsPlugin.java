@@ -29,8 +29,8 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
 import org.apromore.portal.custom.gui.tab.impl.TabHeader;
 import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
-import org.apromore.service.BPMNDiagramImporter;
 import org.apromore.service.ProcessService;
+import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
 import org.apromore.service.metrics.MetricsService;
 import org.springframework.stereotype.Component;
 

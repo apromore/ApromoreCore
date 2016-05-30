@@ -107,6 +107,7 @@
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
+        <module>BPMNDiagramImporter-Logic</module>
         <module>BPMNMiner-Logic</module>
         <module>BPMNMiner-Portal-Plugin</module>
         <module>IBPStruct-Logic</module>
