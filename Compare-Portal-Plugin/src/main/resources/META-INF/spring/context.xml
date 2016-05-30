@@ -39,7 +39,7 @@
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
     <reference id="userService" interface="org.apromore.service.UserService"/>
     <reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
-    <reference id="importerService" interface="org.apromore.service.BPMNDiagramImporter"/>
+    <reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
 
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.compareBP" />

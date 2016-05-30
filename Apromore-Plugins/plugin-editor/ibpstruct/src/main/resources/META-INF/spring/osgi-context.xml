@@ -32,7 +32,7 @@
     <context:annotation-config />
     <context:spring-configured />
 
-    <reference id="importerService" interface="org.apromore.service.BPMNDiagramImporter"/>
+    <reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
     <reference id="ibpstructService" interface="org.apromore.service.ibpstruct.IBPStructService"/>
 
     <!-- enable classpath scanning -->

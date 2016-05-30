@@ -54,6 +54,8 @@
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
+        <include name="BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
+
         <!--
         <include name="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar"/>
         <include name="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar"/>
