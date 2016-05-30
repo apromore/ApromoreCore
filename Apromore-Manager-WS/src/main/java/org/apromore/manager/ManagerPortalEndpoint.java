@@ -20,8 +20,6 @@
 
 package org.apromore.manager;
 
-import ee.ut.eventstr.model.ProDriftDetectionResult;
-import au.edu.qut.util.ImportEventLog;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
@@ -46,8 +44,6 @@ import org.apromore.service.*;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.*;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -94,7 +90,6 @@ public class ManagerPortalEndpoint {
     private UserService userSrv;
     private SecurityService secSrv;
     private WorkspaceService workspaceSrv;
-    private ProDriftDetectionService proDriftSrv;
     private UserInterfaceHelper uiHelper;
     private PQLService pqlService;
     private DatabaseService dbService;
@@ -127,8 +122,7 @@ public class ManagerPortalEndpoint {
             final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
             final UserService userSrv,
             final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
-            final PQLService pqlService,  final DatabaseService dbService, final ProDriftDetectionService proDriftSrv
-    ) {
+            final PQLService pqlService,  final DatabaseService dbService) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
         this.fragmentSrv = fragmentSrv;
@@ -140,7 +134,6 @@ public class ManagerPortalEndpoint {
         this.userSrv = userSrv;
         this.secSrv = secSrv;
         this.workspaceSrv = wrkSrv;
-        this.proDriftSrv = proDriftSrv;
         this.uiHelper = uiHelper;
         this.pqlService = pqlService;
         this.dbService = dbService;
@@ -1331,40 +1324,4 @@ public class ManagerPortalEndpoint {
 
         return new ObjectFactory().createDeleteFolderResponse(res);
     }
-
-	@PayloadRoot(localPart = "ProDriftDetectorRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<ProDriftDetectorOutputMsgType> proDriftDetector(@RequestPayload final JAXBElement<ProDriftDetectorInputMsgType> req) {
-        LOGGER.trace("Executing operation proDriftDetector");
-
-        ProDriftDetectorInputMsgType reqValue = req.getValue();
-        ProDriftDetectorOutputMsgType res = new ProDriftDetectorOutputMsgType();
-
-
-        try {
-
-            byte[] logByteArray = reqValue.getLogByteArray();
-            int winSize = reqValue.getWinSize();
-            String fWinorAwin = reqValue.getFWinorAwin();
-            String logFileName = reqValue.getLogFileName();
-
-            ProDriftDetectionResult pddres = proDriftSrv.proDriftDetector(logByteArray, winSize, fWinorAwin, logFileName);
-
-            res.setPValuesDiagram(pddres.getpValuesDiagram());
-
-            res.getDriftPoints().addAll(pddres.getDriftPoints());
-            res.getLastReadTrace().addAll(pddres.getLastReadTrace());
-            res.getStartOfTransitionPoints().addAll(pddres.getStartOfTransitionPoints());
-            res.getEndOfTransitionPoints().addAll(pddres.getEndOfTransitionPoints());
-
-
-
-        } catch (Exception ex) {
-            LOGGER.error("", ex);
-        }
-
-
-        return WS_OBJECT_FACTORY.createProDriftDetectorResponse(res);
-    }
-
 }

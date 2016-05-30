@@ -47,7 +47,6 @@ public abstract class AbstractEndpointUnitTest {
     protected UserInterfaceHelper uiHelper;
     protected PQLService pqlSrv;
     protected DatabaseService dbSrv;
-    protected ProDriftDetectionService proDriftSrv;
 
     @Before
     public void setUp() throws Exception {
@@ -65,10 +64,9 @@ public abstract class AbstractEndpointUnitTest {
         uiHelper = createMock(UIHelper.class);
         pqlSrv = createMock(PQLServiceImpl.class);
         dbSrv = createMock(DatabaseServiceImpl.class);
-        proDriftSrv = createMock(ProDriftDetectionServiceImpl.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
                 clusterService, frmSrv, domSrv, userSrv, secSrv, wrkSrv, uiHelper,
-                pqlSrv, dbSrv, proDriftSrv);
+                pqlSrv, dbSrv);
     }
 }
