@@ -27,7 +27,6 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
-import org.apromore.portal.custom.gui.tab.impl.TabHeader;
 import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
 import org.apromore.service.ProcessService;
 import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
@@ -197,8 +196,13 @@ public class MetricsPlugin extends PluginCustomGui {
                             LOGGER.info(key + " : " + bpmnMetrics.get(key));
                             rows.add(createTabRowValue(key, bpmnMetrics.get(key), canonicalMetrics.get(key)));
                         }
-                        TabHeader tabHeader = createTabHeader("Metric", "value on BPMN", "value on CPF");
-                        addTab(procName + ": metrics", "", rows, tabHeader, null, portalContext);
+
+                        List<Listheader> listheaders = new ArrayList<>();
+                        listheaders.add(new Listheader("Metric"));
+                        listheaders.add(new Listheader("value on BPMN"));
+                        listheaders.add(new Listheader("value on CPF"));
+
+                        addTab(procName + ": metrics", "", rows, listheaders, null, portalContext);
                     }
 
                     LOGGER.info("Metrics - done!");
