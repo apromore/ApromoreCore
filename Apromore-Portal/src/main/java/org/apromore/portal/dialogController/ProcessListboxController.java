@@ -57,7 +57,7 @@ public class ProcessListboxController extends BaseListboxController {
 
         // Add plugin attributes as additional columns
         for (PortalProcessAttributePlugin plugin: (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins")) {
-            this.getListBox().getListhead().appendChild(new Listheader(plugin.getLabel(Locale.getDefault())));
+            this.getListBox().getListhead().appendChild(plugin.getListheader());
         }
 
         // TODO should be replaced by ListModel listener in zk 6

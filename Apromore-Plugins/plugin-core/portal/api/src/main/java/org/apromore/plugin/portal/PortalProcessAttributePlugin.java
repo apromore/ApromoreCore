@@ -24,6 +24,7 @@ import java.util.Locale;
 
 // Third party
 import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listheader;
 
 // First party
 import org.apromore.model.ProcessSummaryType;
@@ -35,15 +36,14 @@ import org.apromore.plugin.ParameterAwarePlugin;
 public interface PortalProcessAttributePlugin extends ParameterAwarePlugin {
 
     /**
-     * Attribute name, used as the column heading.
-     *
-     * @param locale (optional locale)
-     * @return
+     * Present the column header.
      */
-    String getLabel(Locale locale);
+    Listheader getListheader();
 
     /**
      * Present the column value for a particular process summary row
+     *
+     * Note that it's ineffective to set the width on the listcell; you must set it on the listheader instead.
      *
      * @param process 
      */
