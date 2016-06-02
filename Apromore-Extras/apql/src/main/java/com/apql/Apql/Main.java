@@ -30,8 +30,6 @@ import com.apql.Apql.table.TableProcess;
 import com.apql.Apql.tree.FPTreeSelectionListener;
 import com.apql.Apql.tree.FolderProcessRenderer;
 import com.apql.Apql.tree.FolderProcessTree;
-import org.apromore.filestore.client.FileStoreService;
-import org.apromore.filestore.client.FileStoreServiceClient;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.manager.client.ManagerServiceClient;
 import org.apromore.portal.client.PortalService;
@@ -65,7 +63,6 @@ public class Main extends JPanel {
     private ViewController viewController;
     private QueryController queryController;
     private UserType user;
-    private FileStoreService filestore;
     private ManagerService manager;
     private PortalService portal;
     private JLabel folders;
@@ -94,10 +91,9 @@ public class Main extends JPanel {
     /**
      * @param managerEndpointURI  e.g. <code>http://localhost:9000/manager/services/manager</code>
      * @param portalEndpointURI   e.g. <code>http://localhost:9000/portal/services/portal</code>
-     * @param filestoreURI        e.g. <code>http://localhost:9000/filestore</code>
      * @throws SOAPException if any of the URIs can't be used to create a corresponding service client
      */
-    public Main(final URI managerEndpointURI, final URI portalEndpointURI, final URI filestoreURI) throws SOAPException {
+    public Main(final URI managerEndpointURI, final URI portalEndpointURI) throws SOAPException {
         String OS = System.getProperty("os.name").toLowerCase();
         try {
             if(OS.indexOf("mac") >= 0) {
@@ -129,7 +125,6 @@ public class Main extends JPanel {
 
         manager   = new ManagerServiceClient(managerEndpointURI);
         portal    = new PortalServiceClient(portalEndpointURI);
-        filestore = new FileStoreServiceClient(filestoreURI);
 
         com.apql.Apql.controller.ContextController.manager = manager;  // TODO: rewrite ContextController so that it isn't just a global variable masquerading as a singleton
 
@@ -408,8 +403,7 @@ public class Main extends JPanel {
     public static void main(String[] args) throws Exception {
         ViewController.getController().setUsername("admin");
         Main application = new Main(new URI("http://localhost:9000/manager/services/manager"),
-                                    new URI("http://localhost:9000/portal/services/portal"),
-                                    new URI("http://localhost:9000/filestore"));
+                                    new URI("http://localhost:9000/portal/services/portal"));
 
         JFrame frame = new JFrame();
         frame.add(application);
