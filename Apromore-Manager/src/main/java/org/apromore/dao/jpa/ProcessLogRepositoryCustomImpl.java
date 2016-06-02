@@ -28,6 +28,7 @@ import org.apromore.dao.ProcessLogRepository;
 import org.apromore.dao.ProcessLogRepositoryCustom;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.Log;
+import org.apromore.dao.model.Process;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -60,93 +61,78 @@ import static org.apache.axis.attachments.MimeUtils.filter;
  */
 public class ProcessLogRepositoryCustomImpl implements ProcessLogRepositoryCustom {
 
+
+    @PersistenceContext
+    private EntityManager em;
+
     @Resource
     private JdbcTemplate jdbcTemplate;
+
+    private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM Process_log p ";
+    private static final String GET_ALL_PROCESSES_FOLDER_JPA = "SELECT p FROM Process_log p JOIN p.folder f ";
+    private static final String GET_ALL_PUBLIC_JPA = "p.publicModel = true ";
+    private static final String GET_ALL_FOLDER_JPA = "f.id = ";
+    private static final String GET_ALL_SORT_JPA = " ORDER by p.id";
 
 
     /* ************************** JPA Methods here ******************************* */
 
     /**
-     * @see ProcessLogRepository#findUniqueByID(Integer)
+     * @see org.apromore.dao.ProcessRepositoryCustom#findAllProcesses(String)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public XLog findUniqueByID(Integer processLogId) {
-        if (processLogId != null) {
-            String sql = "SELECT file_path FROM process_log WHERE id = ?";
-            List<String> path = this.jdbcTemplate.query(sql, new Object[] {processLogId},
-                    new RowMapper<String>() {
-                        public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return rs.getString("file_path");
-                        }
-                    });
-            if (path.isEmpty()) {
-                return null;
-            } else {
-                try {
-                    return importFromFile(new XFactoryNaiveImpl(), path.get(0));
-                } catch (Exception e) {
-                    return null;
-                }
-            }
+    public List<Log> findAllProcesses(final String conditions) {
+        StringBuilder strQry = new StringBuilder(0);
+        strQry.append(GET_ALL_PROCESSES_JPA);
+        if (conditions != null && !conditions.isEmpty()) {
+            strQry.append(" WHERE ").append(conditions);
+            strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);
         } else {
-            return null;
+            strQry.append(" WHERE ").append(GET_ALL_PUBLIC_JPA);
         }
+        strQry.append(GET_ALL_SORT_JPA);
+
+        Query query = em.createQuery(strQry.toString());
+        return query.getResultList();
     }
 
     /**
-     * @see ProcessLogRepository#findLogNameByID(Integer)
+     * @see org.apromore.dao.ProcessRepositoryCustom#findAllProcessesByFolder(Integer, String)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public String findLogNameByID(Integer processLogId) {
-        if (processLogId != null) {
-            String sql = "SELECT name FROM process_log WHERE id = ?";
-            List<String> name = this.jdbcTemplate.query(sql, new Object[] {processLogId},
-                    new RowMapper<String>() {
-                        public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return rs.getString("name");
-                        }
-                    });
-            if (name.isEmpty()) {
-                return null;
-            } else {
-                return name.get(0);
-            }
+    public List<Log> findAllProcessesByFolder(final Integer folderId, final String conditions) {
+        boolean whereAdded = false;
+        StringBuilder strQry = new StringBuilder(0);
+        strQry.append(GET_ALL_PROCESSES_FOLDER_JPA);
+        if (conditions != null && !conditions.isEmpty()) {
+            strQry.append(" WHERE ").append(conditions);
+            strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);
+            whereAdded = true;
+        } //else {
+        //   strQry.append(" WHERE ").append(GET_ALL_PUBLIC_JPA);
+        //}
+        if (whereAdded) {
+            strQry.append(" AND ");
         } else {
-            return null;
+            strQry.append(" WHERE ");
         }
+        strQry.append(GET_ALL_FOLDER_JPA).append(folderId);
+        strQry.append(GET_ALL_SORT_JPA);
+
+        Query query = em.createQuery(strQry.toString());
+        return query.getResultList();
     }
 
-    /**
-     * @see ProcessLogRepository#findFolderId(Integer)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public Page<Log> findFolderId(Integer folderId) {
-        if (folderId != null) {
-            String sql = "SELECT * FROM process_log WHERE folderId = ?";
-            List<Integer> path = this.jdbcTemplate.query(sql, new Object[] {folderId},
-                    new RowMapper<Integer>() {
-                        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return rs.getInt("id");
-                        }
-                    });
-            return path;
-        } else {
-            return null;
-        }
-    }
-
-    /**
+        /**
      * @see ProcessLogRepository#storeProcessLog(Integer, String, XLog)
      * {@inheritDoc}
      */
-    @Override
-    @SuppressWarnings("unchecked")
+
+        @SuppressWarnings("unchecked")
     public void storeProcessLog(Integer folderId, String logName, XLog log) {
         if (log != null && logName != null) {
             String sql = "SELECT max(id) FROM process_log";
@@ -173,7 +159,7 @@ public class ProcessLogRepositoryCustomImpl implements ProcessLogRepositoryCusto
      * @see ProcessLogRepository#removeProcessLog(Integer)
      * {@inheritDoc}
      */
-    @Override
+
     @SuppressWarnings("unchecked")
     public void removeProcessLog(Integer processLogId) {
         if (processLogId != null) {
@@ -182,10 +168,6 @@ public class ProcessLogRepositoryCustomImpl implements ProcessLogRepositoryCusto
         }
     }
 
-    @Override
-    public long count() {
-        return 0;
-    }
 
     /* ************************** Util Methods ******************************* */
 
