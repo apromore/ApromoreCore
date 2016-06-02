@@ -20,9 +20,9 @@
 
 package org.apromore.dao;
 
-import java.util.List;
+import org.apromore.dao.model.Log;
 
-import org.apromore.dao.model.Process;
+import java.util.List;
 
 /**
  * Interface domain model Data access object Process.
@@ -39,7 +39,7 @@ public interface ProcessLogRepositoryCustom {
      * @param conditions the conditions
      * @return the list of processes.
      */
-    List<Process> findAllProcesses(final String conditions);
+    List<Log> findAllProcesses(final String conditions);
 
     /**
      * Find all the Processes based on the Conditions and folder. This could be done Using Specifications?
@@ -48,7 +48,7 @@ public interface ProcessLogRepositoryCustom {
      * @param conditions the conditions
      * @return the list of processes.
      */
-    List<Process> findAllProcessesByFolder(final Integer folderId, final String conditions);
+    List<Log> findAllProcessesByFolder(final Integer folderId, final String conditions);
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 
