@@ -35,7 +35,7 @@
     <!-- Other OSGi services this component consumes -->
     <reference id="metricsService" interface="org.apromore.service.metrics.MetricsService"/>
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
-    <reference id="importerService" interface="org.apromore.service.BPMNDiagramImporter"/>
+    <reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
     <reference id="repositoryService" interface="org.apromore.dao.ProcessModelVersionRepository"/>
 
     <!-- Exposes the component as OSGi service -->

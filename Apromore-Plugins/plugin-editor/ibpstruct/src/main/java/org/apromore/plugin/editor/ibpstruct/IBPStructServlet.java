@@ -18,7 +18,7 @@ import javax.xml.transform.stream.StreamSource;
 import au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl;
 import de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter;
 import org.apache.log4j.Logger;
-import org.apromore.service.BPMNDiagramImporter;
+import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
 import org.apromore.service.ibpstruct.IBPStructService;
 import org.json.JSONObject;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;

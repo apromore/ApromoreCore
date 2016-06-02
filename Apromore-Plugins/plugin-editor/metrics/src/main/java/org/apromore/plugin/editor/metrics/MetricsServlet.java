@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 
 import org.apache.log4j.Logger;
-import org.apromore.service.BPMNDiagramImporter;
+import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
 import org.apromore.service.metrics.MetricsService;
 import org.json.JSONObject;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;

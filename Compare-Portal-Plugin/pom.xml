@@ -75,6 +75,11 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
+            <artifactId>bpmndiagramimporter-logic</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
             <artifactId>compare-logic</artifactId>
             <version>1.1</version>
         </dependency>

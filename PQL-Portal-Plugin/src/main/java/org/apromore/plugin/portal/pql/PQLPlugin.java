@@ -43,7 +43,6 @@ import org.zkoss.zul.Window;
 
 // Local packages
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
-import org.apromore.portal.custom.gui.tab.impl.TabHeader;
 import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.pql.PQLService;
