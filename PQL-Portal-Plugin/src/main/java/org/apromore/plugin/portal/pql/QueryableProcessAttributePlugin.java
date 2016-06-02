@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listheader;
 
 // First party
 import org.apromore.helper.Version;
@@ -63,8 +64,11 @@ public class QueryableProcessAttributePlugin extends DefaultParameterAwarePlugin
     @Inject private PQLService pqlService;
 
     /** {@inheritDoc} */
-    public String getLabel(Locale locale) {
-        return "PQL";
+    public Listheader getListheader() {
+        Listheader listheader = new Listheader();
+        listheader.setLabel("PQL");
+        listheader.setWidth("3em");
+        return listheader;
     }
 
     /**

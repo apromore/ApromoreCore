@@ -22,9 +22,9 @@ package org.apromore.plugin.portal.sample;
 
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
-import org.apromore.portal.custom.gui.tab.impl.TabHeader;
 import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
 import org.springframework.stereotype.Component;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Window;
 
 import java.io.IOException;
@@ -51,9 +51,10 @@ public class SamplePlugin extends PluginCustomGui {
         rows.add(createTabRowValue("A"));
         rows.add(createTabRowValue("B"));
 
-        TabHeader tabHeader = createTabHeader("Name");
+        List<Listheader> listheaders = new ArrayList<>();
+        listheaders.add(new Listheader("Name"));
 
-        addTab("new tab", "", rows, tabHeader, null, context);
+        addTab("new tab", "", rows, listheaders, null, context);
 
         context.getMessageHandler().displayInfo("Executed example plug-in!");
         try {
