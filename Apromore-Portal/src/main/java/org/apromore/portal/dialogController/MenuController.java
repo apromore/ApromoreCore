@@ -83,7 +83,7 @@ public class MenuController extends Menubar {
         //exactMatchingMI.setDisabled(true);
 
         //proDrift
-        Menuitem proDriftMI = (Menuitem) this.menuB.getFellow("ProDriftDetection");
+//        Menuitem proDriftMI = (Menuitem) this.menuB.getFellow("ProDriftDetection");
 
         Menu designM = (Menu) this.menuB.getFellow("design");
         Menuitem cmapMI = (Menuitem) this.menuB.getFellow("designCmap");
@@ -163,12 +163,12 @@ public class MenuController extends Menubar {
         });
 
         //proDrift
-        proDriftMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                proDriftGetParameters();
-            }
-        });
+//        proDriftMI.addEventListener("onClick", new EventListener<Event>() {
+//            @Override
+//            public void onEvent(final Event event) throws Exception {
+//                proDriftGetParameters();
+//            }
+//        });
 
         // If there are portal plugins, create a menu for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {

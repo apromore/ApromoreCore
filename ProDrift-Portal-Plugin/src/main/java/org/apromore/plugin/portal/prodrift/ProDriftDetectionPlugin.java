@@ -30,12 +30,12 @@ import javax.inject.Inject;
 // Third party packages
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.prodrift.ProDriftDetectionService;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zul.Messagebox;
 
 // Local packages
-import org.apromore.service.prodrift.ProDriftDetectionService;
 /*
 import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;

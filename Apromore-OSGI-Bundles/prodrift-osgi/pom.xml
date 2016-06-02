@@ -46,16 +46,17 @@
                                 All those dependencies are inline so that their scope can be set to "provided".
                                 By doing so these non-osgi dependencies are not included in the assembly projects!
                              -->
-                            artifactId=
-                            java_cup|
-                            jsc|OpenXES-XStream|weka-dev|
-                            lingpipe|jama|prodrift
+                            artifactId=<!--jfreechart| -->
+                            java_cup|jsc|lingpipe|OpenXESdrift|jama|spex|weka-dev|prodrift
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>ProDrift OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.prodrift-osgi</Bundle-SymbolicName>
                         <Import-Package>
+                            !com.keypoint,
+                            !com.csvreader,
+                            !com.jgraph.components.labels,
                             !att.grappa,
                             !cern.colt.list,
                             !cern.colt.matrix,
@@ -137,8 +138,9 @@
                         </Import-Package>
                         <Export-Package>
                             ee.ut.eventstr,
-                            ee.ut.eventstr.test,
+                            ee.ut.eventstr.driftdetector,
                             ee.ut.eventstr.model,
+                            ee.ut.eventstr.util,
                             ee.ut.mining.log
                         </Export-Package>
                     </instructions>
@@ -150,31 +152,73 @@
     <dependencies>
 
 	<!-- prodrift-->
+
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>prom6-osgi</artifactId>
             <version>6.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>log-osgi</artifactId>
             <version>1.0</version>
         </dependency>
+
+<!--        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom5-lib</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <version>2.0</version>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom6-framework</artifactId>
+            <version>1.0</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.19</version>
+        </dependency>
+        <dependency>
+            <groupId>jsc</groupId>
+            <artifactId>jsc</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliasi</groupId>
+            <artifactId>lingpipe</artifactId>
+            <version>4.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES-Stream</artifactId>
-            <version>2.0</version>
+            <artifactId>OpenXESdrift</artifactId>
+            <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>jama</groupId>
+            <artifactId>jama</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>spex</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>weka</groupId>
+            <artifactId>weka-dev</artifactId>
+            <version>3.7.12</version>
+        </dependency>
+
+
+
+
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>log</artifactId>
@@ -185,66 +229,77 @@
             <artifactId>logabstractions</artifactId>
             <version>1.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.jbpt</groupId>
             <artifactId>jbpt-core</artifactId>
             <version>0.2.433</version>
         </dependency>
-
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>jcommon</artifactId>
             <version>1.0</version>
         </dependency>
-        <!-- No-->
-        <dependency>
-            <groupId>org.jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.19</version>
-        </dependency>
-
-        <dependency>
-            <groupId>jsc</groupId>
-            <artifactId>jsc</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <!-- No-->
-        <dependency>
-            <groupId>weka</groupId>
-            <artifactId>weka-dev</artifactId>
-            <version>3.7.12</version>
-        </dependency>
-        <!-- No-->
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>weka</artifactId>
             <version>1.0</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.aliasi</groupId>
-            <artifactId>lingpipe</artifactId>
-            <version>4.1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>jama</groupId>
-            <artifactId>jama</artifactId>
-            <version>1.5.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ee.ut</groupId>
-            <artifactId>prodrift</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <!-- No-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>14.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.8</version>
+        </dependency>
+
+
+
+
+
+        <dependency>
+            <groupId>ee.ut</groupId>
+            <artifactId>prodrift</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+
+
+
+<!--        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+            <version>2.0</version>
+        </dependency>
+        -->
+
+<!--        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>log</artifactId>
+            <version>1.0</version>
+        </dependency>-->
+<!--        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>logabstractions</artifactId>
+            <version>1.0</version>
+        </dependency>-->
+
+        <!-- No-->
+<!--        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>weka</artifactId>
+            <version>1.0</version>
+        </dependency>-->
+        <!-- No-->
+
 
     </dependencies>
 </project>

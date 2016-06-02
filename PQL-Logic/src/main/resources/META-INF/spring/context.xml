@@ -24,28 +24,26 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:osgi="http://www.springframework.org/schema/osgi"
        xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
+       xmlns:task="http://www.springframework.org/schema/task"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
             http://www.springframework.org/schema/aop             http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
             http://www.springframework.org/schema/context         http://www.springframework.org/schema/context/spring-context-3.1.xsd
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd
-            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+            http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+            http://www.springframework.org/schema/task            http://www.springframework.org/schema/task/spring-task-3.1.xsd">
 
     <context:annotation-config />
     <context:spring-configured />
 
     <aop:aspectj-autoproxy />
 
+    <task:annotation-driven/>
+
     <!-- Other OSGi services this component consumes -->
-    <osgi:reference id="canoniserProvider"             interface="org.apromore.canoniser.provider.CanoniserProvider"/>
     <osgi:reference id="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository"/>
-    <osgi:reference id="canoniserService"              interface="org.apromore.service.CanoniserService"/>
-    <osgi:reference id="pluginService"                 interface="org.apromore.service.PluginService"/>
     <osgi:reference id="processService"                interface="org.apromore.service.ProcessService"/>
-    <osgi:reference id="userService"                   interface="org.apromore.service.UserService"/>
-    <osgi:reference id="UIHelper"                      interface="org.apromore.service.helper.UserInterfaceHelper"/>
-    <osgi:reference id="workspaceService"              interface="org.apromore.service.WorkspaceService"/>
 
     <!-- Access the site.properties configuration artifact -->
     <osgi-compendium:cm-properties id="properties" persistent-id="site" init-timeout="60"/>
@@ -85,5 +83,5 @@
 
     <!-- Make the example service Spring bean visible from outside this OSGi bundle -->
     <osgi:service ref="PQLServiceImpl" interface="org.apromore.service.pql.PQLService" auto-export="interfaces"/>
-
+    
 </beans>

@@ -247,13 +247,7 @@
                 <configuration>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                     <packagingExcludes>
-                        WEB-INF/lib/anf*.jar,WEB-INF/lib/cpf*.jar,WEB-INF/lib/canoniser*.jar,WEB-INF/lib/deployment*.jar,
-                        WEB-INF/lib/search*.jar,WEB-INF/lib/metric*.jar,WEB-INF/lib/manager*.jar,WEB-INF/lib/plugin*.jar,
-                        WEB-INF/lib/aspectjrt*.jar,WEB-INF/lib/bonecp*.jar,WEB-INF/lib/commons*.jar,WEB-INF/lib/com*.jar,
-                        WEB-INF/lib/guava*.jar,WEB-INF/lib/javax.*.jar,WEB-INF/lib/jbpt*.jar,WEB-INF/lib/jcl*.jar,
-                        WEB-INF/lib/joda-time*.jar,WEB-INF/lib/jul*.jar,WEB-INF/lib/mysql-connector-java*.jar,
-                        WEB-INF/lib/org.*.jar,WEB-INF/lib/slf4j-api*.jar,WEB-INF/lib/spring-data-*.jar,
-                        WEB-INF/lib/XmlSchema*.jar,WEB-INF/lib/xpdl-schema*.jar,WEB-INF/lib/logback*.jar
+                        %regex[WEB-INF/lib/(?!mathCollection|taskmapping|lpsolve|jaxb2-basics-runtime).*jar]
                     </packagingExcludes>
                     <archive>
                         <manifestFile>

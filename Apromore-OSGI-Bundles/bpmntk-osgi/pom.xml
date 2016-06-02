@@ -42,10 +42,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Embed-Dependency>
-                            artifactId=bpmn-schema
-                        </Embed-Dependency>
-                        <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>BPMNTK OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.bpmntk-osgi</Bundle-SymbolicName>
@@ -64,14 +60,14 @@
                     </instructions>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
-                <configuration>
-                    <useSystemClassLoader>false</useSystemClassLoader>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-surefire-plugin</artifactId>-->
+                <!--<version>2.19.1</version>-->
+                <!--<configuration>-->
+                    <!--<useSystemClassLoader>false</useSystemClassLoader>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 
@@ -79,10 +75,6 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>prom6-osgi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmn-schema</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>

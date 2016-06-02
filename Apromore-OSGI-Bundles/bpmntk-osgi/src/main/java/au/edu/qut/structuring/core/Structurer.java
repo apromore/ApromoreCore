@@ -36,6 +36,9 @@ public class Structurer implements Runnable {
         zombies = new HashSet<>();
 
         timeBound = 60000 * maxMinutes;
+
+        if(timeBounded) System.out.println("DEBUG - [structurer: A*] time bound in ms: " + timeBound);
+
     }
 
     public Graph getSolution() {
@@ -174,7 +177,10 @@ public class Structurer implements Runnable {
                 }
 
             case LIM_DEPTH:
-                if( timeBounded ) System.out.println("DEBUG - [structurer: LIMITED DEPTH] switched policy!");
+                if( timeBounded ) {
+                    System.out.println("DEBUG - [structurer: LIMITED DEPTH] switched policy!");
+                    startingTime = System.currentTimeMillis();
+                }
                 tmpChildren = new ArrayList<>();
                 toVisit = new LinkedList<>();
                 toVisit.addFirst(iState);
@@ -196,8 +202,21 @@ public class Structurer implements Runnable {
                         }
                     }
                     //System.out.println("DEBUG - [structurer: DEPTH] parsed.");
-                    while( !tmpChildren.isEmpty() ) toVisit.addFirst(tmpChildren.remove(0));
+                    while( !tmpChildren.isEmpty() ) {
+                        toVisit.addFirst(tmpChildren.get(0));
+                        if(tmpChildren.remove(0).getCost() == 0) {
+                            tmpChildren = new ArrayList<>();
+                            System.out.println("DEBUG - [structurer: LIMITED DEPTH] move had cost 0.");
+                            break;
+                        }
+                    }
                     //System.out.println("DEBUG - [structurer: DEPTH] state(" + toVisit.size() + ")");
+
+                    if( (System.currentTimeMillis() - startingTime) > timeBound ) {
+                        System.out.println("DEBUG - [structurer: LIMITED DEPTH] found no solutions. Returning best state reached.");
+                        solutions.add(toVisit.removeFirst());
+                        return;
+                    }
                 }
 
             default:

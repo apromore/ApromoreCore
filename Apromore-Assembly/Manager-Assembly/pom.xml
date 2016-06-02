@@ -178,9 +178,10 @@
                             <excludeTransitive>false</excludeTransitive>
                             <!-- Those artifacts are OSGI bundles already in Virgo -->
                             <excludeArtifactIds>
-                                logback-core,logback-classic,
-                                javax.persistence,
                                 com.springsource.javax.xml.bind,
+                                javax.persistence,
+                                logback-classic,
+                                logback-core,
                                 org.springframework.asm,
                                 org.springframework.aop,
                                 org.springframework.core,
@@ -199,6 +200,7 @@
                             </excludeArtifactIds>
                             <!-- Spring and Gemini are already bundled with Virgo -->
                             <excludeGroupIds>
+                                hub,
                                 org.springframework.security,
                                 org.eclipse.gemini,
                                 org.eclipse.osgi,

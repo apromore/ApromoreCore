@@ -90,20 +90,12 @@ public class PQLPlugin extends PluginCustomGui {
                 public void onEvent(Event event) throws Exception {
                     String queryPQL = query.getText();
                     try {
-                        List<String> results = pqlService.runAPQLQuery(queryPQL, Arrays.asList("26/1.0/MAIN", "27/1.0/MAIN"), portalContext.getCurrentUser().getId());
-                        if (results == null) {
-                            Messagebox.show("Null result for " + queryPQL, "Attention", Messagebox.OK, Messagebox.ERROR);
-                        } else if (results.size() == 1 && results.get(0).startsWith("Line ")) {
-                            Messagebox.show(results.get(0), "Attention", Messagebox.OK, Messagebox.ERROR);
-                        } else {
-                            // Create a tab in the portal summary list UI containing the answers
-                            List<TabRowValue> rows = new ArrayList<>();
-                            for (String result: results) {
-                                rows.add(createTabRowValue(result));
-                            }
-                            TabHeader tabHeader = createTabHeader("Name");
-                            addTab("Result", "", rows, tabHeader, null, portalContext);
-                        }
+                        displayProcessSummaries("PQL result", pqlService.query(queryPQL), portalContext);
+
+                    } catch (PQLService.QueryParsingException e) {
+                        LOGGER.error("Unable to parse " + queryPQL, e);
+                        Messagebox.show(e.getParseErrorMessages().get(0), "Attention", Messagebox.OK, Messagebox.ERROR);
+
                     } catch (Exception e) {
                         LOGGER.error("Unable to execute " + queryPQL, e);
                         Messagebox.show("Unable to execute " + queryPQL + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);

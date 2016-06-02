@@ -19,6 +19,16 @@
   -->
 
 <window width="800px" closable="false" position="center" title="Process Drift Detection">
+
+    <style>
+
+        <!-- Make Plain Grid -->
+        .GridLayoutNoBorder
+        {
+        border: none;
+        }
+
+    </style>
     <vbox>
         <grid>
             <columns sizable="true">
@@ -26,28 +36,131 @@
                 <column width="50%"></column>
             </columns>
             <rows>
+                <row spans="2">
+                    <label id="errorLabel" value="" width="100%" style="color: red"/>
+                </row>
 
                 <row id="logF" visible="true">
                     <label value="Log File(.xml, .mxml, .xes, .mxml.gz, .xes.gz)" width="100%"/>
 
                     <hbox align="center">
                         <button id="logFileUpload" label="Upload" upload="true,maxsize=-1,multiple=false,native"></button>
-                    	<label id="fileName" value=" " width="100%"/>
+                        <label id="fileName" value=" " width="100%"/>
                     </hbox>
 
                 </row>
 
+                <row id="driftDetMech" visible="true">
+                    <label value="Drift detection mechanism" width="100%"/>
+                    <listbox id="driftDetMechLBox" width="100%" multiple="false" checkmark="true" onSelect="
+                                        if(evBased.selected){
+                                            logType.visible = true;
+                                            gradDriftRow.visible = false;
+                                            if(synLog.selected){
+                                                winSizeIntBox.value = 2000;
+                                                ADWIN.selected = true;
+                                                noiseFilterSpinner.value = 0;
+                                            }else{
+                                                winSizeIntBox.value = 5000;
+                                                FWIN.selected = true;
+                                                noiseFilterSpinner.value = 3.5;
+                                            }
+                                            moreSettingsRow.visible = true;
+                                        }else{
+                                            logType.visible = false;
+                                            gradDriftRow.visible = true;
+                                            winSizeIntBox.value = 100;
+                                            ADWIN.selected = true;
+                                            moreSettingsRow.visible = false;
+                                        }
+                                        ">
+                        <listitem id="evBased" label="Evant-based (Alpha+)" selected="true"/>
+                        <listitem id="trBased" label="Trace-based (Runs)"/>
+                    </listbox>
 
-
-                <row id="winsize" visible="true">
-                    <label value="Window Size" width="100%"/>
-                    <intbox value="100" width="100%" constraint="no negative,no zero,no empty: it shall not be negative, zero or empty."/>
                 </row>
-                <row id="fWinOrAwinChoice">
-                    <label value="Window Type (please choose one)" width="100%"/>
-                    <listbox width="100%"/>
-                </row>
 
+                <row width="100%" spans="2">
+                <groupbox width="100%">
+                    <caption label="Parameters"/>
+                    <grid sclass="GridLayoutNoBorder">
+                    <columns>
+                        <column/>
+                        <column/>
+                    </columns>
+                    <rows>
+                        <row id="logType" visible="true">
+                            <label value="Log type" width="100%"/>
+                            <listbox id="logTypeLBox" width="100%" multiple="false" checkmark="true"
+                                     onSelect="if(synLog.selected){
+                                            winSizeIntBox.value = 2000;
+                                            ADWIN.selected = true;
+                                            noiseFilterSpinner.value = 0;
+                                        }else{
+                                            winSizeIntBox.value = 5000;
+                                            FWIN.selected = true;
+                                            noiseFilterSpinner.value = 3.5;
+                                        }
+                                        ">
+                                <listitem id="synLog" label="Synthetic" selected="true"/>
+                                <listitem id="reLog" label="Real-life"/>
+                            </listbox>
+
+                        </row>
+                        <row id="gradDriftRow" visible="false">
+                            <label width="100%"/>
+                            <checkbox id="gradDriftCBox" width="100%" label="Detect gradual drift" checked="false"/>
+                        </row>
+                        <row id="winsize" visible="true">
+                            <label value="Window Size" width="100%"/>
+                            <intbox id="winSizeIntBox" value="2000" width="100%"
+                                    constraint="no negative,no zero,no empty: it shall not be negative, zero or empty."/>
+                        </row>
+                        <row id="fWinOrAwinChoice">
+                            <label value="Window Type" width="100%"/>
+                            <listbox id="fWinOrAwinLBox" width="100%" multiple="false" checkmark="true">
+                                <listitem id="ADWIN" label="Adaptive window" selected="true"/>
+                                <listitem id="FWIN" label="Fixed window"/>
+                            </listbox>
+                        </row>
+
+
+                        <row id="moreSettingsRow" spans="2">
+                            <panel id="moreSettings" title="More" framable="true" width="100%" open="false"
+                                   maximizable="false" minimizable="false" border="normal" collapsible="true" closable="false">
+
+                                <panelchildren>
+
+                                    <grid>
+                                        <columns>
+                                            <column/>
+                                            <column/>
+                                        </columns>
+                                        <rows>
+                                            <row id="noiseFilter">
+                                                <label value="Infrequent feature filter percentage" width="100%"/>
+                                                <doublespinner id="noiseFilterSpinner" width="100%" value="0" step="0.1" mold="rounded"
+                                                               constraint="no empty, min 0 max 100"/>
+                                                <!--<slider id="noiseFilterSlider" mold="scale" maxpos="10" width="100%"/>-->
+                                            </row>
+                                            <!--<row id="conflictRow">-->
+                                                <!--<label width="100%"/>-->
+                                                <!--<checkbox id="conflictCBox" width="100%" label="Include conflict relation" checked="true"/>-->
+                                            <!--</row>-->
+                                        </rows>
+                                    </grid>
+                                </panelchildren>
+                            </panel>
+                        </row>
+                    </rows>
+                    </grid>
+                <!--<group id="parameters" label="Parameters"/>-->
+
+
+                </groupbox>
+                </row>
+<!--                <groupfoot>
+                </groupfoot>-->
 
 
                 <row id="driftButtons" spans="2">

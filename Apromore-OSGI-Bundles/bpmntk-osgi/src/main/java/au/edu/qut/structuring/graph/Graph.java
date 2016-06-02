@@ -192,14 +192,14 @@ public class Graph {
 
 
     public void simplify() {
-        //System.out.println("DEBUG - paths before simplify: " + alivePaths.size());
+        //System.out.println("DEBUG - paths before helper: " + alivePaths.size());
 
         seekBrothers();
         concatenation();
 
         while(true) { if( seekBrothers() && concatenation() ) break; }
 
-        //System.out.println("DEBUG - paths after simplify: " + alivePaths.size());
+        //System.out.println("DEBUG - paths after helper: " + alivePaths.size());
     }
 
 
