@@ -233,7 +233,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
 
 
     /**
-     * @see org.apromore.service.ProcessService#importProcess(String, Integer, String, Version, String, org.apromore.service.model.CanonisedProcess, String, String, String, String, boolean)
+     * @see org.apromore.service.ProcessService#.getBranchName()importProcess(String, Integer, String, Version, String, org.apromore.service.model.CanonisedProcess, String, String, String, String, boolean)
      * {@inheritDoc}
      */
     @Override
@@ -268,18 +268,10 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
 
             // Index for PQL
-            notifyUpdate(pmv);
+            //notifyUpdate(pmv);
 
             // Notify process plugin providers
-            LOGGER.info("Notifying " + processPlugins.size() + " process plugins");
-            for (ProcessPlugin processPlugin: processPlugins) {
-                LOGGER.info("Notifying process plugin " + processPlugin);
-                try {
-                    processPlugin.processChanged(process.getId());
-                } catch (ProcessPlugin.ProcessChangedException e) {
-                    LOGGER.warn("Process plugin " + processPlugin + " failed to change process", e);
-                }
-            }
+            notifyProcessPlugins(pmv);
 
         } catch (UserNotFoundException | JAXBException | IOException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
@@ -288,6 +280,28 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
         }
 
         return pmv;
+    }
+
+    /**
+     * Call the {@link ProcessPlugin#processChanged} method of each of the {@link #processPlugins}.
+     *
+     * Checked exceptions from the plugins are logged, but otherwise disregarded.
+     *
+     * @param pmv  the changed process model version
+     */
+    private void notifyProcessPlugins(ProcessModelVersion pmv) {
+        LOGGER.info("Notifying " + processPlugins.size() + " process plugins");
+        for (ProcessPlugin processPlugin: processPlugins) {
+            LOGGER.info("Notifying process plugin " + processPlugin);
+            try {
+                int id = pmv.getId();
+                String branch = pmv.getProcessBranch().getBranchName();
+                Version version = new Version(pmv.getVersionNumber());
+                processPlugin.processChanged(id, branch, version);
+            } catch (ProcessPlugin.ProcessChangedException e) {
+                LOGGER.warn("Process plugin " + processPlugin + " failed to change process", e);
+            }
+        }
     }
 
     /**
@@ -694,6 +708,9 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
 
                     // Also delete the PQL index for this process model version
                     notifyDelete(pvid);
+
+                    // Notify process plugin providers
+                    notifyProcessPlugins(pvid);
                 }
             } catch (Exception e) {
                 String msg = "Failed to delete the current version of the Process with id: " + entry.getId();

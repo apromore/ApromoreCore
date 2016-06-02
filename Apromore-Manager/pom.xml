@@ -90,7 +90,6 @@
                             com.mysql.jdbc,
                             javax.sql,
                             org.apromore.plugin.provider,
-
                             org.eclipse.virgo.web.dm,
                             org.springframework.beans.factory.aspectj,
                             org.aopalliance.aop,
@@ -125,7 +124,6 @@
                             org.apromore.mapper,
                             org.apromore.scheduler,
                             org.apromore.service.*,
-                            org.apromore.service.impl,
                             org.apromore.toolbox.*
                         </Export-Package>
                         <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>

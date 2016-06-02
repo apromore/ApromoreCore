@@ -26,22 +26,60 @@ import java.util.Set;
 
 import org.pql.index.IndexStatus;
 
+import org.apromore.model.ProcessSummariesType;
+
 /**
  * Created by corno on 2/07/2014.
  */
 public interface PQLService {
 
-    void indexAllModels();
+    /**
+     * @param pql  a grammatical PQL query
+     * @throws QueryParsingException if <var>pql</var> isn't well-formed
+     */
+    ProcessSummariesType query(String pql) throws QueryException;
 
+    /*
+     * @param queryPQL  a grammatical PQL query
+     * @param IDs  the default
+     * @param userID  the ostensible user name making the request
+     * @return the external IDs of the indexed process models which satisfy the query
     List<String> runAPQLQuery(String queryPQL, List<String> IDs, String userID);
-    //List<Detail> getDetails();
-    IndexStatus getIndexStatus(String id) throws SQLException;
+     */
 
     /**
-     * Is the PQL index present?  If this is false, none of the other methods of this service will function.
+     * Check whether a particular process is indexed for PQL querying.
      *
-     * @return the value of the <code>pql.isIndexingEnabled</code> property from
-     *         the <code>site.properties</code> Spring configuration artifact.
+     * @param id  the external identifier of a process model
+     * @return the PQL indexing status of the process model with the given external identifier
+     * @throws SQLException if the status can't be read from the PQL index
      */
-    boolean isIndexingEnabled();
+    IndexStatus getIndexStatus(ExternalId id) throws SQLException;
+
+    /**
+     * Thrown by {@link #query} if the PQL query doesn't return results.
+     */
+    public static class QueryException extends Exception {
+
+        public QueryException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    /**
+     * Thrown by {@link #query} if the PQL query wasn't well-formed.
+     */
+    public static class QueryParsingException extends QueryException {
+
+        private List<String> parseErrorMessages;
+
+        public QueryParsingException(List<String> parseErrorMessages) {
+            super("Unable to parse PQL", null);
+            this.parseErrorMessages = parseErrorMessages;
+        }
+
+        public List<String> getParseErrorMessages() {
+            return parseErrorMessages;
+        }
+    }
 }

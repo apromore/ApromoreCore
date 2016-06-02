@@ -11,6 +11,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
+import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
@@ -20,6 +21,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
+
+@Plugin(
+        name = "Compute Complexity",
+        parameterLabels = { "BPMNDiagram" },
+        returnLabels = { "Complexity" },
+        returnTypes = { String.class },
+        userAccessible = true,
+        help = "Compute complexity of a BPMN process model."
+)
 public class ComplexityCalculator {
     private String bonds;
     private String rigids;
@@ -63,20 +73,12 @@ public class ComplexityCalculator {
         return result;
     }
 
-
-    @Plugin(
-            name = "Compute Complexity",
-            parameterLabels = { "BPMNDiagram" },
-            returnLabels = { "Complexity" },
-            returnTypes = { String.class },
-            userAccessible = true,
-            help = "Compute complexity of a BPMN process model."
-    )
     @UITopiaVariant(
             affiliation = "Queensland University of Technology",
             author = "Adriano Augusto",
             email = "a.augusto@qut.edu.au"
     )
+    @PluginVariant(variantLabel = "Compute Complexity", requiredParameterLabels = {0})
     public static String computeComplexity(PluginContext context, BPMNDiagram diagram) {
         String measures = "";
 
@@ -97,7 +99,7 @@ public class ComplexityCalculator {
         return measures;
     }
 
-    private String computeSize() {
+    public String computeSize() {
         int size = 0;
         if(diagram == null) return "n/a";
 
@@ -110,7 +112,7 @@ public class ComplexityCalculator {
         return Integer.toString(size);
     }
 
-    private String computeCFC() {
+    public String computeCFC() {
         int cfc = 0;
         int outgoingEdges;
         if(diagram == null) return "n/a";
@@ -138,7 +140,7 @@ public class ComplexityCalculator {
         return Integer.toString(cfc);
     }
 
-    private String computeACD() {
+    public String computeACD() {
         double acd = 0;
         if(diagram == null) return "n/a";
 
@@ -150,7 +152,7 @@ public class ComplexityCalculator {
         return String.format("%.3f", acd);
     }
 
-    private String computeMCD() {
+    public String computeMCD() {
         int mcd = 0;
         int tmp;
         if(diagram == null) return "n/a";
@@ -161,7 +163,7 @@ public class ComplexityCalculator {
         return Integer.toString(mcd);
     }
 
-    private String computeCNC() {
+    public String computeCNC() {
         int nodes = 0;
         double cnc;
         if(diagram == null) return "n/a";
@@ -178,7 +180,7 @@ public class ComplexityCalculator {
         return String.format( "%.3f", cnc);
     }
 
-    private String computeDensity() {
+    public String computeDensity() {
         int nodes = 0;
         double density;
         if(diagram == null) return "n/a";
@@ -196,7 +198,7 @@ public class ComplexityCalculator {
         return String.format( "%.3f", density);
     }
 
-    private String computeStructuredness() {
+    public String computeStructuredness() {
         double structuredness;
         double nodes = 0;
         HashSet<RPSTNode> rigids = new HashSet<>();
@@ -314,7 +316,7 @@ public class ComplexityCalculator {
         return String.format( "%.3f", structuredness);
     }
 
-    private String computeSeparability() {
+    public String computeSeparability() {
         double separability;
         double nodes = 0;
         if(diagram == null) return "n/a";
@@ -380,7 +382,7 @@ public class ComplexityCalculator {
         return String.format( "%.3f", separability);
     }
 
-    private String computeDuplicates() {
+    public String computeDuplicates() {
         int duplicates = 0;
         HashSet<String> nodes = new HashSet<>();
         String label;

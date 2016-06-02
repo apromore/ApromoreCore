@@ -58,6 +58,7 @@ public class BPMNDiagramExporterImpl implements BPMNDiagramExporter {
         result = result.replaceAll("\n", "&#10;");
         result = result.replaceAll(">&#10;", ">\n");
         result = result.replaceAll("\"&#10;", "\"\n");
+        result = result.replaceFirst("<bpmndi:BPMNDiagram>.*</bpmndi:BPMNDiagram>", "");
 
         return result;
     }

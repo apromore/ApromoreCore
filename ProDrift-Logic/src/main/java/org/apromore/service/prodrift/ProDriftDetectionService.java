@@ -33,13 +33,21 @@ public interface ProDriftDetectionService {
     /**
      * Detect drifts in the log
      * @param logByteArray the log
-     * @param winSize the window size
-     * @param fWinorAwin Fixed window size or Adaptive window size("FWIN" or "ADWIN")
      * @param logFileName log's name
-     * @return the ProDriftDetectionResult from the WebService
-     * @throws ProDriftDetectionException if the merge failed
+     * @param isEventBased event based or run based
+     * @param isSynthetic syntheric log or real-life
+     * @param withGradual detect gradual drift or not
+     * @param winSize the window size
+     * @param isAdwin Fixed window size or Adaptive window size("FWIN" or "ADWIN")
+     * @param noiseFilterPercentage noise fitler percentage value
+     * @param withConflict include conflict relation among Alpha+ relations or not
+
+     * @return the ProDriftDetectionResult
+     * @throws ProDriftDetectionException if the drift detection failed
      */
-    ProDriftDetectionResult proDriftDetector(byte[] logByteArray, int winSize, String fWinorAwin, String logFileName) throws ProDriftDetectionException;
+    ProDriftDetectionResult proDriftDetector(byte[] logByteArray, String logFileName, boolean isEventBased, boolean isSynthetic,
+                                             boolean withGradual, int winSize, boolean isAdwin, float noiseFilterPercentage,
+                                             boolean withConflict) throws ProDriftDetectionException;
 
 
 }

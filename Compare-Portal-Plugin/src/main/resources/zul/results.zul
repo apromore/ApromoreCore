@@ -1,0 +1,12 @@
+<window id="modalDialog" title="Encountered differences" border="normal" width="460px">
+    <vlayout>
+        <grid id="gridMD">
+            <columns>
+                <column label="id" hflex="1"/>
+                <column label="Difference" hflex="2"/>
+            </columns>
+            <rows></rows>
+        </grid>
+        <button id="closeBtn" label="close"/>
+    </vlayout>
+</window>

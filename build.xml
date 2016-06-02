@@ -52,23 +52,28 @@
         <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
         <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
-        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
+
+        <!--
+        <include name="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar"/>
+        <include name="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar"/>
+        -->
 
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
 
-        <include name="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar"/>
-        <include name="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar"/>
-
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
 
-        <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
-        <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
-
         <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
         <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
+        
+        <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
+        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.jar"/>
+
+        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
+        <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
+        <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
     </fileset>
 
     <fileset id="usrRepo" dir=".">
@@ -200,6 +205,14 @@
             <fileset dir="${dir-osgi}">
                 <include name="**/target/bpmntk-osgi-1.0.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
+                <include name="**/target/eventstr-confchecking-osgi-1.0.jar"/>
+                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+            </fileset>
+
+            <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
+            <fileset dir="Supplements/">
+                <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
             </fileset>
         </copy>
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
@@ -208,6 +221,9 @@
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset refid="pickupRepo"/>
         </copy>
+        <!-- Force the BPMN Miner plugin to be alphabetically after the iBPStruct plugin it depends upon -->
+        <copy file="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
+        <copy file="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset dir="${dir-annotation}">
                 <include name="**/target/*.jar"/>

@@ -75,22 +75,26 @@ public class iBPStruct {
         this.keepBisimulation = keepBisimulation;
         this.forceStructuring = forceStructuring;
 
-        System.out.println("DEBUG - starting iBPStruct with: ");
-        System.out.println("DEBUG - policy: " + policy);
+        System.out.println("iBPStruct - starting: ");
+        System.out.println("iBPStruct - [Setting] policy: " + policy);
+        System.out.println("iBPStruct - [Setting] force structuring: " + forceStructuring);
+        System.out.println("iBPStruct - [Setting] pull-up: " + (!keepBisimulation));
 
-        if( policy == StructuringCore.Policy.ASTAR )
-            System.out.println("DEBUG - [A*] force convergence: " + timeBounded);
+        if( policy == StructuringCore.Policy.ASTAR ) {
+            System.out.println("iBPStruct - [A*] time bounded: " + timeBounded);
+            if( timeBounded )
+                System.out.println("iBPStruct - [A*] max minutes: " + maxMinutes);
+        }
 
         if( (policy == StructuringCore.Policy.LIM_ASTAR) || timeBounded ) {
-            System.out.println("DEBUG - [Limited A*] max solutions to get: " + maxSol);
-            System.out.println("DEBUG - [Limited A*] max children to generate: " + maxChildren);
-            System.out.println("DEBUG - [Limited A*] max states to keep: " + maxStates);
+            System.out.println("iBPStruct - [Limited A*] max solutions to get: " + maxSol);
+            System.out.println("iBPStruct - [Limited A*] max children to generate: " + maxChildren);
+            System.out.println("iBPStruct - [Limited A*] max states to keep: " + maxStates);
         }
 
         if( policy == StructuringCore.Policy.DEPTH )
-            System.out.println("DEBUG - [Depth-First] max depth to reach: " + maxDepth);
+            System.out.println("iBPStruct - [Depth-First] max depth to reach: " + maxDepth);
 
-        System.out.println("DEBUG - [Final Rigid] keep bisimulation: " + keepBisimulation);
     }
 
     public boolean setProcess(Collection<BPMNNode> nodes, Collection<Flow> flows) {

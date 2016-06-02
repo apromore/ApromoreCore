@@ -33,7 +33,8 @@
     <reference id="fileStoreClient" interface="org.apromore.filestore.client.FileStoreService"/>
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
 
-    <list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" availability="optional" />
-    <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" availability="optional" />
+    <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" availability="optional"/>
+    <list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" availability="optional"/>
+    <list id="portalProcessAttributePlugins" interface="org.apromore.plugin.portal.PortalProcessAttributePlugin" availability="optional"/>
 
 </beans:beans>
