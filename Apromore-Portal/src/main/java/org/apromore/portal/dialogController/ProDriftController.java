@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright Â© 2009-2016 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -66,8 +66,10 @@ public class ProDriftController extends BaseController {
                 logFile = uEvent.getMedia();
 
 
-                boolean isValid = XLogManager.validateLog(logFile.getStreamData(), logFile.getName());
-                if (!isValid) {
+                StringBuilder caseCount = new StringBuilder();
+                StringBuilder eventCount = new StringBuilder();
+                boolean result = XLogManager.validateLog(logFile.getStreamData(), logFile.getName(), caseCount, eventCount);
+                if (!result) {
 
                     l.setStyle("color: red");
                     l.setValue("Unacceptable File Format.");
@@ -168,7 +170,7 @@ public class ProDriftController extends BaseController {
 
 
     protected void proDriftShowResults_(java.awt.Image pValuesDiagram, java.util.List<BigInteger> driftPoints, java.util.List<BigInteger> lastReadTrace,
-                                         java.util.List<BigInteger> startOfTransitionPoints, java.util.List<BigInteger> endOfTransitionPoints) {
+                                        java.util.List<BigInteger> startOfTransitionPoints, java.util.List<BigInteger> endOfTransitionPoints) {
         try {
 
             new ProDriftShowResult(this.mainC, pValuesDiagram, driftPoints, lastReadTrace, startOfTransitionPoints, endOfTransitionPoints);
