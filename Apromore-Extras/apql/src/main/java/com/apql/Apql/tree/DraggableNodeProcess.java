@@ -21,8 +21,10 @@
 package com.apql.Apql.tree;
 
 import com.apql.Apql.controller.QueryController;
+import org.apromore.helper.Version;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.service.pql.ExternalId;
 
 import java.util.List;
 import java.util.StringTokenizer;
@@ -51,7 +53,7 @@ public class DraggableNodeProcess extends DraggableNodeTree {
                 lastUpdate = vst.getLastUpdate();
                 version = vst;
             }
-            queryController.addLocation(pst.getId()+"/"+vst.getVersionNumber()+"/"+vst.getName(),this);
+            queryController.addLocation(new ExternalId(pst.getId(), vst.getName(), new Version(vst.getVersionNumber())),this);
         }
         this.pst=pst;
         this.latestVersion=version.getVersionNumber();
@@ -66,17 +68,18 @@ public class DraggableNodeProcess extends DraggableNodeTree {
         return pst;
     }
 
-    public VersionSummaryType getVersionSummaryType(String idNet){
-        StringTokenizer st=new StringTokenizer(idNet,"/");
-        String id=st.nextToken();
-        String version=st.nextToken();
-        String branch=st.nextToken();
-        for(VersionSummaryType vst : pst.getVersionSummaries()){
-            if(!id.equals(pst.getId().toString()))
-                throw new IllegalArgumentException("Wrong ID net");
-            if(vst.getVersionNumber().equals(version) && vst.getName().equals(branch)){
-                return vst;
+    public VersionSummaryType getVersionSummaryType(String idNet) {
+        try {
+            ExternalId externalId = new ExternalId(idNet);
+            for(VersionSummaryType vst : pst.getVersionSummaries()){
+                if(pst.getId() != externalId.getProcessId())
+                    throw new IllegalArgumentException("Wrong ID net");
+                if(vst.getVersionNumber().equals(externalId.getVersion().toString()) && vst.getName().equals(externalId.getBranch())){
+                    return vst;
+                }
             }
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -130,9 +133,10 @@ public class DraggableNodeProcess extends DraggableNodeTree {
         this.pst.setRanking(ranking);
     }
 
+    // Object methods
 
-    public boolean equals(Object ob){
-        if(ob==null || !(ob instanceof DraggableNodeProcess)){
+    @Override public boolean equals(Object ob){
+        if(ob == null || !(ob instanceof DraggableNodeProcess)){
             return false;
         }
         if(ob == this)
@@ -141,8 +145,11 @@ public class DraggableNodeProcess extends DraggableNodeTree {
         return dnp.getId().equals(getId()) && dnp.getLatestVersion().equals(latestVersion) && dnp.getLatestBranch().equals(latestBranch);
     }
 
-    public int hashCode(){
+    @Override public int hashCode(){
         return getId().hashCode()*latestVersion.hashCode()*latestBranch.hashCode();
     }
 
+    @Override public String toString() {
+        return "DNP(id=" + getId() + " branch=" + latestBranch + " version=" + latestVersion + ")";
+    }
 }

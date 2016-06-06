@@ -25,12 +25,14 @@ import com.apql.Apql.controller.ViewController;
 import com.apql.Apql.popup.FolderLabel;
 import com.apql.Apql.popup.ProcessLabel;
 import com.apql.Apql.tree.draghandler.TreeTransferHandler;
+import org.apromore.helper.Version;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.service.pql.ExternalId;
 
 import javax.swing.*;
 import java.awt.dnd.*;
@@ -39,10 +41,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Created by corno on 16/06/2014.
  */
 public class FolderProcessTree extends JTree implements DragGestureListener,DragSourceListener{
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FolderProcessTree.class);
 
     private DraggableNodeTree root;
     private ManagerService manager;
@@ -104,7 +111,7 @@ public class FolderProcessTree extends JTree implements DragGestureListener,Drag
                 List<VersionSummaryType> versionList = new LinkedList<>();
 
                 for(VersionSummaryType vst : pst.getVersionSummaries()){
-                    if(sound.contains(pst.getId()+"/"+vst.getVersionNumber()+"/"+vst.getName())){
+                    if(sound.contains(new ExternalId(pst.getId(), vst.getName(), new Version(vst.getVersionNumber())).toString())) {
                         versionList.add(vst);
                     }
                 }
