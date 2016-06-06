@@ -23,21 +23,14 @@
  */
 package org.apromore.dao.jpa;
 
-import org.apromore.dao.ClusterRepositoryCustom;
-import org.apromore.dao.ProcessLogRepository;
-import org.apromore.dao.ProcessLogRepositoryCustom;
-import org.apromore.dao.model.Cluster;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.LogRepositoryCustom;
 import org.apromore.dao.model.Log;
-import org.apromore.dao.model.Process;
-import org.apromore.service.model.ClusterFilter;
-import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.*;
-import org.springframework.data.domain.Page;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -53,13 +46,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static org.apache.axis.attachments.MimeUtils.filter;
-
 /**
  * implementation of the org.apromore.dao.ClusteringDao interface.
  * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
-public class ProcessLogRepositoryCustomImpl implements ProcessLogRepositoryCustom {
+public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
 
     @PersistenceContext
@@ -68,24 +59,24 @@ public class ProcessLogRepositoryCustomImpl implements ProcessLogRepositoryCusto
     @Resource
     private JdbcTemplate jdbcTemplate;
 
-    private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM Process_log p ";
-    private static final String GET_ALL_PROCESSES_FOLDER_JPA = "SELECT p FROM Process_log p JOIN p.folder f ";
-    private static final String GET_ALL_PUBLIC_JPA = "p.publicModel = true ";
+    private static final String GET_ALL_LOGS_JPA = "SELECT l FROM Log l ";
+    private static final String GET_ALL_LOGS_FOLDER_JPA = "SELECT l FROM Log l JOIN l.folder f ";
+    private static final String GET_ALL_PUBLIC_JPA = "l.publicModel = true ";
     private static final String GET_ALL_FOLDER_JPA = "f.id = ";
-    private static final String GET_ALL_SORT_JPA = " ORDER by p.id";
+    private static final String GET_ALL_SORT_JPA = " ORDER by l.id";
 
 
     /* ************************** JPA Methods here ******************************* */
 
     /**
-     * @see org.apromore.dao.ProcessRepositoryCustom#findAllProcesses(String)
+     * @see org.apromore.dao.LogRepositoryCustom#findAllLogs(String)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Log> findAllProcesses(final String conditions) {
+    public List<Log> findAllLogs(final String conditions) {
         StringBuilder strQry = new StringBuilder(0);
-        strQry.append(GET_ALL_PROCESSES_JPA);
+        strQry.append(GET_ALL_LOGS_JPA);
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(" WHERE ").append(conditions);
             strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);
@@ -99,15 +90,15 @@ public class ProcessLogRepositoryCustomImpl implements ProcessLogRepositoryCusto
     }
 
     /**
-     * @see org.apromore.dao.ProcessRepositoryCustom#findAllProcessesByFolder(Integer, String)
+     * @see org.apromore.dao.LogRepositoryCustom#findAllLogsByFolder(Integer, String)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Log> findAllProcessesByFolder(final Integer folderId, final String conditions) {
+    public List<Log> findAllLogsByFolder(final Integer folderId, final String conditions) {
         boolean whereAdded = false;
         StringBuilder strQry = new StringBuilder(0);
-        strQry.append(GET_ALL_PROCESSES_FOLDER_JPA);
+        strQry.append(GET_ALL_LOGS_FOLDER_JPA);
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(" WHERE ").append(conditions);
             strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);
@@ -127,8 +118,8 @@ public class ProcessLogRepositoryCustomImpl implements ProcessLogRepositoryCusto
         return query.getResultList();
     }
 
-        /**
-     * @see ProcessLogRepository#storeProcessLog(Integer, String, XLog)
+    /**
+     * ?@see LogRepository#storeProcessLog(Integer, String, XLog)
      * {@inheritDoc}
      */
 
@@ -156,7 +147,7 @@ public class ProcessLogRepositoryCustomImpl implements ProcessLogRepositoryCusto
     }
 
     /**
-     * @see ProcessLogRepository#removeProcessLog(Integer)
+//     * @see LogRepository#removeProcessLog(Integer)
      * {@inheritDoc}
      */
 
@@ -226,7 +217,7 @@ public class ProcessLogRepositoryCustomImpl implements ProcessLogRepositoryCusto
         // log sanity checks;
         // notify user if the log is awkward / does miss crucial information
         if (logs == null || logs.size() == 0) {
-            throw new Exception("No processes contained in log!");
+            throw new Exception("No logs contained in log!");
         }
 
         XLog log = logs.iterator().next();

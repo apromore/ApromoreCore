@@ -54,7 +54,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private WorkspaceRepository workspaceRepo;
     private ProcessRepository processRepo;
-    private ProcessLogRepository logRepo;
+    private LogRepository logRepo;
     private FolderRepository folderRepo;
     private UserRepository userRepo;
     private GroupRepository groupRepo;
@@ -73,6 +73,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public WorkspaceServiceImpl(final WorkspaceRepository workspaceRepository,
                                 final UserRepository userRepository,
                                 final ProcessRepository processRepository,
+                                final LogRepository logRepository,
                                 final FolderRepository folderRepository,
                                 final GroupRepository groupRepository,
                                 final GroupFolderRepository groupFolderRepository,
@@ -81,6 +82,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         workspaceRepo = workspaceRepository;
         userRepo = userRepository;
         processRepo = processRepository;
+        logRepo = logRepository;
         folderRepo = folderRepository;
         groupRepo = groupRepository;
         groupFolderRepo = groupFolderRepository;
@@ -117,8 +119,19 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Page<Log> getLogs(String userId, Integer folderId, Pageable pageable) {
-        return (folderId == 0) ? logRepo.findFolderId(userId, pageable)
-                : processRepo.findAllProcessesInFolderForUser(folderId, userId, pageable);
+        Page<Log> res;
+        if(folderId == 0) {
+            LOGGER.warning("ERROR1");
+            res = logRepo.findLogsByUser(userId, pageable);
+            LOGGER.warning("ERROR2 " + res);
+        }else {
+            LOGGER.warning("ERROR3");
+            res = logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
+            LOGGER.warning("ERROR4 " + res);
+        }
+        return res;
+//        return (folderId == 0) ? logRepo.findLogsByUser(userId, pageable)
+//                : logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
     }
 
     @Override
