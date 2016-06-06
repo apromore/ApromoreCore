@@ -20,7 +20,6 @@
 
 package org.apromore.manager.client;
 
-import ee.ut.eventstr.model.ProDriftDetectionResult;
 import org.apromore.helper.PluginHelper;
 import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
 import org.apromore.manager.client.helper.MergeProcessesHelper;
@@ -1178,42 +1177,4 @@ public class ManagerServiceClient implements ManagerService {
             throw new Exception(response.getValue().getResult().getMessage());
         }
     }
-
-    /**
-     * @see ManagerService#proDriftDetector(byte[], int, String, String)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public ProDriftDetectionResult proDriftDetector(byte[] logByteArray, int winSize, String fWinorAwin, String logFileName) {
-
-        LOGGER.debug("Preparing proDriftDetectorRequest.....");
-
-        ProDriftDetectorInputMsgType msg = new ProDriftDetectorInputMsgType();
-        msg.setLogByteArray(logByteArray);
-        msg.setWinSize(winSize);
-        msg.setFWinorAwin(fWinorAwin);
-        msg.setLogFileName(logFileName);
-        JAXBElement<ProDriftDetectorInputMsgType> request = WS_CLIENT_FACTORY.createProDriftDetectorRequest(msg);
-
-        JAXBElement<ProDriftDetectorOutputMsgType> response = (JAXBElement<ProDriftDetectorOutputMsgType>)
-                webServiceTemplate.marshalSendAndReceive(request);
-
-        Image pValuesDiagram = response.getValue().getPValuesDiagram();
-        List driftPoints = response.getValue().getDriftPoints();
-        List lastReadTrace = response.getValue().getLastReadTrace();
-        List startOfTransitionPoints = response.getValue().getStartOfTransitionPoints();
-        List endOfTransitionPoints = response.getValue().getEndOfTransitionPoints();
-
-        ProDriftDetectionResult result = new ProDriftDetectionResult();
-        result.setpValuesDiagram(pValuesDiagram);
-        result.setDriftPoints(driftPoints);
-        result.setLastReadTrace(lastReadTrace);
-        result.setStartOfTransitionPoints(startOfTransitionPoints);
-        result.setEndOfTransitionPoints(endOfTransitionPoints);
-
-
-        return result;
-    }
-
 }
