@@ -82,9 +82,6 @@ public class MenuController extends Menubar {
         //Menuitem exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
         //exactMatchingMI.setDisabled(true);
 
-        //proDrift
-//        Menuitem proDriftMI = (Menuitem) this.menuB.getFellow("ProDriftDetection");
-
         Menu designM = (Menu) this.menuB.getFellow("design");
         Menuitem cmapMI = (Menuitem) this.menuB.getFellow("designCmap");
         Menuitem configureMI = (Menuitem) this.menuB.getFellow("designConfiguration");
@@ -161,14 +158,6 @@ public class MenuController extends Menubar {
                 deployProcessModel();
             }
         });
-
-        //proDrift
-//        proDriftMI.addEventListener("onClick", new EventListener<Event>() {
-//            @Override
-//            public void onEvent(final Event event) throws Exception {
-//                proDriftGetParameters();
-//            }
-//        });
 
         // If there are portal plugins, create a menu for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {
@@ -266,15 +255,6 @@ public class MenuController extends Menubar {
     protected void createQuery() throws InterruptedException, DialogException {
         this.mainC.eraseMessage();
         new PQLFilterController(this.mainC);
-    }
-
-    //proDrift
-    protected void proDriftGetParameters() {
-            try {
-                new ProDriftController(this.mainC);
-            } catch (SuspendNotAllowedException e) {
-                Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-            }
     }
 
     protected void cmapModel() throws ParseException {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright Â© 2009-2016 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -81,7 +81,7 @@ public class ProDriftShowResult extends Window {
         {
 
             Listitem listItem = new Listitem();
-            listItem.setLabel(result.getDriftStatements().get(i));
+            listItem.setLabel("(" + (i+1) + ") " + result.getDriftStatements().get(i));
             this.resultDescription.appendChild(listItem);
             listItem.setSelected(false);
 

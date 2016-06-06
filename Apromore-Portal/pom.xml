@@ -237,6 +237,7 @@
         </dependency>
 
         <!-- BPMNMiner -->
+        <!--
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>prom6-osgi</artifactId>
@@ -252,12 +253,15 @@
             <artifactId>log-osgi</artifactId>
             <version>1.0</version>
         </dependency>
+        -->
 
         <!-- ProDrift -->
+        <!--
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>prodrift-osgi</artifactId>
         </dependency>
+        -->
 
         <!-- Client -->
         <dependency>
