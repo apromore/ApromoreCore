@@ -23,6 +23,8 @@ package org.apromore.service.pql;
 import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import org.apromore.helper.Version;
@@ -34,7 +36,7 @@ public class ExternalIdUnitTest {
 
     @Test
     public void testConstructFromComponents() {
-        Version version = new Version("1.0");
+        Version version = new Version(1, 0);
         ExternalId externalId = new ExternalId(32, "MAIN", version);
         assertEquals(32, externalId.getProcessId());
         assertEquals("MAIN", externalId.getBranch());
@@ -47,7 +49,7 @@ public class ExternalIdUnitTest {
         ExternalId externalId = new ExternalId("32/MAIN/1.0");
         assertEquals(32, externalId.getProcessId());
         assertEquals("MAIN", externalId.getBranch());
-        assertEquals(new Version("1.0"), externalId.getVersion());
+        assertEquals(new Version(1, 0), externalId.getVersion());
         assertEquals("32/MAIN/1.0", externalId.toString());
     }
 
@@ -55,5 +57,16 @@ public class ExternalIdUnitTest {
     public void testConstructFromInvalidString() throws ParseException {
         ExternalId externalId = new ExternalId("Not an external ID");
     }
-}
 
+    @Test
+    public void testEquals() {
+        ExternalId externalId = new ExternalId(32, "MAIN", new Version(1, 0));
+
+        assertFalse(externalId.equals(null));
+        assertTrue(externalId.equals(externalId));
+        assertTrue(externalId.equals(new ExternalId(32, "MAIN", new Version(1, 0))));
+        assertFalse(externalId.equals(new ExternalId(31, "MAIN", new Version(1, 0))));
+        assertFalse(externalId.equals(new ExternalId(32, "BRANCH", new Version(1, 0))));
+        assertFalse(externalId.equals(new ExternalId(32, "MAIN", new Version(1, 1))));
+    }
+}

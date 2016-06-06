@@ -57,6 +57,9 @@ import java.util.*;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
@@ -64,7 +67,8 @@ import java.util.Set;
 public class MainController extends BaseController implements MainControllerInterface {
 
     private static final long serialVersionUID = 5147685906484044300L;
-	private static MainController controller = null;
+    private static MainController controller = null;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
     private EventQueue<Event> qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
 
@@ -185,7 +189,13 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public void refresh() {
-        Executions.sendRedirect(null);
+        try {
+            Executions.sendRedirect(null);
+        } catch (NullPointerException e) {
+            // The ZK documentation for sendRedirect claims that passing a null parameter is allowed
+            // https://www.zkoss.org/javadoc/latest/zk/org/zkoss/zk/ui/Executions.html#sendRedirect(java.lang.String)
+            LOGGER.warn("ZK default redirection failed", e);
+        }
     }
 
     public void loadWorkspace() {
@@ -796,8 +806,8 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public void addResult(List<ResultPQL> results, String userID, List<Detail> details, String query, String nameQuery) {
-        TabQuery newTab = new TabQuery(nameQuery, userID, details, query, portalContext);
-        newTab.setTabpanel(results);
+        TabQuery newTab = new TabQuery(nameQuery, userID, details, query, results, portalContext);
+        SessionTab.getSessionTab(portalContext).addTabToSession(userID, newTab);
     }
 
     private void updateTabs(String userId){
@@ -813,15 +823,20 @@ public class MainController extends BaseController implements MainControllerInte
             for (Tab tab : tabList) {
                 try {
                     if(!tabbox.getTabs().getChildren().contains(tab)) {
-                        AbstractPortalTab portalTab = ((PortalTabImpl) tab).clone();
+                        PortalTab portalTab = (PortalTab) tab.clone();
                         SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userId, tab);
-                        SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, portalTab);
+                        SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, (org.zkoss.zul.Tab) portalTab);
 
                         portalTab.getTab().setParent(tabbox.getTabs());
-                        portalTab.getTabpanel().setParent(tabbox.getTabpanels());
+                        if (portalTab.getTabpanel() == null) {
+                            LOGGER.warn("Portal tab had no panel " + portalTab);
+                        } else {
+                            portalTab.getTabpanel().setParent(tabbox.getTabpanels());
+                        }
                     }
                 }catch (Exception e) {
-                    Executions.sendRedirect(null);
+                    LOGGER.warn("Couldn't update tab", e);
+                    //Executions.sendRedirect(null);
                 }
             }
 

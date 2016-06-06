@@ -29,11 +29,9 @@ import java.util.List;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 19/03/2016.
  */
-public interface PortalTab {
+public interface PortalTab extends Cloneable {
 
     Tabpanel getTabpanel();
-
-    PortalTab clone();
 
     Tab getTab();
 
