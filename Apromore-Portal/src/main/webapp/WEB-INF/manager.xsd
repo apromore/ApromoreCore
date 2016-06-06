@@ -300,10 +300,6 @@
     <xs:element name="MergeProcessesRequest" type="tns:MergeProcessesInputMsgType"/>
     <xs:element name="MergeProcessesResponse" type="tns:MergeProcessesOutputMsgType"/>
 
-
-    <xs:element name="ProDriftDetectorRequest" type="tns:ProDriftDetectorInputMsgType"/>
-    <xs:element name="ProDriftDetectorResponse" type="tns:ProDriftDetectorOutputMsgType"/>
-
     <!-- Plugins -->
     <xs:element name="ReadInstalledPluginsRequest" type="tns:ReadInstalledPluginsInputMsgType"/>
     <xs:element name="ReadInstalledPluginsResponse" type="tns:ReadInstalledPluginsOutputMsgType"/>
@@ -1190,29 +1186,6 @@
             <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
-
-    <xs:complexType name="ProDriftDetectorInputMsgType">
-        <xs:sequence>
-            <xs:element name="logByteArray" minOccurs="0" type="xs:base64Binary"/>
-            <xs:element name="winSize" minOccurs="0" type="xs:int"/>
-            <xs:element name="fWinorAwin" minOccurs="0" type="xs:string"/>
-            <xs:element name="logFileName" minOccurs="0" type="xs:string"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="ProDriftDetectorOutputMsgType">
-        <xs:sequence>
-            <xs:element name="pValuesDiagram" minOccurs="0" type="xs:base64Binary" xmime:expectedContentTypes="image/png"/>
-            <xs:element name="driftPoints" minOccurs="0" type="tns:listofintegers"/>
-            <xs:element name="lastReadTrace" minOccurs="0" type="tns:listofintegers"/>
-            <xs:element name="startOfTransitionPoints" minOccurs="0" type="tns:listofintegers"/>
-            <xs:element name="endOfTransitionPoints" minOccurs="0" type="tns:listofintegers"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:simpleType name="listofintegers">
-        <xs:list itemType="xs:integer"/>
-    </xs:simpleType>
 
     <xs:complexType name="SearchForSimilarProcessesInputMsgType">
         <xs:sequence>

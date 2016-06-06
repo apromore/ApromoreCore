@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright Â© 2009-2016 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window width="800px" closable="false" position="center" title="Process Drift Detection">
+<window width="1000px" closable="false" position="center" title="Process Drift Detection">
 
     <style>
 
@@ -36,6 +36,7 @@
                 <column width="50%"></column>
             </columns>
             <rows>
+
                 <row spans="2">
                     <label id="errorLabel" value="" width="100%" style="color: red"/>
                 </row>
@@ -57,11 +58,11 @@
                                             logType.visible = true;
                                             gradDriftRow.visible = false;
                                             if(synLog.selected){
-                                                winSizeIntBox.value = 2000;
+                                                winSizeIntBox.value = maxWinValueEventsSyn.value;
                                                 ADWIN.selected = true;
                                                 noiseFilterSpinner.value = 0;
                                             }else{
-                                                winSizeIntBox.value = 5000;
+                                                winSizeIntBox.value = maxWinValueEventsReal.value;
                                                 FWIN.selected = true;
                                                 noiseFilterSpinner.value = 3.5;
                                             }
@@ -69,7 +70,7 @@
                                         }else{
                                             logType.visible = false;
                                             gradDriftRow.visible = true;
-                                            winSizeIntBox.value = 100;
+                                            winSizeIntBox.value = maxWinValueRuns.value;
                                             ADWIN.selected = true;
                                             moreSettingsRow.visible = false;
                                         }
@@ -81,86 +82,96 @@
                 </row>
 
                 <row width="100%" spans="2">
-                <groupbox width="100%">
-                    <caption label="Parameters"/>
-                    <grid sclass="GridLayoutNoBorder">
-                    <columns>
-                        <column/>
-                        <column/>
-                    </columns>
-                    <rows>
-                        <row id="logType" visible="true">
-                            <label value="Log type" width="100%"/>
-                            <listbox id="logTypeLBox" width="100%" multiple="false" checkmark="true"
-                                     onSelect="if(synLog.selected){
-                                            winSizeIntBox.value = 2000;
+                    <groupbox width="100%">
+                        <caption label="Parameters"/>
+                        <grid sclass="GridLayoutNoBorder">
+                            <columns>
+                                <column/>
+                                <column/>
+                            </columns>
+                            <rows>
+                                <row id="logType" visible="true">
+                                    <label value="Log type" width="100%"/>
+                                    <listbox id="logTypeLBox" width="100%" multiple="false" checkmark="true"
+                                             onSelect="if(synLog.selected){
+                                            winSizeIntBox.value = maxWinValueEventsSyn.value;
                                             ADWIN.selected = true;
                                             noiseFilterSpinner.value = 0;
                                         }else{
-                                            winSizeIntBox.value = 5000;
+                                            winSizeIntBox.value = maxWinValueEventsReal.value;
                                             FWIN.selected = true;
                                             noiseFilterSpinner.value = 3.5;
                                         }
                                         ">
-                                <listitem id="synLog" label="Synthetic" selected="true"/>
-                                <listitem id="reLog" label="Real-life"/>
-                            </listbox>
+                                        <listitem id="synLog" label="Synthetic" selected="true"/>
+                                        <listitem id="reLog" label="Real-life"/>
+                                    </listbox>
 
-                        </row>
-                        <row id="gradDriftRow" visible="false">
-                            <label width="100%"/>
-                            <checkbox id="gradDriftCBox" width="100%" label="Detect gradual drift" checked="false"/>
-                        </row>
-                        <row id="winsize" visible="true">
-                            <label value="Window Size" width="100%"/>
-                            <intbox id="winSizeIntBox" value="2000" width="100%"
-                                    constraint="no negative,no zero,no empty: it shall not be negative, zero or empty."/>
-                        </row>
-                        <row id="fWinOrAwinChoice">
-                            <label value="Window Type" width="100%"/>
-                            <listbox id="fWinOrAwinLBox" width="100%" multiple="false" checkmark="true">
-                                <listitem id="ADWIN" label="Adaptive window" selected="true"/>
-                                <listitem id="FWIN" label="Fixed window"/>
-                            </listbox>
-                        </row>
-
-
-                        <row id="moreSettingsRow" spans="2">
-                            <panel id="moreSettings" title="More" framable="true" width="100%" open="false"
-                                   maximizable="false" minimizable="false" border="normal" collapsible="true" closable="false">
-
-                                <panelchildren>
-
-                                    <grid>
-                                        <columns>
-                                            <column/>
-                                            <column/>
-                                        </columns>
-                                        <rows>
-                                            <row id="noiseFilter">
-                                                <label value="Infrequent feature filter percentage" width="100%"/>
-                                                <doublespinner id="noiseFilterSpinner" width="100%" value="0" step="0.1" mold="rounded"
-                                                               constraint="no empty, min 0 max 100"/>
-                                                <!--<slider id="noiseFilterSlider" mold="scale" maxpos="10" width="100%"/>-->
-                                            </row>
-                                            <!--<row id="conflictRow">-->
-                                                <!--<label width="100%"/>-->
-                                                <!--<checkbox id="conflictCBox" width="100%" label="Include conflict relation" checked="true"/>-->
-                                            <!--</row>-->
-                                        </rows>
-                                    </grid>
-                                </panelchildren>
-                            </panel>
-                        </row>
-                    </rows>
-                    </grid>
-                <!--<group id="parameters" label="Parameters"/>-->
+                                </row>
+                                <row id="gradDriftRow" visible="false">
+                                    <label width="100%"/>
+                                    <checkbox id="gradDriftCBox" width="100%" label="Detect gradual drift" checked="false"/>
+                                </row>
+                                <row id="winsize" visible="true">
+                                    <label value="Window Size" width="100%"/>
+                                    <intbox id="winSizeIntBox" value="2000" width="100%"
+                                            constraint="no negative,no zero,no empty: it shall not be negative, zero or empty."
+                                    />
+                                </row>
+                                <row id="fWinOrAwinChoice">
+                                    <label value="Window Type" width="100%"/>
+                                    <listbox id="fWinOrAwinLBox" width="100%" multiple="false" checkmark="true">
+                                        <listitem id="ADWIN" label="Adaptive window" selected="true"/>
+                                        <listitem id="FWIN" label="Fixed window"/>
+                                    </listbox>
+                                </row>
 
 
-                </groupbox>
+                                <row id="moreSettingsRow" spans="2">
+                                    <panel id="moreSettings" title="More" framable="true" width="100%" open="false"
+                                           maximizable="false" minimizable="false" border="normal" collapsible="true" closable="false">
+
+                                        <panelchildren>
+
+                                            <grid>
+                                                <columns>
+                                                    <column/>
+                                                    <column/>
+                                                </columns>
+                                                <rows>
+                                                    <row id="noiseFilter">
+                                                        <label value="Infrequent feature filter percentage" width="100%"/>
+                                                        <doublespinner id="noiseFilterSpinner" width="100%" value="0" step="0.1" mold="rounded"
+                                                                       constraint="no empty, min 0 max 100"/>
+                                                        <!--<slider id="noiseFilterSlider" mold="scale" maxpos="10" width="100%"/>-->
+                                                    </row>
+                                                    <!--<row id="conflictRow">-->
+                                                    <!--<label width="100%"/>-->
+                                                    <!--<checkbox id="conflictCBox" width="100%" label="Include conflict relation" checked="true"/>-->
+                                                    <!--</row>-->
+                                                </rows>
+                                            </grid>
+                                        </panelchildren>
+                                    </panel>
+                                </row>
+                                <row spans="2">
+                                    <intbox id="maxWinValueRuns" width="100%" disabled="true" visible="false"/>
+                                </row>
+                                <row spans="2">
+                                    <intbox id="maxWinValueEventsSyn" width="100%" disabled="true" visible="false"/>
+                                </row>
+                                <row spans="2">
+                                    <intbox id="maxWinValueEventsReal" width="100%" disabled="true" visible="false"/>
+                                </row>
+                            </rows>
+                        </grid>
+                        <!--<group id="parameters" label="Parameters"/>-->
+
+
+                    </groupbox>
                 </row>
-<!--                <groupfoot>
-                </groupfoot>-->
+                <!--                <groupfoot>
+                                </groupfoot>-->
 
 
                 <row id="driftButtons" spans="2">
