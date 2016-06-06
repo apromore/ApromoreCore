@@ -27,6 +27,7 @@ import org.apromore.model.VersionSummaryType;
 import javax.swing.*;
 import java.awt.*;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 
@@ -147,7 +148,12 @@ public class TableProcess extends JPanel implements Observer, Serializable {
         boolean whiteBackground=true;
         StringTokenizer st;
         for(String id : idNets){
-            DraggableNodeProcess dnp = queryController.getLocation(id);
+            DraggableNodeProcess dnp;
+            try {
+                dnp = queryController.getLocation(id);
+            } catch (ParseException e) {
+                throw new RuntimeException("I'm too lazy to deal with tightening up Luigi's stringly-typed stuff right now", e);
+            }
             System.out.println("DRAGGABLE: "+dnp+" "+idNets);
             st=new StringTokenizer(id,"/");
             if(whiteBackground){

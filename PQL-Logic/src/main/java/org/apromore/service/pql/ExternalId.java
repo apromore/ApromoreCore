@@ -68,6 +68,20 @@ public class ExternalId {
     public Version getVersion()   { return version; }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == null) { return false; }
+        if (o == this) { return true; }
+        if (!o.getClass().equals(getClass())) { return false; }
+        ExternalId externalId = (ExternalId) o;
+        return externalId.toString().equals(toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
     public String toString() {
         return processId + "/" + branch + "/" + version;
     }

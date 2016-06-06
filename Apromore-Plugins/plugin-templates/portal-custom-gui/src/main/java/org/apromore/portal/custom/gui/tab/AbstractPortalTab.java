@@ -20,13 +20,8 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
     protected PortalContext portalContext;
 
     public AbstractPortalTab(String tabName, String userID, PortalContext portalContext) {
-        this(tabName, portalContext);
-        this.userID = userID;
-    }
-
-    public AbstractPortalTab(String tabName, PortalContext portalContext) {
         super(tabName);
-        this.userID = portalContext.getCurrentUser().getId();
+        this.userID = userID;
         this.portalContext = portalContext;
 
 //        this.tab = new Tab(tabName);
@@ -35,9 +30,9 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
 //        this.tab.setTooltiptext("Double click to show more info");
 //        this.tab.setImage("img/info25.png");
 
-
         this.setClosable(true);
         this.setSelected(true);
+
 //        this.setTooltiptext("Double click to show more info");
 //        this.setImage("img/info25.png");
 
@@ -49,8 +44,21 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
         });
     }
 
+    public AbstractPortalTab(String tabName, PortalContext portalContext) {
+        this(tabName, portalContext.getCurrentUser().getId(), portalContext);
+    }
+
     @Override
-    public abstract PortalTab clone();
+    public Object clone() {
+        AbstractPortalTab clone = (AbstractPortalTab) super.clone();
+
+        clone.isNew         = this.isNew;
+        clone.tabpanel      = (this.tabpanel == null) ? null : (Tabpanel) this.tabpanel.clone();
+        clone.userID        = this.userID;
+        clone.portalContext = this.portalContext;
+
+        return clone;
+    }
 
     @Override
     public Tabpanel getTabpanel(){
