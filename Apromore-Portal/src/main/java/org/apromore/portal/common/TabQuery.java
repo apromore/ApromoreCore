@@ -20,43 +20,35 @@
 
 package org.apromore.portal.common;
 
-import org.apromore.model.*;
-import org.apromore.model.Detail;
-import org.apromore.plugin.portal.MainControllerInterface;
-import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.SessionTab;
-import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
-import org.apromore.portal.custom.gui.tab.PortalTab;
-import org.apromore.portal.dialogController.DetailsTabController;
-import org.apromore.portal.dialogController.MainController;
+import java.util.List;
+
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.*;
 
-import java.util.List;
+import org.apromore.model.*;
+import org.apromore.model.Detail;
+import org.apromore.plugin.portal.MainControllerInterface;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
+import org.apromore.portal.custom.gui.tab.PortalTab;
+import org.apromore.portal.dialogController.DetailsTabController;
+import org.apromore.portal.dialogController.MainController;
 
 /**
  * Created by corno on 17/07/2014.
  */
 public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
 
-    private Listbox listBox;
     private static int progressID=1;
+
+    private Listbox      listBox;
     private List<Detail> details;
-    private long timeCreation;
+    private long         timeCreation;
+    private String       query;
 
-    public String getQuery() {
-        return query;
-    }
-
-    public List<Detail> getDetails() {
-        return details;
-    }
-
-    private String query;
-
-    public TabQuery(String label, String userID, final List<Detail> details, final String query, PortalContext portalContext){
+    public TabQuery(String label, String userID, final List<Detail> details, final String query, List<ResultPQL> processes, PortalContext portalContext){
         super(label, userID, portalContext);
         if(label.equals("") || label==null){
             setLabel("Query "+progressID);
@@ -77,23 +69,11 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
             }
         });
 
-        SessionTab.getSessionTab(portalContext).addTabToSession(userID, this);
-    }
+        this.tabpanel = new Tabpanel();
+        this.tabpanel.setStyle("overflow:auto");
 
-    public int getProgressID(){
-        return progressID;
-    }
-
-    public String getUserID(){
-        return userID;
-    }
-
-    public void setTabpanel(List<ResultPQL> processes){
-        Tabpanel newTabpanel = new Tabpanel();
-        newTabpanel.setStyle("overflow:auto");
-
-        Listbox list = new Listbox();
-        list.setMultiple(true);
+        this.listBox = new Listbox();
+        listBox.setMultiple(true);
 
         Listhead head = new Listhead();
         head.setSizable(true);
@@ -105,7 +85,7 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
 
         head.appendChild(builtChild("1", "Name", null, "auto", null));
 
-        Listheader idListHeader = builtChild("1", "ID", null, "auto", null);
+        Listheader idListHeader = builtChild("1", "ID", null, "auto", "3em");
         idListHeader.setSortAscending(new java.util.Comparator<TabListitem>() {
             public int compare(TabListitem o1, TabListitem o2) {
                 return o1.getProcessSummaryType().getId().intValue() - o2.getProcessSummaryType().getId().intValue();
@@ -118,43 +98,37 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
 	});
         head.appendChild(idListHeader);
 
-        head.appendChild(builtChild("1", "Original Language", null, "auto", null));
-        head.appendChild(builtChild("1", "Domain", null, "auto", null));
-        head.appendChild(builtChild("1", "Ranking", null, "auto", null));
-        head.appendChild(builtChild("1", "Version", null, "auto", null));
-        head.appendChild(builtChild("1", "Branch", null, "auto", null));
-        head.appendChild(builtChild("1", "Owner", null, "auto", null));
-        list.appendChild(head);
+        head.appendChild(builtChild("1", "Original Language", null, "auto", "10em"));
+        head.appendChild(builtChild("1", "Domain", null, "auto", "5em"));
+        head.appendChild(builtChild("1", "Ranking", null, "auto", "6em"));
+        head.appendChild(builtChild("1", "Version", null, "auto", "5em"));
+        head.appendChild(builtChild("1", "Branch", null, "auto", "5em"));
+        head.appendChild(builtChild("1", "Owner", null, "auto", "5em"));
+        listBox.appendChild(head);
 
         TabListitem item =null;
 
         for (final ResultPQL process : processes) {
             item=new TabListitem(process.getPst(),process.getVst(),process.getAttributesToShow());
-            list.appendChild(item);
+            listBox.appendChild(item);
         }
 
         if(item==null) {
             item = new TabListitem();
-            list.appendChild(item);
+            listBox.appendChild(item);
         }
-        newTabpanel.appendChild(list);
-        this.listBox=list;
-        this.tabpanel=newTabpanel;
-    }
-
-    public void setTabpanel(Tabpanel tabpanel){
-        this.tabpanel=tabpanel;
+        this.tabpanel.appendChild(listBox);
     }
 
     public Listbox getListBox(){
         return listBox;
     }
 
-    private Listheader builtChild(String hflex, String label, String id,String sort, String visible){
+    private Listheader builtChild(String hflex, String label, String id, String sort, String visible){
         Listheader header=new Listheader();
-        header.setWidth("150px");
-        if(hflex!=null)
-            header.setHflex(hflex);
+        //header.setWidth("150px");
+        //if(hflex!=null)
+        //    header.setHflex(hflex);
         if(label!=null)
             header.setLabel(label);
         if(id!=null)
@@ -167,7 +141,9 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
     }
 
     public int hashCode(){
-        return userID.hashCode() * tabpanel.hashCode();
+        int x = userID.hashCode();
+        int y = (tabpanel == null) ? 1 : tabpanel.hashCode();
+        return x * y;
     }
 
     public boolean equals(Object o){
@@ -176,24 +152,31 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
         if(o == this)
             return true;
         TabQuery tab=(TabQuery)o;
-        return tab.getTabpanel().equals(tabpanel) && progressID==tab.getProgressID() && userID.equals(tab.getUserID());
+        return equal(tab.tabpanel, tabpanel) && equal(tab.userID, userID);
     }
 
-    private long getTimeCreation(){
-        return timeCreation;
+    private static boolean equal(Object a, Object b) {
+        if (a == null && b == null)
+            return true;
+        if (a == null || b == null)
+            return false;
+        return a.equals(b);
     }
 
     @Override
     public int compareTo(TabQuery o) {
-        if(timeCreation - o.getTimeCreation() > 0)
-            return 1;
-        else if(timeCreation - o.getTimeCreation() ==0 )
-            return 0;
-        return -1;
+        return Long.compare(timeCreation, o.timeCreation);
     }
 
     @Override
-    public PortalTab clone() {
-        return null;
+    public Object clone() {
+        TabQuery clone = (TabQuery) super.clone();
+
+        clone.listBox      = (Listbox) this.listBox.clone();
+        clone.details      = this.details;
+        clone.timeCreation = this.timeCreation;
+        clone.query        = this.query;
+
+        return clone;
     }
 }
