@@ -51,7 +51,7 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         }
 
         List<Listheader> listheaders = new ArrayList<>();
-        if(rows.get(0).size() > 7) {
+        if(rows.size() > 0 && rows.get(0).size() > 7) {
             listheaders.add(new Listheader("Score", null, "3em"));
         }
         addListheader(listheaders, "Name",              null);
