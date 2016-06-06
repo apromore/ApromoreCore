@@ -56,7 +56,7 @@ public class UIHelper implements UserInterfaceHelper {
 
     private AnnotationRepository aRepository;
     private ProcessRepository pRepository;
-    private ProcessLogRepository lRepository;
+    private LogRepository lRepository;
     private GroupProcessRepository gpRepository;
     private ProcessModelVersionRepository pmvRepository;
     private FolderRepository fRepository;
@@ -77,7 +77,7 @@ public class UIHelper implements UserInterfaceHelper {
     @Inject
     public UIHelper(final AnnotationRepository annotationRepository,
                     final ProcessRepository processRepository,
-                    final ProcessLogRepository processLogRepository,
+                    final LogRepository logRepository,
                     final GroupProcessRepository groupProcessRepository,
                     final ProcessModelVersionRepository processModelVersionRepository,
                     final FolderRepository folderRepository,
@@ -85,7 +85,7 @@ public class UIHelper implements UserInterfaceHelper {
 
         this.aRepository = annotationRepository;
         this.pRepository = processRepository;
-        this.lRepository = processLogRepository;
+        this.lRepository = logRepository;
         this.gpRepository = groupProcessRepository;
         this.pmvRepository = processModelVersionRepository;
         this.fRepository = folderRepository;
@@ -239,6 +239,7 @@ public class UIHelper implements UserInterfaceHelper {
         logSummaries.setTotalLogCount(lRepository.count());
         logSummaries.setOffset(new Long(pageIndex * pageSize));
         logSummaries.setLogCount(new Long(logs.getTotalElements()));
+
         for (Log log: logs.getContent()) {
             logSummaries.getLogSummary().add(buildLogSummary(log));
         }
@@ -302,9 +303,9 @@ public class UIHelper implements UserInterfaceHelper {
 //            logSummaryType.setLastVersion(latestVersion.getVersionNumber());
 //        }
 
-        if (log.getUser() != null) {
-            logSummaryType.setOwner(log.getUser().getUsername());
-        }
+//        if (log.getUser() != null) {
+//            logSummaryType.setOwner(log.getUser().getUsername());
+//        }
 
 //        buildVersionSummaryTypeList(logSummaryType, null, process);
 

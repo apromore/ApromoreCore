@@ -38,13 +38,13 @@ import static javax.persistence.GenerationType.IDENTITY;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
-@Table(name = "process_log",
+@Table(name = "log",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"id"}),
                 @UniqueConstraint(columnNames = {"name", "folderId"})
         }
 )
-@Configurable("process_log")
+@Configurable("log")
 @Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Log implements Serializable {
 
@@ -58,8 +58,8 @@ public class Log implements Serializable {
     private User user;
     private Folder folder;
 
-    private Set<GroupProcess> groupProcesses = new HashSet<>();
-    private List<ProcessBranch> processBranches = new ArrayList<>();
+    private Set<GroupLog> groupLogs = new HashSet<>();
+//    private List<ProcessBranch> processBranches = new ArrayList<>();
 
 
     /**
@@ -151,6 +151,15 @@ public class Log implements Serializable {
 
     public void setUser(final User newUser) {
         this.user = newUser;
+    }
+
+    @OneToMany(mappedBy = "log", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<GroupLog> getGroupLogs() {
+        return this.groupLogs;
+    }
+
+    public void setGroupLogs(Set<GroupLog> newGroupLogs) {
+        this.groupLogs = newGroupLogs;
     }
 
 }

@@ -30,7 +30,7 @@ import java.util.List;
  * @version 1.0
  * @see Process
  */
-public interface ProcessLogRepositoryCustom {
+public interface LogRepositoryCustom {
 
     /* ************************** JPA Methods here ******************************* */
 
@@ -39,7 +39,7 @@ public interface ProcessLogRepositoryCustom {
      * @param conditions the conditions
      * @return the list of processes.
      */
-    List<Log> findAllProcesses(final String conditions);
+    List<Log> findAllLogs(final String conditions);
 
     /**
      * Find all the Processes based on the Conditions and folder. This could be done Using Specifications?
@@ -48,7 +48,7 @@ public interface ProcessLogRepositoryCustom {
      * @param conditions the conditions
      * @return the list of processes.
      */
-    List<Log> findAllProcessesByFolder(final Integer folderId, final String conditions);
+    List<Log> findAllLogsByFolder(final Integer folderId, final String conditions);
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 

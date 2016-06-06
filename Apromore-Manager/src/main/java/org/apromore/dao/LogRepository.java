@@ -34,29 +34,30 @@ import java.util.List;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @version 1.0
  */
-public interface ProcessLogRepository extends JpaRepository<Log, Integer>, ProcessLogRepositoryCustom {
+public interface LogRepository extends JpaRepository<Log, Integer>, LogRepositoryCustom {
 
     /**
      * Returns the distinct list of domains.
      * @return the list of domains.
      */
-    @Query("SELECT DISTINCT p.domain FROM Process_Log p ORDER by p.domain")
+    @Query("SELECT DISTINCT l.domain FROM Log l ORDER by l.domain")
     List<String> getAllDomains();
+
     /**
      * Finds if a process with a particular name exists.
-     * @param processName the process name
+     * @param logName the process name
      * @return the process if one exists, null otherwise.
      */
-    @Query("SELECT p FROM Process_Log p WHERE p.name = ?1 AND p.folder is null")
-    Process findUniqueByName(String processName);
+    @Query("SELECT l FROM Log l WHERE l.name = ?1 AND l.folder is null")
+    Log findUniqueByName(String logName);
 
     /**
      * Finds if a process with a particular name in a particular folder exists.
-     * @param processName the process name
+     * @param logName the process name
      * @param folderId the folder id
      * @return the process if one exists, null otherwise.
      */
-    Process findByNameAndFolderId(String processName, Integer folderId);
+    Log findByNameAndFolderId(String logName, Integer folderId);
 
     /**
      * Finds processes within a folder which are in a group the user belongs to.
@@ -64,10 +65,10 @@ public interface ProcessLogRepository extends JpaRepository<Log, Integer>, Proce
      * @param pageable which page of results to produce
      * @return a page of processes
      */
-    @Query("SELECT DISTINCT p FROM Process_Log p JOIN p.groupProcesses gp JOIN gp.group g1, " +
+    @Query("SELECT DISTINCT l FROM Log l JOIN l.groupLogs gl JOIN gl.group g1, " +
             "User u JOIN u.groups g2 " +
-            "WHERE (p.folder is NULL) AND (u.rowGuid = ?1) AND (g1 = g2) ORDER BY p.id")
-    Page<Process> findRootProcessesByUser(String userRowGuid, Pageable pageable);
+            "WHERE (l.folder is NULL) AND (u.rowGuid = ?1) AND (g1 = g2) ORDER BY l.id")
+    Page<Log> findLogsByUser(String userRowGuid, Pageable pageable);
 
     /**
      * Finds processes within a folder which are in a group the user belongs to.
@@ -76,33 +77,33 @@ public interface ProcessLogRepository extends JpaRepository<Log, Integer>, Proce
      * @param pageable which page of results to produce
      * @return a page of processes
      */
-    @Query("SELECT DISTINCT p FROM Process_Log p JOIN p.folder f JOIN p.groupProcesses gp JOIN gp.group g1, " +
+    @Query("SELECT DISTINCT l FROM Log l JOIN l.folder f JOIN l.groupLogs gl JOIN gl.group g1, " +
             "User u JOIN u.groups g2 " +
-            "WHERE (f.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2) ORDER BY p.id")
-    Page<Process> findAllProcessesInFolderForUser(Integer folderId, String userRowGuid, Pageable pageable);
+            "WHERE (f.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2) ORDER BY l.id")
+    Page<Log> findAllLogsInFolderForUser(Integer folderId, String userRowGuid, Pageable pageable);
 
     /**
-     * Returns a processLog
-     * @param processLogId the id of the process log
+     * Returns a Log
+     * @param logId the id of the process log
      * @return the log
      */
-    @Query("SELECT DISTINCT p FROM Process_Log p WHERE p.id = ?1")
-    XLog findUniqueByID(Integer processLogId);
+    @Query("SELECT DISTINCT l FROM Log l WHERE l.id = ?1")
+    Log findUniqueByID(Integer logId);
 
-    /**
-     * Returns a list of processIds
-     * @param folderId the id of the folder
-     * @param name the log name
-     * @param log the log
-     * @return the list of processLogId contained in the folder
-     */
-    void storeProcessLog(Integer folderId, String name, XLog log);
-
-    /**
-     * Returns a list of processIds
-     * @param processLogId the id of the process log
-     */
-    void removeProcessLog(Integer processLogId);
-
-    long count();
+//    /**
+//     * Returns a list of processIds
+//     * @param folderId the id of the folder
+//     * @param name the log name
+//     * @param log the log
+//     * @return the list of LogId contained in the folder
+//     */
+//    void storeLog(Integer folderId, String name, XLog log);
+//
+//    /**
+//     * Returns a list of processIds
+//     * @param LogId the id of the process log
+//     */
+//    void removeLog(Integer LogId);
+//
+//    long count();
 }

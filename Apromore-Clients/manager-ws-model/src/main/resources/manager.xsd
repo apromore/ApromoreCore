@@ -637,7 +637,6 @@
 
     <xs:complexType name="LogSummaryType">
         <xs:sequence>
-            <xs:element minOccurs="1" maxOccurs="unbounded" name="VersionSummaries" type="tns:VersionSummaryType"/>
             <xs:element minOccurs="0" maxOccurs="1" name="Folder" type="tns:FolderType"/>
         </xs:sequence>
         <xs:attribute name="name" type="xs:string"/>
@@ -645,8 +644,6 @@
         <xs:attribute name="domain" type="xs:string"/>
         <xs:attribute name="ranking" type="xs:string"/>
         <xs:attribute name="makePublic" type="xs:boolean"/>
-        <xs:attribute name="last_version" type="xs:string"/>
-        <xs:attribute name="owner" type="xs:string"/>
         <xs:attribute name="hasRead" type="xs:boolean"/>
         <xs:attribute name="hasWrite" type="xs:boolean"/>
         <xs:attribute name="hasOwnership" type="xs:boolean"/>
@@ -988,7 +985,6 @@
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="Logs" type="tns:LogSummariesType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-
     </xs:complexType>
 
     <xs:complexType name="CreateFolderInputMsgType">

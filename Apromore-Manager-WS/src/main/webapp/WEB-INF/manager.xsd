@@ -70,6 +70,8 @@
     <xs:element name="CreateUserResponse" type="tns:CreateUserOutputMsgType"/>
     <xs:element name="GetProcessesRequest" type="tns:GetProcessesInputMsgType"/>
     <xs:element name="GetProcessesResponse" type="tns:GetProcessesOutputMsgType"/>
+    <xs:element name="GetLogsRequest" type="tns:GetLogsInputMsgType"/>
+    <xs:element name="GetLogsResponse" type="tns:GetLogsOutputMsgType"/>
     <xs:element name="CreateFolderRequest" type="tns:CreateFolderInputMsgType"/>
     <xs:element name="CreateFolderResponse" type="tns:CreateFolderOutputMsgType"/>
     <xs:element name="UpdateFolderRequest" type="tns:UpdateFolderInputMsgType"/>
@@ -624,6 +626,29 @@
         <xs:attribute name="code" type="xs:int"/>
     </xs:complexType>
 
+    <xs:complexType name="LogSummariesType">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="LogSummary" type="tns:LogSummaryType"/>
+        </xs:sequence>
+        <xs:attribute name="total_log_count" type="xs:long"/>
+        <xs:attribute name="log_count" type="xs:long"/>
+        <xs:attribute name="offset" type="xs:long"/>
+    </xs:complexType>
+
+    <xs:complexType name="LogSummaryType">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="Folder" type="tns:FolderType"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="id" type="xs:int"/>
+        <xs:attribute name="domain" type="xs:string"/>
+        <xs:attribute name="ranking" type="xs:string"/>
+        <xs:attribute name="makePublic" type="xs:boolean"/>
+        <xs:attribute name="hasRead" type="xs:boolean"/>
+        <xs:attribute name="hasWrite" type="xs:boolean"/>
+        <xs:attribute name="hasOwnership" type="xs:boolean"/>
+    </xs:complexType>
+
     <xs:complexType name="ProcessSummariesType">
         <xs:sequence>
             <xs:element minOccurs="0" maxOccurs="unbounded" name="ProcessSummary" type="tns:ProcessSummaryType"/>
@@ -946,6 +971,20 @@
             <xs:element name="Processes" type="tns:ProcessSummariesType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
 
+    </xs:complexType>
+
+    <xs:complexType name="GetLogsInputMsgType">
+        <xs:attribute name="userId" type="xs:string"/>
+        <xs:attribute name="folderId" type="xs:int"/>
+        <xs:attribute name="pageIndex" type="xs:int"/>
+        <xs:attribute name="pageSize" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="GetLogsOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Logs" type="tns:LogSummariesType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="CreateFolderInputMsgType">
