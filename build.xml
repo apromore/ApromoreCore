@@ -56,7 +56,7 @@
 
         <include name="BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
 
-        <!--
+        <!-- BPMNMiner renamed ~BPMNMiner elsewhere as a workaround for its dependency on IBPStruct
         <include name="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar"/>
         <include name="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar"/>
         -->
@@ -74,7 +74,9 @@
         <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.jar"/>
 
         <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
+        <!-- PQL-Logic is currently required by Apromore-Manager-WS, so it'll already be started as part of 100-manager.plan
         <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
+        -->
         <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
     </fileset>
 

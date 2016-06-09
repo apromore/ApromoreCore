@@ -52,14 +52,11 @@
     <osgi:service ref="securityServiceImpl" interface="org.apromore.service.SecurityService" auto-export="interfaces"/>
     <osgi:service ref="workspaceServiceImpl" interface="org.apromore.service.WorkspaceService" auto-export="interfaces"/>
     <osgi:service ref="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper" auto-export="interfaces"/>
-    <osgi:service ref="PQLServiceImpl" interface="org.apromore.service.PQLService" auto-export="interfaces"/>
-    <osgi:service ref="databaseServiceImpl" interface="org.apromore.service.DatabaseService" auto-export="interfaces"/>
 
     <osgi:service ref="userDetailsServiceImpl" interface="org.springframework.security.core.userdetails.UserDetailsService" auto-export="interfaces"/>
     <osgi:service ref="usernamePasswordAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider" auto-export="interfaces"/>
 
     <osgi:service ref="processModelVersionRepository" interface="org.apromore.dao.ProcessModelVersionRepository" auto-export="interfaces"/>
     <osgi:service ref="folderRepository" interface="org.apromore.dao.FolderRepository" auto-export="interfaces"/>
-    <osgi:service ref="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper" auto-export="interfaces"/>
 
 </beans:beans>

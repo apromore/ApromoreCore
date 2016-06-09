@@ -169,7 +169,6 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
      * @param decomposerSrv decomposer Service.
      * @param ui User Interface Helper.
      * @param workspaceService
-     * @param pqlService
      */
     @Inject
     public ProcessServiceImpl(final AnnotationRepository annotationRepo,
@@ -180,7 +179,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
             final CanonicalConverter converter, final AnnotationService annotationSrv,
             final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, final FragmentService fService,
             final FormatService formatSrv, final @Qualifier("composerServiceImpl") ComposerService composerSrv, final DecomposerService decomposerSrv,
-            final UserInterfaceHelper ui, final WorkspaceService workspaceService, final PQLService pqlService) {
+            final UserInterfaceHelper ui, final WorkspaceService workspaceService) {
         this.annotationRepo = annotationRepo;
         this.groupRepo = groupRepo;
         this.nativeRepo = nativeRepo;
@@ -201,12 +200,6 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
         this.decomposerSrv = decomposerSrv;
         this.ui = ui;
         this.workspaceSrv = workspaceService;
-
-        this.addObserver(pqlService);
-
-        // KLUDGE to work around the circular dependency between ProcessService and PQLService
-        pqlService.setProcessService(this);
-        ui.setPQLService(pqlService);
     }
 
     /**

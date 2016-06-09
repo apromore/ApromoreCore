@@ -26,8 +26,11 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 // Java 2 Enterprise
@@ -36,6 +39,7 @@ import javax.inject.Inject;
 // Third party
 import org.apache.commons.io.IOUtils;
 import org.pql.api.IPQLAPI;
+import org.pql.core.PQLTask;
 import org.pql.index.IndexStatus;
 import org.pql.query.PQLQueryResult;
 import org.slf4j.Logger;
@@ -51,6 +55,7 @@ import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.helper.Version;
+import org.apromore.model.Detail;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
@@ -144,6 +149,57 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
         } catch (Exception e) {
             throw new QueryException("Unable to execute PQL query: " + pql, e);
         }
+    }
+
+    public List<String> runAPQLQuery(String queryPQL, List<String> IDs, String userID) {
+        //Set<String> idNets=new HashSet<>();
+        List<String> results = Collections.emptyList();
+        IPQLAPI api=pqlBean.getApi();
+        LOGGER.error("-----------PQLAPI: " + api);
+        LOGGER.error("----------- query: " + queryPQL);
+        LOGGER.error("-----------   IDs: " + IDs);
+        LOGGER.error("-----------  user: " + userID);
+        try {
+            PQLQueryResult pqlQueryResult = api.query(queryPQL, new HashSet<>(IDs));
+            if (pqlQueryResult.getNumberOfParseErrors() != 0) {
+                results = pqlQueryResult.getParseErrorMessages();
+            } else {//risultati
+                LOGGER.error("-----------IDS PQLServiceImpl" + IDs);
+                map=pqlQueryResult.getTaskMap();
+                LinkedList<PQLTask> tasks=new LinkedList<>(map.values());
+/*
+                idNets=new HashSet<>(IDs);
+                idNets=api.checkLastQuery(idNets);
+                results.addAll(idNets);
+*/
+                results = new LinkedList<>(pqlQueryResult.getSearchResults());
+                LOGGER.error("-----------QUERYAPQL ESATTA "+results);
+            }
+        } catch (Exception e) {
+            LOGGER.error("-----------ERRORRE: " + e.toString());
+            for (StackTraceElement ste : e.getStackTrace())
+                LOGGER.info("ERRORE6: " + ste.getClassName() + " " + ste.getMethodName() + " " + ste.getLineNumber() + " " + ste.getFileName());
+        }
+        return results;
+    }
+
+    private Map<PQLTask,PQLTask> map = new HashMap<>();
+
+    public List<Detail> getDetails() {
+        List<Detail> details = new LinkedList<>();
+        Detail detail;
+        for(PQLTask task : map.keySet()){
+            PQLTask taskTwo = map.get(task);
+
+            detail= new Detail();
+            detail.setLabelOne(task.getLabel());
+            detail.setSimilarityLabelOne(""+task.getSimilarity());
+            if (taskTwo.getSimilarLabels() != null) {
+                detail.getDetail().addAll(taskTwo.getSimilarLabels());
+            }
+            details.add(detail);
+        }
+        return details;
     }
 
     /**
