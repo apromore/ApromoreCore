@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Osmorc" name="OSGi">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="bpstruct-osgi-1.0.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="org.bpstruct-osgi" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+        <additionalProperties>
+          <property key="Embed-Dependency" value="artifactId=bpstruct|de-jbpt|stixar-graph|hub-pn|antlr-rt|uma|stixar-util|rpst|jdom|json|kohsuke|log4j|commons-lang3|jgraph" />
+          <property key="Embed-Transitive" value="false" />
+          <property key="Bundle-ClassPath" value=".,bpstruct-0.1.117.jar,de-jbpt-0.2.77.jar,stixar-graph-1.0.jar,stixar-util-1.0.jar,hub-pn-1.0.jar,antlr-rt-3.2.0.jar,uma-1.2.4.jar,rpst-1.0.jar,jdom-1.0.jar,kohsuke-2.0.6.jar,log4j-1.2.17.jar,jgraph-1.6.jar,json-20090211.jar,commons-lang3-3.4.jar" />
+          <property key="Bundle-Name" value="BPstruct OSGI" />
+          <property key="Import-Package" value="!oracle.xml.parser.v2,!org.apache.xerces.*,!org.antlr.stringtemplate,!javax.xml.*,!org.w3c.dom,!org.junit,!junit.*,!javax.swing.*,!org.xml.sax.*,!org.jaxen.*,!oracle.xml.parser,!com.sun.jdmk.comm,!javax.jmdns,!javax.naming,!javax.jms,!com.ibm.uvm.tools,!javax.mail.*,!javax.management,!ee.ut.bpstruct.epml.old,!org.jgraph.*,!com.touchgraph.graphlayout.interaction,!com.touchgraph.graphlayout,*;resolution=optional" />
+          <property key="Export-Package" value="de.hpi.bpt.process.*,de.hpi.bpt.graph.*,de.hpi.bpt.graph.abs.*,de.hpi.bpt.graph.algo.rpst.*,de.hpi.bpt.hypergraph.abs.*,ee.ut.bpstruct" />
+          <property key="Include-Resource" value="bpstruct-0.1.117.jar=$MAVEN_REPOSITORY$/ee/ut/bpstruct/0.1.117/bpstruct-0.1.117.jar,de-jbpt-0.2.77.jar=$MAVEN_REPOSITORY$/de/hpi/jbpt/de-jbpt/0.2.77/de-jbpt-0.2.77.jar,stixar-graph-1.0.jar=$MAVEN_REPOSITORY$/net/stixar/stixar-graph/1.0/stixar-graph-1.0.jar,stixar-util-1.0.jar=$MAVEN_REPOSITORY$/net/stixar/stixar-util/1.0/stixar-util-1.0.jar,hub-pn-1.0.jar=$MAVEN_REPOSITORY$/hub/top/petrinet/hub-pn/1.0/hub-pn-1.0.jar,antlr-rt-3.2.0.jar=$MAVEN_REPOSITORY$/org/antlr/runtime/antlr-rt/3.2.0/antlr-rt-3.2.0.jar,uma-1.2.4.jar=$MAVEN_REPOSITORY$/hub/top/uma/uma/1.2.4/uma-1.2.4.jar,rpst-1.0.jar=$MAVEN_REPOSITORY$/de/bpt/hpi/rpst/1.0/rpst-1.0.jar,jdom-1.0.jar=$MAVEN_REPOSITORY$/org/jdom/jdom/1.0/jdom-1.0.jar,kohsuke-2.0.6.jar=$MAVEN_REPOSITORY$/org/kohsuke/kohsuke/2.0.6/kohsuke-2.0.6.jar,log4j-1.2.17.jar=$MAVEN_REPOSITORY$/org/apache/log4j/log4j/1.2.17/log4j-1.2.17.jar,jgraph-1.6.jar=$MAVEN_REPOSITORY$/org/jgraph/jgraph/1.6/jgraph-1.6.jar,json-20090211.jar=$MAVEN_REPOSITORY$/org/json/json/20090211/json-20090211.jar,commons-lang3-3.4.jar=$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar" />
+          <property key="Embedded-Artifacts" value="bpstruct-0.1.117.jar;g=&quot;ee.ut&quot;;a=&quot;bpstruct&quot;;v=&quot;0.1.117&quot;,de-jbpt-0.2.77.jar;g=&quot;de.hpi.jbpt&quot;;a=&quot;de-jbpt&quot;;v=&quot;0.2.77&quot;,stixar-graph-1.0.jar;g=&quot;net.stixar&quot;;a=&quot;stixar-graph&quot;;v=&quot;1.0&quot;,stixar-util-1.0.jar;g=&quot;net.stixar&quot;;a=&quot;stixar-util&quot;;v=&quot;1.0&quot;,hub-pn-1.0.jar;g=&quot;hub.top.petrinet&quot;;a=&quot;hub-pn&quot;;v=&quot;1.0&quot;,antlr-rt-3.2.0.jar;g=&quot;org.antlr.runtime&quot;;a=&quot;antlr-rt&quot;;v=&quot;3.2.0&quot;,uma-1.2.4.jar;g=&quot;hub.top.uma&quot;;a=&quot;uma&quot;;v=&quot;1.2.4&quot;,rpst-1.0.jar;g=&quot;de.bpt.hpi&quot;;a=&quot;rpst&quot;;v=&quot;1.0&quot;,jdom-1.0.jar;g=&quot;org.jdom&quot;;a=&quot;jdom&quot;;v=&quot;1.0&quot;,kohsuke-2.0.6.jar;g=&quot;org.kohsuke&quot;;a=&quot;kohsuke&quot;;v=&quot;2.0.6&quot;,log4j-1.2.17.jar;g=&quot;org.apache.log4j&quot;;a=&quot;log4j&quot;;v=&quot;1.2.17&quot;,jgraph-1.6.jar;g=&quot;org.jgraph&quot;;a=&quot;jgraph&quot;;v=&quot;1.6&quot;,json-20090211.jar;g=&quot;org.json&quot;;a=&quot;json&quot;;v=&quot;20090211&quot;,commons-lang3-3.4.jar;g=&quot;org.apache.commons&quot;;a=&quot;commons-lang3&quot;;v=&quot;3.4&quot;" />
+        </additionalProperties>
+        <additionalJARContents />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: ee.ut:bpstruct:0.1.117" level="project" />
+    <orderEntry type="library" name="Maven: de.hpi.jbpt:de-jbpt:0.2.77" level="project" />
+    <orderEntry type="library" name="Maven: net.stixar:stixar-graph:1.0" level="project" />
+    <orderEntry type="library" name="Maven: net.stixar:stixar-util:1.0" level="project" />
+    <orderEntry type="library" name="Maven: hub.top.petrinet:hub-pn:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr.runtime:antlr-rt:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: hub.top.uma:uma:1.2.4" level="project" />
+    <orderEntry type="library" name="Maven: de.bpt.hpi:rpst:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jdom:jdom:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.kohsuke:kohsuke:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.log4j:log4j:1.2.17" level="project" />
+    <orderEntry type="library" name="Maven: org.jgraph:jgraph:1.6" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
+  </component>
+</module>

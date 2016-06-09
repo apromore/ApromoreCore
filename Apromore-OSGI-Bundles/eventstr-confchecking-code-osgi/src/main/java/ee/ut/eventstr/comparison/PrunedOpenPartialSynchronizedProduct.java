@@ -87,7 +87,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 		}
 	}
 	
-	private SinglePORunPESSemantics<T> pes1;
+	private SinglePORunPESSemantics <T> pes1;
 	private NewUnfoldingPESSemantics<T> pes2;
 	private int numberOfTargets;
 	private BitSet maxConf1;
@@ -290,7 +290,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 	
 	private boolean isOrderPreserving(State s, int e1, Integer e2) {
 		BitSet e1dpred = (BitSet)pes1.getDirectPredecessors(e1).clone();
-		Set<Integer> e2dpred = new HashSet<>(pes2.getDirectPredecessors(e2));
+		Set<Integer> e2dpred = new HashSet<Integer>(pes2.getDirectPredecessors(e2));
 		
 		Stack<State> open = new Stack<>();
 		Set<State> visited = new HashSet<>();

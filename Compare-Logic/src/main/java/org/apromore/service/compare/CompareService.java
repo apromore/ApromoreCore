@@ -23,6 +23,7 @@ package org.apromore.service.compare;
 import hub.top.petrinet.PetriNet;
 import org.deckfour.xes.model.XLog;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -31,5 +32,5 @@ import java.util.Set;
 public interface CompareService {
 
     Set<String> discoverBPMNModel(PetriNet net, XLog log) throws Exception;
-
+    Set<String> discoverModelModel(PetriNet net1, PetriNet net2, HashSet<String> silent1, HashSet<String> silent2) throws Exception;
 }
