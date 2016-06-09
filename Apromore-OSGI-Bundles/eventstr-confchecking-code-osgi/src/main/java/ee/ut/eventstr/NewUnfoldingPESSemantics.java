@@ -21,7 +21,7 @@ import com.google.common.collect.Multiset;
 import ee.ut.nets.unfolding.Unfolding2PES;
 import ee.ut.org.processmining.framework.util.Pair;
 
-public class NewUnfoldingPESSemantics <T> {
+public class NewUnfoldingPESSemantics<T>{
 	private Unfolding2PES unfMetadata;
 	private PrimeEventStructure<T> pes;
 	protected Set<BitSet> maximalConfigurations;
@@ -146,7 +146,7 @@ public class NewUnfoldingPESSemantics <T> {
 		}
 		return result;
 	}
-
+	
 	public Set<Integer> getPossibleExtensions(Multiset<Integer> conf) {
 		BitSet shiftedConf = mappings.get(conf);
 		Set<Integer> pe = possibleExtensions.get(shiftedConf);
@@ -363,10 +363,4 @@ public class NewUnfoldingPESSemantics <T> {
 		}
 		return dconf;
 	}
-
-	public boolean isMaximal(Multiset<Integer> conf) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

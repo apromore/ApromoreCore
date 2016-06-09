@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SinglePORunPESSemantics <T> {
+public class SinglePORunPESSemantics <T>{
 	protected PrimeEventStructure<T> pes;	
 	protected Set<BitSet> cuts;
 	protected Set<BitSet> maximalConfigurations;

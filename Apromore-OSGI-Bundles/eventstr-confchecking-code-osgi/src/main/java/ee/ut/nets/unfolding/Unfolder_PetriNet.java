@@ -27,6 +27,9 @@ import hub.top.uma.DNodeSet.DNodeSetElement;
 
 import java.util.HashMap;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import ee.ut.nets.unfolding.BPstructBP.MODE;
 
 /**
@@ -43,6 +46,10 @@ public class Unfolder_PetriNet {
 
 	// a branching process of the Petri net (the unfolding)
 	private BPstructBP bp;
+	
+	BiMap<Node, String> transitionLabel;
+
+	HashMap<String, String> label2Label;
 
 	/**
 	 * Initialize the unfolder to construct a finite complete prefix of a safe
@@ -53,6 +60,8 @@ public class Unfolder_PetriNet {
 	 */
 	public Unfolder_PetriNet(PetriNet net, MODE mode) {
 		try {
+			relabel(net);
+			
 			sys = new BPstructBPSys(net);
 
 			Options o = new Options(sys);
@@ -63,15 +72,57 @@ public class Unfolder_PetriNet {
 
 			// initialize unfolder
 			bp = new BPstructBP(sys, o);
-
 			bp.setMode(mode);
 
 		} catch (InvalidModelException e) {
-
 			System.err.println("Error! Invalid model.");
 			System.err.println(e);
 			sys = null;
 			bp = null;
+		}
+	}
+
+	private void relabel(PetriNet net) {
+		transitionLabel = HashBiMap.<Node, String> create();
+		label2Label = new HashMap<>();
+		HashMap<String, Integer> counterLabel = new HashMap<>();
+		
+		counterLabel.put("silent", 0);
+		for(Transition t : net.getTransitions()){
+			
+			if(t.getName().equals("")){
+				String newLabel = "silent_added_" + (counterLabel.get("silent")+1);
+				counterLabel.put("silent", counterLabel.get("silent")+1);
+				label2Label.put(newLabel, "");
+				t.setName(newLabel);
+				transitionLabel.put(t, newLabel);
+			}else if(!counterLabel.containsKey(t.getName()))
+				counterLabel.put(t.getName(), 0);
+			else{
+				String newLabel = t.getName() + "_copy_" + (counterLabel.get(t.getName())+1);
+				counterLabel.put(t.getName(), counterLabel.get(t.getName())+1);
+				label2Label.put(newLabel, t.getName());
+				t.setName(newLabel);
+				transitionLabel.put(t, newLabel);
+			}
+		}
+		
+		for(Node t : net.getPlaces()){
+			if(t.getName().equals("")){
+				String newLabel = "silent_added_" + (counterLabel.get("silent")+1);
+				counterLabel.put("silent", counterLabel.get("silent")+1);
+				label2Label.put(newLabel, "");
+				t.setName(newLabel);
+				transitionLabel.put(t, newLabel);
+			}else if(!counterLabel.containsKey(t.getName()))
+				counterLabel.put(t.getName(), 0);
+			else{
+				String newLabel = t.getName() + "_copy_" + (counterLabel.get(t.getName())+1);
+				counterLabel.put(t.getName(), counterLabel.get(t.getName() + 1));
+				label2Label.put(newLabel, t.getName());
+				t.setName(newLabel);
+				transitionLabel.put(t, newLabel);
+			}
 		}
 	}
 
@@ -92,7 +143,6 @@ public class Unfolder_PetriNet {
 	 * Convert the unfolding into a Petri net and return this Petri net
 	 */
 	public PetriNet getUnfoldingAsPetriNet() {
-
 		PetriNet unfolding = new PetriNet();
 		DNodeSetElement allNodes = bp.getBranchingProcess().getAllNodes();
 		
@@ -105,8 +155,10 @@ public class Unfolder_PetriNet {
 			if (n.isEvent)
 				continue;
 
+			System.out.println("Data about generator = " + n.id + " -- "+ n.idGenerator+ " -- "+ n.idGen + " -- ");
+			
 			// if (!option_printAnti && n.isAnti) continue;
-
+			
 			String name = n.toString();
 			if (n.isAnti)
 				name = "NOT " + name;
@@ -168,5 +220,12 @@ public class Unfolder_PetriNet {
 
 	public BPstructBPSys getSys() {
 		return sys;
+	}
+
+	public String getOriginalLabel(String string) {
+		if(label2Label != null && label2Label.containsKey(string))
+			return label2Label.get(string);
+		
+		return string;
 	}
 }

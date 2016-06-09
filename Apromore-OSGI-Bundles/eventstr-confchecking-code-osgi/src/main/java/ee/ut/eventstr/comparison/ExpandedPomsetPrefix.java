@@ -3,7 +3,6 @@ package ee.ut.eventstr.comparison;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
