@@ -44,7 +44,7 @@ public class Graph {
     private boolean valid;
     private boolean keepBisimulation;
 
-    final static boolean jsLimitation = true;
+    final static boolean jsLimitation = false;
 
 
     public Graph(boolean keepBisimulation, Map<String, Gateway.GatewayType> gateways) {

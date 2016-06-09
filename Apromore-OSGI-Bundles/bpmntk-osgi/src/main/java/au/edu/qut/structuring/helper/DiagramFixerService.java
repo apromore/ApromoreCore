@@ -9,6 +9,10 @@ import de.hpi.bpt.graph.algo.rpst.RPSTNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 import de.hpi.bpt.hypergraph.abs.Vertex;
+import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
+import org.processmining.framework.plugin.annotations.Plugin;
+import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
@@ -19,9 +23,62 @@ import java.util.*;
 /**
  * Created by Adriano on 16/05/2016.
  */
+
+@Plugin(
+        name = "Remove Useless Parallel Flows",
+        parameterLabels = { "BPMNDiagram" },
+        returnLabels = { "Simplified Diagram" },
+        returnTypes = { BPMNDiagram.class },
+        userAccessible = true,
+        help = "Remove Parallel Flows with no Activities"
+)
 public class DiagramFixerService {
 
+    @UITopiaVariant(
+            affiliation = "Queensland University of Technology",
+            author = "Adriano Augusto",
+            email = "a.augusto@qut.edu.au"
+    )
+    @PluginVariant(variantLabel = "Remove Useless Parallel Flows", requiredParameterLabels = {0})
+    public static BPMNDiagram removeUselessParallelFlows(UIPluginContext context, BPMNDiagram diagram) {
+        DiagramFixerService fixerService = new DiagramFixerService();
+        fixerService.removeEmptyParallelFlows(diagram);
+        return diagram;
+    }
+
     public DiagramFixerService(){}
+
+    public void removeEmptyParallelFlows(BPMNDiagram diagram) {
+        BPMNNode src, tgt;
+        boolean keepGoing;
+        HashSet<Flow> toRemove;
+        HashSet<Gateway> toCheck;
+
+        do{
+            toRemove = new HashSet<>();
+            toCheck = new HashSet<>();
+            keepGoing = false;
+            for( Flow f : diagram.getFlows() ) {
+                src = f.getSource();
+                tgt = f.getTarget();
+                if( src instanceof Gateway &&
+                    tgt instanceof Gateway &&
+                    ((Gateway) src).getGatewayType() == ((Gateway) tgt).getGatewayType() &&
+                    ((Gateway) src).getGatewayType() == Gateway.GatewayType.PARALLEL ) {
+                    toRemove.add(f);
+                    toCheck.add((Gateway) src);
+                    toCheck.add((Gateway) tgt);
+                    keepGoing = true;
+                }
+            }
+
+            for( Flow f : toRemove ) diagram.removeEdge(f);
+
+            if( keepGoing ) {
+                for( Gateway g : toCheck ) checkFakeGateway(diagram, g);
+            }
+        } while( keepGoing );
+    }
 
     public void removeDuplicates(BPMNDiagram diagram) {
         while( checkDuplicates(diagram) ) ;
