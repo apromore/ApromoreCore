@@ -120,10 +120,12 @@ public class StructuringService {
         return this.diagram;
     }
 
+
+
     @UITopiaVariant(
             affiliation = "Queensland University of Technology",
             author = "Adriano Augusto",
-            email = "adriano.augusto@qut.edu.au"
+            email = "a.augusto@qut.edu.au"
     )
     @PluginVariant(variantLabel = "Structure BPMNDiagram", requiredParameterLabels = {0})
     public static BPMNDiagram structureDiagram(UIPluginContext context, BPMNDiagram diagram) {
@@ -468,6 +470,7 @@ public class StructuringService {
         }
 
         diagramFixer.removeDuplicates(structuredDiagram);
+        diagramFixer.removeEmptyParallelFlows(structuredDiagram);
         idToDiagram.put(processID, structuredDiagram);
         rebuildOrder.addLast(processID);
     }
