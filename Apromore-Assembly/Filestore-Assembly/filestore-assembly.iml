@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="manager-ws-model" />
+    <orderEntry type="module" module-name="plugin-api" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.gemini:org.eclipse.gemini.blueprint.extender:1.0.2.RELEASE" level="project" />
+    <orderEntry type="module" module-name="canoniser-api" />
+    <orderEntry type="module" module-name="anf-schema" />
+    <orderEntry type="module" module-name="cpf-schema" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava-collections:r03" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava-annotations:r03" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava-primitives:r03" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava-base:r03" level="project" />
+    <orderEntry type="module" module-name="bpmn-schema" />
+    <orderEntry type="library" name="Maven: com.sun.xml:com.springsource.com.sun.tools.xjc:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.dom4j:com.springsource.org.dom4j:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge.iso-relax:com.springsource.org.iso_relax.verifier:0.0.0.20041111" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.0.13" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.0.13" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml.bind:com.springsource.javax.xml.bind:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml:com.springsource.com.sun.xml.bind:2.2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml:com.springsource.com.sun.xml.fastinfoset:1.2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.jvnet.staxex:com.springsource.org.jvnet.staxex:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.5.3" level="project" />
+    <orderEntry type="module" module-name="manager-security" />
+    <orderEntry type="library" name="Maven: org.springframework:org.springframework.web:3.1.0.RELEASE" level="project" />
+    <orderEntry type="module" module-name="filestore-client" />
+    <orderEntry type="library" name="Maven: org.springframework:org.springframework.beans:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:org.springframework.asm:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.ws:org.springframework.ws:2.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:org.springframework.oxm:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.ws:org.springframework.xml:2.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:com.springsource.org.apache.httpcomponents.httpclient:4.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:com.springsource.org.apache.commons.codec:1.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:com.springsource.org.apache.httpcomponents.httpcore:4.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:com.springsource.org.apache.httpcomponents.httpmime:4.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:com.springsource.org.apache.httpcomponents.httpclient-cache:4.2.1" level="project" />
+    <orderEntry type="library" name="Maven: com.github.lookfirst:sardine:5.0.1" level="project" />
+    <orderEntry type="module" module-name="apromore-filestore" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.persistence:org.eclipse.persistence.jpa:2.4.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.persistence:javax.persistence:2.0.4.v201112161009" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.persistence:org.eclipse.persistence.asm:3.3.1.v201206041142" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.persistence:org.eclipse.persistence.antlr:3.2.0.v201206041011" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.4.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.persistence:org.eclipse.persistence.core:2.4.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.gemini:org.eclipse.gemini.blueprint.core:1.0.2.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.aopalliance:com.springsource.org.aopalliance:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.gemini:org.eclipse.gemini.blueprint.io:1.0.2.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.osgi:org.eclipse.osgi:3.7.1.R37x_v20110808-1106" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.osgi:org.eclipse.osgi.services:3.3.0.v20110513" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:org.springframework.aop:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:org.springframework.context:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:org.springframework.expression:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework:org.springframework.context.support:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:org.springframework.core:3.1.0.RELEASE" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: commons-codec:commons-codec:1.7" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.sourceforge.cglib:com.springsource.net.sf.cglib:2.2.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.validation:com.springsource.javax.validation:1.0.0.GA" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.ant:com.springsource.org.apache.tools.ant:1.8.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework.security:org.springframework.security.core:3.1.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework.security:org.springframework.security.config:3.1.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework.security:org.springframework.security.web:3.1.4.RELEASE" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework.security:org.springframework.security.remoting:3.1.4.RELEASE" level="project" />
+    <orderEntry type="module" module-name="build-tools" />
+  </component>
+</module>

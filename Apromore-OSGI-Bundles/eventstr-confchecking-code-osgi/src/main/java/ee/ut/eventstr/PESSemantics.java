@@ -223,4 +223,17 @@ public class PESSemantics <T> {
 	public PrimeEventStructure<T> getPES() {
 		return pes;
 	}
+
+	public HashSet<String> getConfigurationLabels(BitSet c1) {
+		HashSet<String> labels = new HashSet<>();
+		
+		for (int i = c1.nextSetBit(0); i >= 0; i = c1.nextSetBit(i+1)) 
+		     labels.add(getLabel(i));
+		
+		return labels;
+	}
+
+	public HashSet<String> getCyclicTasks() {
+		return this.pes.getCyclicTasks();
+	}
 }

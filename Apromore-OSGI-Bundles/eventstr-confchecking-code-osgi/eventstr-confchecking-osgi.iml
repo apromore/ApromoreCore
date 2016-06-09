@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Osmorc" name="OSGi">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="eventstr-confchecking-osgi-1.0.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="org.eventstr-confchecking-osgi" bundleVersion="1.0.0" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+        <additionalProperties>
+          <property key="Embed-Transitive" value="false" />
+          <property key="Bundle-ClassPath" value="." />
+          <property key="Bundle-Name" value="Event structure based OSGi component" />
+          <property key="Import-Package" value="!junit.framework.*,!org.junit.*,!hub.top.test,!viptool.algorithm.postprocessing.pnetiplp,!junit.textui,*" />
+          <property key="Export-Package" value="ee.ut.eventstr.comparison,ee.ut.eventstr.folding,ee.ut.eventstr.freq,ee.ut.eventstr.unfolding" />
+          <property key="Include-Resource" value="dummy.txt=$MODULE_DIR$/src/main/resources/dummy.txt" />
+        </additionalProperties>
+        <additionalJARContents />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.apache.servicemix.bundles:org.apache.servicemix.bundles.gwt-dev:2.6.0_1" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
+    <orderEntry type="library" name="Maven: jaxen:jaxen:1.1.6" level="project" />
+    <orderEntry type="library" name="Maven: org.jdom:jdom2:2.0.6" level="project" />
+    <orderEntry type="library" name="Maven: org.jdom:jdom:1.1" level="project" />
+    <orderEntry type="module" module-name="uma-bpdiff-osgi" />
+    <orderEntry type="module-library">
+      <library name="Maven: ut.ee:umabpdiff:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../uma-bpdiff-osgi/lib/umaBPDiff-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="lpsolve-osgi" />
+    <orderEntry type="library" name="Maven: org.processmining:lpsolve55j:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="module" module-name="pnapi-bpdiff-osgi" />
+    <orderEntry type="module-library">
+      <library name="Maven: ut.ee:pnapi:1.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../pnapi-bpdiff-osgi/lib/pnapi-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="log-osgi" />
+    <orderEntry type="library" name="Maven: com.thoughtworks.xstream:xstream:1.4.8" level="project" />
+    <orderEntry type="library" name="Maven: xmlpull:xmlpull:1.1.3.1" level="project" />
+    <orderEntry type="library" name="Maven: xpp3:xpp3_min:1.1.4c" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:14.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.deckfour.xes:OpenXES:2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.deckfour.xes:OpenXES-Stream:2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.processmining:spex:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr.runtime:antlr-rt:3.2.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-all:1.3" level="project" />
+  </component>
+</module>

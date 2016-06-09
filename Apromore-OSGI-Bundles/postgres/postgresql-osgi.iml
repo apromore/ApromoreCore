@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Osmorc" name="OSGi">
+      <configuration manifestGenerationMode="OsmorcControlled" manifestLocation="" jarfileLocation="postgresql-osgi-9.3-1101-jdbc41.jar" outputPathType="CompilerOutputPath" bndFileLocation="" bundlorFileLocation="" bundleActivator="" bundleSymbolicName="org.postgresql-osgi" bundleVersion="9.3.0.1101-jdbc41" ignoreFilePattern="" useProjectDefaultManifestFileLocation="true" alwaysRebuildBundleJAR="false" doNotSynchronizeWithMaven="false">
+        <additionalProperties>
+          <property key="Embed-Dependency" value="artifactId=postgresql" />
+          <property key="Embed-Transitive" value="false" />
+          <property key="Bundle-ClassPath" value=".,postgresql-9.3-1101-jdbc41.jar" />
+          <property key="Bundle-Name" value="postgres OSGI" />
+          <property key="Export-Package" value="org.postgresql,org.postgresql.copy,org.postgresql.core,org.postgresql.core.types,org.postgresql.core.v2,org.postgresql.core.v3,org.postgresql.ds,org.postgresql.ds.common,org.postgresql.ds.jdbc4,org.postgresql.ds.jdbc23,org.postgresql.fastpath,org.postgresql.geometric,org.postgresql.gss,org.postgresql.jdbc2,org.postgresql.jdbc2.optional,org.postgresql.jdbc3,org.postgresql.jdbc3g,org.postgresql.jdbc4,org.postgresql.jdbc4.array,org.postgresql.largeobject,org.postgresql.ssl,org.postgresql.ssl.jdbc4,org.postgresql.translation,org.postgresql.util,org.postgresql.xa,org.postgresql.xa.jdbc3,org.postgresql.xa.jdbc4" />
+          <property key="Include-Resource" value="postgresql-9.3-1101-jdbc41.jar=$MAVEN_REPOSITORY$/org/postgresql/postgresql/9.3-1101-jdbc41/postgresql-9.3-1101-jdbc41.jar" />
+          <property key="Embedded-Artifacts" value="postgresql-9.3-1101-jdbc41.jar;g=&quot;org.postgresql&quot;;a=&quot;postgresql&quot;;v=&quot;9.3-1101-jdbc41&quot;" />
+        </additionalProperties>
+        <additionalJARContents />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.postgresql:postgresql:9.3-1101-jdbc41" level="project" />
+  </component>
+</module>
