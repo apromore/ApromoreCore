@@ -40,8 +40,6 @@ public class ApromoreCompareML {
 	}
 	
 	public Set<String> getDifferences(PetriNet net, XLog log, Set<String> silents) {
-		Set<String> statements = new HashSet<String>();
-		
 		try {
 			return runTest(net, log, silents);
 		} 
@@ -49,9 +47,9 @@ public class ApromoreCompareML {
 			e.printStackTrace();
 		}
 
-		return statements;
+		return new HashSet<String>();
 	}
-		
+	
 	private Set<String> runTest(PetriNet net, XLog log, Set<String> silents) throws Exception {
 		PrintStream stdout = System.out;
 		ByteArrayOutputStream verbalization = new ByteArrayOutputStream();
@@ -91,14 +89,13 @@ public class ApromoreCompareML {
 	       	logpessem = new SinglePORunPESSemantics<Integer>(logpes, sink);			
 			psp = new PrunedOpenPartialSynchronizedProduct<Integer>(logpessem, pnmlpes);
 			
-			psp.perform()
-				.prune()
-			;
+			psp.perform().prune();
+			
 			verbalizer.addPSP(psp.getOperationSequence());				
 		}
 		return verbalizer;
 	}
-		
+	
 	private NewUnfoldingPESSemantics<Integer> getUnfoldingPES(PetriNet net, Set<String> silents) throws Exception {
 		Set<String> labels = new HashSet<>();
 		for (Transition t: net.getTransitions()) {
@@ -110,7 +107,7 @@ public class ApromoreCompareML {
 		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.ESPARZA);
 		unfolder.computeUnfolding();
 		
-		Unfolding2PES pes = new Unfolding2PES(unfolder.getSys(), unfolder.getBP(), labels);
+		Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
 		NewUnfoldingPESSemantics<Integer> pessem = new NewUnfoldingPESSemantics<Integer>(pes.getPES(), pes);
 		return pessem;
 	}

@@ -42,17 +42,18 @@ public class Unfolding2PES {
 	private Set<Integer> invisibleEvents;
 	private Set<Integer> terminalEvents;
 	private Map<Integer, BiMap<Integer, Integer>> isomorphism;
-	
+	private HashSet<String> cyclicTasks; 	
 
-	public Unfolding2PES(BPstructBPSys sys, BPstructBP bp, Set<String> originalVisibleLabels) {
-		this.sys = sys;
-		this.bp = bp;
+	public Unfolding2PES(Unfolder_PetriNet unfolder, Set<String> originalVisibleLabels) {
+		this.sys = unfolder.getSys();
+		this.bp = unfolder.getBP();
 		this.orderedVisibleEventMap = new HashMap<>();
 		this.orderedVisibleEvents = new ArrayList<>();
 		this.cutoffCorrespondingMap = new HashMap<>();
 		this.cutoffEvents = new HashSet<>();
 		this.invisibleEvents = new HashSet<>();
 		this.terminalEvents = new HashSet<>();
+		this.cyclicTasks = new HashSet<>();
 
 		this.labels = new ArrayList<>();
 		
@@ -71,6 +72,8 @@ public class Unfolding2PES {
 		
 		int localId = 0;
 		for (DNode node: bp.getBranchingProcess().allEvents) {
+			String originalName = unfolder.getOriginalLabel(sys.properNames[node.id]);
+			
 			localMap.put(node, localId++);
 
 			boolean atLeastOneTerminal = false;
@@ -82,17 +85,17 @@ public class Unfolding2PES {
 				else
 					atLeastOneNonTerminal = true;
 			}
+			
 			boolean sinkEvent = atLeastOneTerminal & !atLeastOneNonTerminal;
 
-
-			if (originalVisibleLabels.contains(sys.properNames[node.id]) || node.isCutOff || sinkEvent) {
+			if (originalVisibleLabels.contains(originalName) || node.isCutOff || sinkEvent) {
 				visibleEvents.add(node);
 				orderedVisibleEvents.add(node);
-				if (!originalVisibleLabels.contains(sys.properNames[node.id]) && sinkEvent)
+				if (!originalVisibleLabels.contains(originalName) && sinkEvent)
 					invisibleSinks.put(orderedVisibleEventMap.size(), node);
 
 				orderedVisibleEventMap.put(node, orderedVisibleEventMap.size());
-				labels.add(sys.properNames[node.id]);
+				labels.add(originalName);
 			}
 			
 			if (sinkEvent && node.isCutOff)
@@ -105,14 +108,15 @@ public class Unfolding2PES {
 		for (DNode cutoff: cutoffDNodes) {
 			DNode corresponding = bp.getCutOffEquivalentEvent().get(cutoff);
 			if (!visibleEvents.contains(corresponding)) {
+				String originalName = unfolder.getOriginalLabel(sys.properNames[corresponding.id]);
 				visibleEvents.add(corresponding);
 				orderedVisibleEvents.add(corresponding);
 				orderedVisibleEventMap.put(corresponding, orderedVisibleEventMap.size());
-				labels.add(sys.properNames[corresponding.id]);				
+				labels.add(originalName);				
 			}
 			if (!visibleSinks.contains(cutoff)) {
 				cutoffCorrespondingMap.put(orderedVisibleEventMap.get(cutoff), orderedVisibleEventMap.get(corresponding));
-				System.out.printf("Cutoff: %s, Corresponding: %s\n", sys.properNames[cutoff.id], sys.properNames[corresponding.id]);
+				System.out.printf("Cutoff: %s, Corresponding: %s\n", unfolder.getOriginalLabel(sys.properNames[cutoff.id]), unfolder.getOriginalLabel(sys.properNames[corresponding.id]));
 			}
 		}
 		
@@ -234,6 +238,10 @@ public class Unfolding2PES {
 		pes = new PrimeEventStructure<Integer>(labels, causality, dcausality, invcausality,
 						concurrency, conflict, Arrays.asList(artificialStartEvent), new ArrayList<>(sinks));
 		
+		for(int i = 0; i < labels.size(); i++)
+			for(int j = 0; j < labels.size(); j++)
+				if(i != j && labels.get(i).equals(labels.get(j)) && (causality[i].get(j) || causality[j].get(i)))
+					cyclicTasks.add(labels.get(i));
 		
 		for (DNode cutoff: cutoffDNodes) {
 			if (!visibleSinks.contains(cutoff))
@@ -262,7 +270,7 @@ public class Unfolding2PES {
 			}
 			isomorphism.put(cutoff, bimap);
 		}
-		System.out.println(">> " + isomorphism);
+		System.out.println(">> " + isomorphism+" ------ ");
 	}
 
 	public Map<Integer, BiMap<Integer, Integer>> getIsomorphism() {
@@ -340,6 +348,7 @@ public class Unfolding2PES {
 	}
 
 	public PrimeEventStructure<Integer> getPES() {
+		pes.setCyclicTasks(this.cyclicTasks);
 		return pes;
 	}
 
@@ -359,5 +368,9 @@ public class Unfolding2PES {
 	
 	public Set<Integer> getTerminalEvents() {
 		return terminalEvents;
+	}
+
+	public HashSet<String> getCyclicTasks() {
+		return cyclicTasks;
 	}
 }
