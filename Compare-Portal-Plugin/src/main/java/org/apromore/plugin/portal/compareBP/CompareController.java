@@ -24,6 +24,7 @@ import java.io.*;
 import java.util.*;
 
 import hub.top.petrinet.PetriNet;
+import org.apache.tools.ant.types.resources.selectors.Compare;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.compare.CompareService;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -77,6 +78,17 @@ public class CompareController {
     private String logFileName = null;
     private CompareService compareService;
     private PetriNet net;
+
+    public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net1, PetriNet net2, HashSet<String> silent1, HashSet<String> silent2) throws Exception{
+        this.compareService = compareService;
+        this.portalContext = portalContext;
+        Set<String> differences = compareService.discoverModelModel(net1, net2, silent1, silent2);
+
+//                for (String s : differences)
+//                    result += s + "\n";
+
+        makeResultWindows(differences);
+    }
 
     public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net) {
         this.compareService = compareService;
@@ -224,18 +236,6 @@ public class CompareController {
                 Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
             }
         }
-
-
-//        if(log == null) {
-//            Messagebox.show("Please select a log.");
-//        }else if(miningAlgorithms.getSelectedIndex() < 0) {
-//            Messagebox.show("Please select mining algorithm.");
-//        }else {
-//            erModel = new DiscoverERmodel();
-//            listCandidates = erModel.generateAllAttributes(log);
-//
-//            new CandidatesEntitiesController(this, listCandidates);
-//        }
     }
 
     public void makeResultWindows(Set<String> results){
