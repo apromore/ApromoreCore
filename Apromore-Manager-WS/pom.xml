@@ -177,7 +177,7 @@
                 <configuration>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                     <packagingExcludes>
-                        %regex[WEB-INF/lib/(?!jaxb2-basics-runtime).*jar]
+                        %regex[WEB-INF/lib/((?!jaxb2-basics-runtime).)*\.jar]
                     </packagingExcludes>
                     <archive>
                         <manifestFile>
