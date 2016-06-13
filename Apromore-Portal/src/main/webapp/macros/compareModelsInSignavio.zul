@@ -18,17 +18,19 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native" use="org.apromore.portal.dialogController.SignavioController">
+<window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native"
+        xmlns:z="http://www.zkoss.org/2005/zul"
+        use="org.apromore.portal.dialogController.SignavioController">
 
     <n:style media="screen" type="text/css">
-        @import url("/editor/libs/ext-2.0.2/resources/css/ext-all.css");
-        @import url("/editor/libs/ext-2.0.2/resources/css/file-upload.css");
-        @import url("/editor/libs/ext-2.0.2/resources/css/xtheme-gray.css");
+        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
+        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/file-upload.css");
+        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/xtheme-gray.css");
     </n:style>
-    <n:link rel="Stylesheet" media="screen" href="/editor/editor/css/theme_norm.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/editor/editor/css/theme_norm_signavio.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/editor/explorer/src/css/xtheme-smoky.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/editor/explorer/src/css/custom-style.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/xtheme-smoky.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/custom-style.css" type="text/css"/>
 
     <n:div id="oryxwrapper" style="display: none">
         <n:script>
@@ -39,21 +41,26 @@
                 if (!ORYX.CONFIG) {
                     ORYX.CONFIG = {};
                 }
-                ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = "../../editor";
+                ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
             ]]>
         </n:script>
 
         <!-- JavaScript Dependencies of Signavio Process Editor-->
-        <n:script src="/editor/libs/prototype-1.5.1.js" type="text/javascript"/>
-        <n:script src="/editor/libs/path_parser.js" type="text/javascript"/>
-        <n:script src="/editor/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
-        <n:script src="/editor/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
-        <n:script src="/editor/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
-        <n:script src="/editor/libs/iscroll.js" type="text/javascript"/>
-        <n:script src="/editor/editor/i18n/translation_en_us.js" type="text/javascript"/>
-        <n:script src="/editor/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
-        <n:script src="/editor/libs/utils.js" type="text/javascript"/>
-        <n:script src="/editor/editor/oryx.debug.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/prototype-1.5.1.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/utils.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+
+        <!-- Include all Editor plug-ins -->
+        <z:zk forEach="${arg.plugins}">
+            <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
+        </z:zk>
 
         <n:span id="oryxstartupcode">
             <n:script>
