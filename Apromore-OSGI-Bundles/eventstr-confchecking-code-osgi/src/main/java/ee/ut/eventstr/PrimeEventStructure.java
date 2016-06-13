@@ -30,6 +30,7 @@ public class PrimeEventStructure <T> {
 		this.labels = labels;
 		this.sources = sources;
 		this.sinks = sinks;
+		this.cyclicTasks = new HashSet<>();
 	}
 	
 	public BehaviorRelation[][] getBRelMatrix() {

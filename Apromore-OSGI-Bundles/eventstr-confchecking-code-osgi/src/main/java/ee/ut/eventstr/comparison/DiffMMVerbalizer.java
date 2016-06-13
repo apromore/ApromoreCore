@@ -26,7 +26,7 @@ import ee.ut.eventstr.comparison.PartialSynchronizedProduct.Operation.Op;
 import ee.ut.eventstr.comparison.PartialSynchronizedProduct.State;
 import ee.ut.org.processmining.framework.util.Pair;
 
-public class DiffMMVerbalizer <T> {
+public class DiffMMVerbalizer <T>{
 	private PESSemantics<T> pes1;
 	private PESSemantics<T> pes2;
 	
@@ -949,5 +949,9 @@ public class DiffMMVerbalizer <T> {
 
 	public Set<String> getStatements() {
 		return statements;
+	}
+
+	public List<List<Operation>> getOpSeqs() {
+		return this.opSeqs;
 	}
 }
