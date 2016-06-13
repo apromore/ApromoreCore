@@ -22,6 +22,7 @@ package org.apromore.service.compare.impl;
 
 import ee.ut.eventstr.comparison.ApromoreCompareML;
 import ee.ut.eventstr.comparison.ApromoreCompareMM;
+import ee.ut.eventstr.comparison.ApromoreCompareLL;
 import hub.top.petrinet.PetriNet;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
@@ -47,5 +48,11 @@ public class CompareServiceImpl implements CompareService {
     public Set<String> discoverModelModel(PetriNet net1, PetriNet net2, HashSet<String> silent1, HashSet<String> silent2) throws Exception{
         ApromoreCompareMM comparator = new ApromoreCompareMM();
         return comparator.getDifferences(net1, net2, silent1, silent2);
+    }
+    
+    @Override
+    public Set<String> discoverLogLog(XLog log1, XLog log2) throws Exception{
+        ApromoreCompareLL compare = new ApromoreCompareLL();
+        return compare.getDifferences(log1, log2);
     }
 }
