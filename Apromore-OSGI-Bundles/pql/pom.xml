@@ -60,8 +60,12 @@
                         <Bundle-Name>pql OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.pql-osgi</Bundle-SymbolicName>
                         <Export-Package>
+                            org.apache.lucene.bkdtree,
                             org.apache.lucene.codecs,
+                            org.apache.lucene.codecs.idversion,
                             org.apache.lucene.codecs.lucene50,
+                            org.apache.lucene.codecs.lucene53,
+                            org.apache.lucene.rangetree,
                             org.apache.lucene.search.similarities,
                             org.apache.lucene.util,
                             org.jbpt.persist,
