@@ -45,7 +45,6 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.plugin.property.RequestParameterType;
-//import org.apromore.plugin.process.ProcessPlugin;
 import org.apromore.service.AnnotationService;
 import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
@@ -54,7 +53,6 @@ import org.apromore.service.DecomposerService;
 import org.apromore.service.FormatService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
-import org.apromore.service.PQLService;
 import org.apromore.service.UserService;
 import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
@@ -101,11 +99,8 @@ public class ProcessServiceImplUnitTest {
         UserInterfaceHelper ui = createMock(UserInterfaceHelper.class);
         FragmentService fSrv = createMock(FragmentService.class);
         WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
-        PQLService pqlSrv = createMock(PQLService.class);
 
-        //List<ProcessPlugin> processPlugins = new ArrayList<>();
-
-        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, convertor, annSrv, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv, pqlSrv);
+        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, convertor, annSrv, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv);
     }
 
     @Test

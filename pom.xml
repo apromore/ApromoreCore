@@ -342,7 +342,7 @@
         <findbugs.skip>false</findbugs.skip>
         <javadocs.skip>false</javadocs.skip>
         <pmd.skip>false</pmd.skip>
-        <minimizejar>true</minimizejar>
+        <minimizeJar>false</minimizeJar>
     </properties>
 
     <dependencyManagement>

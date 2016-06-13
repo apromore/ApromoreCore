@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.pql.index.IndexStatus;
 
+import org.apromore.model.Detail;
 import org.apromore.model.ProcessSummariesType;
 
 /**
@@ -44,8 +45,10 @@ public interface PQLService {
      * @param IDs  the default
      * @param userID  the ostensible user name making the request
      * @return the external IDs of the indexed process models which satisfy the query
-    List<String> runAPQLQuery(String queryPQL, List<String> IDs, String userID);
      */
+    List<String> runAPQLQuery(String queryPQL, List<String> IDs, String userID);
+
+    List<Detail> getDetails();
 
     /**
      * Check whether a particular process is indexed for PQL querying.
