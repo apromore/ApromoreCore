@@ -21,7 +21,7 @@ import ee.ut.nets.unfolding.BPstructBP.MODE;
 import hub.top.petrinet.PetriNet;
 import hub.top.petrinet.Transition;
 
-public class ApromoreCompareMM {
+public class ApromoreCompareMM{
 
 	public static void main(String[] args) throws Exception{
 		BPMNProcess<Element> model1 = BPMN2Reader.parse(new File("bpm2014/model77.bpmn"));
@@ -32,16 +32,17 @@ public class ApromoreCompareMM {
 		for(Integer i : model1.getVisibleNodes())
 			labels1.remove(model1.getLabels().get(i));
 		
-		BPMNProcess<Element> model2 = BPMN2Reader.parse(new File("bpm2014/model81.bpmn"));
+		BPMNProcess<Element> model2 = BPMN2Reader.parse(new File("bpm2014/model3.bpmn"));
 		Petrifier<Element> petrifier2 = new Petrifier<Element>(model2);
 		PetriNet net2 = petrifier2.petrify(model2.getSources().iterator().next(), model2.getSinks().iterator().next());
+		
 		HashSet<String> labels2 = new HashSet<>(model1.getLabels().values());
 		for(Integer i : model2.getVisibleNodes())
 			labels2.remove(model2.getLabels().get(i));
 		
 		ApromoreCompareMM comp = new ApromoreCompareMM();
 		
-		comp.getDifferences(net1, net2, labels1, labels2);
+		System.out.println(comp.getDifferences(net1, net2, labels1, labels2));
 	}
 	
 	public Set<String> getDifferences(PetriNet net1, PetriNet net2, HashSet<String> silent1, HashSet<String> silent2) throws Exception {
@@ -78,7 +79,7 @@ public class ApromoreCompareMM {
 		psp.setVerbalizer(verbalizer);
 		pre.prune();
 		
-//		write(psp.toDot(), "psp.dot");
+		write(psp.toDot(), "psp.dot");
 		
 		return verbalizer;
 	}

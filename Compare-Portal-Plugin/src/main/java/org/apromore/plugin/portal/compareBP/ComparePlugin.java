@@ -122,7 +122,8 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
         // At least 1 process versions must be selected. Not necessarily of different processes
         if (selectedProcessVersions.size() == 1 && selectedVersions.next().size() < 1 || selectedProcessVersions.size() < 1) {
-            context.getMessageHandler().displayInfo("Select at least 1 process model for the comparison.");
+            new CompareController(context, compareService);
+            context.getMessageHandler().displayInfo("Log to log comparison.");
             return;
         }
 

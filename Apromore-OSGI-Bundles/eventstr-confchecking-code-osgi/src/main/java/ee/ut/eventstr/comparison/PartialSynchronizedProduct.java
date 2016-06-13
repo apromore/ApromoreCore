@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
@@ -49,7 +48,7 @@ public class PartialSynchronizedProduct<T> {
 	private State root;
 	private DiffMMVerbalizer<Integer> verbalizer;
 	
-	private Table<BitSet, BitSet, State> stateSpaceTable = HashBasedTable.create();
+	private Table<BitSet, BitSet, HashSet<State>> stateSpaceTable = HashBasedTable.create();
 	private Multimap<State, State> mergedStates = HashMultimap.create();
 
 	enum StateHint {
@@ -332,9 +331,12 @@ public class PartialSynchronizedProduct<T> {
 		states.add(newState);
 		newState.hint = StateHint.CREATED;
 
-		if (stateSpaceTable.contains(c1, c2)) {
-			State pivot = stateSpaceTable.get(c1, c2);
-
+		State pivot = null;
+		if(stateSpaceTable.contains(c1, c2))
+			pivot = getPivot(stateSpaceTable.get(c1, c2), mappings);
+		
+//		if (stateSpaceTable.contains(c1, c2)) {
+		if(pivot != null){	
 			 if (newState.weight == pivot.weight) {
 			 boolean found = false;
 			 for (State sibling: mergedStates.get(pivot))
@@ -354,10 +356,19 @@ public class PartialSynchronizedProduct<T> {
 			return new Pair<>(action, pivot);
 			 }
 		} else {
-			stateSpaceTable.put(c1, c2, newState);
+			stateSpaceTable.put(c1, c2, new HashSet<State>());
+			stateSpaceTable.get(c1, c2).add(newState);
 			mergedStates.put(newState, newState);
 		}
 		return new Pair<>(action, newState);
+	}
+
+	private State getPivot(HashSet<State> states, BiMap<Integer, Integer> mappings) {
+		for(State st : states)
+			if(st.mappings.equals(mappings))
+				return st;
+		
+		return null;
 	}
 
 	public String toDot() {
@@ -806,5 +817,9 @@ public class PartialSynchronizedProduct<T> {
 
 	public void setVerbalizer(DiffMMVerbalizer<Integer> verbalizer) {
 		this.verbalizer = verbalizer;
+	}
+	
+	public Set<State> getRelevantStates() {
+		return this.relevantStates;
 	}
 }
