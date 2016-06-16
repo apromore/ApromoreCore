@@ -24,11 +24,11 @@ import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -49,10 +49,10 @@ public class PrimaryKeyController {
     private int chosenKeysIndex[];
     private Map<Set<String>, Set<String>> group;
 
-    public PrimaryKeyController(BPMNMinerController bpmnMinerController, List<PrimaryKeyData> pKeyData) throws NoEntityException {
+    public PrimaryKeyController(BPMNMinerController bpmnMinerController, List<PrimaryKeyData> pKeyData) throws IOException, NoEntityException {
         this.bpmnMinerController = bpmnMinerController;
 
-        this.primaryKeyW = (Window) Executions.createComponents("macros/bpmnminer/selectPrimaryKey.zul", null, null);
+        this.primaryKeyW = (Window) bpmnMinerController.portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/selectPrimaryKey.zul", null, null);
         this.primaryKeyW.setTitle("Select Primary Keys");
 
         this.cancelButton = (Button) this.primaryKeyW.getFellow("cancelButton");
