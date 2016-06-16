@@ -75,6 +75,11 @@ public class ProDriftDetectionPlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getGroupLabel(Locale locale) {
+        return "Log";
+    }
+
+    @Override
     public void execute(PortalContext portalContext) {
 
         portalContext.getMessageHandler().displayInfo("Executed process drift detection plug-in!");

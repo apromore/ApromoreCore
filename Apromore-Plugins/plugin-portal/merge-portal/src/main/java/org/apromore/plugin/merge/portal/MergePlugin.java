@@ -82,6 +82,11 @@ public class MergePlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getGroupLabel(Locale locale) {
+        return "Design";
+    }
+
+    @Override
     public void execute(PortalContext context) {
         try {
             LOGGER.info("Executing");

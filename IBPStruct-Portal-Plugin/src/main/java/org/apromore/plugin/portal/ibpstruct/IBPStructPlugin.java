@@ -126,6 +126,11 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getGroupLabel(Locale locale) {
+        return "Design";
+    }
+
+    @Override
     public void execute(PortalContext context) {
         this.portalContext = context;
         processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
