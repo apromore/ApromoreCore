@@ -1,4 +1,4 @@
-<window id="modalDialog" title="Encountered differences" border="normal" width="460px">
+<window id="modalDialog" title="Differences" border="normal" width="560px">
     <vlayout>
         <grid id="gridMD">
             <columns>
