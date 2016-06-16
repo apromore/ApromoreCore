@@ -252,6 +252,11 @@
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>
             </fileset>
+            <fileset dir="${dir-editor-plugins}">
+                <include name="**/target/*.war"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
             <fileset dir="${dir-deploy}">
                 <include name="**/target/*.jar"/>
                 <exclude name="**/target/*-sources.jar"/>
