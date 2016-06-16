@@ -206,6 +206,7 @@ public class Unfolding2PES {
 		}
 		sinks = terminalEvents;
 
+		System.out.println("Labels: " + labels);
 		Pair<BitSet[], BitSet[]> pair = BitsetDAGTransitivity.transitivityDAG(adj, labels.size(), Collections.singleton(artificialStartEvent));
 		BitSet[] causality = pair.getFirst();
 		BitSet[] dcausality = pair.getSecond();

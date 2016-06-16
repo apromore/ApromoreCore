@@ -24,7 +24,7 @@ import hub.top.petrinet.Transition;
 public class ApromoreCompareMM{
 
 	public static void main(String[] args) throws Exception{
-		BPMNProcess<Element> model1 = BPMN2Reader.parse(new File("bpm2014/model77.bpmn"));
+		BPMNProcess<Element> model1 = BPMN2Reader.parse(new File("bpm2014/relationalModel.bpmn"));
 		Petrifier<Element> petrifier1 = new Petrifier<Element>(model1);
 		PetriNet net1 = petrifier1.petrify(model1.getSources().iterator().next(), model1.getSinks().iterator().next());
 		HashSet<String> labels1 = new HashSet<>(model1.getLabels().values());
@@ -32,7 +32,7 @@ public class ApromoreCompareMM{
 		for(Integer i : model1.getVisibleNodes())
 			labels1.remove(model1.getLabels().get(i));
 		
-		BPMNProcess<Element> model2 = BPMN2Reader.parse(new File("bpm2014/model3.bpmn"));
+		BPMNProcess<Element> model2 = BPMN2Reader.parse(new File("bpm2014/unrelationalModel.bpmn"));
 		Petrifier<Element> petrifier2 = new Petrifier<Element>(model2);
 		PetriNet net2 = petrifier2.petrify(model2.getSources().iterator().next(), model2.getSinks().iterator().next());
 		
