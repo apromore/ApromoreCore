@@ -18,8 +18,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
-//import de.hpi.bpt.utils.IOUtils;
-
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.HashMultiset;
@@ -28,20 +26,19 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.Table;
 
 import ee.ut.eventstr.BehaviorRelation;
-import ee.ut.eventstr.NewUnfoldingPESSemantics;
 import ee.ut.eventstr.SinglePORunPESSemantics;
 import ee.ut.org.processmining.framework.util.Pair;
 
-public class PrunedOpenPartialSynchronizedProduct<T> {
+public class LogBasedPartialSynchronizedProduct<T> {
 	
 	public static class State implements Comparable<State> {
 		BitSet c1;
-		Multiset<Integer> c2;
+		BitSet c2;
 		Multiset<String> labels;
 		StateHint action;
 		public short cost = 0;
 		
-		State(BitSet c1, Multiset<String> labels, Multiset<Integer> c2) {
+		State(BitSet c1, Multiset<String> labels, BitSet c2) {
 			this.c1 = c1; this.c2 = c2; this.labels = labels;
 		}
 		
@@ -87,8 +84,8 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 		}
 	}
 	
-	private SinglePORunPESSemantics <T> pes1;
-	private NewUnfoldingPESSemantics<T> pes2;
+	private SinglePORunPESSemantics<T> pes1;
+	private SinglePORunPESSemantics<T> pes2;
 	private int numberOfTargets;
 	private BitSet maxConf1;
 	public State matchings;
@@ -96,13 +93,13 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 	private Multimap<State, Operation> descendants;
 	private Multimap<State, State> ancestors;
 	private State root;
-	private Table<BitSet, Multiset<Integer>, Map<Multiset<String>, State>> stateSpaceTable;
+	private Table<BitSet, BitSet, Map<Multiset<String>, State>> stateSpaceTable;
 
 	private List<State> states = new ArrayList<>();
 	private Set<State> relevantStates;
 	private LinkedList<Operation> opSeq;
 
-	public PrunedOpenPartialSynchronizedProduct(SinglePORunPESSemantics<T> pes1, NewUnfoldingPESSemantics<T> pes2) {
+	public LogBasedPartialSynchronizedProduct(SinglePORunPESSemantics<T> pes1, SinglePORunPESSemantics<T> pes2) {
 		this.pes1 = pes1;
 		this.pes2 = pes2;
 		this.descendants = HashMultimap.create();
@@ -114,10 +111,10 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 		this.matchings = null;
 	}
 	
-	public PrunedOpenPartialSynchronizedProduct<T> perform() {
+	public LogBasedPartialSynchronizedProduct<T> perform() {
 		Queue<State> open = new PriorityQueue<>();
 		
-		root = getState(new BitSet(), HashMultiset.<String> create(), HashMultiset.<Integer> create());
+		root = getState(new BitSet(), HashMultiset.<String> create(), new BitSet());
 		
 		open.offer(root);
 
@@ -126,7 +123,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 			
 			if (isCandidate(s)) {
 				BitSet lpe = pes1.getPossibleExtensions(s.c1);				
-				Set<Integer> rpe = pes2.getPossibleExtensions(s.c2);
+				BitSet rpe = pes2.getPossibleExtensions(s.c2);
 				
 				if (lpe.isEmpty() && rpe.isEmpty()) {
 					matchings = s;
@@ -134,7 +131,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 				}
 				
 //				System.out.println("State: " +s);
-				List<Operation> candidates = new ArrayList<Operation>();
+				List<Operation> candidates = new ArrayList<>();
 				BitSet pruned1 = new BitSet();
 				BitSet pruned2 = new BitSet();
 				
@@ -143,7 +140,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 					BitSet c1p = (BitSet)s.c1.clone();
 					c1p.set(e1);
 					
-					for (Integer e2: rpe) {
+					for (int e2 = rpe.nextSetBit(0); e2 >= 0; e2 = rpe.nextSetBit(e2 + 1)) {
 						if (label1.equals(pes2.getLabel(e2)) &&
 								isOrderPreserving(s, e1, e2)) {
 							pruned1.set(e1); pruned2.set(e2);
@@ -154,18 +151,15 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 //									label1.compareTo(prev.label) > 0)
 //								continue;
 							
-							Pair<Multiset<Integer>, Boolean> extPair = pes2.extend(s.c2, e2);
+							BitSet c2p = (BitSet)s.c2.clone();
+							c2p.set(e2);
 							Multiset<String> labels = HashMultiset.create(s.labels);
 							labels.add(label1);
 							
-							State nstate = getState(c1p, labels, extPair.getFirst());
+							State nstate = getState(c1p, labels, c2p);
 							nstate.cost = s.cost; // A matching operation does not change the current cost
 							
-							Operation operation;
-							if (extPair.getSecond())
-								operation = Operation.matchnshift(nstate, new Pair<>(e1, e2), label1);
-							else
-								operation = Operation.match(nstate, new Pair<>(e1, e2), label1);
+							Operation operation = Operation.match(nstate, new Pair<>(e1, e2), label1);
 
 							candidates.add(operation);
 							
@@ -233,7 +227,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 				pruned2.andNot(kept2);
 				
 				nextCandidate2:
-				for (Integer e2: rpe) {
+				for (int e2 = rpe.nextSetBit(0); e2 >= 0; e2 = rpe.nextSetBit(e2 + 1)) {
 					if (pruned2.get(e2) || kept2.get(e2))
 						continue;
 					
@@ -241,9 +235,9 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 						if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY)
 							continue nextCandidate2;
 
-					
-					Pair<Multiset<Integer>, Boolean> extPair = pes2.extend(s.c2, e2);
-					State nstate = getState(s.c1, s.labels, extPair.getFirst());
+					BitSet c2p = (BitSet)s.c2.clone();
+					c2p.set(e2);
+					State nstate = getState(s.c1, s.labels, c2p);
 					
 					computeCost(nstate);
 
@@ -252,10 +246,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 						open.offer(nstate);
 						ancestors.put(nstate, s);
 					case MERGED:
-						if (extPair.getSecond())
-							descendants.put(s, Operation.rhidenshift(nstate, e2, pes2.getLabel(e2)));
-						else
-							descendants.put(s, Operation.rhide(nstate, e2, pes2.getLabel(e2)));
+						descendants.put(s, Operation.rhide(nstate, e2, pes2.getLabel(e2)));
 					default:
 					}
 					
@@ -290,7 +281,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 	
 	private boolean isOrderPreserving(State s, int e1, Integer e2) {
 		BitSet e1dpred = (BitSet)pes1.getDirectPredecessors(e1).clone();
-		Set<Integer> e2dpred = new HashSet<Integer>(pes2.getDirectPredecessors(e2));
+		BitSet e2dpred = (BitSet)pes2.getDirectPredecessors(e2).clone();
 		
 		Stack<State> open = new Stack<>();
 		Set<State> visited = new HashSet<>();
@@ -314,7 +305,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 							@SuppressWarnings("unchecked")
 							Pair<Integer, Integer> matchedEvents = (Pair<Integer,Integer>)op.target;
 							e1dpred.clear(matchedEvents.getFirst());
-							e2dpred.remove(matchedEvents.getSecond());
+							e2dpred.clear(matchedEvents.getSecond());
 							
 							if (!(e1causes.get(matchedEvents.getFirst()) == e2causes.get(matchedEvents.getSecond()))) {
 //								System.out.println("====== It is not order preserving!");
@@ -325,12 +316,14 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 							@SuppressWarnings("unchecked")
 							Pair<Integer, Integer> matchedEvents = (Pair<Integer,Integer>)op.target;
 							e1dpred.clear(matchedEvents.getFirst());
-							e2dpred.remove(matchedEvents.getSecond());
+							e2dpred.clear(matchedEvents.getSecond());
 							
 //							System.out.println("Performed inverse shift (+match): " + matchedEvents.getSecond());
 							if (pes2.getBRelation(e2, matchedEvents.getSecond()) != BehaviorRelation.CONCURRENCY) {
-								e2causes = pes2.unshift(e2causes, matchedEvents.getSecond());
-//								e2causes = pes2.getLocalConfiguration(matchedEvents.getSecond());
+								
+//								e2causes = pes2.unshift(e2causes, matchedEvents.getSecond());
+//								
+								e2causes = pes2.getLocalConfiguration(matchedEvents.getSecond());
 							}
 							
 							if (!(e1causes.get(matchedEvents.getFirst()) == e2causes.get(matchedEvents.getSecond()))) {
@@ -340,12 +333,14 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 						} else if (op.op == Op.RHIDENSHIFT || op.op == Op.RHIDE) {
 							Integer hiddenEvent = (Integer)op.target;
 //							if (e2dpred.contains(hiddenEvent)) {
-								e2dpred.remove(hiddenEvent);
-								e2dpred.addAll(pes2.getDirectPredecessors(hiddenEvent));
+								e2dpred.clear(hiddenEvent);
+								e2dpred.or(pes2.getDirectPredecessors(hiddenEvent));
 								if (op.op == Op.RHIDENSHIFT && pes2.getBRelation(e2, hiddenEvent) != BehaviorRelation.CONCURRENCY) {
 //									System.out.println("Performed inverse shift: " + hiddenEvent);
-									e2causes = pes2.unshift(e2causes, hiddenEvent);
-//									e2causes.clear(hiddenEvent);
+									
+//									e2causes = pes2.unshift(e2causes, hiddenEvent);
+//									
+									e2causes.clear(hiddenEvent);
 	//								e2causes = pes2.getLocalConfiguration(hiddenEvent);
 								}
 //							}
@@ -362,7 +357,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 	}
 
 	
-	private State getState(BitSet c1, Multiset<String> labels, Multiset<Integer> c2) {
+	private State getState(BitSet c1, Multiset<String> labels, BitSet c2) {
 		State newState = new State(c1, labels, c2);
 		states.add(newState);
 
@@ -390,16 +385,14 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 	}
 	
 	public void computeCost(State s) {
-		Multiset<Integer> c2copy = HashMultiset.create(s.c2);
-		c2copy.removeAll(pes2.getInvisibleEvents());
 		s.cost = (short)(
-				g(s.c1, c2copy, s.labels)
+				g(s.c1, s.c2, s.labels)
 				+ h(s)
 				);
 	}
 		
-	public int g(BitSet c1, Multiset<Integer> c2, Multiset<String> labels) {
-		return (c1.cardinality() + c2.size() - labels.size() * 2);
+	public int g(BitSet c1, BitSet c2, Multiset<String> labels) {
+		return (c1.cardinality() + c2.cardinality() - labels.size() * 2);
 	}
 	
 	public int h(State s) {
@@ -421,7 +414,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 		return set;
 	}
 	
-	public PrunedOpenPartialSynchronizedProduct<T> prune() {
+	public LogBasedPartialSynchronizedProduct<T> prune() {
 		Set<State> gvisited = new HashSet<>();
 		Stack<State> open = new Stack<>();
 		this.opSeq = new LinkedList<>();
@@ -454,7 +447,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 		
 		this.relevantStates = gvisited;
 		
-		System.out.println("Number of relevant states: " + relevantStates.size());
+//		System.out.println("Number of relevant states: " + relevantStates.size());
 		
 		return this;
 	}

@@ -27,6 +27,10 @@ import org.apromore.service.*;
 import org.apromore.service.helper.UIHelper;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.impl.*;
+import org.apromore.service.pql.DatabaseService;
+import org.apromore.service.pql.PQLService;
+import org.apromore.service.pql.impl.DatabaseServiceImpl;
+import org.apromore.service.pql.impl.PQLServiceImpl;
 import org.junit.Before;
 
 public abstract class AbstractEndpointUnitTest {

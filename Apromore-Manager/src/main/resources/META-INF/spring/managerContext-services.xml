@@ -32,33 +32,6 @@
     <context:component-scan base-package="org.apromore.toolbox"/>
     <context:component-scan base-package="org.apromore.manager"/>
 
-    <bean id="lolaDir" class="org.apromore.service.impl.LolaDirImpl">
-        <constructor-arg value="${pql.lola.dir}"/>
-    </bean>
-    <bean id="mysqlbean" class="org.apromore.service.impl.MySqlBeanImpl">
-        <constructor-arg value="${pql.mysql.url}"/>
-        <constructor-arg value="${pql.mysql.user}"/>
-        <constructor-arg value="${pql.mysql.password}"/>
-    </bean>
-    <bean id="pgbean" class="org.apromore.service.impl.PGBeanImpl">
-        <constructor-arg value="${pql.postgres.host}"/>
-        <constructor-arg value="${pql.postgres.name}"/>
-        <constructor-arg value="${pql.postgres.user}"/>
-        <constructor-arg value="${pql.postgres.password}"/>
-    </bean>
-    <bean id="pqlbean" class="org.apromore.service.impl.PqlBeanImpl" scope="prototype"><!-- prototype means that this bean is not a singleton  -->
-        <constructor-arg ref="lolaDir"/>
-        <constructor-arg ref="mysqlbean"/>
-        <constructor-arg ref="pgbean"/>
-        <constructor-arg type="boolean" value="${pql.enableIndexing}"/>
-        <constructor-arg type="int" value="${pql.numberOfQueryThreads}"/>
-        <constructor-arg type="String" value="${pql.labelSimilaritySearch}"/>
-        <constructor-arg type="String" value="${pql.labelSimilarityConfig}"/>
-        <constructor-arg type="double" value="${pql.defaultLabelSimilarityThreshold}"/>
-        <constructor-arg type="String" value="${pql.indexedLabelSimilarityThresholds}"/>
-        <constructor-arg type="long" value="${pql.defaultBotSleepTime}"/>
-        <constructor-arg type="long" value="${pql.defaultBotMaxIndexTime}"/>
-    </bean>
     <bean id="gedmatrixbean" class="org.apromore.service.impl.GEDMatrixBeanImpl">
         <constructor-arg value="${ged.enabled}"/>
     </bean>

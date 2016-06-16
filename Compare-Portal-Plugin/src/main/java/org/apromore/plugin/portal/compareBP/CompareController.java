@@ -24,6 +24,7 @@ import java.io.*;
 import java.util.*;
 
 import hub.top.petrinet.PetriNet;
+import org.apache.tools.ant.types.resources.selectors.Compare;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.compare.CompareService;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -45,6 +46,7 @@ public class CompareController {
     private Window enterLogWin;
     private Window resultsWin;
     private Button uploadLog;
+    private Button uploadLog2;
     private Button cancelButton;
     private Button closeButton;
     private Button okButton;
@@ -54,7 +56,7 @@ public class CompareController {
     private Label sent;
     private SelectDynamicListController domainCB;
     private String nativeType = "BPMN 2.0";
-
+    
     private Textbox modelName;
     private Selectbox miningAlgorithms;
     private Radiogroup dependencyAlgorithms;
@@ -68,21 +70,94 @@ public class CompareController {
     private Slider noiseThreshold;
 
     private XLog log;
+    private XLog log2;
     private List<String> listCandidates;
     private boolean[] selected;
     private Label l;
+    private Label l2;
 
     private org.zkoss.util.media.Media logFile = null;
     private byte[] logByteArray = null;
     private String logFileName = null;
+    
+    private org.zkoss.util.media.Media logFile2 = null;
+    private byte[] logByteArray2 = null;
+    private String logFileName2 = null;
+    
+    
     private CompareService compareService;
     private PetriNet net;
 
+    public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net1, PetriNet net2, HashSet<String> silent1, HashSet<String> silent2) throws Exception{
+        this.compareService = compareService;
+        this.portalContext = portalContext;
+        Set<String> differences = compareService.discoverModelModel(net1, net2, silent1, silent2);
+
+//                for (String s : differences)
+//                    result += s + "\n";
+
+        makeResultWindows(differences);
+    }
+
+    public CompareController(PortalContext portalContext, CompareService compareService){
+        this.compareService = compareService;
+        this.portalContext = portalContext;
+        
+         try {
+            List<String> domains = new ListModelList<>();
+            this.domainCB = new SelectDynamicListController(domains);
+            this.domainCB.setReference(domains);
+            this.domainCB.setAutodrop(true);
+            this.domainCB.setWidth("85%");
+            this.domainCB.setHeight("100%");
+            this.domainCB.setAttribute("hflex", "1");
+
+            this.enterLogWin = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/compareLL.zul", null, null);
+
+            this.l = (Label) this.enterLogWin.getFellow("fileName");
+            this.uploadLog = (Button) this.enterLogWin.getFellow("bpmnMinerUpload");
+             
+            this.l2 = (Label) this.enterLogWin.getFellow("fileName2");
+            this.uploadLog2 = (Button) this.enterLogWin.getFellow("bpmnMinerUpload2");
+             
+            this.cancelButton = (Button) this.enterLogWin.getFellow("bpmnMinerCancelButton");
+            this.okButton = (Button) this.enterLogWin.getFellow("bpmnMinerOKButton");
+
+            this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    uploadFile((UploadEvent) event);
+                }
+            });
+             
+            this.uploadLog2.addEventListener("onUpload", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    uploadFile2((UploadEvent) event);
+                }
+            });
+
+            this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    cancel();
+                }
+            });
+            this.okButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    compareLog2Log();
+                    cancel();
+                }
+            });
+            this.enterLogWin.doModal();
+        }catch (IOException e) {
+            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+        
+    }
+    
     public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net) {
         this.compareService = compareService;
         this.net = net;
         this.portalContext = portalContext;
-
+        
         try {
             List<String> domains = new ListModelList<>();
             this.domainCB = new SelectDynamicListController(domains);
@@ -133,6 +208,14 @@ public class CompareController {
         l.setValue(logFile.getName());
         logByteArray = logFile.getByteData();
         logFileName = logFile.getName();
+    }
+    
+    private void uploadFile2(UploadEvent event) {
+        logFile2 = event.getMedia();
+        l2.setStyle("color: blue");
+        l2.setValue(logFile2.getName());
+        logByteArray2 = logFile2.getByteData();
+        logFileName2 = logFile2.getName();
     }
 
     public static XLog importFromStream(XFactory factory, InputStream is, String name) throws Exception {
@@ -194,6 +277,35 @@ public class CompareController {
     protected void cancel() {
         this.enterLogWin.detach();
     }
+    
+    protected void compareLog2Log() {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bos.write(logByteArray, 0, logByteArray.length);
+            InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
+            log = importFromStream(new XFactoryNaiveImpl(), zipEntryIS, logFileName);
+            
+            ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
+            bos2.write(logByteArray2, 0, logByteArray2.length);
+            InputStream zipEntryIS2 = new ByteArrayInputStream(bos2.toByteArray());
+            log2 = importFromStream(new XFactoryNaiveImpl(), zipEntryIS2, logFileName2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(log == null) {
+            Messagebox.show("Please select a log.");
+        }else {
+            try {
+                Set<String> differences = compareService.discoverLogLog(log, log2);
+                makeResultWindows(differences);
+            } catch (Exception e) {
+                Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
+        }
+    }
 
     protected void createCanditatesEntity() {
         try {
@@ -224,18 +336,6 @@ public class CompareController {
                 Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
             }
         }
-
-
-//        if(log == null) {
-//            Messagebox.show("Please select a log.");
-//        }else if(miningAlgorithms.getSelectedIndex() < 0) {
-//            Messagebox.show("Please select mining algorithm.");
-//        }else {
-//            erModel = new DiscoverERmodel();
-//            listCandidates = erModel.generateAllAttributes(log);
-//
-//            new CandidatesEntitiesController(this, listCandidates);
-//        }
     }
 
     public void makeResultWindows(Set<String> results){
