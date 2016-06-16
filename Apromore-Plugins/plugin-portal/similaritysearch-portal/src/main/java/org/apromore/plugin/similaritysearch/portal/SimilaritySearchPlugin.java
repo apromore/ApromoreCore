@@ -69,6 +69,11 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
     }
 
     @Override
+    public String getGroupLabel(Locale locale) {
+        return "Analysis";
+    }
+
+    @Override
     public void execute(PortalContext context) {
         // Show a message on the portal
         try {

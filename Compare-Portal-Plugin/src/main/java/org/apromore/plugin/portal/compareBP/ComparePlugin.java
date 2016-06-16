@@ -87,7 +87,12 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Compare";
+        return "Compare to Log";
+    }
+
+    @Override
+    public String getGroupLabel(Locale locale) {
+        return "Analysis";
     }
 
     public PetriNet getNet(ProcessSummaryType process, VersionSummaryType vst, PortalContext context, HashSet<String> labels) throws Exception{

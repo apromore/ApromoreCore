@@ -97,6 +97,11 @@ public class MetricsPlugin extends PluginCustomGui {
     }
 
     @Override
+    public String getGroupLabel(Locale locale) {
+        return "Analysis";
+    }
+
+    @Override
     public void execute(PortalContext context) {
         this.portalContext = context;
         processVersions = portalContext.getSelection().getSelectedProcessModelVersions();

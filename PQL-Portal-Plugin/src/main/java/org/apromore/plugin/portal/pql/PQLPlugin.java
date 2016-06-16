@@ -69,6 +69,11 @@ public class PQLPlugin extends PluginCustomGui {
     }
 
     @Override
+    public String getGroupLabel(Locale locale) {
+        return "Analysis";
+    }
+
+    @Override
     public void execute(final PortalContext portalContext) {
 
         portalContext.getMessageHandler().displayInfo("Executed PQL query plug-in!");
