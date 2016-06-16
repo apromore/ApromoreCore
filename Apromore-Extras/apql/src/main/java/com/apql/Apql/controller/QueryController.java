@@ -344,7 +344,7 @@ public class QueryController {
                     DraggableNodeProcess dnp=idNetsNode.get(id);
                     idNets.add(new ExternalId(Integer.parseInt(dnp.getId()), dnp.getLatestBranch(), new Version(dnp.getLatestVersion())).toString());
                     break;
-                }else if(location.matches(idNetsNode.get(id).getPathNode()+"[{]([0-9]+[/]([0-9]+([.][0-9]+){1,2})[/][a-zA-Z0-9]+)[}]")){
+                }else if(location.matches(idNetsNode.get(id).getPathNode()+"[{][0-9]+[/][a-zA-Z0-9]+[/]([0-9]+([.][0-9]+){1,2})[}]")){
                     int indexVersion=location.indexOf("{");
                     try {
                         idNets.add(new ExternalId(location.substring(indexVersion+1,location.length()-1)).toString());
