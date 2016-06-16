@@ -1,4 +1,4 @@
-package au.edu.qut.structuring.helper;
+package au.edu.qut.helper;
 
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
@@ -9,11 +9,8 @@ import de.hpi.bpt.graph.algo.rpst.RPSTNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.IVertex;
 import de.hpi.bpt.hypergraph.abs.Vertex;
-import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
-import org.processmining.framework.plugin.annotations.Plugin;
-import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
@@ -24,35 +21,82 @@ import java.util.*;
  * Created by Adriano on 16/05/2016.
  */
 
-@Plugin(
-        name = "Remove Useless Parallel Flows",
-        parameterLabels = { "BPMNDiagram" },
-        returnLabels = { "Simplified Diagram" },
-        returnTypes = { BPMNDiagram.class },
-        userAccessible = true,
-        help = "Remove Parallel Flows with no Activities"
-)
-public class DiagramFixerService {
+public class DiagramHandler {
 
-    @UITopiaVariant(
-            affiliation = "Queensland University of Technology",
-            author = "Adriano Augusto",
-            email = "a.augusto@qut.edu.au"
-    )
-    @PluginVariant(variantLabel = "Remove Useless Parallel Flows", requiredParameterLabels = {0})
-    public static BPMNDiagram removeUselessParallelFlows(UIPluginContext context, BPMNDiagram diagram) {
-        DiagramFixerService fixerService = new DiagramFixerService();
-        fixerService.removeEmptyParallelFlows(diagram);
-        return diagram;
+    public DiagramHandler(){}
+
+    public void touch(BPMNDiagram diagram) {
+        int g = 0;
+        for( Flow f : diagram.getFlows() ) f.setLabel(Integer.toString(g++));
     }
 
-    public DiagramFixerService(){}
+    public void reduceUnsoundness(BPMNDiagram diagram) {
+        BPMNNode src, tgt;
+        Gateway oldXOR = null;
+        Gateway newXOR = null;
+        HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> toRemove;
+        BPMNEdge<? extends BPMNNode, ? extends BPMNNode> inFlow = null;
+        BPMNEdge<? extends BPMNNode, ? extends BPMNNode> outFlow = null;
+        boolean keepGoing;
+
+        do {
+            keepGoing = false;
+            toRemove = new HashSet<>();
+
+            for(Gateway g : diagram.getGateways() )
+                if( g.getGatewayType() == Gateway.GatewayType.PARALLEL ) {
+                    if( diagram.getOutEdges(g).size() > 1 && diagram.getInEdges(g).size() == 1 ) {
+                        for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> f : diagram.getOutEdges(g) ) {
+                            tgt = f.getTarget();
+                            if( tgt instanceof Gateway && (((Gateway) tgt).getGatewayType() == Gateway.GatewayType.DATABASED) ) {
+                                keepGoing = true;
+                                oldXOR = (Gateway) tgt;
+                                outFlow = f;
+                                for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> ff : diagram.getInEdges(g)) inFlow = ff;
+                                break;
+                            }
+                        }
+                        if( keepGoing ) break;
+                    }
+                }
+
+            if( keepGoing ) {
+                diagram.removeEdge(outFlow);
+                src = inFlow.getSource();
+                tgt = inFlow.getTarget();
+                if( src instanceof Gateway && ((Gateway) src).getGatewayType() == Gateway.GatewayType.DATABASED ) {
+                    newXOR = (Gateway) src;
+                } else {
+                    newXOR = diagram.addGateway("new-XOR", Gateway.GatewayType.DATABASED);
+                    diagram.addFlow(src, newXOR, "");
+                    diagram.addFlow(newXOR, tgt, "");
+                    diagram.removeEdge(inFlow);
+                }
+
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> f : diagram.getInEdges(oldXOR) ) {
+                    diagram.addFlow(f.getSource(), newXOR, "");
+                    toRemove.add(f);
+                }
+
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> f : diagram.getOutEdges(oldXOR) ) {
+                    diagram.addFlow(tgt, f.getTarget(), "");
+                    toRemove.add(f);
+                }
+
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> f : toRemove ) diagram.removeEdge(f);
+                removeNode(diagram, oldXOR);
+            }
+        }while( keepGoing );
+    }
 
     public void removeEmptyParallelFlows(BPMNDiagram diagram) {
         BPMNNode src, tgt;
         boolean keepGoing;
         HashSet<Flow> toRemove;
+        HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> toExtend;
         HashSet<Gateway> toCheck;
+
+        for( Gateway g : new HashSet<Gateway>(diagram.getGateways()) ) checkFakeGateway(diagram, g);
 
         do{
             toRemove = new HashSet<>();
@@ -66,13 +110,38 @@ public class DiagramFixerService {
                     ((Gateway) src).getGatewayType() == ((Gateway) tgt).getGatewayType() &&
                     ((Gateway) src).getGatewayType() == Gateway.GatewayType.PARALLEL ) {
                     toRemove.add(f);
+                    System.out.println("DEBUG - removing empty parallel flow.");
                     toCheck.add((Gateway) src);
                     toCheck.add((Gateway) tgt);
                     keepGoing = true;
                 }
             }
 
-            for( Flow f : toRemove ) diagram.removeEdge(f);
+            for( Flow f : toRemove ) {
+                src = f.getSource();
+                tgt = f.getTarget();
+                diagram.removeEdge(f);
+
+                if( diagram.getOutEdges(src).size() == 0 ) {
+                    toExtend = new HashSet<>();
+                    for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> ff : diagram.getInEdges(src)) toExtend.add(ff);
+
+                    for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> ff : toExtend) {
+                        src = ff.getSource();
+                        diagram.removeEdge(ff);
+                        diagram.addFlow(src, tgt, "");
+                    }
+                } else if( diagram.getInEdges(tgt).size() == 0 ) {
+                    toExtend = new HashSet<>();
+                    for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> ff : diagram.getOutEdges(tgt)) toExtend.add(ff);
+
+                    for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> ff : toExtend) {
+                        tgt = ff.getTarget();
+                        diagram.removeEdge(ff);
+                        diagram.addFlow(src, tgt, "");
+                    }
+                }
+            }
 
             if( keepGoing ) {
                 for( Gateway g : toCheck ) checkFakeGateway(diagram, g);
@@ -539,6 +608,7 @@ public class DiagramFixerService {
             }
         }
 
+        if( (outgoing == 0) && (incoming == 0) ) removeNode(diagram, g);
         if( (outgoing == 1) && (incoming == 1) ) {
             diagram.addFlow(in.getSource(), out.getTarget(), "");
             diagram.removeEdge(in);
@@ -667,6 +737,94 @@ public class DiagramFixerService {
         for(BPMNEdge e : mealRemains) diagram.removeEdge(e);
         removeNode(diagram, meal);
     }
+
+    public BPMNDiagram copyDiagram (BPMNDiagram diagram) {
+        BPMNDiagram duplicateDiagram = new BPMNDiagramImpl(diagram.getLabel());
+        HashMap<BPMNNode, BPMNNode> originalToCopy = new HashMap<>();
+        BPMNNode src, tgt;
+        BPMNNode copy;
+        SubProcess parentSubprocess;
+        Swimlane parentSwimlane;
+
+        for( BPMNNode n : diagram.getNodes() ) {
+            copy = copyNode(duplicateDiagram, n);
+            if( copy != null ) originalToCopy.put(n, copy);
+            else System.out.println("ERROR - diagram duplication failed [1].");
+        }
+
+        for( Flow f : diagram.getFlows() ) {
+            src = originalToCopy.get(f.getSource());
+            tgt = originalToCopy.get(f.getTarget());
+
+            if( src != null && tgt != null ) duplicateDiagram.addFlow(src, tgt, "");
+            else System.out.println("ERROR - diagram duplication failed [2].");
+        }
+
+        for( BPMNNode n : originalToCopy.keySet() ) {
+            parentSubprocess = (SubProcess) originalToCopy.get(n.getParentSubProcess());
+            parentSwimlane = (Swimlane) originalToCopy.get(n.getParentSwimlane());
+            copy = originalToCopy.get(n);
+            copy.setParentSubprocess(parentSubprocess);
+            copy.setParentSwimlane(parentSwimlane);
+        }
+
+        return duplicateDiagram;
+    }
+
+
+    public BPMNNode copyNode(BPMNDiagram diagram, BPMNNode node) {
+        BPMNNode duplicate = null;
+        String label = node.getLabel();
+
+        if( node instanceof SubProcess) {
+            duplicate = diagram.addSubProcess( label,
+                    ((Activity) node).isBLooped(),
+                    ((Activity) node).isBAdhoc(),
+                    ((Activity) node).isBCompensation(),
+                    ((Activity) node).isBMultiinstance(),
+                    ((Activity) node).isBCollapsed(),
+                    (SubProcess) null);
+
+        } else if( node instanceof Activity) {
+            duplicate = diagram.addActivity( label,
+                    ((Activity) node).isBLooped(),
+                    ((Activity) node).isBAdhoc(),
+                    ((Activity) node).isBCompensation(),
+                    ((Activity) node).isBMultiinstance(),
+                    ((Activity) node).isBCollapsed(),
+                    (SubProcess) null);
+
+        } else if( node instanceof CallActivity) {
+            duplicate = diagram.addCallActivity( label,
+                    ((CallActivity) node).isBLooped(),
+                    ((CallActivity) node).isBAdhoc(),
+                    ((CallActivity) node).isBCompensation(),
+                    ((CallActivity) node).isBMultiinstance(),
+                    ((CallActivity) node).isBCollapsed(),
+                    (SubProcess) null);
+
+        } else if( node instanceof Event) {
+            duplicate = diagram.addEvent( label,
+                    ((Event) node).getEventType(),
+                    ((Event) node).getEventTrigger(),
+                    ((Event) node).getEventUse(),
+                    (SubProcess) null,
+                    true,
+                    null);
+
+        } else if( node instanceof Gateway) {
+            duplicate = diagram.addGateway( label,
+                    ((Gateway) node).getGatewayType(),
+                    (SubProcess) null);
+
+            duplicate.setParentSwimlane(node.getParentSwimlane());
+            ((Gateway) duplicate).setMarkerVisible(((Gateway) node).isMarkerVisible());
+            ((Gateway) duplicate).setDecorator(((Gateway) node).getDecorator());
+        }
+
+        return duplicate;
+    }
+
 
     private void removeNode(BPMNDiagram diagram, BPMNNode n) {
         diagram.removeNode(n);

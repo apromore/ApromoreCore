@@ -1,19 +1,12 @@
 package au.edu.qut.structuring;
 
-import au.edu.qut.metrics.ComplexityCalculator;
 import au.edu.qut.structuring.core.StructuringCore;
-import au.edu.qut.structuring.helper.DiagramFixerService;
+import au.edu.qut.helper.DiagramHandler;
 import au.edu.qut.structuring.wrapper.BPStructWrapper;
-import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
-import org.processmining.framework.plugin.annotations.Plugin;
-import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
-import au.edu.qut.structuring.ui.iBPStructUI;
-import au.edu.qut.structuring.ui.iBPStructUIResult;
 import org.processmining.plugins.bpmn.BpmnAssociation;
 
 import java.util.*;
@@ -23,14 +16,6 @@ import java.util.*;
  */
 
 
-@Plugin(
-        name = "Structure BPMNDiagram",
-        parameterLabels = { "BPMNDiagram" },
-        returnLabels = { "Structured Diagram" },
-        returnTypes = { BPMNDiagram.class },
-        userAccessible = true,
-        help = "Structure a BPMNDiagram"
-)
 public class StructuringService {
 
     private static final int MAX_DEPTH = 100;
@@ -50,7 +35,7 @@ public class StructuringService {
     private boolean forceStructuring;
 
     private BPMNDiagram diagram;		//initial diagram
-    private DiagramFixerService diagramFixer;
+    private DiagramHandler diagramHandler;
 
     private Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> unmappableEdges;
     private Set<BPMNNode> unmappableNodes;
@@ -75,7 +60,7 @@ public class StructuringService {
     private Map<String, BPMNDiagram> idToDiagram;
 
     public StructuringService(){
-        diagramFixer = new DiagramFixerService();
+        diagramHandler = new DiagramHandler();
     }
 
     public BPMNDiagram structureDiagram(BPMNDiagram diagram) {
@@ -93,7 +78,8 @@ public class StructuringService {
                                         boolean timeBounded,
                                         boolean keepBisimulation,
                                         boolean forceStructuring) {
-        this.diagram = diagram;
+
+        this.diagram = diagramHandler.copyDiagram(diagram);
         this.policy = policy;
         this.maxDepth = maxDepth;
         this.maxSolutions = maxSolutions;
@@ -119,46 +105,6 @@ public class StructuringService {
 
         return this.diagram;
     }
-
-
-
-    @UITopiaVariant(
-            affiliation = "Queensland University of Technology",
-            author = "Adriano Augusto",
-            email = "a.augusto@qut.edu.au"
-    )
-    @PluginVariant(variantLabel = "Structure BPMNDiagram", requiredParameterLabels = {0})
-    public static BPMNDiagram structureDiagram(UIPluginContext context, BPMNDiagram diagram) {
-        BPMNDiagram structuredDiagram;
-        iBPStructUI gui = new iBPStructUI();
-        iBPStructUIResult result = gui.showGUI(context);
-        StructuringService ss = new StructuringService();
-        try {
-            structuredDiagram = ss.structureDiagram(diagram,
-                                                    result.getPolicy().toString(),
-                                                    result.getMaxDepth(),
-                                                    result.getMaxSol(),
-                                                    result.getMaxChildren(),
-                                                    result.getMaxStates(),
-                                                    result.getMaxMinutes(),
-                                                    result.isTimeBounded(),
-                                                    result.isKeepBisimulation(),
-                                                    result.isForceStructuring());
-        } catch(Exception e) {
-            context.log(e);
-            System.err.print(e);
-            return diagram;
-        }
-
-        ComplexityCalculator cc = new ComplexityCalculator(structuredDiagram);
-        System.out.println("COMPLEXITY - SIZE: " + cc.computeSize());
-        System.out.println("COMPLEXITY - CFC: " + cc.computeCFC());
-        System.out.println("COMPLEXITY - STRUCTUREDNESS: " + cc.computeStructuredness());
-        System.out.println("COMPLEXITY - DUPLICATES: " + cc.computeDuplicates());
-
-        return structuredDiagram;
-    }
-
 
     private void structureDiagram() throws Exception {
         unmappableEdges = new HashSet<>();
@@ -199,10 +145,10 @@ public class StructuringService {
          * - multiple start and end events
          * - boundary events
          **/
-        diagramFixer.fixImplicitGateways(diagram);
-        diagramFixer.removeDoubleEdges(diagram);
-        diagramFixer.collapseSplitGateways(diagram);
-        diagramFixer.removeDoubleEdges(diagram);
+        diagramHandler.fixImplicitGateways(diagram);
+        diagramHandler.removeDoubleEdges(diagram);
+        diagramHandler.collapseSplitGateways(diagram);
+        diagramHandler.removeDoubleEdges(diagram);
 
         removeMultipleStartEvents();
         removeMultipleEndEvents();
@@ -241,9 +187,9 @@ public class StructuringService {
         restoreEvents();
 
         /**** STEP6: fixing possible not valid configurations ****/
-        diagramFixer.removeDoubleEdges(diagram);
-        for( Gateway g : new HashSet<>(diagram.getGateways()) ) diagramFixer.checkFakeGateway(diagram, g);
-        diagramFixer.collapseJoinGateways(diagram);
+        diagramHandler.removeDoubleEdges(diagram);
+        for( Gateway g : new HashSet<>(diagram.getGateways()) ) diagramHandler.checkFakeGateway(diagram, g);
+        diagramHandler.collapseJoinGateways(diagram);
     }
 
     private void parsePool(Swimlane pool) {
@@ -462,15 +408,15 @@ public class StructuringService {
                 spi.structure();
                 structuredDiagram = spi.getDiagram();
             } else {
-                diagramFixer.fixSoundness(structuredDiagram);
+                diagramHandler.fixSoundness(structuredDiagram);
             }
         } catch(Exception e) {
             System.err.print(e);
             structuredDiagram = null;
         }
 
-        diagramFixer.removeDuplicates(structuredDiagram);
-        diagramFixer.removeEmptyParallelFlows(structuredDiagram);
+        diagramHandler.removeDuplicates(structuredDiagram);
+//        diagramHandler.removeEmptyParallelFlows(structuredDiagram);
         idToDiagram.put(processID, structuredDiagram);
         rebuildOrder.addLast(processID);
     }
