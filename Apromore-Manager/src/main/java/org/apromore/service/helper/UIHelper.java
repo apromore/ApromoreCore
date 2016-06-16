@@ -54,7 +54,6 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionType;
 import org.apromore.model.ProcessVersionsType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.service.PQLService;
 import org.apromore.service.WorkspaceService;
 
 /**
@@ -74,7 +73,6 @@ public class UIHelper implements UserInterfaceHelper {
     private ProcessModelVersionRepository pmvRepository;
     private FolderRepository fRepository;
     private WorkspaceService workspaceService;
-    private PQLService pqlService;
 
 
     /**
@@ -85,7 +83,6 @@ public class UIHelper implements UserInterfaceHelper {
      * @param processModelVersionRepository process model version Repository.
      * @param folderRepository folder repository.
      * @param workspaceService Workspace Services.
-     * @param pqlService Process Query Lanuage services
      */
     @Inject
     public UIHelper(final AnnotationRepository annotationRepository,
@@ -102,12 +99,6 @@ public class UIHelper implements UserInterfaceHelper {
         this.fRepository = folderRepository;
         this.workspaceService = workspaceService;
     }
-
-    // KLUDGE to work around circular dependency
-    public void setPQLService(PQLService pqlService) {
-        this.pqlService = pqlService;
-    }
-
 
 
     /**
@@ -358,19 +349,6 @@ public class UIHelper implements UserInterfaceHelper {
             }
         }
         assert externalId != null;
-
-        if (pqlService.isIndexingEnabled()) {
-            // Find the status of the process in the PQL index
-            try {
-                org.pql.index.IndexStatus pqlStatus = pqlService.getIndexStatus(externalId);
-                IndexStatus status = pqlStatus == null ? null : Enum.valueOf(IndexStatus.class, pqlStatus.name());
-                LOGGER.debug("Index status of process with id " + pro.getId() + " is " + status);
-                processSummary.setPqlIndexerStatus(status);
-            } catch (SQLException e) {
-                LOGGER.warn("Unable to get index status for process with id " + pro.getId(), e);
-                processSummary.setPqlIndexerStatus(null);  // Rendered as an error icon
-            }
-        }
     }
 
     /* Builds the list of Native Summaries for a version summary. */

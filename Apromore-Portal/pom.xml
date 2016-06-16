@@ -76,7 +76,7 @@
                                  These dependencies should be in scope provided!
                             -->
                             artifactId=
-                            json|jaxb2-basics-runtime
+                            diffbp|hibernate-core|jbpt|jdom|json|jaxb2-basics-runtime
                             |spring-social-core|spring-social-facebook|spring-social-twitter
                         </Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
@@ -188,7 +188,7 @@
                 <configuration>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                     <packagingExcludes> <!-- Regex to only include the same embedded dependencies as specified in maven-bundle-plugin -->
-                        %regex[WEB-INF/lib/(?!json|jaxb2|spring-social).*jar]
+                        %regex[WEB-INF/lib/(?!diffbp|hibernate-core|jbpt|jdom|json|jaxb2|spring-social).*jar]
                     </packagingExcludes>
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
