@@ -53,7 +53,7 @@ import org.apromore.service.helper.UserInterfaceHelper;
  */
 public class BPMNMinerController {
 
-    private PortalContext portalContext;
+    PortalContext portalContext;
     private Window bpmnMinerW;
     private Button uploadLog;
     private Button cancelButton;
@@ -251,25 +251,26 @@ public class BPMNMinerController {
             bos.write(logByteArray, 0, logByteArray.length);
             InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
             log = importFromStream(new XFactoryNaiveImpl(), zipEntryIS, logFileName);
+
+            if(log == null) {
+                Messagebox.show("Please select a log.");
+            }else if(miningAlgorithms.getSelectedIndex() < 0) {
+                Messagebox.show("Please select mining algorithm.");
+            }else {
+                erModel = new DiscoverERmodel();
+                listCandidates = erModel.generateAllAttributes(log);
+
+                new CandidatesEntitiesController(this, listCandidates);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if(log == null) {
-            Messagebox.show("Please select a log.");
-        }else if(miningAlgorithms.getSelectedIndex() < 0) {
-            Messagebox.show("Please select mining algorithm.");
-        }else {
-            erModel = new DiscoverERmodel();
-            listCandidates = erModel.generateAllAttributes(log);
-
-            new CandidatesEntitiesController(this, listCandidates);
-        }
     }
 
-    public void setSelectedCandidatesEntities(List<String> listCandidates, boolean[] selected) throws NoEntityException {
+    public void setSelectedCandidatesEntities(List<String> listCandidates, boolean[] selected) throws IOException, NoEntityException {
         this.listCandidates = listCandidates;
         this.selected = selected;
 
