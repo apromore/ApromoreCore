@@ -87,7 +87,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Compare to Log";
+        return "Compare";
     }
 
     public String getGroupLabel(Locale locale) {
