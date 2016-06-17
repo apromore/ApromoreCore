@@ -80,6 +80,7 @@ public class StructuringService {
                                         boolean forceStructuring) {
 
         this.diagram = diagramHandler.copyDiagram(diagram);
+//        this.diagram = diagram;
         this.policy = policy;
         this.maxDepth = maxDepth;
         this.maxSolutions = maxSolutions;
@@ -450,7 +451,7 @@ public class StructuringService {
                 if( n instanceof Gateway ) {
                     node = diagram.addGateway("", ((Gateway) n).getGatewayType(), parentProcess);
                 } else if( originalNodes.containsKey(id) ) {
-                    if (greyList.contains(id)) {
+                    if( greyList.contains(id) ) {
                         // this node has been duplicated by iBPStruct tool so we do the same
                         node = duplicateNode(originalNodes.get(id), parentProcess, true);
                         if (node == null)
@@ -462,7 +463,7 @@ public class StructuringService {
                     }
                 } else {
                     node = null;
-                    System.out.println("ERROR - found new node that is not a gateway.");
+                    System.out.println("ERROR - found new node that is not a gateway > " + n.getClass().getSimpleName() + " : " + n.getLabel());
                 }
                 processedNodes.put(n.getId().toString(), node);
             }
@@ -487,7 +488,7 @@ public class StructuringService {
                 //System.out.println("diagram- added flow: " + src.getId() +  " -> " + tgt.getId());
             }
         } catch(Exception e) {
-            System.out.println("Error rebuilding subProcess: " + processID);
+            System.out.println("Error rebuilding subProcess: " + processID + " - " + originalNodes.get(processID).getLabel());
             error = true;
         }
 

@@ -40,7 +40,11 @@ public class OptimizerPlugin {
         System.out.println("Optimizer - [settings] Apply Cleaning: " + result.isApplyCleaning());
 
         FakeMiner fakeMiner = new FakeMiner();
-        BPMNDiagram optimizedDiagram = fakeMiner.optimize(diagram, log);
+        BPMNDiagram optimizedDiagram = fakeMiner.optimize(diagram, log, result.isUnbalancedPaths(),
+                                                                        result.isOptionalTasks(),
+                                                                        result.isRecurrentTasks(),
+                                                                        result.isInclusiveChoice(),
+                                                                        result.isApplyCleaning() );
 
         return optimizedDiagram;
     }

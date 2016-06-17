@@ -501,7 +501,6 @@ public class iBPStruct {
     private BPMNNode createNode(String id) {
         BPMNNode node;
         BPMNNode duplicate = null;
-        String label = id;
 
         if( !nodes.containsKey(id) ) {
             System.out.println("ERROR - looked up for a node that does not exist.");
@@ -509,7 +508,7 @@ public class iBPStruct {
         }
 
         node = nodes.get(id);
-        duplicate = diagramHandler.copyNode(diagram, node);
+        duplicate = diagramHandler.copyNode(diagram, node, id);
         return duplicate;
     }
 

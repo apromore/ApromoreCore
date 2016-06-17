@@ -1,6 +1,6 @@
-package au.edu.qut.processmining.parser;
+package au.edu.qut.processmining.log;
 
-import au.edu.qut.processmining.parser.graph.LogGraph;
+import au.edu.qut.processmining.log.graph.LogGraph;
 import org.deckfour.xes.model.XLog;
 
 /**
@@ -8,9 +8,8 @@ import org.deckfour.xes.model.XLog;
  */
 public class LogParser {
 
-    public LogGraph generateLogGraph(XLog log) {
+    public static LogGraph generateLogGraph(XLog log) {
         LogGraph graph = new LogGraph(log);
-
         return graph;
     }
 }
