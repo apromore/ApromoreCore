@@ -337,11 +337,11 @@
         <ignored.test.suffix>ManualTest.java</ignored.test.suffix>
 
         <!-- Toggles to turn off checks -->
-        <checkstyle.skip>false</checkstyle.skip>
-        <jacoco.skip>false</jacoco.skip>
-        <findbugs.skip>false</findbugs.skip>
-        <javadocs.skip>false</javadocs.skip>
-        <pmd.skip>false</pmd.skip>
+        <checkstyle.skip>true</checkstyle.skip>
+        <jacoco.skip>true</jacoco.skip>
+        <findbugs.skip>true</findbugs.skip>
+        <javadocs.skip>true</javadocs.skip>
+        <pmd.skip>true</pmd.skip>
         <minimizeJar>false</minimizeJar>
     </properties>
 

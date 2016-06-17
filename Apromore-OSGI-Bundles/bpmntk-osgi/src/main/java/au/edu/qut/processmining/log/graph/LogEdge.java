@@ -1,4 +1,4 @@
-package au.edu.qut.processmining.parser.graph;
+package au.edu.qut.processmining.log.graph;
 
 /**
  * Created by Adriano on 15/06/2016.
@@ -14,6 +14,13 @@ public class LogEdge implements Comparable {
         this.source = source;
         this.target = target;
         weight = 0;
+        id = Long.toString(System.currentTimeMillis());
+    }
+
+    public LogEdge(LogNode source, LogNode target, int weight){
+        this.source = source;
+        this.target = target;
+        this.weight = weight;
         id = Long.toString(System.currentTimeMillis());
     }
 

@@ -22,8 +22,17 @@ import java.util.*;
  */
 
 public class DiagramHandler {
+    private BPMNDiagram diagram;
+    private Map<String, BPMNNode> nodes;
+    private Map<BPMNNode, HashSet<BPMNNode>> successors;
+    private Map<BPMNNode, HashSet<BPMNNode>> predecessors;
 
-    public DiagramHandler(){}
+    public DiagramHandler(){
+        diagram = null;
+        nodes = null;
+        successors = null;
+        predecessors = null;
+    }
 
     public void touch(BPMNDiagram diagram) {
         int g = 0;
@@ -747,7 +756,7 @@ public class DiagramHandler {
         Swimlane parentSwimlane;
 
         for( BPMNNode n : diagram.getNodes() ) {
-            copy = copyNode(duplicateDiagram, n);
+            copy = copyNode(duplicateDiagram, n, n.getLabel());
             if( copy != null ) originalToCopy.put(n, copy);
             else System.out.println("ERROR - diagram duplication failed [1].");
         }
@@ -772,9 +781,8 @@ public class DiagramHandler {
     }
 
 
-    public BPMNNode copyNode(BPMNDiagram diagram, BPMNNode node) {
+    public BPMNNode copyNode(BPMNDiagram diagram, BPMNNode node, String label) {
         BPMNNode duplicate = null;
-        String label = node.getLabel();
 
         if( node instanceof SubProcess) {
             duplicate = diagram.addSubProcess( label,
@@ -831,5 +839,31 @@ public class DiagramHandler {
         if( n.getParentSubProcess() != null ) n.getParentSubProcess().getChildren().remove(n);
         if( n.getParentSwimlane() != null ) n.getParentSwimlane().getChildren().remove(n);
     }
+
+    public void setDiagram(BPMNDiagram diagram) {
+        this.diagram = diagram;
+        nodes = new HashMap<>();
+        predecessors = new HashMap<>();
+        successors = new HashMap<>();
+        BPMNNode src, tgt;
+
+        for( Flow f : diagram.getFlows()) {
+            src = f.getSource();
+            tgt = f.getTarget();
+
+            nodes.put(src.getLabel(), src);
+            nodes.put(tgt.getLabel(), tgt);
+
+            if( !successors.containsKey(src) ) successors.put(src, new HashSet<BPMNNode>());
+            if( !predecessors.containsKey(tgt) ) predecessors.put(tgt, new HashSet<BPMNNode>());
+
+            successors.get(src).add(tgt);
+            predecessors.get(tgt).add(src);
+        }
+    }
+
+    public Set<BPMNNode> getPredecessors(BPMNNode node) { return new HashSet<>(predecessors.get(node)); }
+    public Set<BPMNNode> getSuccessors(BPMNNode node) { return new HashSet<>(successors.get(node)); }
+
 
 }
