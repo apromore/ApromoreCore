@@ -45,6 +45,8 @@ public class Unfolding2PES {
 	private HashSet<String> cyclicTasks; 	
 
 	public Unfolding2PES(Unfolder_PetriNet unfolder, Set<String> originalVisibleLabels) {
+//		System.out.println("\t ***"+originalVisibleLabels);
+		
 		this.sys = unfolder.getSys();
 		this.bp = unfolder.getBP();
 		this.orderedVisibleEventMap = new HashMap<>();
@@ -270,7 +272,7 @@ public class Unfolding2PES {
 			}
 			isomorphism.put(cutoff, bimap);
 		}
-		System.out.println(">> " + isomorphism+" ------ ");
+//		System.out.println(">> " + isomorphism+" ------ ");
 	}
 
 	public Map<Integer, BiMap<Integer, Integer>> getIsomorphism() {

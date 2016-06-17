@@ -70,6 +70,11 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getGroupLabel(Locale locale) {
+        return "Log";
+    }
+
+    @Override
     public void execute(PortalContext context) {
 
         context.getMessageHandler().displayInfo("Executed BPMN miner plug-in!");
