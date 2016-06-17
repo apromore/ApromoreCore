@@ -90,7 +90,6 @@ public class ComparePlugin extends DefaultPortalPlugin {
         return "Compare to Log";
     }
 
-    @Override
     public String getGroupLabel(Locale locale) {
         return "Analysis";
     }
@@ -113,9 +112,10 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
         NetSystem net = pnmlSerializer.parse(bytes);
 
-        for(org.jbpt.petri.Transition t : net.getSilentTransitions())
-            labels.add(t.getName());
-        
+        for(org.jbpt.petri.Transition t : net.getObservableTransitions())
+            if (t.getLabel().trim().length() > 0)
+                labels.add(t.getLabel().trim());
+
         return jbptToUma(net);
     }
 
@@ -137,7 +137,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
             List<ProcessSummaryType> procS = new ArrayList<>();
             List<VersionSummaryType> verS = new ArrayList<>();
             List<PetriNet> nets = new ArrayList<>();
-            List<HashSet<String>> silentSets = new ArrayList<>();
+            List<HashSet<String>> observable = new ArrayList<>();
             for (ProcessSummaryType processSummary: selectedProcessVersions.keySet()) {
                 List<VersionSummaryType> versionSummaries = selectedProcessVersions.get(processSummary);
                 if (versionSummaries.isEmpty()) {
@@ -147,9 +147,9 @@ public class ComparePlugin extends DefaultPortalPlugin {
                 for (VersionSummaryType versionSummary: versionSummaries) {
                     procS.add(processSummary);
                     verS.add(versionSummary);
-                    HashSet<String> silent = new HashSet<>();
-                    nets.add(getNet(processSummary, versionSummary, context, silent));
-                    silentSets.add(new HashSet<String>(silent));
+                    HashSet<String> obs = new HashSet<>();
+                    nets.add(getNet(processSummary, versionSummary, context, obs));
+                    observable.add(new HashSet<String>(obs));
 //                    details.add(new VersionDetailType(processSummary, versionSummary));
                 }
             }
@@ -162,7 +162,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
                 break;
             case 2:
                 context.getMessageHandler().displayInfo("Performing comparison.");
-                new CompareController(context,compareService, nets.get(0), nets.get(1), silentSets.get(0), silentSets.get(1));
+                new CompareController(context,compareService, nets.get(0), nets.get(1), observable.get(0), observable.get(1));
                 context.getMessageHandler().displayInfo("Performed comparison.");
                 break;
             default:
