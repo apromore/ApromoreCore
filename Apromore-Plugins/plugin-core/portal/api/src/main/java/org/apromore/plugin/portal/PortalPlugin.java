@@ -29,12 +29,24 @@ import java.util.Locale;
 public interface PortalPlugin extends ParameterAwarePlugin {
 
     /**
-     * Label of the plug-in, i.e., the name under which it's functionality is accessible
+     * Label of the plug-in.
+     *
+     * This is used for the menu item.
      *
      * @param locale (optional locale)
      * @return
      */
     String getLabel(Locale locale);
+
+    /**
+     * Label of the group of plug-ins this one belongs to.
+     *
+     * This is used for the menu.
+     *
+     * @param locale (optional locale)
+     * @return
+     */
+    String getGroupLabel(Locale locale);
 
     /**
      * Call-back that is called when this plug-in is executed.

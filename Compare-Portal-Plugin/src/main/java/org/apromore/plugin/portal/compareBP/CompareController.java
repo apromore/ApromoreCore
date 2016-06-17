@@ -88,10 +88,10 @@ public class CompareController {
     private CompareService compareService;
     private PetriNet net;
 
-    public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net1, PetriNet net2, HashSet<String> silent1, HashSet<String> silent2) throws Exception{
+    public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net1, PetriNet net2, HashSet<String> obs1, HashSet<String> obs2) throws Exception{
         this.compareService = compareService;
         this.portalContext = portalContext;
-        Set<String> differences = compareService.discoverModelModel(net1, net2, silent1, silent2);
+        Set<String> differences = compareService.discoverModelModel(net1, net2, obs1, obs2);
 
 //                for (String s : differences)
 //                    result += s + "\n";
