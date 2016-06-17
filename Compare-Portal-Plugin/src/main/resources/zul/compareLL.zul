@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="win" width="300px" closable="false" position="center" title="Deviance mining (log to log comparison)">
+<window id="win" width="300px" closable="false" position="center" title="Log to log comparison">
     <vbox>
         <groupbox width="285px">
             <label value="Log File 1 (.mxml, .xes, .mxml.gz, .xes.gz)" width="100%"/>
