@@ -131,6 +131,7 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
 
         System.out.println("Output file:");
         UIContext context = new UIContext();
+        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         UIPluginContext uiPluginContext = context.getMainPluginContext();
         BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
