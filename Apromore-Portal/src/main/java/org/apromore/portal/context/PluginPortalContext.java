@@ -138,7 +138,7 @@ public class PluginPortalContext implements PortalContext {
     }
 
     @Override
-    public MainControllerInterface getMainController() {
+    public MainController getMainController() {
         return mainController;
     }
 

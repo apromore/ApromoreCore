@@ -38,6 +38,8 @@
 							ee.ut.eventstr.comparison,
 							ee.ut.eventstr.folding,
 							ee.ut.eventstr.freq,
+							ee.ut.bpmn,
+							ee.ut.eventstr,
 							ee.ut.eventstr.unfolding
 						</Export-Package>
 					</instructions>
@@ -93,9 +95,23 @@
 			<version>4.4</version>
 		</dependency>
 		<dependency>
+            <groupId>org.jbpt</groupId>
+            <artifactId>jbpt-bpm</artifactId>
+            <version>0.2.433</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpt</groupId>
+            <artifactId>jbpt-petri-osgi</artifactId>
+        </dependency>
+		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-all</artifactId>
 			<version>1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -32,7 +32,7 @@
     </parent>
 
     <artifactId>apromore-portal</artifactId>
-    <packaging>war</packaging>
+    <packaging>bundle</packaging>
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Portal</name>
 
@@ -138,7 +138,8 @@
                         <Export-Package>
                             org.apromore.portal.common,
                             org.apromore.portal.dialogController,
-                            org.apromore.portal.exception
+                            org.apromore.portal.exception,
+                            org.apromore.portal.context
                         </Export-Package>
                         <Web-ContextPath>${site.portal}</Web-ContextPath>
                     </instructions>
