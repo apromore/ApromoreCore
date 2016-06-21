@@ -412,6 +412,11 @@
             </dependency>
             <dependency>
                 <groupId>org.jbpt</groupId>
+                <artifactId>jbpt-bpm</artifactId>
+                <version>${jbpt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jbpt</groupId>
                 <artifactId>jbpt-deco</artifactId>
                 <version>${jbpt.version}</version>
             </dependency>

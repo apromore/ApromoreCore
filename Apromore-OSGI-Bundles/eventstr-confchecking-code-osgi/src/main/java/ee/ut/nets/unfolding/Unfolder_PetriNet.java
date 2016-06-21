@@ -26,6 +26,9 @@ import hub.top.uma.Options;
 import hub.top.uma.DNodeSet.DNodeSetElement;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -50,6 +53,7 @@ public class Unfolder_PetriNet {
 	BiMap<Node, String> transitionLabel;
 
 	HashMap<String, String> label2Label;
+	HashMap<Short, Node> mapDNodeTrans;
 
 	/**
 	 * Initialize the unfolder to construct a finite complete prefix of a safe
@@ -58,7 +62,7 @@ public class Unfolder_PetriNet {
 	 * @param net
 	 *            a safe Petri net
 	 */
-	public Unfolder_PetriNet(PetriNet net, MODE mode) {
+	public Unfolder_PetriNet(PetriNet net, MODE mode, HashSet<String> silent) {
 		try {
 			relabel(net);
 			
@@ -73,7 +77,13 @@ public class Unfolder_PetriNet {
 			// initialize unfolder
 			bp = new BPstructBP(sys, o);
 			bp.setMode(mode);
-
+			bp.setSilent(silent);
+			
+			mapDNodeTrans = new HashMap<>();
+			
+			for (Node trans : net.getTransitions())
+				mapDNodeTrans.put(sys.getResultNode(trans).id, trans);
+			
 		} catch (InvalidModelException e) {
 			System.err.println("Error! Invalid model.");
 			System.err.println(e);
@@ -139,6 +149,214 @@ public class Unfolder_PetriNet {
 		}
 	}
 
+	public PetriNet getUnfoldingAsPetriNet(Set<String> visibleLabels, HashMap<Node, Multiplicity> repetitionIndex, HashMap<Node, Node> originalMap, HashMap<Short, Node> mapDT) {
+		PetriNet unfolding = new PetriNet();
+		DNodeSetElement allNodes = bp.getBranchingProcess().getAllNodes();
+		BiMap<Node, DNode> map = HashBiMap.create();	
+		
+		sys.packageProperNames();
+
+		HashMap<Integer, Node> nodeMap = new HashMap<>();
+
+		// first print all conditions
+		for (DNode n : allNodes) {
+			if (n.isEvent)
+				continue;
+
+			// if (!option_printAnti && n.isAnti) continue;
+
+			String name = n.toString();
+			if (n.isAnti)
+				name = "NOT " + name;
+			else if (n.isCutOff){
+//				name ="CUT(" + name + ")";
+			}
+				
+			Place p = unfolding.addPlace(name);
+			nodeMap.put(n.globalId, p);
+
+			if (bp.getBranchingProcess().initialConditions.contains(n))
+				p.setTokens(1);
+		}
+
+		for (DNode n : allNodes) {
+			if (!n.isEvent)
+				continue;
+
+			// if (!option_printAnti && n.isAnti) continue;
+
+			String name = sys.properNames[n.id];
+			if (n.isAnti)
+				name = "NOT " + name;
+			else if (n.isCutOff){
+//				name = "CUT(" + name + ")";
+			}
+			
+			Transition t = unfolding.addTransition(name);
+
+			if(originalMap!= null && mapDNodeTrans != null && mapDNodeTrans.get(n.id) != null)
+				originalMap.put(t, mapDNodeTrans.get(n.id));
+			
+			nodeMap.put(n.globalId, t);
+			map.put(t, n);
+		}
+
+		for (DNode n : allNodes) {
+			if (n.isEvent) {
+				for (DNode pre : n.pre) {
+					unfolding.addArc((Place) nodeMap.get(pre.globalId),
+							(Transition) nodeMap.get(n.globalId));
+				}
+			} else {
+				for (DNode pre : n.pre) {
+					unfolding.addArc((Transition) nodeMap.get(pre.globalId),
+							(Place) nodeMap.get(n.globalId));
+				}
+			}
+		}
+		
+		HashSet<DNode> steadyEvts = getSteadyEvts();
+		HashSet<Short> steadyEvtIds = new HashSet<Short>();
+		for(DNode n : steadyEvts)
+			steadyEvtIds.add(n.id);
+		
+		steadyEvts = getSteadyEvts(visibleLabels);
+		steadyEvtIds = new HashSet<Short>();
+		for(DNode n : steadyEvts)
+			steadyEvtIds.add(n.id);
+
+		updateMultiplicity(repetitionIndex, map, nodeMap, visibleLabels, steadyEvtIds);
+		
+		if(mapDT != null)
+		mapDT.putAll(mapDNodeTrans);
+		
+		return unfolding;
+	}
+	
+	private void updateMultiplicity(HashMap<Node, Multiplicity> repetitionIndex,
+			BiMap<Node, DNode> map, HashMap<Integer, Node> nodeMap, Set<String> visibleLabels, HashSet<Short> steadyEvtIds) {
+		HashMap<Short, LinkedList<DNode>> byIds = groupById(bp.getBranchingProcess().getAllEvents());
+		HashMap<Short, Multiplicity> repetitionI = new HashMap<>();
+		
+		for(Short key : byIds.keySet())
+			repetitionI.put(key, Multiplicity.ZERO);
+		
+		for(Short key : byIds.keySet())
+			for(DNode d1 : byIds.get(key)){
+				HashSet<DNode> repetitions = countOcc(d1);
+				
+				if(repetitions.size() > 0)
+					for(DNode d2 : repetitions)
+						if(d1 != d2 && isDirectPred(d2, visibleLabels, d1))
+							if(steadyEvtIds.contains(d1.id))
+								repetitionI.put(key, Multiplicity.LOOP_ONE_MORE);
+							else
+								repetitionI.put(key, Multiplicity.LOOP_ZERO_MORE);
+						else if(steadyEvtIds.contains(d1.id) && !(repetitionI.get(key).equals(Multiplicity.LOOP_ZERO_MORE) || repetitionI.get(key).equals(Multiplicity.LOOP_ONE_MORE)))
+							repetitionI.put(key, Multiplicity.ONE_MORE);
+						else if(!(repetitionI.get(key).equals(Multiplicity.LOOP_ZERO_MORE) || repetitionI.get(key).equals(Multiplicity.LOOP_ONE_MORE)) && !repetitionI.get(key).equals(Multiplicity.ONE_MORE))
+							repetitionI.put(key, Multiplicity.ZERO_MORE);
+			}
+		
+		BiMap<DNode, Node> inverseMap = map.inverse();
+		
+		for(DNode n : inverseMap.keySet())
+			repetitionIndex.put(inverseMap.get(n), repetitionI.get(n.id));
+		
+		System.out.println("Repetitions = " + repetitionIndex);
+	}
+	
+	private HashSet<DNode> countOcc(DNode n) {
+		HashSet<DNode> occurrences = new HashSet<DNode>();
+		
+		for(DNode p : n.getAllPredecessors())
+			if(p.isEvent && p != n)
+				if(p.id == n.id)
+					occurrences.add(p);
+		
+		return occurrences;
+	}
+	
+	private boolean isDirectPred(DNode r, Set<String> visibleLabels, DNode n) {
+		boolean dPred = true;
+		
+		LinkedList<DNode> precs = new LinkedList<>(n.getAllPredecessors());
+		precs.removeAll(r.getAllPredecessors());
+		
+		for(DNode p : precs)
+			if(p.isEvent && p != n){
+				if(visibleLabels.contains(sys.properNames[p.id]))
+						dPred = false;
+			}else if(!p.getAllPredecessors().contains(r))
+				dPred = false;
+		
+		return dPred;
+	}
+	
+	private HashMap<Short, LinkedList<DNode>> groupById(DNodeSetElement allEvents) {
+		HashMap<Short, LinkedList<DNode>> nodes = new HashMap<Short, LinkedList<DNode>>(); 
+		
+		for(DNode n : allEvents){
+			if(!nodes.containsKey(n.id))
+				nodes.put(n.id, new LinkedList<DNode>());
+			nodes.get(n.id).add(n);
+		}
+		
+		return nodes;
+	}
+	
+	private HashSet<DNode> getSteadyEvts() {
+		DNodeSetElement allEvents = bp.getBranchingProcess().getAllEvents();
+		HashSet<DNode> steady = null;
+		
+		for (DNode n : allEvents)
+			if(!n.isCutOff && isSink(n))
+				if(steady == null){
+					steady = new HashSet<DNode>(n.getAllPredecessors());
+				}else
+					steady.retainAll(n.getAllPredecessors());
+		
+		HashSet<DNode> toRemove = new HashSet<>();
+		for(DNode n : steady)
+			if(!n.isEvent)
+				toRemove.add(n);
+		
+		steady.removeAll(toRemove);
+		
+		return steady;
+	}
+	
+	private HashSet<DNode> getSteadyEvts(Set<String> visibleLabels) {
+		DNodeSetElement allEvents = bp.getBranchingProcess().getAllEvents();
+		HashSet<DNode> steady = null;
+		
+		for (DNode n : allEvents)
+			if(!n.isCutOff && isSink(n))
+				if(steady == null){
+					steady = new HashSet<DNode>(n.getAllPredecessors());
+				}else
+					steady.retainAll(n.getAllPredecessors());
+		
+		HashSet<DNode> toRemove = new HashSet<>();
+		for(DNode n : steady)
+			if(!n.isEvent || !visibleLabels.contains(sys.properNames[n.id]))
+				toRemove.add(n);
+		
+		steady.removeAll(toRemove);
+		
+		return steady;
+	}
+	
+	private boolean isSink(DNode n) {
+		DNode[] post = n.post;
+		
+		for(int i=0 ; i < post.length; i++)
+			if(post[i].post == null || post[i].post.length == 0)
+				return true;
+		
+		return false;
+	}
+	
 	/**
 	 * Convert the unfolding into a Petri net and return this Petri net
 	 */

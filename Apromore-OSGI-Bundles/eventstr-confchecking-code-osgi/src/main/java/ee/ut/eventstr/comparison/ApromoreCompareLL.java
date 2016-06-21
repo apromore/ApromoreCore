@@ -48,27 +48,27 @@ public class ApromoreCompareLL {
 	}
 	
 	
-	public Set<String> getStatements2(XLog log1, XLog log2) {
-		PrimeEventStructure<Integer> logpes1 = getLogPES(log1, "log 1");
-		PrimeEventStructure<Integer> logpes2 = getLogPES(log2, "log 2");
-		
-		PESSemantics<Integer> fullLogPesSem1 = new PESSemantics<Integer>(logpes1);
-		PESSemantics<Integer> fullLogPesSem2 = new PESSemantics<Integer>(logpes2);
-		
-		PartialSynchronizedProduct<Integer> psp = new PartialSynchronizedProduct<>(fullLogPesSem1, fullLogPesSem2);		
-		PartialSynchronizedProduct<Integer> pruned = psp.perform();
-
-		HashSet<String> commonLabels = new HashSet<>(logpes1.getLabels());
-		commonLabels.retainAll(logpes2.getLabels());
-		
-		DiffMMVerbalizer<Integer> verbalizer = new DiffMMVerbalizer<Integer>(fullLogPesSem1, fullLogPesSem2,commonLabels, new HashSet<String>(logpes1.getLabels()), new HashSet<String>(logpes2.getLabels()));
-		pruned.setVerbalizer(verbalizer);
-		pruned.prune();
-		
-		verbalizer.verbalize();
-
-		return verbalizer.getStatements();
-	}
+//	public Set<String> getStatements2(XLog log1, XLog log2) {
+//		PrimeEventStructure<Integer> logpes1 = getLogPES(log1, "log 1");
+//		PrimeEventStructure<Integer> logpes2 = getLogPES(log2, "log 2");
+//		
+//		PESSemantics<Integer> fullLogPesSem1 = new PESSemantics<Integer>(logpes1);
+//		PESSemantics<Integer> fullLogPesSem2 = new PESSemantics<Integer>(logpes2);
+//		
+//		PartialSynchronizedProduct<Integer> psp = new PartialSynchronizedProduct<>(fullLogPesSem1, fullLogPesSem2);		
+//		PartialSynchronizedProduct<Integer> pruned = psp.perform();
+//
+//		HashSet<String> commonLabels = new HashSet<>(logpes1.getLabels());
+//		commonLabels.retainAll(logpes2.getLabels());
+//		
+//		DiffMMVerbalizer<Integer> verbalizer = new DiffMMVerbalizer<Integer>(fullLogPesSem1, fullLogPesSem2,commonLabels, new HashSet<String>(logpes1.getLabels()), new HashSet<String>(logpes2.getLabels()));
+//		pruned.setVerbalizer(verbalizer);
+//		pruned.prune();
+//		
+//		verbalizer.verbalize();
+//
+//		return verbalizer.getStatements();
+//	}
 	
 	private Set<String> getStatements(XLog log1, XLog log2) {
 		SinglePORunPESSemantics<Integer> logpessem1;

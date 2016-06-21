@@ -104,7 +104,7 @@ public class ApromoreCompareML {
 			}
 		}
 		
-		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.ESPARZA);
+		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.ESPARZA, new HashSet<String>());
 		unfolder.computeUnfolding();
 		
 		Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
