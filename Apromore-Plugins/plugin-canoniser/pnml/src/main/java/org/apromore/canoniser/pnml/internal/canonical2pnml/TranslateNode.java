@@ -181,18 +181,18 @@ public class TranslateNode {
             data.getNet().getArc().add(startToRunning);
 
             // Create the transition that stops the task running
-            TransitionType end = new TransitionType();
-            end.setId(String.valueOf(ids++));
-            end.setName(running.getName());
-            end.setGraphics(newGraphicsNodeType(dummyPosition(), transitionDefaultDimension()));
-            data.getNet().getTransition().add(end);
+//            TransitionType end = new TransitionType();
+//            end.setId(String.valueOf(ids++));
+//            end.setName(running.getName());
+//            end.setGraphics(newGraphicsNodeType(dummyPosition(), transitionDefaultDimension()));
+//            data.getNet().getTransition().add(end);
 
             // Create the arc from the running place to the end transition
-            ArcType runningToEnd = new ArcType();
-            runningToEnd.setId(String.valueOf(ids++));
-            runningToEnd.setSource(running);
-            runningToEnd.setTarget(end);
-            data.getNet().getArc().add(runningToEnd);
+//            ArcType runningToEnd = new ArcType();
+//            runningToEnd.setId(String.valueOf(ids++));
+//            runningToEnd.setSource(running);
+//            runningToEnd.setTarget(end);
+//            data.getNet().getArc().add(runningToEnd);
 
             // Name the nodes (English naming convention)
             String taskName = task.getName();
@@ -208,15 +208,16 @@ public class TranslateNode {
                 running.setName(name);
 
                 // End transition named "<Task> end"
-                name = new NodeNameType();
-                name.setText(taskName + "_end");
-                end.setName(name);
+//                name = new NodeNameType();
+//                name.setText(taskName + "_end");
+//                end.setName(name);
             }
 
             // Tell TranslateArc where to attach incoming and outgoing arcs
             data.getStartNodeMap().put(task, tran);
-            data.getRunningPlaceMap().put(task, running);
-            data.getEndNodeMap().put(task, end);
+//            data.getRunningPlaceMap().put(task, running);
+//            data.getEndNodeMap().put(task, end);
+            data.getEndNodeMap().put(task, running);
         }
     }
 

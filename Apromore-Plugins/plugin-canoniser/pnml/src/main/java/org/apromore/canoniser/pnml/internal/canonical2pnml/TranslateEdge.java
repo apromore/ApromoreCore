@@ -149,6 +149,38 @@ public class TranslateEdge {
                 // Our original arc now targets the synthesized place
                 arctarget = place;
             }
+            // changed by Marco Hipp
+            // implemented Method to reconnect misbehaving Place to Place Edge
+            if (arcsource instanceof PlaceType && arctarget instanceof PlaceType ) {
+            	//iterate through every Arc to get the Arc that has the source Place as Target
+            	for (ArcType arcList : data.getNet().getArc()) {
+            		if (arcList.getTarget() instanceof PlaceType) {
+            			PlaceType aclistTarget = (PlaceType) arcList.getTarget();
+            			if (aclistTarget.getId().equals(arcsource.getId())) {
+	            			if (arcList.getSource() instanceof PlaceType) {
+	            				PlaceType transitionSourcePlace = (PlaceType) arcList.getSource();
+	            			}
+	            			if(arcList.getSource() instanceof TransitionType) {
+	            				TransitionType transitionSource = (TransitionType) arcList.getSource();
+	            				org.apromore.pnml.NodeType nodeTransitionSource = (org.apromore.pnml.NodeType) transitionSource;
+	            				arcsource = nodeTransitionSource;
+	            			}
+            			}
+            		}
+            		if (arcList.getTarget() instanceof TransitionType) {
+            			TransitionType aclistTarget = (TransitionType) arcList.getTarget();
+            			if (aclistTarget.getId().equals(arcsource.getId())) {
+	            			if (arcList.getSource() instanceof PlaceType) {
+	            				PlaceType transitionSourcePlace = (PlaceType) arcList.getSource();
+	            			}
+	            			if(arcList.getSource() instanceof TransitionType) {
+	            				TransitionType transitionSource = (TransitionType) arcList.getSource();
+	            			}
+            			}
+            		}
+            	}
+
+            }
 
             arc.setSource(arcsource);
             arc.setTarget(arctarget);
