@@ -4,9 +4,23 @@ import java.io.PrintWriter;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.jbpt.graph.DirectedEdge;
+import org.jbpt.graph.DirectedGraph;
+import org.jbpt.graph.Edge;
+import org.jbpt.graph.Graph;
+import org.jbpt.hypergraph.abs.Vertex;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
+import java.util.Map.Entry;
+
+import ee.ut.bpmn.replayer.Pomset;
 
 public class PESSemantics <T> {
 	protected PrimeEventStructure<T> pes;	
@@ -235,5 +249,122 @@ public class PESSemantics <T> {
 
 	public HashSet<String> getCyclicTasks() {
 		return this.pes.getCyclicTasks();
+	}
+
+	public List<String> getLabels(Set<Integer> next) {
+		List<String> labels = new LinkedList<>();
+		
+		for(Integer evt : next)
+			labels.add(getLabel(evt));
+		
+		return labels;
+	}
+
+	public Set<Integer> getEvents(BitSet bs) {
+		Set<Integer> events = new HashSet<>();
+
+		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1))
+			events.add(i);
+
+		return events;
+	}
+
+	public Pomset getPomset(BitSet bs) {
+		DirectedGraph confgraph = new DirectedGraph();
+		BiMap<Vertex, Integer> map = HashBiMap.<Vertex, Integer> create();
+		HashMap<Integer, String> labels = new HashMap<>();
+		
+		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1)) 
+			if(!getLabel(i).equals("_0_") && !getLabel(i).equals("_1_")){
+				Vertex v = new Vertex(getLabel(i));
+				map.put(v, i);
+				labels.put(i, getLabel(i));
+			}
+
+		HashSet<Integer> conf = bS2int(bs);
+		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1)) 
+			if(!(getLabel(i).equals("_0_") && getDirectPredecessors(i).isEmpty()) && !(getLabel(i).equals("_1_") && getDirectSuccessors(i).isEmpty())){
+				BitSet pred = getOrderBS(conf, i);
+	
+				for (int j = pred.nextSetBit(0); j >= 0; j = pred.nextSetBit(j + 1))
+					if(!getLabel(j).equals("_0_") && !getLabel(j).equals("_1_")){
+						confgraph.addEdge(map.inverse().get(j), map.inverse().get(i));
+					}
+			}
+
+		return new Pomset(confgraph, map, labels);
+	}
+	
+	public Pomset getPomset(BitSet conf1, BitSet conf1a) {
+		Pomset po1 = getPomset(conf1);
+		Pomset po2 = getPomset(conf1a);
+		
+		DirectedGraph confgraph = new DirectedGraph();
+		BiMap<Vertex, Integer> map = HashBiMap.<Vertex, Integer> create();
+		HashMap<Integer, String> labels = new HashMap<>();
+		
+		for(Entry<Vertex, Integer> entry: po1.getMap().entrySet()){
+			Vertex v = new Vertex(getLabel(entry.getValue()));
+			map.put(v, entry.getValue());
+			labels.put(entry.getValue(), getLabel(entry.getValue()));
+		}
+		
+		for(Entry<Vertex, Integer> entry: po2.getMap().entrySet())
+			if(!map.inverse().containsKey(entry.getValue())){
+				Vertex v = new Vertex(getLabel(entry.getValue()));
+				map.put(v, entry.getValue());
+				labels.put(entry.getValue(), getLabel(entry.getValue()));
+			}
+		
+		for(DirectedEdge de : po1.getGraph().getEdges()){
+			Vertex v1 = map.inverse().get(po1.getMap().get(de.getSource()));
+			Vertex v2 = map.inverse().get(po1.getMap().get(de.getTarget()));
+			confgraph.addEdge(v1, v2);
+		}
+		
+		for(DirectedEdge de : po2.getGraph().getEdges()){
+			Vertex v1 = map.inverse().get(po2.getMap().get(de.getSource()));
+			Vertex v2 = map.inverse().get(po2.getMap().get(de.getTarget()));
+			confgraph.addEdge(v1, v2);
+		}
+		
+		return new Pomset(confgraph, map, labels);
+	}
+	
+	public HashSet<Integer> bS2int(BitSet bs) {
+		HashSet<Integer> indexes = new HashSet<>();
+
+		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1))
+			indexes.add(i);
+
+		return indexes;
+	}
+	
+	public BitSet getOrderBS(Set<Integer> evts, int i) {
+		BitSet causes = new BitSet(pes.labels.size());
+		
+		for(Integer p : evts)
+			if(pes.causality[p].get(i))
+				causes.set(p);
+		
+		return causes;
+	}
+
+	public boolean arePossibleExtensions(BitSet conf1, BitSet exts) {
+		
+		for (int i = conf1.nextSetBit(0); i >= 0; i = conf1.nextSetBit(i+1)) 
+			if(!areConsistent(i, exts))
+			return false;
+
+	return true;
+	}
+	
+	public boolean areConsistent(Integer evt, BitSet exts) {
+		
+		for (int i = exts.nextSetBit(0); i >= 0; i = exts.nextSetBit(i+1))
+			if (this.pes.conflict[evt].get(i))
+				return false;
+
+		return true;
 	}
 }

@@ -159,7 +159,11 @@ public class SignavioController extends BaseController {
             }
 
             this.setTitle(title);
-            mainC.showPluginMessages(pluginMessages);
+//            mainC.showPluginMessages(pluginMessages);
+            if (mainC != null) {
+                mainC.showPluginMessages(pluginMessages);
+            }
+//            mainC.showPluginMessages(pluginMessages);
 
             for (RequestParameterType<?> requestParameter: params) {
                 switch (requestParameter.getId()) {

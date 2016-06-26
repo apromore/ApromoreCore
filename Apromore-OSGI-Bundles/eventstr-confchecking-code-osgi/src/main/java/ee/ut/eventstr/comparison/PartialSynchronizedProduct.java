@@ -46,7 +46,8 @@ public class PartialSynchronizedProduct<T> {
 	private Multimap<State, Operation> descendants;
 	private Multimap<State, State> ancestors;
 	private State root;
-	private DiffMMVerbalizer<Integer> verbalizer;
+//	private DiffMMVerbalizer<Integer> verbalizer;
+	private DiffMMGraphicalVerbalizer verbalizer;
 	
 	private Table<BitSet, BitSet, HashSet<State>> stateSpaceTable = HashBasedTable.create();
 	private Multimap<State, State> mergedStates = HashMultimap.create();
@@ -815,7 +816,11 @@ public class PartialSynchronizedProduct<T> {
 //		}
 	}
 
-	public void setVerbalizer(DiffMMVerbalizer<Integer> verbalizer) {
+//	public void setVerbalizer(DiffMMVerbalizer<Integer> verbalizer) {
+//		this.verbalizer = verbalizer;
+//	}
+	
+	public void setVerbalizer(DiffMMGraphicalVerbalizer verbalizer) {
 		this.verbalizer = verbalizer;
 	}
 	

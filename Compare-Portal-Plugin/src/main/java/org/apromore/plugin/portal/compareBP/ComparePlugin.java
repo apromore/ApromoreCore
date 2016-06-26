@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.compareBP;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 
+import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import hub.top.petrinet.PetriNet;
 import hub.top.petrinet.Place;
 import hub.top.petrinet.Transition;
@@ -31,8 +32,12 @@ import org.apache.commons.io.IOUtils;
 
 // Java 2 Enterprise Edition packages
 import javax.inject.Inject;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.math3.analysis.function.Exp;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.helper.Version;
@@ -41,6 +46,8 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.dialogController.MainController;
 import org.apromore.service.compare.CompareService;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
@@ -150,6 +157,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
                     HashSet<String> obs = new HashSet<>();
                     nets.add(getNet(processSummary, versionSummary, context, obs));
                     observable.add(new HashSet<String>(obs));
+                    System.out.println(obs);
 //                    details.add(new VersionDetailType(processSummary, versionSummary));
                 }
             }
@@ -157,12 +165,17 @@ public class ComparePlugin extends DefaultPortalPlugin {
             // If we have exactly two process:version selections, perform the comparison
             switch (selectedProcessVersions.size()) {
             case 1:
-                new CompareController(context, compareService, nets.get(0));
+                new CompareController(context, compareService, nets.get(0), observable.get(0));
                 context.getMessageHandler().displayInfo("Performed conformance checker.");
                 break;
             case 2:
                 context.getMessageHandler().displayInfo("Performing comparison.");
-                new CompareController(context,compareService, nets.get(0), nets.get(1), observable.get(0), observable.get(1));
+
+                ModelAbstractions model1 = toModelAbstractions(procS.get(0), verS.get(0));
+                ModelAbstractions model2 = toModelAbstractions(procS.get(1), verS.get(1));
+
+                new CompareController(context,compareService, model1, model2, observable.get(0), observable.get(1), procS.get(0), verS.get(0), procS.get(1), verS.get(1));
+//                new CompareController(context,compareService, nets.get(0), nets.get(1), observable.get(0), observable.get(1));
                 context.getMessageHandler().displayInfo("Performed comparison.");
                 break;
             default:
@@ -184,6 +197,23 @@ public class ComparePlugin extends DefaultPortalPlugin {
             e.printStackTrace();
         }
 
+    }
+
+    private ModelAbstractions toModelAbstractions(ProcessSummaryType process, VersionSummaryType version) throws Exception {
+        ExportFormatResultType result = processService.exportProcess(
+                process.getName(),           // process name
+                process.getId(),             // process ID
+                version.getName(),           // branch
+                new Version(version.getVersionNumber()),  // version number,
+                "BPMN 2.0",                  // nativeType,
+                null,                        // annotation name,
+                false,                       // with annotations?
+                Collections.EMPTY_SET        // canoniser properties
+        );
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        TransformerFactory.newInstance().newTransformer().transform(new StreamSource(result.getNative().getInputStream()), new StreamResult(baos));
+        return new ModelAbstractions(baos.toByteArray());
     }
 
 //    public PetriNet getNet(int model, PortalContext context, HashSet<String> labels, ProcessSummaryType process ) throws Exception{

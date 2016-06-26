@@ -20,6 +20,8 @@
 
 package org.apromore.service.compare;
 
+import ee.ut.eventstr.comparison.differences.Differences;
+import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import hub.top.petrinet.PetriNet;
 import org.deckfour.xes.model.XLog;
 
@@ -31,7 +33,8 @@ import java.util.Set;
  */
 public interface CompareService {
 
-    Set<String> discoverBPMNModel(PetriNet net, XLog log) throws Exception;
+    Set<String> discoverBPMNModel(PetriNet net, XLog log, HashSet<String> obs1) throws Exception;
     Set<String> discoverLogLog(XLog log1, XLog log2) throws Exception;
-    Set<String> discoverModelModel(PetriNet net1, PetriNet net2, HashSet<String> obs1, HashSet<String> obs2) throws Exception;
+//    Set<String> discoverModelModel(PetriNet net1, PetriNet net2, HashSet<String> obs1, HashSet<String> obs2) throws Exception;
+    Differences discoverModelModelAbs(ModelAbstractions model1, ModelAbstractions model2, HashSet<String> silent1, HashSet<String> silent2) throws Exception;
 }
