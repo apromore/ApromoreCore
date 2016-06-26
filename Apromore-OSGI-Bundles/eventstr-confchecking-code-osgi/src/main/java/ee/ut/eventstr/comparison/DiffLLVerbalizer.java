@@ -23,7 +23,7 @@ import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.Operation;
 import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.State;
 import ee.ut.org.processmining.framework.util.Pair;
 
-public class DiffLLVerbalizer<T>{
+public class DiffLLVerbalizer <T> {
 	private PESSemantics<T> pes1;
 	private PESSemantics<T> pes2;
 	
@@ -36,7 +36,6 @@ public class DiffLLVerbalizer<T>{
 	private State root;
 	
 	private Table<BitSet, BitSet, Map<Integer, int[]>> globalDiffs;
-	private HashSet<String> statements;
 	
 	public DiffLLVerbalizer(PESSemantics<T> pes1, PESSemantics<T> pes2) {
 		this.pes1 = pes1;
@@ -46,9 +45,8 @@ public class DiffLLVerbalizer<T>{
 		this.opSeqs = new ArrayList<>();
 		this.stateSpace = HashBasedTable.create();
 		this.descendants = HashMultimap.create();
-		this.root = new State(new BitSet(), HashMultiset.<String> create(), new BitSet());
+		this.root = new State(new BitSet(), HashMultiset. <String> create(), new BitSet());
 		this.globalDiffs = HashBasedTable.create();
-		this.statements = new HashSet<>();
 	}
 	
 	public void addPSP(List<Operation> opSeq) {
@@ -106,24 +104,20 @@ public class DiffLLVerbalizer<T>{
 				else if (secondHiding != null) {
 					// ========= Symmetric  <<==
 					if (!globalDiffs.contains(context1, context2)) {
-						String statement = String.format("In log 1, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)",
+						System.out.printf("In log 1, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
 								firstMatching.label, firstMatchingEventPair.getFirst(),
 								firstHiding.label, (Integer)firstHiding.target,
 								secondHiding.label, (Integer)secondHiding.target);
-						this.statements.add(statement);
-//						System.out.println(statement);
 					}
 				} 
 				else {
 					// No RHIDE found within difference context
 					if (firstMatching.nextState.labels.contains(firstHidingLabel)) {
 						if (!globalDiffs.contains(context1, context2)) {
-							String statement = String.format("In log 1, after the occurrence of %s(%d), %s(%d) is duplicated, while in log 2 it is not",
+							System.out.printf("In log 1, after the occurrence of %s(%d), %s(%d) is duplicated, while in log 2 it is not\n",
 									firstMatching.label, firstMatchingEventPair.getFirst(),
 									firstHidingLabel, (Integer)firstHiding.target
 									);
-							this.statements.add(statement);
-//							System.out.println(statement);
 						}
 					} 
 					else {
@@ -236,12 +230,10 @@ public class DiffLLVerbalizer<T>{
 										context1.set(firstMatchingEventPair.getFirst());
 										
 										if (!globalDiffs.contains(context1, context2)) {
-											String statement = String.format("In log 1, %s(%d) occurs after %s(%d), while in log 2 it does not",
+											System.out.printf("In log 1, %s(%d) occurs after %s(%d), while in log 2 it does not\n",
 													firstHidingLabel, (Integer)firstHiding.target,
 													firstMatching.label, firstMatchingEventPair.getFirst()
 												);
-											this.statements.add(statement);
-//											System.out.println(statement);
 										}
 									}
 								}
@@ -270,22 +262,20 @@ public class DiffLLVerbalizer<T>{
 				else if (secondHiding != null) {
 					// ========= Symmetric <<==
 					if (!globalDiffs.contains(context1, context2)) {
-						String statement = String.format("In log 1, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)",
+						System.out.printf("In log 1, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
 								firstMatching.label, firstMatchingEventPair.getFirst(),
 								firstHiding.label, (Integer)firstHiding.target,
 								secondHiding.label, (Integer)secondHiding.target);
-						this.statements.add(statement);
 					}
 				} 
 				else {
 					// No LHIDE found within this Difference Context
 					if (firstMatching.nextState.labels.contains(firstHidingLabel)) {
 						if (!globalDiffs.contains(context1, context2)) {
-							String statement = String.format("In log 2, after the occurrence of %s(%d), %s(%d) is duplicated, while in log 1 it is not",
+							System.out.printf("In log 2, after the occurrence of %s(%d), %s(%d) is duplicated, while in log 1 it is not\n",
 									firstMatching.label, firstMatchingEventPair.getFirst(),
 									firstHidingLabel, (Integer)firstHiding.target
 									);
-							this.statements.add(statement);
 						}
 					} 
 					else {
@@ -344,9 +334,8 @@ public class DiffLLVerbalizer<T>{
 																
 								if (found) {
 									if (!globalDiffs.contains(context1, context2)) {
-										String statement = String.format("In log 2, %s(%s) can be skipped, while in log 1 it cannot",
+										System.out.printf("In log 2, %s(%s) can be skipped, while in log 1 it cannot\n",
 												translate(context2), context2);
-										this.statements.add(statement);
 									}
 								} else {
 									context1.set(e1p);
@@ -414,11 +403,10 @@ public class DiffLLVerbalizer<T>{
 									} else { 
 										context2.set((Integer)firstHiding.target);
 										if (!globalDiffs.contains(context1, context2)) {								
-											String statement = String.format("In log 1, %s(%d) occurs after %s(%d), while in log 2 it does not",
+											System.out.printf("In log 2, %s(%d) occurs after %s(%d), while in log 1 it does not\n",
 													firstHidingLabel, (Integer)firstHiding.target,
 													firstMatching.label, firstMatchingEventPair.getSecond()
 												);
-											this.statements.add(statement);
 										}
 									}
 								}
@@ -453,12 +441,10 @@ public class DiffLLVerbalizer<T>{
 	private void verbalizeBehDiffFromModelPerspective(Integer e1,
 			String e1l, Integer e1p, String e1pl,
 			Integer e2, String e2l, Integer e2p, String e2pl) {
-		
-		String statement = String.format("In log 1, %s(%d) %s %s(%d), while in log 2 %s(%d) %s %s(%d)",
+		System.out.printf("In log 1, %s(%d) %s %s(%d), while in log 2 %s(%d) %s %s(%d)\n",
 				e2l, e2, verbalizeBRel(pes2.getBRelation(e2, e2p)), e2pl, e2p, 
 				e1l, e1, verbalizeBRel(pes1.getBRelation(e1, e1p)), e1pl, e1p);
-		this.statements.add(statement);
-//		System.out.println(statement);
+		
 	}
 
 	private String verbalizeBRel(BehaviorRelation bRelation) {
@@ -689,9 +675,4 @@ public class DiffLLVerbalizer<T>{
 		}
 		return set;
 	}
-
-	public Set<String> getStatements() {
-		return this.statements;
-	}
-	
 }

@@ -135,4 +135,8 @@ public class QueueEntry implements Comparable<QueueEntry>{
 		return false;
 	}
 	
+	public boolean containsPO(String name){
+		return pomset.labels.values().contains(name);
+	}
+	
 }
