@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.xml.sax.SAXException;
 
 // Third party classes
 import ee.ut.core.comparison.Comparator;
@@ -41,6 +40,7 @@ import ee.ut.core.comparison.differences.Differences;
 import ee.ut.core.comparison.differences.Run;
 import ee.ut.core.comparison.differences.Runs;
 import ee.ut.core.comparison.verbalizer.VerbalizerGraphical;
+
 import ee.ut.core.models.reader.TypeModel;
 import ee.ut.runner.ModelAbstractions;
 import hub.top.petrinet.Node;
@@ -80,6 +80,23 @@ public class CompareController extends BaseController {
                              final VersionSummaryType version2)
             throws SuspendNotAllowedException, InterruptedException, DialogException {
 
+//        try {
+//            ModelAbstractions model1 = toModelAbstractions(process1, version1);
+//            ModelAbstractions model2 = toModelAbstractions(process2, version2);
+//
+//            ApromoreCompareMM comparator = new ApromoreCompareMM();
+//            DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, model1.getReader().getTaskLabels(), model2.getReader().getTaskLabels());
+//            Differences differences = verbalizer.getDifferences();
+//
+//            Set<RequestParameterType<?>> requestParameters = new HashSet<>();
+//            requestParameters.add(new RequestParameterType<Integer>("m1_pes_size", model1.getPES().getLabels().size()));
+//            requestParameters.add(new RequestParameterType<Integer>("m2_pes_size", model2.getPES().getLabels().size()));
+//            requestParameters.add(new RequestParameterType<String>("m1_differences_json", Differences.toJSON(differences)));
+//
+//            mainC.compareProcesses(process1, version1, process2, version2, "BPMN 2.0", null, null, requestParameters);
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
             final Window window = (Window) Executions.createComponents("macros/compareDialog.zul", null, null);
             final Combobox algorithm = (Combobox) window.getFellow("algorithm");
             final Button compareButton = (Button) window.getFellow("compare");

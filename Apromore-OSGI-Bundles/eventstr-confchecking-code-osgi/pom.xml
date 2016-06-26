@@ -22,11 +22,17 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
+						<Embed-Dependency>
+							artifactId=jackson-mapper-asl|jdom2|jackson-mapper-asl|jbpt-bpm;inline=true
+						</Embed-Dependency>
 						<Embed-Transitive>false</Embed-Transitive>
 						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 						<Bundle-Name>Event structure based OSGi component</Bundle-Name>
 						<Bundle-SymbolicName>org.eventstr-confchecking-osgi</Bundle-SymbolicName>
 						<Import-Package>
+							!ee.ut.eventstr.config,
+							!ee.ut.eventstr.synthesis,
+							!ee.ut.graph.util,
 							!junit.framework.*,
 							!org.junit.*,
 							!hub.top.test,
@@ -38,7 +44,10 @@
 							ee.ut.eventstr.comparison,
 							ee.ut.eventstr.folding,
 							ee.ut.eventstr.freq,
-							ee.ut.eventstr.unfolding
+							ee.ut.bpmn,
+							ee.ut.eventstr,
+							ee.ut.eventstr.unfolding,
+							ee.ut.eventstr.comparison.differences
 						</Export-Package>
 					</instructions>
 				</configuration>
@@ -51,11 +60,6 @@
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.gwt-dev</artifactId>
 			<version>2.6.0_1</version>
-		</dependency>
-		<dependency>
-			<groupId>jaxen</groupId>
-			<artifactId>jaxen</artifactId>
-			<version>1.1.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jdom</groupId>
@@ -93,9 +97,37 @@
 			<version>4.4</version>
 		</dependency>
 		<dependency>
+			<groupId>org.jbpt</groupId>
+			<artifactId>jbpt-petri-osgi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jbpt</groupId>
+			<artifactId>jbpt-bpm</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-all</artifactId>
 			<version>1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>1.1.6</version>
+		</dependency>
+		<!-- <dependency> <groupId>org.codehaus.jackson</groupId> <artifactId>jackson-core-lgpl</artifactId> 
+			</dependency> -->
+		<!-- <dependency> <groupId>com.fasterxml.jackson.core</groupId> <artifactId>jackson-databind</artifactId> 
+			<version>2.7.5</version> </dependency> <dependency> <groupId>jaxen</groupId> 
+			<artifactId>jaxen</artifactId> <version>1.1.6</version> </dependency> <dependency> 
+			<groupId>xom</groupId> <artifactId>xom</artifactId> <version>1.2.5</version> 
+			</dependency> <dependency> <groupId>xerces</groupId> <artifactId>xercesImpl</artifactId> 
+			<version>2.11.0</version> </dependency> -->
+		<!-- <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-impl</artifactId> 
+			<version>1.0.6</version> </dependency> -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
 		</dependency>
 	</dependencies>
 </project>
