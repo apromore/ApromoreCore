@@ -47,6 +47,7 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.dialogController.MainController;
 import org.apromore.service.compare.CompareService;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
@@ -125,7 +126,8 @@ public class ComparePlugin extends DefaultPortalPlugin {
         return jbptToUma(net);
     }
 
-    public void execute(PluginPortalContext context) {
+    @Override
+    public void execute(PortalContext context) {
         LOGGER.info("Executing");
         Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = context.getSelection().getSelectedProcessModelVersions();
         Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
@@ -155,6 +157,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
                     HashSet<String> obs = new HashSet<>();
                     nets.add(getNet(processSummary, versionSummary, context, obs));
                     observable.add(new HashSet<String>(obs));
+                    System.out.println(obs);
 //                    details.add(new VersionDetailType(processSummary, versionSummary));
                 }
             }
@@ -162,7 +165,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
             // If we have exactly two process:version selections, perform the comparison
             switch (selectedProcessVersions.size()) {
             case 1:
-                new CompareController(context, compareService, nets.get(0));
+                new CompareController(context, compareService, nets.get(0), observable.get(0));
                 context.getMessageHandler().displayInfo("Performed conformance checker.");
                 break;
             case 2:

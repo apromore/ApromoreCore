@@ -27,8 +27,10 @@ import hub.top.petrinet.Transition;
 public class ApromoreCompareMM {
 
 	public static void main(String[] args) throws Exception {
-		String modelName1 = "bpm2014/and.bpmn";
-		String modelName2 = "bpm2014/xor.bpmn";
+//		String modelName1 = "bpm2014/model77.bpmn";
+//		String modelName2 = "bpm2014/model64.bpmn";
+		String modelName1 = "models/variant1.bpmn";
+		String modelName2 = "models/variant2.bpmn";
 		
 		ModelAbstractions model1 = new ModelAbstractions(getFileAsArray(modelName1));
 		ModelAbstractions model2 = new ModelAbstractions(getFileAsArray(modelName2));
@@ -36,7 +38,7 @@ public class ApromoreCompareMM {
 		ApromoreCompareMM comparator = new ApromoreCompareMM();
 		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, model1.getReader().getTaskLabels(), model2.getReader().getTaskLabels());
 		verbalizer.verbalize();
-		System.out.println(verbalizer.getDifferences());
+		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
 		System.out.println(verbalizer.getStatements());
 	}
 

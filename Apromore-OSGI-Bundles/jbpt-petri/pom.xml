@@ -57,8 +57,6 @@
        org.jbpt.petri.unfolding.order,
        org.jbpt.petri.untangling,
        org.jbpt.petri.untangling.pss,
-       org.jbpt.pm,
-       org.jbpt.pm.bpmn,
        org.jbpt.petri.wftree
       </Export-Package>
       <Import-Package>*</Import-Package>

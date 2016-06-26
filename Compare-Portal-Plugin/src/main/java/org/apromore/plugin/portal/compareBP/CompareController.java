@@ -23,6 +23,7 @@ package org.apromore.plugin.portal.compareBP;
 import java.io.*;
 import java.util.*;
 
+import ee.ut.eventstr.comparison.differences.Difference;
 import ee.ut.eventstr.comparison.differences.Differences;
 import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import hub.top.petrinet.PetriNet;
@@ -31,7 +32,6 @@ import org.apromore.helper.Version;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
@@ -43,6 +43,7 @@ import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -66,7 +67,7 @@ import org.zkoss.zul.RowRenderer;
  */
 public class CompareController {
 
-    private PluginPortalContext portalContext;
+    private PortalContext portalContext;
     private Window enterLogWin;
     private Window resultsWin;
     private Button uploadLog;
@@ -107,10 +108,12 @@ public class CompareController {
     private org.zkoss.util.media.Media logFile2 = null;
     private byte[] logByteArray2 = null;
     private String logFileName2 = null;
-    
+
+    private static final String SIGNAVIO_SESSION = "SIGNAVIO_SESSION";
     
     private CompareService compareService;
     private PetriNet net;
+    private HashSet<String> obs;
 
 //    public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net1, PetriNet net2, HashSet<String> obs1, HashSet<String> obs2) throws Exception{
 //        this.compareService = compareService;
@@ -123,7 +126,7 @@ public class CompareController {
 //        makeResultWindows(differences);
 //    }
 
-    public CompareController(PluginPortalContext portalContext, CompareService compareService, ModelAbstractions model1, ModelAbstractions model2, HashSet<String> obs1, HashSet<String> obs2, ProcessSummaryType process1, VersionSummaryType version1, ProcessSummaryType process2, VersionSummaryType version2) throws Exception{
+    public CompareController(PortalContext portalContext, CompareService compareService, ModelAbstractions model1, ModelAbstractions model2, HashSet<String> obs1, HashSet<String> obs2, ProcessSummaryType process1, VersionSummaryType version1, ProcessSummaryType process2, VersionSummaryType version2) throws Exception{
         this.compareService = compareService;
         this.portalContext = portalContext;
         Differences differences = compareService.discoverModelModelAbs(model1, model2, obs1, obs2);
@@ -131,13 +134,18 @@ public class CompareController {
 //                for (String s : differences)
 //                    result += s + "\n";
 
+//        HashSet<String> differencesSet = new HashSet<String>();
+//        for(Difference d : differences.getDifferences())
+//        differencesSet.add(d.getSentence());
+
+//        makeResultWindows(differencesSet);
+
         Set<RequestParameterType<?>> requestParameters = new HashSet<>();
         requestParameters.add(new RequestParameterType<Integer>("m1_pes_size", model1.getPES().getLabels().size()));
         requestParameters.add(new RequestParameterType<Integer>("m2_pes_size", model2.getPES().getLabels().size()));
         requestParameters.add(new RequestParameterType<String>("m1_differences_json", Differences.toJSON(differences)));
 
         compareProcesses(process1, version1, process2, version2, "BPMN 2.0", null, null, requestParameters);
-
 
 //        window.detach();
 //        makeResultWindows(differences);
@@ -162,17 +170,18 @@ public class CompareController {
                                  final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
         String instruction = "";
 
-        EditSessionType editSession1 = createEditSession(process1, version1, nativeType, annotation);
-        EditSessionType editSession2 = createEditSession(process2, version2, nativeType, annotation);
-
-
+        String username = this.portalContext.getCurrentUser().getUsername();
+        EditSessionType editSession1 = createEditSession(username,process1, version1, nativeType, annotation);
+        EditSessionType editSession2 = createEditSession(username,process2, version2, nativeType, annotation);
 
         try {
             String id = UUID.randomUUID().toString();
-            SignavioSession session = new SignavioSession(editSession1, editSession2, portalContext.getMainController(), process1, version1, process2, version2, requestParameterTypes);
+
+            SignavioSession session = new SignavioSession(editSession1, editSession2, null, process1, version1, process2, version2, requestParameterTypes);
+            Executions.getCurrent().getSession().setAttribute(SIGNAVIO_SESSION + id, session);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "zul/compareModelsInSignavio.zul?id=" + id;
+            String url = "macros/compareModelsInSignavio.zul?id=" + id;
             instruction += "window.open('" + url + "');";
 
             Clients.evalJavaScript(instruction);
@@ -181,7 +190,7 @@ public class CompareController {
         }
     }
 
-    private EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
+    private static EditSessionType createEditSession(final String username, final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
 
         EditSessionType editSession = new EditSessionType();
 
@@ -189,7 +198,7 @@ public class CompareController {
         editSession.setNativeType(nativeType.equals("XPDL 2.2")?"BPMN 2.0":nativeType);
         editSession.setProcessId(process.getId());
         editSession.setProcessName(process.getName());
-        editSession.setUsername(UserSessionManager.getCurrentUser().getUsername());
+        editSession.setUsername(username);
         editSession.setPublicModel(process.isMakePublic());
         editSession.setOriginalBranchName(version.getName());
         editSession.setOriginalVersionNumber(version.getVersionNumber());
@@ -209,7 +218,7 @@ public class CompareController {
     }
 
     /* From a list of version summary types find the max version number. */
-    private String findMaxVersion(ProcessSummaryType process) {
+    private static String findMaxVersion(ProcessSummaryType process) {
         Version versionNum;
         Version max = new Version(0, 0);
         for (VersionSummaryType version : process.getVersionSummaries()) {
@@ -222,7 +231,7 @@ public class CompareController {
     }
 
 
-    public CompareController(PluginPortalContext portalContext, CompareService compareService){
+    public CompareController(PortalContext portalContext, CompareService compareService){
         this.compareService = compareService;
         this.portalContext = portalContext;
         
@@ -277,9 +286,10 @@ public class CompareController {
         
     }
     
-    public CompareController(PluginPortalContext portalContext, CompareService compareService, PetriNet net) {
+    public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net, HashSet<String> obs1) {
         this.compareService = compareService;
         this.net = net;
+        this.obs = obs1;
         this.portalContext = portalContext;
         
         try {
@@ -423,7 +433,7 @@ public class CompareController {
             Messagebox.show("Please select a log.");
         }else {
             try {
-                Set<String> differences = compareService.discoverLogLog(log, log2);
+                Set<String> differences = compareService.discoverLogLog(log2, log);
                 makeResultWindows(differences);
             } catch (Exception e) {
                 Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -449,7 +459,7 @@ public class CompareController {
 
             try {
 //                String result = "";
-                Set<String> differences = compareService.discoverBPMNModel(net, log);
+                Set<String> differences = compareService.discoverBPMNModel(net, log, obs);
 
 //                for (String s : differences)
 //                    result += s + "\n";

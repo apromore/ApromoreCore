@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+
 /**
  * Collection of differences to be retrieved by the 
  * REST service. This class can be seen as a wrapper

@@ -42,9 +42,9 @@ public class CompareServiceImpl implements CompareService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompareServiceImpl.class);
 
     @Override
-    public Set<String> discoverBPMNModel(PetriNet net, XLog log) throws Exception {
+    public Set<String> discoverBPMNModel(PetriNet net, XLog log, HashSet<String> obs) throws Exception {
         ApromoreCompareML comparator = new ApromoreCompareML();
-        return comparator.getDifferences(net, log);
+        return comparator.getDifferences(net, log, obs);
     }
 
 //    @Override

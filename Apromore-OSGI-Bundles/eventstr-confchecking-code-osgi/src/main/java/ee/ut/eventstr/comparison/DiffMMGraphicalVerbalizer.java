@@ -1,5 +1,7 @@
 package ee.ut.eventstr.comparison;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -8,9 +10,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 
 import org.jbpt.pm.FlowNode;
+import org.jbpt.pm.Gateway;
+import org.jbpt.pm.IDataNode;
+import org.jbpt.pm.OrGateway;
+import org.jbpt.pm.XorGateway;
 import org.jbpt.pm.bpmn.Bpmn;
 import org.jbpt.pm.bpmn.BpmnControlFlow;
 
@@ -22,6 +29,13 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Table;
+
+import org.jbpt.pm.Activity;
+import org.jbpt.pm.AlternativGateway;
+import org.jbpt.pm.AndGateway;
+import org.jbpt.pm.ControlFlow;
+import org.jbpt.pm.DataNode;
+import org.jbpt.pm.Event;
 
 import ee.ut.bpmn.BPMNReader;
 import ee.ut.bpmn.replayer.BPMNReplayer;
@@ -109,8 +123,7 @@ public class DiffMMGraphicalVerbalizer {
 		this.opSeqs = new ArrayList<>();
 		this.stateSpace = HashBasedTable.create();
 		this.descendants = HashMultimap.create();
-		this.root = new State(new BitSet(), HashMultiset.<String> create(), HashBiMap.<Integer, Integer> create(),
-				new BitSet());
+		this.root = new State(new BitSet(), HashMultiset.<String> create(), HashBiMap.<Integer, Integer> create(), new BitSet());
 		this.globalDiffs = HashBasedTable.create();
 	}
 
@@ -147,7 +160,7 @@ public class DiffMMGraphicalVerbalizer {
 							}
 
 					if (!found)
-						verbalizeNotFound(pes1.getLabel(i), getContext(i, mappings, 1));
+						verbalizeNotFound("model 1", pes1.getLabel(i), getContext(i, mappings, 1), i, pes1, replayerBPMN1, loader1);
 				}
 			}
 
@@ -163,7 +176,7 @@ public class DiffMMGraphicalVerbalizer {
 						}
 
 					if (!found)
-						verbalizeNotFound(pes2.getLabel(i), getContext(i, mappings, 2));
+						verbalizeNotFound("model2", pes2.getLabel(i), getContext(i, mappings, 2), i, pes2, replayerBPMN2, loader2);
 				}
 
 			LinkedList<Entry<Integer, Integer>> list = new LinkedList<>(extendedMap.entrySet());
@@ -188,45 +201,118 @@ public class DiffMMGraphicalVerbalizer {
 		compareCyclicBehavior();
 	}
 
-	private void compareCyclicBehavior() {
-		for (String s : pes1.getCyclicTasks())
-			if (!pes2.getCyclicTasks().contains(s) && commonLabels.contains(s))
-				verbalizeRepeated(s, "model 1");
-
-		for (String s : pes2.getCyclicTasks())
-			if (!pes1.getCyclicTasks().contains(s) && commonLabels.contains(s))
-				verbalizeRepeated(s, "model 2");
+	private String verbalizeRepeated(String task, String model) {
+		String statement = String.format("Task %s can be repeated in %s, but not in the other model.", task, model);
+		
+		return statement;
 	}
 
-	private void verbalizeRepeated(String task, String model) {
-		String statement = String.format("Task %s can be repeated in %s, but not in the other model.", task, model);
-		// System.out.println(statement);
+	private String verbalizeNotCommon(String task, String model) {
+		String statement = String.format("Task %s only occurs in %s.", task, model);
+		
+		return statement;
+	}
+
+	private void verbalizeNotFound(String model, String task, String context, int i, PESSemantics<Integer> pes, BPMNReplayer replayer, BPMNReader loader) {
+		String statement = String.format(
+				"In " + model + ", there is a state after %s where %s can occur, whereas it cannot occur in the matching state in the other model", context, task);
+
+		Runs runs1 = null;
+		Runs runs2 = null;
+		
+		if(model.equals("model 1"))
+			runs1 = printTask(i, pes, replayer, net1, loader, statement);
+		
+		if(model.equals("model 2"))
+			runs2 = printTask(i, pes, replayer, net2, loader, statement);
+		
+		Difference diff = new Difference(runs1, runs2);
+
+		if (statement != null) {
+			diff.setSentence(statement);
+			differences.add(diff);
+		}
+		
 		statements.add(statement);
 	}
-
+	
 	private void flushNonCommonTasks() {
 		for (String str : obsLabel1)
-			if (!commonLabels.contains(str) && !str.equals("_0_") && !str.equals("_1_"))
-				verbalizeNotCommon(str, "model 1");
+			if (!commonLabels.contains(str) && !str.equals("_0_") && !str.equals("_1_")){
+				String statement = verbalizeNotCommon(str, "model 1");
+				Difference diff = new Difference(null, null);
+
+				if (statement != null) {
+					diff.setSentence(statement);
+					differences.add(diff);
+					statements.add(statement);
+				}
+			}
 
 		for (String str : obsLabel2)
-			if (!commonLabels.contains(str) && !str.equals("_0_") && !str.equals("_1_"))
-				verbalizeNotCommon(str, "model 2");
+			if (!commonLabels.contains(str) && !str.equals("_0_") && !str.equals("_1_")){
+				String statement = verbalizeNotCommon(str, "model 2");
+				Difference diff = new Difference(null, null);
+
+				if (statement != null) {
+					diff.setSentence(statement);
+					differences.add(diff);
+					statements.add(statement);
+				}
+			}
 	}
 
-	private void verbalizeNotCommon(String task, String model) {
-		String statement = String.format("Task %s only occurs in %s.", task, model);
-		// System.out.println(statement);
-		statements.add(statement);
-	}
+	private void compareCyclicBehavior() {
+		for (String s : pes1.getCyclicTasks())
+			if (!pes2.getCyclicTasks().contains(s) && commonLabels.contains(s)){
+				String statement = verbalizeRepeated(s, "model 1");
+				Runs runs1 = spotTask(s, replayerBPMN1, loader1, statement);
+				Runs runs2 = spotTask(s, replayerBPMN2, loader2, statement);
+				
+				Difference diff = new Difference(runs1, runs2);
 
-	private void verbalizeNotFound(String task1, String context) {
-		String statement = String.format(
-				"In model 1, there is a state after %s where %s can occur, whereas it cannot occur in the matching state in model 2",
-				context, task1);
-		// System.out.println(statement);
-		statements.add(statement);
+				if (statement != null) {
+					diff.setSentence(statement);
+					differences.add(diff);
+					this.statements.add(statement);
+				}
+			}
+
+		for (String s : pes2.getCyclicTasks())
+			if (!pes1.getCyclicTasks().contains(s) && commonLabels.contains(s)){
+				String statement =  verbalizeRepeated(s, "model 2");
+				Runs runs1 = spotTask(s, replayerBPMN1, loader1, statement);
+				Runs runs2 = spotTask(s, replayerBPMN2, loader2, statement);
+				
+				Difference diff = new Difference(runs1, runs2);
+
+				if (statement != null) {
+					diff.setSentence(statement);
+					differences.add(diff);
+					this.statements.add(statement);
+				}
+			}
 	}
+	
+	public void verboseNotCommonTasks(String taskLabel, String m1) {
+		String statement = verbalizeNotCommon(taskLabel, m1);
+		Runs runs1 = null;
+		Runs runs2 = null;
+		
+		if(m1.equals("model 1"))
+			runs1 = spotTask(taskLabel, replayerBPMN1, loader1, statement);
+		
+		if(m1.equals("model 2"))
+			runs2 = spotTask(taskLabel, replayerBPMN2, loader2, statement);
+		
+		Difference diff = new Difference(runs1, runs2);
+
+		if (statement != null) {
+			diff.setSentence(statement);
+			differences.add(diff);
+		}
+	}
+	
 
 	private String getContext(int i, BiMap<Integer, Integer> mappings, int mode) {
 		BitSet lc1;
@@ -285,9 +371,6 @@ public class DiffMMGraphicalVerbalizer {
 
 		if (r1.equals(BehaviorRelation.CAUSALITY)) {
 			runs1 = printDifferenceCausality(event1, event1a, pes1, replayerBPMN1, "m1", net1, loader1, statement);
-			// } else if (r1.equals(BehaviorRelation.ASYM_CONFLICT)) {
-			// runs1 = printDifferenceAC(event1, event1a, pes1, replayerBPMN1,
-			// "m1", net1, loader1, statement);
 		} else if (r1.equals(BehaviorRelation.CONFLICT)) {
 			runs1 = printDifferenceConflictConcurrency(event1, event1a, pes1, replayerBPMN1, "m1", net1, loader1,
 					statement);
@@ -298,9 +381,6 @@ public class DiffMMGraphicalVerbalizer {
 
 		if (r2.equals(BehaviorRelation.CAUSALITY)) {
 			runs2 = printDifferenceCausality(event2, event2a, pes2, replayerBPMN2, "m2", net2, loader2, statement);
-			// } else if (r2.equals(BehaviorRelation.ASYM_CONFLICT)) {
-			// runs2 = printDifferenceAC(event2, event2a, pes2, replayerBPMN2,
-			// "m2", net2, loader2, statement);
 		} else if (r2.equals(BehaviorRelation.CONFLICT)) {
 			runs2 = printDifferenceConflictConcurrency(event2, event2a, pes2, replayerBPMN2, "m2", net2, loader2,
 					statement);
@@ -314,10 +394,17 @@ public class DiffMMGraphicalVerbalizer {
 		if (statement != null) {
 			diff.setSentence(statement);
 			differences.add(diff);
-			// return statement;
+			statements.add(statement);
 		}
-
-		// return null;
+	}
+	
+	private Runs spotTask(String label, BPMNReplayer replayerBPMN, BPMNReader loader, String sentence) {
+		Runs runs = new Runs();
+		
+		HashMap<String, String> colorsBP = replayerBPMN.spotTask(label);
+		runs.addRun(new Run(colorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>(), loader, sentence, null));
+		
+		return runs;
 	}
 
 	private Runs printDifferenceConflictConcurrency(Integer event1, Integer event1a, PESSemantics<Integer> pes,
@@ -333,8 +420,8 @@ public class DiffMMGraphicalVerbalizer {
 		HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event1), pes.getPomset(conf1), repetitions, null);
 
 		HashMap<String, Integer> repetitionsPre = new HashMap<String, Integer>();
-		HashMap<String, String> colorsBPMNPre = replayerBPMN.execute("87668757645756454", pes.getPomset(conf1Minus), repetitionsPre, null);
-		HashMap<String, String> colorsBPMNFinal = getDifferenceColor(colorsBPMNPre, colorsBPMN, repetitions, repetitionsPre);
+//		HashMap<String, String> colorsBPMNPre = replayerBPMN.execute("87668757645756454", pes.getPomset(conf1Minus), repetitionsPre, null);
+//		HashMap<String, String> colorsBPMNFinal = getDifferenceColor(colorsBPMNPre, colorsBPMN, repetitions, repetitionsPre);
 
 		BitSet conf1a = pes.getLocalConfiguration(event1a);
 		BitSet conf1aMinus = (BitSet) conf1a.clone();
@@ -342,12 +429,17 @@ public class DiffMMGraphicalVerbalizer {
 
 		HashMap<String, Integer> repetitions2 = new HashMap<String, Integer>();
 		HashMap<String, String> colorsBPMN2 = replayerBPMN.execute(pes.getLabel(event1a), pes.getPomset(conf1a), repetitions2, null);
-		HashMap<String, Integer> repetitions2Pre = new HashMap<String, Integer>();
-		HashMap<String, String> colorsBPMN2Pre = replayerBPMN.execute("87668757645756454", pes.getPomset(conf1aMinus), repetitions2Pre, null);
+//		HashMap<String, Integer> repetitions2Pre = new HashMap<String, Integer>();
+//		HashMap<String, String> colorsBPMN2Pre = replayerBPMN.execute("87668757645756454", pes.getPomset(conf1aMinus), repetitions2Pre, null);
 
-		HashMap<String, String> colorsBPMN2Final = getDifferenceColor(colorsBPMN2Pre, colorsBPMN2, repetitions2, repetitions2Pre);
-		HashMap<String, String> newColorsBP = unifyColorsBPConflict(colorsBPMNFinal, colorsBPMN2Final);
+//		HashMap<String, String> colorsBPMN2Final = getDifferenceColor(colorsBPMN2Pre, colorsBPMN2, repetitions2, repetitions2Pre);
+		HashMap<String, String> newColorsBP = unifyColorsBPConflict(colorsBPMN, colorsBPMN2);
 
+//		if(loader.equals(loader1))
+//			printModels("m", "1", net, loader, null, newColorsBP, repetitions, repetitions2);
+//		else
+//			printModels("m", "2", net, loader, null, newColorsBP, repetitions, repetitions2);
+		
 		runs.addRun(new Run(newColorsBP, repetitions, repetitions2, loader, sentence, pes.getPomset(conf1, conf1a)));
 
 		return runs;
@@ -362,7 +454,7 @@ public class DiffMMGraphicalVerbalizer {
 			else if (colors1.get(key).equals("red"))
 				unifiedColors.put(key, "red");
 			else if (!colors1a.containsKey(key))
-				unifiedColors.put(key, "blue");
+				unifiedColors.put(key, "yellow");
 			else
 				unifiedColors.put(key, colors1.get(key));
 
@@ -370,11 +462,158 @@ public class DiffMMGraphicalVerbalizer {
 			if (colors1a.get(key).equals("red"))
 				unifiedColors.put(key, "red");
 			else if (!colors1.containsKey(key))
-				unifiedColors.put(key, "blue");
+				unifiedColors.put(key, "yellow");
 			else if (!unifiedColors.containsKey(key))
 				unifiedColors.put(key, colors1a.get(key));
 
 		return unifiedColors;
+	}
+	
+	public void printModels(String prefix, String suffix, PetriNet net, BPMNReader loader, HashMap<Object, String> colorsPN,
+			HashMap<String, String> colorsBPMN1, HashMap<String, Integer> repetitions1, HashMap<String, Integer> repetitions2) {
+		Random r = new Random();
+		int rand = r.nextInt();
+
+		try {
+			PrintStream out = new PrintStream("target/tex/difference" + prefix
+					+ "-" + rand + "-" + suffix + ".dot");
+
+			if (colorsPN != null) {
+				out.print(net.toDot(colorsPN));
+				out.close();
+			}
+
+			out = new PrintStream("target/tex/difference" + prefix + "-" + rand
+					+ "-" + suffix + "BPMN.dot");
+			@SuppressWarnings("unchecked")
+			String modelColor = printBPMN2DOT(colorsBPMN1, (Bpmn<BpmnControlFlow<FlowNode>, FlowNode>)loader.getModel(), loader, repetitions1, repetitions2);
+			out.print(modelColor);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String printBPMN2DOT(HashMap<String, String> colorsUnf,
+			Bpmn<BpmnControlFlow<FlowNode>, FlowNode> model,
+			BPMNReader loader, HashMap<String, Integer> repetitions1,
+			HashMap<String, Integer> repetitions2) {
+		String result = "";
+
+		if (repetitions2 == null)
+			repetitions2 = new HashMap<String, Integer>();
+
+		result += "digraph G {\n";
+		result += "rankdir=LR \n"; 
+
+		for (Event e : model.getEvents()) {
+			if (colorsUnf.containsKey(e.getId())) {
+				result += String
+						.format("  n%s[shape=ellipse,label=\"%s(x %s)(x%s)\", color=\"%s\"];\n",
+								e.getId().replace("-", ""), e.getName(),
+								getLabel(repetitions1, e),
+								getLabel(repetitions2, e),
+								colorsUnf.get(e.getId()));
+			} else
+				result += String.format("  n%s[shape=ellipse,label=\"%s\"];\n",
+						e.getId().replace("-", ""), e.getName());
+		}
+		result += "\n";
+
+		for (Activity a : model.getActivities()) {
+			if (colorsUnf.containsKey(a.getId()))
+				result += String
+						.format("  n%s[shape=box,label=\"%s(x%s)(x%s)\",color=\"%s\"];\n",
+								a.getId().replace("-", ""), a.getName(),
+								getLabel(repetitions1, a),
+								getLabel(repetitions2, a),
+								colorsUnf.get(a.getId()));
+			else
+				result += String.format("  n%s[shape=box,label=\"%s\"];\n", a
+						.getId().replace("-", ""), a.getName());
+		}
+		result += "\n";
+
+		for (Gateway g : model.getGateways(AndGateway.class)) {
+			if (colorsUnf.containsKey(g.getId()))
+				result += String
+						.format("  n%s[shape=diamond,label=\"%s(x%s)(x%s)\", color=\"%s\"];\n",
+								g.getId().replace("-", ""), "AND",
+								getLabel(repetitions1, g),
+								getLabel(repetitions2, g),
+								colorsUnf.get(g.getId()));
+			else
+				result += String.format("  n%s[shape=diamond,label=\"%s\"];\n",
+						g.getId().replace("-", ""), "AND");
+		}
+		for (Gateway g : model.getGateways(XorGateway.class)) {
+			if (colorsUnf.containsKey(g.getId()))
+				result += String
+						.format("  n%s[shape=diamond,label=\"%s(x%s)(x%s)\", color=\"%s\"];\n",
+								g.getId().replace("-", ""), "XOR",
+								getLabel(repetitions1, g),
+								getLabel(repetitions2, g),
+								colorsUnf.get(g.getId()));
+			else
+				result += String.format("  n%s[shape=diamond,label=\"%s\"];\n",
+						g.getId().replace("-", ""), "XOR");
+		}
+		for (Gateway g : model.getGateways(OrGateway.class)) {
+			if (colorsUnf.containsKey(g.getId()))
+				result += String
+						.format("  n%s[shape=diamond,label=\"%s(x%s)(x%s)\", color=\"%s\"];\n",
+								g.getId().replace("-", ""), "OR",
+								getLabel(repetitions1, g),
+								getLabel(repetitions2, g),
+								colorsUnf.get(g.getId()));
+			else
+				result += String.format("  n%s[shape=diamond,label=\"%s\"];\n",
+						g.getId().replace("-", ""), "OR");
+		}
+		for (Gateway g : model.getGateways(AlternativGateway.class))
+			result += String.format("  n%s[shape=diamond,label=\"%s\"];\n", g
+					.getId().replace("-", ""), "?");
+		result += "\n";
+
+		for (DataNode d : model.getDataNodes()) {
+			result += String.format("  n%s[shape=note,label=\"%s\"];\n", d
+					.getId().replace("-", ""),
+					d.getName().concat(" [" + d.getState() + "]"));
+		}
+		result += "\n";
+
+		for (ControlFlow<FlowNode> cf : model.getControlFlow()) {
+			if (cf.getLabel() != null && cf.getLabel() != "")
+				result += String.format("  n%s->n%s[label=\"%s\"];\n", cf
+						.getSource().getId().replace("-", ""), cf.getTarget()
+						.getId().replace("-", ""), cf.getLabel());
+			else
+				result += String.format("  n%s->n%s;\n", cf.getSource().getId()
+						.replace("-", ""),
+						cf.getTarget().getId().replace("-", ""));
+		}
+		result += "\n";
+
+		for (Activity a : model.getActivities()) {
+			for (IDataNode d : a.getReadDocuments()) {
+				result += String.format("  n%s->n%s;\n",
+						d.getId().replace("-", ""), a.getId().replace("-", ""));
+			}
+			for (IDataNode d : a.getWriteDocuments()) {
+				result += String.format("  n%s->n%s;\n",
+						a.getId().replace("-", ""), d.getId().replace("-", ""));
+			}
+		}
+		result += "}";
+
+		return result;
+	}
+
+	private String getLabel(HashMap<String, Integer> repetitions, FlowNode e) {
+		if (!repetitions.containsKey(e.getId()))
+			return "0";
+
+		return repetitions.get(e.getId()) + "";
 	}
 
 	private HashMap<String, String> getDifferenceColor(HashMap<String, String> colorsBPMNPre,
@@ -450,22 +689,22 @@ public class DiffMMGraphicalVerbalizer {
 		return unifiedColors;
 	}
 
-	private Runs printDifferenceCausality(Integer event1, Integer event1a, PESSemantics<Integer> aes,
+	private Runs printDifferenceCausality(Integer event1, Integer event1a, PESSemantics<Integer> pes,
 			BPMNReplayer replayerBPMN, String suffix, PetriNet net, BPMNReader loader, String sentence) {
 		Runs runs = new Runs();
 
 		// All configurations
-		BitSet conf1 = aes.getLocalConfiguration(event1);
+		BitSet conf1 = pes.getLocalConfiguration(event1);
 		Trace<Integer> trace = new Trace<>();
-		trace.addAllStrongCauses(aes.getEvents(conf1));
+		trace.addAllStrongCauses(pes.getEvents(conf1));
 
 		HashMap<String, Integer> repetitions = new HashMap<String, Integer>();
-		HashMap<String, String> colorsBPMN = replayerBPMN.execute(aes.getLabel(event1), aes.getPomset(conf1),
+		HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event1), pes.getPomset(conf1),
 				repetitions, null);
 
-		BitSet conf1a = aes.getLocalConfiguration(event1a);
+		BitSet conf1a = pes.getLocalConfiguration(event1a);
 		Trace<Integer> trace2 = new Trace<>();
-		trace2.addAllStrongCauses(aes.getEvents(conf1a));
+		trace2.addAllStrongCauses(pes.getEvents(conf1a));
 
 		BitSet exts = (BitSet) conf1a.clone();
 		BitSet intersects = (BitSet) conf1a.clone();
@@ -474,17 +713,37 @@ public class DiffMMGraphicalVerbalizer {
 
 		intersects.and(conf1);
 
-		if (intersects.equals(conf1) && aes.arePossibleExtensions(conf1, exts)) {
+		if (intersects.equals(conf1) && pes.arePossibleExtensions(conf1, exts)) {
 			HashMap<String, Integer> repetitions2 = new HashMap<String, Integer>();
-			HashMap<String, String> colorsBPMN2 = replayerBPMN.execute(aes.getLabel(event1a), aes.getPomset(conf1a),
+			HashMap<String, String> colorsBPMN2 = replayerBPMN.execute(pes.getLabel(event1a), pes.getPomset(conf1a),
 					repetitions2, null);
 
 			HashMap<String, String> newColorsBP = unifyColorsBP(colorsBPMN, colorsBPMN2);
 			HashMap<String, Integer> newRep1 = repetitions;
 			HashMap<String, Integer> newRep2 = repetitions2;
 
-			runs.addRun(new Run(newColorsBP, newRep1, newRep2, loader, sentence, aes.getPomset(conf1, conf1a)));
+			runs.addRun(new Run(newColorsBP, newRep1, newRep2, loader, sentence, pes.getPomset(conf1, conf1a)));
+			
+//			printModels("m", "1", net, loader, null, newColorsBP, newRep1, newRep2);
 		}
+
+		return runs;
+	}
+	
+	private Runs printTask(Integer event1, PESSemantics<Integer> pes,
+			BPMNReplayer replayerBPMN, PetriNet net, BPMNReader loader, String sentence) {
+		Runs runs = new Runs();
+
+		// All configurations
+		BitSet conf1 = pes.getLocalConfiguration(event1);
+		Trace<Integer> trace = new Trace<>();
+		trace.addAllStrongCauses(pes.getEvents(conf1));
+
+		HashMap<String, Integer> repetitions = new HashMap<String, Integer>();
+		HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event1), pes.getPomset(conf1),
+				repetitions, null);
+
+		runs.addRun(new Run(colorsBPMN, repetitions, new HashMap<String, Integer>(), loader, sentence, pes.getPomset(conf1)));
 
 		return runs;
 	}
@@ -560,9 +819,13 @@ public class DiffMMGraphicalVerbalizer {
 
 		BitSet lc1 = (BitSet) pes1.getLocalConfiguration(evt1).clone();
 		lc1.and(pes1.getLocalConfiguration(evt1a));
-
+		lc1.set(evt1, false);
+		lc1.set(evt1a, false);
+		
 		BitSet lc2 = (BitSet) pes2.getLocalConfiguration(evt2).clone();
 		lc2.and(pes2.getLocalConfiguration(evt2a));
+		lc2.set(evt2, false);
+		lc2.set(evt2a, false);
 
 		BitSet map1 = new BitSet();
 		BitSet map2 = new BitSet();

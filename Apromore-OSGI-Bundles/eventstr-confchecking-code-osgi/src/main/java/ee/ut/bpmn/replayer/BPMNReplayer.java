@@ -67,7 +67,8 @@ public class BPMNReplayer {
 						copy.add2History(f);
 						copy.candidates.remove(f);
 						for (FlowNode s : model.getDirectSuccessors(f))
-							copy.add2Candidates(s);
+//							if(!copy.history.contains(s))
+								copy.add2Candidates(s);
 
 						if (!queue.contains(copy) && !visited.contains(copy))
 							queue.add(copy);
@@ -85,12 +86,13 @@ public class BPMNReplayer {
 						copy.candidates.remove(f);
 						copy.add2Candidates(s);
 
-						if (!queue.contains(copy) && !visited.contains(copy))
-							queue.add(copy);
-
-						copy.add2Counter(f);
-
-						copy.add2Colors(f, "green");
+						if(!copy.history.contains(s)){
+							if (!queue.contains(copy) && !visited.contains(copy))
+									queue.add(copy);
+							
+							copy.add2Counter(f);
+							copy.add2Colors(f, "green");
+						}
 					}
 					
 					current.add2Colors(f, "green");
@@ -108,7 +110,8 @@ public class BPMNReplayer {
 						copy.add2Counter(f);
 
 						for (FlowNode s : model.getDirectSuccessors(f))
-							copy.add2Candidates(s);
+//							if(!copy.history.contains(s))
+								copy.add2Candidates(s);
 
 						if (copy.getNext().isEmpty() && f.getName().equals(end)) {
 							copy.add2Colors(f, "red");
@@ -127,11 +130,17 @@ public class BPMNReplayer {
 					} else {
 						// fix bug .... when a silent task is in a cycle (it will always add it again)
 						if(!current.contains(f.getName())){
-							QueueEntry copy = current.clone();
+							QueueEntry copy = null;
+							if(current.containsPO(f.getName())){
+								Integer v = getVertex(current, f.getName());
+								copy = current.clone(v);
+							}else
+								copy = current.clone();
 							copy.add2History(f);
 							copy.candidates.remove(f);
 	
 							for (FlowNode s : model.getDirectSuccessors(f))
+								if(!s.equals(f))
 								copy.add2Candidates(s);
 	
 							copy.add2Counter(f);
@@ -145,7 +154,7 @@ public class BPMNReplayer {
 			}
 		}
 
-		return null;
+		return new HashMap<String, String>();
 	}
 	
 	private Integer getVertex(QueueEntry current, String name) {
