@@ -107,9 +107,13 @@
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
+        <module>APQL-Portal-Plugin</module>
         <module>BPMNDiagramImporter-Logic</module>
         <module>BPMNMiner-Logic</module>
         <module>BPMNMiner-Portal-Plugin</module>
+        <module>Cmapper-Portal-Plugin</module>
+        <module>Compare-Logic</module>
+        <module>Compare-Portal-Plugin</module>
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>
         <module>Metrics-Logic</module>
@@ -118,8 +122,7 @@
         <module>PQL-Portal-Plugin</module>
         <module>ProDrift-Logic</module>
         <module>ProDrift-Portal-Plugin</module>
-        <module>Compare-Logic</module>
-        <module>Compare-Portal-Plugin</module>
+        <module>Quaestio-Portal-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
