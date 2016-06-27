@@ -33,7 +33,7 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath*:META-INF/spring/osgi-context.xml
+            classpath*:META-INF/spring/context.xml
         </param-value>
     </context-param>
 

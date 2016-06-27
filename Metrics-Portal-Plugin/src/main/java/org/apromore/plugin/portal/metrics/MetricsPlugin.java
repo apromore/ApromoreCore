@@ -21,8 +21,26 @@
 package org.apromore.plugin.portal.metrics;
 
 // Java 2 Standard Edition packages
+import java.io.IOException;
+import java.util.*;
 
+// Java 2 Enterprise Edition packages
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+// Third party packages
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.event.*;
+import org.zkoss.zul.*;
+
+// Local packages
 import org.apromore.graph.canonical.Canonical;
+import org.apromore.helper.Version;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
@@ -31,26 +49,6 @@ import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
 import org.apromore.service.ProcessService;
 import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
 import org.apromore.service.metrics.MetricsService;
-import org.springframework.stereotype.Component;
-
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apromore.helper.Version;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.event.*;
-import org.zkoss.zul.*;
-
-import java.io.IOException;
-import java.util.*;
-
-// Java 2 Enterprise Edition packages
-// Third party packages
-// Local packages
 
 /**
  * Metrics service. Created by Adriano Augusto 18/04/2016
@@ -59,37 +57,24 @@ import java.util.*;
 public class MetricsPlugin extends PluginCustomGui {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetricsPlugin.class);
 
-
-    private PortalContext portalContext;
-    private final MetricsService metricsService;
-    private final ProcessService processService;
-    private final BPMNDiagramImporter importerService;
-    private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
+    @Inject private MetricsService metricsService;
+    @Inject private ProcessService processService;
+    @Inject private BPMNDiagramImporter importerService;
 
     /* zk gui variables */
-    private Window settings;
-    private Radiogroup size;
-    private Radiogroup cfc;
-    private Radiogroup acd;
-    private Radiogroup mcd;
-    private Radiogroup cnc;
-    private Radiogroup density;
-    private Radiogroup structuredness;
-    private Radiogroup separability;
-    private Radiogroup duplicates;
-
-    private Button okButton;
-    private Button cancelButton;
-
-    @Inject
-    public MetricsPlugin(final MetricsService    metricsService,
-                         final ProcessService processService,
-                         final BPMNDiagramImporter importerService) {
-
-        this.metricsService      = metricsService;
-        this.processService      = processService;
-        this.importerService     = importerService;
-    }
+    //private Window settings;
+    //private Radiogroup size;
+    //private Radiogroup cfc;
+    //private Radiogroup acd;
+    //private Radiogroup mcd;
+    //private Radiogroup cnc;
+    //private Radiogroup density;
+    //private Radiogroup structuredness;
+    //private Radiogroup separability;
+    //private Radiogroup duplicates;
+    //
+    //private Button okButton;
+    //private Button cancelButton;
 
     @Override
     public String getLabel(Locale locale) {
@@ -102,9 +87,9 @@ public class MetricsPlugin extends PluginCustomGui {
     }
 
     @Override
-    public void execute(PortalContext context) {
-        this.portalContext = context;
-        processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
+    public void execute(PortalContext portalContext) {
+
+        Map<ProcessSummaryType, List<VersionSummaryType>> processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
 
         if( processVersions.size() != 1 ) {
             Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
@@ -112,7 +97,7 @@ public class MetricsPlugin extends PluginCustomGui {
         }
 
         portalContext.getMessageHandler().displayInfo("Executing Metrics service...");
-        runComputation();
+        runComputation(portalContext, processVersions);
 //
 //        try {
 //            this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/metrics.zul", null, null);
@@ -148,11 +133,11 @@ public class MetricsPlugin extends PluginCustomGui {
 
 
 
-    protected void cancel() {
-        this.settings.detach();
-    }
+//    protected void cancel() {
+//        this.settings.detach();
+//    }
 
-    protected void runComputation() {
+    protected void runComputation(PortalContext portalContext, Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
         Map<String, String> bpmnMetrics;
         Map<String, String> canonicalMetrics;
 
