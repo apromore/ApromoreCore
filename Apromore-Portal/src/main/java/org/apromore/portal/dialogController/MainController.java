@@ -332,7 +332,7 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    private EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
+    private static EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
 
         EditSessionType editSession = new EditSessionType();
 
@@ -757,7 +757,7 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     /* From a list of version summary types find the max version number. */
-    private String findMaxVersion(ProcessSummaryType process) {
+    private static String findMaxVersion(ProcessSummaryType process) {
         Version versionNum;
         Version max = new Version(0, 0);
         for (VersionSummaryType version : process.getVersionSummaries()) {
