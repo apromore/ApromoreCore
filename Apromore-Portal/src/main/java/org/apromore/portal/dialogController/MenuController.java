@@ -32,7 +32,6 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -75,9 +74,6 @@ public class MenuController extends Menubar {
         Menuitem moveMI = (Menuitem) this.menuB.getFellow("processMove");
         moveMI.setDisabled(true);
 
-        Menu filteringM = (Menu) this.menuB.getFellow("filtering");
-        Menuitem similarityClustersMI = (Menuitem) this.menuB.getFellow("similarityClusters");
-
         createMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
@@ -112,12 +108,6 @@ public class MenuController extends Menubar {
             @Override
             public void onEvent(final Event event) throws Exception {
                 deleteSelectedProcessVersions();
-            }
-        });
-        similarityClustersMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                clusterSimilarProcesses();
             }
         });
         deployMI.addEventListener("onClick", new EventListener<Event>() {
@@ -171,17 +161,6 @@ public class MenuController extends Menubar {
         } else {
             this.mainC.displayMessage("Please select exactly one process model!");
         }
-    }
-
-
-    /**
-     * Cluster similar processes in the whole repository
-     * @throws InterruptedException
-     * @throws SuspendNotAllowedException
-     */
-    protected void clusterSimilarProcesses() throws SuspendNotAllowedException, InterruptedException {
-        this.mainC.eraseMessage();
-        new SimilarityClustersController(this.mainC);
     }
 
     protected void createModel() throws InterruptedException {
