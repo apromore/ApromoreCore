@@ -36,9 +36,4 @@
             <menuitem id="processDeploy" label="Deploy Process" disabled="true" image="/img/deploy.png"/>
         </menupopup>
     </menu>
-    <menu id="filtering" label="Filtering">
-        <menupopup>
-            <menuitem id="similarityClusters" label="Clone Detection" disabled="true" image="/img/approx_clones.png"/>
-        </menupopup>
-    </menu>
 </menubar>
