@@ -21,6 +21,7 @@
 package org.apromore.portal.context;
 
 import org.apache.commons.io.IOUtils;
+import org.apromore.model.ClusterFilterType;
 import org.apromore.model.FolderType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;
@@ -147,4 +148,8 @@ public class PluginPortalContext implements PortalContext {
         mainController.refresh();
     }
 
+    @Override
+    public void displaySimilarityClusters(final ClusterFilterType filter) {
+        mainController.displaySimilarityClusters(filter);
+    }
 }

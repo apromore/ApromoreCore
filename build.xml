@@ -85,6 +85,8 @@
         <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
 
         <include name="Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
+
+        <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
         
         <!-- PQL-Logic is currently required by Apromore-Manager-WS, so it'll already be started as part of 100-manager.plan
         <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
