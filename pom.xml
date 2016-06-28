@@ -123,6 +123,7 @@
         <module>ProDrift-Logic</module>
         <module>ProDrift-Portal-Plugin</module>
         <module>Quaestio-Portal-Plugin</module>
+        <module>Similarity-Clusters-Portal-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
