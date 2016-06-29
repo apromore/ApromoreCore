@@ -21,6 +21,8 @@
 package org.apromore.service.bpmnminer.impl;
 
 import java.util.*;
+import javax.swing.UIManager;
+
 import javax.inject.Inject;
 import javax.swing.*;
 
