@@ -36,25 +36,4 @@
             <menuitem id="processDeploy" label="Deploy Process" disabled="true" image="/img/deploy.png"/>
         </menupopup>
     </menu>
-    <menu id="filtering" label="Filtering">
-        <menupopup>
-            <menuitem id="similarityClusters" label="Clone Detection" disabled="true" image="/img/approx_clones.png"/>
-            <menuitem id="compare" label="Compare Processes" disabled="true" image="/img/compare.png"/>
-            <menuitem id="queryPQL" label="PQL Query" disabled="true" image="/img/query.png"/>
-        </menupopup>
-    </menu>
-    <menu id="design" label="Design">
-        <menupopup>
-            <!--
-            <menuitem id="structProcess" label="Structure process" disabled="true" image="img/BPStruct.png"/>
-            <menuseparator/>
-            <menuitem id="miningBPMNMiner" label="Automated discovery" disabled="true" image="img/icon/bpmn-22x22.png"/>
-            <menuseparator/>
-            <menuitem id="designMerging" label="Merging" disabled="true" image="/img/merge.png"/>
-            <menuseparator/>
-            -->
-            <menuitem id="designConfiguration" label="Questionnaire-driven configuration" disabled="true" image="/img/configuration.png"/>
-            <menuitem id="designCmap" label="Define model:questionnaire mapping" disabled="true" image="/img/cmap.png"/>
-        </menupopup>
-    </menu>
 </menubar>

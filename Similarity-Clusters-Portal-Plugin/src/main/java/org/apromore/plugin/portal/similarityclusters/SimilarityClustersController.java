@@ -18,17 +18,14 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.portal.dialogController.similarityclusters;
+package org.apromore.plugin.portal.similarityclusters;
 
-import org.apromore.model.ClusterFilterType;
-import org.apromore.model.ClusterSettingsType;
-import org.apromore.model.ClusteringParameterType;
-import org.apromore.model.ClusteringSummaryType;
-import org.apromore.model.ConstrainedProcessIdsType;
-import org.apromore.model.GedMatrixSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.portal.dialogController.BaseController;
-import org.apromore.portal.dialogController.MainController;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -40,23 +37,34 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Slider;
 import org.zkoss.zul.Window;
 
-import java.text.SimpleDateFormat;
-import java.util.Set;
+import org.apromore.dao.model.ClusteringSummary;
+import org.apromore.dao.model.HistoryEnum;
+import org.apromore.dao.model.HistoryEvent;
+import org.apromore.dao.model.StatusEnum;
+import org.apromore.exception.RepositoryException;
+import org.apromore.model.ClusterFilterType;
+import org.apromore.model.ClusteringParameterType;
+import org.apromore.model.ClusteringSummaryType;
+import org.apromore.model.ConstrainedProcessIdsType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.ClusterService;
+import org.apromore.service.model.ClusterSettings;
 
 /**
  * Creates the ZK window for similarity clusters invoked through the menu.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
  */
-public class SimilarityClustersController extends BaseController {
+public class SimilarityClustersController {
 
     private static final float DISTANCE_RATIO = 100f;
-
     private static final long serialVersionUID = -4621153332593772946L;
 
-    private MainController mainController;
-    private Window scWindow;
+    private ClusterService clusterService;
+    private PortalContext portalContext;
 
+    private Window scWindow;
     private Button btnOK;
     private Button btnCancel;
     private Button btnCreate;
@@ -70,9 +78,11 @@ public class SimilarityClustersController extends BaseController {
      * @throws org.zkoss.zk.ui.SuspendNotAllowedException
      * @throws InterruptedException
      */
-    public SimilarityClustersController(final MainController mainC) throws SuspendNotAllowedException, InterruptedException {
-        this.mainController = mainC;
-        this.scWindow = (Window) Executions.createComponents("macros/similarityclusters.zul", null, null);
+    public SimilarityClustersController(final PortalContext portalContext, final ClusterService clusterService) throws SuspendNotAllowedException, InterruptedException, IOException {
+        this.portalContext = portalContext;
+        this.clusterService = clusterService;
+
+        this.scWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/similarityclusters.zul", null, null);
         this.btnOK = (Button) this.scWindow.getFellow("similarityclustersOKbutton");
         this.btnCancel = (Button) this.scWindow.getFellow("similarityclustersCancelbutton");
         Label lblBuildDate = (Label) this.scWindow.getFellow("GEDBuildDate");
@@ -92,12 +102,12 @@ public class SimilarityClustersController extends BaseController {
     /**
      * Start the create Clusters.
      */
-    protected final void doCreateSimilarityClusters() {
-        ClusterSettingsType settings = new ClusterSettingsType();
+    protected final void doCreateSimilarityClusters() throws RepositoryException {
+        ClusterSettings settings = new ClusterSettings();
         initAlgorithm(settings);
         initMaxDistance(settings);
         initConstrainedProcessIds(settings);
-        getService().createClusters(settings);
+        clusterService.cluster(settings);
         Messagebox.show("Clustering Completed!");
     }
 
@@ -121,7 +131,7 @@ public class SimilarityClustersController extends BaseController {
      */
     protected final void doShowSimilarityClusters() throws InterruptedException {
         try {
-            mainController.displaySimilarityClusters(initFilterConstraints());
+            portalContext.displaySimilarityClusters(initFilterConstraints());
         } catch (Exception e) {
             Messagebox.show("Search failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         } finally {
@@ -129,13 +139,16 @@ public class SimilarityClustersController extends BaseController {
         }
     }
 
-
     /* Defines the Event Listeners for the class. */
     private void defineEventListeners() {
         this.btnCreate.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
-                doCreateSimilarityClusters();
+                try {
+                    doCreateSimilarityClusters();
+                } catch (Exception e) {
+                    Messagebox.show("Clustering failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+                }
             }
         });
         this.btnOK.addEventListener("onClick", new EventListener<Event>() {
@@ -161,7 +174,8 @@ public class SimilarityClustersController extends BaseController {
     /* Initialises the Filter Constraints */
     private ClusterFilterType initFilterConstraints() {
         ClusterFilterType filterType = new ClusterFilterType();
-        ClusteringSummaryType summary = getService().getClusteringSummary();
+        
+        ClusteringSummary summary = clusterService.getClusteringSummary();
         filterType.setMinClusterSize(summary.getMinClusterSize());
         filterType.setMaxClusterSize(summary.getMaxClusterSize());
 
@@ -173,22 +187,25 @@ public class SimilarityClustersController extends BaseController {
         return filterType;
     }
 
-    private void initAlgorithm(ClusterSettingsType settings) {
+    private void initAlgorithm(ClusterSettings settings) {
         settings.setAlgorithm(algorithmListbox.getSelectedItem().getValue().toString());
     }
 
-    private void initMaxDistance(ClusterSettingsType settings) {
+    private void initMaxDistance(ClusterSettings settings) {
+        /*
         ClusteringParameterType param = new ClusteringParameterType();
         param.setParamName("maxdistance");
         param.setParmaValue(String.valueOf(this.maxdistance.getCurpos() / DISTANCE_RATIO));
         settings.getClusteringParams().add(param);
+        */
+        settings.setMaxNeighborGraphEditDistance(this.maxdistance.getCurpos() / DISTANCE_RATIO);
     }
 
-    private void initConstrainedProcessIds(ClusterSettingsType settings) {
-        ConstrainedProcessIdsType processIds = new ConstrainedProcessIdsType();
-        Set<ProcessSummaryType> selectedProcesses = mainController.getSelectedProcesses();
+    private void initConstrainedProcessIds(ClusterSettings settings) {
+        List<Integer> processIds = new ArrayList<>();
+        Set<ProcessSummaryType> selectedProcesses = portalContext.getSelection().getSelectedProcessModels();
         for (ProcessSummaryType process : selectedProcesses) {
-            processIds.getProcessId().add(process.getId());
+            processIds.add(process.getId());
         }
         settings.setConstrainedProcessIds(processIds);
     }
@@ -197,14 +214,15 @@ public class SimilarityClustersController extends BaseController {
     private void populateGEDMatrixBuildDate(Label lblBuildDate) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         StringBuilder sb = new StringBuilder();
-        GedMatrixSummaryType gedMatrixSummary = getService().getGedMatrixSummary();
-        if (gedMatrixSummary.getBuildDate() == null) {
+        System.out.println("Clone detector " + clusterService);
+        HistoryEvent history = clusterService.getGedMatrixLastExecutionTime();
+        if (history == null) {
             sb.append("Never");
         } else {
-            if (!gedMatrixSummary.isBuilt()) {
+            if (history.getStatus() == StatusEnum.START && history.getType() == HistoryEnum.GED_MATRIX_COMPUTATION) {
                 sb.append("Currently Running, Started ");
             }
-            sb.append(dateFormatter.format(gedMatrixSummary.getBuildDate().toGregorianCalendar().getTime()));
+            sb.append(dateFormatter.format(history.getOccurDate()));
         }
         lblBuildDate.setValue(sb.toString());
     }
