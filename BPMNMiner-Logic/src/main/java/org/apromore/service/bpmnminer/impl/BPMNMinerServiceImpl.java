@@ -22,6 +22,7 @@ package org.apromore.service.bpmnminer.impl;
 
 import java.util.*;
 import javax.inject.Inject;
+import javax.swing.*;
 
 import au.edu.qut.context.FakePluginContext;
 import au.edu.qut.util.LogOptimizer;
@@ -131,6 +132,7 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
 
         System.out.println("Output file:");
         UIContext context = new UIContext();
+        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         UIPluginContext uiPluginContext = context.getMainPluginContext();
         BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
