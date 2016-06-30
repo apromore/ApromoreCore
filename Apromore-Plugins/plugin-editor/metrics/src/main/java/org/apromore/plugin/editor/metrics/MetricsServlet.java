@@ -41,12 +41,14 @@ public class MetricsServlet extends HttpServlet {
     private MetricsService metricsService;
 
     public void init(ServletConfig config) throws ServletException {
-        Object o;
-        o = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext()).getAutowireCapableBeanFactory().getBean("importerService");
-        if(o instanceof  BPMNDiagramImporter) importerService = (BPMNDiagramImporter) o;
-
-        o = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext()).getAutowireCapableBeanFactory().getBean("metricsService");
-        if(o instanceof  MetricsService) metricsService = (MetricsService) o;
+        importerService = (BPMNDiagramImporter)
+            WebApplicationContextUtils.getWebApplicationContext(config.getServletContext())
+                                      .getAutowireCapableBeanFactory()
+                                      .getBean("importerService");
+        metricsService = (MetricsService)
+            WebApplicationContextUtils.getWebApplicationContext(config.getServletContext())
+                                      .getAutowireCapableBeanFactory()
+                                      .getBean("metricsService");
     }
 
     @Override
@@ -66,10 +68,10 @@ public class MetricsServlet extends HttpServlet {
                 response.setContentType("text/plain; charset=UTF-8");
                 response.getWriter().write("Empty or missing parameter 'data'!");
             } else {
-                String meatrics = convert(jsonData);
+                String metrics = convert(jsonData);
                 response.setContentType("application/json");
                 response.setStatus(200);
-                response.getWriter().write(meatrics);
+                response.getWriter().write(metrics);
             }
         } catch (Exception e) {
             try {
