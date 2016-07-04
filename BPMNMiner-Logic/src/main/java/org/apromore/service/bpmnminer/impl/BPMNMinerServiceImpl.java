@@ -22,6 +22,7 @@ package org.apromore.service.bpmnminer.impl;
 
 import java.util.*;
 import javax.inject.Inject;
+import javax.swing.UIManager;
 
 import au.edu.qut.context.FakePluginContext;
 import au.edu.qut.util.LogOptimizer;
