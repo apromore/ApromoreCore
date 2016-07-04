@@ -241,22 +241,22 @@ public class TranslateNode {
 
     static DimensionType placeDefaultDimension() {
         DimensionType d = new DimensionType();
-        d.setX(BigDecimal.valueOf(30));
-        d.setY(BigDecimal.valueOf(30));
+        d.setX(BigDecimal.valueOf(40)); //changed to 40 orig: 30
+        d.setY(BigDecimal.valueOf(40)); //changed to 40 orig: 30
         return d;
     }
 
     static DimensionType transitionDefaultDimension() {
         DimensionType d = new DimensionType();
-        d.setX(BigDecimal.valueOf(50));
-        d.setY(BigDecimal.valueOf(50));
+        d.setX(BigDecimal.valueOf(40)); //changed to 40 orig: 50
+        d.setY(BigDecimal.valueOf(40)); //changed to 40 orig: 50
         return d;
     }
 
     static DimensionType blindTransitionDefaultDimension() {
         DimensionType d = new DimensionType();
-        d.setX(BigDecimal.valueOf(10));
-        d.setY(BigDecimal.valueOf(50));
+        d.setX(BigDecimal.valueOf(40)); // changed to 40 orig: 10
+        d.setY(BigDecimal.valueOf(40)); //changed to 40 orig: 50
         return d;
     }
 

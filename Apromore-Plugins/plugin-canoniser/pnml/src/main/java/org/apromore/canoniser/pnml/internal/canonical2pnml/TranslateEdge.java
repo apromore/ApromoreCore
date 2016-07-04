@@ -150,6 +150,7 @@ public class TranslateEdge {
                 arctarget = place;
             }
             // changed by Marco Hipp
+            ArcType removeArc = null;
             // implemented Method to reconnect misbehaving Place to Place Edge
             if (arcsource instanceof PlaceType && arctarget instanceof PlaceType ) {
             	//iterate through every Arc to get the Arc that has the source Place as Target
@@ -163,7 +164,17 @@ public class TranslateEdge {
 	            			if(arcList.getSource() instanceof TransitionType) {
 	            				TransitionType transitionSource = (TransitionType) arcList.getSource();
 	            				org.apromore.pnml.NodeType nodeTransitionSource = (org.apromore.pnml.NodeType) transitionSource;
+	            				org.apromore.pnml.NodeType zwischenspeicher = arcsource;
+	            				data.getNet().getPlace().remove((PlaceType) zwischenspeicher);
 	            				arcsource = nodeTransitionSource;
+	            				//data.getEndNodeMap().remove(source);
+	            				data.getRunningPlaceMap().remove(source);
+	            				removeArc = arcList;
+//	            				for (ArcType removeArc : data.getNet().getArc()) {
+//	            					
+//	            				}
+	            				
+//	            				data.get
 	            			}
             			}
             		}
@@ -179,9 +190,9 @@ public class TranslateEdge {
             			}
             		}
             	}
-
             }
-
+            if (removeArc != null)
+            	data.getNet().getArc().remove(removeArc);
             arc.setSource(arcsource);
             arc.setTarget(arctarget);
             ArcNameType inscription = new ArcNameType();

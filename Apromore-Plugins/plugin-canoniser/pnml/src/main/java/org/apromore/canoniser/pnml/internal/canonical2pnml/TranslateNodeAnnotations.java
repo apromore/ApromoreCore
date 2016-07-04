@@ -87,16 +87,17 @@ public class TranslateNodeAnnotations {
 
         org.apromore.pnml.PositionType pos = new org.apromore.pnml.PositionType();
         DimensionType dim = new DimensionType();
-        if (cGraphInfo.getSize() != null) {
-            //if (data.getInitialType().equals("PNML")) {
-            if (cGraphInfo != null && cGraphInfo.getSize() != null) {
-                dim.setX(cGraphInfo.getSize().getWidth());
-                dim.setY(cGraphInfo.getSize().getHeight());
-            } else {
+        // always use Standard Dimension for Tool Woped
+//        if (cGraphInfo.getSize() != null) {
+//            //if (data.getInitialType().equals("PNML")) {
+//            if (cGraphInfo != null && cGraphInfo.getSize() != null) {
+//                dim.setX(cGraphInfo.getSize().getWidth());
+//                dim.setY(cGraphInfo.getSize().getHeight());
+//            } else {
                 dim.setX(BigDecimal.valueOf(Long.valueOf(40)));
                 dim.setY(BigDecimal.valueOf(Long.valueOf(40)));
-            }
-        }
+//            }
+//        }
 
         assert cGraphInfo != null;
         if (cGraphInfo.getPosition() != null && cGraphInfo.getPosition().size() > 0) {
