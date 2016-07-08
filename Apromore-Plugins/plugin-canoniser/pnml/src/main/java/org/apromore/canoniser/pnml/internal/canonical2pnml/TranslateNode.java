@@ -199,12 +199,13 @@ public class TranslateNode {
             if (taskName != null) {
                 // Start transition named "<Task> start"
                 NodeNameType name = new NodeNameType();
-                name.setText(taskName + "_start");
+//                name.setText(taskName + "_start");
+                name.setText(taskName);
                 tran.setName(name);
 
                 // Running place named "<Task>"
                 name = new NodeNameType();
-                name.setText(taskName);
+//                name.setText(taskName);
                 running.setName(name);
 
                 // End transition named "<Task> end"

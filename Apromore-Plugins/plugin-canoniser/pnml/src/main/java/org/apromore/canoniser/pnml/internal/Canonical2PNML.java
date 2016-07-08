@@ -30,6 +30,8 @@
 
 package org.apromore.canoniser.pnml.internal;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -40,6 +42,7 @@ import com.google.common.collect.SetMultimap;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.pnml.internal.canonical2pnml.AddXorOperators;
 import org.apromore.canoniser.pnml.internal.canonical2pnml.DataHandler;
+import org.apromore.pnml.NodeType;
 import org.apromore.canoniser.pnml.internal.canonical2pnml.RemoveConnectorTasks;
 import org.apromore.canoniser.pnml.internal.canonical2pnml.RemoveEvents;
 import org.apromore.canoniser.pnml.internal.canonical2pnml.RemoveSplitJoins;
@@ -57,6 +60,7 @@ import org.apromore.pnml.ArcType;
 import org.apromore.pnml.PNMLSchema;
 import org.apromore.pnml.PlaceType;
 import org.apromore.pnml.PnmlType;
+//import org.apromore.pnml.PositionType;
 import org.apromore.pnml.TransitionType;
 
 public class Canonical2PNML {
@@ -175,12 +179,11 @@ public class Canonical2PNML {
      * @since 1.0
      */
     private void decanonise(CanonicalProcessType cproc, AnnotationsType annotations) {
-        for (NetType net : cproc.getNet()) {
+    	for (NetType net : cproc.getNet()) {        	
             tn.setValues(data, ids, annotations);
             tn.translateNet(net);
             ids = tn.getIds();
         }
-
         TranslateHumanResources thr = new TranslateHumanResources();
         thr.setValues(data, ids);
         thr.translate(cproc);
@@ -189,10 +192,13 @@ public class Canonical2PNML {
         data.getNet().setId("noID");
         data.getNet().setType("http://www.informatik.hu-berlin.de/top/pntd/ptNetb");
         data.getPnml().getNet().add(data.getNet());
+        
+        
     }
 
     private void simplify() {
         //LOGGER.info("Performing structural simplifications");
+ 
 
         SetMultimap<org.apromore.pnml.NodeType, ArcType> incomingArcMultimap = HashMultimap.create();
         SetMultimap<org.apromore.pnml.NodeType, ArcType> outgoingArcMultimap = HashMultimap.create();
@@ -254,6 +260,83 @@ public class Canonical2PNML {
         }
         data.getSynthesizedPlaces().clear();
         //LOGGER.info("Performed structural simplifications");
+      
+        
+        //new code.....
+        
+        PlaceType place;
+        TransitionType transition;
+        BigDecimal TranX, TranY, PlaceX, PlaceY;
+        BigDecimal dummyX = new BigDecimal(100);
+        BigDecimal dummyY = new BigDecimal(400);
+          
+
+ 
+        for (int i = 0; i < 2; i++) {
+          for (ArcType arc : data.getNet().getArc()) {
+        
+    		  
+        	  if (arc.getSource() instanceof PlaceType) {
+        		  place = (PlaceType) arc.getSource();
+        		  transition = (TransitionType) arc.getTarget();
+        		  TranX = transition.getGraphics().getPosition().getX();
+        		  TranY = transition.getGraphics().getPosition().getY();
+        		  PlaceX = place.getGraphics().getPosition().getX();
+        		  PlaceY = place.getGraphics().getPosition().getY();
+        		  
+	        		  if ((Double.parseDouble(String.valueOf(PlaceX)) == 100 && Double.parseDouble(String.valueOf(PlaceY)) == 400) &&
+	        			  (Double.parseDouble(String.valueOf(TranX)) == 100 && Double.parseDouble(String.valueOf(TranY)) == 400)) {
+		        		  ;	        	  
+		        	  } else {
+		        			  
+		        		  if(Double.parseDouble(String.valueOf(PlaceX)) == 100 && 
+		       	        	 Double.parseDouble(String.valueOf(PlaceY)) == 400) {
+		        			  	place.getGraphics().getPosition().setX(BigDecimal.valueOf(Double.parseDouble(String.valueOf(TranX)) - 75));
+		        			  	place.getGraphics().getPosition().setY(TranY);
+		        		  } else if (Double.parseDouble(String.valueOf(TranX)) == 100 && 
+		        	        	   Double.parseDouble(String.valueOf(TranY)) == 400) {   
+		        			  	transition.getGraphics().getPosition().setX(BigDecimal.valueOf(Double.parseDouble(String.valueOf(PlaceX)) + 75));
+		        			  	transition.getGraphics().getPosition().setY(PlaceY);
+		        		  }
+		        	  }	 
+        		  
+        	  }     	  
+        	  
+        	  if (arc.getSource() instanceof TransitionType) {
+        		  place = (PlaceType) arc.getTarget();
+        		  transition = (TransitionType) arc.getSource();
+        		  TranX = transition.getGraphics().getPosition().getX();
+        		  TranY = transition.getGraphics().getPosition().getY();
+        		  PlaceX = place.getGraphics().getPosition().getX();
+        		  PlaceY = place.getGraphics().getPosition().getY();
+        			  
+	        		  if ((Double.parseDouble(String.valueOf(PlaceX)) == 100 && Double.parseDouble(String.valueOf(PlaceY)) == 400) &&
+	 	        		  (Double.parseDouble(String.valueOf(TranX)) == 100 && Double.parseDouble(String.valueOf(TranY)) == 400)) {
+	        			  ;
+	        		  } else {
+	 	        			  
+	 	        		  if(Double.parseDouble(String.valueOf(PlaceX)) == 100 && 
+	 	        				 Double.parseDouble(String.valueOf(PlaceY)) == 400) {
+	 	        			  	place.getGraphics().getPosition().setX(BigDecimal.valueOf(Double.parseDouble(String.valueOf(TranX)) + 75));
+	 	        			  	place.getGraphics().getPosition().setY(TranY);
+	 	        		  } else if (Double.parseDouble(String.valueOf(TranX)) == 100 && 
+	 	        	        	   Double.parseDouble(String.valueOf(TranY)) == 400) {   
+	 	        			  	transition.getGraphics().getPosition().setX(BigDecimal.valueOf(Double.parseDouble(String.valueOf(PlaceX)) - 75));
+	 	        			  	transition.getGraphics().getPosition().setY(PlaceY);
+	 	        		  }
+	 	        	  }
+        	  } 
+        	  if (arc.getGraphics() != null) {
+        		  if (arc.getGraphics().getPosition() != null) {
+        			  arc.getGraphics().getPosition().clear();
+        		  }
+        	  }
+          	}
+        	  
+          } 
+        
+        //ende neuer code.....
+        
     }
 
     /**
