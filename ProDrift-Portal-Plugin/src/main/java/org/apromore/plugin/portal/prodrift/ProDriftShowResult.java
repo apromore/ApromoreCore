@@ -136,32 +136,13 @@ public class ProDriftShowResult extends Window {
                 int end  = startOfTransitionPoints.get(i).intValue();
 
                 ByteArrayOutputStream ba = eventLogList.get(i);
-                ByteArrayOutputStream outputStream;
-                String filename;
-
-//                if(XLogManager.getExtension(logName).endsWith("gz")) {
-//                    outputStream = eventLogList.get(i);
-//                    filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogManager.getExtension(logName);
-//                }else {
-                byte[] b = ba.toByteArray();
-                outputStream = new ByteArrayOutputStream(b.length);
-                GZIPOutputStream gzOS = new GZIPOutputStream(outputStream);
-                gzOS.write(b);
-                gzOS.close();
-
-                if(extension.endsWith("gz")) {
-                    filename = logName.substring(0, logName.indexOf(extension) - 1) + "_sublog" + "_" + start+"_" + end + "." + extension;
-                }else{
-                    filename = logName.substring(0, logName.indexOf(extension) - 1) + "_sublog" + "_" + start+"_" + end + "." + extension + ".gz";
-                }
-
-//                }
-
+                String filename = logName.substring(0, logName.indexOf(extension) - 1) + "_sublog" + "_" + start+"_" + end + "." + extension;
+  
                 ZipEntry entry = new ZipEntry(filename);
-
-                entry.setSize(outputStream.toByteArray().length);
+  
+                entry.setSize(ba.toByteArray().length);
                 zos.putNextEntry(entry);
-                zos.write(outputStream.toByteArray());
+                zos.write(ba.toByteArray());
                 zos.closeEntry();
             }
             zos.close();

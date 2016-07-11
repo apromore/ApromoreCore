@@ -22,7 +22,6 @@ package org.apromore.service.pql;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 import org.pql.index.IndexStatus;
 
