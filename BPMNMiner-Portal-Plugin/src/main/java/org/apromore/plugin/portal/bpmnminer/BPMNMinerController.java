@@ -349,11 +349,12 @@ public class BPMNMinerController {
 
     public int getSelectedAlgorithm() {
         int selected = miningAlgorithms.getSelectedIndex();
-        String name = null;
+        String name = "Inductive Miner";
+
         switch (selected) {
             case 0 : name = "Inductive Miner"; break;
-            case 1 : name = "Heuristics Miner ProM5.2 Without Unused Relationships"; break;
-            case 2 : name = "Heuristics Miner ProM 6"; break;
+            case 1 : name = "Heuristics Miner ProM 6"; break;
+            case 2 : name = "Heuristics Miner ProM5.2 Without Unused Relationships"; break;
             case 3 : name = "Alpha Algorithm"; break;
             case 4 : name = "ILP Miner"; break;
             case 5 : name = "Heuristics Miner ProM5.2 With Unused Relationships";
