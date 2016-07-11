@@ -72,7 +72,8 @@ public class CorrectedEPML {
 
         // Lazily obtain the transformer for preprocessing EPML
         if (transformer == null) {
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            TransformerFactory transformerFactory = new com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl(); //TransformerFactory.newInstance();
+            //TransformerFactory transformerFactory = TransformerFactory.newInstance();
             transformer = transformerFactory.newTransformer(
                 new StreamSource(getClass().getClassLoader().getResourceAsStream("xsd/preprocess-epml.xsl"))
             );
