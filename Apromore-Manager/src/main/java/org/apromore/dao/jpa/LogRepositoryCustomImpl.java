@@ -23,7 +23,6 @@
  */
 package org.apromore.dao.jpa;
 
-import org.apromore.dao.LogRepository;
 import org.apromore.dao.LogRepositoryCustom;
 import org.apromore.dao.model.Log;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -31,8 +30,9 @@ import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -42,8 +42,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -52,12 +51,15 @@ import java.util.*;
  */
 public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogRepositoryCustomImpl.class);
 
     @PersistenceContext
     private EntityManager em;
 
     @Resource
     private JdbcTemplate jdbcTemplate;
+
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
     private static final String GET_ALL_LOGS_JPA = "SELECT l FROM Log l ";
     private static final String GET_ALL_LOGS_FOLDER_JPA = "SELECT l FROM Log l JOIN l.folder f ";
@@ -122,28 +124,22 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
      * ?@see LogRepository#storeProcessLog(Integer, String, XLog)
      * {@inheritDoc}
      */
+    @Override
+    public String storeProcessLog(final Integer folderId, final String logName, XLog log, final Integer userID, final String domain, final String created, final boolean publicModel) {
 
-        @SuppressWarnings("unchecked")
-    public void storeProcessLog(Integer folderId, String logName, XLog log) {
+        LOGGER.error("Storing Log " + log.size() + " " + logName);
         if (log != null && logName != null) {
-            String sql = "SELECT max(id) FROM process_log";
-            List<Integer> max = this.jdbcTemplate.query(sql,
-                    new RowMapper<Integer>() {
-                        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return rs.getInt("id");
-                        }
-                    });
+            String logNameId = simpleDateFormat.format(new Date());
 
             try {
-                String name = max + "_" + logName + ".xes.gz";
+                final String name = logNameId + "_" + logName + ".xes.gz";
                 exportToFile("processLogs/", name, log);
-
-                sql = "INSERT INTO process_log WHERE (folderId, name, path_file) values (?, ?, ?)";
-                this.jdbcTemplate.update(sql, new Object[] {folderId, logName, "processLogs/" + name});
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Error " + e.getMessage());
             }
+            return logNameId;
         }
+        return null;
     }
 
     /**
@@ -154,7 +150,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
     @SuppressWarnings("unchecked")
     public void removeProcessLog(Integer processLogId) {
         if (processLogId != null) {
-            String sql = "DELETE FROM process_log WHERE id = ?";
+            String sql = "DELETE FROM Log WHERE id = ?";
             this.jdbcTemplate.update(sql, new Object[] {processLogId});
         }
     }

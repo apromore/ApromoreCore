@@ -56,6 +56,7 @@
     <osgi:reference id="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
     <osgi:reference id="PQLServiceImpl" interface="org.apromore.service.PQLService"/>
     <osgi:reference id="databaseServiceImpl" interface="org.apromore.service.DatabaseService"/>
+    <osgi:reference id="logServiceImpl" interface="org.apromore.service.LogService"/>
 
     <osgi:reference id="userDetailsServiceImpl" interface="org.springframework.security.core.userdetails.UserDetailsService"/>
     <osgi:reference id="usernamePasswordAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider"/>

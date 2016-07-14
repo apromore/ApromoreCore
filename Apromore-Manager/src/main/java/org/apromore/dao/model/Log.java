@@ -50,6 +50,7 @@ public class Log implements Serializable {
 
     private Integer id;
     private String name;
+    private String filePath;
     private String domain;
     private String ranking;
     private String createDate;
@@ -85,7 +86,14 @@ public class Log implements Serializable {
         this.id = id;
     }
 
+    @Column(name = "file_path")
+    public String getFilePath() {
+        return filePath;
+    }
 
+    public void setFilePath(final String filePath) {
+        this.filePath = filePath;
+    }
 
     @Column(name = "name")
     public String getName() {

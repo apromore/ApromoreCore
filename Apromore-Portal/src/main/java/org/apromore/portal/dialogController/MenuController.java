@@ -64,6 +64,8 @@ public class MenuController extends Menubar {
         Menuitem createMI = (Menuitem) this.menuB.getFellow("createProcess");
         Menuitem importMI = (Menuitem) this.menuB.getFellow("fileImport");
         Menuitem exportMI = (Menuitem) this.menuB.getFellow("fileExport");
+        Menuitem importLogMI = (Menuitem) this.menuB.getFellow("fileImportLog");
+        Menuitem exportLogMI = (Menuitem) this.menuB.getFellow("fileExportLog");
         Menuitem editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
         Menuitem editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
         Menuitem deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
@@ -98,6 +100,12 @@ public class MenuController extends Menubar {
                 importModel();
             }
         });
+        importLogMI.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                importLog();
+            }
+        });
         editModelMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
@@ -114,6 +122,12 @@ public class MenuController extends Menubar {
             @Override
             public void onEvent(final Event event) throws Exception {
                 exportNative();
+            }
+        });
+        exportLogMI.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                exportLog();
             }
         });
         deleteMI.addEventListener("onClick", new EventListener<Event>() {
@@ -482,10 +496,29 @@ public class MenuController extends Menubar {
         }
     }
 
+    /**
+     * Export all selected process versions, each of which in a native format to be chosen by the user
+     * @throws InterruptedException
+     * @throws SuspendNotAllowedException
+     * @throws org.apromore.portal.exception.ExceptionFormats
+     */
+    protected void exportLog()  {
+
+    }
+
     protected void importModel() throws InterruptedException {
         this.mainC.eraseMessage();
         try {
             new ImportListProcessesController(mainC);
+        } catch (DialogException e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    protected void importLog() throws InterruptedException {
+        this.mainC.eraseMessage();
+        try {
+            new ImportLogController(mainC);
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }

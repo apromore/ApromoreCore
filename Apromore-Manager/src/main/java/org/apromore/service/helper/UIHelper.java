@@ -290,7 +290,7 @@ public class UIHelper implements UserInterfaceHelper {
 	return processSummary;
     }
 
-    private LogSummaryType buildLogSummary(final Log log) {
+    public LogSummaryType buildLogSummary(final Log log) {
         LogSummaryType logSummaryType = new LogSummaryType();
         logSummaryType.setId(log.getId());
         logSummaryType.setName(log.getName());

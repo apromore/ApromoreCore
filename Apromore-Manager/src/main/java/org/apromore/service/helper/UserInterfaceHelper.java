@@ -20,13 +20,11 @@
 
 package org.apromore.service.helper;
 
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.model.LogSummariesType;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionsType;
+import org.apromore.model.*;
 import org.apromore.service.PQLService;
 
 /**
@@ -80,6 +78,8 @@ public interface UserInterfaceHelper {
      * @return the list of process Summaries on the requested page
      */
     ProcessSummariesType buildProcessSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
+
+    LogSummaryType buildLogSummary(Log log);
 
     LogSummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
 
