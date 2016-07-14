@@ -48,6 +48,8 @@
     <xs:element name="EditProcessDataResponse" type="tns:EditProcessDataOutputMsgType"/>
     <xs:element name="DeleteProcessVersionsRequest" type="tns:DeleteProcessVersionsInputMsgType"/>
     <xs:element name="DeleteProcessVersionsResponse" type="tns:DeleteProcessVersionsOutputMsgType"/>
+    <xs:element name="ImportLogRequest" type="tns:ImportLogInputMsgType"/>
+    <xs:element name="ImportLogResponse" type="tns:ImportLogOutputMsgType"/>
     <xs:element name="ImportProcessRequest" type="tns:ImportProcessInputMsgType"/>
     <xs:element name="ImportProcessResponse" type="tns:ImportProcessOutputMsgType"/>
     <xs:element name="ExportFormatRequest" type="tns:ExportFormatInputMsgType"/>
@@ -1080,6 +1082,14 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="ImportLogInputMsgType">
+        <xs:sequence>
+            <xs:element name="Log" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="Extension" type="xs:string"/>
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="ImportProcessInputMsgType">
         <xs:sequence>
             <xs:element name="ProcessDescription" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
@@ -1098,6 +1108,13 @@
         <xs:attribute name="PreVersion" type="xs:string"/>
     </xs:complexType>
 
+    <xs:complexType name="ImportLogOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType"/>
+            <xs:element name="ImportLogResult" type="tns:ImportLogResultType"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="ImportProcessOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"/>
@@ -1108,6 +1125,13 @@
     <xs:complexType name="ImportProcessResultType">
         <xs:sequence>
             <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Message" type="tns:PluginMessages" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ImportLogResultType">
+        <xs:sequence>
+            <xs:element name="LogSummary" type="tns:LogSummaryType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="Message" type="tns:PluginMessages" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>

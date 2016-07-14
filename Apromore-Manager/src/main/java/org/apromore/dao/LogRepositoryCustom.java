@@ -21,6 +21,7 @@
 package org.apromore.dao;
 
 import org.apromore.dao.model.Log;
+import org.deckfour.xes.model.XLog;
 
 import java.util.List;
 
@@ -51,5 +52,7 @@ public interface LogRepositoryCustom {
     List<Log> findAllLogsByFolder(final Integer folderId, final String conditions);
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
+
+    String storeProcessLog(final Integer folderId, String logName, XLog log, Integer userID, String domain, String created, boolean publicModel);
 
 }

@@ -32,6 +32,7 @@ import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
+import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.custom.gui.tab.impl.PortalTabImpl;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;

@@ -58,9 +58,6 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map;
 import java.util.Set;
@@ -84,6 +81,7 @@ public class ManagerPortalEndpoint {
     private FragmentService fragmentSrv;
     private CanoniserService canoniserService;
     private ProcessService procSrv;
+    private LogService logSrv;
     private ClusterService clusterService;
     private FormatService frmSrv;
     private DomainService domSrv;
@@ -119,7 +117,7 @@ public class ManagerPortalEndpoint {
     @Inject
     public ManagerPortalEndpoint(final DeploymentService deploymentService, final PluginService pluginService,
             final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
-            final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
+            final LogService logSrv, final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
             final UserService userSrv,
             final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
             final PQLService pqlService,  final DatabaseService dbService) {
@@ -128,6 +126,7 @@ public class ManagerPortalEndpoint {
         this.fragmentSrv = fragmentSrv;
         this.canoniserService = canoniserService;
         this.procSrv = procSrv;
+        this.logSrv = logSrv;
         this.clusterService = clusterService;
         this.frmSrv = frmSrv;
         this.domSrv = domSrv;
@@ -327,6 +326,48 @@ public class ManagerPortalEndpoint {
 
         res.setResult(result);
         return WS_OBJECT_FACTORY.createExportFormatResponse(res);
+    }
+
+    @PayloadRoot(localPart = "ImportLogRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ImportLogOutputMsgType> importLog(@RequestPayload final JAXBElement<ImportLogInputMsgType> req) {
+        LOGGER.trace("Executing operation importProcess");
+
+        ResultType result = new ResultType();
+        ImportLogInputMsgType payload = req.getValue();
+        ImportLogOutputMsgType res = new ImportLogOutputMsgType();
+
+        try {
+            EditSessionType editSession = payload.getEditSession();
+            Integer folderId = editSession.getFolderId();
+            String username = editSession.getUsername();
+            String logName = editSession.getProcessName();
+            String domain = editSession.getDomain();
+            String creationDate = editSession.getCreationDate();
+            boolean publicModel = editSession.isPublicModel();
+
+            DataHandler handler = payload.getLog();
+
+            LOGGER.info("Importing process: " + logName);
+
+            Log log = logSrv.importLog(username, folderId, logName, handler.getInputStream(), payload.getExtension(),
+                    domain, creationDate, publicModel);
+            LogSummaryType logSummary = uiHelper.buildLogSummary(log);
+
+            ImportLogResultType importResult = new ImportLogResultType();
+            importResult.setLogSummary(logSummary);
+            res.setImportLogResult(importResult);
+
+            result.setCode(0);
+            result.setMessage("");
+        } catch (Exception ex) {
+            LOGGER.error("", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+
+        res.setResult(result);
+        return WS_OBJECT_FACTORY.createImportLogResponse(res);
     }
 
     @PayloadRoot(localPart = "ImportProcessRequest", namespace = NAMESPACE)

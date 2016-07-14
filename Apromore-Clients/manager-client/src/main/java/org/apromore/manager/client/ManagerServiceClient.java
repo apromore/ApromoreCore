@@ -819,6 +819,37 @@ public class ManagerServiceClient implements ManagerService {
         }
     }
 
+    @Override
+    public ImportLogResultType importLog(String username, Integer folderId, String logName, InputStream log, String extension, String domain, String created, boolean makePublic) throws Exception {
+        LOGGER.debug("Preparing ImportLogRequest.....");
+
+        EditSessionType editSession = new EditSessionType();
+        editSession.setUsername(username);
+        editSession.setFolderId(folderId);
+//        editSession.setNativeType(nativeType);
+        editSession.setProcessName(logName);
+//        editSession.setCurrentVersionNumber(versionNumber);
+        editSession.setDomain(domain);
+        editSession.setCreationDate(created);
+//        editSession.setLastUpdate(lastUpdate);
+        editSession.setPublicModel(makePublic);
+
+        ImportLogInputMsgType msg = new ImportLogInputMsgType();
+        msg.setExtension(extension);
+        msg.setLog(new DataHandler(new ByteArrayDataSource(log, "text/xml")));
+        msg.setEditSession(editSession);
+
+        JAXBElement<ImportLogInputMsgType> request = WS_CLIENT_FACTORY.createImportLogRequest(msg);
+        JAXBElement<ImportLogOutputMsgType> response = (JAXBElement<ImportLogOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            return response.getValue().getImportLogResult();
+        }
+    }
+
+
     /**
      * @see ManagerService#importProcess(String, java.lang.Integer, String, String, String, java.io.InputStream, String, String, String, String, boolean, java.util.Set)
      * {@inheritDoc}

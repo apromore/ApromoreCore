@@ -24,9 +24,13 @@
         <menupopup>
             <menuitem id="createProcess" label="Create model" disabled="true" image="/img/new.png"/>
             <menuseparator/>
-            <menuitem id="fileImport" label="Import" disabled="true" image="/img/import.png"/>
+            <menuitem id="fileImport" label="Import Model" disabled="true" image="/img/import.png"/>
             <menuseparator/>
-            <menuitem id="fileExport" label="Export" disabled="true" image="/img/export.png"/>
+            <menuitem id="fileExport" label="Export Model" disabled="true" image="/img/export.png"/>
+            <menuseparator/>
+            <menuitem id="fileImportLog" label="Import Log" disabled="true" image="/img/import.png"/>
+            <menuseparator/>
+            <menuitem id="fileExportLog" label="Export Log" disabled="true" image="/img/export.png"/>
             <menuseparator/>
             <menuitem id="processEdit" label="Edit model" disabled="true" image="/img/edit.png"/>
             <menuseparator/>
