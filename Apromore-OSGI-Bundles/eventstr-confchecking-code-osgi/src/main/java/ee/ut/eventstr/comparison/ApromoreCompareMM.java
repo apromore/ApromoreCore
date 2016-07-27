@@ -29,8 +29,8 @@ public class ApromoreCompareMM {
 	public static void main(String[] args) throws Exception {
 //		String modelName1 = "bpm2014/model77.bpmn";
 //		String modelName2 = "bpm2014/model64.bpmn";
-		String modelName1 = "models/variant1.bpmn";
-		String modelName2 = "models/variant2.bpmn";
+		String modelName1 = "models1/variant1.bpmn";
+		String modelName2 = "models1/variant2.bpmn";
 		
 		ModelAbstractions model1 = new ModelAbstractions(getFileAsArray(modelName1));
 		ModelAbstractions model2 = new ModelAbstractions(getFileAsArray(modelName2));
