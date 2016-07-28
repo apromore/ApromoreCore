@@ -78,8 +78,8 @@ public class ManagerServiceClient implements ManagerService {
      * @param siteManager
      */
     public ManagerServiceClient(String siteHost, int sitePort, String siteManager) throws SOAPException, URISyntaxException {
-        URI uri = new URI("http", null, siteHost, sitePort, siteManager + "/services/manager", null, null);
-        this.webServiceTemplate = createWebServiceTemplate(new URI("http", null, siteHost, sitePort, siteManager + "/services/manager", null, null));
+        URI uri = new URI("http", null, siteHost, sitePort, siteManager + "/services", null, null);
+        this.webServiceTemplate = createWebServiceTemplate(new URI("http", null, siteHost, sitePort, siteManager + "/services", null, null));
     }
 
     public ManagerServiceClient(URI managerEndpointURI) throws SOAPException {
@@ -88,7 +88,7 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @param managerEndpointURI the externally reachable URL of the manager endpoint, e.g. "http://localhost:9000/manager/services/manager"
+     * @param managerEndpointURI the externally reachable URL of the manager endpoint, e.g. "http://localhost:9000/manager/services"
      */
     private static WebServiceTemplate createWebServiceTemplate(URI managerEndpointURI) throws SOAPException {
 

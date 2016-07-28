@@ -45,18 +45,18 @@ import org.apromore.model.UserType;
 public class APQLPlugin extends DefaultPortalPlugin {
 
     private Applet applet;
-    private String managerEndpoint, portalEndpoint, filestoreURL, pqlLogicURL;
+    private String managerEndpoint, portalEndpoint, filestoreURL, pqlLogicEndpoint;
 
     public APQLPlugin(String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String sitePQL) {
 
         String siteBase = "http://" + siteExternalHost + ":" + siteExternalPort + "/";
 
-        managerEndpoint = siteBase + siteManager + "/services/manager";
-        portalEndpoint  = siteBase + sitePortal + "/services/portal";
-        filestoreURL    = siteBase + siteFilestore;
-        pqlLogicURL     = siteBase + sitePQL + "/services/pql";
+        managerEndpoint  = siteBase + siteManager + "/services";
+        portalEndpoint   = siteBase + sitePortal + "/services";
+        filestoreURL     = siteBase + siteFilestore;
+        pqlLogicEndpoint = siteBase + sitePQL + "/services";
 
-        LoggerFactory.getLogger(getClass()).info("Created APQL portal plugin: manager at " + managerEndpoint + ", portal at " + portalEndpoint + ", filestore at " + filestoreURL + ", logic at " + pqlLogicURL);
+        LoggerFactory.getLogger(getClass()).info("Created APQL portal plugin: manager at " + managerEndpoint + ", portal at " + portalEndpoint + ", filestore at " + filestoreURL + ", logic at " + pqlLogicEndpoint);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class APQLPlugin extends DefaultPortalPlugin {
             applet.setParam("manager_endpoint", managerEndpoint);
             applet.setParam("portal_endpoint", portalEndpoint);
             applet.setParam("filestore_url", filestoreURL);
-            applet.setParam("pql_logic_endpoint", pqlLogicURL);
+            applet.setParam("pql_logic_endpoint", pqlLogicEndpoint);
             applet.setParam("user",user.getUsername());
             applet.setParam("idSession",user.getId());
 
