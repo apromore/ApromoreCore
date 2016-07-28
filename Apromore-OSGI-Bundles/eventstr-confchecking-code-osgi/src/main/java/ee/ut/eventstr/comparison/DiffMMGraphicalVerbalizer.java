@@ -358,15 +358,28 @@ public class DiffMMGraphicalVerbalizer {
 
 	private void verbalize(Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2, String context) {
 		BehaviorRelation r1 = pes1.getBRelation(entry1.getKey(), entry2.getKey());
-		BehaviorRelation r2 = pes2.getBRelation(entry1.getValue(), entry2.getValue());
-
 		Integer event1 = entry1.getKey();
 		Integer event1a = entry2.getKey();
 
+		if(r1.equals(BehaviorRelation.INV_CAUSALITY)){
+			r1 = BehaviorRelation.CAUSALITY;
+			Integer event1b = event1;
+			event1 = event1a;
+			event1a = event1b;
+		}
+		
+		BehaviorRelation r2 = pes2.getBRelation(entry1.getValue(), entry2.getValue());
 		Integer event2 = entry1.getValue();
 		Integer event2a = entry2.getValue();
-
-		String statement = getSentence(pes1.getLabel(entry1.getKey()), pes1.getLabel(entry2.getKey()), r1, r2, context);
+		
+		if(r2.equals(BehaviorRelation.INV_CAUSALITY)){
+			r2 = BehaviorRelation.CAUSALITY;
+			Integer event2b = event2;
+			event2 = event2a;
+			event2a = event2b;
+		}
+		
+		String statement = getSentence(pes1.getLabel(event1), pes1.getLabel(event1a), pes2.getLabel(event2), pes2.getLabel(event2a), r1, r2, context);
 
 		Runs runs1;
 		Runs runs2;
@@ -766,8 +779,7 @@ public class DiffMMGraphicalVerbalizer {
 		return runs;
 	}
 
-	private String getSentence(String task1, String task2, BehaviorRelation rel1, BehaviorRelation rel2,
-			String context) {
+	private String getSentence(String task1, String task2, String task3, String task4, BehaviorRelation rel1, BehaviorRelation rel2, String context) {
 		String verbR1 = "";
 
 		if (rel1.equals(BehaviorRelation.CAUSALITY))
@@ -782,16 +794,15 @@ public class DiffMMGraphicalVerbalizer {
 		String verbR2 = "";
 
 		if (rel2.equals(BehaviorRelation.CAUSALITY))
-			verbR2 = String.format("task %s occurs before %s", task1, task2);
+			verbR2 = String.format("task %s occurs before %s", task3, task4);
 		else if (rel2.equals(BehaviorRelation.INV_CAUSALITY))
-			verbR2 = String.format("task %s occurs before %s", task2, task1);
+			verbR2 = String.format("task %s occurs before %s", task4, task3);
 		else if (rel2.equals(BehaviorRelation.CONFLICT))
-			verbR2 = String.format("either task %s occurs or %s", task1, task2);
+			verbR2 = String.format("either task %s occurs or %s", task3, task4);
 		else if (rel2.equals(BehaviorRelation.CONCURRENCY))
-			verbR2 = String.format("tasks %s and %s can occur in parallel", task1, task2);
+			verbR2 = String.format("tasks %s and %s can occur in parallel", task3, task4);
 
-		String statement = String.format(
-				"In model 1, there is a state after %s where %s, whereas in the matching state in model 2, %s.",
+		String statement = String.format("In model 1, there is a state after %s where %s, whereas in the matching state in model 2, %s.",
 				context, verbR1, verbR2);
 		// System.out.println(statement);
 		return statement;
@@ -827,8 +838,7 @@ public class DiffMMGraphicalVerbalizer {
 		statements.add(statement);
 	}
 
-	private String getContext(Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2,
-			BiMap<Integer, Integer> mappings) {
+	private String getContext(Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2, BiMap<Integer, Integer> mappings) {
 		Integer evt1 = entry1.getKey();
 		Integer evt1a = entry2.getKey();
 
