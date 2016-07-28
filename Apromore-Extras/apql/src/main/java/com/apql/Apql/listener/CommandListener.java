@@ -31,6 +31,8 @@ import org.apromore.model.Detail;
 import org.apromore.model.ResultPQL;
 import org.apromore.model.UserType;
 import org.apromore.portal.client.PortalService;
+import org.apromore.service.pql.DatabaseService;
+import org.apromore.service.pql.PQLService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -55,13 +57,17 @@ public class CommandListener implements ActionListener {
     private UserType user;
     private ManagerService manager;
     private PortalService portal;
+    private PQLService pqlService;
+    private DatabaseService databaseService;
     private QueryController queryController=QueryController.getQueryController();
     private ViewController viewController=ViewController.getController();
 
-    public CommandListener(UserType user, ManagerService manager, PortalService portal){
-        this.user    = user;
-        this.manager = manager;
-        this.portal  = portal;
+    public CommandListener(UserType user, ManagerService manager, PortalService portal, PQLService pqlService, DatabaseService databaseService){
+        this.user            = user;
+        this.manager         = manager;
+        this.portal          = portal;
+        this.pqlService      = pqlService;
+        this.databaseService = databaseService;
     }
 
     @Override
@@ -123,7 +129,7 @@ public class CommandListener implements ActionListener {
 
 
                     LinkedList<String> idsNets = new LinkedList<>(queryController.getIdNets());
-                    List<String> results = manager.runAPQLExpression(variables + " " + query, idsNets, user.getId());
+                    List<String> results = pqlService.runAPQLQuery(variables + " " + query, idsNets, user.getId());
                     long endTime=System.currentTimeMillis();
 
                     if (!results.isEmpty() && !results.get(0).matches("[0-9]+[/][a-zA-Z0-9]+[/]([0-9]+([.][0-9]+){1,2})")) {
@@ -139,7 +145,7 @@ public class CommandListener implements ActionListener {
                         errorPane.setText(sb.toString());
                     } else if (!results.isEmpty() && results.get(0).matches("[0-9]+[/][a-zA-Z0-9]+[/]([0-9]+([.][0-9]+){1,2})") || results.isEmpty()) {
                         queryController.getErrorPane().setText("Query successfull in "+(endTime-startTime)+" msec;");
-                        List<Detail> details = manager.getDetails();
+                        List<Detail> details = pqlService.getDetails();
                         System.out.println(details);
                         List<ResultPQL> pqlResults=queryController.buildResults(results);
                         System.err.println("Adding new tab pqlResults=" + pqlResults + " userId=" + user.getId() + " details=" + details + " variables=" + variables + " query=" + query + " text=" +  viewController.getNameQuery().getText());

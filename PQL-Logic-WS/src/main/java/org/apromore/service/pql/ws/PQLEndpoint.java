@@ -144,7 +144,7 @@ public class PQLEndpoint {
     @PayloadRoot(localPart = "DetailRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<DetailOutputMsgType> getDetails(@RequestPayload final JAXBElement<DetailInputMsgType> req) {
-        LOGGER.trace("Executing operation runAPQLExpression");
+        LOGGER.trace("Executing operation getDetails");
 
         DetailInputMsgType input=req.getValue();
         DetailOutputMsgType res = new DetailOutputMsgType();
@@ -152,21 +152,23 @@ public class PQLEndpoint {
         ResultType resultType = new ResultType();
 
         try {
-//            pqlService.indexAllModels();
-//            LOGGER.error("PRIMA RUNAPQL: "+input.getAPQLExpression()+" "+input.getIds()+" "+input.getUserID());
-//            pqlService.indexAllModels();
-//            List<String> results=pqlService.runAPQLQuery(input.getAPQLExpression(),input.getIds(),input.getUserID());
-            throw new Exception("Not implemented");
-/*
-            List<Detail> details=pqlService.getDetails();
+            //List<Detail> details=pqlService.getDetails();
+            //res.getDetail().addAll(details);
 
-            res.getDetail().addAll(details);
-*/
+            // Because org.apromore.model.Detail and org.apromore.service.pql.model.ws.Detail both exists, we have to do this conversion
+            // TODO: Remove PQL classes from org.apromore.model so that there's only one Detail class
+            for (org.apromore.model.Detail detail: pqlService.getDetails()) {
+                Detail d = WS_OBJECT_FACTORY.createDetail();
+                d.getDetail().addAll(detail.getDetail());
+                d.setLabelOne(detail.getLabelOne());
+                d.setSimilarityLabelOne(detail.getSimilarityLabelOne());
+                res.getDetail().add(d);
+            }
 
         } catch (Exception ex) {
-            LOGGER.error("runAPQLExpression", ex);
+            LOGGER.error("Failed to getDetails", ex);
             resultType.setCode(-1);
-            resultType.setMessage(ex.getMessage() + " runAPQLExpression");
+            resultType.setMessage(ex.getMessage() + " getDetails");
         }
 
         return WS_OBJECT_FACTORY.createDetailResponse(res);

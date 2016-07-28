@@ -246,7 +246,7 @@ class Main extends JFrame {
     // -apromore_model and -user can occur in either order, so we've deferred processing them until here
     if (j != -1) {
       cmapper.setModel(new ApromoreProcessModel(
-        new URI("http://localhost:80/manager/services/manager"),  // manager SOAP endpoint
+        new URI("http://localhost:80/manager/services"),  // manager SOAP endpoint
         Integer.valueOf(argv[j+1]),  // process ID
         argv[j+2],                   // branch
         argv[j+3],                   // version number
