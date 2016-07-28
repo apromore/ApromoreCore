@@ -91,6 +91,7 @@
         <!-- PQL-Logic is currently required by Apromore-Manager-WS, so it'll already be started as part of 100-manager.plan
         <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
         -->
+        <include name="PQL-Logic-WS/target/pql-logic-ws-1.1.war"/>
         <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
     </fileset>
 
