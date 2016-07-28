@@ -29,15 +29,16 @@ public class ApromoreCompareMM {
 	public static void main(String[] args) throws Exception {
 //		String modelName1 = "bpm2014/model77.bpmn";
 //		String modelName2 = "bpm2014/model64.bpmn";
-		String modelName1 = "models1/variant1.bpmn";
-		String modelName2 = "models1/variant2.bpmn";
+		String modelName1 = "models1/v3.bpmn";
+		String modelName2 = "models1/v4.bpmn";
 		
 		ModelAbstractions model1 = new ModelAbstractions(getFileAsArray(modelName1));
 		ModelAbstractions model2 = new ModelAbstractions(getFileAsArray(modelName2));
 		
 		ApromoreCompareMM comparator = new ApromoreCompareMM();
-		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, model1.getReader().getTaskLabels(), model2.getReader().getTaskLabels());
+		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, new HashSet<String>(model1.getReader().mapNew2OldLbls.values()), new HashSet<String>(model2.getReader().mapNew2OldLbls.values()));
 		verbalizer.verbalize();
+		
 		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
 		System.out.println(verbalizer.getStatements());
 	}
