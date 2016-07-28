@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -108,7 +109,14 @@ public class ModelAbstractions {
 //		
 //		Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
 
+		HashMap<String, String> newOldLabels = ((BPMNReader)reader).mapNew2OldLbls;
 		this.pes = new PESSemantics<Integer>(unf2pes.getPES());
+		List<String> labelsPES = this.pes.getLabels();
+		for(int i = 0; i < labelsPES.size(); i++){
+			String label = labelsPES.get(i);
+			if(newOldLabels.containsKey(label))
+				labelsPES.set(i, newOldLabels.get(label));
+		}
 		
 		return this.pes;
 	}

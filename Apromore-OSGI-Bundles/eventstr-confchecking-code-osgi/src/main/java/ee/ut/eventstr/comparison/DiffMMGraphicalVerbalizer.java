@@ -240,7 +240,8 @@ public class DiffMMGraphicalVerbalizer {
 		for (String str : obsLabel1)
 			if (!commonLabels.contains(str) && !str.equals("_0_") && !str.equals("_1_")){
 				String statement = verbalizeNotCommon(str, "model 1");
-				Difference diff = new Difference(null, null);
+				Runs runs1 = spotTask(str, replayerBPMN1, loader1, statement);
+				Difference diff = new Difference(runs1, null);
 
 				if (statement != null) {
 					diff.setSentence(statement);
@@ -252,7 +253,8 @@ public class DiffMMGraphicalVerbalizer {
 		for (String str : obsLabel2)
 			if (!commonLabels.contains(str) && !str.equals("_0_") && !str.equals("_1_")){
 				String statement = verbalizeNotCommon(str, "model 2");
-				Difference diff = new Difference(null, null);
+				Runs runs2 = spotTask(str, replayerBPMN2, loader2, statement);
+				Difference diff = new Difference(null, runs2);
 
 				if (statement != null) {
 					diff.setSentence(statement);
@@ -356,15 +358,28 @@ public class DiffMMGraphicalVerbalizer {
 
 	private void verbalize(Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2, String context) {
 		BehaviorRelation r1 = pes1.getBRelation(entry1.getKey(), entry2.getKey());
-		BehaviorRelation r2 = pes2.getBRelation(entry1.getValue(), entry2.getValue());
-
 		Integer event1 = entry1.getKey();
 		Integer event1a = entry2.getKey();
 
+		if(r1.equals(BehaviorRelation.INV_CAUSALITY)){
+			r1 = BehaviorRelation.CAUSALITY;
+			Integer event1b = event1;
+			event1 = event1a;
+			event1a = event1b;
+		}
+		
+		BehaviorRelation r2 = pes2.getBRelation(entry1.getValue(), entry2.getValue());
 		Integer event2 = entry1.getValue();
 		Integer event2a = entry2.getValue();
-
-		String statement = getSentence(pes1.getLabel(entry1.getKey()), pes1.getLabel(entry2.getKey()), r1, r2, context);
+		
+		if(r2.equals(BehaviorRelation.INV_CAUSALITY)){
+			r2 = BehaviorRelation.CAUSALITY;
+			Integer event2b = event2;
+			event2 = event2a;
+			event2a = event2b;
+		}
+		
+		String statement = getSentence(pes1.getLabel(event1), pes1.getLabel(event1a), pes2.getLabel(event2), pes2.getLabel(event2a), r1, r2, context);
 
 		Runs runs1;
 		Runs runs2;
@@ -372,21 +387,17 @@ public class DiffMMGraphicalVerbalizer {
 		if (r1.equals(BehaviorRelation.CAUSALITY)) {
 			runs1 = printDifferenceCausality(event1, event1a, pes1, replayerBPMN1, "m1", net1, loader1, statement);
 		} else if (r1.equals(BehaviorRelation.CONFLICT)) {
-			runs1 = printDifferenceConflictConcurrency(event1, event1a, pes1, replayerBPMN1, "m1", net1, loader1,
-					statement);
+			runs1 = printDifferenceConflict(event1, event1a, pes1, replayerBPMN1, "m1", net1, loader1, statement);
 		} else {
-			runs1 = printDifferenceConflictConcurrency(event1, event1a, pes1, replayerBPMN1, "m1", net1, loader1,
-					statement);
+			runs1 = printDifferenceConcurrency(event1, event1a, pes1, replayerBPMN1, "m1", net1, loader1, statement);
 		}
 
 		if (r2.equals(BehaviorRelation.CAUSALITY)) {
 			runs2 = printDifferenceCausality(event2, event2a, pes2, replayerBPMN2, "m2", net2, loader2, statement);
 		} else if (r2.equals(BehaviorRelation.CONFLICT)) {
-			runs2 = printDifferenceConflictConcurrency(event2, event2a, pes2, replayerBPMN2, "m2", net2, loader2,
-					statement);
+			runs2 = printDifferenceConflict(event2, event2a, pes2, replayerBPMN2, "m2", net2, loader2, statement);
 		} else {
-			runs2 = printDifferenceConflictConcurrency(event2, event2a, pes2, replayerBPMN2, "m2", net2, loader2,
-					statement);
+			runs2 = printDifferenceConcurrency(event2, event2a, pes2, replayerBPMN2, "m2", net2, loader2, statement);
 		}
 
 		Difference diff = new Difference(runs1, runs2);
@@ -407,7 +418,7 @@ public class DiffMMGraphicalVerbalizer {
 		return runs;
 	}
 
-	private Runs printDifferenceConflictConcurrency(Integer event1, Integer event1a, PESSemantics<Integer> pes,
+	private Runs printDifferenceConflict(Integer event1, Integer event1a, PESSemantics<Integer> pes,
 			BPMNReplayer replayerBPMN, String suffix, PetriNet net, BPMNReader loader, String sentence) {
 		Runs runs = new Runs();
 
@@ -419,7 +430,7 @@ public class DiffMMGraphicalVerbalizer {
 		HashMap<String, Integer> repetitions = new HashMap<String, Integer>();
 		HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event1), pes.getPomset(conf1), repetitions, null);
 
-		HashMap<String, Integer> repetitionsPre = new HashMap<String, Integer>();
+//		HashMap<String, Integer> repetitionsPre = new HashMap<String, Integer>();
 //		HashMap<String, String> colorsBPMNPre = replayerBPMN.execute("87668757645756454", pes.getPomset(conf1Minus), repetitionsPre, null);
 //		HashMap<String, String> colorsBPMNFinal = getDifferenceColor(colorsBPMNPre, colorsBPMN, repetitions, repetitionsPre);
 
@@ -441,6 +452,26 @@ public class DiffMMGraphicalVerbalizer {
 //			printModels("m", "2", net, loader, null, newColorsBP, repetitions, repetitions2);
 		
 		runs.addRun(new Run(newColorsBP, repetitions, repetitions2, loader, sentence, pes.getPomset(conf1, conf1a)));
+
+		return runs;
+	}
+	
+	private Runs printDifferenceConcurrency(Integer event1, Integer event1a, PESSemantics<Integer> pes,
+			BPMNReplayer replayerBPMN, String suffix, PetriNet net, BPMNReader loader, String sentence) {
+		Runs runs = new Runs();
+
+		BitSet conf1 = pes.getLocalConfiguration(event1);
+		BitSet conf1a = pes.getLocalConfiguration(event1a);
+		conf1.or(conf1a);
+		
+		HashMap<String, Integer> repetitions = new HashMap<String, Integer>();
+		HashMap<String, String> colorsBPMN = replayerBPMN.executeC(pes.getLabel(event1), pes.getLabel(event1a), pes.getPomset(conf1), repetitions, null);
+		
+//		HashMap<String, Integer> repetitions2 = new HashMap<String, Integer>();
+//		HashMap<String, String> colorsBPMN2 = replayerBPMN.execute(pes.getLabel(event1a), pes.getPomset(conf1a), repetitions2, null);
+//		HashMap<String, String> newColorsBP = unifyColorsBPConflict(colorsBPMN, colorsBPMN2);
+		
+		runs.addRun(new Run(colorsBPMN, repetitions, repetitions, loader, sentence, pes.getPomset(conf1, conf1a)));
 
 		return runs;
 	}
@@ -748,8 +779,7 @@ public class DiffMMGraphicalVerbalizer {
 		return runs;
 	}
 
-	private String getSentence(String task1, String task2, BehaviorRelation rel1, BehaviorRelation rel2,
-			String context) {
+	private String getSentence(String task1, String task2, String task3, String task4, BehaviorRelation rel1, BehaviorRelation rel2, String context) {
 		String verbR1 = "";
 
 		if (rel1.equals(BehaviorRelation.CAUSALITY))
@@ -764,16 +794,15 @@ public class DiffMMGraphicalVerbalizer {
 		String verbR2 = "";
 
 		if (rel2.equals(BehaviorRelation.CAUSALITY))
-			verbR2 = String.format("task %s occurs before %s", task1, task2);
+			verbR2 = String.format("task %s occurs before %s", task3, task4);
 		else if (rel2.equals(BehaviorRelation.INV_CAUSALITY))
-			verbR2 = String.format("task %s occurs before %s", task2, task1);
+			verbR2 = String.format("task %s occurs before %s", task4, task3);
 		else if (rel2.equals(BehaviorRelation.CONFLICT))
-			verbR2 = String.format("either task %s occurs or %s", task1, task2);
+			verbR2 = String.format("either task %s occurs or %s", task3, task4);
 		else if (rel2.equals(BehaviorRelation.CONCURRENCY))
-			verbR2 = String.format("tasks %s and %s can occur in parallel", task1, task2);
+			verbR2 = String.format("tasks %s and %s can occur in parallel", task3, task4);
 
-		String statement = String.format(
-				"In model 1, there is a state after %s where %s, whereas in the matching state in model 2, %s.",
+		String statement = String.format("In model 1, there is a state after %s where %s, whereas in the matching state in model 2, %s.",
 				context, verbR1, verbR2);
 		// System.out.println(statement);
 		return statement;
@@ -809,8 +838,7 @@ public class DiffMMGraphicalVerbalizer {
 		statements.add(statement);
 	}
 
-	private String getContext(Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2,
-			BiMap<Integer, Integer> mappings) {
+	private String getContext(Entry<Integer, Integer> entry1, Entry<Integer, Integer> entry2, BiMap<Integer, Integer> mappings) {
 		Integer evt1 = entry1.getKey();
 		Integer evt1a = entry2.getKey();
 
