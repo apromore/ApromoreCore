@@ -41,11 +41,8 @@ import org.apromore.plugin.deployment.DeploymentPlugin;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.*;
-import org.apromore.service.pql.PQLService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.*;
-import org.apromore.service.pql.DatabaseService;
-import org.apromore.service.pql.PQLService;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,8 +91,6 @@ public class ManagerPortalEndpoint {
     private SecurityService secSrv;
     private WorkspaceService workspaceSrv;
     private UserInterfaceHelper uiHelper;
-    private PQLService pqlService;
-    private DatabaseService dbService;
 
 
     /**
@@ -124,8 +119,8 @@ public class ManagerPortalEndpoint {
             final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
             final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
             final UserService userSrv,
-            final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
-            final PQLService pqlService,  final DatabaseService dbService) {
+            final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper) {
+
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
         this.fragmentSrv = fragmentSrv;
@@ -138,8 +133,6 @@ public class ManagerPortalEndpoint {
         this.secSrv = secSrv;
         this.workspaceSrv = wrkSrv;
         this.uiHelper = uiHelper;
-        this.pqlService = pqlService;
-        this.dbService = dbService;
 
 //        try {
 //            this.clusterService.computeGEDMatrix();
@@ -776,97 +769,6 @@ public class ManagerPortalEndpoint {
         }
         return WS_OBJECT_FACTORY.createReadProcessSummariesResponse(res);
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.manager.service.ManagerPortalPortType#runAPQLExpression(RunAPQLInputMsgType payload )*
-     */
-    @PayloadRoot(localPart = "RunAPQLRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<RunAPQLOutputMsgType> runAPQLExpression(@RequestPayload final JAXBElement<RunAPQLInputMsgType> req) {
-        LOGGER.trace("Executing operation runAPQLExpression");
-
-        RunAPQLInputMsgType input=req.getValue();
-        RunAPQLOutputMsgType res = new RunAPQLOutputMsgType();
-
-        ResultType resultType = new ResultType();
-
-        try {
-//            pqlService.indexAllModels();
-            LOGGER.error("PRIMA RUNAPQL: "+input.getAPQLExpression()+" "+input.getIds()+" "+input.getUserID());
-//            pqlService.indexAllModels();
-            List<String> results=pqlService.runAPQLQuery(input.getAPQLExpression(), input.getIds(), input.getUserID());
-//            List<Detail> details=pqlService.getDetails();
-
-            if(!results.isEmpty() && !results.get(0).matches("([0-9]+[/][a-zA-Z0-9]+[;]?)+[/]([0-9]+([.][0-9]+){1,2})")) {
-                LOGGER.error("PQL results contains errors " + results);
-                resultType.setMessage("ERRORS");
-                resultType.setCode(0);
-
-            }else {
-                LOGGER.error("PQL Results: " + results);
-                resultType.setMessage("RESULTS");
-                resultType.setCode(1);
-            }
-            res.getProcessResult().addAll(results);
-            res.setResult(resultType);
-        } catch (Exception ex) {
-            LOGGER.error("runAPQLExpression", ex);
-            resultType.setCode(-1);
-            resultType.setMessage(ex.getMessage()+" runAPQLExpression");
-        }
-
-        return WS_OBJECT_FACTORY.createRunAPQLResponse(res);
-    }
-
-    @PayloadRoot(localPart = "DBRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<DBOutputMsgType> getProcessesLabels(@RequestPayload final JAXBElement<DBInputMsgType> req) {
-        LOGGER.trace("Executing operation getProcessesLabels");
-
-        DBInputMsgType input=req.getValue();
-        DBOutputMsgType res = new DBOutputMsgType();
-
-        try {
-            List<String> labels=dbService.getLabels(input.getTable(),input.getColumnName());
-            res.getLabels().clear();
-            res.getLabels().addAll(labels);
-        } catch (Exception ex) {
-            LOGGER.error("getProcessesLabels", ex);
-        }
-
-        return WS_OBJECT_FACTORY.createDBResponse(res);
-    }
-
-    @PayloadRoot(localPart = "DetailRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<DetailOutputMsgType> getDetails(@RequestPayload final JAXBElement<DetailInputMsgType> req) {
-        LOGGER.trace("Executing operation runAPQLExpression");
-
-        DetailInputMsgType input=req.getValue();
-        DetailOutputMsgType res = new DetailOutputMsgType();
-
-        ResultType resultType = new ResultType();
-
-        try {
-//            pqlService.indexAllModels();
-//            LOGGER.error("PRIMA RUNAPQL: "+input.getAPQLExpression()+" "+input.getIds()+" "+input.getUserID());
-//            pqlService.indexAllModels();
-//            List<String> results=pqlService.runAPQLQuery(input.getAPQLExpression(),input.getIds(),input.getUserID());
-            List<Detail> details=pqlService.getDetails();
-
-            res.getDetail().addAll(details);
-
-        } catch (Exception ex) {
-            LOGGER.error("runAPQLExpression", ex);
-            resultType.setCode(-1);
-            resultType.setMessage(ex.getMessage() + " runAPQLExpression");
-        }
-
-        return WS_OBJECT_FACTORY.createDetailResponse(res);
-    }
-
 
     @PayloadRoot(localPart = "ReadInstalledPluginsRequest", namespace = NAMESPACE)
     @ResponsePayload

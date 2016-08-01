@@ -53,21 +53,13 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=pql|themis|lucene-analyzers-common|lucene-core|lucene-queries|lucene-queryparser|lucene-sandbox
+                            artifactId=pql
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>pql OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.pql-osgi</Bundle-SymbolicName>
                         <Export-Package>
-                            org.apache.lucene.bkdtree,
-                            org.apache.lucene.codecs,
-                            org.apache.lucene.codecs.idversion,
-                            org.apache.lucene.codecs.lucene50,
-                            org.apache.lucene.codecs.lucene53,
-                            org.apache.lucene.rangetree,
-                            org.apache.lucene.search.similarities,
-                            org.apache.lucene.util,
                             org.jbpt.persist,
                             org.jbpt.petri.persist,
                             org.pql.antlr,
@@ -76,81 +68,12 @@
                             org.pql.core,
                             org.pql.index,
                             org.pql.label,
-                            org.pql.logic,
                             org.pql.mc,
                             org.pql.query
                         </Export-Package>
                         <Import-Package>
-<!--
-                            org.jbpt.automaton,
-                            org.jbpt.graph.abs,
-                            org.jbpt.algo.graph,
-                            org.jbpt.hypergraph.abs,
-                            org.jbpt.petri,
-                            org.jbpt.petri.behavior,
-                            org.jbpt.petri.io,
-                            org.jbpt.petri.querying,
-                            org.jbpt.petri.structure,
-                            org.jbpt.petri.unfolding,
-                            org.jbpt.petri.unfolding.order,
-                            org.jbpt.petri.untangling,
-                            org.jbpt.petri.untangling.pss,
-                            org.jbpt.petri.wftree,
-                            org.jbpt.throwable,
-                            com.mysql.jdbc,
-                            org.themis,
-                            org.themis.ir,
-                            org.themis.ir.etvsm,
-                            org.themis.ir.vsm,
-                            org.themis.pp,
-                            org.themis.util,
-                            org.apache.lucene.codecs,
-                            org.apache.lucene.codecs.lucene50,
-                            org.apache.lucene.search.similarities,
-                            org.apache.lucene.util,
-                            org.antlr.v4.runtime,
-                            org.antlr.v4.runtime.atn,
-                            org.antlr.v4.runtime.dfa,
-                            org.antlr.v4.runtime.misc,
-                            org.antlr.v4.runtime.tree,
-                            org.antlr.v4.runtime.tree.gui,
-                            org.antlr.v4.runtime.tree.pattern,
-                            org.antlr.v4.runtime.tree.xpath,
-                            org.json,
-                            org.slf4j,
-                            org.postgresql,
-                            org.postgresql.copy,
-                            org.postgresql.core,
-                            org.postgresql.core.types,
-                            org.postgresql.core.v2,
-                            org.postgresql.core.v3,
-                            org.postgresql.ds,
-                            org.postgresql.ds.common,
-                            org.postgresql.ds.jdbc4,
-                            org.postgresql.ds.jdbc23,
-                            org.postgresql.fastpath,
-                            org.postgresql.geometric,
-                            org.postgresql.gss,
-                            org.postgresql.jdbc2,
-                            org.postgresql.jdbc2.optional,
-                            org.postgresql.jdbc3,
-                            org.postgresql.jdbc3g,
-                            org.postgresql.jdbc4,
-                            org.postgresql.jdbc4.array,
-                            org.postgresql.largeobject,
-                            org.postgresql.ssl,
-                            org.postgresql.ssl.jdbc4,
-                            org.postgresql.translation,
-                            org.postgresql.util,
-                            org.postgresql.xa,
-                            org.postgresql.xa.jdbc3,
-                            org.postgresql.xa.jdbc4,
-                            org.pql.label,
-                            org.processmining.models.graphbased.directed.petrinet,
--->
                             com.mysql.jdbc,
                             !nl.tue.astar,
-                            !org.apache.regexp,
                             !org.processmining.plugins.InductiveMiner.mining,
                             !org.processmining.plugins.InductiveMiner.plugins,
                             *
@@ -164,28 +87,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-analyzers-common</artifactId>
-            <version>5.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>5.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queries</artifactId>
-            <version>5.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-queryparser</artifactId>
-            <version>5.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-sandbox</artifactId>
+            <groupId>org.apromore</groupId>
+            <artifactId>lucene-osgi</artifactId>
             <version>5.3.0</version>
         </dependency>
         <dependency>
