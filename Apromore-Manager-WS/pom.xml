@@ -105,12 +105,6 @@
                             net.sf.cglib.core,
                             net.sf.cglib.proxy,
                             org.aopalliance.aop,
-                            org.apache.lucene.bkdtree,
-                            org.apache.lucene.codecs,
-                            org.apache.lucene.codecs.idversion,
-                            org.apache.lucene.codecs.lucene50,
-                            org.apache.lucene.codecs.lucene53,
-                            org.apache.lucene.rangetree,
                             org.apromore.annotation,
                             org.apromore.annotation.exception,
                             org.apromore.annotation.provider,
@@ -127,7 +121,6 @@
                             org.apromore.security.exception,
                             org.apromore.service.helper,
                             org.apromore.service.impl,
-                            org.apromore.service.pql,
                             org.apromore.toolbox.clustering,
                             org.apromore.toolbox.clustering.algorithm.dbscan,
                             org.apromore.toolbox.clustering.algorithm.hac,
@@ -139,7 +132,6 @@
                             org.eclipse.persistence.internal.*,
                             org.eclipse.virgo.web.dm,
                             org.jbpt.graph.abs,
-                            org.pql.index,
                             org.springframework.beans.factory,
                             org.springframework.remoting.httpinvoker,
                             org.springframework.orm.jpa,
@@ -194,20 +186,6 @@
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
             <version>1.1</version>
-        </dependency>
-
-        <!-- PQL -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>pql-logic</artifactId>
-            <version>1.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Clients -->

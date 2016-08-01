@@ -80,17 +80,18 @@
 
         <!-- OSGI -->
         <module>Apromore-OSGI-Bundles/antlr4</module>
+        <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
+        <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
+        <module>Apromore-OSGI-Bundles/eventstr-confchecking-code-osgi</module>
         <module>Apromore-OSGI-Bundles/ini4j</module>
-        <module>Apromore-OSGI-Bundles/postgres</module>
         <module>Apromore-OSGI-Bundles/irthemis</module>
         <module>Apromore-OSGI-Bundles/json</module>
         <module>Apromore-OSGI-Bundles/jbpt-petri</module>
-        <module>Apromore-OSGI-Bundles/pql</module>
-        <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
-        <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
-        <module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>
+        <module>Apromore-OSGI-Bundles/lucene-osgi</module>
         <module>Apromore-OSGI-Bundles/pnapi-bpdiff-osgi</module>
-		<module>Apromore-OSGI-Bundles/eventstr-confchecking-code-osgi</module>
+        <module>Apromore-OSGI-Bundles/postgres</module>
+        <module>Apromore-OSGI-Bundles/pql</module>
+        <module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>
 
         <!-- PROM -->
         <module>Apromore-OSGI-Bundles/log-osgi</module>
