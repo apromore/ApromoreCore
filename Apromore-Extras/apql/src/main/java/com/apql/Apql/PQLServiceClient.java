@@ -169,7 +169,7 @@ public class PQLServiceClient implements DatabaseService, PQLService {
     }
 
     /**
-     * @see ManagerService#runAPQLExpression(String, List, String)
+     * @see PQLService#runAPQLQuery(String, List, String)
      * {@inheritDoc}
      */
     @Override

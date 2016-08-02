@@ -25,10 +25,6 @@
            elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0"
            xsi:schemaLocation="http://www.w3.org/2005/05/xmlmime" >
 
-    <!-- APQL -->
-    <xs:element name="TabAPQLRequest" type="tns:TabAPQLInputMsgType"/>
-    <xs:element name="TabAPQLResponse" type="tns:TabAPQLOutputMsgType"/>
-
     <xs:element name="DBRequest" type="tns:DBInputMsgType"/>
     <xs:element name="DBResponse" type="tns:DBOutputMsgType"/>
 
@@ -42,6 +38,10 @@
             <xs:element name="labels" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
+
+    <!--
+    <xs:element name="TabAPQLRequest" type="tns:TabAPQLInputMsgType"/>
+    <xs:element name="TabAPQLResponse" type="tns:TabAPQLOutputMsgType"/>
 
     <xs:complexType name="TabAPQLInputMsgType">
         <xs:sequence>
@@ -60,20 +60,14 @@
         <xs:attribute name="userID" type="xs:string"/>
     </xs:complexType>
 
-    <xs:complexType name="ResultType">
-        <xs:attribute name="message" type="xs:string"/>
-        <xs:attribute name="code" type="xs:int"/>
-    </xs:complexType>
-
-
     <xs:complexType name="ResultPQL">
         <xs:sequence>
             <xs:element name="attributesToShow" type="xs:boolean" minOccurs="0" maxOccurs="8"/>
             <xs:element name="pst" type="tns:ProcessSummaryType"/>
             <xs:element name="vst" type="tns:VersionSummaryType"/>
         </xs:sequence>
-
     </xs:complexType>
+    -->
 
     <xs:complexType name="Detail">
         <xs:sequence>
@@ -176,6 +170,11 @@
             <xs:element name="processResult" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ResultType">
+        <xs:attribute name="message" type="xs:string"/>
+        <xs:attribute name="code" type="xs:int"/>
     </xs:complexType>
 
 </xs:schema>

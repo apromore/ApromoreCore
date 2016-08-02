@@ -78,12 +78,6 @@ public class PQLEndpoint {
         this.dbService = dbService;
     }
 
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.manager.service.ManagerPortalPortType#runAPQLExpression(RunAPQLInputMsgType payload )*
-     */
     @PayloadRoot(localPart = "RunAPQLRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<RunAPQLOutputMsgType> runAPQLExpression(@RequestPayload final JAXBElement<RunAPQLInputMsgType> req) {
