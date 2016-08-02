@@ -660,57 +660,6 @@ public class ManagerServiceClient implements ManagerService {
         return response.getValue().getProcessSummaries();
     }
 
-
-    /**
-     * @see ManagerService#runAPQLExpression(String, List, String)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<String> runAPQLExpression(final String searchExpression, final List<String> ids, final String userID) throws Exception {
-        LOGGER.debug("@@@@@@@@@@@@@@@@@@@Preparing RunAPQLRequest.....");
-
-        RunAPQLInputMsgType msg = new RunAPQLInputMsgType();
-        msg.setAPQLExpression(searchExpression);
-        msg.setUserID(userID);
-        msg.getIds().clear();
-        msg.getIds().addAll(ids);
-
-        JAXBElement<RunAPQLInputMsgType> request = WS_CLIENT_FACTORY.createRunAPQLRequest(msg);
-        LOGGER.debug("@@@@@@@@@@@@@@@@@@@ After Request: ");
-        JAXBElement<RunAPQLOutputMsgType> response = (JAXBElement<RunAPQLOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        LOGGER.debug("@@@@@@@@@@@@@@@@@@@ ManagerServiceClient Response List: "+response.getValue().getProcessResult());
-        RunAPQLOutputMsgType resp = response.getValue();
-
-        if (resp.getResult().getCode().equals(-1)) {
-            throw new Exception(resp.getResult().getMessage());
-        } else {
-            LOGGER.debug("@@@@@@@@@@@@@@@@@@@ ManagerServiceClient Response Error: "+response.getValue().getResult().getCode()+" "+response.getValue().getResult().getMessage());
-//            return response.getValue().getProcessSummaries();
-            return response.getValue().getProcessResult();
-        }
-    }
-
-    @Override
-    public List<String> getProcessesLabels(String table, String columnName) {
-        DBInputMsgType msg = new DBInputMsgType();
-        msg.setColumnName(columnName);
-        msg.setTable(table);
-        JAXBElement<DBInputMsgType> request = WS_CLIENT_FACTORY.createDBRequest(msg);
-        JAXBElement<DBOutputMsgType> response = (JAXBElement<DBOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getLabels();
-    }
-
-    @Override
-    public List<Detail> getDetails() throws Exception{
-        DetailInputMsgType detail = new DetailInputMsgType();
-
-        JAXBElement<DetailInputMsgType> request = WS_CLIENT_FACTORY.createDetailRequest(detail);
-
-        JAXBElement<DetailOutputMsgType> response = (JAXBElement<DetailOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getDetail();
-    }
-
     /**
      * @see ManagerService#searchForSimilarProcesses(int, String, String, Boolean, int, String, double, double, double, double, double, double)
      * {@inheritDoc}
