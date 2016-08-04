@@ -39,6 +39,26 @@ public class BPMNReplayer {
 		return colors;
 	}
 	
+	public HashMap<String, String> executeC(String end1, String end2, Pomset conf, HashMap<String, Integer> repetitions, BiMap<Node, Node> mapping) {
+		HashMap<String, String> exec = execute(end1 + "xyz123", conf, repetitions, mapping);
+		
+		for(String key : exec.keySet()){
+			FlowNode node = getActivity(key);
+			if(node != null && (node.getName().equals(end1) || node.getName().equals(end2)))
+				exec.put(key, "red");
+		}
+			
+		return exec;
+	}
+	
+	private FlowNode getActivity(String key) {
+		for(FlowNode node : model.getActivities())
+			if(node.getId().equals(key))
+				return node;
+		
+		return null;
+	}
+
 	public HashMap<String, String> execute(String end, Pomset conf, HashMap<String, Integer> repetitions, BiMap<Node, Node> mapping) {
 		HashSet<FlowNode> marking = getMarking();
 		HashSet<QueueEntry> visited = new HashSet<QueueEntry>();

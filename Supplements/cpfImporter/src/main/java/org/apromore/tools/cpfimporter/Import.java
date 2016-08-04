@@ -103,7 +103,7 @@ public final class Import {
         out.println("cpfImporter takes a list of the following arguments:\n" +
                     "  <file>                 add a single process model\n" +
                     "  <directory>            recursively add all process models in the directory\n" +
-                    "  -manager <url>         use the specified manager, e.g. http://localhost:9000/manager/services/manager\n" +
+                    "  -manager <url>         use the specified manager, e.g. http://localhost:9000/manager/services\n" +
                     "  -from <directory>      use the specified base directory\n" +
                     "  -to <directory>        use the specified directory as the base folder within Apromore\n" +
                     "  -h, -help, --help, -?  show this message");

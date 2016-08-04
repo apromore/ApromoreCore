@@ -57,7 +57,8 @@ public class APQLApplet extends JApplet {
                     controller.setApplet(APQLApplet.this);
                     try {
                         APQLApplet.this.add(new Main(new URI(APQLApplet.this.getParameter("manager_endpoint")),
-                                                     new URI(APQLApplet.this.getParameter("portal_endpoint"))));
+                                                     new URI(APQLApplet.this.getParameter("portal_endpoint")),
+                                                     new URI(APQLApplet.this.getParameter("pql_logic_endpoint"))));
                         APQLApplet.this.setMinimumSize(new Dimension(1000, 700));
                     } catch (SOAPException | URISyntaxException e) {
                         e.printStackTrace();

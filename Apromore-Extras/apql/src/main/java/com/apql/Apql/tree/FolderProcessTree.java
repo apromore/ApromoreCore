@@ -32,6 +32,7 @@ import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.service.pql.DatabaseService;
 import org.apromore.service.pql.ExternalId;
 
 import javax.swing.*;
@@ -58,7 +59,7 @@ public class FolderProcessTree extends JTree implements DragGestureListener,Drag
     private DragSource source;
     private HashSet<String> sound;
 
-    public FolderProcessTree(ManagerService manager){
+    public FolderProcessTree(ManagerService manager, DatabaseService databaseService){
         source = new DragSource();
         source.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
         this.root=new DraggableNodeFolder("0","Home","Home");
@@ -66,7 +67,7 @@ public class FolderProcessTree extends JTree implements DragGestureListener,Drag
         this.manager= manager;
         this.user=manager.readUserByUsername(controller.getUsername());
         try {
-            sound=new HashSet<>(manager.getProcessesLabels("jbpt_petri_nets","external_id"));
+            sound=new HashSet<>(databaseService.getLabels("jbpt_petri_nets","external_id"));
         }catch(Exception ex){
             ex.printStackTrace();
         }

@@ -27,10 +27,6 @@ import org.apromore.service.*;
 import org.apromore.service.helper.UIHelper;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.impl.*;
-import org.apromore.service.pql.DatabaseService;
-import org.apromore.service.pql.PQLService;
-import org.apromore.service.pql.impl.DatabaseServiceImpl;
-import org.apromore.service.pql.impl.PQLServiceImpl;
 import org.junit.Before;
 
 public abstract class AbstractEndpointUnitTest {
@@ -49,8 +45,6 @@ public abstract class AbstractEndpointUnitTest {
     protected SecurityService secSrv;
     protected WorkspaceService wrkSrv;
     protected UserInterfaceHelper uiHelper;
-    protected PQLService pqlSrv;
-    protected DatabaseService dbSrv;
 
     @Before
     public void setUp() throws Exception {
@@ -66,11 +60,8 @@ public abstract class AbstractEndpointUnitTest {
         secSrv = createMock(SecurityServiceImpl.class);
         wrkSrv = createMock(WorkspaceServiceImpl.class);
         uiHelper = createMock(UIHelper.class);
-        pqlSrv = createMock(PQLServiceImpl.class);
-        dbSrv = createMock(DatabaseServiceImpl.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
-                clusterService, frmSrv, domSrv, userSrv, secSrv, wrkSrv, uiHelper,
-                pqlSrv, dbSrv);
+                clusterService, frmSrv, domSrv, userSrv, secSrv, wrkSrv, uiHelper);
     }
 }
