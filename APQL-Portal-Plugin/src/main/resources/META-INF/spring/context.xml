@@ -43,6 +43,7 @@
         <beans:constructor-arg type="String" value="${site.filestore}"/>
         <beans:constructor-arg type="String" value="${site.manager}"/>
         <beans:constructor-arg type="String" value="${site.portal}"/>
+        <beans:constructor-arg type="String" value="${site.pql}"/>
     </beans:bean>
 
     <!-- Expose the component as an OSGi service -->

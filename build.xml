@@ -88,9 +88,8 @@
 
         <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
         
-        <!-- PQL-Logic is currently required by Apromore-Manager-WS, so it'll already be started as part of 100-manager.plan
         <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
-        -->
+        <include name="PQL-Logic-WS/target/pql-logic-ws-1.1.war"/>
         <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
     </fileset>
 
@@ -226,6 +225,10 @@
                 <include name="**/target/eventstr-confchecking-osgi-1.0.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+
+                <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
+                <include name="**/target/json-osgi-20090211.jar"/>
+                -->
             </fileset>
 
             <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->

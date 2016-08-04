@@ -56,7 +56,8 @@ public class CompareServiceImpl implements CompareService {
     @Override
     public Differences discoverModelModelAbs(ModelAbstractions model1, ModelAbstractions model2, HashSet<String> silent1, HashSet<String> silent2) throws Exception{
         ApromoreCompareMM comparator = new ApromoreCompareMM();
-        DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, model1.getReader().getTaskLabels(), model2.getReader().getTaskLabels());
+        DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, new HashSet<String>(model1.getReader().mapNew2OldLbls.values()), new HashSet<String>(model2.getReader().mapNew2OldLbls.values()));
+        // model1.getReader().getTaskLabels(), model2.getReader().getTaskLabels());
         verbalizer.verbalize();
         return verbalizer.getDifferences();
 //        return comparator.getDifferences(model1, net2, silent1, silent2);
