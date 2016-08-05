@@ -97,8 +97,11 @@
                             org.pql-osgi;version="[1.0,2)"
                         </Import-Bundle>
                         <Import-Package>
-                            org.eclipse.virgo.web.dm,
                             org.aopalliance.aop,
+                            org.apache.lucene.codecs,
+                            org.apache.lucene.codecs.lucene50,
+                            org.apache.lucene.codecs.lucene53,
+                            org.eclipse.virgo.web.dm,
                             org.springframework.aop,
                             org.springframework.aop.framework,
                             org.apache.tools.ant.types,
