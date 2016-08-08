@@ -284,7 +284,7 @@ public class ProcessServiceImpl implements ProcessService {
         for (ProcessPlugin processPlugin: processPlugins) {
             LOGGER.info("Notifying process plugin " + processPlugin);
             try {
-                int id = pmv.getId();
+                int id = pmv.getProcessBranch().getProcess().getId();
                 String branch = pmv.getProcessBranch().getBranchName();
                 Version version = new Version(pmv.getVersionNumber());
                 processPlugin.processChanged(id, branch, version);
