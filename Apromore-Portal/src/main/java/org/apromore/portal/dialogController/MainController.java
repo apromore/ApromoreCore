@@ -31,9 +31,13 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.custom.gui.plugin.ProcessTabItemExecutor;
 import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
+import org.apromore.portal.custom.gui.tab.TabItemExecutor;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.custom.gui.tab.impl.PortalTabImpl;
+import org.apromore.portal.custom.gui.tab.impl.TabItem;
+import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
@@ -807,8 +811,64 @@ public class MainController extends BaseController implements MainControllerInte
 
     public void addResult(List<ResultPQL> results, String userID, List<Detail> details, String query, String nameQuery) {
         TabQuery newTab = new TabQuery(nameQuery, userID, details, query, results, portalContext);
-        SessionTab.getSessionTab(portalContext).addTabToSession(userID, newTab);
+/*
+        String tabName = "APQL query";
+        String tabRowImage = "img/icon/bpmn-22x22.png";
+
+        List<TabRowValue> rows = new ArrayList<>();
+        for(ResultPQL resultPQL : results) {
+            TabRowValue row = new TabRowValue();
+            row.add("name");
+            row.add("id");
+            row.add("lang");
+            row.add("dom");
+            row.add("rank");
+            row.add("version");
+            row.add("own");
+            rows.add(row);
+        }
+
+        List<Listheader> listheaders = new ArrayList<>();
+        addListheader(listheaders, "Name",              null);
+        addListheader(listheaders, "Id",                "3em");
+        addListheader(listheaders, "Original language", "10em");
+        addListheader(listheaders, "Domain",            "5em");
+        addListheader(listheaders, "Ranking",           "6em");
+        addListheader(listheaders, "Latest version",    "9em");
+        addListheader(listheaders, "Owner",             "5em");
+
+        TabItemExecutor tabItemExecutor = new ProcessTabItemExecutor(portalContext.getMainController());
+
+        portalContext.setUser(
+        PortalTabImpl newTab = new PortalTabImpl(tabName, tabRowImage, rows, listheaders, tabItemExecutor, portalContext);
+*/
+        SessionTab.getSessionTab(portalContext).addTabToSession(userID, newTab, true);
+        updateTabs(userID);
     }
+
+/*
+    private void addListheader(final List<Listheader> listheaders, String name, String width) {
+        final Listheader listheader = new Listheader(name, null, width);
+
+        listheader.setSortAscending(new java.util.Comparator<TabItem>() {
+            int position = listheaders.size();
+            @Override
+            public int compare(TabItem o1, TabItem o2) {
+                return o1.getValue(position).compareTo(o2.getValue(position));
+            }
+        });
+
+        listheader.setSortDescending(new java.util.Comparator<TabItem>() {
+            int position = listheaders.size();
+            @Override
+            public int compare(TabItem o1, TabItem o2) {
+                return o2.getValue(position).compareTo(o1.getValue(position));
+            }
+        });
+
+        listheaders.add(listheader);
+    }
+*/
 
     private void updateTabs(String userId){
         Window mainW = (Window) this.getFellow("mainW");
@@ -824,8 +884,8 @@ public class MainController extends BaseController implements MainControllerInte
                 try {
                     if(!tabbox.getTabs().getChildren().contains(tab)) {
                         PortalTab portalTab = (PortalTab) tab.clone();
-                        SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userId, tab);
-                        SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, (org.zkoss.zul.Tab) portalTab);
+                        SessionTab.getSessionTab(portalContext).removeTabFromSession(userId, tab, false);
+                        SessionTab.getSessionTab(portalContext).addTabToSession(userId, (org.zkoss.zul.Tab) portalTab, false);
 
                         portalTab.getTab().setParent(tabbox.getTabs());
                         if (portalTab.getTabpanel() == null) {

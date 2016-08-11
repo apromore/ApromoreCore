@@ -250,6 +250,7 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
 
     private void indexProcess(ExternalId externalId) {
         //LOGGER.info("Indexing queued process " + externalId);
+        IPQLAPI api = pqlBean.getApi();
         try {
             Set<RequestParameterType<?>> requestProperties = new HashSet<>();
             requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTransition",true));
@@ -260,12 +261,25 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
                 PNML_NATIVE_TYPE, null, false, requestProperties);
 
             byte[] bytes = IOUtils.toByteArray(exportResult.getNative().getInputStream());
-            IPQLAPI api = pqlBean.getApi();
             int internalId = api.storeModel(bytes, externalId.toString());
             LOGGER.info("Stored " + (api.checkModel(internalId) ? "sound" : "unsound") + " process " + externalId + " for PQL indexing as id " + internalId);
 
         } catch (ExportFormatException | IOException | SQLException e) {
             LOGGER.warn("Unable to index " + externalId + " for PQL indexing", e);
+
+            // This is USUALLY because the model has been deleted.  In other cases, it's still relatively safe to just delete the associated index.
+            try {
+                LOGGER.info("Removing model with external ID " + externalId + " from PQL index");
+                int internalId = api.getInternalID(externalId.toString());
+                if(!api.deleteModel(internalId)) {
+                    LOGGER.error("Failed to remove model with external ID " + externalId + " from PQL index");
+                } else {
+                    LOGGER.error("Removed model with external ID " + externalId + " and internal ID " + internalId + " from PQL index");
+                }
+
+            } catch (SQLException e2) {
+                LOGGER.error("Exception while removing model " + externalId + " from PQL index", e2);
+            }
         }
     }
 }
