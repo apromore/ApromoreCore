@@ -31,16 +31,9 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
-import org.apromore.portal.custom.gui.plugin.ProcessTabItemExecutor;
-import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
-import org.apromore.portal.custom.gui.tab.TabItemExecutor;
 import org.apromore.portal.custom.gui.tab.PortalTab;
-import org.apromore.portal.custom.gui.tab.impl.PortalTabImpl;
-import org.apromore.portal.custom.gui.tab.impl.TabItem;
-import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
 import org.apromore.portal.exception.ExceptionAllUsers;
@@ -84,7 +77,6 @@ public class MainController extends BaseController implements MainControllerInte
     private ShortMessageController shortmessageC;
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
-    private BaseFilterController baseFilterController;
 
     private NavigationController navigation;
 
@@ -699,14 +691,12 @@ public class MainController extends BaseController implements MainControllerInte
     private void deattachDynamicUI() {
         this.getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
         this.getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
-        this.getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
     }
 
     /* Attaches the the listbox, detail and filter view */
     private void reattachDynamicUI() {
         this.getFellow("baseListbox").getFellow("tablecomp").appendChild(baseListboxController);
         this.getFellow("baseDetail").getFellow("detailcomp").appendChild(baseDetailController);
-        this.getFellow("baseFilter").getFellow("filtercomp").appendChild(baseFilterController);
     }
 
     /* Switches all dynamic UI elements to the ProcessSummaryView. Affects the listbox, detail and filter view */
@@ -722,7 +712,6 @@ public class MainController extends BaseController implements MainControllerInte
         // Otherwise create new Listbox
         this.baseListboxController = new ProcessListboxController(this);
         this.baseDetailController = new ProcessVersionDetailController(this);
-        this.baseFilterController = new BaseFilterController(this);
 
         reattachDynamicUI();
         reloadProcessSummaries();
@@ -740,9 +729,8 @@ public class MainController extends BaseController implements MainControllerInte
 
         // Otherwise create new Listbox
         this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
-        this.baseFilterController = new SimilarityClustersFilterController(this);
         this.baseListboxController = new SimilarityClustersListboxController(this,
-                (SimilarityClustersFilterController) this.baseFilterController,
+                null,
                 (SimilarityClustersFragmentsListboxController) this.baseDetailController);
 
         reattachDynamicUI();
