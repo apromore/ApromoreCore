@@ -72,7 +72,7 @@ public abstract class AbstractPortalTab extends Tab implements PortalTab {
 
     @Override
     public void remove(){
-        SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userID, this);
+        SessionTab.getSessionTab(portalContext).removeTabFromSession(userID, this, false);
     }
 
     public boolean isNew() {
