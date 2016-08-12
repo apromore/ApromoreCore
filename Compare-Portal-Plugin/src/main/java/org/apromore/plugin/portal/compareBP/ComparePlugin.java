@@ -83,6 +83,9 @@ public class ComparePlugin extends DefaultPortalPlugin {
     private final CanoniserService canoniserService;
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
 
+    private String label = "Compare";
+    private String groupLabel = "Analyze";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ComparePlugin.class.getCanonicalName());
 
     @Inject
@@ -94,11 +97,20 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Compare";
+        return label;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
     public String getGroupLabel(Locale locale) {
-        return "Analysis";
+        return groupLabel;
+    }
+
+    public void setGroupLabel(String groupLabel) {
+        this.groupLabel = groupLabel;
     }
 
     public PetriNet getNet(ProcessSummaryType process, VersionSummaryType vst, PortalContext context, HashSet<String> labels) throws Exception{

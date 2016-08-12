@@ -276,6 +276,7 @@
                 <include name="**/target/*.jar"/>
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>
+                <exclude name="sample/target/*.jar"/>
             </fileset>
             <!--
             <fileset dir="${dir-editor-plugins}">

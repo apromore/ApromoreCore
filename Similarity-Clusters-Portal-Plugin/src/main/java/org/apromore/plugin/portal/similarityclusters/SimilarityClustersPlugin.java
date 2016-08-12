@@ -51,7 +51,7 @@ public class SimilarityClustersPlugin extends PluginCustomGui {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Analysis";
+        return "Analyze";
     }
 
     @Override

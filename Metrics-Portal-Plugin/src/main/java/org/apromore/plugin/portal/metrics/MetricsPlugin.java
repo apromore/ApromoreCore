@@ -83,7 +83,7 @@ public class MetricsPlugin extends PluginCustomGui {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Analysis";
+        return "Analyze";
     }
 
     @Override
