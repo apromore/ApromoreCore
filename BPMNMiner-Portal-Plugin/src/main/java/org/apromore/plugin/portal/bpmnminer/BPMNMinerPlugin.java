@@ -71,7 +71,7 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Log";
+        return "Discover";
     }
 
     @Override

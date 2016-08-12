@@ -92,7 +92,7 @@ public class CmapperPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Design";
+        return "Redesign";
     }
 
 /*

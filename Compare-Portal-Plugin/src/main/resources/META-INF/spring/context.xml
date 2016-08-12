@@ -41,7 +41,13 @@
     <reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
     <reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
 
+    <beans:bean id="plugin2" class="org.apromore.plugin.portal.compareBP.ComparePlugin">
+        <beans:property name="groupLabel" value="Monitor" />
+        <beans:property name="label" value="Compare" />
+    </beans:bean>
+
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.compareBP" />
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+    <service ref="plugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
 </beans:beans>

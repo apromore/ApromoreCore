@@ -91,7 +91,7 @@ public class QuaestioPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Design";
+        return "Redesign";
     }
 
 /*
