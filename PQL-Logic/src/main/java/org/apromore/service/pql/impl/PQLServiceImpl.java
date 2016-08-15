@@ -217,6 +217,28 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
 
     /** {@inheritDoc} */
     public void bindToProcessService() {
+        LOGGER.info("Binding to process service " + processService);
+        IPQLAPI api = pqlBean.getApi();
+        for (ProcessModelVersion pmv: processModelVersionRepository.findAll()) {
+            int        processId  = pmv.getProcessBranch().getProcess().getId();
+            String     branch     = pmv.getProcessBranch().getBranchName();
+            Version    version    = new Version(pmv.getVersionNumber());
+            ExternalId externalId = new ExternalId(processId, branch, version);
+
+            try {
+                int        internalId = api.getInternalID(externalId.toString());
+
+                // If the external ID doesn't occur in the PQL index, queue it to be asynchronously indexed
+                if (internalId == 0) {
+                    LOGGER.info("PQL index needs to be initialized for process with external ID " + externalId + " in process service " + processService);
+                    queue.add(externalId);
+                } else {
+                    LOGGER.info("PQL index " + internalId + " already present for process with external ID " + externalId + " in process service " + processService);
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Unable to look up process with external ID " + externalId + " in the PQL index", e);
+            }
+        }
         LOGGER.info("Bound to process service " + processService);
     }
 
