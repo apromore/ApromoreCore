@@ -226,14 +226,19 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
             ExternalId externalId = new ExternalId(processId, branch, version);
 
             try {
-                int        internalId = api.getInternalID(externalId.toString());
+                int internalId = api.getInternalID(externalId.toString());
+                IndexStatus status = (internalId == 0) ? IndexStatus.UNINDEXED : api.getIndexStatus(internalId);
 
                 // If the external ID doesn't occur in the PQL index, queue it to be asynchronously indexed
-                if (internalId == 0) {
-                    LOGGER.info("PQL index needs to be initialized for process with external ID " + externalId + " in process service " + processService);
+                switch (status) {
+                case UNINDEXED:
+                    LOGGER.info("PQL index needs to be initialized for process with external ID " + externalId);
                     queue.add(externalId);
-                } else {
-                    LOGGER.info("PQL index " + internalId + " already present for process with external ID " + externalId + " in process service " + processService);
+                    break;
+                case INDEXING:    LOGGER.info("PQL index " + internalId + " already being indexed for process with external ID " + externalId);           break;
+                case INDEXED:     LOGGER.info("PQL index " + internalId + " already present for process with external ID " + externalId);                 break;
+                case CANNOTINDEX: LOGGER.info("PQL index " + internalId + " couldn't previously be indexed for process with external ID " + externalId);  break;
+                default:          LOGGER.warn("PQL index " + internalId + " for process with external ID " + externalId + " has unknown status " + status);
                 }
             } catch (SQLException e) {
                 LOGGER.error("Unable to look up process with external ID " + externalId + " in the PQL index", e);
