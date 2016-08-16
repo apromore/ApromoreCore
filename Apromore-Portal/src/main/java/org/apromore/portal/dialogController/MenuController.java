@@ -36,6 +36,8 @@ import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.portal.util.ExplicitComparator;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -117,9 +119,13 @@ public class MenuController extends Menubar {
             }
         });
 
-        // If there are portal plugins, create thes menus for launching them
+        // If there are portal plugins, create the menus for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {
-            Map<String, Menu> menuMap = new HashMap<>();
+            
+            // If present, this comparator expresses the preferred ordering for menus along the the menu bar
+            Comparator<String> ordering = (ExplicitComparator) SpringUtil.getBean("portalMenuOrder");
+
+            SortedMap<String, Menu> menuMap = new TreeMap<>(ordering);
             for (final PortalPlugin plugin: PortalPluginResolver.resolve()) {
                 String menuName = plugin.getGroupLabel(Locale.getDefault());
 
@@ -128,10 +134,10 @@ public class MenuController extends Menubar {
                     Menu menu = new Menu(menuName);
                     menu.appendChild(new Menupopup());
                     menuMap.put(menuName, menu);
-                    menuB.appendChild(menu);
                 }
                 assert menuMap.containsKey(menuName);
 
+                // Add the menu item to the menu
                 Menu menu = menuMap.get(menuName);
                 Menuitem menuitem = new Menuitem();
                 menuitem.setImage("img/icon/bpmn-22x22.png");
@@ -144,6 +150,9 @@ public class MenuController extends Menubar {
                     }
                 });
             }
+
+            // Add the menus to the menu bar
+            for (final Menu menu: menuMap.values()) { menuB.appendChild(menu); }
         }
     }
 
