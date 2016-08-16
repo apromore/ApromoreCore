@@ -46,11 +46,11 @@ public class TableProcess extends JPanel implements Observer, Serializable {
     private int mode=0;
     private int lastMode=-1;
     private boolean selectRow=true;
-    private SpringLayout layout;
+    private BorderLayout layout;
 
     public TableProcess(){
         super();
-        layout = new SpringLayout();
+        layout = new BorderLayout();
         setLayout(layout);
         setBackground(Color.WHITE);
         rows=new LinkedList<>();
@@ -59,7 +59,7 @@ public class TableProcess extends JPanel implements Observer, Serializable {
 
     public TableProcess(boolean selectRow){
         super();
-        layout = new SpringLayout();
+        layout = new BorderLayout();
         setLayout(layout);
         setBackground(Color.WHITE);
         rows=new LinkedList<>();
@@ -82,11 +82,8 @@ public class TableProcess extends JPanel implements Observer, Serializable {
         scrollRows.setVisible(false);
         scrollHeader=new JScrollPane(panelHeader);
 
-        this.add(scrollHeader);
-        this.add(scrollRows);
-
-        layout.putConstraint(SpringLayout.NORTH,scrollHeader,0,SpringLayout.NORTH,this);
-        layout.putConstraint(SpringLayout.NORTH,scrollRows,0,SpringLayout.SOUTH,scrollHeader);
+        this.add(scrollHeader, BorderLayout.NORTH);
+        this.add(scrollRows, BorderLayout.CENTER);
 
         this.revalidate();
         this.repaint();
@@ -115,26 +112,20 @@ public class TableProcess extends JPanel implements Observer, Serializable {
         panelRows.setLayout(new GridLayout(dnp.getVersions().size(),1));
         TableRow row;
         boolean whiteBackground=true;
-        if(dnp!=null)
+        if(dnp!=null) {
             for (VersionSummaryType vst : dnp.getVersions()) {
-                if (whiteBackground) {
-                    System.out.println("WHITE");
-                    row = new TableRow(this, widthHeader, heightHeader, Color.white.brighter(), dnp.getPathNode(), dnp.getId(), vst.getName(), vst.getVersionNumber(), vst.getLastUpdate());
-                    whiteBackground = false;
-                } else {
-                    System.out.println("BLACK");
-                    row = new TableRow(this, widthHeader, heightHeader, Color.lightGray, dnp.getPathNode(), dnp.getId(), vst.getName(), vst.getVersionNumber(), vst.getLastUpdate());
-                    whiteBackground = true;
-                }
+                Color backgroundColor = whiteBackground ? Color.white.brighter() : Color.lightGray;
+                System.out.println(whiteBackground ? "WHITE" : "BLACK");
+                whiteBackground = !whiteBackground;
+                row = new TableRow(this, widthHeader, heightHeader, backgroundColor, dnp.getPathNode(), dnp.getId(), vst.getName(), vst.getVersionNumber(), vst.getLastUpdate());
                 this.rows.add(row);
                 panelRows.add(row);
             }
+        }
         this.remove(scrollRows);
         scrollRows = new JScrollPane(panelRows);
 
-        this.add(scrollRows);
-
-        layout.putConstraint(SpringLayout.NORTH,scrollRows,0,SpringLayout.SOUTH,scrollHeader);
+        this.add(scrollRows, BorderLayout.CENTER);
 
         this.revalidate();
         this.repaint();
@@ -156,13 +147,9 @@ public class TableProcess extends JPanel implements Observer, Serializable {
             }
             System.out.println("DRAGGABLE: "+dnp+" "+idNets);
             st=new StringTokenizer(id,"/");
-            if(whiteBackground){
-                row=new TableRow(this,widthHeader,heightHeader,Color.white.brighter(),dnp.getPathNode(),null,dnp.getName(),st.nextToken(),dnp.getOriginalLanguage(),st.nextToken(),st.nextToken());
-                whiteBackground=false;
-            }else{
-                row=new TableRow(this,widthHeader,heightHeader,Color.lightGray,dnp.getPathNode(),null,dnp.getName(),st.nextToken(),dnp.getOriginalLanguage(),st.nextToken(),st.nextToken());
-                whiteBackground=true;
-            }
+            Color backgroundColor = whiteBackground ? Color.white.brighter() : Color.lightGray;
+            whiteBackground = !whiteBackground;
+            row=new TableRow(this,widthHeader,heightHeader,backgroundColor,dnp.getPathNode(),null,dnp.getName(),st.nextToken(),dnp.getOriginalLanguage(),st.nextToken(),st.nextToken());
             this.rows.add(row);
             panelRows.add(row);
         }
@@ -202,55 +189,24 @@ public class TableProcess extends JPanel implements Observer, Serializable {
             lastMode=column;
             this.mode = column;
             Collections.sort(rows);
-
-            for (TableRow tr : rows) {
-                if (white) {
-                    tr.setBackground(Color.WHITE);
-                    for(JLabel label : tr.getLabelsRow()){
-                        label.setBackground(Color.WHITE);
-                        label.revalidate();
-                        label.repaint();
-                    }
-                    white = false;
-                } else {
-                    tr.setBackground(Color.LIGHT_GRAY);
-                    for(JLabel label : tr.getLabelsRow()){
-                        label.setBackground(Color.LIGHT_GRAY);
-                        label.revalidate();
-                        label.repaint();
-                    }
-                    white = true;
-                }
-                tr.revalidate();
-                tr.repaint();
-                panelRows.add(tr);
-            }
-
-        }else{
+        } else {
             Collections.reverse(rows);
-            for (TableRow tr : rows) {
-                if (white) {
-                    tr.setBackground(Color.WHITE);
-                    for(JLabel label : tr.getLabelsRow()){
-                        label.setBackground(Color.WHITE);
-                        label.revalidate();
-                        label.repaint();
-                    }
-                    white = false;
-                } else {
-                    tr.setBackground(Color.LIGHT_GRAY);
-                    for(JLabel label : tr.getLabelsRow()){
-                        label.setBackground(Color.LIGHT_GRAY);
-                        label.revalidate();
-                        label.repaint();
-                    }
-                    white = true;
-                }
-                tr.revalidate();
-                tr.repaint();
-                panelRows.add(tr);
-            }
         }
+
+        for (TableRow tr : rows) {
+            Color background = white ? Color.WHITE : Color.LIGHT_GRAY;
+            white = !white;
+            tr.setBackground(background);
+            for(JLabel label : tr.getLabelsRow()){
+                label.setBackground(background);
+                label.revalidate();
+                label.repaint();
+            }
+            tr.revalidate();
+            tr.repaint();
+            panelRows.add(tr);
+        }
+
         scrollRows = new JScrollPane(panelRows);
         this.add(scrollRows, BorderLayout.CENTER);
         scrollRows.setVisible(true);
