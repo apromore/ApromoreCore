@@ -47,6 +47,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -178,21 +180,27 @@ public class CommandListener implements ActionListener {
                 window.setVisible(true);
             }else if(button.getText().equals(ViewController.EXPAND)){
                 System.out.println("ELSE expand EC");
-                String query=queryController.getTextPane().getText();
-                StringBuilder locations=new StringBuilder();
-                ButtonAction.CTRLBack.setExpand(true);
-                for(String str : ButtonAction.CTRLBack.getLocationInQuery()){
-                    locations.append("\""+str+"\", ");
+                HashSet<String> locationInQuery = ButtonAction.CTRLBack.getLocationInQuery();
+                if (locationInQuery != null) {
+                    String query=queryController.getTextPane().getText();
+                    StringBuilder locations=new StringBuilder();
+                    ButtonAction.CTRLBack.setExpand(true);
+                    for(String str : ButtonAction.CTRLBack.getLocationInQuery()){
+                        locations.append("\""+str+"\", ");
+                    }
+                    locations.delete(locations.length()-2,locations.length()-1);
+                    Highlight.getHighlight().highlight(queryController.getBeforeLoc()+" "+locations.toString()+" "+queryController.getAfterLoc());
                 }
-                locations.delete(locations.length()-2,locations.length()-1);
-                Highlight.getHighlight().highlight(queryController.getBeforeLoc()+" "+locations.toString()+" "+queryController.getAfterLoc());
             }else if(button.getText().equals(ViewController.COLLAPSE)){
-                String query=queryController.getTextPane().getText();
-                System.out.println("IF expand EC");
-                ButtonAction.CTRLBack.setExpand(false);
-                ButtonAction.CTRLBack.setQuery(query);
-                ButtonAction.CTRLBack.setLocationInQuery(queryController.keepLocationInQuery());
-                Highlight.getHighlight().highlight(queryController.getBeforeLoc()+" + "+queryController.getAfterLoc());
+                System.out.println("IF collapse EC");
+                HashSet<String> locationInQuery = queryController.keepLocationInQuery();
+                if (!Collections.singleton("+").equals(locationInQuery)) {
+                    String query=queryController.getTextPane().getText();
+                    ButtonAction.CTRLBack.setQuery(query);
+                    ButtonAction.CTRLBack.setLocationInQuery(locationInQuery);
+                    ButtonAction.CTRLBack.setExpand(false);
+                    Highlight.getHighlight().highlight(queryController.getBeforeLoc()+" + "+queryController.getAfterLoc());
+                }
             }
         }else if(e.getSource() instanceof JMenuItem){
             menuItem = ((JMenuItem) e.getSource());
