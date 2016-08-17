@@ -44,7 +44,7 @@ public class ButtonAction {
 //        private char u2026=20D;
 
         public CTRLBack(){
-            super("expandCollpase");
+            super("expandCollapse");
         }
 
         public void actionPerformed(ActionEvent e) {
