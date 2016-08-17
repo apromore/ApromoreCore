@@ -42,7 +42,7 @@ public final class Keywords {
     public static final String IS = "IS";
     public static final String OF = "OF";
     public static final String EQUALS = "EQUALS";
-    public static final String OVERLAPSE = "OVERLAPS";
+    public static final String OVERLAPS = "OVERLAPS";
     public static final String TRUE = "TRUE";
     public static final String FALSE = "FALSE";
     public static final String UNKNOWN = "UNKNOWN";
@@ -101,7 +101,7 @@ public final class Keywords {
             tmp.add(Keywords.OF);
             tmp.add(Keywords.EQUALS);
             tmp.add(Keywords.NOT);
-            tmp.add(Keywords.OVERLAPSE);
+            tmp.add(Keywords.OVERLAPS);
             tmp.add(Keywords.TRUE);
             tmp.add(Keywords.FALSE);
             tmp.add(Keywords.UNKNOWN);
@@ -110,6 +110,14 @@ public final class Keywords {
             tmp.add(Keywords.SUBSET);
             tmp.add(Keywords.PROPER);
             tmp.add(Keywords.GET_TASKS);
+            tmp.add(Keywords.GET_TASKS + Keywords.ALWAYS_OCCURS);
+            tmp.add(Keywords.GET_TASKS + Keywords.CAN_OCCUR);
+            tmp.add(Keywords.GET_TASKS + Keywords.CAN_CONFLICT);
+            tmp.add(Keywords.GET_TASKS + Keywords.CAN_COOCCUR);
+            tmp.add(Keywords.GET_TASKS + Keywords.CONFLICT);
+            tmp.add(Keywords.GET_TASKS + Keywords.COOCCUR);
+            tmp.add(Keywords.GET_TASKS + Keywords.TOTAL_CAUSAL);
+            tmp.add(Keywords.GET_TASKS + Keywords.TOTAL_CONCURRENT);
             tmp.add(Keywords.ALWAYS_OCCURS);
             tmp.add(Keywords.CAN_CONFLICT);
             tmp.add(Keywords.CAN_COOCCUR);
@@ -145,7 +153,7 @@ public final class Keywords {
             tmp.add(Keywords.OF);
             tmp.add(Keywords.EQUALS);
             tmp.add(Keywords.NOT);
-            tmp.add(Keywords.OVERLAPSE);
+            tmp.add(Keywords.OVERLAPS);
             tmp.add(Keywords.TRUE);
             tmp.add(Keywords.FALSE);
             tmp.add(Keywords.UNKNOWN);
@@ -154,6 +162,14 @@ public final class Keywords {
             tmp.add(Keywords.SUBSET);
             tmp.add(Keywords.PROPER);
             tmp.add(Keywords.GET_TASKS);
+            tmp.add(Keywords.GET_TASKS + Keywords.ALWAYS_OCCURS);
+            tmp.add(Keywords.GET_TASKS + Keywords.CAN_OCCUR);
+            tmp.add(Keywords.GET_TASKS + Keywords.CAN_CONFLICT);
+            tmp.add(Keywords.GET_TASKS + Keywords.CAN_COOCCUR);
+            tmp.add(Keywords.GET_TASKS + Keywords.CONFLICT);
+            tmp.add(Keywords.GET_TASKS + Keywords.COOCCUR);
+            tmp.add(Keywords.GET_TASKS + Keywords.TOTAL_CAUSAL);
+            tmp.add(Keywords.GET_TASKS + Keywords.TOTAL_CONCURRENT);
             tmp.add(Keywords.ALWAYS_OCCURS);
             tmp.add(Keywords.CAN_CONFLICT);
             tmp.add(Keywords.CAN_COOCCUR);
