@@ -24,7 +24,11 @@ import java.io.*;
 import java.util.*;
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.EventLogService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -105,21 +109,24 @@ public class BPMNMinerController {
     private final CanoniserService canoniserService;
     private final DomainService domainService;
     private final ProcessService processService;
+    private final EventLogService eventLogService;
     private final UserInterfaceHelper userInterfaceHelper;
 
-    public BPMNMinerController(PortalContext       portalContext,
-                               BPMNMinerService    bpmnMinerService,
-                               CanoniserService    canoniserService,
-                               DomainService       domainService,
-                               ProcessService      processService,
+    public BPMNMinerController(PortalContext portalContext,
+                               BPMNMinerService bpmnMinerService,
+                               CanoniserService canoniserService,
+                               DomainService domainService,
+                               ProcessService processService,
+                               EventLogService eventLogService,
                                UserInterfaceHelper userInterfaceHelper) {
 
-            this.portalContext       = portalContext;
-            this.bpmnMinerService    = bpmnMinerService;
-            this.canoniserService    = canoniserService;
-            this.domainService       = domainService;
-            this.processService      = processService;
-            this.userInterfaceHelper = userInterfaceHelper;
+        this.portalContext       = portalContext;
+        this.bpmnMinerService    = bpmnMinerService;
+        this.canoniserService    = canoniserService;
+        this.domainService       = domainService;
+        this.processService      = processService;
+        this.eventLogService = eventLogService;
+        this.userInterfaceHelper = userInterfaceHelper;
 
         try {
             List<String> domains = domainService.findAllDomains();
@@ -130,9 +137,32 @@ public class BPMNMinerController {
             this.domainCB.setHeight("100%");
             this.domainCB.setAttribute("hflex", "1");
 
-            this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMiner.zul", null, null);
+            Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
+            Set<LogSummaryType> selectedLogSummaryType = new HashSet<>();
+            for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+                if(entry.getKey() instanceof LogSummaryType) {
+                    selectedLogSummaryType.add((LogSummaryType) entry.getKey());
+                }
+            }
 
-            this.l = (Label) this.bpmnMinerW.getFellow("fileName");
+            // At least 2 process versions must be selected. Not necessarily of different processes
+            if (selectedLogSummaryType.size() == 0) {
+                this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMinerInput.zul", null, null);
+                this.l = (Label) this.bpmnMinerW.getFellow("fileName");
+                this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        uploadFile((UploadEvent) event);
+                    }
+                });
+                this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
+            }else if (selectedLogSummaryType.size() == 1) {
+                log = eventLogService.getXLog(selectedLogSummaryType.iterator().next().getId());
+                this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMiner.zul", null, null);
+            }else {
+                portalContext.getMessageHandler().displayInfo("Select one log for process discovery.");
+                return;
+            }
+
             this.modelName = (Textbox) this.bpmnMinerW.getFellow("bpmnMinerModelName");
             this.miningAlgorithms = (Selectbox) this.bpmnMinerW.getFellow("bpmnMinerMiningAlgorithm");
             this.miningAlgorithms.setModel(new ListModelArray<Object>(arrayMiningAlgorithms));
@@ -147,15 +177,8 @@ public class BPMNMinerController {
             this.timerEventTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerTimerEventTolerance");
             this.noiseThreshold = (Slider) this.bpmnMinerW.getFellow("bpmnMinerNoiseThreshold");
 
-            this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
             this.cancelButton = (Button) this.bpmnMinerW.getFellow("bpmnMinerCancelButton");
             this.okButton = (Button) this.bpmnMinerW.getFellow("bpmnMinerOKButton");
-
-            this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    uploadFile((UploadEvent) event);
-                }
-            });
 
             this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -248,10 +271,12 @@ public class BPMNMinerController {
 
     protected void createCanditatesEntity() {
         try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bos.write(logByteArray, 0, logByteArray.length);
-            InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
-            log = importFromStream(new XFactoryNaiveImpl(), zipEntryIS, logFileName);
+            if(log == null) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bos.write(logByteArray, 0, logByteArray.length);
+                InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
+                log = importFromStream(new XFactoryNaiveImpl(), zipEntryIS, logFileName);
+            }
 
             if(log == null) {
                 Messagebox.show("Please select a log.");

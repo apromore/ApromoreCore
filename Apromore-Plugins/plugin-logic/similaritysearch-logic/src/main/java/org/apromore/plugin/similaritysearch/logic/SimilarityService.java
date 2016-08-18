@@ -22,7 +22,7 @@ package org.apromore.plugin.similaritysearch.logic;
 
 import org.apromore.exception.ExceptionSearchForSimilar;
 import org.apromore.model.ParametersType;
-import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.SummariesType;
 
 /**
  * Interface for the Similarity Service. Defines all the methods that will do the majority of the work for
@@ -44,8 +44,8 @@ public interface SimilarityService {
      * @return the processSummaryTypes for the found models
      * @throws ExceptionSearchForSimilar
      */
-    ProcessSummariesType searchForSimilarProcesses(Integer processId, String versionName, Boolean latestVersions, Integer folderId,
-        String userId, String method, ParametersType params) throws ExceptionSearchForSimilar;
+    SummariesType searchForSimilarProcesses(Integer processId, String versionName, Boolean latestVersions, Integer folderId,
+                                            String userId, String method, ParametersType params) throws ExceptionSearchForSimilar;
 
 
 }

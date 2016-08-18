@@ -20,7 +20,6 @@
 
 package org.apromore.service.helper;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,13 +46,10 @@ import org.apromore.dao.ProcessRepository;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.GroupProcess;
 import org.apromore.dao.model.Native;
-import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
 import org.apromore.model.AnnotationsType;
-import org.apromore.model.IndexStatus;
-import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionType;
 import org.apromore.model.ProcessVersionsType;
@@ -78,7 +74,6 @@ public class UIHelper implements UserInterfaceHelper {
     private ProcessModelVersionRepository pmvRepository;
     private FolderRepository fRepository;
     private WorkspaceService workspaceService;
-    private PQLService pqlService;
 
 
     /**
@@ -89,7 +84,6 @@ public class UIHelper implements UserInterfaceHelper {
      * @param processModelVersionRepository process model version Repository.
      * @param folderRepository folder repository.
      * @param workspaceService Workspace Services.
-     * @param pqlService Process Query Lanuage services
      */
     @Inject
     public UIHelper(final AnnotationRepository annotationRepository,
@@ -157,11 +151,11 @@ public class UIHelper implements UserInterfaceHelper {
      * @see UserInterfaceHelper#buildProcessSummaryList(Integer, String, org.apromore.model.ProcessVersionsType)
      * {@inheritDoc}
      */
-    public ProcessSummariesType buildProcessSummaryList(Integer folderId, String conditions, ProcessVersionsType similarProcesses) {
+    public SummariesType buildProcessSummaryList(Integer folderId, String conditions, ProcessVersionsType similarProcesses) {
         ProcessSummaryType processSummaryType;
-        ProcessSummariesType processSummaries = new ProcessSummariesType();
+        SummariesType processSummaries = new SummariesType();
 
-        processSummaries.setTotalProcessCount(pRepository.count());
+        processSummaries.setTotalCount(pRepository.count());
 
         List<Integer> proIds = buildProcessIdList(similarProcesses);
         List<Process> processes = pRepository.findAllProcessesByFolder(folderId, conditions);
@@ -169,7 +163,7 @@ public class UIHelper implements UserInterfaceHelper {
         for (Process process : processes) {
             processSummaryType = buildProcessList(proIds, similarProcesses, process);
             if (processSummaryType != null) {
-                processSummaries.getProcessSummary().add(processSummaryType);
+                processSummaries.getSummary().add(processSummaryType);
             }
         }
 
@@ -181,10 +175,10 @@ public class UIHelper implements UserInterfaceHelper {
      * @see UserInterfaceHelper#buildProcessSummaryList(String, Integer, org.apromore.model.ProcessVersionsType)
      * {@inheritDoc}
      */
-    public ProcessSummariesType buildProcessSummaryList(String userId, Integer folderId, ProcessVersionsType similarProcesses) {
-        ProcessSummariesType processSummaries = new ProcessSummariesType();
+    public SummariesType buildProcessSummaryList(String userId, Integer folderId, ProcessVersionsType similarProcesses) {
+        SummariesType processSummaries = new SummariesType();
 
-        processSummaries.setTotalProcessCount(pRepository.count()); //(long) fRepository.getProcessByFolderUserRecursive(folderId, userId).size()
+        processSummaries.setTotalCount(pRepository.count()); //(long) fRepository.getProcessByFolderUserRecursive(folderId, userId).size()
 
         List<Integer> proIds = buildProcessIdList(similarProcesses);
 
@@ -202,7 +196,7 @@ public class UIHelper implements UserInterfaceHelper {
                 processSummaryType.setHasRead(groupProcess.getHasRead());
                 processSummaryType.setHasWrite(groupProcess.getHasWrite());
                 processSummaryType.setHasOwnership(groupProcess.getHasOwnership());
-                processSummaries.getProcessSummary().add(processSummaryType);
+                processSummaries.getSummary().add(processSummaryType);
                 map.put(groupProcess.getProcess().getId(), processSummaryType);
             } else {
                 // Existing process for a different group, so merge permissions in existing process summary entry
@@ -222,37 +216,58 @@ public class UIHelper implements UserInterfaceHelper {
      * @see UserInterfaceHelper#buildProcessSummaryList(String, Integer, Integer, Integer)
      * {@inheritDoc}
      */
-    public ProcessSummariesType buildProcessSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
+    public SummariesType buildProcessSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
         assert pageSize != null;
         assert pageIndex != null;
 
         Page<Process> processes = workspaceService.getProcesses(userId, folderId, new PageRequest(pageIndex, pageSize));
 
-        ProcessSummariesType processSummaries = new ProcessSummariesType();
-        processSummaries.setTotalProcessCount(pRepository.count());
+        SummariesType processSummaries = new SummariesType();
+        processSummaries.setTotalCount(pRepository.count());
         processSummaries.setOffset(new Long(pageIndex * pageSize));
-        processSummaries.setProcessCount(new Long(processes.getTotalElements()));
+        processSummaries.setCount(new Long(processes.getTotalElements()));
         for (Process process: processes.getContent()) {
-            processSummaries.getProcessSummary().add(buildProcessSummary(process));
+            processSummaries.getSummary().add(buildProcessSummary(process));
         }
 
         return processSummaries;
     }
 
+    public SummariesType buildSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
+        assert pageSize != null;
+        assert pageIndex != null;
+
+        Page<Process> processes = workspaceService.getProcesses(userId, folderId, new PageRequest(pageIndex, pageSize));
+        Page<Log> logs = workspaceService.getLogs(userId, folderId, new PageRequest(pageIndex, pageSize));
+
+        SummariesType summaries = new SummariesType();
+        summaries.setTotalCount(pRepository.count() + lRepository.count());
+        summaries.setOffset(new Long(pageIndex * pageSize));
+        summaries.setCount(new Long(processes.getTotalElements()) + new Long(logs.getTotalElements()));
+        for (Process process: processes.getContent()) {
+            summaries.getSummary().add(buildProcessSummary(process));
+        }
+        for (Log log: logs.getContent()) {
+            summaries.getSummary().add(buildLogSummary(log));
+        }
+
+        return summaries;
+    }
+
     @Override
-    public LogSummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
+    public SummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
         assert pageSize != null;
         assert pageIndex != null;
 
         Page<Log> logs = workspaceService.getLogs(userId, folderId, new PageRequest(pageIndex, pageSize));
 
-        LogSummariesType logSummaries = new LogSummariesType();
-        logSummaries.setTotalLogCount(lRepository.count());
+        SummariesType logSummaries = new SummariesType();
+        logSummaries.setTotalCount(lRepository.count());
         logSummaries.setOffset(new Long(pageIndex * pageSize));
-        logSummaries.setLogCount(new Long(logs.getTotalElements()));
+        logSummaries.setCount(new Long(logs.getTotalElements()));
 
         for (Log log: logs.getContent()) {
-            logSummaries.getLogSummary().add(buildLogSummary(log));
+            logSummaries.getSummary().add(buildLogSummary(log));
         }
 
         return logSummaries;

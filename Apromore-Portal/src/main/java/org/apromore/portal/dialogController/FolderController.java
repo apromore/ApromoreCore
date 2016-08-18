@@ -127,7 +127,7 @@ public class FolderController extends GenericForwardComposer {
         if (html != null) {
             FolderType selectedFolder = null;
             List<FolderType> availableFolders = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? UserSessionManager.getTree() : UserSessionManager.getCurrentFolder().getFolders();
-            //List<ProcessSummaryType> availableProcesses = ((ManagerService) SpringUtil.getBean("managerClient")).getProcesses(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+            //List<ProcessSummaryType> availableProcesses = ((ManagerService) SpringUtil.getBean("managerClient")).getProcessOrLogSummaries(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
 
             if (isFolder) {
                 for (FolderType folder : availableFolders) {
@@ -167,8 +167,7 @@ public class FolderController extends GenericForwardComposer {
                 UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
                 UserSessionManager.setCurrentFolder(selectedFolder);
 
-                UserSessionManager.getMainController().reloadProcessSummaries();
-                UserSessionManager.getMainController().reloadLogSummaries();
+                UserSessionManager.getMainController().reloadSummaries();
                 //loadWorkspace(html, selectedFolder.getFolders(), availableProcesses);
                 //Clients.evalJavaScript("bindTiles();");
             }

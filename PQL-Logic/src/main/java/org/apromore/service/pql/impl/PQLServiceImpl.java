@@ -57,7 +57,7 @@ import org.apromore.exception.ExportFormatException;
 import org.apromore.helper.Version;
 import org.apromore.model.Detail;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.SummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.DefaultPlugin;
@@ -105,7 +105,7 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
     }
 
     /** @inheritDoc */
-    @Override public ProcessSummariesType query(String pql) throws QueryException {
+    @Override public SummariesType query(String pql) throws QueryException {
 
         PQLQueryResult pqlQueryResult;
         try {
@@ -118,7 +118,7 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
             assert pqlQueryResult.getNumberOfParseErrors() == 0;
 
             // Compose process summaries for the query results
-            ProcessSummariesType processSummaries = new ProcessSummariesType();
+            SummariesType processSummaries = new SummariesType();
             for (String result: pqlQueryResult.getSearchResults()) {
                 ExternalId id = new ExternalId(result);
 
@@ -139,7 +139,7 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
                 processSummary.setOwner(p.getUser().getUsername());
                 processSummary.getVersionSummaries().add(versionSummary);
 
-                processSummaries.getProcessSummary().add(processSummary);
+                processSummaries.getSummary().add(processSummary);
             }
             return processSummaries;
 

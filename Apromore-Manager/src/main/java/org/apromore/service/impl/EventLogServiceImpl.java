@@ -19,8 +19,11 @@
  */
 package org.apromore.service.impl;
 
+import org.apromore.common.Constants;
 import org.apromore.dao.*;
 import org.apromore.dao.model.*;
+import org.apromore.model.ExportLogResultType;
+import org.apromore.model.PluginMessages;
 import org.apromore.model.SummariesType;
 import org.apromore.service.*;
 import org.apromore.service.helper.UserInterfaceHelper;
@@ -29,6 +32,8 @@ import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.out.XSerializer;
+import org.deckfour.xes.out.XesXmlGZIPSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,8 +41,10 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.activation.DataHandler;
 import javax.inject.Inject;
-import java.io.InputStream;
+import javax.mail.util.ByteArrayDataSource;
+import java.io.*;
 import java.util.*;
 
 //import javax.annotation.Resource;
@@ -90,6 +97,35 @@ public class EventLogServiceImpl implements EventLogService {
         log.setUser(userSrv.findUserByLogin(username));
         logRepo.saveAndFlush(log);
         return log;
+    }
+
+    @Override
+    public ExportLogResultType exportLog(Integer logId) throws Exception {
+        Log log = logRepo.findUniqueByID(logId);
+        XLog xlog = logRepo.getProcessLog(log);
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        exportToStream(outputStream, xlog);
+        ExportLogResultType exportLogResultType = new ExportLogResultType();
+
+        PluginMessages pluginMessages = new PluginMessages();
+        exportLogResultType.setMessage(pluginMessages);
+        exportLogResultType.setNative(new DataHandler(new ByteArrayDataSource(new ByteArrayInputStream(outputStream.toByteArray()), Constants.GZ_MIMETYPE)));
+        return exportLogResultType;
+    }
+
+    @Override
+    public XLog getXLog(Integer logId) {
+        Log log = logRepo.findUniqueByID(logId);
+        return logRepo.getProcessLog(log);
+    }
+
+    @Override
+    public void deleteLogs(List<Log> logs) throws Exception {
+        for(Log log : logs) {
+            Log realLog = logRepo.findUniqueByID(log.getId());
+            logRepo.delete(realLog);
+            logRepo.deleteProcessLog(realLog);
+        }
     }
 
     public static XLog importFromStream(XFactory factory, InputStream is, String extension) throws Exception {
@@ -147,6 +183,11 @@ public class EventLogServiceImpl implements EventLogService {
 
         return log;
 
+    }
+
+    public static void exportToStream(OutputStream outputStream, XLog log) throws Exception {
+        XSerializer serializer = new XesXmlGZIPSerializer();
+        serializer.serialize(log, outputStream);
     }
 
 }

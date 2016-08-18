@@ -27,6 +27,7 @@ import org.apromore.dao.LogRepositoryCustom;
 import org.apromore.dao.model.Log;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.*;
@@ -134,27 +135,38 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
             try {
                 final String name = logNameId + "_" + logName + ".xes.gz";
                 exportToFile("processLogs/", name, log);
+                return logNameId;
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
             }
-            return logNameId;
+
         }
         return null;
     }
 
-    /**
-//     * @see LogRepository#removeProcessLog(Integer)
-     * {@inheritDoc}
-     */
-
-    @SuppressWarnings("unchecked")
-    public void removeProcessLog(Integer processLogId) {
-        if (processLogId != null) {
-            String sql = "DELETE FROM Log WHERE id = ?";
-            this.jdbcTemplate.update(sql, new Object[] {processLogId});
+    public void deleteProcessLog(Log log) {
+        if (log != null) {
+            try {
+                String name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
+                File file = new File("processLogs/" + name);
+                file.delete();
+            } catch (Exception e) {
+                LOGGER.error("Error " + e.getMessage());
+            }
         }
     }
 
+    public XLog getProcessLog(Log log) {
+        if (log != null) {
+            try {
+                String name = "processLogs/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
+                return importFromFile(new XFactoryNaiveImpl(), name);
+            } catch (Exception e) {
+                LOGGER.error("Error " + e.getMessage());
+            }
+        }
+        return null;
+    }
 
     /* ************************** Util Methods ******************************* */
 
@@ -174,13 +186,13 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
     public void exportToFile(String path, String name, XLog log) throws Exception {
         if(name.endsWith("mxml.gz")) {
-            exportToInputStream(log, path + name, new XMxmlGZIPSerializer());
+            exportToInputStream(log, path, name, new XMxmlGZIPSerializer());
         }else if(name.endsWith("mxml")) {
-            exportToInputStream(log, path + name, new XMxmlSerializer());
+            exportToInputStream(log, path, name, new XMxmlSerializer());
         }else if(name.endsWith("xes.gz")) {
-            exportToInputStream(log, path + name, new XesXmlGZIPSerializer());
+            exportToInputStream(log, path, name, new XesXmlGZIPSerializer());
         }else if(name.endsWith("xes")) {
-            exportToInputStream(log, path + name, new XesXmlSerializer());
+            exportToInputStream(log, path, name, new XesXmlSerializer());
         }
     }
 
@@ -228,12 +240,14 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         return log;
     }
 
-    public void exportToInputStream(XLog log, String name, XSerializer serializer) {
+    public void exportToInputStream(XLog log, String path, String name, XSerializer serializer) {
         FileOutputStream outputStream;
         try {
-            File f = new File(name);
-            if(!f.exists()) f.createNewFile();
-            outputStream = new FileOutputStream(f);
+            File directory = new File(path);
+            if(!directory.exists()) directory.mkdirs();
+            File file = new File(path + name);
+            if(!file.exists()) file.createNewFile();
+            outputStream = new FileOutputStream(file);
             serializer.serialize(log, outputStream);
             outputStream.close();
         } catch (Exception e) {

@@ -46,9 +46,11 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ImportLogController extends BaseController {
@@ -144,7 +146,7 @@ public class ImportLogController extends BaseController {
             System.out.println(fileName);
 
             ImportLogResultType importResult = getService().importLog(UserSessionManager.getCurrentUser().getUsername(), folderId, fileName, inputStream,
-                    extension, "", "", isPublic);
+                    extension, "", DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(), isPublic);
 
 //            this.mainC.showPluginMessages(importResult.getMessage());
 //            this.mainC.displayNewProcess(importResult.getProcessSummary());
