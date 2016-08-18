@@ -23,6 +23,7 @@ package org.apromore.portal.dialogController.renderer;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apromore.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
@@ -37,10 +38,6 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
-import org.apromore.model.AnnotationsType;
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
@@ -68,6 +65,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.setStyle("height: 25px");
         if (obj instanceof ProcessSummaryType) {
             renderProcessSummary(listItem, (ProcessSummaryType) obj);
+        } else if (obj instanceof LogSummaryType) {
+            renderLogSummary(listItem, (LogSummaryType) obj);
         } else if (obj instanceof FolderType) {
             renderFolder(listItem, (FolderType) obj);
         } else {
@@ -79,13 +78,13 @@ public class SummaryItemRenderer implements ListitemRenderer {
     private void renderProcessSummary(final Listitem listItem, final ProcessSummaryType process) {
         listItem.appendChild(renderProcessImage());
         listItem.appendChild(renderProcessScore(process));
-        listItem.appendChild(renderProcessName(process));
-        listItem.appendChild(renderProcessId(process));
+        listItem.appendChild(renderName(process));
+        listItem.appendChild(renderId(process));
         listItem.appendChild(renderProcessNativeType(process));
-        listItem.appendChild(renderProcessDomain(process));
+        listItem.appendChild(renderDomain(process));
         listItem.appendChild(renderVersionRanking(process));
         listItem.appendChild(renderProcessLastVersion(process));
-        listItem.appendChild(renderProcessOwner(process));
+        listItem.appendChild(renderOwner(process));
 
         // Append columns for any process attributes supplied via plugins
         for (PortalProcessAttributePlugin plugin: (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins")) {
@@ -114,6 +113,19 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 return nativeType;
             }
         });
+    }
+
+    /* Used to render the process summary information into the list box. */
+    private void renderLogSummary(final Listitem listItem, final LogSummaryType log) {
+        listItem.appendChild(renderLogImage());
+        listItem.appendChild(renderNA());
+        listItem.appendChild(renderName(log));
+        listItem.appendChild(renderId(log));
+        listItem.appendChild(renderNA());
+        listItem.appendChild(renderDomain(log));
+        listItem.appendChild(renderNA());
+        listItem.appendChild(renderNA());
+        listItem.appendChild(renderOwner(log));
     }
 
     /* Used to render folders in the list of process models. */
@@ -152,6 +164,13 @@ public class SummaryItemRenderer implements ListitemRenderer {
         return lc;
     }
 
+    private Listcell renderLogImage() {
+        Listcell lc = new Listcell();
+        lc.appendChild(new Image(Constants.LOG_ICON));
+        lc.setStyle(CENTRE_ALIGN);
+        return lc;
+    }
+
     private Listcell renderProcessImage() {
         Listcell lc = new Listcell();
         lc.appendChild(new Image(Constants.PROCESS_ICON));
@@ -159,24 +178,28 @@ public class SummaryItemRenderer implements ListitemRenderer {
         return lc;
     }
 
-    protected Listcell renderProcessOwner(final ProcessSummaryType process) {
-        return wrapIntoListCell(new Label(process.getOwner()));
+    protected Listcell renderNA() {
+        return wrapIntoListCell(new Label("N/A"));
+    }
+
+    protected Listcell renderOwner(final SummaryType summaryType) {
+        return wrapIntoListCell(new Label(summaryType.getOwner()));
     }
 
     protected Listcell renderProcessLastVersion(final ProcessSummaryType process) {
         return wrapIntoListCell(new Label(process.getLastVersion()));
     }
 
-    protected Listcell renderProcessDomain(final ProcessSummaryType process) {
-        return wrapIntoListCell(new Label(process.getDomain()));
+    protected Listcell renderDomain(final SummaryType summaryType) {
+        return wrapIntoListCell(new Label(summaryType.getDomain()));
     }
 
     protected Listcell renderProcessNativeType(final ProcessSummaryType process) {
         return wrapIntoListCell(new Label(process.getOriginalNativeType()));
     }
 
-    protected Listcell renderProcessName(final ProcessSummaryType process) {
-        return wrapIntoListCell(new Label(process.getName()));
+    protected Listcell renderName(final SummaryType summaryType) {
+        return wrapIntoListCell(new Label(summaryType.getName()));
     }
 
     private Component renderVersionRanking(final ProcessSummaryType process) {
@@ -190,8 +213,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
         return wrapIntoListCell(processRanking);
     }
 
-    protected Listcell renderProcessId(final ProcessSummaryType process) {
-        return wrapIntoListCell(new Label(process.getId().toString()));
+    protected Listcell renderId(final SummaryType summaryType) {
+        return wrapIntoListCell(new Label(summaryType.getId().toString()));
     }
 
     protected Listcell renderProcessScore(final ProcessSummaryType process) {

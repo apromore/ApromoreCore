@@ -31,9 +31,7 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
-import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
 import org.apromore.portal.custom.gui.tab.PortalTab;
-import org.apromore.portal.custom.gui.tab.impl.PortalTabImpl;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
@@ -79,7 +77,7 @@ public class MainController extends BaseController implements MainControllerInte
     private SimpleSearchController simplesearch;
     private ShortMessageController shortmessageC;
     private BaseListboxController baseListboxControllerProcesses;
-    private BaseListboxController baseListboxControllerLogs;
+//    private BaseListboxController baseListboxControllerLogs;
     private BaseDetailController baseDetailController;
     private BaseFilterController baseFilterController;
 
@@ -172,9 +170,9 @@ public class MainController extends BaseController implements MainControllerInte
                         public void onEvent(Event event) throws Exception {
                             if (Constants.EVENT_MESSAGE_SAVE.equals(event.getName())) {
                                 clearProcessVersions();
-                                reloadProcessSummaries();
-                                clearLogVersions();
-                                reloadLogSummaries();
+                                reloadSummaries();
+//                                clearLogVersions();
+//                                reloadLogSummaries();
                             }
                         }
                     });
@@ -235,7 +233,7 @@ public class MainController extends BaseController implements MainControllerInte
      * @param processSummaries the list of process summaries to display
      * @param isQueryResult is this from a query (simsearch, clustering, etc.)
      */
-    public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult) {
+    public void displayProcessSummaries(final SummariesType processSummaries, final Boolean isQueryResult) {
         int folderId;
 
         if (isQueryResult) {
@@ -250,7 +248,7 @@ public class MainController extends BaseController implements MainControllerInte
         // TODO switch to process query result view
         switchToProcessSummaryView();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), folderId);
-        ((ProcessListboxController) this.baseListboxControllerProcesses).displayProcessSummaries(subFolders, processSummaries, isQueryResult);
+        this.baseListboxControllerProcesses.displaySummaries(subFolders, processSummaries, isQueryResult);
     }
 
     // disable/enable features depending on user status
@@ -277,39 +275,39 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    public void reloadProcessSummaries() {
+    public void reloadSummaries() {
         this.simplesearch.clearSearches();
         switchToProcessSummaryView();
         pg.setActivePage(0);
 
         FolderType currentFolder = UserSessionManager.getCurrentFolder();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
-        ProcessListboxController.ProcessSummaryListModel model = ((ProcessListboxController) this.baseListboxControllerProcesses).displayProcessSummaries(subFolders, false);
+        ProcessListboxController.SummaryListModel model = this.baseListboxControllerProcesses.displaySummaries(subFolders, false);
 
         this.displayMessage(
-            model.getSize() + " out of " + model.getTotalProcessCount() +
-	    (model.getTotalProcessCount() > 1 ? " processes." : " process.")
+            model.getSize() + " out of " + model.getTotalCount() +
+	    (model.getTotalCount() > 1 ? " elements." : " element.")
 	);
 
         loadWorkspace();
     }
 
-    public void reloadLogSummaries() {
-        this.simplesearch.clearSearches();
-        switchToProcessSummaryView();
-        pg.setActivePage(0);
-
-        FolderType currentFolder = UserSessionManager.getCurrentFolder();
-        List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
-        LogListboxController.LogSummaryListModel model = ((LogListboxController) this.baseListboxControllerLogs).displayLogSummaries(subFolders);
-
-        this.displayMessage(
-                model.getSize() + " out of " + model.getTotalLogCount() +
-                        (model.getTotalLogCount() > 1 ? " logs." : " log.")
-        );
-
-        loadWorkspace();
-    }
+//    public void reloadLogSummaries() {
+//        this.simplesearch.clearSearches();
+//        switchToProcessSummaryView();
+//        pg.setActivePage(0);
+//
+//        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+//        List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
+//        LogListboxController.LogSummaryListModel model = ((LogListboxController) this.baseListboxControllerLogs).displayLogSummaries(subFolders);
+//
+//        this.displayMessage(
+//                model.getSize() + " out of " + model.getTotalLogCount() +
+//                        (model.getTotalLogCount() > 1 ? " logs." : " log.")
+//        );
+//
+//        loadWorkspace();
+//    }
 
 
     /**
@@ -324,21 +322,21 @@ public class MainController extends BaseController implements MainControllerInte
 
     /**
      * Send request to Manager: deleted process versions given as parameter
-     * @param processVersions a selection of process versions to delete.
+     * @param elements a selection of process versions to delete.
      * @throws InterruptedException
      */
-    public void deleteProcessVersions(final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws InterruptedException {
+    public void deleteElements(final Map<SummaryType, List<VersionSummaryType>> elements) throws InterruptedException {
         try {
-            getService().deleteProcessVersions(processVersions);
+            getService().deleteElements(elements);
             switchToProcessSummaryView();
             this.baseListboxControllerProcesses.refreshContent();
             String message;
             int nb = 0;
 
             // to count how many process version(s) deleted
-            Collection<List<VersionSummaryType>> sumTypes = processVersions.values();
+            Collection<List<VersionSummaryType>> sumTypes = elements.values();
             for (List<VersionSummaryType> sumType : sumTypes) {
-                nb += sumType.size();
+                if(sumType != null) nb += sumType.size();
             }
             if (nb > 1) {
                 message = nb + " process versions deleted.";
@@ -507,11 +505,11 @@ public class MainController extends BaseController implements MainControllerInte
         ((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
     }
 
-    public void clearLogVersions() {
-        //TODO
-//        switchToProcessSummaryView();
-//        ((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
-    }
+//    public void clearLogVersions() {
+//        //TODO
+////        switchToProcessSummaryView();
+////        ((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
+//    }
 
     public void displaySimilarityClusters(final ClusterFilterType filter) {
         switchToSimilarityClusterView();
@@ -519,7 +517,7 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     @SuppressWarnings("unchecked")
-    public Set<ProcessSummaryType> getSelectedProcesses() {
+    public Set<SummaryType> getSelectedElements() {
         if (this.baseListboxControllerProcesses instanceof ProcessListboxController) {
             ProcessListboxController processController = (ProcessListboxController) getBaseListboxController();
             return processController.getListModel().getSelection();
@@ -528,17 +526,17 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    public Set<LogSummaryType> getSelectedLogs() {
-        LogListboxController logController = (LogListboxController) getLogListboxController();
-        return logController.getListModel().getSelection();
-    }
+//    public Set<LogSummaryType> getSelectedLogs() {
+//        LogListboxController logController = (LogListboxController) getLogListboxController();
+//        return logController.getListModel().getSelection();
+//    }
 
     /**
      * @return a map with all currently selected process models and the corresponding selected versions
      * @throws ParseException
      */
-    public Map<ProcessSummaryType, List<VersionSummaryType>> getSelectedProcessVersions() {
-        Map<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<>();
+    public Map<SummaryType, List<VersionSummaryType>> getSelectedElementsAndVersions() {
+        Map<SummaryType, List<VersionSummaryType>> summaryTypes = new HashMap<>();
         String versionNumber;
 
         if (getBaseListboxController() instanceof ProcessListboxController) {
@@ -561,11 +559,13 @@ public class MainController extends BaseController implements MainControllerInte
                             }
                         }
                     }
-                    processVersions.put((ProcessSummaryType) obj, versionList);
+                    summaryTypes.put((ProcessSummaryType) obj, versionList);
+                }else if (obj instanceof LogSummaryType) {
+                    summaryTypes.put((LogSummaryType) obj, null);
                 }
             }
         }
-        return processVersions;
+        return summaryTypes;
     }
 
 
@@ -731,7 +731,7 @@ public class MainController extends BaseController implements MainControllerInte
     /* Removes the currently displayed listbox, detail and filter view */
     private void deattachDynamicUI() {
         this.getFellow("baseListboxProcesses").getFellow("tablecomp").getChildren().clear();
-        this.getFellow("baseListboxLogs").getFellow("tablecomp").getChildren().clear();
+//        this.getFellow("baseListboxLogs").getFellow("tablecomp").getChildren().clear();
         this.getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
         this.getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
     }
@@ -739,7 +739,7 @@ public class MainController extends BaseController implements MainControllerInte
     /* Attaches the the listbox, detail and filter view */
     private void reattachDynamicUI() {
         this.getFellow("baseListboxProcesses").getFellow("tablecomp").appendChild(baseListboxControllerProcesses);
-        this.getFellow("baseListboxLogs").getFellow("tablecomp").appendChild(baseListboxControllerLogs);
+//        this.getFellow("baseListboxLogs").getFellow("tablecomp").appendChild(baseListboxControllerLogs);
         this.getFellow("baseDetail").getFellow("detailcomp").appendChild(baseDetailController);
         this.getFellow("baseFilter").getFellow("filtercomp").appendChild(baseFilterController);
     }
@@ -756,13 +756,13 @@ public class MainController extends BaseController implements MainControllerInte
 
         // Otherwise create new Listbox
         this.baseListboxControllerProcesses = new ProcessListboxController(this);
-        this.baseListboxControllerLogs = new LogListboxController(this);
+//        this.baseListboxControllerLogs = new LogListboxController(this);
         this.baseDetailController = new ProcessVersionDetailController(this);
         this.baseFilterController = new BaseFilterController(this);
 
         reattachDynamicUI();
-        reloadProcessSummaries();
-        reloadLogSummaries();
+        reloadSummaries();
+//        reloadLogSummaries();
     }
 
     /* Switches all dynamic UI elements to the SimilarityClusterView. Affects the listbox, detail and filter view */
@@ -818,9 +818,9 @@ public class MainController extends BaseController implements MainControllerInte
         return baseListboxControllerProcesses;
     }
 
-    public BaseListboxController getLogListboxController() {
-        return baseListboxControllerLogs;
-    }
+//    public BaseListboxController getLogListboxController() {
+//        return baseListboxControllerLogs;
+//    }
 
     public BaseDetailController getDetailListbox() {
         return baseDetailController;

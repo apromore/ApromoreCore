@@ -22,9 +22,13 @@ package org.apromore.service;
 
 import org.apromore.dao.model.*;
 import org.apromore.exception.*;
+import org.apromore.model.ExportLogResultType;
 import org.apromore.model.SummariesType;
+import org.deckfour.xes.model.XLog;
 
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -59,6 +63,13 @@ public interface EventLogService {
     Log importLog(String username, Integer folderId, String logName, InputStream log, String extension,
                   String domain, String created, boolean publicModel)
             throws Exception;
+
+    ExportLogResultType exportLog(Integer logId)
+            throws Exception;
+
+    XLog getXLog(Integer logId);
+
+    void deleteLogs(List<Log> logs) throws Exception;
 
 
 }

@@ -98,6 +98,7 @@
                             prom6-models|prom6-plugins|simmetrics|slickerbox1|tableLayout|uitopia|uitopiaResourcesv|weka|javahelp|junit|
                             exp4j|japura|animation|osservice|petrinets|transitionsystems|widgets|
                             oplall|ilpminer|
+                            <!--xeslite|asm|concurrent-trees|cqengine|kryo-serializers|lz4|mapdb|minlog|objenesis|reflectasm|sqlite-jdbc|-->
                             javacsv|javailp|jgrapht-jdk|jmathplot|trove|ujmp-complete|basicutils|
                             commons-cli|compress-lzf|java-merge-sort|juniversalchardet|opencsv|uncommons-maths|apacheutils|
                             grappa|
@@ -1201,15 +1202,10 @@
             <artifactId>xstream</artifactId>
             <version>1.4.8</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>xerces</groupId>-->
-        <!--<artifactId>xercesImpl</artifactId>-->
-        <!--<version>2.8.1</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>14.0.1</version>
+            <version>19.0</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.orchestra</groupId>
@@ -1613,12 +1609,6 @@
             <artifactId>apacheutils</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.apromore</groupId>-->
-        <!--<artifactId>fodina-osgi</artifactId>-->
-        <!--<version>1.0</version>-->
-        <!--</dependency>-->
-        <!-- Fodina-lib -->
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>jgoodies-common</artifactId>
@@ -1857,5 +1847,62 @@
             <artifactId>logabstractions</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.processmining</groupId>-->
+            <!--<artifactId>xeslite</artifactId>-->
+            <!--<version>6.5</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.googlecode.cqengine</groupId>-->
+            <!--<artifactId>cqengine</artifactId>-->
+            <!--<version>2.6.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.googlecode.concurrent-trees</groupId>-->
+            <!--<artifactId>concurrent-trees</artifactId>-->
+            <!--<version>1.0.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>net.jpountz.lz4</groupId>-->
+            <!--<artifactId>lz4</artifactId>-->
+            <!--<version>1.3.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.mapdb</groupId>-->
+            <!--<artifactId>mapdb</artifactId>-->
+            <!--<version>3.0.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.ow2.asm</groupId>-->
+            <!--<artifactId>asm</artifactId>-->
+            <!--<version>5.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>de.javakaffee</groupId>-->
+            <!--<artifactId>kryo-serializers</artifactId>-->
+            <!--<version>0.38</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.esotericsoftware</groupId>-->
+            <!--<artifactId>minlog</artifactId>-->
+            <!--<version>1.3.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.objenesis</groupId>-->
+            <!--<artifactId>objenesis</artifactId>-->
+            <!--<version>2.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.esotericsoftware</groupId>-->
+            <!--<artifactId>reflectasm</artifactId>-->
+            <!--<version>1.10.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.xerial</groupId>-->
+            <!--<artifactId>sqlite-jdbc</artifactId>-->
+            <!--<version>3.8.11.2</version>-->
+        <!--</dependency>-->
+
     </dependencies>
 </project>

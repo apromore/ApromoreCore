@@ -27,11 +27,7 @@ import com.apql.Apql.popup.ProcessLabel;
 import com.apql.Apql.tree.draghandler.TreeTransferHandler;
 import org.apromore.helper.Version;
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.UserType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.model.*;
 import org.apromore.service.pql.ExternalId;
 
 import javax.swing.*;
@@ -103,25 +99,27 @@ public class FolderProcessTree extends JTree implements DragGestureListener,Drag
     private void addProcesses(DraggableNodeTree node, int folderId, String folderPath) {
         final int PAGE_SIZE = 100;
         int page = 0;
-        ProcessSummariesType processes;
+        SummariesType processes;
         do {
-            processes = manager.getProcesses(user.getId(), folderId, page, PAGE_SIZE);
-            for(ProcessSummaryType pst: processes.getProcessSummary()) {
+            processes = manager.getProcessOrLogSummaries(user.getId(), folderId, page, PAGE_SIZE);
+            for(SummaryType summaryType : processes.getSummary()) {
+                if(summaryType instanceof  ProcessSummaryType) {
+                    ProcessSummaryType pst = (ProcessSummaryType) summaryType;
+                    List<VersionSummaryType> versionList = new LinkedList<>();
 
-                List<VersionSummaryType> versionList = new LinkedList<>();
-
-                for(VersionSummaryType vst : pst.getVersionSummaries()){
-                    if(sound.contains(new ExternalId(pst.getId(), vst.getName(), new Version(vst.getVersionNumber())).toString())) {
-                        versionList.add(vst);
+                    for (VersionSummaryType vst : pst.getVersionSummaries()) {
+                        if (sound.contains(new ExternalId(pst.getId(), vst.getName(), new Version(vst.getVersionNumber())).toString())) {
+                            versionList.add(vst);
+                        }
+                    }
+                    if (!versionList.isEmpty()) {
+                        pst.getVersionSummaries().retainAll(versionList);
+                        DraggableNodeTree process = new DraggableNodeProcess(pst, folderPath + pst.getName());
+                        node.add(process);
                     }
                 }
-                if(!versionList.isEmpty()) {
-                    pst.getVersionSummaries().retainAll(versionList);
-                    DraggableNodeTree process = new DraggableNodeProcess(pst, folderPath + pst.getName());
-                    node.add(process);
-                }
             }
-        } while(PAGE_SIZE * page++ + processes.getProcessSummary().size() < processes.getProcessCount());
+        } while(PAGE_SIZE * page++ + processes.getSummary().size() < processes.getCount());
     }
 
     public DraggableNodeTree getRoot(){

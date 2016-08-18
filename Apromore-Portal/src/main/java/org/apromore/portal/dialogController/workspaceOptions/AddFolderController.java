@@ -124,8 +124,7 @@ public class AddFolderController extends BaseController {
                     this.mainController.getService().updateFolder(this.folderId, folderName, isGEDMatrixReady);
                 }
 
-                this.mainController.reloadProcessSummaries();
-                this.mainController.reloadLogSummaries();
+                this.mainController.reloadSummaries();
             }
         } catch (Exception ex) {
             LOGGER.warning("Exception ");

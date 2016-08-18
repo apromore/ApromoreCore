@@ -21,13 +21,6 @@
 <window id="win" width="300px" closable="false" position="center" title="BPMN Miner">
     <vbox>
         <groupbox width="285px">
-            <label value="Log File(.mxml, .xes, .mxml.gz, .xes.gz)" width="100%"/>
-            <hbox align="center">
-                <button id="bpmnMinerUpload" label="Upload" upload="true,maxsize=-1,multiple=false,native"/>
-                <label id="fileName" value="File Name" width="100%"/>
-            </hbox>
-        </groupbox>
-	    <groupbox width="285px">
             <caption label="Select Model Name"/>
             <textbox name="Select Mining Algorithm" id="bpmnMinerModelName" width="270px" />
         </groupbox>

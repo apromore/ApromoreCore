@@ -20,9 +20,7 @@
 
 package org.apromore.portal.dialogController;
 
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.model.*;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.exception.DialogException;
@@ -265,14 +263,14 @@ public abstract class BaseListboxController extends BaseController {
     protected void removeFolder() throws Exception {
         // See if the user has mixed folders and process models. we handle everything differently.
         ArrayList<FolderType> folders =  getMainController().getMenu().getSelectedFolders();
-        Map<ProcessSummaryType, List<VersionSummaryType>> processes =  getMainController().getSelectedProcessVersions();
+        Map<SummaryType, List<VersionSummaryType>> elements =  getMainController().getSelectedElementsAndVersions();
 
-        if (doesSelectionContainFoldersAndProcesses(folders, processes)) {
-            showMessageFoldersAndProcessesDelete(getMainController(), folders);
+        if (doesSelectionContainFoldersAndElements(folders, elements)) {
+            showMessageFoldersAndElementsDelete(getMainController(), folders);
         } else {
             if (folders != null && !folders.isEmpty()) {
                 showMessageFolderDelete(getMainController(), folders);
-            } else if (processes != null && !processes.isEmpty()) {
+            } else if (elements != null && !elements.isEmpty()) {
                 showMessageProcessesDelete(getMainController());
             } else {
                LOGGER.error("Nothing selected to delete?");
@@ -287,7 +285,7 @@ public abstract class BaseListboxController extends BaseController {
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
-                        deleteProcesses(mainController);
+                        deleteElements(mainController);
                         break;
                     case Messagebox.NO:
                         break;
@@ -311,13 +309,13 @@ public abstract class BaseListboxController extends BaseController {
     }
 
     /* Show a message tailored to deleting a combo of folders and processes */
-    private void showMessageFoldersAndProcessesDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
+    private void showMessageFoldersAndElementsDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
         Messagebox.show(FOLDER_PROCESS_DELETE, ALERT, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener<Event>() {
             public void onEvent(Event evt) throws Exception {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
                         deleteFolders(folders, mainController);
-                        deleteProcesses(mainController);
+                        deleteElements(mainController);
                         break;
                     case Messagebox.NO:
                         break;
@@ -339,8 +337,8 @@ public abstract class BaseListboxController extends BaseController {
 
 
     /* Removes all the selected processes, either the select version or the latest if no version is selected. */
-    private void deleteProcesses(MainController mainController) throws Exception {
-        mainController.getMenu().deleteSelectedProcessVersions();
+    private void deleteElements(MainController mainController) throws Exception {
+        mainController.getMenu().deleteSelectedElements();
     }
 
     /* Removes all the selected folders and the containing folders and processes. */
@@ -348,16 +346,64 @@ public abstract class BaseListboxController extends BaseController {
         for (FolderType folderId : folders) {
             mainController.getService().deleteFolder(folderId.getId());
         }
-        mainController.reloadProcessSummaries();
-        mainController.reloadLogSummaries();
+        mainController.reloadSummaries();
     }
 
+    public abstract void displaySummaries(List<FolderType> subFolders, SummariesType summaries, Boolean isQueryResult);
+
+    public abstract SummaryListModel displaySummaries(List<FolderType> subFolders, boolean isQueryResult);
+
     /* Does the selection in the main detail list contain folders and processes. */
-    private boolean doesSelectionContainFoldersAndProcesses(ArrayList<FolderType> folders, Map<ProcessSummaryType, List<VersionSummaryType>> processes) throws Exception {
-        return (folders != null && !folders.isEmpty()) && (processes != null && !processes.isEmpty());
+    private boolean doesSelectionContainFoldersAndElements(ArrayList<FolderType> folders, Map<SummaryType, List<VersionSummaryType>> elements) throws Exception {
+        return (folders != null && !folders.isEmpty()) && (elements != null && !elements.isEmpty());
     }
 
     public MainController getMainController() {
         return mainController;
+    }
+
+    public class SummaryListModel extends ListModelList {
+        final int pageSize = 10;  // TODO: ought to be externally configurable
+
+        private SummariesType summaries;
+        private int currentPageIndex = 0;
+        private List<FolderType> subFolders;
+
+        /**
+         * Constructor.
+         *
+         * @param subFolders  will be displayed before processes
+         */
+        SummaryListModel(List<FolderType> subFolders) {
+            this.subFolders = subFolders;
+            setMultiple(true);
+        }
+
+        public Object getElementAt(int index) {
+            if (index < subFolders.size()) {
+                return subFolders.get(index);
+            } else {
+                int processIndex = index - subFolders.size();
+                return getSummaries(processIndex / pageSize).getSummary().get(processIndex % pageSize);
+            }
+        }
+
+        public int getSize() {
+            return subFolders.size() + getSummaries(currentPageIndex).getCount().intValue();
+        }
+
+        public int getTotalCount() {
+            return getSummaries(currentPageIndex).getTotalCount().intValue();
+        }
+
+        private SummariesType getSummaries(int pageIndex) {
+            if (summaries == null || currentPageIndex != pageIndex) {
+                UserType user = UserSessionManager.getCurrentUser();
+                FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                summaries = getService().getProcessOrLogSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
+                currentPageIndex = pageIndex;
+            }
+            return summaries;
+        }
     }
 }

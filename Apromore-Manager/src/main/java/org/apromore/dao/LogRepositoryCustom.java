@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * Interface domain model Data access object Process.
- * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
+ * @author <a href="mailto:raffaele.conforti@qut.edu.au">Raffaele Conforti</a>
  * @version 1.0
  * @see Process
  */
@@ -54,5 +54,9 @@ public interface LogRepositoryCustom {
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 
     String storeProcessLog(final Integer folderId, String logName, XLog log, Integer userID, String domain, String created, boolean publicModel);
+
+    void deleteProcessLog(Log log);
+
+    XLog getProcessLog(Log log);
 
 }

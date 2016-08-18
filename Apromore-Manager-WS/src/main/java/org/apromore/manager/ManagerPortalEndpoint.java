@@ -45,7 +45,6 @@ import org.apromore.service.pql.PQLService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.*;
 import org.apromore.service.pql.DatabaseService;
-import org.apromore.service.pql.PQLService;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +83,7 @@ public class ManagerPortalEndpoint {
     private FragmentService fragmentSrv;
     private CanoniserService canoniserService;
     private ProcessService procSrv;
-    private LogService logSrv;
+    private EventLogService logSrv;
     private ClusterService clusterService;
     private FormatService frmSrv;
     private DomainService domSrv;
@@ -119,11 +118,11 @@ public class ManagerPortalEndpoint {
      */
     @Inject
     public ManagerPortalEndpoint(final DeploymentService deploymentService, final PluginService pluginService,
-            final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
-            final LogService logSrv, final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
-            final UserService userSrv,
-            final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
-            final PQLService pqlService,  final DatabaseService dbService) {
+                                 final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
+                                 final EventLogService logSrv, final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
+                                 final UserService userSrv,
+                                 final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper,
+                                 final PQLService pqlService, final DatabaseService dbService) {
         this.deploymentService = deploymentService;
         this.pluginService = pluginService;
         this.fragmentSrv = fragmentSrv;
@@ -225,6 +224,33 @@ public class ManagerPortalEndpoint {
             result.setMessage(ex.getMessage());
         }
         return WS_OBJECT_FACTORY.createDeleteProcessVersionsResponse(res);
+    }
+
+    @PayloadRoot(localPart = "DeleteLogRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<DeleteLogOutputMsgType> deleteLog(
+            @RequestPayload final JAXBElement<DeleteLogInputMsgType> req) {
+        LOGGER.trace("Executing operation deleteLog");
+        DeleteLogInputMsgType payload = req.getValue();
+        DeleteLogOutputMsgType res = new DeleteLogOutputMsgType();
+        ResultType result = new ResultType();
+        res.setResult(result);
+        try {
+            List<Log> logs = new ArrayList<>();
+            for (final LogSummaryType l : payload.getLogSummaryType()) {
+                Log log = new Log(l.getId());
+                logs.add(log);
+            }
+            logSrv.deleteLogs(logs);
+
+            result.setCode(0);
+            result.setMessage("");
+        } catch (Exception ex) {
+            LOGGER.error("", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+        return WS_OBJECT_FACTORY.createDeleteLogResponse(res);
     }
 
     @PayloadRoot(localPart = "UpdateProcessRequest", namespace = NAMESPACE)
@@ -331,6 +357,35 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createExportFormatResponse(res);
     }
 
+    @PayloadRoot(localPart = "ExportLogRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ExportLogOutputMsgType> exportLog(@RequestPayload final JAXBElement<ExportLogInputMsgType> req) {
+        LOGGER.trace("Executing operation exportFormat");
+
+        ResultType result = new ResultType();
+        ExportLogInputMsgType payload = req.getValue();
+        ExportLogOutputMsgType res = new ExportLogOutputMsgType();
+
+        // Search for Native
+        try {
+            Integer logId = payload.getLogId();
+            String name = payload.getLogName();
+
+            ExportLogResultType exportResult = logSrv.exportLog(logId);
+            res.setExportResult(exportResult);
+
+            result.setCode(0);
+            result.setMessage("");
+        } catch (Exception efe) {
+            LOGGER.error("ExportFormat failed: " + efe.toString());
+            result.setCode(-1);
+            result.setMessage(efe.getMessage());
+        }
+
+        res.setResult(result);
+        return WS_OBJECT_FACTORY.createExportLogResponse(res);
+    }
+
     @PayloadRoot(localPart = "ImportLogRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ImportLogOutputMsgType> importLog(@RequestPayload final JAXBElement<ImportLogInputMsgType> req) {
@@ -355,7 +410,7 @@ public class ManagerPortalEndpoint {
 
             Log log = logSrv.importLog(username, folderId, logName, handler.getInputStream(), payload.getExtension(),
                     domain, creationDate, publicModel);
-            LogSummaryType logSummary = uiHelper.buildLogSummary(log);
+            LogSummaryType logSummary = (LogSummaryType) uiHelper.buildLogSummary(log);
 
             ImportLogResultType importResult = new ImportLogResultType();
             importResult.setLogSummary(logSummary);
@@ -806,7 +861,7 @@ public class ManagerPortalEndpoint {
         res.setResult(result);
 
         try {
-            ProcessSummariesType processes = procSrv.readProcessSummaries(payload.getFolderId(), payload.getSearchExpression());
+            SummariesType processes = procSrv.readProcessSummaries(payload.getFolderId(), payload.getSearchExpression());
             result.setCode(0);
             result.setMessage("");
             res.setProcessSummaries(processes);
@@ -1287,18 +1342,18 @@ public class ManagerPortalEndpoint {
         return new ObjectFactory().createGetProcessGroupsResponse(res);
     }
 
-    @PayloadRoot(localPart = "GetProcessesRequest", namespace = NAMESPACE)
+    @PayloadRoot(localPart = "GetProcessesOrLogsRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<GetProcessesOutputMsgType> getProcesses(@RequestPayload final JAXBElement<GetProcessesInputMsgType> req) {
-        LOGGER.trace("Executing operation getProcesses");
-        GetProcessesInputMsgType payload = req.getValue();
-        GetProcessesOutputMsgType res = new GetProcessesOutputMsgType();
+    public JAXBElement<GetProcessesOrLogsOutputMsgType> getProcessesOrLogs(@RequestPayload final JAXBElement<GetProcessesOrLogsInputMsgType> req) {
+        LOGGER.trace("Executing operation getProcessesOrLogs");
+        GetProcessesOrLogsInputMsgType payload = req.getValue();
+        GetProcessesOrLogsOutputMsgType res = new GetProcessesOrLogsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
 
-        res.setProcesses(uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), payload.getPageIndex(), payload.getPageSize()));
+        res.setProcessesOrLogs(uiHelper.buildSummaryList(payload.getUserId(), payload.getFolderId(), payload.getPageIndex(), payload.getPageSize()));
 
-        return new ObjectFactory().createGetProcessesResponse(res);
+        return new ObjectFactory().createGetProcessesOrLogsResponse(res);
     }
 
     @PayloadRoot(localPart = "GetLogsRequest", namespace = NAMESPACE)

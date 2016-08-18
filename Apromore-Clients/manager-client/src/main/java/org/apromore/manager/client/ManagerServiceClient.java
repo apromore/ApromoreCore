@@ -27,8 +27,6 @@ import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
 import org.apromore.manager.client.util.StreamUtil;
 import org.apromore.model.*;
 import org.apromore.plugin.property.RequestParameterType;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.out.XesXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
@@ -42,7 +40,6 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPException;
-import java.awt.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -360,35 +357,19 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummariesType getProcesses(String userId, int folderId, int pageIndex, int pageSize) {
-        LOGGER.debug("Preparing GetProcessesRequest.....");
+    public SummariesType getProcessOrLogSummaries(String userId, int folderId, int pageIndex, int pageSize) {
+        LOGGER.debug("Preparing GetProcessOrLogRequest.....");
 
-        GetProcessesInputMsgType msg = new GetProcessesInputMsgType();
+        GetProcessesOrLogsInputMsgType msg = new GetProcessesOrLogsInputMsgType();
         msg.setUserId(userId);
         msg.setFolderId(folderId);
         msg.setPageIndex(pageIndex);
         msg.setPageSize(pageSize);
 
-        JAXBElement<GetProcessesInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesRequest(msg);
+        JAXBElement<GetProcessesOrLogsInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesOrLogsRequest(msg);
 
-        JAXBElement<GetProcessesOutputMsgType> response = (JAXBElement<GetProcessesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getProcesses();
-    }
-
-    @Override
-    public LogSummariesType getLogs(String userId, int folderId, int pageIndex, int pageSize) {
-        LOGGER.debug("Preparing GetLogsRequest.....");
-
-        GetLogsInputMsgType msg = new GetLogsInputMsgType();
-        msg.setUserId(userId);
-        msg.setFolderId(folderId);
-        msg.setPageIndex(pageIndex);
-        msg.setPageSize(pageSize);
-
-        JAXBElement<GetLogsInputMsgType> request = WS_CLIENT_FACTORY.createGetLogsRequest(msg);
-
-        JAXBElement<GetLogsOutputMsgType> response = (JAXBElement<GetLogsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getLogs();
+        JAXBElement<GetProcessesOrLogsOutputMsgType> response = (JAXBElement<GetProcessesOrLogsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getProcessesOrLogs();
     }
 
     @Override
@@ -663,7 +644,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummariesType readProcessSummaries(final Integer folderId, final String searchCriteria) {
+    public SummariesType readProcessSummaries(final Integer folderId, final String searchCriteria) {
         LOGGER.debug("Preparing ReadProcessSummariesRequest.....");
 
         ReadProcessSummariesInputMsgType msg = new ReadProcessSummariesInputMsgType();
@@ -733,7 +714,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummariesType searchForSimilarProcesses(final int processId, final String versionName, final String method,
+    public SummariesType searchForSimilarProcesses(final int processId, final String versionName, final String method,
             final Boolean latestVersions, final int folderId, final String userId, final double modelThreshold, final double labelThreshold,
             final double contextThreshold, final double skipnWeight, final double subnWeight, final double skipeWeight) {
         LOGGER.debug("Preparing SearchForSimilarProcessesRequest.....");
@@ -811,6 +792,26 @@ public class ManagerServiceClient implements ManagerService {
         JAXBElement<ExportFormatInputMsgType> request = WS_CLIENT_FACTORY.createExportFormatRequest(msg);
 
         JAXBElement<ExportFormatOutputMsgType> response = (JAXBElement<ExportFormatOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            LOGGER.info(StreamUtil.convertStreamToString(response.getValue().getExportResult().getNative()));
+            return response.getValue().getExportResult();
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ExportLogResultType exportLog(final int logId, final String logName) throws Exception {
+        LOGGER.debug("Preparing ExportLogRequest.....");
+
+        ExportLogInputMsgType msg = new ExportLogInputMsgType();
+        msg.setLogId(logId);
+        msg.setLogName(logName);
+
+        JAXBElement<ExportLogInputMsgType> request = WS_CLIENT_FACTORY.createExportLogRequest(msg);
+
+        JAXBElement<ExportLogOutputMsgType> response = (JAXBElement<ExportLogOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         } else {
@@ -1006,22 +1007,36 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @see ManagerService#deleteProcessVersions(java.util.Map)
+     * @see ManagerService#deleteElements(java.util.Map)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void deleteProcessVersions(final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception {
+    public void deleteElements(final Map<SummaryType, List<VersionSummaryType>> elements) throws Exception {
         LOGGER.debug("Preparing DeleteProcessVersions.....");
 
-        DeleteProcessVersionsInputMsgType msg = new DeleteProcessVersionsInputMsgType();
-        msg.getProcessVersionIdentifier().addAll(DeleteProcessVersionHelper.setProcessModels(processVersions));
+        for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+            if(entry.getKey() instanceof ProcessSummaryType) {
+                DeleteProcessVersionsInputMsgType msg = new DeleteProcessVersionsInputMsgType();
+                msg.getProcessVersionIdentifier().addAll(DeleteProcessVersionHelper.setElements(elements));
 
-        JAXBElement<DeleteProcessVersionsInputMsgType> request = WS_CLIENT_FACTORY.createDeleteProcessVersionsRequest(msg);
+                JAXBElement<DeleteProcessVersionsInputMsgType> request = WS_CLIENT_FACTORY.createDeleteProcessVersionsRequest(msg);
 
-        JAXBElement<DeleteProcessVersionsOutputMsgType> response = (JAXBElement<DeleteProcessVersionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        if (response.getValue().getResult().getCode() == -1) {
-            throw new Exception(response.getValue().getResult().getMessage());
+                JAXBElement<DeleteProcessVersionsOutputMsgType> response = (JAXBElement<DeleteProcessVersionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+                if (response.getValue().getResult().getCode() == -1) {
+                    throw new Exception(response.getValue().getResult().getMessage());
+                }
+            }else {
+                DeleteLogInputMsgType msg = new DeleteLogInputMsgType();
+                msg.getLogSummaryType().add((LogSummaryType) entry.getKey());
+
+                JAXBElement<DeleteLogInputMsgType> request = WS_CLIENT_FACTORY.createDeleteLogRequest(msg);
+
+                JAXBElement<DeleteLogOutputMsgType> response = (JAXBElement<DeleteLogOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+                if (response.getValue().getResult().getCode() == -1) {
+                    throw new Exception(response.getValue().getResult().getMessage());
+                }
+            }
         }
     }
 

@@ -20,15 +20,9 @@
 
 package org.apromore.service.pql;
 
-import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.List;
-import java.util.Set;
-
-import org.pql.index.IndexStatus;
 
 import org.apromore.helper.Version;
-import org.apromore.model.ProcessSummariesType;
 
 /**
  * Hold the composite key of a process model version

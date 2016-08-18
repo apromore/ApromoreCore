@@ -84,9 +84,7 @@ public interface ManagerService {
 
     List<GroupAccessType> getProcessGroups(int processId);
 
-    ProcessSummariesType getProcesses(String userId, int folderId, int pageIndex, int pageSize);
-
-    LogSummariesType getLogs(String userId, int folderId, int pageIndex, int pageSize);
+    SummariesType getProcessOrLogSummaries(String userId, int folderId, int pageIndex, int pageSize);
 
     ImportLogResultType importLog(String username, Integer folderId, String logName, InputStream log, String extension, String domain, String created, boolean makePublic) throws Exception;
 
@@ -190,7 +188,7 @@ public interface ManagerService {
      * @param searchCriteria the search criteria to restrict the results
      * @return the ProcessSummaryType from the WebService
      */
-    ProcessSummariesType readProcessSummaries(Integer folderId, String searchCriteria);
+    SummariesType readProcessSummaries(Integer folderId, String searchCriteria);
 
     /**
      * Takes an APQL expression and tells the manager to excute it and return a result.
@@ -218,7 +216,7 @@ public interface ManagerService {
      * @param skipeWeight the Skip E weight
      * @return processSummary type for the Web Service
      */
-    ProcessSummariesType searchForSimilarProcesses(int processId, String versionName, String method, Boolean latestVersions, int folderId,
+    SummariesType searchForSimilarProcesses(int processId, String versionName, String method, Boolean latestVersions, int folderId,
             String userId, double modelThreshold, double labelThreshold, double contextThreshold, double skipnWeight, double subnWeight,
             double skipeWeight);
 
@@ -261,6 +259,8 @@ public interface ManagerService {
     ExportFormatResultType exportFormat(int processId, String processName, String branch, String versionNumber, String nativeType,
             String annotationName, Boolean withAnnotations, String owner, Set<RequestParameterType<?>> canoniserProperties)
             throws Exception;
+
+    ExportLogResultType exportLog(int logId, String logName) throws Exception;
 
     /**
      * Import a process into the Apromore Repository.
@@ -420,11 +420,11 @@ public interface ManagerService {
 
     /**
      * Delete process models / versions from the repository.
-     * @param processVersions the list of process models
+     * @param elements the list of process models
      * @throws Exception ... change to be something more relevant
      * TODO: Fix Exception
      */
-    void deleteProcessVersions(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception;
+    void deleteElements(Map<SummaryType, List<VersionSummaryType>> elements) throws Exception;
 
 
     /**

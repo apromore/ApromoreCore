@@ -70,8 +70,8 @@ public class Log implements Serializable {
         super();
     }
 
-    public Log(Integer processId) {
-        id = processId;
+    public Log(Integer logId) {
+        id = logId;
     }
 
 

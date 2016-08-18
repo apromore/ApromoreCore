@@ -22,7 +22,7 @@ package org.apromore.portal.dialogController;
 
 import org.apromore.model.*;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
+import org.apromore.portal.dialogController.renderer.SummaryItemRenderer;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
