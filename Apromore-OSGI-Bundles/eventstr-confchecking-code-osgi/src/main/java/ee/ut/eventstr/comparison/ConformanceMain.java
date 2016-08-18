@@ -191,10 +191,10 @@ public class ConformanceMain {
 			}
 		}
 		
-		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.ESPARZA);
+		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.ESPARZA, new HashSet<String>());
 		unfolder.computeUnfolding();
 		
-		Unfolding2PES pes = new Unfolding2PES(unfolder.getSys(), unfolder.getBP(), labels);
+		Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
 		NewUnfoldingPESSemantics<Integer> pessem = new NewUnfoldingPESSemantics<Integer>(pes.getPES(), pes);
 		return pessem;
 	}

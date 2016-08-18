@@ -6,6 +6,10 @@
 # IntelliJ IDEA artifacts, see https://intellij-support.jetbrains.com/hc/en-us/articles/206544839-How-to-manage-projects-under-Version-Control-Systems
 **/.idea/*
 **/*.iws
+*.iml
+
+# macOS Finder artifacts
+**/.DS_Store
 
 # Unpacked application server
 Apromore-Assembly/Editor-Repository
