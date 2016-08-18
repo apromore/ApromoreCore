@@ -24,8 +24,9 @@ import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.model.*;
-import org.apromore.service.PQLService;
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.ProcessVersionsType;
 
 /**
  * UI Helper Interface. Kinda a hack, need to re-look at this.
@@ -82,6 +83,4 @@ public interface UserInterfaceHelper {
     LogSummaryType buildLogSummary(Log log);
 
     LogSummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
-
-    public void setPQLService(PQLService pqlService);
 }

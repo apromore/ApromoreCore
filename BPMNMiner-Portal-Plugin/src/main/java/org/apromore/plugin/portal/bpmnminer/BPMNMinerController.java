@@ -34,6 +34,7 @@ import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
+import org.processmining.plugins.bpmn.miner.subprocessminer.ui.SelectMinerUI;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -53,7 +54,7 @@ import org.apromore.service.helper.UserInterfaceHelper;
  */
 public class BPMNMinerController {
 
-    private PortalContext portalContext;
+    PortalContext portalContext;
     private Window bpmnMinerW;
     private Button uploadLog;
     private Button cancelButton;
@@ -64,13 +65,13 @@ public class BPMNMinerController {
     private String nativeType = "BPMN 2.0";
 
     private String[] arrayMiningAlgorithms = new String[] {
-            "Inductive Miner",
-            "Heuristics Miner ProM 5.2 without unused relationships",
-            "Heuristics Miner ProM 6",
+            SelectMinerUI.IM,
+            SelectMinerUI.HM6,
+            SelectMinerUI.HMWO5,
 //            "Fodina Miner",
-            "Alpha Algorithm",
-            "ILP Miner",
-            "Heuristics Miner ProM 5.2 with unused relationships"
+            SelectMinerUI.ALPHA,
+            SelectMinerUI.ILP,
+            SelectMinerUI.HMW5
     };
     private String[] arrayDependencyAlgorithms = new String[] {
             "Normal",
@@ -251,25 +252,26 @@ public class BPMNMinerController {
             bos.write(logByteArray, 0, logByteArray.length);
             InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
             log = importFromStream(new XFactoryNaiveImpl(), zipEntryIS, logFileName);
+
+            if(log == null) {
+                Messagebox.show("Please select a log.");
+            }else if(miningAlgorithms.getSelectedIndex() < 0) {
+                Messagebox.show("Please select mining algorithm.");
+            }else {
+                erModel = new DiscoverERmodel();
+                listCandidates = erModel.generateAllAttributes(log);
+
+                new CandidatesEntitiesController(this, listCandidates);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if(log == null) {
-            Messagebox.show("Please select a log.");
-        }else if(miningAlgorithms.getSelectedIndex() < 0) {
-            Messagebox.show("Please select mining algorithm.");
-        }else {
-            erModel = new DiscoverERmodel();
-            listCandidates = erModel.generateAllAttributes(log);
-
-            new CandidatesEntitiesController(this, listCandidates);
-        }
     }
 
-    public void setSelectedCandidatesEntities(List<String> listCandidates, boolean[] selected) throws NoEntityException {
+    public void setSelectedCandidatesEntities(List<String> listCandidates, boolean[] selected) throws IOException, NoEntityException {
         this.listCandidates = listCandidates;
         this.selected = selected;
 
@@ -300,7 +302,7 @@ public class BPMNMinerController {
 
             this.bpmnMinerW.detach();
 
-            String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
+            String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, getSelectedAlgorithm(), dependencyAlgorithms.getSelectedIndex()+1,
                     ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
                     ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
                     listCandidates, group);
@@ -343,5 +345,28 @@ public class BPMNMinerController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int getSelectedAlgorithm() {
+        int selected = miningAlgorithms.getSelectedIndex();
+        String name = "Inductive Miner";
+
+        switch (selected) {
+            case 0 : name = "Inductive Miner"; break;
+            case 1 : name = "Heuristics Miner ProM 6"; break;
+            case 2 : name = "Heuristics Miner ProM5.2 Without Unused Relationships"; break;
+            case 3 : name = "Alpha Algorithm"; break;
+            case 4 : name = "ILP Miner"; break;
+            case 5 : name = "Heuristics Miner ProM5.2 With Unused Relationships";
+        }
+
+        if(name.equals(SelectMinerUI.ALPHA)) return SelectMinerUI.ALPHAPOS;
+        else if(name.equals(SelectMinerUI.HM6)) return SelectMinerUI.HMPOS6;
+        else if(name.equals(SelectMinerUI.HMW5)) return SelectMinerUI.HMWPOS5;
+        else if(name.equals(SelectMinerUI.HMWO5)) return SelectMinerUI.HMWOPOS5;
+        else if(name.equals(SelectMinerUI.ILP)) return SelectMinerUI.ILPPOS;
+        else if(name.equals(SelectMinerUI.IM)) return SelectMinerUI.IMPOS;
+
+        return SelectMinerUI.IMPOS;
     }
 }

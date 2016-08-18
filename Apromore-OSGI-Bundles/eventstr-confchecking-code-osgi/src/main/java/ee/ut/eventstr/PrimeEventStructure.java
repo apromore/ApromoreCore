@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.BitSet;
+import java.util.HashSet;
 import java.util.List;
 
 public class PrimeEventStructure <T> {
@@ -17,6 +18,7 @@ public class PrimeEventStructure <T> {
 	List<Integer> sinks;
 	
 	BehaviorRelation[][] matrix;
+	private HashSet<String> cyclicTasks;
 
 	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality,
 			BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict, List<Integer> sources, List<Integer> sinks) {
@@ -28,6 +30,7 @@ public class PrimeEventStructure <T> {
 		this.labels = labels;
 		this.sources = sources;
 		this.sinks = sinks;
+		this.cyclicTasks = new HashSet<>();
 	}
 	
 	public BehaviorRelation[][] getBRelMatrix() {
@@ -140,5 +143,13 @@ public class PrimeEventStructure <T> {
 			return ".";
 		}
 		return null;
+	}
+
+	public void setCyclicTasks(HashSet<String> cyclicTasks) {
+		this.cyclicTasks = cyclicTasks;
+	}
+	
+	public HashSet<String> getCyclicTasks(){
+		return cyclicTasks;
 	}
 }

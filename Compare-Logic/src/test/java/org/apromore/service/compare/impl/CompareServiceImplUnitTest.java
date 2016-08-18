@@ -44,6 +44,7 @@ import org.junit.Test;
 
 // First party
 import org.apromore.service.compare.CompareService;
+import org.semanticweb.kaon2.ob;
 
 /**
  * Tests for {@link CompareServiceImpl}.
@@ -86,8 +87,12 @@ public class CompareServiceImplUnitTest {
         // Obtain the log parameter
         XLog log = new XesXmlParser().parse(getClass().getClassLoader().getResourceAsStream(xes)).get(0);
 
+        HashSet<String> obs = new HashSet<String>();
+        for(Transition t : net.getTransitions())
+                obs.add(t.getName());
+
         // Invoke the method
-        Set<String> result = compareService.discoverBPMNModel(net, log);
+        Set<String> result = compareService.discoverBPMNModel(net, log, obs);
 
         // Did we get the expected result?
         assertEquals(expectedResult, result);

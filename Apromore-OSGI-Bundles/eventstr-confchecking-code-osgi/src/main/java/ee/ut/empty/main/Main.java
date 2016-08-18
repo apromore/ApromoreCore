@@ -1,6 +1,7 @@
 package ee.ut.empty.main;
 
 import java.io.File;
+import java.util.HashSet;
 
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -45,12 +46,19 @@ public class Main {
 
 		PORuns2PES.getPrimeEventStructure(runs, modelLog);
 		
-		BPMNProcess<Element> model = BPMN2Reader.parse(new File("models/cycle10.bpmn"));
+		HashSet<String> obsLabels = new HashSet<>();
+		
+		BPMNProcess<Element> model = BPMN2Reader.parse(new File("bpm2014/model64.bpmn"));
+		
+		for(Integer i : model.getVisibleNodes())
+			if(model.isTask(i) && !model.getName(i).isEmpty())
+				obsLabels.add(model.getName(i));
+		
 		Petrifier<Element> petrifier = new Petrifier<Element>(model);
 		PetriNet net = petrifier.petrify(0, 12);
 		System.out.println(model.getLabels());
 		ApromoreCompareML comp = new ApromoreCompareML();
-		System.out.println(comp.getDifferences(net, log));
+		System.out.println(comp.getDifferences(net, log, obsLabels));
 		
 	    System.out.println("Overall time: " + (System.nanoTime() - time) / 1000000000.0);
 	}

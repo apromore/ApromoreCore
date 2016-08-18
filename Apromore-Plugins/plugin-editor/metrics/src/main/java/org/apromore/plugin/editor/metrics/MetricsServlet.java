@@ -6,30 +6,32 @@ import java.io.IOException;
 import java.util.Map;
 
 // Java 2 Enterprise
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 
+// Third party
 import org.apache.log4j.Logger;
-import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
-import org.apromore.service.metrics.MetricsService;
 import org.json.JSONObject;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+// Apromore
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
-import de.hpi.bpmn2_0.transformation.Diagram2BpmnConverter;
 import de.hpi.bpmn2_0.model.extension.synergia.Configurable;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
+import de.hpi.bpmn2_0.transformation.Diagram2BpmnConverter;
+import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
+import org.apromore.service.metrics.MetricsService;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.ServletConfig;
 
 public class MetricsServlet extends HttpServlet {
 
@@ -39,12 +41,14 @@ public class MetricsServlet extends HttpServlet {
     private MetricsService metricsService;
 
     public void init(ServletConfig config) throws ServletException {
-        Object o;
-        o = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext()).getAutowireCapableBeanFactory().getBean("importerService");
-        if(o instanceof  BPMNDiagramImporter) importerService = (BPMNDiagramImporter) o;
-
-        o = WebApplicationContextUtils.getWebApplicationContext(config.getServletContext()).getAutowireCapableBeanFactory().getBean("metricsService");
-        if(o instanceof  MetricsService) metricsService = (MetricsService) o;
+        importerService = (BPMNDiagramImporter)
+            WebApplicationContextUtils.getWebApplicationContext(config.getServletContext())
+                                      .getAutowireCapableBeanFactory()
+                                      .getBean("importerService");
+        metricsService = (MetricsService)
+            WebApplicationContextUtils.getWebApplicationContext(config.getServletContext())
+                                      .getAutowireCapableBeanFactory()
+                                      .getBean("metricsService");
     }
 
     @Override
@@ -64,10 +68,10 @@ public class MetricsServlet extends HttpServlet {
                 response.setContentType("text/plain; charset=UTF-8");
                 response.getWriter().write("Empty or missing parameter 'data'!");
             } else {
-                String meatrics = convert(jsonData);
+                String metrics = convert(jsonData);
                 response.setContentType("application/json");
                 response.setStatus(200);
-                response.getWriter().write(meatrics);
+                response.getWriter().write(metrics);
             }
         } catch (Exception e) {
             try {

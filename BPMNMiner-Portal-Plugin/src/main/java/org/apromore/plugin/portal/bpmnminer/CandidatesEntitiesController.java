@@ -21,7 +21,6 @@
 package org.apromore.plugin.portal.bpmnminer;
 
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -29,6 +28,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Window;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -46,12 +46,12 @@ public class CandidatesEntitiesController {
     private List<String> listCandidates;
     private boolean[] selected;
 
-    public CandidatesEntitiesController(BPMNMinerController bpmnMinerController, List<String> listCandidates) {
+    public CandidatesEntitiesController(BPMNMinerController bpmnMinerController, List<String> listCandidates) throws IOException {
         this.bpmnMinerController = bpmnMinerController;
         this.selected = new boolean[listCandidates.size()];
         this.listCandidates = listCandidates;
 
-        this.candidateEntitiesW = (Window) Executions.createComponents("macros/bpmnminer/candidateEntities.zul", null, null);
+        this.candidateEntitiesW = (Window) bpmnMinerController.portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/candidateEntities.zul", null, null);
         this.candidateEntitiesW.setTitle("Select Candidate Entities");
 
         this.candidates = (Listbox) this.candidateEntitiesW.getFellow("list");
@@ -98,7 +98,7 @@ public class CandidatesEntitiesController {
         this.candidateEntitiesW.detach();
         try {
             this.bpmnMinerController.setSelectedCandidatesEntities(listCandidates, selected);
-        } catch (NoEntityException e) {
+        } catch (IOException | NoEntityException e) {
             this.bpmnMinerController.noEntityException();
         }
     }

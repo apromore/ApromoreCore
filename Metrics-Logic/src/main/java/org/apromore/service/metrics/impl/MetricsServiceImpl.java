@@ -34,13 +34,13 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
 import org.apromore.graph.canonical.CPFEdge;
 import org.apromore.graph.canonical.CPFNode;
 import org.apromore.graph.canonical.Canonical;
-
 import org.apromore.graph.canonical.NodeTypeEnum;
+import org.apromore.plugin.DefaultParameterAwarePlugin;
+import org.apromore.service.metrics.MetricsService;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.apromore.service.metrics.MetricsService;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,7 +53,7 @@ import static org.apromore.graph.canonical.NodeTypeEnum.*;
  * Created by Adriano Augusto on 18/04/2016.
  */
 @Service
-public class MetricsServiceImpl implements MetricsService {
+public class MetricsServiceImpl extends DefaultParameterAwarePlugin implements MetricsService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetricsServiceImpl.class);
     private Canonical diagram;
     private String bonds;

@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.compareBP;
 import java.io.ByteArrayInputStream;
 import java.util.*;
 
+import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import hub.top.petrinet.PetriNet;
 import hub.top.petrinet.Place;
 import hub.top.petrinet.Transition;
@@ -31,8 +32,12 @@ import org.apache.commons.io.IOUtils;
 
 // Java 2 Enterprise Edition packages
 import javax.inject.Inject;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.math3.analysis.function.Exp;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.helper.Version;
@@ -41,7 +46,8 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
+import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.dialogController.MainController;
 import org.apromore.service.compare.CompareService;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
@@ -91,6 +97,35 @@ public class ComparePlugin extends DefaultPortalPlugin {
         return "Compare";
     }
 
+    public String getGroupLabel(Locale locale) {
+        return "Analysis";
+    }
+
+    public PetriNet getNet(ProcessSummaryType process, VersionSummaryType vst, PortalContext context, HashSet<String> labels) throws Exception{
+        int procID = process.getId();
+        String procName = process.getName();
+        String branch = vst.getName();
+        Version version = new Version(vst.getVersionNumber());
+        String username = context.getCurrentUser().getUsername();
+        int folderId = context.getCurrentFolder() == null ? 0 : context.getCurrentFolder().getId();
+
+        Set<RequestParameterType<?>> requestProperties = new HashSet<>();
+        requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTransition",true));
+        requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTrans",false));
+
+        ExportFormatResultType data = processService.exportProcess(procName, procID, branch, version, "PNML 1.3.2", "MN", false, requestProperties);
+        byte[] bytes = IOUtils.toByteArray(data.getNative().getInputStream());
+        PNMLSerializer pnmlSerializer = new PNMLSerializer();
+
+        NetSystem net = pnmlSerializer.parse(bytes);
+
+        for(org.jbpt.petri.Transition t : net.getObservableTransitions())
+            if (t.getLabel().trim().length() > 0)
+                labels.add(t.getLabel().trim());
+
+        return jbptToUma(net);
+    }
+
     @Override
     public void execute(PortalContext context) {
         LOGGER.info("Executing");
@@ -99,39 +134,133 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
         // At least 1 process versions must be selected. Not necessarily of different processes
         if (selectedProcessVersions.size() == 1 && selectedVersions.next().size() < 1 || selectedProcessVersions.size() < 1) {
-            context.getMessageHandler().displayInfo("Select at least 1 process model for the comparison.");
+            new CompareController(context, compareService);
+            context.getMessageHandler().displayInfo("Log to log comparison.");
             return;
         }
 
         try {
-            processVersions = context.getSelection().getSelectedProcessModelVersions();
-            for (ProcessSummaryType process : processVersions.keySet()) {
-                for (VersionSummaryType vst : processVersions.get(process)) {
-                    int procID = process.getId();
-                    String procName = process.getName();
-                    String branch = vst.getName();
-                    Version version = new Version(vst.getVersionNumber());
-                    String username = context.getCurrentUser().getUsername();
-                    int folderId = context.getCurrentFolder() == null ? 0 : context.getCurrentFolder().getId();
-
-                    Set<RequestParameterType<?>> requestProperties = new HashSet<>();
-                    requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTransition",true));
-                    requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTrans",false));
-
-                    ExportFormatResultType data = processService.exportProcess(procName, procID, branch, version, "PNML 1.3.2", "MN", false, requestProperties);
-                    byte[] bytes = IOUtils.toByteArray(data.getNative().getInputStream());
-                    PNMLSerializer pnmlSerializer = new PNMLSerializer();
-
-                    NetSystem net = pnmlSerializer.parse(bytes);
-
-                    new CompareController(context, compareService, jbptToUma(net));
+            // Populate "details" with the process:version selections
+            List<ProcessSummaryType> procS = new ArrayList<>();
+            List<VersionSummaryType> verS = new ArrayList<>();
+            List<PetriNet> nets = new ArrayList<>();
+            List<HashSet<String>> observable = new ArrayList<>();
+            for (ProcessSummaryType processSummary: selectedProcessVersions.keySet()) {
+                List<VersionSummaryType> versionSummaries = selectedProcessVersions.get(processSummary);
+                if (versionSummaries.isEmpty()) {
+                    List<VersionSummaryType> x = processSummary.getVersionSummaries();
+                    versionSummaries.add(x.get(x.size() - 1));  // default to the head version
+                }
+                for (VersionSummaryType versionSummary: versionSummaries) {
+                    procS.add(processSummary);
+                    verS.add(versionSummary);
+                    HashSet<String> obs = new HashSet<>();
+                    nets.add(getNet(processSummary, versionSummary, context, obs));
+                    observable.add(new HashSet<String>(obs));
+                    System.out.println(obs);
+//                    details.add(new VersionDetailType(processSummary, versionSummary));
                 }
             }
+
+            // If we have exactly two process:version selections, perform the comparison
+            switch (selectedProcessVersions.size()) {
+            case 1:
+                new CompareController(context, compareService, nets.get(0), observable.get(0));
+                context.getMessageHandler().displayInfo("Performed conformance checker.");
+                break;
+            case 2:
+                context.getMessageHandler().displayInfo("Performing comparison.");
+
+                ModelAbstractions model1 = toModelAbstractions(procS.get(0), verS.get(0));
+                ModelAbstractions model2 = toModelAbstractions(procS.get(1), verS.get(1));
+
+                new CompareController(context,compareService, model1, model2, observable.get(0), observable.get(1), procS.get(0), verS.get(0), procS.get(1), verS.get(1));
+//                new CompareController(context,compareService, nets.get(0), nets.get(1), observable.get(0), observable.get(1));
+                context.getMessageHandler().displayInfo("Performed comparison.");
+                break;
+            default:
+                context.getMessageHandler().displayInfo("There are " + selectedProcessVersions.size() + " process versions selected, but only 2 can be compared at a time.");
+            }
+
+//            if(selectedProcessVersions.size() == 2) {
+//                HashSet<String> silent2 = new HashSet<>();
+//                PetriNet net2 = getNet(2, context, silent2);
+//
+//                System.out.println("Is null (1)? " + (net1 == null));
+//                System.out.println("Is null (2)? " + (net2 == null));
+//
+//                new CompareController(context,compareService, net1, net2, silent1, silent2);
+//            }else
+//                new CompareController(context, compareService, net1);
+
         }catch(Exception e){
             e.printStackTrace();
         }
 
     }
+
+    private ModelAbstractions toModelAbstractions(ProcessSummaryType process, VersionSummaryType version) throws Exception {
+        ExportFormatResultType result = processService.exportProcess(
+                process.getName(),           // process name
+                process.getId(),             // process ID
+                version.getName(),           // branch
+                new Version(version.getVersionNumber()),  // version number,
+                "BPMN 2.0",                  // nativeType,
+                null,                        // annotation name,
+                false,                       // with annotations?
+                Collections.EMPTY_SET        // canoniser properties
+        );
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        TransformerFactory.newInstance().newTransformer().transform(new StreamSource(result.getNative().getInputStream()), new StreamResult(baos));
+        return new ModelAbstractions(baos.toByteArray());
+    }
+
+//    public PetriNet getNet(int model, PortalContext context, HashSet<String> labels, ProcessSummaryType process ) throws Exception{
+////        processVersions = context.getSelection().getSelectedProcessModelVersions();
+////
+////        for (ProcessSummaryType process : processVersions.keySet()) {
+////            i++;
+////
+////            System.out.println("enter to the net extraction! = "+i +" -- "+ model);
+////            for (VersionSummaryType vst : processVersions.get(process)) {
+//                System.out.println("1");
+//                int procID = process.getId();
+//                String procName = process.getName();
+//                String branch = vst.getName();
+//                Version version = new Version(vst.getVersionNumber());
+//                String username = context.getCurrentUser().getUsername();
+//                int folderId = context.getCurrentFolder() == null ? 0 : context.getCurrentFolder().getId();
+//
+//                System.out.println("2");
+//
+//                Set<RequestParameterType<?>> requestProperties = new HashSet<>();
+//                requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTransition",true));
+//                requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTrans",false));
+//
+//                System.out.println("3");
+//
+//                ExportFormatResultType data = processService.exportProcess(procName, procID, branch, version, "PNML 1.3.2", "MN", false, requestProperties);
+//                byte[] bytes = IOUtils.toByteArray(data.getNative().getInputStream());
+//                PNMLSerializer pnmlSerializer = new PNMLSerializer();
+//
+//                System.out.println("4");
+//
+//                NetSystem net = pnmlSerializer.parse(bytes);
+//
+//                System.out.println("5");
+//                for(org.jbpt.petri.Transition t : net.getSilentTransitions())
+//                    labels.add(t.getName());
+//
+//                System.out.println("6");
+////                if(i == model)
+//                    return jbptToUma(net);
+//                //new CompareController(context, compareService, jbptToUma(net));
+////            }
+////        }
+////
+////        return null;
+//    }
 
     public PetriNet jbptToUma(NetSystem net) {
         PetriNet copy = new PetriNet();
