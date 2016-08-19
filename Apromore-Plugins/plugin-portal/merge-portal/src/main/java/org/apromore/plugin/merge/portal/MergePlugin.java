@@ -83,7 +83,7 @@ public class MergePlugin extends DefaultPortalPlugin {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Design";
+        return "Redesign";
     }
 
     @Override

@@ -2015,7 +2015,7 @@ public class Main extends JPanel implements ListSelectionListener,
                         // -apromore_model and -user can occur in either order, so we've deferred processing them until here
 			if (j != -1) {
 				application.setLinkedProcessModel(new ApromoreProcessModel(
-                                        new URI("http://localhost/manager/services/manager"),  // manager SOAP endpoint
+                                        new URI("http://localhost/manager/services"),  // manager SOAP endpoint
 					Integer.valueOf(args[j+1]),   // process ID
 					args[j+2],                    // branch
 					args[j+3],                    // version number

@@ -37,7 +37,7 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
     }
 
     private void addTab(Tab tab, PortalContext portalContext) {
-        SessionTab.getSessionTab(portalContext).addTabToSession(portalContext.getCurrentUser().getId(), tab);
+        SessionTab.getSessionTab(portalContext).addTabToSession(portalContext.getCurrentUser().getId(), tab, true);
     }
 
     protected void displayProcessSummaries(String tabName, SummariesType processSummaries, PortalContext portalContext) {

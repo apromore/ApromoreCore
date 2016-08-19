@@ -34,7 +34,6 @@ import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
 import org.apromore.portal.exception.ExceptionAllUsers;
@@ -76,10 +75,8 @@ public class MainController extends BaseController implements MainControllerInte
     private MenuController menu;
     private SimpleSearchController simplesearch;
     private ShortMessageController shortmessageC;
-    private BaseListboxController baseListboxControllerProcesses;
-//    private BaseListboxController baseListboxControllerLogs;
+    private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
-    private BaseFilterController baseFilterController;
 
     private NavigationController navigation;
 
@@ -171,8 +168,6 @@ public class MainController extends BaseController implements MainControllerInte
                             if (Constants.EVENT_MESSAGE_SAVE.equals(event.getName())) {
                                 clearProcessVersions();
                                 reloadSummaries();
-//                                clearLogVersions();
-//                                reloadLogSummaries();
                             }
                         }
                     });
@@ -731,17 +726,13 @@ public class MainController extends BaseController implements MainControllerInte
     /* Removes the currently displayed listbox, detail and filter view */
     private void deattachDynamicUI() {
         this.getFellow("baseListboxProcesses").getFellow("tablecomp").getChildren().clear();
-//        this.getFellow("baseListboxLogs").getFellow("tablecomp").getChildren().clear();
         this.getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
-        this.getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
     }
 
     /* Attaches the the listbox, detail and filter view */
     private void reattachDynamicUI() {
         this.getFellow("baseListboxProcesses").getFellow("tablecomp").appendChild(baseListboxControllerProcesses);
-//        this.getFellow("baseListboxLogs").getFellow("tablecomp").appendChild(baseListboxControllerLogs);
         this.getFellow("baseDetail").getFellow("detailcomp").appendChild(baseDetailController);
-        this.getFellow("baseFilter").getFellow("filtercomp").appendChild(baseFilterController);
     }
 
     /* Switches all dynamic UI elements to the ProcessSummaryView. Affects the listbox, detail and filter view */
@@ -756,13 +747,10 @@ public class MainController extends BaseController implements MainControllerInte
 
         // Otherwise create new Listbox
         this.baseListboxControllerProcesses = new ProcessListboxController(this);
-//        this.baseListboxControllerLogs = new LogListboxController(this);
         this.baseDetailController = new ProcessVersionDetailController(this);
-        this.baseFilterController = new BaseFilterController(this);
 
         reattachDynamicUI();
         reloadSummaries();
-//        reloadLogSummaries();
     }
 
     /* Switches all dynamic UI elements to the SimilarityClusterView. Affects the listbox, detail and filter view */
@@ -778,8 +766,8 @@ public class MainController extends BaseController implements MainControllerInte
         // Otherwise create new Listbox
         this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
         this.baseFilterController = new SimilarityClustersFilterController(this);
-        this.baseListboxControllerProcesses = new SimilarityClustersListboxController(this,
-                (SimilarityClustersFilterController) this.baseFilterController,
+        this.baseListboxController = new SimilarityClustersListboxController(this,
+                null,
                 (SimilarityClustersFragmentsListboxController) this.baseDetailController);
 
         reattachDynamicUI();
@@ -852,8 +840,64 @@ public class MainController extends BaseController implements MainControllerInte
 
     public void addResult(List<ResultPQL> results, String userID, List<Detail> details, String query, String nameQuery) {
         TabQuery newTab = new TabQuery(nameQuery, userID, details, query, results, portalContext);
-        SessionTab.getSessionTab(portalContext).addTabToSession(userID, newTab);
+/*
+        String tabName = "APQL query";
+        String tabRowImage = "img/icon/bpmn-22x22.png";
+
+        List<TabRowValue> rows = new ArrayList<>();
+        for(ResultPQL resultPQL : results) {
+            TabRowValue row = new TabRowValue();
+            row.add("name");
+            row.add("id");
+            row.add("lang");
+            row.add("dom");
+            row.add("rank");
+            row.add("version");
+            row.add("own");
+            rows.add(row);
+        }
+
+        List<Listheader> listheaders = new ArrayList<>();
+        addListheader(listheaders, "Name",              null);
+        addListheader(listheaders, "Id",                "3em");
+        addListheader(listheaders, "Original language", "10em");
+        addListheader(listheaders, "Domain",            "5em");
+        addListheader(listheaders, "Ranking",           "6em");
+        addListheader(listheaders, "Latest version",    "9em");
+        addListheader(listheaders, "Owner",             "5em");
+
+        TabItemExecutor tabItemExecutor = new ProcessTabItemExecutor(portalContext.getMainController());
+
+        portalContext.setUser(
+        PortalTabImpl newTab = new PortalTabImpl(tabName, tabRowImage, rows, listheaders, tabItemExecutor, portalContext);
+*/
+        SessionTab.getSessionTab(portalContext).addTabToSession(userID, newTab, true);
+        updateTabs(userID);
     }
+
+/*
+    private void addListheader(final List<Listheader> listheaders, String name, String width) {
+        final Listheader listheader = new Listheader(name, null, width);
+
+        listheader.setSortAscending(new java.util.Comparator<TabItem>() {
+            int position = listheaders.size();
+            @Override
+            public int compare(TabItem o1, TabItem o2) {
+                return o1.getValue(position).compareTo(o2.getValue(position));
+            }
+        });
+
+        listheader.setSortDescending(new java.util.Comparator<TabItem>() {
+            int position = listheaders.size();
+            @Override
+            public int compare(TabItem o1, TabItem o2) {
+                return o2.getValue(position).compareTo(o1.getValue(position));
+            }
+        });
+
+        listheaders.add(listheader);
+    }
+*/
 
     private void updateTabs(String userId){
         Window mainW = (Window) this.getFellow("mainW");
@@ -869,8 +913,8 @@ public class MainController extends BaseController implements MainControllerInte
                 try {
                     if(!tabbox.getTabs().getChildren().contains(tab)) {
                         PortalTab portalTab = (PortalTab) tab.clone();
-                        SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userId, tab);
-                        SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, (org.zkoss.zul.Tab) portalTab);
+                        SessionTab.getSessionTab(portalContext).removeTabFromSession(userId, tab, false);
+                        SessionTab.getSessionTab(portalContext).addTabToSession(userId, (org.zkoss.zul.Tab) portalTab, false);
 
                         portalTab.getTab().setParent(tabbox.getTabs());
                         if (portalTab.getTabpanel() == null) {

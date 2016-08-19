@@ -128,7 +128,7 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Design";
+        return "Discover";
     }
 
     @Override
