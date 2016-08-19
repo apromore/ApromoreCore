@@ -20,7 +20,7 @@
 
 <!-- Controller is  MenuController-->
 <menubar id="operationMenu" width="100%">
-    <menu id="process" label="Process">
+    <menu id="process" label="File">
         <menupopup>
             <menuitem id="createProcess" label="Create model" disabled="true" image="/img/new.png"/>
             <menuitem id="fileImport" label="Import" disabled="true" image="/img/import.png"/>
@@ -35,7 +35,7 @@
             <menuitem id="processPaste" label="Paste" disabled="true" image="/img/paste.png"/>
             <menuitem id="processMove" label="Move" disabled="true" image="/img/move.png"/>
             <menuseparator/>
-            <menuitem id="processDeploy" label="Deploy Process" disabled="true" image="/img/deploy.png"/>
+            <menuitem id="processDeploy" label="Deploy Process to YAWL" disabled="true" image="/img/deploy.png"/>
         </menupopup>
     </menu>
 </menubar>

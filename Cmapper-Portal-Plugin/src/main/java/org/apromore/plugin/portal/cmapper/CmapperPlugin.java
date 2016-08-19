@@ -75,7 +75,7 @@ public class CmapperPlugin extends DefaultPortalPlugin {
     private String managerEndpoint, filestoreURL;
 
     public CmapperPlugin(String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager) {
-        managerEndpoint = "http://" + siteExternalHost + ":" + siteExternalPort + "/" + siteManager + "/services/manager";
+        managerEndpoint = "http://" + siteExternalHost + ":" + siteExternalPort + "/" + siteManager + "/services";
         filestoreURL    = "http://" + siteExternalHost + ":" + siteExternalPort + "/" + siteFilestore;
     }
 
@@ -86,7 +86,7 @@ public class CmapperPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Design";
+        return "Redesign";
     }
 
 /*

@@ -75,7 +75,7 @@ public class QuaestioPlugin extends DefaultPortalPlugin {
     private String managerEndpoint;
 
     public QuaestioPlugin(String siteExternalHost, int siteExternalPort, String siteManager) {
-        managerEndpoint = "http://" + siteExternalHost + ":" + siteExternalPort + "/" + siteManager + "/services/manager";
+        managerEndpoint = "http://" + siteExternalHost + ":" + siteExternalPort + "/" + siteManager + "/services";
     }
 
     @Override
@@ -85,7 +85,7 @@ public class QuaestioPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Design";
+        return "Redesign";
     }
 
 /*

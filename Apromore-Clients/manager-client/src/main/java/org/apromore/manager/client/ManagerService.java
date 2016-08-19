@@ -191,16 +191,6 @@ public interface ManagerService {
     SummariesType readProcessSummaries(Integer folderId, String searchCriteria);
 
     /**
-     * Takes an APQL expression and tells the manager to excute it and return a result.
-     * @param searchExpression the search expression to restrict the results
-     * @return the ProcessSummaryType from the WebService
-     */
-    List<String> runAPQLExpression(String searchExpression, List<String> ids, String userID) throws Exception;
-
-    List<String> getProcessesLabels(String table, String columnName);
-
-    List<Detail> getDetails() throws Exception;
-    /**
      * Run a search for similar processes models.
      * @param processId the search criteria being a process model
      * @param versionName the version name of the process model search criteria

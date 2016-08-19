@@ -217,6 +217,33 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
 
     /** {@inheritDoc} */
     public void bindToProcessService() {
+        LOGGER.info("Binding to process service " + processService);
+        IPQLAPI api = pqlBean.getApi();
+        for (ProcessModelVersion pmv: processModelVersionRepository.findAll()) {
+            int        processId  = pmv.getProcessBranch().getProcess().getId();
+            String     branch     = pmv.getProcessBranch().getBranchName();
+            Version    version    = new Version(pmv.getVersionNumber());
+            ExternalId externalId = new ExternalId(processId, branch, version);
+
+            try {
+                int internalId = api.getInternalID(externalId.toString());
+                IndexStatus status = (internalId == 0) ? IndexStatus.UNINDEXED : api.getIndexStatus(internalId);
+
+                // If the external ID doesn't occur in the PQL index, queue it to be asynchronously indexed
+                switch (status) {
+                case UNINDEXED:
+                    LOGGER.info("PQL index needs to be initialized for process with external ID " + externalId);
+                    queue.add(externalId);
+                    break;
+                case INDEXING:    LOGGER.info("PQL index " + internalId + " already being indexed for process with external ID " + externalId);           break;
+                case INDEXED:     LOGGER.info("PQL index " + internalId + " already present for process with external ID " + externalId);                 break;
+                case CANNOTINDEX: LOGGER.info("PQL index " + internalId + " couldn't previously be indexed for process with external ID " + externalId);  break;
+                default:          LOGGER.warn("PQL index " + internalId + " for process with external ID " + externalId + " has unknown status " + status);
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Unable to look up process with external ID " + externalId + " in the PQL index", e);
+            }
+        }
         LOGGER.info("Bound to process service " + processService);
     }
 
@@ -250,6 +277,7 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
 
     private void indexProcess(ExternalId externalId) {
         //LOGGER.info("Indexing queued process " + externalId);
+        IPQLAPI api = pqlBean.getApi();
         try {
             Set<RequestParameterType<?>> requestProperties = new HashSet<>();
             requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTransition",true));
@@ -260,12 +288,25 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
                 PNML_NATIVE_TYPE, null, false, requestProperties);
 
             byte[] bytes = IOUtils.toByteArray(exportResult.getNative().getInputStream());
-            IPQLAPI api = pqlBean.getApi();
             int internalId = api.storeModel(bytes, externalId.toString());
             LOGGER.info("Stored " + (api.checkModel(internalId) ? "sound" : "unsound") + " process " + externalId + " for PQL indexing as id " + internalId);
 
         } catch (ExportFormatException | IOException | SQLException e) {
             LOGGER.warn("Unable to index " + externalId + " for PQL indexing", e);
+
+            // This is USUALLY because the model has been deleted.  In other cases, it's still relatively safe to just delete the associated index.
+            try {
+                LOGGER.info("Removing model with external ID " + externalId + " from PQL index");
+                int internalId = api.getInternalID(externalId.toString());
+                if(!api.deleteModel(internalId)) {
+                    LOGGER.error("Failed to remove model with external ID " + externalId + " from PQL index");
+                } else {
+                    LOGGER.error("Removed model with external ID " + externalId + " and internal ID " + internalId + " from PQL index");
+                }
+
+            } catch (SQLException e2) {
+                LOGGER.error("Exception while removing model " + externalId + " from PQL index", e2);
+            }
         }
     }
 }

@@ -75,8 +75,8 @@ public class ManagerServiceClient implements ManagerService {
      * @param siteManager
      */
     public ManagerServiceClient(String siteHost, int sitePort, String siteManager) throws SOAPException, URISyntaxException {
-        URI uri = new URI("http", null, siteHost, sitePort, siteManager + "/services/manager", null, null);
-        this.webServiceTemplate = createWebServiceTemplate(new URI("http", null, siteHost, sitePort, siteManager + "/services/manager", null, null));
+        URI uri = new URI("http", null, siteHost, sitePort, siteManager + "/services", null, null);
+        this.webServiceTemplate = createWebServiceTemplate(new URI("http", null, siteHost, sitePort, siteManager + "/services", null, null));
     }
 
     public ManagerServiceClient(URI managerEndpointURI) throws SOAPException {
@@ -85,7 +85,7 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @param managerEndpointURI the externally reachable URL of the manager endpoint, e.g. "http://localhost:9000/manager/services/manager"
+     * @param managerEndpointURI the externally reachable URL of the manager endpoint, e.g. "http://localhost:9000/manager/services"
      */
     private static WebServiceTemplate createWebServiceTemplate(URI managerEndpointURI) throws SOAPException {
 
@@ -655,57 +655,6 @@ public class ManagerServiceClient implements ManagerService {
 
         JAXBElement<ReadProcessSummariesOutputMsgType> response = (JAXBElement<ReadProcessSummariesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getProcessSummaries();
-    }
-
-
-    /**
-     * @see ManagerService#runAPQLExpression(String, List, String)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<String> runAPQLExpression(final String searchExpression, final List<String> ids, final String userID) throws Exception {
-        LOGGER.debug("@@@@@@@@@@@@@@@@@@@Preparing RunAPQLRequest.....");
-
-        RunAPQLInputMsgType msg = new RunAPQLInputMsgType();
-        msg.setAPQLExpression(searchExpression);
-        msg.setUserID(userID);
-        msg.getIds().clear();
-        msg.getIds().addAll(ids);
-
-        JAXBElement<RunAPQLInputMsgType> request = WS_CLIENT_FACTORY.createRunAPQLRequest(msg);
-        LOGGER.debug("@@@@@@@@@@@@@@@@@@@ After Request: ");
-        JAXBElement<RunAPQLOutputMsgType> response = (JAXBElement<RunAPQLOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        LOGGER.debug("@@@@@@@@@@@@@@@@@@@ ManagerServiceClient Response List: "+response.getValue().getProcessResult());
-        RunAPQLOutputMsgType resp = response.getValue();
-
-        if (resp.getResult().getCode().equals(-1)) {
-            throw new Exception(resp.getResult().getMessage());
-        } else {
-            LOGGER.debug("@@@@@@@@@@@@@@@@@@@ ManagerServiceClient Response Error: "+response.getValue().getResult().getCode()+" "+response.getValue().getResult().getMessage());
-//            return response.getValue().getProcessSummaries();
-            return response.getValue().getProcessResult();
-        }
-    }
-
-    @Override
-    public List<String> getProcessesLabels(String table, String columnName) {
-        DBInputMsgType msg = new DBInputMsgType();
-        msg.setColumnName(columnName);
-        msg.setTable(table);
-        JAXBElement<DBInputMsgType> request = WS_CLIENT_FACTORY.createDBRequest(msg);
-        JAXBElement<DBOutputMsgType> response = (JAXBElement<DBOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getLabels();
-    }
-
-    @Override
-    public List<Detail> getDetails() throws Exception{
-        DetailInputMsgType detail = new DetailInputMsgType();
-
-        JAXBElement<DetailInputMsgType> request = WS_CLIENT_FACTORY.createDetailRequest(detail);
-
-        JAXBElement<DetailOutputMsgType> response = (JAXBElement<DetailOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getDetail();
     }
 
     /**
