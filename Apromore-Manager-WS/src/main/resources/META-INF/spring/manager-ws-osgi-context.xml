@@ -54,8 +54,6 @@
     <osgi:reference id="securityServiceImpl" interface="org.apromore.service.SecurityService"/>
     <osgi:reference id="workspaceServiceImpl" interface="org.apromore.service.WorkspaceService"/>
     <osgi:reference id="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
-    <osgi:reference id="PQLServiceImpl" interface="org.apromore.service.pql.PQLService"/>
-    <osgi:reference id="databaseServiceImpl" interface="org.apromore.service.pql.DatabaseService"/>
     <osgi:reference id="logServiceImpl" interface="org.apromore.service.EventLogService"/>
 
     <osgi:reference id="userDetailsServiceImpl" interface="org.springframework.security.core.userdetails.UserDetailsService"/>

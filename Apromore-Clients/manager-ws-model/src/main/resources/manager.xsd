@@ -364,7 +364,6 @@
             <xs:element name="Message" type="tns:PluginMessage" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
-
     <xs:complexType name="PluginMessage">
         <xs:sequence>
             <xs:element name="value" type="xs:string"/>

@@ -43,7 +43,6 @@ import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.*;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.model.*;
-import org.apromore.service.pql.DatabaseService;
 import org.apromore.toolbox.clustering.algorithm.dbscan.FragmentPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
