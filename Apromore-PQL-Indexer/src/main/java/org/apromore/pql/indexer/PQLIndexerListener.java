@@ -22,6 +22,8 @@ package org.apromore.pql.indexer;
 
 // Java 2 Standard Edition
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 // Java 2 Enterprise Edition
 import javax.servlet.ServletContextEvent;
@@ -46,7 +48,7 @@ public class PQLIndexerListener implements ServletContextListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PQLIndexerListener.class.getCanonicalName());
 
-    private PQLBot bot = null;
+    private Set<PQLBot> bots = new HashSet<>();
 
     public void contextInitialized(ServletContextEvent event) {
         LOGGER.info("PQL Indexer starting");
@@ -55,28 +57,36 @@ public class PQLIndexerListener implements ServletContextListener {
         ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
         final PQLIndexerConfigurationBean config = (PQLIndexerConfigurationBean) applicationContext.getAutowireCapableBeanFactory().getBean("pqlIndexerConfig");
 
-        if (!config.isIndexingEnabled()) {
-            LOGGER.info("PQL Indexer disabled: pql.enableIndexing is configured to be false.  No indexer threads will be created.");
+        int indexerCount = Math.min(config.getNumberOfIndexerThreads(), Runtime.getRuntime().availableProcessors());
+        if (indexerCount <= 0) {
+            LOGGER.info("PQL Indexer disabled: pql.numberOfIndexerThreads is configured to be " + config.getNumberOfIndexerThreads() + ".  No indexer threads will be created.");
             return;
         }
-        assert config.isIndexingEnabled();
+        assert config.getNumberOfIndexerThreads() >= 1;
 
         // Create PQL bot
-        try {
-            bot = config.createBot();
-            bot.setDaemon(true);
-            bot.start();
-            LOGGER.info("PQL Indexer created bot");
+        LOGGER.info("PQL Indexer starting " + indexerCount + " bots");
+        
+        for (int index = 1; index <= indexerCount; index++) {
+            try {
+                PQLBot bot = config.createBot(null);
+                bot.setDaemon(true);
+                bot.start();
+                bots.add(bot);
+                LOGGER.info("PQL Indexer created bot #" + index);
 
-        } catch (PQLIndexerConfigurationException e) {
-            LOGGER.error("PQL Indexer unable to create bot", e);
+            } catch (PQLIndexerConfigurationException e) {
+                LOGGER.error("PQL Indexer unable to create bot #" + index, e);
+            }
         }
 
-        LOGGER.info("PQL Indexer started");
+        LOGGER.info("PQL Indexer started " + bots.size() + " bots");
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-        bot.terminate();
+        for (PQLBot bot: bots) {
+            bot.terminate();
+        }
         LOGGER.info("PQL Indexer destroyed");
     }
 }
