@@ -49,8 +49,8 @@ import org.slf4j.LoggerFactory;
  */
 public class PQLIndexerConfigurationBean {
 
-    /** Whether PQL indexing is enabled at all. */
-    private boolean isIndexingEnabled;
+    /** The number of PQL indexer bots to launch; if zero, indexing is disabled. */
+    private int numberOfIndexerThreads;
 
     /** Time between checks for unindexed models, in seconds. */
     private int defaultBotSleepTime;
@@ -82,7 +82,7 @@ public class PQLIndexerConfigurationBean {
      * @param postgresPassword
      * @throws PQLIndexerConfigurationException  if the bean can't be created due to problems with <var>site.properties</var>
      */
-    public PQLIndexerConfigurationBean(boolean isIndexingEnabled,
+    public PQLIndexerConfigurationBean(int     numberOfIndexerThreads,
                                        String  labelSimilaritySearch,
                                        String  labelSimilarityConfig,
                                        double  defaultLabelSimilarityThreshold,
@@ -99,7 +99,7 @@ public class PQLIndexerConfigurationBean {
                                        String  postgresPassword) throws PQLIndexerConfigurationException {
 
         LoggerFactory.getLogger(getClass()).info("PQL Indexer configured with:" + 
-            " pql.enableIndexing=" + isIndexingEnabled +
+            " pql.numberOfIndexerThreads=" + numberOfIndexerThreads +
             " pql.labelSimilaritySearch=" + labelSimilaritySearch +
             " pql.labelSimilarityConfig=" + labelSimilarityConfig +
             " pql.defaultLabelSimilarityThreshold=" + defaultLabelSimilarityThreshold +
@@ -113,7 +113,7 @@ public class PQLIndexerConfigurationBean {
             " pql.postgres.name=" + postgresName +
             " pql.postgres.user=" + postgresUser);
 
-        this.isIndexingEnabled      = isIndexingEnabled;
+        this.numberOfIndexerThreads = numberOfIndexerThreads;
         this.defaultBotSleepTime    = defaultBotSleepTime;
         this.defaultBotMaxIndexTime = defaultBotMaxIndexTime;
 
@@ -136,7 +136,7 @@ public class PQLIndexerConfigurationBean {
         try {
             this.mysql = new MySQLConnection(mysqlURL, mysqlUser, mysqlPassword);
         } catch(ClassNotFoundException | SQLException e) {
-            if (isIndexingEnabled) {
+            if (this.numberOfIndexerThreads > 0) {
                 throw new PQLIndexerConfigurationException("MySQL connection could not be created", e);
             } else {
                 LoggerFactory.getLogger(getClass()).info("MySQL connection could not be created for PQL indexer, but this doesn't matter since indexing is disabled.");
@@ -184,12 +184,15 @@ public class PQLIndexerConfigurationBean {
         assert index != null;
     }
 
-    public boolean isIndexingEnabled() { return isIndexingEnabled; }
+    public int getNumberOfIndexerThreads() { return numberOfIndexerThreads; }
 
-    public PQLBot createBot() throws PQLIndexerConfigurationException {
+    /**
+     * @param name  the name for the created bot, which should be unique; pass <code>null</code> to use a random UUID
+     */
+    public PQLBot createBot(String name) throws PQLIndexerConfigurationException {
         try {
             return new PQLBot(mysql.getConnection(),
-                              null,  // bot name will be a random UUID
+                              name,
                               index,
                               mc,
                               indexType,
