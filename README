@@ -37,7 +37,7 @@ CONFIGURATION
 
 Almost all configuration occurs in the top level site.properties file.  The default version of this file from a fresh git
 checkout contains reasonable defaults that use H2 as the main database, but disable PQL (which requires MySQL or Postgres and
-more intricateconfiguration).
+more intricate configuration).
 
 H2 running from a flat file is the default database for the sake of zero-configuration.
 However our development is done chiefly on MySQL; instructions for reconfiguring Apromore to use MySQL appear below.
