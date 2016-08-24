@@ -291,6 +291,9 @@
                 <exclude name="**/core/**/*.jar"/>
             </fileset>
         </copy>
+
+        <!-- PQL indexing bot -->
+        <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
     </target>
 
     <target name="create-h2">
