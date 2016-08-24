@@ -23,8 +23,10 @@ package org.apromore.pql.indexer;
 // Java 2 Standard Edition
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 // Third party packages
@@ -62,6 +64,9 @@ public class PQLIndexerConfigurationBean {
     private IndexType indexType;
     private LoLA2ModelChecker mc;
     private PQLIndexMySQL index;
+
+    /** This is a list of process arguments suitable as input to the {@link ProcessBuilder} class. */
+    private List<String> args = new ArrayList();
 
     /**
      * This constructor is invoked by a <code>bean</code> element in <code>pqlIndexerContext.xml</code>.
@@ -182,6 +187,27 @@ public class PQLIndexerConfigurationBean {
             throw new PQLIndexerConfigurationException("Unable to create index", e);
         }
         assert index != null;
+
+
+        // Process argument list
+
+        // MySQL
+        args.add("--database");    args.add(mysqlURL);
+        args.add("--user");        args.add(mysqlUser);
+        args.add("--password");    args.add(mysqlPassword);
+
+        // LoLA2
+        args.add("--lola");        args.add(lolaDir);
+
+        // Similarity
+        args.add("--labeltype");   args.add(labelSimilaritySearch);
+        args.add("--labelrepo");   args.add(labelSimilarityConfig);
+        args.add("--threshold");   args.add(Double.toString(defaultLabelSimilarityThreshold));
+        args.add("--thresholds");  args.add(indexedLabelSimilarityThresholds);
+
+        // Bot timers
+        args.add("--index");       args.add(Integer.toString(defaultBotMaxIndexTime));
+        args.add("--sleep");       args.add(Integer.toString(defaultBotSleepTime));
     }
 
     public int getNumberOfIndexerThreads() { return numberOfIndexerThreads; }
@@ -201,5 +227,12 @@ public class PQLIndexerConfigurationBean {
         } catch (ClassNotFoundException | NameInUseException | SQLException e) {
             throw new PQLIndexerConfigurationException("Unable to create bot", e);
         }
+    }
+
+    /**
+     * @return a list of process arguments suitable as input to the {@link ProcessBuilder} class
+     */
+    public List<String> getBotProcessArguments() {
+        return args;
     }
 }
