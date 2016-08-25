@@ -76,6 +76,9 @@ public class PQLIndexerListener implements ServletContextListener {
         List<String> args = new ArrayList(Arrays.asList("java", "-jar", "pql-bot.jar"));
         args.addAll(config.getBotProcessArguments());
         ProcessBuilder processBuilder = new ProcessBuilder(args);
+        File indexerLogFile = new File(new File("logs"), "Indexer.log");
+        processBuilder.redirectError(indexerLogFile);
+        processBuilder.redirectOutput(indexerLogFile);
         for (int index = 1; index <= indexerCount; index++) {
             /*
              * This thread-based implementation of the indexer should be reinstituted in the event that PQL becomes thread-safe.
