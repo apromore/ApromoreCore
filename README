@@ -69,7 +69,7 @@ $ mysql --user=root --password=MAcri
 	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES ON apromore.* TO 'apromore'@'localhost';
 
 Create and populate the database tables.
-$ mysql --user=root --password=MAcri < Supplements/database/db-mysql.sql
+$ mysql --user=apromore --password=MAcri < Supplements/database/db-mysql.sql
 
 At the end of the db-mysql.sql script is where we populate some of the system data including user information. Currently, we have a few users setup that are developers or affiliates and they can be used or you can choose to add your own.  All passwords are encrypted but they are 'password' for the time being and we don't have a facility just yet to allow a user to change their password. This is coming soon as well as a setup utility to allow the creation of a user on first running.
 
@@ -80,17 +80,19 @@ Stop and restart the server so that it picks up the changes to site.properties.
 PQL SETUP
 =========
 
-PQL queries over the process store are only supported on MySQL.  Create and populate the database tables with the additional PQL instructions:
-$ cat Supplements/database/db-mysql.sql Supplements/database/PQL.MySQL-1.2.sql | mysql --user=root --password=MAcri
+PQL queries over the process store are only supported on MySQL.  Create and populate the database with additional tables for PQL:
+$ mysql --user=root --password=MAcri < Supplements/database/PQL.MySQL-1.2.sql
 
 In site.properties, perform the following changes:
-* Change pql.enableIndexing to "true".
+* Change pql.numberOfIndexerThreads to at least 1
+* Change pql.numberOfQueryThreads to at least 1
 * Change pql.lola.dir to the location of your LoLA 2.0 executable
 * Change the various pql.mysql.* properties to match your MySQL database
 
-In build.xml, uncomment the includes for the three following PQL components in the "pickupRepo" fileset:
+In build.xml, uncomment the inclusion of the four following PQL components in the "pickupRepo" fileset:
 * Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan
 * PQL-Logic/target/pql-logic-1.1.jar
+* PQL-Logic-WS/target/pql-logic-ws-1.1.war
 * PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar
 
 
