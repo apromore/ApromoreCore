@@ -541,20 +541,21 @@ public class MainController extends BaseController implements MainControllerInte
             Set<Object> selectedProcesses = (Set<Object>) getBaseListboxController().getListModel().getSelection();
             for (Object obj : selectedProcesses) {
                 if (obj instanceof ProcessSummaryType) {
+                    ProcessSummaryType processSummaryType = (ProcessSummaryType) obj;
                     versionList = new ArrayList<>();
                     if (selectedVersions != null) {
                         for (VersionDetailType detail: selectedVersions) {
                             versionList.add(detail.getVersion());
                         }
                     } else {
-                        for (VersionSummaryType summaryType : ((ProcessSummaryType) obj).getVersionSummaries()) {
-                            versionNumber = ((ProcessSummaryType) obj).getLastVersion();
+                        for (VersionSummaryType summaryType : processSummaryType.getVersionSummaries()) {
+                            versionNumber = processSummaryType.getLastVersion();
                             if (summaryType.getVersionNumber().compareTo(versionNumber) == 0) {
                                 versionList.add(summaryType);
                             }
                         }
                     }
-                    summaryTypes.put((ProcessSummaryType) obj, versionList);
+                    summaryTypes.put(processSummaryType, versionList);
                 }else if (obj instanceof LogSummaryType) {
                     summaryTypes.put((LogSummaryType) obj, null);
                 }
