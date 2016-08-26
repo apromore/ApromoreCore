@@ -149,12 +149,12 @@ public class BPMNMinerController {
             if (selectedLogSummaryType.size() == 0) {
                 this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMinerInput.zul", null, null);
                 this.l = (Label) this.bpmnMinerW.getFellow("fileName");
+                this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
                 this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         uploadFile((UploadEvent) event);
                     }
                 });
-                this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
             }else if (selectedLogSummaryType.size() == 1) {
                 log = eventLogService.getXLog(selectedLogSummaryType.iterator().next().getId());
                 this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMiner.zul", null, null);
@@ -280,8 +280,6 @@ public class BPMNMinerController {
 
             if(log == null) {
                 Messagebox.show("Please select a log.");
-            }else if(miningAlgorithms.getSelectedIndex() < 0) {
-                Messagebox.show("Please select mining algorithm.");
             }else {
                 erModel = new DiscoverERmodel();
                 listCandidates = erModel.generateAllAttributes(log);
@@ -332,8 +330,11 @@ public class BPMNMinerController {
                     ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
                     listCandidates, group);
 
-            String defaultProcessName = this.logFileName.split("\\.")[0];
-            if(!modelName.getValue().isEmpty()) {
+            String defaultProcessName = null;
+            if(this.logFileName != null) {
+                defaultProcessName = this.logFileName.split("\\.")[0];
+            }
+            if (!modelName.getValue().isEmpty()) {
                 defaultProcessName = modelName.getValue();
             }
 
@@ -392,6 +393,6 @@ public class BPMNMinerController {
         else if(name.equals(SelectMinerUI.ILP)) return SelectMinerUI.ILPPOS;
         else if(name.equals(SelectMinerUI.IM)) return SelectMinerUI.IMPOS;
 
-        return SelectMinerUI.HMWOPOS5;
+        return SelectMinerUI.IMPOS;
     }
 }

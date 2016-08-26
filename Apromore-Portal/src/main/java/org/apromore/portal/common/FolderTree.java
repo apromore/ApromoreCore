@@ -21,6 +21,7 @@
 package org.apromore.portal.common;
 
 import org.apromore.model.FolderType;
+import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SummariesType;
 import org.apromore.model.SummaryType;
 
@@ -85,8 +86,12 @@ public class FolderTree {
             SummariesType processes;
             do {
                 processes = UserSessionManager.getMainController().getService().getProcessOrLogSummaries(UserSessionManager.getCurrentUser().getId(), folderId, page, PAGE_SIZE);
-                for (SummaryType process : processes.getSummary()) {
-                    node.add(new FolderTreeNode(process, null, !loadAll, FolderTreeNodeTypes.Process));
+                for (SummaryType summaryType : processes.getSummary()) {
+                    if(summaryType instanceof ProcessSummaryType) {
+                        node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Process));
+                    }else {
+                        node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Log));
+                    }
                 }
             } while(PAGE_SIZE * page++ + processes.getSummary().size() < processes.getCount());
         }

@@ -30,17 +30,10 @@ import com.apql.Apql.tree.DraggableNodeFolder;
 import com.apql.Apql.tree.DraggableNodeProcess;
 import com.apql.Apql.tree.DraggableNodeTree;
 import com.apql.Apql.tree.FolderProcessTree;
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.service.pql.DatabaseService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.*;
 import java.util.List;
 
