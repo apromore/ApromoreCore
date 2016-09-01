@@ -26,10 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -41,6 +38,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.inject.Inject;
 
 // Third party packages
+import org.apromore.model.*;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.zkoss.spring.SpringUtil;
@@ -57,10 +55,6 @@ import com.processconfiguration.cmap.CMAP;
 import org.apromore.filestore.client.FileStoreService;
 import org.apromore.helper.Version;
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.UserType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
@@ -146,7 +140,19 @@ public class CmapperPlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext portalContext) {
         try {
-            Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = portalContext.getSelection().getSelectedProcessModelVersions();
+            Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
+            Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+            for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+                if(entry.getKey() instanceof ProcessSummaryType) {
+                    selectedProcessVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
+                }
+            }
+
+            if(selectedProcessVersions.size() != 1) {
+                Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
+                return;
+            }
+
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/cmap.zul", null, null);
 
             URL cmapURL = null;
@@ -174,14 +180,14 @@ public class CmapperPlugin extends DefaultPortalPlugin {
                     ExportFormatResultType exportFormatResult;
                     try {
                         exportFormatResult = processService.exportProcess(
-                            null,                                     // process name
-                            process.getId(),                          // process ID
-                            version.getName(),                        // branch
-                            new Version(version.getVersionNumber()),  // version number,
-                            NATIVE_TYPE,                              // nativeType,
-                            null,                                     // annotation name,
-                            false,                                    // with annotations?
-                            Collections.EMPTY_SET                     // canoniser properties
+                                null,                                     // process name
+                                process.getId(),                          // process ID
+                                version.getName(),                        // branch
+                                new Version(version.getVersionNumber()),  // version number,
+                                NATIVE_TYPE,                              // nativeType,
+                                null,                                     // annotation name,
+                                false,                                    // with annotations?
+                                Collections.EMPTY_SET                     // canoniser properties
                         );
                     } catch (Exception e) {
                         System.err.println("Unable to export BPMN model: " + e.getMessage());
@@ -213,39 +219,39 @@ public class CmapperPlugin extends DefaultPortalPlugin {
                         cmapURL = baseURI.resolve(cmapURLString).toURL();
                     } catch (MalformedURLException e) {
                         throw new Exception("The model " + modelName +
-                            " has a malformed link to its configuration mapping: \"" + cmapURLString + "\"", e);
+                                " has a malformed link to its configuration mapping: \"" + cmapURLString + "\"", e);
                     }
                     assert cmapURL != null;
 
                     // Download and parse the cmap document
                     CMAP cmap;
                     try {
-                        /*
-                        // Obtain the proxy for the WebDAV repository
-                        FileStoreService fileStore = (FileStoreService) SpringUtil.getBean("fileStoreClient");
+                    /*
+                    // Obtain the proxy for the WebDAV repository
+                    FileStoreService fileStore = (FileStoreService) SpringUtil.getBean("fileStoreClient");
 
-                        System.out.println("AMARANTH");
-                        System.out.println(org.apromore.portal.util.StreamUtil.convertStreamToString(fileStore.getFile(cmapURL.toString())));
-                        System.out.println("/AMARANTH");
-                    
-                        // Deserialize a JAXB representation of the cmap document from the WebDAV repository
-                        cmap = (CMAP) JAXBContext.newInstance(com.processconfiguration.cmap.ObjectFactory.class)
-                                                 .createUnmarshaller()
-                                                 .unmarshal(new StreamSource(fileStore.getFile(cmapURL.toString())));
-                        */
+                    System.out.println("AMARANTH");
+                    System.out.println(org.apromore.portal.util.StreamUtil.convertStreamToString(fileStore.getFile(cmapURL.toString())));
+                    System.out.println("/AMARANTH");
+
+                    // Deserialize a JAXB representation of the cmap document from the WebDAV repository
+                    cmap = (CMAP) JAXBContext.newInstance(com.processconfiguration.cmap.ObjectFactory.class)
+                                             .createUnmarshaller()
+                                             .unmarshal(new StreamSource(fileStore.getFile(cmapURL.toString())));
+                    */
 
                         // Bypass fileStore and its OSGi issues by going directly to WebDAV
                         HttpURLConnection c = (HttpURLConnection) cmapURL.openConnection();
                         c.setRequestMethod("GET");
                         c.setRequestProperty("Authorization",
-                            "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary("admin:password".getBytes("utf-8")));
+                                "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary("admin:password".getBytes("utf-8")));
                         c.connect();
                         System.err.println("Reponse code: " + c.getResponseCode());
                         System.err.println("Reponse message: " + c.getResponseMessage());
                         System.err.println("Content type: " + c.getContentType());
                         cmap = (CMAP) JAXBContext.newInstance(com.processconfiguration.cmap.ObjectFactory.class)
-                                                  .createUnmarshaller()
-                                                  .unmarshal(new StreamSource(c.getInputStream()));
+                                .createUnmarshaller()
+                                .unmarshal(new StreamSource(c.getInputStream()));
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new Exception("Unable to read the configuration mapping from " + cmapURL, e);
@@ -258,8 +264,8 @@ public class CmapperPlugin extends DefaultPortalPlugin {
                         qmlURL = new URL(cmapURL, cmap.getQml());
                     } catch (MalformedURLException e) {
                         throw new Exception("The cmap file " + cmapURLString +
-                            " which " + modelName + " is linked to has an invalid questionnaire link: \"" +
-                            cmap.getQml() + "\"", e);
+                                " which " + modelName + " is linked to has an invalid questionnaire link: \"" +
+                                cmap.getQml() + "\"", e);
                     }
                     System.err.println("QML URL from Cmap: " + qmlURL);
 

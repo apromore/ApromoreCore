@@ -21,8 +21,9 @@
 package org.apromore.portal.common;
 
 import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummariesType;
+import org.apromore.model.SummaryType;
 
 import java.util.HashSet;
 import java.util.List;
@@ -69,7 +70,7 @@ public class FolderTree {
                     addProcesses(childNode, folder.getId());
                 }
             }else {
-                node.add(new FolderTreeNode((ProcessSummaryType) null, null, !loadAll, FolderTreeNodeTypes.Process));
+                node.add(new FolderTreeNode((SummaryType) null, null, !loadAll, FolderTreeNodeTypes.Process));
             }
         }
 
@@ -82,13 +83,17 @@ public class FolderTree {
         if (loadAll) {
             final int PAGE_SIZE = 100;
             int page = 0;
-            ProcessSummariesType processes;
+            SummariesType processes;
             do {
-                processes = UserSessionManager.getMainController().getService().getProcesses(UserSessionManager.getCurrentUser().getId(), folderId, page, PAGE_SIZE);
-                for (ProcessSummaryType process : processes.getProcessSummary()) {
-                    node.add(new FolderTreeNode(process, null, !loadAll, FolderTreeNodeTypes.Process));
+                processes = UserSessionManager.getMainController().getService().getProcessOrLogSummaries(UserSessionManager.getCurrentUser().getId(), folderId, page, PAGE_SIZE);
+                for (SummaryType summaryType : processes.getSummary()) {
+                    if(summaryType instanceof ProcessSummaryType) {
+                        node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Process));
+                    }else {
+                        node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Log));
+                    }
                 }
-            } while(PAGE_SIZE * page++ + processes.getProcessSummary().size() < processes.getProcessCount());
+            } while(PAGE_SIZE * page++ + processes.getSummary().size() < processes.getCount());
         }
     }
 

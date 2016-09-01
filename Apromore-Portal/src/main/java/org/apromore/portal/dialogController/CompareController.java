@@ -57,7 +57,6 @@ import org.zkoss.zul.Window;
 
 // Local classes
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;

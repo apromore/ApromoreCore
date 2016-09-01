@@ -26,13 +26,13 @@ import org.apromore.manager.client.helper.MergeProcessesHelper;
 import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
 import org.apromore.manager.client.util.StreamUtil;
 import org.apromore.model.Detail;
-import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.SummariesType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.pql.DatabaseService;
 import org.apromore.service.pql.ExternalId;
 import org.apromore.service.pql.PQLService;
-import org.apromore.service.pql.ws.model.*;
 
+import org.apromore.service.pql.ws.model.*;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.pql.index.IndexStatus;
@@ -160,7 +160,7 @@ public class PQLServiceClient implements DatabaseService, PQLService {
         return results;
     }
 
-    public ProcessSummariesType query(String pql) throws PQLService.QueryException {
+    public SummariesType query(String pql) throws PQLService.QueryException {
         throw new RuntimeException("Not implemented");
     }
 

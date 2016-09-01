@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -36,18 +37,21 @@ public class ExportListNativeController extends BaseController {
     private List<ExportOneNativeController> exportedList; // list of exports done
 
     public ExportListNativeController(MainController mainC, MenuController menuC,
-            Map<ProcessSummaryType, List<VersionSummaryType>> processVersions)
+            Map<SummaryType, List<VersionSummaryType>> processVersions)
             throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
         this.mainC = mainC;
         this.toExportList = new ArrayList<>();
         this.exportedList = new ArrayList<>();
-        Set<ProcessSummaryType> keySet = processVersions.keySet();
-        for (final ProcessSummaryType process : keySet) {
-            for (final VersionSummaryType version : processVersions.get(process)) {
-                ExportOneNativeController exportNativeC =
-                        new ExportOneNativeController(this, this.mainC, process.getId(), process.getName(), process.getOriginalNativeType(),
-                                version.getName(), version.getVersionNumber(), version.getAnnotations(), this.mainC.getNativeTypes());
-                this.toExportList.add(exportNativeC);
+        Set<SummaryType> keys = processVersions.keySet();
+        for (SummaryType key : keys) {
+            if(key instanceof ProcessSummaryType) {
+                ProcessSummaryType process = (ProcessSummaryType) key;
+                for (final VersionSummaryType version : processVersions.get(process)) {
+                    ExportOneNativeController exportNativeC =
+                            new ExportOneNativeController(this, this.mainC, process.getId(), process.getName(), process.getOriginalNativeType(),
+                                    version.getName(), version.getVersionNumber(), version.getAnnotations(), this.mainC.getNativeTypes());
+                    this.toExportList.add(exportNativeC);
+                }
             }
         }
     }
@@ -83,7 +87,7 @@ public class ExportListNativeController extends BaseController {
             } else if (this.exportedList.size() > 1) {
                 report += " processes completed.";
             }
-            this.mainC.reloadProcessSummaries();
+            this.mainC.reloadSummaries();
         }
         this.mainC.displayMessage(report);
     }

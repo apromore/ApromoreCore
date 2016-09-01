@@ -27,6 +27,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 // Third party packages
+import org.apromore.service.EventLogService;
 import org.springframework.stereotype.Component;
 
 // Local packages
@@ -48,19 +49,22 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
     private final CanoniserService    canoniserService;
     private final DomainService       domainService;
     private final ProcessService      processService;
+    private final EventLogService     eventLogService;
     private final UserInterfaceHelper userInterfaceHelper;
 
     @Inject
-    public BPMNMinerPlugin(final BPMNMinerService    bpmnMinerService,
-                           final CanoniserService    canoniserService,
-                           final DomainService       domainService,
-                           final ProcessService      processService,
+    public BPMNMinerPlugin(final BPMNMinerService bpmnMinerService,
+                           final CanoniserService canoniserService,
+                           final DomainService domainService,
+                           final ProcessService processService,
+                           final EventLogService eventLogService,
                            final UserInterfaceHelper userInterfaceHelper) {
 
         this.bpmnMinerService    = bpmnMinerService;
         this.canoniserService    = canoniserService;
         this.domainService       = domainService;
         this.processService      = processService;
+        this.eventLogService = eventLogService;
         this.userInterfaceHelper = userInterfaceHelper;
     }
 
@@ -79,7 +83,7 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
 
         context.getMessageHandler().displayInfo("Executed BPMN miner plug-in!");
 
-        new BPMNMinerController(context, bpmnMinerService, canoniserService, domainService, processService, userInterfaceHelper);
+        new BPMNMinerController(context, bpmnMinerService, canoniserService, domainService, processService, eventLogService, userInterfaceHelper);
     }
 
 }

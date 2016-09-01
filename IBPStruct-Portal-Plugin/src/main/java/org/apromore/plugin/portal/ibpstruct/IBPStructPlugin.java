@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.ibpstruct;
 
 import au.edu.qut.bpmn.exporter.impl.BPMNDiagramExporterImpl;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -133,7 +134,14 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext context) {
         this.portalContext = context;
-        processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
+
+        Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
+        processVersions = new HashMap<>();
+        for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+            if(entry.getKey() instanceof ProcessSummaryType) {
+                processVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
+            }
+        }
 
         if( processVersions.size() != 1 ) {
             Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);

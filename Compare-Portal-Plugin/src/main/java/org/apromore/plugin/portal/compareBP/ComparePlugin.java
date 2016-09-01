@@ -43,6 +43,7 @@ import org.apromore.canoniser.Canoniser;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;
@@ -72,6 +73,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.zkoss.zul.Messagebox;
 
 /**
  * A user interface to the BPMN miner service.
@@ -141,7 +143,19 @@ public class ComparePlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext context) {
         LOGGER.info("Executing");
-        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = context.getSelection().getSelectedProcessModelVersions();
+        Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
+        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+        for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+            if(entry.getKey() instanceof ProcessSummaryType) {
+                selectedProcessVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
+            }
+        }
+
+        if(selectedProcessVersions.size() != 1) {
+            Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
+            return;
+        }
+
         Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
 
         // At least 1 process versions must be selected. Not necessarily of different processes

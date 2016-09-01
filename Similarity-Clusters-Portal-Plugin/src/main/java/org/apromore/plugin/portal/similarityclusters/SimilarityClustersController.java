@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apromore.model.*;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -42,11 +43,6 @@ import org.apromore.dao.model.HistoryEnum;
 import org.apromore.dao.model.HistoryEvent;
 import org.apromore.dao.model.StatusEnum;
 import org.apromore.exception.RepositoryException;
-import org.apromore.model.ClusterFilterType;
-import org.apromore.model.ClusteringParameterType;
-import org.apromore.model.ClusteringSummaryType;
-import org.apromore.model.ConstrainedProcessIdsType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.ClusterService;
 import org.apromore.service.model.ClusterSettings;
@@ -74,7 +70,6 @@ public class SimilarityClustersController {
 
     /**
      * Creates the dialog to create and show similarity clusters.
-     * @param mainC the main controller
      * @throws org.zkoss.zk.ui.SuspendNotAllowedException
      * @throws InterruptedException
      */
@@ -203,9 +198,9 @@ public class SimilarityClustersController {
 
     private void initConstrainedProcessIds(ClusterSettings settings) {
         List<Integer> processIds = new ArrayList<>();
-        Set<ProcessSummaryType> selectedProcesses = portalContext.getSelection().getSelectedProcessModels();
-        for (ProcessSummaryType process : selectedProcesses) {
-            processIds.add(process.getId());
+        Set<SummaryType> selectedProcesses = portalContext.getSelection().getSelectedProcessModels();
+        for (SummaryType process : selectedProcesses) {
+            if(process instanceof ProcessSummaryType) processIds.add(process.getId());
         }
         settings.setConstrainedProcessIds(processIds);
     }

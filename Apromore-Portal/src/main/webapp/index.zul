@@ -178,7 +178,7 @@
                         </tabs>
                         <tabpanels id="tabpanels" >
                             <tabpanel vflex="true">
-                                <BaseListbox id="baseListbox" vflex="true"/>
+                                <BaseListbox id="baseListboxProcesses" vflex="true"/>
                             </tabpanel>
                         </tabpanels>
                     </tabbox>
