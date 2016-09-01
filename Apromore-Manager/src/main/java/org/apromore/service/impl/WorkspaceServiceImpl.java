@@ -20,21 +20,10 @@
 
 package org.apromore.service.impl;
 
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.GroupFolderRepository;
-import org.apromore.dao.GroupProcessRepository;
-import org.apromore.dao.ProcessRepository;
-import org.apromore.dao.UserRepository;
-import org.apromore.dao.WorkspaceRepository;
+import org.apromore.dao.*;
 import org.apromore.dao.dataObject.FolderTreeNode;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupProcess;
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.User;
-import org.apromore.dao.model.Workspace;
 import org.apromore.service.WorkspaceService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,6 +54,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private WorkspaceRepository workspaceRepo;
     private ProcessRepository processRepo;
+    private LogRepository logRepo;
     private FolderRepository folderRepo;
     private UserRepository userRepo;
     private GroupRepository groupRepo;
@@ -83,6 +73,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public WorkspaceServiceImpl(final WorkspaceRepository workspaceRepository,
                                 final UserRepository userRepository,
                                 final ProcessRepository processRepository,
+                                final LogRepository logRepository,
                                 final FolderRepository folderRepository,
                                 final GroupRepository groupRepository,
                                 final GroupFolderRepository groupFolderRepository,
@@ -91,6 +82,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         workspaceRepo = workspaceRepository;
         userRepo = userRepository;
         processRepo = processRepository;
+        logRepo = logRepository;
         folderRepo = folderRepository;
         groupRepo = groupRepository;
         groupFolderRepo = groupFolderRepository;
@@ -123,6 +115,23 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable) {
 	return (folderId == 0) ? processRepo.findRootProcessesByUser(userId, pageable)
 	                       : processRepo.findAllProcessesInFolderForUser(folderId, userId, pageable);
+    }
+
+    @Override
+    public Page<Log> getLogs(String userId, Integer folderId, Pageable pageable) {
+        Page<Log> res;
+        if(folderId == 0) {
+            LOGGER.warning("ERROR1");
+            res = logRepo.findLogsByUser(userId, pageable);
+            LOGGER.warning("ERROR2 " + res);
+        }else {
+            LOGGER.warning("ERROR3");
+            res = logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
+            LOGGER.warning("ERROR4 " + res);
+        }
+        return res;
+//        return (folderId == 0) ? logRepo.findLogsByUser(userId, pageable)
+//                : logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
     }
 
     @Override

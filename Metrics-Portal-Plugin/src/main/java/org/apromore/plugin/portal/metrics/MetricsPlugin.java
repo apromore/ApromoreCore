@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 
 // Third party packages
+import org.apromore.model.SummaryType;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +90,13 @@ public class MetricsPlugin extends PluginCustomGui {
     @Override
     public void execute(final PortalContext portalContext) {
 
-        final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
+        Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
+        final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
+        for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+            if(entry.getKey() instanceof ProcessSummaryType) {
+                processVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
+            }
+        }
 
         if( processVersions.size() != 1 ) {
             Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);

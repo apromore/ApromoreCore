@@ -26,10 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -41,6 +38,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.inject.Inject;
 
 // Third party packages
+import org.apromore.model.*;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.zkoss.spring.SpringUtil;
@@ -57,10 +55,6 @@ import com.processconfiguration.cmap.CMAP;
 import org.apromore.filestore.client.FileStoreService;
 import org.apromore.helper.Version;
 import org.apromore.manager.client.ManagerService;
-import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.UserType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
@@ -149,7 +143,20 @@ public class QuaestioPlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext portalContext) {
         try {
-            Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = portalContext.getSelection().getSelectedProcessModelVersions();
+
+            Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
+            Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+            for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+                if(entry.getKey() instanceof ProcessSummaryType) {
+                    selectedProcessVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
+                }
+            }
+
+            if(selectedProcessVersions.size() != 1) {
+                Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
+                return;
+            }
+
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/configure.zul", null, null);
 
             URL cmapURL = null;

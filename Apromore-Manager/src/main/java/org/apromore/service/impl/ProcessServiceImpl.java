@@ -71,7 +71,7 @@ import org.apromore.graph.canonical.ResourceTypeEnum;
 import org.apromore.helper.PluginHelper;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.SummariesType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.plugin.process.ProcessPlugin;
 import org.apromore.service.*;
@@ -207,8 +207,8 @@ public class ProcessServiceImpl implements ProcessService {
      *      {@inheritDoc}
      */
     @Override
-    public ProcessSummariesType readProcessSummaries(final Integer folderId, final String searchExpression) {
-        ProcessSummariesType processSummaries = null;
+    public SummariesType readProcessSummaries(final Integer folderId, final String searchExpression) {
+        SummariesType processSummaries = null;
 
         try {
             // Firstly, do we need to use the searchExpression

@@ -21,7 +21,6 @@
 package com.apql.Apql.popup;
 
 import com.apql.Apql.controller.ViewController;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 
 import javax.swing.*;
