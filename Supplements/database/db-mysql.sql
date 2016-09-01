@@ -125,8 +125,8 @@ CREATE TABLE `process` (
 CREATE TABLE `log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `folderId` int(11) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NOT NULL,
-  `file_path` varchar(255) DEFAULT NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
   `public_log` boolean NOT NULL DEFAULT 0,
   `domain` varchar(255) DEFAULT NULL,
   `ranking` varchar(10) DEFAULT NULL,
@@ -135,12 +135,12 @@ CREATE TABLE `log` (
   PRIMARY KEY (`id`),
   KEY `fk_users` (`owner`),
   KEY `fk_folder` (`folderId`),
-  CONSTRAINT `fk_folder` FOREIGN KEY (`folderId`)
+  CONSTRAINT `fk_log_folder` FOREIGN KEY (`folderId`)
   REFERENCES `folder` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_log1` FOREIGN KEY (`owner`)
   REFERENCES `user` (`id`)
-    ON DELETE CASCADE ON UPDATE CASCADE,
+    ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `native` (
