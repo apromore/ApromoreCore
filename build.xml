@@ -52,10 +52,8 @@
         <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
         <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
-        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
-        <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
-        <include name="APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
+        <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
         <include name="BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
 
@@ -88,9 +86,13 @@
 
         <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
         
+        <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
+        <include name="APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
+        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
         <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
         <include name="PQL-Logic-WS/target/pql-logic-ws-1.1.war"/>
         <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
+        -->
     </fileset>
 
     <fileset id="usrRepo" dir=".">
@@ -291,6 +293,9 @@
                 <exclude name="**/core/**/*.jar"/>
             </fileset>
         </copy>
+
+        <!-- PQL indexing bot -->
+        <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
     </target>
 
     <target name="create-h2">

@@ -131,6 +131,7 @@
         <module>Apromore-Extras/Cmapper</module>
         <module>Apromore-Extras/Quaestio</module>
         <module>Apromore-Extras/apql</module>
+        <module>Apromore-Extras/PQLBot</module>
 
         <!-- Clients that we can distribute -->
         <module>Apromore-Clients/manager-ws-model</module>
