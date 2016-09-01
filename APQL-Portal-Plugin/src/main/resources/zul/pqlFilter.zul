@@ -19,7 +19,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="queryWindow" title="APQL Query" width="1000px" height="700px" closable="true" position="center" sizable="true">
+<window id="queryWindow" title="PQL Query" width="1000px" height="700px" closable="true" position="center" sizable="true">
     <vbox>
         <applet id="apql"
                 codebase="../apql/applets/"
