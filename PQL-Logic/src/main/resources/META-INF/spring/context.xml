@@ -68,7 +68,6 @@
         <constructor-arg ref="lolaDir"/>
         <constructor-arg ref="mysqlbean"/>
         <constructor-arg ref="pgbean"/>
-        <constructor-arg type="boolean" value="${pql.enableIndexing}"/>
         <constructor-arg type="int" value="${pql.numberOfQueryThreads}"/>
         <constructor-arg type="String" value="${pql.labelSimilaritySearch}"/>
         <constructor-arg type="String" value="${pql.labelSimilarityConfig}"/>
