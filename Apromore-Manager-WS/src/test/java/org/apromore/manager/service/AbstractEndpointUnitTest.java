@@ -38,6 +38,7 @@ public abstract class AbstractEndpointUnitTest {
     protected PluginService pluginService;
     protected FragmentService fragmentSrv;
     protected ProcessService procSrv;
+    protected EventLogService eventLogSrv;
     protected ClusterService clusterService;
     protected FormatService frmSrv;
     protected DomainService domSrv;
@@ -46,6 +47,7 @@ public abstract class AbstractEndpointUnitTest {
     protected WorkspaceService wrkSrv;
     protected UserInterfaceHelper uiHelper;
 
+
     @Before
     public void setUp() throws Exception {
         deploymentService = createMock(DeploymentServiceImpl.class);
@@ -53,6 +55,7 @@ public abstract class AbstractEndpointUnitTest {
         fragmentSrv = createMock(FragmentServiceImpl.class);
         canoniserService = createMock(CanoniserServiceImpl.class);
         procSrv = createMock(ProcessServiceImpl.class);
+        eventLogSrv = createMock(EventLogServiceImpl.class);
         clusterService = createMock(ClusterServiceImpl.class);
         frmSrv = createMock(FormatServiceImpl.class);
         domSrv = createMock(DomainServiceImpl.class);
@@ -61,7 +64,7 @@ public abstract class AbstractEndpointUnitTest {
         wrkSrv = createMock(WorkspaceServiceImpl.class);
         uiHelper = createMock(UIHelper.class);
 
-        endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
+        endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv, eventLogSrv,
                 clusterService, frmSrv, domSrv, userSrv, secSrv, wrkSrv, uiHelper);
     }
 }

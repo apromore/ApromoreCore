@@ -22,10 +22,10 @@ package org.apromore.manager.service;
 
 import org.apromore.manager.ManagerPortalEndpoint;
 import org.apromore.model.ObjectFactory;
-import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ReadProcessSummariesInputMsgType;
 import org.apromore.model.ReadProcessSummariesOutputMsgType;
 
+import org.apromore.model.SummariesType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -49,7 +49,7 @@ public class ReadProcessSummariesEndpointUnitTest extends AbstractEndpointUnitTe
         msg.setSearchExpression(searchExpression);
         JAXBElement<ReadProcessSummariesInputMsgType> request = new ObjectFactory().createReadProcessSummariesRequest(msg);
 
-        ProcessSummariesType procSummary = new ProcessSummariesType();
+        SummariesType procSummary = new SummariesType();
         expect(procSrv.readProcessSummaries(0, searchExpression)).andReturn(procSummary);
 
         replayAll();
@@ -58,7 +58,7 @@ public class ReadProcessSummariesEndpointUnitTest extends AbstractEndpointUnitTe
         Assert.assertNotNull(response.getValue().getResult());
         Assert.assertNotNull(response.getValue().getProcessSummaries());
         Assert.assertEquals("Result Code Doesn't Match", response.getValue().getResult().getCode().intValue(), 0);
-        Assert.assertEquals("UserNames should be empty", response.getValue().getProcessSummaries().getProcessSummary().size(), 0);
+        Assert.assertEquals("UserNames should be empty", response.getValue().getProcessSummaries().getSummary().size(), 0);
 
         verifyAll();
     }
