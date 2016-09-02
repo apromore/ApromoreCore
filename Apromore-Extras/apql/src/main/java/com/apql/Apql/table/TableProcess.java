@@ -81,6 +81,7 @@ public class TableProcess extends JPanel implements Observer, Serializable {
         scrollRows=new JScrollPane(panelRows);
         scrollRows.setVisible(false);
         scrollHeader=new JScrollPane(panelHeader);
+        scrollHeader.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         this.add(scrollHeader, BorderLayout.NORTH);
         this.add(scrollRows, BorderLayout.CENTER);
