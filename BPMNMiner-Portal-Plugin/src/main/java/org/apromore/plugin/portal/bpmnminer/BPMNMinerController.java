@@ -393,6 +393,6 @@ public class BPMNMinerController {
         else if(name.equals(SelectMinerUI.ILP)) return SelectMinerUI.ILPPOS;
         else if(name.equals(SelectMinerUI.IM)) return SelectMinerUI.IMPOS;
 
-        return SelectMinerUI.IMPOS;
+        return SelectMinerUI.HMPOS6;
     }
 }
