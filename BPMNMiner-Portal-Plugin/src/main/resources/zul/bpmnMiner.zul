@@ -78,8 +78,8 @@
                         </columns>
                         <rows>
                             <row>
-                                <radio id="structured" label="Yes" />
-                                <radio id="notStructured" label="No" selected="true"/>
+                                <radio id="structured" label="Yes" selected="true"/>
+                                <radio id="notStructured" label="No"/>
                             </row>
                         </rows>
                     </grid>

@@ -120,9 +120,6 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
             }
         }
 
-        if(miningAlgorithm == 0) miningAlgorithm = 1;
-        else if(miningAlgorithm == 1) miningAlgorithm = 0;
-
         SelectMinerResult selectMinerResult = new SelectMinerResult(miningAlgorithm, interruptingEventTolerance, multiInstancePercentage,
                 multiInstanceTolerance, timerEventPercentage, timerEventTolerance, noiseThreshold);
 
