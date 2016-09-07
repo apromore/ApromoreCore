@@ -37,6 +37,7 @@
     <reference id="canoniserService" interface="org.apromore.service.CanoniserService"/>
     <reference id="domainService" interface="org.apromore.service.DomainService"/>
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
+    <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="userService" interface="org.apromore.service.UserService"/>
     <reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
     <reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>

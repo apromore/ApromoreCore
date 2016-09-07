@@ -38,6 +38,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.compare.CompareService;
+import org.apromore.service.EventLogService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -112,33 +113,82 @@ public class CompareController {
     private static final String SIGNAVIO_SESSION = "SIGNAVIO_SESSION";
     
     private CompareService compareService;
+    private EventLogService eventLogService;
     private PetriNet net;
     private HashSet<String> obs;
 
-//    public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net1, PetriNet net2, HashSet<String> obs1, HashSet<String> obs2) throws Exception{
-//        this.compareService = compareService;
-//        this.portalContext = portalContext;
-//        Set<String> differences = compareService.discoverModelModel(net1, net2, obs1, obs2);
-//
-////                for (String s : differences)
-////                    result += s + "\n";
-//
-//        makeResultWindows(differences);
-//    }
 
-    public CompareController(PortalContext portalContext, CompareService compareService, ModelAbstractions model1, ModelAbstractions model2, HashSet<String> obs1, HashSet<String> obs2, ProcessSummaryType process1, VersionSummaryType version1, ProcessSummaryType process2, VersionSummaryType version2) throws Exception{
+    public CompareController(PortalContext portalContext, CompareService compareService, EventLogService eventLogService) {
         this.compareService = compareService;
         this.portalContext = portalContext;
+        this.eventLogService = eventLogService;
+    }
+
+    public void compareLLPopup(){
+
+        try {
+            List<String> domains = new ListModelList<>();
+            this.domainCB = new SelectDynamicListController(domains);
+            this.domainCB.setReference(domains);
+            this.domainCB.setAutodrop(true);
+            this.domainCB.setWidth("85%");
+            this.domainCB.setHeight("100%");
+            this.domainCB.setAttribute("hflex", "1");
+
+            this.enterLogWin = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/compareLL.zul", null, null);
+
+            this.l = (Label) this.enterLogWin.getFellow("fileName");
+            this.uploadLog = (Button) this.enterLogWin.getFellow("bpmnMinerUpload");
+
+            this.l2 = (Label) this.enterLogWin.getFellow("fileName2");
+            this.uploadLog2 = (Button) this.enterLogWin.getFellow("bpmnMinerUpload2");
+
+            this.cancelButton = (Button) this.enterLogWin.getFellow("bpmnMinerCancelButton");
+            this.okButton = (Button) this.enterLogWin.getFellow("bpmnMinerOKButton");
+
+            this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    uploadFile((UploadEvent) event);
+                }
+            });
+
+            this.uploadLog2.addEventListener("onUpload", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    uploadFile2((UploadEvent) event);
+                }
+            });
+
+            this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    cancel();
+                }
+            });
+            this.okButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    compareLog2Log();
+                    cancel();
+                }
+            });
+            this.enterLogWin.doModal();
+
+        }catch (IOException e) {
+            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    public void compareLL(XLog log1, XLog log2) {
+        try {
+            this.log = log1;
+            this.log2 = log2;
+            Set<String> differences = compareService.discoverLogLog(log1, log2);
+            makeResultWindows(differences);
+        } catch (Exception e) {
+            Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    public void compareMM(ModelAbstractions model1, ModelAbstractions model2, HashSet<String> obs1, HashSet<String> obs2, ProcessSummaryType process1, VersionSummaryType version1, ProcessSummaryType process2, VersionSummaryType version2) throws Exception {
         Differences differences = compareService.discoverModelModelAbs(model1, model2, obs1, obs2);
-
-//                for (String s : differences)
-//                    result += s + "\n";
-
-//        HashSet<String> differencesSet = new HashSet<String>();
-//        for(Difference d : differences.getDifferences())
-//        differencesSet.add(d.getSentence());
-
-//        makeResultWindows(differencesSet);
 
         Set<RequestParameterType<?>> requestParameters = new HashSet<>();
         requestParameters.add(new RequestParameterType<Integer>("m1_pes_size", model1.getPES().getLabels().size()));
@@ -146,9 +196,63 @@ public class CompareController {
         requestParameters.add(new RequestParameterType<String>("m1_differences_json", Differences.toJSON(differences)));
 
         compareProcesses(process1, version1, process2, version2, "BPMN 2.0", null, null, requestParameters);
+    }
 
-//        window.detach();
-//        makeResultWindows(differences);
+    public void compareML(PetriNet net, HashSet<String> obs1, XLog log) {
+        this.net = net;
+        this.obs = obs1;
+        this.log = log;
+
+        try {
+            Set<String> differences = compareService.discoverBPMNModel(net, log, obs);
+
+            makeResultWindows(differences);
+        } catch (Exception e) {
+            Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    public void compareMLPopup(PetriNet net, HashSet<String> obs1) {
+        this.net = net;
+        this.obs = obs1;
+
+        try {
+            List<String> domains = new ListModelList<>();
+            this.domainCB = new SelectDynamicListController(domains);
+            this.domainCB.setReference(domains);
+            this.domainCB.setAutodrop(true);
+            this.domainCB.setWidth("85%");
+            this.domainCB.setHeight("100%");
+            this.domainCB.setAttribute("hflex", "1");
+
+            this.enterLogWin = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/compare.zul", null, null);
+
+            this.l = (Label) this.enterLogWin.getFellow("fileName");
+            this.uploadLog = (Button) this.enterLogWin.getFellow("bpmnMinerUpload");
+            this.cancelButton = (Button) this.enterLogWin.getFellow("bpmnMinerCancelButton");
+            this.okButton = (Button) this.enterLogWin.getFellow("bpmnMinerOKButton");
+
+            this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    uploadFile((UploadEvent) event);
+                }
+            });
+
+            this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    cancel();
+                }
+            });
+            this.okButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    createCanditatesEntity();
+                    cancel();
+                }
+            });
+            this.enterLogWin.doModal();
+        }catch (IOException e) {
+            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
     }
 
     /**
@@ -228,107 +332,6 @@ public class CompareController {
             }
         }
         return max.toString();
-    }
-
-
-    public CompareController(PortalContext portalContext, CompareService compareService){
-        this.compareService = compareService;
-        this.portalContext = portalContext;
-        
-         try {
-            List<String> domains = new ListModelList<>();
-            this.domainCB = new SelectDynamicListController(domains);
-            this.domainCB.setReference(domains);
-            this.domainCB.setAutodrop(true);
-            this.domainCB.setWidth("85%");
-            this.domainCB.setHeight("100%");
-            this.domainCB.setAttribute("hflex", "1");
-
-            this.enterLogWin = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/compareLL.zul", null, null);
-
-            this.l = (Label) this.enterLogWin.getFellow("fileName");
-            this.uploadLog = (Button) this.enterLogWin.getFellow("bpmnMinerUpload");
-             
-            this.l2 = (Label) this.enterLogWin.getFellow("fileName2");
-            this.uploadLog2 = (Button) this.enterLogWin.getFellow("bpmnMinerUpload2");
-             
-            this.cancelButton = (Button) this.enterLogWin.getFellow("bpmnMinerCancelButton");
-            this.okButton = (Button) this.enterLogWin.getFellow("bpmnMinerOKButton");
-
-            this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    uploadFile((UploadEvent) event);
-                }
-            });
-             
-            this.uploadLog2.addEventListener("onUpload", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    uploadFile2((UploadEvent) event);
-                }
-            });
-
-            this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    cancel();
-                }
-            });
-            this.okButton.addEventListener("onClick", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    compareLog2Log();
-                    cancel();
-                }
-            });
-            this.enterLogWin.doModal();
-
-        }catch (IOException e) {
-            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-        
-    }
-    
-    public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net, HashSet<String> obs1) {
-        this.compareService = compareService;
-        this.net = net;
-        this.obs = obs1;
-        this.portalContext = portalContext;
-        
-        try {
-            List<String> domains = new ListModelList<>();
-            this.domainCB = new SelectDynamicListController(domains);
-            this.domainCB.setReference(domains);
-            this.domainCB.setAutodrop(true);
-            this.domainCB.setWidth("85%");
-            this.domainCB.setHeight("100%");
-            this.domainCB.setAttribute("hflex", "1");
-
-            this.enterLogWin = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/compare.zul", null, null);
-
-            this.l = (Label) this.enterLogWin.getFellow("fileName");
-            this.uploadLog = (Button) this.enterLogWin.getFellow("bpmnMinerUpload");
-            this.cancelButton = (Button) this.enterLogWin.getFellow("bpmnMinerCancelButton");
-            this.okButton = (Button) this.enterLogWin.getFellow("bpmnMinerOKButton");
-
-            this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    uploadFile((UploadEvent) event);
-                }
-            });
-
-            this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    cancel();
-                }
-            });
-            this.okButton.addEventListener("onClick", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    createCanditatesEntity();
-                    cancel();
-                }
-            });
-            this.enterLogWin.doModal();
-        }catch (IOException e) {
-            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
     }
 
     /**
@@ -497,17 +500,6 @@ public class CompareController {
             grid.setRowRenderer(rowRenderer);
             grid.setModel(listModel);
 
-//
-//            int i = 0;
-//            for (String sentence : results) {
-//                System.out.println("Sentence = " + sentence);
-//                this.row = new Row();
-//                this.row.setId(""+(i++));
-//                this.sent = new Label(sentence);
-//                this.sent.setParent(this.row);
-//                this.row.setParent(this.rows);
-//            }
-
             this.resultsWin.doModal();
         }catch(Exception e){
             e.printStackTrace();
@@ -526,69 +518,11 @@ public class CompareController {
         return ignored;
     }
 
-//    public void setSelectedPrimaryKeys(Map<Set<String>, Set<String>> group) {
-//        mineAndSave(listCandidates, group);
-//    }
-
     public void noEntityException() {
     }
 
     public void setSelectedPrimaryKeys(Map<Set<String>, Set<String>> group) {
     }
-//
-//    public void noEntityException() {
-//        mineAndSave(new ArrayList<String>(), new HashMap<Set<String>, Set<String>>());
-//    }
-//
-//    private void mineAndSave(List<String> listCandidates, Map<Set<String>, Set<String>> group) {
-//        try {
-//
-//            this.enterLogWin.detach();
-//
-//            String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
-//                    ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
-//                    ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
-//                    listCandidates, group);
-//
-//            String defaultProcessName = this.logFileName.split("\\.")[0];
-//            if(!modelName.getValue().isEmpty()) {
-//                defaultProcessName = modelName.getValue();
-//            }
-//
-//            String user = portalContext.getCurrentUser().getUsername();
-//            Version version = new Version(1, 0);
-//            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
-//            String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-//            boolean publicModel = true;
-//
-//            ProcessModelVersion pmv = processService.importProcess(user,
-//                portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-//                defaultProcessName,
-//                version,
-//                this.nativeType,
-//                canoniserService.canonise(this.nativeType, new ByteArrayInputStream(model.getBytes()), canoniserProperties),
-//                domainCB.getValue(),
-//                "Model generated by the Apromore BPMN process mining service.",
-//                now,  // creation timestamp
-//                now,  // last update timestamp
-//                publicModel);
-//
-//            this.portalContext.displayNewProcess(userInterfaceHelper.createProcessSummary(pmv.getProcessBranch().getProcess(),
-//                pmv.getProcessBranch(),
-//                pmv,
-//                this.nativeType,
-//                domainCB.getValue(),
-//                now,  // creation timestamp
-//                now,  // last update timestamp
-//                user,
-//                publicModel));
-//
-//            this.portalContext.refreshContent();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     public class SimpleRenderer implements RowRenderer<String> {
 
