@@ -44,12 +44,14 @@ import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SummaryType;
+import org.apromore.model.LogSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.service.compare.CompareService;
+import org.deckfour.xes.model.XLog;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.hypergraph.abs.Vertex;
@@ -59,6 +61,7 @@ import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.plugins.bpmn.converter.BPMNConverter;
 import org.processmining.plugins.bpmn.converter.PetriNetToBPMNConverterPlugin;
 import org.semanticweb.kaon2.jb;
+import org.semanticweb.kaon2.lo;
 import org.springframework.stereotype.Component;
 
 // Local packages
@@ -67,6 +70,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.EventLogService;
 import org.apromore.service.helper.UserInterfaceHelper;
 
 import org.slf4j.Logger;
@@ -83,6 +87,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
     private final CompareService compareService;
     private final ProcessService processService;
     private final CanoniserService canoniserService;
+    private final EventLogService eventLogService;
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
 
     private String label = "Compare";
@@ -91,10 +96,11 @@ public class ComparePlugin extends DefaultPortalPlugin {
     private static final Logger LOGGER = LoggerFactory.getLogger(ComparePlugin.class.getCanonicalName());
 
     @Inject
-    public ComparePlugin(final CompareService compareService, final ProcessService processService, final CanoniserService canoniserService){
+    public ComparePlugin(final CompareService compareService, final ProcessService processService, final CanoniserService canoniserService, final EventLogService eventLogService){
         this.compareService = compareService;
         this.processService = processService;
         this.canoniserService = canoniserService;
+        this.eventLogService = eventLogService;
     }
 
     @Override
@@ -143,29 +149,92 @@ public class ComparePlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext context) {
         LOGGER.info("Executing");
+
         Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
+        Set<LogSummaryType> selectedLogSummaryType = new HashSet<>();
         Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
         for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
-            if(entry.getKey() instanceof ProcessSummaryType) {
+            if(entry.getKey() instanceof LogSummaryType) {
+                selectedLogSummaryType.add((LogSummaryType) entry.getKey());
+            }else if(entry.getKey() instanceof ProcessSummaryType){
                 selectedProcessVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
             }
         }
 
-        if(selectedProcessVersions.size() != 1) {
-            Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
-            return;
-        }
+//        if(selectedProcessVersions.size() != 1) {
+//            Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
+//            return;
+//        }
 
-        Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
-
-        // At least 1 process versions must be selected. Not necessarily of different processes
-        if (selectedProcessVersions.size() == 1 && selectedVersions.next().size() < 1 || selectedProcessVersions.size() < 1) {
-            new CompareController(context, compareService);
-            context.getMessageHandler().displayInfo("Log to log comparison.");
-            return;
-        }
+        // Populate "details" with the process:version selections
+        List<ProcessSummaryType> procS = new ArrayList<>();
+        List<VersionSummaryType> verS = new ArrayList<>();
+        List<PetriNet> nets = new ArrayList<>();
+        List<HashSet<String>> observable = new ArrayList<>();
 
         try {
+            for (ProcessSummaryType processSummary: selectedProcessVersions.keySet()) {
+                List<VersionSummaryType> versionSummaries = selectedProcessVersions.get(processSummary);
+                if (versionSummaries.isEmpty()) {
+                    List<VersionSummaryType> x = processSummary.getVersionSummaries();
+                    versionSummaries.add(x.get(x.size() - 1));  // default to the head version
+                }
+                for (VersionSummaryType versionSummary: versionSummaries) {
+                    procS.add(processSummary);
+                    verS.add(versionSummary);
+                    HashSet<String> obs = new HashSet<>();
+                    nets.add(getNet(processSummary, versionSummary, context, obs));
+                    observable.add(new HashSet<String>(obs));
+                }
+            }
+
+            List<XLog> logs = new ArrayList<>();
+            for(LogSummaryType logType : selectedLogSummaryType){
+                logs.add(eventLogService.getXLog(logType.getId()));
+            }
+
+            CompareController controller = new CompareController(context, compareService, eventLogService);
+
+            if(logs.size() == 2){
+                controller.compareLL(logs.get(0), logs.get(1));
+                return;
+            }else if(logs.size() == 1 && selectedProcessVersions.size() == 1){
+                controller.compareML(nets.get(0), observable.get(0), logs.get(0));
+                return;
+            }else if(selectedProcessVersions.size() == 2){
+                context.getMessageHandler().displayInfo("Performing comparison.");
+
+                ModelAbstractions model1 = toModelAbstractions(procS.get(0), verS.get(0));
+                ModelAbstractions model2 = toModelAbstractions(procS.get(1), verS.get(1));
+
+                controller.compareMM(model1, model2, observable.get(0), observable.get(1), procS.get(0), verS.get(0), procS.get(1), verS.get(1));
+                context.getMessageHandler().displayInfo("Performed comparison.");
+                return;
+            }else if(logs.size() > 2 || selectedProcessVersions.size() > 2){
+                context.getMessageHandler().displayInfo("There are " + selectedProcessVersions.size() + " process versions selected, but only 2 can be compared at a time.");
+                return;
+            }
+
+            // Select the comparison method according to the elements selected in Apromore and input data
+            Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
+
+            // At least 1 process versions must be selected. Not necessarily of different processes
+            if ((selectedProcessVersions.size() == 1 && selectedVersions.next().size() < 1) || selectedProcessVersions.size() < 1) {
+                controller.compareLLPopup();
+                context.getMessageHandler().displayInfo("Log to log comparison.");
+                return;
+            }
+
+            switch (selectedProcessVersions.size()) {
+                case 1:
+                    controller.compareMLPopup(nets.get(0), observable.get(0));
+                    context.getMessageHandler().displayInfo("Performed conformance checker.");
+                    break;
+                default:
+                    context.getMessageHandler().displayInfo("Comparison method not found. Check the selected elements.");
+            }
+
+        /*try {
             // Populate "details" with the process:version selections
             List<ProcessSummaryType> procS = new ArrayList<>();
             List<VersionSummaryType> verS = new ArrayList<>();
@@ -183,8 +252,6 @@ public class ComparePlugin extends DefaultPortalPlugin {
                     HashSet<String> obs = new HashSet<>();
                     nets.add(getNet(processSummary, versionSummary, context, obs));
                     observable.add(new HashSet<String>(obs));
-                    System.out.println(obs);
-//                    details.add(new VersionDetailType(processSummary, versionSummary));
                 }
             }
 
@@ -201,28 +268,18 @@ public class ComparePlugin extends DefaultPortalPlugin {
                 ModelAbstractions model2 = toModelAbstractions(procS.get(1), verS.get(1));
 
                 new CompareController(context,compareService, model1, model2, observable.get(0), observable.get(1), procS.get(0), verS.get(0), procS.get(1), verS.get(1));
-//                new CompareController(context,compareService, nets.get(0), nets.get(1), observable.get(0), observable.get(1));
                 context.getMessageHandler().displayInfo("Performed comparison.");
                 break;
             default:
                 context.getMessageHandler().displayInfo("There are " + selectedProcessVersions.size() + " process versions selected, but only 2 can be compared at a time.");
             }
-
-//            if(selectedProcessVersions.size() == 2) {
-//                HashSet<String> silent2 = new HashSet<>();
-//                PetriNet net2 = getNet(2, context, silent2);
-//
-//                System.out.println("Is null (1)? " + (net1 == null));
-//                System.out.println("Is null (2)? " + (net2 == null));
-//
-//                new CompareController(context,compareService, net1, net2, silent1, silent2);
-//            }else
-//                new CompareController(context, compareService, net1);
+        }catch(Exception e){
+            e.printStackTrace();
+        }*/
 
         }catch(Exception e){
             e.printStackTrace();
         }
-
     }
 
     private ModelAbstractions toModelAbstractions(ProcessSummaryType process, VersionSummaryType version) throws Exception {
