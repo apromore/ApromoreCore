@@ -1,15 +1,13 @@
 package au.edu.qut.structuring;
 
+import au.edu.qut.helper.DiagramHandler;
 import au.edu.qut.structuring.core.StructuringCore;
 import au.edu.qut.structuring.graph.Graph;
 import au.edu.qut.structuring.graph.Path;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
-import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -32,6 +30,8 @@ public class iBPStruct {
     private boolean keepBisimulation;
     private boolean forceStructuring;
     private int g = 0;
+
+    private DiagramHandler diagramHandler;
 
 
     /* setup and rebuild data structs */
@@ -74,6 +74,8 @@ public class iBPStruct {
         this.timeBounded = timeBounded;
         this.keepBisimulation = keepBisimulation;
         this.forceStructuring = forceStructuring;
+
+        diagramHandler = new DiagramHandler();
 
         System.out.println("iBPStruct - starting: ");
         System.out.println("iBPStruct - [Setting] policy: " + policy);
@@ -499,7 +501,6 @@ public class iBPStruct {
     private BPMNNode createNode(String id) {
         BPMNNode node;
         BPMNNode duplicate = null;
-        String label = id;
 
         if( !nodes.containsKey(id) ) {
             System.out.println("ERROR - looked up for a node that does not exist.");
@@ -507,54 +508,7 @@ public class iBPStruct {
         }
 
         node = nodes.get(id);
-
-        if( node instanceof SubProcess) {
-            duplicate = diagram.addSubProcess( label,
-                    ((Activity) node).isBLooped(),
-                    ((Activity) node).isBAdhoc(),
-                    ((Activity) node).isBCompensation(),
-                    ((Activity) node).isBMultiinstance(),
-                    ((Activity) node).isBCollapsed(),
-                    (SubProcess) null);
-
-        } else if( node instanceof Activity) {
-            duplicate = diagram.addActivity( label,
-                    ((Activity) node).isBLooped(),
-                    ((Activity) node).isBAdhoc(),
-                    ((Activity) node).isBCompensation(),
-                    ((Activity) node).isBMultiinstance(),
-                    ((Activity) node).isBCollapsed(),
-                    (SubProcess) null);
-
-        } else if( node instanceof CallActivity) {
-            duplicate = diagram.addCallActivity( label,
-                    ((CallActivity) node).isBLooped(),
-                    ((CallActivity) node).isBAdhoc(),
-                    ((CallActivity) node).isBCompensation(),
-                    ((CallActivity) node).isBMultiinstance(),
-                    ((CallActivity) node).isBCollapsed(),
-                    (SubProcess) null);
-
-        } else if( node instanceof Event ) {
-            duplicate = diagram.addEvent( label,
-                    ((Event) node).getEventType(),
-                    ((Event) node).getEventTrigger(),
-                    ((Event) node).getEventUse(),
-                    (SubProcess) null,
-                    true,
-                    null);
-
-        } else if( node instanceof Gateway ) {
-            g++;
-            duplicate = diagram.addGateway( label,
-                    ((Gateway) node).getGatewayType(),
-                    (SubProcess) null);
-
-            duplicate.setParentSwimlane(node.getParentSwimlane());
-            ((Gateway) duplicate).setMarkerVisible(((Gateway) node).isMarkerVisible());
-            ((Gateway) duplicate).setDecorator(((Gateway) node).getDecorator());
-        }
-
+        duplicate = diagramHandler.copyNode(diagram, node, id);
         return duplicate;
     }
 

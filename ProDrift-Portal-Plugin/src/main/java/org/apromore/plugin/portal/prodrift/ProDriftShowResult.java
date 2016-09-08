@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright Â© 2009-2016 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -20,8 +20,8 @@
 
 package org.apromore.plugin.portal.prodrift;
 
-import ee.ut.eventstr.test.AlphaBasedPosetReaderTest;
-import ee.ut.mining.log.XLogReader;
+import ee.ut.eventstr.model.ProDriftDetectionResult;
+import ee.ut.eventstr.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
@@ -54,8 +54,7 @@ public class ProDriftShowResult extends Window {
     /**
      * @throws IOException if the <code>prodriftshowresult.zul</code> template can't be read from the classpath
      */
-    public ProDriftShowResult(PortalContext portalContext, java.awt.Image pValuesDiagram, java.util.List<BigInteger> driftPoints, java.util.List<BigInteger> lastReadTrace,
-                              java.util.List<BigInteger> startOfTransitionPoints, java.util.List<BigInteger> endOfTransitionPoints) throws IOException {
+    public ProDriftShowResult(PortalContext portalContext, ProDriftDetectionResult result) throws IOException {
         this.portalContext = portalContext;
 
         this.proDriftW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/prodriftshowresult.zul", null, null);
@@ -70,27 +69,27 @@ public class ProDriftShowResult extends Window {
         });
 
         this.pValueDiagramImg = (org.zkoss.zul.Image) this.proDriftW.getFellow("pValueDiagramImg");
-        BufferedImage img = new BufferedImage(pValuesDiagram.getWidth(null), pValuesDiagram.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        BufferedImage img = new BufferedImage(result.getpValuesDiagram().getWidth(null), result.getpValuesDiagram().getHeight(null), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = img.createGraphics();
-        g2d.drawImage(pValuesDiagram, 0, 0, null);
+        g2d.drawImage(result.getpValuesDiagram(), 0, 0, null);
         g2d.dispose();
         this.pValueDiagramImg.setContent(img);
 
         this.resultDescription = (Listbox) this.proDriftW.getFellow("resultDescription");
         resultDescription.setDisabled(true);
-        for(int i = 0; i < driftPoints.size(); i++)
+        for(int i = 0; i < result.getDriftStatements().size(); i++)
         {
 
             Listitem listItem = new Listitem();
-            listItem.setLabel("Drift detected at " + driftPoints.get(i).intValue() + " after reading " + lastReadTrace.get(i).intValue() + " traces.");
+            listItem.setLabel("(" + (i+1) + ") " + result.getDriftStatements().get(i));
             this.resultDescription.appendChild(listItem);
             listItem.setSelected(false);
 
         }
 
         Session sess = Sessions.getCurrent();
-        sess.setAttribute("startOfTransitionPoints", startOfTransitionPoints);
-        sess.setAttribute("endOfTransitionPoints", endOfTransitionPoints);
+        sess.setAttribute("startOfTransitionPoints", result.getStartOfTransitionPoints());
+        sess.setAttribute("endOfTransitionPoints", result.getEndOfTransitionPoints());
 
 
         this.proDriftW.doModal();
@@ -103,14 +102,15 @@ public class ProDriftShowResult extends Window {
         Session sess = Sessions.getCurrent();
         java.util.List<BigInteger> startOfTransitionPoints = (java.util.List<BigInteger>)sess.getAttribute("startOfTransitionPoints");
         java.util.List<BigInteger> endOfTransitionPoints = (java.util.List<BigInteger>)sess.getAttribute("endOfTransitionPoints");
-        byte[] log = (byte[])sess.getAttribute("log");
-        String logName = (String)sess.getAttribute("logName");
+        byte[] log = (byte[])sess.getAttribute("logDrift");
+        String logName = (String)sess.getAttribute("logNameDrift");
+        Boolean isEventBased = (Boolean)sess.getAttribute("isEventBased");
 
 
         List<ByteArrayOutputStream> eventLogList = null;
         try {
 
-            eventLogList = AlphaBasedPosetReaderTest.getSubLogs(log, logName, startOfTransitionPoints, endOfTransitionPoints);
+            eventLogList = XLogManager.getSubLogs(log, logName, startOfTransitionPoints, endOfTransitionPoints, isEventBased);
 
         }catch (Exception ex)
         {
@@ -121,6 +121,7 @@ public class ProDriftShowResult extends Window {
 
         ByteArrayOutputStream baos = null;
         ZipOutputStream zos = null;
+        String extension = XLogManager.getExtension(logName);
         try
         {
 
@@ -135,26 +136,13 @@ public class ProDriftShowResult extends Window {
                 int end  = startOfTransitionPoints.get(i).intValue();
 
                 ByteArrayOutputStream ba = eventLogList.get(i);
-                ByteArrayOutputStream outputStream;
-                String filename;
-
-                if(XLogReader.getExtension(logName).endsWith("gz")) {
-                    outputStream = eventLogList.get(i);
-                    filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogReader.getExtension(logName);
-                }else {
-                    byte[] b = ba.toByteArray();
-                    outputStream = new ByteArrayOutputStream(b.length);
-                    GZIPOutputStream gzOS = new GZIPOutputStream(outputStream);
-                    gzOS.write(b);
-                    gzOS.close();
-                    filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogReader.getExtension(logName) + "gz";
-                }
-
+                String filename = logName.substring(0, logName.indexOf(extension) - 1) + "_sublog" + "_" + start+"_" + end + "." + extension;
+  
                 ZipEntry entry = new ZipEntry(filename);
-
-                entry.setSize(outputStream.toByteArray().length);
+  
+                entry.setSize(ba.toByteArray().length);
                 zos.putNextEntry(entry);
-                zos.write(outputStream.toByteArray());
+                zos.write(ba.toByteArray());
                 zos.closeEntry();
             }
             zos.close();
@@ -163,7 +151,7 @@ public class ProDriftShowResult extends Window {
             // this is the zip file as byte[]
             downloadContent = baos.toByteArray();
 
-            Filedownload.save(downloadContent, "application/zip", logName.substring(0, logName.indexOf(".")) + "_sublogs.zip");
+            Filedownload.save(downloadContent, "application/zip", logName.substring(0, logName.indexOf(extension) - 1) + "_sublogs.zip");
 
         }catch (IOException e)
         {

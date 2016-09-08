@@ -20,13 +20,14 @@
 
 package org.apromore.service.helper;
 
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionsType;
-import org.apromore.service.PQLService;
+import org.apromore.model.SummariesType;
+import org.apromore.model.SummaryType;
 
 /**
  * UI Helper Interface. Kinda a hack, need to re-look at this.
@@ -58,7 +59,7 @@ public interface UserInterfaceHelper {
      * @param similarProcesses something
      * @return the list of process Summaries
      */
-    ProcessSummariesType buildProcessSummaryList(Integer folderId, String conditions, ProcessVersionsType similarProcesses);
+    SummariesType buildProcessSummaryList(Integer folderId, String conditions, ProcessVersionsType similarProcesses);
 
     /**
      * Builds the list of process Summaries and kicks off the versions and annotations.
@@ -67,7 +68,7 @@ public interface UserInterfaceHelper {
      * @param similarProcesses something
      * @return the list of process Summaries
      */
-    ProcessSummariesType buildProcessSummaryList(String userId, Integer folderId, ProcessVersionsType similarProcesses);
+    SummariesType buildProcessSummaryList(String userId, Integer folderId, ProcessVersionsType similarProcesses);
 
     /**
      * Build a page out of the list of process summaries.
@@ -78,7 +79,11 @@ public interface UserInterfaceHelper {
      * @param pageSize the desired size of the page of results
      * @return the list of process Summaries on the requested page
      */
-    ProcessSummariesType buildProcessSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
+    SummariesType buildProcessSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
 
-    public void setPQLService(PQLService pqlService);
+    SummariesType buildSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
+
+    SummaryType buildLogSummary(Log log);
+
+    SummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
 }

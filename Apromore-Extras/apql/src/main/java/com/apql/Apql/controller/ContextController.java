@@ -30,17 +30,10 @@ import com.apql.Apql.tree.DraggableNodeFolder;
 import com.apql.Apql.tree.DraggableNodeProcess;
 import com.apql.Apql.tree.DraggableNodeTree;
 import com.apql.Apql.tree.FolderProcessTree;
-import org.apromore.manager.client.ManagerService;
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.service.pql.DatabaseService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.*;
 import java.util.List;
 
@@ -49,7 +42,7 @@ import java.util.List;
  */
 public class ContextController {
     private static ContextController context;
-    public static ManagerService manager;
+    public static DatabaseService databaseService;
     private ViewController viewController=ViewController.getController();
     private QueryController queryController=QueryController.getQueryController();
     private HashMap<String,List<JLabel>> cache=new HashMap<>();
@@ -322,7 +315,7 @@ public class ContextController {
         if (testProcessLabels != null) {
             return testProcessLabels;
         } else {
-            return manager.getProcessesLabels("jbpt_labels","label");
+            return databaseService.getLabels("jbpt_labels","label");
         }
     }
 

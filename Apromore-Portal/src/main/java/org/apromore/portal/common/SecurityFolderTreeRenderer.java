@@ -21,7 +21,9 @@
 package org.apromore.portal.common;
 
 import org.apromore.model.FolderType;
+import org.apromore.model.LogSummaryType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
 import org.apromore.portal.dialogController.SecurityPermissionsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +73,8 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
 
         Hlayout hl = new Hlayout();
 
+        SummaryType summaryType;
+
         switch (ctn.getType()) {
         case Folder:
             FolderType folder = (FolderType) ctn.getData();
@@ -91,10 +95,23 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
             break;
 
         case Process:
-            ProcessSummaryType process = (ProcessSummaryType) ctn.getData();
-            hl.appendChild(new Image("/img/process24.png"));
-            String processName = process.getName();
-            hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
+            summaryType = (SummaryType) ctn.getData();
+            if(summaryType instanceof ProcessSummaryType) {
+                ProcessSummaryType process = (ProcessSummaryType) summaryType;
+                hl.appendChild(new Image("/img/process24.png"));
+                String processName = process.getName();
+                hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
+            }
+            break;
+
+        case Log:
+            summaryType = (SummaryType) ctn.getData();
+            if(summaryType instanceof LogSummaryType) {
+                LogSummaryType log = (LogSummaryType) summaryType;
+                hl.appendChild(new Image("/img/log24.png"));
+                String processName = log.getName();
+                hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
+            }
             break;
 
         default:
@@ -122,9 +139,12 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                         break;
   
                     case Process:
-                        ProcessSummaryType selectedProcess = (ProcessSummaryType) clickedNodeValue.getData();
-                        hasOwnership = selectedProcess.isHasOwnership();
-                        selectedId = selectedProcess.getId();
+                        SummaryType summaryType = (SummaryType) clickedNodeValue.getData();
+                        if(summaryType instanceof ProcessSummaryType) {
+                            ProcessSummaryType process = (ProcessSummaryType) summaryType;
+                            hasOwnership = process.isHasOwnership();
+                            selectedId = process.getId();
+                        }
                         break;
 
                     default:

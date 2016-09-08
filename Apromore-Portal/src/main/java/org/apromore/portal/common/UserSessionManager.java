@@ -28,7 +28,9 @@ import org.apromore.model.UserType;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
 
 public class UserSessionManager {
 
@@ -49,15 +51,29 @@ public class UserSessionManager {
 
 
     public static void setCurrentUser(UserType user) {
-        Executions.getCurrent().getSession().setAttribute(USER, user);
+        getSession().setAttribute(USER, user);
+    }
+
+    private static Session getSession() {
+        Execution execution = Executions.getCurrent();
+        if (execution == null) {
+            throw new RuntimeException("No current execution");
+        }
+
+        Session session = execution.getSession();
+        if (session == null) {
+            throw new RuntimeException("Session was not set for the current execution");
+        }
+
+        return session;
     }
 
     public static UserType getCurrentUser() {
-        if (Executions.getCurrent().getSession().getAttribute(USER) != null) {
-            return (UserType) Executions.getCurrent().getSession().getAttribute(USER);
+        if (getSession().getAttribute(USER) != null) {
+            return (UserType) getSession().getAttribute(USER);
         } else if (SecurityContextHolder.getContext().getAuthentication() != null) {
             setCurrentUser((UserType) SecurityContextHolder.getContext().getAuthentication().getDetails());
-            return (UserType) Executions.getCurrent().getSession().getAttribute(USER);
+            return (UserType) getSession().getAttribute(USER);
         }
         return null;
     }

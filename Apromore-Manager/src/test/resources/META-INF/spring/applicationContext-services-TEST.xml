@@ -79,33 +79,6 @@
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
     <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
 
-    <bean id="lolaDir" class="org.apromore.service.impl.LolaDirImpl">
-        <constructor-arg value="${pql.lola.dir}"/>
-    </bean>
-    <bean id="mysqlbean" class="org.apromore.service.impl.MySqlBeanImpl">
-        <constructor-arg value="${pql.mysql.dir}"/>
-        <constructor-arg value="${pql.mysql.user}"/>
-        <constructor-arg value="${pql.mysql.password}"/>
-    </bean>
-    <bean id="pgbean" class="org.apromore.service.impl.PGBeanImpl">
-        <constructor-arg value="${pql.postgres.host}"/>
-        <constructor-arg value="${pql.postgres.name}"/>
-        <constructor-arg value="${pql.postgres.user}"/>
-        <constructor-arg value="${pql.postgres.password}"/>
-    </bean>
-    <bean id="pqlbean" class="org.apromore.service.impl.PqlBeanImpl" scope="prototype"><!-- prototype means that this bean is not a singleton  -->
-        <constructor-arg ref="lolaDir"/>
-        <constructor-arg ref="mysqlbean"/>
-        <constructor-arg ref="pgbean"/>
-        <constructor-arg type="boolean" value="false"/>
-        <constructor-arg type="int" value="1"/>
-        <constructor-arg type="String" value="LEVENSHTEIN"/>
-        <constructor-arg type="String" value="/dev/null"/>
-        <constructor-arg type="double" value="0.75"/>
-        <constructor-arg type="String" value="0.5,0.75, 1.0"/>
-        <constructor-arg type="long" value="300"/>
-        <constructor-arg type="long" value="86400"/>
-    </bean>
     <bean id="gedmatrixbean" class="org.apromore.service.impl.GEDMatrixBeanImpl">
         <constructor-arg value="false"/>
     </bean>

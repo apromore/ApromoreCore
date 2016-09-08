@@ -22,6 +22,7 @@ package org.apromore.manager.client.helper;
 
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionIdentifierType;
+import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 
 import java.util.ArrayList;
@@ -40,28 +41,31 @@ public class DeleteProcessVersionHelper {
     /**
      * Sets up the process models that are to be merged.
      *
-     * @param selectedProcessVersions the list of models
+     * @param elements the list of models
      * @return the object to be sent to the Service
      */
-    public static Collection<ProcessVersionIdentifierType> setProcessModels(Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) {
+    public static Collection<ProcessVersionIdentifierType> setElements(Map<SummaryType, List<VersionSummaryType>> elements) {
         ProcessVersionIdentifierType processVersionId;
         List<VersionSummaryType> versionSummaries;
-        Set<ProcessSummaryType> keys = selectedProcessVersions.keySet();
+        Set<SummaryType> keys = elements.keySet();
 
         Collection<ProcessVersionIdentifierType> payload = new ArrayList<>();
 
-        for (ProcessSummaryType processSummary : keys) {
-            versionSummaries = selectedProcessVersions.get(processSummary);
+        for (SummaryType summaryType : keys) {
+            if(summaryType instanceof ProcessSummaryType) {
+                ProcessSummaryType processSummary = (ProcessSummaryType) summaryType;
+                versionSummaries = elements.get(processSummary);
 
-            processVersionId = new ProcessVersionIdentifierType();
-            processVersionId.setProcessId(processSummary.getId());
-            processVersionId.setProcessName(processSummary.getName());
-            for (VersionSummaryType versionSummary : versionSummaries) {
-                processVersionId.setBranchName(versionSummary.getName());
-                processVersionId.setVersionNumber(versionSummary.getVersionNumber());
+                processVersionId = new ProcessVersionIdentifierType();
+                processVersionId.setProcessId(processSummary.getId());
+                processVersionId.setProcessName(processSummary.getName());
+                for (VersionSummaryType versionSummary : versionSummaries) {
+                    processVersionId.setBranchName(versionSummary.getName());
+                    processVersionId.setVersionNumber(versionSummary.getVersionNumber());
+                }
+
+                payload.add(processVersionId);
             }
-
-            payload.add(processVersionId);
         }
 
         return payload;

@@ -52,7 +52,9 @@ DROP TABLE IF EXISTS `cluster`;
 DROP TABLE IF EXISTS `cluster_assignment`;
 DROP TABLE IF EXISTS `fragment_distance`;
 DROP TABLE IF EXISTS `metric`;
-DROP TABLE IF EXISTS `history_event`;
+
+DROP TABLE IF EXISTS `group_log`;
+DROP TABLE IF EXISTS `log`;
 
 # DROP TABLE IF EXISTS `qrtz_fired_triggers`;
 # DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
@@ -117,6 +119,27 @@ CREATE TABLE `process` (
     ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_process2` FOREIGN KEY (`nativeTypeId`)
   REFERENCES `native_type` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `folderId` int(11) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `public_log` boolean NOT NULL DEFAULT 0,
+  `domain` varchar(255) DEFAULT NULL,
+  `ranking` varchar(10) DEFAULT NULL,
+  `createDate` varchar(40) DEFAULT NULL,
+  `owner` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_users` (`owner`),
+  KEY `fk_folder` (`folderId`),
+  CONSTRAINT `fk_log_folder` FOREIGN KEY (`folderId`)
+  REFERENCES `folder` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_log1` FOREIGN KEY (`owner`)
+  REFERENCES `user` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -442,6 +465,20 @@ CREATE TABLE `group_process` (
   KEY `fk_group_process_group` (`groupId`),
   CONSTRAINT `fk_group_process_process` FOREIGN KEY (`processId`) REFERENCES `process` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_group_process_group` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `group_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `groupId` int(11) NOT NULL,
+  `logId` int(11) NOT NULL,
+  `has_read` tinyint(1) NOT NULL DEFAULT '0',
+  `has_write` tinyint(1) NOT NULL DEFAULT '0',
+  `has_ownership` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `fk_group_log_log` (`logId`),
+  KEY `fk_group_log_group` (`groupId`),
+  CONSTRAINT `fk_group_log_log` FOREIGN KEY (`logId`) REFERENCES `log` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_group_log_group` FOREIGN KEY (`groupId`) REFERENCES `group` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `role` (

@@ -29,7 +29,7 @@
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
     <bean id="pqlIndexerConfig" class="org.apromore.pql.indexer.PQLIndexerConfigurationBean">
-        <constructor-arg type="boolean" value="${pql.enableIndexing}"/>
+        <constructor-arg type="int"     value="${pql.numberOfIndexerThreads}"/>
 
         <constructor-arg type="String"  value="${pql.labelSimilaritySearch}"/>
         <constructor-arg type="String"  value="${pql.labelSimilarityConfig}"/>

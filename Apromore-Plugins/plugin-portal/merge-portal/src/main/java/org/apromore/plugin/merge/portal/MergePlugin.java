@@ -82,10 +82,22 @@ public class MergePlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getGroupLabel(Locale locale) {
+        return "Redesign";
+    }
+
+    @Override
     public void execute(PortalContext context) {
         try {
             LOGGER.info("Executing");
-            Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = context.getSelection().getSelectedProcessModelVersions();
+            Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
+            Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+            for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+                if(entry.getKey() instanceof ProcessSummaryType) {
+                    selectedProcessVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
+                }
+            }
+
             Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
 
             // At least 2 process versions must be selected. Not necessarily of different processes

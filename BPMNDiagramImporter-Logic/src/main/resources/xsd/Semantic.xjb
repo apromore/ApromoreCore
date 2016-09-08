@@ -1,0 +1,51 @@
+<bindings
+  xmlns="http://java.sun.com/xml/ns/jaxb"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb  http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+                      http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd"
+  version="2.1">
+    <bindings schemaLocation="Semantic.xsd" node="/xsd:schema">
+        <bindings node="xsd:complexType[@name='tActivity']//xsd:attribute[@name='default']">
+            <property><baseType name="TSequenceFlow"/></property>
+        </bindings>
+
+        <bindings node="xsd:complexType[@name='tCallableElement']//xsd:element[@name='supportedInterfaceRef']">
+            <property><baseType name="TInterface"/></property>
+        </bindings>
+
+        <bindings node="xsd:complexType[@name='tComplexGateway']//xsd:attribute[@name='default']">
+            <property><baseType name="TSequenceFlow"/></property>
+        </bindings>
+
+        <bindings node="xsd:complexType[@name='tDataAssociation']//xsd:element[@name='targetRef']">
+            <property><baseType name="TBaseElement"/></property>
+        </bindings>
+
+        <bindings node="xsd:complexType[@name='tExclusiveGateway']//xsd:attribute[@name='default']">
+            <property><baseType name="TSequenceFlow"/></property>
+        </bindings>
+
+	<!--
+        <bindings node="xsd:complexType[@name='tFlowNode']//xsd:element[@name='incoming']">
+            <property><baseType name="TSequenceFlow"/></property>
+        </bindings>
+
+        <bindings node="xsd:complexType[@name='tFlowNode']//xsd:element[@name='outgoing']">
+            <property><baseType name="TSequenceFlow"/></property>
+        </bindings>
+	-->
+
+        <bindings node="xsd:complexType[@name='tInclusiveGateway']//xsd:attribute[@name='default']">
+            <property><baseType name="TSequenceFlow"/></property>
+        </bindings>
+
+        <bindings node="xsd:complexType[@name='tSequenceFlow']//xsd:attribute[@name='sourceRef']">
+            <property><baseType name="TFlowNode"/></property>
+        </bindings>
+
+        <bindings node="xsd:complexType[@name='tSequenceFlow']//xsd:attribute[@name='targetRef']">
+            <property><baseType name="TFlowNode"/></property>
+        </bindings>
+    </bindings>
+</bindings>

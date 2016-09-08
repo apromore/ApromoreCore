@@ -62,7 +62,7 @@
                     <instructions>
                         <Embed-Dependency>
                             <!-- Embedded non-OSGI libraries. Remember to always keep the maven-war-plugin in sync -->
-                            artifactId=mathCollection|taskmapping|lpsolve|jaxb2-basics-runtime
+                            artifactId=taskmapping|jaxb2-basics-runtime
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Import-Bundle>
@@ -153,49 +153,6 @@
     </build>
 
     <dependencies>
-
-        <!-- BPStruct -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpstruct-osgi</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <!-- PQL -->
-        <dependency>
-            <groupId>org.jbpt</groupId>
-            <artifactId>jbpt-petri-osgi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime-osgi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.pql</groupId>
-            <artifactId>pql-osgi</artifactId>
-        </dependency>
-
-        <!-- BPMNMiner -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.ibm.icu</groupId>
-                    <artifactId>icu4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>log-osgi</artifactId>
-            <version>1.0</version>
-        </dependency>
-
-        <!-- ProDrift -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prodrift-osgi</artifactId>
-        </dependency>
 
         <!-- Clients -->
         <dependency>
@@ -289,14 +246,6 @@
         <dependency>
             <groupId>tu</groupId>
             <artifactId>taskmapping</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mathCollection</groupId>
-            <artifactId>mathCollection</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>lpsolve</groupId> <!-- TODO check if this can be replace by lpsolve-osgi -->
-            <artifactId>lpsolve</artifactId>
         </dependency>
 
         <!-- Commons -->
@@ -573,13 +522,6 @@
             <artifactId>aris-schema</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmn-schema</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>epml-schema</artifactId>
@@ -660,6 +602,12 @@
             <groupId>org.apromore</groupId>
             <artifactId>bpmntk-osgi</artifactId>
             <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
+            <version>2.0</version>
         </dependency>
     </dependencies>
 

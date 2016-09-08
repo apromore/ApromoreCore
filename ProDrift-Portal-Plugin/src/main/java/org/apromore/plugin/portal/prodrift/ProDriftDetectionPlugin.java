@@ -30,17 +30,10 @@ import javax.inject.Inject;
 // Third party packages
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.prodrift.ProDriftDetectionService;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zul.Messagebox;
-
-// Local packages
-import org.apromore.service.prodrift.ProDriftDetectionService;
-/*
-import org.apromore.service.CanoniserService;
-import org.apromore.service.DomainService;
-import org.apromore.service.ProcessService;
-*/
 
 /**
  * A user interface to the process drift detection service.
@@ -49,29 +42,31 @@ import org.apromore.service.ProcessService;
 public class ProDriftDetectionPlugin extends DefaultPortalPlugin {
 
     private final ProDriftDetectionService proDriftDetectionService;
-    /*
-    private final CanoniserService canoniserService;
-    private final DomainService    domainService;
-    private final ProcessService   processService;
-    */
+
+    private String label = "Detect Process Drifts";
+    private String groupLabel = "Analyze";
 
     @Inject
-    public ProDriftDetectionPlugin(final ProDriftDetectionService proDriftDetectionService /*,
-                           final CanoniserService canoniserService,
-                           final DomainService    domainService,
-                           final ProcessService   processService */) {
-
+    public ProDriftDetectionPlugin(final ProDriftDetectionService proDriftDetectionService) {
         this.proDriftDetectionService = proDriftDetectionService;
-        /*
-        this.canoniserService = canoniserService;
-        this.domainService    = domainService;
-        this.processService   = processService;
-        */
     }
 
     @Override
     public String getLabel(Locale locale) {
-        return "Detect Process Drifts";
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public String getGroupLabel(Locale locale) {
+        return groupLabel;
+    }
+
+    public void setGroupLabel(String groupLabel) {
+        this.groupLabel = groupLabel;
     }
 
     @Override

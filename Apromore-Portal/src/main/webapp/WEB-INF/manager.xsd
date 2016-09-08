@@ -149,20 +149,6 @@
     <xs:element name="TabAPQLRequest" type="tns:TabAPQLInputMsgType"/>
     <xs:element name="TabAPQLResponse" type="tns:TabAPQLOutputMsgType"/>
 
-    <xs:element name="DBRequest" type="tns:DBInputMsgType"/>
-    <xs:element name="DBResponse" type="tns:DBOutputMsgType"/>
-
-    <xs:complexType name="DBInputMsgType">
-        <xs:attribute name="table" type="xs:string"/>
-        <xs:attribute name="columnName" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="DBOutputMsgType">
-        <xs:sequence>
-            <xs:element name="labels" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
     <xs:complexType name="TabAPQLInputMsgType">
         <xs:sequence>
             <xs:element name="results" type="tns:ResultPQL" minOccurs="0" maxOccurs="unbounded"/>
@@ -195,18 +181,6 @@
         </xs:sequence>
         <xs:attribute name="labelOne" type="xs:string"/>
         <xs:attribute name="similarityLabelOne" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:element name="DetailRequest" type="tns:DetailInputMsgType"/>
-    <xs:element name="DetailResponse" type="tns:DetailOutputMsgType"/>
-
-    <xs:complexType name="DetailInputMsgType">
-    </xs:complexType>
-
-    <xs:complexType name="DetailOutputMsgType">
-        <xs:sequence>
-            <xs:element name="detail" type="tns:Detail" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
     </xs:complexType>
 
     <!-- BPMNMiner -->
@@ -289,8 +263,6 @@
     <!-- Retrieve Process Summaries -->
     <xs:element name="ReadProcessSummariesRequest" type="tns:ReadProcessSummariesInputMsgType"/>
     <xs:element name="ReadProcessSummariesResponse" type="tns:ReadProcessSummariesOutputMsgType"/>
-    <xs:element name="RunAPQLRequest" type="tns:RunAPQLInputMsgType"/>
-    <xs:element name="RunAPQLResponse" type="tns:RunAPQLOutputMsgType"/>
     <xs:element name="WriteAnnotationRequest" type="tns:WriteAnnotationInputMsgType"/>
     <xs:element name="WriteAnnotationResponse" type="tns:WriteAnnotationOutputMsgType"/>
 
@@ -299,10 +271,6 @@
     <xs:element name="SearchForSimilarProcessesResponse" type="tns:SearchForSimilarProcessesOutputMsgType"/>
     <xs:element name="MergeProcessesRequest" type="tns:MergeProcessesInputMsgType"/>
     <xs:element name="MergeProcessesResponse" type="tns:MergeProcessesOutputMsgType"/>
-
-
-    <xs:element name="ProDriftDetectorRequest" type="tns:ProDriftDetectorInputMsgType"/>
-    <xs:element name="ProDriftDetectorResponse" type="tns:ProDriftDetectorOutputMsgType"/>
 
     <!-- Plugins -->
     <xs:element name="ReadInstalledPluginsRequest" type="tns:ReadInstalledPluginsInputMsgType"/>
@@ -1131,22 +1099,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="RunAPQLInputMsgType">
-        <xs:sequence>
-            <xs:element name="ids" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="APQLExpression" type="xs:string"/>
-        <xs:attribute name="UserID" type="xs:string"/>
-
-    </xs:complexType>
-
-    <xs:complexType name="RunAPQLOutputMsgType">
-        <xs:sequence>
-            <xs:element name="processResult" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-    </xs:complexType>
-
     <xs:complexType name="WriteAnnotationInputMsgType">
         <xs:sequence>
             <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
@@ -1190,29 +1142,6 @@
             <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
-
-    <xs:complexType name="ProDriftDetectorInputMsgType">
-        <xs:sequence>
-            <xs:element name="logByteArray" minOccurs="0" type="xs:base64Binary"/>
-            <xs:element name="winSize" minOccurs="0" type="xs:int"/>
-            <xs:element name="fWinorAwin" minOccurs="0" type="xs:string"/>
-            <xs:element name="logFileName" minOccurs="0" type="xs:string"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="ProDriftDetectorOutputMsgType">
-        <xs:sequence>
-            <xs:element name="pValuesDiagram" minOccurs="0" type="xs:base64Binary" xmime:expectedContentTypes="image/png"/>
-            <xs:element name="driftPoints" minOccurs="0" type="tns:listofintegers"/>
-            <xs:element name="lastReadTrace" minOccurs="0" type="tns:listofintegers"/>
-            <xs:element name="startOfTransitionPoints" minOccurs="0" type="tns:listofintegers"/>
-            <xs:element name="endOfTransitionPoints" minOccurs="0" type="tns:listofintegers"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:simpleType name="listofintegers">
-        <xs:list itemType="xs:integer"/>
-    </xs:simpleType>
 
     <xs:complexType name="SearchForSimilarProcessesInputMsgType">
         <xs:sequence>

@@ -24,7 +24,11 @@ import java.io.*;
 import java.util.*;
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.EventLogService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -34,6 +38,7 @@ import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
 import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
+import org.processmining.plugins.bpmn.miner.subprocessminer.ui.SelectMinerUI;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -53,7 +58,7 @@ import org.apromore.service.helper.UserInterfaceHelper;
  */
 public class BPMNMinerController {
 
-    private PortalContext portalContext;
+    PortalContext portalContext;
     private Window bpmnMinerW;
     private Button uploadLog;
     private Button cancelButton;
@@ -64,13 +69,13 @@ public class BPMNMinerController {
     private String nativeType = "BPMN 2.0";
 
     private String[] arrayMiningAlgorithms = new String[] {
-            "Inductive Miner",
-            "Heuristics Miner ProM 5.2 without unused relationships",
-            "Heuristics Miner ProM 6",
+            SelectMinerUI.IM,
+            SelectMinerUI.HM6,
+            SelectMinerUI.HMWO5,
 //            "Fodina Miner",
-            "Alpha Algorithm",
-            "ILP Miner",
-            "Heuristics Miner ProM 5.2 with unused relationships"
+            SelectMinerUI.ALPHA,
+            SelectMinerUI.ILP,
+            SelectMinerUI.HMW5
     };
     private String[] arrayDependencyAlgorithms = new String[] {
             "Normal",
@@ -104,21 +109,24 @@ public class BPMNMinerController {
     private final CanoniserService canoniserService;
     private final DomainService domainService;
     private final ProcessService processService;
+    private final EventLogService eventLogService;
     private final UserInterfaceHelper userInterfaceHelper;
 
-    public BPMNMinerController(PortalContext       portalContext,
-                               BPMNMinerService    bpmnMinerService,
-                               CanoniserService    canoniserService,
-                               DomainService       domainService,
-                               ProcessService      processService,
+    public BPMNMinerController(PortalContext portalContext,
+                               BPMNMinerService bpmnMinerService,
+                               CanoniserService canoniserService,
+                               DomainService domainService,
+                               ProcessService processService,
+                               EventLogService eventLogService,
                                UserInterfaceHelper userInterfaceHelper) {
 
-            this.portalContext       = portalContext;
-            this.bpmnMinerService    = bpmnMinerService;
-            this.canoniserService    = canoniserService;
-            this.domainService       = domainService;
-            this.processService      = processService;
-            this.userInterfaceHelper = userInterfaceHelper;
+        this.portalContext       = portalContext;
+        this.bpmnMinerService    = bpmnMinerService;
+        this.canoniserService    = canoniserService;
+        this.domainService       = domainService;
+        this.processService      = processService;
+        this.eventLogService = eventLogService;
+        this.userInterfaceHelper = userInterfaceHelper;
 
         try {
             List<String> domains = domainService.findAllDomains();
@@ -129,9 +137,32 @@ public class BPMNMinerController {
             this.domainCB.setHeight("100%");
             this.domainCB.setAttribute("hflex", "1");
 
-            this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMiner.zul", null, null);
+            Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
+            Set<LogSummaryType> selectedLogSummaryType = new HashSet<>();
+            for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+                if(entry.getKey() instanceof LogSummaryType) {
+                    selectedLogSummaryType.add((LogSummaryType) entry.getKey());
+                }
+            }
 
-            this.l = (Label) this.bpmnMinerW.getFellow("fileName");
+            // At least 2 process versions must be selected. Not necessarily of different processes
+            if (selectedLogSummaryType.size() == 0) {
+                this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMinerInput.zul", null, null);
+                this.l = (Label) this.bpmnMinerW.getFellow("fileName");
+                this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
+                this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        uploadFile((UploadEvent) event);
+                    }
+                });
+            }else if (selectedLogSummaryType.size() == 1) {
+                log = eventLogService.getXLog(selectedLogSummaryType.iterator().next().getId());
+                this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMiner.zul", null, null);
+            }else {
+                portalContext.getMessageHandler().displayInfo("Select one log for process discovery.");
+                return;
+            }
+
             this.modelName = (Textbox) this.bpmnMinerW.getFellow("bpmnMinerModelName");
             this.miningAlgorithms = (Selectbox) this.bpmnMinerW.getFellow("bpmnMinerMiningAlgorithm");
             this.miningAlgorithms.setModel(new ListModelArray<Object>(arrayMiningAlgorithms));
@@ -146,15 +177,8 @@ public class BPMNMinerController {
             this.timerEventTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerTimerEventTolerance");
             this.noiseThreshold = (Slider) this.bpmnMinerW.getFellow("bpmnMinerNoiseThreshold");
 
-            this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
             this.cancelButton = (Button) this.bpmnMinerW.getFellow("bpmnMinerCancelButton");
             this.okButton = (Button) this.bpmnMinerW.getFellow("bpmnMinerOKButton");
-
-            this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    uploadFile((UploadEvent) event);
-                }
-            });
 
             this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -247,29 +271,30 @@ public class BPMNMinerController {
 
     protected void createCanditatesEntity() {
         try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bos.write(logByteArray, 0, logByteArray.length);
-            InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
-            log = importFromStream(new XFactoryNaiveImpl(), zipEntryIS, logFileName);
+            if(log == null) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bos.write(logByteArray, 0, logByteArray.length);
+                InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
+                log = importFromStream(new XFactoryNaiveImpl(), zipEntryIS, logFileName);
+            }
+
+            if(log == null) {
+                Messagebox.show("Please select a log.");
+            }else {
+                erModel = new DiscoverERmodel();
+                listCandidates = erModel.generateAllAttributes(log);
+
+                new CandidatesEntitiesController(this, listCandidates);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if(log == null) {
-            Messagebox.show("Please select a log.");
-        }else if(miningAlgorithms.getSelectedIndex() < 0) {
-            Messagebox.show("Please select mining algorithm.");
-        }else {
-            erModel = new DiscoverERmodel();
-            listCandidates = erModel.generateAllAttributes(log);
-
-            new CandidatesEntitiesController(this, listCandidates);
-        }
     }
 
-    public void setSelectedCandidatesEntities(List<String> listCandidates, boolean[] selected) throws NoEntityException {
+    public void setSelectedCandidatesEntities(List<String> listCandidates, boolean[] selected) throws IOException, NoEntityException {
         this.listCandidates = listCandidates;
         this.selected = selected;
 
@@ -300,13 +325,16 @@ public class BPMNMinerController {
 
             this.bpmnMinerW.detach();
 
-            String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
+            String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, getSelectedAlgorithm(), dependencyAlgorithms.getSelectedIndex()+1,
                     ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
                     ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
                     listCandidates, group);
 
-            String defaultProcessName = this.logFileName.split("\\.")[0];
-            if(!modelName.getValue().isEmpty()) {
+            String defaultProcessName = null;
+            if(this.logFileName != null) {
+                defaultProcessName = this.logFileName.split("\\.")[0];
+            }
+            if (!modelName.getValue().isEmpty()) {
                 defaultProcessName = modelName.getValue();
             }
 
@@ -343,5 +371,28 @@ public class BPMNMinerController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int getSelectedAlgorithm() {
+        int selected = miningAlgorithms.getSelectedIndex();
+        String name = "";
+
+        switch (selected) {
+            case 0 : name = SelectMinerUI.IM; break;
+            case 1 : name = SelectMinerUI.HM6; break;
+            case 2 : name = SelectMinerUI.HMWO5; break;
+            case 3 : name = SelectMinerUI.ALPHA; break;
+            case 4 : name = SelectMinerUI.ILP; break;
+            case 5 : name = SelectMinerUI.HMW5;
+        }
+
+        if(name.equals(SelectMinerUI.ALPHA)) return SelectMinerUI.ALPHAPOS;
+        else if(name.equals(SelectMinerUI.HM6)) return SelectMinerUI.HMPOS6;
+        else if(name.equals(SelectMinerUI.HMW5)) return SelectMinerUI.HMWPOS5;
+        else if(name.equals(SelectMinerUI.HMWO5)) return SelectMinerUI.HMWOPOS5;
+        else if(name.equals(SelectMinerUI.ILP)) return SelectMinerUI.ILPPOS;
+        else if(name.equals(SelectMinerUI.IM)) return SelectMinerUI.IMPOS;
+
+        return SelectMinerUI.HMPOS6;
     }
 }

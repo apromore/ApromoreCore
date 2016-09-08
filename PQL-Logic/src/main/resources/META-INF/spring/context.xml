@@ -68,7 +68,6 @@
         <constructor-arg ref="lolaDir"/>
         <constructor-arg ref="mysqlbean"/>
         <constructor-arg ref="pgbean"/>
-        <constructor-arg type="boolean" value="${pql.enableIndexing}"/>
         <constructor-arg type="int" value="${pql.numberOfQueryThreads}"/>
         <constructor-arg type="String" value="${pql.labelSimilaritySearch}"/>
         <constructor-arg type="String" value="${pql.labelSimilarityConfig}"/>
@@ -82,6 +81,7 @@
     <context:component-scan base-package="org.apromore.service.pql.impl"/>
 
     <!-- Make the example service Spring bean visible from outside this OSGi bundle -->
+    <osgi:service ref="databaseServiceImpl" interface="org.apromore.service.pql.DatabaseService" auto-export="interfaces"/>
     <osgi:service ref="PQLServiceImpl" interface="org.apromore.service.pql.PQLService" auto-export="interfaces"/>
     
 </beans>

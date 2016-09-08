@@ -35,8 +35,14 @@
     <!-- Other OSGi services this component consumes -->
     <reference id="proDriftDetectionService" interface="org.apromore.service.prodrift.ProDriftDetectionService"/>
 
+    <beans:bean id="plugin2" class="org.apromore.plugin.portal.prodrift.ProDriftDetectionPlugin">
+        <beans:property name="groupLabel" value="Monitor" />
+        <beans:property name="label" value="Detect Process Drifts" />
+    </beans:bean>
+
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal" />
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+    <service ref="plugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
        
 </beans:beans>

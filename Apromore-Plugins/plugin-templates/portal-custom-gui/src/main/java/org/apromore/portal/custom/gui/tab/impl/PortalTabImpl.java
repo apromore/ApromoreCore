@@ -37,26 +37,24 @@ public class PortalTabImpl extends AbstractPortalTab {
     private String tabName;
     private String tabRowImage;
     private List<TabRowValue> tabRowValues;
-    private TabHeader tabHeader;
+    private List<Listheader> listheaders;
     private TabItemExecutor tabItemExecutor;
 
-    private int pos = 0;
-
-    public PortalTabImpl(String tabName, String tabRowImage, List<TabRowValue> tabRowValues, TabHeader tabHeader, TabItemExecutor tabItemExecutor, PortalContext portalContext) {
+    public PortalTabImpl(String tabName, String tabRowImage, List<TabRowValue> tabRowValues, List<Listheader> listheaders, TabItemExecutor tabItemExecutor, PortalContext portalContext) {
         super(tabName, portalContext);
         this.tabName = tabName;
         this.tabRowImage = tabRowImage;
         this.tabRowValues = tabRowValues;
-        this.tabHeader = tabHeader;
+        this.listheaders = listheaders;
         this.tabItemExecutor = tabItemExecutor;
-        this.tabpanel = generateTabpanel(tabHeader, tabRowImage, tabRowValues, tabItemExecutor);
+        this.tabpanel = generateTabpanel(listheaders, tabRowImage, tabRowValues, tabItemExecutor);
     }
 
-    public Tabpanel generateTabpanel(TabHeader tabHeader, String tabRowImage, List<TabRowValue> tabRowValues, TabItemExecutor tabItemExecutor){
+    public Tabpanel generateTabpanel(List<Listheader> listheaders, String tabRowImage, List<TabRowValue> tabRowValues, TabItemExecutor tabItemExecutor){
         Tabpanel tabpanel = new Tabpanel();
         tabpanel.setStyle("overflow:auto");
 
-        listBox = generateListbox(tabRowImage, tabHeader, tabRowValues, tabItemExecutor);
+        listBox = generateListbox(tabRowImage, listheaders, tabRowValues, tabItemExecutor);
 
         tabpanel.appendChild(listBox);
 
@@ -64,10 +62,10 @@ public class PortalTabImpl extends AbstractPortalTab {
     }
 
     public PortalTabImpl clone() {
-        return new PortalTabImpl(tabName, tabRowImage, tabRowValues, tabHeader, tabItemExecutor, portalContext);
+        return new PortalTabImpl(tabName, tabRowImage, tabRowValues, listheaders, tabItemExecutor, portalContext);
     }
 
-    private Listbox generateListbox(String image, TabHeader tabHeader, List<TabRowValue> tabRowValues, TabItemExecutor tabItemExecutor) {
+    private Listbox generateListbox(String image, List<Listheader> listheaders, List<TabRowValue> tabRowValues, TabItemExecutor tabItemExecutor) {
         Listbox list = new Listbox();
         list.setMultiple(true);
 
@@ -80,25 +78,7 @@ public class PortalTabImpl extends AbstractPortalTab {
         head.appendChild(imgHeader);
         list.appendChild(head);
 
-        for(String valueLabel: tabHeader) {
-            Listheader idListHeader = createListHeader("1", valueLabel, null, "auto", null);
-
-            idListHeader.setSortAscending(new java.util.Comparator<TabItem>() {
-                int position = pos;
-                @Override
-                public int compare(TabItem o1, TabItem o2) {
-                    return o1.getValue(position).compareTo(o2.getValue(position));
-                }
-            });
-            idListHeader.setSortDescending(new java.util.Comparator<TabItem>() {
-                int position = pos;
-                @Override
-                public int compare(TabItem o1, TabItem o2) {
-                    return o2.getValue(position).compareTo(o1.getValue(position));
-                }
-            });
-
-            pos++;
+        for (Listheader idListHeader: listheaders) {
             head.appendChild(idListHeader);
         }
 
@@ -117,13 +97,13 @@ public class PortalTabImpl extends AbstractPortalTab {
         return list;
     }
 
-    private Listheader createListHeader(String hflex, String label, String id,String sort, String visible){
+    private Listheader createListHeader(String hflex, String label, String width, String id, String sort, String visible){
         Listheader header=new Listheader();
-        header.setWidth("150px");
         if(hflex != null)
             header.setHflex(hflex);
         if(label != null)
             header.setLabel(label);
+        header.setWidth(width);
         if(id != null)
             header.setId(id);
         if(sort != null)

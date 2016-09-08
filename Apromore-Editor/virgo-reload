@@ -11,4 +11,4 @@ cp platform/target/apromore-editor-2.0.war \
    platform\ extensions/yawl/target/editor-platform-extension-yawl-2.0.jar \
        ../Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE/repository/usr/
 
-cp ../Apromore-Assembly/Editor-Assembly/src/main/resources/org.apromore.editor.plan ../Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE/pickup/
+cp ../Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan ../Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE/pickup/

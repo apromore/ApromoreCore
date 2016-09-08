@@ -91,7 +91,7 @@ public class EPMLToJSONConverter {
 
     @SuppressWarnings("unchecked")
     private JAXBElement<TypeEPML> unmarshalNativeFormat(final InputStream nativeFormat) throws JAXBException {
-        JAXBContext jc1 = JAXBContext.newInstance(EPML_CONTEXT);
+        JAXBContext jc1 = JAXBContext.newInstance(TypeEPML.class);
         Unmarshaller u = jc1.createUnmarshaller();
         return (JAXBElement<TypeEPML>) u.unmarshal(nativeFormat);
     }

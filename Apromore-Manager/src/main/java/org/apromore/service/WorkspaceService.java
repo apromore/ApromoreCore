@@ -21,13 +21,11 @@
 package org.apromore.service;
 
 import org.apromore.dao.dataObject.FolderTreeNode;
-import org.apromore.dao.model.Folder;
-import org.apromore.dao.model.GroupFolder;
-import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.Process;
-import org.apromore.dao.model.User;
+import org.apromore.dao.model.*;
 
 import java.util.List;
+
+import org.apromore.dao.model.Process;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -53,6 +51,8 @@ public interface WorkspaceService {
     List<GroupProcess> getGroupProcesses(String userId, Integer folderId);
 
     Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable);
+
+    Page<Log> getLogs(String userId, Integer folderId, Pageable pageable);
 
     void createFolder(String userId, String folderName, Integer parentFolderId, Boolean isGEDMatrixReady);
 

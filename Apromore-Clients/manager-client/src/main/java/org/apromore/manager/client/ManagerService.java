@@ -20,7 +20,6 @@
 
 package org.apromore.manager.client;
 
-import ee.ut.eventstr.model.ProDriftDetectionResult;
 import org.apromore.model.*;
 import org.apromore.plugin.property.RequestParameterType;
 import org.deckfour.xes.model.XLog;
@@ -85,7 +84,9 @@ public interface ManagerService {
 
     List<GroupAccessType> getProcessGroups(int processId);
 
-    ProcessSummariesType getProcesses(String userId, int folderId, int pageIndex, int pageSize);
+    SummariesType getProcessOrLogSummaries(String userId, int folderId, int pageIndex, int pageSize);
+
+    ImportLogResultType importLog(String username, Integer folderId, String logName, InputStream log, String extension, String domain, String created, boolean makePublic) throws Exception;
 
     void createFolder(String userId, String folderName, int parentFolderId, Boolean isGEDMatrixReady);
 
@@ -187,18 +188,8 @@ public interface ManagerService {
      * @param searchCriteria the search criteria to restrict the results
      * @return the ProcessSummaryType from the WebService
      */
-    ProcessSummariesType readProcessSummaries(Integer folderId, String searchCriteria);
+    SummariesType readProcessSummaries(Integer folderId, String searchCriteria);
 
-    /**
-     * Takes an APQL expression and tells the manager to excute it and return a result.
-     * @param searchExpression the search expression to restrict the results
-     * @return the ProcessSummaryType from the WebService
-     */
-    List<String> runAPQLExpression(String searchExpression, List<String> ids, String userID) throws Exception;
-
-    List<String> getProcessesLabels(String table, String columnName);
-
-    List<Detail> getDetails() throws Exception;
     /**
      * Run a search for similar processes models.
      * @param processId the search criteria being a process model
@@ -215,7 +206,7 @@ public interface ManagerService {
      * @param skipeWeight the Skip E weight
      * @return processSummary type for the Web Service
      */
-    ProcessSummariesType searchForSimilarProcesses(int processId, String versionName, String method, Boolean latestVersions, int folderId,
+    SummariesType searchForSimilarProcesses(int processId, String versionName, String method, Boolean latestVersions, int folderId,
             String userId, double modelThreshold, double labelThreshold, double contextThreshold, double skipnWeight, double subnWeight,
             double skipeWeight);
 
@@ -258,6 +249,8 @@ public interface ManagerService {
     ExportFormatResultType exportFormat(int processId, String processName, String branch, String versionNumber, String nativeType,
             String annotationName, Boolean withAnnotations, String owner, Set<RequestParameterType<?>> canoniserProperties)
             throws Exception;
+
+    ExportLogResultType exportLog(int logId, String logName) throws Exception;
 
     /**
      * Import a process into the Apromore Repository.
@@ -417,11 +410,11 @@ public interface ManagerService {
 
     /**
      * Delete process models / versions from the repository.
-     * @param processVersions the list of process models
+     * @param elements the list of process models
      * @throws Exception ... change to be something more relevant
      * TODO: Fix Exception
      */
-    void deleteProcessVersions(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception;
+    void deleteElements(Map<SummaryType, List<VersionSummaryType>> elements) throws Exception;
 
 
     /**
@@ -431,16 +424,4 @@ public interface ManagerService {
      * @throws Exception ... change to be something more relevant
      */
     void updateSearchHistories(UserType currentUser, List<SearchHistoriesType> searchHist) throws Exception;
-
-/**
-     * Detect drifts in the log
-     * @param logByteArray the log as a byte array
-     * @param winSize the window size
-     * @param fWinorAwin Fixed window size or Adaptive window size("FWIN" or "ADWIN")
-     * @param logFileName Name of log file
-     * @return the ProDriftDetectionResult from the WebService
-     */
-    ProDriftDetectionResult proDriftDetector(byte[] logByteArray, int winSize, String fWinorAwin, String logFileName);
-
-
 }

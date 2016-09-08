@@ -39,14 +39,6 @@
         <h2.version>1.3.171</h2.version>
     </properties>
 
-    <!--
-    <scm>
-        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Manager</url>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Manager</connection>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Manager</developerConnection>
-    </scm>
-    -->
-
     <build>
         <finalName>manager-ws</finalName>
         <plugins>
@@ -81,24 +73,10 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle>
                     <instructions>
-                        <Embed-Dependency>artifactId=mathCollection|taskmapping|lpsolve|jaxb2-basics-runtime</Embed-Dependency>
+                        <Embed-Dependency>artifactId=jaxb2-basics-runtime</Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
-<!--
-                        <Require-Bundle>
-			    com.springsource.org.aspectj.weaver;bundle-version="[1.6.12,2.0)",
-
-                            org.springframework.data.jpa;bundle-version="[1.1,2.0)",
-                            org.springframework.data.core;bundle-version="[1.3,2.0)",
-                            org.eclipse.persistence.jpa;bundle-version="[2.4,3.0)",
-                            org.eclipse.persistence.core;bundle-version="[2.4,3.0)",
-                            org.springframework.web;bundle-version="[3.1.0,4.0)",
-                            org.springframework.aop;bundle-version="[3.1.0,4.0)",
-                            org.springframework.beans;bundle-version="[3.1.0,4.0)",
-                            com.mysql.jdbc;bundle-version="[5.1.31,6.0)"
-                        </Require-Bundle>
--->
                         <Import-Bundle>
                             javax.persistence;bundle-version="[2.0.4,3)",
                             org.springframework.aop;bundle-version="[3.1.0,4.0)",
@@ -114,21 +92,9 @@
                             org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             org.springframework.security.web;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
                             org.springframework.transaction;bundle-version="[3.1.0,4.0)",
-                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]" <!-- ,
-
-                            org.springframework.beans;bundle-version="[3.1.0,4.0)",
-                            org.springframework.web;bundle-version="[3.1.0,4.0)",
-                            org.springframework.web.servlet;bundle-version="[3.1.0,4.0)",
-                            org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.security.config;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.apromore.manager-security;version="[1.1,1.1]",
-                            org.apromore.manager-ws-model;version="[1.1,1.1]",
-                            org.apromore.filestore-client;version="[1.0,1.1]"
--->
+                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]"
                         </Import-Bundle>
                         <Import-Package>
-                            au.edu.qut.context,
                             com.jolbox.bonecp,
                             com.sun.xml.bind,
                             com.sun.xml.bind.v2,
@@ -147,7 +113,6 @@
                             org.apromore.graph.canonical,
                             org.apromore.graph.canonical.converter,
                             org.apromore.graph.util,
-                            <!-- org.apromore.plugin.deployment.exception, -->
                             org.apromore.plugin.deployment.provider,
                             org.apromore.plugin.exception,
                             org.apromore.plugin.property,
@@ -167,11 +132,6 @@
                             org.eclipse.persistence.internal.*,
                             org.eclipse.virgo.web.dm,
                             org.jbpt.graph.abs,
-                            org.pql.index,
-                            org.processmining.contexts.uitopia,
-                            org.processmining.models.graphbased.directed.bpmn,
-                            org.processmining.models.graphbased.directed.bpmn.elements,
-                            org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies,
                             org.springframework.beans.factory,
                             org.springframework.remoting.httpinvoker,
                             org.springframework.orm.jpa,
@@ -186,23 +146,6 @@
                             org.springframework.ws.soap.server.endpoint,
                             org.springframework.ws.server.endpoint.mapping,
                             org.springframework.ws.transport.http,
-<!--
-                            !org.apromore.annotation.*,
-                            org.springframework.beans.factory.aspectj,
-                            org.aopalliance.aop,
-                            javax.persistence,
-                            javax.persistence.criteria,
-                            javax.persistence.metamodel,
-                            javax.persistence.spi,
-                            javax.wsdl.extensions,
-                            com.google.common.base,
-                            net.sf.cglib.proxy,
-                            net.sf.cglib.core,
-                            net.sf.cglib.reflect,
-                            org.springframework.ws.transport.http,
-                            org.springframework.ws,
-                            com.sun.xml.bind.v2,
--->
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,
@@ -220,40 +163,13 @@
                     </instructions>
                 </configuration>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${maven.exec.plugin}</version>
-                <executions>
-                    <execution>
-                        <id>weave-classes</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>org.eclipse.persistence.tools.weaving.jpa.StaticWeave</mainClass>
-                    <commandlineArgs>-classpath %classpath; -loglevel OFF -persistenceinfo ${basedir}/src/main/resources ${basedir}/target/classes ${basedir}/target/classes</commandlineArgs>
-                    <classpathScope>compile</classpathScope>
-                </configuration>
-            </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                     <packagingExcludes>
-                        WEB-INF/lib/anf*.jar,WEB-INF/lib/cpf*.jar,WEB-INF/lib/canoniser*.jar,WEB-INF/lib/deployment*.jar,
-                        WEB-INF/lib/search*.jar,WEB-INF/lib/metric*.jar,WEB-INF/lib/manager*.jar,WEB-INF/lib/plugin*.jar,
-                        WEB-INF/lib/aspectjrt*.jar,WEB-INF/lib/bonecp*.jar,WEB-INF/lib/commons*.jar,WEB-INF/lib/com*.jar,
-                        WEB-INF/lib/guava*.jar,WEB-INF/lib/javax.*.jar,WEB-INF/lib/jbpt*.jar,WEB-INF/lib/jcl*.jar,
-                        WEB-INF/lib/joda-time*.jar,WEB-INF/lib/jul*.jar,WEB-INF/lib/mysql-connector-java*.jar,
-                        WEB-INF/lib/org.*.jar,WEB-INF/lib/slf4j-api*.jar,WEB-INF/lib/spring-data-*.jar,
-                        WEB-INF/lib/XmlSchema*.jar,WEB-INF/lib/xpdl-schema*.jar,WEB-INF/lib/logback*.jar
+                        %regex[WEB-INF/lib/((?!jaxb2-basics-runtime).)*\.jar]
                     </packagingExcludes>
                     <archive>
                         <manifestFile>
@@ -271,113 +187,6 @@
             <artifactId>apromore-manager</artifactId>
             <version>1.1</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>plugin-api-provider</artifactId>
-        </dependency>
-        -->
-
-        <!-- diagramStructuring -->
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpstruct-osgi</artifactId>
-            <version>1.0</version>
-        </dependency>
--->
-
-        <!-- PQL -->
-<!--
-        <dependency>
-            <groupId>org.jbpt</groupId>
-            <artifactId>jbpt-petri-osgi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime-osgi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.pql</groupId>
-            <artifactId>pql-osgi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-            <version>1.3</version>
-        </dependency>
--->
-
-        <!-- BPMNMiner -->
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.ibm.icu</groupId>
-                    <artifactId>icu4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>log-osgi</artifactId>
-            <version>1.0</version>
-        </dependency>
--->
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>bpmn</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>bpmnminer</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-<!--
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom6-contexts</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom6-framework</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom6-models</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>uitopia</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
--->
-        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- ProDrift -->
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prodrift-osgi</artifactId>
-        </dependency>
--->
 
         <!-- Clients -->
         <dependency>

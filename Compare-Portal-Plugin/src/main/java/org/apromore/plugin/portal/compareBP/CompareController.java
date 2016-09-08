@@ -23,18 +23,45 @@ package org.apromore.plugin.portal.compareBP;
 import java.io.*;
 import java.util.*;
 
+import ee.ut.eventstr.comparison.differences.Difference;
+import ee.ut.eventstr.comparison.differences.Differences;
+import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import hub.top.petrinet.PetriNet;
+import org.apache.tools.ant.types.resources.selectors.Compare;
+import org.apromore.helper.Version;
+import org.apromore.model.EditSessionType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.compare.CompareService;
+import org.apromore.service.EventLogService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zul.*;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Window;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Rows;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Selectbox;
+import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.Slider;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.RowRenderer;
 
 /**
  * Created by conforti on 10/04/15.
@@ -45,6 +72,7 @@ public class CompareController {
     private Window enterLogWin;
     private Window resultsWin;
     private Button uploadLog;
+    private Button uploadLog2;
     private Button cancelButton;
     private Button closeButton;
     private Button okButton;
@@ -54,7 +82,7 @@ public class CompareController {
     private Label sent;
     private SelectDynamicListController domainCB;
     private String nativeType = "BPMN 2.0";
-
+    
     private Textbox modelName;
     private Selectbox miningAlgorithms;
     private Radiogroup dependencyAlgorithms;
@@ -68,20 +96,125 @@ public class CompareController {
     private Slider noiseThreshold;
 
     private XLog log;
+    private XLog log2;
     private List<String> listCandidates;
     private boolean[] selected;
     private Label l;
+    private Label l2;
 
     private org.zkoss.util.media.Media logFile = null;
     private byte[] logByteArray = null;
     private String logFileName = null;
-    private CompareService compareService;
-    private PetriNet net;
+    
+    private org.zkoss.util.media.Media logFile2 = null;
+    private byte[] logByteArray2 = null;
+    private String logFileName2 = null;
 
-    public CompareController(PortalContext portalContext, CompareService compareService, PetriNet net) {
+    private static final String SIGNAVIO_SESSION = "SIGNAVIO_SESSION";
+    
+    private CompareService compareService;
+    private EventLogService eventLogService;
+    private PetriNet net;
+    private HashSet<String> obs;
+
+
+    public CompareController(PortalContext portalContext, CompareService compareService, EventLogService eventLogService) {
         this.compareService = compareService;
-        this.net = net;
         this.portalContext = portalContext;
+        this.eventLogService = eventLogService;
+    }
+
+    public void compareLLPopup(){
+
+        try {
+            List<String> domains = new ListModelList<>();
+            this.domainCB = new SelectDynamicListController(domains);
+            this.domainCB.setReference(domains);
+            this.domainCB.setAutodrop(true);
+            this.domainCB.setWidth("85%");
+            this.domainCB.setHeight("100%");
+            this.domainCB.setAttribute("hflex", "1");
+
+            this.enterLogWin = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/compareLL.zul", null, null);
+
+            this.l = (Label) this.enterLogWin.getFellow("fileName");
+            this.uploadLog = (Button) this.enterLogWin.getFellow("bpmnMinerUpload");
+
+            this.l2 = (Label) this.enterLogWin.getFellow("fileName2");
+            this.uploadLog2 = (Button) this.enterLogWin.getFellow("bpmnMinerUpload2");
+
+            this.cancelButton = (Button) this.enterLogWin.getFellow("bpmnMinerCancelButton");
+            this.okButton = (Button) this.enterLogWin.getFellow("bpmnMinerOKButton");
+
+            this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    uploadFile((UploadEvent) event);
+                }
+            });
+
+            this.uploadLog2.addEventListener("onUpload", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    uploadFile2((UploadEvent) event);
+                }
+            });
+
+            this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    cancel();
+                }
+            });
+            this.okButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    compareLog2Log();
+                    cancel();
+                }
+            });
+            this.enterLogWin.doModal();
+
+        }catch (IOException e) {
+            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    public void compareLL(XLog log1, XLog log2) {
+        try {
+            this.log = log1;
+            this.log2 = log2;
+            Set<String> differences = compareService.discoverLogLog(log1, log2);
+            makeResultWindows(differences);
+        } catch (Exception e) {
+            Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    public void compareMM(ModelAbstractions model1, ModelAbstractions model2, HashSet<String> obs1, HashSet<String> obs2, ProcessSummaryType process1, VersionSummaryType version1, ProcessSummaryType process2, VersionSummaryType version2) throws Exception {
+        Differences differences = compareService.discoverModelModelAbs(model1, model2, obs1, obs2);
+
+        Set<RequestParameterType<?>> requestParameters = new HashSet<>();
+        requestParameters.add(new RequestParameterType<Integer>("m1_pes_size", model1.getPES().getLabels().size()));
+        requestParameters.add(new RequestParameterType<Integer>("m2_pes_size", model2.getPES().getLabels().size()));
+        requestParameters.add(new RequestParameterType<String>("m1_differences_json", Differences.toJSON(differences)));
+
+        compareProcesses(process1, version1, process2, version2, "BPMN 2.0", null, null, requestParameters);
+    }
+
+    public void compareML(PetriNet net, HashSet<String> obs1, XLog log) {
+        this.net = net;
+        this.obs = obs1;
+        this.log = log;
+
+        try {
+            Set<String> differences = compareService.discoverBPMNModel(net, log, obs);
+
+            makeResultWindows(differences);
+        } catch (Exception e) {
+            Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    public void compareMLPopup(PetriNet net, HashSet<String> obs1) {
+        this.net = net;
+        this.obs = obs1;
 
         try {
             List<String> domains = new ListModelList<>();
@@ -123,6 +256,85 @@ public class CompareController {
     }
 
     /**
+     * Display two process versions and allow their differences to be highlighted.
+     *
+     * @param process1 the process summary
+     * @param version1 the version of the process
+     * @param process2 the process summary
+     * @param version2 the version of the process
+     * @param nativeType the native type of the process
+     * @param annotation the annotation of that process
+     * @param readOnly is this model readonly or not
+     * @param requestParameterTypes request parameters types.
+     * @throws InterruptedException
+     */
+    public void compareProcesses(final ProcessSummaryType process1, final VersionSummaryType version1,
+                                 final ProcessSummaryType process2, final VersionSummaryType version2,
+                                 final String nativeType, final String annotation,
+                                 final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
+        String instruction = "";
+
+        String username = this.portalContext.getCurrentUser().getUsername();
+        EditSessionType editSession1 = createEditSession(username,process1, version1, nativeType, annotation);
+        EditSessionType editSession2 = createEditSession(username,process2, version2, nativeType, annotation);
+
+        try {
+            String id = UUID.randomUUID().toString();
+
+            SignavioSession session = new SignavioSession(editSession1, editSession2, null, process1, version1, process2, version2, requestParameterTypes);
+            Executions.getCurrent().getSession().setAttribute(SIGNAVIO_SESSION + id, session);
+            UserSessionManager.setEditSession(id, session);
+
+            String url = "macros/compareModelsInSignavio.zul?id=" + id;
+            instruction += "window.open('" + url + "');";
+
+            Clients.evalJavaScript(instruction);
+        } catch (Exception e) {
+            Messagebox.show("Cannot compare " + process1.getName() + " and " + process2.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    private static EditSessionType createEditSession(final String username, final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
+
+        EditSessionType editSession = new EditSessionType();
+
+        editSession.setDomain(process.getDomain());
+        editSession.setNativeType(nativeType.equals("XPDL 2.2")?"BPMN 2.0":nativeType);
+        editSession.setProcessId(process.getId());
+        editSession.setProcessName(process.getName());
+        editSession.setUsername(username);
+        editSession.setPublicModel(process.isMakePublic());
+        editSession.setOriginalBranchName(version.getName());
+        editSession.setOriginalVersionNumber(version.getVersionNumber());
+        editSession.setCurrentVersionNumber(version.getVersionNumber());
+        editSession.setMaxVersionNumber(findMaxVersion(process));
+
+        editSession.setCreationDate(version.getCreationDate());
+        editSession.setLastUpdate(version.getLastUpdate());
+        if (annotation == null) {
+            editSession.setWithAnnotation(false);
+        } else {
+            editSession.setWithAnnotation(true);
+            editSession.setAnnotation(annotation);
+        }
+
+        return editSession;
+    }
+
+    /* From a list of version summary types find the max version number. */
+    private static String findMaxVersion(ProcessSummaryType process) {
+        Version versionNum;
+        Version max = new Version(0, 0);
+        for (VersionSummaryType version : process.getVersionSummaries()) {
+            versionNum = new Version(version.getVersionNumber());
+            if (versionNum.compareTo(max) > 0) {
+                max = versionNum;
+            }
+        }
+        return max.toString();
+    }
+
+    /**
      * Upload file: an archive or an xml file
      * @param event the event to process.
      * @throws InterruptedException
@@ -133,6 +345,14 @@ public class CompareController {
         l.setValue(logFile.getName());
         logByteArray = logFile.getByteData();
         logFileName = logFile.getName();
+    }
+    
+    private void uploadFile2(UploadEvent event) {
+        logFile2 = event.getMedia();
+        l2.setStyle("color: blue");
+        l2.setValue(logFile2.getName());
+        logByteArray2 = logFile2.getByteData();
+        logFileName2 = logFile2.getName();
     }
 
     public static XLog importFromStream(XFactory factory, InputStream is, String name) throws Exception {
@@ -194,6 +414,35 @@ public class CompareController {
     protected void cancel() {
         this.enterLogWin.detach();
     }
+    
+    protected void compareLog2Log() {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bos.write(logByteArray, 0, logByteArray.length);
+            InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
+            log = importFromStream(new XFactoryNaiveImpl(), zipEntryIS, logFileName);
+            
+            ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
+            bos2.write(logByteArray2, 0, logByteArray2.length);
+            InputStream zipEntryIS2 = new ByteArrayInputStream(bos2.toByteArray());
+            log2 = importFromStream(new XFactoryNaiveImpl(), zipEntryIS2, logFileName2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(log == null) {
+            Messagebox.show("Please select a log.");
+        }else {
+            try {
+                Set<String> differences = compareService.discoverLogLog(log2, log);
+                makeResultWindows(differences);
+            } catch (Exception e) {
+                Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
+        }
+    }
 
     protected void createCanditatesEntity() {
         try {
@@ -213,7 +462,7 @@ public class CompareController {
 
             try {
 //                String result = "";
-                Set<String> differences = compareService.discoverBPMNModel(net, log);
+                Set<String> differences = compareService.discoverBPMNModel(net, log, obs);
 
 //                for (String s : differences)
 //                    result += s + "\n";
@@ -224,18 +473,6 @@ public class CompareController {
                 Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
             }
         }
-
-
-//        if(log == null) {
-//            Messagebox.show("Please select a log.");
-//        }else if(miningAlgorithms.getSelectedIndex() < 0) {
-//            Messagebox.show("Please select mining algorithm.");
-//        }else {
-//            erModel = new DiscoverERmodel();
-//            listCandidates = erModel.generateAllAttributes(log);
-//
-//            new CandidatesEntitiesController(this, listCandidates);
-//        }
     }
 
     public void makeResultWindows(Set<String> results){
@@ -263,17 +500,6 @@ public class CompareController {
             grid.setRowRenderer(rowRenderer);
             grid.setModel(listModel);
 
-//
-//            int i = 0;
-//            for (String sentence : results) {
-//                System.out.println("Sentence = " + sentence);
-//                this.row = new Row();
-//                this.row.setId(""+(i++));
-//                this.sent = new Label(sentence);
-//                this.sent.setParent(this.row);
-//                this.row.setParent(this.rows);
-//            }
-
             this.resultsWin.doModal();
         }catch(Exception e){
             e.printStackTrace();
@@ -292,69 +518,11 @@ public class CompareController {
         return ignored;
     }
 
-//    public void setSelectedPrimaryKeys(Map<Set<String>, Set<String>> group) {
-//        mineAndSave(listCandidates, group);
-//    }
-
     public void noEntityException() {
     }
 
     public void setSelectedPrimaryKeys(Map<Set<String>, Set<String>> group) {
     }
-//
-//    public void noEntityException() {
-//        mineAndSave(new ArrayList<String>(), new HashMap<Set<String>, Set<String>>());
-//    }
-//
-//    private void mineAndSave(List<String> listCandidates, Map<Set<String>, Set<String>> group) {
-//        try {
-//
-//            this.enterLogWin.detach();
-//
-//            String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, miningAlgorithms.getSelectedIndex(), dependencyAlgorithms.getSelectedIndex()+1,
-//                    ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
-//                    ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
-//                    listCandidates, group);
-//
-//            String defaultProcessName = this.logFileName.split("\\.")[0];
-//            if(!modelName.getValue().isEmpty()) {
-//                defaultProcessName = modelName.getValue();
-//            }
-//
-//            String user = portalContext.getCurrentUser().getUsername();
-//            Version version = new Version(1, 0);
-//            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
-//            String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-//            boolean publicModel = true;
-//
-//            ProcessModelVersion pmv = processService.importProcess(user,
-//                portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-//                defaultProcessName,
-//                version,
-//                this.nativeType,
-//                canoniserService.canonise(this.nativeType, new ByteArrayInputStream(model.getBytes()), canoniserProperties),
-//                domainCB.getValue(),
-//                "Model generated by the Apromore BPMN process mining service.",
-//                now,  // creation timestamp
-//                now,  // last update timestamp
-//                publicModel);
-//
-//            this.portalContext.displayNewProcess(userInterfaceHelper.createProcessSummary(pmv.getProcessBranch().getProcess(),
-//                pmv.getProcessBranch(),
-//                pmv,
-//                this.nativeType,
-//                domainCB.getValue(),
-//                now,  // creation timestamp
-//                now,  // last update timestamp
-//                user,
-//                publicModel));
-//
-//            this.portalContext.refreshContent();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     public class SimpleRenderer implements RowRenderer<String> {
 

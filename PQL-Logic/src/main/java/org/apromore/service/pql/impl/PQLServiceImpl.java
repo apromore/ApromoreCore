@@ -26,8 +26,11 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 // Java 2 Enterprise
@@ -36,6 +39,7 @@ import javax.inject.Inject;
 // Third party
 import org.apache.commons.io.IOUtils;
 import org.pql.api.IPQLAPI;
+import org.pql.core.PQLTask;
 import org.pql.index.IndexStatus;
 import org.pql.query.PQLQueryResult;
 import org.slf4j.Logger;
@@ -51,8 +55,9 @@ import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.helper.Version;
+import org.apromore.model.Detail;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.SummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.DefaultPlugin;
@@ -100,7 +105,7 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
     }
 
     /** @inheritDoc */
-    @Override public ProcessSummariesType query(String pql) throws QueryException {
+    @Override public SummariesType query(String pql) throws QueryException {
 
         PQLQueryResult pqlQueryResult;
         try {
@@ -113,7 +118,7 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
             assert pqlQueryResult.getNumberOfParseErrors() == 0;
 
             // Compose process summaries for the query results
-            ProcessSummariesType processSummaries = new ProcessSummariesType();
+            SummariesType processSummaries = new SummariesType();
             for (String result: pqlQueryResult.getSearchResults()) {
                 ExternalId id = new ExternalId(result);
 
@@ -134,7 +139,7 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
                 processSummary.setOwner(p.getUser().getUsername());
                 processSummary.getVersionSummaries().add(versionSummary);
 
-                processSummaries.getProcessSummary().add(processSummary);
+                processSummaries.getSummary().add(processSummary);
             }
             return processSummaries;
 
@@ -144,6 +149,57 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
         } catch (Exception e) {
             throw new QueryException("Unable to execute PQL query: " + pql, e);
         }
+    }
+
+    public List<String> runAPQLQuery(String queryPQL, List<String> IDs, String userID) {
+        //Set<String> idNets=new HashSet<>();
+        List<String> results = Collections.emptyList();
+        IPQLAPI api=pqlBean.getApi();
+        LOGGER.error("-----------PQLAPI: " + api);
+        LOGGER.error("----------- query: " + queryPQL);
+        LOGGER.error("-----------   IDs: " + IDs);
+        LOGGER.error("-----------  user: " + userID);
+        try {
+            PQLQueryResult pqlQueryResult = api.query(queryPQL, new HashSet<>(IDs));
+            if (pqlQueryResult.getNumberOfParseErrors() != 0) {
+                results = pqlQueryResult.getParseErrorMessages();
+            } else {//risultati
+                LOGGER.error("-----------IDS PQLServiceImpl" + IDs);
+                map=pqlQueryResult.getTaskMap();
+                LinkedList<PQLTask> tasks=new LinkedList<>(map.values());
+/*
+                idNets=new HashSet<>(IDs);
+                idNets=api.checkLastQuery(idNets);
+                results.addAll(idNets);
+*/
+                results = new LinkedList<>(pqlQueryResult.getSearchResults());
+                LOGGER.error("-----------QUERYAPQL ESATTA "+results);
+            }
+        } catch (Exception e) {
+            LOGGER.error("-----------ERRORRE: " + e.toString());
+            for (StackTraceElement ste : e.getStackTrace())
+                LOGGER.info("ERRORE6: " + ste.getClassName() + " " + ste.getMethodName() + " " + ste.getLineNumber() + " " + ste.getFileName());
+        }
+        return results;
+    }
+
+    private Map<PQLTask,PQLTask> map = new HashMap<>();
+
+    public List<Detail> getDetails() {
+        List<Detail> details = new LinkedList<>();
+        Detail detail;
+        for(PQLTask task : map.keySet()){
+            PQLTask taskTwo = map.get(task);
+
+            detail= new Detail();
+            detail.setLabelOne(task.getLabel());
+            detail.setSimilarityLabelOne(""+task.getSimilarity());
+            if (taskTwo.getSimilarLabels() != null) {
+                detail.getDetail().addAll(taskTwo.getSimilarLabels());
+            }
+            details.add(detail);
+        }
+        return details;
     }
 
     /**
@@ -161,6 +217,33 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
 
     /** {@inheritDoc} */
     public void bindToProcessService() {
+        LOGGER.info("Binding to process service " + processService);
+        IPQLAPI api = pqlBean.getApi();
+        for (ProcessModelVersion pmv: processModelVersionRepository.findAll()) {
+            int        processId  = pmv.getProcessBranch().getProcess().getId();
+            String     branch     = pmv.getProcessBranch().getBranchName();
+            Version    version    = new Version(pmv.getVersionNumber());
+            ExternalId externalId = new ExternalId(processId, branch, version);
+
+            try {
+                int internalId = api.getInternalID(externalId.toString());
+                IndexStatus status = (internalId == 0) ? IndexStatus.UNINDEXED : api.getIndexStatus(internalId);
+
+                // If the external ID doesn't occur in the PQL index, queue it to be asynchronously indexed
+                switch (status) {
+                case UNINDEXED:
+                    LOGGER.info("PQL index needs to be initialized for process with external ID " + externalId);
+                    queue.add(externalId);
+                    break;
+                case INDEXING:    LOGGER.info("PQL index " + internalId + " already being indexed for process with external ID " + externalId);           break;
+                case INDEXED:     LOGGER.info("PQL index " + internalId + " already present for process with external ID " + externalId);                 break;
+                case CANNOTINDEX: LOGGER.info("PQL index " + internalId + " couldn't previously be indexed for process with external ID " + externalId);  break;
+                default:          LOGGER.warn("PQL index " + internalId + " for process with external ID " + externalId + " has unknown status " + status);
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Unable to look up process with external ID " + externalId + " in the PQL index", e);
+            }
+        }
         LOGGER.info("Bound to process service " + processService);
     }
 
@@ -194,6 +277,7 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
 
     private void indexProcess(ExternalId externalId) {
         //LOGGER.info("Indexing queued process " + externalId);
+        IPQLAPI api = pqlBean.getApi();
         try {
             Set<RequestParameterType<?>> requestProperties = new HashSet<>();
             requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTransition",true));
@@ -204,12 +288,25 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
                 PNML_NATIVE_TYPE, null, false, requestProperties);
 
             byte[] bytes = IOUtils.toByteArray(exportResult.getNative().getInputStream());
-            IPQLAPI api = pqlBean.getApi();
             int internalId = api.storeModel(bytes, externalId.toString());
             LOGGER.info("Stored " + (api.checkModel(internalId) ? "sound" : "unsound") + " process " + externalId + " for PQL indexing as id " + internalId);
 
         } catch (ExportFormatException | IOException | SQLException e) {
             LOGGER.warn("Unable to index " + externalId + " for PQL indexing", e);
+
+            // This is USUALLY because the model has been deleted.  In other cases, it's still relatively safe to just delete the associated index.
+            try {
+                LOGGER.info("Removing model with external ID " + externalId + " from PQL index");
+                int internalId = api.getInternalID(externalId.toString());
+                if(!api.deleteModel(internalId)) {
+                    LOGGER.error("Failed to remove model with external ID " + externalId + " from PQL index");
+                } else {
+                    LOGGER.error("Removed model with external ID " + externalId + " and internal ID " + internalId + " from PQL index");
+                }
+
+            } catch (SQLException e2) {
+                LOGGER.error("Exception while removing model " + externalId + " from PQL index", e2);
+            }
         }
     }
 }

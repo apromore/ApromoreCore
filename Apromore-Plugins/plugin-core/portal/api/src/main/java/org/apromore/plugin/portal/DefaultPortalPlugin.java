@@ -36,6 +36,11 @@ public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements 
     }
 
     @Override
+    public String getGroupLabel(Locale locale) {
+        return "Plugins";
+    }
+
+    @Override
     public void execute(PortalContext context) {
     }
 

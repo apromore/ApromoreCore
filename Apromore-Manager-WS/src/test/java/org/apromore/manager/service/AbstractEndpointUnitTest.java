@@ -38,6 +38,7 @@ public abstract class AbstractEndpointUnitTest {
     protected PluginService pluginService;
     protected FragmentService fragmentSrv;
     protected ProcessService procSrv;
+    protected EventLogService eventLogSrv;
     protected ClusterService clusterService;
     protected FormatService frmSrv;
     protected DomainService domSrv;
@@ -45,9 +46,7 @@ public abstract class AbstractEndpointUnitTest {
     protected SecurityService secSrv;
     protected WorkspaceService wrkSrv;
     protected UserInterfaceHelper uiHelper;
-    protected PQLService pqlSrv;
-    protected DatabaseService dbSrv;
-    protected ProDriftDetectionService proDriftSrv;
+
 
     @Before
     public void setUp() throws Exception {
@@ -56,6 +55,7 @@ public abstract class AbstractEndpointUnitTest {
         fragmentSrv = createMock(FragmentServiceImpl.class);
         canoniserService = createMock(CanoniserServiceImpl.class);
         procSrv = createMock(ProcessServiceImpl.class);
+        eventLogSrv = createMock(EventLogServiceImpl.class);
         clusterService = createMock(ClusterServiceImpl.class);
         frmSrv = createMock(FormatServiceImpl.class);
         domSrv = createMock(DomainServiceImpl.class);
@@ -63,12 +63,8 @@ public abstract class AbstractEndpointUnitTest {
         secSrv = createMock(SecurityServiceImpl.class);
         wrkSrv = createMock(WorkspaceServiceImpl.class);
         uiHelper = createMock(UIHelper.class);
-        pqlSrv = createMock(PQLServiceImpl.class);
-        dbSrv = createMock(DatabaseServiceImpl.class);
-        proDriftSrv = createMock(ProDriftDetectionServiceImpl.class);
 
-        endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv,
-                clusterService, frmSrv, domSrv, userSrv, secSrv, wrkSrv, uiHelper,
-                pqlSrv, dbSrv, proDriftSrv);
+        endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv, eventLogSrv,
+                clusterService, frmSrv, domSrv, userSrv, secSrv, wrkSrv, uiHelper);
     }
 }

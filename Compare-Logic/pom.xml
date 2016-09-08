@@ -49,28 +49,12 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
-                        <!--<Embed-Dependency>-->
-                            <!--artifactId=OpenXES|OpenXES-Stream|pnapi-bpdiff-osgi-->
-                        <!--</Embed-Dependency>-->
-                        <!--<Embed-Dependency>-->
-                            <!--artifactId=OpenXES|OpenXES-Stream-->
-                        <!--</Embed-Dependency>-->
-                        <!--<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>-->
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
-                            !junit.framework.*,
-                            !org.junit.*,
-                            !hub.top.test,
-                            !viptool.algorithm.postprocessing.pnetiplp,
-                            !junit.textui,
-                            hub.top.petrinet,
-                            org.deckfour.xes.model,
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.compare,
-                            hub.top.petrinet,
-                            org.deckfour.xes.model
+                            org.apromore.service.compare
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -79,6 +63,10 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.jbpt</groupId>
+            <artifactId>jbpt-petri-osgi</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
@@ -90,10 +78,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.google.guava</groupId>-->
-            <!--<artifactId>guava</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>eventstr-confchecking-osgi</artifactId>
@@ -112,11 +96,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.context</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.apromore</groupId>-->
-            <!--<artifactId>log-osgi</artifactId>-->
-            <!--<version>1.0</version>-->
-        <!--</dependency>-->
     </dependencies>
 </project>
 

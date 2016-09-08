@@ -45,9 +45,10 @@
                 <configuration>
                     <!-- Generally, no change should be necessary here unless your plug-in relies on a non-OSGi dependency -->
                     <instructions>
-                        <!--<Embed-Dependency>-->
+                        <Embed-Dependency>
+                            artifactId=jbpt-bpm;inline=true
                             <!--artifactId=OpenXES|OpenXES-Stream|pnapi-bpdiff-osgi-->
-                        <!--</Embed-Dependency>-->
+                        </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Import-Package>
@@ -55,6 +56,7 @@
                             org.apromore.plugin,
                             org.springframework.beans.factory.aspectj,
                             hub.top.petrinet,
+                            org.apromore.portal.dialogController.dto,
                             org.deckfour.xes.model,
                             ee.ut.*,
                             *
@@ -75,7 +77,12 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>compare-Logic</artifactId>
+            <artifactId>bpmndiagramimporter-logic</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>compare-logic</artifactId>
             <version>1.1</version>
         </dependency>
         <dependency>
@@ -97,6 +104,19 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-plugin-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-portal</artifactId>
+            <version>1.1</version>
+            <classifier>classes</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpt</groupId>
+            <artifactId>jbpt-petri-osgi</artifactId>
+        </dependency>
     </dependencies>
-
 </project>

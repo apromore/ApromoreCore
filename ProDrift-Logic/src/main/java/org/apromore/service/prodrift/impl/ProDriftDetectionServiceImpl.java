@@ -20,8 +20,9 @@
 
 package org.apromore.service.prodrift.impl;
 
+import ee.ut.eventstr.driftdetector.ControlFlowDriftDetector_EventStream;
+import ee.ut.eventstr.driftdetector.ControlFlowDriftDetector_RunStream;
 import ee.ut.eventstr.model.ProDriftDetectionResult;
-import ee.ut.eventstr.test.AlphaBasedPosetReaderTest;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.plugin.provider.PluginProvider;
 import org.apromore.service.CanoniserService;
@@ -59,19 +60,33 @@ public class ProDriftDetectionServiceImpl implements ProDriftDetectionService {
     public ProDriftDetectionServiceImpl() {}
 
     /**
-     * @see ProDriftDetectionService#proDriftDetector(byte[], int, String, String)
+     * @see ProDriftDetectionService#proDriftDetector(byte[], String, boolean, boolean,
+            boolean, int, boolean, float, boolean);
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public ProDriftDetectionResult proDriftDetector(byte[] logByteArray, int winSize, String fWinorAwin, String logFileName) throws ProDriftDetectionException {
+    public ProDriftDetectionResult proDriftDetector(byte[] logByteArray, String logFileName, boolean isEventBased, boolean isSynthetic,
+                                                    boolean withGradual, int winSize, boolean isAdwin, float noiseFilterPercentage,
+                                                    boolean withConflict) throws ProDriftDetectionException {
+
+        ProDriftDetectionResult pddRes = null;
 
         InputStream is = new ByteArrayInputStream(logByteArray);
 
-        AlphaBasedPosetReaderTest driftTest0 = new AlphaBasedPosetReaderTest(is, logFileName, winSize, fWinorAwin);
+        if(isEventBased)
+        {
 
-        ProDriftDetectionResult pddRes = driftTest0.proDriftRun();
+            ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(is, winSize, isAdwin, noiseFilterPercentage, withConflict, logFileName);
+            pddRes = driftDertector.ControlFlowDriftDetectorStart();
 
+        }else
+        {
+
+            ControlFlowDriftDetector_RunStream driftDertector = new ControlFlowDriftDetector_RunStream(is, winSize, isAdwin, logFileName, withGradual);
+            pddRes = driftDertector.ControlFlowDriftDetectorStart();
+
+        }
 
         return pddRes;
     }

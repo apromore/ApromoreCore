@@ -31,12 +31,9 @@ import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
-import org.apromore.portal.custom.gui.tab.AbstractPortalTab;
 import org.apromore.portal.custom.gui.tab.PortalTab;
-import org.apromore.portal.custom.gui.tab.impl.PortalTabImpl;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
 import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
 import org.apromore.portal.exception.ExceptionAllUsers;
@@ -57,6 +54,9 @@ import java.util.*;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
  * It is automatically instantiated as index.zul is loaded!
@@ -64,7 +64,8 @@ import java.util.Set;
 public class MainController extends BaseController implements MainControllerInterface {
 
     private static final long serialVersionUID = 5147685906484044300L;
-	private static MainController controller = null;
+    private static MainController controller = null;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
     private EventQueue<Event> qe = EventQueues.lookup(Constants.EVENT_QUEUE_REFRESH_SCREEN, EventQueues.SESSION, true);
 
@@ -76,7 +77,6 @@ public class MainController extends BaseController implements MainControllerInte
     private ShortMessageController shortmessageC;
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
-    private BaseFilterController baseFilterController;
 
     private NavigationController navigation;
 
@@ -167,7 +167,7 @@ public class MainController extends BaseController implements MainControllerInte
                         public void onEvent(Event event) throws Exception {
                             if (Constants.EVENT_MESSAGE_SAVE.equals(event.getName())) {
                                 clearProcessVersions();
-                                reloadProcessSummaries();
+                                reloadSummaries();
                             }
                         }
                     });
@@ -185,7 +185,13 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public void refresh() {
-        Executions.sendRedirect(null);
+        try {
+            Executions.sendRedirect(null);
+        } catch (NullPointerException e) {
+            // The ZK documentation for sendRedirect claims that passing a null parameter is allowed
+            // https://www.zkoss.org/javadoc/latest/zk/org/zkoss/zk/ui/Executions.html#sendRedirect(java.lang.String)
+            LOGGER.warn("ZK default redirection failed", e);
+        }
     }
 
     public void loadWorkspace() {
@@ -222,7 +228,7 @@ public class MainController extends BaseController implements MainControllerInte
      * @param processSummaries the list of process summaries to display
      * @param isQueryResult is this from a query (simsearch, clustering, etc.)
      */
-    public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult) {
+    public void displayProcessSummaries(final SummariesType processSummaries, final Boolean isQueryResult) {
         int folderId;
 
         if (isQueryResult) {
@@ -237,7 +243,7 @@ public class MainController extends BaseController implements MainControllerInte
         // TODO switch to process query result view
         switchToProcessSummaryView();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), folderId);
-        ((ProcessListboxController) this.baseListboxController).displayProcessSummaries(subFolders, processSummaries, isQueryResult);
+        this.baseListboxController.displaySummaries(subFolders, processSummaries, isQueryResult);
     }
 
     // disable/enable features depending on user status
@@ -264,22 +270,39 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    public void reloadProcessSummaries() {
+    public void reloadSummaries() {
         this.simplesearch.clearSearches();
         switchToProcessSummaryView();
         pg.setActivePage(0);
 
         FolderType currentFolder = UserSessionManager.getCurrentFolder();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
-        ProcessListboxController.ProcessSummaryListModel model = ((ProcessListboxController) this.baseListboxController).displayProcessSummaries(subFolders, false);
+        ProcessListboxController.SummaryListModel model = this.baseListboxController.displaySummaries(subFolders, false);
 
         this.displayMessage(
-            model.getSize() + " out of " + model.getTotalProcessCount() +
-	    (model.getTotalProcessCount() > 1 ? " processes." : " process.")
+            model.getSize() + " out of " + model.getTotalCount() +
+	    (model.getTotalCount() > 1 ? " elements." : " element.")
 	);
 
         loadWorkspace();
     }
+
+//    public void reloadLogSummaries() {
+//        this.simplesearch.clearSearches();
+//        switchToProcessSummaryView();
+//        pg.setActivePage(0);
+//
+//        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+//        List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
+//        LogListboxController.LogSummaryListModel model = ((LogListboxController) this.baseListboxControllerLogs).displayLogSummaries(subFolders);
+//
+//        this.displayMessage(
+//                model.getSize() + " out of " + model.getTotalLogCount() +
+//                        (model.getTotalLogCount() > 1 ? " logs." : " log.")
+//        );
+//
+//        loadWorkspace();
+//    }
 
 
     /**
@@ -294,21 +317,21 @@ public class MainController extends BaseController implements MainControllerInte
 
     /**
      * Send request to Manager: deleted process versions given as parameter
-     * @param processVersions a selection of process versions to delete.
+     * @param elements a selection of process versions to delete.
      * @throws InterruptedException
      */
-    public void deleteProcessVersions(final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws InterruptedException {
+    public void deleteElements(final Map<SummaryType, List<VersionSummaryType>> elements) throws InterruptedException {
         try {
-            getService().deleteProcessVersions(processVersions);
+            getService().deleteElements(elements);
             switchToProcessSummaryView();
             this.baseListboxController.refreshContent();
             String message;
             int nb = 0;
 
             // to count how many process version(s) deleted
-            Collection<List<VersionSummaryType>> sumTypes = processVersions.values();
+            Collection<List<VersionSummaryType>> sumTypes = elements.values();
             for (List<VersionSummaryType> sumType : sumTypes) {
-                nb += sumType.size();
+                if(sumType != null) nb += sumType.size();
             }
             if (nb > 1) {
                 message = nb + " process versions deleted.";
@@ -322,7 +345,7 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    private EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
+    private static EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
 
         EditSessionType editSession = new EditSessionType();
 
@@ -466,10 +489,22 @@ public class MainController extends BaseController implements MainControllerInte
         ((ProcessVersionDetailController) this.baseDetailController).displayProcessVersions(data);
     }
 
+    public void displayLogVersions(final LogSummaryType data) {
+        //TODO
+//        switchToProcessSummaryView();
+//        ((ProcessVersionDetailController) this.baseDetailController).displayProcessVersions(data);
+    }
+
     public void clearProcessVersions() {
         switchToProcessSummaryView();
         ((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
     }
+
+//    public void clearLogVersions() {
+//        //TODO
+////        switchToProcessSummaryView();
+////        ((ProcessVersionDetailController) this.baseDetailController).clearProcessVersions();
+//    }
 
     public void displaySimilarityClusters(final ClusterFilterType filter) {
         switchToSimilarityClusterView();
@@ -477,7 +512,7 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     @SuppressWarnings("unchecked")
-    public Set<ProcessSummaryType> getSelectedProcesses() {
+    public Set<SummaryType> getSelectedElements() {
         if (this.baseListboxController instanceof ProcessListboxController) {
             ProcessListboxController processController = (ProcessListboxController) getBaseListboxController();
             return processController.getListModel().getSelection();
@@ -486,12 +521,17 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
+//    public Set<LogSummaryType> getSelectedLogs() {
+//        LogListboxController logController = (LogListboxController) getLogListboxController();
+//        return logController.getListModel().getSelection();
+//    }
+
     /**
      * @return a map with all currently selected process models and the corresponding selected versions
      * @throws ParseException
      */
-    public Map<ProcessSummaryType, List<VersionSummaryType>> getSelectedProcessVersions() {
-        Map<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<>();
+    public Map<SummaryType, List<VersionSummaryType>> getSelectedElementsAndVersions() {
+        Map<SummaryType, List<VersionSummaryType>> summaryTypes = new HashMap<>();
         String versionNumber;
 
         if (getBaseListboxController() instanceof ProcessListboxController) {
@@ -501,24 +541,27 @@ public class MainController extends BaseController implements MainControllerInte
             Set<Object> selectedProcesses = (Set<Object>) getBaseListboxController().getListModel().getSelection();
             for (Object obj : selectedProcesses) {
                 if (obj instanceof ProcessSummaryType) {
+                    ProcessSummaryType processSummaryType = (ProcessSummaryType) obj;
                     versionList = new ArrayList<>();
                     if (selectedVersions != null) {
                         for (VersionDetailType detail: selectedVersions) {
                             versionList.add(detail.getVersion());
                         }
                     } else {
-                        for (VersionSummaryType summaryType : ((ProcessSummaryType) obj).getVersionSummaries()) {
-                            versionNumber = ((ProcessSummaryType) obj).getLastVersion();
+                        for (VersionSummaryType summaryType : processSummaryType.getVersionSummaries()) {
+                            versionNumber = processSummaryType.getLastVersion();
                             if (summaryType.getVersionNumber().compareTo(versionNumber) == 0) {
                                 versionList.add(summaryType);
                             }
                         }
                     }
-                    processVersions.put((ProcessSummaryType) obj, versionList);
+                    summaryTypes.put(processSummaryType, versionList);
+                }else if (obj instanceof LogSummaryType) {
+                    summaryTypes.put((LogSummaryType) obj, null);
                 }
             }
         }
-        return processVersions;
+        return summaryTypes;
     }
 
 
@@ -683,16 +726,14 @@ public class MainController extends BaseController implements MainControllerInte
 
     /* Removes the currently displayed listbox, detail and filter view */
     private void deattachDynamicUI() {
-        this.getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
+        this.getFellow("baseListboxProcesses").getFellow("tablecomp").getChildren().clear();
         this.getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
-        this.getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
     }
 
     /* Attaches the the listbox, detail and filter view */
     private void reattachDynamicUI() {
-        this.getFellow("baseListbox").getFellow("tablecomp").appendChild(baseListboxController);
+        this.getFellow("baseListboxProcesses").getFellow("tablecomp").appendChild(baseListboxController);
         this.getFellow("baseDetail").getFellow("detailcomp").appendChild(baseDetailController);
-        this.getFellow("baseFilter").getFellow("filtercomp").appendChild(baseFilterController);
     }
 
     /* Switches all dynamic UI elements to the ProcessSummaryView. Affects the listbox, detail and filter view */
@@ -708,10 +749,9 @@ public class MainController extends BaseController implements MainControllerInte
         // Otherwise create new Listbox
         this.baseListboxController = new ProcessListboxController(this);
         this.baseDetailController = new ProcessVersionDetailController(this);
-        this.baseFilterController = new BaseFilterController(this);
 
         reattachDynamicUI();
-        reloadProcessSummaries();
+        reloadSummaries();
     }
 
     /* Switches all dynamic UI elements to the SimilarityClusterView. Affects the listbox, detail and filter view */
@@ -726,10 +766,8 @@ public class MainController extends BaseController implements MainControllerInte
 
         // Otherwise create new Listbox
         this.baseDetailController = new SimilarityClustersFragmentsListboxController(this);
-        this.baseFilterController = new SimilarityClustersFilterController(this);
         this.baseListboxController = new SimilarityClustersListboxController(this,
-                (SimilarityClustersFilterController) this.baseFilterController,
-                (SimilarityClustersFragmentsListboxController) this.baseDetailController);
+                null, (SimilarityClustersFragmentsListboxController) this.baseDetailController);
 
         reattachDynamicUI();
     }
@@ -747,7 +785,7 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     /* From a list of version summary types find the max version number. */
-    private String findMaxVersion(ProcessSummaryType process) {
+    private static String findMaxVersion(ProcessSummaryType process) {
         Version versionNum;
         Version max = new Version(0, 0);
         for (VersionSummaryType version : process.getVersionSummaries()) {
@@ -766,6 +804,10 @@ public class MainController extends BaseController implements MainControllerInte
     public BaseListboxController getBaseListboxController() {
         return baseListboxController;
     }
+
+//    public BaseListboxController getLogListboxController() {
+//        return baseListboxControllerLogs;
+//    }
 
     public BaseDetailController getDetailListbox() {
         return baseDetailController;
@@ -796,9 +838,65 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public void addResult(List<ResultPQL> results, String userID, List<Detail> details, String query, String nameQuery) {
-        TabQuery newTab = new TabQuery(nameQuery, userID, details, query, portalContext);
-        newTab.setTabpanel(results);
+        TabQuery newTab = new TabQuery(nameQuery, userID, details, query, results, portalContext);
+/*
+        String tabName = "APQL query";
+        String tabRowImage = "img/icon/bpmn-22x22.png";
+
+        List<TabRowValue> rows = new ArrayList<>();
+        for(ResultPQL resultPQL : results) {
+            TabRowValue row = new TabRowValue();
+            row.add("name");
+            row.add("id");
+            row.add("lang");
+            row.add("dom");
+            row.add("rank");
+            row.add("version");
+            row.add("own");
+            rows.add(row);
+        }
+
+        List<Listheader> listheaders = new ArrayList<>();
+        addListheader(listheaders, "Name",              null);
+        addListheader(listheaders, "Id",                "3em");
+        addListheader(listheaders, "Original language", "10em");
+        addListheader(listheaders, "Domain",            "5em");
+        addListheader(listheaders, "Ranking",           "6em");
+        addListheader(listheaders, "Latest version",    "9em");
+        addListheader(listheaders, "Owner",             "5em");
+
+        TabItemExecutor tabItemExecutor = new ProcessTabItemExecutor(portalContext.getMainController());
+
+        portalContext.setUser(
+        PortalTabImpl newTab = new PortalTabImpl(tabName, tabRowImage, rows, listheaders, tabItemExecutor, portalContext);
+*/
+        SessionTab.getSessionTab(portalContext).addTabToSession(userID, newTab, true);
+        updateTabs(userID);
     }
+
+/*
+    private void addListheader(final List<Listheader> listheaders, String name, String width) {
+        final Listheader listheader = new Listheader(name, null, width);
+
+        listheader.setSortAscending(new java.util.Comparator<TabItem>() {
+            int position = listheaders.size();
+            @Override
+            public int compare(TabItem o1, TabItem o2) {
+                return o1.getValue(position).compareTo(o2.getValue(position));
+            }
+        });
+
+        listheader.setSortDescending(new java.util.Comparator<TabItem>() {
+            int position = listheaders.size();
+            @Override
+            public int compare(TabItem o1, TabItem o2) {
+                return o2.getValue(position).compareTo(o1.getValue(position));
+            }
+        });
+
+        listheaders.add(listheader);
+    }
+*/
 
     private void updateTabs(String userId){
         Window mainW = (Window) this.getFellow("mainW");
@@ -813,15 +911,20 @@ public class MainController extends BaseController implements MainControllerInte
             for (Tab tab : tabList) {
                 try {
                     if(!tabbox.getTabs().getChildren().contains(tab)) {
-                        AbstractPortalTab portalTab = ((PortalTabImpl) tab).clone();
-                        SessionTab.getSessionTab(portalContext).removeTabFromSessionNoRefresh(userId, tab);
-                        SessionTab.getSessionTab(portalContext).addTabToSessionNoRefresh(userId, portalTab);
+                        PortalTab portalTab = (PortalTab) tab.clone();
+                        SessionTab.getSessionTab(portalContext).removeTabFromSession(userId, tab, false);
+                        SessionTab.getSessionTab(portalContext).addTabToSession(userId, (org.zkoss.zul.Tab) portalTab, false);
 
                         portalTab.getTab().setParent(tabbox.getTabs());
-                        portalTab.getTabpanel().setParent(tabbox.getTabpanels());
+                        if (portalTab.getTabpanel() == null) {
+                            LOGGER.warn("Portal tab had no panel " + portalTab);
+                        } else {
+                            portalTab.getTabpanel().setParent(tabbox.getTabpanels());
+                        }
                     }
                 }catch (Exception e) {
-                    Executions.sendRedirect(null);
+                    LOGGER.warn("Couldn't update tab", e);
+                    //Executions.sendRedirect(null);
                 }
             }
 

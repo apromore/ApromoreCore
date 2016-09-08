@@ -64,7 +64,7 @@ public class iBPStructSettings extends ProMPropertiesPanel {
         timeBounded = this.addCheckBox("Time Bounding", true);
         timeBounded.addChangeListener(bpsil);
 
-        forceStructuring = this.addCheckBox("Force Structuring", true);
+        forceStructuring = this.addCheckBox("Force Structuring", false);
         forceStructuring.addChangeListener(bpsil);
 
         maxMinutes = SlickerFactory.instance().createNiceIntegerSlider("Max Minutes", 0, 120, MAX_MINUTES, NiceSlider.Orientation.HORIZONTAL);
@@ -100,7 +100,7 @@ public class iBPStructSettings extends ProMPropertiesPanel {
         result.setMaxMinutes(MAX_MINUTES);
         result.setKeepBisimulation(true);
         result.setTimeBounded(true);
-        result.setForceStructuring(true);
+        result.setForceStructuring(false);
     }
 
     public iBPStructUIResult getSelections() {

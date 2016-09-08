@@ -21,7 +21,14 @@
 package org.apromore.pql.indexer;
 
 // Java 2 Standard Edition
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 // Java 2 Enterprise Edition
 import javax.servlet.ServletContextEvent;
@@ -46,7 +53,8 @@ public class PQLIndexerListener implements ServletContextListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PQLIndexerListener.class.getCanonicalName());
 
-    private PQLBot bot = null;
+    //private Set<PQLBot> bots = new HashSet<>();
+    private Set<Process> processes = new HashSet<>();
 
     public void contextInitialized(ServletContextEvent event) {
         LOGGER.info("PQL Indexer starting");
@@ -55,28 +63,72 @@ public class PQLIndexerListener implements ServletContextListener {
         ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(event.getServletContext());
         final PQLIndexerConfigurationBean config = (PQLIndexerConfigurationBean) applicationContext.getAutowireCapableBeanFactory().getBean("pqlIndexerConfig");
 
-        if (!config.isIndexingEnabled()) {
-            LOGGER.info("PQL Indexer disabled: pql.enableIndexing is configured to be false.  No indexer threads will be created.");
+        int indexerCount = Math.min(config.getNumberOfIndexerThreads(), Runtime.getRuntime().availableProcessors());
+        if (indexerCount <= 0) {
+            LOGGER.info("PQL Indexer disabled: pql.numberOfIndexerThreads is configured to be " + config.getNumberOfIndexerThreads() + ".  No indexer threads will be created.");
             return;
         }
-        assert config.isIndexingEnabled();
+        assert config.getNumberOfIndexerThreads() >= 1;
 
         // Create PQL bot
-        try {
-            bot = config.createBot();
-            bot.setDaemon(true);
-            bot.start();
-            LOGGER.info("PQL Indexer created bot");
+        LOGGER.info("PQL Indexer starting " + indexerCount + " bots in " + (new File("")).getAbsolutePath());
+        
+        List<String> args = new ArrayList(Arrays.asList("java", "-jar", "pql-bot.jar"));
+        args.addAll(config.getBotProcessArguments());
+        ProcessBuilder processBuilder = new ProcessBuilder(args);
+        File indexerLogFile = new File(new File("logs"), "Indexer.log");
+        processBuilder.redirectError(indexerLogFile);
+        processBuilder.redirectOutput(indexerLogFile);
+        for (int index = 1; index <= indexerCount; index++) {
+            /*
+             * This thread-based implementation of the indexer should be reinstituted in the event that PQL becomes thread-safe.
+             *
 
-        } catch (PQLIndexerConfigurationException e) {
-            LOGGER.error("PQL Indexer unable to create bot", e);
+            try {
+                PQLBot bot = config.createBot(null);
+                bot.setDaemon(true);
+                bot.start();
+                bots.add(bot);
+                LOGGER.info("PQL Indexer created bot #" + index);
+
+            } catch (PQLIndexerConfigurationException e) {
+                LOGGER.error("PQL Indexer unable to create bot #" + index, e);
+            }
+            */
+
+            try {
+                LOGGER.info("PQL Indexer creating bot #" + index + " with process arguments: " + processBuilder.command());
+                Process process = processBuilder.start();
+                processes.add(process);
+                LOGGER.info("PQL Indexer created bot #" + index + " as process " + process);
+            }
+            catch (IOException e) {
+                LOGGER.error("Unable to create bot #" + index, e);
+            }
         }
 
-        LOGGER.info("PQL Indexer started");
+        //LOGGER.info("PQL Indexer started " + bots.size() + " bots");
+        LOGGER.info("PQL Indexer started " + processes.size() + " bots");
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-        bot.terminate();
+        /*
+        for (PQLBot bot: bots) {
+            bot.terminate();
+        }
+        */
+        for (Process process: processes) {
+            process.destroy();
+        }
+        for (Process process: processes) {
+            try {
+                int exitStatus = process.waitFor();
+                LOGGER.info("PQL indexer bot terminated with status " + exitStatus);
+            }
+            catch (InterruptedException e) {
+                LOGGER.warn("Interrupted while waiting for exit status of PQL indexer process", e);
+            }
+        }
         LOGGER.info("PQL Indexer destroyed");
     }
 }

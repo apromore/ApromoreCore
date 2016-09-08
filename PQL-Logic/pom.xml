@@ -50,6 +50,7 @@
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
                         <Import-Package>
+                            com.mysql.jdbc,
                             org.springframework.beans.factory.aspectj,
                             *
                         </Import-Package>
@@ -107,6 +108,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.transaction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

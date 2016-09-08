@@ -30,27 +30,34 @@ import com.apql.Apql.history.QueueHistory;
 import com.apql.Apql.tree.DraggableNodeFolder;
 import com.apql.Apql.tree.DraggableNodeProcess;
 
+import org.apromore.helper.Version;
 import org.apromore.model.ResultPQL;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.service.pql.ExternalId;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
 
 import javax.swing.*;
 import javax.swing.tree.TreeNode;
 import java.awt.*;
+import java.text.ParseException;
 import java.util.*;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by corno on 25/07/2014.
  */
 public class QueryController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryController.class);
+
     private QueryText query;
     private int caretPosition=0;
-    private HashSet<String> locations;
-    private HashMap<String, DraggableNodeProcess> idNetsNode=new HashMap<>();
+    private Set<String> locations;
+    private Map<ExternalId, DraggableNodeProcess> idNetsNode=new HashMap<>();
 
     private String versionMode=ViewController.ALLVERSIONS;
     private static QueryController queryController;
@@ -303,7 +310,7 @@ public class QueryController {
         if(locations.contains("*")){
             return keepAllModels();
         }else if(locations.isEmpty()){
-            return new HashSet<String>();
+            return new HashSet<>();
         }else if(locations.contains("+")){
             locations = ButtonAction.CTRLBack.getLocationInQuery();
         }
@@ -316,30 +323,34 @@ public class QueryController {
         for(String location : locations) {
 //            if(count==locations.size())
 //                break;
-            for (String id : idNetsNode.keySet()) {
+            for (ExternalId id : idNetsNode.keySet()) {
                 if (idNetsNode.get(id).getName().equals(location) || idNetsNode.get(id).getId().equals(location)) {
                     DraggableNodeProcess dnp=idNetsNode.get(id);
                     if(queryController.getVersion().equals(ViewController.LATESTVERSION)) {
-                        idNets.add(dnp.getId()+"/"+dnp.getLatestVersion()+"/"+dnp.getLatestBranch());
+                        idNets.add(new ExternalId(Integer.parseInt(dnp.getId()), dnp.getLatestBranch(), new Version(dnp.getLatestVersion())).toString());
                     }else if(queryController.getVersion().equals(ViewController.ALLVERSIONS)){
                         for (VersionSummaryType vst : dnp.getVersions()) {
-                            idNets.add(dnp.getId()+"/"+vst.getVersionNumber()+"/"+vst.getName());
+                            idNets.add(new ExternalId(Integer.parseInt(dnp.getId()), vst.getName(), new Version(vst.getVersionNumber())).toString());
                         }
                     }
 //                    break;
                 }else if(location.matches(idNetsNode.get(id).getPathNode()+"[{](ALLVERSION)[}]")){
                     DraggableNodeProcess dnp=idNetsNode.get(id);
                     for (VersionSummaryType vst : dnp.getVersions()) {
-                        idNets.add(dnp.getId()+"/"+vst.getVersionNumber()+"/"+vst.getName());
+                        idNets.add(new ExternalId(Integer.parseInt(dnp.getId()), vst.getName(), new Version(vst.getVersionNumber())).toString());
                     }
                     break;
                 }else if(location.matches(idNetsNode.get(id).getPathNode()+"[{](LATESTVERSION)[}]")){
                     DraggableNodeProcess dnp=idNetsNode.get(id);
-                    idNets.add(dnp.getId()+"/"+dnp.getLatestVersion()+"/"+dnp.getLatestBranch());
+                    idNets.add(new ExternalId(Integer.parseInt(dnp.getId()), dnp.getLatestBranch(), new Version(dnp.getLatestVersion())).toString());
                     break;
-                }else if(location.matches(idNetsNode.get(id).getPathNode()+"[{]([0-9]+[/]([0-9]+([.][0-9]+){1,2})[/][a-zA-Z0-9]+)[}]")){
+                }else if(location.matches(idNetsNode.get(id).getPathNode()+"[{][0-9]+[/][a-zA-Z0-9]+[/]([0-9]+([.][0-9]+){1,2})[}]")){
                     int indexVersion=location.indexOf("{");
-                    idNets.add(location.substring(indexVersion+1,location.length()-1));
+                    try {
+                        idNets.add(new ExternalId(location.substring(indexVersion+1,location.length()-1)).toString());
+                    } catch (ParseException e) {
+                        throw new RuntimeException("Unable to parse location " + location, e);
+                    }
                     break;
                 }
             }
@@ -351,33 +362,47 @@ public class QueryController {
     }
 
     private HashSet<String> keepAllModels(){
-//        HashSet<String> idNets=new HashSet<>();
-//
-//        JTree tree = viewController.getFolderProcessTree();
-//        TreeNode root = (TreeNode) tree.getModel().getRoot();
-//        LinkedList<Enumeration> queue = new LinkedList<>();
-//        queue.add(root.children());
-//        while (!queue.isEmpty()) {
-//            Enumeration e = queue.removeFirst();
-//            while (e.hasMoreElements()) {
-//                Object ob = e.nextElement();
-//                if (ob instanceof DraggableNodeProcess) {
-//                    DraggableNodeProcess dnp = (DraggableNodeProcess) ob;
-//                    String idNet;
-//                    for (VersionSummaryType vst : dnp.getVersions()) {
-//                        idNet=dnp.getId() + "/" + vst.getVersionNumber() + "/" + vst.getName();
-//                        idNets.add(idNet);
-//                        idNetsNode.put(idNet,dnp);
-//                    }
-//                } else if (ob instanceof DraggableNodeFolder) {
-//                    queue.addLast(((DraggableNodeFolder) ob).children());
-//                }
-//            }
-//        }
-        return new HashSet<>(idNetsNode.keySet());
+        HashSet<String> idNets=new HashSet<>();
+
+        for (ExternalId id: idNetsNode.keySet()) {
+            idNets.add(id.toString());
+        }
+
+        /*
+        JTree tree = viewController.getFolderProcessTree();
+        TreeNode root = (TreeNode) tree.getModel().getRoot();
+        LinkedList<Enumeration> queue = new LinkedList<>();
+        queue.add(root.children());
+        while (!queue.isEmpty()) {
+            Enumeration e = queue.removeFirst();
+            while (e.hasMoreElements()) {
+                Object ob = e.nextElement();
+                if (ob instanceof DraggableNodeProcess) {
+                    DraggableNodeProcess dnp = (DraggableNodeProcess) ob;
+                    ExternalId idNet;
+                    for (VersionSummaryType vst : dnp.getVersions()) {
+                        //idNet=dnp.getId() + "/" + vst.getVersionNumber() + "/" + vst.getName();
+                        idNet=new ExternalId(Integer.parseInt(dnp.getId()), vst.getName(), new Version(vst.getVersionNumber()));
+                        idNets.add(idNet.toString());
+                        idNetsNode.put(idNet,dnp);
+                    }
+                } else if (ob instanceof DraggableNodeFolder) {
+                    queue.addLast(((DraggableNodeFolder) ob).children());
+                }
+            }
+        }
+        */
+
+        return idNets;
+
+        //return new HashSet<>(idNetsNode.keySet());
     }
 
-    public List<ResultPQL> buildResults(List<String> netResults){
+    /**
+     * @param netResults  a list of external IDs
+     * @throws ParseException if any of the <var>netResults</var> aren't parseable as {@link ExternalId}
+     */
+    public List<ResultPQL> buildResults(List<String> netResults) throws ParseException {
         LinkedList<ResultPQL> results=new LinkedList<>();
         ResultPQL pql;
             DraggableNodeProcess dnp;
@@ -386,7 +411,7 @@ public class QueryController {
 
             if (attributes.contains("*")) {
                 for (String net : netResults) {
-                    dnp = idNetsNode.get(net);
+                    dnp = idNetsNode.get(new ExternalId(net));
 
                     pql = new ResultPQL();
                     pql.setPst(dnp.getValue());
@@ -408,7 +433,7 @@ public class QueryController {
             } else {
                 for (String net : netResults) {
                     pql = new ResultPQL();
-                    dnp = idNetsNode.get(net);
+                    dnp = idNetsNode.get(new ExternalId(net));
                     boolean[] attributesToShow=new boolean[8];
                     if (attributes.contains("name"))
                         attributesToShow[0]=true;
@@ -449,13 +474,17 @@ public class QueryController {
         return attributes;
     }
 
-    public DraggableNodeProcess getLocation(String idNets){
+    /**
+     * @param idNets  an external ID
+     * @throws ParseException if <var>idNEts</var> can't be parsed as an {@link ExternalId}.
+     */
+    public DraggableNodeProcess getLocation(String idNets) throws ParseException {
         System.out.println("KEY: "+idNets);
-        return idNetsNode.get(idNets);
+        return idNetsNode.get(new ExternalId(idNets));
     }
 
-    public void addLocation(String idNet, DraggableNodeProcess process){
-        idNetsNode.put(idNet,process);
+    public void addLocation(ExternalId idNet, DraggableNodeProcess process){
+        idNetsNode.put(idNet, process);
     }
 
 }

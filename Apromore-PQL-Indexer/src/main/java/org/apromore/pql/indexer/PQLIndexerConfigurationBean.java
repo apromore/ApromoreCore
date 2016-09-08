@@ -23,8 +23,10 @@ package org.apromore.pql.indexer;
 // Java 2 Standard Edition
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 // Third party packages
@@ -49,8 +51,8 @@ import org.slf4j.LoggerFactory;
  */
 public class PQLIndexerConfigurationBean {
 
-    /** Whether PQL indexing is enabled at all. */
-    private boolean isIndexingEnabled;
+    /** The number of PQL indexer bots to launch; if zero, indexing is disabled. */
+    private int numberOfIndexerThreads;
 
     /** Time between checks for unindexed models, in seconds. */
     private int defaultBotSleepTime;
@@ -62,6 +64,9 @@ public class PQLIndexerConfigurationBean {
     private IndexType indexType;
     private LoLA2ModelChecker mc;
     private PQLIndexMySQL index;
+
+    /** This is a list of process arguments suitable as input to the {@link ProcessBuilder} class. */
+    private List<String> args = new ArrayList();
 
     /**
      * This constructor is invoked by a <code>bean</code> element in <code>pqlIndexerContext.xml</code>.
@@ -82,7 +87,7 @@ public class PQLIndexerConfigurationBean {
      * @param postgresPassword
      * @throws PQLIndexerConfigurationException  if the bean can't be created due to problems with <var>site.properties</var>
      */
-    public PQLIndexerConfigurationBean(boolean isIndexingEnabled,
+    public PQLIndexerConfigurationBean(int     numberOfIndexerThreads,
                                        String  labelSimilaritySearch,
                                        String  labelSimilarityConfig,
                                        double  defaultLabelSimilarityThreshold,
@@ -99,7 +104,7 @@ public class PQLIndexerConfigurationBean {
                                        String  postgresPassword) throws PQLIndexerConfigurationException {
 
         LoggerFactory.getLogger(getClass()).info("PQL Indexer configured with:" + 
-            " pql.enableIndexing=" + isIndexingEnabled +
+            " pql.numberOfIndexerThreads=" + numberOfIndexerThreads +
             " pql.labelSimilaritySearch=" + labelSimilaritySearch +
             " pql.labelSimilarityConfig=" + labelSimilarityConfig +
             " pql.defaultLabelSimilarityThreshold=" + defaultLabelSimilarityThreshold +
@@ -113,7 +118,7 @@ public class PQLIndexerConfigurationBean {
             " pql.postgres.name=" + postgresName +
             " pql.postgres.user=" + postgresUser);
 
-        this.isIndexingEnabled      = isIndexingEnabled;
+        this.numberOfIndexerThreads = numberOfIndexerThreads;
         this.defaultBotSleepTime    = defaultBotSleepTime;
         this.defaultBotMaxIndexTime = defaultBotMaxIndexTime;
 
@@ -136,7 +141,7 @@ public class PQLIndexerConfigurationBean {
         try {
             this.mysql = new MySQLConnection(mysqlURL, mysqlUser, mysqlPassword);
         } catch(ClassNotFoundException | SQLException e) {
-            if (isIndexingEnabled) {
+            if (this.numberOfIndexerThreads > 0) {
                 throw new PQLIndexerConfigurationException("MySQL connection could not be created", e);
             } else {
                 LoggerFactory.getLogger(getClass()).info("MySQL connection could not be created for PQL indexer, but this doesn't matter since indexing is disabled.");
@@ -182,14 +187,38 @@ public class PQLIndexerConfigurationBean {
             throw new PQLIndexerConfigurationException("Unable to create index", e);
         }
         assert index != null;
+
+
+        // Process argument list
+
+        // MySQL
+        args.add("--database");    args.add(mysqlURL);
+        args.add("--user");        args.add(mysqlUser);
+        args.add("--password");    args.add(mysqlPassword);
+
+        // LoLA2
+        args.add("--lola");        args.add(lolaDir);
+
+        // Similarity
+        args.add("--labeltype");   args.add(labelSimilaritySearch);
+        args.add("--labelrepo");   args.add(labelSimilarityConfig);
+        args.add("--threshold");   args.add(Double.toString(defaultLabelSimilarityThreshold));
+        args.add("--thresholds");  args.add(indexedLabelSimilarityThresholds);
+
+        // Bot timers
+        args.add("--index");       args.add(Integer.toString(defaultBotMaxIndexTime));
+        args.add("--sleep");       args.add(Integer.toString(defaultBotSleepTime));
     }
 
-    public boolean isIndexingEnabled() { return isIndexingEnabled; }
+    public int getNumberOfIndexerThreads() { return numberOfIndexerThreads; }
 
-    public PQLBot createBot() throws PQLIndexerConfigurationException {
+    /**
+     * @param name  the name for the created bot, which should be unique; pass <code>null</code> to use a random UUID
+     */
+    public PQLBot createBot(String name) throws PQLIndexerConfigurationException {
         try {
             return new PQLBot(mysql.getConnection(),
-                              null,  // bot name will be a random UUID
+                              name,
                               index,
                               mc,
                               indexType,
@@ -198,5 +227,12 @@ public class PQLIndexerConfigurationBean {
         } catch (ClassNotFoundException | NameInUseException | SQLException e) {
             throw new PQLIndexerConfigurationException("Unable to create bot", e);
         }
+    }
+
+    /**
+     * @return a list of process arguments suitable as input to the {@link ProcessBuilder} class
+     */
+    public List<String> getBotProcessArguments() {
+        return args;
     }
 }

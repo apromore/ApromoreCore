@@ -20,15 +20,9 @@
 
 package org.apromore.service.pql;
 
-import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.List;
-import java.util.Set;
-
-import org.pql.index.IndexStatus;
 
 import org.apromore.helper.Version;
-import org.apromore.model.ProcessSummariesType;
 
 /**
  * Hold the composite key of a process model version
@@ -66,6 +60,20 @@ public class ExternalId {
     public int     getProcessId() { return processId; }
     public String  getBranch()    { return branch; }
     public Version getVersion()   { return version; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) { return false; }
+        if (o == this) { return true; }
+        if (!o.getClass().equals(getClass())) { return false; }
+        ExternalId externalId = (ExternalId) o;
+        return externalId.toString().equals(toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
 
     @Override
     public String toString() {

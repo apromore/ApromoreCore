@@ -98,6 +98,7 @@
                             prom6-models|prom6-plugins|simmetrics|slickerbox1|tableLayout|uitopia|uitopiaResourcesv|weka|javahelp|junit|
                             exp4j|japura|animation|osservice|petrinets|transitionsystems|widgets|
                             oplall|ilpminer|
+                            <!--xeslite|asm|concurrent-trees|cqengine|kryo-serializers|lz4|mapdb|minlog|objenesis|reflectasm|sqlite-jdbc|-->
                             javacsv|javailp|jgrapht-jdk|jmathplot|trove|ujmp-complete|basicutils|
                             commons-cli|compress-lzf|java-merge-sort|juniversalchardet|opencsv|uncommons-maths|apacheutils|
                             grappa|
@@ -817,12 +818,47 @@
                             org.processmining.plugins.bpmn.plugins,
                             org.processmining.plugins.connectionfactories.logpetrinet,
                             org.processmining.plugins.filtering,
+                            org.processmining.plugins.flowerMiner,
                             org.processmining.plugins.ilpminer,
                             org.processmining.plugins.ilpminer.fitness,
                             org.processmining.plugins.ilpminer.netproperties,
                             org.processmining.plugins.ilpminer.templates,
                             org.processmining.plugins.ilpminer.templates.cplex,
                             org.processmining.plugins.ilpminer.templates.javailp,
+                            org.processmining.plugins.InductiveMiner,
+                            org.processmining.plugins.InductiveMiner.conversion,
+                            org.processmining.plugins.InductiveMiner.dfgOnly,
+                            org.processmining.plugins.InductiveMiner.dfgOnly.dfgBaseCaseFinder,
+                            org.processmining.plugins.InductiveMiner.dfgOnly.dfgCutFinder,
+                            org.processmining.plugins.InductiveMiner.dfgOnly.dfgFallThrough,
+                            org.processmining.plugins.InductiveMiner.dfgOnly.dfgSplitter,
+                            org.processmining.plugins.InductiveMiner.dfgOnly.log2logInfo,
+                            org.processmining.plugins.InductiveMiner.dfgOnly.plugins,
+                            org.processmining.plugins.InductiveMiner.dfgOnly.plugins.dialogs,
+                            org.processmining.plugins.InductiveMiner.efficienttree,
+                            org.processmining.plugins.InductiveMiner.efficienttree.reductionrules,
+                            org.processmining.plugins.InductiveMiner.graphs,
+                            org.processmining.plugins.InductiveMiner.jobList,
+                            org.processmining.plugins.InductiveMiner.mining,
+                            org.processmining.plugins.InductiveMiner.mining.baseCases,
+                            org.processmining.plugins.InductiveMiner.mining.cuts,
+                            org.processmining.plugins.InductiveMiner.mining.cuts.ExhaustiveKSuccessor,
+                            org.processmining.plugins.InductiveMiner.mining.cuts.IM,
+                            org.processmining.plugins.InductiveMiner.mining.cuts.IMi,
+                            org.processmining.plugins.InductiveMiner.mining.cuts.IMilc,
+                            org.processmining.plugins.InductiveMiner.mining.cuts.IMin,
+                            org.processmining.plugins.InductiveMiner.mining.cuts.IMin.probabilities,
+                            org.processmining.plugins.InductiveMiner.mining.cuts.IMin.solve,
+                            org.processmining.plugins.InductiveMiner.mining.cuts.IMin.solve.single,
+                            org.processmining.plugins.InductiveMiner.mining.cuts.IMlc,
+                            org.processmining.plugins.InductiveMiner.mining.fallthrough,
+                            org.processmining.plugins.InductiveMiner.mining.interleaved,
+                            org.processmining.plugins.InductiveMiner.mining.logSplitter,
+                            org.processmining.plugins.InductiveMiner.mining.logs,
+                            org.processmining.plugins.InductiveMiner.mining.metrics,
+                            org.processmining.plugins.InductiveMiner.mining.postprocessor,
+                            org.processmining.plugins.InductiveMiner.plugins,
+                            org.processmining.plugins.InductiveMiner.plugins.dialogs,
                             org.processmining.plugins.log,
                             org.processmining.plugins.log.exporting,
                             org.processmining.plugins.log.logabstraction,
@@ -1201,11 +1237,6 @@
             <artifactId>xstream</artifactId>
             <version>1.4.8</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>xerces</groupId>-->
-        <!--<artifactId>xercesImpl</artifactId>-->
-        <!--<version>2.8.1</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -1613,12 +1644,6 @@
             <artifactId>apacheutils</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.apromore</groupId>-->
-        <!--<artifactId>fodina-osgi</artifactId>-->
-        <!--<version>1.0</version>-->
-        <!--</dependency>-->
-        <!-- Fodina-lib -->
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>jgoodies-common</artifactId>
@@ -1691,7 +1716,7 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>inductiveminer</artifactId>
-            <version>1.0</version>
+            <version>2.0</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
@@ -1722,7 +1747,7 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>bpmnminer</artifactId>
-            <version>1.0</version>
+            <version>2.0</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
@@ -1857,5 +1882,62 @@
             <artifactId>logabstractions</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.processmining</groupId>-->
+            <!--<artifactId>xeslite</artifactId>-->
+            <!--<version>6.5</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.googlecode.cqengine</groupId>-->
+            <!--<artifactId>cqengine</artifactId>-->
+            <!--<version>2.6.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.googlecode.concurrent-trees</groupId>-->
+            <!--<artifactId>concurrent-trees</artifactId>-->
+            <!--<version>1.0.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>net.jpountz.lz4</groupId>-->
+            <!--<artifactId>lz4</artifactId>-->
+            <!--<version>1.3.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.mapdb</groupId>-->
+            <!--<artifactId>mapdb</artifactId>-->
+            <!--<version>3.0.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.ow2.asm</groupId>-->
+            <!--<artifactId>asm</artifactId>-->
+            <!--<version>5.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>de.javakaffee</groupId>-->
+            <!--<artifactId>kryo-serializers</artifactId>-->
+            <!--<version>0.38</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.esotericsoftware</groupId>-->
+            <!--<artifactId>minlog</artifactId>-->
+            <!--<version>1.3.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.objenesis</groupId>-->
+            <!--<artifactId>objenesis</artifactId>-->
+            <!--<version>2.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.esotericsoftware</groupId>-->
+            <!--<artifactId>reflectasm</artifactId>-->
+            <!--<version>1.10.1</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.xerial</groupId>-->
+            <!--<artifactId>sqlite-jdbc</artifactId>-->
+            <!--<version>3.8.11.2</version>-->
+        <!--</dependency>-->
+
     </dependencies>
 </project>
