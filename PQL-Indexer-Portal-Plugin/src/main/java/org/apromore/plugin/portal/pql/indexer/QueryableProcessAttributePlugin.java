@@ -39,6 +39,8 @@ import org.zkoss.zul.Popup;
 
 // First party
 import org.apromore.helper.Version;
+import org.apromore.model.FolderType;
+import org.apromore.model.LogSummaryType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
@@ -73,6 +75,14 @@ public class QueryableProcessAttributePlugin extends DefaultParameterAwarePlugin
         listheader.setLabel("PQL");
         listheader.setWidth("3em");
         return listheader;
+    }
+
+    public Listcell getListcell(FolderType folder) {
+        return new Listcell();
+    }
+
+    public Listcell getListcell(LogSummaryType log) {
+        return new Listcell();
     }
 
     /**
