@@ -66,7 +66,7 @@ $ mysqladmin --user=root --password=MAcri create apromore
 Create a user named 'apromore' with the required permissions
 $ mysql --user=root --password=MAcri
 	CREATE USER 'apromore'@'localhost' IDENTIFIED BY 'MAcri';
-	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES ON apromore.* TO 'apromore'@'localhost';
+	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, EXECUTE, SHOW VIEW ON apromore.* TO 'apromore'@'localhost';
 
 Create and populate the database tables.
 $ mysql --user=apromore --password=MAcri < Supplements/database/db-mysql.sql
@@ -95,6 +95,9 @@ In build.xml, uncomment the inclusion of the following PQL components in the "pi
 * PQL-Logic/target/pql-logic-1.1.jar
 * PQL-Logic-WS/target/pql-logic-ws-1.1.war
 * PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar
+
+Also, uncomment the following component in the "copy-virgo" target:
+* PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar
 
 
 SAMPLE DATA

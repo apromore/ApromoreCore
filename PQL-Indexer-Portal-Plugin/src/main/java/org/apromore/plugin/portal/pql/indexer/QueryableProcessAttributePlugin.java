@@ -17,7 +17,7 @@
  * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
-package org.apromore.plugin.portal.pql;
+package org.apromore.plugin.portal.pql.indexer;
 
 // Java 2 Standard
 import java.util.List;

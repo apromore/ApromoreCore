@@ -34,16 +34,9 @@
 
     <!-- Other OSGi services this component consumes -->
     <reference id="pqlService" interface="org.apromore.service.pql.PQLService"/>
-    <!--
-    <reference id="canoniserService" interface="org.apromore.service.CanoniserService"/>
-    <reference id="domainService" interface="org.apromore.service.DomainService"/>
-    <reference id="processService" interface="org.apromore.service.ProcessService"/>
-    <reference id="userService" interface="org.apromore.service.UserService"/>
-    <reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
-    -->
 
     <!-- Exposes the component as OSGi service -->
-    <context:component-scan base-package="org.apromore.plugin.portal" />
-    <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+    <context:component-scan base-package="org.apromore.plugin.portal.pql.indexer" />
+    <service ref="queryableProcessAttributePlugin" interface="org.apromore.plugin.portal.PortalProcessAttributePlugin" auto-export="interfaces" />
        
 </beans:beans>
