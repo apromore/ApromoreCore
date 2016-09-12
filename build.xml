@@ -253,6 +253,10 @@
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
 
+        <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing
+        <copy file="PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
+        -->
+
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset dir="${dir-annotation}">
                 <include name="**/target/*.jar"/>
