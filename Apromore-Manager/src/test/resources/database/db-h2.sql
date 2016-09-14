@@ -282,6 +282,15 @@ CREATE TABLE group_process
    has_ownership bit DEFAULT 0 NOT NULL
 )
 ;
+CREATE TABLE group_log (
+  id int auto_increment PRIMARY KEY NOT NULL,
+  groupId int NOT NULL,
+  logId int NOT NULL,
+  has_read bit DEFAULT 0 NOT NULL,
+  has_write bit DEFAULT 0 NOT NULL,
+  has_ownership bit DEFAULT 0 NOT NULL
+)
+;
 CREATE TABLE history_event (
   id int auto_increment PRIMARY KEY NOT NULL,
   status varchar(50) NOT NULL,
@@ -418,6 +427,18 @@ CREATE TABLE process
    ranking varchar(10),
    createDate varchar(40),
    public_model bit DEFAULT 0 NOT NULL
+)
+;
+CREATE TABLE log (
+  id int auto_increment PRIMARY KEY NOT NULL,
+  folderId int DEFAULT NULL,
+  name varchar(255) NOT NULL,
+  file_path varchar(255) NOT NULL,
+  public_log bit DEFAULT 0 NOT NULL,
+  domain varchar(255),
+  ranking varchar(10),
+  createDate varchar(40),
+  owner int
 )
 ;
 CREATE TABLE process_branch
