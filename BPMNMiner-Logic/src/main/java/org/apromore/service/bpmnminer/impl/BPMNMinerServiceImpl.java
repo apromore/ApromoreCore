@@ -28,6 +28,13 @@ import javax.swing.*;
 
 import au.edu.qut.context.FakePluginContext;
 import au.edu.qut.util.LogOptimizer;
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.factory.XFactoryRegistry;
+import org.deckfour.xes.info.XLogInfo;
+import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -124,7 +131,10 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
                 multiInstanceTolerance, timerEventPercentage, timerEventTolerance, noiseThreshold);
 
         FakePluginContext fakePluginContext = new FakePluginContext();
+        log.setInfo(new XEventNameClassifier(), XLogInfoFactory.createLogInfo(log, new XEventNameClassifier()));
+
         BPMNSubProcessMiner bpmnSubProcessMiner = new BPMNSubProcessMiner(fakePluginContext);
+
         BPMNDiagram diagram = bpmnSubProcessMiner.mineBPMNModel(fakePluginContext, log, sortLog, selectMinerResult, dependencyAlgorithm, concModel,
                 groupEntities, candidatesEntities, selectedEntities, true);
 

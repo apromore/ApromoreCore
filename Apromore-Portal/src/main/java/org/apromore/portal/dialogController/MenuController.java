@@ -62,8 +62,6 @@ public class MenuController extends Menubar {
         Menuitem createMI = (Menuitem) this.menuB.getFellow("createProcess");
         Menuitem importMI = (Menuitem) this.menuB.getFellow("fileImport");
         Menuitem exportMI = (Menuitem) this.menuB.getFellow("fileExport");
-        Menuitem importLogMI = (Menuitem) this.menuB.getFellow("fileImportLog");
-        Menuitem exportLogMI = (Menuitem) this.menuB.getFellow("fileExportLog");
         Menuitem editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
         Menuitem editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
         Menuitem deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
@@ -84,13 +82,7 @@ public class MenuController extends Menubar {
         importMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
-                importModel();
-            }
-        });
-        importLogMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                importLog();
+                importFile();
             }
         });
         editModelMI.addEventListener("onClick", new EventListener<Event>() {
@@ -108,13 +100,7 @@ public class MenuController extends Menubar {
         exportMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
-                exportNative();
-            }
-        });
-        exportLogMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                exportLog();
+                exportFile();
             }
         });
         deleteMI.addEventListener("onClick", new EventListener<Event>() {
@@ -271,6 +257,18 @@ public class MenuController extends Menubar {
         }
     }
 
+    protected void exportFile() throws Exception {
+        if(this.mainC.getSelectedElements().size() == 1) {
+            SummaryType summaryType = this.mainC.getSelectedElements().iterator().next();
+            System.out.println(summaryType);
+            if (summaryType instanceof LogSummaryType) {
+                exportLog();
+            } else if (summaryType instanceof ProcessSummaryType) {
+                exportNative();
+            }
+        }
+    }
+
 
     /**
      * Export all selected process versions, each of which in a native format to be chosen by the user
@@ -329,19 +327,10 @@ public class MenuController extends Menubar {
         }
     }
 
-    protected void importModel() throws InterruptedException {
+    protected void importFile() throws InterruptedException {
         this.mainC.eraseMessage();
         try {
-            new ImportListProcessesController(mainC);
-        } catch (DialogException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-
-    protected void importLog() throws InterruptedException {
-        this.mainC.eraseMessage();
-        try {
-            new ImportLogController(mainC);
+            new ImportController(mainC);
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }

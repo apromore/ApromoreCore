@@ -53,6 +53,8 @@ DROP TABLE IF EXISTS `cluster_assignment`;
 DROP TABLE IF EXISTS `fragment_distance`;
 DROP TABLE IF EXISTS `metric`;
 
+DROP TABLE IF EXISTS `history_event`;
+
 DROP TABLE IF EXISTS `group_log`;
 DROP TABLE IF EXISTS `log`;
 

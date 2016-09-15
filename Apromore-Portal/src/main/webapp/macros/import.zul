@@ -19,7 +19,7 @@
   -->
 
 <!-- importProcessesWindow window has ImportProcessesController as a controller -->
-<window id="importProcessesWindow" position="center" title="Import process models"
+<window id="importWindow" position="center" title="Import process models or logs"
         visible="true" sizable="true" width="550px">
     <vbox vflex="1">
         <grid>
@@ -31,17 +31,21 @@
             <rows>
                 <row>
                     <label value="File to upload"/>
-                    <button id="uploadButton" label="Browse" upload="true,maxsize=-1"/>
-                    <label id="filenameLabel" value=""/>
+                    <button id="uploadButton" label="Browse" upload="true,maxsize=-1,multiple=false,native"/>
+                    <label id="fileNameLabel" value="File Name" width="100%"/>
                 </row>
                 <row spans="1,2">
                     <label value="Supported extensions"/>
                     <label id="supportedExt" value=""/>
                 </row>
+                <row spans="1,2">
+                    <label value="Make File Public"/>
+                    <checkbox id="public" />
+                </row>
                 <row spans="3">
                     <div align="center">
-                        <!--<button id="okButtonImportProcesses" label="OK" image="img/ok.png" disabled="true" />-->
-                        <button id="cancelButtonImportProcesses" label="Cancel" image="img/cancel2.png" />
+                        <button id="okButtonImport" label="OK" image="img/ok.png" disabled="true" />
+                        <button id="cancelButtonImport" label="Cancel" image="img/cancel2.png" />
                     </div>
                 </row>
             </rows>
