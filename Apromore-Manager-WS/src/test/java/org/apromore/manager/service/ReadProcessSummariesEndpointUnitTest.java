@@ -20,7 +20,6 @@
 
 package org.apromore.manager.service;
 
-import org.apromore.manager.ManagerPortalEndpoint;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.ReadProcessSummariesInputMsgType;
 import org.apromore.model.ReadProcessSummariesOutputMsgType;

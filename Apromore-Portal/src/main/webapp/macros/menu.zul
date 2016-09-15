@@ -25,8 +25,6 @@
             <menuitem id="createProcess" label="Create model" disabled="true" image="/img/new.png"/>
             <menuitem id="fileImport" label="Import" disabled="true" image="/img/import.png"/>
             <menuitem id="fileExport" label="Export" disabled="true" image="/img/export.png"/>
-            <menuitem id="fileImportLog" label="Import Log" disabled="true" image="/img/import.png"/>
-            <menuitem id="fileExportLog" label="Export Log" disabled="true" image="/img/export.png"/>
             <menuitem id="processEdit" label="Edit model" disabled="true" image="/img/edit.png"/>
             <menuitem id="dataEdit" label="Edit meta data" disabled="true" image="/img/edit_metadata.png"/>
             <menuitem id="processDelete" label="Delete" disabled="true" image="/img/delete.png"/>

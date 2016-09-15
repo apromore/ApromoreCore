@@ -21,78 +21,81 @@
 package org.apromore.portal.dialogController;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apromore.model.ImportLogResultType;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.exception.ExceptionAllUsers;
-import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionImport;
+import org.apromore.portal.exception.*;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
 
-public class ImportListProcessesController extends BaseController {
+public class ImportController extends BaseController {
 
     private MainController mainC;
-    private Window importProcessesWindow;
-    private Label filenameLabel;
-    private String extension;
-    private String fileOrArchive;
+    private Window importWindow;
+
     private String nativeType;
     private String ignoredFiles;
-    private Media media;
+
+    private Media media = null;
+    private byte[] logByteArray = null;
+    private String fileName = null;
+    private String fileType = null;
+    private String extension;
+    private Label fileNameLabel;
+    private boolean isPublic;
+
+    private Button okButton;
+
     private List<ImportOneProcessController> toImportList = new ArrayList<>();
     private List<ImportOneProcessController> importedList = new ArrayList<>();
 
-    public ImportListProcessesController(MainController mainC) throws DialogException {
+    public ImportController(MainController mainC) throws DialogException {
         this.ignoredFiles = "";
         this.mainC = mainC;
 
         try {
-            final Window win = (Window) Executions.createComponents("macros/importProcesses.zul", null, null);
-            this.importProcessesWindow = (Window) win.getFellow("importProcessesWindow");
-            Button uploadButton = (Button) this.importProcessesWindow.getFellow("uploadButton");
-            Button cancelButton = (Button) this.importProcessesWindow.getFellow("cancelButtonImportProcesses");
-            this.filenameLabel = (Label) this.importProcessesWindow.getFellow("filenameLabel");
-            Label supportedExtL = (Label) this.importProcessesWindow.getFellow("supportedExt");
+            final Window win = (Window) Executions.createComponents("macros/import.zul", null, null);
+            this.importWindow = (Window) win.getFellow("importWindow");
+            Button uploadButton = (Button) this.importWindow.getFellow("uploadButton");
+            Button cancelButton = (Button) this.importWindow.getFellow("cancelButtonImport");
+            okButton = (Button) this.importWindow.getFellow("okButtonImport");
+            this.fileNameLabel = (Label) this.importWindow.getFellow("fileNameLabel");
+            Label supportedExtL = (Label) this.importWindow.getFellow("supportedExt");
+            isPublic = ((Checkbox) this.importWindow.getFellow("public")).isChecked();
 
             // build the list of supported extensions to display
-            String supportedExtS = "zip";
+            String supportedExtS = "xes, xes.gz, mxml, mxml.gz, zip";
             Set<String> supportedExt = this.mainC.getNativeTypes().keySet();
             for (String aSupportedExt : supportedExt) {
                 supportedExtS += ", " + aSupportedExt;
             }
+
             supportedExtL.setValue(supportedExtS);
 
-
-            // event listeners
-            importProcessesWindow.addEventListener("onLater", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    extractArchiveOrFile();
-                    Clients.clearBusy();
-                }
-            });
             uploadButton.addEventListener("onUpload", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     uploadFile((UploadEvent) event);
+                }
+            });
+            okButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    importFile();
                 }
             });
             cancelButton.addEventListener("onClick", new EventListener<Event>() {
@@ -108,7 +111,7 @@ public class ImportListProcessesController extends BaseController {
     }
 
     private void cancel() throws IOException {
-        this.importProcessesWindow.detach();
+        this.importWindow.detach();
     }
 
     /**
@@ -116,34 +119,105 @@ public class ImportListProcessesController extends BaseController {
      * @param event the event to process.
      * @throws InterruptedException
      */
-    private void uploadFile(UploadEvent event) throws InterruptedException {
+//    private void uploadFile(UploadEvent event) throws InterruptedException {
+//        try {
+//            // derive file type from its extension
+//            String fileType;
+//            this.media = event.getMedia();
+//            this.fileOrArchive = event.getMedia().getName();
+//            String[] list_extensions = this.fileOrArchive.split("\\.");
+//            this.extension = list_extensions[list_extensions.length - 1];
+//            if (this.extension.compareTo("zip") == 0) {
+//                fileType = "zip archive";
+//            } else {
+//                fileType = this.mainC.getNativeTypes().get(this.extension);
+//                if (fileType == null) {
+//                    throw new ExceptionImport("Unsupported extension.");
+//                }
+//                this.nativeType = fileType;
+//            }
+//
+//            this.fileNameLabel.setValue(this.fileOrArchive + " (file/model type is " + fileType + ")");
+//
+//            // Simulate the ok button ?? I don't think this is correct.
+//            Clients.showBusy("Processing...");
+//            Events.echoEvent("onLater", importWindow, null);
+//        } catch (ExceptionImport e) {
+//            Messagebox.show("Upload failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+//        } catch (Exception e) {
+//            Messagebox.show("Repository not available (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+//        }
+//    }
+
+    private void uploadFile(UploadEvent event) throws ExceptionFormats, ExceptionImport {
+        media = event.getMedia();
+        fileNameLabel.setStyle("color: blue");
+        fileNameLabel.setValue(media.getName());
+        logByteArray = media.getByteData();
+        fileName = media.getName();
+        String[] list_extensions = fileName.split("\\.");
+        extension = list_extensions[list_extensions.length - 1];
+        if(!extension.equals("zip") && !extension.equals("gz") && !extension.equals("xes") && !extension.equals("mxmxl")) {
+            fileType = this.mainC.getNativeTypes().get(extension);
+            if (fileType == null) {
+                throw new ExceptionImport("Unsupported extension.");
+            }
+            nativeType = fileType;
+        }
+        okButton.setDisabled(false);
+    }
+
+    private void importFile() throws InterruptedException, IOException, ExceptionDomains, ExceptionAllUsers, JAXBException {
+        if(extension.equals("zip")) {
+            extractArchiveOrFile();
+        }else if(fileName.endsWith("xes") || fileName.endsWith("xes.gz") || fileName.endsWith("mxml") || fileName.endsWith("mxml.gz")) {
+            importLog();
+        }else {
+            importProcess(this.mainC, this, this.media.getStreamData(), this.fileName.split("\\.")[0], this.nativeType, this.fileName);
+        }
+    }
+
+    private void importLog() {
         try {
-            // derive file type from its extension
-            String fileType;
-            this.media = event.getMedia();
-            this.fileOrArchive = event.getMedia().getName();
-            String[] list_extensions = this.fileOrArchive.split("\\.");
-            this.extension = list_extensions[list_extensions.length - 1];
-            if (this.extension.compareTo("zip") == 0) {
-                fileType = "zip archive";
-            } else {
-                fileType = this.mainC.getNativeTypes().get(this.extension);
-                if (fileType == null) {
-                    throw new ExceptionImport("Unsupported extension.");
-                }
-                this.nativeType = fileType;
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bos.write(logByteArray, 0, logByteArray.length);
+            InputStream inputStream = new ByteArrayInputStream(bos.toByteArray());
+
+            Integer folderId = 0;
+            if (UserSessionManager.getCurrentFolder() != null) {
+                folderId = UserSessionManager.getCurrentFolder().getId();
             }
 
-            this.filenameLabel.setValue(this.fileOrArchive + " (file/model type is " + fileType + ")");
+            extension = discoverExtension(fileName);
+            System.out.println(fileName);
+            System.out.println(extension);
+            String logFileName = fileName.substring(0, fileName.indexOf(extension) - 1);
 
-            // Simulate the ok button ?? I don't think this is correct.
-            Clients.showBusy("Processing...");
-            Events.echoEvent("onLater", importProcessesWindow, null);
-        } catch (ExceptionImport e) {
-            Messagebox.show("Upload failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            getService().importLog(UserSessionManager.getCurrentUser().getUsername(), folderId, logFileName, inputStream,
+                    extension, "", DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(), isPublic);
+
         } catch (Exception e) {
-            Messagebox.show("Repository not available (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }finally {
+            closePopup();
         }
+    }
+
+    private void closePopup() {
+        importWindow.detach();
+    }
+
+    private String discoverExtension(String logFileName) {
+        if(logFileName.endsWith("mxml")) {
+            return "mxml";
+        }else if(logFileName.endsWith("mxml.gz")) {
+            return "mxml.gz";
+        }else if(logFileName.endsWith("xes")) {
+            return "xes";
+        }else if(logFileName.endsWith("xes.gz")) {
+            return "xes.gz";
+        }
+        return null;
     }
 
     /**
@@ -189,8 +263,8 @@ public class ImportListProcessesController extends BaseController {
                 }
             } else {
                 // Case of a single file: import it.
-                String defaultProcessName = this.fileOrArchive.split("\\.")[0];
-                importProcess(this.mainC, this, this.media.getStreamData(), defaultProcessName, this.nativeType, this.fileOrArchive);
+                String defaultProcessName = this.fileName.split("\\.")[0];
+                importProcess(this.mainC, this, this.media.getStreamData(), defaultProcessName, this.nativeType, this.fileName);
             }
 
         } catch (JAXBException e) {
@@ -200,8 +274,8 @@ public class ImportListProcessesController extends BaseController {
         }
     }
 
-    private void importProcess(MainController mainC, ImportListProcessesController importC, InputStream xml_is, String processName, String nativeType, String filename) throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
-        ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importC, xml_is, processName, nativeType, filename);
+    private void importProcess(MainController mainC, ImportController importC, InputStream xml_is, String processName, String nativeType, String filename) throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
+        ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importC, xml_is, processName, nativeType, filename, isPublic);
         this.toImportList.add(oneImport);
     }
 
