@@ -209,19 +209,19 @@ public class Main extends JPanel {
         loadSave.add(save);
         menuBar.add(loadSave);
 
-        Action aboutItem = new AbstractAction("About PQL") {
+        Action aboutItem = new AbstractAction("PQL Utilities") {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 try {
-                    browse(new URL("http://processquerying.com/pql/"));
+                    browse(new URL("http://processquerying.com/pql-utilities/"));
                 }
                 catch (Exception exception) {}  // if the browser doesn't get launched, it's no disaster
             }
         };
 
-        Action tutorialItem = new AbstractAction("PQL YouTube tutorial") {
+        Action tutorialItem = new AbstractAction("PQL Screencasts") {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 try {
-                    browse(new URL("https://www.youtube.com/watch?v=S_U6frTWd3M"));
+                    browse(new URL("http://processquerying.com/pql-screencasts/"));
                 }
                 catch (Exception exception) {}  // if the browser doesn't get launched, it's no disaster
             }
