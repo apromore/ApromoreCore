@@ -27,8 +27,6 @@ import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
 import org.apromore.manager.client.util.StreamUtil;
 import org.apromore.model.*;
 import org.apromore.plugin.property.RequestParameterType;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.out.XesXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
@@ -42,7 +40,6 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPException;
-import java.awt.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -78,8 +75,8 @@ public class ManagerServiceClient implements ManagerService {
      * @param siteManager
      */
     public ManagerServiceClient(String siteHost, int sitePort, String siteManager) throws SOAPException, URISyntaxException {
-        URI uri = new URI("http", null, siteHost, sitePort, siteManager + "/services/manager", null, null);
-        this.webServiceTemplate = createWebServiceTemplate(new URI("http", null, siteHost, sitePort, siteManager + "/services/manager", null, null));
+        URI uri = new URI("http", null, siteHost, sitePort, siteManager + "/services", null, null);
+        this.webServiceTemplate = createWebServiceTemplate(new URI("http", null, siteHost, sitePort, siteManager + "/services", null, null));
     }
 
     public ManagerServiceClient(URI managerEndpointURI) throws SOAPException {
@@ -88,7 +85,7 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @param managerEndpointURI the externally reachable URL of the manager endpoint, e.g. "http://localhost:9000/manager/services/manager"
+     * @param managerEndpointURI the externally reachable URL of the manager endpoint, e.g. "http://localhost:9000/manager/services"
      */
     private static WebServiceTemplate createWebServiceTemplate(URI managerEndpointURI) throws SOAPException {
 
@@ -360,19 +357,19 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummariesType getProcesses(String userId, int folderId, int pageIndex, int pageSize) {
-        LOGGER.debug("Preparing GetProcessesRequest.....");
+    public SummariesType getProcessOrLogSummaries(String userId, int folderId, int pageIndex, int pageSize) {
+        LOGGER.debug("Preparing GetProcessOrLogRequest.....");
 
-        GetProcessesInputMsgType msg = new GetProcessesInputMsgType();
+        GetProcessesOrLogsInputMsgType msg = new GetProcessesOrLogsInputMsgType();
         msg.setUserId(userId);
         msg.setFolderId(folderId);
         msg.setPageIndex(pageIndex);
         msg.setPageSize(pageSize);
 
-        JAXBElement<GetProcessesInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesRequest(msg);
+        JAXBElement<GetProcessesOrLogsInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesOrLogsRequest(msg);
 
-        JAXBElement<GetProcessesOutputMsgType> response = (JAXBElement<GetProcessesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getProcesses();
+        JAXBElement<GetProcessesOrLogsOutputMsgType> response = (JAXBElement<GetProcessesOrLogsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getProcessesOrLogs();
     }
 
     @Override
@@ -647,7 +644,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummariesType readProcessSummaries(final Integer folderId, final String searchCriteria) {
+    public SummariesType readProcessSummaries(final Integer folderId, final String searchCriteria) {
         LOGGER.debug("Preparing ReadProcessSummariesRequest.....");
 
         ReadProcessSummariesInputMsgType msg = new ReadProcessSummariesInputMsgType();
@@ -660,64 +657,13 @@ public class ManagerServiceClient implements ManagerService {
         return response.getValue().getProcessSummaries();
     }
 
-
-    /**
-     * @see ManagerService#runAPQLExpression(String, List, String)
-     * {@inheritDoc}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<String> runAPQLExpression(final String searchExpression, final List<String> ids, final String userID) throws Exception {
-        LOGGER.debug("@@@@@@@@@@@@@@@@@@@Preparing RunAPQLRequest.....");
-
-        RunAPQLInputMsgType msg = new RunAPQLInputMsgType();
-        msg.setAPQLExpression(searchExpression);
-        msg.setUserID(userID);
-        msg.getIds().clear();
-        msg.getIds().addAll(ids);
-
-        JAXBElement<RunAPQLInputMsgType> request = WS_CLIENT_FACTORY.createRunAPQLRequest(msg);
-        LOGGER.debug("@@@@@@@@@@@@@@@@@@@ After Request: ");
-        JAXBElement<RunAPQLOutputMsgType> response = (JAXBElement<RunAPQLOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        LOGGER.debug("@@@@@@@@@@@@@@@@@@@ ManagerServiceClient Response List: "+response.getValue().getProcessResult());
-        RunAPQLOutputMsgType resp = response.getValue();
-
-        if (resp.getResult().getCode().equals(-1)) {
-            throw new Exception(resp.getResult().getMessage());
-        } else {
-            LOGGER.debug("@@@@@@@@@@@@@@@@@@@ ManagerServiceClient Response Error: "+response.getValue().getResult().getCode()+" "+response.getValue().getResult().getMessage());
-//            return response.getValue().getProcessSummaries();
-            return response.getValue().getProcessResult();
-        }
-    }
-
-    @Override
-    public List<String> getProcessesLabels(String table, String columnName) {
-        DBInputMsgType msg = new DBInputMsgType();
-        msg.setColumnName(columnName);
-        msg.setTable(table);
-        JAXBElement<DBInputMsgType> request = WS_CLIENT_FACTORY.createDBRequest(msg);
-        JAXBElement<DBOutputMsgType> response = (JAXBElement<DBOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getLabels();
-    }
-
-    @Override
-    public List<Detail> getDetails() throws Exception{
-        DetailInputMsgType detail = new DetailInputMsgType();
-
-        JAXBElement<DetailInputMsgType> request = WS_CLIENT_FACTORY.createDetailRequest(detail);
-
-        JAXBElement<DetailOutputMsgType> response = (JAXBElement<DetailOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getDetail();
-    }
-
     /**
      * @see ManagerService#searchForSimilarProcesses(int, String, String, Boolean, int, String, double, double, double, double, double, double)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummariesType searchForSimilarProcesses(final int processId, final String versionName, final String method,
+    public SummariesType searchForSimilarProcesses(final int processId, final String versionName, final String method,
             final Boolean latestVersions, final int folderId, final String userId, final double modelThreshold, final double labelThreshold,
             final double contextThreshold, final double skipnWeight, final double subnWeight, final double skipeWeight) {
         LOGGER.debug("Preparing SearchForSimilarProcessesRequest.....");
@@ -802,6 +748,57 @@ public class ManagerServiceClient implements ManagerService {
             return response.getValue().getExportResult();
         }
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ExportLogResultType exportLog(final int logId, final String logName) throws Exception {
+        LOGGER.debug("Preparing ExportLogRequest.....");
+
+        ExportLogInputMsgType msg = new ExportLogInputMsgType();
+        msg.setLogId(logId);
+        msg.setLogName(logName);
+
+        JAXBElement<ExportLogInputMsgType> request = WS_CLIENT_FACTORY.createExportLogRequest(msg);
+
+        JAXBElement<ExportLogOutputMsgType> response = (JAXBElement<ExportLogOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            LOGGER.info(StreamUtil.convertStreamToString(response.getValue().getExportResult().getNative()));
+            return response.getValue().getExportResult();
+        }
+    }
+
+    @Override
+    public ImportLogResultType importLog(String username, Integer folderId, String logName, InputStream log, String extension, String domain, String created, boolean makePublic) throws Exception {
+        LOGGER.debug("Preparing ImportLogRequest.....");
+
+        EditSessionType editSession = new EditSessionType();
+        editSession.setUsername(username);
+        editSession.setFolderId(folderId);
+//        editSession.setNativeType(nativeType);
+        editSession.setProcessName(logName);
+//        editSession.setCurrentVersionNumber(versionNumber);
+        editSession.setDomain(domain);
+        editSession.setCreationDate(created);
+//        editSession.setLastUpdate(lastUpdate);
+        editSession.setPublicModel(makePublic);
+
+        ImportLogInputMsgType msg = new ImportLogInputMsgType();
+        msg.setExtension(extension);
+        msg.setLog(new DataHandler(new ByteArrayDataSource(log, "text/xml")));
+        msg.setEditSession(editSession);
+
+        JAXBElement<ImportLogInputMsgType> request = WS_CLIENT_FACTORY.createImportLogRequest(msg);
+        JAXBElement<ImportLogOutputMsgType> response = (JAXBElement<ImportLogOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            return response.getValue().getImportLogResult();
+        }
+    }
+
 
     /**
      * @see ManagerService#importProcess(String, java.lang.Integer, String, String, String, java.io.InputStream, String, String, String, String, boolean, java.util.Set)
@@ -959,22 +956,36 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @see ManagerService#deleteProcessVersions(java.util.Map)
+     * @see ManagerService#deleteElements(java.util.Map)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void deleteProcessVersions(final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception {
+    public void deleteElements(final Map<SummaryType, List<VersionSummaryType>> elements) throws Exception {
         LOGGER.debug("Preparing DeleteProcessVersions.....");
 
-        DeleteProcessVersionsInputMsgType msg = new DeleteProcessVersionsInputMsgType();
-        msg.getProcessVersionIdentifier().addAll(DeleteProcessVersionHelper.setProcessModels(processVersions));
+        for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+            if(entry.getKey() instanceof ProcessSummaryType) {
+                DeleteProcessVersionsInputMsgType msg = new DeleteProcessVersionsInputMsgType();
+                msg.getProcessVersionIdentifier().addAll(DeleteProcessVersionHelper.setElements(elements));
 
-        JAXBElement<DeleteProcessVersionsInputMsgType> request = WS_CLIENT_FACTORY.createDeleteProcessVersionsRequest(msg);
+                JAXBElement<DeleteProcessVersionsInputMsgType> request = WS_CLIENT_FACTORY.createDeleteProcessVersionsRequest(msg);
 
-        JAXBElement<DeleteProcessVersionsOutputMsgType> response = (JAXBElement<DeleteProcessVersionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        if (response.getValue().getResult().getCode() == -1) {
-            throw new Exception(response.getValue().getResult().getMessage());
+                JAXBElement<DeleteProcessVersionsOutputMsgType> response = (JAXBElement<DeleteProcessVersionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+                if (response.getValue().getResult().getCode() == -1) {
+                    throw new Exception(response.getValue().getResult().getMessage());
+                }
+            }else {
+                DeleteLogInputMsgType msg = new DeleteLogInputMsgType();
+                msg.getLogSummaryType().add((LogSummaryType) entry.getKey());
+
+                JAXBElement<DeleteLogInputMsgType> request = WS_CLIENT_FACTORY.createDeleteLogRequest(msg);
+
+                JAXBElement<DeleteLogOutputMsgType> response = (JAXBElement<DeleteLogOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+                if (response.getValue().getResult().getCode() == -1) {
+                    throw new Exception(response.getValue().getResult().getMessage());
+                }
+            }
         }
     }
 

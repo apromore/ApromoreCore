@@ -1,5 +1,5 @@
 /*
- * Copyright Â© 2009-2016 The Apromore Initiative.
+ * Copyright Ã‚Â© 2009-2016 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -20,10 +20,12 @@
 
 package org.apromore.plugin.portal.prodrift;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import ee.ut.eventstr.model.ProDriftDetectionResult;
 import ee.ut.eventstr.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.prodrift.ProDriftDetectionService;
+import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -32,7 +34,12 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 
 public class ProDriftController {
@@ -52,8 +59,8 @@ public class ProDriftController {
     private Listbox conflictLBox;
     private Button OKbutton;
 
-    private org.zkoss.util.media.Media logFile = null;
-    private byte[] logByteArray = null;
+    //    private byte[] logByteArray = null;
+    private XLog xlog = null;
     private String logFileName = null;
 
     int caseCount = 0;
@@ -69,7 +76,7 @@ public class ProDriftController {
     /**
      * @throws IOException if the <code>prodrift.zul</code> template can't be read from the classpath
      */
-    public ProDriftController(PortalContext portalContext, ProDriftDetectionService proDriftDetectionService) throws IOException {
+    public ProDriftController(PortalContext portalContext, ProDriftDetectionService proDriftDetectionService, Map<XLog, String> logs) throws IOException {
         this.portalContext = portalContext;
         this.proDriftDetectionService = proDriftDetectionService;
 
@@ -86,45 +93,41 @@ public class ProDriftController {
         maxWinValueEventsRealIntBox.setValue(desiredWinSizeEventsReal);
 
         this.logFileUpload = (Button) this.proDriftW.getFellow("logFileUpload");
-        final Label l = (Label) this.proDriftW.getFellow("fileName");
 
+        showError("");
+        if(logs.size() > 0)
+        {
+
+//            Row logUploadRow = (Row) this.proDriftW.getFellow("logF");
+//            logUploadRow.setVisible(false);
+
+
+            if(logs.size() > 1)
+            {
+
+                showError("Please select only one log!");
+
+            }else
+            {
+
+                this.logFileUpload.setVisible(false);
+
+                Map.Entry<XLog, String> xl_entry = logs.entrySet().iterator().next();
+                String xl_name = xl_entry.getValue() + ".xes.gz";
+                XLog xl = xl_entry.getKey();
+
+                initializeLogVars(xl, null, xl_name);
+
+            }
+
+        }
 
         this.logFileUpload.addEventListener("onUpload", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 UploadEvent uEvent = (UploadEvent) event;
-                logFile = uEvent.getMedia();
+                org.zkoss.util.media.Media logFileMedia = uEvent.getMedia();
 
-                StringBuilder caseCountSB = new StringBuilder();
-                StringBuilder eventCountSB = new StringBuilder();
-                boolean result = XLogManager.validateLog(logFile.getStreamData(), logFile.getName(), caseCountSB, eventCountSB);
-                if (!result) {
-
-                    l.setStyle("color: red");
-                    l.setValue("Unacceptable File Format.");
-
-//                    showError("Please select a log file(.xml, .mxml, .xes, .mxml.gz, .xes.gz)");
-
-                } else {
-
-                    try {
-                        caseCount = Integer.parseInt(caseCountSB.toString());
-                        eventCount = Integer.parseInt(eventCountSB.toString());
-                    }catch (NumberFormatException ex) {}
-
-                    showError("");
-                    l.setStyle("color: blue");
-                    l.setValue(logFile.getName() + " (Cases=" + caseCount + ", Events=" + eventCount + ")");
-                    logByteArray = logFile.getByteData();
-                    logFileName = logFile.getName();
-
-                    setDefaultWinSizes();
-
-                    Session sess = Sessions.getCurrent();
-                    sess.setAttribute("logDrift", logByteArray);
-                    sess.setAttribute("logNameDrift", logFileName);
-
-                }
-
+                initializeLogVars(null, logFileMedia.getStreamData(), logFileMedia.getName());
 
             }
         });
@@ -163,6 +166,52 @@ public class ProDriftController {
 
 
         this.proDriftW.doModal();
+    }
+
+    private void initializeLogVars(XLog xl, InputStream is, String logName) {
+
+        final Label l = (Label) this.proDriftW.getFellow("fileName");
+        StringBuilder caseCountSB = new StringBuilder();
+        StringBuilder eventCountSB = new StringBuilder();
+        boolean valild = false;
+        xlog = null;
+
+        if(is != null)
+            xlog = XLogManager.validateLog(is, logName, caseCountSB, eventCountSB);
+        else if(xl != null)
+            xlog = XLogManager.validateLog(xl, logName, caseCountSB, eventCountSB);
+
+        if (xlog == null) {
+
+            l.setStyle("color: red");
+            l.setValue("Unacceptable Log Format.");
+
+//                    showError("Please select a log file(.xml, .mxml, .xes, .mxml.gz, .xes.gz)");
+
+        } else {
+
+            try {
+                caseCount = Integer.parseInt(caseCountSB.toString());
+                eventCount = Integer.parseInt(eventCountSB.toString());
+            }catch (NumberFormatException ex) {}
+
+            showError("");
+            l.setStyle("color: blue");
+            l.setValue(logName + " (Cases=" + caseCount + ", Events=" + eventCount + ")");
+
+//            if(xl != null)
+//                xlog = xl;
+
+            logFileName = logName;
+
+            setDefaultWinSizes();
+
+            Session sess = Sessions.getCurrent();
+            sess.setAttribute("logDrift", xlog);
+            sess.setAttribute("logNameDrift", logFileName);
+
+        }
+
     }
 
     private void setDefaultWinSizes()
@@ -248,7 +297,7 @@ public class ProDriftController {
 
     protected void proDriftDetector() {
         String message;
-        if (logByteArray != null)
+        if (xlog != null)
         {
 
             Intbox winSizeIntBox = (Intbox) proDriftW.getFellow("winSizeIntBox");
@@ -279,7 +328,7 @@ public class ProDriftController {
 
                     boolean withConflict = isSynthetic ? true : false;
 
-                    ProDriftDetectionResult result = proDriftDetectionService.proDriftDetector(logByteArray, logFileName,
+                    ProDriftDetectionResult result = proDriftDetectionService.proDriftDetector(xlog, logFileName,
                             isEventBased, isSynthetic, withGradual, winSize, isAdwin, noiseFilterPercentage, withConflict);
 
                     proDriftShowResults_(result);

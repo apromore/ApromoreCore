@@ -20,7 +20,6 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<!-- similaritysearch window has controller SimilaritySearchController -->
 <window width="580px" closable="false" position="center" title="Search for similar processes">
 
     <hbox spacing="0" width="100%" widths="40%,60%" height="360px">

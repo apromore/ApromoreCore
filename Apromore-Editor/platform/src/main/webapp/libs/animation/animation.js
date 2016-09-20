@@ -1090,7 +1090,7 @@ LogCase.prototype = {
 		//circle.setAttributeNS(null,"cy",offset * Math.cos(this.offsetAngle));
 		circle.setAttributeNS(null,"cx", 0);
 		circle.setAttributeNS(null,"cy", offset);
-		circle.setAttributeNS(null,"r",3);
+		circle.setAttributeNS(null,"r",5);
 		circle.setAttributeNS(null,"fill",this.color);
 		marker.appendChild(circle);
 	

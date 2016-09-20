@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright Â© 2009-2016 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -21,26 +21,33 @@
 package org.apromore.plugin.portal.prodrift;
 
 // Java 2 Standard Edition packages
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Locale;
+import java.io.InputStream;
+import java.util.*;
 
 // Java 2 Enterprise Edition packages
 import javax.inject.Inject;
 
 // Third party packages
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.model.Log;
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.EventLogService;
 import org.apromore.service.prodrift.ProDriftDetectionService;
+import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.in.*;
+import org.deckfour.xes.model.XLog;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zul.Messagebox;
-
-// Local packages
-/*
-import org.apromore.service.CanoniserService;
-import org.apromore.service.DomainService;
-import org.apromore.service.ProcessService;
-*/
 
 /**
  * A user interface to the process drift detection service.
@@ -49,45 +56,65 @@ import org.apromore.service.ProcessService;
 public class ProDriftDetectionPlugin extends DefaultPortalPlugin {
 
     private final ProDriftDetectionService proDriftDetectionService;
-    /*
-    private final CanoniserService canoniserService;
-    private final DomainService    domainService;
-    private final ProcessService   processService;
-    */
+    private final EventLogService eventLogService;
+
+    private String label = "Detect Process Drifts";
+    private String groupLabel = "Analyze";
 
     @Inject
-    public ProDriftDetectionPlugin(final ProDriftDetectionService proDriftDetectionService /*,
-                           final CanoniserService canoniserService,
-                           final DomainService    domainService,
-                           final ProcessService   processService */) {
-
+    public ProDriftDetectionPlugin(final ProDriftDetectionService proDriftDetectionService, final EventLogService eventLogService) {
         this.proDriftDetectionService = proDriftDetectionService;
-        /*
-        this.canoniserService = canoniserService;
-        this.domainService    = domainService;
-        this.processService   = processService;
-        */
+        this.eventLogService = eventLogService;
     }
 
     @Override
     public String getLabel(Locale locale) {
-        return "Detect Process Drifts";
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Log";
+        return groupLabel;
+    }
+
+    public void setGroupLabel(String groupLabel) {
+        this.groupLabel = groupLabel;
     }
 
     @Override
     public void execute(PortalContext portalContext) {
 
+        Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
+        Set<LogSummaryType> selectedLogSummaryType = new HashSet<>();
+        for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet())
+        {
+            if(entry.getKey() instanceof LogSummaryType)
+            {
+                selectedLogSummaryType.add((LogSummaryType) entry.getKey());
+            }
+        }
+
+        Map<XLog, String> logs = new HashMap<>();
+        for(LogSummaryType logType : selectedLogSummaryType)
+        {
+            logs.put(eventLogService.getXLog(logType.getId()), logType.getName());
+        }
+
+
         portalContext.getMessageHandler().displayInfo("Executed process drift detection plug-in!");
 
         try {
-            new ProDriftController(portalContext, this.proDriftDetectionService);
+
+            new ProDriftController(portalContext, this.proDriftDetectionService, logs);
         } catch (IOException | SuspendNotAllowedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
+
+
+
 }

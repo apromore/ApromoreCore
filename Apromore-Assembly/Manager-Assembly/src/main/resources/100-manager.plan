@@ -32,7 +32,6 @@
     <!-- Start offering services to OSGi clients -->
     <artifact type="bundle" name="org.apromore.manager" version="[1.1.0, 2)" />
 
-    <!-- Bridge the OSGi services to SOAP clients.  PQL currently piggybacks on the Manager's bridge, but it ought to be broken out into its own PQL-Logic-WS eventually. -->
-    <artifact type="bundle" name="org.apromore.pql-logic" version="[1.1.0, 2)" />
+    <!-- Bridge the OSGi services to SOAP clients -->
     <artifact type="bundle" name="org.apromore.manager-ws" version="[1.1.0, 2)" />
 </plan>

@@ -22,12 +22,11 @@ package org.apromore.service.pql;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 import org.pql.index.IndexStatus;
 
 import org.apromore.model.Detail;
-import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.SummariesType;
 
 /**
  * Created by corno on 2/07/2014.
@@ -38,7 +37,7 @@ public interface PQLService {
      * @param pql  a grammatical PQL query
      * @throws QueryParsingException if <var>pql</var> isn't well-formed
      */
-    ProcessSummariesType query(String pql) throws QueryException;
+    SummariesType query(String pql) throws QueryException;
 
     /*
      * @param queryPQL  a grammatical PQL query

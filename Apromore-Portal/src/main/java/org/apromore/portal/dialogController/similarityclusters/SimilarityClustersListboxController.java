@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.apromore.model.ClusterFilterType;
 import org.apromore.model.ClusterSummaryType;
+import org.apromore.model.FolderType;
+import org.apromore.model.SummariesType;
 import org.apromore.portal.dialogController.BaseListboxController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.similarityclusters.renderer.SimilarityClustersItemRenderer;
@@ -107,6 +109,16 @@ public class SimilarityClustersListboxController extends BaseListboxController {
             getListModel().addAll(summary);
         }
         getMainController().displayMessage(buildRefreshMessage());
+    }
+
+    @Override
+    public void displaySummaries(List<FolderType> subFolders, SummariesType summaries, Boolean isQueryResult) {
+
+    }
+
+    @Override
+    public SummaryListModel displaySummaries(List<FolderType> subFolders, boolean isQueryResult) {
+        return null;
     }
 
     /**

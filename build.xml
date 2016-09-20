@@ -52,32 +52,47 @@
         <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
         <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
+
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
         <include name="BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
+
+        <include name="Cmapper-Portal-Plugin/target/cmapper-portal-plugin-1.1.war"/>
 
         <!-- BPMNMiner renamed ~BPMNMiner elsewhere as a workaround for its dependency on IBPStruct
         <include name="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar"/>
         <include name="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar"/>
         -->
 
-        <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
-        <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
-
-        <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
-        <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
-
-        <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
-        <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
-        
         <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
         <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.jar"/>
 
-        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
-        <!-- PQL-Logic is currently required by Apromore-Manager-WS, so it'll already be started as part of 100-manager.plan
-        <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
+        <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
+        <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
+        <!-- ibpstruct-editor-plugin renamed ~ibpstruct-editor-plugin elsewhere as a workaround for its dependency upon ibpstruct-logic
+        <include name="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war"/>
         -->
+
+        <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
+        <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
+        <!-- metrics-editor-plugin renamed ~metrics-editor-plugin elsewhere as a workaround for its dependency upon metrics-logic
+        <include name="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war"/>
+        -->
+
+        <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
+        <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
+
+        <include name="Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
+
+        <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
+        
+        <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
+        <include name="APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
+        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
+        <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
+        <include name="PQL-Logic-WS/target/pql-logic-ws-1.1.war"/>
         <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
+        -->
     </fileset>
 
     <fileset id="usrRepo" dir=".">
@@ -212,6 +227,10 @@
                 <include name="**/target/eventstr-confchecking-osgi-1.0.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+
+                <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
+                <include name="**/target/json-osgi-20090211.jar"/>
+                -->
             </fileset>
 
             <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
@@ -225,9 +244,19 @@
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset refid="pickupRepo"/>
         </copy>
+
         <!-- Force the BPMN Miner plugin to be alphabetically after the iBPStruct plugin it depends upon -->
         <copy file="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
         <copy file="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
+
+        <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
+        <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
+        <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
+
+        <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing
+        <copy file="PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
+        -->
+
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset dir="${dir-annotation}">
                 <include name="**/target/*.jar"/>
@@ -253,18 +282,24 @@
                 <include name="**/target/*.jar"/>
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>
+                <exclude name="sample/target/*.jar"/>
             </fileset>
+            <!--
             <fileset dir="${dir-editor-plugins}">
                 <include name="**/target/*.war"/>
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>
             </fileset>
+            -->
             <fileset dir="${dir-deploy}">
                 <include name="**/target/*.jar"/>
                 <exclude name="**/target/*-sources.jar"/>
                 <exclude name="**/core/**/*.jar"/>
             </fileset>
         </copy>
+
+        <!-- PQL indexing bot -->
+        <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
     </target>
 
     <target name="create-h2">

@@ -23,13 +23,13 @@ package com.apql.Apql;
 import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.xml.soap.SOAPException;
 
-import com.apql.Apql.controller.QueryController;
 import com.apql.Apql.controller.ViewController;
 import org.apromore.model.UserType;
 
@@ -41,23 +41,22 @@ public class APQLApplet extends JApplet {
 		super.init();
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
-                private Main m;
-                private QueryText query;
-                private UserType user;
-                private ViewController controller;
-                private QueryController queryController;
 
                 public void run(){
-                    controller=ViewController.getController();
-                    queryController=QueryController.getQueryController();
-//                    controller.clear();
-//                    queryController.clearQueryController();
+                    ViewController controller = ViewController.getController();
                     controller.setUsername(APQLApplet.this.getParameter("user"));
                     controller.setIdSession(APQLApplet.this.getParameter("idSession"));
                     controller.setApplet(APQLApplet.this);
                     try {
-                        APQLApplet.this.add(new Main(new URI(APQLApplet.this.getParameter("manager_endpoint")),
-                                                     new URI(APQLApplet.this.getParameter("portal_endpoint"))));
+                        final Main main = new Main(new URI(APQLApplet.this.getParameter("manager_endpoint")),
+                                             new URI(APQLApplet.this.getParameter("portal_endpoint")),
+                                             new URI(APQLApplet.this.getParameter("pql_logic_endpoint"))) {
+                            @Override
+                            protected void browse(final URL url) throws Exception {
+                                getAppletContext().showDocument(url, "target");
+                            }
+                        };
+                        APQLApplet.this.add(main);
                         APQLApplet.this.setMinimumSize(new Dimension(1000, 700));
                     } catch (SOAPException | URISyntaxException e) {
                         e.printStackTrace();

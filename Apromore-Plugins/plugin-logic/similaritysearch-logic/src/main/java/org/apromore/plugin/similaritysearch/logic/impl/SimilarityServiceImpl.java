@@ -79,7 +79,7 @@ public class SimilarityServiceImpl extends DefaultParameterAwarePlugin implement
      * @see
      *      {@inheritDoc}
      */
-    public ProcessSummariesType searchForSimilarProcesses(final Integer processId, final String branchName, final Boolean latestVersions,
+    public SummariesType searchForSimilarProcesses(final Integer processId, final String branchName, final Boolean latestVersions,
             final Integer folderId, final String userId, final String method, final ParametersType params) throws ExceptionSearchForSimilar {
         LOGGER.debug("Starting Similarity Search...");
 

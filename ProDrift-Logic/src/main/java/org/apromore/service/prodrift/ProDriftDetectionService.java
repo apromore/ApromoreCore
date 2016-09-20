@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright Â© 2009-2016 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -21,6 +21,7 @@
 package org.apromore.service.prodrift;
 
 import ee.ut.eventstr.model.ProDriftDetectionResult;
+import org.deckfour.xes.model.XLog;
 
 /**
  * Interface for the Process Drift Detection Service. Defines all the methods that will do the majority of the work for
@@ -32,7 +33,7 @@ public interface ProDriftDetectionService {
 
     /**
      * Detect drifts in the log
-     * @param logByteArray the log
+     * @param xlog the log
      * @param logFileName log's name
      * @param isEventBased event based or run based
      * @param isSynthetic syntheric log or real-life
@@ -45,7 +46,7 @@ public interface ProDriftDetectionService {
      * @return the ProDriftDetectionResult
      * @throws ProDriftDetectionException if the drift detection failed
      */
-    ProDriftDetectionResult proDriftDetector(byte[] logByteArray, String logFileName, boolean isEventBased, boolean isSynthetic,
+    ProDriftDetectionResult proDriftDetector(XLog xlog, String logFileName, boolean isEventBased, boolean isSynthetic,
                                              boolean withGradual, int winSize, boolean isAdwin, float noiseFilterPercentage,
                                              boolean withConflict) throws ProDriftDetectionException;
 

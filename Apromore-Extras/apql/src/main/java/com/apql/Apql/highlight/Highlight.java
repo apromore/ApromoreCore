@@ -100,24 +100,28 @@ public class Highlight {
                 pos+=tmp.length();
             }else
             if (Keywords.contains(tmpString)) {
-                if (tmpString.equalsIgnoreCase(Keywords.CAN_OCCUR)) {
-                    colorWord(pos, Keywords.CAN_OCCUR, keyWord);
-                } else if (tmpString.equalsIgnoreCase(Keywords.CAN_COOCCUR)) {
-                    colorWord(pos, Keywords.CAN_COOCCUR, keyWord);
-                } else if (tmpString.equalsIgnoreCase(Keywords.CAN_CONFLICT)) {
-                    colorWord(pos, Keywords.CAN_CONFLICT, keyWord);
-                } else if (tmpString.equalsIgnoreCase(Keywords.ALWAYS_OCCURS)) {
-                    colorWord(pos, Keywords.ALWAYS_OCCURS, keyWord);
-                } else if(tmpString.equalsIgnoreCase(Keywords.GET_TASKS)){
-                    colorWord(pos, Keywords.GET_TASKS, keyWord);
-                } else if(tmpString.equalsIgnoreCase(Keywords.TOTAL_CAUSAL)){
-                    colorWord(pos, Keywords.TOTAL_CAUSAL, keyWord);
-                } else if ((tmpString.equals("*") || tmpString.equals("id") || tmpString.equals("name") || tmpString.equals("language") || tmpString.equals("version") || tmpString.equals("owner") || tmpString.equals("domain") || tmpString.equals("ranking"))) {
+                switch (tmpString) {
+                case "*":
+                case "id":
+                case "name":
+                case "language":
+                case "version":
+                case "owner":
+                case "domain":
+                case "ranking":
                     colorWord(pos, tmpString, selectClause);
-                } else {
-                    colorWord(pos, tmpString.toUpperCase(), keyWord);
+                    break;
+                default:
+                    for (String k: Keywords.getKeywords()) {
+                        if (tmpString.equalsIgnoreCase(k)) {
+                            colorWord(pos, k, keyWord);
+                            break;
+                        }   
+                    }
+                    assert false: tmpString + " was checked to be in the keywords list " + Keywords.getKeywords();
                 }
                 pos += tmpString.length();
+          
             } else {
                 colorWord(pos, tmpString, normalWord);
                 pos += tmpString.length();

@@ -21,8 +21,27 @@
 package org.apromore.plugin.portal.metrics;
 
 // Java 2 Standard Edition packages
+import java.io.IOException;
+import java.util.*;
 
+// Java 2 Enterprise Edition packages
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+// Third party packages
+import org.apromore.model.SummaryType;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.event.*;
+import org.zkoss.zul.*;
+
+// Local packages
 import org.apromore.graph.canonical.Canonical;
+import org.apromore.helper.Version;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
@@ -31,26 +50,6 @@ import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
 import org.apromore.service.ProcessService;
 import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
 import org.apromore.service.metrics.MetricsService;
-import org.springframework.stereotype.Component;
-
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apromore.helper.Version;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.event.*;
-import org.zkoss.zul.*;
-
-import java.io.IOException;
-import java.util.*;
-
-// Java 2 Enterprise Edition packages
-// Third party packages
-// Local packages
 
 /**
  * Metrics service. Created by Adriano Augusto 18/04/2016
@@ -59,12 +58,9 @@ import java.util.*;
 public class MetricsPlugin extends PluginCustomGui {
     private static final Logger LOGGER = LoggerFactory.getLogger(MetricsPlugin.class);
 
-
-    private PortalContext portalContext;
-    private final MetricsService metricsService;
-    private final ProcessService processService;
-    private final BPMNDiagramImporter importerService;
-    private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
+    @Inject private MetricsService metricsService;
+    @Inject private ProcessService processService;
+    @Inject private BPMNDiagramImporter importerService;
 
     /* zk gui variables */
     private Window settings;
@@ -77,19 +73,9 @@ public class MetricsPlugin extends PluginCustomGui {
     private Radiogroup structuredness;
     private Radiogroup separability;
     private Radiogroup duplicates;
-
+    
     private Button okButton;
     private Button cancelButton;
-
-    @Inject
-    public MetricsPlugin(final MetricsService    metricsService,
-                         final ProcessService processService,
-                         final BPMNDiagramImporter importerService) {
-
-        this.metricsService      = metricsService;
-        this.processService      = processService;
-        this.importerService     = importerService;
-    }
 
     @Override
     public String getLabel(Locale locale) {
@@ -98,52 +84,59 @@ public class MetricsPlugin extends PluginCustomGui {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Analysis";
+        return "Analyze";
     }
 
     @Override
-    public void execute(PortalContext context) {
-        this.portalContext = context;
-        processVersions = portalContext.getSelection().getSelectedProcessModelVersions();
+    public void execute(final PortalContext portalContext) {
+
+        Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
+        final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
+        for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+            if(entry.getKey() instanceof ProcessSummaryType) {
+                processVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
+            }
+        }
 
         if( processVersions.size() != 1 ) {
             Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
             return;
         }
 
-        portalContext.getMessageHandler().displayInfo("Executing Metrics service...");
-        runComputation();
-//
-//        try {
-//            this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/metrics.zul", null, null);
-//
-//            this.size = (Radiogroup) this.settings.getFellow("size");
-//            this.cfc = (Radiogroup) this.settings.getFellow("cfc");
-//            this.acd = (Radiogroup) this.settings.getFellow("acd");
-//            this.mcd = (Radiogroup) this.settings.getFellow("mcd");
-//            this.cnc = (Radiogroup) this.settings.getFellow("cnc");
-//            this.density = (Radiogroup) this.settings.getFellow("density");
-//            this.structuredness = (Radiogroup) this.settings.getFellow("structuredness");
-//            this.separability = (Radiogroup) this.settings.getFellow("separability");
-//            this.duplicates = (Radiogroup) this.settings.getFellow("duplicates");
-//
-//            this.cancelButton = (Button) this.settings.getFellow("CancelButton");
-//            this.okButton = (Button) this.settings.getFellow("OKButton");
-//
-//            this.cancelButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
-//                public void onEvent(Event event) throws Exception {
-//                    cancel();
-//                }
-//            });
-//            this.okButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
-//                public void onEvent(Event event) throws Exception {
-//                    runComputation();
-//                }
-//            });
-//            this.settings.doModal();
-//        } catch (IOException e) {
-//            Messagebox.show("Something went wrong (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-//        }
+//        portalContext.getMessageHandler().displayInfo("Executing Metrics service...");
+//        runComputation(portalContext, processVersions);
+
+        try {
+            this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/metrics.zul", null, null);
+
+            this.size = (Radiogroup) this.settings.getFellow("size");
+            this.cfc = (Radiogroup) this.settings.getFellow("cfc");
+            this.acd = (Radiogroup) this.settings.getFellow("acd");
+            this.mcd = (Radiogroup) this.settings.getFellow("mcd");
+            this.cnc = (Radiogroup) this.settings.getFellow("cnc");
+            this.density = (Radiogroup) this.settings.getFellow("density");
+            this.structuredness = (Radiogroup) this.settings.getFellow("structuredness");
+            this.separability = (Radiogroup) this.settings.getFellow("separability");
+            this.duplicates = (Radiogroup) this.settings.getFellow("duplicates");
+
+            this.cancelButton = (Button) this.settings.getFellow("CancelButton");
+            this.okButton = (Button) this.settings.getFellow("OKButton");
+
+            this.cancelButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    cancel();
+                }
+            });
+            this.okButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    runComputation(portalContext, processVersions);
+                }
+            });
+            this.settings.doModal();
+
+        } catch (IOException e) {
+            Messagebox.show("Something went wrong (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
     }
 
 
@@ -152,22 +145,22 @@ public class MetricsPlugin extends PluginCustomGui {
         this.settings.detach();
     }
 
-    protected void runComputation() {
+    protected void runComputation(PortalContext portalContext, Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
         Map<String, String> bpmnMetrics;
         Map<String, String> canonicalMetrics;
 
-//        this.settings.detach();
-//
-//        boolean size = this.size.getSelectedIndex() == 0 ? true : false;
-//        boolean cfc = this.cfc.getSelectedIndex() == 0 ? true : false;
-//        boolean acd  = this.acd.getSelectedIndex() == 0 ? true : false;
-//        boolean mcd = this.mcd.getSelectedIndex() == 0 ? true : false;
-//        boolean cnc = this.cnc.getSelectedIndex() == 0 ? true : false;
-//        boolean density  = this.density.getSelectedIndex() == 0 ? true : false;
-//        boolean structuredness = this.structuredness.getSelectedIndex() == 0 ? true : false;
-//        boolean separability = this.separability.getSelectedIndex() == 0 ? true : false;
-//        boolean duplicates  = this.duplicates.getSelectedIndex() == 0 ? true : false;
+        this.settings.detach();
 
+        boolean size = this.size.getSelectedIndex() == 0 ? true : false;
+        boolean cfc = this.cfc.getSelectedIndex() == 0 ? true : false;
+        boolean acd  = this.acd.getSelectedIndex() == 0 ? true : false;
+        boolean mcd = this.mcd.getSelectedIndex() == 0 ? true : false;
+        boolean cnc = this.cnc.getSelectedIndex() == 0 ? true : false;
+        boolean density  = this.density.getSelectedIndex() == 0 ? true : false;
+        boolean structuredness = this.structuredness.getSelectedIndex() == 0 ? true : false;
+        boolean separability = this.separability.getSelectedIndex() == 0 ? true : false;
+        boolean duplicates  = this.duplicates.getSelectedIndex() == 0 ? true : false;
+/*
         boolean size = true;
         boolean cfc = true;
         boolean acd  = true;
@@ -177,7 +170,7 @@ public class MetricsPlugin extends PluginCustomGui {
         boolean structuredness = true;
         boolean separability = true;
         boolean duplicates  = true;
-
+*/
         try {
             for (ProcessSummaryType process : processVersions.keySet()) {
                 for (VersionSummaryType vst : processVersions.get(process)) {

@@ -1,10 +1,6 @@
 package org.apromore.portal.custom.gui.plugin;
 
-import org.apromore.helper.Version;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.model.*;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.SessionTab;
@@ -41,13 +37,16 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
     }
 
     private void addTab(Tab tab, PortalContext portalContext) {
-        SessionTab.getSessionTab(portalContext).addTabToSession(portalContext.getCurrentUser().getId(), tab);
+        SessionTab.getSessionTab(portalContext).addTabToSession(portalContext.getCurrentUser().getId(), tab, true);
     }
 
-    protected void displayProcessSummaries(String tabName, ProcessSummariesType processSummaries, PortalContext portalContext) {
+    protected void displayProcessSummaries(String tabName, SummariesType processSummaries, PortalContext portalContext) {
         List<TabRowValue> rows = new ArrayList<>();
-        for(ProcessSummaryType processSummaryType : processSummaries.getProcessSummary()) {
-            rows.add(createProcessSummaryRowValue(processSummaryType, processSummaryType.getVersionSummaries().get(0)));
+        for(SummaryType summaryType : processSummaries.getSummary()) {
+            if(summaryType instanceof ProcessSummaryType) {
+                ProcessSummaryType processSummaryType = (ProcessSummaryType) summaryType;
+                rows.add(createProcessSummaryRowValue(processSummaryType, processSummaryType.getVersionSummaries().get(0)));
+            }
         }
 
         List<Listheader> listheaders = new ArrayList<>();

@@ -35,6 +35,8 @@ import org.apromore.manager.client.ManagerServiceClient;
 import org.apromore.portal.client.PortalService;
 import org.apromore.portal.client.PortalServiceClient;
 import org.apromore.model.UserType;
+import org.apromore.service.pql.DatabaseService;
+import org.apromore.service.pql.PQLService;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -44,6 +46,7 @@ import javax.xml.soap.SOAPException;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 
 public class Main extends JPanel {
 
@@ -65,6 +68,8 @@ public class Main extends JPanel {
     private UserType user;
     private ManagerService manager;
     private PortalService portal;
+    private DatabaseService databaseService;
+    private PQLService pqlService;
     private JLabel folders;
     private JLabel variablesLabel;
     private JLabel queryLabel;
@@ -89,11 +94,12 @@ public class Main extends JPanel {
     private JButton collapse;
 
     /**
-     * @param managerEndpointURI  e.g. <code>http://localhost:9000/manager/services/manager</code>
-     * @param portalEndpointURI   e.g. <code>http://localhost:9000/portal/services/portal</code>
+     * @param managerEndpointURI  e.g. <code>http://localhost:9000/manager/services</code>
+     * @param portalEndpointURI   e.g. <code>http://localhost:9000/portal/services</code>
+     * @param pqlEndpointURI  e.g. <code>http://localhost:9000/pql/services</code>
      * @throws SOAPException if any of the URIs can't be used to create a corresponding service client
      */
-    public Main(final URI managerEndpointURI, final URI portalEndpointURI) throws SOAPException {
+    public Main(final URI managerEndpointURI, final URI portalEndpointURI, final URI pqlEndpointURI) throws SOAPException {
         String OS = System.getProperty("os.name").toLowerCase();
         try {
             if(OS.indexOf("mac") >= 0) {
@@ -123,15 +129,18 @@ public class Main extends JPanel {
         error.setPreferredSize(new Dimension(150, 150));
         QueueHistory queueHistory=new QueueHistory(20);
 
-        manager   = new ManagerServiceClient(managerEndpointURI);
-        portal    = new PortalServiceClient(portalEndpointURI);
+        manager = new ManagerServiceClient(managerEndpointURI);
+        portal  = new PortalServiceClient(portalEndpointURI);
+        PQLServiceClient pqlServiceClient = new PQLServiceClient(pqlEndpointURI);
+        pqlService = pqlServiceClient;
+        databaseService  = pqlServiceClient;
 
-        com.apql.Apql.controller.ContextController.manager = manager;  // TODO: rewrite ContextController so that it isn't just a global variable masquerading as a singleton
+        com.apql.Apql.controller.ContextController.databaseService = databaseService;  // TODO: rewrite ContextController so that it isn't just a global variable masquerading as a singleton
 
         user = manager.readUserByUsername(viewController.getUsername());
-        command=new CommandListener(user, manager, portal);
+        command=new CommandListener(user, manager, portal, pqlService, databaseService);
 
-        FolderProcessTree fpt = new FolderProcessTree(manager);
+        FolderProcessTree fpt = new FolderProcessTree(manager, databaseService);
 
         DefaultTreeModel modelTree = new DefaultTreeModel(fpt.createTree());
 
@@ -199,6 +208,29 @@ public class Main extends JPanel {
         loadSave.add(load);
         loadSave.add(save);
         menuBar.add(loadSave);
+
+        Action aboutItem = new AbstractAction("PQL Utilities") {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    browse(new URL("http://processquerying.com/pql-utilities/"));
+                }
+                catch (Exception exception) {}  // if the browser doesn't get launched, it's no disaster
+            }
+        };
+
+        Action tutorialItem = new AbstractAction("PQL Screencasts") {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    browse(new URL("http://processquerying.com/pql-screencasts/"));
+                }
+                catch (Exception exception) {}  // if the browser doesn't get launched, it's no disaster
+            }
+        };
+
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.add(aboutItem).setPreferredSize(new Dimension(200, 30));
+        helpMenu.add(tutorialItem).setPreferredSize(new Dimension(200, 30));
+        menuBar.add(helpMenu);
 
         expandIcon=new ImageIcon("/icons/expand.png");
 //        viewController.setMainPanel(this);
@@ -402,8 +434,16 @@ public class Main extends JPanel {
 
     public static void main(String[] args) throws Exception {
         ViewController.getController().setUsername("admin");
-        Main application = new Main(new URI("http://localhost:9000/manager/services/manager"),
-                                    new URI("http://localhost:9000/portal/services/portal"));
+        
+        String base = "http://localhost:9000";
+        if (args.length > 0) {
+            base = args[0];
+        }
+        System.out.println("Args: " + args);
+        System.out.println("Base URI: " + base);
+        Main application = new Main(new URI(base + "/manager/services"),
+                                    new URI(base + "/portal/services"),
+                                    new URI(base + "/pql/services"));
 
         JFrame frame = new JFrame();
         frame.add(application);
@@ -415,5 +455,12 @@ public class Main extends JPanel {
         frame.pack();
         frame.setLocationRelativeTo(null);  // center of the screen
         frame.setVisible(true);
+    }
+
+    /**
+     * @param url  an web page URL to (re)display
+     */
+    protected void browse(final URL url) throws Exception {
+        Desktop.getDesktop().browse(url.toURI());
     }
 }

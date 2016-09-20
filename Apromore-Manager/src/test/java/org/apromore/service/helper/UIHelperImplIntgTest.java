@@ -22,8 +22,9 @@ package org.apromore.service.helper;
 
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.helper.Version;
-import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummariesType;
+import org.apromore.model.SummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
@@ -84,16 +85,19 @@ public class UIHelperImplIntgTest {
     public void TestUIHelper() throws Exception {
         createProcessModel("testUI");
 
-        ProcessSummariesType processSummaries = uiSrv.buildProcessSummaryList(0, "", null);
+        SummariesType summariesType = uiSrv.buildProcessSummaryList(0, "", null);
 
-        assertThat(processSummaries, notNullValue());
-        assertThat(processSummaries.getProcessSummary().size(), greaterThan(0));
+        assertThat(summariesType, notNullValue());
+        assertThat(summariesType.getSummary().size(), greaterThan(0));
 
         boolean found = false;
-        for (ProcessSummaryType proSum : processSummaries.getProcessSummary()) {
-            if (proSum.getName().equals("testUI")) {
-                found = true;
-                break;
+        for (SummaryType summaryType : summariesType.getSummary()) {
+            if(summaryType instanceof ProcessSummaryType) {
+                ProcessSummaryType processSummaryType = (ProcessSummaryType) summaryType;
+                if (processSummaryType.getName().equals("testUI")) {
+                    found = true;
+                    break;
+                }
             }
         }
         if (!found) {

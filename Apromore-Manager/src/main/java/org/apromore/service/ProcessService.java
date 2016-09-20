@@ -38,7 +38,7 @@ import org.apromore.exception.UpdateProcessException;
 import org.apromore.graph.canonical.Canonical;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.SummariesType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ProcessData;
@@ -58,7 +58,7 @@ public interface ProcessService {
      * @param searchExpression the search expression to limit the search.
      * @return The ProcessSummariesType used for Webservices.
      */
-    ProcessSummariesType readProcessSummaries(final Integer folderId, final String searchExpression);
+    SummariesType readProcessSummaries(final Integer folderId, final String searchExpression);
 
     /**
      * Import a Process.
