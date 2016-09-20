@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright Â© 2009-2016 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -30,6 +30,7 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.prodrift.ProDriftDetectionException;
 import org.apromore.service.prodrift.ProDriftDetectionService;
 import org.apromore.service.WorkspaceService;
+import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -60,30 +61,28 @@ public class ProDriftDetectionServiceImpl implements ProDriftDetectionService {
     public ProDriftDetectionServiceImpl() {}
 
     /**
-     * @see ProDriftDetectionService#proDriftDetector(byte[], String, boolean, boolean,
+     * @see ProDriftDetectionService#proDriftDetector(XLog, String, boolean, boolean,
             boolean, int, boolean, float, boolean);
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public ProDriftDetectionResult proDriftDetector(byte[] logByteArray, String logFileName, boolean isEventBased, boolean isSynthetic,
+    public ProDriftDetectionResult proDriftDetector(XLog xlog, String logFileName, boolean isEventBased, boolean isSynthetic,
                                                     boolean withGradual, int winSize, boolean isAdwin, float noiseFilterPercentage,
                                                     boolean withConflict) throws ProDriftDetectionException {
 
         ProDriftDetectionResult pddRes = null;
 
-        InputStream is = new ByteArrayInputStream(logByteArray);
-
         if(isEventBased)
         {
 
-            ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(is, winSize, isAdwin, noiseFilterPercentage, withConflict, logFileName);
+            ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(xlog, winSize, isAdwin, noiseFilterPercentage, withConflict, logFileName);
             pddRes = driftDertector.ControlFlowDriftDetectorStart();
 
         }else
         {
 
-            ControlFlowDriftDetector_RunStream driftDertector = new ControlFlowDriftDetector_RunStream(is, winSize, isAdwin, logFileName, withGradual);
+            ControlFlowDriftDetector_RunStream driftDertector = new ControlFlowDriftDetector_RunStream(xlog, winSize, isAdwin, logFileName, withGradual);
             pddRes = driftDertector.ControlFlowDriftDetectorStart();
 
         }
