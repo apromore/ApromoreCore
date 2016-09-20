@@ -34,15 +34,15 @@ public class OptimizerPlugin {
         MinerUIResult result = gui.showGUI(context);
 
         System.out.println("Optimizer - [settings] Inclusive Choice: " + result.isInclusiveChoice());
-        System.out.println("Optimizer - [settings] Optional Tasks: " + result.isOptionalTasks());
-        System.out.println("Optimizer - [settings] Recurrent Tasks: " + result.isRecurrentTasks());
+        System.out.println("Optimizer - [settings] Optional Tasks: " + result.isOptionalActivities());
+        System.out.println("Optimizer - [settings] Recurrent Tasks: " + result.isRecurrentActivities());
         System.out.println("Optimizer - [settings] Unbalanced Paths: " + result.isUnbalancedPaths());
         System.out.println("Optimizer - [settings] Apply Cleaning: " + result.isApplyCleaning());
 
         FakeMiner fakeMiner = new FakeMiner();
         BPMNDiagram optimizedDiagram = fakeMiner.optimize(diagram, log, result.isUnbalancedPaths(),
-                                                                        result.isOptionalTasks(),
-                                                                        result.isRecurrentTasks(),
+                                                                        result.isOptionalActivities(),
+                                                                        result.isRecurrentActivities(),
                                                                         result.isInclusiveChoice(),
                                                                         result.isApplyCleaning() );
 
