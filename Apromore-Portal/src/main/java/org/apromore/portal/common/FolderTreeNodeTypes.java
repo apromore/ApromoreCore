@@ -30,5 +30,6 @@ package org.apromore.portal.common;
 public enum FolderTreeNodeTypes {
     Folder,
     Process,
+    Log,
     Fragment
 }

@@ -20,23 +20,23 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-	 <parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
         <groupId>org.apromore</groupId>
         <artifactId>apromore</artifactId>
         <version>1.1</version>
         <relativePath>../../</relativePath>
     </parent>
-	
-  <groupId>com.apql</groupId>
-  <artifactId>apql</artifactId>
-  <version>1.0</version>
-  <packaging>jar</packaging>
 
-  <name>apql</name>
+    <groupId>com.apql</groupId>
+    <artifactId>apql</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
 
-  <build>
+    <name>apql</name>
+
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -79,96 +79,27 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                                <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>WEB-INF/**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>com.sun.xml:com.springsource.com.sun.xml.bind</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apache.httpcomponents:com.springsource.org.apache.httpcomponents.httpclient</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apache.httpcomponents:httpcore</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apromore:manager-client</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apromore:portal-client</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apromore:manager-ws-model</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework:org.springframework.beans</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework:org.springframework.context</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework:org.springframework.core</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework:org.springframework.core</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework:org.springframework.oxm</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework.ws:org.springframework.ws</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework.ws:org.springframework.xml</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                            </filters>                      
-                            <minimizeJar>${minimizeJar}</minimizeJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.apache.httpcomponents:com.springsource.org.apache.httpcomponents.httpclient</include>
+                                    <include>org.apache.httpcomponents:httpcore</include>
+                                    <include>org.apromore:manager-client</include>
+                                    <include>org.apromore:manager-ws-model</include>
+                                    <include>org.apromore:portal-client</include>
+                                    <include>org.apromore:pql-logic</include>
+                                    <include>org.apromore:pql-logic-ws</include>
+                                    <include>org.jvnet.jaxb2_commons:jaxb2-basics-runtime</include>
+                                    <include>org.slf4j:jcl-over-slf4j</include>
+                                    <include>org.slf4j:slf4j-api</include>
+                                    <include>org.springframework:org.springframework.beans</include>
+                                    <include>org.springframework:org.springframework.context</include>
+                                    <include>org.springframework:org.springframework.core</include>
+                                    <include>org.springframework:org.springframework.oxm</include>
+                                    <include>org.springframework.ws:org.springframework.ws</include>
+                                    <include>org.springframework.ws:org.springframework.xml</include>
+                                </includes>
+                            </artifactSet>
+                            <minimizeJar>false</minimizeJar>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.apql.Apql.Main</mainClass>
@@ -210,36 +141,42 @@
         </plugins>
     </build>
 
-  <dependencies>
-      <dependency>
-          <groupId>org.apache.httpcomponents</groupId>
-          <artifactId>httpcore</artifactId>
-          <version>4.2.1</version>
-          <scope>runtime</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.apromore</groupId>
-          <artifactId>manager-client</artifactId>
-      </dependency>
-      <dependency>
-          <groupId>org.apromore</groupId>
-          <artifactId>portal-client</artifactId>
-      </dependency>
-      <dependency>
-          <groupId>org.apromore</groupId>
-          <artifactId>pql-logic</artifactId>
-          <version>1.1</version>
-      </dependency>
-      <dependency>
-          <groupId>org.jsoup</groupId>
-          <artifactId>jsoup</artifactId>
-          <version>1.7.3</version>
-      </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.2.1</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>portal-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>pql-logic</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>pql-logic-ws</artifactId>
+            <version>1.1</version>
+            <classifier>classes</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.7.3</version>
+        </dependency>
 
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <scope>test</scope>
-      </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

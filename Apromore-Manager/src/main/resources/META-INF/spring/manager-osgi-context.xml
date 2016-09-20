@@ -52,6 +52,7 @@
     <osgi:service ref="securityServiceImpl" interface="org.apromore.service.SecurityService" auto-export="interfaces"/>
     <osgi:service ref="workspaceServiceImpl" interface="org.apromore.service.WorkspaceService" auto-export="interfaces"/>
     <osgi:service ref="UIHelper" interface="org.apromore.service.helper.UserInterfaceHelper" auto-export="interfaces"/>
+    <osgi:service ref="eventLogServiceImpl" interface="org.apromore.service.EventLogService" auto-export="interfaces"/>
 
     <osgi:service ref="userDetailsServiceImpl" interface="org.springframework.security.core.userdetails.UserDetailsService" auto-export="interfaces"/>
     <osgi:service ref="usernamePasswordAuthenticationProvider" interface="org.springframework.security.authentication.AuthenticationProvider" auto-export="interfaces"/>

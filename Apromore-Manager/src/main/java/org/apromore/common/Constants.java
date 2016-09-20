@@ -23,6 +23,7 @@ package org.apromore.common;
 public interface Constants {
 
     public static final String XML_MIMETYPE = "text/xml";
+    public static final String GZ_MIMETYPE = "application/x-gzip";
 
     public static final String INITIAL_ANNOTATION = "Initial";
     public static final String INITIAL_FORMAT = "IntialFormat";

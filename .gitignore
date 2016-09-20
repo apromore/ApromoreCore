@@ -8,6 +8,9 @@
 **/*.iws
 *.iml
 
+# macOS Finder artifacts
+**/.DS_Store
+
 # Unpacked application server
 Apromore-Assembly/Editor-Repository
 Apromore-Assembly/Filestore-Repository

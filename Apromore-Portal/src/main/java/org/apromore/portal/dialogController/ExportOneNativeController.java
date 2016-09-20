@@ -111,7 +111,7 @@ public class ExportOneNativeController extends BaseController {
         // enable cancelAll button if at least 1 process versions left.
         cancelAllB.setVisible(this.exportListControllerC.getToExportList().size() > 0);
 
-        // Build list of available formats for export.
+        // Build list of available formats for exportFile.
         Listitem cbi;
         cbi = new Listitem();
         this.formatsLB.appendChild(cbi);

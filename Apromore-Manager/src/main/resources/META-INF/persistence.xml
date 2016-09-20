@@ -44,9 +44,11 @@
         <class>org.apromore.dao.model.FragmentVersionDag</class>
         <class>org.apromore.dao.model.Group</class>
         <class>org.apromore.dao.model.GroupFolder</class>
+        <class>org.apromore.dao.model.GroupLog</class>
         <class>org.apromore.dao.model.GroupProcess</class>
         <class>org.apromore.dao.model.HistoryEvent</class>
         <class>org.apromore.dao.model.Keywords</class>
+        <class>org.apromore.dao.model.Log</class>
         <class>org.apromore.dao.model.Membership</class>
         <class>org.apromore.dao.model.Metric</class>
         <class>org.apromore.dao.model.Native</class>

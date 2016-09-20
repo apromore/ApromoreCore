@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -38,19 +39,22 @@ public class EditListProcessDataController extends BaseController {
     private List<EditOneProcessDataController> editedList;
 
 
-    public EditListProcessDataController(MainController mainC, Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions)
+    public EditListProcessDataController(MainController mainC, Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions)
             throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
         this.mainC = mainC;
         this.toEditList = new ArrayList<>();
         this.editedList = new ArrayList<>();
 
         // process versions are edited one by one
-        Set<ProcessSummaryType> keys = selectedProcessVersions.keySet();
-        for (ProcessSummaryType process : keys) {
-            for (Integer i = 0; i < selectedProcessVersions.get(process).size(); i++) {
-                VersionSummaryType version = selectedProcessVersions.get(process).get(i);
-                EditOneProcessDataController editDataOneProcess = new EditOneProcessDataController(this.mainC, this, process, version);
-                this.toEditList.add(editDataOneProcess);
+        Set<SummaryType> keys = selectedProcessVersions.keySet();
+        for (SummaryType key : keys) {
+            if(key instanceof ProcessSummaryType) {
+                ProcessSummaryType process = (ProcessSummaryType) key;
+                for (Integer i = 0; i < selectedProcessVersions.get(process).size(); i++) {
+                    VersionSummaryType version = selectedProcessVersions.get(process).get(i);
+                    EditOneProcessDataController editDataOneProcess = new EditOneProcessDataController(this.mainC, this, process, version);
+                    this.toEditList.add(editDataOneProcess);
+                }
             }
         }
     }
@@ -107,7 +111,7 @@ public class EditListProcessDataController extends BaseController {
             } else if (this.editedList.size() > 1) {
                 report += " processes completed.";
             }
-            this.mainC.reloadProcessSummaries();
+            this.mainC.reloadSummaries();
         }
         this.mainC.displayMessage(report);
     }

@@ -57,7 +57,6 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
             setLabel(label);
         }
         this.details=details;
-        this.userID=userID;
         this.query=query;
         timeCreation=System.currentTimeMillis();
 //        setDraggable("true");
@@ -152,7 +151,7 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
         if(o == this)
             return true;
         TabQuery tab=(TabQuery)o;
-        return equal(tab.tabpanel, tabpanel) && equal(tab.userID, userID);
+        return tab.timeCreation == timeCreation && equal(tab.userID, userID);
     }
 
     private static boolean equal(Object a, Object b) {
@@ -178,5 +177,10 @@ public class TabQuery extends AbstractPortalTab implements Comparable<TabQuery>{
         clone.query        = this.query;
 
         return clone;
+    }
+
+    @Override
+    public String toString() {
+        return "TabQuery(super=" + super.toString() + " userID=" + this.userID + " id=" + this.getId() + " context=" + this.getContext() + " tabbox=" + this.getTabbox() + ")";
     }
 }

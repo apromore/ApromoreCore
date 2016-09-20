@@ -21,7 +21,9 @@
 package org.apromore.dao;
 
 import org.apromore.dao.model.Folder;
+import org.apromore.dao.model.Log;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -33,5 +35,13 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface FolderRepository extends JpaRepository<Folder, Integer>, FolderRepositoryCustom {
+
+    /**
+     * Returns a Log
+     * @param folderId the id of the folder
+     * @return the folder
+     */
+    @Query("SELECT DISTINCT f FROM Folder f WHERE f.id = ?1")
+    Folder findUniqueByID(Integer folderId);
 
 }

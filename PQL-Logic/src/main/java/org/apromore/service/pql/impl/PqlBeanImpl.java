@@ -54,7 +54,6 @@ public class PqlBeanImpl {
     private LolaDirImpl lolaDir;
     private MySqlBeanImpl mySqlBean;
     private PGBeanImpl pgBean;
-    private boolean indexingEnabled;
     private int numberOfQueryThreads;
     private String labelSimilaritySearch;
     private String labelSimilarityConfig;
@@ -76,7 +75,6 @@ public class PqlBeanImpl {
     public PqlBeanImpl(LolaDirImpl lolaDir,
                        MySqlBeanImpl mySqlBean,
                        PGBeanImpl pgBean,
-                       boolean indexingEnabled,
                        int numberOfQueryThreads,
                        String labelSimilaritySearch,
                        String labelSimilarityConfig,
@@ -92,7 +90,6 @@ public class PqlBeanImpl {
             " pql.postgres.host=" + pgBean.getHost() +
             " pql.postgres.name=" + pgBean.getName() +
             " pql.postgres.user=" + pgBean.getUser() +
-            " pql.enableIndexing=" + indexingEnabled +
             " pql.numberOfQueryThreads=" + numberOfQueryThreads +
             " pql.labelSimilaritySearch=" + labelSimilaritySearch +
             " pql.labelSimilarityConfig=" + labelSimilarityConfig +
@@ -102,14 +99,13 @@ public class PqlBeanImpl {
             " pql.defaultBotMaxIndexTime=" + defaultBotMaxIndexTime);
 
         File lolaPath = new File(lolaDir.getLolaDir());
-        if (indexingEnabled && !lolaPath.isFile()) {
+        if (numberOfQueryThreads > 0 && !lolaPath.isFile()) {
             LOGGER.error("LoLA 2.0 executable not found at " + lolaDir.getLolaDir());
         }
 
         this.lolaDir               = lolaDir;
         this.mySqlBean             = mySqlBean;
         this.pgBean                = pgBean;
-        this.indexingEnabled       = indexingEnabled;
         this.numberOfQueryThreads  = numberOfQueryThreads;
         this.labelSimilaritySearch = labelSimilaritySearch;
         this.labelSimilarityConfig = labelSimilarityConfig;
@@ -187,10 +183,6 @@ public class PqlBeanImpl {
             }
         }
         return api;
-    }
-
-    public boolean isIndexingEnabled() {
-        return indexingEnabled;
     }
 
     public String getLabelSimilaritySearch() {

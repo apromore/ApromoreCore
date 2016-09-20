@@ -45,8 +45,6 @@ public class Unfolding2PES {
 	private HashSet<String> cyclicTasks; 	
 
 	public Unfolding2PES(Unfolder_PetriNet unfolder, Set<String> originalVisibleLabels) {
-//		System.out.println("\t ***"+originalVisibleLabels);
-		
 		this.sys = unfolder.getSys();
 		this.bp = unfolder.getBP();
 		this.orderedVisibleEventMap = new HashMap<>();
@@ -203,6 +201,7 @@ public class Unfolding2PES {
 			} else {
 				if (coset.size() > 1)
 					throw new RuntimeException("Something wrong with this model: ");
+				terminalEvents.add(coset.iterator().next());
 				labels.set(coset.iterator().next(), "_1_");
 			}
 		}

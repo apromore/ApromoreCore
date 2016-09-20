@@ -1,5 +1,9 @@
 package ee.ut.eventstr.comparison;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,6 +15,7 @@ import org.deckfour.xes.model.XTrace;
 import ee.ut.eventstr.PESSemantics;
 import ee.ut.eventstr.PrimeEventStructure;
 import ee.ut.eventstr.SinglePORunPESSemantics;
+import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.Operation;
 import ee.ut.mining.log.AlphaRelations;
 import ee.ut.mining.log.poruns.PORun;
 import ee.ut.mining.log.poruns.PORuns;
@@ -33,11 +38,10 @@ public class ApromoreCompareLL {
 		try {
 			if (removeIdentifiers) {
 				// cleanStatements removes the numbers between parentheses in the verbalisation
-//				return new HashSet<String>(cleanStatements(getStatements(log1, log2)));
-				return new HashSet<String>(cleanStatements(new LinkedList<>(getStatements(log1, log2))));
+				return new HashSet<String>(cleanStatements(getStatements(log1, log2)));
 			}
 			else {
-				return getStatements(log1, log2);
+				return new HashSet<String>(getStatements(log1, log2));
 			}
 		} 
 		catch (Exception e) {
@@ -47,30 +51,7 @@ public class ApromoreCompareLL {
 		return new HashSet<String>();
 	}
 	
-	
-	public Set<String> getStatements2(XLog log1, XLog log2) {
-		PrimeEventStructure<Integer> logpes1 = getLogPES(log1, "log 1");
-		PrimeEventStructure<Integer> logpes2 = getLogPES(log2, "log 2");
-		
-		PESSemantics<Integer> fullLogPesSem1 = new PESSemantics<Integer>(logpes1);
-		PESSemantics<Integer> fullLogPesSem2 = new PESSemantics<Integer>(logpes2);
-		
-		PartialSynchronizedProduct<Integer> psp = new PartialSynchronizedProduct<>(fullLogPesSem1, fullLogPesSem2);		
-		PartialSynchronizedProduct<Integer> pruned = psp.perform();
-
-		HashSet<String> commonLabels = new HashSet<>(logpes1.getLabels());
-		commonLabels.retainAll(logpes2.getLabels());
-		
-		DiffMMVerbalizer<Integer> verbalizer = new DiffMMVerbalizer<Integer>(fullLogPesSem1, fullLogPesSem2,commonLabels, new HashSet<String>(logpes1.getLabels()), new HashSet<String>(logpes2.getLabels()));
-		pruned.setVerbalizer(verbalizer);
-		pruned.prune();
-		
-		verbalizer.verbalize();
-
-		return verbalizer.getStatements();
-	}
-	
-	private Set<String> getStatements(XLog log1, XLog log2) {
+	private List<String> getStatements(XLog log1, XLog log2) {
 		SinglePORunPESSemantics<Integer> logpessem1;
 		SinglePORunPESSemantics<Integer> logpessem2;
 		LogBasedPartialSynchronizedProduct<Integer> psp;
@@ -82,30 +63,48 @@ public class ApromoreCompareLL {
 		PESSemantics<Integer> fullLogPesSem2 = new PESSemantics<Integer>(logpes2);
 		DiffLLVerbalizer<Integer> verbalizer = new DiffLLVerbalizer<Integer>(fullLogPesSem1, fullLogPesSem2);
 		
-//		List<String> statements = new ArrayList<String>();
+		List<String> statements = new ArrayList<String>();
+		
+		int mincost;
+		int curcost;
+		List<Operation> bestOp;
 		
 		for (int sink1: logpes1.getSinks()) {
 			logpessem1 = new SinglePORunPESSemantics<Integer>(logpes1, sink1); 
+			
+			mincost = Integer.MAX_VALUE;
+			bestOp = new ArrayList<Operation>();
+			
 			for (int sink2: logpes2.getSinks()) {
 				logpessem2 = new SinglePORunPESSemantics<Integer>(logpes2, sink2);
 		       	psp = new LogBasedPartialSynchronizedProduct<Integer>(logpessem1, logpessem2);
-				psp.perform().prune();
+					
+				psp.perform()
+					.prune()
+				;
 				
-				verbalizer.addPSP(psp.getOperationSequence());
+				curcost = psp.getStates().get(psp.getStates().size() - 1).cost;
+				
+				if (curcost < mincost) {
+					mincost = curcost;
+					bestOp = psp.getOperationSequence();
+				}
 			}
+			verbalizer.addPSP(bestOp);
 		}
 		
-//		PrintStream stdout = System.out;
-//		ByteArrayOutputStream stats = new ByteArrayOutputStream();
-//		PrintStream ps = new PrintStream(stats);
-//		System.setOut(ps);
+		PrintStream stdout = System.out;
+		ByteArrayOutputStream stats = new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(stats);
+		System.setOut(ps);
 		
 		verbalizer.verbalize();
 		
-//		System.setOut(stdout);
-//		statements = new ArrayList<String>(Arrays.asList(stats.toString().split("\n")));
+		System.setOut(stdout);
 		
-		return verbalizer.getStatements();
+		statements = new ArrayList<String>(Arrays.asList(stats.toString().split("\n")));
+		
+		return statements;
 	}
 	
 	private List<String> cleanStatements(List<String> statements) {

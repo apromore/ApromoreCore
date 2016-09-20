@@ -66,7 +66,7 @@ class ApromoreProcessModel implements ProcessModel {
          *
          * This reads a process model from an Apromore manager service.
          *
-         * @param managerEndpointURI  the externally reachable SOAP endpoint of the Apromore manager, e.g. <code>http://localhost:80/manager/services/manager</code>
+         * @param managerEndpointURI  the externally reachable SOAP endpoint of the Apromore manager, e.g. <code>http://localhost:80/manager/services</code>
          * @param processId           the ID of the process model
          * @param branch              the branch name of the process model
 	 * @param versionString       the version number of the process model

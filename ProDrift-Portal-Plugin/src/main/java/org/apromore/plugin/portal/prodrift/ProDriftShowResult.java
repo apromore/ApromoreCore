@@ -1,5 +1,5 @@
 /*
- * Copyright Â© 2009-2016 The Apromore Initiative.
+ * Copyright Ã‚Â© 2009-2016 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -23,6 +23,7 @@ package org.apromore.plugin.portal.prodrift;
 import ee.ut.eventstr.model.ProDriftDetectionResult;
 import ee.ut.eventstr.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
+import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
@@ -102,7 +103,7 @@ public class ProDriftShowResult extends Window {
         Session sess = Sessions.getCurrent();
         java.util.List<BigInteger> startOfTransitionPoints = (java.util.List<BigInteger>)sess.getAttribute("startOfTransitionPoints");
         java.util.List<BigInteger> endOfTransitionPoints = (java.util.List<BigInteger>)sess.getAttribute("endOfTransitionPoints");
-        byte[] log = (byte[])sess.getAttribute("logDrift");
+        XLog log = (XLog)sess.getAttribute("logDrift");
         String logName = (String)sess.getAttribute("logNameDrift");
         Boolean isEventBased = (Boolean)sess.getAttribute("isEventBased");
 
@@ -136,32 +137,13 @@ public class ProDriftShowResult extends Window {
                 int end  = startOfTransitionPoints.get(i).intValue();
 
                 ByteArrayOutputStream ba = eventLogList.get(i);
-                ByteArrayOutputStream outputStream;
-                String filename;
-
-//                if(XLogManager.getExtension(logName).endsWith("gz")) {
-//                    outputStream = eventLogList.get(i);
-//                    filename = logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogManager.getExtension(logName);
-//                }else {
-                byte[] b = ba.toByteArray();
-                outputStream = new ByteArrayOutputStream(b.length);
-                GZIPOutputStream gzOS = new GZIPOutputStream(outputStream);
-                gzOS.write(b);
-                gzOS.close();
-
-                if(extension.endsWith("gz")) {
-                    filename = logName.substring(0, logName.indexOf(extension) - 1) + "_sublog" + "_" + start+"_" + end + "." + extension;
-                }else{
-                    filename = logName.substring(0, logName.indexOf(extension) - 1) + "_sublog" + "_" + start+"_" + end + "." + extension + ".gz";
-                }
-
-//                }
+                String filename = logName.substring(0, logName.indexOf(extension) - 1) + "_sublog" + "_" + start+"_" + end + "." + extension;
 
                 ZipEntry entry = new ZipEntry(filename);
 
-                entry.setSize(outputStream.toByteArray().length);
+                entry.setSize(ba.toByteArray().length);
                 zos.putNextEntry(entry);
-                zos.write(outputStream.toByteArray());
+                zos.write(ba.toByteArray());
                 zos.closeEntry();
             }
             zos.close();

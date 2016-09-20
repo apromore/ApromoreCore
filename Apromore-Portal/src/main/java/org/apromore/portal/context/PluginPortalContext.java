@@ -21,10 +21,7 @@
 package org.apromore.portal.context;
 
 import org.apache.commons.io.IOUtils;
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.UserType;
-import org.apromore.model.VersionSummaryType;
+import org.apromore.model.*;
 import org.apromore.plugin.portal.*;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
@@ -102,13 +99,13 @@ public class PluginPortalContext implements PortalContext {
     public PortalSelection getSelection() {
         return new PortalSelection() {
             @Override
-            public Map<ProcessSummaryType, List<VersionSummaryType>> getSelectedProcessModelVersions() {
-                return mainController.getSelectedProcessVersions();
+            public Map<SummaryType, List<VersionSummaryType>> getSelectedProcessModelVersions() {
+                return mainController.getSelectedElementsAndVersions();
             }
 
             @Override
-            public Set<ProcessSummaryType> getSelectedProcessModels() {
-                return mainController.getSelectedProcesses();
+            public Set<SummaryType> getSelectedProcessModels() {
+                return mainController.getSelectedElements();
             }
 
         };
@@ -138,7 +135,7 @@ public class PluginPortalContext implements PortalContext {
     }
 
     @Override
-    public MainControllerInterface getMainController() {
+    public MainController getMainController() {
         return mainController;
     }
 
@@ -147,4 +144,8 @@ public class PluginPortalContext implements PortalContext {
         mainController.refresh();
     }
 
+    @Override
+    public void displaySimilarityClusters(final ClusterFilterType filter) {
+        mainController.displaySimilarityClusters(filter);
+    }
 }

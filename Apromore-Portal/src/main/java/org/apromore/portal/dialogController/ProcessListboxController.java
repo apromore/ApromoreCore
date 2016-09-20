@@ -23,16 +23,13 @@ package org.apromore.portal.dialogController;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
-import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.*;
+import org.apromore.model.SummariesType;
 import org.apromore.plugin.portal.PortalProcessAttributePlugin;
-import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.dialogController.renderer.ProcessSummaryItemRenderer;
+import org.apromore.portal.dialogController.renderer.SummaryItemRenderer;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -41,8 +38,6 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listheader;
 
 import org.apromore.model.FolderType;
-import org.apromore.model.UserType;
-import org.zkoss.zul.AbstractListModel;
 
 public class ProcessListboxController extends BaseListboxController {
 
@@ -51,7 +46,7 @@ public class ProcessListboxController extends BaseListboxController {
     private Listheader columnScore;
 
     public ProcessListboxController(MainController mainController) {
-        super(mainController, "macros/listbox/processSummaryListbox.zul", new ProcessSummaryItemRenderer(mainController));
+        super(mainController, "macros/listbox/processSummaryListbox.zul", new SummaryItemRenderer(mainController));
 
         this.columnScore = (Listheader) this.getListBox().getFellow("columnScore");
 
@@ -110,18 +105,18 @@ public class ProcessListboxController extends BaseListboxController {
      */
     @Override
     protected void refreshContent() {
-        getMainController().reloadProcessSummaries();
+        getMainController().reloadSummaries();
     }
 
     /**
-     * Display process versions given in processSummaries. If isQueryResult this
+     * Display process versions given in summaries. If isQueryResult this
      * results from a search whose query is versionQ, given processQ
      * @param subFolders list of folders to display.
-     * @param processSummaries the list of processes to display.
+     * @param summaries the list of processes to display.
      * @param isQueryResult is this a query result from a search or process.
      */
     @SuppressWarnings("unchecked")
-    public void displayProcessSummaries(List<FolderType> subFolders, ProcessSummariesType processSummaries, Boolean isQueryResult) {
+    public void displaySummaries(List<FolderType> subFolders, SummariesType summaries, Boolean isQueryResult) {
         this.columnScore.setVisible(isQueryResult);
 
         getListBox().clearSelection();
@@ -131,75 +126,91 @@ public class ProcessListboxController extends BaseListboxController {
         if (!isQueryResult) {
             getListModel().addAll(subFolders);
         }
-        getListModel().addAll(processSummaries.getProcessSummary());
+        getListModel().addAll(summaries.getSummary());
         if (isQueryResult && getListBox().getItemCount() > 0) {
             getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
         }
     }
 
-    public ProcessSummaryListModel displayProcessSummaries(List<FolderType> subFolders, boolean isQueryResult) {
+    public SummaryListModel displaySummaries(List<FolderType> subFolders, boolean isQueryResult) {
         this.columnScore.setVisible(isQueryResult);
 
         getListBox().clearSelection();
-        ProcessSummaryListModel model = new ProcessSummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);
+        SummaryListModel model = new SummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);
+
         getListBox().setModel(model);
 
-            if (isQueryResult && getListBox().getItemCount() > 0) {
-                getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
-            }
+        if (isQueryResult && getListBox().getItemCount() > 0) {
+            getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
+        }
 
         return model;
     }
+
+//    public SummaryListModel displayProcessSummaries(List<FolderType> subFolders, boolean isQueryResult) {
+//        this.columnScore.setVisible(isQueryResult);
+//
+//        getListBox().clearSelection();
+//        SummaryListModel model = new SummaryListModel(isQueryResult ? Collections.<FolderType>emptyList() : subFolders);
+//
+//        getListBox().setModel(model);
+//
+//            if (isQueryResult && getListBox().getItemCount() > 0) {
+//                getListBox().getItemAtIndex(0).setStyle(Constants.SELECTED_PROCESS);
+//            }
+//
+//        return model;
+//    }
 
     /**
      * Lazily loading list of @link{ProcessSummaryType}.
      *
      * @see http://books.zkoss.org/wiki/ZK_Developer%27s_Reference/MVC/Model/List_Model#Huge_Amount_of_Data
      */
-    class ProcessSummaryListModel extends ListModelList {
-	final int pageSize = 10;  // TODO: ought to be externally configurable
-
-	private ProcessSummariesType processSummaries;
-	private int currentPageIndex = 0;
-        private List<FolderType> subFolders;
-
-        /**
-         * Constructor.
-         *
-         * @param subFolders  will be displayed before processes
-         */
-        ProcessSummaryListModel(List<FolderType> subFolders) {
-            this.subFolders = subFolders;
-            setMultiple(true);
-        }
-
-	public Object getElementAt(int index) {
-            if (index < subFolders.size()) {
-                return subFolders.get(index);
-            } else {
-                int processIndex = index - subFolders.size();
-	        return getProcessSummaries(processIndex / pageSize).getProcessSummary().get(processIndex % pageSize);
-            }
-	}
-
-	public int getSize() {
-	    return subFolders.size() + getProcessSummaries(currentPageIndex).getProcessCount().intValue();
-	}
-
-	public int getTotalProcessCount() {
-	    return getProcessSummaries(currentPageIndex).getTotalProcessCount().intValue();
-	}
-
-	private ProcessSummariesType getProcessSummaries(int pageIndex) {
-	    if (processSummaries == null || currentPageIndex != pageIndex) {
-		UserType user = UserSessionManager.getCurrentUser();
-		FolderType currentFolder = UserSessionManager.getCurrentFolder();
-		processSummaries = getService().getProcesses(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
-		currentPageIndex = pageIndex;
-	    }
-	    return processSummaries;
-	}
-    }
+//    class SummaryListModel extends ListModelList {
+//        final int pageSize = 10;  // TODO: ought to be externally configurable
+//
+//        private SummariesType summaries;
+//        private int currentPageIndex = 0;
+//            private List<FolderType> subFolders;
+//
+//            /**
+//             * Constructor.
+//             *
+//             * @param subFolders  will be displayed before processes
+//             */
+//            SummaryListModel(List<FolderType> subFolders) {
+//                this.subFolders = subFolders;
+//                setMultiple(true);
+//            }
+//
+//        public Object getElementAt(int index) {
+//                if (index < subFolders.size()) {
+//                    return subFolders.get(index);
+//                } else {
+//                    int processIndex = index - subFolders.size();
+//                return getSummaries(processIndex / pageSize).getSummary().get(processIndex % pageSize);
+//                }
+//        }
+//
+//        public int getSize() {
+//            return subFolders.size() + getSummaries(currentPageIndex).getCount().intValue();
+//        }
+//
+//        public int getTotalCount() {
+//            return getSummaries(currentPageIndex).getTotalCount().intValue();
+//        }
+//
+//        private SummariesType getSummaries(int pageIndex) {
+//            if (summaries == null || currentPageIndex != pageIndex) {
+//            UserType user = UserSessionManager.getCurrentUser();
+//            FolderType currentFolder = UserSessionManager.getCurrentFolder();
+//            summaries = getService().getProcessOrLogSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
+//            currentPageIndex = pageIndex;
+//            }
+//            return summaries;
+//        }
+//    }
 
     /**
      * refresh the display without reloading the data. Keeps selection if any.
@@ -217,7 +228,7 @@ public class ProcessListboxController extends BaseListboxController {
 
         FolderType currentFolder = UserSessionManager.getCurrentFolder();
         List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
-        ProcessListboxController.ProcessSummaryListModel model = displayProcessSummaries(subFolders, false);
+        SummaryListModel model = displaySummaries(subFolders, false);
     }
 
 }
