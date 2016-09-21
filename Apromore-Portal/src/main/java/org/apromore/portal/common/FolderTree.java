@@ -85,7 +85,7 @@ public class FolderTree {
             int page = 0;
             SummariesType processes;
             do {
-                processes = UserSessionManager.getMainController().getService().getProcessOrLogSummaries(UserSessionManager.getCurrentUser().getId(), folderId, page, PAGE_SIZE);
+                processes = UserSessionManager.getMainController().getService().getProcessSummaries(UserSessionManager.getCurrentUser().getId(), folderId, page, PAGE_SIZE);
                 for (SummaryType summaryType : processes.getSummary()) {
                     if(summaryType instanceof ProcessSummaryType) {
                         node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Process));

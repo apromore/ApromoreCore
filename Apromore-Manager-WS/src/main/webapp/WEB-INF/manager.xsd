@@ -74,8 +74,8 @@
     <xs:element name="GetProcessGroupsResponse" type="tns:GetProcessGroupsOutputMsgType"/>
     <xs:element name="CreateUserRequest" type="tns:CreateUserInputMsgType"/>
     <xs:element name="CreateUserResponse" type="tns:CreateUserOutputMsgType"/>
-    <xs:element name="GetProcessesOrLogsRequest" type="tns:GetProcessesOrLogsInputMsgType"/>
-    <xs:element name="GetProcessesOrLogsResponse" type="tns:GetProcessesOrLogsOutputMsgType"/>
+    <xs:element name="GetProcessesRequest" type="tns:GetProcessesInputMsgType"/>
+    <xs:element name="GetProcessesResponse" type="tns:GetProcessesOutputMsgType"/>
     <xs:element name="GetLogsRequest" type="tns:GetLogsInputMsgType"/>
     <xs:element name="GetLogsResponse" type="tns:GetLogsOutputMsgType"/>
     <xs:element name="CreateFolderRequest" type="tns:CreateFolderInputMsgType"/>
@@ -364,7 +364,6 @@
             <xs:element name="Message" type="tns:PluginMessage" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
-
     <xs:complexType name="PluginMessage">
         <xs:sequence>
             <xs:element name="value" type="xs:string"/>
@@ -925,17 +924,17 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetProcessesOrLogsInputMsgType">
+    <xs:complexType name="GetProcessesInputMsgType">
         <xs:attribute name="userId" type="xs:string"/>
         <xs:attribute name="folderId" type="xs:int"/>
         <xs:attribute name="pageIndex" type="xs:int"/>
         <xs:attribute name="pageSize" type="xs:int"/>
     </xs:complexType>
 
-    <xs:complexType name="GetProcessesOrLogsOutputMsgType">
+    <xs:complexType name="GetProcessesOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="ProcessesOrLogs" type="tns:SummariesType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Processes" type="tns:SummariesType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
 
     </xs:complexType>

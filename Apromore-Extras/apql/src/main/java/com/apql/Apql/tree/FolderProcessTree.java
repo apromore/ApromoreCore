@@ -102,7 +102,7 @@ public class FolderProcessTree extends JTree implements DragGestureListener,Drag
         int page = 0;
         SummariesType summariesType;
         do {
-            summariesType = manager.getProcessOrLogSummaries(user.getId(), folderId, page, PAGE_SIZE);
+            summariesType = manager.getProcessSummaries(user.getId(), folderId, page, PAGE_SIZE);
             for(SummaryType summaryType: summariesType.getSummary()) {
                 if(summaryType instanceof ProcessSummaryType) {
                     ProcessSummaryType pst = (ProcessSummaryType) summaryType;

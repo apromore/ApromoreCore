@@ -119,19 +119,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Page<Log> getLogs(String userId, Integer folderId, Pageable pageable) {
-        Page<Log> res;
-        if(folderId == 0) {
-            LOGGER.warning("ERROR1");
-            res = logRepo.findLogsByUser(userId, pageable);
-            LOGGER.warning("ERROR2 " + res);
-        }else {
-            LOGGER.warning("ERROR3");
-            res = logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
-            LOGGER.warning("ERROR4 " + res);
-        }
-        return res;
-//        return (folderId == 0) ? logRepo.findLogsByUser(userId, pageable)
-//                : logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
+        return (folderId == 0) ? logRepo.findLogsByUser(userId, pageable)
+                               : logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
     }
 
     @Override
