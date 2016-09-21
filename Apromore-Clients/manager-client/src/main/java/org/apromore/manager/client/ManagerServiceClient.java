@@ -357,19 +357,36 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public SummariesType getProcessOrLogSummaries(String userId, int folderId, int pageIndex, int pageSize) {
-        LOGGER.debug("Preparing GetProcessOrLogRequest.....");
+    public SummariesType getProcessSummaries(String userId, int folderId, int pageIndex, int pageSize) {
+        LOGGER.debug("Preparing GetProcessRequest.....");
 
-        GetProcessesOrLogsInputMsgType msg = new GetProcessesOrLogsInputMsgType();
+        GetProcessesInputMsgType msg = new GetProcessesInputMsgType();
         msg.setUserId(userId);
         msg.setFolderId(folderId);
         msg.setPageIndex(pageIndex);
         msg.setPageSize(pageSize);
 
-        JAXBElement<GetProcessesOrLogsInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesOrLogsRequest(msg);
+        JAXBElement<GetProcessesInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesRequest(msg);
 
-        JAXBElement<GetProcessesOrLogsOutputMsgType> response = (JAXBElement<GetProcessesOrLogsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getProcessesOrLogs();
+        JAXBElement<GetProcessesOutputMsgType> response = (JAXBElement<GetProcessesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getProcesses();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public SummariesType getLogSummaries(String userId, int folderId, int pageIndex, int pageSize) {
+        LOGGER.debug("Preparing GetLogRequest.....");
+
+        GetLogsInputMsgType msg = new GetLogsInputMsgType();
+        msg.setUserId(userId);
+        msg.setFolderId(folderId);
+        msg.setPageIndex(pageIndex);
+        msg.setPageSize(pageSize);
+
+        JAXBElement<GetLogsInputMsgType> request = WS_CLIENT_FACTORY.createGetLogsRequest(msg);
+
+        JAXBElement<GetLogsOutputMsgType> response = (JAXBElement<GetLogsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getLogs();
     }
 
     @Override
