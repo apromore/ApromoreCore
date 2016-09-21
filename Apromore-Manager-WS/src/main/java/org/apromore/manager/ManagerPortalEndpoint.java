@@ -1249,18 +1249,18 @@ public class ManagerPortalEndpoint {
         return new ObjectFactory().createGetProcessGroupsResponse(res);
     }
 
-    @PayloadRoot(localPart = "GetProcessesOrLogsRequest", namespace = NAMESPACE)
+    @PayloadRoot(localPart = "GetProcessesRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<GetProcessesOrLogsOutputMsgType> getProcessesOrLogs(@RequestPayload final JAXBElement<GetProcessesOrLogsInputMsgType> req) {
-        LOGGER.trace("Executing operation getProcessesOrLogs");
-        GetProcessesOrLogsInputMsgType payload = req.getValue();
-        GetProcessesOrLogsOutputMsgType res = new GetProcessesOrLogsOutputMsgType();
+    public JAXBElement<GetProcessesOutputMsgType> getProcesses(@RequestPayload final JAXBElement<GetProcessesInputMsgType> req) {
+        LOGGER.trace("Executing operation getProcesses");
+        GetProcessesInputMsgType payload = req.getValue();
+        GetProcessesOutputMsgType res = new GetProcessesOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
 
-        res.setProcessesOrLogs(uiHelper.buildSummaryList(payload.getUserId(), payload.getFolderId(), payload.getPageIndex(), payload.getPageSize()));
+        res.setProcesses(uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), payload.getPageIndex(), payload.getPageSize()));
 
-        return new ObjectFactory().createGetProcessesOrLogsResponse(res);
+        return new ObjectFactory().createGetProcessesResponse(res);
     }
 
     @PayloadRoot(localPart = "GetLogsRequest", namespace = NAMESPACE)
