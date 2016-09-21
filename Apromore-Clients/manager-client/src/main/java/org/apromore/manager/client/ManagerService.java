@@ -84,7 +84,9 @@ public interface ManagerService {
 
     List<GroupAccessType> getProcessGroups(int processId);
 
-    SummariesType getProcessOrLogSummaries(String userId, int folderId, int pageIndex, int pageSize);
+    SummariesType getProcessSummaries(String userId, int folderId, int pageIndex, int pageSize);
+
+    SummariesType getLogSummaries(String userId, int folderId, int pageIndex, int pageSize);
 
     ImportLogResultType importLog(String username, Integer folderId, String logName, InputStream log, String extension, String domain, String created, boolean makePublic) throws Exception;
 

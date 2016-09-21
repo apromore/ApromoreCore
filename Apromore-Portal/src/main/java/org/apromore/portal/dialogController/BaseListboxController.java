@@ -365,8 +365,8 @@ public abstract class BaseListboxController extends BaseController {
     public class SummaryListModel extends ListModelList {
         final int pageSize = 10;  // TODO: ought to be externally configurable
 
-        private SummariesType summaries;
-        private int currentPageIndex = 0;
+        private SummariesType summaries, logSummaries;
+        private int currentPageIndex = 0, currentLogPageIndex = 0;
         private List<FolderType> subFolders;
 
         /**
@@ -380,16 +380,25 @@ public abstract class BaseListboxController extends BaseController {
         }
 
         public Object getElementAt(int index) {
+
+            // Elements are always accessed in the following order: subfolders, then process models, then logs
+
             if (index < subFolders.size()) {
-                return subFolders.get(index);
+                return subFolders.get(index);  // subfolder
             } else {
                 int processIndex = index - subFolders.size();
-                return getSummaries(processIndex / pageSize).getSummary().get(processIndex % pageSize);
+                SummariesType summaries = getSummaries(processIndex / pageSize);
+                if (processIndex % pageSize < summaries.getSummary().size()) {
+                    return summaries.getSummary().get(processIndex % pageSize);  // process model
+                } else {
+                    int logIndex = processIndex - summaries.getCount().intValue();
+                    return getLogSummaries(logIndex / pageSize).getSummary().get(logIndex % pageSize);  // log
+                }
             }
         }
 
         public int getSize() {
-            return subFolders.size() + getSummaries(currentPageIndex).getCount().intValue();
+            return subFolders.size() + getSummaries(currentPageIndex).getCount().intValue() + getLogSummaries(currentLogPageIndex).getCount().intValue();
         }
 
         public int getTotalCount() {
@@ -400,10 +409,20 @@ public abstract class BaseListboxController extends BaseController {
             if (summaries == null || currentPageIndex != pageIndex) {
                 UserType user = UserSessionManager.getCurrentUser();
                 FolderType currentFolder = UserSessionManager.getCurrentFolder();
-                summaries = getService().getProcessOrLogSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
+                summaries = getService().getProcessSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
                 currentPageIndex = pageIndex;
             }
             return summaries;
+        }
+
+        private SummariesType getLogSummaries(int pageIndex) {
+            if (logSummaries == null || currentLogPageIndex != pageIndex) {
+                UserType user = UserSessionManager.getCurrentUser();
+                FolderType currentFolder = UserSessionManager.getCurrentFolder();
+                logSummaries = getService().getLogSummaries(user.getId(), currentFolder == null ? 0 : currentFolder.getId(), pageIndex, pageSize);
+                currentLogPageIndex = pageIndex;
+            }
+            return logSummaries;
         }
     }
 }

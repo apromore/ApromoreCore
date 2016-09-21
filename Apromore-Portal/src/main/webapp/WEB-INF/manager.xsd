@@ -48,10 +48,16 @@
     <xs:element name="EditProcessDataResponse" type="tns:EditProcessDataOutputMsgType"/>
     <xs:element name="DeleteProcessVersionsRequest" type="tns:DeleteProcessVersionsInputMsgType"/>
     <xs:element name="DeleteProcessVersionsResponse" type="tns:DeleteProcessVersionsOutputMsgType"/>
+    <xs:element name="DeleteLogRequest" type="tns:DeleteLogInputMsgType"/>
+    <xs:element name="DeleteLogResponse" type="tns:DeleteLogOutputMsgType"/>
+    <xs:element name="ImportLogRequest" type="tns:ImportLogInputMsgType"/>
+    <xs:element name="ImportLogResponse" type="tns:ImportLogOutputMsgType"/>
     <xs:element name="ImportProcessRequest" type="tns:ImportProcessInputMsgType"/>
     <xs:element name="ImportProcessResponse" type="tns:ImportProcessOutputMsgType"/>
     <xs:element name="ExportFormatRequest" type="tns:ExportFormatInputMsgType"/>
     <xs:element name="ExportFormatResponse" type="tns:ExportFormatOutputMsgType"/>
+    <xs:element name="ExportLogRequest" type="tns:ExportLogInputMsgType"/>
+    <xs:element name="ExportLogResponse" type="tns:ExportLogOutputMsgType"/>
     <xs:element name="UpdateProcessRequest" type="tns:UpdateProcessInputMsgType"/>
     <xs:element name="UpdateProcessResponse" type="tns:UpdateProcessOutputMsgType"/>
     <xs:element name="GetFragmentRequest" type="tns:GetFragmentInputMsgType"/>
@@ -70,6 +76,8 @@
     <xs:element name="CreateUserResponse" type="tns:CreateUserOutputMsgType"/>
     <xs:element name="GetProcessesRequest" type="tns:GetProcessesInputMsgType"/>
     <xs:element name="GetProcessesResponse" type="tns:GetProcessesOutputMsgType"/>
+    <xs:element name="GetLogsRequest" type="tns:GetLogsInputMsgType"/>
+    <xs:element name="GetLogsResponse" type="tns:GetLogsOutputMsgType"/>
     <xs:element name="CreateFolderRequest" type="tns:CreateFolderInputMsgType"/>
     <xs:element name="CreateFolderResponse" type="tns:CreateFolderOutputMsgType"/>
     <xs:element name="UpdateFolderRequest" type="tns:UpdateFolderInputMsgType"/>
@@ -592,32 +600,47 @@
         <xs:attribute name="code" type="xs:int"/>
     </xs:complexType>
 
-    <xs:complexType name="ProcessSummariesType">
+    <xs:complexType name="SummariesType">
         <xs:sequence>
-            <xs:element minOccurs="0" maxOccurs="unbounded" name="ProcessSummary" type="tns:ProcessSummaryType"/>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="Summary" type="tns:SummaryType"/>
         </xs:sequence>
-        <xs:attribute name="total_process_count" type="xs:long"/>
-        <xs:attribute name="process_count" type="xs:long"/>
+        <xs:attribute name="total_count" type="xs:long"/>
+        <xs:attribute name="count" type="xs:long"/>
         <xs:attribute name="offset" type="xs:long"/>
     </xs:complexType>
 
-    <xs:complexType name="ProcessSummaryType">
+    <xs:complexType name="SummaryType">
         <xs:sequence>
-            <xs:element minOccurs="1" maxOccurs="unbounded" name="VersionSummaries" type="tns:VersionSummaryType"/>
             <xs:element minOccurs="0" maxOccurs="1" name="Folder" type="tns:FolderType"/>
         </xs:sequence>
-        <xs:attribute name="original_native_type" type="xs:string"/>
         <xs:attribute name="name" type="xs:string"/>
         <xs:attribute name="id" type="xs:int"/>
         <xs:attribute name="domain" type="xs:string"/>
         <xs:attribute name="ranking" type="xs:string"/>
         <xs:attribute name="makePublic" type="xs:boolean"/>
-        <xs:attribute name="last_version" type="xs:string"/>
         <xs:attribute name="owner" type="xs:string"/>
         <xs:attribute name="hasRead" type="xs:boolean"/>
         <xs:attribute name="hasWrite" type="xs:boolean"/>
         <xs:attribute name="hasOwnership" type="xs:boolean"/>
-        <xs:attribute name="pqlIndexerStatus" type="tns:IndexStatus"/>
+    </xs:complexType>
+
+    <xs:complexType name="LogSummaryType">
+        <xs:complexContent>
+            <xs:extension base="tns:SummaryType" />
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ProcessSummaryType">
+        <xs:complexContent>
+            <xs:extension base="tns:SummaryType">
+                <xs:sequence>
+                    <xs:element minOccurs="1" maxOccurs="unbounded" name="VersionSummaries" type="tns:VersionSummaryType"/>
+                </xs:sequence>
+                <xs:attribute name="original_native_type" type="xs:string"/>
+                <xs:attribute name="last_version" type="xs:string"/>
+                <xs:attribute name="pqlIndexerStatus" type="tns:IndexStatus"/>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <!-- These enumeration names correspond to org.pql.index.IndexStatus. -->
@@ -911,9 +934,23 @@
     <xs:complexType name="GetProcessesOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="Processes" type="tns:ProcessSummariesType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Processes" type="tns:SummariesType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
 
+    </xs:complexType>
+
+    <xs:complexType name="GetLogsInputMsgType">
+        <xs:attribute name="userId" type="xs:string"/>
+        <xs:attribute name="folderId" type="xs:int"/>
+        <xs:attribute name="pageIndex" type="xs:int"/>
+        <xs:attribute name="pageSize" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="GetLogsOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Logs" type="tns:SummariesType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="CreateFolderInputMsgType">
@@ -1013,6 +1050,26 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="DeleteLogInputMsgType">
+        <xs:sequence>
+            <xs:element name="LogSummaryType" type="tns:LogSummaryType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DeleteLogOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ImportLogInputMsgType">
+        <xs:sequence>
+            <xs:element name="Log" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="Extension" type="xs:string"/>
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="ImportProcessInputMsgType">
         <xs:sequence>
             <xs:element name="ProcessDescription" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
@@ -1031,6 +1088,13 @@
         <xs:attribute name="PreVersion" type="xs:string"/>
     </xs:complexType>
 
+    <xs:complexType name="ImportLogOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType"/>
+            <xs:element name="ImportLogResult" type="tns:ImportLogResultType"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="ImportProcessOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"/>
@@ -1041,6 +1105,13 @@
     <xs:complexType name="ImportProcessResultType">
         <xs:sequence>
             <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Message" type="tns:PluginMessages" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ImportLogResultType">
+        <xs:sequence>
+            <xs:element name="LogSummary" type="tns:LogSummaryType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="Message" type="tns:PluginMessages" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
@@ -1066,7 +1137,26 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:complexType name="ExportLogInputMsgType">
+        <xs:attribute name="LogId" type="xs:int"/>
+        <xs:attribute name="LogName" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="ExportLogOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType"/>
+            <xs:element name="ExportResult" type="tns:ExportLogResultType"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="ExportFormatResultType">
+        <xs:sequence>
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="Message" type="tns:PluginMessages" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ExportLogResultType">
         <xs:sequence>
             <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
             <xs:element name="Message" type="tns:PluginMessages" minOccurs="1" maxOccurs="1"/>
@@ -1095,7 +1185,7 @@
     <xs:complexType name="ReadProcessSummariesOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="ProcessSummaries" type="tns:ProcessSummariesType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ProcessSummaries" type="tns:SummariesType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1158,7 +1248,7 @@
     <xs:complexType name="SearchForSimilarProcessesOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"/>
-            <xs:element name="ProcessSummaries" type="tns:ProcessSummariesType"/>
+            <xs:element name="ProcessSummaries" type="tns:SummariesType"/>
         </xs:sequence>
     </xs:complexType>
 

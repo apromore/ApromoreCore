@@ -81,8 +81,6 @@ public interface UserInterfaceHelper {
      */
     SummariesType buildProcessSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
 
-    SummariesType buildSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
-
     SummaryType buildLogSummary(Log log);
 
     SummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize);
