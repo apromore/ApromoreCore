@@ -99,6 +99,7 @@ public class StructuringService {
             this.structureDiagram();
         } catch (Exception e) {
             System.out.println("ERROR - impossible structure diagram");
+            return diagram;
         }
 
         end = System.currentTimeMillis() - start;
@@ -245,7 +246,7 @@ public class StructuringService {
                 }
 
                 diagram.addFlow(fakeStart, g, "fakeStartFlow");
-                //System.out.println("Added fakeStart (" + fakeStart.getId() + ") for subProcess: " + (spe == null ? "null" : spe.getId()));
+                System.out.println("DEBUG - added fakeStart (" + fakeStart.getId() + ") for subProcess: " + (spe == null ? "null" : spe.getId()));
             }
 
         for( Swimlane ple : pl2se.keySet() )
@@ -261,8 +262,10 @@ public class StructuringService {
                 }
 
                 diagram.addFlow(fakeStart, g, "fakeStartFlow");
-                //System.out.println("Added fakeStart (" + fakeStart.getId() + ") for pool: " + (ple == null ? "null" : ple.getId()));
+                System.out.println("DEBUG - added fakeStart (" + fakeStart.getId() + ") for pool: " + (ple == null ? "null" : ple.getId()));
             }
+
+//        System.out.println("DEBUG - REMOVED MULTIPLE START: " + pl2se.size() + sp2se.size() );
     }
 
     private void removeMultipleEndEvents() {
@@ -296,7 +299,7 @@ public class StructuringService {
                 }
 
                 diagram.addFlow(g, fakeEnd, "toFakeEnd");
-                //System.out.println("Added fakeEnd (" + fakeEnd.getId() + ") for subProcess: " + (spe == null ? "null" : spe.getId()));
+                System.out.println("DEBUG - added fakeEnd (" + fakeEnd.getId() + ") for subProcess: " + (spe == null ? "null" : spe.getId()));
             }
 
         for( Swimlane ple : pl2ee.keySet() )
@@ -312,8 +315,10 @@ public class StructuringService {
                 }
 
                 diagram.addFlow(g, fakeEnd, "toFakeEnd");
-                //System.out.println("Added fakeEnd (" + fakeEnd.getId() + ") for pool: " + (ple == null ? "null" : ple.getId()));
+                System.out.println("DEBUG - added fakeEnd (" + fakeEnd.getId() + ") for pool: " + (ple == null ? "null" : ple.getId()));
             }
+
+//        System.out.println("DEBUG - REMOVED MULTIPLE END: " + pl2ee.size() + sp2ee.size() );
     }
 
     private void handleBoundaryEvents() {
@@ -329,7 +334,7 @@ public class StructuringService {
                             if( ((association.getTarget() instanceof Activity) && ((Activity) association.getTarget()).isBCompensation()) ||
                                     ((association.getTarget() instanceof CallActivity) && ((CallActivity) association.getTarget()).isBCompensation()) )
                             {
-                                //System.out.println("Detaching compensation event and activity: " + e.getId() + " > " + association.getTarget().getId());
+                                System.out.println("DEBUG - Detaching compensation event and activity: " + e.getId() + " > " + association.getTarget().getId());
                                 boundToFix.put(e, a);
                                 compensationActivities.put(e, association.getTarget());
                                 break;
@@ -351,7 +356,7 @@ public class StructuringService {
                             diagram.addFlow(g, e, "");
                             e.setParentSubprocess(a.getParentSubProcess());
                             boundToFix.put(e, a);
-                            //System.out.println("Boundary event found: " + a.getId() + " > " + e.getId());
+                            System.out.println("DEBUG - Boundary event found: " + a.getId() + " > " + e.getId());
                             break;
                         }
                 }
@@ -405,6 +410,8 @@ public class StructuringService {
                 iBPStruct spi = new iBPStruct(  StructuringCore.Policy.valueOf(policy),
                         maxDepth, maxSolutions, maxChildren, maxStates,
                         maxMinutes, timeBounded, keepBisimulation, forceStructuring);
+                String pLabel = (processID == null ? "top-level" : originalNodes.get(processID).getLabel());
+                System.out.println("DEBUG - structuring process(" + processID + ")(" + pLabel + ") - " + nodes.size() + " : " + edges.size());
                 spi.setProcess(nodes, flows);
                 spi.structure();
                 structuredDiagram = spi.getDiagram();

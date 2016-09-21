@@ -236,7 +236,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
                 if( e.getParentSubProcess() != null ) {
                     e.setExceptionFor(e.getParentSubProcess());
                     e.getParentSubProcess().incNumOfBoundaryEvents();
-                    LOGGER.info("found ghost boundary event: " + e.getId() + " for " + e.getParentSubProcess().getId());
+                    LOGGER.info("FIX - found ghost boundary event: " + e.getId() + " for " + e.getParentSubProcess().getId());
                     SubProcess parentProcess = e.getParentSubProcess().getParentSubProcess();
                     Swimlane pool = e.getParentSubProcess().getParentPool();
                     e.getParentSubProcess().getChildren().remove(e);
@@ -245,7 +245,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
                     e.setParentSwimlane(pool);
                     for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : diagram.getOutEdges(e) )
                         fixExceptionFlowParents(oe.getTarget(), pool, parentProcess);
-                } else LOGGER.error("error fixing ghost boundary event: " + e.getId());
+                } else LOGGER.error("ERROR - impossible to fix ghost boundary event: " + e.getId());
             }
     }
 

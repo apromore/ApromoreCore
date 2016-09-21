@@ -183,6 +183,8 @@ public class iBPStruct {
 
         } else {
             System.out.println("ERROR - found multiple entry(" + starts.size() + ") or exit(" + ends.size() + ") points.");
+            for(String s : starts) System.out.println("DEBUG - extra start(" + s + "): " + this.nodes.get(s).getLabel());
+            for(String s : ends) System.out.println("DEBUG - extra end(" + s + "): " + this.nodes.get(s).getLabel());
             isValid = false;
         }
 
