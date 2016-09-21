@@ -14,10 +14,7 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
 import org.deckfour.xes.model.XLog;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
-import org.processmining.models.graphbased.directed.bpmn.elements.Flow;
-import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
-import org.processmining.models.graphbased.directed.bpmn.elements.Swimlane;
+import org.processmining.models.graphbased.directed.bpmn.elements.*;
 
 import java.util.*;
 
@@ -28,52 +25,87 @@ import java.util.*;
 public class FakeMiner {
 
     private boolean unbalancedPaths;
-    private boolean optionalTasks;
-    private boolean recurrentTasks;
+    private boolean optionalActivities;
+    private boolean recurrentActivities;
     private boolean inclusiveChoice;
     private boolean applyCleaning;
 
     private DiagramHandler diagramHandler;
     private LogGraph fuzzyNet;
     private BPMNDiagram diagram;
+
     private RPST rpst;
     private HashSet<RPSTNode> cycles;
     private HashSet<RPSTNode> parallel;
     private HashSet<RPSTNode> exclusive;
+    private HashSet<RPSTNode> skippable;
+    private HashSet<RPSTNode> inclusive;
     private HashMap<BPMNNode, RPSTNode> parentSESE;
+
     private HashMap<String, BPMNNode> idToNode;
     private HashMap<String, Gateway> idToGate;
+    private HashMap<RPSTNode, Gateway> bondEntry;
+    private HashMap<RPSTNode, Gateway> bondExit;
+
     private ArrayList<RPSTNode> bottomUpRPST;
+    private HashMap<RPSTNode, HashSet<BPMNNode>> RPSTNodeToBPMNChildren;
+
+    private HashMap<RPSTNode, HashSet<ArrayList<Activity>>> entryToExitPaths;
+
+    private HashMap<Activity, Integer> minTime;
+    private HashMap<Activity, Integer> maxTime;
+
+    private HashSet<Activity> removedSkippingActivity;
 
     public FakeMiner() {
         diagramHandler = new DiagramHandler();
     }
 
 
-    public BPMNDiagram optimize(BPMNDiagram inputDiagram, XLog log, boolean unbalancedPaths, boolean optionalTasks, boolean recurrentTasks, boolean inclusiveChoice, boolean applyCleaning) {
+    public BPMNDiagram optimize(BPMNDiagram inputDiagram, XLog log, boolean unbalancedPaths, boolean optionalActivities, boolean recurrentActivities, boolean inclusiveChoice, boolean applyCleaning) {
         diagram = diagramHandler.copyDiagram(inputDiagram);
+        diagramHandler.setDiagram(diagram);
 
         this.inclusiveChoice = inclusiveChoice;
         this.unbalancedPaths = unbalancedPaths;
-        this.optionalTasks = optionalTasks;
-        this.recurrentTasks = recurrentTasks;
+        this.optionalActivities = optionalActivities;
+        this.recurrentActivities = recurrentActivities;
         this.applyCleaning = applyCleaning;
 
         fuzzyNet = LogParser.generateLogGraph(log);
 
-        if( !generateRPST() ) return inputDiagram;
 
-        checkWeights();
+        if( !updateDataInfo() ) return inputDiagram;
+        checkFollowers();
+        if( inclusiveChoice ) {
+            removeSkippingActivities();
+            if( !updateDataInfo() ) return inputDiagram;
+            setOrGateways();
+        }
+
+        if( !updateDataInfo() ) return inputDiagram;
+        if( optionalActivities ) setSkippingActivities();
 
         return diagram;
     }
 
+    private boolean updateDataInfo() {
+        if( !generateRPST() ) return false;
+        generatePaths();
+        diagramHandler.setDiagram(diagram);
+//        computeTimes();
+
+        return true;
+    }
 
     private boolean generateRPST() {
+        System.out.println("DEBUG - starting RPST generation.");
         try {
             HashMap<BPMNNode, Vertex> mapping = new HashMap<>();
             idToNode = new HashMap<>();
             idToGate = new HashMap<>();
+            bondEntry = new HashMap<>();
+            bondExit = new HashMap<>();
 
             IDirectedGraph<DirectedEdge, Vertex> graph = new DirectedGraph();
             Vertex src;
@@ -103,6 +135,13 @@ public class FakeMiner {
 
             rpst = new RPST(graph);
             bottomUpRPST = new ArrayList<>();
+            parentSESE = new HashMap<>();
+            RPSTNodeToBPMNChildren = new HashMap<>();
+
+            cycles = new HashSet<>();
+            parallel = new HashSet<>();
+            exclusive = new HashSet<>();
+            inclusive = new HashSet<>();
 
             RPSTNode root = rpst.getRoot();
             LinkedList<RPSTNode> toAnalize = new LinkedList<RPSTNode>();
@@ -115,29 +154,43 @@ public class FakeMiner {
                 for( RPSTNode n : new HashSet<RPSTNode>(rpst.getChildren(root)) ) {
                     String exitID = n.getExit().getName();
                     String entryID = n.getEntry().getName();
+                    RPSTNodeToBPMNChildren.put(n, new HashSet<BPMNNode>());
                     switch (n.getType()) {
                         case R:
                             System.out.println("WARNING - rigid found.");
                             toAnalize.addLast(n);
                             return false;
-                        case T:
-                            break;
                         case P:
                             toAnalize.addLast(n);
+                        case T:
+                            if( root.getEntry().getName().equals(exitID) && root.getExit().getName().equals(entryID) ) {
+                                cycles.add(root);
+                                exclusive.remove(root);
+                                System.out.println("DEBUG - rpst node: cycles++");
+                            }
                             break;
                         case B:
-                            if( idToGate.get(entryID).getGatewayType() == Gateway.GatewayType.DATABASED ) exclusive.add(n);
-                            else if( idToGate.get(entryID).getGatewayType() == Gateway.GatewayType.PARALLEL ) parallel.add(n);
+                            bondEntry.put(n, idToGate.get(entryID));
+                            bondExit.put(n, idToGate.get(exitID));
+                            if( idToGate.get(entryID).getGatewayType() == Gateway.GatewayType.DATABASED ) {
+                                exclusive.add(n);
+                                System.out.println("DEBUG - rpst node: exclusive++");
+                            } else if( idToGate.get(entryID).getGatewayType() == Gateway.GatewayType.PARALLEL ) {
+                                parallel.add(n);
+                                System.out.println("DEBUG - rpst node: parallel++");
+                            } else if( idToGate.get(entryID).getGatewayType() == Gateway.GatewayType.INCLUSIVE ) {
+                                inclusive.add(n);
+                                System.out.println("DEBUG - rpst node: inclusive++");
+                            }
 
                             for(IDirectedEdge e : new HashSet<IDirectedEdge>(n.getFragmentEdges()) ) {
                                 bpmnSRC = idToNode.get(e.getSource().getName());
                                 bpmnTGT = idToNode.get(e.getTarget().getName());
+                                if( bpmnSRC == null || bpmnTGT == null ) System.out.println("ERROR - check this one.");
                                 parentSESE.put(bpmnSRC, n);
                                 parentSESE.put(bpmnTGT, n);
-                                if( e.getSource().getName().equalsIgnoreCase(exitID) && e.getTarget().getName().equalsIgnoreCase(entryID) ) {
-                                    cycles.add(n);
-                                    exclusive.remove(n);
-                                }
+                                RPSTNodeToBPMNChildren.get(n).add(bpmnSRC);
+                                RPSTNodeToBPMNChildren.get(n).add(bpmnTGT);
                             }
                             toAnalize.addLast(n);
                             break;
@@ -151,38 +204,213 @@ public class FakeMiner {
             return false;
         }
 
+        System.out.println("DEBUG - exclusive bonds found: " + exclusive.size());
+        System.out.println("DEBUG - parallel bonds found: " + parallel.size());
+        System.out.println("DEBUG - cycles bonds found: " + cycles.size());
+        System.out.println("DEBUG - RPST generated correctly.");
+
         return true;
     }
 
-    private void checkWeights(){
-        HashSet<RPSTNode> checked = new HashSet<>();
-        String exitID;
+    private void generatePaths() {
+        int size = bottomUpRPST.size();
+        RPSTNode bond;
         String entryID;
-        BPMNNode entry;
-        BPMNNode exit;
-        HashSet<BPMNNode> successors;
-        int weight;
+        String exitID;
 
-        for( RPSTNode node : parallel )
-            if( !checked.contains(node) ) {
-                successors = new HashSet<>();
-                entryID = node.getEntry().getName();
-                entry = idToGate.get(entryID);
-                exitID = node.getExit().getName();
-                exit = idToGate.get(exitID);
-                weight = 0;
+        skippable = new HashSet<>();
+        entryToExitPaths = new HashMap<>();
+        HashMap<BPMNNode, BPMNNode> RPSTNodeEntryToRPSTNodeExit;
 
-                successors.addAll(diagramHandler.getSuccessors(entry));
 
-                while( !successors.isEmpty() ) {
-                    for( BPMNNode s : successors ) {
-                        if( s instanceof Activity ) {
-                            if( weight == 0 ) weight = fuzzyNet.getWeight(s.getLabel());
-//                            if( fuzzyNet.getWeight(s.getLabel()) != weight && optionalTasks ) diagramHandler.makeSkippable(s);
-                        }
+        for( int i=0; i < size; i++ ) {
+            bond = bottomUpRPST.get(i);
+            entryToExitPaths.put(bond, new HashSet<ArrayList<Activity>>());
+            RPSTNodeEntryToRPSTNodeExit = new HashMap<>();
+            System.out.println("DEBUG - generating path of a bond.");
+            for( RPSTNode polygon : new HashSet<RPSTNode>(rpst.getChildren(bond)) )
+                if( polygon.getType() == TCType.P ) {
+                    for( RPSTNode rpstnode : new HashSet<RPSTNode>(rpst.getChildren(polygon)) ) {
+                        exitID = rpstnode.getExit().getName();
+                        entryID = rpstnode.getEntry().getName();
+                        RPSTNodeEntryToRPSTNodeExit.put(idToNode.get(entryID), idToNode.get(exitID));
+                    }
+                    entryToExitPaths.get(bond).add( generatePath(bond, RPSTNodeEntryToRPSTNodeExit) );
+                } else if( polygon.getType() == TCType.T ) {
+                    entryID = polygon.getEntry().getName();
+                    if( entryID.equalsIgnoreCase(bondEntry.get(bond).getId().toString()) ) skippable.add(bond);
+                }
+        }
+    }
+
+    private ArrayList<Activity> generatePath( RPSTNode bond,  HashMap<BPMNNode, BPMNNode> RPSTNodeEntryToRPSTNodeExit) {
+        ArrayList<Activity> path = new ArrayList<>();
+        int index = 0;
+        Gateway entry = bondEntry.get(bond);
+        Gateway exit = bondExit.get(bond);
+        BPMNNode tmp;
+
+        tmp = entry;
+        while( true ) {
+            do {
+                tmp = RPSTNodeEntryToRPSTNodeExit.get(tmp);
+            } while( (tmp instanceof Gateway) && (!tmp.equals(exit)) );
+            if( tmp instanceof Activity) path.add(index, (Activity)tmp);
+            else break;
+            index++;
+        }
+
+        for( int i=0; i<path.size(); i++ ) System.out.println("DEBUG - path: " + path.get(i).getLabel());
+
+        return path;
+    }
+
+    private void computeTimes() {
+        Event start = null;
+        Event end;
+
+        minTime = new HashMap<>();
+        maxTime = new HashMap<>();
+
+        for( Event e : diagram.getEvents() ) {
+            if( e.getEventType() == Event.EventType.END ) end = e;
+            if( e.getEventType() == Event.EventType.START ) start = e;
+        }
+
+        exploreDiagram(start, 1);
+
+        for( Activity a : diagram.getActivities() ) {
+            System.out.println("DEBUG - activity min times [model|log]: " + a.getLabel() + " - " + minTime.get(a) + " | " + fuzzyNet.getMinTime(a.getLabel()));
+            System.out.println("DEBUG - activity max times [model|log]: " + a.getLabel() + " - " + " o | " + fuzzyNet.getMaxTime(a.getLabel()));
+        }
+    }
+
+    private void exploreDiagram(BPMNNode node, int depth) {
+        if( !minTime.containsKey(node) ) {
+            if(node instanceof Activity) {
+                minTime.put((Activity) node, depth);
+                depth++;
+            }
+            for(BPMNNode succ : diagramHandler.getSuccessors(node)) exploreDiagram(succ, depth);
+        }
+    }
+
+    private void checkFollowers() {
+        RPSTNode root = rpst.getRoot();
+
+        for( RPSTNode child : new HashSet<RPSTNode>(rpst.getChildren(root)) ) {
+            String exitID = child.getExit().getName();
+            String entryID = child.getEntry().getName();
+            BPMNNode entry = idToNode.get(entryID);
+            BPMNNode exit = idToNode.get(exitID);
+            switch(child.getType()) {
+                case T:
+                    if( fuzzyNet.isDirectlyFollow(entry.getLabel(), exit.getLabel()) &&
+                        fuzzyNet.isEventuallyFollow(exit.getLabel(), entry.getLabel()) )
+                        System.out.println("DEBUG - check this dependency: " + entry.getLabel() + " > " + exit.getLabel() );
+                    break;
+                case P:
+                    break;
+                case B:
+                    break;
+                case R:
+                    break;
+                default:
+            }
+        }
+
+        checkInnerFollowers();
+    }
+
+    private void checkInnerFollowers() {
+        int size = bottomUpRPST.size();
+        RPSTNode bond;
+
+        Activity src, tgt;
+
+        for( int i=0; i < size; i++ ) {
+            bond = bottomUpRPST.get(i);
+
+            for( ArrayList<Activity> path : entryToExitPaths.get(bond) )
+                for( int j=0; j < (path.size()-1); ) {
+                    src = path.get(j);
+                    j++;
+                    tgt = path.get(j);
+                    if( fuzzyNet.isDirectlyFollow(src.getLabel(), tgt.getLabel()) &&
+                            fuzzyNet.isEventuallyFollow(tgt.getLabel(), src.getLabel()) )
+                        System.out.println("DEBUG - check this dependency: " + src.getLabel() + " > " + tgt.getLabel() );
+                }
+        }
+    }
+
+    private void removeSkippingActivities() {
+        removedSkippingActivity = new HashSet<>();
+
+        for( Activity a : diagram.getActivities() ) {
+            if( diagramHandler.checkAndRemoveSkippingActivity(a) ) removedSkippingActivity.add(a);
+        }
+        for( Gateway g : new HashSet<Gateway>(diagram.getGateways()) ) diagramHandler.checkFakeGateway(diagram, g);
+    }
+
+    private void setOrGateways() {
+        Set<Integer> weights;
+
+        inclusive = new HashSet<>();
+
+        for( RPSTNode parallelBond : parallel ) {
+            weights = new HashSet<>();
+            System.out.println("DEBUG - analyzing a bond.");
+
+            for( ArrayList<Activity> path : entryToExitPaths.get(parallelBond) )
+                if (!path.isEmpty()) {
+                    System.out.println("DEBUG - adding weight: " + fuzzyNet.getWeight(path.get(0).getLabel()));
+                    weights.add(fuzzyNet.getWeight(path.get(0).getLabel()));
+                }
+
+            System.out.println("DEBUG - size of weights: " + weights.size());
+            if( weights.size() > 1 ) {
+                bondEntry.get(parallelBond).setGatewayType(Gateway.GatewayType.INCLUSIVE);
+                bondExit.get(parallelBond).setGatewayType(Gateway.GatewayType.INCLUSIVE);
+                inclusive.add(parallelBond);
+            }
+        }
+
+        for( RPSTNode inclusiveBond : inclusive ) parallel.remove(inclusiveBond);
+//        for( Activity a : removedSkippingActivity ) if( !inclusive.contains(parentSESE.get(a)) )  diagramHandler.setSkipping(a);
+    }
+
+    private void setSkippingActivities() {
+        Set<BPMNNode> skipped = new HashSet<>();
+        int size = bottomUpRPST.size();
+        RPSTNode bond;
+
+        Activity src, tgt;
+        int weightSRC, weightTGT;
+
+        for( int i=0; i < size; i++ ) {
+            bond = bottomUpRPST.get(i);
+
+            for( ArrayList<Activity> path : entryToExitPaths.get(bond) )
+                for( int j=0; j < (path.size()-1); ) {
+                    do {
+                        src = path.get(j);
+                        j++;
+                        tgt = path.get(j);
+                        weightSRC = fuzzyNet.getWeight(src.getLabel());
+                        weightTGT = fuzzyNet.getWeight(tgt.getLabel());
+                    } while( (weightSRC == weightTGT) && (j != (path.size()-1)) );
+
+                    if( (weightSRC < weightTGT) && !skipped.contains(src) ) {
+                        diagramHandler.setSkipping(src);
+                        skipped.add(src);
+                    }
+
+                    if( (weightSRC > weightTGT) && !skipped.contains(tgt) ) {
+                        diagramHandler.setSkipping(tgt);
+                        skipped.add(tgt);
                     }
                 }
-            }
+        }
     }
 
 }

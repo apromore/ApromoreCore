@@ -59,21 +59,21 @@ public class LogGraph {
         XTrace trace;
         XEvent event;
 
-        String name;
-        String prevName;
+        String eventName;
+        String prevEventName;
 
         LogNode node;
         LogNode prevNode;
         LogEdge edge;
 
         int totalEvents;
-        System.out.println("DEBUG - total traces: " + totalTraces);
+//        System.out.println("DEBUG - total traces: " + totalTraces);
 
         for( tIndex = 0; tIndex < totalTraces; tIndex++ ) {
             trace = log.get(tIndex);
             totalEvents = trace.size();
-            System.out.println("DEBUG - analyzing trace: " + tIndex);
-            prevName = null;
+//            System.out.println("DEBUG - analyzing trace: " + tIndex);
+            prevEventName = null;
             prevNode = null;
             node = null;
 
@@ -81,61 +81,61 @@ public class LogGraph {
 
             for( eIndex = 0; eIndex < totalEvents; eIndex++ ) {
                 event = trace.get(eIndex);
-                name = event.getAttributes().get("concept:name").toString();
+                eventName = event.getAttributes().get("concept:name").toString();
 
-                if( !minTime.containsKey(name) ) {
-                    minTime.put(name, eIndex+1);
-                    maxTime.put(name, eIndex+1);
+                if( !minTime.containsKey(eventName) ) {
+                    minTime.put(eventName, eIndex+1);
+                    maxTime.put(eventName, eIndex+1);
                 } else {
-                    if( minTime.get(name) > (eIndex+1) ) minTime.put(name, eIndex+1);
-                    if( maxTime.get(name) < (eIndex+1) ) maxTime.put(name, eIndex+1);
+                    if( minTime.get(eventName) > (eIndex+1) ) minTime.put(eventName, eIndex+1);
+                    if( maxTime.get(eventName) < (eIndex+1) ) maxTime.put(eventName, eIndex+1);
                 }
 
 
                 for( String e : executed ) {
                     if( !eventuallyFollow.containsKey(e) ) eventuallyFollow.put(e, new HashSet<String>());
-                    eventuallyFollow.get(e).add(name);
+                    eventuallyFollow.get(e).add(eventName);
                 }
-                if( !executed.contains(name) ) executed.add(name);
+                if( !executed.contains(eventName) ) executed.add(eventName);
 
-                if( !nodes.containsKey(name) ) {
-                    node =  new LogNode(name);
-                    nodes.put(name, node);
-                } else node = nodes.get(name);
+                if( !nodes.containsKey(eventName) ) {
+                    node =  new LogNode(eventName);
+                    nodes.put(eventName, node);
+                } else node = nodes.get(eventName);
 
                 node.increaseWeight();
-                if( prevName == null ) {
-                    startEvents.add(name);
+                if( prevEventName == null ) {
+                    startEvents.add(eventName);
                     node.incStartingTimes();
                 }
 
-                if( !graph.containsKey(prevName) ) graph.put(prevName, new HashMap<String, LogEdge>());
-                if( !graph.get(prevName).containsKey(name) ) {
+                if( !graph.containsKey(prevEventName) ) graph.put(prevEventName, new HashMap<String, LogEdge>());
+                if( !graph.get(prevEventName).containsKey(eventName) ) {
                     edge = new LogEdge(prevNode, node);
                     edges.add(edge);
-                    incoming.put(name, edge);
-                    outgoing.put(prevName, edge);
-                    graph.get(prevName).put(name, edge);
+                    incoming.put(eventName, edge);
+                    outgoing.put(prevEventName, edge);
+                    graph.get(prevEventName).put(eventName, edge);
                 }
-                graph.get(prevName).get(name).increaseWeight();
+                graph.get(prevEventName).get(eventName).increaseWeight();
 
-                prevName = name;
+                prevEventName = eventName;
                 prevNode = node;
             }
 
-            name = null;
+            eventName = null;
             node = null;
 
-            if( !graph.containsKey(prevName) ) graph.put(prevName, new HashMap<String, LogEdge>());
-            if( !graph.get(prevName).containsKey(name) ) {
+            if( !graph.containsKey(prevEventName) ) graph.put(prevEventName, new HashMap<String, LogEdge>());
+            if( !graph.get(prevEventName).containsKey(eventName) ) {
                 edge = new LogEdge(prevNode, node);
                 edges.add(edge);
-                incoming.put(name, edge);
-                outgoing.put(prevName, edge);
-                graph.get(prevName).put(name, edge);
+                incoming.put(eventName, edge);
+                outgoing.put(prevEventName, edge);
+                graph.get(prevEventName).put(eventName, edge);
             }
-            graph.get(prevName).get(name).increaseWeight();
-            endEvents.add(prevName);
+            graph.get(prevEventName).get(eventName).increaseWeight();
+            endEvents.add(prevEventName);
         }
     }
 
@@ -174,6 +174,18 @@ public class LogGraph {
             diagram.addFlow(srcNode, tgtNode, Integer.toString(edge.getWeight()));
         }
 
+        System.out.println("DEBUG - directly follow relationships:");
+        for( String srcEvent : graph.keySet() )
+            for( String tgtEvent : graph.get(srcEvent).keySet() )
+                System.out.println("DEBUG - directly follow dependency holds in between: " + srcEvent + " > " + tgtEvent + "[" + graph.get(srcEvent).get(tgtEvent).getWeight() + "]");
+
+        System.out.println("DEBUG - eventually follow relationships:");
+        for( String srcEvent : eventuallyFollow.keySet() ) {
+            System.out.print("DEBUG - eventually follow dependency holds in between: " + srcEvent + " > ");
+            for( String tgtEvent : eventuallyFollow.get(srcEvent) ) System.out.print(tgtEvent + ", ");
+            System.out.println();
+        }
+
         return diagram;
     }
 
@@ -181,11 +193,11 @@ public class LogGraph {
     public boolean isStart(String name) { return startEvents.contains(name); }
     public boolean isEnd(String name) { return endEvents.contains(name); }
 
-    public boolean isDirectlyFollow(String follower, String node) {
+    public boolean isDirectlyFollow(String node, String follower) {
         return (graph.containsKey(node) && graph.get(node).containsKey(follower));
     }
 
-    public boolean isEventuallyFollow(String follower, String node) {
+    public boolean isEventuallyFollow(String node, String follower) {
         return (eventuallyFollow.containsKey(node) && eventuallyFollow.get(node).contains(follower));
     }
 
