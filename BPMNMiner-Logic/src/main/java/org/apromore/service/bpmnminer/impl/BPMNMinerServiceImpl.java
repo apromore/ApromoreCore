@@ -24,16 +24,10 @@ import java.util.*;
 import javax.swing.UIManager;
 
 import javax.inject.Inject;
-import javax.swing.*;
 
 import au.edu.qut.context.FakePluginContext;
 import au.edu.qut.util.LogOptimizer;
-import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
-import org.deckfour.xes.factory.XFactory;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.factory.XFactoryRegistry;
-import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
@@ -75,8 +69,6 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
     public String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
                                     double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
                                     double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception {
-
-		//this.LOGGER.info("discoverBPMNModel - started.");
 
         String xmlProcessModel;
 
