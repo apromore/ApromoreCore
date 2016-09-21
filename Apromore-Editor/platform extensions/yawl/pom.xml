@@ -50,7 +50,7 @@
                     <unpackBundle>false</unpackBundle>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=jdom|Saxon-HE|yawl-lib|yawleditor-layout|json;inline=true
+                            artifactId=jdom|Saxon-HE|yawl-lib|yawleditor-layout;inline=true
                         </Embed-Dependency>
                         <Import-Package>
                             !com.sun.rave.web.ui.*,
@@ -119,34 +119,10 @@
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
+            <artifactId>json-osgi</artifactId>
+            <version>20090211</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- JAXB -->
-        <!--
-        <dependency>
-            <groupId>com.sun.xml</groupId>
-            <artifactId>com.springsource.com.sun.xml.bind</artifactId>
-            <version>${jaxb-impl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-extra-osgi</artifactId>
-            <version>2.2.7-b58</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>com.springsource.javax.xml.bind</artifactId>
-            <version>${jaxb-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jvnet.jaxb2_commons</groupId>
-            <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>${jaxb2-basics-runtime.version}</version>
-        </dependency>
-        -->
-
     </dependencies>
 
 </project>
