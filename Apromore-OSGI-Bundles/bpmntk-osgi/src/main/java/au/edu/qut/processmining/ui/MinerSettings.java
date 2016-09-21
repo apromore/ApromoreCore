@@ -15,8 +15,8 @@ public class MinerSettings extends ProMPropertiesPanel {
     private MinerUIResult result;
 
     private JCheckBox inclusiveChoice;
-    private JCheckBox optionalTasks;
-    private JCheckBox recurrentTasks;
+    private JCheckBox optionalActivities;
+    private JCheckBox recurrentActivities;
     private JCheckBox unbalancedPaths;
     private JCheckBox applyCleaning;
 
@@ -30,11 +30,11 @@ public class MinerSettings extends ProMPropertiesPanel {
         unbalancedPaths = this.addCheckBox("Unbalanced Paths", true);
         unbalancedPaths.addChangeListener(minerListener);
 
-        optionalTasks = this.addCheckBox("Optional Activities", true);
-        optionalTasks.addChangeListener(minerListener);
+        optionalActivities = this.addCheckBox("Optional Activities", true);
+        optionalActivities.addChangeListener(minerListener);
 
-        recurrentTasks = this.addCheckBox("Recurrent Activities", false);
-        recurrentTasks.addChangeListener(minerListener);
+        recurrentActivities = this.addCheckBox("Recurrent Activities", false);
+        recurrentActivities.addChangeListener(minerListener);
 
         inclusiveChoice = this.addCheckBox("Inclusive Choice", false);
         inclusiveChoice.addChangeListener(minerListener);
@@ -42,8 +42,8 @@ public class MinerSettings extends ProMPropertiesPanel {
         applyCleaning = this.addCheckBox("Apply Cleaning", false);
         applyCleaning.addChangeListener(minerListener);
 
-        result.setOptionalTasks(optionalTasks.isSelected());
-        result.setRecurrentTasks(recurrentTasks.isSelected());
+        result.setOptionalActivities(optionalActivities.isSelected());
+        result.setRecurrentActivities(recurrentActivities.isSelected());
         result.setInclusiveChoice(inclusiveChoice.isSelected());
         result.setUnbalancedPaths(unbalancedPaths.isSelected());
         result.setApplyCleaning(applyCleaning.isSelected());
@@ -57,8 +57,8 @@ public class MinerSettings extends ProMPropertiesPanel {
     private class MinerSettingsListener implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
-            result.setOptionalTasks(optionalTasks.isSelected());
-            result.setRecurrentTasks(recurrentTasks.isSelected());
+            result.setOptionalActivities(optionalActivities.isSelected());
+            result.setRecurrentActivities(recurrentActivities.isSelected());
             result.setInclusiveChoice(inclusiveChoice.isSelected());
             result.setUnbalancedPaths(unbalancedPaths.isSelected());
             result.setApplyCleaning(applyCleaning.isSelected());

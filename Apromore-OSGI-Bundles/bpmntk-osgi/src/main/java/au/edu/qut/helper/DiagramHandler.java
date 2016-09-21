@@ -27,6 +27,9 @@ public class DiagramHandler {
     private Map<BPMNNode, HashSet<BPMNNode>> successors;
     private Map<BPMNNode, HashSet<BPMNNode>> predecessors;
 
+    private Map<BPMNNode, HashSet<BPMNNode>> logicSuccessors;
+    private Map<BPMNNode, HashSet<BPMNNode>> logicPredecessors;
+
     public DiagramHandler(){
         diagram = null;
         nodes = null;
@@ -847,15 +850,15 @@ public class DiagramHandler {
         successors = new HashMap<>();
         BPMNNode src, tgt;
 
+        for( BPMNNode node : diagram.getNodes() ) {
+            successors.put(node, new HashSet<BPMNNode>());
+            predecessors.put(node, new HashSet<BPMNNode>());
+            nodes.put(node.getLabel(), node);
+        }
+
         for( Flow f : diagram.getFlows()) {
             src = f.getSource();
             tgt = f.getTarget();
-
-            nodes.put(src.getLabel(), src);
-            nodes.put(tgt.getLabel(), tgt);
-
-            if( !successors.containsKey(src) ) successors.put(src, new HashSet<BPMNNode>());
-            if( !predecessors.containsKey(tgt) ) predecessors.put(tgt, new HashSet<BPMNNode>());
 
             successors.get(src).add(tgt);
             predecessors.get(tgt).add(src);
@@ -865,5 +868,62 @@ public class DiagramHandler {
     public Set<BPMNNode> getPredecessors(BPMNNode node) { return new HashSet<>(predecessors.get(node)); }
     public Set<BPMNNode> getSuccessors(BPMNNode node) { return new HashSet<>(successors.get(node)); }
 
+    public BPMNNode getSuccessor(Activity a) { return (new ArrayList<BPMNNode>(successors.get(a))).get(0); }
+    public BPMNNode getPredecessor(Activity a) { return (new ArrayList<BPMNNode>(predecessors.get(a))).get(0); }
+
+
+    public boolean checkAndRemoveSkippingActivity(Activity a) {
+        BPMNEdge<? extends BPMNNode, ? extends BPMNNode> toRemove = null;
+        BPMNNode prev = getPredecessor(a);
+        BPMNNode succ = getSuccessor(a);
+
+        if( (prev instanceof Gateway) && (succ instanceof Gateway) && (successors.get(prev).size() == 2) ) {
+            for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getOutEdges(prev) )
+                if( e.getTarget().equals(succ) ) {
+                    toRemove = e;
+                    break;
+                }
+
+            if( toRemove != null ) {
+                diagram.removeEdge(toRemove);
+                System.out.println("DEBUG - removed skypping activity: " + a.getLabel());
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void removeEdge(BPMNNode src, BPMNNode tgt) {
+        BPMNEdge<? extends BPMNNode, ? extends BPMNNode> toRemove = null;
+
+        for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getOutEdges(src) )
+            if( e.getTarget().equals(tgt) ) {
+                toRemove = e;
+                break;
+            }
+
+        if( toRemove != null ) diagram.removeEdge(toRemove);
+    }
+
+    public void setSkipping(Activity a) {
+        System.out.println("DEBUG - adding skipping activity: " + a.getLabel());
+        BPMNNode prev = getPredecessor(a);
+        BPMNNode succ = getSuccessor(a);
+        Gateway  gEntry = diagram.addGateway("", Gateway.GatewayType.DATABASED);
+        Gateway  gExit = diagram.addGateway("", Gateway.GatewayType.DATABASED);
+        Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> toRemove = new HashSet();
+
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getInEdges(a)) toRemove.add(e);
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getOutEdges(a)) toRemove.add(e);
+
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : toRemove) diagram.removeEdge(e);
+
+        diagram.addFlow(gEntry, a, "");
+        diagram.addFlow(a, gExit, "");
+        diagram.addFlow(gEntry, gExit, "");
+        diagram.addFlow(prev, gEntry, "");
+        diagram.addFlow(gExit, succ, "");
+    }
 
 }

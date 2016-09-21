@@ -4,22 +4,22 @@ package au.edu.qut.processmining.ui;
  * Created by Adriano on 14/06/2016.
  */
 public class MinerUIResult {
-    private boolean recurrentTasks;
-    private boolean optionalTasks;
+    private boolean recurrentActivities;
+    private boolean optionalActivities;
     private boolean inclusiveChoice;
     private boolean setUnbalancedPaths;
     private boolean applyCleaning;
 
-    public boolean isOptionalTasks() { return optionalTasks; }
-    public void setOptionalTasks(boolean optionalTasks) { this.optionalTasks = optionalTasks; }
+    public boolean isOptionalActivities() { return optionalActivities; }
+    public void setOptionalActivities(boolean optionalActivities) { this.optionalActivities = optionalActivities; }
 
     public boolean isInclusiveChoice() {
         return inclusiveChoice;
     }
     public void setInclusiveChoice(boolean inclusiveChoice) { this.inclusiveChoice = inclusiveChoice; }
 
-    public boolean isRecurrentTasks() { return recurrentTasks; }
-    public void setRecurrentTasks(boolean recurrentTasks) { this.recurrentTasks = recurrentTasks; }
+    public boolean isRecurrentActivities() { return recurrentActivities; }
+    public void setRecurrentActivities(boolean recurrentActivities) { this.recurrentActivities = recurrentActivities; }
 
     public boolean isUnbalancedPaths() { return setUnbalancedPaths; }
     public void setUnbalancedPaths(boolean setUnbalancedPaths) { this.setUnbalancedPaths = setUnbalancedPaths; }
