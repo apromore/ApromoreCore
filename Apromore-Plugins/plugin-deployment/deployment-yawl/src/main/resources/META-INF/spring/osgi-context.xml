@@ -30,8 +30,9 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
        
     <!-- enable classpath scanning -->
-	<context:component-scan base-package="org.apromore.plugin.deployment.yawl" />   
+    <context:component-scan base-package="org.apromore.plugin.deployment.yawl" />   
 
     <service ref="yawlDeploymentPlugin" interface="org.apromore.plugin.deployment.DeploymentPlugin" auto-export="interfaces" />
+    <service ref="yawlDeploymentPortalPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
       
 </beans:beans>
