@@ -65,7 +65,6 @@ public class MenuController extends Menubar {
         Menuitem editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
         Menuitem editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
         Menuitem deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
-        Menuitem deployMI = (Menuitem) this.menuB.getFellow("processDeploy");
         Menuitem copyMI = (Menuitem) this.menuB.getFellow("processCopy");
         copyMI.setDisabled(true);
         Menuitem pasteMI = (Menuitem) this.menuB.getFellow("processPaste");
@@ -109,12 +108,6 @@ public class MenuController extends Menubar {
                 deleteSelectedElements();
             }
         });
-        deployMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                deployProcessModel();
-            }
-        });
 
         // If there are portal plugins, create the menus for launching them
         if (!PortalPluginResolver.resolve().isEmpty()) {
@@ -153,23 +146,6 @@ public class MenuController extends Menubar {
         }
     }
 
-
-    /**
-     * Deploy process mdel to a running process engine
-     * @throws InterruptedException
-     * @throws WrongValueException
-     */
-    protected void deployProcessModel() throws WrongValueException, InterruptedException, ParseException {
-        this.mainC.eraseMessage();
-        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedElementsAndVersions();
-        if (selectedProcessVersions.size() == 1 && selectedProcessVersions.keySet().iterator().next() instanceof ProcessSummaryType) {
-            Map<ProcessSummaryType, List<VersionSummaryType>> processSummaryVersions = new HashMap<>();
-            processSummaryVersions.put((ProcessSummaryType) selectedProcessVersions.keySet().iterator().next(), selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()));
-            new DeployProcessModelController(this.mainC, processSummaryVersions.entrySet().iterator().next());
-        } else {
-            this.mainC.displayMessage("Please select exactly one process model!");
-        }
-    }
 
     protected void createModel() throws InterruptedException {
         this.mainC.eraseMessage();
