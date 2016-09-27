@@ -42,6 +42,8 @@ public class CandidatesEntitiesController {
     private Listbox candidates;
     private Button cancelButton;
     private Button nextButton;
+    private Button selectButton;
+    private Button deselectButton;
 
     private List<String> listCandidates;
     private boolean[] selected;
@@ -64,6 +66,8 @@ public class CandidatesEntitiesController {
 
         this.cancelButton = (Button) this.candidateEntitiesW.getFellow("entityCancelButton");
         this.nextButton = (Button) this.candidateEntitiesW.getFellow("entityNextButton");
+        this.selectButton= (Button) this.candidateEntitiesW.getFellow("selectButton");
+        this.deselectButton= (Button) this.candidateEntitiesW.getFellow("deselectButton");
 
         updateActions();
 
@@ -82,12 +86,36 @@ public class CandidatesEntitiesController {
                 next();
             }
         });
+        this.selectButton.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                selectAll();
+            }
+        });
+        this.deselectButton.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                deselectAll();
+            }
+        });
 
         if(listCandidates != null && listCandidates.size() > 0) {
             this.candidateEntitiesW.doModal();
         }else {
             next();
         }
+    }
+
+    private void selectAll() {
+        for(int i = 0; i < selected.length; i++) {
+            selected[i] = true;
+            candidates.selectAll();
+        }
+    }
+
+    private void deselectAll() {
+        for(int i = 0; i < selected.length; i++) {
+            selected[i] = false;
+        }
+        candidates.setSelectedIndex(-1);
     }
 
     protected void cancel() {
