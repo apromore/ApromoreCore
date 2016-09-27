@@ -26,6 +26,10 @@
             </listhead>
         </listbox>
         <div align="center">
+            <button id="selectButton" label="Select All"></button>
+            <button id="deselectButton" label="Deselect All"></button>
+        </div>
+        <div align="center">
             <button id="entityCancelButton" label="Cancel" image="img/cancel2.png"></button>
             <button id="entityNextButton" label="Ok" image="img/ok.png"></button>
         </div>
