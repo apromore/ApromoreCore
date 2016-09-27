@@ -25,6 +25,9 @@ import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.plugins.bpmn.BpmnDefinitions;
 
+import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+
 /**
  * Created by Adriano on 29/10/2015.
  */
@@ -38,6 +41,17 @@ public class BPMNDiagramExporterImpl implements BPMNDiagramExporter {
 
         UIContext context = new UIContext();
         UIPluginContext uiPluginContext = context.getMainPluginContext();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    UIManager.setLookAndFeel(new MetalLookAndFeel());
+                } catch (UnsupportedLookAndFeelException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
