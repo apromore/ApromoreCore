@@ -165,7 +165,9 @@ public class BPMNMinerController {
 
             this.modelName = (Textbox) this.bpmnMinerW.getFellow("bpmnMinerModelName");
             this.miningAlgorithms = (Selectbox) this.bpmnMinerW.getFellow("bpmnMinerMiningAlgorithm");
-            this.miningAlgorithms.setModel(new ListModelArray<Object>(arrayMiningAlgorithms));
+            ListModelArray listModelArray = new ListModelArray<Object>(arrayMiningAlgorithms);
+            listModelArray.addToSelection(arrayMiningAlgorithms[2]);
+            this.miningAlgorithms.setModel(listModelArray);
 
             this.dependencyAlgorithms = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerDependencyAlgorithm");
             this.sortLog = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerSort");

@@ -1747,7 +1747,7 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>bpmnminer</artifactId>
-            <version>2.0</version>
+            <version>3.0</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
