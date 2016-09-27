@@ -302,16 +302,16 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
      */
     private void sortInsertion(ProcessSummaryType process, SummariesType sortedList) {
         int i = 0;
-        while (check(sortedList, i)) {
+        while (check(process, sortedList, i)) {
             i++;
         }
         sortedList.getSummary().add(i, process);
     }
 
-    private boolean check(SummariesType sortedList, int i) {
-        if(sortedList.getSummary().get(i) instanceof ProcessSummaryType) {
+    private boolean check(ProcessSummaryType process, SummariesType sortedList, int i) {
+        if(i < sortedList.getSummary().size() && sortedList.getSummary().get(i) instanceof ProcessSummaryType) {
             ProcessSummaryType processSummaryType = (ProcessSummaryType) sortedList.getSummary().get(i);
-            return i < sortedList.getSummary().size() && processSummaryType.getVersionSummaries().get(0).getScore() > process.getVersionSummaries().get(0).getScore();
+            return processSummaryType.getVersionSummaries().get(0).getScore() > process.getVersionSummaries().get(0).getScore();
         }
         return false;
     }
