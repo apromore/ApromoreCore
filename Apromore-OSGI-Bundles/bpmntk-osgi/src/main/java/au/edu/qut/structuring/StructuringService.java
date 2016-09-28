@@ -98,6 +98,7 @@ public class StructuringService {
         try {
             this.structureDiagram();
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("ERROR - impossible structure diagram");
             return diagram;
         }
@@ -410,8 +411,8 @@ public class StructuringService {
                 iBPStruct spi = new iBPStruct(  StructuringCore.Policy.valueOf(policy),
                         maxDepth, maxSolutions, maxChildren, maxStates,
                         maxMinutes, timeBounded, keepBisimulation, forceStructuring);
-                String pLabel = (processID == null ? "top-level" : originalNodes.get(processID).getLabel());
-                System.out.println("DEBUG - structuring process(" + processID + ")(" + pLabel + ") - " + nodes.size() + " : " + edges.size());
+//                String pLabel = (processID == null ? "top-level" : originalNodes.get(processID).getLabel());
+//                System.out.println("DEBUG - structuring process(" + processID + ")(" + pLabel + ") - " + nodes.size() + " : " + edges.size());
                 spi.setProcess(nodes, flows);
                 spi.structure();
                 structuredDiagram = spi.getDiagram();
@@ -419,7 +420,7 @@ public class StructuringService {
                 diagramHandler.fixSoundness(structuredDiagram);
             }
         } catch(Exception e) {
-            System.err.print(e);
+            e.printStackTrace();
             structuredDiagram = null;
         }
 
