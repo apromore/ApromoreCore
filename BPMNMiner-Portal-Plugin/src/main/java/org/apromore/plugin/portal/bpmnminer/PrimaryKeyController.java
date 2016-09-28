@@ -95,7 +95,6 @@ public class PrimaryKeyController {
             if(keyList.length > 1) {
                 Selectbox selectbox = new Selectbox();
                 ListModelArray listModelArray = new ListModelArray<Object>(keyList);
-                listModelArray.addToSelection(keyList[0]);
                 selectbox.setModel(listModelArray);
                 selectbox.setId("" + dataIndex);
                 selectbox.setParent(row);
