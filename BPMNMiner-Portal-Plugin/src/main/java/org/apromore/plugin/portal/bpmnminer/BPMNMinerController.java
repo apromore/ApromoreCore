@@ -285,6 +285,7 @@ public class BPMNMinerController {
             }else {
                 erModel = new DiscoverERmodel();
                 listCandidates = erModel.generateAllAttributes(log);
+                Collections.sort(listCandidates);
 
                 new CandidatesEntitiesController(this, listCandidates);
             }
