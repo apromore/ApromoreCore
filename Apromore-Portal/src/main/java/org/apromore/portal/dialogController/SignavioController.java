@@ -251,8 +251,18 @@ public class SignavioController extends BaseController {
                     Treecell cell = new Treecell(difference.getString("sentence"));
                     row.appendChild(cell);
 
-                    onCreateRuns("model 1", difference.optJSONObject("runsM1"), item, "oryxEditor1");
-                    onCreateRuns("model 2", difference.optJSONObject("runsM2"), item, "oryxEditor2");
+                    String clean1 = "oryxEditor1.cleanDifferences()";
+                    String clean2 = "oryxEditor2.cleanDifferences()";
+
+                    String sent1 = onCreateSentence("model 1", difference.optJSONObject("runsM1"), "oryxEditor1");
+                    String sent2 = onCreateSentence("model 2", difference.optJSONObject("runsM2"), "oryxEditor2");
+
+                    if(sent1.length() > 0 && sent2.length() > 0)
+                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1 + ";"+ sent2);
+                    else if(sent1.length() > 0)
+                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1);
+                    else if(sent2.length() > 0)
+                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent2);
 
                     treechildren.appendChild(item);
                 }
@@ -265,8 +275,8 @@ public class SignavioController extends BaseController {
         }
     }
 
-    private void onCreateRuns(final String modelName, JSONObject runsM1, Treeitem item, String oryxEditor) throws JSONException {
-
+    private String onCreateRuns(final String modelName, JSONObject runsM1, Treeitem item, String oryxEditor) throws JSONException {
+        String sentence = "";
         if (runsM1 != null) {
             // Add UI for these runs
             Treechildren m1children = item.getTreechildren();
@@ -310,10 +320,11 @@ public class SignavioController extends BaseController {
                 Treecell runCell = new Treecell();
                 runRow.appendChild(runCell);
 
+
                 Button button = new Button("Run " + j);
                 final int jj = j;
                 button.setWidgetListener("onClick", oryxEditor + ".highlightDifferences('Run " + jj + "'," + run.getJSONObject("colorsBPMN") + ")");
-
+                sentence = oryxEditor + ".highlightDifferences('Run " + jj + "'," + run.getJSONObject("colorsBPMN") + ")";
                 runCell.appendChild(button);
 
                 /*
@@ -328,6 +339,38 @@ public class SignavioController extends BaseController {
             }
             LOGGER.info("Fetched runs");
         }
+
+        return sentence;
+    }
+
+    private String onCreateSentence(final String modelName, JSONObject runsM1, String oryxEditor) throws JSONException {
+        String sentence = "";
+        if (runsM1 != null) {
+            LOGGER.info("About to fetch runs");
+            JSONArray runs = runsM1.getJSONArray("runs");
+            LOGGER.info("Runs " + runs);
+            for (int j=0; j < runs.length(); j++) {
+                LOGGER.info("About to fetch run " + j);
+                JSONObject run = runs.getJSONObject(j);
+                LOGGER.info("Run " + j + " " + run);
+
+                final int jj = j;
+                sentence = oryxEditor + ".highlightDifferences('Run " + jj + "'," + run.getJSONObject("colorsBPMN") + ")";
+
+                /*
+                LOGGER.info("About to fetch colorsBPMN");
+                final JSONObject colorsBPMN = run.getJSONObject("colorsBPMN");
+                LOGGER.info("Fetched colorsBPMN");
+                for (String colorBPMN: new Iterable<String>(){ public Iterator<String> iterator() { return colorsBPMN.keys(); }}) {
+                    LOGGER.info("  " + colorBPMN + " -> " + colorsBPMN.getString(colorBPMN));
+                }
+                LOGGER.info("Logged colorsBPMN");
+                */
+            }
+            LOGGER.info("Fetched runs");
+        }
+
+        return sentence;
     }
 
     /**
