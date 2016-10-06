@@ -218,6 +218,7 @@ public class iBPStruct {
             System.out.println("DEBUG - got " + rigids.size() + " rigids.");
         } catch( Exception e ) {
             System.out.println("ERROR - jbpt thrown an exception. Structuring the whole diagram.");
+            System.out.println("DEBUG - backing up and re-trying.");
             //e.printStackTrace(System.out);
             graph = backup;
             rigids = new HashSet<>();
