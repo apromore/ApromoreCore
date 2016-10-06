@@ -79,8 +79,8 @@ public class StructuringService {
                                         boolean keepBisimulation,
                                         boolean forceStructuring) {
 
-        this.diagram = diagramHandler.copyDiagram(diagram);
-//        this.diagram = diagram;
+//        this.diagram = diagramHandler.copyDiagram(diagram);
+        this.diagram = diagram;
         this.policy = policy;
         this.maxDepth = maxDepth;
         this.maxSolutions = maxSolutions;
@@ -149,7 +149,7 @@ public class StructuringService {
          **/
         diagramHandler.fixImplicitGateways(diagram);
         diagramHandler.removeDoubleEdges(diagram);
-        diagramHandler.collapseSplitGateways(diagram);
+//        diagramHandler.collapseSplitGateways(diagram);
         diagramHandler.removeDoubleEdges(diagram);
 
         removeMultipleStartEvents();
