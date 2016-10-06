@@ -90,6 +90,18 @@
                         console.log('Logged run');
                     }
 
+                    ORYX.Editor.prototype.cleanDifferences = function() {
+                        console.log('cleaning differences');
+
+                        // Set selection properties for highlighted elements
+                        this._canvas.getChildShapes().each(function (shape) {
+                            shape.setProperty("selected", false);
+                            shape.setProperty("selectioncolor", null);
+                        }.bind(this));
+
+                        this._canvas.update();
+                    }
+
                     var oryxEditor, oryxEditor2;
 
                     // This function is called upon load of all Oryx dependencies
