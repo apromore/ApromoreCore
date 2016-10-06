@@ -39,8 +39,8 @@ public class ApromoreCompareMM {
 		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, new HashSet<String>(model1.getReader().mapNew2OldLbls.values()), new HashSet<String>(model2.getReader().mapNew2OldLbls.values()));
 		verbalizer.verbalize();
 		
-		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
-		System.out.println(verbalizer.getStatements());
+//		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
+//		System.out.println(verbalizer.getStatements());
 	}
 
 	public static byte[] getFileAsArray(String fileName) {
@@ -152,7 +152,7 @@ public class ApromoreCompareMM {
 		PartialSynchronizedProduct<Integer> psp = new PartialSynchronizedProduct<>(pnmlpes1, pnmlpes2);
 		PartialSynchronizedProduct<Integer> pre = psp.perform();
 
-		write(psp.toDot(), "psp1.dot");
+//		write(psp.toDot(), "psp1.dot");
 		
 		HashSet<String> commonLabels = new HashSet<>(pnmlpes1.getLabels());
 		commonLabels.retainAll(pnmlpes2.getLabels());
@@ -169,7 +169,7 @@ public class ApromoreCompareMM {
 		// psp.setVerbalizer(verbalizer);
 		// pre.prune();
 
-		write(psp.toDot(), "psp.dot");
+//		write(psp.toDot(), "psp.dot");
 
 		return verbalizer;
 	}
