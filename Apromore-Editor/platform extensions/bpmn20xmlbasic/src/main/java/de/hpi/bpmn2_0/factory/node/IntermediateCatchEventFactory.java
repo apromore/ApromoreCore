@@ -339,9 +339,8 @@ public class IntermediateCatchEventFactory extends AbstractShapeFactory {
 			return;
 		}
 
+                Activity a = (Activity) activity.getNode();
 		IntermediateCatchEvent ice = (IntermediateCatchEvent) event.getNode();
-//		System.out.println("Event class- " + event.getClass().getSimpleName());
-
 		BoundaryEvent bEvent = new BoundaryEvent();
 
 		/* duplicating the intermediate catch event into the boundary event */
@@ -349,19 +348,18 @@ public class IntermediateCatchEventFactory extends AbstractShapeFactory {
 		bEvent.setId(ice.getId());
 		bEvent.setName(ice.getName());
 		bEvent.getEventDefinition().addAll(ice.getEventDefinition());
-		bEvent.setAttachedToRef((Activity) activity.getNode());
-		((Activity) activity.getNode()).getBoundaryEventRefs().add(bEvent);
+		bEvent.setAttachedToRef(a);
+		a.getBoundaryEventRefs().add(bEvent);
 		bEvent.getAttachedToRef().getAttachedBoundaryEvents().addAll(bEvent.getAttachedToRef().getBoundaryEventRefs());
 		bEvent.setCancelActivity(ice.getCancelActivity());
 		bEvent.setParallelMultiple(ice.isParallelMultiple());
 
 		for(de.hpi.bpmn2_0.model.connector.Edge e : ice.getOutgoing()) bEvent.getOutgoing().add(e);
-		bEvent.setSubProcess(ice.getSubProcess());
-//		System.out.println("subProcess- SET: " + ((bEvent.getSubProcess() == null) ? "top-Level" : bEvent.getSubProcess().getId()) );
+		bEvent.setSubProcess(a.getSubProcess());
 
 		bEvent.setSubChoreography(ice.getSubChoreography());
-		bEvent.setProcessid(ice.getProcessid());
-		bEvent.setProcess(ice.getProcess());
+		bEvent.setProcessid(a.getProcessid());
+		bEvent.setProcess(a.getProcess());
 		for(Object o : ice.getAny()) bEvent.getAny().add(o);
 		for(de.hpi.bpmn2_0.model.extension.PropertyListItem p : ice.getAdditionalProperties()) bEvent.getAdditionalProperties().add(p);
 		for(de.hpi.bpmn2_0.model.connector.SequenceFlow f : ice.get_outgoingSequenceFlows()) bEvent.get_outgoingSequenceFlows().add(f);
@@ -382,11 +380,5 @@ public class IntermediateCatchEventFactory extends AbstractShapeFactory {
 				bEvent.getLane().getFlowNodeRef().add(bEvent);
 			}
 		}
-
-//		System.out.println(bEvent.getId() + " attachedTo " + bEvent.getAttachedToRef().getId());
-//		System.out.println(bEvent.getId() + " boundary event refs: " + bEvent.getAttachedToRef().getBoundaryEventRefs());
-//		System.out.println(bEvent.getId() + " attached boundary event refs: " + bEvent.getAttachedToRef().getAttachedBoundaryEvents());
-//		System.out.println(bEvent.getAttachedToRef().getId() + " outgoing " + bEvent.getOutgoing());
-
 	}
 }
