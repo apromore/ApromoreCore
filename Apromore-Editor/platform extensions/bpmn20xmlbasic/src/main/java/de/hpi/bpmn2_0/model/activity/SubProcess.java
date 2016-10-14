@@ -34,6 +34,7 @@ import de.hpi.bpmn2_0.model.connector.Association;
 import de.hpi.bpmn2_0.model.connector.Edge;
 import de.hpi.bpmn2_0.model.data_object.DataObject;
 import de.hpi.bpmn2_0.model.data_object.DataStore;
+import de.hpi.bpmn2_0.model.event.BoundaryEvent;
 import de.hpi.bpmn2_0.model.gateway.ParallelGateway;
 import de.hpi.bpmn2_0.transformation.Visitor;
 
@@ -89,7 +90,14 @@ public class SubProcess extends Activity implements ContainerElement,
     public void addChild(BaseElement child) {
         /* Set sub process reference */
         if (child instanceof FlowElement) {
-            this.setSubProcess(this);
+            ((FlowElement) child).setSubProcess(this);
+
+            /* Boundary events of the children are also within the subprocess */
+            if (child instanceof Activity) {
+                for (BoundaryEvent boundaryEvent: ((Activity) child).getBoundaryEventRefs()) {
+                    boundaryEvent.setSubProcess(this);
+                }
+            }
         }
 
         /* Insert into appropriate list */

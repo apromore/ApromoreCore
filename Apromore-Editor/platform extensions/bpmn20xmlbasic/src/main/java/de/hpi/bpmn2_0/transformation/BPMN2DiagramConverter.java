@@ -192,12 +192,7 @@ public class BPMN2DiagramConverter {
                         if (that.getAttachedToRef() == null) {
                             throw new IllegalArgumentException(that.getId() + " has no attachedToRef attribute");
                         }
-                        logger.info(that.getId() + " attachedTo " + that.getAttachedToRef().getId());
-                        logger.info(that.getId() + " boundary event refs: " + that.getAttachedToRef().getBoundaryEventRefs());
-                        logger.info(that.getId() + " attached boundary event refs: " + that.getAttachedToRef().getAttachedBoundaryEvents());
                         that.getAttachedToRef().getAttachedBoundaryEvents().addAll(that.getAttachedToRef().getBoundaryEventRefs());
-                        logger.info(that.getId() + " new attached boundary event refs: " + that.getAttachedToRef().getAttachedBoundaryEvents());
-                        logger.info(that.getAttachedToRef().getId() + " outgoing " + that.getOutgoing());
                     }
                 });
             }
@@ -322,7 +317,7 @@ public class BPMN2DiagramConverter {
         Map<FlowNode, BasicShape>      subProcessShapeMap    = new HashMap<>();
 
         for (final FlowElement flowElement: flowElements) {
-            System.out.println("Analyzing flow element id " + flowElement.getId());
+            logger.fine("Analyzing flow element id " + flowElement.getId());
             BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(shape, bpmndiMap, absentInConfiguration, originX, originY);
             DiagramElement diagramElement = bpmndiMap.get(flowElement);
             if(diagramElement == null) continue;
@@ -358,7 +353,7 @@ public class BPMN2DiagramConverter {
             }
         }
     }
-    
+
     public void getBPMN(String bpmnString, String encoding, OutputStream jsonStream) {
         // Parse BPMN from XML to JAXB
         Unmarshaller unmarshaller;
@@ -405,14 +400,14 @@ public class BPMN2DiagramConverter {
      */
     public static void main(String[] args) throws JAXBException, JSONException {
         try {
-            logger.info("Starting test for " + args[0]);
+            logger.fine("Starting test for " + args[0]);
 
             // Parse BPMN from XML to JAXB
             Unmarshaller unmarshaller = newContext().createUnmarshaller();
             unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
             Definitions definitions = unmarshaller.unmarshal(new StreamSource(new File(args[0])), Definitions.class).getValue();
 
-            logger.fine("Parsed BPMN");
+            logger.finer("Parsed BPMN");
 
             // Convert BPMN to JSON
             BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
@@ -422,12 +417,12 @@ public class BPMN2DiagramConverter {
 
             List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
 
-            logger.fine("Diagrams=" + diagrams);
+            logger.finer("Diagrams=" + diagrams);
             for (BasicDiagram diagram : diagrams) {
                 System.out.println(diagram.getString());
             }
 
-            logger.info("Completed test for " + args[0]);
+            logger.fine("Completed test for " + args[0]);
         } catch (Throwable t) {
             t.printStackTrace();
         }
