@@ -8,18 +8,18 @@ import java.util.concurrent.CancellationException;
 /**
  * Created by Adriano on 14/06/2016.
  */
-public class MinerUI {
+public class OptimizerUI {
 
-    public MinerUIResult showGUI(UIPluginContext context) {
+    public OptimizerUIResult showGUI(UIPluginContext context) {
 
-        MinerSettings minerSettings = new MinerSettings();
-        TaskListener.InteractionResult guiResult = context.showWizard("Select Optimizer Settings", true, true, minerSettings);
+        OptimizerSettings optimizerSettings = new OptimizerSettings();
+        TaskListener.InteractionResult guiResult = context.showWizard("Select Optimizer Settings", true, true, optimizerSettings);
 
         if( guiResult == TaskListener.InteractionResult.CANCEL ) {
             context.getFutureResult(0).cancel(true);
             throw new CancellationException("The wizard has been cancelled.");
         }
 
-        return minerSettings.getSelections();
+        return optimizerSettings.getSelections();
     }
 }

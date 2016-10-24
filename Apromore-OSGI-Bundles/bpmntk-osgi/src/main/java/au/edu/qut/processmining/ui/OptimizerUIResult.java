@@ -3,7 +3,7 @@ package au.edu.qut.processmining.ui;
 /**
  * Created by Adriano on 14/06/2016.
  */
-public class MinerUIResult {
+public class OptimizerUIResult {
     private boolean recurrentActivities;
     private boolean optionalActivities;
     private boolean inclusiveChoice;

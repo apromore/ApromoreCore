@@ -7,6 +7,12 @@ import au.edu.qut.structuring.core.StructuringCore;
  */
 public class iBPStructUIResult {
 
+    protected static final int MAX_DEPTH = 100;
+    protected static final int MAX_CHILDREN = 10;
+    protected static final int MAX_SOL = 500;
+    protected static final int MAX_STATES = 100;
+    protected static final int MAX_MINUTES = 2;
+
     private StructuringCore.Policy policy;
     private int maxDepth;
     private int maxSol;
@@ -16,6 +22,18 @@ public class iBPStructUIResult {
     private boolean timeBounded;
     private boolean forceStructuring;
     private boolean keepBisimulation;
+
+    public iBPStructUIResult() {
+        policy = StructuringCore.Policy.ASTAR;
+        maxDepth = MAX_DEPTH;
+        maxSol = MAX_SOL;
+        maxChildren = MAX_CHILDREN;
+        maxStates = MAX_STATES;
+        maxMinutes = MAX_MINUTES;
+        keepBisimulation = true;
+        timeBounded = true;
+        forceStructuring = false;
+    }
 
 
     public boolean isForceStructuring() { return forceStructuring; }
