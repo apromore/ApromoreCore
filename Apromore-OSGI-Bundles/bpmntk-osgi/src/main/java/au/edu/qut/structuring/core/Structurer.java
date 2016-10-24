@@ -45,6 +45,10 @@ public class Structurer implements Runnable {
         StructuringState best;
 
         if( solutions.isEmpty() ) {
+            if( zombies.isEmpty() ) {
+                System.out.println("WARNING - no solutions found, returning the initial rigid.");
+                return iState.getGraph();
+            }
             best = Collections.max(zombies);
             System.out.println("WARNING - no more move allowed. Maximum structuring reached with " + best.getGraph().getAlivePaths().size() + " paths.");
         } else best = Collections.min(solutions);
