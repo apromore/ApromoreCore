@@ -1,8 +1,8 @@
 package au.edu.qut.promplugins;
 
-import au.edu.qut.processmining.miner.FakeMiner;
-import au.edu.qut.processmining.ui.MinerUI;
-import au.edu.qut.processmining.ui.MinerUIResult;
+import au.edu.qut.processmining.repairing.Optimizer;
+import au.edu.qut.processmining.ui.OptimizerUI;
+import au.edu.qut.processmining.ui.OptimizerUIResult;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -30,8 +30,8 @@ public class OptimizerPlugin {
     )
     @PluginVariant(variantLabel = "Optimize BPMNDiagram", requiredParameterLabels = {0, 1})
     public static BPMNDiagram optimizeDiagram(UIPluginContext context, BPMNDiagram diagram, XLog log) {
-        MinerUI gui = new MinerUI();
-        MinerUIResult result = gui.showGUI(context);
+        OptimizerUI gui = new OptimizerUI();
+        OptimizerUIResult result = gui.showGUI(context);
 
         System.out.println("Optimizer - [settings] Inclusive Choice: " + result.isInclusiveChoice());
         System.out.println("Optimizer - [settings] Optional Tasks: " + result.isOptionalActivities());
@@ -39,8 +39,8 @@ public class OptimizerPlugin {
         System.out.println("Optimizer - [settings] Unbalanced Paths: " + result.isUnbalancedPaths());
         System.out.println("Optimizer - [settings] Apply Cleaning: " + result.isApplyCleaning());
 
-        FakeMiner fakeMiner = new FakeMiner();
-        BPMNDiagram optimizedDiagram = fakeMiner.optimize(diagram, log, result.isUnbalancedPaths(),
+        Optimizer optimizer = new Optimizer();
+        BPMNDiagram optimizedDiagram = optimizer.optimize(diagram, log, result.isUnbalancedPaths(),
                                                                         result.isOptionalActivities(),
                                                                         result.isRecurrentActivities(),
                                                                         result.isInclusiveChoice(),

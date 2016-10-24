@@ -1,8 +1,8 @@
-package au.edu.qut.processmining.miner;
+package au.edu.qut.processmining.repairing;
 
 import au.edu.qut.helper.DiagramHandler;
 import au.edu.qut.processmining.log.LogParser;
-import au.edu.qut.processmining.log.graph.LogGraph;
+import au.edu.qut.processmining.log.graph.fuzzy.FuzzyNet;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
@@ -22,7 +22,7 @@ import java.util.*;
  * Created by Adriano on 14/06/2016.
  */
 
-public class FakeMiner {
+public class Optimizer {
 
     private boolean unbalancedPaths;
     private boolean optionalActivities;
@@ -31,7 +31,7 @@ public class FakeMiner {
     private boolean applyCleaning;
 
     private DiagramHandler diagramHandler;
-    private LogGraph fuzzyNet;
+    private FuzzyNet fuzzyNet;
     private BPMNDiagram diagram;
 
     private RPST rpst;
@@ -57,7 +57,7 @@ public class FakeMiner {
 
     private HashSet<Activity> removedSkippingActivity;
 
-    public FakeMiner() {
+    public Optimizer() {
         diagramHandler = new DiagramHandler();
     }
 
@@ -72,7 +72,7 @@ public class FakeMiner {
         this.recurrentActivities = recurrentActivities;
         this.applyCleaning = applyCleaning;
 
-        fuzzyNet = LogParser.generateLogGraph(log);
+        fuzzyNet = LogParser.getFuzzyNet(log);
 
 
         if( !updateDataInfo() ) return inputDiagram;
@@ -263,26 +263,6 @@ public class FakeMiner {
         for( int i=0; i<path.size(); i++ ) System.out.println("DEBUG - path: " + path.get(i).getLabel());
 
         return path;
-    }
-
-    private void computeTimes() {
-        Event start = null;
-        Event end;
-
-        minTime = new HashMap<>();
-        maxTime = new HashMap<>();
-
-        for( Event e : diagram.getEvents() ) {
-            if( e.getEventType() == Event.EventType.END ) end = e;
-            if( e.getEventType() == Event.EventType.START ) start = e;
-        }
-
-        exploreDiagram(start, 1);
-
-        for( Activity a : diagram.getActivities() ) {
-            System.out.println("DEBUG - activity min times [model|log]: " + a.getLabel() + " - " + minTime.get(a) + " | " + fuzzyNet.getMinTime(a.getLabel()));
-            System.out.println("DEBUG - activity max times [model|log]: " + a.getLabel() + " - " + " o | " + fuzzyNet.getMaxTime(a.getLabel()));
-        }
     }
 
     private void exploreDiagram(BPMNNode node, int depth) {
