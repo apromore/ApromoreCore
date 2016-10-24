@@ -22,8 +22,8 @@ public class FuzzyNet {
     private HashSet<FuzzyEdge> edges;
     private HashMap<String, FuzzyNode> nodes;
 
-    private HashMap<String, FuzzyEdge> outgoing;
-    private HashMap<String, FuzzyEdge> incoming;
+    private HashMap<String, HashSet<FuzzyEdge>> outgoing;
+    private HashMap<String, HashSet<FuzzyEdge>> incoming;
 
     private HashMap<String, HashMap<String, FuzzyEdge>> net;
 
@@ -58,14 +58,16 @@ public class FuzzyNet {
         int traceSize;
 //        System.out.println("DEBUG - total traces: " + totalTraces);
 
-        for( tIndex = 0; tIndex < totalTraces; tIndex++ ) {
+        FuzzyNode autogenStart = new FuzzyNode("autogen-start", totalTraces);
+        FuzzyNode autogenEnd = new FuzzyNode("autogen-end", totalTraces);
 
+        for( tIndex = 0; tIndex < totalTraces; tIndex++ ) {
             trace = log.get(tIndex);
             traceSize = trace.size();
             //  System.out.println("DEBUG - analyzing trace: " + tIndex);
 
-            prevEventLabel = null;
-            prevNode = null;
+            prevEventLabel = autogenStart.getLabel();
+            prevNode = autogenStart;
             node = null;
 
             for( eIndex = 0; eIndex < traceSize; eIndex++ ) {
@@ -86,8 +88,10 @@ public class FuzzyNet {
                 if( !net.get(prevEventLabel).containsKey(eventLabel) ) {
                     edge = new FuzzyEdge(prevNode, node);
                     edges.add(edge);
-                    incoming.put(eventLabel, edge);
-                    outgoing.put(prevEventLabel, edge);
+                    if( !incoming.containsKey(eventLabel) ) incoming.put(eventLabel, new HashSet<FuzzyEdge>());
+                    if( !outgoing.containsKey(prevEventLabel) ) outgoing.put(prevEventLabel, new HashSet<FuzzyEdge>());
+                    incoming.get(eventLabel).add(edge);
+                    outgoing.get(prevEventLabel).add(edge);
                     net.get(prevEventLabel).put(eventLabel, edge);
                 }
                 net.get(prevEventLabel).get(eventLabel).increaseFrequency();
@@ -98,15 +102,17 @@ public class FuzzyNet {
 
             node.incEndFrequency();
 
-            eventLabel = null;
-            node = null;
+            eventLabel = autogenEnd.getLabel();
+            node = autogenEnd;
 
             if( !net.containsKey(prevEventLabel) ) net.put(prevEventLabel, new HashMap<String, FuzzyEdge>());
             if( !net.get(prevEventLabel).containsKey(eventLabel) ) {
                 edge = new FuzzyEdge(prevNode, node);
                 edges.add(edge);
-                incoming.put(eventLabel, edge);
-                outgoing.put(prevEventLabel, edge);
+                if( !incoming.containsKey(eventLabel) ) incoming.put(eventLabel, new HashSet<FuzzyEdge>());
+                if( !outgoing.containsKey(prevEventLabel) ) outgoing.put(prevEventLabel, new HashSet<FuzzyEdge>());
+                incoming.get(eventLabel).add(edge);
+                outgoing.get(prevEventLabel).add(edge);
                 net.get(prevEventLabel).put(eventLabel, edge);
             }
             net.get(prevEventLabel).get(eventLabel).increaseFrequency();
@@ -123,11 +129,11 @@ public class FuzzyNet {
         String label;
         BPMNNode srcNode, tgtNode;
 
-        event = diagram.addEvent("start-autogen\n("+ log.size() +")", Event.EventType.START, Event.EventTrigger.NONE, Event.EventUse.CATCH, false, null);
-        mapping.put("start-autogen", event);
+        event = diagram.addEvent("autogen-start\n("+ log.size() +")", Event.EventType.START, Event.EventTrigger.NONE, Event.EventUse.CATCH, false, null);
+        mapping.put("autogen-start", event);
 
-        event = diagram.addEvent("end-autogen\n("+ log.size() +")", Event.EventType.END, Event.EventTrigger.NONE, Event.EventUse.THROW, false, null);
-        mapping.put("end-autogen", event);
+        event = diagram.addEvent("autogen-end\n("+ log.size() +")", Event.EventType.END, Event.EventTrigger.NONE, Event.EventUse.THROW, false, null);
+        mapping.put("autogen-end", event);
 
         for( String eventLabel : nodes.keySet() ) {
             label = eventLabel + "\n(" + nodes.get(eventLabel).getFrequency() + ")";
@@ -139,10 +145,10 @@ public class FuzzyNet {
             src = edge.getSource();
             tgt = edge.getTarget();
 
-            if( src == null ) srcNode = mapping.get("start-autogen");
+            if( src == null ) srcNode = mapping.get("autogen-start");
             else srcNode = mapping.get(src.getLabel());
 
-            if( tgt == null ) tgtNode = mapping.get("end-autogen");
+            if( tgt == null ) tgtNode = mapping.get("autogen-end");
             else tgtNode = mapping.get(tgt.getLabel());
 
             diagram.addFlow(srcNode, tgtNode, Integer.toString(edge.getFrequency()));
@@ -159,7 +165,4 @@ public class FuzzyNet {
     public boolean isDirectlyFollow(String node, String follower) {
         return (net.containsKey(node) && net.get(node).containsKey(follower));
     }
-
-    public int getFrequency(String name){ return nodes.get(name).getFrequency(); }
-
 }
