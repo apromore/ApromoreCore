@@ -63,6 +63,12 @@ public class RoundTrippingTest {
       roundTrip("Case 12.bpmn");
   }
 
+  /** Confirm that a BPMN boundary event within a subprocess survives a round trip. */
+  @Test public void testBoundaryInSubProcess() throws Exception { roundTrip("boundary-in-subprocess.bpmn"); }
+
+  /** Confirm that a BPMNb boundary event attached to a subprocess survives a round trip. */
+  @Test public void testBoundaryOnSubProcess() throws Exception { roundTrip("boundary-on-subprocess.bpmn"); }
+
   /**
    * @param fileName  a BPMN file in the test/resources/data directory
    */
