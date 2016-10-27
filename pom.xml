@@ -92,6 +92,7 @@
         <module>Apromore-OSGI-Bundles/postgres</module>
         <module>Apromore-OSGI-Bundles/pql</module>
         <module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>
+        <module>Apromore-OSGI-Bundles/infrequentbehaviourfilter-osgi</module>
 
         <!-- PROM -->
         <module>Apromore-OSGI-Bundles/log-osgi</module>
