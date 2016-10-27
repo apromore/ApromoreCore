@@ -74,7 +74,7 @@ public class Optimizer {
         this.recurrentActivities = recurrentActivities;
         this.applyCleaning = applyCleaning;
 
-        fuzzyNet = LogParser.getFuzzyNet(log);
+        fuzzyNet = LogParser.initFuzzyNet(log);
         analizer = new LogAnalizer(log);
         analizer.runAnalysis();
 

@@ -30,7 +30,7 @@ public class FuzzyNetPlugin {
     )
     @PluginVariant(variantLabel = "Get Fuzzy Net from Log", requiredParameterLabels = {0})
     public static BPMNDiagram getFuzzyNetFromLog(UIPluginContext context, XLog log) {
-        FuzzyNet fuzzyNet = LogParser.getFuzzyNet(log);
+        FuzzyNet fuzzyNet = LogParser.initFuzzyNet(log);
         return fuzzyNet.getFuzzyNet();
     }
 }

@@ -1,11 +1,11 @@
-package au.edu.qut.processmining.log.graph.heuristic;
+package au.edu.qut.processmining.miners.heuristic.net;
 
-import au.edu.qut.processmining.log.graph.EventEdge;
+import au.edu.qut.processmining.log.graph.LogEdge;
 
 /**
  * Created by Adriano on 24/10/2016.
  */
-public class HeuristicEdge extends EventEdge {
+public class HeuristicEdge extends LogEdge {
     private int frequency;
 
     private double localDependencyScore;
