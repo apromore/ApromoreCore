@@ -19,13 +19,13 @@ public class HeuristicMinerPlus {
         System.out.println("HM+ - log parsed successfully");
     }
 
-    public HeuristicNet mineHeuristicNet(double dependencyThreshold, double positiveObservations, double relative2bestThreshold) {
-        System.out.println("HM+ - starting: ");
+    public HeuristicNet mineHeuristicNet(double dependencyThreshold, double positiveObservations, double relative2BestThreshold) {
+        System.out.println("HM+ - starting... ");
         System.out.println("HM+ - [Setting] dependency threshold: " + dependencyThreshold);
         System.out.println("HM+ - [Setting] positive observations: " + positiveObservations);
-        System.out.println("HM+ - [Setting] relative to best threshold: " + relative2bestThreshold);
+        System.out.println("HM+ - [Setting] relative to best threshold: " + relative2BestThreshold);
 
-        heuristicNet = new HeuristicNet(log, dependencyThreshold, positiveObservations, relative2bestThreshold);
+        heuristicNet = new HeuristicNet(log, dependencyThreshold, positiveObservations, relative2BestThreshold);
         heuristicNet.generateHeuristicNet();
         return heuristicNet;
     }

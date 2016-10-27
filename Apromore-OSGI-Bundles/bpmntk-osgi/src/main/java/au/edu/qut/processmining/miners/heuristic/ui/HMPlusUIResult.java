@@ -5,10 +5,9 @@ package au.edu.qut.processmining.miners.heuristic.ui;
  */
 public class HMPlusUIResult {
 
-
-    protected static final double DEPENDENCY_THRESHOLD = 0.95;
-    protected static final double POSITIVE_OBSERVATIONS = 0.80;
-    protected static final double RELATIVE2BEST_THRESHOLD = 0.05;
+    public static final double DEPENDENCY_THRESHOLD = 0.95;
+    public static final double POSITIVE_OBSERVATIONS = 0.10;
+    public static final double RELATIVE2BEST_THRESHOLD = 0.05;
 
     private double dependencyThreshold;
     private double positiveObservations;
@@ -19,6 +18,9 @@ public class HMPlusUIResult {
         positiveObservations = POSITIVE_OBSERVATIONS;
         relative2BestThreshold = RELATIVE2BEST_THRESHOLD;
     }
+
+    public void disablePositiveObservations() { positiveObservations = 0.0; }
+    public void disableRelative2BestThreshold() { relative2BestThreshold = 1.0;}
 
     public double getDependencyThreshold() {
         return dependencyThreshold;
