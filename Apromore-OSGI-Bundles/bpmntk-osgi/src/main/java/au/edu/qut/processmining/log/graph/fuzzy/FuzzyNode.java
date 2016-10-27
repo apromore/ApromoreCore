@@ -11,8 +11,4 @@ public class FuzzyNode extends EventNode implements Comparable {
     public FuzzyNode() { super(); }
 
     public FuzzyNode(String label) { super(label); }
-
-    public FuzzyNode(int frequency) { super(frequency); }
-
-    public FuzzyNode(String label, int frequency) { super(label, frequency); }
 }
