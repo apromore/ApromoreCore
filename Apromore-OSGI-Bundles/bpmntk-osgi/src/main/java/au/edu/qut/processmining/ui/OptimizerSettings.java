@@ -9,10 +9,10 @@ import javax.swing.event.ChangeListener;
 /**
  * Created by Adriano on 14/06/2016.
  */
-public class MinerSettings extends ProMPropertiesPanel {
+public class OptimizerSettings extends ProMPropertiesPanel {
 
     private static final String DIALOG_NAME = "Setup Optimizer";
-    private MinerUIResult result;
+    private OptimizerUIResult result;
 
     private JCheckBox inclusiveChoice;
     private JCheckBox optionalActivities;
@@ -20,10 +20,10 @@ public class MinerSettings extends ProMPropertiesPanel {
     private JCheckBox unbalancedPaths;
     private JCheckBox applyCleaning;
 
-    public MinerSettings() {
+    public OptimizerSettings() {
         super(DIALOG_NAME);
 
-        result = new MinerUIResult();
+        result = new OptimizerUIResult();
 
         MinerSettingsListener minerListener = new MinerSettingsListener();
 
@@ -50,7 +50,7 @@ public class MinerSettings extends ProMPropertiesPanel {
     }
 
 
-    public MinerUIResult getSelections() {
+    public OptimizerUIResult getSelections() {
         return result;
     }
 
