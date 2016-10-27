@@ -58,8 +58,10 @@ public class FuzzyNet {
         int traceSize;
 //        System.out.println("DEBUG - total traces: " + totalTraces);
 
-        FuzzyNode autogenStart = new FuzzyNode("autogen-start", totalTraces);
-        FuzzyNode autogenEnd = new FuzzyNode("autogen-end", totalTraces);
+        FuzzyNode autogenStart = new FuzzyNode("autogen-start");
+        autogenStart.increaseFrequency(totalTraces);
+        FuzzyNode autogenEnd = new FuzzyNode("autogen-end");
+        autogenEnd.increaseFrequency(totalTraces);
 
         for( tIndex = 0; tIndex < totalTraces; tIndex++ ) {
             trace = log.get(tIndex);
@@ -161,6 +163,9 @@ public class FuzzyNet {
 
         return diagram;
     }
+
+
+    public FuzzyNode getNode(String label) {return nodes.get(label); }
 
     public boolean isDirectlyFollow(String node, String follower) {
         return (net.containsKey(node) && net.get(node).containsKey(follower));

@@ -6,6 +6,7 @@ package au.edu.qut.processmining.log.graph;
 public class EventNode implements Comparable {
     protected String id;
     protected String label;
+    protected int code;
 
     protected int frequency;
     protected int startFrequency;
@@ -26,27 +27,22 @@ public class EventNode implements Comparable {
         endFrequency = 0;
         this.label = label;
     }
-
-    public EventNode(int frequency) {
+    public EventNode(String label, int code) {
         id = Long.toString(System.currentTimeMillis());
-        startFrequency = 0;
-        endFrequency = 0;
-        label = "null";
-        this.frequency = frequency;
-    }
-
-    public EventNode(String label, int frequency) {
-        id = Long.toString(System.currentTimeMillis());
+        frequency = 0;
         startFrequency = 0;
         endFrequency = 0;
         this.label = label;
-        this.frequency = frequency;
+        this.code = code;
     }
 
     public String getID() { return id; }
 
     public void setLabel(String label) { this.label = label; }
     public String getLabel() { return label; }
+
+    public void setCode(int code) { this.code = code; }
+    public int getCode() { return code; }
 
     public void increaseFrequency() { frequency++; }
     public void increaseFrequency(int amount) { frequency += amount; }
