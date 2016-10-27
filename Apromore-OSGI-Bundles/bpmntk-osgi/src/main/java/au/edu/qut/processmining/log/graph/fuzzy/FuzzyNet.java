@@ -1,6 +1,6 @@
 package au.edu.qut.processmining.log.graph.fuzzy;
 
-import au.edu.qut.processmining.log.graph.EventNode;
+import au.edu.qut.processmining.log.graph.LogNode;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -127,7 +127,7 @@ public class FuzzyNet {
         HashMap<String, BPMNNode> mapping = new HashMap<>();
         Activity task;
         Event event;
-        EventNode src, tgt;
+        LogNode src, tgt;
         String label;
         BPMNNode srcNode, tgtNode;
 
