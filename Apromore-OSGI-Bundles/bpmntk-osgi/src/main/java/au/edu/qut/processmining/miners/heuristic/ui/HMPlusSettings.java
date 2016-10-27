@@ -5,6 +5,7 @@ import com.fluxicon.slickerbox.components.NiceSlider;
 import com.fluxicon.slickerbox.factory.SlickerFactory;
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
 
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
@@ -23,7 +24,10 @@ public class HMPlusSettings extends ProMPropertiesPanel {
 
     NiceDoubleSlider dependencyThreshold;
     NiceDoubleSlider positiveObservations;
-    NiceDoubleSlider relative2bestThreshold;
+    NiceDoubleSlider relative2BestThreshold;
+
+    JCheckBox enablePositiveObservations;
+    JCheckBox enableRelative2Best;
 
 
     public HMPlusSettings() {
@@ -33,6 +37,12 @@ public class HMPlusSettings extends ProMPropertiesPanel {
 
         HMPItemListener hmpil = new HMPItemListener();
 
+        enablePositiveObservations = this.addCheckBox("Enable Positive Observations Threshold", false);
+        enablePositiveObservations.addChangeListener(hmpil);
+
+        enableRelative2Best = this.addCheckBox("Enable Relative To Best Threshold", false);
+        enableRelative2Best.addChangeListener(hmpil);
+
         dependencyThreshold = SlickerFactory.instance().createNiceDoubleSlider("Dependency Threshold", 0.00, 1.00, HMPlusUIResult.DEPENDENCY_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
         dependencyThreshold.addChangeListener(hmpil);
         this.add(dependencyThreshold);
@@ -41,16 +51,16 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         positiveObservations = SlickerFactory.instance().createNiceDoubleSlider("Positive Observations", 0.00, 1.00, HMPlusUIResult.POSITIVE_OBSERVATIONS, NiceSlider.Orientation.HORIZONTAL);
         positiveObservations.addChangeListener(hmpil);
         this.add(positiveObservations);
-        positiveObservations.setVisible(true);
+        positiveObservations.setVisible(false);
 
-        relative2bestThreshold = SlickerFactory.instance().createNiceDoubleSlider("Relative to Best Threshold", 0.00, 1.00, HMPlusUIResult.RELATIVE2BEST_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
-        relative2bestThreshold.addChangeListener(hmpil);
-        this.add(relative2bestThreshold);
-        relative2bestThreshold.setVisible(true);
+        relative2BestThreshold = SlickerFactory.instance().createNiceDoubleSlider("Relative to Best Threshold", 0.00, 1.00, HMPlusUIResult.RELATIVE2BEST_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
+        relative2BestThreshold.addChangeListener(hmpil);
+        this.add(relative2BestThreshold);
+        relative2BestThreshold.setVisible(false);
 
         result.setDependencyThreshold(HMPlusUIResult.DEPENDENCY_THRESHOLD);
-        result.setPositiveObservations(HMPlusUIResult.POSITIVE_OBSERVATIONS);
-        result.setRelative2BestThreshold(HMPlusUIResult.RELATIVE2BEST_THRESHOLD);
+        result.disablePositiveObservations();
+        result.disableRelative2BestThreshold();
     }
 
     public HMPlusUIResult getSelections() {
@@ -62,8 +72,14 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         @Override
         public void stateChanged(ChangeEvent e) {
             result.setDependencyThreshold(dependencyThreshold.getValue());
-            result.setPositiveObservations(positiveObservations.getValue());
-            result.setRelative2BestThreshold(relative2bestThreshold.getValue());
+
+            positiveObservations.setVisible(enablePositiveObservations.isSelected());
+            if( enablePositiveObservations.isSelected() ) result.setPositiveObservations(positiveObservations.getValue());
+            else result.disablePositiveObservations();
+
+            relative2BestThreshold.setVisible(enableRelative2Best.isSelected());
+            if( enableRelative2Best.isSelected() ) result.setRelative2BestThreshold(relative2BestThreshold.getValue());
+            else result.disableRelative2BestThreshold();
         }
 
         @Override
