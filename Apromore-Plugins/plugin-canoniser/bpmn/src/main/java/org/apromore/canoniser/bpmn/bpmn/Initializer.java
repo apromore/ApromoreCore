@@ -202,7 +202,7 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                     for (CpfEdgeType edge : cpfSplit.getOutgoingEdges()) {
                         CpfNodeType node = (CpfNodeType) cpf.getElement(edge.getTargetId());
                         if (node instanceof CpfEventType) {
-                            cancelledEdgeIdSet.add(edge.getId());
+                            cancelledEdgeIdSet.add(node.getId());
                         }
                     }
 
