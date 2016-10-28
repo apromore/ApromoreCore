@@ -2,6 +2,7 @@ package au.edu.qut.processmining.miners.heuristic.net;
 
 import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUIResult;
+import org.apache.commons.lang3.StringUtils;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
@@ -35,6 +36,9 @@ public class HeuristicNet {
 
     private Map<Integer, HashSet<Integer>> parallelisms;
     private Map<Integer, HashSet<Integer>> conflicts;
+
+    private Set<Integer> loopsL1;
+    private Set<HeuristicEdge> loopsL2;
 
     private Map<Integer, HashMap<Integer, HeuristicEdge>> net;
 
@@ -75,6 +79,7 @@ public class HeuristicNet {
     public void generateHeuristicNet() {
         evaluateDependencies();
         evaluateParallelismsAndConflicts();
+        evaluateLoops();
         evaluateDependecyScores();
         pruneHeuristicNet();
     }
@@ -148,6 +153,7 @@ public class HeuristicNet {
         parallelisms = new HashMap<>();
         conflicts = new HashMap<>();
 
+        System.out.println("DEBUG - evaluating parallelism and conflicts ...");
         for( int src : net.keySet() )
             for( int tgt : net.get(src).keySet() ) {
                 if( net.containsKey(tgt) && (net.get(tgt).containsKey(src)) ) {
@@ -172,6 +178,66 @@ public class HeuristicNet {
         return (net.containsKey(A) && net.get(A).containsKey(B));
     }
 
+    private void evaluateLoops() {
+        HashMap<Integer, HashMap<Integer, Double>> loop2Frequencies = new HashMap<>();
+        int src, tgt;
+
+        String src2tgt_loop2Pattern;
+        String tgt2src_loop2Pattern;
+
+        int src2tgt_loop2Frequency;
+        int tgt2src_loop2Frequency;
+
+        double loop2DependencyScore;
+
+        loopsL1 = new HashSet<>();
+        loopsL2 = new HashSet<>();
+
+        System.out.println("DEBUG - evaluating loops length ONE ...");
+
+        for( HeuristicEdge e : edges ) {
+            src = e.getSource().getCode();
+            tgt = e.getTarget().getCode();
+            if( src == tgt ) loopsL1.add(src);
+        }
+
+        System.out.println("DEBUG - found " + loopsL1.size() + " self-loops:");
+        for( int code : loopsL1 ) System.out.println("DEBUG - self-loop: " + events.get(code));
+
+
+        System.out.println("DEBUG - evaluating loops length TWO ...");
+        for( HeuristicEdge e : edges ) {
+            src = e.getSource().getCode();
+            tgt = e.getTarget().getCode();
+            /* if both src and tgt are length 1 loops, we do not evaluate length 2 loops for this edge */
+            if( loopsL1.contains(src) && loopsL1.contains(tgt) ) continue;
+
+            if( loop2Frequencies.containsKey(tgt) && loop2Frequencies.get(tgt).containsKey(src) ) {
+                loop2DependencyScore = loop2Frequencies.get(tgt).get(src);
+            } else {
+                src2tgt_loop2Pattern = "::" + src + "::" + tgt + "::" + src + "::";
+                tgt2src_loop2Pattern = "::" + tgt + "::" + src + "::" + tgt + "::";
+                src2tgt_loop2Frequency = 0;
+                tgt2src_loop2Frequency = 0;
+
+                for( String trace : traces.keySet() ) {
+                    src2tgt_loop2Frequency += (StringUtils.countMatches(trace, src2tgt_loop2Pattern)*traces.get(trace));
+                    tgt2src_loop2Frequency += (StringUtils.countMatches(trace, tgt2src_loop2Pattern)*traces.get(trace));
+                }
+
+                loop2DependencyScore = (double)(src2tgt_loop2Frequency + tgt2src_loop2Frequency)/(src2tgt_loop2Frequency + tgt2src_loop2Frequency + 1);
+
+                if( !loop2Frequencies.containsKey(src) ) loop2Frequencies.put(src, new HashMap<Integer, Double>());
+                if( !loop2Frequencies.get(src).containsKey(tgt) ) loop2Frequencies.get(src).put(tgt, loop2DependencyScore);
+            }
+
+            System.out.println("DEBUG - #" + events.get(src) + " >> " + events.get(tgt) + " : " + loop2DependencyScore);
+            if( loop2DependencyScore == 0 ) continue;
+            loopsL2.add(e);
+            e.setLocalDependencyScore(loop2DependencyScore);
+        }
+    }
+
     private void evaluateDependecyScores() {
         int src2tgt_frequency;
         int tgt2src_frequency;
@@ -183,30 +249,35 @@ public class HeuristicNet {
         candidateSuccessor = new HashMap<>();
         candidatePredecessor = new HashMap<>();
 
+        System.out.println("DEBUG - evaluating dependency scores ...");
         for( HeuristicEdge e : edges ) {
-            src2tgt_frequency = e.getFrequency();
             src = e.getSource().getCode();
             tgt = e.getTarget().getCode();
 
-            if( src == tgt ) {
-                localDependency = (double) (e.getFrequency())/(e.getFrequency() + 1);
-                e.setLocalDependencyScore(localDependency);
-            } else {
-                if( net.containsKey(tgt) && net.get(tgt).containsKey(src) ) {
-                    // this means there is a reverse edge
-                    tgt2src_frequency = net.get(tgt).get(src).getFrequency();
-                } else tgt2src_frequency = 0;
+            if( !loopsL2.contains(e) ) {
+                if (src == tgt) {
+                    localDependency = (double) (e.getFrequency()) / (e.getFrequency() + 1);
+                    e.setLocalDependencyScore(localDependency);
+                } else {
+                    src2tgt_frequency = e.getFrequency();
 
-                localDependency = (double) (src2tgt_frequency - tgt2src_frequency) / (src2tgt_frequency + tgt2src_frequency + 1);
-                e.setLocalDependencyScore(localDependency);
+                    if (net.containsKey(tgt) && net.get(tgt).containsKey(src)) {
+                        // this means there is a reverse edge
+                        tgt2src_frequency = net.get(tgt).get(src).getFrequency();
+                    } else tgt2src_frequency = 0;
 
-                if( !candidateSuccessor.containsKey(src) ) candidateSuccessor.put(src, e);
-                else if( candidateSuccessor.get(src).getLocalDependencyScore() < localDependency ) candidateSuccessor.put(src, e);
+                /* computing the heuristic formula */
+                    localDependency = (double) (src2tgt_frequency - tgt2src_frequency) / (src2tgt_frequency + tgt2src_frequency + 1);
+                    e.setLocalDependencyScore(localDependency);
+                }
+                System.out.println("DEBUG - #" + events.get(src) + " => " + events.get(tgt) + " : " + localDependency);
+            } else localDependency = e.getLocalDependencyScore();
 
-                if( !candidatePredecessor.containsKey(tgt) ) candidatePredecessor.put(tgt, e);
-                else if( candidatePredecessor.get(tgt).getLocalDependencyScore() < localDependency ) candidatePredecessor.put(tgt, e);
-            }
-            System.out.println("DEBUG - #" + src + " => " + tgt + " : " + localDependency);
+            if( !candidateSuccessor.containsKey(src) ) candidateSuccessor.put(src, e);
+            else if( candidateSuccessor.get(src).getLocalDependencyScore() < localDependency ) candidateSuccessor.put(src, e);
+
+            if( !candidatePredecessor.containsKey(tgt) ) candidatePredecessor.put(tgt, e);
+            else if( candidatePredecessor.get(tgt).getLocalDependencyScore() < localDependency ) candidatePredecessor.put(tgt, e);
         }
     }
 
