@@ -18,6 +18,9 @@ public class LogParser {
     public static FuzzyNet initFuzzyNet(XLog log) { return (new FuzzyNet(log)); }
 
     public static SimpleLog getSimpleLog(XLog log) {
+        System.out.println("Log Parser - starting... ");
+        System.out.println("Log Parser - input log size: " + log.size());
+
         SimpleLog sLog;
 
         HashMap<String, Integer> parsed = new HashMap<>();
@@ -32,14 +35,16 @@ public class LogParser {
 
         XEvent event;
         String label;
+        long totalEvents;
         int eventCounter;
 
         int totalTraces = log.size();
-        int traceSize;
+        long traceSize;
 
         events.put(STARTCODE, "autogen-start");
         events.put(ENDCODE, "autogen-end");
 
+        totalEvents = 0;
         eventCounter = 1;
 
         for( tIndex = 0; tIndex < totalTraces; tIndex++ ) {
@@ -48,6 +53,7 @@ public class LogParser {
 
             sTrace = "::" + Integer.toString(STARTCODE) + ":";
             for( eIndex = 0; eIndex < traceSize; eIndex++ ) {
+                totalEvents++;
                 event = trace.get(eIndex);
                 label = event.getAttributes().get("concept:name").toString();
 
@@ -65,11 +71,15 @@ public class LogParser {
             traces.put(sTrace, traces.get(sTrace)+1);
         }
 
+        System.out.println("DEBUG - total events parsed: " + totalEvents);
         System.out.println("DEBUG - total different events: " + (eventCounter-1));
         System.out.println("DEBUG - total different traces: " + traces.size() );
         for( String t : traces.keySet() ) {
             System.out.println("DEBUG - ["+ traces.get(t) +"] trace: " + t);
         }
+
+        System.out.println("DEBUG - final mapping:");
+        for( int code : events.keySet() ) System.out.println("DEBUG - " + code + " = " + events.get(code));
 
         sLog = new SimpleLog(traces, events);
         sLog.setStartcode(STARTCODE);
