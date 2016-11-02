@@ -43,6 +43,6 @@ public class HeuristicNetPlugin {
             net.printParallelisms();
         }
 
-        return net.getHeuristicNet();
+        return net.getHeuristicDiagram();
     }
 }

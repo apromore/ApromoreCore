@@ -7,6 +7,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.processmining.models.graphbased.directed.bpmn.elements.Event;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -41,6 +42,8 @@ public class HeuristicNet {
     private Set<HeuristicEdge> loopsL2;
 
     private Map<Integer, HashMap<Integer, HeuristicEdge>> net;
+
+    private Set<Integer> selfLoop;
 
     private double dependencyThreshold;
     private double positiveObservations;
@@ -82,6 +85,7 @@ public class HeuristicNet {
         evaluateLoops();
         evaluateDependecyScores();
         pruneHeuristicNet();
+        removeSelfLoop();
     }
 
     private void evaluateDependencies() {
@@ -166,11 +170,11 @@ public class HeuristicNet {
             }
     }
 
-    private boolean areConcurrent(int A, int B) {
+    public boolean areConcurrent(int A, int B) {
         return (parallelisms.containsKey(A) && parallelisms.get(A).contains(B));
     }
 
-    private boolean areInConflict(int A, int B) {
+    public boolean areInConflict(int A, int B) {
         return (conflicts.containsKey(A) && conflicts.get(A).contains(B));
     }
 
@@ -283,7 +287,6 @@ public class HeuristicNet {
 
     private void pruneHeuristicNet() {
         HashSet<HeuristicEdge> toBeRemoved = new HashSet<>();
-        String edgeID;
         int src, tgt;
         double maxDependencyScore;
         double dsThreshold;
@@ -294,11 +297,11 @@ public class HeuristicNet {
 
         boolean firstCheck;
         boolean secondCheck;
+        boolean completePrune = true;
 
         System.out.println("DEBUG - edges before pruning: " + edges.size());
 
         for( HeuristicEdge e : edges ) {
-            edgeID = e.getID();
             src = e.getSource().getCode();
             tgt = e.getTarget().getCode();
 //            if(src == tgt) continue; //loop guard
@@ -327,6 +330,13 @@ public class HeuristicNet {
         }
 
         for( HeuristicEdge e : toBeRemoved ) {
+            src = e.getSource().getCode();
+            tgt = e.getTarget().getCode();
+            if( completePrune ) {
+                incoming.get(tgt).remove(e);
+                outgoing.get(src).remove(e);
+                net.get(src).remove(tgt);
+            }
             edges.remove(e);
             System.out.println("DEBUG - removing edge: " + e.getSource().getLabel() + " > " + e.getTarget().getLabel());
         }
@@ -334,7 +344,7 @@ public class HeuristicNet {
         System.out.println("DEBUG - edges after pruning: " + edges.size());
     }
 
-    public BPMNDiagram getHeuristicNet() {
+    public BPMNDiagram getHeuristicDiagram() {
         BPMNDiagram diagram = new BPMNDiagramImpl("heuristic-net");
         HashMap<Integer, BPMNNode> mapping = new HashMap<>();
         String label;
@@ -359,6 +369,55 @@ public class HeuristicNet {
         return diagram;
     }
 
+    public BPMNDiagram convertIntoBPMNDiagram() {
+        BPMNDiagram diagram = new BPMNDiagramImpl("bpmn-diagram");
+        HashMap<Integer, BPMNNode> mapping = new HashMap<>();
+        String label;
+        BPMNNode node;
+        BPMNNode src, tgt;
+
+        for( int event : nodes.keySet() ) {
+            label = Integer.toString(event);
+
+            if( event == startcode || event == endcode )
+                node = diagram.addEvent(label, (event == startcode ? Event.EventType.START : Event.EventType.END), Event.EventTrigger.NONE, Event.EventUse.CATCH, false, null);
+            else
+                node = diagram.addActivity(label, selfLoop.contains(event), false, false, false, false);
+
+            mapping.put(event, node);
+        }
+
+        for( HeuristicEdge edge : edges ) {
+            src = mapping.get(edge.getSource().getCode());
+            tgt = mapping.get(edge.getTarget().getCode());
+            diagram.addFlow(src, tgt, "");
+        }
+
+        return diagram;
+    }
+
+
+    private void removeSelfLoop() {
+        HashSet<HeuristicEdge> toRemove = new HashSet();
+        int src, tgt;
+
+        selfLoop = new HashSet<>();
+
+        for( HeuristicEdge e : edges )
+            if( e.getSource() == e.getTarget() ) {
+                selfLoop.add(e.getSource().getCode());
+                toRemove.add(e);
+            }
+
+        for( HeuristicEdge e : toRemove ) {
+            src = e.getSource().getCode();
+            tgt = e.getTarget().getCode();
+            incoming.get(tgt).remove(e);
+            outgoing.get(src).remove(e);
+            net.get(src).remove(tgt);
+            edges.remove(e);
+        }
+    }
 
     /* DEBUG methods */
 
