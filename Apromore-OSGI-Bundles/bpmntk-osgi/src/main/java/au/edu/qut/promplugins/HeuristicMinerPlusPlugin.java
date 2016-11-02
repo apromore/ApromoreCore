@@ -37,17 +37,20 @@ public class HeuristicMinerPlusPlugin {
         HMPlusUI gui = new HMPlusUI();
         HMPlusUIResult result = gui.showGUI(context);
 
-        HeuristicMinerPlus hmp = new HeuristicMinerPlus(log);
-        HeuristicNet net = hmp.mineHeuristicNet(result.getDependencyThreshold(), result.getPositiveObservations(), result.getRelative2BestThreshold());
+        HeuristicMinerPlus hmp = new HeuristicMinerPlus();
+        hmp.mineBPMNModel(log, result.getDependencyThreshold(), result.getPositiveObservations(), result.getRelative2BestThreshold());
+
+        HeuristicNet heuristicNet = hmp.getHeuristicNet();
 
         if( debug ) {
-            net.printFrequencies();
-            net.printConflicts();
-            net.printParallelisms();
+            heuristicNet.printFrequencies();
+            heuristicNet.printConflicts();
+            heuristicNet.printParallelisms();
         }
 
-        BPMNDiagram bpmn = hmp.getBPMNDiagram();
+        BPMNDiagram netDiagram = hmp.getHeuristicDiagram();
+        BPMNDiagram bpmnDiagram = hmp.getBPMNDiagram();
 
-        return bpmn;
+        return netDiagram;
     }
 }
