@@ -1,6 +1,7 @@
 package au.edu.qut.processmining.repairing;
 
 import au.edu.qut.helper.DiagramHandler;
+import au.edu.qut.processmining.log.LogAnalizer;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.graph.fuzzy.FuzzyNet;
 import de.hpi.bpt.graph.DirectedEdge;
@@ -30,6 +31,7 @@ public class Optimizer {
     private boolean inclusiveChoice;
     private boolean applyCleaning;
 
+    private LogAnalizer analizer;
     private DiagramHandler diagramHandler;
     private FuzzyNet fuzzyNet;
     private BPMNDiagram diagram;
@@ -72,7 +74,9 @@ public class Optimizer {
         this.recurrentActivities = recurrentActivities;
         this.applyCleaning = applyCleaning;
 
-        fuzzyNet = LogParser.getFuzzyNet(log);
+        fuzzyNet = LogParser.initFuzzyNet(log);
+        analizer = new LogAnalizer(log);
+        analizer.runAnalysis();
 
 
         if( !updateDataInfo() ) return inputDiagram;
@@ -286,7 +290,7 @@ public class Optimizer {
             switch(child.getType()) {
                 case T:
                     if( fuzzyNet.isDirectlyFollow(entry.getLabel(), exit.getLabel()) &&
-                        fuzzyNet.isEventuallyFollow(exit.getLabel(), entry.getLabel()) )
+                        analizer.isEventuallyFollow(exit.getLabel(), entry.getLabel()) )
                         System.out.println("DEBUG - check this dependency: " + entry.getLabel() + " > " + exit.getLabel() );
                     break;
                 case P:
@@ -317,7 +321,7 @@ public class Optimizer {
                     j++;
                     tgt = path.get(j);
                     if( fuzzyNet.isDirectlyFollow(src.getLabel(), tgt.getLabel()) &&
-                            fuzzyNet.isEventuallyFollow(tgt.getLabel(), src.getLabel()) )
+                            analizer.isEventuallyFollow(tgt.getLabel(), src.getLabel()) )
                         System.out.println("DEBUG - check this dependency: " + src.getLabel() + " > " + tgt.getLabel() );
                 }
         }
@@ -333,22 +337,22 @@ public class Optimizer {
     }
 
     private void setOrGateways() {
-        Set<Integer> weights;
+        Set<Integer> frequencies;
 
         inclusive = new HashSet<>();
 
         for( RPSTNode parallelBond : parallel ) {
-            weights = new HashSet<>();
+            frequencies = new HashSet<>();
             System.out.println("DEBUG - analyzing a bond.");
 
             for( ArrayList<Activity> path : entryToExitPaths.get(parallelBond) )
                 if (!path.isEmpty()) {
-                    System.out.println("DEBUG - adding weight: " + fuzzyNet.getWeight(path.get(0).getLabel()));
-                    weights.add(fuzzyNet.getWeight(path.get(0).getLabel()));
+                    System.out.println("DEBUG - adding weight: " + fuzzyNet.getNode(path.get(0).getLabel()).getFrequency());
+                    frequencies.add(fuzzyNet.getNode(path.get(0).getLabel()).getFrequency());
                 }
 
-            System.out.println("DEBUG - size of weights: " + weights.size());
-            if( weights.size() > 1 ) {
+            System.out.println("DEBUG - size of frequencies: " + frequencies.size());
+            if( frequencies.size() > 1 ) {
                 bondEntry.get(parallelBond).setGatewayType(Gateway.GatewayType.INCLUSIVE);
                 bondExit.get(parallelBond).setGatewayType(Gateway.GatewayType.INCLUSIVE);
                 inclusive.add(parallelBond);
@@ -365,7 +369,7 @@ public class Optimizer {
         RPSTNode bond;
 
         Activity src, tgt;
-        int weightSRC, weightTGT;
+        int srcFrequency, tgtFrequency;
 
         for( int i=0; i < size; i++ ) {
             bond = bottomUpRPST.get(i);
@@ -376,16 +380,16 @@ public class Optimizer {
                         src = path.get(j);
                         j++;
                         tgt = path.get(j);
-                        weightSRC = fuzzyNet.getWeight(src.getLabel());
-                        weightTGT = fuzzyNet.getWeight(tgt.getLabel());
-                    } while( (weightSRC == weightTGT) && (j != (path.size()-1)) );
+                        srcFrequency = fuzzyNet.getNode(src.getLabel()).getFrequency();
+                        tgtFrequency = fuzzyNet.getNode(tgt.getLabel()).getFrequency();
+                    } while( (srcFrequency == tgtFrequency) && (j != (path.size()-1)) );
 
-                    if( (weightSRC < weightTGT) && !skipped.contains(src) ) {
+                    if( (srcFrequency < tgtFrequency) && !skipped.contains(src) ) {
                         diagramHandler.setSkipping(src);
                         skipped.add(src);
                     }
 
-                    if( (weightSRC > weightTGT) && !skipped.contains(tgt) ) {
+                    if( (srcFrequency > tgtFrequency) && !skipped.contains(tgt) ) {
                         diagramHandler.setSkipping(tgt);
                         skipped.add(tgt);
                     }

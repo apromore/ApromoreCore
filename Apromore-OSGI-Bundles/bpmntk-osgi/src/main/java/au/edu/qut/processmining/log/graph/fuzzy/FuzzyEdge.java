@@ -1,12 +1,12 @@
 package au.edu.qut.processmining.log.graph.fuzzy;
 
-import au.edu.qut.processmining.log.graph.EventEdge;
+import au.edu.qut.processmining.log.graph.LogEdge;
 
 /**
  * Created by Adriano on 15/06/2016.
  */
 
-public class FuzzyEdge extends EventEdge implements Comparable {
+public class FuzzyEdge extends LogEdge implements Comparable {
     private int frequency;
 
     public FuzzyEdge(FuzzyNode source, FuzzyNode target){

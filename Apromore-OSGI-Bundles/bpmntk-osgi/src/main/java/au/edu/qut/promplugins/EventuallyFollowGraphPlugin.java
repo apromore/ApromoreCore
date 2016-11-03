@@ -1,5 +1,6 @@
 package au.edu.qut.promplugins;
 
+import au.edu.qut.processmining.log.LogAnalizer;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.graph.fuzzy.FuzzyNet;
 import org.deckfour.xes.model.XLog;
@@ -28,7 +29,8 @@ public class EventuallyFollowGraphPlugin {
     )
     @PluginVariant(variantLabel = "Discover Eventually Follow Graph from Log", requiredParameterLabels = {0})
     public static BPMNDiagram getFuzzyNetFromLog(UIPluginContext context, XLog log) {
-        FuzzyNet graph = LogParser.getFuzzyNet(log);
-        return graph.getEventuallyFollowGraph();
+        LogAnalizer analizer = new LogAnalizer(log);
+        analizer.runAnalysis();
+        return null; //TODO
     }
 }
