@@ -1,5 +1,7 @@
 package au.edu.qut.processmining.miners.heuristic.oracle;
 
+import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+
 import java.util.*;
 
 /**
@@ -106,6 +108,17 @@ public class OracleItem implements Comparable {
 
         oiUnion.engrave();
         return oiUnion;
+    }
+
+    public Gateway.GatewayType getGateType(){
+        if( !xorBrothers.isEmpty() ) return Gateway.GatewayType.DATABASED;
+        if( !andBrothers.isEmpty() ) return Gateway.GatewayType.PARALLEL;
+        return null;
+    }
+
+    public Integer getNodeCode() {
+        if( past.size() == 1 ) return (new ArrayList<>(past)).get(0);
+        else return null;
     }
 
     @Override

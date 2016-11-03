@@ -2,12 +2,16 @@ package au.edu.qut.processmining.miners.heuristic.net;
 
 import au.edu.qut.processmining.log.graph.LogEdge;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by Adriano on 24/10/2016.
  */
 public class HeuristicEdge extends LogEdge {
-    private int frequency;
 
+    private static DecimalFormat dFormat = new DecimalFormat(".###");
+
+    private int frequency;
     private double localDependencyScore;
     private double globalDependencyScore;
 
@@ -49,4 +53,7 @@ public class HeuristicEdge extends LogEdge {
     public void setGlobalDependencyScore(double globalDependencyScore) { this.globalDependencyScore = globalDependencyScore; }
 
     public int getFrequency(){ return frequency; }
+
+    @Override
+    public String toString() { return dFormat.format(localDependencyScore) + "/" + frequency; }
 }
