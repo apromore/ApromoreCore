@@ -1,6 +1,6 @@
 package au.edu.qut.processmining.log.graph.fuzzy;
 
-import au.edu.qut.processmining.log.graph.EventNode;
+import au.edu.qut.processmining.log.graph.LogNode;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -58,8 +58,10 @@ public class FuzzyNet {
         int traceSize;
 //        System.out.println("DEBUG - total traces: " + totalTraces);
 
-        FuzzyNode autogenStart = new FuzzyNode("autogen-start", totalTraces);
-        FuzzyNode autogenEnd = new FuzzyNode("autogen-end", totalTraces);
+        FuzzyNode autogenStart = new FuzzyNode("autogen-start");
+        autogenStart.increaseFrequency(totalTraces);
+        FuzzyNode autogenEnd = new FuzzyNode("autogen-end");
+        autogenEnd.increaseFrequency(totalTraces);
 
         for( tIndex = 0; tIndex < totalTraces; tIndex++ ) {
             trace = log.get(tIndex);
@@ -125,7 +127,7 @@ public class FuzzyNet {
         HashMap<String, BPMNNode> mapping = new HashMap<>();
         Activity task;
         Event event;
-        EventNode src, tgt;
+        LogNode src, tgt;
         String label;
         BPMNNode srcNode, tgtNode;
 
@@ -161,6 +163,9 @@ public class FuzzyNet {
 
         return diagram;
     }
+
+
+    public FuzzyNode getNode(String label) {return nodes.get(label); }
 
     public boolean isDirectlyFollow(String node, String follower) {
         return (net.containsKey(node) && net.get(node).containsKey(follower));

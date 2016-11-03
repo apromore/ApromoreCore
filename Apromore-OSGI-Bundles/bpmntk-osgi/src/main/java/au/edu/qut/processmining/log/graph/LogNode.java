@@ -3,15 +3,16 @@ package au.edu.qut.processmining.log.graph;
 /**
  * Created by Adriano on 15/06/2016.
  */
-public class EventNode implements Comparable {
+public class LogNode implements Comparable {
     protected String id;
     protected String label;
+    protected int code;
 
     protected int frequency;
     protected int startFrequency;
     protected int endFrequency;
 
-    public EventNode() {
+    public LogNode() {
         id = Long.toString(System.currentTimeMillis());
         label = "null";
         frequency = 0;
@@ -19,34 +20,29 @@ public class EventNode implements Comparable {
         endFrequency = 0;
     }
 
-    public EventNode(String label) {
+    public LogNode(String label) {
         id = Long.toString(System.currentTimeMillis());
         frequency = 0;
         startFrequency = 0;
         endFrequency = 0;
         this.label = label;
     }
-
-    public EventNode(int frequency) {
+    public LogNode(String label, int code) {
         id = Long.toString(System.currentTimeMillis());
-        startFrequency = 0;
-        endFrequency = 0;
-        label = "null";
-        this.frequency = frequency;
-    }
-
-    public EventNode(String label, int frequency) {
-        id = Long.toString(System.currentTimeMillis());
+        frequency = 0;
         startFrequency = 0;
         endFrequency = 0;
         this.label = label;
-        this.frequency = frequency;
+        this.code = code;
     }
 
     public String getID() { return id; }
 
     public void setLabel(String label) { this.label = label; }
     public String getLabel() { return label; }
+
+    public void setCode(int code) { this.code = code; }
+    public int getCode() { return code; }
 
     public void increaseFrequency() { frequency++; }
     public void increaseFrequency(int amount) { frequency += amount; }
@@ -64,13 +60,13 @@ public class EventNode implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        if( o instanceof EventNode) return id.compareTo(((EventNode)o).getID());
+        if( o instanceof LogNode) return id.compareTo(((LogNode)o).getID());
         else return -1;
     }
 
     @Override
     public boolean equals(Object o) {
-        if( o instanceof EventNode) return id.equals(((EventNode)o).getID());
+        if( o instanceof LogNode) return id.equals(((LogNode)o).getID());
         else return false;
     }
 

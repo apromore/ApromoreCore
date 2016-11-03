@@ -21,7 +21,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
         userAccessible = true,
         help = "Returns the log as a fuzzy net"
 )
-public class LogFuzzyNetPlugin {
+public class FuzzyNetPlugin {
 
     @UITopiaVariant(
             affiliation = "Queensland University of Technology",
@@ -30,7 +30,7 @@ public class LogFuzzyNetPlugin {
     )
     @PluginVariant(variantLabel = "Get Fuzzy Net from Log", requiredParameterLabels = {0})
     public static BPMNDiagram getFuzzyNetFromLog(UIPluginContext context, XLog log) {
-        FuzzyNet graph = LogParser.getFuzzyNet(log);
-        return graph.getFuzzyNet();
+        FuzzyNet fuzzyNet = LogParser.initFuzzyNet(log);
+        return fuzzyNet.getFuzzyNet();
     }
 }
