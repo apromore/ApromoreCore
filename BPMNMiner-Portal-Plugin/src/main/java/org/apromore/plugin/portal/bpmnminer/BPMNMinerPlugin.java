@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 // Third party packages
 import org.apromore.service.EventLogService;
+import org.apromore.service.logfilter.InfrequentBehaviourFilterService;
 import org.springframework.stereotype.Component;
 
 // Local packages
@@ -50,6 +51,7 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
     private final DomainService       domainService;
     private final ProcessService      processService;
     private final EventLogService     eventLogService;
+    private final InfrequentBehaviourFilterService infrequentBehaviourFilterService;
     private final UserInterfaceHelper userInterfaceHelper;
 
     @Inject
@@ -58,13 +60,15 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
                            final DomainService domainService,
                            final ProcessService processService,
                            final EventLogService eventLogService,
+                           final InfrequentBehaviourFilterService infrequentBehaviourFilterService,
                            final UserInterfaceHelper userInterfaceHelper) {
 
-        this.bpmnMinerService    = bpmnMinerService;
-        this.canoniserService    = canoniserService;
-        this.domainService       = domainService;
-        this.processService      = processService;
-        this.eventLogService = eventLogService;
+        this.bpmnMinerService                   = bpmnMinerService;
+        this.canoniserService                   = canoniserService;
+        this.domainService                      = domainService;
+        this.processService                     = processService;
+        this.eventLogService                    = eventLogService;
+        this.infrequentBehaviourFilterService   = infrequentBehaviourFilterService;
         this.userInterfaceHelper = userInterfaceHelper;
     }
 
@@ -83,7 +87,7 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
 
         context.getMessageHandler().displayInfo("Executed BPMN miner plug-in!");
 
-        new BPMNMinerController(context, bpmnMinerService, canoniserService, domainService, processService, eventLogService, userInterfaceHelper);
+        new BPMNMinerController(context, bpmnMinerService, canoniserService, domainService, processService, eventLogService, infrequentBehaviourFilterService, userInterfaceHelper);
     }
 
 }

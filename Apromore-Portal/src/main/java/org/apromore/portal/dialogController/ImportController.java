@@ -196,6 +196,7 @@ public class ImportController extends BaseController {
             getService().importLog(UserSessionManager.getCurrentUser().getUsername(), folderId, logFileName, inputStream,
                     extension, "", DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(), isPublic);
 
+            mainC.refresh();
         } catch (Exception e) {
             Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }finally {
