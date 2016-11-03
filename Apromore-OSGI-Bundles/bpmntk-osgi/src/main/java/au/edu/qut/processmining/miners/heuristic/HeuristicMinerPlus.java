@@ -1,5 +1,6 @@
 package au.edu.qut.processmining.miners.heuristic;
 
+import au.edu.qut.helper.DiagramHandler;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
@@ -7,13 +8,15 @@ import au.edu.qut.processmining.miners.heuristic.oracle.Oracle;
 import au.edu.qut.processmining.miners.heuristic.oracle.OracleItem;
 import org.deckfour.xes.model.XLog;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.processmining.models.graphbased.directed.bpmn.elements.Event;
-import org.processmining.models.graphbased.directed.bpmn.elements.Flow;
+import org.processmining.models.graphbased.directed.bpmn.elements.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Created by Adriano on 24/10/2016.
@@ -40,6 +43,7 @@ public class HeuristicMinerPlus {
 
         mineHeuristicNet(dependencyThreshold, positiveObservations, relative2BestThreshold);
         generateBPMNDiagram();
+        updateLabels(this.log.getEvents());
 
         return bpmnDiagram;
     }
@@ -57,6 +61,7 @@ public class HeuristicMinerPlus {
     }
 
     private void generateBPMNDiagram() {
+        HashMap<Integer, BPMNNode> mapping = new HashMap<>();
         BPMNNode entry = null;
         BPMNNode exit = null;
 
@@ -103,6 +108,7 @@ public class HeuristicMinerPlus {
                     tgt = oe.getTarget();
                     removableEdges.add(oe);
                     successors.add( Integer.valueOf(tgt.getLabel()) );
+                    mapping.put(Integer.valueOf(tgt.getLabel()), tgt);
                     if( !toVisit.contains(tgt) && !visited.contains(tgt) ) toVisit.add(tgt);
                 }
 
@@ -120,6 +126,8 @@ public class HeuristicMinerPlus {
 
                 finalOracleItem = oracle.getFinalOracleItem(oracleItems);
 
+                generateSplitGateways(entry, finalOracleItem, mapping);
+
             } else {
                 tgt = ((new ArrayList<>(bpmnDiagram.getOutEdges(entry))).get(0)).getTarget();
                 if( !toVisit.contains(tgt) && !visited.contains(tgt) ) toVisit.add(tgt);
@@ -127,6 +135,55 @@ public class HeuristicMinerPlus {
         }
 
         System.out.println("HM+ - bpmn diagram generated successfully");
+    }
+
+    private void generateSplitGateways(BPMNNode entry, OracleItem nextOracleItem, Map<Integer, BPMNNode> mapping) {
+        Gateway.GatewayType type = nextOracleItem.getGateType();
+        BPMNNode node;
+        Integer nodeCode;
+        Gateway gate;
+
+        System.out.println("DEBUG - generating split from Oracle ~ [xor|and]: " + nextOracleItem + " ~ [" + nextOracleItem.getXorBrothers().size() + "|" + nextOracleItem.getAndBrothers().size() + "]");
+
+        if( type == null ) {
+            nodeCode = nextOracleItem.getNodeCode();
+            if( nodeCode != null ) {
+                node = mapping.get(nodeCode);
+                bpmnDiagram.addFlow(entry, node, "");
+            } else System.out.println("ERROR - found an oracle item without brother and more than one element in its past");
+            return;
+        }
+
+        gate = bpmnDiagram.addGateway("", type);
+        bpmnDiagram.addFlow(entry, gate, "");
+        for( OracleItem next : nextOracleItem.getXorBrothers() ) generateSplitGateways(gate, next, mapping);
+        for( OracleItem next : nextOracleItem.getAndBrothers() ) generateSplitGateways(gate, next, mapping);
+    }
+
+    private void updateLabels(Map<Integer, String> events) {
+        DiagramHandler helper = new DiagramHandler();
+        BPMNDiagram duplicateDiagram = new BPMNDiagramImpl(bpmnDiagram.getLabel());
+        HashMap<BPMNNode, BPMNNode> originalToCopy = new HashMap<>();
+        BPMNNode src, tgt;
+        BPMNNode copy;
+        String label;
+
+        for( BPMNNode n : bpmnDiagram.getNodes() ) {
+            if( n instanceof Activity ) label = events.get(Integer.valueOf(n.getLabel()));
+            else label = n.getLabel();
+            copy = helper.copyNode(duplicateDiagram, n, label);
+            if( copy != null ) originalToCopy.put(n, copy);
+            else System.out.println("ERROR - diagram labels updating failed [1].");
+        }
+
+        for( Flow f : bpmnDiagram.getFlows() ) {
+            src = originalToCopy.get(f.getSource());
+            tgt = originalToCopy.get(f.getTarget());
+
+            if( src != null && tgt != null ) duplicateDiagram.addFlow(src, tgt, f.getLabel());
+            else System.out.println("ERROR - diagram labels updating failed [2].");
+        }
+        bpmnDiagram = duplicateDiagram;
     }
 
 }
