@@ -9,15 +9,12 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.models.graphbased.directed.bpmn.elements.Event;
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 /**
  * Created by Adriano on 24/10/2016.
  */
 public class HeuristicNet {
-
-    private static DecimalFormat dFormat = new DecimalFormat(".###");
 
     private SimpleLog log;
     private int startcode;
@@ -362,8 +359,7 @@ public class HeuristicNet {
         for( HeuristicEdge edge : edges ) {
             src = mapping.get(edge.getSource().getCode());
             tgt = mapping.get(edge.getTarget().getCode());
-            label =  dFormat.format(edge.getLocalDependencyScore()) + "/" + edge.getFrequency();
-            diagram.addFlow(src, tgt, label);
+            diagram.addFlow(src, tgt, edge.toString());
         }
 
         return diagram;
@@ -380,7 +376,7 @@ public class HeuristicNet {
             label = Integer.toString(event);
 
             if( event == startcode || event == endcode )
-                node = diagram.addEvent(label, (event == startcode ? Event.EventType.START : Event.EventType.END), Event.EventTrigger.NONE, Event.EventUse.CATCH, false, null);
+                node = diagram.addEvent(label, (event == startcode ? Event.EventType.START : Event.EventType.END), Event.EventTrigger.NONE, (event == startcode ? Event.EventUse.CATCH : Event.EventUse.THROW), true, null);
             else
                 node = diagram.addActivity(label, selfLoop.contains(event), false, false, false, false);
 
@@ -390,7 +386,7 @@ public class HeuristicNet {
         for( HeuristicEdge edge : edges ) {
             src = mapping.get(edge.getSource().getCode());
             tgt = mapping.get(edge.getTarget().getCode());
-            diagram.addFlow(src, tgt, "");
+            diagram.addFlow(src, tgt, edge.toString());
         }
 
         return diagram;
