@@ -48,9 +48,9 @@ public class HeuristicMinerPlusPlugin {
             heuristicNet.printParallelisms();
         }
 
-        BPMNDiagram netDiagram = hmp.getHeuristicDiagram();
+//        BPMNDiagram netDiagram = hmp.getHeuristicDiagram();
         BPMNDiagram bpmnDiagram = hmp.getBPMNDiagram();
 
-        return netDiagram;
+        return bpmnDiagram;
     }
 }

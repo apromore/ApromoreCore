@@ -86,7 +86,7 @@ public final class Import {
                 File fileArg = new File(fromDir, args[i]);
                 File toArg = (toDir == null) ? new File(args[i]) : new File(toDir, args[i]);
                 if (fileArg.isFile()) {
-                    uploadProcess(fileArg, toArg);
+                    uploadFile(fileArg, toArg);
                 }
                 else if (fileArg.isDirectory()) {
                     processDirectory(fileArg, toArg);
@@ -118,7 +118,7 @@ public final class Import {
                     if (file.isDirectory()) {
                         processDirectory(file, toDir);
                     } else {
-                        uploadProcess(file, toDir);
+                        uploadFile(file, toDir);
                     }
                 }
             }
@@ -128,15 +128,16 @@ public final class Import {
     }
 
 
-    /* upload a single process into apromore. */
-    private static void uploadProcess(final File file, final File toFile) {
+    /* upload a single process or log into apromore. */
+    private static void uploadFile(final File file, final File toFile) {
+        LOGGER.info("Upload from " + file + " to " + toFile);
         try {
             final String userName = "admin";
             final Set<RequestParameterType<?>> noCanoniserParameters = Collections.emptySet();
 
             File parentFile = toFile.getParentFile();
             String ext = FilenameUtils.getExtension(toFile.getName());
-            if (getNativeFormat(ext) != null && parentFile != null) {
+            if (parentFile != null) {
                 createFolder(parentFile);
                 int parentId = getFolderId(parentFile);
                 assert parentId != -1;
@@ -144,8 +145,18 @@ public final class Import {
                 String now = DateFormat.getInstance().format(new Date());
 
                 if (manager == null) {
-                    LOGGER.error("Failed to load file {} because no -manager parameter was specified");
-                } else {
+                    LOGGER.error("Failed to load file {} because no -manager parameter was specified", file);
+                } else if ("xes".equals(ext)) {
+                    manager.importLog(
+                        userName,
+                        parentId,
+                        FilenameUtils.getBaseName(toFile.getName()),  // log name
+                        new FileInputStream(file),                    // XML serialization of the log
+                        "xes",                                        // filename extension
+                        "domain",
+                        now,                                          // creation timestamp
+                        true);                                        // make public?
+                } else if (getNativeFormat(ext) != null) {
                     manager.importProcess(
                         userName,                                     // user name
                         parentId,                                     // folder ID
@@ -159,6 +170,8 @@ public final class Import {
                         now,                                          // last modification timestamp
                         true,                                         // make public?
                         noCanoniserParameters);
+                } else {
+                    LOGGER.error("Failed to load file {}; unrecognized file extension", file.getName());
                 }
             }
         } catch (Exception e) {
