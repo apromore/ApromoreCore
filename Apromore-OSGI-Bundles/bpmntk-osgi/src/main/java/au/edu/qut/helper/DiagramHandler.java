@@ -757,6 +757,8 @@ public class DiagramHandler {
         BPMNNode copy;
         SubProcess parentSubprocess;
         Swimlane parentSwimlane;
+        Activity exceptionFor;
+        BPMNNode newExceptionFor;
 
         for( BPMNNode n : diagram.getNodes() ) {
             copy = copyNode(duplicateDiagram, n, n.getLabel());
@@ -775,9 +777,18 @@ public class DiagramHandler {
         for( BPMNNode n : originalToCopy.keySet() ) {
             parentSubprocess = (SubProcess) originalToCopy.get(n.getParentSubProcess());
             parentSwimlane = (Swimlane) originalToCopy.get(n.getParentSwimlane());
+
             copy = originalToCopy.get(n);
             copy.setParentSubprocess(parentSubprocess);
             copy.setParentSwimlane(parentSwimlane);
+
+            if( (n instanceof Event) && (copy instanceof Event) ) {
+                exceptionFor = ((Event)n).getBoundingNode();
+                if( exceptionFor != null ) {
+                    newExceptionFor = originalToCopy.get(exceptionFor);
+                    if( newExceptionFor instanceof Activity ) ((Event) copy).setExceptionFor((Activity) newExceptionFor);
+                }
+            }
         }
 
         return duplicateDiagram;

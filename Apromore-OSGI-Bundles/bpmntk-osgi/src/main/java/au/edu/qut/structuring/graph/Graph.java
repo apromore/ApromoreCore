@@ -210,10 +210,10 @@ public class Graph {
         Path twinBrother;
         int size;
         boolean ntd = true;
+        //System.out.println("DEBUG - alive paths before merging brothers: " + alivePaths.size() );
 
         //looking up brothers. it is a matrix entry-exit with a set of int in each cell.
         //if the set size is greater than 1 means all the int inside the set are brother paths.
-
         for( String entry : brothers.keySet() )
             for( String exit : brothers.get(entry).keySet() )
                 if( (size = (brotherhood = brothers.get(entry).get(exit)).size()) > 1 ) {
@@ -222,9 +222,12 @@ public class Graph {
                     bigBrother = allPaths.get(brotherhood.get(size-1));
                     while( brotherhood.size() != 1 ) {
                         bigBrother.addBrother(allPaths.get(brotherhood.get(0)));
+                        //System.out.println("DEBUG - merged brothers [" + bigBrother.getPID() + " + " + brotherhood.get(0) + "] with loop [" + bigBrother.isLoop() + ":" + allPaths.get(brotherhood.get(0)).isLoop() + "]");
                         removePath(brotherhood.get(0));
                     }
                 }
+
+        //System.out.println("DEBUG - alive paths after merging brothers: " + alivePaths.size() );
 
         //at this point there are no brothers except for cycles.
         for( String entry : brothers.keySet() )
@@ -257,11 +260,14 @@ public class Graph {
                     }
                 }
             }
+
+        //System.out.println("DEBUG - alive paths after merging reverse brothers: " + alivePaths.size() );
         return ntd;
     }
 
     private boolean concatenation() {
         boolean ntd = true;
+        //System.out.println("DEBUG - alive paths before concatenation: " + alivePaths.size() );
 
         for( String o : incoming.keySet() )
             if( o.equals(entry) || o.equals(exit) ) continue;
@@ -269,6 +275,8 @@ public class Graph {
                 concatenate(incoming.get(o).get(0), outgoing.get(o).get(0));
                 ntd = false;
             }
+
+        //System.out.println("DEBUG - alive paths after concatenation: " + alivePaths.size() );
         return ntd;
     }
 

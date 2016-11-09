@@ -5,49 +5,49 @@ package au.edu.qut.processmining.log.graph;
  */
 
 public class LogEdge implements Comparable {
-    private String id;
-    private int weight;
-    private LogNode source;
-    private LogNode target;
+    protected String id;
+    protected String label;
+    protected LogNode source;
+    protected LogNode target;
+
+    public LogEdge() {
+        id = Long.toString(System.currentTimeMillis());
+        source = null;
+        target = null;
+    }
 
     public LogEdge(LogNode source, LogNode target){
+        id = Long.toString(System.currentTimeMillis());
         this.source = source;
         this.target = target;
-        weight = 0;
-        id = Long.toString(System.currentTimeMillis());
     }
-
-    public LogEdge(LogNode source, LogNode target, int weight){
+    public LogEdge(LogNode source, LogNode target, String label){
+        id = Long.toString(System.currentTimeMillis());
         this.source = source;
         this.target = target;
-        this.weight = weight;
-        id = Long.toString(System.currentTimeMillis());
-    }
-
-    public int increaseWeight() {
-        weight++;
-        return weight;
-    }
-
-    public int increaseWeight(int amount) {
-        weight += amount;
-        return weight;
+        this.label = label;
     }
 
     public String getID() { return id; }
-    public int getWeight(){ return weight; }
+
+    public void setLabel(String label) { this.label = label; }
+    public String getLabel() { return label; }
+
+    public void setSource(LogNode source){ this.source = source; }
     public LogNode getSource(){ return source; }
+
+    public void setTarget(LogNode target) { this.target = target; }
     public LogNode getTarget(){ return target; }
 
     @Override
     public int compareTo(Object o) {
-        if( o instanceof LogEdge ) return id.compareTo(((LogEdge)o).getID());
+        if( o instanceof LogEdge) return id.compareTo(((LogEdge)o).getID());
         else return -1;
     }
 
     @Override
     public boolean equals(Object o) {
-        if( o instanceof LogEdge ) return id.equals(((LogEdge)o).getID());
+        if( o instanceof LogEdge) return id.equals(((LogEdge)o).getID());
         else return false;
     }
 }
