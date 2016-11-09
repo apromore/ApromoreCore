@@ -1,10 +1,12 @@
 package ee.ut.eventstr.comparison;
 
+import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import hub.top.petrinet.PetriNet;
 import hub.top.petrinet.Transition;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,26 +40,45 @@ public class ApromoreCompareML {
 
 	public static final String version = "0.1";
 
+	public static byte[] getFileAsArray(String fileName) {
+		FileInputStream fileInputStream = null;
+		File file = new File(fileName);
+
+		try {
+			byte[] bFile = new byte[(int) file.length()];
+
+			// convert file into array of bytes
+			fileInputStream = new FileInputStream(file);
+			fileInputStream.read(bFile);
+			fileInputStream.close();
+
+			return bFile;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public static void main(String[] args) {
-		ApromoreCompareML ml = new ApromoreCompareML();
+		String modelString = "models/bp5.bpmn";
+		String logString = "logs/bpLog4.xes";
 
-		String folder, pnml, logfn;
-
-		String folderLog = "logs/";
-		String folderModel = "models/";
-		logfn = "net2.xes";
-		pnml = "net1.pnml";
-		
 		HashSet<String> silents = new HashSet<String>();
-		silents.add("silent");
-		silents.add("silent1");
 		silents.add("_1_");
 		silents.add("_0_");
 		
 		try {
-			XLog log = XLogReader.openLog(folderLog + logfn);
-			PetriNet net = PNMLReader.parse(new File(folderModel + pnml));
-			System.out.println(ml.getDifferencesSilent(net, log, silents));
+			XLog log = XLogReader.openLog(logString);
+			ModelAbstractions model = new ModelAbstractions(getFileAsArray(modelString));
+			ApromoreCompareML comparator = new ApromoreCompareML();
+
+			DiffMLGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model, log, silents);
+			verbalizer.verbalize();
+
+			//		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
+			//		System.out.println(verbalizer.getStatements());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -123,6 +144,33 @@ public class ApromoreCompareML {
 		System.out.println("Total time: " + totaltime / 1000 / 1000 + "ms");
 
 		return statementSet;
+	}
+
+	public DiffMLGraphicalVerbalizer analyzeDifferences(ModelAbstractions model, XLog log, HashSet<String> silents)
+			throws Exception {
+		DiffMLGraphicalVerbalizer verbalizer = new DiffMLGraphicalVerbalizer(model, log, silents);
+
+//		SinglePORunPESSemantics<Integer> logpessem;
+//		PrunedOpenPartialSynchronizedProduct<Integer> psp;
+//
+//		PrimeEventStructure<Integer> logpes = getLogPES(log);
+//		NewUnfoldingPESSemantics<Integer> pnmlpes = getUnfoldingPES(model.getNet(), silents);
+//		ExpandedPomsetPrefix<Integer> expprefix = new ExpandedPomsetPrefix<Integer>(pnmlpes);
+//
+//		PESSemantics<Integer> fullLogPesSem = new PESSemantics<Integer>(logpes);
+//
+//		DiffMLGraphicalVerbalizer verbalizer = new DiffMLGraphicalVerbalizer(fullLogPesSem, pnmlpes, expprefix);
+
+		for (int sink : verbalizer.logpes.getSinks()) {
+			SinglePORunPESSemantics<Integer> logpessem = new SinglePORunPESSemantics<Integer>(verbalizer.logpes, sink);
+			PrunedOpenPartialSynchronizedProduct<Integer> psp = new PrunedOpenPartialSynchronizedProduct<Integer>(logpessem, verbalizer.pes2);
+
+			psp.perform().prune();
+
+			verbalizer.addPSP(psp.getOperationSequence());
+		}
+
+		return verbalizer;
 	}
 
 	private NewDiffVerbalizer<Integer> analyzeDifferences(PetriNet net, XLog log, HashSet<String> silents)

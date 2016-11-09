@@ -20,11 +20,9 @@
 
 package org.apromore.service.compare.impl;
 
-import ee.ut.eventstr.comparison.ApromoreCompareML;
-import ee.ut.eventstr.comparison.ApromoreCompareMM;
-import ee.ut.eventstr.comparison.ApromoreCompareLL;
-import ee.ut.eventstr.comparison.DiffMMGraphicalVerbalizer;
+import ee.ut.eventstr.comparison.*;
 import ee.ut.eventstr.comparison.differences.Differences;
+import ee.ut.eventstr.comparison.differences.DifferencesML;
 import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import hub.top.petrinet.PetriNet;
 import org.deckfour.xes.model.XLog;
@@ -41,10 +39,19 @@ import java.util.Set;
 public class CompareServiceImpl implements CompareService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompareServiceImpl.class);
 
+    // Non-graphical verbalizer
+    // @Override
+    // public Set<String> discoverBPMNModel(PetriNet net, XLog log, HashSet<String> obs) throws Exception {
+    //      ApromoreCompareML comparator = new ApromoreCompareML();
+    //      return comparator.getDifferences(net, log, obs);
+    // }
+
     @Override
-    public Set<String> discoverBPMNModel(PetriNet net, XLog log, HashSet<String> obs) throws Exception {
+    public DifferencesML discoverBPMNModel(ModelAbstractions model, XLog log, HashSet<String> obs) throws Exception {
         ApromoreCompareML comparator = new ApromoreCompareML();
-        return comparator.getDifferences(net, log, obs);
+        DiffMLGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model, log, obs);
+        verbalizer.verbalize();
+        return verbalizer.getDifferences();
     }
 
 //    @Override

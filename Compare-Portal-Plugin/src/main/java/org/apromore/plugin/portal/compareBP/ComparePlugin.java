@@ -79,9 +79,6 @@ import org.slf4j.LoggerFactory;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.zkoss.zul.Messagebox;
 
-/**
- * A user interface to the BPMN miner service.
- */
 @Component("plugin")
 public class ComparePlugin extends DefaultPortalPlugin {
     private final CompareService compareService;
@@ -199,7 +196,9 @@ public class ComparePlugin extends DefaultPortalPlugin {
                 controller.compareLL(logs.get(0), logs.get(1));
                 return;
             }else if(logs.size() == 1 && selectedProcessVersions.size() == 1){
-                controller.compareML(nets.get(0), observable.get(0), logs.get(0));
+                ModelAbstractions model = toModelAbstractions(procS.get(0), verS.get(0));
+
+                controller.compareML(model, new HashSet<String>(), logs.get(0), procS.get(0), verS.get(0));
                 return;
             }else if(selectedProcessVersions.size() == 2){
                 context.getMessageHandler().displayInfo("Performing comparison.");
@@ -227,7 +226,8 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
             switch (selectedProcessVersions.size()) {
                 case 1:
-                    controller.compareMLPopup(nets.get(0), observable.get(0));
+                    ModelAbstractions model = toModelAbstractions(procS.get(0), verS.get(0));
+                    controller.compareMLPopup(model, observable.get(0), procS.get(0), verS.get(0));
                     context.getMessageHandler().displayInfo("Performed conformance checker.");
                     break;
                 default:
