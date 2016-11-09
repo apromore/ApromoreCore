@@ -131,8 +131,10 @@ public class BPMNReader {
 				String targetRef = sequenceFlow.getAttributeValue("targetRef");
 				Node source = nodes.get(sourceRef);
 				Node target = nodes.get(targetRef);
-				
-				bp.addControlFlow(map.get(source), map.get(target));
+
+				BpmnControlFlow flow = bp.addControlFlow(map.get(source), map.get(target));
+				flow.setId(sequenceFlow.getAttributeValue("id"));
+				System.out.println(flow.getId());
 				
 				if (source != null && target != null)
 					source.connectTo(target.getInputPlace());
