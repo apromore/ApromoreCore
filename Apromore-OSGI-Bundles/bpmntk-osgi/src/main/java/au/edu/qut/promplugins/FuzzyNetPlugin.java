@@ -1,10 +1,7 @@
 package au.edu.qut.promplugins;
 
 import au.edu.qut.processmining.log.LogParser;
-import au.edu.qut.processmining.log.graph.LogGraph;
-import au.edu.qut.processmining.miner.FakeMiner;
-import au.edu.qut.processmining.ui.MinerUI;
-import au.edu.qut.processmining.ui.MinerUIResult;
+import au.edu.qut.processmining.log.graph.fuzzy.FuzzyNet;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -24,7 +21,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
         userAccessible = true,
         help = "Returns the log as a fuzzy net"
 )
-public class LogFuzzyNetPlugin {
+public class FuzzyNetPlugin {
 
     @UITopiaVariant(
             affiliation = "Queensland University of Technology",
@@ -33,7 +30,7 @@ public class LogFuzzyNetPlugin {
     )
     @PluginVariant(variantLabel = "Get Fuzzy Net from Log", requiredParameterLabels = {0})
     public static BPMNDiagram getFuzzyNetFromLog(UIPluginContext context, XLog log) {
-        LogGraph graph = LogParser.generateLogGraph(log);
-        return graph.getLogAsDiagram();
+        FuzzyNet fuzzyNet = LogParser.initFuzzyNet(log);
+        return fuzzyNet.getFuzzyNet();
     }
 }

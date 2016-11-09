@@ -79,8 +79,8 @@ public class StructuringService {
                                         boolean keepBisimulation,
                                         boolean forceStructuring) {
 
-        this.diagram = diagramHandler.copyDiagram(diagram);
-//        this.diagram = diagram;
+//        this.diagram = diagramHandler.copyDiagram(diagram);
+        this.diagram = diagram;
         this.policy = policy;
         this.maxDepth = maxDepth;
         this.maxSolutions = maxSolutions;
@@ -98,8 +98,7 @@ public class StructuringService {
         try {
             this.structureDiagram();
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("ERROR - impossible structure diagram");
+            System.out.println("ERROR - impossible structure diagram, returning the input: " + e.getMessage());
             return diagram;
         }
 
@@ -150,7 +149,7 @@ public class StructuringService {
          **/
         diagramHandler.fixImplicitGateways(diagram);
         diagramHandler.removeDoubleEdges(diagram);
-        diagramHandler.collapseSplitGateways(diagram);
+//        diagramHandler.collapseSplitGateways(diagram);
         diagramHandler.removeDoubleEdges(diagram);
 
         removeMultipleStartEvents();
@@ -329,6 +328,7 @@ public class StructuringService {
 
         for( Event e : diagram.getEvents() )
             if( (a = e.getBoundingNode()) != null ) {
+                System.out.println("DEBUG - found boundary event: detaching.");
                 if( e.getEventTrigger() == Event.EventTrigger.COMPENSATION ) {
                     for( Association association : diagram.getAssociations() )
                         if( association.getSource() == e )
@@ -361,6 +361,8 @@ public class StructuringService {
                             break;
                         }
                 }
+            } else {
+                System.out.println("DEBUG - event: " + e.getEventType());
             }
     }
 
@@ -411,8 +413,7 @@ public class StructuringService {
                 iBPStruct spi = new iBPStruct(  StructuringCore.Policy.valueOf(policy),
                         maxDepth, maxSolutions, maxChildren, maxStates,
                         maxMinutes, timeBounded, keepBisimulation, forceStructuring);
-//                String pLabel = (processID == null ? "top-level" : originalNodes.get(processID).getLabel());
-//                System.out.println("DEBUG - structuring process(" + processID + ")(" + pLabel + ") - " + nodes.size() + " : " + edges.size());
+                System.out.println("DEBUG - structuring process(" + processID + ") - " + nodes.size() + " : " + edges.size());
                 spi.setProcess(nodes, flows);
                 spi.structure();
                 structuredDiagram = spi.getDiagram();
@@ -420,6 +421,7 @@ public class StructuringService {
                 diagramHandler.fixSoundness(structuredDiagram);
             }
         } catch(Exception e) {
+            System.out.println("ERROR - impossible structure the current subprocess, setting diagram NULL." );
             e.printStackTrace();
             structuredDiagram = null;
         }

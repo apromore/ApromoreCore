@@ -21,11 +21,6 @@ public class iBPStructSettings extends ProMPropertiesPanel {
     private static final long serialVersionUID = 1L;
 
     private static final String DIALOG_NAME = "Setup Structuring Policy";
-    private static final int MAX_DEPTH = 100;
-    private static final int MAX_CHILDREN = 10;
-    private static final int MAX_SOL = 500;
-    private static final int MAX_STATES = 100;
-    private static final int MAX_MINUTES = 2;
 
     final iBPStructUIResult result;
 
@@ -67,37 +62,37 @@ public class iBPStructSettings extends ProMPropertiesPanel {
         forceStructuring = this.addCheckBox("Force Structuring", false);
         forceStructuring.addChangeListener(bpsil);
 
-        maxMinutes = SlickerFactory.instance().createNiceIntegerSlider("Max Minutes", 0, 120, MAX_MINUTES, NiceSlider.Orientation.HORIZONTAL);
+        maxMinutes = SlickerFactory.instance().createNiceIntegerSlider("Max Minutes", 0, 120, iBPStructUIResult.MAX_MINUTES, NiceSlider.Orientation.HORIZONTAL);
         maxMinutes.addChangeListener(bpsil);
         this.add(maxMinutes);
         maxMinutes.setVisible(true);
 
-        maxDepth = SlickerFactory.instance().createNiceIntegerSlider("Max Depth", 0, 500, MAX_DEPTH, NiceSlider.Orientation.HORIZONTAL);
+        maxDepth = SlickerFactory.instance().createNiceIntegerSlider("Max Depth", 0, 500, iBPStructUIResult.MAX_DEPTH, NiceSlider.Orientation.HORIZONTAL);
         maxDepth.addChangeListener(bpsil);
         this.add(maxDepth);
         maxDepth.setVisible(false);
 
-        maxChildren = SlickerFactory.instance().createNiceIntegerSlider("Max Children", 1, 100, MAX_CHILDREN, NiceSlider.Orientation.HORIZONTAL);
+        maxChildren = SlickerFactory.instance().createNiceIntegerSlider("Max Children", 1, 100, iBPStructUIResult.MAX_CHILDREN, NiceSlider.Orientation.HORIZONTAL);
         maxChildren.addChangeListener(bpsil);
         this.add(maxChildren);
         maxChildren.setVisible(false);
 
-        maxStates = SlickerFactory.instance().createNiceIntegerSlider("Max States", 1, 10000, MAX_STATES, NiceSlider.Orientation.HORIZONTAL);
+        maxStates = SlickerFactory.instance().createNiceIntegerSlider("Max States", 1, 10000, iBPStructUIResult.MAX_STATES, NiceSlider.Orientation.HORIZONTAL);
         maxStates.addChangeListener(bpsil);
         this.add(maxStates);
         maxStates.setVisible(false);
 
-        maxSol = SlickerFactory.instance().createNiceIntegerSlider("Max Solutions", 0, 1000, MAX_SOL, NiceSlider.Orientation.HORIZONTAL);
+        maxSol = SlickerFactory.instance().createNiceIntegerSlider("Max Solutions", 0, 1000, iBPStructUIResult.MAX_SOL, NiceSlider.Orientation.HORIZONTAL);
         maxSol.addChangeListener(bpsil);
         this.add(maxSol);
         maxSol.setVisible(false);
 
         result.setPolicy(StructuringCore.Policy.ASTAR);
-        result.setMaxDepth(MAX_DEPTH);
-        result.setMaxSol(MAX_SOL);
-        result.setMaxChildren(MAX_CHILDREN);
-        result.setMaxStates(MAX_STATES);
-        result.setMaxMinutes(MAX_MINUTES);
+        result.setMaxDepth(iBPStructUIResult.MAX_DEPTH);
+        result.setMaxSol(iBPStructUIResult.MAX_SOL);
+        result.setMaxChildren(iBPStructUIResult.MAX_CHILDREN);
+        result.setMaxStates(iBPStructUIResult.MAX_STATES);
+        result.setMaxMinutes(iBPStructUIResult.MAX_MINUTES);
         result.setKeepBisimulation(true);
         result.setTimeBounded(true);
         result.setForceStructuring(false);
