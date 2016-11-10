@@ -107,7 +107,9 @@ public class InfrequentBehaviourFilterPlugin extends PluginCustomGui {
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             eventLogService.exportToStream(outputStream, xlog);
 
-            eventLogService.importLog(portalContext.getCurrentUser().getUsername(), logST.getFolder()!=null?logST.getFolder().getId():null,
+            int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+
+            eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
                     logST.getName() + "_filtered", new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     logST.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     logST.isMakePublic());
