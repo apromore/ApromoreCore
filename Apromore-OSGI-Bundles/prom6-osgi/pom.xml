@@ -324,7 +324,7 @@
                             <!--edu.uci.ics.jung.algorithms.layout,-->
                             <!--edu.uci.ics.jung.algorithms.layout.util,-->
                             <!--edu.uci.ics.jung.algorithms.matrix,-->
-                            <!--edu.uci.ics.jung.algorithms.metrics,-->
+                            <!--edu.uci.ics.jung.algorithms.logfilter,-->
                             <!--edu.uci.ics.jung.algorithms.scoring,-->
                             <!--edu.uci.ics.jung.algorithms.scoring.util,-->
                             <!--edu.uci.ics.jung.algorithms.shortestpath,-->

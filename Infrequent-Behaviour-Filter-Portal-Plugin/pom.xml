@@ -33,9 +33,9 @@
 
     <packaging>bundle</packaging>
     <!-- Unique name of the plug-in -->
-    <artifactId>bpmnminer-portal-plugin</artifactId>
-    <name>BPMNMiner portal plugin</name>
-    <description>Some description</description>
+    <artifactId>infrequent-behaviour-filter-portal-plugin</artifactId>
+    <name>Infrequent Behaviour Filter portal plugin</name>
+    <description>Infrequent Behaviour Filter Plugin</description>
 
     <build>
         <plugins>
@@ -51,6 +51,13 @@
                             org.springframework.beans.factory.aspectj,
                             *
                         </Import-Package>
+                        <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGi bundle
+                        <Embed-Dependency>
+                            artifactId=fooBar
+                        </Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Embed-Directory>lib</Embed-Directory>
+                        -->
                     </instructions>
                 </configuration>
             </plugin>
@@ -60,21 +67,21 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>bpmnminer-logic</artifactId>
+            <artifactId>infrequent-behaviour-filter-logic</artifactId>
             <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>infrequent-behaviour-filter-logic</artifactId>
-            <version>1.1</version>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-custom-gui</artifactId>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 

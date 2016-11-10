@@ -22,6 +22,7 @@ package org.apromore.plugin.portal.bpmnminer;
 
 import java.io.*;
 import java.util.*;
+import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.apromore.model.LogSummaryType;
@@ -29,6 +30,7 @@ import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
+import org.apromore.service.logfilter.InfrequentBehaviourFilterService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -85,6 +87,7 @@ public class BPMNMinerController {
     private Textbox modelName;
     private Selectbox miningAlgorithms;
     private Radiogroup dependencyAlgorithms;
+    private Radiogroup filterLog;
     private Radiogroup sortLog;
     private Radiogroup structProcess;
     private Slider interruptingEventTolerance;
@@ -110,6 +113,7 @@ public class BPMNMinerController {
     private final DomainService domainService;
     private final ProcessService processService;
     private final EventLogService eventLogService;
+    private final InfrequentBehaviourFilterService infrequentBehaviourFilterService;
     private final UserInterfaceHelper userInterfaceHelper;
 
     public BPMNMinerController(PortalContext portalContext,
@@ -118,6 +122,7 @@ public class BPMNMinerController {
                                DomainService domainService,
                                ProcessService processService,
                                EventLogService eventLogService,
+                               InfrequentBehaviourFilterService infrequentBehaviourFilterService,
                                UserInterfaceHelper userInterfaceHelper) {
 
         this.portalContext       = portalContext;
@@ -125,8 +130,9 @@ public class BPMNMinerController {
         this.canoniserService    = canoniserService;
         this.domainService       = domainService;
         this.processService      = processService;
-        this.eventLogService = eventLogService;
+        this.eventLogService     = eventLogService;
         this.userInterfaceHelper = userInterfaceHelper;
+        this.infrequentBehaviourFilterService = infrequentBehaviourFilterService;
 
         try {
             List<String> domains = domainService.findAllDomains();
@@ -170,6 +176,7 @@ public class BPMNMinerController {
             this.miningAlgorithms.setModel(listModelArray);
 
             this.dependencyAlgorithms = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerDependencyAlgorithm");
+            this.filterLog = (Radiogroup) this.bpmnMinerW.getFellow("noiseFilter");
             this.sortLog = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerSort");
             this.structProcess = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerStructProcess");
             this.interruptingEventTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerInterruptingEventTolerance");
@@ -327,6 +334,10 @@ public class BPMNMinerController {
         try {
 
             this.bpmnMinerW.detach();
+
+            if(filterLog.getSelectedIndex() == 0) {
+                log = infrequentBehaviourFilterService.filterLog(log);
+            }
 
             String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, getSelectedAlgorithm(), dependencyAlgorithms.getSelectedIndex()+1,
                     ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,

@@ -75,8 +75,11 @@
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
-        <!-- metrics-editor-plugin renamed ~metrics-editor-plugin elsewhere as a workaround for its dependency upon metrics-logic
-        <include name="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war"/>
+
+        <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
+        <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
+        <!-- logfilter-editor-plugin renamed ~logfilter-editor-plugin elsewhere as a workaround for its dependency upon logfilter-logic
+        <include name="Apromore-Plugins/plugin-editor/logfilter/target/logfilter-editor-plugin-1.1.war"/>
         -->
 
         <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
@@ -227,6 +230,7 @@
                 <include name="**/target/eventstr-confchecking-osgi-1.0.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/infrequent-behaviour-filter-osgi-1.0.jar"/>
 
                 <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
                 <include name="**/target/json-osgi-20090211.jar"/>
