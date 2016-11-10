@@ -2257,7 +2257,7 @@ public class DiffMLGraphicalVerbalizer {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
 		return diff;
 	}
@@ -2597,7 +2597,7 @@ public class DiffMLGraphicalVerbalizer {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
         return diff;
     }
@@ -2753,7 +2753,7 @@ public class DiffMLGraphicalVerbalizer {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
         return diff;
     }
@@ -2882,7 +2882,7 @@ public class DiffMLGraphicalVerbalizer {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
         return diff;
     }
