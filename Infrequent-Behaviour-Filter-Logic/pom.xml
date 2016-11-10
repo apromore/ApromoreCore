@@ -25,32 +25,33 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apromore.plugin</groupId>
-        <artifactId>plugin</artifactId>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
         <version>1.1</version>
-        <relativePath>../Apromore-Plugins/</relativePath>
+        <relativePath>../</relativePath>
     </parent>
 
+    <artifactId>infrequent-behaviour-filter-logic</artifactId>
     <packaging>bundle</packaging>
-    <!-- Unique name of the plug-in -->
-    <artifactId>bpmnminer-portal-plugin</artifactId>
-    <name>BPMNMiner portal plugin</name>
-    <description>Some description</description>
+    <name>Infrequent Behaviour Filter service</name>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
                 <configuration>
-                    <!-- Generally, no change should be necessary here unless your plug-in relies on a non-OSGi dependency -->
                     <instructions>
                         <Import-Package>
-                            <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
-                            org.apromore.plugin,
                             org.springframework.beans.factory.aspectj,
+                            com.raffaeleconforti.noisefiltering.event,
                             *
                         </Import-Package>
+                        <Export-Package>
+                            org.apromore.service.logfilter
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -60,22 +61,27 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>bpmnminer-logic</artifactId>
-            <version>1.1</version>
+            <artifactId>apromore-manager</artifactId>
+            <version>${manager-client.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>portal-plugin-api</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.context</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>infrequent-behaviour-filter-logic</artifactId>
-            <version>1.1</version>
+            <artifactId>infrequent-behaviour-filter-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>noisefiltering-event-commandline</artifactId>
+            <version>1.0.20161109</version>
         </dependency>
     </dependencies>
-
 </project>
+

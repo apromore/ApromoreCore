@@ -123,7 +123,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderNA());
         listItem.appendChild(renderName(log));
         listItem.appendChild(renderId(log));
-        listItem.appendChild(renderNA());
+        listItem.appendChild(renderOpenXES());
         listItem.appendChild(renderDomain(log));
         listItem.appendChild(renderNA());
         listItem.appendChild(renderNA());
@@ -193,6 +193,10 @@ public class SummaryItemRenderer implements ListitemRenderer {
         lc.appendChild(new Image(Constants.PROCESS_ICON));
         lc.setStyle(CENTRE_ALIGN);
         return lc;
+    }
+
+    protected Listcell renderOpenXES() {
+        return wrapIntoListCell(new Label("OpenXES"));
     }
 
     protected Listcell renderNA() {
