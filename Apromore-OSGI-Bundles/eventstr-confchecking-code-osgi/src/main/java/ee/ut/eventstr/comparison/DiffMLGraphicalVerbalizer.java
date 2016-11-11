@@ -82,7 +82,7 @@ public class DiffMLGraphicalVerbalizer {
 
 //	private Set<String> statements;
 
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 
 	public DiffMLGraphicalVerbalizer(ModelAbstractions model, XLog log, HashSet<String> silents) throws Exception{
 		this.model = model;
@@ -288,8 +288,10 @@ public class DiffMLGraphicalVerbalizer {
 
                 if (pes1.getBRelation(p.getFirst(), ctx.getKey().getFirst()) == BehaviorRelation.CONCURRENCY) {
                     String sentence = String.format("In the log, after '%s', '%s' and '%s' are concurrent, while in the model they are mutually exclusive",
-                            translate(pes1, p.getFirst()), translate(pes1, ctx.getKey().getFirst()),
-                            translate(pes1, ctx.getKey().getFirst()), translate(pes1, p.getFirst()));
+							//translate(pes1, p.getFirst()),
+							translate(pes1, ((Pair<Integer, Integer>)lastMatchMap.get(ctx.getValue()).target).getFirst()),
+							translate(pes1, ctx.getKey().getFirst()),
+							translate(pes1, p.getFirst()));
 
                     DifferenceML diff = print2Tasks(p.getSecond(), ctx.getKey().getSecond(), pes2, replayer, net, loader, sentence);
                     if (diff != null) {
@@ -2255,7 +2257,7 @@ public class DiffMLGraphicalVerbalizer {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
 		return diff;
 	}
@@ -2563,10 +2565,13 @@ public class DiffMLGraphicalVerbalizer {
             if(!startColors.containsKey(element) && !start.contains(element) && !a.contains(element))
                 greys.add(element);
 
+		greys.addAll(a);
+		a.clear();
+
         HashSet<String> allReleventEdges = new HashSet<>();
         allReleventEdges.addAll(start);
         allReleventEdges.addAll(end);
-        allReleventEdges.addAll(a);
+//        allReleventEdges.addAll(a);
         allReleventEdges.addAll(greys);
         HashSet<String> flows = replayerBPMN.getEdgesBetween(allReleventEdges);
         greys.addAll(flows);
@@ -2592,7 +2597,7 @@ public class DiffMLGraphicalVerbalizer {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
         return diff;
     }
@@ -2748,7 +2753,7 @@ public class DiffMLGraphicalVerbalizer {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
         return diff;
     }
@@ -2877,7 +2882,7 @@ public class DiffMLGraphicalVerbalizer {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
         return diff;
     }
