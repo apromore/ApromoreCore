@@ -1,0 +1,413 @@
+<!--
+  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native"
+        xmlns:z="http://www.zkoss.org/2005/zul"
+        use="org.apromore.portal.dialogController.ModelToLogComparisonController">
+
+    <n:style media="screen" type="text/css">
+        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
+        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/file-upload.css");
+        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/xtheme-gray.css");
+    </n:style>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/xtheme-smoky.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/custom-style.css" type="text/css"/>
+
+    <n:div id="oryxwrapper" style="display: none">
+        <n:script>
+            <![CDATA[
+                if (!ORYX) {
+                    var ORYX = {};
+                }
+                if (!ORYX.CONFIG) {
+                    ORYX.CONFIG = {};
+                }
+                ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
+            ]]>
+        </n:script>
+
+        <!-- JavaScript Dependencies of Signavio Process Editor-->
+        <n:script src="/${arg.editor}/libs/prototype-1.5.1.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/utils.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+
+        <!-- Include all Editor plug-ins -->
+        <z:zk forEach="${arg.plugins}">
+            <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
+        </z:zk>
+
+        <n:span id="oryxstartupcode">
+            <n:script>
+                <![CDATA[
+                    var urlData = '${arg.url}';
+
+                    ORYX.Editor.prototype.resetDifference = function() {
+                        reloadJSON(editorConfig);
+                    }
+
+                    ORYX.CONFIG.PANEL_LEFT_COLLAPSED = true;
+                    ORYX.CONFIG.WINDOW_HEIGHT        = 600;
+
+                    var addFlowNode = function(json, shapes, id, stencilId, x, y, w, h) {
+                        var addition = {
+                            "bounds": {
+                                "lowerRight": { "x": x + w/2, "y": y + h/2 },
+                                "upperLeft": { "x": x - w/2, "y": y - h/2 }
+                            },
+                            "childShapes": [],
+                            "incoming": [],
+                            "labels": [],
+                            "outgoing": [],
+                            "properties": {
+                                "bordercolor": "#FF0000"
+                            },
+                            "resourceId": id,
+                            "stencil": { "id": stencilId }
+                        };
+                       json.childShapes.push(addition);
+                       shapes[id] = addition;
+                       return addition;
+                   };
+
+                   var addSequenceFlow = function(json, shapes, id, source, target, waypoints) {
+                        var addition = {
+                            "childShapes": [],
+                            "dockers": [
+                                { "x": 20, "y": 20 },
+                                { "x": 20, "y": 20 }
+                            ],
+                            "incoming": [],
+                            "labels": [],
+                            "outgoing": [
+                                { "resourceId": target }
+                            ],
+                            "properties": {
+                                "bordercolor": "#FF0000"
+                            },
+                            "resourceId": id,
+                            "stencil": { "id": "SequenceFlow" },
+                            "source": { "resourceId": source },
+                            "target": { "resourceId": target }
+                        };
+                        json.childShapes.push(addition);
+                        shapes[source].outgoing.push({ resourceId: id });
+                    };
+
+                    var highlight = function(shape) {
+                        //shape.properties["bordercolor"] = "#FF0000";
+                        shape.properties["selected"] = true;
+                        shape.properties["selectioncolor"] = "#FF0000";
+                    };
+
+                    // Find the shapes corresponding to the function arguments resource IDs
+                    var indexJSON = function(json) {
+                        var shapes = {};
+                        json.childShapes.each(function (shape) {
+                            shapes[shape.resourceId] = shape;
+                        }.bind(this));
+                        return shapes;
+                    };
+
+                    // Replace any current model in oryxEditor1 with 
+                    var reloadJSON = function(json) {
+                        // Remove the existing model from the canvas
+                        oryxEditor1.getCanvas().getChildShapes().each(function (shape) {
+                            oryxEditor1.deleteShape(shape);
+                        }.bind(this));
+
+                        // Reload the modified model
+                        oryxEditor1.importJSON(json, true);
+                        console.log("ALPHA");
+                    };
+
+                    var reduceOpacityForGreyedElements = function(greys, shapes) {
+                        for (var i = greys.length; i--;) {
+                            shapes[greys[i]].getShape().node.setAttributeNS(null, "style", "opacity: 0.25");
+                        }
+                    };
+
+                    // In the log Task A occurs before Task B, while in the model they are concurrent
+                    // CAUSCONC 1
+                    // CONFLICT 3
+                    ORYX.Editor.prototype.causconc = function(start, a, b, end, greys) {
+                        var json = jQuery.extend(true, {}, editorConfig);
+                        var shapes = indexJSON(json);
+
+                        addSequenceFlow(json, shapes, "sid-start-a", start, a);
+                        highlight(shapes[a]);
+                        addSequenceFlow(json, shapes, "sid-a-b", a, b);
+                        highlight(shapes[b]);
+                        addSequenceFlow(json, shapes, "sid-b-end", b, end);
+
+                        reloadJSON(json);
+
+                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
+                    }
+
+                    // CAUSCONC 2 ParallelGateway
+                    // CONFLICT 1 ParallelGateway
+                    // CONFLICT 2 ExclusiveGateway
+                    // CONFLICT 4 ExclusiveGateway
+                    ORYX.Editor.prototype.causconc2 = function(gatewayStencilId, start, a, b, end, greys) {
+                        var json = jQuery.extend(true, {}, editorConfig);
+                        var shapes = indexJSON(json);
+
+                        var ca = shapeCenter(shapes[a]);
+                        var cb = shapeCenter(shapes[b]);
+
+                        var startplus = addFlowNode(json, shapes, "sid-startplus", gatewayStencilId, (ca.x + cb.x + cb.y - ca.y)/2, (ca.y + cb.y + ca.x - cb.x)/2, 40, 40).resourceId;
+                        var endplus = addFlowNode(json, shapes, "sid-endplus", gatewayStencilId, (ca.x + cb.x + ca.y - cb.y)/2, (ca.y + cb.y + cb.x - ca.x)/2, 40, 40).resourceId;
+
+                        addSequenceFlow(json, shapes, "sid-start-startplus", start, startplus);
+                        addSequenceFlow(json, shapes, "sid-startplus-a", startplus, a);
+                        addSequenceFlow(json, shapes, "sid-startplus-b", startplus, b);
+                        highlight(shapes[a]);
+                        highlight(shapes[b]);
+                        addSequenceFlow(json, shapes, "sid-a-endplus", a, endplus);
+                        addSequenceFlow(json, shapes, "sid-b-endplus", b, endplus);
+                        addSequenceFlow(json, shapes, "sid-endplus-end", endplus, end);
+
+                        reloadJSON(json);
+
+                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
+                    }
+
+                    var shapeCenter = function(shape) {
+                        return {x: (shape.bounds.lowerRight.x + shape.bounds.upperLeft.x) / 2,
+                                y: (shape.bounds.lowerRight.y + shape.bounds.upperLeft.y) / 2};
+                    }
+
+                    var angle = function(origin, endpoint) {
+                        return Math.atan2(endpoint.x - origin.x, endpoint.y - origin.y);
+                    }
+
+                    // TASKSKIP 1
+                    ORYX.Editor.prototype.taskskip = function(start, middle, end, greys) {
+                        var json = jQuery.extend(true, {}, editorConfig);
+                        var shapes = indexJSON(json);
+
+                        var cs = shapeCenter(shapes[start]);
+                        var cm = shapeCenter(shapes[middle]);
+                        var ce = shapeCenter(shapes[end]);
+
+                        var startplus = addFlowNode(json, shapes, "sid-startplus", "Exclusive_Databased_Gateway", (cs.x + cm.x + cm.y - cs.y)/2, (cs.y + cm.y + cs.x - cm.x)/2, 40, 40).resourceId;
+                        var endplus = addFlowNode(json, shapes, "sid-endplus", "Exclusive_Databased_Gateway", (cm.x + ce.x + ce.y - cm.y)/2, (cm.y + ce.y + cm.x - ce.x)/2, 40, 40).resourceId;
+                        addSequenceFlow(json, shapes, "sid-startplus-endplus", startplus, endplus);
+
+                        addSequenceFlow(json, shapes, "sid-start-startplus", start, startplus);
+                        addSequenceFlow(json, shapes, "sid-startplus-a", startplus, middle);
+                        highlight(shapes[middle]);
+                        addSequenceFlow(json, shapes, "sid-a-endplus", middle, endplus);
+                        addSequenceFlow(json, shapes, "sid-endplus-end", endplus, end);
+
+                        reloadJSON(json);
+
+                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
+                    }
+
+                    // TASKSKIP 2
+                    ORYX.Editor.prototype.taskskip2 = function(start, middle, end, greys) {
+                        var json = jQuery.extend(true, {}, editorConfig);
+                        var shapes = indexJSON(json);
+
+                        addSequenceFlow(json, shapes, "sid-start-a", start, middle);
+                        highlight(shapes[middle]);
+                        addSequenceFlow(json, shapes, "sid-a-end", middle, end);
+
+                        reloadJSON(json);
+
+                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
+                    }
+
+                    // TASKSUB
+                    ORYX.Editor.prototype.tasksub = function(start, substitutedTaskName, end, greys) {
+                        var json = jQuery.extend(true, {}, editorConfig);
+                        var shapes = indexJSON(json);
+
+                        var cs = shapeCenter(shapes[start]);
+                        var ce = shapeCenter(shapes[end]);
+
+                        var middle = addFlowNode(json, shapes, "sid-a", "Task", (cs.x + ce.x + ce.y - cs.y)/2, (cs.y + ce.y + cs.x - ce.x)/2, 100, 60);
+                        middle["properties"]["name"] = substitutedTaskName;
+
+                        addSequenceFlow(json, shapes, "sid-start-a", start, middle.resourceId);
+                        addSequenceFlow(json, shapes, "sid-a-end", middle.resourceId, end);
+
+                        reloadJSON(json);
+
+                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
+                    }
+
+                    // UNMREPETITION
+                    ORYX.Editor.prototype.unmrepetition = function(repeating, following, greys) {
+                        var json = jQuery.extend(true, {}, editorConfig);
+                        var shapes = indexJSON(json);
+
+                        var cs = shapeCenter(shapes[repeating]);
+                        var ce = shapeCenter(shapes[following]);
+
+                        var middle = addFlowNode(json, shapes, "sid-a", "Exclusive_Databased_Gateway", (cs.x + ce.x + ce.y - cs.y)/2, (cs.y + ce.y + cs.x - ce.x)/2, 40, 40);
+                        highlight(shapes[repeating]);
+                        addSequenceFlow(json, shapes, "sid-start-xor", repeating, middle.resourceId);
+                        addSequenceFlow(json, shapes, "sid-xor-start", middle.resourceId, repeating, [{x: 700, y: 50}]);
+                        addSequenceFlow(json, shapes, "sid-xor-end", middle.resourceId, following);
+
+                        reloadJSON(json);
+
+                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
+                    }
+
+                    // TASKRELOC
+                    ORYX.Editor.prototype.taskreloc = function(start, middles, end, greys) {
+                    }
+
+                    // TASKABS 1
+                    ORYX.Editor.prototype.taskabs = function(start, startmiddles, middle, middleends, end, greys) {
+                    }
+
+                    // TASKABS 2
+                    ORYX.Editor.prototype.taskabs2 = function(start, insertedTaskName, end, greys) {
+                    }
+
+                    // TASKABS 3
+                    ORYX.Editor.prototype.taskabs3 = function(start, end, greys) {
+                        var json = jQuery.extend(true, {}, editorConfig);
+                        var shapes = indexJSON(json);
+
+                        addSequenceFlow(json, shapes, "sid-start-end", start, end);
+
+                        reloadJSON(json);
+
+                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
+                    }
+
+                    var oryxEditor1;
+
+                    // This function is called upon load of all Oryx dependencies
+                    window.onOryxResourcesLoaded = function() {
+                        var createEditor = function(id, jsonData) {
+                            var editor = new ORYX.Editor ({
+				model : {
+				    id: id,
+				    stencilset : {
+                                        url : '${arg.url}',
+                                        namespace : '${arg.url}'
+                                    },
+				},
+				fullscreen : false
+			    });
+
+                            // Import new process model
+                            new Ajax.Request('${arg.importPath}', {
+                                parameters: {
+                                    'data': jsonData,
+                                    'differences': '${arg.differences}'
+                                },
+                                method: 'POST',
+
+                                onSuccess: function(transport) {
+                                    /*var*/ editorConfig = Ext.decode(transport.responseText);
+                                    editor.importJSON(editorConfig, true);
+
+                                    // Call Auto-Layout if everything is available
+                                    window.setTimeout(function() {
+                                        var layouter;
+                                        if (urlData == 'http://b3mn.org/stencilset/epc#') {
+                                            layouter = oryxEditor1.pluginsData.find(function(pluginData) {
+                                                return pluginData.name === "Layout-EPC";
+                                            });
+                                        } else if (urlData == 'http://b3mn.org/stencilset/bpmn1.1#' || urlData == 'http://b3mn.org/stencilset/bpmn2.0#') {
+                                            layouter = oryxEditor1.pluginsData.find(function(pluginData) {
+                                                return pluginData.name === "Layout-BPMN";
+                                            });
+                                        }
+
+                                        var doAutoLayout = false; //'${arg.doAutoLayout}' === 'true';
+                                        if (layouter && doAutoLayout) {
+                                            layouter.functionality();                                            
+                                        }
+
+                                        Ext.select('svg').setVisible(true);
+                                        window.onbeforeunload = null;
+                                    }, 1000);
+                                }.bind(this),
+
+                                onFailure: function(transport) {
+                                    alert("Failed to load process fragment!");
+                                }.bind(this)
+                            });
+
+                            return editor;
+                        };
+
+			oryxEditor1 = createEditor('oryx-canvas1', '${arg.jsonData}');
+
+                        Ext.select('svg').setVisible(false);
+
+                        ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(json, svg) {
+                            new Ajax.Request('${arg.exportPath}', {
+                                parameters: {'data': json},
+                                method: 'POST',
+
+                                onSuccess: function(transport) {
+                                    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', transport.responseText));
+                                }.bind(this),
+
+                                onFailure: function(transport) {
+                                    Ext.Msg.show({
+                                        title: "Error",
+                                        msg: "Failed to save process as " + transport.responseText,
+                                        buttons: Ext.Msg.OK,
+                                        icon: Ext.Msg.ERROR
+                                    }).getDialog().syncSize()
+                                    alert("Failed to save process as " + nativeFormat);
+                                }.bind(this)
+                            });
+                        };
+                    };
+                ]]>
+            </n:script>
+        </n:span>
+    </n:div>
+
+    <n:table>
+        <n:tr>
+            <n:td style="vertical-align: top" width="20%" height="600">
+                <tree>
+                    <treecols>
+                        <treecol label="Differences"/>
+                    </treecols>
+                    <treechildren id="differences"></treechildren>
+                </tree>
+            </n:td>
+            <n:td valign="top"><n:div id="oryx-canvas1"></n:div></n:td>
+        </n:tr>
+    </n:table>
+</window>
+

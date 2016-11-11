@@ -212,11 +212,9 @@ public class CompareController {
 
             Set<RequestParameterType<?>> requestParameters = new HashSet<>();
             requestParameters.add(new RequestParameterType<String>("m1_differences_json", DifferencesML.toJSON(differences)));
-            System.out.println(DifferencesML.toJSON(differences));
 
             compareProcessLog(process, version, "BPMN 2.0", null, null, requestParameters);
 
-            // makeResultWindows(differences);
         } catch (Exception e) {
             Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
@@ -308,26 +306,26 @@ public class CompareController {
 
     public void compareProcessLog(final ProcessSummaryType process1, final VersionSummaryType version1,
                                  final String nativeType, final String annotation,
-                                 final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
+                                 final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) {
         String instruction = "";
 
         String username = this.portalContext.getCurrentUser().getUsername();
         EditSessionType editSession1 = createEditSession(username,process1, version1, nativeType, annotation);
 
-//        try {
-//            String id = UUID.randomUUID().toString();
-//
-//            SignavioSession session = new SignavioSession(editSession1, null, process1, version1, requestParameterTypes);
-//            Executions.getCurrent().getSession().setAttribute(SIGNAVIO_SESSION + id, session);
-//            UserSessionManager.setEditSession(id, session);
-//
-//            String url = "macros/compareModelsInSignavio.zul?id=" + id;
-//            instruction += "window.open('" + url + "');";
-//
-//            Clients.evalJavaScript(instruction);
-//        } catch (Exception e) {
-//            Messagebox.show("Cannot compare " + process1.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-//        }
+        try {
+            String id = UUID.randomUUID().toString();
+
+            SignavioSession session = new SignavioSession(editSession1, null, null, process1, version1, null, null, requestParameterTypes);
+            Executions.getCurrent().getSession().setAttribute(SIGNAVIO_SESSION + id, session);
+            UserSessionManager.setEditSession(id, session);
+
+            String url = "macros/compareModelToLogInSignavio.zul?id=" + id;
+            instruction += "window.open('" + url + "');";
+
+            Clients.evalJavaScript(instruction);
+        } catch (Exception e) {
+            Messagebox.show("Cannot compare " + process1.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
     }
 
     private static EditSessionType createEditSession(final String username, final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
