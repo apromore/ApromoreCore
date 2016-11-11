@@ -10,7 +10,7 @@ Apromore has been successfully installed on the following platforms:
 - Mac OSX 10.8 to 10.11
 
 Ensure the following software is installed:
-- Java 1.7
+- Java 1.8
 - Maven 3.3.9
 - Ant 1.9.2
 - Git 2.3.5
@@ -69,7 +69,7 @@ $ mysql --user=root --password=MAcri
 	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, EXECUTE, SHOW VIEW ON apromore.* TO 'apromore'@'localhost';
 
 Create and populate the database tables.
-$ mysql --user=apromore --password=MAcri < Supplements/database/db-mysql.sql
+$ mysql --user=root --password=MAcri < Supplements/database/db-mysql.sql
 
 At the end of the db-mysql.sql script is where we populate some of the system data including user information. Currently, we have a few users setup that are developers or affiliates and they can be used or you can choose to add your own.  All passwords are encrypted but they are 'password' for the time being and we don't have a facility just yet to allow a user to change their password. This is coming soon as well as a setup utility to allow the creation of a user on first running.
 
