@@ -35,7 +35,7 @@ public class DifferenceML {
 	}
 
 	public String getSentence() {
-		return sentence;
+		return sentence.replace('\'', '\"');
 	}
 
 	public String toString(){
