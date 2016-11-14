@@ -62,7 +62,7 @@ public class ApromoreCompareML {
 
 	public static void main(String[] args) {
 		String modelString = "models/bp2.bpmn";
-		String logString = "logs/bpLog9.xes";
+		String logString = "logs/bpLog4.xes";
 
 		HashSet<String> silents = new HashSet<String>();
 		silents.add("_1_");

@@ -219,11 +219,13 @@ public class DiffMLGraphicalVerbalizer {
                 //// ==============================
                 if (pes1.getBRelation(ctx.getKey().getFirst(), p.getFirst()) == BehaviorRelation.CAUSALITY){
                     String sentence = String.format("In the log, after '%s', '%s' occurs before '%s', while in the model they are concurrent",
-                            translate(pes1, ((Pair<Integer, Integer>) lastMatchMap.get(ctx.getValue()).target).getFirst()),
+                            translate(pes1, ((Pair<Integer, Integer>) lastMatchMap.get(ctx.getValue()).target).getSecond()),
                             translate(pes1, ctx.getKey().getFirst()), translate(pes1, p.getFirst()));
 
                     DifferenceML diff = print2Tasks(ctx.getKey().getSecond(), p.getSecond(), pes2, replayer, net, loader, sentence);
+
                     if(diff != null) {
+						diff.setSentence(sentence);
                         diff.setType("CAUSCONC1");
                         differences.add(diff);
                     }
@@ -250,9 +252,11 @@ public class DiffMLGraphicalVerbalizer {
 			if (DEBUG)
 				System.out.printf(">> Event substition (%s, %s, %s)\n", enablingState,
 						translate(pes1, p.getFirst()), translate(pes2, p.getSecond()));
+
 			String sentence = String.format("In the log, after '%s', '%s' is substituted by '%s'",
 					translate(pes1, ((Pair<Integer, Integer>)lastMatchMap.get(enablingState).target).getFirst()),
-					translate(pes1, p.getFirst()), translate(pes2, p.getSecond()));
+					translate(pes2, p.getSecond()),
+					translate(pes1, p.getFirst()));
 
             List<Integer> singleton= new LinkedList<>();
             singleton.add(p.getSecond());
@@ -311,18 +315,24 @@ public class DiffMLGraphicalVerbalizer {
                     }
 
                 } else if (pes1.getBRelation(ctx.getKey().getFirst(), p.getFirst()) == BehaviorRelation.CAUSALITY){
-                    String sentence = String.format("In the log, after '%s', '%s' occurs before '%s', while in the model they are mutually exclusive",
-                            translate(pes1, p.getFirst()), translate(pes1, ctx.getKey().getFirst()),
-                            translate(pes1, ctx.getKey().getFirst()), translate(pes1, p.getFirst()));
+					String sentence = String.format("In the log, after '%s', '%s' occurs before '%s', while in the model they are mutually exclusive",
+							translate(pes1, ((Pair<Integer, Integer>)lastMatchMap.get(ctx.getValue()).target).getFirst()),
+							translate(pes1, ctx.getKey().getFirst()),
+							translate(pes1, p.getFirst()));
 
-                    DifferenceML diff = print2Tasks(p.getSecond(), ctx.getKey().getSecond(), pes2, replayer, net, loader, sentence);
-                    if (diff != null) {
+                    DifferenceML diff = print2Tasks(ctx.getKey().getSecond(), p.getSecond(), pes2, replayer, net, loader, sentence);
+
+//					sentence = String.format("In the log, after '%s', '%s' occurs before '%s', while in the model they are mutually exclusive",
+//							diff.getStart().get(0),
+//							diff.getA().get(0),
+//							diff.getB().get(0));
+
+					if (diff != null) {
                         diff.setType("CONFLICT3");
                         differences.add(diff);
                     }
-
-                }else {
-                    String sentence = String.format("In the log, after '%s', '%s' occurs before '%s', while in the model they are mutually exclusive",
+                }else if (pes2.getBRelation(ctx.getKey().getSecond(), p.getSecond()) == BehaviorRelation.CAUSALITY) {
+                    String sentence = String.format("In the model, after '%s', '%s' occurs before '%s', while in the log they are mutually exclusive",
                             translate(pes2, ((Pair<Integer, Integer>) lastMatchMap.get(ctx.getValue()).target).getSecond()),
                             translate(pes2, ctx.getKey().getSecond()), translate(pes2, p.getSecond()));
 
@@ -388,7 +398,8 @@ public class DiffMLGraphicalVerbalizer {
 		for (Entry<State, List<Integer>> entry:	expprefix.getAdditionalAcyclicIntervals().entries()) {
 			if (DEBUG)
 				System.out.printf("In the log, %s do(es) not occur after %s\n", translate(entry.getValue()), entry.getKey());
-			String sentence = String.format("In the log, %s do(es) not occur after '%s'",
+
+			String sentence = String.format("In the log, the interval %s does not occur after '%s'",
 					translate(entry.getValue()), translate(pes1, ((Pair<Integer,Integer>)lastMatchMap.get(entry.getKey()).target).getFirst()));
 
 			DifferenceML diff = printTasksGO(entry.getValue(), pes2, replayer, net, loader, sentence);
@@ -567,9 +578,9 @@ public class DiffMLGraphicalVerbalizer {
 					String sentence = String.format("In the model, '%s' occurs after '%s' instead of '%s'",
 							translate(pes2, (Integer) op.target),
 							pred == null || pred.label.equals("_0_") ? "<start state>" :
-									translate(pes2, ((Pair<Integer, Integer>)pred.target).getSecond()),
+									translate(pes2, ((Pair<Integer, Integer>)pred.target).getFirst()),
 							succ == null || succ.label.equals("_1_") ? "<end state>" :
-									translate(pes2, ((Pair<Integer, Integer>)succ.target).getSecond()));
+									translate(pes2, ((Pair<Integer, Integer>)pred.target).getSecond()));
 
                     List<Integer> singleton = new LinkedList<>();
                     singleton.add((Integer) op.target);

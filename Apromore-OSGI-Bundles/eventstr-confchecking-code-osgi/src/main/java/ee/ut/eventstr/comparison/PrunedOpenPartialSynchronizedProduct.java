@@ -160,7 +160,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 							
 							State nstate = getState(c1p, labels, extPair.getFirst());
 							nstate.cost = s.cost; // A matching operation does not change the current cost
-							
+
 							Operation operation;
 							if (extPair.getSecond())
 								operation = Operation.matchnshift(nstate, new Pair<>(e1, e2), label1);
