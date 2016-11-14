@@ -95,12 +95,16 @@
                        return addition;
                    };
 
+                   var findCenter = function(shape) {
+                       return { x: (shape.bounds.lowerRight.x - shape.bounds.upperLeft.x)/2, y: (shape.bounds.lowerRight.y - shape.bounds.upperLeft.y)/2 }; 
+                   };
+
                    var addSequenceFlow = function(json, shapes, id, source, target, waypoints) {
                         var addition = {
                             "childShapes": [],
                             "dockers": [
-                                { "x": 20, "y": 20 },
-                                { "x": 20, "y": 20 }
+                                findCenter(shapes[source]),
+                                findCenter(shapes[target])
                             ],
                             "incoming": [],
                             "labels": [],
