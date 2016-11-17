@@ -23,9 +23,7 @@ package org.apromore.plugin.portal.compareBP;
 import java.io.*;
 import java.util.*;
 
-import ee.ut.eventstr.comparison.differences.Difference;
-import ee.ut.eventstr.comparison.differences.Differences;
-import ee.ut.eventstr.comparison.differences.ModelAbstractions;
+import ee.ut.eventstr.comparison.differences.*;
 import hub.top.petrinet.PetriNet;
 import org.apache.tools.ant.types.resources.selectors.Compare;
 import org.apromore.helper.Version;
@@ -114,7 +112,11 @@ public class CompareController {
     
     private CompareService compareService;
     private EventLogService eventLogService;
-    private PetriNet net;
+//    private PetriNet net;
+    private ModelAbstractions model;
+    VersionSummaryType version;
+    ProcessSummaryType process;
+
     private HashSet<String> obs;
 
 
@@ -198,22 +200,30 @@ public class CompareController {
         compareProcesses(process1, version1, process2, version2, "BPMN 2.0", null, null, requestParameters);
     }
 
-    public void compareML(PetriNet net, HashSet<String> obs1, XLog log) {
-        this.net = net;
+    public void compareML(ModelAbstractions model, HashSet<String> obs1, XLog log, ProcessSummaryType process, VersionSummaryType version) {
+        this.model = model;
+        this.process = process;
+        this.version = version;
         this.obs = obs1;
         this.log = log;
 
         try {
-            Set<String> differences = compareService.discoverBPMNModel(net, log, obs);
+            DifferencesML differences = compareService.discoverBPMNModel(model, log, obs);
 
-            makeResultWindows(differences);
+            Set<RequestParameterType<?>> requestParameters = new HashSet<>();
+            requestParameters.add(new RequestParameterType<String>("m1_differences_json", DifferencesML.toJSON(differences)));
+
+            compareProcessLog(process, version, "BPMN 2.0", null, null, requestParameters);
+
         } catch (Exception e) {
             Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
-    public void compareMLPopup(PetriNet net, HashSet<String> obs1) {
-        this.net = net;
+    public void compareMLPopup(ModelAbstractions model, HashSet<String> obs1, ProcessSummaryType process, VersionSummaryType version) {
+        this.model = model;
+        this.process = process;
+        this.version = version;
         this.obs = obs1;
 
         try {
@@ -291,6 +301,30 @@ public class CompareController {
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
             Messagebox.show("Cannot compare " + process1.getName() + " and " + process2.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    public void compareProcessLog(final ProcessSummaryType process1, final VersionSummaryType version1,
+                                 final String nativeType, final String annotation,
+                                 final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) {
+        String instruction = "";
+
+        String username = this.portalContext.getCurrentUser().getUsername();
+        EditSessionType editSession1 = createEditSession(username,process1, version1, nativeType, annotation);
+
+        try {
+            String id = UUID.randomUUID().toString();
+
+            SignavioSession session = new SignavioSession(editSession1, null, null, process1, version1, null, null, requestParameterTypes);
+            Executions.getCurrent().getSession().setAttribute(SIGNAVIO_SESSION + id, session);
+            UserSessionManager.setEditSession(id, session);
+
+            String url = "macros/compareModelToLogInSignavio.zul?id=" + id;
+            instruction += "window.open('" + url + "');";
+
+            Clients.evalJavaScript(instruction);
+        } catch (Exception e) {
+            Messagebox.show("Cannot compare " + process1.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -459,16 +493,8 @@ public class CompareController {
         if(log == null) {
             Messagebox.show("Please select a log.");
         }else {
-
             try {
-//                String result = "";
-                Set<String> differences = compareService.discoverBPMNModel(net, log, obs);
-
-//                for (String s : differences)
-//                    result += s + "\n";
-
-                makeResultWindows(differences);
-//                Messagebox.show(result, "Differences", Messagebox.OK, Messagebox.INFORMATION);
+                compareML(model, obs, log, process, version);
             } catch (Exception e) {
                 Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
             }

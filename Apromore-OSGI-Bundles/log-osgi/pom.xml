@@ -42,7 +42,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=OpenXES|OpenXES-Stream|spex
+                            artifactId=OpenXES|spex
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
@@ -101,17 +101,10 @@
         <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES</artifactId>
-            <version>2.0</version>
         </dependency>
         <dependency>
             <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES-Stream</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.processmining</groupId>
             <artifactId>spex</artifactId>
-            <version>1.0</version>
         </dependency>
     </dependencies>
 </project>

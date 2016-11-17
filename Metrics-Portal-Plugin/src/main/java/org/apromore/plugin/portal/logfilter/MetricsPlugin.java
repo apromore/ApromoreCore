@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.metrics;
+package org.apromore.plugin.portal.logfilter;
 
 // Java 2 Standard Edition packages
 import java.io.IOException;
@@ -200,7 +200,7 @@ public class MetricsPlugin extends PluginCustomGui {
                         listheaders.add(new Listheader("value on BPMN"));
                         listheaders.add(new Listheader("value on CPF"));
 
-                        addTab(procName + ": metrics", "", rows, listheaders, null, portalContext);
+                        addTab(procName + ": logfilter", "", rows, listheaders, null, portalContext);
                     }
 
                     LOGGER.info("Metrics - done!");
