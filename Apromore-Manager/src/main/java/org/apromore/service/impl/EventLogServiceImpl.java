@@ -185,7 +185,8 @@ public class EventLogServiceImpl implements EventLogService {
 
     }
 
-    public static void exportToStream(OutputStream outputStream, XLog log) throws Exception {
+    @Override
+    public void exportToStream(OutputStream outputStream, XLog log) throws Exception {
         XSerializer serializer = new XesXmlGZIPSerializer();
         serializer.serialize(log, outputStream);
     }

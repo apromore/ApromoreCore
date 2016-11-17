@@ -69,6 +69,23 @@
                 </radiogroup>
             </groupbox>
             <groupbox width="285px">
+                <caption label="Filter-out Noise from Log"/>
+                <radiogroup id="noiseFilter">
+                    <grid>
+                        <columns>
+                            <column />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <radio id="filtered" label="Yes" selected="true"/>
+                                <radio id="notFiltered" label="No"/>
+                            </row>
+                        </rows>
+                    </grid>
+                </radiogroup>
+            </groupbox>
+            <groupbox width="285px">
                 <caption label="Structured Process Model"/>
                 <radiogroup id="bpmnMinerStructProcess">
                     <grid>
