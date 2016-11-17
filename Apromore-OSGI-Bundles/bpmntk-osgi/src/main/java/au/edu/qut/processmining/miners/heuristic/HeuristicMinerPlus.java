@@ -13,10 +13,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Adriano on 24/10/2016.
@@ -52,11 +49,22 @@ public class HeuristicMinerPlus {
     public BPMNDiagram getHeuristicDiagram() { return heuristicDiagram; }
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
+    public void mineHeuristicNet(XLog log, double dependencyThreshold, double positiveObservations, double relative2BestThreshold) {
+        System.out.println("HM+ - starting... ");
+        System.out.println("HM+ - [Setting] dependency threshold: " + dependencyThreshold);
+        System.out.println("HM+ - [Setting] positive observations: " + positiveObservations);
+        System.out.println("HM+ - [Setting] relative to best threshold: " + relative2BestThreshold);
+
+        this.log = LogParser.getSimpleLog(log);
+        System.out.println("HM+ - log parsed successfully");
+        mineHeuristicNet(dependencyThreshold, positiveObservations, relative2BestThreshold);
+    }
+
     private void mineHeuristicNet(double dependencyThreshold, double positiveObservations, double relative2BestThreshold) {
         System.out.println("HM+ - mining heuristic net: starting");
         heuristicNet = new HeuristicNet(log, dependencyThreshold, positiveObservations, relative2BestThreshold);
         heuristicNet.generateHeuristicNet();
-        heuristicDiagram = heuristicNet.getHeuristicDiagram();
+        heuristicDiagram = heuristicNet.getHeuristicDiagram(true);
         System.out.println("HM+ - mining heuristic net: done ");
     }
 
@@ -65,7 +73,9 @@ public class HeuristicMinerPlus {
         BPMNNode entry = null;
         BPMNNode exit = null;
 
+        BPMNNode src;
         BPMNNode tgt;
+        Gateway gate;
 
         ArrayList<BPMNNode> toVisit = new ArrayList<>();
         HashSet<BPMNNode> visited = new HashSet<>();
@@ -79,6 +89,9 @@ public class HeuristicMinerPlus {
         HashSet<OracleItem> oracleItems;
 
         bpmnDiagram = heuristicNet.convertIntoBPMNDiagram();
+
+
+        /* generating all the splits gateways */
 
         for( Event e : bpmnDiagram.getEvents() )
             if( e.getEventType() == Event.EventType.START ) entry = e;
@@ -131,6 +144,21 @@ public class HeuristicMinerPlus {
             } else {
                 tgt = ((new ArrayList<>(bpmnDiagram.getOutEdges(entry))).get(0)).getTarget();
                 if( !toVisit.contains(tgt) && !visited.contains(tgt) ) toVisit.add(tgt);
+            }
+        }
+
+        /* generating all the joins gateways */
+        Set<BPMNNode> nodes = new HashSet<>(bpmnDiagram.getNodes());
+        for( BPMNNode n : nodes ) {
+            removableEdges = new HashSet<>(bpmnDiagram.getInEdges(n));
+            if( removableEdges.size() > 1 ) {
+//                System.out.println("DEBUG - generating a new join");
+                gate = bpmnDiagram.addGateway("", Gateway.GatewayType.DATABASED);
+                bpmnDiagram.addFlow(gate, n, "");
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : removableEdges ) {
+                    bpmnDiagram.removeEdge(oe);
+                    bpmnDiagram.addFlow(oe.getSource(), gate, "");
+                }
             }
         }
 
