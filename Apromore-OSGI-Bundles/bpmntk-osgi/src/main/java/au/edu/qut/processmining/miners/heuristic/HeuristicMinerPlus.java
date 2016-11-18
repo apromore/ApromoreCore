@@ -148,19 +148,19 @@ public class HeuristicMinerPlus {
         }
 
         /* generating all the joins gateways */
-        Set<BPMNNode> nodes = new HashSet<>(bpmnDiagram.getNodes());
-        for( BPMNNode n : nodes ) {
-            removableEdges = new HashSet<>(bpmnDiagram.getInEdges(n));
-            if( removableEdges.size() > 1 ) {
-//                System.out.println("DEBUG - generating a new join");
-                gate = bpmnDiagram.addGateway("", Gateway.GatewayType.DATABASED);
-                bpmnDiagram.addFlow(gate, n, "");
-                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : removableEdges ) {
-                    bpmnDiagram.removeEdge(oe);
-                    bpmnDiagram.addFlow(oe.getSource(), gate, "");
-                }
-            }
-        }
+//        Set<BPMNNode> nodes = new HashSet<>(bpmnDiagram.getNodes());
+//        for( BPMNNode n : nodes ) {
+//            removableEdges = new HashSet<>(bpmnDiagram.getInEdges(n));
+//            if( removableEdges.size() > 1 ) {
+////                System.out.println("DEBUG - generating a new join");
+//                gate = bpmnDiagram.addGateway("", Gateway.GatewayType.DATABASED);
+//                bpmnDiagram.addFlow(gate, n, "");
+//                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : removableEdges ) {
+//                    bpmnDiagram.removeEdge(oe);
+//                    bpmnDiagram.addFlow(oe.getSource(), gate, "");
+//                }
+//            }
+//        }
 
         System.out.println("HM+ - bpmn diagram generated successfully");
     }
