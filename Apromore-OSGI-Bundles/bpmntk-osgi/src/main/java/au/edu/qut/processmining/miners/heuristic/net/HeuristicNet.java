@@ -56,8 +56,8 @@ public class HeuristicNet {
         endcode = log.getEndcode();
 
         dependencyThreshold = HMPlusUIResult.DEPENDENCY_THRESHOLD;
-        positiveObservations = HMPlusUIResult.POSITIVE_OBSERVATIONS;
-        relative2BestThreshold = HMPlusUIResult.RELATIVE2BEST_THRESHOLD;
+        positiveObservations = 0.0;
+        relative2BestThreshold = 1.0;
     }
 
     public HeuristicNet(SimpleLog log, double dependencyThreshold, double positiveObservations, double relative2BestThreshold) {
@@ -165,26 +165,6 @@ public class HeuristicNet {
                     conflicts.get(src).add(tgt);
                 }
             }
-
-//        printParallelisms();
-//        /* this second evaluation of the parallelisms allows to check indirect parallelisms:
-//        * e.g.  if 7 is parallel with 9, 12, 14
-//        *       then 9 has to be parallel not only with 7, but as well with 12 and 14
-//        *       if these two latter relationships do not hold, it means we have to take them off from 7
-//        *       or add them to 9
-//        *       */
-//        System.out.println("DEBUG - fixing parallelisms...");
-//        for( int A : parallelisms.keySet() )
-//            for( int B : parallelisms.get(A) )
-//                for( int C : parallelisms.get(A) ) {
-//                    if( C == B ) continue;
-//                    if( !parallelisms.get(B).contains(C) ) {
-//                        parallelisms.get(B).add(C);
-//                        parallelisms.get(C).add(B);
-//                        System.out.println("DEBUG - adding extra parallelism: " + B + " || " + C );
-//                    }
-//                }
-
         printParallelisms();
     }
 
@@ -257,6 +237,8 @@ public class HeuristicNet {
             if( loop2DependencyScore == 0 ) continue;
             loopsL2.add(e);
             e.setLocalDependencyScore(loop2DependencyScore);
+            if( parallelisms.containsKey(src) && parallelisms.get(src).remove(tgt) )
+                System.out.println("DEBUG - successfully removed parallelism: " + src + " || " + tgt);
         }
     }
 
