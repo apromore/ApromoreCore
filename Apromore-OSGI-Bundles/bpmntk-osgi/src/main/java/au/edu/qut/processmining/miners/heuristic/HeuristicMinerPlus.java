@@ -6,6 +6,12 @@ import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
 import au.edu.qut.processmining.miners.heuristic.oracle.Oracle;
 import au.edu.qut.processmining.miners.heuristic.oracle.OracleItem;
+import de.hpi.bpt.graph.DirectedEdge;
+import de.hpi.bpt.graph.DirectedGraph;
+import de.hpi.bpt.graph.abs.IDirectedGraph;
+import de.hpi.bpt.graph.algo.rpst.RPST;
+import de.hpi.bpt.graph.algo.rpst.RPSTNode;
+import de.hpi.bpt.hypergraph.abs.Vertex;
 import org.deckfour.xes.model.XLog;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
@@ -25,6 +31,8 @@ public class HeuristicMinerPlus {
 
     private BPMNDiagram heuristicDiagram;
     private BPMNDiagram bpmnDiagram;
+
+    private int gateCounter;
 
     public HeuristicMinerPlus() {}
 
@@ -73,9 +81,9 @@ public class HeuristicMinerPlus {
         BPMNNode entry = null;
         BPMNNode exit = null;
 
-        BPMNNode src;
         BPMNNode tgt;
         Gateway gate;
+        gateCounter = Integer.MIN_VALUE;
 
         ArrayList<BPMNNode> toVisit = new ArrayList<>();
         HashSet<BPMNNode> visited = new HashSet<>();
@@ -147,6 +155,8 @@ public class HeuristicMinerPlus {
             }
         }
 
+        while( generateBondJoin() );
+
         /* generating all the joins gateways */
 //        Set<BPMNNode> nodes = new HashSet<>(bpmnDiagram.getNodes());
 //        for( BPMNNode n : nodes ) {
@@ -182,11 +192,143 @@ public class HeuristicMinerPlus {
             return;
         }
 
-        gate = bpmnDiagram.addGateway("", type);
+        gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), type);
         bpmnDiagram.addFlow(entry, gate, "");
         for( OracleItem next : nextOracleItem.getXorBrothers() ) generateSplitGateways(gate, next, mapping);
         for( OracleItem next : nextOracleItem.getAndBrothers() ) generateSplitGateways(gate, next, mapping);
     }
+
+    private boolean generateBondJoin() {
+        HashSet<String> changed = new HashSet<>();
+
+        try {
+            HashMap<String, BPMNNode> nodes = new HashMap<>();
+            HashMap<BPMNNode, Vertex> vertexes = new HashMap<BPMNNode, Vertex>();
+
+            HashMap<String, Gateway.GatewayType> gates = new HashMap<String, Gateway.GatewayType>();
+            ArrayList<RPSTNode> bondHierarchy = new ArrayList<RPSTNode>();
+
+            IDirectedGraph<DirectedEdge, Vertex> graph = new DirectedGraph();
+            Vertex src;
+            Vertex tgt;
+
+            BPMNNode bpmnSRC;
+            BPMNNode bpmnTGT;
+            Gateway gate;
+
+            String entry, exit;
+
+
+            /* building the graph from the bpmnDiagram, the graph is necessary to generate the RPST */
+
+            for( Flow f : bpmnDiagram.getFlows((Swimlane) null) ) {
+                bpmnSRC = f.getSource();
+                bpmnTGT = f.getTarget();
+                if( !vertexes.containsKey(bpmnSRC) ) {
+                    src = new Vertex(bpmnSRC.getLabel());  //this is still a unique number
+                    if( bpmnSRC instanceof Gateway ) gates.put(bpmnSRC.getLabel(), ((Gateway) bpmnSRC).getGatewayType());
+                    vertexes.put(bpmnSRC, src);
+                    nodes.put(bpmnSRC.getLabel(), bpmnSRC);
+                } else src = vertexes.get(bpmnSRC);
+
+                if( !vertexes.containsKey(bpmnTGT) ) {
+                    tgt = new Vertex(bpmnTGT.getLabel());  //this is still a unique number
+                    if( bpmnTGT instanceof Gateway ) gates.put(bpmnTGT.getLabel(), ((Gateway) bpmnTGT).getGatewayType());
+                    vertexes.put(bpmnTGT, tgt);
+                    nodes.put(bpmnTGT.getLabel(), bpmnTGT);
+                } else tgt = vertexes.get(bpmnTGT);
+
+                graph.addEdge(src, tgt);
+            }
+
+            /* graph ready */
+
+
+            RPST rpst = new RPST(graph);
+
+            RPSTNode root = rpst.getRoot();
+            LinkedList<RPSTNode> toAnalize = new LinkedList<RPSTNode>();
+            toAnalize.addLast(root);
+
+            while( toAnalize.size() != 0 ) {
+                root = toAnalize.removeFirst();
+
+                for( RPSTNode n : new HashSet<RPSTNode>(rpst.getChildren(root)) ) {
+                    switch( n.getType() ) {
+                        case R:
+                            toAnalize.addLast(n);
+                            return false;
+                        case T:
+                            break;
+                        case P:
+                            toAnalize.addLast(n);
+                            break;
+                        case B:
+                            exit = n.getExit().getName();
+                            if( !gates.containsKey(exit) ) {
+                                System.out.println("DEBUG - found a bond exit (" + exit + ") that is not a gateway");
+                                bondHierarchy.add(0, n);
+                            }
+                            toAnalize.addLast(n);
+                            break;
+                        default:
+                    }
+                }
+            }
+
+            System.out.println("DEBUG - starting analysing bonds: " + bondHierarchy.size() );
+            int debugChecker;
+            HashMap<String, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removableEdges;
+            HashSet<String> toRemove;
+
+            while( !bondHierarchy.isEmpty() ) {
+                RPSTNode bond = bondHierarchy.remove(0);
+                entry = bond.getEntry().getName();
+                exit = bond.getExit().getName();
+                System.out.println("DEBUG - analysing a bond with [ split gate : join task ] = [ " + gates.get(entry) + " : " + exit + " ]");
+
+                if( changed.contains(exit) ) continue;
+                changed.add(exit);
+
+                debugChecker = rpst.getChildren(bond).size();
+
+                removableEdges = new HashMap<>();
+                toRemove = new HashSet<>();
+                bpmnTGT = nodes.get(exit);
+
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : bpmnDiagram.getInEdges(bpmnTGT) )
+                    removableEdges.put(oe.getSource().getLabel(), oe);
+
+                IDirectedGraph<DirectedEdge, Vertex> bondGraph = bond.getFragment();
+                for( Vertex v : bondGraph.getVertices() )
+                    if( v.getName().equals(exit) ) {
+                        // editing the bpmn diagram
+                        gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), gates.get(entry));
+                        System.out.println("DEBUG - added a split");
+                        bpmnDiagram.addFlow(gate, bpmnTGT, "");
+                        for( de.hpi.bpt.graph.abs.AbstractDirectedEdge e : bondGraph.getEdgesWithTarget(v) ) {
+                            debugChecker--;
+                            entry = e.getSource().getName();
+                            toRemove.add(entry);
+                            bpmnSRC = nodes.get(entry);
+                            bpmnDiagram.addFlow(bpmnSRC, gate, "");
+                        }
+                    }
+
+                for( String re : toRemove ) bpmnDiagram.removeEdge(removableEdges.get(re));
+                System.out.println("DEBUG - checker: 0 = " + debugChecker );
+            }
+
+        } catch( Exception e ) {
+            e.printStackTrace(System.out);
+            System.out.println("ERROR - impossible to generate split gateways");
+            return false;
+        }
+
+        System.out.println("DEBUG - generate bond join: " + (!changed.isEmpty()) );
+        return !changed.isEmpty();
+    }
+
 
     private void updateLabels(Map<Integer, String> events) {
         DiagramHandler helper = new DiagramHandler();
