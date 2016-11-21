@@ -95,8 +95,9 @@
         <module>Apromore-OSGI-Bundles/infrequent-behaviour-filter-osgi</module>
 
         <!-- PROM -->
-        <module>Apromore-OSGI-Bundles/log-osgi</module>
+        <module>Apromore-OSGI-Bundles/jdom2-osgi</module>
         <module>Apromore-OSGI-Bundles/fodina-osgi</module>
+        <module>Apromore-OSGI-Bundles/log-osgi</module>
         <module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
         <module>Apromore-OSGI-Bundles/prom6-osgi</module>
         <module>Apromore-OSGI-Bundles/prodrift-osgi</module>
@@ -174,11 +175,11 @@
     <properties>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.source.version>1.7</java.source.version>
+        <java.source.version>1.8</java.source.version>
         <java.target.version>${java.source.version}</java.target.version>
         <sonar.language>java</sonar.language>
         <pmd.target.jdk>${java.target.version}</pmd.target.jdk>
-        <jdk.version>1.7.0</jdk.version>
+        <jdk.version>1.8.0</jdk.version>
         <ant.version>1.8.3</ant.version>
 
         <!-- Apromore Dependency Versions -->
