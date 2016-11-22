@@ -337,8 +337,9 @@
 
     <target name="install-sample-data">
         <java jar="Supplements/cpfImporter/target/cpfImporter-1.0.one-jar.jar" fork="yes">
-            <!-- Configurable BPMN samples -->
             <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
+
+            <!-- Configurable BPMN samples -->
             <arg value="-from"/>    <arg value="Apromore-Extras/bpmncmap/src/test/resources"/>
             <arg value="-to"/>      <arg value="airport"/>
             <arg value="International departure.bpmn"/>
@@ -366,6 +367,7 @@
             <arg value="92 Discretionary experience 2.bpmn"/>
             <arg value="93 Discretionary experience 3.bpmn"/>
             <arg value="94 Discretionary experience 4.bpmn"/>
+
             <!-- PQL samples -->
             <arg value="-from"/> <arg value="Supplements/samples/pql"/>
             <arg value="-to"/>   <arg value="pql"/>
@@ -379,10 +381,13 @@
             <arg value="8.pnml"/>
             <arg value="9.pnml"/>
             <arg value="10.pnml"/>
+
             <!-- Log animation samples -->
             <arg value="-from"/> <arg value="Supplements/samples/repairExample"/>
             <arg value="-to"/>   <arg value="repair"/>
             <arg value="repairExample.bpmn"/>
+            <arg value="RepairExample20140901103825.mxml"/>
+            <arg value="repairExample_complete_lifecycle_only.xes"/>
         </java>
         <copy todir="Apromore-Assembly/Filestore-Repository" overwrite="yes" verbose="true">
             <!-- Configurable BPMN samples -->
@@ -390,17 +395,20 @@
                 <include name="*.cmap"/>
                 <include name="*.qml"/>
             </fileset>
-            <!-- Log animation samples -->
-            <fileset dir="Supplements/samples/repairExample">
-                <include name="RepairExample20140901103825.mxml"/>
-                <include name="repairExample_complete_lifecycle_only.xes"/>
-            </fileset>
         </copy>
     </target>
 
     <target name="install-comparison-data">
         <java jar="Supplements/cpfImporter/target/cpfImporter-1.0.one-jar.jar" fork="yes">
             <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
+
+            <!-- Model to model -->
+            <arg value="-from"/>    <arg value="Supplements/samples/model-to-model"/>
+            <arg value="-to"/>      <arg value="model-to-model"/>
+            <arg value="Model1.bpmn"/>
+            <arg value="Model2.bpmn"/>
+
+            <!-- Model to log -->
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CAUSCONC-1"/>
             <arg value="-to"/>      <arg value="model-to-log/CAUSCONC-1"/>
             <arg value="bp3.bpmn"/>

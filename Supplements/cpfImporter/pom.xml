@@ -37,7 +37,7 @@
     <packaging>jar</packaging>
 
     <name>Canonical Process Importer</name>
-    <description>Imports CPF and ANF into apromore using the API's provided.</description>
+    <description>Imports CPF and ANF into apromore using the APIs provided.</description>
     <inceptionYear>2013</inceptionYear>
 
     <developers>
