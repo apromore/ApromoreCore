@@ -146,13 +146,13 @@ public final class Import {
 
                 if (manager == null) {
                     LOGGER.error("Failed to load file {} because no -manager parameter was specified", file);
-                } else if ("xes".equals(ext)) {
+                } else if ("mxml".equals(ext) || "xes".equals(ext)) {
                     manager.importLog(
                         userName,
                         parentId,
                         FilenameUtils.getBaseName(toFile.getName()),  // log name
                         new FileInputStream(file),                    // XML serialization of the log
-                        "xes",                                        // filename extension
+                        ext,                                          // filename extension
                         "domain",
                         now,                                          // creation timestamp
                         true);                                        // make public?

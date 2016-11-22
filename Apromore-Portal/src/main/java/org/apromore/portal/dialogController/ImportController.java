@@ -157,7 +157,7 @@ public class ImportController extends BaseController {
         fileName = media.getName();
         String[] list_extensions = fileName.split("\\.");
         extension = list_extensions[list_extensions.length - 1];
-        if(!extension.equals("zip") && !extension.equals("gz") && !extension.equals("xes") && !extension.equals("mxmxl")) {
+        if(!extension.equals("zip") && !extension.equals("gz") && !extension.equals("xes") && !extension.equals("mxml")) {
             fileType = this.mainC.getNativeTypes().get(extension);
             if (fileType == null) {
                 throw new ExceptionImport("Unsupported extension.");
