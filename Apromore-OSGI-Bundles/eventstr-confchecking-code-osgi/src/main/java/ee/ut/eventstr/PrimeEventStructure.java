@@ -3,6 +3,7 @@ package ee.ut.eventstr;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
@@ -78,6 +79,10 @@ public class PrimeEventStructure <T> {
 		out.println("}");
 		
 		return str.toString();
+	}
+
+	public void setLabels(List<String> labels) {
+		this.labels = new ArrayList<>(labels);
 	}
 
 	public String toDot(BitSet conf, BitSet hidings) {

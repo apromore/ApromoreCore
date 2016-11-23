@@ -102,10 +102,13 @@ public class DiffMLGraphicalVerbalizer {
 		this.pes1 = new PESSemantics<Integer>(logpes);
 
 		this.commonLabels = new HashSet<String>();
-		this.commonLabels.addAll(this.model.getLabels());
+		this.commonLabels.addAll(this.model.getReader().mapNew2OldLbls.values());
 		this.commonLabels.addAll(pes1.getLabels());
 		this.commonLabels.removeAll(silents);
 
+
+		System.out.println(this.pes1.getPES().toDot());
+		System.out.println(this.pes2.toDot());
 		System.out.println("Common labels = " + commonLabels);
 
 		this.differences = new DifferencesML();
@@ -142,9 +145,19 @@ public class DiffMLGraphicalVerbalizer {
 
 		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, BPstructBP.MODE.ESPARZA, silents);
 		unfolder.computeUnfolding();
-
 		Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
 		NewUnfoldingPESSemantics<Integer> pessem = new NewUnfoldingPESSemantics<Integer>(pes.getPES(), pes);
+
+		List<String> oldLabels = pessem.getLabels();
+		List<String> newLabels = new ArrayList<>();
+		for(String oldL : oldLabels)
+			if(model.getReader().mapNew2OldLbls.containsKey(oldL))
+				newLabels.add(model.getReader().mapNew2OldLbls.get(oldL));
+			else
+				newLabels.add(oldL);
+
+		pessem.setLabels(newLabels);
+
 		return pessem;
 	}
 
@@ -917,21 +930,23 @@ public class DiffMLGraphicalVerbalizer {
 					if (pair != null) {
 						f = (Integer)pair.getSecond().target;
 
-						Pair<List<Integer>,List<Integer>> tuplePair = findCausalInconsistency(sigma, e, f, stack);
+						HashSet<Pair<List<Integer>,List<Integer>>> tuplePairs = findCausalInconsistency(sigma, e, f, stack);
 
-						if (tuplePair != null) {
-							List<Integer> tuple = tuplePair.getFirst();
+						for(Pair<List<Integer>,List<Integer>> tuplePair : tuplePairs){
+							if (tuplePair != null) {
+								List<Integer> tuple = tuplePair.getFirst();
 
-							State enablingState = findEnablingState(stack, op, pair.getSecond());
-							System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple, enablingState);
-//						assertCausalityConcurrencyMismatch(pair.getFirst(), e, tuple.get(1), tuple.get(2), tuple.get(3));
-							assertCausalityConcurrencyMismatch(enablingState, e, tuple.get(1), tuple.get(2), tuple.get(3));
+								State enablingState = findEnablingState(stack, op, pair.getSecond());
+								System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple, enablingState);
+								//						assertCausalityConcurrencyMismatch(pair.getFirst(), e, tuple.get(1), tuple.get(2), tuple.get(3));
+								assertCausalityConcurrencyMismatch(enablingState, e, tuple.get(1), tuple.get(2), tuple.get(3));
 
-							lhideOps.remove(op);
-							rhideOps.remove(pair.getSecond());
-							n_chs.remove(pair);
-						} else
-							pending.put(new Pair<>(op, pair.getSecond()), new Pair<>(sigma, pair.getFirst()));
+								lhideOps.remove(op);
+								rhideOps.remove(pair.getSecond());
+								n_chs.remove(pair);
+							} else
+								pending.put(new Pair<>(op, pair.getSecond()), new Pair<>(sigma, pair.getFirst()));
+						}
 					} else
 						n_chs.add(new Pair<>(sigma, op));
 					break;
@@ -943,21 +958,22 @@ public class DiffMLGraphicalVerbalizer {
 						e = (Integer)pairp.getSecond().target;
 
 						// Line 15:
-						Pair<List<Integer>,List<Integer>> tuplePair = findCausalInconsistency(sigma, e, f, stack);
+						HashSet<Pair<List<Integer>,List<Integer>>> tuplePairs = findCausalInconsistency(sigma, e, f, stack);
+						for(Pair<List<Integer>,List<Integer>> tuplePair : tuplePairs){
+							if (tuplePair != null) {
+								List<Integer> tuple = tuplePair.getFirst();
 
-						if (tuplePair != null) {
-							List<Integer> tuple = tuplePair.getFirst();
-
-							State enablingState = findEnablingState(stack, pairp.getSecond(), op);
-							System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple, enablingState);
+								State enablingState = findEnablingState(stack, pairp.getSecond(), op);
+								System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple, enablingState);
 //						assertCausalityConcurrencyMismatch(pairp.getFirst(), e, tuple.get(1), tuple.get(2), tuple.get(3));
-							assertCausalityConcurrencyMismatch(enablingState, e, tuple.get(1), tuple.get(2), tuple.get(3));
+								assertCausalityConcurrencyMismatch(enablingState, e, tuple.get(1), tuple.get(2), tuple.get(3));
 
-							rhideOps.remove(op);
-							lhideOps.remove(pairp.getSecond());
-							n_chs.remove(pairp);
-						} else
-							pending.put(new Pair<>(pairp.getSecond(), op), new Pair<>(pairp.getFirst(), sigma));
+								rhideOps.remove(op);
+								lhideOps.remove(pairp.getSecond());
+								n_chs.remove(pairp);
+							} else
+								pending.put(new Pair<>(pairp.getSecond(), op), new Pair<>(pairp.getFirst(), sigma));
+						}
 					} else
 						n_chs.add(new Pair<>(sigma, op));
 					break;
@@ -966,24 +982,26 @@ public class DiffMLGraphicalVerbalizer {
 					for (Pair<Operation, Operation> opPair: pending.keySet()) {
 						Integer ep = (Integer)opPair.getFirst().target;
 						Integer fp = (Integer)opPair.getSecond().target;
-						Pair<List<Integer>,List<Integer>> tuplePair = findCausalInconsistency(sigma, ep, fp, stack);
-						if (tuplePair != null) {
-							List<Integer> tuple = tuplePair.getFirst();
+						HashSet<Pair<List<Integer>,List<Integer>>> tuplePairs = findCausalInconsistency(sigma, ep, fp, stack);
+						for(Pair<List<Integer>,List<Integer>> tuplePair : tuplePairs){
+							if (tuplePair != null) {
+								List<Integer> tuple = tuplePair.getFirst();
 
-							Pair<State, State> states = pending.get(opPair);
-							State leftState = states.getFirst(), rightState = states.getSecond();
+								Pair<State, State> states = pending.get(opPair);
+								State leftState = states.getFirst(), rightState = states.getSecond();
 
-							State enablingState = findEnablingState(stack, opPair.getFirst(), opPair.getSecond());
-							System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple, enablingState);
+								State enablingState = findEnablingState(stack, opPair.getFirst(), opPair.getSecond());
+								System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple, enablingState);
 
-							assertCausalityConcurrencyMismatch(enablingState, tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3));
-							toRemove.add(opPair);
-							n_chs.remove(new Pair<>(leftState, opPair.getFirst()));
-							chs.remove(new Pair<>(leftState, opPair.getFirst()));
-							n_chs.remove(new Pair<>(rightState, opPair.getSecond()));
-							chs.remove(new Pair<>(rightState, opPair.getSecond()));
-						} else {
+								assertCausalityConcurrencyMismatch(enablingState, tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3));
+								toRemove.add(opPair);
+								n_chs.remove(new Pair<>(leftState, opPair.getFirst()));
+								chs.remove(new Pair<>(leftState, opPair.getFirst()));
+								n_chs.remove(new Pair<>(rightState, opPair.getSecond()));
+								chs.remove(new Pair<>(rightState, opPair.getSecond()));
+							} else {
 //						throw new RuntimeException("Something wrong with a Causality/Concurrency mismatch" + opPair);
+							}
 						}
 					}
 					for (Pair<Operation, Operation> opPair: toRemove)
@@ -1077,6 +1095,7 @@ public class DiffMLGraphicalVerbalizer {
 			stack.pop();
 		}
 	}
+
 	private State findEnablingState(LinkedList<Operation> stack, Operation lop, Operation rop) {
 		Integer e = null;
 		if (lop.op == Op.LHIDE)
@@ -1190,11 +1209,17 @@ public class DiffMLGraphicalVerbalizer {
 			return new Pair<Integer,Integer>(null, (Integer)op.target);
 	}
 
-	public Pair<List<Integer>, List<Integer>> findCausalInconsistency(State sigma, Integer e, Integer f, LinkedList<Operation> stack) {
-		BitSet epred = pes1.getDirectPredecessors(e);
-		BitSet fpred = new BitSet();
-		for (Integer pred: pes2.getDirectPredecessors(f))
-			fpred.set(pred);
+	public HashSet<Pair<List<Integer>, List<Integer>>> findCausalInconsistency(State sigma, Integer e, Integer f, LinkedList<Operation> stack) {
+//		BitSet epred = pes1.getDirectPredecessors(e);
+//		BitSet fpred = new BitSet();
+//		for (Integer pred: pes2.getDirectPredecessors(f))
+//			fpred.set(pred);
+
+		HashSet<Pair<List<Integer>, List<Integer>>> pairDiff = new HashSet<>();
+
+		BitSet epred = (BitSet) pes1.getStrictCausesOf(e).clone();
+		BitSet fpred = (BitSet) pes2.getCausesOf(f).clone();
+
 		List<Integer> cutoffs = new ArrayList<>();
 		Integer localF = f;
 
@@ -1210,15 +1235,19 @@ public class DiffMLGraphicalVerbalizer {
 					epred.clear(ep);
 					fpred.clear(fp);
 					if (!causallyConsistent(e, ep, localF, fp))
-						return new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs);
+						pairDiff.add(new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs));
+//						return new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs);
+
 					break;
 				case LHIDE:
-					epred.or(pes1.getDirectPredecessors(ep));
+//					epred.or(pes1.getDirectPredecessors(ep));
+					epred.or(pes1.getStrictCausesOf(ep));
 					epred.clear(ep);
 					break;
 				case RHIDE:
-					for (Integer pred: pes2.getDirectPredecessors(fp))
-						fpred.set(pred);
+//					for (Integer pred: pes2.getDirectPredecessors(fp))
+//						fpred.set(pred);
+					fpred.or(pes2.getCausesOf(f));
 					fpred.clear(fp);
 					break;
 				case MATCHNSHIFT:
@@ -1234,7 +1263,8 @@ public class DiffMLGraphicalVerbalizer {
 
 					localF = pes2.unshift(f, fp);
 					if (!causallyConsistent(e, ep, localF, fp))
-						return new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs);
+						pairDiff.add(new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs));
+//						return new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs);
 					break;
 				case RHIDENSHIFT:
 					localF = pes2.unshift(f, fp);
@@ -1250,7 +1280,7 @@ public class DiffMLGraphicalVerbalizer {
 			if (epred.isEmpty() && fpred.isEmpty())
 				break;
 		}
-		return null;
+		return pairDiff;
 	}
 
 	private boolean causallyConsistent(Integer e, Integer ep, Integer f, Integer fp) {
