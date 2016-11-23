@@ -78,7 +78,7 @@ public class ExpandedPomsetPrefix<T> {
 					visited.remove(fake);
 				}
 			}
-			else {
+			else if(!visited.containsKey(n_sconf)){
 				buildPrefix(n_conf, n_sconf, visited);
 			}
 		}

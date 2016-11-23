@@ -121,7 +121,7 @@ public class NewUnfoldingPESSemantics<T>{
 					cycles.add(copy);
 				}
 				future.or(futures.get(shiftedW));
-			} else
+			} else if(!reverseMap.containsKey(shiftedW))
 				future.or(findElementaryCycles(w));
 		}
 		reverseMap.remove(shiftedV);
@@ -444,5 +444,9 @@ public class NewUnfoldingPESSemantics<T>{
 					dconf.set(succ);
 		}
 		return dconf;
+	}
+
+	public void setLabels(List<String> newLabels) {
+		this.pes.setLabels(newLabels);
 	}
 }
