@@ -37,15 +37,19 @@ import org.apromore.graph.canonical.Canonical;
 import org.apromore.graph.canonical.NodeTypeEnum;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.service.metrics.MetricsService;
+import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XOrganizationalExtension;
+import org.deckfour.xes.extension.std.XTimeExtension;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
+import java.text.DecimalFormat;
+import java.util.*;
 
 import static org.apromore.graph.canonical.NodeTypeEnum.*;
 
@@ -87,6 +91,70 @@ public class MetricsServiceImpl extends DefaultParameterAwarePlugin implements M
         result.put("Rigids", this.rigids);
         result.put("Separability", computeSeparability());
         result.put("Duplicates", computeDuplicates());
+
+        return result;
+    }
+
+    @Override
+    public Map<String, String> computeMetrics(XLog log) {
+        Map<String, String> result = new HashMap<>();
+
+        Set<String> uniqueTraces = new HashSet<>();
+        Map<String, Integer> labels = new HashMap<>();
+        Set<String> resources = new HashSet<>();
+        List<Long> durations = new ArrayList<>(log.size());
+
+        int events = 0;
+
+        Date start = null;
+        Date end = null;
+
+        XConceptExtension xce = XConceptExtension.instance();
+        XTimeExtension xte = XTimeExtension.instance();
+        XOrganizationalExtension xor = XOrganizationalExtension.instance();
+
+        for(XTrace trace : log) {
+            StringBuilder traceBuilder = new StringBuilder();
+            durations.add(xte.extractTimestamp(trace.get(trace.size() - 1)).getTime() - xte.extractTimestamp(trace.get(0)).getTime());
+            for(XEvent event : trace) {
+                String label = xce.extractName(event);
+                if(!labels.containsKey(label)) labels.put(label, labels.size());
+                traceBuilder.append(labels.get(label) + ",");
+
+                resources.add(xor.extractResource(event));
+                Date d = xte.extractTimestamp(event);
+                if(start == null || d.before(start)) start = d;
+                if(end == null || d.after(end)) end = d;
+                events++;
+            }
+            uniqueTraces.add(traceBuilder.toString());
+        }
+
+        Long[] dur = durations.toArray(new Long[durations.size()]);
+        Arrays.sort(dur);
+
+        double shortest = Double.MAX_VALUE;
+        double longhest = 0;
+        double median = dur[dur.length / 2] / 3600000;
+        double mean = 0;
+        for(Long l : dur) {
+            mean += l;
+            if(shortest > l) shortest = l;
+            if(longhest < l) longhest = l;
+        }
+        mean = mean / (dur.length * 3600000);
+
+        result.put("Number of Traces", Integer.toString(log.size()));
+        result.put("Number of Activities", Integer.toString(labels.size()));
+        result.put("Number of Events", Integer.toString(events));
+        result.put("Number of Resources", Integer.toString(resources.size()));
+        result.put("Number of UniqueTraces", Integer.toString(uniqueTraces.size()));
+        result.put("Log StartTime", start.toString());
+        result.put("Log EndTime", end.toString());
+        result.put("Mean duration in hours",  new DecimalFormat("#.##").format(mean));
+        result.put("Median duration in hours",  new DecimalFormat("#.##").format(median));
+        result.put("Min duration in hours",  new DecimalFormat("#.##").format(shortest));
+        result.put("Max duration in hours",  new DecimalFormat("#.##").format(longhest));
 
         return result;
     }
