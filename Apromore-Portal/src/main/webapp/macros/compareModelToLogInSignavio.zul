@@ -257,8 +257,9 @@
                         var cs = shapeCenter(shapes[start]);
                         var ce = shapeCenter(shapes[end]);
 
-                        var middle = addFlowNode(json, shapes, "sid-a", "Task", (cs.x + ce.x + ce.y - cs.y)/2, (cs.y + ce.y + cs.x - ce.x)/2, 100, 60);
+                        var middle = addFlowNode(json, shapes, "sid-a", "Task", (cs.x + ce.x + ce.y - cs.y)/2, (cs.y + ce.y + cs.x - ce.x)/2, 100, 80);
                         middle["properties"]["name"] = substitutedTaskName;
+                        middle["properties"]["bgcolor"] = "white";
 
                         addSequenceFlow(json, shapes, "sid-start-a", start, middle.resourceId);
                         addSequenceFlow(json, shapes, "sid-a-end", middle.resourceId, end);
