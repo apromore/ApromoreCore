@@ -81,17 +81,17 @@ public class NewUnfoldingPESSemantics<T>{
 
 	private Map<BitSet, Multiset<Integer>> reverseMap = new HashMap<>();
 	protected Map<BitSet, BitSet> futures = new LinkedHashMap<>();
-	
+
 	private void computePreFuture(BitSet conf) {
 		if (!futures.containsKey(conf)) {
 			BitSet future = new BitSet();
-			
+
 			for (int e = conf.nextSetBit(0); e >= 0; e = conf.nextSetBit(e+1))
 				future.or(pes.conflict[e]);
 
 			future.flip(0, pes.labels.size());
 			future.andNot(conf);
-			
+
 			for (Integer e: unfMetadata.getInvisibleEvents())
 				future.clear(e);
 
@@ -103,15 +103,15 @@ public class NewUnfoldingPESSemantics<T>{
 		BitSet shiftedV = getShifted(v);
 		reverseMap.put(shiftedV, v);
 		BitSet future = futures.get(shiftedV);
-		
+
 		for(Integer ext: getPossibleExtensions(v)) {
 			Pair<Multiset<Integer>, Boolean> pair = extend(v, ext);
-						
+
 			Multiset<Integer> w = pair.getFirst();
 			BitSet shiftedW = getShifted(w);
-			
+
 			computePreFuture(shiftedW);
-			
+
 			if (pair.getSecond() &&  reverseMap.containsKey(shiftedW)) {
 				BitSet concset = (BitSet)getConcurrencySet(ext).clone();
 				concset.and(shiftedW);
@@ -121,7 +121,7 @@ public class NewUnfoldingPESSemantics<T>{
 					cycles.add(copy);
 				}
 				future.or(futures.get(shiftedW));
-			} else if(!reverseMap.containsKey(shiftedW))
+			} else
 				future.or(findElementaryCycles(w));
 		}
 		reverseMap.remove(shiftedV);

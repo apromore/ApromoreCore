@@ -71,7 +71,7 @@ public class NewDiffVerbalizer<T> {
 		this.ancestors = HashMultimap.create();
 
 		this.stateSpace = HashBasedTable.create();
-		this.root = new State(new BitSet(), HashMultiset. <String> create(), HashMultiset.<Integer> create());
+		this.root = new State(new BitSet(), HashMultiset.<String>create(), HashMultiset.<Integer>create());
 
 		this.confMismatches = HashBasedTable.create();
 		this.causalityConcurrencyMismatches = new HashMap<>();
@@ -80,13 +80,14 @@ public class NewDiffVerbalizer<T> {
 		this.confTableBridge = HashBasedTable.create();
 		this.lastMatchMap = new HashMap<>();
 		this.statements = new TreeSet<>();
+
 	}
 
 	public void addPSP(List<Operation> opSeq) {
 		opSeqs.add(opSeq);
 	}
 
-	public void verbalize() {
+	public Set<String> verbalize() {
 		for (List<Operation> opSeq: opSeqs) {
 			addPSPBranchToGlobalPSP(opSeq);
 		}
@@ -180,10 +181,20 @@ public class NewDiffVerbalizer<T> {
 							translate(pes1, p.getFirst())));
 				}
 				else if (pes2.getBRelation(p.getSecond(), ctx.getKey().getSecond()) == BehaviorRelation.CONCURRENCY) {
+					String firstEvent, secondEvent;
+					firstEvent = translate(pes2, ctx.getKey().getSecond());
+					secondEvent = translate(pes2, p.getSecond());
+
+					if (firstEvent.compareTo(secondEvent) > 0) {
+						String temp = firstEvent;
+						firstEvent = secondEvent;
+						secondEvent = temp;
+					}
+
 					statements.add(String.format("In the model, after '%s', '%s' and '%s' are concurrent, while in the log they are mutually exclusive",
 							translate(pes2, ((Pair<Integer, Integer>)lastMatchMap.get(ctx.getValue()).target).getSecond()),
-							translate(pes2, ctx.getKey().getSecond()),
-							translate(pes2, p.getSecond())));
+							firstEvent,
+							secondEvent));
 				}
 				else if (pes1.getBRelation(ctx.getKey().getFirst(), p.getFirst()) == BehaviorRelation.CAUSALITY) {
 					statements.add(String.format("In the log, after '%s', '%s' occurs before '%s', while in the model they are mutually exclusive",
@@ -202,10 +213,11 @@ public class NewDiffVerbalizer<T> {
 			}
 		}
 
-		System.out.println("================");
-		for (String stm: statements) {
-			System.out.println(stm);
-		}
+//		System.out.println("================");
+//		for (String stm: statements) {
+//			System.out.println(stm);
+//		}
+		return statements;
 	}
 
 	private void prune() {
@@ -258,8 +270,16 @@ public class NewDiffVerbalizer<T> {
 			if (DEBUG) {
 				System.out.printf("In the log, %s do(es) not occur after %s\n", translate(entry.getValue()), entry.getKey());
 			}
-			statements.add(String.format("In the log, the interval %s does not occur after '%s'",
-					translate(entry.getValue()), translate(pes1, ((Pair<Integer,Integer>)lastMatchMap.get(entry.getKey()).target).getFirst())));
+			List<String> interval = translate(entry.getValue());
+
+			if (interval.size() > 0) {
+				statements.add(String.format("In the log, the interval %s does not occur after '%s'",
+						interval, translate(pes1, ((Pair<Integer,Integer>)lastMatchMap.get(entry.getKey()).target).getFirst())));
+			}
+			else {
+				statements.add(entry.toString() + " empty interval");
+//				statements.add(opSeqs.toString());
+			}
 		}
 
 //		System.out.println(	expandedPrefix.getAdditionalAcyclicIntervals().entries() + " intervals");
@@ -267,13 +287,44 @@ public class NewDiffVerbalizer<T> {
 			if (DEBUG) {
 				System.out.printf("In the log, the cycle involving %s does not occur after %s\n", translate(entry.getValue()), entry.getKey());
 			}
+
+			// some ugly stuff to clean up redundant statements
+			List<String> cycleEvents = translate(entry.getValue());
+			String first = "";
+			String second = "";
+			Set<String> redundant = new HashSet<String>();
+			String curstat;
+
+			for (String s: statements) {
+				curstat = s;
+				s = s.replace("In the log, ", "");
+				s = s.replace(" occurs after", "");
+				s = s.replace(" and before", "");
+				s = s.replace("'", "");
+
+				int pos = s.indexOf(" ");
+				if (pos > 0) {
+					first = s.substring(0, s.indexOf(" "));
+				}
+				pos = s.indexOf(" ", first.length() + 1);
+				if (pos > 0) {
+					second = s.substring(first.length() + 1, pos);
+				}
+
+				if (cycleEvents.contains(first) && cycleEvents.contains(second)) {
+					redundant.add(curstat);
+				}
+			}
+			statements.removeAll(redundant);
+			// end of the ugly stuff to remove redundant statements
+
 			statements.add(String.format("In the log, the cycle involving %s does not occur after '%s'",
 					translate(entry.getValue()), translate(pes1, ((Pair<Integer,Integer>)lastMatchMap.get(entry.getKey()).target).getFirst())));
 		}
 	}
 
-	private Set<String> translate(Collection<Integer> multiset) {
-		Set<String> set = new HashSet<>();
+	private List<String> translate(Collection<Integer> multiset) {
+		List<String> set = new ArrayList<String>();
 		for (Integer ev: multiset) {
 			if (!pes2.getInvisibleEvents().contains(ev)) {
 				set.add(translate(pes2, ev));
@@ -426,12 +477,14 @@ public class NewDiffVerbalizer<T> {
 								pred == null || pred.label.equals("_0_") ? "<start state>": pred.label, //String.format("%s%s", pred.label, pred.target),
 								succ == null || succ.label.equals("_1_") ? "<end state>": succ.label); //String.format("%s%s", succ.label, succ.target));
 					}
+
 					statements.add(String.format("In the model, '%s' occurs after '%s' and before '%s'",
 							translate(pes2, (Integer) op.target),
 							pred == null || pred.label.equals("_0_") ? "<start state>" :
 									translate(pes2, ((Pair<Integer, Integer>)pred.target).getSecond()),
 							succ == null || succ.label.equals("_1_") ? "<end state>" :
 									translate(pes2, ((Pair<Integer, Integer>)succ.target).getSecond())));
+
 				}
 				rpending.remove(op.label, op);
 			}
@@ -498,6 +551,13 @@ public class NewDiffVerbalizer<T> {
 									translate(pes2, ((Pair<Integer,Integer>)lastMatchMap.get(rtargets.get(f).getFirst()).target).getSecond()),
 									translate(pes2, (Integer)rtargets.get(f).getSecond().target));
 						}
+
+						// remove statement from model perspective that reflects the optional event (which is verbalized here)
+						statements.remove(String.format("In the model, '%s' occurs after '%s' and before '%s'",
+								translate(pes2, (Integer)rtargets.get(f).getSecond().target),
+								translate(pes2, ((Pair<Integer,Integer>)lastMatchMap.get(rtargets.get(f).getFirst()).target).getSecond()),
+								op.label));
+
 						statements.add(String.format("In the log, after '%s', '%s' is optional",
 								translate(pes2, ((Pair<Integer,Integer>)lastMatchMap.get(rtargets.get(f).getFirst()).target).getSecond()),
 								translate(pes2, (Integer)rtargets.get(f).getSecond().target)));
@@ -550,7 +610,7 @@ public class NewDiffVerbalizer<T> {
 						fp = p.getSecond();
 
 						State enablingState = findEnablingState(stack, op, pair.getSecond());
-						System.out.printf("Conflict related mismatch %s enabling state: %s\n", tuple, enablingState);
+//					System.out.printf("Conflict related mismatch %s enabling state: %s\n", tuple, enablingState);
 
 						assertConflictMismatch(enablingState, e, ep, f, fp);
 
@@ -572,7 +632,7 @@ public class NewDiffVerbalizer<T> {
 						fp = p.getSecond();
 
 						State enablingState = findEnablingState(stack, pair.getSecond(), op);
-						System.out.printf("Conflict related mismatch %s enabling state: %s\n", tuplep, enablingState);
+//					System.out.printf("Conflict related mismatch %s enabling state: %s\n", tuplep, enablingState);
 
 						assertConflictMismatch(enablingState, e, ep, f, fp);
 
@@ -600,7 +660,7 @@ public class NewDiffVerbalizer<T> {
 							enablingState = findEnablingState(stack, op, hideOp);
 						}
 
-						System.out.printf("Conflict related mismatch %s enabling state: %s\n", tupleq, enablingState);
+//					System.out.printf("Conflict related mismatch %s enabling state: %s\n", tupleq, enablingState);
 
 						// Here, (e,f) refer to the matched events. That is why I changed the order of the parameters
 						assertConflictMismatch(enablingState, ep, e, fp, f);
@@ -719,11 +779,12 @@ public class NewDiffVerbalizer<T> {
 		return null;
 	}
 
-	private void findCausalityConcurrencyMismatches(State sigma, Set<Pair<State, Operation>> chs, Set<State> visited, LinkedList<Operation> stack, Map<Pair<Operation, Operation>, Pair<State, State>> pending) {
+	private void findCausalityConcurrencyMismatches(State sigma, Set<Pair<State, Operation>> chs, Set<State> visited,
+													LinkedList<Operation> stack, Map<Pair<Operation, Operation>, Pair<State, State>> pending) {
 		visited.add(sigma);
-		for (Operation op: descendants.get(sigma)) {
+		for (Operation op : descendants.get(sigma)) {
 			stack.push(op);
-			Pair<Integer,Integer> deltaEvents = getDeltaEvents(op);
+			Pair<Integer, Integer> deltaEvents = getDeltaEvents(op);
 			Integer e = deltaEvents.getFirst();
 			Integer f = deltaEvents.getSecond();
 			Set<Pair<State, Operation>> n_chs = new HashSet<>(chs);
@@ -732,144 +793,145 @@ public class NewDiffVerbalizer<T> {
 				case LHIDE:
 					Pair<State, Operation> pair = findRHide(chs, e);
 					if (pair != null) {
-						f = (Integer)pair.getSecond().target;
+						f = (Integer) pair.getSecond().target;
 
-						Pair<List<Integer>,List<Integer>> tuplePair = findCausalInconsistency(sigma, e, f, stack);
+						HashSet<Pair<List<Integer>, List<Integer>>> tuplePairs = findCausalInconsistency(sigma, e, f,
+								stack);
 
-						if (tuplePair != null) {
-							List<Integer> tuple = tuplePair.getFirst();
+						for (Pair<List<Integer>, List<Integer>> tuplePair : tuplePairs) {
+							if (tuplePair != null) {
+								List<Integer> tuple = tuplePair.getFirst();
 
-							State enablingState = findEnablingState(stack, op, pair.getSecond());
-							System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple, enablingState);
-//						assertCausalityConcurrencyMismatch(pair.getFirst(), e, tuple.get(1), tuple.get(2), tuple.get(3));
-							assertCausalityConcurrencyMismatch(enablingState, e, tuple.get(1), tuple.get(2), tuple.get(3));
+								State enablingState = findEnablingState(stack, op, pair.getSecond());
+//							System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple,
+//									enablingState);
+								// assertCausalityConcurrencyMismatch(pair.getFirst(),
+								// e, tuple.get(1), tuple.get(2), tuple.get(3));
+								assertCausalityConcurrencyMismatch(enablingState, e, tuple.get(1), tuple.get(2),
+										tuple.get(3));
 
-							lhideOps.remove(op);
-							rhideOps.remove(pair.getSecond());
-							n_chs.remove(pair);
+								lhideOps.remove(op);
+								rhideOps.remove(pair.getSecond());
+								n_chs.remove(pair);
+							} else
+								pending.put(new Pair<>(op, pair.getSecond()), new Pair<>(sigma, pair.getFirst()));
 						}
-						else {
-							pending.put(new Pair<>(op, pair.getSecond()), new Pair<>(sigma, pair.getFirst()));
-						}
-					}
-					else {
+					} else
 						n_chs.add(new Pair<>(sigma, op));
-					}
 					break;
 				case RHIDE:
 				case RHIDENSHIFT:
 					// Line 14:
 					Pair<State, Operation> pairp = findLHide(chs, f);
 					if (pairp != null) {
-						e = (Integer)pairp.getSecond().target;
+						e = (Integer) pairp.getSecond().target;
 
 						// Line 15:
-						Pair<List<Integer>,List<Integer>> tuplePair = findCausalInconsistency(sigma, e, f, stack);
+						HashSet<Pair<List<Integer>, List<Integer>>> tuplePairs = findCausalInconsistency(sigma, e, f,
+								stack);
+						for (Pair<List<Integer>, List<Integer>> tuplePair : tuplePairs) {
+							if (tuplePair != null) {
+								List<Integer> tuple = tuplePair.getFirst();
 
-						if (tuplePair != null) {
-							List<Integer> tuple = tuplePair.getFirst();
+								State enablingState = findEnablingState(stack, pairp.getSecond(), op);
+//							System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple,
+//									enablingState);
+								// assertCausalityConcurrencyMismatch(pairp.getFirst(),
+								// e, tuple.get(1), tuple.get(2), tuple.get(3));
+								assertCausalityConcurrencyMismatch(enablingState, e, tuple.get(1), tuple.get(2),
+										tuple.get(3));
 
-							State enablingState = findEnablingState(stack, pairp.getSecond(), op);
-							System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple, enablingState);
-//						assertCausalityConcurrencyMismatch(pairp.getFirst(), e, tuple.get(1), tuple.get(2), tuple.get(3));
-							assertCausalityConcurrencyMismatch(enablingState, e, tuple.get(1), tuple.get(2), tuple.get(3));
-
-							rhideOps.remove(op);
-							lhideOps.remove(pairp.getSecond());
-							n_chs.remove(pairp);
+								rhideOps.remove(op);
+								lhideOps.remove(pairp.getSecond());
+								n_chs.remove(pairp);
+							} else
+								pending.put(new Pair<>(pairp.getSecond(), op), new Pair<>(pairp.getFirst(), sigma));
 						}
-						else {
-							pending.put(new Pair<>(pairp.getSecond(), op), new Pair<>(pairp.getFirst(), sigma));
-						}
-					}
-					else {
+					} else
 						n_chs.add(new Pair<>(sigma, op));
-					}
 					break;
 				default:
 					List<Pair<Operation, Operation>> toRemove = new ArrayList<>();
-					for (Pair<Operation, Operation> opPair: pending.keySet()) {
-						Integer ep = (Integer)opPair.getFirst().target;
-						Integer fp = (Integer)opPair.getSecond().target;
-						Pair<List<Integer>,List<Integer>> tuplePair = findCausalInconsistency(sigma, ep, fp, stack);
-						if (tuplePair != null) {
-							List<Integer> tuple = tuplePair.getFirst();
+					for (Pair<Operation, Operation> opPair : pending.keySet()) {
+						Integer ep = (Integer) opPair.getFirst().target;
+						Integer fp = (Integer) opPair.getSecond().target;
+						HashSet<Pair<List<Integer>, List<Integer>>> tuplePairs = findCausalInconsistency(sigma, ep, fp,
+								stack);
+						for (Pair<List<Integer>, List<Integer>> tuplePair : tuplePairs) {
+							if (tuplePair != null) {
+								List<Integer> tuple = tuplePair.getFirst();
 
-							Pair<State, State> states = pending.get(opPair);
-							State leftState = states.getFirst(), rightState = states.getSecond();
+								Pair<State, State> states = pending.get(opPair);
+								State leftState = states.getFirst(), rightState = states.getSecond();
 
-							State enablingState = findEnablingState(stack, opPair.getFirst(), opPair.getSecond());
-							System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple, enablingState);
+								State enablingState = findEnablingState(stack, opPair.getFirst(), opPair.getSecond());
+//							System.out.printf("Causality/Concurrency mismatch %s enabling state: %s\n", tuple,
+//									enablingState);
 
-							assertCausalityConcurrencyMismatch(enablingState, tuple.get(0), tuple.get(1), tuple.get(2), tuple.get(3));
-							toRemove.add(opPair);
-							n_chs.remove(new Pair<>(leftState, opPair.getFirst()));
-							chs.remove(new Pair<>(leftState, opPair.getFirst()));
-							n_chs.remove(new Pair<>(rightState, opPair.getSecond()));
-							chs.remove(new Pair<>(rightState, opPair.getSecond()));
-						}
-						else {
-//						throw new RuntimeException("Something wrong with a Causality/Concurrency mismatch" + opPair);
+								assertCausalityConcurrencyMismatch(enablingState, tuple.get(0), tuple.get(1), tuple.get(2),
+										tuple.get(3));
+								toRemove.add(opPair);
+								n_chs.remove(new Pair<>(leftState, opPair.getFirst()));
+								chs.remove(new Pair<>(leftState, opPair.getFirst()));
+								n_chs.remove(new Pair<>(rightState, opPair.getSecond()));
+								chs.remove(new Pair<>(rightState, opPair.getSecond()));
+							} else {
+								// throw new RuntimeException("Something wrong with
+								// a Causality/Concurrency mismatch" + opPair);
+							}
 						}
 					}
-					for (Pair<Operation, Operation> opPair: toRemove) {
+					for (Pair<Operation, Operation> opPair : toRemove)
 						pending.remove(opPair);
-					}
 
 					n_chs = retainCommutative(chs, e, f);
 
 					Map<Integer, Pair<State, Operation>> lhides = new HashMap<>();
 					Map<Integer, Pair<State, Operation>> rhides = new HashMap<>();
-					for (Pair<State, Operation> p: chs) {
+					for (Pair<State, Operation> p : chs) {
 						if (!n_chs.contains(p)) {
 							Operation oper = p.getSecond();
-							Integer ev = (Integer)oper.target;
-							if (oper.op == Op.LHIDE) {
+							Integer ev = (Integer) oper.target;
+							if (oper.op == Op.LHIDE)
 								lhides.put(ev, p);
-							}
-							else if (!pes2.getInvisibleEvents().contains(ev)) {
+							else if (!pes2.getInvisibleEvents().contains(ev))
 								rhides.put(ev, p);
-							}
 						}
 					}
-//				System.out.println("Left: " + lhides);
-//				System.out.println("Right: " + rhides);
+					// System.out.println("Left: " + lhides);
+					// System.out.println("Right: " + rhides);
 
 					while (!lhides.isEmpty() && !rhides.isEmpty()) {
 						Set<Integer> left = new HashSet<>(lhides.keySet());
 						TreeMultimap<String, Integer> lmap = TreeMultimap.create();
-						for (Integer ev: lhides.keySet()) {
+						for (Integer ev : lhides.keySet()) {
 							BitSet dpred = pes1.getDirectPredecessors(ev);
 							boolean found = false;
-							for (int dp = dpred.nextSetBit(0); dp >= 0; dp = dpred.nextSetBit(dp + 1)) {
+							for (int dp = dpred.nextSetBit(0); dp >= 0; dp = dpred.nextSetBit(dp + 1))
 								if (left.contains(dp)) {
 									found = true;
 									break;
 								}
-							}
-							if (!found) {
+							if (!found)
 								lmap.put(pes1.getLabel(ev), ev);
-							}
 						}
 
-//					System.out.println("Left cand: " + lmap);
+						// System.out.println("Left cand: " + lmap);
 
 						Set<Integer> right = new HashSet<>(rhides.keySet());
 						TreeMultimap<String, Integer> rmap = TreeMultimap.create();
-						for (Integer ev: rhides.keySet()) {
+						for (Integer ev : rhides.keySet()) {
 							Collection<Integer> dpred = pes2.getDirectPredecessors(ev);
 							boolean found = false;
-							for (Integer dp: dpred) {
+							for (Integer dp : dpred)
 								if (right.contains(dp)) {
 									found = true;
 									break;
 								}
-							}
-							if (!found) {
+							if (!found)
 								rmap.put(pes2.getLabel(ev), ev);
-							}
 						}
-//					System.out.println("Right cand: " + rmap);
+						// System.out.println("Right cand: " + rmap);
 
 						while (!lmap.isEmpty() && !rmap.isEmpty()) {
 							Entry<String, Integer> lentry = lmap.entries().iterator().next();
@@ -885,20 +947,16 @@ public class NewDiffVerbalizer<T> {
 
 							State enablingState = null;
 
-							if ((lpair.getFirst().c1.cardinality() <= rpair.getFirst().c1.cardinality()) &&
-									(lpair.getFirst().c2.size() <= rpair.getFirst().c2.size())) {
+							if (lpair.getFirst().c1.cardinality() <= rpair.getFirst().c1.cardinality()
+									&& lpair.getFirst().c2.size() <= rpair.getFirst().c2.size())
 								enablingState = lpair.getFirst();
-							}
-							else {
+							else
 								enablingState = rpair.getFirst();
-							}
-
 
 							Pair<Integer, Integer> ef = new Pair<>(lentry.getValue(), rentry.getValue());
 							Set<State> set = eventSubstitutionMismatches.get(ef);
-							if (set == null) {
+							if (set == null)
 								eventSubstitutionMismatches.put(ef, set = new HashSet<>());
-							}
 							set.add(enablingState);
 
 							rhideOps.remove(rpair.getSecond());
@@ -907,9 +965,8 @@ public class NewDiffVerbalizer<T> {
 					}
 					break;
 			}
-			if (!visited.contains(op.nextState)) {
+			if (!visited.contains(op.nextState))
 				findCausalityConcurrencyMismatches(op.nextState, n_chs, visited, stack, pending);
-			}
 			stack.pop();
 		}
 	}
@@ -1048,12 +1105,18 @@ public class NewDiffVerbalizer<T> {
 		}
 	}
 
-	public Pair<List<Integer>, List<Integer>> findCausalInconsistency(State sigma, Integer e, Integer f, LinkedList<Operation> stack) {
-		BitSet epred = pes1.getDirectPredecessors(e);
-		BitSet fpred = new BitSet();
-		for (Integer pred: pes2.getDirectPredecessors(f)) {
-			fpred.set(pred);
-		}
+	public HashSet<Pair<List<Integer>, List<Integer>>> findCausalInconsistency(State sigma, Integer e, Integer f,
+																			   LinkedList<Operation> stack) {
+		// BitSet epred = pes1.getDirectPredecessors(e);
+		// BitSet fpred = new BitSet();
+		// for (Integer pred: pes2.getDirectPredecessors(f))
+		// fpred.set(pred);
+
+		HashSet<Pair<List<Integer>, List<Integer>>> pairDiff = new HashSet<>();
+
+		BitSet epred = (BitSet) pes1.getStrictCausesOf(e).clone();
+		BitSet fpred = (BitSet) pes2.getCausesOf(f).clone();
+
 		List<Integer> cutoffs = new ArrayList<>();
 		Integer localF = f;
 
@@ -1068,18 +1131,20 @@ public class NewDiffVerbalizer<T> {
 				case MATCH:
 					epred.clear(ep);
 					fpred.clear(fp);
-					if (!causallyConsistent(e, ep, localF, fp)) {
-						return new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs);
-					}
+					if (!causallyConsistent(e, ep, localF, fp))
+						pairDiff.add(new Pair<>(Arrays.asList(e, ep, localF, fp), cutoffs));
+					// return new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs);
+
 					break;
 				case LHIDE:
-					epred.or(pes1.getDirectPredecessors(ep));
+					// epred.or(pes1.getDirectPredecessors(ep));
+					epred.or(pes1.getStrictCausesOf(ep));
 					epred.clear(ep);
 					break;
 				case RHIDE:
-					for (Integer pred: pes2.getDirectPredecessors(fp)) {
-						fpred.set(pred);
-					}
+					// for (Integer pred: pes2.getDirectPredecessors(fp))
+					// fpred.set(pred);
+					fpred.or(pes2.getCausesOf(f));
 					fpred.clear(fp);
 					break;
 				case MATCHNSHIFT:
@@ -1087,33 +1152,32 @@ public class NewDiffVerbalizer<T> {
 
 					int corrFp = pes2.getCorresponding(fp);
 
-					for (Integer pred: pes2.getDirectPredecessors(fp)) {
+					for (Integer pred : pes2.getDirectPredecessors(fp))
 						fpred.set(pred);
-					}
 					fpred.andNot(pes2.getLocalConfiguration(corrFp));
 
 					cutoffs.add(fp);
 
 					localF = pes2.unshift(f, fp);
-					if (!causallyConsistent(e, ep, localF, fp)) {
-						return new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs);
-					}
+					if (!causallyConsistent(e, ep, localF, fp))
+						pairDiff.add(new Pair<>(Arrays.asList(e, ep, localF, fp), cutoffs));
+					// return new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs);
 					break;
 				case RHIDENSHIFT:
 					localF = pes2.unshift(f, fp);
 
 					int corrFpp = pes2.getCorresponding(fp);
-					for (Integer pred: pes2.getDirectPredecessors(fp)) {
+					for (Integer pred : pes2.getDirectPredecessors(fp))
 						fpred.set(pred);
-					}
 					fpred.andNot(pes2.getLocalConfiguration(corrFpp));
 
 					cutoffs.add(fp);
 					break;
 			}
-			if (epred.isEmpty() && fpred.isEmpty()) break;
+			if (epred.isEmpty() && fpred.isEmpty())
+				break;
 		}
-		return null;
+		return pairDiff;
 	}
 
 	private boolean causallyConsistent(Integer e, Integer ep, Integer f, Integer fp) {
@@ -1199,6 +1263,10 @@ public class NewDiffVerbalizer<T> {
 		out.println("}");
 
 		return str.toString();
+	}
+
+	public Set<String> getStatements(){
+		return this.statements;
 	}
 
 }

@@ -3,7 +3,6 @@ package ee.ut.eventstr.comparison;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -14,8 +13,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 
-import ee.ut.org.processmining.framework.util.Pair;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multimap;
@@ -25,6 +22,7 @@ import ee.ut.eventstr.NewUnfoldingPESSemantics;
 import ee.ut.eventstr.comparison.PrunedOpenPartialSynchronizedProduct.Op;
 import ee.ut.eventstr.comparison.PrunedOpenPartialSynchronizedProduct.Operation;
 import ee.ut.eventstr.comparison.PrunedOpenPartialSynchronizedProduct.State;
+import ee.ut.org.processmining.framework.util.Pair;
 
 public class ExpandedPomsetPrefix<T> {
 	private NewUnfoldingPESSemantics<T> pes;
@@ -33,38 +31,38 @@ public class ExpandedPomsetPrefix<T> {
 	private Map<BitSet, Pair<Multiset<Integer>, Multiset<Integer>>> cycles;
 	private Set<Multiset<Integer>> runs;
 	private Set<BitSet> states;
-
+	
 	private HashMap<BitSet, State> stateMap;
 	private HashMap<BitSet, Operation> opMap;
-
+	
 	public ExpandedPomsetPrefix(NewUnfoldingPESSemantics<T> pes) {
 		this.pes = pes;
 		this.adjList = HashMultimap.create();
 		this.invAdjList = HashMultimap.create();
 		this.stateMap = new HashMap<>();
 		this.opMap = new HashMap<>();
-
+		
 		this.cycles = new HashMap<>();
 		this.runs = new HashSet<>();
-
+		
 		buildPrefix(HashMultiset.<Integer>create(), new BitSet(), new LinkedHashMap<BitSet, Multiset<Integer>>());
-
+		
 		this.states = new HashSet<>(adjList.values());
 		this.states.add(new BitSet());
 	}
-
-	private void buildPrefix(Multiset<Integer> conf, BitSet sconf,
-							 LinkedHashMap<BitSet, Multiset<Integer>> visited) {
+	
+	private void buildPrefix(Multiset<Integer> conf, BitSet sconf, 
+			LinkedHashMap<BitSet, Multiset<Integer>> visited) {
 		visited.put(sconf, conf);
-
+		
 		for (Integer e: pes.getPossibleExtensions(conf)) {
 			Pair<Multiset<Integer>, Boolean> pair = pes.extend(conf, e);
 			Multiset<Integer> n_conf = pair.getFirst();
 			BitSet n_sconf = pes.getShifted(n_conf);
-
+			
 			BitSet intersection = (BitSet)n_sconf.clone();
 			intersection.and(pes.getConcurrencySet(e));
-
+			
 			if (visited.containsKey(n_sconf) && intersection.isEmpty()) {
 				Multiset<Integer> entryConf = visited.get(n_sconf);
 				Multiset<Integer> cycle = HashMultiset.create(n_conf);
@@ -77,12 +75,12 @@ public class ExpandedPomsetPrefix<T> {
 					addBranch(visited);
 					visited.remove(fake);
 				}
-			}
-			else if(!visited.containsKey(n_sconf)){
+			} 
+			else {
 				buildPrefix(n_conf, n_sconf, visited);
 			}
 		}
-
+		
 		// Is maximal?
 		if (pes.getMaxConf().contains(sconf)) {
 			if (!runs.contains(conf)) {
@@ -92,24 +90,24 @@ public class ExpandedPomsetPrefix<T> {
 		}
 		visited.remove(sconf);
 	}
-
+	
 	public String toDot() {
 		StringWriter str = new StringWriter();
 		PrintWriter out = new PrintWriter(str);
-
+		
 		out.println("digraph G {");
-
+		
 		out.println("\tnode[shape=box];");
 		for (BitSet state: states) {
 			out.printf("\tn%d [label=\"%s\\n%s\"];\n", state.hashCode(), state, opMap.get(state));
 		}
-
+		
 		for (Entry<BitSet,BitSet> entry: adjList.entries()) {
 			out.printf("\tn%d -> n%d;\n", entry.getKey().hashCode(), entry.getValue().hashCode());
 		}
-
+		
 		out.println("}");
-
+		
 		return str.toString();
 	}
 
@@ -138,73 +136,126 @@ public class ExpandedPomsetPrefix<T> {
 		if (op.op == Op.LHIDE) {
 			return;
 		}
-
+		
 		BitSet bset = pack(state.c2);
-		if (bset.cardinality() == state.c2.size()) {
+		if (bset.cardinality() == state.c2.size()) {			
 			Operation currOp = opMap.get(bset);
 			if (currOp == null) {
 				opMap.put(bset, op);
 				stateMap.put(bset, state);
-			}
+			} 
 			else if (!(currOp.op == Op.MATCH || currOp.op == Op.MATCHNSHIFT)) {
 				if (op.op == Op.MATCH || op.op == Op.MATCHNSHIFT) {
 					opMap.put(bset, op);
-					stateMap.put(bset, state);
+					stateMap.put(bset, state);					
 				}
 			}
 		}
 	}
-
-	public Multimap<State, List<Integer>> getAdditionalAcyclicIntervals_test() {
+	
+//	public Multimap<State, List<Integer>> getAdditionalAcyclicIntervals_test() {
+//		Multimap<State, List<Integer>> additional = HashMultimap.create();
+//		for (Multiset<Integer> _run: runs) {
+//			BitSet run = pack(_run);
+//			System.out.println(run + " run");
+//			System.out.println(opMap + " opMap");
+//			
+//			if (!opMap.containsKey(run)) {
+//				LinkedList<Integer> tasks = new LinkedList<Integer>();
+//				Stack<BitSet> open = new Stack<BitSet>();
+//				Set<BitSet> visited = new HashSet<BitSet>();
+//				open.push(run);
+//				boolean stateFound = false;
+//				
+//				BitSet interval = new BitSet();
+//				for (BitSet mc: opMap.keySet()) {
+//					if (opMap.get(mc).label.equals("_1_")) {
+//						interval.or(mc);
+//						break;
+//					}
+//				}
+//				System.out.println(interval + " interval");
+//				interval.andNot(run);
+//				for (int event = interval.nextSetBit(0); event >= 0; event = interval.nextSetBit(event + 1)) {
+//					if (!pes.getInvisibleEvents().contains(event)) {
+//						tasks.addFirst(event);
+//					}
+//				}
+//				
+//				while (!open.isEmpty()) {
+//					BitSet curr = open.pop();
+//					
+//					Operation op = opMap.get(curr);
+//					if (op == null || op.op == Op.RHIDE || op.op == Op.RHIDENSHIFT) {
+//						for (BitSet pred: invAdjList.get(curr)) {
+//							if ((!visited.contains(pred)) && (!open.contains(pred))) {
+//								open.push(pred);
+//							}
+//						}
+//					} 
+//					else if (!stateFound) {
+//						additional.put(stateMap.get(curr), tasks);
+//						stateFound = true;
+//					}
+//				}
+//			}
+//		}
+//		return additional;
+//	}
+	
+	public Multimap<State, List<Integer>> getAdditionalAcyclicIntervals() {
 		Multimap<State, List<Integer>> additional = HashMultimap.create();
+		
+		Set<BitSet> maxconfs = new HashSet<BitSet>(opMap.keySet());
+		maxconfs.removeAll(adjList.keySet());
+		
+		BitSet diff = new BitSet();
+		BitSet startconf = new BitSet();
+		
+		Set<BitSet> prevconfs = new HashSet<BitSet>();
+		
 		for (Multiset<Integer> _run: runs) {
 			BitSet run = pack(_run);
-			System.out.println(run + " run");
-			System.out.println(opMap + " opMap");
 			if (!opMap.containsKey(run)) {
-				LinkedList<Integer> tasks = new LinkedList<Integer>();
-				Stack<BitSet> open = new Stack<BitSet>();
-				Set<BitSet> visited = new HashSet<BitSet>();
-				open.push(run);
-				boolean stateFound = false;
-
-				BitSet interval = new BitSet();
-				for (BitSet mc: opMap.keySet()) {
-					if (opMap.get(mc).label.equals("_1_")) {
-						interval.or(mc);
-						break;
-					}
-				}
-				System.out.println(interval + " interval");
-				interval.andNot(run);
-				for (int event = interval.nextSetBit(0); event >= 0; event = interval.nextSetBit(event + 1)) {
-					if (!pes.getInvisibleEvents().contains(event)) {
-						tasks.addFirst(event);
-					}
-				}
-
-				while (!open.isEmpty()) {
-					BitSet curr = open.pop();
-
-					Operation op = opMap.get(curr);
-					if (op == null || op.op == Op.RHIDE || op.op == Op.RHIDENSHIFT) {
-						for (BitSet pred: invAdjList.get(curr)) {
-							if ((!visited.contains(pred)) && (!open.contains(pred))) {
-								open.push(pred);
+				for (BitSet max: maxconfs) {
+					diff.or(max);
+					diff.andNot(run);
+					System.out.println(diff);
+					
+					for (BitSet prev: opMap.keySet()) {
+						if (!prev.intersects(diff)) {
+							for (BitSet next: adjList.get(prev)) {
+								if (next.intersects(diff)) {
+									prevconfs.add(prev);
+								}
 							}
 						}
 					}
-					else if (!stateFound) {
-						additional.put(stateMap.get(curr), tasks);
-						stateFound = true;
-					}
+					
+					
+					// check for intervals
+					// for each interval check the operations to avoid existing conflicts
+					// or
+					// use procedure as in the old version to obtain states and subsequent additional events
 				}
 			}
 		}
+		
 		return additional;
 	}
-
-	public Multimap<State, List<Integer>> getAdditionalAcyclicIntervals() {
+	
+	public Multimap<State, List<Integer>> getAdditionalAcyclicIntervals_old() {
+		
+		System.out.println(pes.getLabel(1));
+		System.out.println(pes.getLabel(3));
+		System.out.println(runs.toString());
+		System.out.println(opMap.keySet() + " keyset");
+		
+		Set<BitSet> maxconfs = new HashSet<BitSet>(opMap.keySet());
+		maxconfs.removeAll(adjList.keySet());
+		
+		System.out.println(maxconfs + " maxconfs");
+		
 		Multimap<State, List<Integer>> additional = HashMultimap.create();
 		for (Multiset<Integer> _run: runs) {
 			BitSet run = pack(_run);
@@ -217,16 +268,18 @@ public class ExpandedPomsetPrefix<T> {
 				boolean stateFound = false;
 				while (!open.isEmpty()) {
 					BitSet curr = open.pop();
-
+					
 					if (prev != null) {
 						BitSet diff = (BitSet) prev.clone();
 						diff.andNot(curr);
 						int event = diff.nextSetBit(0);
-						if (!pes.getInvisibleEvents().contains(event)) {
-							tasks.addFirst(event);
+						if (event >= 0) {
+							if (!pes.getInvisibleEvents().contains(event)) {
+								tasks.addFirst(event);
+							}
 						}
 					}
-
+					
 					Operation op = opMap.get(curr);
 					if (op == null || op.op == Op.RHIDE || op.op == Op.RHIDENSHIFT) {
 						for (BitSet pred: invAdjList.get(curr)) {
@@ -234,21 +287,24 @@ public class ExpandedPomsetPrefix<T> {
 								open.push(pred);
 							}
 						}
-					}
+					} 
 					else if (!stateFound) {
 						additional.put(stateMap.get(curr), tasks);
 						stateFound = true;
 					}
-//					prev = curr;
+//					prev = (BitSet)curr.clone();
 				}
+			}
+			else {
+				System.out.println(opMap);
 			}
 		}
 		return additional;
 	}
-
+	
 	public Multimap<State, Multiset<Integer>> getAdditionalCyclicIntervals() {
 		Multimap<State, Multiset<Integer>> additional = HashMultimap.create();
-		for (BitSet cycleMarker: cycles.keySet()) {
+		for (BitSet cycleMarker: cycles.keySet()) {			
 			if (!opMap.containsKey(cycleMarker)) {
 				Pair<Multiset<Integer>, Multiset<Integer>> pair = cycles.get(cycleMarker);
 				Stack<BitSet> open = new Stack<>();
@@ -256,16 +312,16 @@ public class ExpandedPomsetPrefix<T> {
 				open.push(cycleMarker);
 				while (!open.isEmpty()) {
 					BitSet curr = open.pop();
-
+					
 					Operation op = opMap.get(curr);
-
+					
 					if (op == null || op.op == Op.RHIDE || op.op == Op.RHIDENSHIFT) {
 						for (BitSet pred: invAdjList.get(curr)) {
 							if (!visited.contains(pred) && !open.contains(pred)) {
 								open.push(pred);
 							}
 						}
-					}
+					} 
 					else {
 						additional.put(stateMap.get(curr), pair.getSecond());
 						break;
@@ -274,5 +330,5 @@ public class ExpandedPomsetPrefix<T> {
 			}
 		}
 		return additional;
-	}
+	}	
 }
