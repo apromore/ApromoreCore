@@ -110,6 +110,44 @@ public class OracleItem implements Comparable {
         return oiUnion;
     }
 
+    public static OracleItem forcedMergeANDs(Set<OracleItem> andBrothers) {
+        /*
+        * forcing the merging of two or more AND oracle items means:
+        * 1. create a new oracle item that contains all the oracle items to be merged as andBrothers
+        * 2. the new oracle item will have the union of the future minus the union of the past of all the andBrothers
+        * 3. the new oracle item will have the union of the pasts of all the andBrothers in input
+        */
+
+        OracleItem oiUnion = new OracleItem();
+        oiUnion.andBrothers.addAll(andBrothers);
+
+        for( OracleItem and : andBrothers ) oiUnion.future.addAll(and.future);
+        for( OracleItem and : andBrothers ) oiUnion.past.addAll(and.past);
+        oiUnion.future.removeAll(oiUnion.past);
+
+        oiUnion.engrave();
+        return oiUnion;
+    }
+
+    public int getANDDistance(OracleItem oi) {
+        HashSet<Integer> union = new HashSet<>();
+        HashSet<Integer> intersection = new HashSet<>();
+        int distance;
+
+        union.addAll(oi.past);
+        union.addAll(oi.future);
+
+        intersection.addAll(this.past);
+        intersection.addAll(this.future);
+        intersection.retainAll(union);
+
+        union.addAll(this.past);
+        union.addAll(this.future);
+
+        distance = union.size() - intersection.size();
+        return distance;
+    }
+
     public Gateway.GatewayType getGateType(){
         if( !xorBrothers.isEmpty() ) return Gateway.GatewayType.DATABASED;
         if( !andBrothers.isEmpty() ) return Gateway.GatewayType.PARALLEL;

@@ -20,7 +20,7 @@ public class HMPlusUIResult {
     }
 
     public void disablePositiveObservations() { positiveObservations = 0.0; }
-    public void disableRelative2BestThreshold() { relative2BestThreshold = 1.0;}
+    public void disableRelative2BestThreshold() { relative2BestThreshold = 1.0; }
 
     public double getDependencyThreshold() {
         return dependencyThreshold;

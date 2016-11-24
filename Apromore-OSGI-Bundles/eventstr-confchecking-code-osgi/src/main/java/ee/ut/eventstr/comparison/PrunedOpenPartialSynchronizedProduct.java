@@ -160,7 +160,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 							
 							State nstate = getState(c1p, labels, extPair.getFirst());
 							nstate.cost = s.cost; // A matching operation does not change the current cost
-							
+
 							Operation operation;
 							if (extPair.getSecond())
 								operation = Operation.matchnshift(nstate, new Pair<>(e1, e2), label1);
@@ -208,14 +208,14 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 					Pair<Integer, Integer> pair = (Pair)operation.target;
 					int e1 = pair.getFirst();
 					int e2 = pair.getSecond();
-					for (int e1p = kept1.nextSetBit(0); e1p >= 0; e1p = kept1.nextSetBit(e1p + 1))
-						if (pes1.getBRelation(e1, e1p) == BehaviorRelation.CONCURRENCY)
-							continue nextCandidate;
-					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1))
-						if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY)
-							continue nextCandidate;		
-					kept1.set(e1);
-					kept2.set(e2);
+//					for (int e1p = kept1.nextSetBit(0); e1p >= 0; e1p = kept1.nextSetBit(e1p + 1))
+//						if (pes1.getBRelation(e1, e1p) == BehaviorRelation.CONCURRENCY)
+//							continue nextCandidate;
+//					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1))
+//						if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY)
+//							continue nextCandidate;
+//					kept1.set(e1);
+//					kept2.set(e2);
 
 					switch (operation.nextState.action) {
 					case CREATED:

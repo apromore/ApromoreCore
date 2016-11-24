@@ -56,8 +56,8 @@ public class HeuristicNet {
         endcode = log.getEndcode();
 
         dependencyThreshold = HMPlusUIResult.DEPENDENCY_THRESHOLD;
-        positiveObservations = HMPlusUIResult.POSITIVE_OBSERVATIONS;
-        relative2BestThreshold = HMPlusUIResult.RELATIVE2BEST_THRESHOLD;
+        positiveObservations = 0.0;
+        relative2BestThreshold = 1.0;
     }
 
     public HeuristicNet(SimpleLog log, double dependencyThreshold, double positiveObservations, double relative2BestThreshold) {
@@ -165,6 +165,7 @@ public class HeuristicNet {
                     conflicts.get(src).add(tgt);
                 }
             }
+        printParallelisms();
     }
 
     public boolean areConcurrent(int A, int B) {
@@ -203,7 +204,7 @@ public class HeuristicNet {
         }
 
         System.out.println("DEBUG - found " + loopsL1.size() + " self-loops:");
-        for( int code : loopsL1 ) System.out.println("DEBUG - self-loop: " + events.get(code));
+        for( int code : loopsL1 ) System.out.println("DEBUG - self-loop: " + code);
 
 
         System.out.println("DEBUG - evaluating loops length TWO ...");
@@ -232,10 +233,12 @@ public class HeuristicNet {
                 if( !loop2Frequencies.get(src).containsKey(tgt) ) loop2Frequencies.get(src).put(tgt, loop2DependencyScore);
             }
 
-            System.out.println("DEBUG - #" + events.get(src) + " >> " + events.get(tgt) + " : " + loop2DependencyScore);
+            System.out.println("DEBUG - #" + src + " >> " + tgt + " : " + loop2DependencyScore);
             if( loop2DependencyScore == 0 ) continue;
             loopsL2.add(e);
             e.setLocalDependencyScore(loop2DependencyScore);
+            if( parallelisms.containsKey(src) && parallelisms.get(src).remove(tgt) )
+                System.out.println("DEBUG - successfully removed parallelism: " + src + " || " + tgt);
         }
     }
 
@@ -271,7 +274,7 @@ public class HeuristicNet {
                     localDependency = (double) (src2tgt_frequency - tgt2src_frequency) / (src2tgt_frequency + tgt2src_frequency + 1);
                     e.setLocalDependencyScore(localDependency);
                 }
-                System.out.println("DEBUG - #" + events.get(src) + " => " + events.get(tgt) + " : " + localDependency);
+                System.out.println("DEBUG - #" + src + " => " + tgt + " : " + localDependency);
             } else localDependency = e.getLocalDependencyScore();
 
             if( !candidateSuccessor.containsKey(src) ) candidateSuccessor.put(src, e);
@@ -335,13 +338,13 @@ public class HeuristicNet {
                 net.get(src).remove(tgt);
             }
             edges.remove(e);
-            System.out.println("DEBUG - removing edge: " + e.getSource().getLabel() + " > " + e.getTarget().getLabel());
+            System.out.println("DEBUG - removing edge: " + e.getSource().getCode() + " > " + e.getTarget().getCode());
         }
 
         System.out.println("DEBUG - edges after pruning: " + edges.size());
     }
 
-    public BPMNDiagram getHeuristicDiagram() {
+    public BPMNDiagram getHeuristicDiagram(boolean labels) {
         BPMNDiagram diagram = new BPMNDiagramImpl("heuristic-net");
         HashMap<Integer, BPMNNode> mapping = new HashMap<>();
         String label;
@@ -352,7 +355,7 @@ public class HeuristicNet {
 
         for( int event : nodes.keySet() ) {
             label = events.get(event) + "\n(" + nodes.get(event).getFrequency() + ")";
-            task = diagram.addActivity(label, false, false, false, false, false);
+            task = diagram.addActivity( (labels ? label : Integer.toString(event)), false, false, false, false, false);
             mapping.put(event, task);
         }
 
@@ -419,14 +422,14 @@ public class HeuristicNet {
 
     public void printFrequencies() {
         System.out.println("DEBUG - printing frequencies:");
-        for( HeuristicNode node : nodes.values() ) System.out.println("DEBUG - #" + node.getLabel() + " = " + node.getFrequency());
+        for( HeuristicNode node : nodes.values() ) System.out.println("DEBUG - #" + node.getCode() + " = " + node.getFrequency());
     }
 
     public void printParallelisms() {
         System.out.println("DEBUG - printing parallelisms:");
         for( int A : parallelisms.keySet() ) {
-            System.out.print("DEBUG - " + events.get(A) + " || " );
-            for( int B : parallelisms.get(A) ) System.out.print( events.get(B) + ",");
+            System.out.print("DEBUG - " + A + " || " );
+            for( int B : parallelisms.get(A) ) System.out.print( B + ",");
             System.out.println();
         }
     }
@@ -434,8 +437,8 @@ public class HeuristicNet {
     public void printConflicts() {
         System.out.println("DEBUG - printing conflicts:");
         for( int A : conflicts.keySet() ) {
-            System.out.print("DEBUG - " + events.get(A) + " # " );
-            for( int B : conflicts.get(A) ) System.out.print( events.get(B) + ",");
+            System.out.print("DEBUG - " + A + " # " );
+            for( int B : conflicts.get(A) ) System.out.print( B + ",");
             System.out.println();
         }
     }
