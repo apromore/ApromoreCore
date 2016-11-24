@@ -1,4 +1,4 @@
-package psputil;
+package ee.ut.eventstr.comparison;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -8,10 +8,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ee.ut.eventstr.PESSemantics;
+import ee.ut.eventstr.PrimeEventStructure;
+import ee.ut.eventstr.SinglePORunPESSemantics;
+import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct;
+import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.*;
+import ee.ut.eventstr.comparison.DiffLLVerbalizer;
+import ee.ut.mining.log.poruns.pes.PORuns2PES;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 
-import psputil.LogBasedPartialSynchronizedProduct.Operation;
 import ee.ut.mining.log.AlphaRelations;
 import ee.ut.mining.log.poruns.PORun;
 import ee.ut.mining.log.poruns.PORuns;

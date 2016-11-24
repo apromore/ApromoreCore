@@ -1,4 +1,4 @@
-package psputil;
+package ee.ut.eventstr.comparison;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.processmining.framework.util.Pair;
+import com.google.common.base.Strings;
+import ee.ut.eventstr.PESSemantics;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
@@ -19,9 +20,10 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.Table;
 
 import ee.ut.eventstr.BehaviorRelation;
-import psputil.LogBasedPartialSynchronizedProduct.Op;
-import psputil.LogBasedPartialSynchronizedProduct.Operation;
-import psputil.LogBasedPartialSynchronizedProduct.State;
+import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.Op;
+import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.Operation;
+import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.State;
+import ee.ut.org.processmining.framework.util.Pair;
 
 /**
  * @authors Luciano Garcia-Banuelos, Nick van Beest
@@ -49,7 +51,7 @@ public class DiffLLVerbalizer <T> {
 		this.opSeqs = new ArrayList<>();
 		this.stateSpace = HashBasedTable.create();
 		this.descendants = HashMultimap.create();
-		this.root = new State(new BitSet(), HashMultiset.create(), new BitSet());
+		this.root = new State(new BitSet(), HashMultiset.<String>create(), new BitSet());
 		this.globalDiffs = HashBasedTable.create();
 	}
 	

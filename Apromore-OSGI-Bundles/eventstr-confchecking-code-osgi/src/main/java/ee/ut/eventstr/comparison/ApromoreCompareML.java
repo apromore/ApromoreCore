@@ -1,5 +1,9 @@
 package ee.ut.eventstr.comparison;
 
+import ee.ut.eventstr.NewUnfoldingPESSemantics;
+import ee.ut.eventstr.PESSemantics;
+import ee.ut.eventstr.PrimeEventStructure;
+import ee.ut.eventstr.SinglePORunPESSemantics;
 import ee.ut.eventstr.comparison.differences.DifferencesML;
 import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import hub.top.petrinet.PetriNet;
@@ -18,10 +22,6 @@ import java.util.Set;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 
-import ee.ut.eventstr.NewUnfoldingPESSemantics;
-import ee.ut.eventstr.PESSemantics;
-import ee.ut.eventstr.PrimeEventStructure;
-import ee.ut.eventstr.SinglePORunPESSemantics;
 import ee.ut.mining.log.AlphaRelations;
 import ee.ut.mining.log.XLogReader;
 import ee.ut.mining.log.poruns.PORun;
@@ -62,12 +62,30 @@ public class ApromoreCompareML {
 	}
 
 	public static void main(String[] args) {
-		String modelString = "sunModels/SuncorpSkinM.bpmn";
-		String logString = "sunLogs/SuncorpSkin.xes";
+		String modelString = "models/btm.bpmn";
+		String logString = "logs/btl.xes";
 
 		HashSet<String> silents = new HashSet<String>();
 		silents.add("_1_");
 		silents.add("_0_");
+		silents.add("t15");
+		silents.add("t16");
+		silents.add("t17");
+		silents.add("t18");
+        silents.add("t19");
+		silents.add("t15");
+        silents.add("t16");
+        silents.add("t17");
+        silents.add("t18");
+        silents.add("t19");
+        silents.add("t20");
+        silents.add("t21");
+        silents.add("t22");
+        silents.add("t23");
+		silents.add("t24");
+        silents.add("t25");
+		silents.add("null_positive");
+		silents.add("null_enable");
 		
 		try {
 			XLog log = XLogReader.openLog(logString);
@@ -76,12 +94,12 @@ public class ApromoreCompareML {
 
 			DiffMLGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model, log, silents);
 			verbalizer.verbalize();
+			System.out.println(DifferencesML.toJSON(verbalizer.getDifferences()));
 
 //			NewDiffVerbalizer<Integer> verbalizer = comparator.analyzeDifferences(model.getNet(), log, silents);
 //			verbalizer.verbalize();
+//			System.out.println(verbalizer.getStatements());
 
-			System.out.println(DifferencesML.toJSON(verbalizer.getDifferences()));
-			//		System.out.println(verbalizer.getStatements());
 
 		} catch (Exception e) {
 			e.printStackTrace();

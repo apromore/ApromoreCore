@@ -443,8 +443,7 @@ public class DiffMLGraphicalVerbalizer {
 		return set;
 	}
 
-	private void markExpandedPrefix(State curr, Multimap<String, Operation> lpending,
-									Multimap<String, Operation> rpending, Set<State> visited, Operation lastMatch) {
+	private void markExpandedPrefix(State curr, Multimap<String, Operation> lpending, Multimap<String, Operation> rpending, Set<State> visited, Operation lastMatch) {
 		visited.add(curr);
 		lastMatchMap.put(curr, lastMatch);
 
