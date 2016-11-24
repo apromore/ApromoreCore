@@ -5,29 +5,30 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 
 import ee.ut.eventstr.PESSemantics;
 import ee.ut.eventstr.PrimeEventStructure;
 import ee.ut.eventstr.SinglePORunPESSemantics;
-import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.Operation;
+import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct;
+import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.*;
+import ee.ut.eventstr.comparison.DiffLLVerbalizer;
+import ee.ut.mining.log.poruns.pes.PORuns2PES;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
+
 import ee.ut.mining.log.AlphaRelations;
 import ee.ut.mining.log.poruns.PORun;
 import ee.ut.mining.log.poruns.PORuns;
-import ee.ut.mining.log.poruns.pes.PORuns2PES;
 
 /**
  * @author Nick van Beest
- * @date 10/06/2016
+ * @date 10/11/2016
  */
 public class ApromoreCompareLL {
 	
-	public static final String version = "0.1";
+	public static final String version = "0.2";
 	
 	
 	public Set<String> getDifferences(XLog log1, XLog log2) {
@@ -67,7 +68,9 @@ public class ApromoreCompareLL {
 		
 		int mincost;
 		int curcost;
+		int cursink = -1;
 		List<Operation> bestOp;
+		Set<Integer> unusedsinks = new HashSet<Integer>(logpes2.getSinks());
 		
 		for (int sink1: logpes1.getSinks()) {
 			logpessem1 = new SinglePORunPESSemantics<Integer>(logpes1, sink1); 
@@ -79,9 +82,30 @@ public class ApromoreCompareLL {
 				logpessem2 = new SinglePORunPESSemantics<Integer>(logpes2, sink2);
 		       	psp = new LogBasedPartialSynchronizedProduct<Integer>(logpessem1, logpessem2);
 					
-				psp.perform()
-					.prune()
-				;
+				psp.perform().prune();
+				
+				curcost = psp.getStates().get(psp.getStates().size() - 1).cost;
+				
+				if (curcost < mincost) {
+					mincost = curcost;
+					bestOp = psp.getOperationSequence();
+					cursink = sink2;
+				}
+			}
+			verbalizer.addPSP(bestOp);
+			unusedsinks.remove(cursink);
+		}
+		
+		for (int sink2: unusedsinks) {
+			logpessem2 = new SinglePORunPESSemantics<Integer>(logpes2, sink2);
+			mincost = Integer.MAX_VALUE;
+			bestOp = new ArrayList<Operation>();
+			
+			for (int sink1: logpes1.getSinks()) {
+				logpessem1 = new SinglePORunPESSemantics<Integer>(logpes1, sink1); 
+		       	psp = new LogBasedPartialSynchronizedProduct<Integer>(logpessem1, logpessem2);
+
+		       	psp.perform().prune();
 				
 				curcost = psp.getStates().get(psp.getStates().size() - 1).cost;
 				
@@ -132,13 +156,16 @@ public class ApromoreCompareLL {
 		AlphaRelations alphaRelations = new AlphaRelations(log);
 		
 		PORuns runs = new PORuns();
-
+		PORun porun;
+		
 		for (XTrace trace: log) {
-			PORun porun = new PORun(alphaRelations, trace);
+			porun = new PORun(alphaRelations, trace);
 			
 			runs.add(porun);
 		}
 		runs.mergePrefix();
+		
+//		System.out.println(runs.toDot());
 		
 		PrimeEventStructure<Integer> pes = PORuns2PES.getPrimeEventStructure(runs, name);
 		

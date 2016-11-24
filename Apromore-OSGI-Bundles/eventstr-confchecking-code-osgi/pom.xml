@@ -23,23 +23,12 @@
 				<configuration>
 					<instructions>
 						<Embed-Dependency>
-							artifactId=jackson-mapper-asl|jdom2|jackson-mapper-asl|jbpt-bpm;inline=true
+							artifactId=jackson-mapper-asl|jackson-mapper-asl|jbpt-bpm;inline=true
 						</Embed-Dependency>
 						<Embed-Transitive>false</Embed-Transitive>
 						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 						<Bundle-Name>Event structure based OSGi component</Bundle-Name>
 						<Bundle-SymbolicName>org.eventstr-confchecking-osgi</Bundle-SymbolicName>
-						<Import-Package>
-							!ee.ut.eventstr.config,
-							!ee.ut.eventstr.synthesis,
-							!ee.ut.graph.util,
-							!junit.framework.*,
-							!org.junit.*,
-							!hub.top.test,
-							!viptool.algorithm.postprocessing.pnetiplp,
-							!junit.textui,
-							*
-						</Import-Package>
 						<Export-Package>
 							ee.ut.eventstr.comparison,
 							ee.ut.eventstr.folding,
@@ -62,8 +51,8 @@
 			<version>2.6.0_1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jdom</groupId>
-			<artifactId>jdom2</artifactId>
+			<groupId>org.apromore</groupId>
+			<artifactId>jdom2-osgi</artifactId>
 			<version>2.0.6</version>
 		</dependency>
 		<dependency>
@@ -103,7 +92,7 @@
 		<dependency>
 			<groupId>org.jbpt</groupId>
 			<artifactId>jbpt-bpm</artifactId>
-            <version>0.2.433</version>
+		<version>0.2.433</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>

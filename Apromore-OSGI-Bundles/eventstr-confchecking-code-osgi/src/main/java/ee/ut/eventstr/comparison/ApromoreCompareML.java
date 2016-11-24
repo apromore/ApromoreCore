@@ -1,5 +1,10 @@
 package ee.ut.eventstr.comparison;
 
+import ee.ut.eventstr.NewUnfoldingPESSemantics;
+import ee.ut.eventstr.PESSemantics;
+import ee.ut.eventstr.PrimeEventStructure;
+import ee.ut.eventstr.SinglePORunPESSemantics;
+import ee.ut.eventstr.comparison.differences.DifferencesML;
 import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import hub.top.petrinet.PetriNet;
 import hub.top.petrinet.Transition;
@@ -17,10 +22,6 @@ import java.util.Set;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 
-import ee.ut.eventstr.NewUnfoldingPESSemantics;
-import ee.ut.eventstr.PESSemantics;
-import ee.ut.eventstr.PrimeEventStructure;
-import ee.ut.eventstr.SinglePORunPESSemantics;
 import ee.ut.mining.log.AlphaRelations;
 import ee.ut.mining.log.XLogReader;
 import ee.ut.mining.log.poruns.PORun;
@@ -61,12 +62,30 @@ public class ApromoreCompareML {
 	}
 
 	public static void main(String[] args) {
-		String modelString = "models/bp2.bpmn";
-		String logString = "logs/bpLog9.xes";
+		String modelString = "models/btm.bpmn";
+		String logString = "logs/btl.xes";
 
 		HashSet<String> silents = new HashSet<String>();
 		silents.add("_1_");
 		silents.add("_0_");
+		silents.add("t15");
+		silents.add("t16");
+		silents.add("t17");
+		silents.add("t18");
+        silents.add("t19");
+		silents.add("t15");
+        silents.add("t16");
+        silents.add("t17");
+        silents.add("t18");
+        silents.add("t19");
+        silents.add("t20");
+        silents.add("t21");
+        silents.add("t22");
+        silents.add("t23");
+		silents.add("t24");
+        silents.add("t25");
+		silents.add("null_positive");
+		silents.add("null_enable");
 		
 		try {
 			XLog log = XLogReader.openLog(logString);
@@ -75,9 +94,12 @@ public class ApromoreCompareML {
 
 			DiffMLGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model, log, silents);
 			verbalizer.verbalize();
+			System.out.println(DifferencesML.toJSON(verbalizer.getDifferences()));
 
-			//		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
-			//		System.out.println(verbalizer.getStatements());
+//			NewDiffVerbalizer<Integer> verbalizer = comparator.analyzeDifferences(model.getNet(), log, silents);
+//			verbalizer.verbalize();
+//			System.out.println(verbalizer.getStatements());
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -173,7 +195,7 @@ public class ApromoreCompareML {
 		return verbalizer;
 	}
 
-	private NewDiffVerbalizer<Integer> analyzeDifferences(PetriNet net, XLog log, HashSet<String> silents)
+	public NewDiffVerbalizer<Integer> analyzeDifferences(PetriNet net, XLog log, HashSet<String> silents)
 			throws Exception {
 		SinglePORunPESSemantics<Integer> logpessem;
 		PrunedOpenPartialSynchronizedProduct<Integer> psp;
@@ -183,6 +205,29 @@ public class ApromoreCompareML {
 		ExpandedPomsetPrefix<Integer> expprefix = new ExpandedPomsetPrefix<Integer>(pnmlpes);
 
 		PESSemantics<Integer> fullLogPesSem = new PESSemantics<Integer>(logpes);
+		NewDiffVerbalizer<Integer> verbalizer = new NewDiffVerbalizer<Integer>(fullLogPesSem, pnmlpes, expprefix);
+
+		for (int sink : logpes.getSinks()) {
+			logpessem = new SinglePORunPESSemantics<Integer>(logpes, sink);
+			psp = new PrunedOpenPartialSynchronizedProduct<Integer>(logpessem, pnmlpes);
+
+			psp.perform().prune();
+
+			verbalizer.addPSP(psp.getOperationSequence());
+		}
+		return verbalizer;
+	}
+
+	public NewDiffVerbalizer<Integer> analyzeDifferences(PetriNet net, PESSemantics pesLog, HashSet<String> silents)
+			throws Exception {
+		SinglePORunPESSemantics<Integer> logpessem;
+		PrunedOpenPartialSynchronizedProduct<Integer> psp;
+
+		PrimeEventStructure<Integer> logpes = pesLog.getPES();
+		NewUnfoldingPESSemantics<Integer> pnmlpes = getUnfoldingPES(net, silents);
+		ExpandedPomsetPrefix<Integer> expprefix = new ExpandedPomsetPrefix<Integer>(pnmlpes);
+
+		PESSemantics<Integer> fullLogPesSem = pesLog;
 		NewDiffVerbalizer<Integer> verbalizer = new NewDiffVerbalizer<Integer>(fullLogPesSem, pnmlpes, expprefix);
 
 		for (int sink : logpes.getSinks()) {

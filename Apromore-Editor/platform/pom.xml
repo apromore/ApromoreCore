@@ -218,11 +218,6 @@
                             net.sf.cglib.core,
                             net.sf.cglib.reflect,
                             !net.sf.saxon,
-
-<!--
-                            !org.apache.xml.resolver,
-                            !org.apache.xml.resolver.helpers,
--->
                             !com.sun.image.codec.jpeg,
                             !javax.media.jai,
                             !junit.framework,
@@ -444,16 +439,10 @@
             </exclusions>
         </dependency>
 
-        <!-- TODO: Those aren't OSGI!! Why are they here and not embedded? Are those really needed? -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json-osgi</artifactId>
             <version>20090211</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.xerces</artifactId>
-            <version>2.11.0_1</version>
         </dependency>
 
         <!-- Signavio platform extensions -->

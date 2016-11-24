@@ -15,7 +15,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
  */
 
 @Plugin(
-        name = "Mine Heuristic Net from log",
+        name = "Mine Heuristic net from log",
         parameterLabels = { "Event Log" },
         returnLabels = { "Heuristic Net" },
         returnTypes = { BPMNDiagram.class },
@@ -29,7 +29,7 @@ public class HeuristicNetPlugin {
             author = "Adriano Augusto",
             email = "adriano.augusto@ut.ee"
     )
-    @PluginVariant(variantLabel = "Mine Heuristic Net from log", requiredParameterLabels = {0})
+    @PluginVariant(variantLabel = "Mine Heuristic net from log", requiredParameterLabels = {0})
     public static BPMNDiagram mineHeuristicNet(UIPluginContext context, XLog log) {
         boolean debug = true;
 
@@ -43,6 +43,6 @@ public class HeuristicNetPlugin {
             net.printParallelisms();
         }
 
-        return net.getHeuristicDiagram();
+        return net.getHeuristicDiagram(true);
     }
 }
