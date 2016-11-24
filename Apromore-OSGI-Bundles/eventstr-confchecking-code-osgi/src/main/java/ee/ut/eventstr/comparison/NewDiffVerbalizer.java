@@ -102,6 +102,7 @@ public class NewDiffVerbalizer<T> {
 		markExpandedPrefix(root, HashMultimap.<String, Operation>create(), HashMultimap.<String, Operation>create(), new HashSet<State>(), null);
 		findSkipMismatches(root, new HashMap<Integer, Pair<State, Operation>> (), new HashMap<Integer, Pair<State, Operation>> (), new HashSet<State>());
 		verbalizeAdditionalModelBehavior();
+		verbalizeOptionalModelBehavior();
 
 		for (Pair<Integer, Integer> p: causalityConcurrencyMismatches.keySet()) {
 			Map<Pair<Integer, Integer>, State> map = new HashMap<>();
@@ -318,8 +319,13 @@ public class NewDiffVerbalizer<T> {
 			statements.removeAll(redundant);
 			// end of the ugly stuff to remove redundant statements
 
-			statements.add(String.format("In the log, the cycle involving %s does not occur after '%s'",
-					translate(entry.getValue()), translate(pes1, ((Pair<Integer,Integer>)lastMatchMap.get(entry.getKey()).target).getFirst())));
+			List<String> interval = translate(entry.getValue());
+			String localstate = translate(pes1, ((Pair<Integer,Integer>)lastMatchMap.get(entry.getKey()).target).getFirst());
+
+//			if (interval.contains(localstate)) {
+				statements.add(String.format("In the log, the cycle involving %s does not occur after '%s'",
+						interval, localstate));
+//			}
 		}
 	}
 
@@ -1267,6 +1273,17 @@ public class NewDiffVerbalizer<T> {
 
 	public Set<String> getStatements(){
 		return this.statements;
+	}
+
+	private void verbalizeOptionalModelBehavior() {
+		for (Entry<State, List<Integer>> entry:	expandedPrefix.getOptionalAcyclicIntervals().entries()) {
+			List<String> interval = translate(entry.getValue());
+
+			if (interval.size() > 0) {
+				statements.add(String.format("In the model, after %s, %s is optional",
+						translate(pes1, ((Pair<Integer,Integer>)lastMatchMap.get(entry.getKey()).target).getFirst()), interval));
+			}
+		}
 	}
 
 }
