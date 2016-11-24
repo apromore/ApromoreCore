@@ -67,6 +67,8 @@
                 <![CDATA[
                     var urlData = '${arg.url}';
 
+                    ORYX.CONFIG.PANEL_LEFT_COLLAPSED = true;
+
                     ORYX.Editor.prototype.highlightDifferences = function(run, colorsBPMN) {
                         console.log('Highlighting differences for ' + run + ' on ' + this.id);
 
