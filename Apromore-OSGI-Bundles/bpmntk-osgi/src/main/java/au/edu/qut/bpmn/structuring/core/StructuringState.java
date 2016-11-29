@@ -1,7 +1,7 @@
-package au.edu.qut.structuring.core;
+package au.edu.qut.bpmn.structuring.core;
 
-import au.edu.qut.structuring.graph.Graph;
-import au.edu.qut.structuring.graph.Move;
+import au.edu.qut.bpmn.structuring.graph.Graph;
+import au.edu.qut.bpmn.structuring.graph.Move;
 
 import java.util.*;
 

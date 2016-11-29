@@ -1,11 +1,11 @@
-package au.edu.qut.structuring.ui;
+package au.edu.qut.bpmn.structuring.ui;
 
 import com.fluxicon.slickerbox.components.NiceIntegerSlider;
 import com.fluxicon.slickerbox.components.NiceSlider;
 import com.fluxicon.slickerbox.factory.SlickerFactory;
 import org.processmining.framework.util.ui.widgets.ProMComboBox;
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
-import au.edu.qut.structuring.core.StructuringCore;
+import au.edu.qut.bpmn.structuring.core.StructuringCore;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

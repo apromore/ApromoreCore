@@ -1,6 +1,6 @@
 package au.edu.qut.processmining.repairing;
 
-import au.edu.qut.helper.DiagramHandler;
+import au.edu.qut.bpmn.helper.DiagramHandler;
 import au.edu.qut.processmining.log.LogAnalizer;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.graph.fuzzy.FuzzyNet;

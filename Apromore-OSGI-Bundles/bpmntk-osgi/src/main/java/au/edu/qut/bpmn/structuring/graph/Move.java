@@ -1,4 +1,4 @@
-package au.edu.qut.structuring.graph;
+package au.edu.qut.bpmn.structuring.graph;
 
 /**
  * Created by Adriano on 29/02/2016.
