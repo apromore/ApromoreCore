@@ -47,7 +47,7 @@
                     <instructions>
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
-                            au.edu.qut.structuring,
+                            au.edu.qut.bpmn.structuring,
                             au.edu.qut.bpmn.exporter.*,
                             au.edu.qut.bpmn.exporter.impl.*,
                             *

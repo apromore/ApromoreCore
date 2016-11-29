@@ -1,4 +1,4 @@
-package au.edu.qut.helper;
+package au.edu.qut.bpmn.helper;
 
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;

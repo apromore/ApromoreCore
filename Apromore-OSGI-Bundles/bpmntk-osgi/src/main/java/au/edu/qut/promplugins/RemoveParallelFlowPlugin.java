@@ -1,6 +1,6 @@
 package au.edu.qut.promplugins;
 
-import au.edu.qut.helper.DiagramHandler;
+import au.edu.qut.bpmn.helper.DiagramHandler;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;

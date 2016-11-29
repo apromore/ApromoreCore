@@ -1,4 +1,4 @@
-package au.edu.qut.structuring.graph;
+package au.edu.qut.bpmn.structuring.graph;
 
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;

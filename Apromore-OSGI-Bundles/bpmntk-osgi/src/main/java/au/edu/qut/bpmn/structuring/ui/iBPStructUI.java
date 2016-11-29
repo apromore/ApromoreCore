@@ -1,4 +1,4 @@
-package au.edu.qut.structuring.ui;
+package au.edu.qut.bpmn.structuring.ui;
 
 import org.deckfour.uitopia.api.event.TaskListener;
 import org.processmining.contexts.uitopia.UIPluginContext;
