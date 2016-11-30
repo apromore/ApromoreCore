@@ -1,10 +1,17 @@
 package au.edu.qut.bpmn.helper;
 
+import de.hpi.bpt.graph.DirectedEdge;
+import de.hpi.bpt.graph.DirectedGraph;
+import de.hpi.bpt.graph.abs.IDirectedGraph;
+import de.hpi.bpt.graph.algo.rpst.RPST;
+import de.hpi.bpt.graph.algo.rpst.RPSTNode;
+import de.hpi.bpt.hypergraph.abs.Vertex;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.Flow;
 import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+import org.processmining.models.graphbased.directed.bpmn.elements.Swimlane;
 
 import java.util.*;
 
@@ -23,12 +30,41 @@ public class GatewayMap {
     /* about the map itself */
     private Set<Gateway> gateways;
     private Set<GatewayMapFlow> flows;
+    private Map<Gateway, Set<GatewayMapFlow>> incomings;
+    private Map<Gateway, Set<GatewayMapFlow>> outgoings;
     private Map<Gateway, Set<Gateway>> successors; //successor gateways
     private Map<Gateway, Set<Gateway>> predecessors; //predecessor gateways
-    private Map<Gateway, Map<Gateway, List<GatewayMapFlow>>> graph;
+    private Map<Gateway, Map<Gateway, Set<GatewayMapFlow>>> graph;
 
 
     public GatewayMap() {}
+
+    public BPMNDiagram getGatewayMap() {
+        BPMNDiagram diagram = new BPMNDiagramImpl("gatemap");
+        Gateway src, tgt;
+        Gateway nSRC, nTGT;
+
+        HashMap<Gateway, Gateway> mapping = new HashMap<>();
+
+        for( GatewayMapFlow flow : flows ) {
+            src = flow.getSource();
+            tgt = flow.getTarget();
+
+            if( !mapping.containsKey(src) ) {
+                nSRC = diagram.addGateway("", src.getGatewayType());
+                mapping.put(src, nSRC);
+            } else nSRC = mapping.get(src);
+
+            if( !mapping.containsKey(tgt) ) {
+                nTGT = diagram.addGateway("", tgt.getGatewayType());
+                mapping.put(tgt, nTGT);
+            } else nTGT = mapping.get(tgt);
+
+            diagram.addFlow(nSRC, nTGT, "");
+        }
+
+        return diagram;
+    }
 
     public boolean generateMap(BPMNDiagram diagram) {
         ArrayList<BPMNNode> toVisit = new ArrayList<>();
@@ -39,6 +75,8 @@ public class GatewayMap {
 
         flows = new HashSet<>();
         gateways = new HashSet<>();
+        incomings = new HashMap<>();
+        outgoings = new HashMap<>();
         successors = new HashMap<>();
         predecessors = new HashMap<>();
         graph = new HashMap<>();
@@ -96,7 +134,146 @@ public class GatewayMap {
 
         System.out.println("DEBUG - gateways: " + gateways.size() );
         System.out.println("DEBUG - flows: " + flows.size() );
+        checkGateways();
         return true;
+    }
+
+    public int removeOneBlockBonds() {
+        int bonds = 0;
+        HashSet<GatewayMapFlow> removableFlows;
+
+        do {
+            removableFlows = new HashSet<>();
+            for( Gateway entry : gateways )
+                if( (successors.get(entry).size() == 1) && (outgoings.get(entry).size() > 1) ) {
+                    System.out.println("DEBUG - found a removable bonds");
+                    //this means g is the entry of a one-block-BOND and its successor is the exit
+                    bonds++;
+                    for (GatewayMapFlow f : outgoings.get(entry)) removableFlows.add(f);
+                    break;
+                }
+            for (GatewayMapFlow rf : removableFlows) this.removeFlow(rf);
+        } while ( !removableFlows.isEmpty() );
+
+        System.out.println("DEBUG - bonds removed: " + bonds);
+        return bonds;
+    }
+
+    public void setHomogenousRigidJoins() {
+        try {
+            HashMap<String, Gateway> idToGate = new HashMap<>();
+            HashMap<BPMNNode, Vertex> vertexes = new HashMap<BPMNNode, Vertex>();
+            ArrayList<RPSTNode> rigidHierarchy = new ArrayList<RPSTNode>();
+            HashSet<Gateway> checked = new HashSet<>();
+
+            IDirectedGraph<DirectedEdge, Vertex> graph = new DirectedGraph();
+            Vertex src;
+            Vertex tgt;
+
+            Gateway gSRC;
+            Gateway gTGT;
+
+            /* building the graph from the bpmnDiagram, the graph is necessary to generate the RPST */
+
+            for( GatewayMapFlow f : flows ) {
+                gSRC = f.getSource();
+                gTGT = f.getTarget();
+                if( !vertexes.containsKey(gSRC) ) {
+                    src = new Vertex(gSRC.getLabel());  //this is still a unique number
+                    vertexes.put(gSRC, src);
+                    idToGate.put(gSRC.getLabel(), gSRC);
+                } else src = vertexes.get(gSRC);
+
+                if( !vertexes.containsKey(gTGT) ) {
+                    tgt = new Vertex(gTGT.getLabel());  //this is still a unique number
+                    vertexes.put(gTGT, tgt);
+                    idToGate.put(gTGT.getLabel(), gTGT);
+                } else tgt = vertexes.get(gTGT);
+
+                graph.addEdge(src, tgt);
+            }
+
+            /* graph ready - building the RPST */
+
+            RPST rpst = new RPST(graph);
+
+            RPSTNode root = rpst.getRoot();
+            LinkedList<RPSTNode> toAnalize = new LinkedList<RPSTNode>();
+            toAnalize.addLast(root);
+
+            while( toAnalize.size() != 0 ) {
+                root = toAnalize.removeFirst();
+
+                for( RPSTNode n : new HashSet<RPSTNode>(rpst.getChildren(root)) ) {
+                    switch( n.getType() ) {
+                        case R:
+                            toAnalize.addLast(n);
+                            rigidHierarchy.add(0, n);
+                            break;
+                        case T:
+                            break;
+                        case P:
+                            toAnalize.addLast(n);
+                            break;
+                        case B:
+                            toAnalize.addLast(n);
+                            System.out.println("WARNING - found a bond in the gateway map, after the removal.");
+                            break;
+                        default:
+                    }
+                }
+            }
+
+            /* working on the hierarchy of the rigids */
+            Gateway gate;
+            HashSet<Gateway> joins;
+            boolean and_homogeneous;
+            int fixedJoins = 0;
+            while( !rigidHierarchy.isEmpty() ) {
+                RPSTNode rigid = rigidHierarchy.remove(0);
+
+                joins = new HashSet<>();
+                and_homogeneous = true;
+
+                IDirectedGraph<DirectedEdge, Vertex> rigidGraph = rigid.getFragment();
+                for( Vertex v : rigidGraph.getVertices() ) {
+                    gate = idToGate.get(v.getName());
+                    if( (outgoings.get(gate).size() > 1) && (gate.getGatewayType() == Gateway.GatewayType.DATABASED) && (!checked.contains(gate)) ) and_homogeneous = false;
+                    if( (incomings.get(gate).size() > 1) && (!checked.contains(gate)) ) joins.add(gate);
+                    checked.add(gate);
+                }
+
+                if( and_homogeneous ) {
+                    fixedJoins += joins.size();
+                    for(Gateway j : joins) j.setGatewayType(Gateway.GatewayType.PARALLEL);
+                }
+
+                System.out.println("DEBUG - joins set: " + fixedJoins);
+            }
+
+        } catch( Exception e ) {
+            e.printStackTrace(System.out);
+            System.out.println("ERROR - impossible to set join gateways inside the rigids");
+        }
+    }
+
+    public boolean checkGateways() {
+        int splits = 0;
+        int joins = 0;
+        int errors = 0;
+        boolean isSplit, isJoin;
+
+        for(Gateway g : gateways) {
+            if( isSplit = (outgoings.get(g).size() > 1) ) splits++;
+            if( isJoin = (incomings.get(g).size() > 1) ) joins++;
+            if( isJoin && isSplit ) errors++;
+        }
+
+        System.out.println("DEBUG - splits found: " + splits );
+        System.out.println("DEBUG - joins found: " + joins );
+        System.out.println("DEBUG - errors (join/split) found: " + errors );
+
+        return (errors == 0);
     }
 
     private boolean init(BPMNDiagram diagram) {
@@ -170,9 +347,11 @@ public class GatewayMap {
 
     private void addGateway(Gateway gate) {
         gateways.add(gate);
+        incomings.put(gate, new HashSet<GatewayMapFlow>());
+        outgoings.put(gate, new HashSet<GatewayMapFlow>());
         successors.put(gate, new HashSet<Gateway>());
         predecessors.put(gate, new HashSet<Gateway>());
-        graph.put(gate, new HashMap<Gateway, List<GatewayMapFlow>>());
+        graph.put(gate, new HashMap<Gateway, Set<GatewayMapFlow>>());
     }
 
     private void addFlow(BPMNNode src, BPMNNode tgt, BPMNNode ref) {
@@ -186,39 +365,86 @@ public class GatewayMap {
         GatewayMapFlow flow = new GatewayMapFlow(++FID, entry, exit, ref);
 
         flows.add(flow);
+
+        incomings.get(exit).add(flow);
+        outgoings.get(entry).add(flow);
+
         successors.get(entry).add(exit);
         predecessors.get(exit).add(entry);
 
-        if( !graph.get(entry).containsKey(exit) ) graph.get(entry).put(exit, new ArrayList<GatewayMapFlow>());
+        if( !graph.get(entry).containsKey(exit) ) graph.get(entry).put(exit, new HashSet<GatewayMapFlow>());
         graph.get(entry).get(exit).add(flow);
     }
 
+    private void removeFlow(GatewayMapFlow flow) {
+        Gateway entry = flow.getSource();
+        Gateway exit = flow.getTarget();
 
-    public BPMNDiagram getGatewayMap() {
-        BPMNDiagram diagram = new BPMNDiagramImpl("gatemap");
-        Gateway src, tgt;
-        Gateway nSRC, nTGT;
+        System.out.println("DEBUG - removing flow");
 
-        HashMap<Gateway, Gateway> mapping = new HashMap<>();
+        flows.remove(flow);
 
-        for( GatewayMapFlow flow : flows ) {
-            src = flow.getSource();
-            tgt = flow.getTarget();
+        outgoings.get(entry).remove(flow);
+        incomings.get(exit).remove(flow);
 
-            if( !mapping.containsKey(src) ) {
-                nSRC = diagram.addGateway("", src.getGatewayType());
-                mapping.put(src, nSRC);
-            } else nSRC = mapping.get(src);
+        successors.get(entry).remove(exit);
+        predecessors.get(exit).remove(entry);
 
-            if( !mapping.containsKey(tgt) ) {
-                nTGT = diagram.addGateway("", tgt.getGatewayType());
-                mapping.put(tgt, nTGT);
-            } else nTGT = mapping.get(tgt);
+        graph.get(entry).get(exit).remove(flow);
 
-            diagram.addFlow(nSRC, nTGT, "");
+        if( graph.get(entry).get(exit).isEmpty() ) mergeGateways(entry, exit);
+    }
+
+    private void mergeGateways(Gateway entry, Gateway exit) {
+        Gateway prevSRC = null;
+        Gateway nextTGT = null;
+        BPMNNode ref = null;
+
+        System.out.println("DEBUG - merging gateways");
+        GatewayMapFlow iRemovable = null;
+        GatewayMapFlow oRemovable = null;
+
+        if( (incomings.get(entry).size() != 1) || (outgoings.get(exit).size() != 1) ) {
+            System.out.println("DEBUG - cannot merge gateways [" + incomings.get(entry).size() + " - " + outgoings.get(exit).size() + "]");
+            return;
         }
 
-        return diagram;
+        for( GatewayMapFlow i : incomings.get(entry) ) {
+            prevSRC = i.getSource();
+            iRemovable = i;
+        }
+
+        for( GatewayMapFlow o : outgoings.get(exit) ) {
+            nextTGT = o.getTarget();
+            ref = o.getRef();
+            oRemovable = o;
+        }
+
+        if( outgoings.get(entry).size() != 0 ) {
+            prevSRC = entry;
+        } else {
+            removeFlow(iRemovable);
+            removeGateway(entry);
+        }
+
+        if( incomings.get(exit).size() != 0 ) {
+            nextTGT = exit;
+            ref = null;
+        } else {
+            removeFlow(oRemovable);
+            removeGateway(exit);
+        }
+
+        this.addFlow(prevSRC, nextTGT, ref);
+    }
+
+    private void removeGateway(Gateway gate) {
+        gateways.remove(gate);
+        incomings.remove(gate);
+        outgoings.remove(gate);
+        successors.remove(gate);
+        predecessors.remove(gate);
+        graph.remove(gate);
     }
 
 

@@ -1,6 +1,7 @@
 package au.edu.qut.processmining.miners.heuristic;
 
 import au.edu.qut.bpmn.helper.DiagramHandler;
+import au.edu.qut.bpmn.helper.GatewayMap;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
@@ -33,6 +34,7 @@ public class HeuristicMinerPlus {
     private BPMNDiagram bpmnDiagram;
 
     private int gateCounter;
+    private HashMap<String, Gateway> candidateJoins;
 
     public HeuristicMinerPlus() {}
 
@@ -99,6 +101,7 @@ public class HeuristicMinerPlus {
 
 
         /* generating all the splits gateways */
+        candidateJoins = new HashMap<>();
 
         for( Event e : bpmnDiagram.getEvents() )
             if( e.getEventType() == Event.EventType.START ) entry = e;
@@ -168,8 +171,17 @@ public class HeuristicMinerPlus {
         BPMNNode node;
         Integer nodeCode;
         Gateway gate;
+        Gateway candidateJoin;
 
         System.out.println("DEBUG - generating split from Oracle ~ [xor|and]: " + nextOracleItem + " ~ [" + nextOracleItem.getXorBrothers().size() + "|" + nextOracleItem.getAndBrothers().size() + "]");
+
+        if( candidateJoins.containsKey(nextOracleItem.toString()) ) {
+            //these are joins, they are generated considering the fact they shares the same future (finalOracleItem)
+            System.out.println("DEBUG - found JOIN for: " + nextOracleItem.toString());
+            candidateJoin = candidateJoins.get(nextOracleItem.toString());
+            bpmnDiagram.addFlow(entry, candidateJoin, "");
+            return;
+        }
 
         if( type == null ) {
             nodeCode = nextOracleItem.getNodeCode();
@@ -184,6 +196,8 @@ public class HeuristicMinerPlus {
         bpmnDiagram.addFlow(entry, gate, "");
         for( OracleItem next : nextOracleItem.getXorBrothers() ) generateSplitGateways(gate, next, mapping);
         for( OracleItem next : nextOracleItem.getAndBrothers() ) generateSplitGateways(gate, next, mapping);
+
+        candidateJoins.put(nextOracleItem.toString(), gate);
     }
 
     private boolean generateBondJoins() {
@@ -325,7 +339,8 @@ public class HeuristicMinerPlus {
         /* step 1. adding a xor join gateway where needed */
         for( BPMNNode n : nodes ) {
             removableEdges = new HashSet<>(bpmnDiagram.getInEdges(n));
-            if ((n instanceof Gateway) || (removableEdges.size() <= 1)) continue;
+            if( removableEdges.size() <= 1 ) continue;
+            if( (n instanceof Gateway) && (bpmnDiagram.getOutEdges(n).size() <= 1) ) continue; //we generate a new join only for those gateways that are both join and split
 //            System.out.println("DEBUG - generating a new join");
             gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), Gateway.GatewayType.DATABASED);
             bpmnDiagram.addFlow(gate, n, "");
@@ -347,111 +362,12 @@ public class HeuristicMinerPlus {
         * if none of the above cases, the rigid soundness will be successively fixed with Bartek technique
          */
 
-//        try {
-//            HashMap<String, BPMNNode> labelToNode = new HashMap<>();
-//            HashMap<BPMNNode, Vertex> vertexes = new HashMap<BPMNNode, Vertex>();
-//
-//            HashMap<String, Gateway.GatewayType> gates = new HashMap<String, Gateway.GatewayType>();
-//            ArrayList<RPSTNode> rigidHierarchy = new ArrayList<RPSTNode>();
-//            HashSet<String> bondGates = new HashSet<>();
-//
-//            IDirectedGraph<DirectedEdge, Vertex> graph = new DirectedGraph();
-//            Vertex src;
-//            Vertex tgt;
-//
-//            BPMNNode bpmnSRC;
-//            BPMNNode bpmnTGT;
-//
-//            String entry, exit;
-//
-//
-//            /* building the graph from the bpmnDiagram, the graph is necessary to generate the RPST */
-//
-//            for( Flow f : bpmnDiagram.getFlows((Swimlane) null) ) {
-//                bpmnSRC = f.getSource();
-//                bpmnTGT = f.getTarget();
-//                if( !vertexes.containsKey(bpmnSRC) ) {
-//                    src = new Vertex(bpmnSRC.getLabel());  //this is still a unique number
-//                    if( bpmnSRC instanceof Gateway ) gates.put(bpmnSRC.getLabel(), ((Gateway) bpmnSRC).getGatewayType());
-//                    vertexes.put(bpmnSRC, src);
-//                    labelToNode.put(bpmnSRC.getLabel(), bpmnSRC);
-//                } else src = vertexes.get(bpmnSRC);
-//
-//                if( !vertexes.containsKey(bpmnTGT) ) {
-//                    tgt = new Vertex(bpmnTGT.getLabel());  //this is still a unique number
-//                    if( bpmnTGT instanceof Gateway ) gates.put(bpmnTGT.getLabel(), ((Gateway) bpmnTGT).getGatewayType());
-//                    vertexes.put(bpmnTGT, tgt);
-//                    labelToNode.put(bpmnTGT.getLabel(), bpmnTGT);
-//                } else tgt = vertexes.get(bpmnTGT);
-//
-//                graph.addEdge(src, tgt);
-//            }
-//
-//            /* graph ready */
-//
-//            RPST rpst = new RPST(graph);
-//
-//            RPSTNode root = rpst.getRoot();
-//            LinkedList<RPSTNode> toAnalize = new LinkedList<RPSTNode>();
-//            toAnalize.addLast(root);
-//
-//            while( toAnalize.size() != 0 ) {
-//                root = toAnalize.removeFirst();
-//
-//                for( RPSTNode n : new HashSet<RPSTNode>(rpst.getChildren(root)) ) {
-//                    switch( n.getType() ) {
-//                        case R:
-//                            toAnalize.addLast(n);
-//                            rigidHierarchy.add(0, n);
-//
-//                            /* saving all the gateways that belong to bonds */
-//                            IDirectedGraph<DirectedEdge, Vertex> rigidGraph = n.getFragment();
-//                            for( Vertex v : rigidGraph.getVertices() )
-//                                if( gates.containsKey(v.getName()) ) bondGates.remove(v.getName());
-//
-//                            break;
-//                        case T:
-//                            break;
-//                        case P:
-//                            toAnalize.addLast(n);
-//                            break;
-//                        case B:
-//                            toAnalize.addLast(n);
-//                            entry = n.getEntry().getName();
-//                            exit = n.getExit().getName();
-//
-//                            /* saving all the gateways that belong to bonds */
-//                            IDirectedGraph<DirectedEdge, Vertex> bondGraph = n.getFragment();
-//                            for( Vertex v : bondGraph.getVertices() )
-//                                if( gates.containsKey(v.getName()) ) bondGates.add(v.getName());
-//
-////                            bondGates.remove(entry);
-////                            bondGates.remove(exit);
-//                            break;
-//                        default:
-//                    }
-//                }
-//            }
-//
-//            /* working on the hierarchy of the rigids */
-//            while( !rigidHierarchy.isEmpty() ) {
-//                RPSTNode rigid = rigidHierarchy.remove(0);
-////                System.out.println("DEBUG - analysing a rigid");
-//
-//                IDirectedGraph<DirectedEdge, Vertex> rigidGraph = rigid.getFragment();
-//                for( Vertex v : rigidGraph.getVertices() )
-//                    if( gates.containsKey(v.getName()) );
-//
-//            }
-//
-//        } catch( Exception e ) {
-//            e.printStackTrace(System.out);
-//            System.out.println("ERROR - impossible to generate join gateways");
-//            return false;
-//        }
-//
+        GatewayMap gatemap = new GatewayMap();
+        gatemap.generateMap(bpmnDiagram);
+        gatemap.removeOneBlockBonds();
+        gatemap.setHomogenousRigidJoins();
 
-        return false;
+        return true;
     }
 
     private void updateLabels(Map<Integer, String> events) {
