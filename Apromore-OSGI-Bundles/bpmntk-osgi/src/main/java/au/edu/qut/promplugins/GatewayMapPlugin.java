@@ -29,11 +29,13 @@ public class GatewayMapPlugin {
             email = "adriano.augusto@ut.ee"
     )
     @PluginVariant(variantLabel = "Get Gateway Map of a BPMN Diagram", requiredParameterLabels = {0})
-    public static BPMNDiagram ShowGatewayMap(PluginContext context, BPMNDiagram input) {
+    public static BPMNDiagram GetGatewayMap(PluginContext context, BPMNDiagram input) {
         BPMNDiagram output;
 
         GatewayMap gatemap = new GatewayMap();
         gatemap.generateMap(input);
+        gatemap.removeOneBlockBonds();
+
         output = gatemap.getGatewayMap();
 
         return output;
