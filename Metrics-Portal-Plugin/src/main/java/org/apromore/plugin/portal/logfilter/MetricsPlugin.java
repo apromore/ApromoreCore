@@ -141,10 +141,10 @@ public class MetricsPlugin extends PluginCustomGui {
                         runProcessComputation(portalContext, processVersions);
                     }
                 });
+                this.settings.doModal();
             }else {
                 runLogComputation(portalContext, logVersions);
             }
-            this.settings.doModal();
 
         } catch (IOException e) {
             Messagebox.show("Something went wrong (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -232,8 +232,6 @@ public class MetricsPlugin extends PluginCustomGui {
     protected void runLogComputation(PortalContext portalContext, Map<LogSummaryType, List<VersionSummaryType>> logVersion) {
         Map<String, String> metrics;
 
-        this.settings.detach();
-
         try {
             for (LogSummaryType logSummaryType : logVersion.keySet()) {
                     XLog log = eventLogService.getXLog(logSummaryType.getId());
@@ -242,7 +240,9 @@ public class MetricsPlugin extends PluginCustomGui {
                     if(metrics == null) LOGGER.info("GOT NULL!");
                     else {
                         List<TabRowValue> rows = new ArrayList<>();
-                        for (String key : metrics.keySet()) {
+                        String[] keys = metrics.keySet().toArray(new String[metrics.size()]);
+                        Arrays.sort(keys);
+                        for (String key : keys) {
                             LOGGER.info(key + " : " + metrics.get(key));
                             rows.add(createTabRowValue(key, metrics.get(key)));
                         }
@@ -251,7 +251,7 @@ public class MetricsPlugin extends PluginCustomGui {
                         listheaders.add(new Listheader("Metric"));
                         listheaders.add(new Listheader("Value"));
 
-                        addTab(logSummaryType.getName() + ": logfilter", "", rows, listheaders, null, portalContext);
+                        addTab(logSummaryType.getName() + ": Log Statistics", "", rows, listheaders, null, portalContext);
                     }
 
                     LOGGER.info("Metrics - done!");
