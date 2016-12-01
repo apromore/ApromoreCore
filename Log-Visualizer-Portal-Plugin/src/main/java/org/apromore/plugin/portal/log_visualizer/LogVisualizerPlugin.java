@@ -42,21 +42,14 @@ import org.apromore.model.LogSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.service.EventLogService;
 
 @Component("plugin")
 public class LogVisualizerPlugin extends DefaultPortalPlugin {
-    private final EventLogService eventLogService;
 
     private String label = "Visualize log";
     private String groupLabel = "Analyze";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerPlugin.class.getCanonicalName());
-
-    @Inject
-    public LogVisualizerPlugin(final EventLogService eventLogService){
-        this.eventLogService = eventLogService;
-    }
 
     @Override
     public String getLabel(Locale locale) {
