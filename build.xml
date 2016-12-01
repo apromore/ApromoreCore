@@ -73,6 +73,8 @@
         <include name="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war"/>
         -->
 
+        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.0.jar"/>
+
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
 
