@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.apromore.service.ibpstruct.IBPStructService;
 
-import au.edu.qut.structuring.StructuringService;
+import au.edu.qut.bpmn.structuring.StructuringService;
 
 /**
  * Created by Adriano Augusto on 18/04/2016.

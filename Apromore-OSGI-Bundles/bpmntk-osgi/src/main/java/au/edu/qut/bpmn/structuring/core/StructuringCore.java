@@ -1,9 +1,9 @@
-package au.edu.qut.structuring.core;
+package au.edu.qut.bpmn.structuring.core;
 
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 
-import au.edu.qut.structuring.graph.Graph;
+import au.edu.qut.bpmn.structuring.graph.Graph;
 
 import java.util.HashSet;
 import java.util.Set;

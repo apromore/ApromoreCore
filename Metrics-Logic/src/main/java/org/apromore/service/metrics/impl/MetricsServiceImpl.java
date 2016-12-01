@@ -20,7 +20,7 @@
 
 package org.apromore.service.metrics.impl;
 
-import au.edu.qut.metrics.ComplexityCalculator;
+import au.edu.qut.bpmn.metrics.ComplexityCalculator;
 
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
