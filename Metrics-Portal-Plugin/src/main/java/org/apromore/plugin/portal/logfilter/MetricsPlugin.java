@@ -31,7 +31,10 @@ import java.util.Locale;
 import java.util.Map;
 
 // Third party packages
+import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
+import org.apromore.service.EventLogService;
+import org.deckfour.xes.model.XLog;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +63,7 @@ public class MetricsPlugin extends PluginCustomGui {
 
     @Inject private MetricsService metricsService;
     @Inject private ProcessService processService;
+    @Inject private EventLogService eventLogService;
     @Inject private BPMNDiagramImporter importerService;
 
     /* zk gui variables */
@@ -92,13 +96,17 @@ public class MetricsPlugin extends PluginCustomGui {
 
         Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
         final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
+        final Map<LogSummaryType, List<VersionSummaryType>> logVersions = new HashMap<LogSummaryType, List<VersionSummaryType>>();
+
         for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
             if(entry.getKey() instanceof ProcessSummaryType) {
                 processVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
+            }else {
+                logVersions.put((LogSummaryType) entry.getKey(), entry.getValue());
             }
         }
 
-        if( processVersions.size() != 1 ) {
+        if( processVersions.size() != 1 && logVersions.size() != 1) {
             Messagebox.show("Please, select exactly one process.", "Wrong Process Selection", Messagebox.OK, Messagebox.INFORMATION);
             return;
         }
@@ -107,32 +115,36 @@ public class MetricsPlugin extends PluginCustomGui {
 //        runComputation(portalContext, processVersions);
 
         try {
-            this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/metrics.zul", null, null);
+            if(processVersions.size() > 1) {
+                this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/metrics.zul", null, null);
 
-            this.size = (Radiogroup) this.settings.getFellow("size");
-            this.cfc = (Radiogroup) this.settings.getFellow("cfc");
-            this.acd = (Radiogroup) this.settings.getFellow("acd");
-            this.mcd = (Radiogroup) this.settings.getFellow("mcd");
-            this.cnc = (Radiogroup) this.settings.getFellow("cnc");
-            this.density = (Radiogroup) this.settings.getFellow("density");
-            this.structuredness = (Radiogroup) this.settings.getFellow("structuredness");
-            this.separability = (Radiogroup) this.settings.getFellow("separability");
-            this.duplicates = (Radiogroup) this.settings.getFellow("duplicates");
+                this.size = (Radiogroup) this.settings.getFellow("size");
+                this.cfc = (Radiogroup) this.settings.getFellow("cfc");
+                this.acd = (Radiogroup) this.settings.getFellow("acd");
+                this.mcd = (Radiogroup) this.settings.getFellow("mcd");
+                this.cnc = (Radiogroup) this.settings.getFellow("cnc");
+                this.density = (Radiogroup) this.settings.getFellow("density");
+                this.structuredness = (Radiogroup) this.settings.getFellow("structuredness");
+                this.separability = (Radiogroup) this.settings.getFellow("separability");
+                this.duplicates = (Radiogroup) this.settings.getFellow("duplicates");
 
-            this.cancelButton = (Button) this.settings.getFellow("CancelButton");
-            this.okButton = (Button) this.settings.getFellow("OKButton");
+                this.cancelButton = (Button) this.settings.getFellow("CancelButton");
+                this.okButton = (Button) this.settings.getFellow("OKButton");
 
-            this.cancelButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    cancel();
-                }
-            });
-            this.okButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    runComputation(portalContext, processVersions);
-                }
-            });
-            this.settings.doModal();
+                this.cancelButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        cancel();
+                    }
+                });
+                this.okButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        runProcessComputation(portalContext, processVersions);
+                    }
+                });
+                this.settings.doModal();
+            }else {
+                runLogComputation(portalContext, logVersions);
+            }
 
         } catch (IOException e) {
             Messagebox.show("Something went wrong (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -145,7 +157,7 @@ public class MetricsPlugin extends PluginCustomGui {
         this.settings.detach();
     }
 
-    protected void runComputation(PortalContext portalContext, Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
+    protected void runProcessComputation(PortalContext portalContext, Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
         Map<String, String> bpmnMetrics;
         Map<String, String> canonicalMetrics;
 
@@ -205,6 +217,44 @@ public class MetricsPlugin extends PluginCustomGui {
 
                     LOGGER.info("Metrics - done!");
                 }
+            }
+        } catch(Exception e) {
+            StringBuilder sb = new StringBuilder();
+            e.printStackTrace();
+            for(StackTraceElement element : e.getStackTrace()) {
+                sb.append(element.toString() + "\n");
+            }
+            String message = "Search failed (" + sb.toString() + ")";
+            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    protected void runLogComputation(PortalContext portalContext, Map<LogSummaryType, List<VersionSummaryType>> logVersion) {
+        Map<String, String> metrics;
+
+        try {
+            for (LogSummaryType logSummaryType : logVersion.keySet()) {
+                    XLog log = eventLogService.getXLog(logSummaryType.getId());
+                    metrics = metricsService.computeMetrics(log);
+
+                    if(metrics == null) LOGGER.info("GOT NULL!");
+                    else {
+                        List<TabRowValue> rows = new ArrayList<>();
+                        String[] keys = metrics.keySet().toArray(new String[metrics.size()]);
+                        Arrays.sort(keys);
+                        for (String key : keys) {
+                            LOGGER.info(key + " : " + metrics.get(key));
+                            rows.add(createTabRowValue(key, metrics.get(key)));
+                        }
+
+                        List<Listheader> listheaders = new ArrayList<>();
+                        listheaders.add(new Listheader("Metric"));
+                        listheaders.add(new Listheader("Value"));
+
+                        addTab(logSummaryType.getName() + ": Log Statistics", "", rows, listheaders, null, portalContext);
+                    }
+
+                    LOGGER.info("Metrics - done!");
             }
         } catch(Exception e) {
             StringBuilder sb = new StringBuilder();
