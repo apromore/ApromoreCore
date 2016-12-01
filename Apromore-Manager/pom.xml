@@ -124,7 +124,8 @@
                             org.apromore.mapper,
                             org.apromore.scheduler,
                             org.apromore.service.*,
-                            org.apromore.toolbox.*
+                            org.apromore.toolbox.*,
+                            org.apromore.util
                         </Export-Package>
                         <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>
                     </instructions>
