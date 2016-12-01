@@ -1,5 +1,6 @@
 package au.edu.qut.promplugins;
 
+import au.edu.qut.bpmn.helper.GatewayMap;
 import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
 import au.edu.qut.processmining.miners.heuristic.HeuristicMinerPlus;
 import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUI;

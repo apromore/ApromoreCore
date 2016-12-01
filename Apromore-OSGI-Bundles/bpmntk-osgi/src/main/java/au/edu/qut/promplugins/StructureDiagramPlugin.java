@@ -1,9 +1,9 @@
 package au.edu.qut.promplugins;
 
-import au.edu.qut.metrics.ComplexityCalculator;
-import au.edu.qut.structuring.StructuringService;
-import au.edu.qut.structuring.ui.iBPStructUI;
-import au.edu.qut.structuring.ui.iBPStructUIResult;
+import au.edu.qut.bpmn.metrics.ComplexityCalculator;
+import au.edu.qut.bpmn.structuring.StructuringService;
+import au.edu.qut.bpmn.structuring.ui.iBPStructUI;
+import au.edu.qut.bpmn.structuring.ui.iBPStructUIResult;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.annotations.Plugin;

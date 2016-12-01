@@ -1,8 +1,8 @@
-package au.edu.qut.structuring;
+package au.edu.qut.bpmn.structuring;
 
-import au.edu.qut.structuring.core.StructuringCore;
-import au.edu.qut.helper.DiagramHandler;
-import au.edu.qut.structuring.wrapper.BPStructWrapper;
+import au.edu.qut.bpmn.structuring.core.StructuringCore;
+import au.edu.qut.bpmn.helper.DiagramHandler;
+import au.edu.qut.bpmn.structuring.wrapper.BPStructWrapper;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;

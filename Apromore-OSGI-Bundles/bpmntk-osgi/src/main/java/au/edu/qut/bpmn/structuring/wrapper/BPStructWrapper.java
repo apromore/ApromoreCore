@@ -1,4 +1,4 @@
-package au.edu.qut.structuring.wrapper;
+package au.edu.qut.bpmn.structuring.wrapper;
 
 import de.hpi.bpt.process.Process;
 import de.hpi.bpt.process.serialize.JSON2Process;

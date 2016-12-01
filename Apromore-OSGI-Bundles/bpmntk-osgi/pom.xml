@@ -52,8 +52,8 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            au.edu.qut.structuring,
-                            au.edu.qut.metrics,
+                            au.edu.qut.bpmn.structuring,
+                            au.edu.qut.bpmn.metrics,
                             au.edu.qut.bpmn.exporter,
                             au.edu.qut.bpmn.exporter.impl
                         </Export-Package>

@@ -1,6 +1,7 @@
 package au.edu.qut.processmining.miners.heuristic;
 
-import au.edu.qut.helper.DiagramHandler;
+import au.edu.qut.bpmn.helper.DiagramHandler;
+import au.edu.qut.bpmn.helper.GatewayMap;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
@@ -33,6 +34,7 @@ public class HeuristicMinerPlus {
     private BPMNDiagram bpmnDiagram;
 
     private int gateCounter;
+    private HashMap<String, Gateway> candidateJoins;
 
     public HeuristicMinerPlus() {}
 
@@ -82,7 +84,6 @@ public class HeuristicMinerPlus {
         BPMNNode exit = null;
 
         BPMNNode tgt;
-        Gateway gate;
         gateCounter = Integer.MIN_VALUE;
 
         ArrayList<BPMNNode> toVisit = new ArrayList<>();
@@ -100,6 +101,7 @@ public class HeuristicMinerPlus {
 
 
         /* generating all the splits gateways */
+        candidateJoins = new HashMap<>();
 
         for( Event e : bpmnDiagram.getEvents() )
             if( e.getEventType() == Event.EventType.START ) entry = e;
@@ -155,22 +157,11 @@ public class HeuristicMinerPlus {
             }
         }
 
-        while( generateBondJoin() );
+        /* generating join gateways */
+        while( generateBondJoins() );
 
-        /* generating all the joins gateways */
-//        Set<BPMNNode> nodes = new HashSet<>(bpmnDiagram.getNodes());
-//        for( BPMNNode n : nodes ) {
-//            removableEdges = new HashSet<>(bpmnDiagram.getInEdges(n));
-//            if( removableEdges.size() > 1 ) {
-////                System.out.println("DEBUG - generating a new join");
-//                gate = bpmnDiagram.addGateway("", Gateway.GatewayType.DATABASED);
-//                bpmnDiagram.addFlow(gate, n, "");
-//                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : removableEdges ) {
-//                    bpmnDiagram.removeEdge(oe);
-//                    bpmnDiagram.addFlow(oe.getSource(), gate, "");
-//                }
-//            }
-//        }
+        /* generating join gateways for sound rigids */
+        generateRigidJoins();
 
         System.out.println("HM+ - bpmn diagram generated successfully");
     }
@@ -180,8 +171,17 @@ public class HeuristicMinerPlus {
         BPMNNode node;
         Integer nodeCode;
         Gateway gate;
+        Gateway candidateJoin;
 
         System.out.println("DEBUG - generating split from Oracle ~ [xor|and]: " + nextOracleItem + " ~ [" + nextOracleItem.getXorBrothers().size() + "|" + nextOracleItem.getAndBrothers().size() + "]");
+
+        if( candidateJoins.containsKey(nextOracleItem.toString()) ) {
+            //these are joins, they are generated considering the fact they shares the same future (finalOracleItem)
+            System.out.println("DEBUG - found JOIN for: " + nextOracleItem.toString());
+            candidateJoin = candidateJoins.get(nextOracleItem.toString());
+            bpmnDiagram.addFlow(entry, candidateJoin, "");
+            return;
+        }
 
         if( type == null ) {
             nodeCode = nextOracleItem.getNodeCode();
@@ -196,9 +196,11 @@ public class HeuristicMinerPlus {
         bpmnDiagram.addFlow(entry, gate, "");
         for( OracleItem next : nextOracleItem.getXorBrothers() ) generateSplitGateways(gate, next, mapping);
         for( OracleItem next : nextOracleItem.getAndBrothers() ) generateSplitGateways(gate, next, mapping);
+
+        candidateJoins.put(nextOracleItem.toString(), gate);
     }
 
-    private boolean generateBondJoin() {
+    private boolean generateBondJoins() {
         HashSet<String> changed = new HashSet<>();
 
         try {
@@ -257,7 +259,7 @@ public class HeuristicMinerPlus {
                     switch( n.getType() ) {
                         case R:
                             toAnalize.addLast(n);
-                            return false;
+                            break;
                         case T:
                             break;
                         case P:
@@ -329,6 +331,44 @@ public class HeuristicMinerPlus {
         return !changed.isEmpty();
     }
 
+    private boolean generateRigidJoins() {
+        HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removableEdges;
+        Set<BPMNNode> nodes = new HashSet<>(bpmnDiagram.getNodes());
+        Gateway gate;
+
+        /* step 1. adding a xor join gateway where needed */
+        for( BPMNNode n : nodes ) {
+            removableEdges = new HashSet<>(bpmnDiagram.getInEdges(n));
+            if( removableEdges.size() <= 1 ) continue;
+            if( (n instanceof Gateway) && (bpmnDiagram.getOutEdges(n).size() <= 1) ) continue; //we generate a new join only for those gateways that are both join and split
+//            System.out.println("DEBUG - generating a new join");
+            gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), Gateway.GatewayType.DATABASED);
+            bpmnDiagram.addFlow(gate, n, "");
+            for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : removableEdges) {
+                bpmnDiagram.removeEdge(oe);
+                bpmnDiagram.addFlow(oe.getSource(), gate, "");
+            }
+        }
+
+        /* at this point, all the xor-homogeneous rigids are already set
+        *  what is left is:
+        *  and-homogeneous (will be fixed in the next step)
+        *  heterogeneous rigids (will be fixed with bartek)
+        *  */
+
+        /* step 2. checking all the rigids in the RPST bottom-up
+        * if a rigid contains only XOR nothing is done
+        * if a rigid contains only AND splits, all the XOR joins (formerly created at step 1) are turned into AND joins
+        * if none of the above cases, the rigid soundness will be successively fixed with Bartek technique
+         */
+
+        GatewayMap gatemap = new GatewayMap();
+        gatemap.generateMap(bpmnDiagram);
+        gatemap.removeOneBlockBonds();
+        gatemap.setHomogenousRigidJoins();
+
+        return true;
+    }
 
     private void updateLabels(Map<Integer, String> events) {
         DiagramHandler helper = new DiagramHandler();

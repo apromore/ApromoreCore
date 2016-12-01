@@ -1,6 +1,6 @@
-package au.edu.qut.structuring.ui;
+package au.edu.qut.bpmn.structuring.ui;
 
-import au.edu.qut.structuring.core.StructuringCore;
+import au.edu.qut.bpmn.structuring.core.StructuringCore;
 
 /**
  * Created by Adriano on 29/02/2016.
