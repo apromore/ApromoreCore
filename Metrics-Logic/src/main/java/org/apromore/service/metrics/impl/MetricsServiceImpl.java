@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -138,11 +139,13 @@ public class MetricsServiceImpl extends DefaultParameterAwarePlugin implements M
         double median = dur[dur.length / 2] / 3600000;
         double mean = 0;
         for(Long l : dur) {
-            mean += l;
+            mean += l / 3600000;
             if(shortest > l) shortest = l;
             if(longhest < l) longhest = l;
         }
-        mean = mean / (dur.length * 3600000);
+        mean = mean / dur.length;
+        shortest = shortest / 3600000;
+        longhest = longhest / 3600000;
 
         result.put("Number of Traces", Integer.toString(log.size()));
         result.put("Number of Activities", Integer.toString(labels.size()));
