@@ -240,9 +240,13 @@
                         var json = jQuery.extend(true, {}, editorConfig);
                         var shapes = indexJSON(json);
 
-                        addSequenceFlow(json, shapes, "sid-start-a", start, middle);
-                        highlight(shapes[middle]);
-                        addSequenceFlow(json, shapes, "sid-a-end", middle, end);
+                        addSequenceFlow(json, shapes, "sid-start-a", start[0], middle[0]);
+                        highlight(shapes[middle[0]]);
+                        for (i=1; i < middle.length; i++) {
+                            addSequenceFlow(json, shapes, "sid-link-" + 1, middle[i-1], middle[i]);
+                            highlight(shapes[middle[i]]);
+                        }
+                        addSequenceFlow(json, shapes, "sid-a-end", middle[middle.length - 1], end[0]);
 
                         reloadJSON(json);
 
