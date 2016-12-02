@@ -324,9 +324,9 @@ public class ModelToLogComparisonController extends BaseController {
             case "TASKSKIP2":
             case "UNOBSCYCLICINTER":
                 javascript = "oryxEditor1.taskskip2(" +
-                    "\"" + difference.optJSONArray("start").get(0) + "\"," +
-                    "\"" + difference.optJSONArray("a").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("end").get(0)   + "\"," +
+                    difference.optJSONArray("start") + "," +
+                    difference.optJSONArray("a")     + "," +
+                    difference.optJSONArray("end")   + "," +
                     difference.optJSONArray("greys") + ")";
                 break;
 
