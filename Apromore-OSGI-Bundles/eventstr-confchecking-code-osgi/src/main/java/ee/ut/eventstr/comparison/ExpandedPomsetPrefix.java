@@ -2,8 +2,18 @@ package ee.ut.eventstr.comparison;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.Stack;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.HashMultiset;
@@ -195,8 +205,8 @@ public class ExpandedPomsetPrefix<T> {
 //		return additional;
 //	}
 	
-	public Multimap<State, List<Integer>> getAdditionalAcyclicIntervals() {
-		Multimap<State, List<Integer>> additional = HashMultimap.create();
+	public Multimap<State, List<Integer>> getOptionalAcyclicIntervals() {
+		Multimap<State, List<Integer>> optional = HashMultimap.create();
 		
 		Set<BitSet> maxconfs = new HashSet<BitSet>(opMap.keySet());
 		maxconfs.removeAll(adjList.keySet());
@@ -205,49 +215,73 @@ public class ExpandedPomsetPrefix<T> {
 		BitSet startconf = new BitSet();
 		
 		Set<BitSet> prevconfs = new HashSet<BitSet>();
+		Set<BitSet> bitruns = new HashSet<BitSet>();
+		
+		List<Integer> elem;
+		Boolean found;
 		
 		for (Multiset<Integer> _run: runs) {
-			BitSet run = pack(_run);
+			bitruns.add(pack(_run));
+		}
+
+		for (BitSet run: bitruns) {
 			if (!opMap.containsKey(run)) {
 				for (BitSet max: maxconfs) {
 					diff.or(max);
 					diff.andNot(run);
-					System.out.println(diff);
-					
-					for (BitSet prev: opMap.keySet()) {
-						if (!prev.intersects(diff)) {
-							for (BitSet next: adjList.get(prev)) {
-								if (next.intersects(diff)) {
-									prevconfs.add(prev);
+
+//					for (BitSet fm: opMap.keySet()) {
+//						if (fm.intersects(diff)) {
+//							for (BitSet prev: invAdjList.get(fm)) {
+//								if (!prev.intersects(diff)) {
+//									firstmismatchconfs.add(fm);
+//								}
+//							}
+//						}
+//					}
+
+					for (int d = diff.nextSetBit(0); d >= 0; d = diff.nextSetBit(d + 1)) {
+						BitSet conflict = pes.getDirectConflictSet(d);
+						BitSet runcopy;
+						found = false;
+						
+						if (!pes.getInvisibleEvents().contains(d)) {
+							for (int d2 = conflict.nextSetBit(0); d2 >= 0; d2 = conflict.nextSetBit(d2 + 1)) {
+								runcopy = (BitSet)run.clone();
+								runcopy.set(d2);
+								runcopy.clear(d);
+								if ((bitruns.contains(runcopy)) && (!pes.getInvisibleEvents().contains(d2))) {
+									found = true;
+								}
+							}
+							
+							if ((!found) && (!pes.getDirectConflictSet(d).intersects(diff))) {
+								for (BitSet prev: opMap.keySet()) {
+									if (!prev.get(d)) {
+										for (BitSet next: adjList.get(prev)) {
+											if (next.get(d)) {
+												elem = new ArrayList<Integer>();
+												if (!pes.getInvisibleEvents().contains(d)) {
+													elem.add(d);
+													optional.put(stateMap.get(prev), elem);
+												}
+											}
+										}
+									}
 								}
 							}
 						}
 					}
-					
-					
-					// check for intervals
-					// for each interval check the operations to avoid existing conflicts
-					// or
-					// use procedure as in the old version to obtain states and subsequent additional events
 				}
 			}
 		}
 		
-		return additional;
+		
+		
+		return optional;
 	}
 	
-	public Multimap<State, List<Integer>> getAdditionalAcyclicIntervals_old() {
-		
-		System.out.println(pes.getLabel(1));
-		System.out.println(pes.getLabel(3));
-		System.out.println(runs.toString());
-		System.out.println(opMap.keySet() + " keyset");
-		
-		Set<BitSet> maxconfs = new HashSet<BitSet>(opMap.keySet());
-		maxconfs.removeAll(adjList.keySet());
-		
-		System.out.println(maxconfs + " maxconfs");
-		
+	public Multimap<State, List<Integer>> getAdditionalAcyclicIntervals() {
 		Multimap<State, List<Integer>> additional = HashMultimap.create();
 		for (Multiset<Integer> _run: runs) {
 			BitSet run = pack(_run);
@@ -287,9 +321,6 @@ public class ExpandedPomsetPrefix<T> {
 //					prev = (BitSet)curr.clone();
 				}
 			}
-			else {
-				System.out.println(opMap);
-			}
 		}
 		return additional;
 	}
@@ -322,77 +353,5 @@ public class ExpandedPomsetPrefix<T> {
 			}
 		}
 		return additional;
-	}
-
-	public Multimap<State, List<Integer>> getOptionalAcyclicIntervals() {
-		Multimap<State, List<Integer>> optional = HashMultimap.create();
-
-		Set<BitSet> maxconfs = new HashSet<BitSet>(opMap.keySet());
-		maxconfs.removeAll(adjList.keySet());
-
-		BitSet diff = new BitSet();
-		BitSet startconf = new BitSet();
-
-		Set<BitSet> prevconfs = new HashSet<BitSet>();
-		Set<BitSet> bitruns = new HashSet<BitSet>();
-
-		List<Integer> elem;
-		Boolean found;
-
-		for (Multiset<Integer> _run: runs) {
-			bitruns.add(pack(_run));
-		}
-
-		for (BitSet run: bitruns) {
-			if (!opMap.containsKey(run)) {
-				for (BitSet max: maxconfs) {
-					diff.or(max);
-					diff.andNot(run);
-
-//					for (BitSet fm: opMap.keySet()) {
-//						if (fm.intersects(diff)) {
-//							for (BitSet prev: invAdjList.get(fm)) {
-//								if (!prev.intersects(diff)) {
-//									firstmismatchconfs.add(fm);
-//								}
-//							}
-//						}
-//					}
-
-					for (int d = diff.nextSetBit(0); d >= 0; d = diff.nextSetBit(d + 1)) {
-						BitSet conflict = pes.getDirectConflictSet(d);
-						found = false;
-
-						for (int d2 = conflict.nextSetBit(0); d2 >= 0; d2 = conflict.nextSetBit(d2 + 1)) {
-							run.set(d2);
-							run.clear(d);
-							if ((bitruns.contains(run)) && (!pes.getInvisibleEvents().contains(d2))) {
-								found = true;
-							}
-						}
-
-						if ((!found) && (!pes.getDirectConflictSet(d).intersects(diff))) {
-							for (BitSet prev: opMap.keySet()) {
-								if (!prev.get(d)) {
-									for (BitSet next: adjList.get(prev)) {
-										if (next.get(d)) {
-											elem = new ArrayList<Integer>();
-											if (!pes.getInvisibleEvents().contains(d)) {
-												elem.add(d);
-												optional.put(stateMap.get(prev), elem);
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-
-
-		return optional;
-	}
+	}	
 }

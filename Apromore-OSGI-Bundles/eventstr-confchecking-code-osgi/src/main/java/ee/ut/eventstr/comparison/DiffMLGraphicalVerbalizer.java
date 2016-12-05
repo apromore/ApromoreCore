@@ -1,6 +1,7 @@
 package ee.ut.eventstr.comparison;
 
 import com.google.common.collect.*;
+import com.google.gwt.soyc.io.FileSystemOutputDirectory;
 import ee.ut.bpmn.BPMNReader;
 import ee.ut.bpmn.replayer.BPMNReplayerML;
 import ee.ut.bpmn.replayer.Pomset;
@@ -551,27 +552,31 @@ public class DiffMLGraphicalVerbalizer {
 				} else {
 					Operation pred = predMatch.get(op);
 					Operation succ = succMatch.get(op);
+
+                    Integer before = pred == null || pred.label.equals("_0_") ? -1 :
+                            ((Pair<Integer, Integer>)pred.target).getFirst();
+                    Integer after = succ == null || succ.label.equals("_1_") ? -1 :
+                            ((Pair<Integer, Integer>)succ.target).getFirst();
+
+                    String bS = before == -1 ? "<end state>" : translate(pes1, before);
+                    String aS = after == -1 ? "<end state>" : translate(pes1, after);
+
 					if (DEBUG)
 						System.out.printf("In the log, \"%s\" occurs after \"%s\" and before \"%s\"\n", translate(pes1, (Integer) op.target),
-								pred == null || pred.label.equals("_0_") ? "<start state>": pred.label, //String.format("%s%s", pred.label, pred.target),
-								succ == null || succ.label.equals("_1_") ? "<end state>": succ.label); //String.format("%s%s", succ.label, succ.target));
+								before, after);
 
 					String sentence = String.format("In the log, '%s' occurs after '%s' and before '%s'",
-							translate(pes1, (Integer) op.target),
-							pred == null || pred.label.equals("_0_") ? "<start state>" :
-									translate(pes1, ((Pair<Integer, Integer>)pred.target).getFirst()),
-							succ == null || succ.label.equals("_1_") ? "<end state>" :
-									translate(pes1, ((Pair<Integer, Integer>)succ.target).getFirst()));
+							translate(pes1, (Integer) op.target), bS, aS);
 
-                    List<Integer> singletonPred = new LinkedList<>();
-                    singletonPred.add(((Pair<Integer, Integer>)pred.target).getSecond());
+//                    List<Integer> highlight = new LinkedList<>();
+//                    highlight.add(before);
+//                    highlight.add(after);
 
-                    DifferenceML diff = addTasks(singletonPred, pes2, replayer, net, loader, sentence);
+                    DifferenceML diff = printTasksHLstEnd(before, after, pes2, replayer, net, loader, sentence);
                     if(diff != null) {
-                        diff.setType("TASKABS");
+                        diff.setType("TASKABSLog");
                         List<String> newTaks = new ArrayList<>();
-                        newTaks.add(translate(pes1, ((Pair<Integer, Integer>)pred.target).getFirst()));
-                        newTaks.add(translate(pes1, ((Pair<Integer, Integer>)succ.target).getFirst()));
+                        newTaks.add(translate(pes1, (Integer) op.target));
                         diff.setNewTasks(newTaks);
 
                         differences.add(diff);
@@ -618,24 +623,28 @@ public class DiffMLGraphicalVerbalizer {
 				} else {
 					Operation pred = predMatch.get(op);
 					Operation succ = succMatch.get(op);
+
+                    Integer before = pred == null || pred.label.equals("_0_") ? -1 :
+                            ((Pair<Integer, Integer>)pred.target).getSecond();
+                    Integer after = succ == null || succ.label.equals("_1_") ? -1 :
+                            ((Pair<Integer, Integer>)succ.target).getSecond();
+
+                    String bS = before == -1 ? "<end state>" : translate(pes2, before);
+                    String aS = after == -1 ? "<end state>" : translate(pes2, after);
+
 					if (DEBUG)
 						System.out.printf("In the model, \"%s\" occurs after \"%s\" and before \"%s\"\n", translate(pes2, (Integer) op.target),
-								pred == null || pred.label.equals("_0_") ? "<start state>": pred.label, //String.format("%s%s", pred.label, pred.target),
-								succ == null || succ.label.equals("_1_") ? "<end state>": succ.label); //String.format("%s%s", succ.label, succ.target));
+								bS, aS);
 
 					String sentence = String.format("In the model, '%s' occurs after '%s' and before '%s'",
-							translate(pes2, (Integer) op.target),
-							pred == null || pred.label.equals("_0_") ? "<start state>" :
-									translate(pes2, ((Pair<Integer, Integer>)pred.target).getSecond()),
-							succ == null || succ.label.equals("_1_") ? "<end state>" :
-									translate(pes2, ((Pair<Integer, Integer>)succ.target).getSecond()));
+							translate(pes2, (Integer) op.target), bS, aS);
 
                     List<Integer> targets = new LinkedList<>();
                     targets.add((Integer) op.target);
-                    DifferenceML diff = printTasksGO(targets, pes2, replayer, net, loader, sentence);
+                    DifferenceML diff = printTasksGO2(before, targets, after, pes2, replayer, net, loader, sentence);
 
                     if(diff != null) {
-                        diff.setType("TASKABS");
+                        diff.setType("TASKABSModel");
 //                        List<String> newTaks = new ArrayList<>();
 //                        newTaks.add(translate(pes1, ((Pair<Integer, Integer>)pred.target).getFirst()));
 //                        newTaks.add(translate(pes1, ((Pair<Integer, Integer>)succ.target).getFirst()));
@@ -1292,13 +1301,13 @@ public class DiffMLGraphicalVerbalizer {
 		State pred = root;
 
 		for (int i = 0; i < opSeq.size(); i++) {
-			Operation curr = opSeq.get(i);
+            Operation curr = opSeq.get(i);
 
-			if (curr.op == Op.RHIDE || curr.op == Op.RHIDENSHIFT)
-				if (!pes2.getInvisibleEvents().contains(curr.target))
-					rhideOps.add(curr);
-				else if (curr.op == Op.LHIDE)
-					lhideOps.add(curr);
+            if (curr.op == Op.RHIDE || curr.op == Op.RHIDENSHIFT){
+                if (!pes2.getInvisibleEvents().contains(curr.target))
+                    rhideOps.add(curr);
+            }else if (curr.op == Op.LHIDE)
+                lhideOps.add(curr);
 
 			State state = curr.nextState;
 			Map<Multiset<String>, State> map = stateSpace.get(state.c1, state.c2);
@@ -2157,12 +2166,19 @@ public class DiffMLGraphicalVerbalizer {
 		List<String> end = new ArrayList<>();
 		List<String> greys = new ArrayList<>();
 
+        boolean markEnd = false;
+
 		BitSet inter = null;
 		BitSet union = null;
 
         HashMap<String, String> aColors = new HashMap<>();
 
 		for(Integer event : events){
+            if(event == -1) {
+                markEnd = true;
+                continue;
+            }
+
             if(!commonLabels.contains(pes.getLabel(event)))
                 continue;
 
@@ -2190,7 +2206,8 @@ public class DiffMLGraphicalVerbalizer {
 		}
 
         for(Integer event : events)
-            inter.set(event, false);
+            if(event >= 0)
+                inter.set(event, false);
 
 		Pomset pomset = pes.getPomset(inter, commonLabels);
 		DirectedGraph g = pomset.getGraph();
@@ -2370,7 +2387,9 @@ public class DiffMLGraphicalVerbalizer {
 			HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event), pes.getPomset(conf1, commonLabels), new HashMap<String, Integer>(), null);
 
 			for(Entry<String, String> entry : colorsBPMN.entrySet())
-				if(entry.getValue().equals("red"))
+                if(a.contains(entry.getKey()))
+                   continue;
+				else if(entry.getValue().equals("red"))
 					start.add(entry.getKey());
 				else if(!start.contains(entry.getKey()) && !a.contains(entry.getKey()))
 					startColors.put(entry.getKey(), "green");
@@ -2436,10 +2455,103 @@ public class DiffMLGraphicalVerbalizer {
 		for (String s : a)
 			newColorsBP.put(s, "red");
 
-//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
 		return diff;
 	}
+
+    private DifferenceML printTasksHLstEnd(Integer startEvt, Integer endEvt, NewUnfoldingPESSemantics<Integer> pes, BPMNReplayerML replayerBPMN, PetriNet net, BPMNReader loader, String sentence) {
+        List<String> start = new ArrayList<>();
+        List<String> end = new ArrayList<>();
+
+        BitSet inter = null;
+        BitSet union = null;
+
+        HashMap<String, String> startColors = new HashMap<>();
+        List<Integer> startEvts = new ArrayList<>();
+        startEvts.add(startEvt);
+
+
+        for(Integer event : startEvts){
+            if(event < 0) {
+                startColors.put(replayerBPMN.getEnd(), "green");
+                continue;
+            }
+
+            if(!commonLabels.contains(pes.getLabel(event)))
+                continue;
+
+            BitSet conf1 = pes.getLocalConfiguration(event);
+            Trace<Integer> trace = new Trace<>();
+            trace.addAllStrongCauses(pes.getEvents(conf1));
+
+            HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event), pes.getPomset(conf1, commonLabels), new HashMap<String, Integer>(), null);
+
+            for (Entry<String, String> entry : colorsBPMN.entrySet())
+                if (entry.getValue().equals("red"))
+                    start.add(entry.getKey());
+                else if (!start.contains(entry.getKey()))
+                    startColors.put(entry.getKey(), "green");
+
+        }
+
+        HashMap<String, String> endColors = new HashMap<>();
+        List<Integer> endEvts = new ArrayList<>();
+        endEvts.add(endEvt);
+
+
+        for(Integer event : endEvts) {
+            if (event < 0) {
+                endColors.put(replayerBPMN.getEnd(), "green");
+                end.add(replayerBPMN.getEnd());
+                continue;
+            }
+
+            if (!commonLabels.contains(pes.getLabel(event)))
+                continue;
+
+
+            BitSet conf1 = pes.getLocalConfiguration(event);
+            Trace<Integer> trace = new Trace<>();
+            trace.addAllStrongCauses(pes.getEvents(conf1));
+
+            HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event), pes.getPomset(conf1, commonLabels), new HashMap<String, Integer>(), null);
+
+            for (Entry<String, String> entry : colorsBPMN.entrySet())
+                if (entry.getValue().equals("red"))
+                    end.add(entry.getKey());
+                else if (!start.contains(entry.getKey()))
+                    endColors.put(entry.getKey(), "green");
+        }
+
+        List<String> greys = new ArrayList<>();
+        HashSet<String> allReleventEdges = new HashSet<>();
+        allReleventEdges.addAll(start);
+        allReleventEdges.addAll(end);
+        HashSet<String> flows = replayerBPMN.getEdgesBetween(allReleventEdges);
+        greys.addAll(flows);
+
+        DifferenceML diff = new DifferenceML();
+        diff.setSentence(sentence);
+        diff.setStart(start);
+        diff.setEnd(end);
+        diff.setGreys(greys);
+
+        // For testing
+        HashMap<String, String> newColorsBP = new HashMap<>();
+        for (String s : start)
+            newColorsBP.put(s, "blue");
+
+        for (String s : end)
+            newColorsBP.put(s, "blue");
+
+        for (String s : greys)
+            newColorsBP.put(s, "gray");
+
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+
+        return diff;
+    }
 
     private DifferenceML print2Tasks(Integer event1, Integer event2, NewUnfoldingPESSemantics<Integer> pes, BPMNReplayerML replayerBPMN, PetriNet net, BPMNReader loader, String sentence) {
         if(!commonLabels.contains(pes.getLabel(event1)) && !commonLabels.contains(pes.getLabel(event2)))
@@ -2746,6 +2858,129 @@ public class DiffMLGraphicalVerbalizer {
 
 		greys.addAll(a);
 		a.clear();
+
+        HashSet<String> allReleventEdges = new HashSet<>();
+        allReleventEdges.addAll(start);
+        allReleventEdges.addAll(end);
+//        allReleventEdges.addAll(a);
+        allReleventEdges.addAll(greys);
+        HashSet<String> flows = replayerBPMN.getEdgesBetween(allReleventEdges);
+        greys.addAll(flows);
+
+        DifferenceML diff = new DifferenceML();
+        diff.setSentence(sentence);
+        diff.setA(a);
+        diff.setStart(start);
+        diff.setEnd(end);
+        diff.setGreys(greys);
+
+        // For testing
+        HashMap<String, String> newColorsBP = new HashMap<>();
+        for (String s : a)
+            newColorsBP.put(s, "gray");
+
+        for (String s : start)
+            newColorsBP.put(s, "blue");
+
+        for (String s : end)
+            newColorsBP.put(s, "blue");
+
+        for (String s : greys)
+            newColorsBP.put(s, "gray");
+
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+
+        return diff;
+    }
+
+
+    private DifferenceML printTasksGO2(Integer startN, List<Integer> events, Integer endN, NewUnfoldingPESSemantics<Integer> pes, BPMNReplayerML replayerBPMN, PetriNet net, BPMNReader loader, String sentence) {
+        List<String> start = new ArrayList<>();
+        List<String> a = new ArrayList<>();
+        List<String> end = new ArrayList<>();
+        List<String> greys = new ArrayList<>();
+
+        BitSet inter = null;
+        BitSet union = null;
+
+        HashMap<String, String> aColors = new HashMap<>();
+
+        for(Integer event : events){
+            if(!commonLabels.contains(pes.getLabel(event)))
+                continue;
+
+            BitSet conf1 = pes.getLocalConfiguration(event);
+            Trace<Integer> trace = new Trace<>();
+            trace.addAllStrongCauses(pes.getEvents(conf1));
+
+            HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event), pes.getPomset(conf1, commonLabels), new HashMap<String, Integer>(), null);
+
+            for(Entry<String, String> entry : colorsBPMN.entrySet())
+                if(entry.getValue().equals("red"))
+                    a.add(entry.getKey());
+                else if(!a.contains(entry.getKey()))
+                    aColors.put(entry.getKey(), "green");
+
+            if(inter == null)
+                inter = (BitSet) conf1.clone();
+            else
+                inter.and(conf1);
+
+            if(union == null)
+                union = (BitSet) conf1.clone();
+            else
+                union.or(conf1);
+        }
+
+        if(inter == null)
+            return null;
+
+        HashMap<String, String> startColors = new HashMap<>();
+
+        if(commonLabels.contains(pes.getLabel(startN))){
+            BitSet conf1 = pes.getLocalConfiguration(startN);
+            Trace<Integer> trace = new Trace<>();
+            trace.addAllStrongCauses(pes.getEvents(conf1));
+
+            HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(startN), pes.getPomset(conf1, commonLabels), new HashMap<String, Integer>(), null);
+
+            for(Entry<String, String> entry : colorsBPMN.entrySet())
+                if(entry.getValue().equals("red"))
+                    start.add(entry.getKey());
+                else if(!start.contains(entry.getKey()) && !a.contains(entry.getKey()))
+                    startColors.put(entry.getKey(), "green");
+        }
+
+
+        HashMap<String, String> endColors = new HashMap<>();
+
+        if(endN < 0){
+            endColors.put(replayerBPMN.getEnd(), "green");
+            end.add(replayerBPMN.getEnd());
+        }else if(commonLabels.contains(pes.getLabel(endN))){
+            BitSet conf1 = pes.getLocalConfiguration(endN);
+            Trace<Integer> trace = new Trace<>();
+            trace.addAllStrongCauses(pes.getEvents(conf1));
+
+            HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(endN), pes.getPomset(conf1, commonLabels), new HashMap<String, Integer>(), null);
+
+            for(Entry<String, String> entry : colorsBPMN.entrySet())
+                if(entry.getValue().equals("red"))
+                    end.add(entry.getKey());
+                else if(!start.contains(entry.getKey()) && !a.contains(entry.getKey()))
+                    endColors.put(entry.getKey(), "green");
+        }
+
+        for(String element : aColors.keySet())
+            if(!startColors.containsKey(element) && !start.contains(element))
+                greys.add(element);
+
+        for(String element : endColors.keySet())
+            if(!startColors.containsKey(element) && !start.contains(element) && !a.contains(element))
+                greys.add(element);
+
+        greys.addAll(a);
+        a.clear();
 
         HashSet<String> allReleventEdges = new HashSet<>();
         allReleventEdges.addAll(start);
@@ -3090,6 +3325,11 @@ public class DiffMLGraphicalVerbalizer {
 		runs.addRun(new Run(colorsBPMN, repetitions, new HashMap<String, Integer>(), loader, sentence, pes.getPomset(conf1)));
 
 		return runs;
+	}
+
+	public void printStatements(){
+		for(DifferenceML diff : differences.getDifferences())
+			System.out.println(diff.getSentence());
 	}
 
 //    private void verbalizeOptionalModelBehavior() {
