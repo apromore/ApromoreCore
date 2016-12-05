@@ -2980,7 +2980,6 @@ public class DiffMLGraphicalVerbalizer {
                 greys.add(element);
 
         greys.addAll(a);
-        a.clear();
 
         HashSet<String> allReleventEdges = new HashSet<>();
         allReleventEdges.addAll(start);
