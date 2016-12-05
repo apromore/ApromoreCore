@@ -2976,7 +2976,7 @@ public class DiffMLGraphicalVerbalizer {
                 greys.add(element);
 
         for(String element : endColors.keySet())
-            if(!startColors.containsKey(element) && !start.contains(element) && !a.contains(element))
+            if(!start.contains(element) && !endColors.containsKey(element) && !end.contains(element) && !a.contains(element))
                 greys.add(element);
 
         greys.addAll(a);
@@ -2991,7 +2991,7 @@ public class DiffMLGraphicalVerbalizer {
 
         DifferenceML diff = new DifferenceML();
         diff.setSentence(sentence);
-        diff.setA(a);
+//        diff.setA(a);
         diff.setStart(start);
         diff.setEnd(end);
         diff.setGreys(greys);
