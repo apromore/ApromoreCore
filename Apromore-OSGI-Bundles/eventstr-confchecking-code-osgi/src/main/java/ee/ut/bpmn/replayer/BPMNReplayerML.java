@@ -258,4 +258,12 @@ public class BPMNReplayerML {
 
 		return m;
 	}
+
+	public String getEnd(){
+		for(FlowNode node : model.getFlowNodes())
+			if(model.getAllSuccessors(node).size() == 0)
+				return node.getId();
+
+		return "";
+	}
 }

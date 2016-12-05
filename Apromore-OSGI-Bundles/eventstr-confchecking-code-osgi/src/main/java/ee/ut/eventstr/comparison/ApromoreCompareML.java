@@ -62,8 +62,14 @@ public class ApromoreCompareML {
 	}
 
 	public static void main(String[] args) {
-		String modelString = "models/btm.bpmn";
-		String logString = "logs/btl.xes";
+//		String modelString = "models/btm.bpmn";
+//		String logString = "logs/btl.xes";
+        String folder = "/Users/armascer/Downloads/";
+        String logString = folder + "conf_loop_log.xes";
+        String modelString = folder + "conc_seq_insert.bpmn";
+
+//		String logString = "financia/*l/financial_log-filtered-10.xes";
+//		String modelString = "financ*/ial/financial_log-filtered-10-Local.pnml";
 
 		HashSet<String> silents = new HashSet<String>();
 		silents.add("_1_");
@@ -92,6 +98,7 @@ public class ApromoreCompareML {
 			ModelAbstractions model = new ModelAbstractions(getFileAsArray(modelString));
 			ApromoreCompareML comparator = new ApromoreCompareML();
 
+//          PetriNet model = PNMLReader.parse(new File(modelString));
 			DiffMLGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model, log, silents);
 			verbalizer.verbalize();
 			System.out.println(DifferencesML.toJSON(verbalizer.getDifferences()));
