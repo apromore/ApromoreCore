@@ -65,8 +65,10 @@ public class ApromoreCompareML {
 //		String modelString = "models/btm.bpmn";
 //		String logString = "logs/btl.xes";
         String folder = "/Users/armascer/Downloads/";
-        String logString = folder + "conf_loop_log.xes";
-        String modelString = folder + "conc_seq_insert.bpmn";
+//        String logString = folder + "conf_loop_log.xes";
+//        String modelString = folder + "conc_seq_insert.bpmn";
+        String logString = folder + "conc_seq_insert_log.xes";
+        String modelString = folder + "conf_loop.bpmn";
 
 //		String logString = "financia/*l/financial_log-filtered-10.xes";
 //		String modelString = "financ*/ial/financial_log-filtered-10-Local.pnml";
