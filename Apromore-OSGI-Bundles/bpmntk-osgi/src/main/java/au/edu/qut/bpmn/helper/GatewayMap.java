@@ -81,6 +81,8 @@ public class GatewayMap {
         predecessors = new HashMap<>();
         graph = new HashMap<>();
 
+        DiagramHandler.normalizeGateways(diagram);
+
         if( !init(diagram) ) return false;
 
         System.out.println("DEBUG - starting generation of the map");
@@ -146,7 +148,7 @@ public class GatewayMap {
             removableFlows = new HashSet<>();
             for( Gateway entry : gateways )
                 if( (successors.get(entry).size() == 1) && (outgoings.get(entry).size() > 1) ) {
-                    System.out.println("DEBUG - found a removable bonds");
+                    System.out.println("DEBUG - found a removable bond");
                     //this means g is the entry of a one-block-BOND and its successor is the exit
                     bonds++;
                     for (GatewayMapFlow f : outgoings.get(entry)) removableFlows.add(f);
@@ -158,6 +160,8 @@ public class GatewayMap {
         System.out.println("DEBUG - bonds removed: " + bonds);
         return bonds;
     }
+
+
 
     public void setHomogenousRigidJoins() {
         try {
@@ -405,6 +409,9 @@ public class GatewayMap {
         GatewayMapFlow oRemovable = null;
 
         if( (incomings.get(entry).size() != 1) || (outgoings.get(exit).size() != 1) ) {
+            //this can happen when entry or exit is a gateway that is going to be removed (i.e. with no incoming and outgoing flows), this is not a error
+            //also, this can happen in the presence of JOIN/SPLIT gateways, this would be an error
+            //however, this latte case should never happen, because the map is checked for JOIN/SPLIT gateways and eventually transformed into joins followed by splits
             System.out.println("DEBUG - cannot merge gateways [" + incomings.get(entry).size() + " - " + outgoings.get(exit).size() + "]");
             return;
         }
@@ -422,6 +429,7 @@ public class GatewayMap {
 
         if( outgoings.get(entry).size() != 0 ) {
             prevSRC = entry;
+            System.out.println("WARNING - this should not happen: outgoings.size != 0");
         } else {
             removeFlow(iRemovable);
             removeGateway(entry);
@@ -430,6 +438,7 @@ public class GatewayMap {
         if( incomings.get(exit).size() != 0 ) {
             nextTGT = exit;
             ref = null;
+            System.out.println("WARNING - this should not happen: incomings.size != 0");
         } else {
             removeFlow(oRemovable);
             removeGateway(exit);

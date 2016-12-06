@@ -2,6 +2,7 @@ package au.edu.qut.bpmn.helper;
 
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
+import de.hpi.bpt.graph.abs.AbstractDirectedEdge;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
 import de.hpi.bpt.graph.algo.rpst.RPST;
@@ -37,9 +38,328 @@ public class DiagramHandler {
         predecessors = null;
     }
 
+    public static void normalizeGateways(BPMNDiagram diagram) {
+        //this method removes join/split gateways, transforming them into a sequence of a join and a split.
+        //also, it removes those gateways that are exit for more than one RPST node, giving for each RPST node its own exit gateway.
+
+        //step 1: removing join/split gateways
+        removeJoinSplit(diagram);
+
+        //step 2: removing shared exits
+        removeRPSTNodeSharedExits(diagram);
+
+        //step 3: removing shared entries
+        removeRPSTNodeSharedEntries(diagram);
+    }
+
+    public static void removeJoinSplit(BPMNDiagram diagram) {
+        Gateway split;
+        HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removable;
+        int jsCounter = 0;
+
+        for( Gateway join : diagram.getGateways() )
+            if( (diagram.getInEdges(join).size() > 1) && (diagram.getOutEdges(join).size() > 1) ) {
+                jsCounter++; //found a join/split
+
+                split = diagram.addGateway("", join.getGatewayType()); //this is going to be the new split, and we will keep js as join only
+                diagram.addFlow(join, split, "");
+
+                removable = new HashSet<>();
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getOutEdges(join) ) {
+                    diagram.addFlow(split, e.getTarget(), "");
+                    removable.add(e);
+                }
+
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : removable ) diagram.removeEdge(e);
+            }
+
+       System.out.println("DEBUG - join/split removed: " + jsCounter);
+    }
+
+    public static void removeRPSTNodeSharedExits(BPMNDiagram diagram) {
+        HashMap<String, BPMNNode> idToNode = new HashMap<>();
+        HashMap<BPMNNode, Vertex> vertexes = new HashMap<BPMNNode, Vertex>();
+        HashMap<String, ArrayList<RPSTNode>> rpstnodeExits = new HashMap<String, ArrayList<RPSTNode>>();
+        String exit;
+
+        IDirectedGraph<DirectedEdge, Vertex> graph = new DirectedGraph();
+        Vertex src;
+        Vertex tgt;
+
+        BPMNNode bpmnSRC;
+        BPMNNode bpmnTGT;
+
+        try {
+        /* building the graph from the bpmnDiagram, the graph is necessary to generate the RPST */
+            for (Flow f : diagram.getFlows()) {
+                bpmnSRC = f.getSource();
+                bpmnTGT = f.getTarget();
+
+                if (!vertexes.containsKey(bpmnSRC)) {
+                    src = new Vertex(bpmnSRC.getLabel());  //this is still a unique number
+                    vertexes.put(bpmnSRC, src);
+                    idToNode.put(bpmnSRC.getLabel(), bpmnSRC);
+                } else src = vertexes.get(bpmnSRC);
+
+                if (!vertexes.containsKey(bpmnTGT)) {
+                    tgt = new Vertex(bpmnTGT.getLabel());  //this is still a unique number
+                    vertexes.put(bpmnTGT, tgt);
+                    idToNode.put(bpmnTGT.getLabel(), bpmnTGT);
+                } else tgt = vertexes.get(bpmnTGT);
+
+                graph.addEdge(src, tgt);
+            }
+
+            /* graph ready - building the RPST */
+
+            RPST rpst = new RPST(graph);
+
+            RPSTNode root = rpst.getRoot();
+            LinkedList<RPSTNode> toAnalize = new LinkedList<RPSTNode>();
+            toAnalize.addLast(root);
+
+            while (toAnalize.size() != 0) {
+                root = toAnalize.removeFirst();
+
+                for (RPSTNode n : new HashSet<RPSTNode>(rpst.getChildren(root))) {
+                    switch (n.getType()) {
+                        case R:
+                            toAnalize.addLast(n);
+                            exit = n.getExit().getName();
+                            if (!rpstnodeExits.containsKey(exit)) rpstnodeExits.put(exit, new ArrayList<RPSTNode>());
+                            rpstnodeExits.get(exit).add(0, n);
+                            break;
+                        case T:
+                            break;
+                        case P:
+                            toAnalize.addLast(n);
+                            break;
+                        case B:
+                            toAnalize.addLast(n);
+                            exit = n.getExit().getName();
+                            if (!rpstnodeExits.containsKey(exit)) rpstnodeExits.put(exit, new ArrayList<RPSTNode>());
+                            rpstnodeExits.get(exit).add(0, n);
+                            break;
+                        default:
+                    }
+                }
+            }
+        } catch ( Exception e ) {
+            System.out.println("ERROR - impossible to remove shared exit of RPST nodes");
+            return;
+        }
+
+        RPSTNode inner;
+        RPSTNode outer;
+        HashSet<BPMNNode> toChange;
+        HashSet<BPMNNode> changed;
+        Gateway prev;
+        Gateway next;
+        BPMNNode finalTGT;
+        HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removable;
+
+        IDirectedGraph<DirectedEdge, Vertex> iGraph;
+        IDirectedGraph<DirectedEdge, Vertex> oGraph;
+
+        for( String e : rpstnodeExits.keySet() ) {
+            if( idToNode.get(e) instanceof Gateway ) prev = (Gateway) idToNode.get(e);
+            else continue;
+
+            inner = rpstnodeExits.get(e).remove(0);
+
+            finalTGT = null;
+            removable = new HashSet<>();
+            for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : diagram.getOutEdges(prev) ) {
+                //having removed the join/split gateways this loop has length one
+                finalTGT = flow.getTarget();
+                removable.add(flow);
+            }
+
+            for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : removable ) diagram.removeEdge(flow);
+
+            changed = new HashSet<>();
+            iGraph = inner.getFragment();
+            for( AbstractDirectedEdge edge : iGraph.getEdges() )
+                if( edge.getTarget().getName().equals(e) ) changed.add(idToNode.get(edge.getSource().getName()));
+
+            while( !rpstnodeExits.get(e).isEmpty() ) {
+                outer = rpstnodeExits.get(e).remove(0);
+
+                toChange = new HashSet<>();
+
+                oGraph = outer.getFragment();
+                for( AbstractDirectedEdge edge : oGraph.getEdges() )
+                    if( edge.getTarget().getName().equals(e) ) toChange.add(idToNode.get(edge.getSource().getName()));
+
+                toChange.removeAll(changed);
+
+                next = diagram.addGateway("", prev.getGatewayType()); //this is going to be the new split, and we will keep js as join only
+                diagram.addFlow(prev, next, "");
+
+                removable = new HashSet<>();
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : diagram.getInEdges(prev) ) {
+                    bpmnSRC = flow.getSource();
+                    if( toChange.contains(bpmnSRC) ) {
+                        removable.add(flow);
+                        diagram.addFlow(bpmnSRC, next, "");
+                    }
+                }
+
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : removable ) diagram.removeEdge(flow);
+
+                System.out.println("DEBUG - normalized an exit");
+                changed.addAll(toChange);
+                prev = next;
+            }
+
+            diagram.addFlow(prev, finalTGT, "");
+        }
+    }
+
+
+    public static void removeRPSTNodeSharedEntries(BPMNDiagram diagram) {
+        HashMap<String, BPMNNode> idToNode = new HashMap<>();
+        HashMap<BPMNNode, Vertex> vertexes = new HashMap<BPMNNode, Vertex>();
+        HashMap<String, ArrayList<RPSTNode>> rpstnodeEntries = new HashMap<String, ArrayList<RPSTNode>>();
+        String entry;
+
+        IDirectedGraph<DirectedEdge, Vertex> graph = new DirectedGraph();
+        Vertex src;
+        Vertex tgt;
+
+        BPMNNode bpmnSRC;
+        BPMNNode bpmnTGT;
+
+        try {
+        /* building the graph from the bpmnDiagram, the graph is necessary to generate the RPST */
+            for (Flow f : diagram.getFlows()) {
+                bpmnSRC = f.getSource();
+                bpmnTGT = f.getTarget();
+
+                if (!vertexes.containsKey(bpmnSRC)) {
+                    src = new Vertex(bpmnSRC.getLabel());  //this is still a unique number
+                    vertexes.put(bpmnSRC, src);
+                    idToNode.put(bpmnSRC.getLabel(), bpmnSRC);
+                } else src = vertexes.get(bpmnSRC);
+
+                if (!vertexes.containsKey(bpmnTGT)) {
+                    tgt = new Vertex(bpmnTGT.getLabel());  //this is still a unique number
+                    vertexes.put(bpmnTGT, tgt);
+                    idToNode.put(bpmnTGT.getLabel(), bpmnTGT);
+                } else tgt = vertexes.get(bpmnTGT);
+
+                graph.addEdge(src, tgt);
+            }
+
+            /* graph ready - building the RPST */
+
+            RPST rpst = new RPST(graph);
+
+            RPSTNode root = rpst.getRoot();
+            LinkedList<RPSTNode> toAnalize = new LinkedList<RPSTNode>();
+            toAnalize.addLast(root);
+
+            while (toAnalize.size() != 0) {
+                root = toAnalize.removeFirst();
+
+                for (RPSTNode n : new HashSet<RPSTNode>(rpst.getChildren(root))) {
+                    switch (n.getType()) {
+                        case R:
+                            toAnalize.addLast(n);
+                            entry = n.getEntry().getName();
+                            if (!rpstnodeEntries.containsKey(entry)) rpstnodeEntries.put(entry, new ArrayList<RPSTNode>());
+                            rpstnodeEntries.get(entry).add(0, n);
+                            break;
+                        case T:
+                            break;
+                        case P:
+                            toAnalize.addLast(n);
+                            break;
+                        case B:
+                            toAnalize.addLast(n);
+                            entry = n.getEntry().getName();
+                            if (!rpstnodeEntries.containsKey(entry)) rpstnodeEntries.put(entry, new ArrayList<RPSTNode>());
+                            rpstnodeEntries.get(entry).add(0, n);
+                            break;
+                        default:
+                    }
+                }
+            }
+        } catch ( Exception e ) {
+            System.out.println("ERROR - impossible to remove shared exit of RPST nodes");
+            return;
+        }
+
+        RPSTNode inner;
+        RPSTNode outer;
+        HashSet<BPMNNode> toChange;
+        HashSet<BPMNNode> changed;
+        Gateway prev;
+        Gateway next;
+        BPMNNode finalSRC;
+        HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removable;
+
+        IDirectedGraph<DirectedEdge, Vertex> iGraph;
+        IDirectedGraph<DirectedEdge, Vertex> oGraph;
+
+        for( String e : rpstnodeEntries.keySet() ) {
+            if( idToNode.get(e) instanceof Gateway ) prev = (Gateway) idToNode.get(e);
+            else continue;
+
+            inner = rpstnodeEntries.get(e).remove(0);
+
+            finalSRC = null;
+            removable = new HashSet<>();
+            for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : diagram.getInEdges(prev) ) {
+                //having removed the join/split gateways this loop has length one
+                finalSRC = flow.getSource();
+                removable.add(flow);
+            }
+
+            for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : removable ) diagram.removeEdge(flow);
+
+            changed = new HashSet<>();
+            iGraph = inner.getFragment();
+            for( AbstractDirectedEdge edge : iGraph.getEdges() )
+                if( edge.getSource().getName().equals(e) ) changed.add(idToNode.get(edge.getTarget().getName()));
+
+            while( !rpstnodeEntries.get(e).isEmpty() ) {
+                outer = rpstnodeEntries.get(e).remove(0);
+
+                toChange = new HashSet<>();
+
+                oGraph = outer.getFragment();
+                for( AbstractDirectedEdge edge : oGraph.getEdges() )
+                    if( edge.getSource().getName().equals(e) ) toChange.add(idToNode.get(edge.getTarget().getName()));
+
+                toChange.removeAll(changed);
+
+                next = diagram.addGateway("", prev.getGatewayType()); //this is going to be the new split, and we will keep js as join only
+                diagram.addFlow(next, prev, "");
+
+                removable = new HashSet<>();
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : diagram.getOutEdges(prev) ) {
+                    bpmnTGT = flow.getTarget();
+                    if( toChange.contains(bpmnTGT) ) {
+                        removable.add(flow);
+                        diagram.addFlow(next, bpmnTGT, "");
+                    }
+                }
+
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : removable ) diagram.removeEdge(flow);
+
+                System.out.println("DEBUG - normalized an entry");
+                changed.addAll(toChange);
+                prev = next;
+            }
+
+            diagram.addFlow(finalSRC, prev, "");
+        }
+    }
+
     public void touch(BPMNDiagram diagram) {
-        int g = 0;
-        for( Flow f : diagram.getFlows() ) f.setLabel(Integer.toString(g++));
+        int l = 0;
+        for( Flow f : diagram.getFlows() ) f.setLabel(Integer.toString(l++));
     }
 
     public void reduceUnsoundness(BPMNDiagram diagram) {
