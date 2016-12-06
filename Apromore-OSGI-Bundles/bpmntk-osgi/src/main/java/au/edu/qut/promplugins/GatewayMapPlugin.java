@@ -1,5 +1,6 @@
 package au.edu.qut.promplugins;
 
+import au.edu.qut.bpmn.helper.DiagramHandler;
 import au.edu.qut.bpmn.helper.GatewayMap;
 import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUI;
 import org.deckfour.xes.model.XLog;
@@ -30,10 +31,13 @@ public class GatewayMapPlugin {
     )
     @PluginVariant(variantLabel = "Get Gateway Map of a BPMN Diagram", requiredParameterLabels = {0})
     public static BPMNDiagram GetGatewayMap(PluginContext context, BPMNDiagram input) {
+        BPMNDiagram copy;
         BPMNDiagram output;
 
+        copy = (new DiagramHandler()).copyDiagram(input);
+
         GatewayMap gatemap = new GatewayMap();
-        gatemap.generateMap(input);
+        gatemap.generateMap(copy);
         gatemap.removeOneBlockBonds();
 
         output = gatemap.getGatewayMap();

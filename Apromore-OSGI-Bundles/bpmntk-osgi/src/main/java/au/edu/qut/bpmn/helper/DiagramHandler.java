@@ -77,6 +77,8 @@ public class DiagramHandler {
     }
 
     public static void removeRPSTNodeSharedExits(BPMNDiagram diagram) {
+        int exitsCounter = 0;
+
         HashMap<String, BPMNNode> idToNode = new HashMap<>();
         HashMap<BPMNNode, Vertex> vertexes = new HashMap<BPMNNode, Vertex>();
         HashMap<String, ArrayList<RPSTNode>> rpstnodeExits = new HashMap<String, ArrayList<RPSTNode>>();
@@ -96,15 +98,15 @@ public class DiagramHandler {
                 bpmnTGT = f.getTarget();
 
                 if (!vertexes.containsKey(bpmnSRC)) {
-                    src = new Vertex(bpmnSRC.getLabel());  //this is still a unique number
+                    src = new Vertex(bpmnSRC.getId().toString());  //this is still a unique number
                     vertexes.put(bpmnSRC, src);
-                    idToNode.put(bpmnSRC.getLabel(), bpmnSRC);
+                    idToNode.put(bpmnSRC.getId().toString(), bpmnSRC);
                 } else src = vertexes.get(bpmnSRC);
 
                 if (!vertexes.containsKey(bpmnTGT)) {
-                    tgt = new Vertex(bpmnTGT.getLabel());  //this is still a unique number
+                    tgt = new Vertex(bpmnTGT.getId().toString());  //this is still a unique number
                     vertexes.put(bpmnTGT, tgt);
-                    idToNode.put(bpmnTGT.getLabel(), bpmnTGT);
+                    idToNode.put(bpmnTGT.getId().toString(), bpmnTGT);
                 } else tgt = vertexes.get(bpmnTGT);
 
                 graph.addEdge(src, tgt);
@@ -207,17 +209,22 @@ public class DiagramHandler {
 
                 for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : removable ) diagram.removeEdge(flow);
 
-                System.out.println("DEBUG - normalized an exit");
+//                System.out.println("DEBUG - normalized an exit");
+                exitsCounter++;
                 changed.addAll(toChange);
                 prev = next;
             }
 
             diagram.addFlow(prev, finalTGT, "");
         }
+
+        System.out.println("DEBUG - normalized exits: " + exitsCounter);
     }
 
 
     public static void removeRPSTNodeSharedEntries(BPMNDiagram diagram) {
+        int entriesCounter = 0;
+
         HashMap<String, BPMNNode> idToNode = new HashMap<>();
         HashMap<BPMNNode, Vertex> vertexes = new HashMap<BPMNNode, Vertex>();
         HashMap<String, ArrayList<RPSTNode>> rpstnodeEntries = new HashMap<String, ArrayList<RPSTNode>>();
@@ -237,15 +244,15 @@ public class DiagramHandler {
                 bpmnTGT = f.getTarget();
 
                 if (!vertexes.containsKey(bpmnSRC)) {
-                    src = new Vertex(bpmnSRC.getLabel());  //this is still a unique number
+                    src = new Vertex(bpmnSRC.getId().toString());  //this is still a unique number
                     vertexes.put(bpmnSRC, src);
-                    idToNode.put(bpmnSRC.getLabel(), bpmnSRC);
+                    idToNode.put(bpmnSRC.getId().toString(), bpmnSRC);
                 } else src = vertexes.get(bpmnSRC);
 
                 if (!vertexes.containsKey(bpmnTGT)) {
-                    tgt = new Vertex(bpmnTGT.getLabel());  //this is still a unique number
+                    tgt = new Vertex(bpmnTGT.getId().toString());  //this is still a unique number
                     vertexes.put(bpmnTGT, tgt);
-                    idToNode.put(bpmnTGT.getLabel(), bpmnTGT);
+                    idToNode.put(bpmnTGT.getId().toString(), bpmnTGT);
                 } else tgt = vertexes.get(bpmnTGT);
 
                 graph.addEdge(src, tgt);
@@ -286,7 +293,7 @@ public class DiagramHandler {
                 }
             }
         } catch ( Exception e ) {
-            System.out.println("ERROR - impossible to remove shared exit of RPST nodes");
+            System.out.println("ERROR - impossible to remove shared entry of RPST nodes");
             return;
         }
 
@@ -348,13 +355,16 @@ public class DiagramHandler {
 
                 for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : removable ) diagram.removeEdge(flow);
 
-                System.out.println("DEBUG - normalized an entry");
+//                System.out.println("DEBUG - normalized an entry");
+                entriesCounter++;
                 changed.addAll(toChange);
                 prev = next;
             }
 
             diagram.addFlow(finalSRC, prev, "");
         }
+
+        System.out.println("DEBUG - normalized entries: " + entriesCounter);
     }
 
     public void touch(BPMNDiagram diagram) {
