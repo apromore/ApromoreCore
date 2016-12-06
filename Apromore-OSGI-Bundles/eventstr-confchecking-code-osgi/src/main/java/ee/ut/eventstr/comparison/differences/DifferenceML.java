@@ -5,6 +5,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -55,7 +56,7 @@ public class DifferenceML {
 	}
 
 	public void setA(List<String> a) {
-		this.a = new ArrayList<>(new HashSet<>(a));
+		this.a = new ArrayList<>(new LinkedHashSet<>(a));
 	}
 
 	public List<String> getB() {
