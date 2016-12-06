@@ -183,15 +183,15 @@ public class GatewayMap {
                 gSRC = f.getSource();
                 gTGT = f.getTarget();
                 if( !vertexes.containsKey(gSRC) ) {
-                    src = new Vertex(gSRC.getLabel());  //this is still a unique number
+                    src = new Vertex(gSRC.getId().toString());  //this is still a unique number
                     vertexes.put(gSRC, src);
-                    idToGate.put(gSRC.getLabel(), gSRC);
+                    idToGate.put(gSRC.getId().toString(), gSRC);
                 } else src = vertexes.get(gSRC);
 
                 if( !vertexes.containsKey(gTGT) ) {
-                    tgt = new Vertex(gTGT.getLabel());  //this is still a unique number
+                    tgt = new Vertex(gTGT.getId().toString());  //this is still a unique number
                     vertexes.put(gTGT, tgt);
-                    idToGate.put(gTGT.getLabel(), gTGT);
+                    idToGate.put(gTGT.getId().toString(), gTGT);
                 } else tgt = vertexes.get(gTGT);
 
                 graph.addEdge(src, tgt);
