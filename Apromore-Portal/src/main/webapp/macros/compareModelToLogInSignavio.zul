@@ -166,8 +166,10 @@
                         // Create a gateway from the Start element, splitting between elements A and B and rejoining to the End element
                         var createSplitAndJoin = function(gatewayStencilId) {
                             if (message = validate(["start.length == 1", "a.length == 1", "b.length == 1", "end.length == 1"])) { alert(message); }
+                            var cs = shapeCenter(shapes[start[0]]);
                             var ca = shapeCenter(shapes[a[0]]);
                             var cb = shapeCenter(shapes[b[0]]);
+                            var ce = shapeCenter(shapes[end[0]]);
 
                             var dx = (cb.y - ca.y)
                             var dy = (ca.x - cb.x)
@@ -175,7 +177,7 @@
                             var gateway1 = {x: (ca.x + cb.x)/2 + (cb.y - ca.y)*scale, y: (ca.y + cb.y)/2 + (ca.x - cb.x)*scale};
                             var gateway2 = {x: (ca.x + cb.x)/2 + (ca.y - cb.y)*scale, y: (ca.y + cb.y)/2 + (cb.x - ca.x)*scale};
                             var distance = function(a, b) { return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y)); };
-                            if (distance(ca,gateway1) + distance(gateway2,cb) > distance(ca,gateway2) + distance(gateway1,cb)) {
+                            if (distance(cs,gateway1) + distance(gateway2,ce) > distance(cs,gateway2) + distance(gateway1,ce)) {
                                 var tmp = gateway1;
                                 gateway1 = gateway2;
                                 gateway2 = tmp;
