@@ -172,8 +172,16 @@
                             var dx = (cb.y - ca.y)
                             var dy = (ca.x - cb.x)
                             var scale = Math.max(90 / Math.sqrt(dx * dx + dy * dy), 0.5);
-                            var startplus = addFlowNode("sid-startplus", gatewayStencilId, (ca.x + cb.x)/2 + (cb.y - ca.y)*scale, (ca.y + cb.y)/2 + (ca.x - cb.x)*scale, 40, 40).resourceId;
-                            var endplus = addFlowNode("sid-endplus", gatewayStencilId, (ca.x + cb.x)/2 + (ca.y - cb.y)*scale, (ca.y + cb.y)/2 + (cb.x - ca.x)*scale, 40, 40).resourceId;
+                            var gateway1 = {x: (ca.x + cb.x)/2 + (cb.y - ca.y)*scale, y: (ca.y + cb.y)/2 + (ca.x - cb.x)*scale};
+                            var gateway2 = {x: (ca.x + cb.x)/2 + (ca.y - cb.y)*scale, y: (ca.y + cb.y)/2 + (cb.x - ca.x)*scale};
+                            var distance = function(a, b) { return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y)); };
+                            if (distance(ca,gateway1) + distance(gateway2,cb) > distance(ca,gateway2) + distance(gateway1,cb)) {
+                                var tmp = gateway1;
+                                gateway1 = gateway2;
+                                gateway2 = tmp;
+                            }
+                            var startplus = addFlowNode("sid-startplus", gatewayStencilId, gateway1.x, gateway1.y, 40, 40).resourceId;
+                            var endplus = addFlowNode("sid-endplus", gatewayStencilId, gateway2.x, gateway2.y, 40, 40).resourceId;
 
                             addSequenceFlow("sid-start-startplus", start[0], startplus);
                             addSequenceFlow("sid-startplus-a", startplus, a[0]);
