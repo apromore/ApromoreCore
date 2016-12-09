@@ -163,6 +163,16 @@
                                     y: (shape.bounds.lowerRight.y + shape.bounds.upperLeft.y) / 2};
                         }
 
+                        var distance = function(a, b) { return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y)); };
+
+                        // Find a point at least minSpacing away from points a and b, forming at least a right angle.  Sign +1 or -1 selects the two solutions.
+                        var lagrangePoint = function(a, b, minSpacing, sign) {
+                            var dx = (b.y - a.y);
+                            var dy = (a.x - b.x);
+                            var scale = sign * Math.max(minSpacing / Math.sqrt(dx * dx + dy * dy), 0.5);
+                            return {x: (a.x + b.x)/2 + (b.y - a.y)*scale, y: (a.y + b.y)/2 + (a.x - b.x)*scale};
+                        };
+
                         // Create a gateway from the Start element, splitting between elements A and B and rejoining to the End element
                         var createSplitAndJoin = function(gatewayStencilId) {
                             if (message = validate(["start.length == 1", "a.length == 1", "b.length == 1", "end.length == 1"])) { alert(message); }
@@ -170,13 +180,8 @@
                             var ca = shapeCenter(shapes[a[0]]);
                             var cb = shapeCenter(shapes[b[0]]);
                             var ce = shapeCenter(shapes[end[0]]);
-
-                            var dx = (cb.y - ca.y)
-                            var dy = (ca.x - cb.x)
-                            var scale = Math.max(90 / Math.sqrt(dx * dx + dy * dy), 0.5);
-                            var gateway1 = {x: (ca.x + cb.x)/2 + (cb.y - ca.y)*scale, y: (ca.y + cb.y)/2 + (ca.x - cb.x)*scale};
-                            var gateway2 = {x: (ca.x + cb.x)/2 + (ca.y - cb.y)*scale, y: (ca.y + cb.y)/2 + (cb.x - ca.x)*scale};
-                            var distance = function(a, b) { return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y)); };
+                            var gateway1 = lagrangePoint(ca, cb, 90, +1);
+                            var gateway2 = lagrangePoint(ca, cb, 90, -1);
                             if (distance(cs,gateway1) + distance(gateway2,ce) > distance(cs,gateway2) + distance(gateway1,ce)) {
                                 var tmp = gateway1;
                                 gateway1 = gateway2;
@@ -239,11 +244,9 @@
                             if (message = validate(["start.length == 1", "newTasks.length == 1", "end.length == 1"])) { alert(message); }
                             var cs = shapeCenter(shapes[start[0]]);
                             var ce = shapeCenter(shapes[end[0]]);
+                            var cm = lagrangePoint(cs, ce, 130, +1);
 
-                            var dx = (ce.y - cs.y)
-                            var dy = (cs.x - ce.x)
-                            var scale = Math.max(130 / Math.sqrt(dx * dx + dy * dy), 0.5);
-                            var middle = addFlowNode("sid-a", "Task", (cs.x + ce.x)/2 + (ce.y - cs.y)*scale, (cs.y + ce.y)/2 + (cs.x - ce.x)*scale, 100, 80);
+                            var middle = addFlowNode("sid-a", "Task", cm.x, cm.y, 100, 80);
                             middle["properties"]["name"] = newTasks[0];
                             middle["properties"]["bgcolor"] = "white";
 
@@ -256,11 +259,12 @@
                             var cs = shapeCenter(shapes[start[0]]);
                             var cm = shapeCenter(shapes[a[0]]);
                             var ce = shapeCenter(shapes[end[0]]);
+                            var g1 = lagrangePoint(cs, cm, 90, +1);
+                            var g2 = lagrangePoint(cm, ce, 90, +1);
 
-                            var startplus = addFlowNode("sid-startplus", "Exclusive_Databased_Gateway", (cs.x + cm.x + cm.y - cs.y)/2, (cs.y + cm.y + cs.x - cm.x)/2, 40, 40).resourceId;
-                            var endplus = addFlowNode("sid-endplus", "Exclusive_Databased_Gateway", (cm.x + ce.x + ce.y - cm.y)/2, (cm.y + ce.y + cm.x - ce.x)/2, 40, 40).resourceId;
+                            var startplus = addFlowNode("sid-startplus", "Exclusive_Databased_Gateway", g1.x, g1.y, 40, 40).resourceId;
+                            var endplus = addFlowNode("sid-endplus", "Exclusive_Databased_Gateway", g2.x, g2.y, 40, 40).resourceId;
                             addSequenceFlow("sid-startplus-endplus", startplus, endplus);
-
                             addSequenceFlow("sid-start-startplus", start[0], startplus);
                             addSequenceFlow("sid-startplus-a", startplus, a[0]);
                             highlight(shapes[a[0]]);
@@ -286,10 +290,7 @@
                             var following = end[0];
                             var cs = shapeCenter(shapes[repeating]);
                             var ce = shapeCenter(shapes[following]);
-                            var dx = (ce.y - cs.y)
-                            var dy = (ce.x - cs.x)
-                            var scale = Math.max(90 / Math.sqrt(dx * dx + dy * dy), 0.5);
-                            var cm = {x: (cs.x + ce.x)/2 + (ce.y - cs.y)*scale, y: (cs.y + ce.y)/2 + (cs.x - ce.x)*scale};
+                            var cm = lagrangePoint(cs, ce, 90, +1);
 
                             var middle = addFlowNode("sid-a", "Exclusive_Databased_Gateway", cm.x, cm.y, 40, 40);
                             highlight(shapes[repeating]);
