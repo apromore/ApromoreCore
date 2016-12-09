@@ -286,7 +286,10 @@
                             var following = end[0];
                             var cs = shapeCenter(shapes[repeating]);
                             var ce = shapeCenter(shapes[following]);
-                            var cm = {x: (cs.x + ce.x + ce.y - cs.y)/2, y: (cs.y + ce.y + cs.x - ce.x)/2};
+                            var dx = (ce.y - cs.y)
+                            var dy = (ce.x - cs.x)
+                            var scale = Math.max(90 / Math.sqrt(dx * dx + dy * dy), 0.5);
+                            var cm = {x: (cs.x + ce.x)/2 + (ce.y - cs.y)*scale, y: (cs.y + ce.y)/2 + (cs.x - ce.x)*scale};
 
                             var middle = addFlowNode("sid-a", "Exclusive_Databased_Gateway", cm.x, cm.y, 40, 40);
                             highlight(shapes[repeating]);
