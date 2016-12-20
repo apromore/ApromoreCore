@@ -10,10 +10,10 @@ import java.util.concurrent.CancellationException;
  */
 public class HMPlusUI {
 
-    public HMPlusUIResult showGUI(UIPluginContext context) {
+    public HMPlusUIResult showGUI(UIPluginContext context, String title) {
 
         HMPlusSettings hmPlusSettings = new HMPlusSettings();
-        TaskListener.InteractionResult guiResult = context.showWizard("Select HM+ parameters", true, true, hmPlusSettings);
+        TaskListener.InteractionResult guiResult = context.showWizard(title, true, true, hmPlusSettings);
 
         if( guiResult == TaskListener.InteractionResult.CANCEL ) {
             context.getFutureResult(0).cancel(true);
