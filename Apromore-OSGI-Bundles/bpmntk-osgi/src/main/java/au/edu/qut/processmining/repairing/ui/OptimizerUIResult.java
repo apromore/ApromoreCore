@@ -1,4 +1,4 @@
-package au.edu.qut.processmining.ui;
+package au.edu.qut.processmining.repairing.ui;
 
 /**
  * Created by Adriano on 14/06/2016.

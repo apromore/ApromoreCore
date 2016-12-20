@@ -13,11 +13,16 @@ public class HMPlusUIResult {
     private double positiveObservations;
     private double relative2BestThreshold;
 
+    private boolean discoverJoins;
+
     public HMPlusUIResult() {
         dependencyThreshold = DEPENDENCY_THRESHOLD;
         positiveObservations = POSITIVE_OBSERVATIONS;
         relative2BestThreshold = RELATIVE2BEST_THRESHOLD;
     }
+
+    public boolean isDiscoverJoins() { return discoverJoins; }
+    public void setDiscoverJoins(boolean discoverJoins) { this.discoverJoins = discoverJoins; }
 
     public void disablePositiveObservations() { positiveObservations = 0.0; }
     public void disableRelative2BestThreshold() { relative2BestThreshold = 1.0; }

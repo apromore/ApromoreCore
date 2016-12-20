@@ -34,17 +34,13 @@ public class HeuristicMinerPlusPlugin {
     @PluginVariant(variantLabel = "Mine BPMN model with HM+", requiredParameterLabels = {0})
     public static BPMNDiagram mineBPMNModelWithHMP(UIPluginContext context, XLog log) {
         boolean debug = true;
-        boolean onlyHeuristicNet = false;
         BPMNDiagram output;
 
         HMPlusUI gui = new HMPlusUI();
-        HMPlusUIResult result = gui.showGUI(context);
+        HMPlusUIResult result = gui.showGUI(context, "Setup HM+");
 
         HeuristicMinerPlus hmp = new HeuristicMinerPlus();
-
-        if( onlyHeuristicNet ) hmp.mineHeuristicNet(log, result.getDependencyThreshold(), result.getPositiveObservations(), result.getRelative2BestThreshold());
-        else hmp.mineBPMNModel(log, result.getDependencyThreshold(), result.getPositiveObservations(), result.getRelative2BestThreshold());
-
+        hmp.mineBPMNModel(log, result.getDependencyThreshold(), result.getPositiveObservations(), result.getRelative2BestThreshold(), result.isDiscoverJoins());
         HeuristicNet heuristicNet = hmp.getHeuristicNet();
 
         if( debug ) {
@@ -53,8 +49,7 @@ public class HeuristicMinerPlusPlugin {
             heuristicNet.printParallelisms();
         }
 
-        if( onlyHeuristicNet ) output = heuristicNet.getHeuristicDiagram(false);
-        else output = hmp.getBPMNDiagram();
+        output = hmp.getBPMNDiagram();
 
         return output;
     }

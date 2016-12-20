@@ -38,7 +38,7 @@ public class DiagramHandler {
         predecessors = null;
     }
 
-    public static void normalizeGateways(BPMNDiagram diagram) {
+    public void normalizeGateways(BPMNDiagram diagram) {
         //this method removes join/split gateways, transforming them into a sequence of a join and a split.
         //also, it removes those gateways that are exit for more than one RPST node, giving for each RPST node its own exit gateway.
 
@@ -46,23 +46,22 @@ public class DiagramHandler {
         removeJoinSplit(diagram);
 
         //step 2: removing shared exits
-        removeRPSTNodeSharedExits(diagram);
+//        removeRPSTNodeSharedExits(diagram);
 
         //step 3: removing shared entries
-        removeRPSTNodeSharedEntries(diagram);
+//        removeRPSTNodeSharedEntries(diagram);
     }
 
-    public static void removeJoinSplit(BPMNDiagram diagram) {
+    public void removeJoinSplit(BPMNDiagram diagram) {
         Gateway split;
         HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removable;
         int jsCounter = 0;
 
-        for( Gateway join : diagram.getGateways() )
+        for( Gateway join : new HashSet<Gateway>(diagram.getGateways()) )
             if( (diagram.getInEdges(join).size() > 1) && (diagram.getOutEdges(join).size() > 1) ) {
                 jsCounter++; //found a join/split
 
                 split = diagram.addGateway("", join.getGatewayType()); //this is going to be the new split, and we will keep js as join only
-                diagram.addFlow(join, split, "");
 
                 removable = new HashSet<>();
                 for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getOutEdges(join) ) {
@@ -70,13 +69,15 @@ public class DiagramHandler {
                     removable.add(e);
                 }
 
+                diagram.addFlow(join, split, "");
+                
                 for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : removable ) diagram.removeEdge(e);
             }
 
        System.out.println("DEBUG - join/split removed: " + jsCounter);
     }
 
-    public static void removeRPSTNodeSharedExits(BPMNDiagram diagram) {
+    public void removeRPSTNodeSharedExits(BPMNDiagram diagram) {
         int exitsCounter = 0;
 
         HashMap<String, BPMNNode> idToNode = new HashMap<>();
@@ -154,7 +155,7 @@ public class DiagramHandler {
         RPSTNode inner;
         RPSTNode outer;
         HashSet<BPMNNode> toChange;
-        HashSet<BPMNNode> changed;
+        HashSet<BPMNNode> touched;
         Gateway prev;
         Gateway next;
         BPMNNode finalTGT;
@@ -179,10 +180,10 @@ public class DiagramHandler {
 
             for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : removable ) diagram.removeEdge(flow);
 
-            changed = new HashSet<>();
+            touched = new HashSet<>();
             iGraph = inner.getFragment();
             for( AbstractDirectedEdge edge : iGraph.getEdges() )
-                if( edge.getTarget().getName().equals(e) ) changed.add(idToNode.get(edge.getSource().getName()));
+                if( edge.getTarget().getName().equals(e) ) touched.add(idToNode.get(edge.getSource().getName()));
 
             while( !rpstnodeExits.get(e).isEmpty() ) {
                 outer = rpstnodeExits.get(e).remove(0);
@@ -193,15 +194,15 @@ public class DiagramHandler {
                 for( AbstractDirectedEdge edge : oGraph.getEdges() )
                     if( edge.getTarget().getName().equals(e) ) toChange.add(idToNode.get(edge.getSource().getName()));
 
-                toChange.removeAll(changed);
+//                toChange.removeAll(touched);
 
-                next = diagram.addGateway("", prev.getGatewayType()); //this is going to be the new split, and we will keep js as join only
+                next = diagram.addGateway("", prev.getGatewayType());
                 diagram.addFlow(prev, next, "");
 
                 removable = new HashSet<>();
                 for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : diagram.getInEdges(prev) ) {
                     bpmnSRC = flow.getSource();
-                    if( toChange.contains(bpmnSRC) ) {
+                    if( !touched.contains(bpmnSRC) ) {
                         removable.add(flow);
                         diagram.addFlow(bpmnSRC, next, "");
                     }
@@ -211,7 +212,8 @@ public class DiagramHandler {
 
 //                System.out.println("DEBUG - normalized an exit");
                 exitsCounter++;
-                changed.addAll(toChange);
+                touched.addAll(toChange);
+                touched.add(prev);
                 prev = next;
             }
 
@@ -300,7 +302,7 @@ public class DiagramHandler {
         RPSTNode inner;
         RPSTNode outer;
         HashSet<BPMNNode> toChange;
-        HashSet<BPMNNode> changed;
+        HashSet<BPMNNode> touched;
         Gateway prev;
         Gateway next;
         BPMNNode finalSRC;
@@ -325,10 +327,10 @@ public class DiagramHandler {
 
             for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : removable ) diagram.removeEdge(flow);
 
-            changed = new HashSet<>();
+            touched = new HashSet<>();
             iGraph = inner.getFragment();
             for( AbstractDirectedEdge edge : iGraph.getEdges() )
-                if( edge.getSource().getName().equals(e) ) changed.add(idToNode.get(edge.getTarget().getName()));
+                if( edge.getSource().getName().equals(e) ) touched.add(idToNode.get(edge.getTarget().getName()));
 
             while( !rpstnodeEntries.get(e).isEmpty() ) {
                 outer = rpstnodeEntries.get(e).remove(0);
@@ -339,15 +341,15 @@ public class DiagramHandler {
                 for( AbstractDirectedEdge edge : oGraph.getEdges() )
                     if( edge.getSource().getName().equals(e) ) toChange.add(idToNode.get(edge.getTarget().getName()));
 
-                toChange.removeAll(changed);
+//                toChange.removeAll(touched);
 
-                next = diagram.addGateway("", prev.getGatewayType()); //this is going to be the new split, and we will keep js as join only
+                next = diagram.addGateway("", prev.getGatewayType());
                 diagram.addFlow(next, prev, "");
 
                 removable = new HashSet<>();
                 for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> flow : diagram.getOutEdges(prev) ) {
                     bpmnTGT = flow.getTarget();
-                    if( toChange.contains(bpmnTGT) ) {
+                    if( ! touched.contains(bpmnTGT) ) {
                         removable.add(flow);
                         diagram.addFlow(next, bpmnTGT, "");
                     }
@@ -357,7 +359,8 @@ public class DiagramHandler {
 
 //                System.out.println("DEBUG - normalized an entry");
                 entriesCounter++;
-                changed.addAll(toChange);
+                touched.addAll(toChange);
+                touched.add(prev);
                 prev = next;
             }
 
@@ -929,6 +932,30 @@ public class DiagramHandler {
                     diagram.addFlow(n, g, "");
                 }
             }
+        }
+    }
+
+    public void removeTrivialGateways(BPMNDiagram diagram) {
+        BPMNNode src = null;
+        BPMNNode tgt = null;
+        HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removable;
+
+        for( Gateway g : new HashSet<>(diagram.getGateways()) ) {
+            removable = new HashSet<>();
+
+            removable.addAll(diagram.getInEdges(g));
+            if( removable.size() != 1 ) continue;
+
+            removable.addAll(diagram.getOutEdges(g));
+            if( removable.size() != 2 ) continue;
+
+            for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : removable) {
+                if(e.getTarget() == g)  src = e.getSource();
+                else tgt = e.getTarget();
+                diagram.removeEdge(e);
+            }
+            diagram.removeGateway(g);
+            diagram.addFlow(src, tgt, "");
         }
     }
 

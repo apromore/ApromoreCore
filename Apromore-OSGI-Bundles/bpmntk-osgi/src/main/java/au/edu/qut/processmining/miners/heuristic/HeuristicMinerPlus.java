@@ -30,21 +30,24 @@ public class HeuristicMinerPlus {
     private SimpleLog log;
     private HeuristicNet heuristicNet;
 
-    private BPMNDiagram heuristicDiagram;
+//    private BPMNDiagram heuristicDiagram;
     private BPMNDiagram bpmnDiagram;
 
     private int gateCounter;
     private HashMap<String, Gateway> candidateJoins;
 
+    private boolean discoverJoins;
+
     public HeuristicMinerPlus() {}
 
-    public BPMNDiagram mineBPMNModel(XLog log, double dependencyThreshold, double positiveObservations, double relative2BestThreshold) {
-
+    public BPMNDiagram mineBPMNModel(XLog log, double dependencyThreshold, double positiveObservations, double relative2BestThreshold, boolean discoverJoins) {
         System.out.println("HM+ - starting... ");
+        System.out.println("HM+ - [Setting] discover joins: " + discoverJoins);
         System.out.println("HM+ - [Setting] dependency threshold: " + dependencyThreshold);
         System.out.println("HM+ - [Setting] positive observations: " + positiveObservations);
         System.out.println("HM+ - [Setting] relative to best threshold: " + relative2BestThreshold);
 
+        this.discoverJoins = discoverJoins;
         this.log = LogParser.getSimpleLog(log);
         System.out.println("HM+ - log parsed successfully");
 
@@ -56,15 +59,17 @@ public class HeuristicMinerPlus {
     }
 
     public HeuristicNet getHeuristicNet() { return heuristicNet; }
-    public BPMNDiagram getHeuristicDiagram() { return heuristicDiagram; }
+//    public BPMNDiagram getHeuristicDiagram() { return heuristicDiagram; }
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
-    public void mineHeuristicNet(XLog log, double dependencyThreshold, double positiveObservations, double relative2BestThreshold) {
+    public void mineHeuristicNet(XLog log, double dependencyThreshold, double positiveObservations, double relative2BestThreshold, boolean discoverJoins) {
         System.out.println("HM+ - starting... ");
+        System.out.println("HM+ - [Setting] discover joins: " + discoverJoins);
         System.out.println("HM+ - [Setting] dependency threshold: " + dependencyThreshold);
         System.out.println("HM+ - [Setting] positive observations: " + positiveObservations);
         System.out.println("HM+ - [Setting] relative to best threshold: " + relative2BestThreshold);
 
+        this.discoverJoins = discoverJoins;
         this.log = LogParser.getSimpleLog(log);
         System.out.println("HM+ - log parsed successfully");
         mineHeuristicNet(dependencyThreshold, positiveObservations, relative2BestThreshold);
@@ -74,7 +79,7 @@ public class HeuristicMinerPlus {
         System.out.println("HM+ - mining heuristic net: starting");
         heuristicNet = new HeuristicNet(log, dependencyThreshold, positiveObservations, relative2BestThreshold);
         heuristicNet.generateHeuristicNet();
-        heuristicDiagram = heuristicNet.getHeuristicDiagram(true);
+//        heuristicDiagram = heuristicNet.getHeuristicDiagram(true);
         System.out.println("HM+ - mining heuristic net: done ");
     }
 
@@ -161,7 +166,7 @@ public class HeuristicMinerPlus {
         while( generateBondJoins() );
 
         /* generating join gateways for sound rigids */
-        generateRigidJoins();
+        if( discoverJoins ) generateRigidJoins();
 
         System.out.println("HM+ - bpmn diagram generated successfully");
     }
@@ -279,7 +284,7 @@ public class HeuristicMinerPlus {
             }
 
             System.out.println("DEBUG - starting analysing bonds: " + bondHierarchy.size() );
-            int debugChecker;
+//            int debugChecker;
             HashMap<String, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removableEdges;
             HashSet<String> toRemove;
 
@@ -292,7 +297,9 @@ public class HeuristicMinerPlus {
                 if( changed.contains(exit) ) continue;
                 changed.add(exit);
 
-                debugChecker = rpst.getChildren(bond).size();
+//                debugChecker = rpst.getChildren(bond).size();
+
+//                System.out.println("DEBUG - before checker: 0 = " + debugChecker );
 
                 removableEdges = new HashMap<>();
                 toRemove = new HashSet<>();
@@ -305,11 +312,11 @@ public class HeuristicMinerPlus {
                 for( Vertex v : bondGraph.getVertices() )
                     if( v.getName().equals(exit) ) {
                         // editing the bpmn diagram
-                        gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), gates.get(entry));
+                        gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), Gateway.GatewayType.INCLUSIVE);//gates.get(entry));
                         System.out.println("DEBUG - added a split");
                         bpmnDiagram.addFlow(gate, bpmnTGT, "");
                         for( de.hpi.bpt.graph.abs.AbstractDirectedEdge e : bondGraph.getEdgesWithTarget(v) ) {
-                            debugChecker--;
+//                            debugChecker--;
                             entry = e.getSource().getName();
                             toRemove.add(entry);
                             bpmnSRC = nodes.get(entry);
@@ -318,7 +325,7 @@ public class HeuristicMinerPlus {
                     }
 
                 for( String re : toRemove ) bpmnDiagram.removeEdge(removableEdges.get(re));
-                System.out.println("DEBUG - checker: 0 = " + debugChecker );
+//                System.out.println("DEBUG - after checker: 0 = " + debugChecker );
             }
 
         } catch( Exception e ) {
@@ -327,22 +334,22 @@ public class HeuristicMinerPlus {
             return false;
         }
 
-        System.out.println("DEBUG - generate bond join: " + (!changed.isEmpty()) );
+//        System.out.println("DEBUG - generate bond join: " + (!changed.isEmpty()) );
         return !changed.isEmpty();
     }
 
-    private boolean generateRigidJoins() {
+    private void generateRigidJoins() {
         HashSet<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removableEdges;
         Set<BPMNNode> nodes = new HashSet<>(bpmnDiagram.getNodes());
         Gateway gate;
 
-        /* step 1. adding a xor join gateway where needed */
+        /* step 1. adding a inclusive joins */
         for( BPMNNode n : nodes ) {
             removableEdges = new HashSet<>(bpmnDiagram.getInEdges(n));
-            if( removableEdges.size() <= 1 ) continue;
-            if( (n instanceof Gateway) && (bpmnDiagram.getOutEdges(n).size() <= 1) ) continue; //we generate a new join only for those gateways that are both join and split
+            if( (removableEdges.size() <= 1) || (n instanceof Gateway) ) continue;
+//            if( (n instanceof Gateway) && (bpmnDiagram.getOutEdges(n).size() <= 1) ) continue; //we generate a new join only for those gateways that are both join and split
 //            System.out.println("DEBUG - generating a new join");
-            gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), Gateway.GatewayType.DATABASED);
+            gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), Gateway.GatewayType.INCLUSIVE);
             bpmnDiagram.addFlow(gate, n, "");
             for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : removableEdges) {
                 bpmnDiagram.removeEdge(oe);
@@ -353,21 +360,22 @@ public class HeuristicMinerPlus {
         /* at this point, all the xor-homogeneous rigids are already set
         *  what is left is:
         *  and-homogeneous (will be fixed in the next step)
-        *  heterogeneous rigids (will be fixed with bartek)
+        *  heterogeneous rigids (will be fixed with Bartek/Hagen )
         *  */
 
         /* step 2. checking all the rigids in the RPST bottom-up
         * if a rigid contains only XOR nothing is done
         * if a rigid contains only AND splits, all the XOR joins (formerly created at step 1) are turned into AND joins
-        * if none of the above cases, the rigid soundness will be successively fixed with Bartek technique
+        * if none of the above cases, the rigid soundness will be successively fixed with Bartek/Hagen technique
          */
 
         GatewayMap gatemap = new GatewayMap();
-        gatemap.generateMap(bpmnDiagram);
-        gatemap.removeOneBlockBonds();
-        gatemap.setHomogenousRigidJoins();
-
-        return true;
+        if( gatemap.generateMap(bpmnDiagram) ) {
+//            gatemap.setHomogenousRigidJoins();
+            gatemap.detectIORs();
+        } else {
+            System.out.println("ERROR - something went wrong configuring the gateway map");
+        }
     }
 
     private void updateLabels(Map<Integer, String> events) {

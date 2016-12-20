@@ -1,8 +1,8 @@
 package au.edu.qut.promplugins;
 
 import au.edu.qut.processmining.repairing.Optimizer;
-import au.edu.qut.processmining.ui.OptimizerUI;
-import au.edu.qut.processmining.ui.OptimizerUIResult;
+import au.edu.qut.processmining.repairing.ui.OptimizerUI;
+import au.edu.qut.processmining.repairing.ui.OptimizerUIResult;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;

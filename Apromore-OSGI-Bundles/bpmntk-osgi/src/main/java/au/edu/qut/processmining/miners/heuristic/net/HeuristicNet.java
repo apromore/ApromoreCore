@@ -40,8 +40,6 @@ public class HeuristicNet {
 
     private Map<Integer, HashMap<Integer, HeuristicEdge>> net;
 
-    private Set<Integer> selfLoop;
-
     private double dependencyThreshold;
     private double positiveObservations;
     private double relative2BestThreshold;
@@ -77,15 +75,43 @@ public class HeuristicNet {
     }
 
     public void generateHeuristicNet() {
-        evaluateDependencies();
-        evaluateParallelismsAndConflicts();
-        evaluateLoops();
-        evaluateDependecyScores();
-        pruneHeuristicNet();
-        removeSelfLoop();
+        evaluateDirectlyFollowDependencies();
+        evaluateParallelismsAndConflicts(); //depends on evaluateDirectlyFollowDependencies()
+        evaluateLoops();    //depends on evaluateParallelismsAndConflicts()
+        evaluateDependencyScores();  //depends on evaluateLoops()
+        pruneHeuristicNet(); //depends on evaluateDependecyScores()
+        checkIntegrity();   //repairs the net if disconnected
+        removeWeakParallelisms();   //last thing to run ever
     }
 
-    private void evaluateDependencies() {
+    private void checkIntegrity() {
+        System.out.println("DEBUG - recovering edges:");
+        for(int n : nodes.keySet()) {
+            if( incoming.get(n).isEmpty() && (n != startcode) ) addEdge(candidatePredecessor.get(n));
+            if( outgoing.get(n).isEmpty() && (n != endcode) ) addEdge(candidateSuccessor.get(n));
+        }
+    }
+
+    private void removeWeakParallelisms() {
+        int src;
+        int tgt;
+
+        System.out.println("DEBUG - evaluating dependency scores ...");
+        for( HeuristicEdge e : edges ) {
+            src = e.getSource().getCode();
+            tgt = e.getTarget().getCode();
+
+            if( parallelisms.containsKey(src) && parallelisms.get(src).remove(tgt) ) {
+                System.out.println("DEBUG - successfully removed weak parallelism: " + src + " || " + tgt);
+            }
+
+            if( parallelisms.containsKey(tgt) && parallelisms.get(tgt).remove(src) ) {
+                System.out.println("DEBUG - successfully removed weak reverse parallelism: " + tgt + " || " + src);
+            }
+        }
+    }
+
+    private void evaluateDirectlyFollowDependencies() {
         StringTokenizer trace;
         int traceFrequency;
 
@@ -106,11 +132,11 @@ public class HeuristicNet {
         net = new HashMap<>();
 
         autogenStart = new HeuristicNode(events.get(startcode), startcode);
-        nodes.put(startcode, autogenStart);
+        this.addNode(autogenStart);
         autogenStart.increaseFrequency(log.size()); //we will always skip to analyse this event later, so we set now the maximum frequency because it is an artificial start event
 
         autogenEnd = new HeuristicNode(events.get(endcode), endcode);
-        nodes.put(endcode, autogenEnd);
+        this.addNode(autogenEnd);
 
         for( String t : traces.keySet() ) {
             trace = new StringTokenizer(t, "::");
@@ -125,20 +151,14 @@ public class HeuristicNet {
 
                 if( !nodes.containsKey(event) ) {
                     node =  new HeuristicNode(events.get(event), event);
-                    nodes.put(event, node);
+                    this.addNode(node);
                 } else node = nodes.get(event);
 
                 node.increaseFrequency(traceFrequency); //increasing frequency of this event occurrence
 
-                if( !net.containsKey(prevEvent) ) net.put(prevEvent, new HashMap<Integer, HeuristicEdge>());
-                if( !net.get(prevEvent).containsKey(event) ) {
+                if( !net.containsKey(prevEvent) || !net.get(prevEvent).containsKey(event) ) {
                     edge = new HeuristicEdge(prevNode, node);
-                    edges.add(edge);
-                    if( !incoming.containsKey(event) ) incoming.put(event, new HashSet<HeuristicEdge>());
-                    if( !outgoing.containsKey(prevEvent) ) outgoing.put(prevEvent, new HashSet<HeuristicEdge>());
-                    incoming.get(event).add(edge);
-                    outgoing.get(prevEvent).add(edge);
-                    net.get(prevEvent).put(event, edge);
+                    this.addEdge(edge);
                 }
 
                 net.get(prevEvent).get(event).increaseFrequency(traceFrequency); //increasing frequency of this directly following relationship
@@ -165,7 +185,7 @@ public class HeuristicNet {
                     conflicts.get(src).add(tgt);
                 }
             }
-        printParallelisms();
+//        printParallelisms();
     }
 
     public boolean areConcurrent(int A, int B) {
@@ -181,6 +201,7 @@ public class HeuristicNet {
     }
 
     private void evaluateLoops() {
+        HashSet<HeuristicEdge> removableLoopEdges = new HashSet();
         HashMap<Integer, HashMap<Integer, Double>> loop2Frequencies = new HashMap<>();
         int src, tgt;
 
@@ -196,16 +217,17 @@ public class HeuristicNet {
         loopsL2 = new HashSet<>();
 
         System.out.println("DEBUG - evaluating loops length ONE ...");
-
         for( HeuristicEdge e : edges ) {
             src = e.getSource().getCode();
             tgt = e.getTarget().getCode();
-            if( src == tgt ) loopsL1.add(src);
+            if( src == tgt ) {
+                loopsL1.add(src);
+                removableLoopEdges.add(e);
+            }
         }
 
         System.out.println("DEBUG - found " + loopsL1.size() + " self-loops:");
         for( int code : loopsL1 ) System.out.println("DEBUG - self-loop: " + code);
-
 
         System.out.println("DEBUG - evaluating loops length TWO ...");
         for( HeuristicEdge e : edges ) {
@@ -238,11 +260,15 @@ public class HeuristicNet {
             loopsL2.add(e);
             e.setLocalDependencyScore(loop2DependencyScore);
             if( parallelisms.containsKey(src) && parallelisms.get(src).remove(tgt) )
-                System.out.println("DEBUG - successfully removed parallelism: " + src + " || " + tgt);
+                System.out.println("DEBUG - successfully removed short-loop parallelism: " + src + " || " + tgt);
         }
+
+
+        System.out.println("DEBUG - removing loops length ONE ...");
+        for( HeuristicEdge e : removableLoopEdges ) this.removeEdge(e);
     }
 
-    private void evaluateDependecyScores() {
+    private void evaluateDependencyScores() {
         int src2tgt_frequency;
         int tgt2src_frequency;
         double localDependency;
@@ -297,7 +323,6 @@ public class HeuristicNet {
 
         boolean firstCheck;
         boolean secondCheck;
-        boolean completePrune = true;
 
         System.out.println("DEBUG - edges before pruning: " + edges.size());
 
@@ -305,6 +330,13 @@ public class HeuristicNet {
             src = e.getSource().getCode();
             tgt = e.getTarget().getCode();
 //            if(src == tgt) continue; //loop guard
+
+//            if( (parallelisms.containsKey(src) && parallelisms.get(src).contains(tgt)) ||
+//                    (parallelisms.containsKey(tgt) && parallelisms.get(tgt).contains(src)) ) {
+//                toBeRemoved.add(e);
+//                System.out.println("DEBUG - forcing the removal of the edge: " + src + " -> " + tgt);
+//                continue;
+//            }
 
             /* firstly we evaluate the edge for the successor */
             maxDependencyScore = candidateSuccessor.get(src).getLocalDependencyScore();
@@ -329,18 +361,7 @@ public class HeuristicNet {
             if( firstCheck && secondCheck ) toBeRemoved.add(e);
         }
 
-        for( HeuristicEdge e : toBeRemoved ) {
-            src = e.getSource().getCode();
-            tgt = e.getTarget().getCode();
-            if( completePrune ) {
-                incoming.get(tgt).remove(e);
-                outgoing.get(src).remove(e);
-                net.get(src).remove(tgt);
-            }
-            edges.remove(e);
-            System.out.println("DEBUG - removing edge: " + e.getSource().getCode() + " > " + e.getTarget().getCode());
-        }
-
+        for( HeuristicEdge e : toBeRemoved ) this.removeEdge(e);
         System.out.println("DEBUG - edges after pruning: " + edges.size());
     }
 
@@ -381,7 +402,7 @@ public class HeuristicNet {
             if( event == startcode || event == endcode )
                 node = diagram.addEvent(label, (event == startcode ? Event.EventType.START : Event.EventType.END), Event.EventTrigger.NONE, (event == startcode ? Event.EventUse.CATCH : Event.EventUse.THROW), true, null);
             else
-                node = diagram.addActivity(label, selfLoop.contains(event), false, false, false, false);
+                node = diagram.addActivity(label, loopsL1.contains(event), false, false, false, false);
 
             mapping.put(event, node);
         }
@@ -396,26 +417,38 @@ public class HeuristicNet {
     }
 
 
-    private void removeSelfLoop() {
-        HashSet<HeuristicEdge> toRemove = new HashSet();
-        int src, tgt;
+    /* data objects management */
 
-        selfLoop = new HashSet<>();
+    private void addNode(HeuristicNode n) {
+        int code = n.getCode();
 
-        for( HeuristicEdge e : edges )
-            if( e.getSource() == e.getTarget() ) {
-                selfLoop.add(e.getSource().getCode());
-                toRemove.add(e);
-            }
+        nodes.put(code, n);
+        if( !incoming.containsKey(code) ) incoming.put(code, new HashSet<HeuristicEdge>());
+        if( !outgoing.containsKey(code) ) outgoing.put(code, new HashSet<HeuristicEdge>());
+    }
 
-        for( HeuristicEdge e : toRemove ) {
-            src = e.getSource().getCode();
-            tgt = e.getTarget().getCode();
-            incoming.get(tgt).remove(e);
-            outgoing.get(src).remove(e);
-            net.get(src).remove(tgt);
-            edges.remove(e);
-        }
+    private void addEdge(HeuristicEdge e) {
+        int src = e.getSource().getCode();
+        int tgt = e.getTarget().getCode();
+
+        edges.add(e);
+        incoming.get(tgt).add(e);
+        outgoing.get(src).add(e);
+
+        if( !net.containsKey(src) ) net.put(src, new HashMap<Integer, HeuristicEdge>());
+        net.get(src).put(tgt, e);
+
+        System.out.println("DEBUG - added edge: " + src + " -> " + tgt);
+    }
+
+    private void removeEdge(HeuristicEdge e) {
+        int src = e.getSource().getCode();
+        int tgt = e.getTarget().getCode();
+        incoming.get(tgt).remove(e);
+        outgoing.get(src).remove(e);
+        net.get(src).remove(tgt);
+        edges.remove(e);
+//        System.out.println("DEBUG - removed edge: " + src + " -> " + tgt);
     }
 
     /* DEBUG methods */

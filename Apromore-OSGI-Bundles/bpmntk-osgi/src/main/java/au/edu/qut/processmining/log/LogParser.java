@@ -74,9 +74,7 @@ public class LogParser {
         System.out.println("DEBUG - total events parsed: " + totalEvents);
         System.out.println("DEBUG - total different events: " + (eventCounter-1));
         System.out.println("DEBUG - total different traces: " + traces.size() );
-        for( String t : traces.keySet() ) {
-            System.out.println("DEBUG - ["+ traces.get(t) +"] trace: " + t);
-        }
+//        for( String t : traces.keySet() ) System.out.println("DEBUG - ["+ traces.get(t) +"] trace: " + t);
 
         System.out.println("DEBUG - final mapping:");
         for( int code : events.keySet() ) System.out.println("DEBUG - " + code + " = " + events.get(code));

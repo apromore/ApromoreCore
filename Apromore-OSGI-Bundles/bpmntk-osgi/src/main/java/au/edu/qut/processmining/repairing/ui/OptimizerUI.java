@@ -1,4 +1,4 @@
-package au.edu.qut.processmining.ui;
+package au.edu.qut.processmining.repairing.ui;
 
 import org.deckfour.uitopia.api.event.TaskListener;
 import org.processmining.contexts.uitopia.UIPluginContext;
