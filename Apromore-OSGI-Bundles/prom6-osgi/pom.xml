@@ -1882,6 +1882,16 @@
             <artifactId>logabstractions</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>fuzzyminer</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>fuzzy</artifactId>
+            <version>1.0</version>
+        </dependency>
 
         <!--<dependency>-->
             <!--<groupId>org.processmining</groupId>-->
