@@ -74,70 +74,6 @@
                     ORYX.CONFIG.PANEL_LEFT_COLLAPSED = true;
                     ORYX.CONFIG.WINDOW_HEIGHT        = 600;
 
-                    var addFlowNode = function(json, shapes, id, stencilId, x, y, w, h) {
-                        var addition = {
-                            "bounds": {
-                                "lowerRight": { "x": x + w/2, "y": y + h/2 },
-                                "upperLeft": { "x": x - w/2, "y": y - h/2 }
-                            },
-                            "childShapes": [],
-                            "incoming": [],
-                            "labels": [],
-                            "outgoing": [],
-                            "properties": {
-                                "bordercolor": "#FF0000"
-                            },
-                            "resourceId": id,
-                            "stencil": { "id": stencilId }
-                        };
-                       json.childShapes.push(addition);
-                       shapes[id] = addition;
-                       return addition;
-                   };
-
-                   var findCenter = function(shape) {
-                       return { x: (shape.bounds.lowerRight.x - shape.bounds.upperLeft.x)/2, y: (shape.bounds.lowerRight.y - shape.bounds.upperLeft.y)/2 }; 
-                   };
-
-                   var addSequenceFlow = function(json, shapes, id, source, target, waypoints) {
-                        var addition = {
-                            "childShapes": [],
-                            "dockers": [
-                                findCenter(shapes[source]),
-                                findCenter(shapes[target])
-                            ],
-                            "incoming": [],
-                            "labels": [],
-                            "outgoing": [
-                                { "resourceId": target }
-                            ],
-                            "properties": {
-                                "bordercolor": "#FF0000"
-                            },
-                            "resourceId": id,
-                            "stencil": { "id": "SequenceFlow" },
-                            "source": { "resourceId": source },
-                            "target": { "resourceId": target }
-                        };
-                        json.childShapes.push(addition);
-                        shapes[source].outgoing.push({ resourceId: id });
-                    };
-
-                    var highlight = function(shape) {
-                        //shape.properties["bordercolor"] = "#FF0000";
-                        shape.properties["selected"] = true;
-                        shape.properties["selectioncolor"] = "#FF0000";
-                    };
-
-                    // Find the shapes corresponding to the function arguments resource IDs
-                    var indexJSON = function(json) {
-                        var shapes = {};
-                        json.childShapes.each(function (shape) {
-                            shapes[shape.resourceId] = shape;
-                        }.bind(this));
-                        return shapes;
-                    };
-
                     // Replace any current model in oryxEditor1 with 
                     var reloadJSON = function(json) {
                         // Remove the existing model from the canvas
@@ -147,169 +83,234 @@
 
                         // Reload the modified model
                         oryxEditor1.importJSON(json, true);
-                        console.log("ALPHA");
                     };
 
-                    var reduceOpacityForGreyedElements = function(greys, shapes) {
+                    ORYX.Editor.prototype.displayMLDifference = function(type, start, a, b, newTasks, end, greys) {
+
+                        // Find the shapes corresponding to the function arguments resource IDs
+                        var indexJSON = function(json) {
+                            var shapes = {};
+                            json.childShapes.each(function (shape) {
+                                shapes[shape.resourceId] = shape;
+                            }.bind(this));
+                            return shapes;
+                        };
+
+                        var json = jQuery.extend(true, {}, editorConfig);
+                        var shapes = indexJSON(json);
+
+                        var addFlowNode = function(id, stencilId, x, y, w, h) {
+                            var addition = {
+                                "bounds": {
+                                    "lowerRight": { "x": x + w/2, "y": y + h/2 },
+                                    "upperLeft": { "x": x - w/2, "y": y - h/2 }
+                                },
+                                "childShapes": [],
+                                "incoming": [],
+                                "labels": [],
+                                "outgoing": [],
+                                "properties": {
+                                    "bordercolor": "#FF0000"
+                                },
+                                "resourceId": id,
+                                "stencil": { "id": stencilId }
+                            };
+                            json.childShapes.push(addition);
+                            shapes[id] = addition;
+                            return addition;
+                        };
+
+                        var addSequenceFlow = function(id, source, target, waypoints) {
+                            var findCenter = function(shape) {
+                                return { x: (shape.bounds.lowerRight.x - shape.bounds.upperLeft.x)/2, y: (shape.bounds.lowerRight.y - shape.bounds.upperLeft.y)/2 }; 
+                            };
+
+                            var addition = {
+                                "childShapes": [],
+                                "dockers": [
+                                    findCenter(shapes[source]),
+                                    findCenter(shapes[target])
+                                ],
+                                "incoming": [],
+                                "labels": [],
+                                "outgoing": [
+                                    { "resourceId": target }
+                                ],
+                                "properties": {
+                                    "bordercolor": "#FF0000"
+                                },
+                                "resourceId": id,
+                                "stencil": { "id": "SequenceFlow" },
+                                "source": { "resourceId": source },
+                                "target": { "resourceId": target }
+                            };
+                            if (waypoints) {
+                                var endpoint = addition.dockers.pop();
+                                addition.dockers = addition.dockers.concat(waypoints);
+                                addition.dockers.push(endpoint);
+                            }
+                            json.childShapes.push(addition);
+                            shapes[source].outgoing.push({ resourceId: id });
+                        };
+
+                        var highlight = function(shape) {
+                            shape.properties["selected"] = true;
+                            shape.properties["selectioncolor"] = "#FF0000";
+                        };
+
+                        var shapeCenter = function(shape) {
+                            return {x: (shape.bounds.lowerRight.x + shape.bounds.upperLeft.x) / 2,
+                                    y: (shape.bounds.lowerRight.y + shape.bounds.upperLeft.y) / 2};
+                        }
+
+                        var distance = function(a, b) { return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y)); };
+
+                        // Find a point at least minSpacing away from points a and b, forming at least a right angle.  Sign +1 or -1 selects the two solutions.
+                        var lagrangePoint = function(a, b, minSpacing, sign) {
+                            var dx = (b.y - a.y);
+                            var dy = (a.x - b.x);
+                            var scale = sign * Math.max(minSpacing / Math.sqrt(dx * dx + dy * dy), 0.5);
+                            return {x: (a.x + b.x)/2 + (b.y - a.y)*scale, y: (a.y + b.y)/2 + (a.x - b.x)*scale};
+                        };
+
+                        // Create a gateway from the Start element, splitting between elements A and B and rejoining to the End element
+                        var createSplitAndJoin = function(gatewayStencilId) {
+                            if (message = validate(["start.length == 1", "a.length == 1", "b.length == 1", "end.length == 1"])) { alert(message); }
+                            var cs = shapeCenter(shapes[start[0]]);
+                            var ca = shapeCenter(shapes[a[0]]);
+                            var cb = shapeCenter(shapes[b[0]]);
+                            var ce = shapeCenter(shapes[end[0]]);
+                            var gateway1 = lagrangePoint(ca, cb, 90, +1);
+                            var gateway2 = lagrangePoint(ca, cb, 90, -1);
+                            if (distance(cs,gateway1) + distance(gateway2,ce) > distance(cs,gateway2) + distance(gateway1,ce)) {
+                                var tmp = gateway1;
+                                gateway1 = gateway2;
+                                gateway2 = tmp;
+                            }
+                            var startplus = addFlowNode("sid-startplus", gatewayStencilId, gateway1.x, gateway1.y, 40, 40).resourceId;
+                            var endplus = addFlowNode("sid-endplus", gatewayStencilId, gateway2.x, gateway2.y, 40, 40).resourceId;
+
+                            addSequenceFlow("sid-start-startplus", start[0], startplus);
+                            addSequenceFlow("sid-startplus-a", startplus, a[0]);
+                            addSequenceFlow("sid-startplus-b", startplus, b[0]);
+                            highlight(shapes[a[0]]);
+                            highlight(shapes[b[0]]);
+                            addSequenceFlow("sid-a-endplus", a[0], endplus);
+                            addSequenceFlow("sid-b-endplus", b[0], endplus);
+                            addSequenceFlow("sid-endplus-end", endplus, end[0]);
+                        }
+
+                        var validate = function(constraints) {
+                            var violations = constraints
+                                .map(function(constraint, index, constraints) { return eval(constraint) ? null : constraint; })
+                                .filter(function(x) { return x });
+                            console.info("Violations: " + violations);
+                            console.dir(violations);
+                            return violations.length == 0 ? null : "Assertions violated by Compare-Logic for pattern " + type + ": " + violations;
+                        }
+
+                        switch (type) {
+                        case "CAUSCONC1":  // In the log Task A occurs before Task B, while in the model they are concurrent
+                        case "CONFLICT3":
+                            if (message = validate(["start.length == 1", "a.length == 1", "b.length == 1", "end.length == 1"])) { alert(message); }
+                            addSequenceFlow("sid-start-a", start[0], a[0]);
+                            highlight(shapes[a]);
+                            addSequenceFlow("sid-a-b", a[0], b[0]);
+                            highlight(shapes[b]);
+                            addSequenceFlow("sid-b-end", b[0], end[0]);
+                            break;
+
+                        case "CAUSCONC2":
+                        case "CONFLICT1":
+                            createSplitAndJoin("ParallelGateway");
+                            break;
+
+                        case "CONFLICT2":
+                        case "CONFLICT4":
+                            createSplitAndJoin("Exclusive_Databased_Gateway");
+                            break;
+
+                        case "TASKABS":
+                        case "TASKABS3":
+                        case "TASKABSModel":
+                        case "UNOBSACYCLICINTER":
+                            if (message = validate(["start.length == 1", "end.length == 1"])) { alert(message); }
+                            addSequenceFlow("sid-start-end", start[0], end[0]);
+                            break;
+
+                        case "TASKABS4":
+                        case "TASKABSLog":
+                        case "TASKSUB":
+                            if (message = validate(["start.length == 1", "newTasks.length == 1", "end.length == 1"])) { alert(message); }
+                            var cs = shapeCenter(shapes[start[0]]);
+                            var ce = shapeCenter(shapes[end[0]]);
+                            var cm = lagrangePoint(cs, ce, 130, +1);
+
+                            var middle = addFlowNode("sid-a", "Task", cm.x, cm.y, 100, 80);
+                            middle["properties"]["name"] = newTasks[0];
+                            middle["properties"]["bgcolor"] = "white";
+
+                            addSequenceFlow("sid-start-a", start[0], middle.resourceId);
+                            addSequenceFlow("sid-a-end", middle.resourceId, end[0]);
+                            break;
+
+                        case "TASKSKIP1":
+                            if (message = validate(["start.length == 1", "a.length == 1", "end.length == 1"])) { alert(message); }
+                            var cs = shapeCenter(shapes[start[0]]);
+                            var cm = shapeCenter(shapes[a[0]]);
+                            var ce = shapeCenter(shapes[end[0]]);
+                            var g1 = lagrangePoint(cs, cm, 90, +1);
+                            var g2 = lagrangePoint(cm, ce, 90, +1);
+
+                            var startplus = addFlowNode("sid-startplus", "Exclusive_Databased_Gateway", g1.x, g1.y, 40, 40).resourceId;
+                            var endplus = addFlowNode("sid-endplus", "Exclusive_Databased_Gateway", g2.x, g2.y, 40, 40).resourceId;
+                            addSequenceFlow("sid-startplus-endplus", startplus, endplus);
+                            addSequenceFlow("sid-start-startplus", start[0], startplus);
+                            addSequenceFlow("sid-startplus-a", startplus, a[0]);
+                            highlight(shapes[a[0]]);
+                            addSequenceFlow("sid-a-endplus", a[0], endplus);
+                            addSequenceFlow("sid-endplus-end", endplus, end[0]);
+                            break;
+
+                        case "TASKSKIP2":
+                        case "UNOBSCYCLICINTER":
+                            if (message = validate(["start.length == 1", "a.length >= 1", "end.length == 1"])) { alert(message); }
+                            addSequenceFlow("sid-start-a", start[0], a[0]);
+                            highlight(shapes[a[0]]);
+                            for (i=1; i < a.length; i++) {
+                                addSequenceFlow("sid-link-" + 1, a[i-1], a[i]);
+                                highlight(shapes[a[i]]);
+                            }
+                            addSequenceFlow("sid-a-end", a[a.length - 1], end[0]);
+                            break;
+
+                        case "UNMREPETITION":
+                            if (message = validate(["start.length == 1", "end.length == 1"])) { alert(message); }
+                            var repeating = start[0];
+                            var following = end[0];
+                            var cs = shapeCenter(shapes[repeating]);
+                            var ce = shapeCenter(shapes[following]);
+                            var cm = lagrangePoint(cs, ce, 90, +1);
+
+                            var middle = addFlowNode("sid-a", "Exclusive_Databased_Gateway", cm.x, cm.y, 40, 40);
+                            highlight(shapes[repeating]);
+                            addSequenceFlow("sid-start-xor", repeating, middle.resourceId, [{x: (cs.x + cm.x)/2 + (cs.y - cm.y)/5, y: (cs.y + cm.y)/2 - (cs.x - cm.x)/5}]);
+                            addSequenceFlow("sid-xor-start", middle.resourceId, repeating, [{x: (cs.x + cm.x)/2 - (cs.y - cm.y)/5, y: (cs.y + cm.y)/2 + (cs.x - cm.x)/5}]);
+                            addSequenceFlow("sid-xor-end", middle.resourceId, following);
+                            break;
+
+			default:
+                            alert("Unsupported difference type \"" + type + "\"");
+                            return;
+                        }
+
+                        reloadJSON(json);
+
+                        // Reduce the opacity of greyed-out elements
+                        shapes = indexJSON(this._canvas.toJSON());
                         for (var i = greys.length; i--;) {
                             shapes[greys[i]].getShape().node.setAttributeNS(null, "style", "opacity: 0.25");
                         }
-                    };
-
-                    // In the log Task A occurs before Task B, while in the model they are concurrent
-                    // CAUSCONC 1
-                    // CONFLICT 3
-                    ORYX.Editor.prototype.causconc = function(start, a, b, end, greys) {
-                        var json = jQuery.extend(true, {}, editorConfig);
-                        var shapes = indexJSON(json);
-
-                        addSequenceFlow(json, shapes, "sid-start-a", start, a);
-                        highlight(shapes[a]);
-                        addSequenceFlow(json, shapes, "sid-a-b", a, b);
-                        highlight(shapes[b]);
-                        addSequenceFlow(json, shapes, "sid-b-end", b, end);
-
-                        reloadJSON(json);
-
-                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
-                    }
-
-                    // CAUSCONC 2 ParallelGateway
-                    // CONFLICT 1 ParallelGateway
-                    // CONFLICT 2 ExclusiveGateway
-                    // CONFLICT 4 ExclusiveGateway
-                    ORYX.Editor.prototype.causconc2 = function(gatewayStencilId, start, a, b, end, greys) {
-                        var json = jQuery.extend(true, {}, editorConfig);
-                        var shapes = indexJSON(json);
-
-                        var ca = shapeCenter(shapes[a]);
-                        var cb = shapeCenter(shapes[b]);
-
-                        var startplus = addFlowNode(json, shapes, "sid-startplus", gatewayStencilId, (ca.x + cb.x + cb.y - ca.y)/2, (ca.y + cb.y + ca.x - cb.x)/2, 40, 40).resourceId;
-                        var endplus = addFlowNode(json, shapes, "sid-endplus", gatewayStencilId, (ca.x + cb.x + ca.y - cb.y)/2, (ca.y + cb.y + cb.x - ca.x)/2, 40, 40).resourceId;
-
-                        addSequenceFlow(json, shapes, "sid-start-startplus", start, startplus);
-                        addSequenceFlow(json, shapes, "sid-startplus-a", startplus, a);
-                        addSequenceFlow(json, shapes, "sid-startplus-b", startplus, b);
-                        highlight(shapes[a]);
-                        highlight(shapes[b]);
-                        addSequenceFlow(json, shapes, "sid-a-endplus", a, endplus);
-                        addSequenceFlow(json, shapes, "sid-b-endplus", b, endplus);
-                        addSequenceFlow(json, shapes, "sid-endplus-end", endplus, end);
-
-                        reloadJSON(json);
-
-                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
-                    }
-
-                    var shapeCenter = function(shape) {
-                        return {x: (shape.bounds.lowerRight.x + shape.bounds.upperLeft.x) / 2,
-                                y: (shape.bounds.lowerRight.y + shape.bounds.upperLeft.y) / 2};
-                    }
-
-                    var angle = function(origin, endpoint) {
-                        return Math.atan2(endpoint.x - origin.x, endpoint.y - origin.y);
-                    }
-
-                    // TASKSKIP 1
-                    ORYX.Editor.prototype.taskskip = function(start, middle, end, greys) {
-                        var json = jQuery.extend(true, {}, editorConfig);
-                        var shapes = indexJSON(json);
-
-                        var cs = shapeCenter(shapes[start]);
-                        var cm = shapeCenter(shapes[middle]);
-                        var ce = shapeCenter(shapes[end]);
-
-                        var startplus = addFlowNode(json, shapes, "sid-startplus", "Exclusive_Databased_Gateway", (cs.x + cm.x + cm.y - cs.y)/2, (cs.y + cm.y + cs.x - cm.x)/2, 40, 40).resourceId;
-                        var endplus = addFlowNode(json, shapes, "sid-endplus", "Exclusive_Databased_Gateway", (cm.x + ce.x + ce.y - cm.y)/2, (cm.y + ce.y + cm.x - ce.x)/2, 40, 40).resourceId;
-                        addSequenceFlow(json, shapes, "sid-startplus-endplus", startplus, endplus);
-
-                        addSequenceFlow(json, shapes, "sid-start-startplus", start, startplus);
-                        addSequenceFlow(json, shapes, "sid-startplus-a", startplus, middle);
-                        highlight(shapes[middle]);
-                        addSequenceFlow(json, shapes, "sid-a-endplus", middle, endplus);
-                        addSequenceFlow(json, shapes, "sid-endplus-end", endplus, end);
-
-                        reloadJSON(json);
-
-                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
-                    }
-
-                    // TASKSKIP 2
-                    ORYX.Editor.prototype.taskskip2 = function(start, middle, end, greys) {
-                        var json = jQuery.extend(true, {}, editorConfig);
-                        var shapes = indexJSON(json);
-
-                        addSequenceFlow(json, shapes, "sid-start-a", start, middle);
-                        highlight(shapes[middle]);
-                        addSequenceFlow(json, shapes, "sid-a-end", middle, end);
-
-                        reloadJSON(json);
-
-                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
-                    }
-
-                    // TASKSUB
-                    ORYX.Editor.prototype.tasksub = function(start, substitutedTaskName, end, greys) {
-                        var json = jQuery.extend(true, {}, editorConfig);
-                        var shapes = indexJSON(json);
-
-                        var cs = shapeCenter(shapes[start]);
-                        var ce = shapeCenter(shapes[end]);
-
-                        var middle = addFlowNode(json, shapes, "sid-a", "Task", (cs.x + ce.x + ce.y - cs.y)/2, (cs.y + ce.y + cs.x - ce.x)/2, 100, 80);
-                        middle["properties"]["name"] = substitutedTaskName;
-                        middle["properties"]["bgcolor"] = "white";
-
-                        addSequenceFlow(json, shapes, "sid-start-a", start, middle.resourceId);
-                        addSequenceFlow(json, shapes, "sid-a-end", middle.resourceId, end);
-
-                        reloadJSON(json);
-
-                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
-                    }
-
-                    // UNMREPETITION
-                    ORYX.Editor.prototype.unmrepetition = function(repeating, following, greys) {
-                        var json = jQuery.extend(true, {}, editorConfig);
-                        var shapes = indexJSON(json);
-
-                        var cs = shapeCenter(shapes[repeating]);
-                        var ce = shapeCenter(shapes[following]);
-
-                        var middle = addFlowNode(json, shapes, "sid-a", "Exclusive_Databased_Gateway", (cs.x + ce.x + ce.y - cs.y)/2, (cs.y + ce.y + cs.x - ce.x)/2, 40, 40);
-                        highlight(shapes[repeating]);
-                        addSequenceFlow(json, shapes, "sid-start-xor", repeating, middle.resourceId);
-                        addSequenceFlow(json, shapes, "sid-xor-start", middle.resourceId, repeating, [{x: 700, y: 50}]);
-                        addSequenceFlow(json, shapes, "sid-xor-end", middle.resourceId, following);
-
-                        reloadJSON(json);
-
-                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
-                    }
-
-                    // TASKRELOC
-                    ORYX.Editor.prototype.taskreloc = function(start, middles, end, greys) {
-                    }
-
-                    // TASKABS 1
-                    ORYX.Editor.prototype.taskabs = function(start, startmiddles, middle, middleends, end, greys) {
-                    }
-
-                    // TASKABS 2
-                    ORYX.Editor.prototype.taskabs2 = function(start, insertedTaskName, end, greys) {
-                    }
-
-                    // TASKABS 3
-                    ORYX.Editor.prototype.taskabs3 = function(start, end, greys) {
-                        var json = jQuery.extend(true, {}, editorConfig);
-                        var shapes = indexJSON(json);
-
-                        addSequenceFlow(json, shapes, "sid-start-end", start, end);
-
-                        reloadJSON(json);
-
-                        reduceOpacityForGreyedElements(greys, indexJSON(this._canvas.toJSON()));
                     }
 
                     var oryxEditor1;

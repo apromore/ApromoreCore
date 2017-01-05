@@ -18,7 +18,7 @@ public class HMPlusSettings extends ProMPropertiesPanel {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String DIALOG_NAME = "Setup Heuristic Miner+";
+    private static final String DIALOG_NAME = "Select Heuristic Net miner Params";
 
     final HMPlusUIResult result;
 
@@ -28,20 +28,25 @@ public class HMPlusSettings extends ProMPropertiesPanel {
 
     JCheckBox enablePositiveObservations;
     JCheckBox enableRelative2Best;
+    JCheckBox discoverJoins;
 
+    public HMPlusSettings() { this(DIALOG_NAME); }
 
-    public HMPlusSettings() {
-        super(DIALOG_NAME);
+    public HMPlusSettings(String title) {
+        super(title);
 
         result = new HMPlusUIResult();
 
         HMPItemListener hmpil = new HMPItemListener();
 
-        enablePositiveObservations = this.addCheckBox("Enable Positive Observations Threshold", false);
+        enablePositiveObservations = this.addCheckBox("Positive Observations Threshold", false);
         enablePositiveObservations.addChangeListener(hmpil);
 
-        enableRelative2Best = this.addCheckBox("Enable Relative To Best Threshold", false);
+        enableRelative2Best = this.addCheckBox("Relative To Best Threshold", false);
         enableRelative2Best.addChangeListener(hmpil);
+
+        discoverJoins = this.addCheckBox("Discover Join (dev only)", true);
+        discoverJoins.addChangeListener(hmpil);
 
         dependencyThreshold = SlickerFactory.instance().createNiceDoubleSlider("Dependency Threshold", 0.00, 1.00, HMPlusUIResult.DEPENDENCY_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
         dependencyThreshold.addChangeListener(hmpil);
@@ -61,6 +66,7 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         result.setDependencyThreshold(HMPlusUIResult.DEPENDENCY_THRESHOLD);
         result.disablePositiveObservations();
         result.disableRelative2BestThreshold();
+        result.setDiscoverJoins(discoverJoins.isSelected());
     }
 
     public HMPlusUIResult getSelections() {
@@ -72,6 +78,8 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         @Override
         public void stateChanged(ChangeEvent e) {
             result.setDependencyThreshold(dependencyThreshold.getValue());
+
+            result.setDiscoverJoins(discoverJoins.isSelected());
 
             positiveObservations.setVisible(enablePositiveObservations.isSelected());
             if( enablePositiveObservations.isSelected() ) result.setPositiveObservations(positiveObservations.getValue());

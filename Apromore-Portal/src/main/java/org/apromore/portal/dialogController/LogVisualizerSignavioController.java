@@ -46,7 +46,7 @@ public class LogVisualizerSignavioController extends BaseController {
         super();
 
         String id = Executions.getCurrent().getParameter("id");
-        String data1 = Executions.getCurrent().getSession().getAttribute("SIGNAVIO_SESSION" + id);
+        String data1 = (String) Executions.getCurrent().getSession().getAttribute("SIGNAVIO_SESSION" + id);
 
         try {
             this.setTitle("Dummy title");

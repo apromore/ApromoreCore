@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.base.Strings;
-import ee.ut.eventstr.PESSemantics;
-
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.HashMultiset;
@@ -20,14 +17,15 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.Table;
 
 import ee.ut.eventstr.BehaviorRelation;
+import ee.ut.eventstr.PESSemantics;
 import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.Op;
 import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.Operation;
 import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.State;
 import ee.ut.org.processmining.framework.util.Pair;
 
 /**
- * @authors Luciano Garcia-Banuelos, Nick van Beest
- * @date 19/11/2016
+ * @authors Nick van Beest, Luciano Garcia-Banuelos
+ * @date 23/11/2016
  */
 public class DiffLLVerbalizer <T> {
 	private PESSemantics<T> pes1;
@@ -41,6 +39,8 @@ public class DiffLLVerbalizer <T> {
 	private Multimap<State, Operation> descendants;
 	private State root;
 	
+	private Set<String> statements;
+	
 	private Table<BitSet, BitSet, Map<Integer, int[]>> globalDiffs;
 	
 	public DiffLLVerbalizer(PESSemantics<T> pes1, PESSemantics<T> pes2) {
@@ -53,13 +53,15 @@ public class DiffLLVerbalizer <T> {
 		this.descendants = HashMultimap.create();
 		this.root = new State(new BitSet(), HashMultiset.<String>create(), new BitSet());
 		this.globalDiffs = HashBasedTable.create();
+		
+		this.statements = new HashSet<String>();
 	}
 	
 	public void addPSP(List<Operation> opSeq) {
 		opSeqs.add(opSeq);
 	}
 
-	public void verbalize() {
+	public Set<String> verbalize() {
 		List<List<int[]>> lofl = new LinkedList<>();
 		for (List<Operation> opSeq: opSeqs) {
 			lofl.add(getADiffContexts(opSeq));
@@ -71,11 +73,13 @@ public class DiffLLVerbalizer <T> {
 						
 			verbalizeDifferences(opSeq, diffIndexesList, index);
 		}
+		
+		return statements;
 	}
 	
 	private void verbalizeDifferences(List<Operation> opSeq, List<int[]> diffIndexesList, int index) {
 		int[] diffIndexes;
-		
+
 		for (int di = 0; di < diffIndexesList.size(); di++) {
 			diffIndexes = diffIndexesList.get(di);
 			Operation firstMatching = opSeq.get(diffIndexes[0]);
@@ -95,9 +99,6 @@ public class DiffLLVerbalizer <T> {
 			
 			String firstHidingLabel = firstHiding.label;
 			
-//			System.out.println(diffIndexes[0] + " " + diffIndexes [1] + " " + diffIndexes[2]);
-//			System.out.println(pes2.getLabels());
-//			System.out.println(context2 + " context");
 			
 			if (firstHiding.op == Op.LHIDE) {
 				Pair<Operation, Boolean> pair = findRHide(opSeq, diffIndexes, firstHidingLabel);
@@ -117,21 +118,22 @@ public class DiffLLVerbalizer <T> {
 				else if (secondHiding != null) {
 					// ========= Symmetric  <<==
 					if (!globalDiffs.contains(context1, context2)) {
-						System.out.printf("In log 2, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
-								firstMatching.label, firstMatchingEventPair.getFirst(),
-								firstHiding.label, (Integer)firstHiding.target,
-								secondHiding.label, (Integer)secondHiding.target);
+//						System.out.printf("In log 2, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
+//								firstMatching.label, firstMatchingEventPair.getFirst(),
+//								firstHiding.label, (Integer)firstHiding.target,
+//								secondHiding.label, (Integer)secondHiding.target);
+						statements.add(
+								String.format("In log 2, after the occurrence of %s, %s is substituted by %s",
+										firstMatching.label,
+										firstHiding.label,
+										secondHiding.label)
+						);
 					}
 				} 
 				else {
 					// No RHIDE found within difference context
 					if (firstMatching.nextState.labels.contains(firstHidingLabel)) {
 						if (!globalDiffs.contains(context1, context2)) {
-//							System.out.printf("In log 1, after the occurrence of %s(%d), %s(%d) is duplicated, while in log 2 it is not\n",
-//									firstMatching.label, firstMatchingEventPair.getFirst(),
-//									firstHidingLabel, (Integer)firstHiding.target
-//									);
-
 							int c = 1;
 							
 							BitSet interval = new BitSet();
@@ -139,17 +141,14 @@ public class DiffLLVerbalizer <T> {
 							past.set(diffIndexes[0], diffIndexes[1]);
 							
 							if ((diffIndexes[2] - diffIndexes[1]) > 1) {
-//								while ((pes2.getLabels().contains(pes1.getLabel(diffIndexes[1])) == pes2.getLabels().contains(pes1.getLabel(diffIndexes[1] + c))) &&
 								while ((pes2.getLabels().contains(opSeq.get(diffIndexes[1]).label) == pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).label)) &&
 										(diffIndexes[1] + c < diffIndexes[2])) {
 									c++;
 								}
 								
 								interval.set(diffIndexes[1], diffIndexes[1] + c);
-//								interval.and(context1);
 								
 								if (diffIndexes[1] + c == diffIndexes[2]) {
-//									if ((opSeq.get(diffIndexes[2]).op == Op.MATCH) && (context1.get(diffIndexes[2]))) {
 									if ((opSeq.get(diffIndexes[2]).op == Op.MATCH) && 
 											(pes1.getLabel(context1.previousSetBit(context1.length())).equals(opSeq.get(diffIndexes[2]).label))) {
 										interval.set(diffIndexes[2]);
@@ -165,10 +164,16 @@ public class DiffLLVerbalizer <T> {
 								interval.set(diffIndexes[1]);
 							}
 							
-							System.out.printf("In log 1, after the occurrence of %s, %s is repeated, while in log 2 it is not\n",
-									translate(past, opSeq),
-									translate(interval, opSeq)
-									);	
+//							System.out.printf("In log 1, after the occurrence of %s, %s is repeated, while in log 2 it is not\n",
+//									translate(past, opSeq),
+//									translate(interval, opSeq)
+//									);	
+							statements.add(
+									String.format("In log 1, after the occurrence of %s, %s is repeated, while in log 2 it is not",
+											translate(past, opSeq),
+											translate(interval, opSeq)
+									)
+							);	
 						}
 					} 
 					else {
@@ -233,8 +238,13 @@ public class DiffLLVerbalizer <T> {
 
 								if (found) {
 									if (!globalDiffs.contains(context1, context2)) {
-										System.out.printf("In log 2, %s(%s) can be skipped, while in log 1 it cannot\n",
-												translate(context1, 1), context1);
+//										System.out.printf("In log 2, %s(%s) can be skipped, while in log 1 it cannot\n",
+//												translate(context1, 1), context1);
+										statements.add(		
+												String.format("In log 2, %s can be skipped, while in log 1 it cannot",
+														translate(context1, 1)
+												)
+										);
 									}
 								}
 								else {
@@ -242,12 +252,11 @@ public class DiffLLVerbalizer <T> {
 									context2.set(e2);
 									context1.set(firstMatchingEventPair.getFirst());
 
-									if (!globalDiffs.contains(context1, context2)) {
-
-										verbalizeBehDiffFromModelPerspective(
-											firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)firstHiding.target, firstHiding.label, 
-											firstMatchingEventPair.getSecond(), firstMatching.label, e2p, pes2.getLabel(e2p));
-									}	
+//									if (!globalDiffs.contains(context1, context2)) {
+//										verbalizeBehDiffFromModelPerspective(
+//											firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)firstHiding.target, firstHiding.label, 
+//											firstMatchingEventPair.getSecond(), firstMatching.label, e2p, pes2.getLabel(e2p));
+//									}	
 								}
 							}
 							else {
@@ -332,12 +341,7 @@ public class DiffLLVerbalizer <T> {
 										else {
 											context1.set(firstMatchingEventPair.getFirst());
 											
-											if (!globalDiffs.contains(context1, context2)) {
-//												System.out.printf("In log 1, %s(%d) occurs after %s(%d), while in log 2 it does not\n",
-//														firstHidingLabel, (Integer)firstHiding.target,
-//														firstMatching.label, firstMatchingEventPair.getFirst()
-//													);
-												
+											if (!globalDiffs.contains(context1, context2)) {												
 												// first, check the entire context to see if there are to identify intervals of consecutive repeated events 
 												// and intervals of consecutive new events (i.e. events not occurring in 1 of the 2 logs)
 												int c = 1;
@@ -366,10 +370,16 @@ public class DiffLLVerbalizer <T> {
 													interval.set(diffIndexes[1]);
 												}
 												
-												System.out.printf("In log 1, %s occurs after %s, while in log 2 it does not\n",
-														translate(interval, opSeq),
-														translate(past, opSeq)
-													);
+//												System.out.printf("In log 1, %s occurs after %s, while in log 2 it does not\n",
+//														translate(interval, opSeq),
+//														translate(past, opSeq)
+//													);
+												statements.add(
+														String.format("In log 1, %s occurs after %s, while in log 2 it does not",
+																translate(interval, opSeq),
+																translate(past, opSeq)
+														)
+												);
 											}
 										}
 									}
@@ -399,20 +409,23 @@ public class DiffLLVerbalizer <T> {
 				else if (secondHiding != null) {
 					// ========= Symmetric <<==
 					if (!globalDiffs.contains(context1, context2)) {
-						System.out.printf("In log 2, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
-								firstMatching.label, firstMatchingEventPair.getFirst(),
-								firstHiding.label, (Integer)firstHiding.target,
-								secondHiding.label, (Integer)secondHiding.target);
+//						System.out.printf("In log 2, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
+//								firstMatching.label, firstMatchingEventPair.getFirst(),
+//								firstHiding.label, (Integer)firstHiding.target,
+//								secondHiding.label, (Integer)secondHiding.target);
+						statements.add(
+								String.format("In log 2, after the occurrence of %s, %s is substituted by %s",
+										firstMatching.label, 
+										firstHiding.label, 
+										secondHiding.label
+								)
+						);
 					}
 				} 
 				else {
 					// No LHIDE found within this Difference Context
 					if (firstMatching.nextState.labels.contains(firstHidingLabel)) {
 						if (!globalDiffs.contains(context1, context2)) {
-//							System.out.printf("In log 2, after the occurrence of %s(%d), %s(%d) is duplicated, while in log 1 it is not\n",
-//									firstMatching.label, firstMatchingEventPair.getFirst(),
-//									firstHidingLabel, (Integer)firstHiding.target
-//									);
 							
 							// first, check the entire context to see if there are to identify intervals of consecutive repeated events 
 							// and intervals of consecutive new events (i.e. events not occurring in 1 of the 2 logs)		
@@ -430,10 +443,8 @@ public class DiffLLVerbalizer <T> {
 								}
 								
 								interval.set(diffIndexes[1], diffIndexes[1] + c);
-//								interval.and(context2);
 								
 								if (diffIndexes[1] + c == diffIndexes[2]) {
-//									if ((opSeq.get(diffIndexes[2]).op == Op.MATCH) && (context2.get(diffIndexes[2]))) {
 									if ((opSeq.get(diffIndexes[2]).op == Op.MATCH) && 
 											(pes2.getLabel(context2.previousSetBit(context2.length())).equals(opSeq.get(diffIndexes[2]).label))) {
 										interval.set(diffIndexes[2]);
@@ -449,10 +460,16 @@ public class DiffLLVerbalizer <T> {
 								interval.set(diffIndexes[1]);
 							}
 							
-							System.out.printf("In log 2, after the occurrence of %s, %s is repeated, while in log 1 it is not\n",
-									translate(past, opSeq),
-									translate(interval, opSeq)
-									);							
+//							System.out.printf("In log 2, after the occurrence of %s, %s is repeated, while in log 1 it is not\n",
+//									translate(past, opSeq),
+//									translate(interval, opSeq)
+//									);
+							statements.add(
+									String.format("In log 2, after the occurrence of %s, %s is repeated, while in log 1 it is not",
+											translate(past, opSeq),
+											translate(interval, opSeq)
+									)
+							);
 						}
 					} 
 					else {
@@ -515,8 +532,13 @@ public class DiffLLVerbalizer <T> {
 								
 								if (found) {
 									if (!globalDiffs.contains(context1, context2)) {
-										System.out.printf("In log 1, %s(%s) can be skipped, while in log 2 it cannot\n",
-												translate(context2), context2);
+//										System.out.printf("In log 1, %s(%s) can be skipped, while in log 2 it cannot\n",
+//												translate(context2), context2);
+										statements.add(
+												String.format("In log 1, %s can be skipped, while in log 2 it cannot",
+														translate(context2)
+												)
+										);
 									}
 								} 
 								else {
@@ -588,12 +610,7 @@ public class DiffLLVerbalizer <T> {
 									} 
 									else { 
 										context2.set((Integer)firstHiding.target);
-										if (!globalDiffs.contains(context1, context2)) {								
-//											System.out.printf("In log 2, %s(%d) occurs after %s(%d), while in log 1 it does not\n",
-//													firstHidingLabel, (Integer)firstHiding.target,
-//													firstMatching.label, firstMatchingEventPair.getSecond()
-//												);
-											
+										if (!globalDiffs.contains(context1, context2)) {											
 											// first, check the entire context to see if there are to identify intervals of consecutive repeated events 
 											// and intervals of consecutive new events (i.e. events not occurring in 1 of the 2 logs)
 											int c = 1;
@@ -622,11 +639,16 @@ public class DiffLLVerbalizer <T> {
 												interval.set(diffIndexes[1]);
 											}
 											
-											System.out.printf("In log 2, %s occurs after %s, while in log 1 it does not\n",
-													translate(interval, opSeq),
-													translate(past, opSeq)
-												);
-											
+//											System.out.printf("In log 2, %s occurs after %s, while in log 1 it does not\n",
+//													translate(interval, opSeq),
+//													translate(past, opSeq)
+//												);
+											statements.add(
+													String.format("In log 2, %s occurs after %s, while in log 1 it does not",
+															translate(interval, opSeq),
+															translate(past, opSeq)
+													)
+											);
 										}
 									}
 								}
@@ -655,11 +677,35 @@ public class DiffLLVerbalizer <T> {
 	private void verbalizeBehDiffFromModelPerspective(Integer e1,
 			String e1l, Integer e1p, String e1pl,
 			Integer e2, String e2l, Integer e2p, String e2pl) {
-		System.out.printf("In log 1, %s(%d) %s %s(%d), while in log 2 %s(%d) %s %s(%d)\n",
-				e1l, e1, verbalizeBRel(pes1.getBRelation(e1, e1p)), e1pl, e1p,
-				e2l, e2, verbalizeBRel(pes2.getBRelation(e2, e2p)), e2pl, e2p); 
-//				e1l, e1, verbalizeBRel(pes1.getBRelation(e1, e1p)), e1pl, e1p);
+//		System.out.printf("In log 1, %s(%d) %s %s(%d), while in log 2 %s(%d) %s %s(%d)\n",
+//				e1l, e1, verbalizeBRel(pes1.getBRelation(e1, e1p)), e1pl, e1p,
+//				e2l, e2, verbalizeBRel(pes2.getBRelation(e2, e2p)), e2pl, e2p);
+		String br1 = verbalizeBRel(pes1.getBRelation(e1, e1p));
+		String br2 = verbalizeBRel(pes2.getBRelation(e2, e2p));
 		
+		String temp;
+		if (pes1.getBRelation(e1, e1p).equals(BehaviorRelation.CONCURRENCY) || pes1.getBRelation(e1, e1p).equals(BehaviorRelation.CONFLICT)) {
+			if (e1l.compareTo(e1pl) > 0) {
+				temp = e1l;
+				e1l = e1pl;
+				e1pl = temp;
+			}
+		}
+		
+		if (pes2.getBRelation(e2, e2p).equals(BehaviorRelation.CONCURRENCY) || pes2.getBRelation(e2, e2p).equals(BehaviorRelation.CONFLICT)) {
+			if (e2l.compareTo(e2pl) > 0) {
+				temp = e2l;
+				e2l = e2pl;
+				e2pl = temp;
+			}
+		}
+		
+		statements.add(
+				String.format("In log 1, %s %s %s, while in log 2 %s %s %s",
+						e1l, br1, e1pl,
+						e2l, br2, e2pl
+				)
+		);		
 	}
 
 	private String verbalizeBRel(BehaviorRelation bRelation) {
@@ -673,30 +719,7 @@ public class DiffLLVerbalizer <T> {
 		}
 		return null;
 	}
-
-	private Map<String, Integer> getContextLabels(BitSet context, PESSemantics<T> pes) {
-		Map<String, Integer> labels = new HashMap<String, Integer>();
 		
-		for (int c = context.nextSetBit(0); c >= 0; c = context.nextSetBit(c)) {
-			labels.put(pes.getLabel(c), c);
-		}
-		
-		return labels;
-	}
-	
-	private BitSet getContextBitSet(List<Operation> opSeq, BitSet operationlabels, BitSet context, PESSemantics<T> pes) {
-		BitSet contextbitset = new BitSet();
-		Map<String, Integer> contextlabels = getContextLabels(context, pes);
-		
-		for (int c = operationlabels.nextSetBit(0); c >= 0; c = operationlabels.nextSetBit(c)) {
-			contextbitset.set(contextlabels.get(opSeq.get(c).label));
-		}
-		
-		return contextbitset;
-	}
-	
-//	private Map<Integer, Integer> getOperationContextMap
-	
 	private boolean matchFirst(State curr, BitSet context1, Integer ev1) {
 		boolean result = false;
 		for (Operation op: descendants.get(curr)) {

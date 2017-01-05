@@ -249,101 +249,16 @@ public class ModelToLogComparisonController extends BaseController {
     }
 
     private String differenceToJavascript(JSONObject difference) throws JSONException {
+            LOGGER.info("differenceToJavascript: " + difference);
 
-            String javascript = null;
-
-            switch (difference.optString("type")) {
-            case "CAUSCONC1":
-            case "CONFLICT3":
-                javascript = "oryxEditor1.causconc(" +
-                    "\"" + difference.optJSONArray("start").get(0) + "\"," +
-                    "\"" + difference.optJSONArray("a").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("b").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("end").get(0)   + "\"," +
-                    difference.optJSONArray("greys") + ")";
-                break;
-
-            case "CAUSCONC2":
-            case "CONFLICT1":
-                javascript = "oryxEditor1.causconc2(\"ParallelGateway\"," +
-                    "\"" + difference.optJSONArray("start").get(0) + "\"," +
-                    "\"" + difference.optJSONArray("a").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("b").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("end").get(0)   + "\"," +
-                    difference.optJSONArray("greys") + ")";
-                break;
-
-            case "CONFLICT2":
-            case "CONFLICT4":
-                javascript = "oryxEditor1.causconc2(\"Exclusive_Databased_Gateway\"," +
-                    "\"" + difference.optJSONArray("start").get(0) + "\"," +
-                    "\"" + difference.optJSONArray("a").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("b").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("end").get(0)   + "\"," +
-                    difference.optJSONArray("greys") + ")";
-                break;
-
-            case "TASKABS1":
-                javascript = "alert(\"TASKABS1 not implemented\")";
-                break;
-
-            case "TASKABS2":
-                javascript = "alert(\"TASKABS2 not implemented\")";
-                break;
-
-            case "TASKABS":
-            case "TASKABS3":
-            case "UNOBSACYCLICINTER":
-                javascript = "oryxEditor1.taskabs3(" +
-                    "\"" + difference.optJSONArray("start").get(0) + "\"," +
-                    "\"" + difference.optJSONArray("end").get(0)   + "\"," +
-                    difference.optJSONArray("greys") + ")";
-                break;
-
-            case "TASKABS4":
-            case "TASKSUB":
-                javascript = "oryxEditor1.tasksub(" +
-                    "\"" + difference.optJSONArray("start").get(0)    + "\"," +
-                    "\"" + difference.optJSONArray("newTasks").get(0) + "\"," +
-                    "\"" + difference.optJSONArray("end").get(0)      + "\"," +
-                    difference.optJSONArray("greys") + ")";
-                break;
-
-            case "TASKRELOC1":
-                javascript = "alert(\"TASKRELOC1 not implemented\")";
-                break;
-
-            case "TASKSKIP1":
-                javascript = "oryxEditor1.taskskip(" +
-                    "\"" + difference.optJSONArray("start").get(0) + "\"," +
-                    "\"" + difference.optJSONArray("a").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("end").get(0)   + "\"," +
-                    difference.optJSONArray("greys") + ")";
-                break;
-
-            case "TASKSKIP2":
-            case "UNOBSCYCLICINTER":
-                javascript = "oryxEditor1.taskskip2(" +
-                    "\"" + difference.optJSONArray("start").get(0) + "\"," +
-                    "\"" + difference.optJSONArray("a").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("end").get(0)   + "\"," +
-                    difference.optJSONArray("greys") + ")";
-                break;
-
-            case "UNMREPETITION":
-                javascript = "oryxEditor1.unmrepetition(" +
-                    "\"" + difference.optJSONArray("start").get(0) + "\"," +
-                    "\"" + difference.optJSONArray("a").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("b").get(0)     + "\"," +
-                    "\"" + difference.optJSONArray("end").get(0)   + "\"," +
-                    difference.optJSONArray("greys") + ")";
-                break;
-
-            default:
-                LOGGER.warn("Unsupported type: {}", difference.optString("type"));
-            }
-
-            return javascript;
+            return "oryxEditor1.displayMLDifference(" +
+                    "\"" + difference.optString("type") + "\"," +
+                    difference.optJSONArray("start")    + "," +
+                    difference.optJSONArray("a")        + "," +
+                    difference.optJSONArray("b")        + "," +
+                    difference.optJSONArray("newTasks") + "," +
+                    difference.optJSONArray("end")      + "," +
+                    difference.optJSONArray("greys")    + ")";
     }
 
     /**

@@ -1,4 +1,4 @@
-package au.edu.qut.processmining.ui;
+package au.edu.qut.processmining.repairing.ui;
 
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
 

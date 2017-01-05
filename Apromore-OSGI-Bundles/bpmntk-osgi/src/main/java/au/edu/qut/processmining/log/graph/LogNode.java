@@ -28,7 +28,7 @@ public class LogNode implements Comparable {
         this.label = label;
     }
     public LogNode(String label, int code) {
-        id = Long.toString(System.currentTimeMillis());
+        id = Integer.toString(code);
         frequency = 0;
         startFrequency = 0;
         endFrequency = 0;
