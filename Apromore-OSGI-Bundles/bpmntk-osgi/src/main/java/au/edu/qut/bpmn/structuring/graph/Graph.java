@@ -242,7 +242,7 @@ public class Graph {
                         twinBrother = allPaths.get(twinBrotherhood.get(0));
 
                         if( bigBrother.isLoop() && twinBrother.isLoop() ) {
-                            System.out.println("WARNING - got double loop, merging is dangerous.");
+//                            System.out.println("WARNING - got double loop, merging is dangerous.");
                             if( outgoing.get(entry).size() == 1 ) {
                                 bigBrother.addReverseBrother(twinBrother);
                                 removePath(twinBrotherhood.get(0));
