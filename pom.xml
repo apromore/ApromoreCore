@@ -132,6 +132,7 @@
         <module>Similarity-Clusters-Portal-Plugin</module>
         <module>Infrequent-Behaviour-Filter-Logic</module>
         <module>Infrequent-Behaviour-Filter-Portal-Plugin</module>
+        <module>LogVisualizer-Logic</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
