@@ -274,6 +274,8 @@ public class BPMN2DiagramConverter {
         diagram.setProperty("targetnamespace",    "http://www.signavio.com/bpmn20");
         diagram.setProperty("typelanguage",       "http://www.w3.org/2001/XMLSchema");
             
+        Map<Process, BasicShape> poolMap = new HashMap<>();
+        BasicShape parentShape = diagram;
         for (BaseElement root: definitions.getRootElement()) {
 
             // For Configurable BPMN, look for the pc:configurationMapping element
@@ -286,9 +288,43 @@ public class BPMN2DiagramConverter {
             }
 
             // Child elements
+            if (root instanceof Collaboration) {
+                for (Participant participant: ((Collaboration) root).getParticipant()) {
+                    DiagramElement pool = bpmndiMap.get(participant);
+
+                    // Create the pool in JSON
+                    BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration, 0, 0);
+                    pool.acceptVisitor(visitor);
+                    BasicShape poolShape = visitor.getShape();
+                    diagram.addChildShape(poolShape);
+
+                    if (participant.getProcessRef() != null) {
+                        poolMap.put(participant.getProcessRef(), poolShape);
+                        parentShape = poolShape;
+                    }
+                }
+            }
+
             if (root instanceof Process) {
                 Process process = (Process) root;
-                flowElementsToShapes(process.getFlowElement(), diagram, bpmndiMap, messageRefSet, absentInConfiguration, 0, 0);
+                BasicShape poolShape = poolMap.get(process);
+
+                // Swimlane handling
+                Map<FlowNode, BasicShape> laneMap = new HashMap<>();
+                for (LaneSet pool: process.getLaneSet()) {
+                    for (Lane lane: pool.getAllLanes()) {
+                        DiagramElement laneDiagramElement = bpmndiMap.get(lane);
+                        BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration, 0, 0);
+                        laneDiagramElement.acceptVisitor(visitor);
+                        BasicShape laneShape = visitor.getShape();
+                        poolShape.addChildShape(laneShape);
+                        for (FlowNode flowNode: lane.getFlowNodeRef()) {
+                            laneMap.put(flowNode, laneShape);
+                        }
+                    }
+                }
+
+                flowElementsToShapes(process.getFlowElement(), parentShape, bpmndiMap, messageRefSet, absentInConfiguration, 0, 0, laneMap);
             }
         }
 
@@ -311,33 +347,54 @@ public class BPMN2DiagramConverter {
                                       final Set<String>                     messageRefSet,
                                       final Set<SequenceFlow>               absentInConfiguration,
                                       final double                          originX,
-                                      final double                          originY) {
+                                      final double                          originY,
+                                      final Map<FlowNode, BasicShape>       laneMap) {
 
         Map<BoundaryEvent, BasicShape> boundaryEventShapeMap = new HashMap<>();
         Map<FlowNode, BasicShape>      subProcessShapeMap    = new HashMap<>();
 
         for (final FlowElement flowElement: flowElements) {
             logger.fine("Analyzing flow element id " + flowElement.getId());
-            BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(shape, bpmndiMap, absentInConfiguration, originX, originY);
+
+            double x = originX;
+            double y = originY;
+            if (flowElement instanceof FlowNode) {
+                FlowNode flowNode = (FlowNode) flowElement;
+
+                if (laneMap.containsKey(flowNode)) {
+                    Point point = laneMap.get(flowNode).getBounds().getUpperLeft();
+                    x += point.getX();
+                    y += point.getY();
+                }
+            }
+
+            BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(shape, bpmndiMap, absentInConfiguration, x, y);
             DiagramElement diagramElement = bpmndiMap.get(flowElement);
+            BasicShape parentShape = shape;
             if(diagramElement == null) continue;
             diagramElement.acceptVisitor(visitor);
 
             if (flowElement instanceof FlowNode) {
-                subProcessShapeMap.put((FlowNode) flowElement, visitor.getShape());
+                FlowNode flowNode = (FlowNode) flowElement;
+
+                if (laneMap.containsKey(flowNode)) {
+                    parentShape = laneMap.get(flowNode);
+                }
+
+                subProcessShapeMap.put(flowNode, visitor.getShape());
             }
 
             if (flowElement instanceof SubProcess) {
                 SubProcess subProcess = (SubProcess) flowElement;
                 de.hpi.bpmn2_0.model.bpmndi.dc.Bounds bounds = ((BPMNShape) diagramElement).getBounds();
-		flowElementsToShapes(subProcess.getFlowElement(), visitor.getShape(), bpmndiMap, messageRefSet, absentInConfiguration, bounds.getX(), bounds.getY());
+		flowElementsToShapes(subProcess.getFlowElement(), visitor.getShape(), bpmndiMap, messageRefSet, absentInConfiguration, bounds.getX(), bounds.getY(), laneMap);
             }
 
             if (!messageRefSet.contains(visitor.getShape().getResourceId())) {
                 if (flowElement instanceof BoundaryEvent) {
                     boundaryEventShapeMap.put((BoundaryEvent) flowElement, visitor.getShape());
                 } else {
-                    shape.addChildShape(visitor.getShape());
+                    parentShape.addChildShape(visitor.getShape());
                 }
             }
         }
