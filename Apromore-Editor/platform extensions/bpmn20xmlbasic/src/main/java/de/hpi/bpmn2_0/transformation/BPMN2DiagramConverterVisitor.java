@@ -50,6 +50,7 @@ import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.model.Documentation;
 import de.hpi.bpmn2_0.model.FlowElement;
 import de.hpi.bpmn2_0.model.FlowNode;
+import de.hpi.bpmn2_0.model.Process;
 import de.hpi.bpmn2_0.model.activity.AdHocSubProcess;
 import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.activity.CallActivity;
@@ -1117,15 +1118,16 @@ class BPMN2DiagramConverterVisitor extends AbstractVisitor {
 	@Override public void visitParticipant(Participant that) {
 		super.visitParticipant(that);
 
-		if (that.getProcessRef() == null) {
+                Process process = that.getProcessRef();
+		if (process == null) {
 			shape.setStencilId("CollapsedPool");
 		}
 		else {
 			shape.setStencilId("Pool");
-			shape.setProperty("isclosed",             that.getProcessRef().isIsClosed());
-			shape.setProperty("isexecutable",         that.getProcessRef().isExecutable());
-			//shape.setProperty("processdocumentation", that.getProcessRef().getDocumentation());
-			shape.setProperty("processtype",          that.getProcessRef().getProcessType().value());
+			shape.setProperty("isclosed",             process.isIsClosed());
+			shape.setProperty("isexecutable",         process.isExecutable());
+			//shape.setProperty("processdocumentation", process.getDocumentation());
+			shape.setProperty("processtype",          process.getProcessType().value());
 		}
 
                 if (that.getParticipantMultiplicity() != null) {
