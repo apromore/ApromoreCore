@@ -102,10 +102,10 @@
                             org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.security.core;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.config;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.web;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
+                            org.springframework.security.core;version="[3.1.0,4.0)",
+                            org.springframework.security.config;version="[3.1.0,4.0)",
+                            org.springframework.security.web;version="[3.1.0,4.0)",
+                            org.springframework.security.remoting;version="[3.1.0,4.0)",
                             org.zkoss-osgi;bundle-version="[6.5,7)",
                             org.apromore.plugin.portal-custom-gui;version="[1.1,2.0)"
                         </Import-Bundle>
