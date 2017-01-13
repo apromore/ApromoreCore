@@ -78,7 +78,8 @@ public class TranslateEdge {
             if (!(arcsource instanceof PlaceType)) {
                 incomingArc.setSource(arcsource);
             }
-            else {  // insert a silent transition before the place
+            else {  
+            	// Insert a silent transition before the place
                 TransitionType transition = new TransitionType();
                 transition.setId(String.valueOf(ids++));
                 transition.setGraphics(TranslateNode.newGraphicsNodeType(TranslateNode.dummyPosition(), TranslateNode.blindTransitionDefaultDimension()));
@@ -105,7 +106,8 @@ public class TranslateEdge {
             if (!(arctarget instanceof PlaceType)) {
                 outgoingArc.setTarget(arctarget);
             }
-            else {  // insert a silent transition after the place
+            else {  
+            	// Insert a silent transition after the place
                 TransitionType transition = new TransitionType();
                 transition.setId(String.valueOf(ids++));
                 transition.setGraphics(TranslateNode.newGraphicsNodeType(TranslateNode.dummyPosition(), TranslateNode.blindTransitionDefaultDimension()));
@@ -124,7 +126,7 @@ public class TranslateEdge {
 
             data.put_originalid_map(BigInteger.valueOf(Long.valueOf(place.getId())), edge.getOriginalID());
         }
-        else {  // !data.isCpfEdgePnmlPlace()
+        else {  
             ArcType arc = new ArcType();
             arc.setId(String.valueOf(ids++));
 
@@ -149,50 +151,36 @@ public class TranslateEdge {
                 // Our original arc now targets the synthesized place
                 arctarget = place;
             }
-            // changed by Marco Hipp
+
             ArcType removeArc = null;
-            // implemented Method to reconnect misbehaving Place to Place Edge
+            // Implemented method to reconnect misbehaving place to place edge
             if (arcsource instanceof PlaceType && arctarget instanceof PlaceType ) {
-            	//iterate through every Arc to get the Arc that has the source Place as Target
+            	// Iterate through every arc to get the arc that has the source place as target
             	for (ArcType arcList : data.getNet().getArc()) {
+            		
             		if (arcList.getTarget() instanceof PlaceType) {
             			PlaceType aclistTarget = (PlaceType) arcList.getTarget();
+            			
             			if (aclistTarget.getId().equals(arcsource.getId())) {
-	            			if (arcList.getSource() instanceof PlaceType) {
-	            				PlaceType transitionSourcePlace = (PlaceType) arcList.getSource();
-	            			}
+	            				            			
 	            			if(arcList.getSource() instanceof TransitionType) {
 	            				TransitionType transitionSource = (TransitionType) arcList.getSource();
 	            				org.apromore.pnml.NodeType nodeTransitionSource = (org.apromore.pnml.NodeType) transitionSource;
-	            				org.apromore.pnml.NodeType zwischenspeicher = arcsource;
-	            				data.getNet().getPlace().remove((PlaceType) zwischenspeicher);
+	            				org.apromore.pnml.NodeType buffer = arcsource;
+	            				data.getNet().getPlace().remove((PlaceType) buffer);
 	            				arcsource = nodeTransitionSource;
-	            				//data.getEndNodeMap().remove(source);
+
 	            				data.getRunningPlaceMap().remove(source);
 	            				removeArc = arcList;
-//	            				for (ArcType removeArc : data.getNet().getArc()) {
-//	            					
-//	            				}
-	            				
-//	            				data.get
 	            			}
             			}
-            		}
-            		if (arcList.getTarget() instanceof TransitionType) {
-            			TransitionType aclistTarget = (TransitionType) arcList.getTarget();
-            			if (aclistTarget.getId().equals(arcsource.getId())) {
-	            			if (arcList.getSource() instanceof PlaceType) {
-	            				PlaceType transitionSourcePlace = (PlaceType) arcList.getSource();
-	            			}
-	            			if(arcList.getSource() instanceof TransitionType) {
-	            				TransitionType transitionSource = (TransitionType) arcList.getSource();
-	            			}
-            			}
-            		}
+            		}   			
             	}
             }
+            
             if (removeArc != null)
             	data.getNet().getArc().remove(removeArc);
+            
             arc.setSource(arcsource);
             arc.setTarget(arctarget);
             ArcNameType inscription = new ArcNameType();

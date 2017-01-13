@@ -70,7 +70,7 @@ public class Canonical2PNMLUnitTest {
     /**
      * Decanonize <code>Basic.cpf</code>.
      */
-//    @Test
+    @Test
     public void testBasic() throws Exception {
 
         // Convert the CPF Task to a single PNML Transition
@@ -216,7 +216,7 @@ public class Canonical2PNMLUnitTest {
      *
      * See that CPF cancellation sets get converted into PNML reset arcs.
      */
-//    @Test
+    @Test
     public void testCase12() throws Exception {
         PnmlType pnml = decanonise("Case 12.cpf",   // input file
                                    null,            // no ANF file
@@ -238,7 +238,7 @@ public class Canonical2PNMLUnitTest {
      * CPF generated from a BPMN task with two boundary events.
      * Three CPF nodes (task, timer & message) cancel each of the others.
      */
-//    @Test
+    @Test
     public void testTripleCancellation() throws Exception {
         PnmlType pnml = decanonise("TripleCancellation.cpf",   // input file
                                    null,                       // no ANF file
@@ -256,7 +256,7 @@ public class Canonical2PNMLUnitTest {
 
 
     // Internal methods
-
+    
     private PnmlType decanonise(final String  cpfFileName,
                                 final String  anfFileName,
                                 final String  pnmlFileName,

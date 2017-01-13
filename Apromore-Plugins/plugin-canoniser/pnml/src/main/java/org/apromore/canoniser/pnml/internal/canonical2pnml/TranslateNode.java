@@ -180,44 +180,21 @@ public class TranslateNode {
             startToRunning.setTarget(running);
             data.getNet().getArc().add(startToRunning);
 
-            // Create the transition that stops the task running
-//            TransitionType end = new TransitionType();
-//            end.setId(String.valueOf(ids++));
-//            end.setName(running.getName());
-//            end.setGraphics(newGraphicsNodeType(dummyPosition(), transitionDefaultDimension()));
-//            data.getNet().getTransition().add(end);
-
-            // Create the arc from the running place to the end transition
-//            ArcType runningToEnd = new ArcType();
-//            runningToEnd.setId(String.valueOf(ids++));
-//            runningToEnd.setSource(running);
-//            runningToEnd.setTarget(end);
-//            data.getNet().getArc().add(runningToEnd);
-
             // Name the nodes (English naming convention)
             String taskName = task.getName();
             if (taskName != null) {
-                // Start transition named "<Task> start"
+                // Start transition named "<Task>"
                 NodeNameType name = new NodeNameType();
-//                name.setText(taskName + "_start");
                 name.setText(taskName);
                 tran.setName(name);
 
                 // Running place named "<Task>"
                 name = new NodeNameType();
-//                name.setText(taskName);
                 running.setName(name);
-
-                // End transition named "<Task> end"
-//                name = new NodeNameType();
-//                name.setText(taskName + "_end");
-//                end.setName(name);
             }
 
             // Tell TranslateArc where to attach incoming and outgoing arcs
             data.getStartNodeMap().put(task, tran);
-//            data.getRunningPlaceMap().put(task, running);
-//            data.getEndNodeMap().put(task, end);
             data.getEndNodeMap().put(task, running);
         }
     }
@@ -242,22 +219,22 @@ public class TranslateNode {
 
     static DimensionType placeDefaultDimension() {
         DimensionType d = new DimensionType();
-        d.setX(BigDecimal.valueOf(40)); //changed to 40 orig: 30
-        d.setY(BigDecimal.valueOf(40)); //changed to 40 orig: 30
+        d.setX(BigDecimal.valueOf(40)); //changed to 40 for WoPeD (orig: 30)
+        d.setY(BigDecimal.valueOf(40)); //changed to 40 for WoPeD (orig: 30)
         return d;
     }
 
     static DimensionType transitionDefaultDimension() {
         DimensionType d = new DimensionType();
-        d.setX(BigDecimal.valueOf(40)); //changed to 40 orig: 50
-        d.setY(BigDecimal.valueOf(40)); //changed to 40 orig: 50
+        d.setX(BigDecimal.valueOf(40)); //changed to 40 for WoPeD (orig: 50)
+        d.setY(BigDecimal.valueOf(40)); //changed to 40 for WoPeD (orig: 50)
         return d;
     }
 
     static DimensionType blindTransitionDefaultDimension() {
         DimensionType d = new DimensionType();
-        d.setX(BigDecimal.valueOf(40)); // changed to 40 orig: 10
-        d.setY(BigDecimal.valueOf(40)); //changed to 40 orig: 50
+        d.setX(BigDecimal.valueOf(40)); // changed to 40 for WoPeD (orig: 10)
+        d.setY(BigDecimal.valueOf(40)); // changed to 40 for WoPeD (orig: 50)
         return d;
     }
 
@@ -267,7 +244,6 @@ public class TranslateNode {
         graphics.setDimension(dimension);
         return graphics;
     }
-
 
     public void translateEvent(NodeType node) {
         if (node instanceof MessageType || node instanceof TimerType) {

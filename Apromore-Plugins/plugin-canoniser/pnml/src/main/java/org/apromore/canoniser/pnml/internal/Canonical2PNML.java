@@ -191,14 +191,11 @@ public class Canonical2PNML {
 
         data.getNet().setId("noID");
         data.getNet().setType("http://www.informatik.hu-berlin.de/top/pntd/ptNetb");
-        data.getPnml().getNet().add(data.getNet());
-        
-        
+        data.getPnml().getNet().add(data.getNet());     
     }
 
     private void simplify() {
-        //LOGGER.info("Performing structural simplifications");
- 
+        //LOGGER.info("Performing structural simplifications"); 
 
         SetMultimap<org.apromore.pnml.NodeType, ArcType> incomingArcMultimap = HashMultimap.create();
         SetMultimap<org.apromore.pnml.NodeType, ArcType> outgoingArcMultimap = HashMultimap.create();
@@ -259,85 +256,63 @@ public class Canonical2PNML {
             }
         }
         data.getSynthesizedPlaces().clear();
-        //LOGGER.info("Performed structural simplifications");
-      
+        //LOGGER.info("Performed structural simplifications");      
         
-        //new code.....
-        
-        PlaceType place;
-        TransitionType transition;
+        // Logic to correct position of process elements        
+        PlaceType place = null;
+        TransitionType transition = null;
         BigDecimal TranX, TranY, PlaceX, PlaceY;
-        BigDecimal dummyX = new BigDecimal(100);
-        BigDecimal dummyY = new BigDecimal(400);
-          
+        int offset1 = 0;
+		int offset2 = 0;
+		
+		for (int i = 0; i < 2; i++) {
+			for (ArcType arc : data.getNet().getArc()) {
 
- 
-        for (int i = 0; i < 2; i++) {
-          for (ArcType arc : data.getNet().getArc()) {
-        
-    		  
-        	  if (arc.getSource() instanceof PlaceType) {
-        		  place = (PlaceType) arc.getSource();
-        		  transition = (TransitionType) arc.getTarget();
-        		  TranX = transition.getGraphics().getPosition().getX();
-        		  TranY = transition.getGraphics().getPosition().getY();
-        		  PlaceX = place.getGraphics().getPosition().getX();
-        		  PlaceY = place.getGraphics().getPosition().getY();
-        		  
-	        		  if ((Double.parseDouble(String.valueOf(PlaceX)) == 100 && Double.parseDouble(String.valueOf(PlaceY)) == 400) &&
-	        			  (Double.parseDouble(String.valueOf(TranX)) == 100 && Double.parseDouble(String.valueOf(TranY)) == 400)) {
-		        		  ;	        	  
-		        	  } else {
-		        			  
-		        		  if(Double.parseDouble(String.valueOf(PlaceX)) == 100 && 
-		       	        	 Double.parseDouble(String.valueOf(PlaceY)) == 400) {
-		        			  	place.getGraphics().getPosition().setX(BigDecimal.valueOf(Double.parseDouble(String.valueOf(TranX)) - 75));
-		        			  	place.getGraphics().getPosition().setY(TranY);
-		        		  } else if (Double.parseDouble(String.valueOf(TranX)) == 100 && 
-		        	        	   Double.parseDouble(String.valueOf(TranY)) == 400) {   
-		        			  	transition.getGraphics().getPosition().setX(BigDecimal.valueOf(Double.parseDouble(String.valueOf(PlaceX)) + 75));
-		        			  	transition.getGraphics().getPosition().setY(PlaceY);
-		        		  }
-		        	  }	 
-        		  
-        	  }     	  
-        	  
-        	  if (arc.getSource() instanceof TransitionType) {
-        		  place = (PlaceType) arc.getTarget();
-        		  transition = (TransitionType) arc.getSource();
-        		  TranX = transition.getGraphics().getPosition().getX();
-        		  TranY = transition.getGraphics().getPosition().getY();
-        		  PlaceX = place.getGraphics().getPosition().getX();
-        		  PlaceY = place.getGraphics().getPosition().getY();
-        			  
-	        		  if ((Double.parseDouble(String.valueOf(PlaceX)) == 100 && Double.parseDouble(String.valueOf(PlaceY)) == 400) &&
-	 	        		  (Double.parseDouble(String.valueOf(TranX)) == 100 && Double.parseDouble(String.valueOf(TranY)) == 400)) {
-	        			  ;
-	        		  } else {
-	 	        			  
-	 	        		  if(Double.parseDouble(String.valueOf(PlaceX)) == 100 && 
-	 	        				 Double.parseDouble(String.valueOf(PlaceY)) == 400) {
-	 	        			  	place.getGraphics().getPosition().setX(BigDecimal.valueOf(Double.parseDouble(String.valueOf(TranX)) + 75));
-	 	        			  	place.getGraphics().getPosition().setY(TranY);
-	 	        		  } else if (Double.parseDouble(String.valueOf(TranX)) == 100 && 
-	 	        	        	   Double.parseDouble(String.valueOf(TranY)) == 400) {   
-	 	        			  	transition.getGraphics().getPosition().setX(BigDecimal.valueOf(Double.parseDouble(String.valueOf(PlaceX)) - 75));
-	 	        			  	transition.getGraphics().getPosition().setY(PlaceY);
-	 	        		  }
-	 	        	  }
-        	  } 
-        	  if (arc.getGraphics() != null) {
-        		  if (arc.getGraphics().getPosition() != null) {
-        			  arc.getGraphics().getPosition().clear();
-        		  }
-        	  }
-          	}
-        	  
-          } 
-        
-        //ende neuer code.....
-        
-    }
+				if (arc.getSource() instanceof PlaceType) {
+					place = (PlaceType) arc.getSource();
+					transition = (TransitionType) arc.getTarget();
+					offset1 = -75;
+					offset2 = +75;
+				} else if (arc.getSource() instanceof TransitionType) {
+					place = (PlaceType) arc.getTarget();
+					transition = (TransitionType) arc.getSource();
+					offset1 = +75;
+					offset2 = -75;
+				}
+
+				TranX = transition.getGraphics().getPosition().getX();
+				TranY = transition.getGraphics().getPosition().getY();
+				PlaceX = place.getGraphics().getPosition().getX();
+				PlaceY = place.getGraphics().getPosition().getY();
+
+				if ((Double.parseDouble(String.valueOf(PlaceX)) == 100
+						&& Double.parseDouble(String.valueOf(PlaceY)) == 400)
+						&& (Double.parseDouble(String.valueOf(TranX)) == 100
+								&& Double.parseDouble(String.valueOf(TranY)) == 400)) {
+					; // do nothing
+				} else {
+
+					if (Double.parseDouble(String.valueOf(PlaceX)) == 100
+							&& Double.parseDouble(String.valueOf(PlaceY)) == 400) {
+						place.getGraphics().getPosition()
+								.setX(BigDecimal.valueOf(Double.parseDouble(String.valueOf(TranX)) + offset1));
+						place.getGraphics().getPosition().setY(TranY);
+					} else if (Double.parseDouble(String.valueOf(TranX)) == 100
+							&& Double.parseDouble(String.valueOf(TranY)) == 400) {
+						transition.getGraphics().getPosition()
+								.setX(BigDecimal.valueOf(Double.parseDouble(String.valueOf(PlaceX)) + offset2));
+						transition.getGraphics().getPosition().setY(PlaceY);
+					}
+				}
+
+				if (arc.getGraphics() != null) {
+					if (arc.getGraphics().getPosition() != null) {
+						arc.getGraphics().getPosition().clear();
+					}
+				}
+			}
+		}
+	}
 
     /**
      * @param transition

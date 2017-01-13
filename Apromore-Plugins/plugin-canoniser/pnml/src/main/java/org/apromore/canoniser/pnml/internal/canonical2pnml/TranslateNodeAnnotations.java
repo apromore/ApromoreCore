@@ -87,17 +87,24 @@ public class TranslateNodeAnnotations {
 
         org.apromore.pnml.PositionType pos = new org.apromore.pnml.PositionType();
         DimensionType dim = new DimensionType();
-        // always use Standard Dimension for Tool Woped
-//        if (cGraphInfo.getSize() != null) {
-//            //if (data.getInitialType().equals("PNML")) {
-//            if (cGraphInfo != null && cGraphInfo.getSize() != null) {
-//                dim.setX(cGraphInfo.getSize().getWidth());
-//                dim.setY(cGraphInfo.getSize().getHeight());
-//            } else {
-                dim.setX(BigDecimal.valueOf(Long.valueOf(40)));
-                dim.setY(BigDecimal.valueOf(Long.valueOf(40)));
-//            }
-//        }
+        
+        // Always use standard dimension of 40 for Tool WoPeD
+        dim.setX(BigDecimal.valueOf(Long.valueOf(40)));
+        dim.setY(BigDecimal.valueOf(Long.valueOf(40)));
+        
+        /*----------------------------------------------------
+         * Old generic (tool-independent) size coding
+        
+        if (cGraphInfo.getSize() != null) {
+            if (data.getInitialType().equals("PNML")) {
+            	if (cGraphInfo != null && cGraphInfo.getSize() != null) {
+                dim.setX(cGraphInfo.getSize().getWidth());
+                dim.setY(cGraphInfo.getSize().getHeight());
+            	} 
+            }
+        }
+        *----------------------------------------------------
+        */
 
         assert cGraphInfo != null;
         if (cGraphInfo.getPosition() != null && cGraphInfo.getPosition().size() > 0) {
@@ -130,6 +137,7 @@ public class TranslateNodeAnnotations {
                 nnt.setText(((TransitionType) obj).getName().getText());
                 ((TransitionType) obj).setName(nnt);
             }
+            
             ((TransitionType) obj).setGraphics(graphics);
             if (data.get_triggermap()!=null&&data.get_triggermap().containsKey(((TransitionType) obj).getName().getText())) {
                 TriggerType tt = (data.get_triggermap_value(((TransitionType) obj).getName().getText()));
@@ -138,6 +146,7 @@ public class TranslateNodeAnnotations {
                 pt.setY((((TransitionType) obj).getGraphics().getPosition().getY().subtract(BigDecimal.valueOf(Long.valueOf(20)))));
                 tt.getGraphics().setPosition(pt);
             }
+            
             if (data.get_resourcepositionmap()!=null&&data.get_resourcepositionmap().containsKey(((TransitionType) obj).getName().getText())) {
                 TransitionResourceType tres = (data.get_resourcepositionmap_value(((TransitionType) obj).getName().getText()));
                 PositionType pt = new PositionType();
