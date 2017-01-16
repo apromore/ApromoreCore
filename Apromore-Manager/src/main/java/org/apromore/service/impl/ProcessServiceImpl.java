@@ -237,8 +237,8 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
         LOGGER.debug("Executing operation canoniseProcess");
 
         if (cpf == null) {
-            LOGGER.error("Process " + processName + " Failed to import correctly.");
-            throw new ImportException("Process " + processName + " Failed to import correctly.");
+            LOGGER.error("Process " + processName + " failed to import correctly.");
+            throw new ImportException("Process " + processName + " failed to import correctly.");
         } else if ((folderId.equals(0) && processRepo.findUniqueByName(processName) != null) ||
                 (processRepo.findByNameAndFolderId(processName, folderId) != null)) {
             LOGGER.error("Process " + processName + " was found to already exist in the Repository.");
@@ -251,7 +251,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
             NativeType nativeType = formatSrv.findNativeType(natType);
             Process process = insertProcess(processName, user, nativeType, domain, folderId, created, publicModel);
             if (process.getId() == null) {
-                throw new ImportException("Created New process named \"" + processName + "\", but JPA repository assigned a primary key ID of " + process.getId());
+                throw new ImportException("Created new process named \"" + processName + "\", but JPA repository assigned a primary key ID of " + process.getId());
             }
 
             pmv = addProcess(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
@@ -1036,7 +1036,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
 
             process.getProcessBranches().add(branch);
 
-            return processBranchRepo.save(branch);
+            return processBranchRepo.saveAndFlush(branch);
         } catch (Exception ex) {
             LOGGER.error("Importing a Branch Failed: " + ex.toString());
             throw new ImportException(ex);
@@ -1065,7 +1065,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
         addResourcesToProcessModel(proModGrap, processModel);
         updateResourcesOnProcessModel(proModGrap.getResources(), processModel);
 
-        return processModelVersionRepo.save(processModel);
+        return processModelVersionRepo.saveAndFlush(processModel);
     }
 
 
