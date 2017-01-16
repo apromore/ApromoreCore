@@ -44,7 +44,6 @@ public class HeuristicNetPlugin {
 
         if( debug ) {
             net.printFrequencies();
-            net.printConflicts();
             net.printParallelisms();
         }
 

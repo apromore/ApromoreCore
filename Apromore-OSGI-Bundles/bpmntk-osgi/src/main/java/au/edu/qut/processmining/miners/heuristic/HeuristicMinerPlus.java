@@ -79,7 +79,6 @@ public class HeuristicMinerPlus {
         System.out.println("HM+ - mining heuristic net: starting");
         heuristicNet = new HeuristicNet(log, dependencyThreshold, positiveObservations, relative2BestThreshold);
         heuristicNet.generateHeuristicNet();
-//        heuristicDiagram = heuristicNet.getHeuristicDiagram(true);
         System.out.println("HM+ - mining heuristic net: done ");
     }
 
@@ -166,7 +165,7 @@ public class HeuristicMinerPlus {
         while( generateBondJoins() );
 
         /* generating join gateways for sound rigids */
-        if( discoverJoins ) generateRigidJoins();
+        generateRigidJoins();
 
         System.out.println("HM+ - bpmn diagram generated successfully");
     }
@@ -206,6 +205,7 @@ public class HeuristicMinerPlus {
     }
 
     private boolean generateBondJoins() {
+        int counter = 0;
         HashSet<String> changed = new HashSet<>();
 
         try {
@@ -214,6 +214,8 @@ public class HeuristicMinerPlus {
 
             HashMap<String, Gateway.GatewayType> gates = new HashMap<String, Gateway.GatewayType>();
             ArrayList<RPSTNode> bondHierarchy = new ArrayList<RPSTNode>();
+            HashSet<RPSTNode> loopBonds = new HashSet<>();
+            HashSet<RPSTNode> rigids = new HashSet<>();
 
             IDirectedGraph<DirectedEdge, Vertex> graph = new DirectedGraph();
             Vertex src;
@@ -223,7 +225,7 @@ public class HeuristicMinerPlus {
             BPMNNode bpmnTGT;
             Gateway gate;
 
-            String entry, exit;
+            String entry, exit, gatify, matchingGate, srcVertex;
 
 
             /* building the graph from the bpmnDiagram, the graph is necessary to generate the RPST */
@@ -262,19 +264,25 @@ public class HeuristicMinerPlus {
 
                 for( RPSTNode n : new HashSet<RPSTNode>(rpst.getChildren(root)) ) {
                     switch( n.getType() ) {
-                        case R:
-                            toAnalize.addLast(n);
-                            break;
                         case T:
                             break;
                         case P:
                             toAnalize.addLast(n);
                             break;
+                        case R:
+                            rigids.add(n);
                         case B:
                             exit = n.getExit().getName();
                             if( !gates.containsKey(exit) ) {
                                 System.out.println("DEBUG - found a bond exit (" + exit + ") that is not a gateway");
                                 bondHierarchy.add(0, n);
+                            } else {
+                                entry = n.getEntry().getName();
+                                if( !gates.containsKey(entry) ) {
+                                    System.out.println("DEBUG - found a bond entry (" + entry + ") that is not a gateway");
+                                    bondHierarchy.add(0, n);
+                                    loopBonds.add(n);
+                                }
                             }
                             toAnalize.addLast(n);
                             break;
@@ -284,48 +292,55 @@ public class HeuristicMinerPlus {
             }
 
             System.out.println("DEBUG - starting analysing bonds: " + bondHierarchy.size() );
-//            int debugChecker;
             HashMap<String, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removableEdges;
             HashSet<String> toRemove;
+            boolean isLoop;
+            boolean isRigid;
+            Gateway.GatewayType gType;
 
             while( !bondHierarchy.isEmpty() ) {
                 RPSTNode bond = bondHierarchy.remove(0);
                 entry = bond.getEntry().getName();
                 exit = bond.getExit().getName();
-                System.out.println("DEBUG - analysing a bond with [ split gate : join task ] = [ " + gates.get(entry) + " : " + exit + " ]");
+                isLoop = loopBonds.contains(bond);
+                isRigid = rigids.contains(bond);
+                gatify = isLoop ? entry : exit;   //if the bond is a loop, the entry of the bond is a join and its exit is a split, if not a loop bond it is vice-versa
+                matchingGate = isLoop ? exit : entry;
+                gType = isRigid ? Gateway.GatewayType.INCLUSIVE : gates.get(matchingGate);
 
-                if( changed.contains(exit) ) continue;
-                changed.add(exit);
-
-//                debugChecker = rpst.getChildren(bond).size();
-
-//                System.out.println("DEBUG - before checker: 0 = " + debugChecker );
+                if( changed.contains(gatify) ) continue;
+                changed.add(gatify);
 
                 removableEdges = new HashMap<>();
                 toRemove = new HashSet<>();
-                bpmnTGT = nodes.get(exit);
+                bpmnTGT = nodes.get(gatify);
 
-                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : bpmnDiagram.getInEdges(bpmnTGT) )
-                    removableEdges.put(oe.getSource().getLabel(), oe);
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> ie : bpmnDiagram.getInEdges(bpmnTGT) ) removableEdges.put(ie.getSource().getLabel(), ie);
 
                 IDirectedGraph<DirectedEdge, Vertex> bondGraph = bond.getFragment();
                 for( Vertex v : bondGraph.getVertices() )
-                    if( v.getName().equals(exit) ) {
+                    if( v.getName().equals(gatify) ) {
                         // editing the bpmn diagram
-                        gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), Gateway.GatewayType.INCLUSIVE);//gates.get(entry));
-                        System.out.println("DEBUG - added a split");
+                        gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), gType);
+                        counter++;
                         bpmnDiagram.addFlow(gate, bpmnTGT, "");
+
                         for( de.hpi.bpt.graph.abs.AbstractDirectedEdge e : bondGraph.getEdgesWithTarget(v) ) {
-//                            debugChecker--;
-                            entry = e.getSource().getName();
-                            toRemove.add(entry);
-                            bpmnSRC = nodes.get(entry);
+                            srcVertex = e.getSource().getName();
+                            toRemove.add(srcVertex);
+                            bpmnSRC = nodes.get(srcVertex);
                             bpmnDiagram.addFlow(bpmnSRC, gate, "");
                         }
-                    }
 
-                for( String re : toRemove ) bpmnDiagram.removeEdge(removableEdges.get(re));
-//                System.out.println("DEBUG - after checker: 0 = " + debugChecker );
+                        for( String label : removableEdges.keySet() ) {
+                            if( toRemove.contains(label) ) bpmnDiagram.removeEdge(removableEdges.get(label));
+                            else if(isLoop) {
+                                bpmnSRC = nodes.get(label);
+                                bpmnDiagram.addFlow(bpmnSRC, gate, "");
+                                bpmnDiagram.removeEdge(removableEdges.get(label));
+                            }
+                        }
+                    }
             }
 
         } catch( Exception e ) {
@@ -334,7 +349,7 @@ public class HeuristicMinerPlus {
             return false;
         }
 
-//        System.out.println("DEBUG - generate bond join: " + (!changed.isEmpty()) );
+        System.out.println("DEBUG - bond joins generated: " + counter );
         return !changed.isEmpty();
     }
 
@@ -343,12 +358,10 @@ public class HeuristicMinerPlus {
         Set<BPMNNode> nodes = new HashSet<>(bpmnDiagram.getNodes());
         Gateway gate;
 
-        /* step 1. adding a inclusive joins */
+        /* step 1. adding inclusive joins */
         for( BPMNNode n : nodes ) {
             removableEdges = new HashSet<>(bpmnDiagram.getInEdges(n));
             if( (removableEdges.size() <= 1) || (n instanceof Gateway) ) continue;
-//            if( (n instanceof Gateway) && (bpmnDiagram.getOutEdges(n).size() <= 1) ) continue; //we generate a new join only for those gateways that are both join and split
-//            System.out.println("DEBUG - generating a new join");
             gate = bpmnDiagram.addGateway(Integer.toString(gateCounter++), Gateway.GatewayType.INCLUSIVE);
             bpmnDiagram.addFlow(gate, n, "");
             for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : removableEdges) {
@@ -357,22 +370,9 @@ public class HeuristicMinerPlus {
             }
         }
 
-        /* at this point, all the xor-homogeneous rigids are already set
-        *  what is left is:
-        *  and-homogeneous (will be fixed in the next step)
-        *  heterogeneous rigids (will be fixed with Bartek/Hagen )
-        *  */
-
-        /* step 2. checking all the rigids in the RPST bottom-up
-        * if a rigid contains only XOR nothing is done
-        * if a rigid contains only AND splits, all the XOR joins (formerly created at step 1) are turned into AND joins
-        * if none of the above cases, the rigid soundness will be successively fixed with Bartek/Hagen technique
-         */
-
         GatewayMap gatemap = new GatewayMap();
         if( gatemap.generateMap(bpmnDiagram) ) {
-//            gatemap.setHomogenousRigidJoins();
-            gatemap.detectIORs();
+            if(discoverJoins) gatemap.detectIORs();
         } else {
             System.out.println("ERROR - something went wrong configuring the gateway map");
         }

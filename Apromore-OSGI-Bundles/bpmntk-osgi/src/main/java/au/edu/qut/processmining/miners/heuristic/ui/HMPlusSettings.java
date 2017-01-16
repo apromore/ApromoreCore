@@ -53,7 +53,7 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         this.add(dependencyThreshold);
         dependencyThreshold.setVisible(true);
 
-        positiveObservations = SlickerFactory.instance().createNiceDoubleSlider("Positive Observations", 0.00, 1.00, HMPlusUIResult.POSITIVE_OBSERVATIONS, NiceSlider.Orientation.HORIZONTAL);
+        positiveObservations = SlickerFactory.instance().createNiceDoubleSlider("Positive Observations", 0.00, 0.05, HMPlusUIResult.POSITIVE_OBSERVATIONS, NiceSlider.Orientation.HORIZONTAL);
         positiveObservations.addChangeListener(hmpil);
         this.add(positiveObservations);
         positiveObservations.setVisible(false);
