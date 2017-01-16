@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.logfilter;
+package org.apromore.plugin.portal.metrics;
 
 // Java 2 Standard Edition packages
 import java.io.IOException;

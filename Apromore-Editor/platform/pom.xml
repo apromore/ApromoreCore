@@ -178,7 +178,7 @@
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Import-Bundle>
-                            org.apache.catalina;version="[7.0.35.v201302131125,7.0.35.v201302131125]",
+                            org.apache.catalina;version="[7.0,8)",
                             org.apromore.editor-platform-extension-bpmn2_0;version="[1.2,2)",
                             org.apromore.editor-platform-extension-diagram;version="[1.2,2)",
                             org.apromore.editor-platform-extension-downloader;version="[1.2,2)",
@@ -198,10 +198,10 @@
                             org.springframework.web;bundle-version="[3.1.0,4.0)",
                             org.springframework.beans;bundle-version="[3.1.0,4.0)",
                             org.springframework.context;bundle-version="[3.1.0,4.0)",
-                            org.springframework.security.core;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.config;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.web;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
+                            org.springframework.security.core;version="[3.1.0,4.0)",
+                            org.springframework.security.config;version="[3.1.0,4.0)",
+                            org.springframework.security.web;version="[3.1.0,4.0)",
+                            org.springframework.security.remoting;version="[3.1.0,4.0)",
                             org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             com.springsource.javax.validation;version="[1.0.0.GA,1.0.0.GA]",
                             com.springsource.org.apache.tools.ant;version="[1.8.3,1.8.3]"
