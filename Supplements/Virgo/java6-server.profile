@@ -147,7 +147,6 @@ org.osgi.framework.system.packages = \
  javax.xml.crypto.dsig.spec;version="1.0",\
  javax.xml.datatype;version="1.3",\
  javax.xml.namespace;version="1.3",\
- javax.xml.namespace;version="1.3",\
  javax.xml.parsers;version="1.3",\
  javax.xml.soap,\
  javax.xml.soap;version="1.3.0",\
@@ -179,9 +178,9 @@ org.osgi.framework.system.packages = \
  javax.xml.xpath,\
  javax.vecmath,\
  org.eclipse.virgo.kernel.equinox.extensions,\
- org.eclipse.virgo.kernel.equinox.extensions;version="3.6.0",\
+ org.eclipse.virgo.kernel.equinox.extensions;version="3.6.4",\
  org.eclipse.virgo.kernel.equinox.extensions.hooks,\
- org.eclipse.virgo.kernel.equinox.extensions.hooks;version="3.6.0",\
+ org.eclipse.virgo.kernel.equinox.extensions.hooks;version="3.6.4",\
  org.ietf.jgss,\
  org.omg.CORBA,\
  org.omg.CORBA_2_3,\
@@ -211,19 +210,20 @@ org.osgi.framework.system.packages = \
  org.omg.PortableServer.ServantLocatorPackage,\
  org.omg.SendingContext,\
  org.omg.stub.java.rmi,\
- org.w3c.dom;version="1.3",\
- org.w3c.dom.bootstrap;version="1.3",\
- org.w3c.dom.css;version="1.3",\
- org.w3c.dom.events;version="1.3",\
- org.w3c.dom.html;version="1.3",\
- org.w3c.dom.ls;version="1.3",\
- org.w3c.dom.ranges;version="1.3",\
- org.w3c.dom.stylesheets;version="1.3",\
- org.w3c.dom.traversal;version="1.3",\
- org.w3c.dom.views;version="1.3",\
- org.xml.sax;version="1.3",\
- org.xml.sax.ext;version="1.3",\
- org.xml.sax.helpers;version="1.3",\
+ org.w3c.dom,\
+ org.w3c.dom.bootstrap,\
+ org.w3c.dom.css,\
+ org.w3c.dom.events,\
+ org.w3c.dom.html,\
+ org.w3c.dom.ls,\
+ org.w3c.dom.ranges,\
+ org.w3c.dom.stylesheets,\
+ org.w3c.dom.traversal,\
+ org.w3c.dom.views ,\
+ org.w3c.dom.xpath,\
+ org.xml.sax,\
+ org.xml.sax.ext,\
+ org.xml.sax.helpers,\
  sun.awt,\
  sun.management,\
  sun.misc,\
