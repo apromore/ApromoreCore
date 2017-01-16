@@ -45,7 +45,6 @@ public class HeuristicMinerPlusPlugin {
 
         if( debug ) {
             heuristicNet.printFrequencies();
-            heuristicNet.printConflicts();
             heuristicNet.printParallelisms();
         }
 

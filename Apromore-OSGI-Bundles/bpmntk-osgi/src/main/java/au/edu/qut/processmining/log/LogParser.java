@@ -23,9 +23,9 @@ public class LogParser {
 
         SimpleLog sLog;
 
-        HashMap<String, Integer> parsed = new HashMap<>();
-        HashMap<Integer, String> events = new HashMap<>();
-        HashMap<String, Integer> traces = new HashMap<>();
+        HashMap<String, Integer> parsed = new HashMap<>();  //this maps the original name of an event to its code
+        HashMap<Integer, String> events = new HashMap<>();  //this maps the code of the event to its original name
+        HashMap<String, Integer> traces = new HashMap<>();  //this is the simple log, each trace is a string associated to its frequency
 
         int tIndex; //index to iterate on the log traces
         int eIndex; //index to iterate on the events of the trace
@@ -48,6 +48,11 @@ public class LogParser {
         eventCounter = 1;
 
         for( tIndex = 0; tIndex < totalTraces; tIndex++ ) {
+            /* we convert each trace in the log into a string
+            *  each string will be a sequence of "::x" terminated with "::", where:
+            *  '::' is a separator
+            *  'x' is an integer encoding the name of the original event
+            */
             trace = log.get(tIndex);
             traceSize = trace.size();
 
