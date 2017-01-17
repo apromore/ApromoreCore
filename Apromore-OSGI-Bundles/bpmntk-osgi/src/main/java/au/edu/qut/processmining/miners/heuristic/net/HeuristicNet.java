@@ -78,7 +78,7 @@ public class HeuristicNet {
         Activity task;
         BPMNNode src, tgt;
 
-        System.out.println("DEBUG - building the Heuristic net with [ nodes : edges ] = [" + nodes.size() + " : " + edges.size() + " ]");
+//        System.out.println("DEBUG - building the Heuristic net with [ nodes : edges ] = [" + nodes.size() + " : " + edges.size() + " ]");
 
         for( int event : nodes.keySet() ) {
             label = events.get(event) + "\n(" + nodes.get(event).getFrequency() + ")";
@@ -209,7 +209,7 @@ public class HeuristicNet {
     private void evaluateParallelisms() {
         parallelisms = new HashMap<>();
 
-        System.out.println("DEBUG - evaluating parallelism and conflicts ...");
+        System.out.println("HNM - evaluating parallelism and conflicts ...");
         for( int src : net.keySet() )
             for( int tgt : net.get(src).keySet() )
                 if( net.containsKey(tgt) && (net.get(tgt).containsKey(src)) ) {
@@ -234,7 +234,7 @@ public class HeuristicNet {
         loopsL1 = new HashSet<>();
         loopsL2 = new HashSet<>();
 
-        System.out.println("DEBUG - evaluating loops length ONE ...");
+        System.out.println("HNM - evaluating loops length ONE ...");
         for( HeuristicEdge e : edges ) {
             src = e.getSource().getCode();
             tgt = e.getTarget().getCode();
@@ -245,13 +245,13 @@ public class HeuristicNet {
         }
 
 //        we removed the loop length 1 edges, because late we will just mark them as self-loop activities
-        System.out.println("DEBUG - removing loops length ONE ...");
+        System.out.println("HNM - removing loops length ONE ...");
         for( HeuristicEdge e : removableLoopEdges ) this.removeEdge(e);
 
         System.out.println("DEBUG - found " + loopsL1.size() + " self-loops:");
         for( int code : loopsL1 ) System.out.println("DEBUG - self-loop: " + code);
 
-        System.out.println("DEBUG - evaluating loops length TWO ...");
+        System.out.println("HNM - evaluating loops length TWO ...");
         for( HeuristicEdge e : edges ) {
             src = e.getSource().getCode();
             tgt = e.getTarget().getCode();
@@ -285,7 +285,7 @@ public class HeuristicNet {
                 if( !loop2Frequencies.get(src).containsKey(tgt) ) loop2Frequencies.get(src).put(tgt, loop2DependencyScore);
             }
 
-            System.out.println("DEBUG - l2-score: " + src + " >> " + tgt + " : " + loop2DependencyScore);
+//            System.out.println("DEBUG - l2-score: " + src + " >> " + tgt + " : " + loop2DependencyScore);
             if( loop2DependencyScore != 0 ) {
 //                if the dependency score of the loop length 2 is greater than zero:
 //                1. we mark the edge as loop length 2 edge
@@ -295,8 +295,8 @@ public class HeuristicNet {
 
 //                finally, we have to remove the parallelism relationship between src and tgt,
 //                because it wasn't a real parallelism but just a short loop
-                if( parallelisms.containsKey(src) && parallelisms.get(src).remove(tgt) )
-                    System.out.println("DEBUG - successfully removed short-loop parallelism: " + src + " || " + tgt);
+                if( parallelisms.containsKey(src) && parallelisms.get(src).remove(tgt) );
+//                    System.out.println("DEBUG - successfully removed short-loop parallelism: " + src + " || " + tgt);
             }
         }
     }
@@ -312,7 +312,7 @@ public class HeuristicNet {
         candidateSuccessor = new HashMap<>();
         candidatePredecessor = new HashMap<>();
 
-        System.out.println("DEBUG - evaluating dependency scores ...");
+        System.out.println("HNM - evaluating dependency scores ...");
         for( HeuristicEdge e : edges ) {
             src = e.getSource().getCode();
             tgt = e.getTarget().getCode();
@@ -332,7 +332,7 @@ public class HeuristicNet {
                 localDependency = (double) (src2tgt_frequency - tgt2src_frequency) / (src2tgt_frequency + tgt2src_frequency + 1);
                 e.setLocalDependencyScore(localDependency);
 
-                System.out.println("DEBUG - dScore: " + src + " => " + tgt + " : " + localDependency);
+//                System.out.println("DEBUG - dScore: " + src + " => " + tgt + " : " + localDependency);
             } else {
 //                if this edge is a loop length 2 edge, we have already computed its dependency score,
 //                so we can just get it as attribute of the edge
@@ -363,7 +363,7 @@ public class HeuristicNet {
         boolean firstCheck;
         boolean secondCheck;
 
-        System.out.println("DEBUG - edges before pruning: " + edges.size());
+        System.out.println("HNM - edges before pruning: " + edges.size());
 
         for( HeuristicEdge e : edges ) {
             src = e.getSource().getCode();
@@ -398,7 +398,7 @@ public class HeuristicNet {
         }
 
         for( HeuristicEdge e : toBeRemoved ) this.removeEdge(e);
-        System.out.println("DEBUG - edges after pruning: " + edges.size());
+        System.out.println("HNM - edges after pruning: " + edges.size());
     }
 
     private void checkIntegrity() {
@@ -406,42 +406,53 @@ public class HeuristicNet {
 //        we restore the edges here, getting only the best predecessor and/or the best successor
 
         boolean change;
-        System.out.println("DEBUG - recovering edges:");
+        int counter = 0;
+        System.out.println("HNM - recovering edges ...");
         do {
             change = false;
             for(int n : nodes.keySet()) {
                 if( incoming.get(n).isEmpty() && (n != startcode) ) {
                     change = true;
+                    counter++;
                     addEdge(candidatePredecessor.get(n));
                 }
 
                 if( outgoing.get(n).isEmpty() && (n != endcode) ) {
                     change = true;
+                    counter++;
                     addEdge(candidateSuccessor.get(n));
                 }
             }
         } while (change);
+
+        System.out.println("HNM - recovered edges: " + counter);
     }
 
     private void removeWeakParallelisms() {
         int src;
         int tgt;
+        int counter = 0;
 
 //        if it happens that we have edges between A and B, they cannot be in parallel,
 //        because the edge means that the directly follow relationship between A and B is strong
 //        and they are not in parallel, otherwise no edges would remain between A and B
 //        the natural consequence is that we remove their parallelism from the set of parallelisms
-        System.out.println("DEBUG - evaluating weak parallelisms ...");
+        System.out.println("HNM - evaluating weak parallelisms ...");
         for( HeuristicEdge e : edges ) {
             src = e.getSource().getCode();
             tgt = e.getTarget().getCode();
 
-            if( parallelisms.containsKey(src) && parallelisms.get(src).remove(tgt) )
-                System.out.println("DEBUG - successfully removed weak parallelism: " + src + " || " + tgt);
+            if( parallelisms.containsKey(src) && parallelisms.get(src).remove(tgt) ) {
+                counter++;
+//                System.out.println("DEBUG - successfully removed weak parallelism: " + src + " || " + tgt);
+            }
 
-            if( parallelisms.containsKey(tgt) && parallelisms.get(tgt).remove(src) )
-                System.out.println("DEBUG - successfully removed weak reverse parallelism: " + tgt + " || " + src);
+            if( parallelisms.containsKey(tgt) && parallelisms.get(tgt).remove(src) ) {
+                counter++;
+//                System.out.println("DEBUG - successfully removed weak reverse parallelism: " + tgt + " || " + src);
+            }
         }
+        System.out.println("HNM - weak parallelisms found and removed: " + counter);
     }
 
 
