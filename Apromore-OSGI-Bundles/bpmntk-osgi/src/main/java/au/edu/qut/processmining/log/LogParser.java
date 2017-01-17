@@ -18,7 +18,7 @@ public class LogParser {
     public static FuzzyNet initFuzzyNet(XLog log) { return (new FuzzyNet(log)); }
 
     public static SimpleLog getSimpleLog(XLog log) {
-        System.out.println("Log Parser - starting... ");
+        System.out.println("Log Parser - starting ... ");
         System.out.println("Log Parser - input log size: " + log.size());
 
         SimpleLog sLog;
@@ -76,9 +76,9 @@ public class LogParser {
             traces.put(sTrace, traces.get(sTrace)+1);
         }
 
-        System.out.println("DEBUG - total events parsed: " + totalEvents);
-        System.out.println("DEBUG - total different events: " + (eventCounter-1));
-        System.out.println("DEBUG - total different traces: " + traces.size() );
+        System.out.println("Log Parser - total events parsed: " + totalEvents);
+        System.out.println("Log Parser - total different events: " + (eventCounter-1));
+        System.out.println("Log Parser - total different traces: " + traces.size() );
 //        for( String t : traces.keySet() ) System.out.println("DEBUG - ["+ traces.get(t) +"] trace: " + t);
 
         System.out.println("DEBUG - final mapping:");
