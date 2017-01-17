@@ -265,7 +265,7 @@ public class HeuristicNet {
             if( loop2Frequencies.containsKey(tgt) && loop2Frequencies.get(tgt).containsKey(src) ) {
 //                this is a computational optimization, due to the fact if we have A > B loop length 2
 //                B > A will be as well loop length 2, and they will have of course the same dependency score.
-//                ref. 'Process Mining with Heuristics Miner Algorithm (Weijters et al.) - p.9
+//                ref. "Process Mining with Heuristics Miner Algorithm" (Weijters et al.) - p.9
                 loop2DependencyScore = loop2Frequencies.get(tgt).get(src);
             } else {
                 src2tgt_loop2Pattern = "::" + src + "::" + tgt + "::" + src + "::";
@@ -278,7 +278,7 @@ public class HeuristicNet {
                     tgt2src_loop2Frequency += (StringUtils.countMatches(trace, tgt2src_loop2Pattern)*traces.get(trace));
                 }
 
-//                this formula is taken from: 'Process Mining with Heuristics Miner Algorithm (Weijters et al.) - p.9
+//                this formula is taken from: "Process Mining with Heuristics Miner Algorithm" (Weijters et al.) - p.9
                 loop2DependencyScore = (double)(src2tgt_loop2Frequency + tgt2src_loop2Frequency)/(src2tgt_loop2Frequency + tgt2src_loop2Frequency + 1);
 
                 if( !loop2Frequencies.containsKey(src) ) loop2Frequencies.put(src, new HashMap<Integer, Double>());
@@ -328,7 +328,7 @@ public class HeuristicNet {
                 } else tgt2src_frequency = 0;
 
 //                here we compute the local dependency applying the formula of the paper:
-//                'Process Mining with Heuristics Miner Algorithm (Weijters et al.) - p.7
+//                "Process Mining with Heuristics Miner Algorithm" (Weijters et al.) - p.7
                 localDependency = (double) (src2tgt_frequency - tgt2src_frequency) / (src2tgt_frequency + tgt2src_frequency + 1);
                 e.setLocalDependencyScore(localDependency);
 
@@ -370,7 +370,7 @@ public class HeuristicNet {
             tgt = e.getTarget().getCode();
 
 //            firstly we evaluate the edge for the best successor
-//            Rediscovering Workflow Models from Event-Based Data using Little Thumb (Weijters et al.) - p. 9
+//            "Rediscovering Workflow Models from Event-Based Data using Little Thumb" (Weijters et al.) - p. 9
             maxDependencyScore = candidateSuccessor.get(src).getLocalDependencyScore();
             dsThreshold = maxDependencyScore*dependencyThreshold;
 

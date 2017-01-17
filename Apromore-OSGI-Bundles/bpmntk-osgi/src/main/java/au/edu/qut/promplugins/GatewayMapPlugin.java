@@ -38,7 +38,7 @@ public class GatewayMapPlugin {
 
         GatewayMap gatemap = new GatewayMap();
         gatemap.generateMap(copy);
-        gatemap.detectIORs();
+        gatemap.detectAndReplaceIORs();
 
         output = gatemap.getGatewayMap();
 

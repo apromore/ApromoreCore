@@ -417,7 +417,7 @@ public class HeuristicMinerPlus {
 
     private void setJoinTypes() {
         GatewayMap gatemap = new GatewayMap();
-        if( discoverJoins && gatemap.generateMap(bpmnDiagram) ) gatemap.detectIORs();
+        if( discoverJoins && gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
         else System.out.println("ERROR - something went wrong initializing the gateway map");
     }
 
