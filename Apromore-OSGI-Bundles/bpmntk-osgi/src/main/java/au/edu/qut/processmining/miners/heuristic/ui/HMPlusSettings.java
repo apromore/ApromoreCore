@@ -28,7 +28,7 @@ public class HMPlusSettings extends ProMPropertiesPanel {
 
     JCheckBox enablePositiveObservations;
     JCheckBox enableRelative2Best;
-    JCheckBox discoverJoins;
+    JCheckBox replaceIORs;
 
     public HMPlusSettings() { this(DIALOG_NAME); }
 
@@ -45,8 +45,8 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         enableRelative2Best = this.addCheckBox("Relative To Best Threshold", false);
         enableRelative2Best.addChangeListener(hmpil);
 
-        discoverJoins = this.addCheckBox("Discover Join (dev only)", true);
-        discoverJoins.addChangeListener(hmpil);
+        replaceIORs = this.addCheckBox("Replace IORs", true);
+        replaceIORs.addChangeListener(hmpil);
 
         dependencyThreshold = SlickerFactory.instance().createNiceDoubleSlider("Dependency Threshold", 0.00, 1.00, HMPlusUIResult.DEPENDENCY_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
         dependencyThreshold.addChangeListener(hmpil);
@@ -66,7 +66,7 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         result.setDependencyThreshold(HMPlusUIResult.DEPENDENCY_THRESHOLD);
         result.disablePositiveObservations();
         result.disableRelative2BestThreshold();
-        result.setDiscoverJoins(discoverJoins.isSelected());
+        result.setReplaceIORs(replaceIORs.isSelected());
     }
 
     public HMPlusUIResult getSelections() {
@@ -79,7 +79,7 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         public void stateChanged(ChangeEvent e) {
             result.setDependencyThreshold(dependencyThreshold.getValue());
 
-            result.setDiscoverJoins(discoverJoins.isSelected());
+            result.setReplaceIORs(replaceIORs.isSelected());
 
             positiveObservations.setVisible(enablePositiveObservations.isSelected());
             if( enablePositiveObservations.isSelected() ) result.setPositiveObservations(positiveObservations.getValue());
