@@ -13,7 +13,7 @@ public class HMPlusUIResult {
     private double positiveObservations;
     private double relative2BestThreshold;
 
-    private boolean discoverJoins;
+    private boolean replaceIORs;
 
     public HMPlusUIResult() {
         dependencyThreshold = DEPENDENCY_THRESHOLD;
@@ -21,8 +21,8 @@ public class HMPlusUIResult {
         relative2BestThreshold = RELATIVE2BEST_THRESHOLD;
     }
 
-    public boolean isDiscoverJoins() { return discoverJoins; }
-    public void setDiscoverJoins(boolean discoverJoins) { this.discoverJoins = discoverJoins; }
+    public boolean isReplaceIORs() { return replaceIORs; }
+    public void setReplaceIORs(boolean replaceIORs) { this.replaceIORs = replaceIORs; }
 
     public void disablePositiveObservations() { positiveObservations = 0.0; }
     public void disableRelative2BestThreshold() { relative2BestThreshold = 1.0; }

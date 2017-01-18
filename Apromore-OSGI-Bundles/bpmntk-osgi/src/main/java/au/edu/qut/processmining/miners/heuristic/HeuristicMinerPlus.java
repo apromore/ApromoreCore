@@ -31,7 +31,7 @@ public class HeuristicMinerPlus {
     private HeuristicNet heuristicNet;
     private BPMNDiagram bpmnDiagram;
 
-    private boolean discoverJoins;
+    private boolean replaceIORs;
 
     private int gateCounter;
     private HashMap<String, Gateway> candidateJoins;
@@ -43,14 +43,14 @@ public class HeuristicMinerPlus {
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
-    public BPMNDiagram mineBPMNModel(XLog log, double dependencyThreshold, double positiveObservations, double relative2BestThreshold, boolean discoverJoins) {
+    public BPMNDiagram mineBPMNModel(XLog log, double dependencyThreshold, double positiveObservations, double relative2BestThreshold, boolean replaceIORs) {
         System.out.println("HM+ - starting ... ");
-        System.out.println("HM+ - [Setting] discover joins: " + discoverJoins);
+        System.out.println("HM+ - [Setting] replace IORs: " + replaceIORs);
         System.out.println("HM+ - [Setting] dependency threshold: " + dependencyThreshold);
         System.out.println("HM+ - [Setting] positive observations: " + positiveObservations);
         System.out.println("HM+ - [Setting] relative to best threshold: " + relative2BestThreshold);
 
-        this.discoverJoins = discoverJoins;
+        this.replaceIORs = replaceIORs;
         this.log = LogParser.getSimpleLog(log);
         System.out.println("HM+ - log parsed successfully");
 
@@ -181,7 +181,7 @@ public class HeuristicMinerPlus {
 
 //        finally, we turn all the inclusive joins placed, into proper joins: ANDs or XORs
         System.out.println("HM+ - turning inclusive joins ...");
-        setJoinTypes();
+        replaceIORs();
 
         updateLabels(this.log.getEvents());
         System.out.println("HM+ - bpmn diagram generated successfully");
@@ -415,9 +415,9 @@ public class HeuristicMinerPlus {
         System.out.println("DEBUG - inner joins placed: " + counter );
     }
 
-    private void setJoinTypes() {
+    private void replaceIORs() {
         GatewayMap gatemap = new GatewayMap();
-        if( discoverJoins && gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
+        if( replaceIORs && gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
         else System.out.println("ERROR - something went wrong initializing the gateway map");
     }
 

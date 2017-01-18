@@ -494,6 +494,7 @@ public class GatewayMap {
     public void detectAndReplaceIORs() {
         Gateway.GatewayType gatetype;
         GatewayMapFlow gmFlow;
+        Gateway dominator;
         Gateway ior;
         Gateway xor;
         BPMNNode last;
@@ -501,6 +502,7 @@ public class GatewayMap {
         Map<GatewayMapFlow, Gateway> xors;
         Map<GatewayMapFlow, Set<Gateway>> visitedGates;
         Map<GatewayMapFlow, Set<GatewayMapFlow>> visitedFlows;
+        Set<GatewayMapFlow> frontier;
         Map<GatewayMapFlow, Set<Gateway>> toVisit;
 
         boolean loop;
@@ -520,8 +522,11 @@ public class GatewayMap {
             visitedFlows = new HashMap<>();
             toVisit = new HashMap<>();
 
-            loop = false;
+//            this set will keep track of all the flows belonging to the dominator frontier
+            frontier = new HashSet<>();
+            dominator = getDominator(ior);
 
+            loop = false;
             for( GatewayMapFlow iFlow : new HashSet<>(incomings.get(ior)) ) {
                 if( iFlow.loop ) {
 //                    Favre et Volzer do not handle loops, therefore we need a special routine for them:
@@ -555,7 +560,8 @@ public class GatewayMap {
 //                        this map will keep track of all the gateway we have to visit
 //                        from this flow path during the backward exploration
                         toVisit.put(gmFlow, new HashSet<Gateway>());
-                        toVisit.get(gmFlow).add(gmFlow.src);
+                        if( gmFlow.src != dominator ) toVisit.get(gmFlow).add(gmFlow.src);
+                        else frontier.add(gmFlow);
 
 //                        this map will keep track of all the gateway we have visited
 //                        from this flow path during the backward exploration
@@ -578,7 +584,7 @@ public class GatewayMap {
             if( !loop ) {
                 System.out.println("DEBUG - changing IOR: " + ior.getLabel());
                 System.out.println("DEBUG - xors: " + xors.size());
-                gatetype = replaceIOR(getDominator(ior), toVisit, visitedGates, visitedFlows, new HashSet<GatewayMapFlow>(), xors);
+                gatetype = replaceIOR(dominator, toVisit, visitedGates, visitedFlows, frontier, xors);
                 ior.setGatewayType(gatetype);
             }
         }
