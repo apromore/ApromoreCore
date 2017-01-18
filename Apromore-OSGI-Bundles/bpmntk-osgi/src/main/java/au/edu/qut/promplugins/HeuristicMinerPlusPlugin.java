@@ -33,7 +33,7 @@ public class HeuristicMinerPlusPlugin {
     )
     @PluginVariant(variantLabel = "Mine BPMN model with HM+", requiredParameterLabels = {0})
     public static BPMNDiagram mineBPMNModelWithHMP(UIPluginContext context, XLog log) {
-        boolean debug = true;
+        boolean debug = false;
         BPMNDiagram output;
 
         HMPlusUI gui = new HMPlusUI();
