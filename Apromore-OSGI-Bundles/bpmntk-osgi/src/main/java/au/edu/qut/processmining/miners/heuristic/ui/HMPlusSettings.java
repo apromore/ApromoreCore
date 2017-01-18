@@ -3,6 +3,7 @@ package au.edu.qut.processmining.miners.heuristic.ui;
 import com.fluxicon.slickerbox.components.NiceDoubleSlider;
 import com.fluxicon.slickerbox.components.NiceSlider;
 import com.fluxicon.slickerbox.factory.SlickerFactory;
+import org.processmining.framework.util.ui.widgets.ProMComboBox;
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
 /**
  * Created by Adriano on 29/02/2016.
@@ -30,14 +32,24 @@ public class HMPlusSettings extends ProMPropertiesPanel {
     JCheckBox enableRelative2Best;
     JCheckBox replaceIORs;
 
+    ProMComboBox structuring;
+
     public HMPlusSettings() { this(DIALOG_NAME); }
 
     public HMPlusSettings(String title) {
         super(title);
 
+        HMPItemListener hmpil = new HMPItemListener();
+
+        LinkedList<String> structuringTime = new LinkedList<>();
+        structuringTime.addLast("Unstructured");
+        structuringTime.addLast("Post-Structuring");
+        structuringTime.addLast("Pre-Structuring");
+
         result = new HMPlusUIResult();
 
-        HMPItemListener hmpil = new HMPItemListener();
+        structuring = this.addComboBox("Structuring Policy", structuringTime);
+        structuring.addActionListener(hmpil);
 
         enablePositiveObservations = this.addCheckBox("Positive Observations Threshold", false);
         enablePositiveObservations.addChangeListener(hmpil);
@@ -67,6 +79,7 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         result.disablePositiveObservations();
         result.disableRelative2BestThreshold();
         result.setReplaceIORs(replaceIORs.isSelected());
+        result.setStructuringTime(HMPlusUIResult.StructuringTime.NONE);
     }
 
     public HMPlusUIResult getSelections() {
@@ -91,7 +104,21 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) { }
+        public void actionPerformed(ActionEvent e) {
+            if( e.getSource() instanceof JComboBox ) {
+                switch( ((JComboBox)e.getSource()).getSelectedIndex() ) {
+                    case 0:
+                        result.setStructuringTime(HMPlusUIResult.StructuringTime.NONE);
+                        break;
+                    case 1:
+                        result.setStructuringTime(HMPlusUIResult.StructuringTime.POST);
+                        break;
+                    case 2:
+                        result.setStructuringTime(HMPlusUIResult.StructuringTime.PRE);
+                        break;
+                }
+            }
+        }
     }
 
 }
