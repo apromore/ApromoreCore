@@ -46,6 +46,7 @@
                         <Bundle-Name>BPMNTK OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.bpmntk-osgi</Bundle-SymbolicName>
                         <Import-Package>
+                            !ee.ut.comptech,
                             !junit.framework.*,
                             !org.junit.*,
                             !org.omg.spec.bpmn._20100524.model.*,
