@@ -39,7 +39,10 @@ public class HeuristicMinerPlusPlugin {
         HMPlusUIResult result = gui.showGUI(context, "Setup HM+");
 
         HeuristicMinerPlus hmp = new HeuristicMinerPlus();
-        hmp.mineBPMNModel(log, result.getDependencyThreshold(), result.getPositiveObservations(), result.getRelative2BestThreshold(), result.isReplaceIORs());
+        hmp.mineBPMNModel( log, result.getDependencyThreshold(), result.getPositiveObservations(),
+                                result.getRelative2BestThreshold(), result.isReplaceIORs(),
+                                result.getStructuringTime());
+
         HeuristicNet heuristicNet = hmp.getHeuristicNet();
 
         if( debug ) {

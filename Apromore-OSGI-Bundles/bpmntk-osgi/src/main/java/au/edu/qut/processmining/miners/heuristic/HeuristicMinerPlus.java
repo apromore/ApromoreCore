@@ -2,11 +2,13 @@ package au.edu.qut.processmining.miners.heuristic;
 
 import au.edu.qut.bpmn.helper.DiagramHandler;
 import au.edu.qut.bpmn.helper.GatewayMap;
+import au.edu.qut.bpmn.structuring.StructuringService;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
 import au.edu.qut.processmining.miners.heuristic.oracle.Oracle;
 import au.edu.qut.processmining.miners.heuristic.oracle.OracleItem;
+import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUIResult;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
@@ -32,6 +34,7 @@ public class HeuristicMinerPlus {
     private BPMNDiagram bpmnDiagram;
 
     private boolean replaceIORs;
+    private HMPlusUIResult.StructuringTime structuringTime;
 
     private int gateCounter;
     private HashMap<String, Gateway> candidateJoins;
@@ -43,19 +46,26 @@ public class HeuristicMinerPlus {
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
-    public BPMNDiagram mineBPMNModel(XLog log, double dependencyThreshold, double positiveObservations, double relative2BestThreshold, boolean replaceIORs) {
+    public BPMNDiagram mineBPMNModel(XLog log, double dependencyThreshold, double positiveObservations,
+                                     double relative2BestThreshold, boolean replaceIORs, HMPlusUIResult.StructuringTime structuringTime)
+    {
         System.out.println("HM+ - starting ... ");
         System.out.println("HM+ - [Setting] replace IORs: " + replaceIORs);
         System.out.println("HM+ - [Setting] dependency threshold: " + dependencyThreshold);
         System.out.println("HM+ - [Setting] positive observations: " + positiveObservations);
         System.out.println("HM+ - [Setting] relative to best threshold: " + relative2BestThreshold);
+        System.out.println("HM+ - [Setting] structuring: " + structuringTime);
 
         this.replaceIORs = replaceIORs;
+        this.structuringTime = structuringTime;
+
         this.log = LogParser.getSimpleLog(log);
         System.out.println("HM+ - log parsed successfully");
 
         mineHeuristicNet(dependencyThreshold, positiveObservations, relative2BestThreshold);
         generateBPMNDiagramFromHeuristicNet();
+
+        if( structuringTime == HMPlusUIResult.StructuringTime.POST ) structure();
 
         return bpmnDiagram;
     }
@@ -178,6 +188,9 @@ public class HeuristicMinerPlus {
 //        this second method adds the remaining joins, which were no entry neither exits of any RPST node
         System.out.println("HM+ - generating inner joins ...");
         generateInnerJoins();
+
+
+        if( structuringTime == HMPlusUIResult.StructuringTime.PRE ) structure();
 
 //        finally, we turn all the inclusive joins placed, into proper joins: ANDs or XORs
         System.out.println("HM+ - turning inclusive joins ...");
@@ -419,6 +432,12 @@ public class HeuristicMinerPlus {
         GatewayMap gatemap = new GatewayMap();
         if( replaceIORs && gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
         else System.out.println("ERROR - something went wrong initializing the gateway map");
+    }
+
+    private void structure() {
+        StructuringService ss = new StructuringService();
+        BPMNDiagram structureDiagram = ss.structureDiagram(bpmnDiagram);
+        bpmnDiagram = structureDiagram;
     }
 
     private void updateLabels(Map<Integer, String> events) {
