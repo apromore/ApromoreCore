@@ -58,7 +58,6 @@
                         <Import-Package>
                             org.apache.commons.codec.binary,
                             com.sun.jndi.ldap,
-                            javassist,
                             *
                         </Import-Package>
                     </instructions>

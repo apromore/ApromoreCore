@@ -84,7 +84,7 @@
         }
     </style>
 
-    <window id="mainW" border="none" height="100%" width="100%" vflex="true" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
+    <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
 
         <div height="40px">
             <div style="float:left; margin-top: 5px;" >
@@ -112,7 +112,7 @@
 
         <borderlayout vflex="true">
             <west id="leftPanel" title="Key word filter" size="30%" collapsible="true" splittable="true">
-                <borderlayout vflex="true" height="100%">
+                <borderlayout vflex="min" height="100%">
                     <north id="leftNorthPanel">
                         <SimpleSearch id="simplesearchcomp"/>
                     </north>
@@ -126,18 +126,18 @@
                             <!--</south>-->
                         </borderlayout>
                     </center>
-                    <south id="leftSouthPanel" size="25%" splittable="true" vflex="true" autoscroll="true">
+                    <south id="leftSouthPanel" size="25%" splittable="true" vflex="min" autoscroll="true">
                         <DetailView id="baseDetail" />
                     </south>
                 </borderlayout>
             </west>
 
-            <center id="mainPanel" vflex="true">
-                <div vflex="true" height="100%">
-                    <Menu id="menucomp" style="background-color: #F9F9F9;"/>
+            <center id="mainPanel">
+                <div height="100%">
+                    <Menu id="menucomp" style="background-color: #F9F9F9;" width="100%"/>
                     <hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9; border-bottom: 1px solid #CFCFCF;">
                         <paging id="pg" style="border-bottom: 0px solid #F9F9F9;" />
-                        <hbox id="buttons" align="center" height="100%" vflex="true">
+                        <hbox id="buttons" align="center" height="100%" vflex="min">
                             <button id="refreshB" label="" style="background: transparent; border:none" image="img/arrow_refresh.png" tooltiptext="Reload data" />
                             <button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />
                             <button id="btnAddFolder" label="" image="img/folder_add.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
@@ -170,9 +170,9 @@
                     </window>
 
                     <html id="breadCrumbs" width="100%" height="10" style="font-family: arial; font-size: 12px; font-weight: normal;" />
-                    <html id="folders" width="100%" visible="false" height="0"/>
+                    <html id="folders" width="100%" visible="false" height="100%"/>
 
-                    <tabbox id="tabbox" vflex="true" height="100%">
+                    <tabbox id="tabbox" height="100%">
                         <tabs id="tabs" >
                             <tab label="Processes"/>
                         </tabs>
