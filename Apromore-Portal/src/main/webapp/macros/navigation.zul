@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="treeW" title="Folders" sizable="true" hflex="true" vflex="true" height="100%" width="100%">
+<window id="treeW" title="Folders" sizable="true">
             <caption>
                 <toolbarbutton id="expand" image="/img/expandall.gif" />
                 <toolbarbutton id="contract" image="/img/collapseall.gif" />
@@ -29,7 +29,7 @@
                     _display: inline;
                 }
             </style>
-            <tree id="tree" vflex="true" hflex="true" height="100%" width="100%" style="border-width: 0px; overflow: auto;">
+            <tree id="tree" style="border-width: 0px; overflow: auto;">
                 <treecols sizable="true">
                     <treecol label=""/>
                 </treecols>
