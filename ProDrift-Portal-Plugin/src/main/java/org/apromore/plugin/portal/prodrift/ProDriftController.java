@@ -20,10 +20,11 @@
 
 package org.apromore.plugin.portal.prodrift;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
+import ee.ut.eventstr.driftdetector.ControlFlowDriftDetector_EventStream;
 import ee.ut.eventstr.model.ProDriftDetectionResult;
 import ee.ut.eventstr.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.prodrift.model.prodrift.CharStatement;
 import org.apromore.service.prodrift.ProDriftDetectionService;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.Session;
@@ -34,11 +35,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 
 
@@ -65,11 +63,13 @@ public class ProDriftController {
 
     int caseCount = 0;
     int eventCount = 0;
+    int activityCount = 0;
 
     int desiredWinSizeRuns = 100;
-    int desiredWinSizeEventsSyn = 2000;
+    int desiredWinSizeEventsSyn = 5000;
     int desiredWinSizeEventsReal = 5000;
     int winSizeDividedBy = 10;
+    int activityLimit = 35;
 
 
 
@@ -82,6 +82,9 @@ public class ProDriftController {
 
         this.proDriftW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/prodrift.zul", null, null);
         this.proDriftW.setTitle("ProDrift: Set Parameters.");
+
+        Intbox activityLimitIntBox = (Intbox) proDriftW.getFellow("activityLimit");
+        activityLimitIntBox.setValue(activityLimit);
 
         Intbox maxWinValueRunsIntBox = (Intbox) proDriftW.getFellow("maxWinValueRuns");
         maxWinValueRunsIntBox.setValue(desiredWinSizeRuns);
@@ -164,6 +167,23 @@ public class ProDriftController {
         });
 
 
+//        Popup popup = (Popup) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/prodriftcharacterizationpopup.zul", null, null);
+//
+//        ListModel<String> cs = new ListModelList<String>();
+//
+//        ((ListModelList<String>) cs).add("gggggggggg gggggggggggg wwwwww wwwwww wwww wwwwww wwww");
+//
+//        ((ListModelList<String>) cs).add("gggggggggg gggggggggggg wwwwww wwwwww wwww wwwwww wwww");
+////
+////        Grid grid = (Grid) popup.getFellow("myGrid");
+////        grid.setModel(cs);
+////
+//        Listbox grid = (Listbox) popup.getFellow("myBox");
+//        grid.setModel(cs);
+//
+//        cancelButton.setPopup(popup);
+
+
 
         this.proDriftW.doModal();
     }
@@ -173,13 +193,14 @@ public class ProDriftController {
         final Label l = (Label) this.proDriftW.getFellow("fileName");
         StringBuilder caseCountSB = new StringBuilder();
         StringBuilder eventCountSB = new StringBuilder();
+        StringBuilder activityCountSB = new StringBuilder();
         boolean valild = false;
         xlog = null;
 
         if(is != null)
-            xlog = XLogManager.validateLog(is, logName, caseCountSB, eventCountSB);
+            xlog = XLogManager.validateLog(is, logName, caseCountSB, eventCountSB, activityCountSB);
         else if(xl != null)
-            xlog = XLogManager.validateLog(xl, logName, caseCountSB, eventCountSB);
+            xlog = XLogManager.validateLog(xl, logName, caseCountSB, eventCountSB, activityCountSB);
 
         if (xlog == null) {
 
@@ -193,11 +214,12 @@ public class ProDriftController {
             try {
                 caseCount = Integer.parseInt(caseCountSB.toString());
                 eventCount = Integer.parseInt(eventCountSB.toString());
+                activityCount = Integer.parseInt(activityCountSB.toString());
             }catch (NumberFormatException ex) {}
 
             showError("");
             l.setStyle("color: blue");
-            l.setValue(logName + " (Cases=" + caseCount + ", Events=" + eventCount + ")");
+            l.setValue(logName + " (Cases=" + caseCount + ", Activities=" + activityCount + ", Events~" + eventCount + ")");
 
 //            if(xl != null)
 //                xlog = xl;
@@ -205,10 +227,6 @@ public class ProDriftController {
             logFileName = logName;
 
             setDefaultWinSizes();
-
-            Session sess = Sessions.getCurrent();
-            sess.setAttribute("logDrift", xlog);
-            sess.setAttribute("logNameDrift", logFileName);
 
         }
 
@@ -220,6 +238,12 @@ public class ProDriftController {
         Intbox maxWinValueRunsIntBoX = (Intbox) proDriftW.getFellow("maxWinValueRuns");
         Intbox maxWinValueEventsSynIntBoX = (Intbox) proDriftW.getFellow("maxWinValueEventsSyn");
         Intbox maxWinValueEventsRealIntBoX = (Intbox) proDriftW.getFellow("maxWinValueEventsReal");
+
+        Intbox activityCountIntBoX = (Intbox) proDriftW.getFellow("activityCount");
+        activityCountIntBoX.setValue(activityCount);
+
+        Intbox winSizeCoefficientIntBoX = (Intbox) proDriftW.getFellow("winSizeCoefficient");
+        winSizeCoefficientIntBoX.setValue(ControlFlowDriftDetector_EventStream.winSizeCoefficient);
 
         if(caseCount / winSizeDividedBy < desiredWinSizeRuns)
         {
@@ -263,16 +287,36 @@ public class ProDriftController {
         Listbox driftDetMechLBox = (Listbox) proDriftW.getFellow("driftDetMechLBox");
         boolean isEventBased = driftDetMechLBox.getSelectedItem().getLabel().startsWith("E") ? true : false;
 
-        Listbox logTypeLBox = (Listbox) proDriftW.getFellow("logTypeLBox");
-        boolean isSynthetic = logTypeLBox.getSelectedItem().getLabel().startsWith("S") ? true : false;
+//        Listbox logTypeLBox = (Listbox) proDriftW.getFellow("logTypeLBox");
+//        boolean isSynthetic = logTypeLBox.getSelectedItem().getLabel().startsWith("M") ? true : false;
+
+        boolean isSynthetic = true;
+        if(activityCount < activityLimit)
+            isSynthetic = true;
+        else
+            isSynthetic = false;
+
 
         Intbox winSizeIntBox = (Intbox) proDriftW.getFellow("winSizeIntBox");
 
         if(isEventBased)
-            if (isSynthetic)
+            if (isSynthetic) {
+                ((Listitem)proDriftW.getFellow("synLog")).setSelected(true);
+
+                if((activityCount * activityCount * ControlFlowDriftDetector_EventStream.winSizeCoefficient)
+                        > maxWinValueEventsSynIntBoX.getValue())
+                    ((Listitem)proDriftW.getFellow("FWIN")).setSelected(true);
+                else
+                    ((Listitem)proDriftW.getFellow("ADWIN")).setSelected(true);
+
+                ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(0.0);
                 winSizeIntBox.setValue(maxWinValueEventsSynIntBoX.getValue());
-            else
+            }else {
+                ((Listitem)proDriftW.getFellow("reLog")).setSelected(true);
+                ((Listitem)proDriftW.getFellow("FWIN")).setSelected(true);
+                ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(3.5);
                 winSizeIntBox.setValue(maxWinValueEventsRealIntBoX.getValue());
+            }
         else
             winSizeIntBox.setValue(maxWinValueRunsIntBoX.getValue());
 
@@ -291,7 +335,8 @@ public class ProDriftController {
         errorLabel.setValue(error);
     }
 
-    protected void cancel() {
+    protected void cancel() throws IOException {
+
         showError(""); this.proDriftW.detach();
     }
 
@@ -315,7 +360,7 @@ public class ProDriftController {
                 try {
 
                     Listbox logTypeLBox = (Listbox) proDriftW.getFellow("logTypeLBox");
-                    boolean isSynthetic = logTypeLBox.getSelectedItem().getLabel().startsWith("S") ? true : false;
+                    boolean isSynthetic = logTypeLBox.getSelectedItem().getLabel().startsWith("M") ? true : false;
 
                     Checkbox gradDriftCBox = (Checkbox) proDriftW.getFellow("gradDriftCBox");
                     boolean withGradual = gradDriftCBox.isChecked() ? true : false;
@@ -328,10 +373,26 @@ public class ProDriftController {
 
                     boolean withConflict = isSynthetic ? true : false;
 
-                    ProDriftDetectionResult result = proDriftDetectionService.proDriftDetector(xlog, logFileName,
-                            isEventBased, isSynthetic, withGradual, winSize, isAdwin, noiseFilterPercentage, withConflict);
+                    Checkbox withCharacterizationCBox = (Checkbox) proDriftW.getFellow("withCharacterizationCBox");
+                    boolean withCharacterization = withCharacterizationCBox.isChecked() ? true : false;
 
-                    proDriftShowResults_(result);
+                    Spinner cummulativeChangeSpinner = (Spinner) proDriftW.getFellow("cummulativeChangeSpinner");
+                    int cummulativeChange = cummulativeChangeSpinner.getValue().intValue();
+
+//                    Rengine engineR = null;
+//                    Object obj = sess.getAttribute("engineR");
+//                    if(obj == null) {
+//                        engineR = new Rengine(new String[]{"--no-save"}, false, null);
+//                        sess.setAttribute("engineR", engineR);
+//                    }else
+//                        engineR = (Rengine) obj;
+
+
+                    ProDriftDetectionResult result = proDriftDetectionService.proDriftDetector(xlog, logFileName,
+                            isEventBased, isSynthetic, withGradual, winSize, isAdwin, noiseFilterPercentage, withConflict,
+                            withCharacterization, cummulativeChange/*, engineR*/);
+
+                    proDriftShowResults_(result, isEventBased, xlog, logFileName, withCharacterization, cummulativeChange);
                     message = "Completed Successfully";
                     portalContext.getMessageHandler().displayInfo(message);
 
@@ -358,10 +419,11 @@ public class ProDriftController {
     }
 
 
-    protected void proDriftShowResults_(ProDriftDetectionResult result) {
+    protected void proDriftShowResults_(ProDriftDetectionResult result, boolean isEventBased, XLog xlog, String logFileName,
+                                        boolean withCharacterization, int cummulativeChange) {
         try {
 
-            new ProDriftShowResult(portalContext, result);
+            new ProDriftShowResult(portalContext, result, isEventBased, xlog, logFileName, withCharacterization, cummulativeChange);
 
         } catch (IOException | SuspendNotAllowedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
