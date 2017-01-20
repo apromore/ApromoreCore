@@ -3,6 +3,7 @@ package au.edu.qut.processmining.miners.heuristic.ui;
 import com.fluxicon.slickerbox.components.NiceDoubleSlider;
 import com.fluxicon.slickerbox.components.NiceSlider;
 import com.fluxicon.slickerbox.factory.SlickerFactory;
+import org.processmining.framework.util.ui.widgets.ProMComboBox;
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
 /**
  * Created by Adriano on 29/02/2016.
@@ -28,16 +30,26 @@ public class HMPlusSettings extends ProMPropertiesPanel {
 
     JCheckBox enablePositiveObservations;
     JCheckBox enableRelative2Best;
-    JCheckBox discoverJoins;
+    JCheckBox replaceIORs;
+
+    ProMComboBox structuring;
 
     public HMPlusSettings() { this(DIALOG_NAME); }
 
     public HMPlusSettings(String title) {
         super(title);
 
+        HMPItemListener hmpil = new HMPItemListener();
+
+        LinkedList<String> structuringTime = new LinkedList<>();
+        structuringTime.addLast("Unstructured");
+        structuringTime.addLast("Post-Structuring");
+        structuringTime.addLast("Pre-Structuring");
+
         result = new HMPlusUIResult();
 
-        HMPItemListener hmpil = new HMPItemListener();
+        structuring = this.addComboBox("Structuring Policy", structuringTime);
+        structuring.addActionListener(hmpil);
 
         enablePositiveObservations = this.addCheckBox("Positive Observations Threshold", false);
         enablePositiveObservations.addChangeListener(hmpil);
@@ -45,8 +57,8 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         enableRelative2Best = this.addCheckBox("Relative To Best Threshold", false);
         enableRelative2Best.addChangeListener(hmpil);
 
-        discoverJoins = this.addCheckBox("Discover Join (dev only)", true);
-        discoverJoins.addChangeListener(hmpil);
+        replaceIORs = this.addCheckBox("Replace IORs", true);
+        replaceIORs.addChangeListener(hmpil);
 
         dependencyThreshold = SlickerFactory.instance().createNiceDoubleSlider("Dependency Threshold", 0.00, 1.00, HMPlusUIResult.DEPENDENCY_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
         dependencyThreshold.addChangeListener(hmpil);
@@ -66,7 +78,8 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         result.setDependencyThreshold(HMPlusUIResult.DEPENDENCY_THRESHOLD);
         result.disablePositiveObservations();
         result.disableRelative2BestThreshold();
-        result.setDiscoverJoins(discoverJoins.isSelected());
+        result.setReplaceIORs(replaceIORs.isSelected());
+        result.setStructuringTime(HMPlusUIResult.StructuringTime.NONE);
     }
 
     public HMPlusUIResult getSelections() {
@@ -79,7 +92,7 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         public void stateChanged(ChangeEvent e) {
             result.setDependencyThreshold(dependencyThreshold.getValue());
 
-            result.setDiscoverJoins(discoverJoins.isSelected());
+            result.setReplaceIORs(replaceIORs.isSelected());
 
             positiveObservations.setVisible(enablePositiveObservations.isSelected());
             if( enablePositiveObservations.isSelected() ) result.setPositiveObservations(positiveObservations.getValue());
@@ -91,7 +104,21 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) { }
+        public void actionPerformed(ActionEvent e) {
+            if( e.getSource() instanceof JComboBox ) {
+                switch( ((JComboBox)e.getSource()).getSelectedIndex() ) {
+                    case 0:
+                        result.setStructuringTime(HMPlusUIResult.StructuringTime.NONE);
+                        break;
+                    case 1:
+                        result.setStructuringTime(HMPlusUIResult.StructuringTime.POST);
+                        break;
+                    case 2:
+                        result.setStructuringTime(HMPlusUIResult.StructuringTime.PRE);
+                        break;
+                }
+            }
+        }
     }
 
 }

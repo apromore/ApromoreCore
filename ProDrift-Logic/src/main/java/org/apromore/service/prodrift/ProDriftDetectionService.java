@@ -42,13 +42,17 @@ public interface ProDriftDetectionService {
      * @param isAdwin Fixed window size or Adaptive window size("FWIN" or "ADWIN")
      * @param noiseFilterPercentage noise fitler percentage value
      * @param withConflict include conflict relation among Alpha+ relations or not
+     * @param withCharacterization characterize a drift?
+     * @param cummulativeChange cummulative relative relation frequency change explaining a drift
+     //* @param engineR Rengine to connect to R
 
      * @return the ProDriftDetectionResult
      * @throws ProDriftDetectionException if the drift detection failed
      */
     ProDriftDetectionResult proDriftDetector(XLog xlog, String logFileName, boolean isEventBased, boolean isSynthetic,
                                              boolean withGradual, int winSize, boolean isAdwin, float noiseFilterPercentage,
-                                             boolean withConflict) throws ProDriftDetectionException;
+                                             boolean withConflict, boolean withCharacterization, int cummulativeChange/*,
+                                             Rengine engineR*/) throws ProDriftDetectionException;
 
 
 }

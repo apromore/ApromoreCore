@@ -15,29 +15,28 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
  */
 
 @Plugin(
-        name = "Get Gateway Map of a BPMN Diagram",
+        name = "Replace IOR joins in a BPMN Diagram",
         parameterLabels = { "BPMN Diagram" },
-        returnLabels = { "Gateway Map" },
+        returnLabels = { "BPMN Diagram without IOR joins" },
         returnTypes = { BPMNDiagram.class },
         userAccessible = true,
-        help = "Display a BPMN as only its gateways"
+        help = "Remove the IOR joins in a BPMN diagram and replace them accordingly"
 )
-public class GatewayMapPlugin {
+public class ReplaceIORsPlugin {
 
     @UITopiaVariant(
             affiliation = "University of Tartu",
             author = "Adriano Augusto",
             email = "adriano.augusto@ut.ee"
     )
-    @PluginVariant(variantLabel = "Get Gateway Map of a BPMN Diagram", requiredParameterLabels = {0})
-    public static BPMNDiagram GetGatewayMap(PluginContext context, BPMNDiagram input) {
-        BPMNDiagram copy;
+    @PluginVariant(variantLabel = "Replace IOR joins in a BPMN Diagram", requiredParameterLabels = {0})
+    public static BPMNDiagram ReplaceIORs(PluginContext context, BPMNDiagram input) {
         BPMNDiagram output;
 
-        copy = (new DiagramHandler()).copyDiagram(input);
+        output = (new DiagramHandler()).copyDiagram(input);
         GatewayMap gatemap = new GatewayMap();
-        gatemap.generateMap(copy);
-        output = gatemap.getGatewayMap();
+        gatemap.generateMap(output);
+        gatemap.detectAndReplaceIORs();
 
         return output;
     }

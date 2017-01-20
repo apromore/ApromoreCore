@@ -30,7 +30,7 @@
 
     <groupId>org.apromore</groupId>
     <artifactId>prodrift-osgi</artifactId>
-    <version>2.2</version>
+    <version>2.3</version>
     <packaging>bundle</packaging>
 
     <build>
@@ -47,7 +47,7 @@
                                 By doing so these non-osgi dependencies are not included in the assembly projects!
                              -->
                             artifactId=<!--jfreechart| -->
-                            java_cup|jsc|lingpipe|jama|spex|weka-dev|prodrift
+                            java_cup|jsc|lingpipe|jama|spex|weka-dev|jri|prodrift
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
@@ -138,6 +138,7 @@
                         </Import-Package>
                         <Export-Package>
                             ee.ut.eventstr,
+                            ee.ut.eventstr.driftcharacterization,
                             ee.ut.eventstr.driftdetector,
                             ee.ut.eventstr.model,
                             ee.ut.eventstr.util,
@@ -256,14 +257,18 @@
             <version>1.4.8</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>jri</artifactId>
+            <version>1.0</version>
+        </dependency>
 
 
 
         <dependency>
             <groupId>ee.ut</groupId>
             <artifactId>prodrift</artifactId>
-            <version>2.2</version>
+            <version>2.3</version>
         </dependency>
 
 
