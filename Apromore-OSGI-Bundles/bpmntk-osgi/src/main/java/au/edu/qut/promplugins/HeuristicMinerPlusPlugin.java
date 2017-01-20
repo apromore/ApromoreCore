@@ -1,6 +1,5 @@
 package au.edu.qut.promplugins;
 
-import au.edu.qut.bpmn.helper.GatewayMap;
 import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
 import au.edu.qut.processmining.miners.heuristic.HeuristicMinerPlus;
 import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUI;
@@ -33,14 +32,17 @@ public class HeuristicMinerPlusPlugin {
     )
     @PluginVariant(variantLabel = "Mine BPMN model with HM+", requiredParameterLabels = {0})
     public static BPMNDiagram mineBPMNModelWithHMP(UIPluginContext context, XLog log) {
-        boolean debug = true;
+        boolean debug = false;
         BPMNDiagram output;
 
         HMPlusUI gui = new HMPlusUI();
         HMPlusUIResult result = gui.showGUI(context, "Setup HM+");
 
         HeuristicMinerPlus hmp = new HeuristicMinerPlus();
-        hmp.mineBPMNModel(log, result.getDependencyThreshold(), result.getPositiveObservations(), result.getRelative2BestThreshold(), result.isDiscoverJoins());
+        hmp.mineBPMNModel( log, result.getDependencyThreshold(), result.getPositiveObservations(),
+                                result.getRelative2BestThreshold(), result.isReplaceIORs(),
+                                result.getStructuringTime());
+
         HeuristicNet heuristicNet = hmp.getHeuristicNet();
 
         if( debug ) {

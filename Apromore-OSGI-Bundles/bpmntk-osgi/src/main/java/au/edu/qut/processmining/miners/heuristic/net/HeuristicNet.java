@@ -496,7 +496,7 @@ public class HeuristicNet {
     public void printFrequencies() {
         System.out.println("DEBUG - printing frequencies:");
         for( HeuristicNode node : nodes.values() )
-            System.out.println("DEBUG - #" + node.getCode() + " = " + node.getFrequency());
+            System.out.println("DEBUG - " + node.getCode() + " = " + node.getFrequency());
     }
 
     public void printParallelisms() {

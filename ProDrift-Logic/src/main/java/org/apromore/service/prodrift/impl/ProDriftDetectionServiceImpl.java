@@ -62,21 +62,21 @@ public class ProDriftDetectionServiceImpl implements ProDriftDetectionService {
 
     /**
      * @see ProDriftDetectionService#proDriftDetector(XLog, String, boolean, boolean,
-            boolean, int, boolean, float, boolean);
+            boolean, int, boolean, float, boolean, boolean, int);
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
     public ProDriftDetectionResult proDriftDetector(XLog xlog, String logFileName, boolean isEventBased, boolean isSynthetic,
                                                     boolean withGradual, int winSize, boolean isAdwin, float noiseFilterPercentage,
-                                                    boolean withConflict) throws ProDriftDetectionException {
+                                                    boolean withConflict, boolean withCharacterization, int cummulativeChange/*, Rengine engineR*/) throws ProDriftDetectionException {
 
         ProDriftDetectionResult pddRes = null;
 
         if(isEventBased)
         {
 
-            ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(xlog, winSize, isAdwin, noiseFilterPercentage, withConflict, logFileName);
+            ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(xlog, winSize, isAdwin, noiseFilterPercentage, withConflict, logFileName, withCharacterization, cummulativeChange);
             pddRes = driftDertector.ControlFlowDriftDetectorStart();
 
         }else

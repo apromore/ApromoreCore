@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window width="1000px" closable="false" position="center" title="Process Drift Detection">
+<window width="1000px" closable="false" position="center,top" title="Process Drift Detection">
 
     <style>
 
@@ -57,9 +57,29 @@
                                         if(evBased.selected){
                                             logType.visible = true;
                                             gradDriftRow.visible = false;
+                                            withCharacterizationRow.visible = true;
+                                            if(withCharacterizationCBox.checked){
+                                                CummulativeChangeRow.visible = true;
+                                            }else{
+                                                CummulativeChangeRow.visible = false;
+                                            }
+                                            if(activityCount.value >= activityLimit.value)
+                                            {
+                                                synLog.selected = false;
+                                                reLog.selected = true;
+                                            }else{
+                                                synLog.selected = true;
+                                                reLog.selected = false;
+                                            }
+
                                             if(synLog.selected){
                                                 winSizeIntBox.value = maxWinValueEventsSyn.value;
-                                                ADWIN.selected = true;
+                                                if(activityCount.value * activityCount.value *
+                                                    winSizeCoefficient.value > maxWinValueEventsSyn.value){
+                                                    FWIN.selected = true;
+                                                }else{
+                                                    ADWIN.selected = true;
+                                                }
                                                 noiseFilterSpinner.value = 0;
                                             }else{
                                                 winSizeIntBox.value = maxWinValueEventsReal.value;
@@ -70,6 +90,8 @@
                                         }else{
                                             logType.visible = false;
                                             gradDriftRow.visible = true;
+                                            withCharacterizationRow.visible = false;
+                                            CummulativeChangeRow.visible = false;
                                             winSizeIntBox.value = maxWinValueRuns.value;
                                             ADWIN.selected = true;
                                             noiseFilter.visible = false;
@@ -94,12 +116,39 @@
                                     <column/>
                                 </columns>
                                 <rows>
+                                    <row id="withCharacterizationRow" visible="true">
+                                        <label width="100%"/>
+                                        <checkbox id="withCharacterizationCBox" width="100%" label="Drift characterization"
+                                                  checked="true" onCheck="if(withCharacterizationCBox.checked){
+                                            CummulativeChangeRow.visible = true;
+                                        }else{
+                                            CummulativeChangeRow.visible = false;
+                                        }
+                                        "/>
+                                    </row>
+                                    <row id="CummulativeChangeRow" visible="true">
+                                        <label value="Cummulative change (%)" width="100%"/>
+                                        <spinner id="cummulativeChangeSpinner" width="100%" value="98" step="1"
+                                                 mold="rounded" constraint="no empty, min 80 max 100"/>
+                                    </row>
+                                    <row id="gradDriftRow" visible="false">
+                                        <label width="100%"/>
+                                        <checkbox id="gradDriftCBox" width="100%" label="Gradual drift"
+                                                  checked="false"/>
+                                    </row>
                                     <row id="logType" visible="true">
                                         <label value="Number of activities" width="100%"/>
                                         <listbox id="logTypeLBox" width="100%" multiple="false" checkmark="true"
                                                  onSelect="if(synLog.selected){
                                             winSizeIntBox.value = maxWinValueEventsSyn.value;
-                                            ADWIN.selected = true;
+
+                                            if(activityCount.value * activityCount.value *
+                                                winSizeCoefficient.value > maxWinValueEventsSyn.value){
+                                                FWIN.selected = true;
+                                            }else{
+                                                ADWIN.selected = true;
+                                            }
+
                                             noiseFilterSpinner.value = 0;
                                         }else{
                                             winSizeIntBox.value = maxWinValueEventsReal.value;
@@ -112,14 +161,9 @@
                                         </listbox>
 
                                     </row>
-                                    <row id="gradDriftRow" visible="false">
-                                        <label width="100%"/>
-                                        <checkbox id="gradDriftCBox" width="100%" label="Detect gradual drift"
-                                                  checked="false"/>
-                                    </row>
                                     <row id="winsize" visible="true">
                                         <label value="Window Size" width="100%"/>
-                                        <intbox id="winSizeIntBox" value="2000" width="100%"
+                                        <intbox id="winSizeIntBox" value="5000" width="100%"
                                                 constraint="no negative,no zero,no empty: it shall not be negative, zero or empty."
                                         />
                                     </row>
@@ -133,7 +177,7 @@
 
 
                                     <row id="noiseFilter">
-                                        <label value="Relation noise filter percentage" width="100%"/>
+                                        <label value="Relation noise filter (%)" width="100%"/>
                                         <doublespinner id="noiseFilterSpinner" width="100%" value="0" step="0.1"
                                                        mold="rounded"
                                                        constraint="no empty, min 0 max 100"/>
@@ -153,6 +197,18 @@
                                     </row>
                                     <row spans="2" visible="false">
                                         <intbox id="maxWinValueEventsReal" width="100%" disabled="true"
+                                                visible="false"/>
+                                    </row>
+                                    <row spans="2" visible="false">
+                                        <intbox id="activityCount" width="100%" disabled="true"
+                                                visible="false"/>
+                                    </row>
+                                    <row spans="2" visible="false">
+                                        <intbox id="winSizeCoefficient" width="100%" disabled="true"
+                                                visible="false"/>
+                                    </row>
+                                    <row spans="2" visible="false">
+                                        <intbox id="activityLimit" width="100%" disabled="true"
                                                 visible="false"/>
                                     </row>
                                 </rows>
