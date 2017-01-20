@@ -49,7 +49,7 @@ public class HeuristicMinerPlus {
     public BPMNDiagram mineBPMNModel(XLog log, double dependencyThreshold, double positiveObservations,
                                      double relative2BestThreshold, boolean replaceIORs, HMPlusUIResult.StructuringTime structuringTime)
     {
-        System.out.println("HM+ - starting ... ");
+        System.out.println("HM+ - starting ... PIPPO");
         System.out.println("HM+ - [Setting] replace IORs: " + replaceIORs);
         System.out.println("HM+ - [Setting] dependency threshold: " + dependencyThreshold);
         System.out.println("HM+ - [Setting] positive observations: " + positiveObservations);

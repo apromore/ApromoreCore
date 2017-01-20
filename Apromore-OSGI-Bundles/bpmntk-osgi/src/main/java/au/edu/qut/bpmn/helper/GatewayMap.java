@@ -619,7 +619,7 @@ public class GatewayMap {
                     continue;
                 }
 
-                for( GatewayMapFlow igmf : incomings.get(g) )
+                for( GatewayMapFlow igmf : incomings.get(g) ) {
 //                    NOTE: we are skipping the loops, also, if this is a loop, it means that 'g' is an IOR join
 //                          successively, we will place a token generator for each of this gateways found
                     if( !visitedFlows.get(f).contains(igmf) && !igmf.isLoop() ) {
@@ -634,6 +634,7 @@ public class GatewayMap {
                             }
                         }
                     }
+                }
             }
             toVisit.get(f).clear();
             toVisit.get(f).addAll(tmp);
