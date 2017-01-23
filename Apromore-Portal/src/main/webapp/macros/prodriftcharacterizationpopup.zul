@@ -25,7 +25,9 @@
         <listhead>
             <listheader label="Characterization Statements"/>
         </listhead>
-        <listitem label="${each}"></listitem>
+        <template name="modell">
+            <listitem label="${each}"></listitem>
+        </template>
     </listbox>
 
 </vbox>

@@ -49,7 +49,7 @@ public class HeuristicMinerPlus {
     public BPMNDiagram mineBPMNModel(XLog log, double dependencyThreshold, double positiveObservations,
                                      double relative2BestThreshold, boolean replaceIORs, HMPlusUIResult.StructuringTime structuringTime)
     {
-        System.out.println("HM+ - starting ... ");
+        System.out.println("HM+ - starting ...");
         System.out.println("HM+ - [Setting] replace IORs: " + replaceIORs);
         System.out.println("HM+ - [Setting] dependency threshold: " + dependencyThreshold);
         System.out.println("HM+ - [Setting] positive observations: " + positiveObservations);
@@ -212,7 +212,7 @@ public class HeuristicMinerPlus {
 
         if( candidateJoins.containsKey(nextOracleItem.toString()) ) {
 //            these are joins, they are created considering the fact they share the same future (finalOracleItem)
-            System.out.println("DEBUG - FOUND join for the Oracle item: " + nextOracleItem.toString());
+//            System.out.println("DEBUG - FOUND join for the Oracle item: " + nextOracleItem.toString());
             candidateJoin = candidateJoins.get(nextOracleItem.toString());
             bpmnDiagram.addFlow(entry, candidateJoin, "");
             return;
@@ -306,13 +306,13 @@ public class HeuristicMinerPlus {
                         case B:
                             exit = n.getExit().getName();
                             if( !gates.containsKey(exit) ) {
-                                System.out.println("DEBUG - found a bond exit (" + exit + ") that is not a gateway");
+//                                System.out.println("DEBUG - found a bond exit (" + exit + ") that is not a gateway");
                                 rpstBottomUpHierarchy.add(0, n);
                             } else {
                                 entry = n.getEntry().getName();
                                 if( !gates.containsKey(entry) ) {
 //                                    this is the case when an RPSTNode is a LOOP
-                                    System.out.println("DEBUG - found a bond entry (" + entry + ") that is not a gateway");
+//                                    System.out.println("DEBUG - found a bond entry (" + entry + ") that is not a gateway");
                                     rpstBottomUpHierarchy.add(0, n);
                                     loops.add(n);
                                 }
@@ -324,7 +324,7 @@ public class HeuristicMinerPlus {
                 }
             }
 
-            System.out.println("DEBUG - starting analysing RPST node: " + rpstBottomUpHierarchy.size() );
+//            System.out.println("DEBUG - starting analysing RPST node: " + rpstBottomUpHierarchy.size() );
             HashMap<String, BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> removableEdges;
             HashSet<String> toRemove;
             RPSTNode rpstNode;
@@ -402,7 +402,7 @@ public class HeuristicMinerPlus {
             return false;
         }
 
-        System.out.println("DEBUG - SESE joins placed: " + counter );
+//        System.out.println("DEBUG - SESE joins placed: " + counter );
         return !changed.isEmpty();
     }
 
@@ -425,11 +425,12 @@ public class HeuristicMinerPlus {
                 bpmnDiagram.addFlow(e.getSource(), gate, "");
             }
         }
-        System.out.println("DEBUG - inner joins placed: " + counter );
+//        System.out.println("DEBUG - inner joins placed: " + counter );
     }
 
     private void replaceIORs() {
         GatewayMap gatemap = new GatewayMap();
+        System.out.println("DEBUG - doing the magic ...");
         if( replaceIORs && gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
         else System.out.println("ERROR - something went wrong initializing the gateway map");
     }

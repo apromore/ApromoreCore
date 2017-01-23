@@ -248,8 +248,8 @@ public class HeuristicNet {
         System.out.println("HNM - removing loops length ONE ...");
         for( HeuristicEdge e : removableLoopEdges ) this.removeEdge(e);
 
-        System.out.println("DEBUG - found " + loopsL1.size() + " self-loops:");
-        for( int code : loopsL1 ) System.out.println("DEBUG - self-loop: " + code);
+//        System.out.println("DEBUG - found " + loopsL1.size() + " self-loops:");
+//        for( int code : loopsL1 ) System.out.println("DEBUG - self-loop: " + code);
 
         System.out.println("HNM - evaluating loops length TWO ...");
         for( HeuristicEdge e : edges ) {
