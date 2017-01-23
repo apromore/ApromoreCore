@@ -125,7 +125,7 @@
                 </borderlayout>
             </west>
 
-            <center id="mainPanel" autoscroll="true">
+            <center id="mainPanel">
                 <div height="100%">
                     <Menu id="menucomp" style="background-color: #F9F9F9;" width="100%"/>
                     <hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9; border-bottom: 1px solid #CFCFCF;">
@@ -165,12 +165,12 @@
                     <html id="breadCrumbs" width="100%" height="10" style="font-family: arial; font-size: 12px; font-weight: normal;" />
                     <html id="folders" width="100%" visible="false" height="100%"/>
 
-                    <tabbox id="tabbox" height="100%">
+                    <tabbox id="tabbox" vflex="true">
                         <tabs id="tabs" >
                             <tab label="Processes"/>
                         </tabs>
                         <tabpanels id="tabpanels" >
-                            <tabpanel vflex="true">
+                            <tabpanel vflex="true" style="overflow: auto">
                                 <BaseListbox id="baseListboxProcesses" vflex="true"/>
                             </tabpanel>
                         </tabpanels>
