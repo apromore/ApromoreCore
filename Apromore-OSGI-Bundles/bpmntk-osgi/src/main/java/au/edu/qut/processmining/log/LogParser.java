@@ -81,8 +81,8 @@ public class LogParser {
         System.out.println("Log Parser - total different traces: " + traces.size() );
 //        for( String t : traces.keySet() ) System.out.println("DEBUG - ["+ traces.get(t) +"] trace: " + t);
 
-        System.out.println("DEBUG - final mapping:");
-        for( int code : events.keySet() ) System.out.println("DEBUG - " + code + " = " + events.get(code));
+//        System.out.println("DEBUG - final mapping:");
+//        for( int code : events.keySet() ) System.out.println("DEBUG - " + code + " = " + events.get(code));
 
         sLog = new SimpleLog(traces, events);
         sLog.setStartcode(STARTCODE);
