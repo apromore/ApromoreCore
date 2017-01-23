@@ -14,6 +14,7 @@ import de.hpi.bpt.graph.DirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
 import de.hpi.bpt.graph.algo.rpst.RPST;
 import de.hpi.bpt.graph.algo.rpst.RPSTNode;
+import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.Vertex;
 import org.deckfour.xes.model.XLog;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -38,6 +39,9 @@ public class HeuristicMinerPlus {
 
     private int gateCounter;
     private HashMap<String, Gateway> candidateJoins;
+
+    private Set<Gateway> bondsEntries;
+    private Set<Gateway> rigidsEntries;
 
 
     public HeuristicMinerPlus() {}
@@ -182,6 +186,8 @@ public class HeuristicMinerPlus {
 //        at this point, all the splits were generated, along with just a few joins
 //        now we focus only on the joins. we use the RPST in order to place INCLUSIVE joins
 //        which will be turned into AND or XOR joins later
+        bondsEntries = new HashSet<>();
+        rigidsEntries = new HashSet<>();
         System.out.println("HM+ - generating SESE joins ...");
         while( generateSESEjoins() );
 
@@ -194,7 +200,7 @@ public class HeuristicMinerPlus {
 
 //        finally, we turn all the inclusive joins placed, into proper joins: ANDs or XORs
         System.out.println("HM+ - turning inclusive joins ...");
-        replaceIORs();
+        if( replaceIORs ) replaceIORs();
 
         updateLabels(this.log.getEvents());
         System.out.println("HM+ - bpmn diagram generated successfully");
@@ -315,6 +321,9 @@ public class HeuristicMinerPlus {
 //                                    System.out.println("DEBUG - found a bond entry (" + entry + ") that is not a gateway");
                                     rpstBottomUpHierarchy.add(0, n);
                                     loops.add(n);
+                                } else {
+                                    if( n.getType() == TCType.R ) rigidsEntries.add((Gateway)nodes.get(entry));
+                                    else bondsEntries.add((Gateway)nodes.get(entry));
                                 }
                             }
                             toAnalize.addLast(n);
@@ -429,9 +438,9 @@ public class HeuristicMinerPlus {
     }
 
     private void replaceIORs() {
-        GatewayMap gatemap = new GatewayMap();
+        GatewayMap gatemap = new GatewayMap(bondsEntries);
         System.out.println("DEBUG - doing the magic ...");
-        if( replaceIORs && gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
+        if( gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
         else System.out.println("ERROR - something went wrong initializing the gateway map");
     }
 

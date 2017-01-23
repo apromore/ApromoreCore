@@ -110,7 +110,7 @@ public class Oracle {
             }
         }
 
-        System.out.println("DEBUG - matryoshka: " + matryoshka);
+//        System.out.println("DEBUG - matryoshka: " + matryoshka);
         return matryoshka;
     }
 
