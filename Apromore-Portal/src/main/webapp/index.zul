@@ -116,15 +116,8 @@
                     <north id="leftNorthPanel">
                         <SimpleSearch id="simplesearchcomp"/>
                     </north>
-                    <center id="leftCenterPanel" vflex="1">
-                        <borderlayout vflex="true">
-                            <center id="leftInnerCenterPanel">
-                                <Navigation id="navigationcomp" vflex="true" hflex="true"/>
-                            </center>
-                            <!--<south id="leftInnerSouthPanel" title="Filter" vflex="true" splittable="false" collapsible="true" open="false">-->
-                                <!--<Filter id="baseFilter" vflex="true" hflex="true"/>-->
-                            <!--</south>-->
-                        </borderlayout>
+                    <center id="leftInnerCenterPanel">
+                        <Navigation id="navigationcomp" vflex="true" hflex="true"/>
                     </center>
                     <south id="leftSouthPanel" size="25%" splittable="true" vflex="min" autoscroll="true">
                         <DetailView id="baseDetail" />
@@ -132,7 +125,7 @@
                 </borderlayout>
             </west>
 
-            <center id="mainPanel">
+            <center id="mainPanel" autoscroll="true">
                 <div height="100%">
                     <Menu id="menucomp" style="background-color: #F9F9F9;" width="100%"/>
                     <hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9; border-bottom: 1px solid #CFCFCF;">
