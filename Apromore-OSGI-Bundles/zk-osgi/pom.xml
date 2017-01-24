@@ -44,14 +44,17 @@
                     <instructions>
                         <Embed-Dependency>
                             artifactId=
-                            bsh|zk|zcommon|zel|zkbind|zkplus
-                            |zul|zhtml|zweb|zkspring-core
+                            zk-osgi|zcommon-osgi|zel-osgi|zkbind-osgi|zkplus-osgi
+                            |zul-osgi|zhtml-osgi|zweb-osgi|zjavassist-osgi|zkspring-core
                         </Embed-Dependency>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Bundle-Name>ZK OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.zkoss-osgi</Bundle-SymbolicName>
                         <Import-Package>
+                            !bsh,
+                            !com.sun.jdi.*,
+                            !org.zkoss.zsoup.*,
                             !javax.enterprise.*,
                             !groovy.*,
                             !org.acegisecurity.*,
@@ -67,8 +70,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.zkoss.*,
-                            bsh.*
+                            org.zkoss.*
                         </Export-Package>
                         <DynamicImport-Package>
                             org.apromore.plugin.portal.*,
@@ -85,53 +87,70 @@
         <!-- ZK Libraries -->
         <dependency>
             <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkbind</artifactId>
+            <artifactId>zkbind-osgi</artifactId>
+            <version>8.0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
-            <artifactId>zhtml</artifactId>
+            <artifactId>zhtml-osgi</artifactId>
+            <version>8.0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
-            <artifactId>zk</artifactId>
+            <artifactId>zk-osgi</artifactId>
+            <version>8.0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkplus</artifactId>
+            <artifactId>zkplus-osgi</artifactId>
+            <version>8.0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>
-            <artifactId>zul</artifactId>
+            <artifactId>zul-osgi</artifactId>
+            <version>8.0.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.zkoss.common</groupId>
-            <artifactId>zweb</artifactId>
+            <artifactId>zweb-osgi</artifactId>
+            <version>8.0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.common</groupId>
-            <artifactId>zel</artifactId>
+            <artifactId>zel-osgi</artifactId>
+            <version>8.0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.common</groupId>
-            <artifactId>zcommon</artifactId>
+            <artifactId>zcommon-osgi</artifactId>
+            <version>8.0.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.common</groupId>
+            <artifactId>zjavassist-osgi</artifactId>
+            <version>8.0.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkspring-core</artifactId>
+<!--
             <exclusions>
                 <exclusion>
                     <groupId>org.javassist</groupId>
                     <artifactId>javassist</artifactId>
                 </exclusion>
             </exclusions>
+-->
         </dependency>
         <!-- Replacement for the org.javassist from the hibernate package -->
+<!--
         <dependency>
             <groupId>org.jboss.javassist</groupId>
             <artifactId>com.springsource.javassist</artifactId>
         </dependency>
+-->
 
     </dependencies>
 </project>
