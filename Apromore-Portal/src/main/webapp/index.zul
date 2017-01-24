@@ -119,7 +119,7 @@
                     <center id="leftInnerCenterPanel">
                         <Navigation id="navigationcomp" vflex="true" hflex="true"/>
                     </center>
-                    <south id="leftSouthPanel" size="25%" splittable="true" vflex="min" autoscroll="true">
+                    <south id="leftSouthPanel" size="25%" splittable="true">
                         <DetailView id="baseDetail" />
                     </south>
                 </borderlayout>
