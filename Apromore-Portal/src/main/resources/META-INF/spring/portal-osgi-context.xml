@@ -37,4 +37,6 @@
     <list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" availability="optional"/>
     <list id="portalProcessAttributePlugins" interface="org.apromore.plugin.portal.PortalProcessAttributePlugin" availability="optional"/>
 
+    <service ref="portalConfig" interface="org.apromore.portal.ConfigBean"/>
+
 </beans:beans>
