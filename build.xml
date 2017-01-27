@@ -65,7 +65,7 @@
         -->
 
         <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
-        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.jar"/>
+        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
 
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>

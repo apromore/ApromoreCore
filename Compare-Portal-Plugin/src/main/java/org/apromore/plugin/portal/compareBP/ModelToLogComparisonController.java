@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.portal.dialogController;
+package org.apromore.plugin.portal.compareBP;
 
 // Java 2 Standard packages
 import java.io.StringReader;
@@ -61,6 +61,11 @@ import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
 
+import javax.inject.Inject;
+import org.apromore.portal.dialogController.BaseController;
+import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.dialogController.SaveAsDialogController;
+
 /**
  * The Signavio Controller. This controls opening the signavio editor in apromore.
  *
@@ -68,7 +73,7 @@ import org.apromore.portal.util.StreamUtil;
  */
 public class ModelToLogComparisonController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SignavioController.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelToLogComparisonController.class.getCanonicalName());
 
     private MainController mainC;
 
@@ -78,12 +83,14 @@ public class ModelToLogComparisonController extends BaseController {
     private Set<RequestParameterType<?>> params;
     private JSONObject differences;
 
+    @Inject private UserSessionManager userSessionManager;
+
     public ModelToLogComparisonController() {
         super();
 
         String id = Executions.getCurrent().getParameter("id");
         if (id != null) {
-            SignavioSession session = UserSessionManager.getEditSession(id);
+            SignavioSession session = userSessionManager.getEditSession(id);
             if (session == null) {
                 throw new AssertionError("No edit session associated with id " + id);
             }

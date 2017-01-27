@@ -34,6 +34,8 @@ public class ConfigBean {
     private String  versionNumber;
     private String  versionBuildDate;
 
+    public ConfigBean() {}
+
     public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String versionNumber, String versionBuildDate) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +

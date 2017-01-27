@@ -42,6 +42,11 @@
     <reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
     <reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
 
+    <reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
+
+    <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" availability="optional"/>
+    <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
+
     <beans:bean id="plugin2" class="org.apromore.plugin.portal.compareBP.ComparePlugin">
         <beans:property name="groupLabel" value="Monitor" />
         <beans:property name="label" value="Compare" />

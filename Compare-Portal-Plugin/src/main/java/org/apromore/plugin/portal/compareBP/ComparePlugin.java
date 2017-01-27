@@ -92,6 +92,8 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComparePlugin.class.getCanonicalName());
 
+    @Inject private org.apromore.portal.ConfigBean portalConfig;
+
     @Inject
     public ComparePlugin(final CompareService compareService, final ProcessService processService, final CanoniserService canoniserService, final EventLogService eventLogService){
         this.compareService = compareService;
@@ -145,8 +147,6 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(PortalContext context) {
-        LOGGER.info("Executing");
-
         Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
         Set<LogSummaryType> selectedLogSummaryType = new HashSet<>();
         Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
@@ -190,7 +190,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
                 logs.add(eventLogService.getXLog(logType.getId()));
             }
 
-            CompareController controller = new CompareController(context, compareService, eventLogService);
+            CompareController controller = new CompareController(context, compareService);
 
             if(logs.size() == 2){
                 controller.compareLL(logs.get(0), logs.get(1));
