@@ -1,3 +1,23 @@
+<!--
+  ~ Copyright © 2009-2017 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:oryx="http://oryx-editor.org" id="sid-65F5D300-0F1E-432A-AA38-B39E298C3A4D" width="324.890625" height="209" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg"><defs><marker id="sid-102FD63D-C390-4439-B552-755E373AAB74start" refX="1" refY="5" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="11" orient="auto">
 	  		<path id="sid-102FD63D-C390-4439-B552-755E373AAB74conditional" d="M 0 6 L 8 1 L 15 5 L 8 9 L 1 5" fill="white" stroke="#000000" stroke-width="1" display="none"/>
 			<path id="sid-102FD63D-C390-4439-B552-755E373AAB74default" d="M 5 0 L 11 10" fill="white" stroke="#000000" stroke-width="1" display="none"/>
