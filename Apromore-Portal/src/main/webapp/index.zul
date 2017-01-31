@@ -4,12 +4,8 @@
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
 <?component name="Navigation" macroURI="macros/navigation.zul" ?>
 <?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
-<!--<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>-->
-<?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
-<?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
-
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -18,15 +14,19 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
+
+<!--<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>-->
+<?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
+<?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
 
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
