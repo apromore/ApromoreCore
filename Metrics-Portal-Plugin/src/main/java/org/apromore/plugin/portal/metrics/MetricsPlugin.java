@@ -115,7 +115,7 @@ public class MetricsPlugin extends PluginCustomGui {
 //        runComputation(portalContext, processVersions);
 
         try {
-            if(processVersions.size() > 1) {
+            if(processVersions.size() > 0) {
                 this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/metrics.zul", null, null);
 
                 this.size = (Radiogroup) this.settings.getFellow("size");
