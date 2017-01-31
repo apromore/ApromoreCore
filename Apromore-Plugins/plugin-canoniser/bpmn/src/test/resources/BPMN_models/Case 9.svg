@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:oryx="http://oryx-editor.org" id="sid-3445CE45-9623-4AA3-AAFB-9380241194DF" width="525" height="191" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg"><defs><marker id="sid-E14E6FA0-1C58-4614-B666-E36DE75A470Cstart" refX="1" refY="5" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="11" orient="auto">
 	  		<path id="sid-E14E6FA0-1C58-4614-B666-E36DE75A470Cconditional" d="M 0 6 L 8 1 L 15 5 L 8 9 L 1 5" fill="white" stroke="#000000" stroke-width="1" display="none"/>
 			<path id="sid-E14E6FA0-1C58-4614-B666-E36DE75A470Cdefault" d="M 5 0 L 11 10" fill="white" stroke="#000000" stroke-width="1" display="none"/>
