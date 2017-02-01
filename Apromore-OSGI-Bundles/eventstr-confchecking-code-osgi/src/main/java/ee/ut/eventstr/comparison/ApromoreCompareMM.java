@@ -1,3 +1,23 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package ee.ut.eventstr.comparison;
 
 import java.io.BufferedWriter;
@@ -36,11 +56,11 @@ public class ApromoreCompareMM {
 		ModelAbstractions model2 = new ModelAbstractions(getFileAsArray(modelName2));
 		
 		ApromoreCompareMM comparator = new ApromoreCompareMM();
-		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, new HashSet<String>(model1.getReader().mapNew2OldLbls.values()), new HashSet<String>(model2.getReader().mapNew2OldLbls.values()));
+		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, new HashSet<String>(model1.getLabels()), new HashSet<String>(model2.getLabels()));
 		verbalizer.verbalize();
 		
 //		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
-//		System.out.println(verbalizer.getStatements());
+		System.out.println(verbalizer.getStatements());
 	}
 
 	public static byte[] getFileAsArray(String fileName) {
@@ -146,8 +166,8 @@ public class ApromoreCompareMM {
 		Set<String> common = new HashSet<>(obs1);
 		common.retainAll(obs2);
 
-		PESSemantics<Integer> pnmlpes1 = model1.getPES(common);
-		PESSemantics<Integer> pnmlpes2 = model2.getPES(common);
+		PESSemantics<Integer> pnmlpes1 = model1.getPESSemantics(common);
+		PESSemantics<Integer> pnmlpes2 = model2.getPESSemantics(common);
 
 		PartialSynchronizedProduct<Integer> psp = new PartialSynchronizedProduct<>(pnmlpes1, pnmlpes2);
 		PartialSynchronizedProduct<Integer> pre = psp.perform();

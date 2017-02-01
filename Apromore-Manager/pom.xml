@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -9,10 +9,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -78,10 +78,10 @@
                             org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.security.core;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.config;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.web;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
+                            org.springframework.security.core;version="[3.1.0,4.0)",
+                            org.springframework.security.config;version="[3.1.0,4.0)",
+                            org.springframework.security.web;version="[3.1.0,4.0)",
+                            org.springframework.security.remoting;version="[3.1.0,4.0)",
                             org.apromore.manager-security;version="[1.1,1.1]",
                             org.apromore.manager-ws-model;version="[1.1,1.1]",
                             org.apromore.filestore-client;version="[1.0,1.1]"

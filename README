@@ -6,7 +6,6 @@ REQUIREMENTS
 
 Apromore has been successfully installed on the following platforms:
 - Windows 7
-- Linux (specifically ubuntu only when running OracleJVM)
 - Mac OSX 10.8 to 10.11
 
 Ensure the following software is installed:
@@ -18,6 +17,18 @@ Ensure the following software is installed:
 Additional software required for PQL support:
 - MySQL 5.6.x
 - LoLA 2.0 (http://service-technology.org/lola/)
+
+Additional software required for ProDrift support:
+- R 3.3
+- rJava
+
+
+STANDALONE INSTALLATION
+====================
+
+* Download the apromore repository from http://apromore.qut.edu.au/apromore.zip.
+* Unzip the file and open the folder Apromore-Server.
+* Start the repository via the apromore.sh file, if using *NIX, or the apromore.bat if using Windows.
 
 
 DEFAULT INSTALLATION
@@ -128,7 +139,7 @@ Models always show up in the log as unable to be indexed.
 * Check that LoLA executable is correctly configured.
 
 Where is the server log?
-* Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE/serviceability/logs/log.log
+* Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/serviceability/logs/log.log
 
 I grabbed the PQL.MySQL-1.2.sql file directly from the PQL sources and it doesn't work!
 * Edit the file and change the uuid attribute of the jbpt_petri_nodes table from VARCHAR(50) to VARCHAR(100) in two places

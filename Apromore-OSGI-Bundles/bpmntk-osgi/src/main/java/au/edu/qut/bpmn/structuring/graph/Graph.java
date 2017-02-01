@@ -1,3 +1,23 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package au.edu.qut.bpmn.structuring.graph;
 
 import de.hpi.bpt.graph.DirectedEdge;
@@ -131,14 +151,15 @@ public class Graph {
         int l = 0;
         HashSet<String> unvisited = new HashSet<>(outgoing.keySet());
         HashSet<String> visiting = new HashSet<>();
-        HashMap<String, Boolean> visited = new HashMap<>();
+        HashMap<String, Boolean> visitedGates = new HashMap<>();
+        HashSet<Integer> visitedEdges = new HashSet<>();
 
         HashSet<Integer> loopEdges = new HashSet<>();
         HashSet<Integer> forwardEdges = new HashSet<>();
 
         //System.out.println("DEBUG - outgoing size: " + unvisited.size() );
 
-        explore(this.entry, unvisited, visiting, visited, loopEdges, forwardEdges);
+        explore(this.entry, unvisited, visiting, visitedGates, visitedEdges, loopEdges, forwardEdges);
 
         //System.out.println("DEBUG - forwardEdges size: " + forwardEdges.size() );
         //System.out.println("DEBUG - loops size: " + loopEdges.size() );
@@ -152,18 +173,23 @@ public class Graph {
     }
 
     private boolean explore( String entry, HashSet<String> unvisited, HashSet<String> visiting,
-                             HashMap<String, Boolean> visited, HashSet<Integer> loopEdges, HashSet<Integer> forwardEdges )
+                             HashMap<String, Boolean> visitedGates, HashSet<Integer> visitedEdges,
+                             HashSet<Integer> loopEdges, HashSet<Integer> forwardEdges )
     {
         String next;
         boolean loopEdge = false;
         boolean forwardEdge = false;
+        boolean visited = true;
 
         unvisited.remove(entry);
         visiting.add(entry);
+
+        if( entry == exit ) forwardEdge = true;
+
         for( int pid : outgoing.get(entry) ) {
             next = allPaths.get(pid).getExit();
             if( unvisited.contains(next) ) {
-                if( explore(next, unvisited, visiting, visited, loopEdges, forwardEdges) ) {
+                if( explore(next, unvisited, visiting, visitedGates, visitedEdges, loopEdges, forwardEdges) ) {
                     loopEdge = true;
                     loopEdges.add(pid);
                 } else {
@@ -173,8 +199,8 @@ public class Graph {
             } else if( visiting.contains(next) ) {
                 loopEdge = true;
                 loopEdges.add(pid);
-            } else if( visited.containsKey(next) ) {
-                if( visited.get(next) ) {
+            } else if( visitedGates.containsKey(next) ) {
+                if( visitedGates.get(next) ) {
                     loopEdge = true;
                     loopEdges.add(pid);
                 } else {
@@ -182,10 +208,13 @@ public class Graph {
                     forwardEdges.add(pid);
                 }
             }
+            visitedEdges.add(pid);
         }
 
         visiting.remove(entry);
-        visited.put(entry, (loopEdge && !forwardEdge));
+        for( int pid : incoming.get(entry) ) if( !visitedEdges.contains(pid) ) visited = false;
+        if( visited ) visitedGates.put(entry, (loopEdge && !forwardEdge));
+        else unvisited.add(entry);
 
         return (loopEdge && !forwardEdge);
     }

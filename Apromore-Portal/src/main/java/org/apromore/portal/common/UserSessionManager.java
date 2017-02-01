@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -21,18 +21,24 @@
 package org.apromore.portal.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apromore.model.FolderType;
 import org.apromore.model.UserType;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 
 public class UserSessionManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserSessionManager.class);
 
     private static final String USER = "USER";
     private static final String CURRENT_FOLDER = "CURRENT_FOLDER";
@@ -44,14 +50,17 @@ public class UserSessionManager {
     private static final String MAIN_CONTROLLER = "MAIN_CONTROLLER";
     private static final String SELECTED_FOLDER_IDS = "SELECTED_FOLDER_IDS";
     private static final String SELECTED_PROCESS_IDS = "SELECTED_PROCESS_IDS";
-    private static final String SIGNAVIO_SESSION = "SIGNAVIO_SESSION";
 
+    /**
+     * Map from user session UUIDs passed as the query part of URLs, to Signavio session objects.
+     */
+    static Map<String,SignavioSession> editSessionMap = new HashMap<>();
 
     private UserSessionManager() { }
 
 
     public static void setCurrentUser(UserType user) {
-        getSession().setAttribute(USER, user);
+        setAttribute(USER, user);
     }
 
     private static Session getSession() {
@@ -68,133 +77,139 @@ public class UserSessionManager {
         return session;
     }
 
+    private static Object getAttribute(String attribute) {
+        return getSession().getAttribute(attribute);
+    }
+
+    private static void setAttribute(String attribute, Object value) {
+        getSession().setAttribute(attribute, value);
+    }
+
     public static UserType getCurrentUser() {
-        if (getSession().getAttribute(USER) != null) {
-            return (UserType) getSession().getAttribute(USER);
+        if (getAttribute(USER) != null) {
+            return (UserType) getAttribute(USER);
         } else if (SecurityContextHolder.getContext().getAuthentication() != null) {
             setCurrentUser((UserType) SecurityContextHolder.getContext().getAuthentication().getDetails());
-            return (UserType) getSession().getAttribute(USER);
+            return (UserType) getAttribute(USER);
         }
         return null;
     }
 
+    // TODO: fix the memory leak by reclaiming stale sessions
     public static void setEditSession(String id, SignavioSession session) {
-        Executions.getCurrent().getSession().setAttribute(SIGNAVIO_SESSION + id, session);
+        editSessionMap.put(id, session);
     }
 
     public static SignavioSession getEditSession(String id) {
-        if (Executions.getCurrent().getSession().getAttribute(SIGNAVIO_SESSION + id) != null) {
-            return (SignavioSession) Executions.getCurrent().getSession().getAttribute(SIGNAVIO_SESSION + id);
-        }
-        return null;
+        return editSessionMap.get(id);
     }
 
     public static void setCurrentFolder(FolderType folder) {
-        Executions.getCurrent().getSession().setAttribute(CURRENT_FOLDER, folder);
+        setAttribute(CURRENT_FOLDER, folder);
     }
 
     public static FolderType getCurrentFolder() {
-        if (Executions.getCurrent().getSession().getAttribute(CURRENT_FOLDER) != null) {
-            return (FolderType) Executions.getCurrent().getSession().getAttribute(CURRENT_FOLDER);
+        if (getAttribute(CURRENT_FOLDER) != null) {
+            return (FolderType) getAttribute(CURRENT_FOLDER);
         }
 
         return null;
     }
 
     public static void setSelectedFolderIds(List<Integer> folderIds) {
-        Executions.getCurrent().getSession().setAttribute(SELECTED_FOLDER_IDS, folderIds);
+        setAttribute(SELECTED_FOLDER_IDS, folderIds);
     }
 
     @SuppressWarnings("unchecked")
     public static List<Integer> getSelectedFolderIds() {
-        if (Executions.getCurrent().getSession().getAttribute(SELECTED_FOLDER_IDS) != null) {
-            return (List<Integer>) Executions.getCurrent().getSession().getAttribute(SELECTED_FOLDER_IDS);
+        if (getAttribute(SELECTED_FOLDER_IDS) != null) {
+            return (List<Integer>) getAttribute(SELECTED_FOLDER_IDS);
         }
 
         return new ArrayList<>();
     }
 
     public static void setSelectedProcessIds(List<Integer> processIds) {
-        Executions.getCurrent().getSession().setAttribute(SELECTED_PROCESS_IDS, processIds);
+        setAttribute(SELECTED_PROCESS_IDS, processIds);
     }
 
     @SuppressWarnings("unchecked")
     public static List<Integer> getSelectedProcessIds() {
-        if (Executions.getCurrent().getSession().getAttribute(SELECTED_PROCESS_IDS) != null) {
-            return (List<Integer>) Executions.getCurrent().getSession().getAttribute(SELECTED_PROCESS_IDS);
+        if (getAttribute(SELECTED_PROCESS_IDS) != null) {
+            return (List<Integer>) getAttribute(SELECTED_PROCESS_IDS);
         }
 
         return new ArrayList<>();
     }
 
     public static void setPreviousFolder(FolderType folder) {
-        Executions.getCurrent().getSession().setAttribute(PREVIOUS_FOLDER, folder);
+        setAttribute(PREVIOUS_FOLDER, folder);
     }
 
     public static FolderType getPreviousFolder() {
-        if (Executions.getCurrent().getSession().getAttribute(PREVIOUS_FOLDER) != null) {
-            return (FolderType) Executions.getCurrent().getSession().getAttribute(PREVIOUS_FOLDER);
+        if (getAttribute(PREVIOUS_FOLDER) != null) {
+            return (FolderType) getAttribute(PREVIOUS_FOLDER);
         }
 
         return null;
     }
 
     public static void setTree(List<FolderType> folders) {
-        Executions.getCurrent().getSession().setAttribute(TREE, folders);
+        setAttribute(TREE, folders);
     }
 
     @SuppressWarnings("unchecked")
     public static List<FolderType> getTree() {
-        if (Executions.getCurrent().getSession().getAttribute(TREE) != null) {
-            return (List<FolderType>) Executions.getCurrent().getSession().getAttribute(TREE);
+        if (getAttribute(TREE) != null) {
+            return (List<FolderType>) getAttribute(TREE);
         }
 
         return null;
     }
 
     public static void setMainController(MainController mainController) {
-        Executions.getCurrent().getSession().setAttribute(MAIN_CONTROLLER, mainController);
+        setAttribute(MAIN_CONTROLLER, mainController);
     }
 
     public static MainController getMainController() {
-        if (Executions.getCurrent().getSession().getAttribute(MAIN_CONTROLLER) != null) {
-            return (MainController) Executions.getCurrent().getSession().getAttribute(MAIN_CONTROLLER);
+        if (getAttribute(MAIN_CONTROLLER) != null) {
+            return (MainController) getAttribute(MAIN_CONTROLLER);
         }
 
         return null;
     }
 
     public static void setCurrentSecurityItem(Integer id) {
-        Executions.getCurrent().getSession().setAttribute(CURRENT_SECURITY_ITEM, id);
+        setAttribute(CURRENT_SECURITY_ITEM, id);
     }
 
     public static Integer getCurrentSecurityItem() {
-        if (Executions.getCurrent().getSession().getAttribute(CURRENT_SECURITY_ITEM) != null) {
-            return (Integer) Executions.getCurrent().getSession().getAttribute(CURRENT_SECURITY_ITEM);
+        if (getAttribute(CURRENT_SECURITY_ITEM) != null) {
+            return (Integer) getAttribute(CURRENT_SECURITY_ITEM);
         }
 
         return null;
     }
 
     public static void setCurrentSecurityType(FolderTreeNodeTypes type) {
-        Executions.getCurrent().getSession().setAttribute(CURRENT_SECURITY_TYPE, type);
+        setAttribute(CURRENT_SECURITY_TYPE, type);
     }
 
     public static FolderTreeNodeTypes getCurrentSecurityType() {
-        if (Executions.getCurrent().getSession().getAttribute(CURRENT_SECURITY_TYPE) != null) {
-            return (FolderTreeNodeTypes) Executions.getCurrent().getSession().getAttribute(CURRENT_SECURITY_TYPE);
+        if (getAttribute(CURRENT_SECURITY_TYPE) != null) {
+            return (FolderTreeNodeTypes) getAttribute(CURRENT_SECURITY_TYPE);
         }
 
         return FolderTreeNodeTypes.Folder;
     }
 
     public static void setCurrentSecurityOwnership(boolean hasOwnership) {
-        Executions.getCurrent().getSession().setAttribute(CURRENT_SECURITY_OWNERSHIP, hasOwnership);
+        setAttribute(CURRENT_SECURITY_OWNERSHIP, hasOwnership);
     }
 
     public static boolean getCurrentSecurityOwnership() {
-        if (Executions.getCurrent().getSession().getAttribute(CURRENT_SECURITY_OWNERSHIP) != null) {
-            return (Boolean) Executions.getCurrent().getSession().getAttribute(CURRENT_SECURITY_OWNERSHIP);
+        if (getAttribute(CURRENT_SECURITY_OWNERSHIP) != null) {
+            return (Boolean) getAttribute(CURRENT_SECURITY_OWNERSHIP);
         }
 
         return false;

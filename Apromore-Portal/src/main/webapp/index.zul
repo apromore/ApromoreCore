@@ -4,12 +4,8 @@
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
 <?component name="Navigation" macroURI="macros/navigation.zul" ?>
 <?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
-<!--<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>-->
-<?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
-<?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
-
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -18,15 +14,19 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
+
+<!--<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>-->
+<?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
+<?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
 
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
@@ -84,7 +84,7 @@
         }
     </style>
 
-    <window id="mainW" border="none" height="100%" width="100%" vflex="true" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
+    <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
 
         <div height="40px">
             <div style="float:left; margin-top: 5px;" >
@@ -112,32 +112,25 @@
 
         <borderlayout vflex="true">
             <west id="leftPanel" title="Key word filter" size="30%" collapsible="true" splittable="true">
-                <borderlayout vflex="true" height="100%">
+                <borderlayout vflex="min" height="100%">
                     <north id="leftNorthPanel">
                         <SimpleSearch id="simplesearchcomp"/>
                     </north>
-                    <center id="leftCenterPanel" vflex="1">
-                        <borderlayout vflex="true">
-                            <center id="leftInnerCenterPanel">
-                                <Navigation id="navigationcomp" vflex="true" hflex="true"/>
-                            </center>
-                            <!--<south id="leftInnerSouthPanel" title="Filter" vflex="true" splittable="false" collapsible="true" open="false">-->
-                                <!--<Filter id="baseFilter" vflex="true" hflex="true"/>-->
-                            <!--</south>-->
-                        </borderlayout>
+                    <center id="leftInnerCenterPanel">
+                        <Navigation id="navigationcomp" vflex="true" hflex="true"/>
                     </center>
-                    <south id="leftSouthPanel" size="25%" splittable="true" vflex="true" autoscroll="true">
+                    <south id="leftSouthPanel" size="25%" splittable="true">
                         <DetailView id="baseDetail" />
                     </south>
                 </borderlayout>
             </west>
 
-            <center id="mainPanel" vflex="true">
-                <div vflex="true" height="100%">
-                    <Menu id="menucomp" style="background-color: #F9F9F9;"/>
+            <center id="mainPanel">
+                <div height="100%">
+                    <Menu id="menucomp" style="background-color: #F9F9F9;" width="100%"/>
                     <hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9; border-bottom: 1px solid #CFCFCF;">
                         <paging id="pg" style="border-bottom: 0px solid #F9F9F9;" />
-                        <hbox id="buttons" align="center" height="100%" vflex="true">
+                        <hbox id="buttons" align="center" height="100%" vflex="min">
                             <button id="refreshB" label="" style="background: transparent; border:none" image="img/arrow_refresh.png" tooltiptext="Reload data" />
                             <button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />
                             <button id="btnAddFolder" label="" image="img/folder_add.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
@@ -170,14 +163,14 @@
                     </window>
 
                     <html id="breadCrumbs" width="100%" height="10" style="font-family: arial; font-size: 12px; font-weight: normal;" />
-                    <html id="folders" width="100%" visible="false" height="0"/>
+                    <html id="folders" width="100%" visible="false" height="100%"/>
 
-                    <tabbox id="tabbox" vflex="true" height="100%">
+                    <tabbox id="tabbox" vflex="true">
                         <tabs id="tabs" >
                             <tab label="Processes"/>
                         </tabs>
                         <tabpanels id="tabpanels" >
-                            <tabpanel vflex="true">
+                            <tabpanel vflex="true" style="overflow: auto">
                                 <BaseListbox id="baseListboxProcesses" vflex="true"/>
                             </tabpanel>
                         </tabpanels>
