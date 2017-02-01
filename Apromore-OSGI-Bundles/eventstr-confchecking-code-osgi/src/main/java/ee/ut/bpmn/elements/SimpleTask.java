@@ -10,12 +10,12 @@ import org.jdom2.Element;
 public class SimpleTask extends Node {
 	protected Transition positiveCase;
 		
-	public SimpleTask(Element element, PetriNet net, HashMap<String, String> tasks) {
+	public SimpleTask(Element element, PetriNet net){// HashMap<String, String> tasks), HashMap<String, Integer> labelCounter) {
 		super(element, net);
 		String name = element.getAttributeValue("name");
 		
-		if(tasks.containsKey(element.getAttributeValue("name")))
-			name += tasks.size();
+//		if(tasks.containsKey(name))
+//			name += labelCounter.get(name);
 		
 		this.positiveCase = new Transition(name);
 				

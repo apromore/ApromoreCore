@@ -4,6 +4,7 @@ import ee.ut.eventstr.NewUnfoldingPESSemantics;
 import ee.ut.eventstr.PESSemantics;
 import ee.ut.eventstr.PrimeEventStructure;
 import ee.ut.eventstr.SinglePORunPESSemantics;
+import ee.ut.eventstr.comparison.differences.DifferenceML;
 import ee.ut.eventstr.comparison.differences.DifferencesML;
 import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import hub.top.petrinet.PetriNet;
@@ -64,18 +65,58 @@ public class ApromoreCompareML {
 	public static void main(String[] args) {
 //		String modelString = "models/btm.bpmn";
 //		String logString = "logs/btl.xes";
-        String folder = "/Users/armascer/Downloads/";
+        String folder1 = "fines/";
+		String folder2 = "fines/";
+
 //        String logString = folder + "conf_loop_log.xes";
 //        String modelString = folder + "conc_seq_insert.bpmn";
-        String logString = folder + "conc_seq_insert_log.xes";
-        String modelString = folder + "conf_loop.bpmn";
+//        String logString = folder1 + "Repair/Example2/conc_seq_insert_log.xes";
+//        String modelString = folder2 + "Examples/Example1/conf_loop.bpmn";
+
+		String logString = "TestModels/TASKSKIP-2/bpLog3.xes";
+		String modelString = "TestModels/TASKSKIP-2/bp6.bpmn";
+
+		//String logString = "financial/financial_log-filtered-10.xes";
+		//String folder = "financial/";
+		//String modelString = folder+"financial_log-filtered-10-Local.pnml";
+
+//		String logString = "/Users/armascer/Work/IDEs/WorkspaceLocalConcurrency/eventstr-confchecking/logs/a3.pnml_log.xes";
+//		String modelString = "/Users/armascer/Work/IDEs/WorkspaceLocalConcurrency/eventstr-confchecking/models/a3_International_departure.bpmn";
+
+//		String logString = "ali/Ali_repair.xes";
+//		String modelString = "models/bp.bpmn";
 
 //		String logString = "financia/*l/financial_log-filtered-10.xes";
 //		String modelString = "financ*/ial/financial_log-filtered-10-Local.pnml";
 
 		HashSet<String> silents = new HashSet<String>();
+		silents.add("Tau_0");
+		silents.add("Tau_1");
+		silents.add("Tau_2");
+		silents.add("Tau_3");
+		silents.add("Tau_4");
+		silents.add("Tau_5");
+		silents.add("Tau_6");
+		silents.add("Tau_7");
+		silents.add("Tau_8");
+		silents.add("Tau_9");
+		silents.add("Tau_10");
+		silents.add("Tau_11");
+		silents.add("Tau_12");
+		silents.add("t30");
+		silents.add("t31");
+		silents.add("t32");
+
 		silents.add("_1_");
 		silents.add("_0_");
+		silents.add("t1");
+		silents.add("t2");
+		silents.add("t3");
+		silents.add("t4");
+		silents.add("t5");
+		silents.add("t6");
+		silents.add("t7");
+		silents.add("t8");
 		silents.add("t15");
 		silents.add("t16");
 		silents.add("t17");
@@ -92,6 +133,15 @@ public class ApromoreCompareML {
         silents.add("t23");
 		silents.add("t24");
         silents.add("t25");
+		silents.add("Inv");
+		silents.add("Inv1");
+		silents.add("Inv2");
+		silents.add("Inv3");
+		silents.add("Inv4");
+		silents.add("Inv5");
+		silents.add("Inv6");
+		silents.add("Inv7");
+		silents.add("Inv8");
 		silents.add("null_positive");
 		silents.add("null_enable");
 		
@@ -100,12 +150,19 @@ public class ApromoreCompareML {
 			ModelAbstractions model = new ModelAbstractions(getFileAsArray(modelString));
 			ApromoreCompareML comparator = new ApromoreCompareML();
 
-//          PetriNet model = PNMLReader.parse(new File(modelString));
+//			String modelString = "ali/Ali_repair.pnml";
+//			PetriNet model = PNMLReader.parse(new File(modelString));
+//			NewDiffVerbalizer<Integer> verbalizer = comparator.analyzeDifferences(model, log, silents);
+//			verbalizer.verbalize();
+//			System.out.println(verbalizer.getStatements());
+
 			DiffMLGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model, log, silents);
 			verbalizer.verbalize();
 			System.out.println(DifferencesML.toJSON(verbalizer.getDifferences()));
+		for(DifferenceML dif : verbalizer.getDifferences().getDifferences())
+			System.out.println(dif.getSentence());
 
-//			NewDiffVerbalizer<Integer> verbalizer = comparator.analyzeDifferences(model.getNet(), log, silents);
+//			NewDiffVerbalizer<Integer> verbalizer = comparator.analyzeDifferences(model, log, silents);
 //			verbalizer.verbalize();
 //			System.out.println(verbalizer.getStatements());
 
@@ -177,8 +234,7 @@ public class ApromoreCompareML {
 		return statementSet;
 	}
 
-	public DiffMLGraphicalVerbalizer analyzeDifferences(ModelAbstractions model, XLog log, HashSet<String> silents)
-			throws Exception {
+	public DiffMLGraphicalVerbalizer analyzeDifferences(ModelAbstractions model, XLog log, HashSet<String> silents) throws Exception {
 		DiffMLGraphicalVerbalizer verbalizer = new DiffMLGraphicalVerbalizer(model, log, silents);
 
 //		SinglePORunPESSemantics<Integer> logpessem;

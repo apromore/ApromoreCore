@@ -11,12 +11,12 @@ public class Task extends Node {
 	private Transition positiveCase;
 	private Transition negativeCase;
 		
-	public Task(Element element, PetriNet net, HashMap<String, String> tasks) {
+	public Task(Element element, PetriNet net){//}, HashMap<String, String> tasks) {
 		super(element, net);
 		String name = element.getAttributeValue("name");
 		
-		if(tasks.containsKey(element.getAttributeValue("name")))
-			name += tasks.size();
+//		if(tasks.containsKey(element.getAttributeValue("name")))
+//			name += tasks.size();
 		
 		this.positiveCase = new Transition(name);
 		this.negativeCase = new Transition();
