@@ -128,6 +128,11 @@
                 <filename name="dmk.sh"/>
             </fileset>
         </copy>
+        <copy todir="${dir-virgo}/bin" overwrite="true">
+            <fileset dir="Supplements/Virgo">
+                <filename name="dmk.bat"/>
+            </fileset>
+        </copy>
         <copy todir="${dir-virgo}/repository/ext" overwrite="true">
             <fileset dir="Supplements/Virgo">
                 <filename name="org.eclipse.virgo.web.properties"/>
