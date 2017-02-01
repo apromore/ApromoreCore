@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.portal.dialogController;
+package org.apromore.plugin.portal.compareBP;
 
 // Java 2 Standard packages
 import java.io.StringReader;
@@ -61,14 +61,17 @@ import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
 
+import org.apromore.portal.dialogController.BaseController;
+import org.apromore.portal.dialogController.MainController;
+
 /**
- * The Signavio Controller. This controls opening the signavio editor in apromore.
+ * Controller for a pair of signavio editor windows.
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class ModelToLogComparisonController extends BaseController {
+public class ModelsComparisonController extends BaseController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SignavioController.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelsComparisonController.class.getCanonicalName());
 
     private MainController mainC;
 
@@ -76,9 +79,10 @@ public class ModelToLogComparisonController extends BaseController {
     private ProcessSummaryType process, process2;
     private VersionSummaryType version, version2;
     private Set<RequestParameterType<?>> params;
+    private int m1PESSize, m2PESSize;
     private JSONObject differences;
 
-    public ModelToLogComparisonController() {
+    public ModelsComparisonController() {
         super();
 
         String id = Executions.getCurrent().getParameter("id");
@@ -158,18 +162,27 @@ public class ModelToLogComparisonController extends BaseController {
             }
 
             this.setTitle(title);
+//            mainC.showPluginMessages(pluginMessages);
             if (mainC != null) {
                 mainC.showPluginMessages(pluginMessages);
             }
+//            mainC.showPluginMessages(pluginMessages);
 
             for (RequestParameterType<?> requestParameter: params) {
                 switch (requestParameter.getId()) {
                 case "m1_differences_json":
                     param.put("differences", (String) requestParameter.getValue());
                     this.differences = new JSONObject((String) requestParameter.getValue());
+                    //LOGGER.info("Request parameter \"differences\" set to " + requestParameter.getValue());
+                    break;
+                case "m1_pes_size":
+                    this.m1PESSize = (Integer) requestParameter.getValue();
+                    break;
+                case "m2_pes_size":
+                    this.m2PESSize = (Integer) requestParameter.getValue();
                     break;
                 default:
-                    LOGGER.warn("Unsupported request parameter \"" + requestParameter.getId() + "\" with value " + requestParameter.getValue());
+                    LOGGER.info("Unsupported request parameter \"" + requestParameter.getId() + "\" with value " + requestParameter.getValue());
                 }
             }
 
@@ -196,6 +209,7 @@ public class ModelToLogComparisonController extends BaseController {
             e.printStackTrace();
         }
 
+/*
         this.addEventListener("onSave", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
@@ -216,11 +230,18 @@ public class ModelToLogComparisonController extends BaseController {
                 }
             }
         });
+*/
     }
 
     public void onCreate() throws InterruptedException {
         Treechildren treechildren = (Treechildren) this.getFellowIfAny("differences");
         if (treechildren != null) {
+            Label m1Label = (Label) this.getFellow("m1-pes-size");
+            m1Label.setValue(Integer.toString(m1PESSize));
+
+            Label m2Label = (Label) this.getFellow("m2-pes-size");
+            m2Label.setValue(Integer.toString(m2PESSize));
+
             try {
                 JSONArray array = this.differences.getJSONArray("differences");
                 for (int i=0; i < array.length(); i++) {
@@ -235,7 +256,18 @@ public class ModelToLogComparisonController extends BaseController {
                     Treecell cell = new Treecell(difference.getString("sentence"));
                     row.appendChild(cell);
 
-                    cell.setWidgetListener("onClick", differenceToJavascript(difference));
+                    String clean1 = "oryxEditor1.cleanDifferences()";
+                    String clean2 = "oryxEditor2.cleanDifferences()";
+
+                    String sent1 = onCreateSentence("model 1", difference.optJSONObject("runsM1"), "oryxEditor1");
+                    String sent2 = onCreateSentence("model 2", difference.optJSONObject("runsM2"), "oryxEditor2");
+
+                    if(sent1.length() > 0 && sent2.length() > 0)
+                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1 + ";"+ sent2);
+                    else if(sent1.length() > 0)
+                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1);
+                    else if(sent2.length() > 0)
+                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent2);
 
                     treechildren.appendChild(item);
                 }
@@ -248,17 +280,102 @@ public class ModelToLogComparisonController extends BaseController {
         }
     }
 
-    private String differenceToJavascript(JSONObject difference) throws JSONException {
-            LOGGER.info("differenceToJavascript: " + difference);
+    private String onCreateRuns(final String modelName, JSONObject runsM1, Treeitem item, String oryxEditor) throws JSONException {
+        String sentence = "";
+        if (runsM1 != null) {
+            // Add UI for these runs
+            Treechildren m1children = item.getTreechildren();
+            if (m1children == null) {
+                m1children = new Treechildren();
+                item.appendChild(m1children);
+            }
+            assert m1children != null;
 
-            return "oryxEditor1.displayMLDifference(" +
-                    "\"" + difference.optString("type") + "\"," +
-                    difference.optJSONArray("start")    + "," +
-                    difference.optJSONArray("a")        + "," +
-                    difference.optJSONArray("b")        + "," +
-                    difference.optJSONArray("newTasks") + "," +
-                    difference.optJSONArray("end")      + "," +
-                    difference.optJSONArray("greys")    + ")";
+            Treeitem m1item = new Treeitem();
+            m1children.appendChild(m1item);
+
+            Treerow m1row = new Treerow();
+            m1item.appendChild(m1row);
+
+            Treecell m1cell = new Treecell("Runs in " + modelName);
+            m1row.appendChild(m1cell);
+
+            LOGGER.info("About to fetch runs");
+            JSONArray runs = runsM1.getJSONArray("runs");
+            LOGGER.info("Runs " + runs);
+            for (int j=0; j < runs.length(); j++) {
+                LOGGER.info("About to fetch run " + j);
+                JSONObject run = runs.getJSONObject(j);
+                LOGGER.info("Run " + j + " " + run);
+
+                // Add UI for this run
+                Treechildren runChildren = m1item.getTreechildren();
+                if (runChildren == null) {
+                    runChildren = new Treechildren();
+                    m1item.appendChild(runChildren);
+                }
+                assert runChildren != null;
+
+                Treeitem runItem = new Treeitem();
+                runChildren.appendChild(runItem);
+
+                Treerow runRow = new Treerow();
+                runItem.appendChild(runRow);
+
+                Treecell runCell = new Treecell();
+                runRow.appendChild(runCell);
+
+
+                Button button = new Button("Run " + j);
+                final int jj = j;
+                button.setWidgetListener("onClick", oryxEditor + ".highlightDifferences('Run " + jj + "'," + run.getJSONObject("colorsBPMN") + ")");
+                sentence = oryxEditor + ".highlightDifferences('Run " + jj + "'," + run.getJSONObject("colorsBPMN") + ")";
+                runCell.appendChild(button);
+
+                /*
+                LOGGER.info("About to fetch colorsBPMN");
+                final JSONObject colorsBPMN = run.getJSONObject("colorsBPMN");
+                LOGGER.info("Fetched colorsBPMN");
+                for (String colorBPMN: new Iterable<String>(){ public Iterator<String> iterator() { return colorsBPMN.keys(); }}) {
+                    LOGGER.info("  " + colorBPMN + " -> " + colorsBPMN.getString(colorBPMN));
+                }
+                LOGGER.info("Logged colorsBPMN");
+                */
+            }
+            LOGGER.info("Fetched runs");
+        }
+
+        return sentence;
+    }
+
+    private String onCreateSentence(final String modelName, JSONObject runsM1, String oryxEditor) throws JSONException {
+        String sentence = "";
+        if (runsM1 != null) {
+            LOGGER.info("About to fetch runs");
+            JSONArray runs = runsM1.getJSONArray("runs");
+            LOGGER.info("Runs " + runs);
+            for (int j=0; j < runs.length(); j++) {
+                LOGGER.info("About to fetch run " + j);
+                JSONObject run = runs.getJSONObject(j);
+                LOGGER.info("Run " + j + " " + run);
+
+                final int jj = j;
+                sentence = oryxEditor + ".highlightDifferences('Run " + jj + "'," + run.getJSONObject("colorsBPMN") + ")";
+
+                /*
+                LOGGER.info("About to fetch colorsBPMN");
+                final JSONObject colorsBPMN = run.getJSONObject("colorsBPMN");
+                LOGGER.info("Fetched colorsBPMN");
+                for (String colorBPMN: new Iterable<String>(){ public Iterator<String> iterator() { return colorsBPMN.keys(); }}) {
+                    LOGGER.info("  " + colorBPMN + " -> " + colorsBPMN.getString(colorBPMN));
+                }
+                LOGGER.info("Logged colorsBPMN");
+                */
+            }
+            LOGGER.info("Fetched runs");
+        }
+
+        return sentence;
     }
 
     /**

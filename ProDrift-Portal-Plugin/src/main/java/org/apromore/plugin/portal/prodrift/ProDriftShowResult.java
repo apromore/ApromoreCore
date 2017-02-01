@@ -1,5 +1,5 @@
 /*
- * Copyright Ã‚Â© 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -23,42 +23,69 @@ package org.apromore.plugin.portal.prodrift;
 import ee.ut.eventstr.model.ProDriftDetectionResult;
 import ee.ut.eventstr.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.prodrift.model.prodrift.Drift;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Window;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.GZIPOutputStream;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 
-public class ProDriftShowResult extends Window {
+public class ProDriftShowResult extends Window  {
 
     private static final long serialVersionUID = 1L;
-    private final PortalContext portalContext;
+    private PortalContext portalContext = null;
     private Window proDriftW;
 
+    private XLog xlog = null;
+    private String logFileName = null;
+    private Boolean isEventBased = true;
+
+    private ProDriftDetectionResult result = null;
 
 
     private org.zkoss.zul.Image pValueDiagramImg;
-    private Listbox resultDescription;
     private Button saveSublogs;
+
+//    private ListModel<Drift> driftsModel = new ListModelList<Drift>();
 
     /**
      * @throws IOException if the <code>prodriftshowresult.zul</code> template can't be read from the classpath
      */
-    public ProDriftShowResult(PortalContext portalContext, ProDriftDetectionResult result) throws IOException {
+    public ProDriftShowResult(PortalContext portalContext, ProDriftDetectionResult result,
+                              boolean isEventBased, XLog xlog, String logFileName, boolean withCharacterization,
+                              int cummulativeChange) throws IOException {
         this.portalContext = portalContext;
+        this.result = result;
+        this.xlog = xlog;
+        this.logFileName = logFileName;
+        this.isEventBased = isEventBased;
 
-        this.proDriftW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/prodriftshowresult.zul", null, null);
+        if(isEventBased) {
+            this.proDriftW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/prodriftshowresult.zul", null, null);
+
+            Label charLabel = (Label) this.proDriftW.getFellow("characterizationLabel");
+            if(!withCharacterization)
+                charLabel.setVisible(false);
+
+        }else
+            this.proDriftW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/prodriftshowresultruns.zul", null, null);
+
         this.proDriftW.setTitle("ProDrift: Drift Detection Result.");
 
         this.saveSublogs = (Button) this.proDriftW.getFellow("savesublogs");
@@ -76,42 +103,73 @@ public class ProDriftShowResult extends Window {
         g2d.dispose();
         this.pValueDiagramImg.setContent(img);
 
-        this.resultDescription = (Listbox) this.proDriftW.getFellow("resultDescription");
-        resultDescription.setDisabled(true);
+//        this.resultDescription = (Listbox) this.proDriftW.getFellow("resultDescription");
+//        resultDescription.setDisabled(true);
+
+        List<BigInteger> driftPoints = result.getDriftPoints();
+        Map<BigInteger, List<String>> characterizationMap = result.getCharacterizationMap();
+
+        ListModel<Drift> driftsModel = new ListModelList<Drift>();
+
         for(int i = 0; i < result.getDriftStatements().size(); i++)
         {
 
-            Listitem listItem = new Listitem();
-            listItem.setLabel("(" + (i+1) + ") " + result.getDriftStatements().get(i));
-            this.resultDescription.appendChild(listItem);
-            listItem.setSelected(false);
+
+            Drift drift = new Drift();
+            BigInteger driftPoint = driftPoints.get(i);
+            drift.setDriftPoint(driftPoint.longValue());
+            drift.setDriftStatement("(" + (i+1) + ") " + result.getDriftStatements().get(i));
+            List<String> charStatementsList = characterizationMap.get(driftPoint);
+            ListModel<String> cs = new ListModelList<String>();
+
+            if(charStatementsList != null){
+                int ind = 0;
+                for(String str : charStatementsList)
+                    ((ListModelList<String>)cs).add("(" + (++ind) + ") " + str);
+            }
+            if(isEventBased) {
+                if(withCharacterization)
+                {
+                    if(cs.getSize() == 0)
+                    {
+                        if(cummulativeChange == 100)
+                            ((ListModelList<String>)cs).add("ProDrift could not characterize this drift!");
+                        else
+                            ((ListModelList<String>)cs).add("ProDrift could not characterize this drift! " +
+                                    "Please increase the value of \"Cummulative change\" parameter in previous window and try again!");
+                    }
+                }
+            }
+
+            if(cs.getSize() == 0)
+                ((ListModelList<String>)cs).add("");
+
+            drift.setCharacterizationStatements(cs);
+
+            ((ListModelList<Drift>)driftsModel).add(drift);
 
         }
 
-        Session sess = Sessions.getCurrent();
-        sess.setAttribute("startOfTransitionPoints", result.getStartOfTransitionPoints());
-        sess.setAttribute("endOfTransitionPoints", result.getEndOfTransitionPoints());
+        Grid grid = (Grid) this.proDriftW.getFellow("prodriftGrid");
+        grid.setModel(driftsModel);
 
 
         this.proDriftW.doModal();
+
     }
 
     public void downloadSulogs() {
 
 
         byte[] downloadContent = null;
-        Session sess = Sessions.getCurrent();
-        java.util.List<BigInteger> startOfTransitionPoints = (java.util.List<BigInteger>)sess.getAttribute("startOfTransitionPoints");
-        java.util.List<BigInteger> endOfTransitionPoints = (java.util.List<BigInteger>)sess.getAttribute("endOfTransitionPoints");
-        XLog log = (XLog)sess.getAttribute("logDrift");
-        String logName = (String)sess.getAttribute("logNameDrift");
-        Boolean isEventBased = (Boolean)sess.getAttribute("isEventBased");
+        java.util.List<BigInteger> startOfTransitionPoints = result.getStartOfTransitionPoints();
+        java.util.List<BigInteger> endOfTransitionPoints = result.getEndOfTransitionPoints();
 
 
         List<ByteArrayOutputStream> eventLogList = null;
         try {
 
-            eventLogList = XLogManager.getSubLogs(log, logName, startOfTransitionPoints, endOfTransitionPoints, isEventBased);
+            eventLogList = XLogManager.getSubLogs(xlog, logFileName, startOfTransitionPoints, endOfTransitionPoints, isEventBased);
 
         }catch (Exception ex)
         {
@@ -122,7 +180,7 @@ public class ProDriftShowResult extends Window {
 
         ByteArrayOutputStream baos = null;
         ZipOutputStream zos = null;
-        String extension = XLogManager.getExtension(logName);
+        String extension = XLogManager.getExtension(logFileName);
         try
         {
 
@@ -137,7 +195,7 @@ public class ProDriftShowResult extends Window {
                 int end  = startOfTransitionPoints.get(i).intValue();
 
                 ByteArrayOutputStream ba = eventLogList.get(i);
-                String filename = logName.substring(0, logName.indexOf(extension) - 1) + "_sublog" + "_" + start+"_" + end + "." + extension;
+                String filename = logFileName.substring(0, logFileName.indexOf(extension) - 1) + "_sublog" + "_" + start+"_" + end + "." + extension;
 
                 ZipEntry entry = new ZipEntry(filename);
 
@@ -152,7 +210,7 @@ public class ProDriftShowResult extends Window {
             // this is the zip file as byte[]
             downloadContent = baos.toByteArray();
 
-            Filedownload.save(downloadContent, "application/zip", logName.substring(0, logName.indexOf(extension) - 1) + "_sublogs.zip");
+            Filedownload.save(downloadContent, "application/zip", logFileName.substring(0, logFileName.indexOf(extension) - 1) + "_sublogs.zip");
 
         }catch (IOException e)
         {

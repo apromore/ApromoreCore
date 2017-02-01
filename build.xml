@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -9,10 +9,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -33,9 +33,9 @@
     <property name="dir-extras-test-tools" location="${dir-extras}/Test-Tools"/>
 
     <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
-    <property name="virgo-url" value="https://github.com/apromore/ApromoreDev/blob/master/software/virgo-tomcat-server-3.6.2.RELEASE.zip?raw=true"/>
+    <property name="virgo-url" value="https://github.com/apromore/ApromoreDev/blob/master/software/virgo-tomcat-server-3.6.4.RELEASE.zip?raw=true"/>
     <property name="dir-deployment" location="${basedir}/Apromore-Assembly"/>
-    <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.2.RELEASE"/>
+    <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.4.RELEASE"/>
 
     <!-- Locations of all the plugins. as they should be separate to the Web App PAR. -->
     <property name="dir-plugins" location="${basedir}/Apromore-Plugins/"/>
@@ -65,7 +65,7 @@
         -->
 
         <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
-        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.jar"/>
+        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
 
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
@@ -128,6 +128,11 @@
                 <filename name="dmk.sh"/>
             </fileset>
         </copy>
+        <copy todir="${dir-virgo}/bin" overwrite="true">
+            <fileset dir="Supplements/Virgo">
+                <filename name="dmk.bat"/>
+            </fileset>
+        </copy>
         <copy todir="${dir-virgo}/repository/ext" overwrite="true">
             <fileset dir="Supplements/Virgo">
                 <filename name="org.eclipse.virgo.web.properties"/>
@@ -159,9 +164,9 @@
                 <include name="pickup/*.war"/>
                 <include name="pickup/*.par"/>
                 <include name="pickup/*.plan"/>
-                <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.2.RELEASE.par"/>
-                <exclude name="pickup/org.eclipse.virgo.apps.splash_3.6.2.RELEASE.jar"/>
-                <exclude name="pickup/org.eclipse.virgo.management.console_3.6.2.RELEASE.jar"/>
+                <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.4.RELEASE.par"/>
+                <exclude name="pickup/org.eclipse.virgo.apps.splash_3.6.4.RELEASE.jar"/>
+                <exclude name="pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar"/>
             </fileset>
         </delete>
     </target>
