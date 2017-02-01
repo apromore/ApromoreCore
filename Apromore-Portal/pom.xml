@@ -106,7 +106,7 @@
                             org.springframework.security.config;version="[3.1.0,4.0)",
                             org.springframework.security.web;version="[3.1.0,4.0)",
                             org.springframework.security.remoting;version="[3.1.0,4.0)",
-                            org.zkoss-osgi;bundle-version="[6.5,7)",
+                            org.zkoss-osgi;bundle-version="[6.5,9.0)",
                             org.apromore.plugin.portal-custom-gui;version="[1.1,2.0)"
                         </Import-Bundle>
                         <Import-Package>
@@ -475,7 +475,6 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>zk-osgi</artifactId>
-            <version>6.5.3</version>
         </dependency>
         <!-- Dependencies that aren't OSGI, included in war -->
         <dependency>

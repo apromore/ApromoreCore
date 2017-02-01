@@ -32,7 +32,7 @@
     <groupId>org.apromore</groupId>
     <packaging>bundle</packaging>
     <artifactId>zk-osgi</artifactId>
-    <version>6.5.3</version>
+    <version>8.0.2.2</version>
 
     <build>
         <plugins>
