@@ -4,13 +4,17 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.google.common.collect.BiMap;
+import ee.ut.eventstr.NewUnfoldingPESSemantics;
+import ee.ut.nets.unfolding.BPstructBP;
+import hub.top.uma.DNode;
+import org.jbpt.pm.FlowNode;
+import org.jbpt.pm.bpmn.Bpmn;
+import org.jbpt.pm.bpmn.BpmnControlFlow;
 import org.jbpt.utils.IOUtils;
 import org.jdom.JDOMException;
 import org.xml.sax.SAXException;
@@ -26,156 +30,270 @@ import hub.top.petrinet.PetriNet;
 import hub.top.petrinet.Transition;
 
 public class ModelAbstractions {
-	PetriNet net;
-	BPMNReader reader;
+    // Readers and parsers
+    BPMNReader reader;
+    Unfolder_PetriNet unfolder;
+    Unfolding2PES parserPES;
+
+    // Models
+    private Bpmn<BpmnControlFlow<FlowNode>, FlowNode> bpmnModel;
+    PetriNet net;
+    PetriNet unfolding;
 	PESSemantics<Integer> pes;
-	HashSet<String> labels;
+    NewUnfoldingPESSemantics<Integer> pessem;
+    HashSet<String> labels;
+
+    // Labels for dealing with duplicates in the model
+    HashMap<String, String> mapLabelsO2N;
+    HashMap<String, Integer> labelCounter;
+
+	// Map from the tasks in the BPMN model to the Petri net
+	private BiMap<FlowNode, Node> mapTasks2Trans;
+    // Map from the tasks in the BPMN model to the Petri net
+    private HashMap<Node, FlowNode> mapTasks2TransReverse;
 
 	// Map from the nodes in the branching process to the net
 	private HashMap<Node, Node> mapBP2Net;
+    // Map from the unfolding to the net
+    private HashMap<Short, Node> mapUnf2Net;
+    // Map from the branching process to the PES
+    private BiMap<DNode, Integer> mapUnf2PES;
+    // Map from the PES to the branching process
+    private HashMap<Integer, DNode> mapPES2Unf;
+    // Map from the events in the PES to the net
+    private HashMap<Integer, Node> mapPES2Net;
 
-	// Map from the nodes in the net system to the net
-	private HashMap<Short, Node> mapSystem2Net;
-
-	public ModelAbstractions(byte[] modelArray) throws JDOMException, IOException, SAXException, ParserConfigurationException {
-		initReader(modelArray);
+    public ModelAbstractions(byte[] modelArray) throws JDOMException, IOException, SAXException, ParserConfigurationException {
+        // Read the BPMN model and create the Petri net
+        readModels(modelArray);
 
 		labels = new HashSet<String>();
 		labels.addAll(reader.getTaskLabels());
 	}
 
-	private void initReader(byte[] modelArray) {
-		try {
-			InputStream input = new ByteArrayInputStream(modelArray);
+    private void readModels(byte[] modelArray) {
+        try {
+            InputStream input = new ByteArrayInputStream(modelArray);
 
-			this.reader = new BPMNReader(input);
-			this.net = this.reader.getNet();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            reader = new BPMNReader(input);
+            bpmnModel = reader.getModel();
+            net = reader.getNet();
 
-	public HashSet<String> getLabels() {
-		return labels;
-	}
+            mapTasks2Trans = reader.getTasksUMATrans();
+            mapTasks2TransReverse = reader.getTasksUMATransReverse();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
 
-	public HashMap<Node, Node> getMapBP2Net() {
-		return mapBP2Net;
-	}
+    // ------ Hacking for dealing with duplicate transitions during the unfolding ------
+    private void label2Uniques(){
+        // Label to distinct labels
+        mapLabelsO2N = new HashMap<>();
+        labelCounter = new HashMap<String, Integer>();
 
-	public HashMap<Short, Node> getMapSystem2Net() {
-		return mapSystem2Net;
-	}
+        for(Transition t : net.getTransitions()) {
+            String tName = t.getName();
+            if (!labelCounter.containsKey(tName))
+                labelCounter.put(tName, 0);
+            else {
+                t.setName(tName + "-" + labelCounter.get(tName));
+                labelCounter.put(tName, labelCounter.get(tName) + 1);
+                mapLabelsO2N.put(t.getName(), tName);
+            }
+        }
+    }
 
-	// public void computePES(HashSet<String> commonLabels) throws SAXException,
-	// ParserConfigurationException, IOException, JDOMException {
-	// mapBP2Net = new HashMap<>();
-	// mapSystem2Net = new HashMap<>();
-	// HashSet<String> silent = new HashSet<String>(labels);
-	// for (Transition t : reader.getPetriNet().getTransitions())
-	// silent.add(t.getName());
-	// silent.removeAll(commonLabels);
-	//
-	// this.pes = bpmnFoldedES.getPES(reader.getPetriNet(), commonLabels, name,
-	// r.nextInt(), silent, false, mapBP2Net,
-	// mapSystem2Net, ((BPMNReader) reader).mapNew2OldLbls);
-	//
-	// caseES = ES.PES;
-	// }
+    private void computeUnfolding(Set<String> labels){
+        HashSet<String> commonLabels = new HashSet<>(labels);
+        HashSet<String> silent = new HashSet<String>(labels);
+        for (Transition t : net.getTransitions())
+            silent.add(t.getName());
+        silent.removeAll(commonLabels);
 
-	public String getName(String path) {
-		String name = path.substring(path.lastIndexOf("/") + 1);
-		
-		return name;
-	}
+        mapBP2Net = new HashMap<>();
 
-	public PESSemantics<Integer> getPES(Set<String> commonLabels) throws Exception {
-		mapBP2Net = new HashMap<>();
-		mapSystem2Net = new HashMap<>();
-		
-		if(pes != null)
-			return this.pes;
-		
-		HashSet<String> silent = new HashSet<String>(labels);
-		for (Transition t : net.getTransitions())
-			silent.add(t.getName());
-		silent.removeAll(commonLabels);
-		
-		
-		Unfolding2PES unf2pes = getPES(commonLabels, silent, false, mapBP2Net, mapSystem2Net, ((BPMNReader)reader).mapNew2OldLbls);
-		
-//		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.EQUAL_PREDS);
-//		unfolder.computeUnfolding();
-//		
-//		Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
+        label2Uniques();
 
-		HashMap<String, String> newOldLabels = ((BPMNReader)reader).mapNew2OldLbls;
-		this.pes = new PESSemantics<Integer>(unf2pes.getPES());
+        // Unfolding
+        unfolder = new Unfolder_PetriNet(net, MODE.EQUAL_PREDS, silent);
+        unfolder.computeUnfolding();
+        mapUnf2Net = unfolder.getMapDNodeTrans();
+
+        commonLabels.addAll(mapLabelsO2N.keySet());
+
+        HashMap<Node, Multiplicity> repetitions = new HashMap<>();
+        PetriNet branchingProcess = unfolder.getUnfoldingAsPetriNet(commonLabels, repetitions, mapBP2Net);
+
+//        // Label back
+//        for(Transition t : branchingProcess.getTransitions())
+//            if(mapLabelsO2N.containsKey(t.getName()))
+//                t.setName(mapLabelsO2N.get(t.getName()));
+
+        this.unfolding = branchingProcess;
+    }
+
+    private void computeUnfolding2(){
+        HashSet<String> commonLabels = new HashSet<>();
+        HashSet<String> silent = new HashSet<String>(labels);
+        for (Transition t : net.getTransitions())
+            silent.add(t.getName());
+        silent.removeAll(commonLabels);
+
+        this.mapBP2Net = new HashMap<>();
+
+        label2Uniques();
+
+        // Unfolding
+        unfolder = new Unfolder_PetriNet(net, BPstructBP.MODE.ESPARZA, silent);
+        unfolder.computeUnfolding();
+        mapUnf2Net = unfolder.getMapDNodeTrans();
+
+        commonLabels.addAll(mapLabelsO2N.keySet());
+
+        HashMap<Node, Multiplicity> repetitions = new HashMap<>();
+        PetriNet branchingProcess = unfolder.getUnfoldingAsPetriNet(commonLabels, repetitions, mapBP2Net);
+
+//        // Label back
+//        for(Transition t : branchingProcess.getTransitions())
+//            if(mapLabelsO2N.containsKey(t.getName()))
+//                t.setName(mapLabelsO2N.get(t.getName()));
+
+        this.unfolding = branchingProcess;
+    }
+
+    public PESSemantics<Integer> getPESSemantics(Set<String> commonLabels) throws Exception {
+        computeUnfolding(commonLabels);
+        parserPES = new Unfolding2PES(unfolder, labels);
+        mapUnf2PES = parserPES.getMapEventsBP2ES();
+        mapPES2Unf = parserPES.getMapEventsPES2Unf();
+        mapPES2Net = new HashMap<>();
+
+        if(pes != null)
+            return this.pes;
+
+        this.pes = new PESSemantics<Integer>(parserPES.getPES());
 		List<String> labelsPES = this.pes.getLabels();
 		for(int i = 0; i < labelsPES.size(); i++){
 			String label = labelsPES.get(i);
-			if(newOldLabels.containsKey(label))
-				labelsPES.set(i, newOldLabels.get(label));
-		}
-		
-		return this.pes;
-	}
-	
-	public Unfolding2PES getPES(Set<String> visibleLabels, HashSet<String> toOmit, boolean verbose,
-			HashMap<Node, Node> originalMap, HashMap<Short, Node> mapDT, HashMap<String, String> mapNew2OldLbls)
-			throws SAXException, ParserConfigurationException, IOException,
-			JDOMException {
-		try {
-			File outputDir = new File("output");
-			if (!outputDir.exists())
-				outputDir.mkdir();
-			 
-			toOmit.removeAll(mapNew2OldLbls.keySet());
-			
-			// Unfolding
-			Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.EQUAL_PREDS, toOmit);//new HashSet<String>());
-			unfolder.computeUnfolding();
 
-			visibleLabels.addAll(mapNew2OldLbls.keySet());
-			
-			HashMap<Node, Multiplicity> repetitions = new HashMap<>();
-			PetriNet branchingProcess = unfolder.getUnfoldingAsPetriNet(visibleLabels, repetitions, originalMap, mapDT);
-			
-//			 if (verbose) {
-//				// Write output files
-//				IOUtils.toFile("output/Net.dot", net.toDot());
-//				IOUtils.toFile("output/Unf.dot", unfolder.getUnfoldingAsPetriNet().toDot());
-//				IOUtils.toFile("output/UnfPrefix.dot", branchingProcess.toDot());
-//			 }
-			
-//			Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
-//
-//			PreEventStructure<T> es = (PreEventStructure<T>) new PNet2PES(branchingProcess).getPrimeEventStructure();
-//			es.setRepetitions((HashMap<T, Multiplicity>) repetitions);
-//
-//			toOmit = new HashSet<String>(es.getLabels());
-//			toOmit.removeAll(visibleLabels);
-//			toOmit.removeAll(mapNew2OldLbls.entrySet());
-//			labelBack(es, mapNew2OldLbls);
-//			
-//			removeCuts(toOmit, visibleLabels);
-//			
-//			es.removeUnobservableEvents(toOmit);
-//			
-//			PrimeEventStructure<T> pes = es.toPES(); 
-			// if (verbose) {
-//			 PrintStream out = new PrintStream("target/tex/" + "" + id + "-Pes.tex");
-//			 pes.toLatex(out, new LinkedList<T>());
-//			 out.close();
-			// }
+            if(!pes.getPES().getLabels().get(i).equals("_0_") && !pes.getPES().getLabels().get(i).equals("_1_"))
+                mapPES2Net.put(i, getTransition(label));
 
-//			return pes;
-			
-			return new Unfolding2PES(unfolder, labels);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			if(mapLabelsO2N.containsKey(label))
+				labelsPES.set(i, mapLabelsO2N.get(label));
 		}
+
+        return this.pes;
+    }
+
+    public NewUnfoldingPESSemantics<Integer> getUnfoldingPESSemantics(PetriNet net, HashSet<String> silents) throws Exception {
+        computeUnfolding2();
+        parserPES = new Unfolding2PES(unfolder, labels);
+        mapUnf2PES = parserPES.getMapEventsBP2ES();
+        mapPES2Unf = parserPES.getMapEventsPES2Unf();
+        mapPES2Net = new HashMap<>();
+
+        pessem = new NewUnfoldingPESSemantics<Integer>(parserPES.getPES(), parserPES);
+
+        List<String> oldLabels = pessem.getLabels();
+        List<String> newLabels = new ArrayList<>();
+        int i = 0;
+        for(String oldL : oldLabels) {
+            if(!oldL.equals("_0_") && !oldL.equals("_1_"))
+                mapPES2Net.put(i, getTransition(oldL));
+
+            if (mapLabelsO2N.containsKey(oldL))
+                newLabels.add(mapLabelsO2N.get(oldL));
+            else
+                newLabels.add(oldL);
+
+            i++;
+        }
+
+        pessem.setLabels(newLabels);
+
+        for(int j =0 ; j < pessem.getLabels().size(); j++)
+            System.out.print(getTaskFromEvent(j));
+
+        return pessem;
+    }
+
+    public Node getTransition(String label){
+        for(Transition t : net.getTransitions())
+            if(t.getName().trim().equals(label.trim()))
+                return t;
+
+        System.out.println("No transition with the given label");
+        System.exit(0);
+
+        return null;
+    }
+
+    public HashSet<FlowNode> getTasksFromConf(BitSet conf){
+        HashSet<FlowNode> tasks = new HashSet<>();
+        HashSet<DNode> events;
+
+        events = getEvtsConfPES(conf);
+
+        for(DNode node : events)
+            if(unfolder.getMapDNodeTrans().containsKey(node.id) && mapTasks2TransReverse.containsKey(unfolder.getMapDNodeTrans().get(node.id)))
+                tasks.add(mapTasks2TransReverse.get(unfolder.getMapDNodeTrans().get(node.id)));
+
+        return tasks;
+    }
+
+    public boolean isSynth(int i){
+        if(pessem == null)
+            return pes.getLabel(i).equals("_0_") || pes.getLabel(i).equals("_1_");
+
+        return pessem.getLabel(i).equals("_0_") || pessem.getLabel(i).equals("_1_");
+    }
+
+    public HashSet<DNode> getEvtsConfPES(BitSet conf){
+        HashSet<DNode> events = new HashSet<>();
+
+        for (int i = conf.nextSetBit(0); i >= 0; i = conf.nextSetBit(i+1)) {
+            if(isSynth(i))
+                continue;
+
+            Set<DNode> localC = unfolder.getBP().getLocalConfig(mapPES2Unf.get(i));
+            events.addAll(localC);
+        }
+
+        return events;
+    }
+
+    public FlowNode getTaskFromEvent(Integer i){
+        Node eventTrans = mapPES2Net.get(i);
+        return mapTasks2TransReverse.get(eventTrans);
+    }
+
+    public FlowNode getEnd(){
+        for(FlowNode node : bpmnModel.getFlowNodes())
+            if(bpmnModel.getAllSuccessors(node).size() == 0)
+                return node;
+
+        return null;
+    }
+
+    public FlowNode getStart(){
+        for(FlowNode node : bpmnModel.getFlowNodes())
+            if(bpmnModel.getAllPredecessors(node).size() == 0)
+                return node;
+
+        return null;
+    }
+
+    public String getName(String path) {
+        String name = path.substring(path.lastIndexOf("/") + 1);
+        return name;
+    }
+
+    public HashMap<String, String> getMapLabelsO2N(){ return mapLabelsO2N; }
+
+	public HashSet<String> getLabels() { return labels; }
+
+	public HashMap<Node, Node> getMapBP2Net() {
+		return mapBP2Net;
 	}
 
 	public PESSemantics<Integer> getPES() {
@@ -189,4 +307,10 @@ public class ModelAbstractions {
 	public PetriNet getNet(){
 		return net;
 	}
+
+    public BiMap<FlowNode, Node> getMapTasks2Trans() { return mapTasks2Trans; }
+
+    public Bpmn<BpmnControlFlow<FlowNode>, FlowNode> getBpmnModel() {
+        return bpmnModel;
+    }
 }

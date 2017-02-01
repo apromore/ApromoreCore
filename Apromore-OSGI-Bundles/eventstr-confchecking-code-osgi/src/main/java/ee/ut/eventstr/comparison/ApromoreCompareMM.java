@@ -36,11 +36,11 @@ public class ApromoreCompareMM {
 		ModelAbstractions model2 = new ModelAbstractions(getFileAsArray(modelName2));
 		
 		ApromoreCompareMM comparator = new ApromoreCompareMM();
-		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, new HashSet<String>(model1.getReader().mapNew2OldLbls.values()), new HashSet<String>(model2.getReader().mapNew2OldLbls.values()));
+		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, new HashSet<String>(model1.getLabels()), new HashSet<String>(model2.getLabels()));
 		verbalizer.verbalize();
 		
 //		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
-//		System.out.println(verbalizer.getStatements());
+		System.out.println(verbalizer.getStatements());
 	}
 
 	public static byte[] getFileAsArray(String fileName) {
@@ -146,8 +146,8 @@ public class ApromoreCompareMM {
 		Set<String> common = new HashSet<>(obs1);
 		common.retainAll(obs2);
 
-		PESSemantics<Integer> pnmlpes1 = model1.getPES(common);
-		PESSemantics<Integer> pnmlpes2 = model2.getPES(common);
+		PESSemantics<Integer> pnmlpes1 = model1.getPESSemantics(common);
+		PESSemantics<Integer> pnmlpes2 = model2.getPESSemantics(common);
 
 		PartialSynchronizedProduct<Integer> psp = new PartialSynchronizedProduct<>(pnmlpes1, pnmlpes2);
 		PartialSynchronizedProduct<Integer> pre = psp.perform();

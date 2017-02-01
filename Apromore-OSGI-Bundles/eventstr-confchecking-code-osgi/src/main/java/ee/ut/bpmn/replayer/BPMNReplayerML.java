@@ -63,63 +63,63 @@ public class BPMNReplayerML {
 		return null;
 	}
 
-	public HashMap<String, String> getEnd(String a, String b, Set<String> labels2Spot){
-		HashMap<String, String> allColors = new HashMap<>();
-
-		FlowNode task1 = getActivity(a);
-		FlowNode task2 = getActivity(b);
-
-		HashSet<FlowNode> visited1 = new HashSet<>();
-		visited1.add(task1);
-		HashSet<FlowNode> visited2 = new HashSet<>();
-		visited2.add(task2);
-
-		HashSet<FlowNode> observed1 = new HashSet<>();
-		HashSet<FlowNode> observed2 = new HashSet<>();
-
-		while(!visited1.isEmpty() || !visited2.isEmpty()){
-			HashSet<FlowNode> visited1New = new HashSet<>();
-			HashSet<FlowNode> visited2New = new HashSet<>();
-
-			for(FlowNode n : visited1)
-				if(!observed1.contains(n)) {
-					observed1.add(n);
-					visited1New.addAll(model.getDirectSuccessors(n));
-					allColors.put(n.getId(), "green");
-				}
-
-			for(FlowNode n : visited2)
-				if(!observed2.contains(n)) {
-					observed2.add(n);
-					visited2New.addAll(model.getDirectSuccessors(n));
-					allColors.put(n.getId(), "green");
-				}
-
-			HashSet<FlowNode> intersect = new HashSet<>(observed1);
-			intersect.retainAll(observed2);
-
-			if(!intersect.isEmpty()) {
-				HashMap<String, String> map = new HashMap<>();
-				for (FlowNode node : intersect) {
-					if (labels2Spot.contains(node.getName()))
-						map.put(node.getId(), "red");
-				}
-
-				if(map.size() > 0) {
-					for(Map.Entry<String, String> entry : allColors.entrySet())
-						if(!map.containsKey(entry.getKey()))
-							map.put(entry.getKey(), entry.getValue());
-
-					return map;
-				}
-			}
-
-			visited1 = new HashSet<>(visited1New);
-			visited2 = new HashSet<>(visited2New);
-		}
-
-		return new HashMap<>();
-	}
+//	public HashMap<String, String> getEnd(String a, String b, Set<String> labels2Spot){
+//		HashMap<String, String> allColors = new HashMap<>();
+//
+//		FlowNode task1 = getActivity(a);
+//		FlowNode task2 = getActivity(b);
+//
+//		HashSet<FlowNode> visited1 = new HashSet<>();
+//		visited1.add(task1);
+//		HashSet<FlowNode> visited2 = new HashSet<>();
+//		visited2.add(task2);
+//
+//		HashSet<FlowNode> observed1 = new HashSet<>();
+//		HashSet<FlowNode> observed2 = new HashSet<>();
+//
+//		while(!visited1.isEmpty() || !visited2.isEmpty()){
+//			HashSet<FlowNode> visited1New = new HashSet<>();
+//			HashSet<FlowNode> visited2New = new HashSet<>();
+//
+//			for(FlowNode n : visited1)
+//				if(!observed1.contains(n)) {
+//					observed1.add(n);
+//					visited1New.addAll(model.getDirectSuccessors(n));
+//					allColors.put(n.getId(), "green");
+//				}
+//
+//			for(FlowNode n : visited2)
+//				if(!observed2.contains(n)) {
+//					observed2.add(n);
+//					visited2New.addAll(model.getDirectSuccessors(n));
+//					allColors.put(n.getId(), "green");
+//				}
+//
+//			HashSet<FlowNode> intersect = new HashSet<>(observed1);
+//			intersect.retainAll(observed2);
+//
+//			if(!intersect.isEmpty()) {
+//				HashMap<String, String> map = new HashMap<>();
+//				for (FlowNode node : intersect) {
+//					if (labels2Spot.contains(node.getName()))
+//						map.put(node.getId(), "red");
+//				}
+//
+//				if(map.size() > 0) {
+//					for(Map.Entry<String, String> entry : allColors.entrySet())
+//						if(!map.containsKey(entry.getKey()))
+//							map.put(entry.getKey(), entry.getValue());
+//
+//					return map;
+//				}
+//			}
+//
+//			visited1 = new HashSet<>(visited1New);
+//			visited2 = new HashSet<>(visited2New);
+//		}
+//
+//		return new HashMap<>();
+//	}
 
 	public HashMap<String, String> execute(String end, Pomset conf, HashMap<String, Integer> repetitions, BiMap<Node, Node> mapping) {
 		HashSet<FlowNode> marking = getMarking();
@@ -259,11 +259,11 @@ public class BPMNReplayerML {
 		return m;
 	}
 
-	public String getEnd(){
-		for(FlowNode node : model.getFlowNodes())
-			if(model.getAllSuccessors(node).size() == 0)
-				return node.getId();
-
-		return "";
-	}
+//	public String getEnd(){
+//		for(FlowNode node : model.getFlowNodes())
+//			if(model.getAllSuccessors(node).size() == 0)
+//				return node.getId();
+//
+//		return "";
+//	}
 }

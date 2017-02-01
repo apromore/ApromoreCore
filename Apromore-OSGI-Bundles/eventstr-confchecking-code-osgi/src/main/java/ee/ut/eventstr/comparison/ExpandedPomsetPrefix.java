@@ -78,9 +78,8 @@ public class ExpandedPomsetPrefix<T> {
 					visited.remove(fake);
 				}
 			} 
-			else {
+			else
 				buildPrefix(n_conf, n_sconf, visited);
-			}
 		}
 		
 		// Is maximal?

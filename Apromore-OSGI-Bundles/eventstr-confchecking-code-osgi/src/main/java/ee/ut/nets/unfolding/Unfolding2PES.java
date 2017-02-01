@@ -1,5 +1,8 @@
 package ee.ut.nets.unfolding;
 
+import hub.top.petrinet.Node;
+import hub.top.petrinet.PetriNet;
+import hub.top.petrinet.Transition;
 import hub.top.uma.DNode;
 import hub.top.uma.DNodeBP;
 
@@ -28,6 +31,7 @@ import ee.ut.graph.cliques.CCliqueFinder;
 import ee.ut.graph.transitivity.BitsetDAGTransitivity;
 import ee.ut.graph.transitivity.MatrixBasedTransitivity;
 import ee.ut.org.processmining.framework.util.Pair;
+import hub.top.uma.DNodeSet;
 
 public class Unfolding2PES {
 	private BPstructBPSys sys;
@@ -42,7 +46,9 @@ public class Unfolding2PES {
 	private Set<Integer> invisibleEvents;
 	private Set<Integer> terminalEvents;
 	private Map<Integer, BiMap<Integer, Integer>> isomorphism;
-	private HashSet<String> cyclicTasks; 	
+	private HashSet<String> cyclicTasks;
+	private BiMap<DNode, Integer> mapEventsBP2ES;
+    private HashMap<Integer, DNode> mapEventsPES2Unf;
 
 	public Unfolding2PES(Unfolder_PetriNet unfolder, Set<String> originalVisibleLabels) {
 		this.sys = unfolder.getSys();
@@ -58,7 +64,9 @@ public class Unfolding2PES {
 		this.labels = new ArrayList<>();
 		
 		this.visibleLabels = new HashSet<>(originalVisibleLabels);
-		
+		this.mapEventsBP2ES = HashBiMap. <DNode, Integer>create();
+        this.mapEventsPES2Unf = new HashMap<>();
+
 		int numberOfEvents = bp.getBranchingProcess().allEvents.size();
 		int numberOfConditions = bp.getBranchingProcess().allConditions.size();
 		int fullSize = numberOfConditions + numberOfEvents + 3;
@@ -95,7 +103,12 @@ public class Unfolding2PES {
 					invisibleSinks.put(orderedVisibleEventMap.size(), node);
 
 				orderedVisibleEventMap.put(node, orderedVisibleEventMap.size());
-				labels.add(originalName);
+				this.mapEventsBP2ES.put(node, labels.size());
+
+                if(originalVisibleLabels.contains(originalName))
+                    this.mapEventsPES2Unf.put(labels.size(), node);
+
+                labels.add(originalName);
 			}
 			
 			if (sinkEvent && node.isCutOff)
@@ -362,7 +375,6 @@ public class Unfolding2PES {
 		return visibleLabels.contains(sys.properNames[dnode.id]);
 	}
 
-
 	public Integer getCorrespondingEvent(int ev) {
 		return cutoffCorrespondingMap.get(ev);
 	}
@@ -374,4 +386,10 @@ public class Unfolding2PES {
 	public HashSet<String> getCyclicTasks() {
 		return cyclicTasks;
 	}
+
+    public BiMap<DNode, Integer> getMapEventsBP2ES(){ return  mapEventsBP2ES; }
+
+    public HashMap<Integer, DNode> getMapEventsPES2Unf() {
+        return mapEventsPES2Unf;
+    }
 }
