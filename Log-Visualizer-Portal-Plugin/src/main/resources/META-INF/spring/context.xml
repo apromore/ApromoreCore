@@ -33,11 +33,10 @@
     <context:spring-configured />
 
     <!-- Other OSGi services this component consumes -->
-<!--
-    <reference id="logVisualizerService" interface="org.apromore.service.log_visualizer.LogVisualizerService"/>
--->
+    <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
+    <reference id="logVisualizerService" interface="org.apromore.service.logvisualizer.LogVisualizerService"/>
 
     <!-- Exposes the component as OSGi service -->
-    <context:component-scan base-package="org.apromore.plugin.portal.log_visualizer" />
+    <context:component-scan base-package="org.apromore.plugin.portal.logvisualizer" />
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
 </beans:beans>

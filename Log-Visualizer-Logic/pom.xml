@@ -31,9 +31,9 @@
         <relativePath>../</relativePath>
     </parent>
 
-    <artifactId>logvisualizer-logic</artifactId>
+    <artifactId>log-visualizer-logic</artifactId>
     <packaging>bundle</packaging>
-    <name>LogVisualizer service</name>
+    <name>Log Visualizer Service</name>
 
     <build>
         <plugins>
@@ -62,6 +62,10 @@
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
             <version>${manager-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom6-osgi</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

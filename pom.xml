@@ -78,6 +78,14 @@
         <module>Apromore-Schema/xpdl-schema</module>
         <module>Apromore-Schema/yawl-schema</module>
 
+        <!-- PROM -->
+        <module>Apromore-OSGI-Bundles/jdom2-osgi</module>
+        <module>Apromore-OSGI-Bundles/fodina-osgi</module>
+        <module>Apromore-OSGI-Bundles/log-osgi</module>
+        <module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
+        <module>Apromore-OSGI-Bundles/prom6-osgi</module>
+        <module>Apromore-OSGI-Bundles/prodrift-osgi</module>
+
         <!-- OSGI -->
         <module>Apromore-OSGI-Bundles/antlr4</module>
         <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
@@ -94,13 +102,6 @@
         <module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>
         <module>Apromore-OSGI-Bundles/infrequent-behaviour-filter-osgi</module>
 
-        <!-- PROM -->
-        <module>Apromore-OSGI-Bundles/jdom2-osgi</module>
-        <module>Apromore-OSGI-Bundles/fodina-osgi</module>
-        <module>Apromore-OSGI-Bundles/log-osgi</module>
-        <module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
-        <module>Apromore-OSGI-Bundles/prom6-osgi</module>
-        <module>Apromore-OSGI-Bundles/prodrift-osgi</module>
 
         <!-- ZK Osgi -->
         <module>Apromore-OSGI-Bundles/zk-osgi</module>
@@ -119,6 +120,7 @@
         <module>Compare-Portal-Plugin</module>
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>
+        <module>Log-Visualizer-Logic</module>
         <module>Log-Visualizer-Portal-Plugin</module>
         <module>Metrics-Logic</module>
         <module>Metrics-Portal-Plugin</module>
@@ -132,7 +134,6 @@
         <module>Similarity-Clusters-Portal-Plugin</module>
         <module>Infrequent-Behaviour-Filter-Logic</module>
         <module>Infrequent-Behaviour-Filter-Portal-Plugin</module>
-        <module>LogVisualizer-Logic</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
@@ -376,7 +377,7 @@
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>log-osgi</artifactId>
-                <version>1.0</version>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>

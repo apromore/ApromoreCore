@@ -18,13 +18,14 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.log_visualizer;
+package org.apromore.plugin.portal.logvisualizer;
 
 // Java 2 Standard Edition
-import java.io.FileInputStream;
 import java.util.UUID;
 
 // Third party packages
+import org.apromore.service.logvisualizer.LogVisualizerService;
+import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -35,11 +36,12 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Slider;
 
 // Local packages
-import org.apromore.util.StreamUtil;
+
 
 public class LogVisualizerController extends GenericForwardComposer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerController.class.getCanonicalName());
+
 
     public void onClick$cancelButton(Event event) throws InterruptedException {
         event.getTarget().detach();
@@ -47,16 +49,21 @@ public class LogVisualizerController extends GenericForwardComposer {
 
     public void onClick$okButton(Event event) throws InterruptedException {
         Integer logId = (Integer) event.getTarget().getAttribute("logId");
-        Slider slider1 = (Slider) event.getTarget().getFellow("slider1");
-        Slider slider2 = (Slider) event.getTarget().getFellow("slider2");
-        LOGGER.info("Invoking Log visualizer: logId=" + logId + " slider1=" + slider1.getCurpos() + " slider2=" + slider2.getCurpos());
+        XLog log = (XLog) event.getTarget().getAttribute("log");
+        LogVisualizerService logVisualizerService = (LogVisualizerService) event.getTarget().getAttribute("logVisualizerService");
+
+        Slider activities = (Slider) event.getTarget().getFellow("slider1");
+        Slider arcs = (Slider) event.getTarget().getFellow("slider2");
+        LOGGER.info("Invoking Log visualizer: logId=" + logId + " slider1=" + activities.getCurpos() / 100 + " slider2=" + arcs.getCurpos() / 100);
         event.getTarget().detach();
 
         try {
             String id = UUID.randomUUID().toString();
 
+            String data1 = logVisualizerService.visualizeLog(log, 1 - activities.getCurposInDouble() / 100 , arcs.getCurposInDouble() / 100 );
+            System.out.println(data1);
             // Dummy implementation: should instead assign data1 by calling Log-Visualizer-Logic with the parameters logId, slider1, slider2
-            String data1 = StreamUtil.convertStreamToString(new FileInputStream("/Users/raboczi/Project/ApromoreCode/SOAP/d.bpmn"));
+//            String data1 = StreamUtil.convertStreamToString(new FileInputStream("/Users/raboczi/Project/ApromoreCode/SOAP/d.bpmn"));
 
             Executions.getCurrent().getSession().setAttribute("SIGNAVIO_SESSION" + id, data1);
 

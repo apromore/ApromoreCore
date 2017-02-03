@@ -31,6 +31,6 @@ import java.util.Map;
  */
 public interface LogVisualizerService {
 
-    void visualizeLog(XLog log, double activities, double arcs);
+    String visualizeLog(XLog log, double activities, double arcs);
 
 }

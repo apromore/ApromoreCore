@@ -19,7 +19,7 @@
   -->
 
 <window width="600px" closable="false" position="center" title="Log Visualizer"
-    apply="org.apromore.plugin.portal.log_visualizer.LogVisualizerController">
+    apply="org.apromore.plugin.portal.logvisualizer.LogVisualizerController">
     <vbox>
         <grid>
             <columns sizable="true">
@@ -28,12 +28,12 @@
             </columns>
             <rows>
                 <row>
-                    <label>First slider</label>
-                    <slider id="slider1"/>
+                    <label>Percentage Activities</label>
+                    <slider id="slider1" curpos="100"/>
                 </row>
                 <row>
-                    <label>Second slider</label>
-                    <slider id="slider2"/>
+                    <label>Percentage Arcs</label>
+                    <slider id="slider2" curpos="100"/>
                 </row>
             </rows>
         </grid>
