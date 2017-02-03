@@ -23,7 +23,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apromore.plugin</groupId>
   <artifactId>bpmn2cpf</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
   <name>BPMN-to-CPF converter command line utility</name>
   <build>
     <plugins>

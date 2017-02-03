@@ -33,7 +33,7 @@
 
     <artifactId>apromore-filestore</artifactId>
     <packaging>war</packaging>
-    <version>1.0</version>
+    <version>1.1</version>
     <name>Apromore File Store</name>
 
     <scm>

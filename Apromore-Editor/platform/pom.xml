@@ -71,7 +71,7 @@
             <plugin>
                 <groupId>org.apromore</groupId>
                 <artifactId>sscompressor-maven-plugin</artifactId>
-                <version>1.0</version>
+                <version>1.1</version>
                 <configuration>
                     <ssDirString>${project.basedir}/src/main/stencilsets</ssDirString>
                     <outDirString>${project.basedir}/target/sscompressor</outDirString>

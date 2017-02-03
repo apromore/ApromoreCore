@@ -34,7 +34,7 @@
     <packaging>bundle</packaging>
     <!-- Unique name of the plug-in -->
     <artifactId>log-visualizer-portal-plugin</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <name>Log visualizer portal plugin</name>
     <description>Some description</description>
 
@@ -73,13 +73,6 @@
     </build>
 
     <dependencies>
-<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>log-visualizer-logic</artifactId>
-            <version>1.0</version>
-        </dependency>
--->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
@@ -92,6 +85,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>logvisualizer-logic</artifactId>
+            <version>1.1</version>
         </dependency>
     </dependencies>
 </project>
