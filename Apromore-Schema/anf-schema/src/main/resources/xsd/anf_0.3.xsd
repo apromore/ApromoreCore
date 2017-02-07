@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--
- Copyright (C) 2009, The AProMoRe Foundation
- 
- All rights reserved. This program and the accompanying materials
- are made available under the terms of the XX license
- which accompanies this distribution, and is available at XX
- 
- Contributors:
-     Marcello La Rosa
-     
-     v0.1 - initial document
-     v0.2 - added meta-data
--->
-
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
         xmlns:anf="http://www.apromore.org/ANF"
         targetNamespace="http://www.apromore.org/ANF"

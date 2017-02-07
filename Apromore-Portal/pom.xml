@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -9,10 +9,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -106,7 +106,7 @@
                             org.springframework.security.config;version="[3.1.0,4.0)",
                             org.springframework.security.web;version="[3.1.0,4.0)",
                             org.springframework.security.remoting;version="[3.1.0,4.0)",
-                            org.zkoss-osgi;bundle-version="[6.5,7)",
+                            org.zkoss-osgi;bundle-version="[6.5,9.0)",
                             org.apromore.plugin.portal-custom-gui;version="[1.1,2.0)"
                         </Import-Bundle>
                         <Import-Package>
@@ -136,11 +136,13 @@
                             *;resolution:=optional
                         </Import-Package>
                         <Export-Package>
+                            org.apromore.portal,
                             org.apromore.portal.common,
+                            org.apromore.portal.context,
                             org.apromore.portal.dialogController,
                             org.apromore.portal.dialogController.dto,
                             org.apromore.portal.exception,
-                            org.apromore.portal.context
+                            org.apromore.portal.util
                         </Export-Package>
                         <Web-ContextPath>${site.portal}</Web-ContextPath>
                     </instructions>
@@ -473,7 +475,6 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>zk-osgi</artifactId>
-            <version>6.5.3</version>
         </dependency>
         <!-- Dependencies that aren't OSGI, included in war -->
         <dependency>

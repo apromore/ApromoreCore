@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -8,10 +8,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -93,7 +93,8 @@
                             artifactId=
                             bsh|colt|filterableSortableTablePanel|flanagan|freehep-export|freehep-graphics2d|
                             freehep-graphicsio|freehep-graphicsio-emf|freehep-graphicsio-java|freehep-graphicsio-pdf|freehep-graphicsio-ps|freehep-graphicsio-svg|
-                            freehep-graphicsio-swf|freehep-graphicsio-tests|freehep-io|freehep-swing|freehep-util|freehep-xml|jargs|jas-plotter|
+                            freehep-graphicsio-swf|freehep-graphicsio-tests|freehep-io|freehep-swing|freehep-util|freehep-xml|
+                            fuzzy|fuzzyminer|jargs|jas-plotter|
                             jgraph|jlfgr|jung-algorithms|jung-io|jung-visualization|openide-lookup|prom6-contexts|prom6-framework|
                             prom6-models|prom6-plugins|simmetrics|slickerbox1|tableLayout|uitopia|uitopiaResourcesv|weka|javahelp|junit|
                             exp4j|japura|animation|osservice|petrinets|transitionsystems|widgets|
@@ -287,7 +288,7 @@
                             <!--com.jgraph.algebra.cost,-->
                             <!--com.jgraph.components.labels,-->
                             <!--com.jgraph.io.svg,-->
-                            <!--com.jgraph.layout,-->
+                            com.jgraph.layout,
                             <!--com.jgraph.layout.graph,-->
                             <!--com.jgraph.layout.hierarchical,-->
                             <!--com.jgraph.layout.hierarchical.model,-->
@@ -759,6 +760,14 @@
                             org.processmining.models.graphbased.directed.bpmn,
                             org.processmining.models.graphbased.directed.bpmn.elements,
                             org.processmining.models.graphbased.directed.conceptualmodels,
+                            org.processmining.models.graphbased.directed.fuzzymodel,
+                            org.processmining.models.graphbased.directed.fuzzymodel.attenuation,
+                            org.processmining.models.graphbased.directed.fuzzymodel.impl,
+                            org.processmining.models.graphbased.directed.fuzzymodel.metrics,
+                            org.processmining.models.graphbased.directed.fuzzymodel.metrics.unary,
+                            org.processmining.models.graphbased.directed.fuzzymodel.metrics.binary,
+                            org.processmining.models.graphbased.directed.fuzzymodel.transform,
+                            org.processmining.models.graphbased.directed.fuzzymodel.util,
                             org.processmining.models.graphbased.directed.opennet,
                             org.processmining.models.graphbased.directed.petrinet,
                             org.processmining.models.graphbased.directed.petrinet.analysis,
@@ -819,6 +828,9 @@
                             org.processmining.plugins.connectionfactories.logpetrinet,
                             org.processmining.plugins.filtering,
                             org.processmining.plugins.flowerMiner,
+                            org.processmining.plugins.fuzzymap.util,
+                            org.processmining.plugins.fuzzymodel.miner,
+                            org.processmining.plugins.fuzzymodel.miner.ui,
                             org.processmining.plugins.ilpminer,
                             org.processmining.plugins.ilpminer.fitness,
                             org.processmining.plugins.ilpminer.netproperties,
@@ -1431,6 +1443,16 @@
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
+            <artifactId>fuzzy</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>fuzzyminer</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
             <artifactId>jargs</artifactId>
             <version>1.0</version>
         </dependency>
@@ -1880,6 +1902,16 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>logabstractions</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>fuzzyminer</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>fuzzy</artifactId>
             <version>1.0</version>
         </dependency>
 
