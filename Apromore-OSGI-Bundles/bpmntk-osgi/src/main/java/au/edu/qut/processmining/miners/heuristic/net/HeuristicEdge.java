@@ -71,7 +71,7 @@ public class HeuristicEdge extends LogEdge {
 
     @Override
     public int compareTo(Object o) {
-        if( (o instanceof HeuristicEdge) && ((HeuristicEdge) o).getLocalDependencyScore() > localDependencyScore ) return 1;
+        if( (o instanceof HeuristicEdge) ) return Double.compare(((HeuristicEdge) o).getLocalDependencyScore(), localDependencyScore);
         else return -1;
     }
 }
