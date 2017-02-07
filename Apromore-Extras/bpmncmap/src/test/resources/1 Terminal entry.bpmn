@@ -11,12 +11,12 @@
             <pc:variant id="vid-718786402" name="MEL"/>
          </pc:variants>
       </extensionElements>
-      <participant id="sid-59E71286-D258-4390-A077-CF4005ED8745" name="Airport Volunteer [PER,BNE,OOL]">
+      <participant id="sid-59E71286-D258-4390-A077-CF4005ED8745" processRef="sid-d9582468-f86b-4fd2-aaf2-a0f41a2e5156" name="Airport Volunteer [PER,BNE,OOL]">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>
       </participant>
-      <participant id="sid-A99809BC-D871-48E4-9801-717DEB49C935" name="Passenger">
+      <participant id="sid-A99809BC-D871-48E4-9801-717DEB49C935" processRef="sid-d2362366-7108-4d58-a3d3-85b3720fffbd" name="Passenger">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>

@@ -53,7 +53,7 @@ public class Unfolder_PetriNet {
 	BiMap<Node, String> transitionLabel;
 
 	HashMap<String, String> label2Label;
-	HashMap<Short, Node> mapDNodeTrans;
+	private HashMap<Short, Node> mapDNodeTrans;
 
 	/**
 	 * Initialize the unfolder to construct a finite complete prefix of a safe
@@ -149,7 +149,7 @@ public class Unfolder_PetriNet {
 		}
 	}
 
-	public PetriNet getUnfoldingAsPetriNet(Set<String> visibleLabels, HashMap<Node, Multiplicity> repetitionIndex, HashMap<Node, Node> originalMap, HashMap<Short, Node> mapDT) {
+	public PetriNet getUnfoldingAsPetriNet(Set<String> visibleLabels, HashMap<Node, Multiplicity> repetitionIndex, HashMap<Node, Node> originalMap) {
 		PetriNet unfolding = new PetriNet();
 		DNodeSetElement allNodes = bp.getBranchingProcess().getAllNodes();
 		BiMap<Node, DNode> map = HashBiMap.create();	
@@ -227,8 +227,8 @@ public class Unfolder_PetriNet {
 
 		updateMultiplicity(repetitionIndex, map, nodeMap, visibleLabels, steadyEvtIds);
 		
-		if(mapDT != null)
-		mapDT.putAll(mapDNodeTrans);
+//		if(mapDT != null)
+//			mapDT.putAll(mapDNodeTrans);
 		
 		return unfolding;
 	}
@@ -446,4 +446,8 @@ public class Unfolder_PetriNet {
 		
 		return string;
 	}
+
+    public HashMap<Short, Node> getMapDNodeTrans() {
+        return mapDNodeTrans;
+    }
 }

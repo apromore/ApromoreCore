@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,17 +8,17 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.log_visualizer;
+package org.apromore.plugin.portal.logvisualizer;
 
 // Java 2 Standard Edition packages
 import java.io.IOException;
@@ -30,6 +30,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 // Third party packages
+import org.apromore.service.EventLogService;
+import org.apromore.service.logvisualizer.LogVisualizerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -48,6 +50,9 @@ public class LogVisualizerPlugin extends DefaultPortalPlugin {
 
     private String label = "Visualize log";
     private String groupLabel = "Analyze";
+
+    @Inject private EventLogService eventLogService;
+    @Inject private LogVisualizerService logVisualizerService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerPlugin.class.getCanonicalName());
 
@@ -87,7 +92,10 @@ public class LogVisualizerPlugin extends DefaultPortalPlugin {
 
         try {
             Window window = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/logvisualizer.zul", null, null);
+
+            window.setAttribute("logVisualizerService", logVisualizerService);
             window.setAttribute("logId", logSummary.getId());
+            window.setAttribute("log", eventLogService.getXLog(logSummary.getId()));
             window.doModal();
         } catch (IOException e) {
             context.getMessageHandler().displayError("Could not load component ", e);
