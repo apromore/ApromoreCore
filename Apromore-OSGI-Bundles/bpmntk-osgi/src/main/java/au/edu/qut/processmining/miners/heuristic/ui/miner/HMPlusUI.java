@@ -1,4 +1,4 @@
-package au.edu.qut.processmining.miners.heuristic.ui;
+package au.edu.qut.processmining.miners.heuristic.ui.miner;
 
 import org.deckfour.uitopia.api.event.TaskListener;
 import org.processmining.contexts.uitopia.UIPluginContext;

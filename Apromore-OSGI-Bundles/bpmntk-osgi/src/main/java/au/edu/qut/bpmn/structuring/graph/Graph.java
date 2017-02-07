@@ -139,7 +139,7 @@ public class Graph {
 
         //System.out.println("DEBUG - outgoing size: " + unvisited.size() );
 
-        explore(this.entry, unvisited, visiting, visitedGates, visitedEdges, loopEdges, forwardEdges);
+        exploreLoops(this.entry, unvisited, visiting, visitedGates, visitedEdges, loopEdges, forwardEdges);
 
         //System.out.println("DEBUG - forwardEdges size: " + forwardEdges.size() );
         //System.out.println("DEBUG - loops size: " + loopEdges.size() );
@@ -152,9 +152,9 @@ public class Graph {
         System.out.println("DEBUG - detected loops: " + l);
     }
 
-    private boolean explore( String entry, HashSet<String> unvisited, HashSet<String> visiting,
-                             HashMap<String, Boolean> visitedGates, HashSet<Integer> visitedEdges,
-                             HashSet<Integer> loopEdges, HashSet<Integer> forwardEdges )
+    private boolean exploreLoops(String entry, HashSet<String> unvisited, HashSet<String> visiting,
+                                 HashMap<String, Boolean> visitedGates, HashSet<Integer> visitedEdges,
+                                 HashSet<Integer> loopEdges, HashSet<Integer> forwardEdges )
     {
         String next;
         boolean loopEdge = false;
@@ -168,8 +168,9 @@ public class Graph {
 
         for( int pid : outgoing.get(entry) ) {
             next = allPaths.get(pid).getExit();
+            visitedEdges.add(pid);
             if( unvisited.contains(next) ) {
-                if( explore(next, unvisited, visiting, visitedGates, visitedEdges, loopEdges, forwardEdges) ) {
+                if( exploreLoops(next, unvisited, visiting, visitedGates, visitedEdges, loopEdges, forwardEdges) ) {
                     loopEdge = true;
                     loopEdges.add(pid);
                 } else {
@@ -188,7 +189,6 @@ public class Graph {
                     forwardEdges.add(pid);
                 }
             }
-            visitedEdges.add(pid);
         }
 
         visiting.remove(entry);

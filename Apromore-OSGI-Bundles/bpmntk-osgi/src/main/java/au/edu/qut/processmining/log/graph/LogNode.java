@@ -1,5 +1,7 @@
 package au.edu.qut.processmining.log.graph;
 
+import java.util.UUID;
+
 /**
  * Created by Adriano on 15/06/2016.
  */
@@ -13,7 +15,7 @@ public class LogNode implements Comparable {
     protected int endFrequency;
 
     public LogNode() {
-        id = Long.toString(System.currentTimeMillis());
+        id = UUID.randomUUID().toString();
         label = "null";
         frequency = 0;
         startFrequency = 0;
@@ -21,7 +23,7 @@ public class LogNode implements Comparable {
     }
 
     public LogNode(String label) {
-        id = Long.toString(System.currentTimeMillis());
+        id = UUID.randomUUID().toString();
         frequency = 0;
         startFrequency = 0;
         endFrequency = 0;
