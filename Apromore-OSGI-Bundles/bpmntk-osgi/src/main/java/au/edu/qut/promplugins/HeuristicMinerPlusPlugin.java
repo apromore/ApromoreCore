@@ -2,8 +2,8 @@ package au.edu.qut.promplugins;
 
 import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
 import au.edu.qut.processmining.miners.heuristic.HeuristicMinerPlus;
-import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUI;
-import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUIResult;
+import au.edu.qut.processmining.miners.heuristic.ui.miner.HMPlusUI;
+import au.edu.qut.processmining.miners.heuristic.ui.miner.HMPlusUIResult;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -39,9 +39,8 @@ public class HeuristicMinerPlusPlugin {
         HMPlusUIResult result = gui.showGUI(context, "Setup HM+");
 
         HeuristicMinerPlus hmp = new HeuristicMinerPlus();
-        hmp.mineBPMNModel( log, result.getDependencyThreshold(), result.getPositiveObservations(),
-                                result.getRelative2BestThreshold(), result.isReplaceIORs(),
-                                result.getStructuringTime());
+        hmp.mineBPMNModel( log, result.getFrequencyThreshold(), result.getParallelismsThreshold(),
+                                result.isReplaceIORs(), result.getStructuringTime());
 
         HeuristicNet heuristicNet = hmp.getHeuristicNet();
 

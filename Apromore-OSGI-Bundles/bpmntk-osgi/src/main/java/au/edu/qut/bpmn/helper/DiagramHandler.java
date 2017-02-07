@@ -49,7 +49,9 @@ public class DiagramHandler {
                 jsCounter++;
 
 //                this is going to be the new split, and we will keep js as join only
-                split = diagram.addGateway("", join.getGatewayType());
+//                split = diagram.addGateway("", join.getGatewayType());
+                split = diagram.addGateway("js"+jsCounter, join.getGatewayType());
+                join.setGatewayType(Gateway.GatewayType.INCLUSIVE);
 
                 removable = new HashSet<>();
                 for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getOutEdges(join) ) {

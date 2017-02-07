@@ -1,5 +1,7 @@
 package au.edu.qut.processmining.log.graph;
 
+import java.util.UUID;
+
 /**
  * Created by Adriano on 15/06/2016.
  */
@@ -11,18 +13,18 @@ public class LogEdge implements Comparable {
     protected LogNode target;
 
     public LogEdge() {
-        id = Long.toString(System.currentTimeMillis());
+        id = UUID.randomUUID().toString();
         source = null;
         target = null;
     }
 
     public LogEdge(LogNode source, LogNode target){
-        id = Long.toString(System.currentTimeMillis());
+        id = UUID.randomUUID().toString();
         this.source = source;
         this.target = target;
     }
     public LogEdge(LogNode source, LogNode target, String label){
-        id = Long.toString(System.currentTimeMillis());
+        id = UUID.randomUUID().toString();
         this.source = source;
         this.target = target;
         this.label = label;

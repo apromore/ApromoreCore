@@ -2,8 +2,6 @@ package au.edu.qut.promplugins;
 
 import au.edu.qut.bpmn.helper.DiagramHandler;
 import au.edu.qut.bpmn.helper.GatewayMap;
-import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUI;
-import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;

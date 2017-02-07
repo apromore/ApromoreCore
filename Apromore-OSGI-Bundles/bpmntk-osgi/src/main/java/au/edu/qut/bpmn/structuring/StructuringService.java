@@ -63,8 +63,11 @@ public class StructuringService {
         diagramHandler = new DiagramHandler();
     }
 
+    public BPMNDiagram structureFlatBPMNDiagram(BPMNDiagram diagram) {
+        return structureFlatBPMNDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, true, false);
+    }
+
     public BPMNDiagram structureDiagram(BPMNDiagram diagram) {
-        this.diagram = diagram;
         return structureDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, true, false);
     }
 
@@ -106,6 +109,31 @@ public class StructuringService {
         System.out.println("PERFORMANCE - TIME: " + end + " ms");
 
         return this.diagram;
+    }
+
+    private BPMNDiagram structureFlatBPMNDiagram(BPMNDiagram diagram,
+                                                 String  policy,
+                                                 int     maxDepth,
+                                                 int     maxSolutions,
+                                                 int     maxChildren,
+                                                 int     maxStates,
+                                                 int     maxMinutes,
+                                                 boolean timeBounded,
+                                                 boolean keepBisimulation,
+                                                 boolean forceStructuring)
+    {
+        BPMNDiagram output;
+
+        this.diagram = diagramHandler.copyDiagram(diagram);
+
+        iBPStruct spi = new iBPStruct(  StructuringCore.Policy.valueOf(policy),
+                                        maxDepth, maxSolutions, maxChildren, maxStates,
+                                        maxMinutes, timeBounded, keepBisimulation, forceStructuring);
+        spi.setProcess(this.diagram.getNodes(), this.diagram.getFlows());
+        spi.structure();
+        output = spi.getDiagram();
+
+        return (output != null ? output : diagram);
     }
 
     private void structureDiagram() throws Exception {

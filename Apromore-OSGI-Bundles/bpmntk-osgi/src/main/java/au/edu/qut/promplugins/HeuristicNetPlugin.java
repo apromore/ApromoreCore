@@ -3,8 +3,8 @@ package au.edu.qut.promplugins;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
-import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUI;
-import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUIResult;
+import au.edu.qut.processmining.miners.heuristic.ui.net.HNMUI;
+import au.edu.qut.processmining.miners.heuristic.ui.net.HNMUIResult;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -35,11 +35,11 @@ public class HeuristicNetPlugin {
     public static BPMNDiagram mineHeuristicNet(UIPluginContext context, XLog log) {
         boolean debug = true;
 
-        HMPlusUI gui = new HMPlusUI();
-        HMPlusUIResult result = gui.showGUI(context, "Setup");
+        HNMUI gui = new HNMUI();
+        HNMUIResult result = gui.showGUI(context, "Setup HNM");
 
         SimpleLog sLog = LogParser.getSimpleLog(log);
-        HeuristicNet net = new HeuristicNet(sLog, result.getDependencyThreshold(), result.getPositiveObservations(), result.getRelative2BestThreshold());
+        HeuristicNet net = new HeuristicNet(sLog, result.getFrequencyThreshold(), result.getParallelismsThreshold());
         net.generateHeuristicNet();
 
         if( debug ) {
