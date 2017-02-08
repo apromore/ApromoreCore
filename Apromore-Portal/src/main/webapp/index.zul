@@ -114,13 +114,13 @@
             <west id="leftPanel" title="Key word filter" size="30%" collapsible="true" splittable="true">
                 <borderlayout vflex="min" height="100%">
                     <north id="leftNorthPanel">
-                        <SimpleSearch id="simplesearchcomp"/>
+                        <SimpleSearch id="simplesearchcomp" vflex="true" hflex="true"/>
                     </north>
                     <center id="leftInnerCenterPanel">
                         <Navigation id="navigationcomp" vflex="true" hflex="true"/>
                     </center>
-                    <south id="leftSouthPanel" size="25%" splittable="true">
-                        <DetailView id="baseDetail" />
+                    <south id="leftSouthPanel" size="25%" splittable="false">
+                        <DetailView id="baseDetail" vflex="true" hflex="true"/>
                     </south>
                 </borderlayout>
             </west>
