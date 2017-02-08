@@ -18,9 +18,9 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<listbox id="processSummariesListbox" vflex="true" span="true" autopaging="true" mold="paging" multiple="true" checkmark="false">
+<listbox id="processSummariesListbox" hflex="true" vflex="true" span="true" autopaging="true" mold="paging" multiple="true" checkmark="false">
     <listhead sizable="true" >
-        <listheader width="25px" visible="true" />
+        <listheader width="30px" visible="true" />
         <listheader width="min"                label="Score" id="columnScore" visible="true" />
         <listheader                            label="Name"              sort="auto(name)" />
         <listheader width="min" align="center" label="Id"                sort="auto(id)" />
