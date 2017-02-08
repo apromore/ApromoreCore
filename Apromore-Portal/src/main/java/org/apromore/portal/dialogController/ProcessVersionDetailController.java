@@ -47,8 +47,6 @@ public class ProcessVersionDetailController extends BaseDetailController {
         model.setMultiple(true);
         listBox.setModel(model);
 
-        ((South) getMainController().getFellow("leftSouthPanel")).setTitle("Process Details");
-
         appendChild(listBox);
     }
 
