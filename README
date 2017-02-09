@@ -26,9 +26,10 @@ Additional software required for ProDrift support:
 STANDALONE INSTALLATION
 ====================
 
-* Download the apromore repository from http://apromore.qut.edu.au/apromore.zip.
+* Download apromore from http://apromore.qut.edu.au/apromore.zip.
 * Unzip the file and open the folder Apromore-Server.
-* Start the repository via the apromore.sh file, if using *NIX, or the apromore.bat if using Windows.
+* Start the apromore via the apromore.sh file, if using Mac, or the apromore.bat if using Windows.
+* Open apromore via the apromore.html file.
 
 
 DEFAULT INSTALLATION
