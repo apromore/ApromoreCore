@@ -18,17 +18,18 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="treeW" title="Folders" vflex="true">
-            <caption>
-                <toolbarbutton id="expand" image="/img/expandall.gif" />
-                <toolbarbutton id="contract" image="/img/collapseall.gif" />
-            </caption>
+<window id="treeW" hflex="true" vflex="true">
             <style>
                 .h-inline-block {
                     display: inline-block;
                     _display: inline;
                 }
             </style>
+            <div class="z-west-header" style="display: -webkit-flex; display: flex">
+                <label style="color: black; font-weight: bold; -webkit-flex: 1; flex: 1" value="Folders"/>
+                <toolbarbutton id="expand" image="/img/expandall.gif" />
+                <toolbarbutton id="contract" image="/img/collapseall.gif" />
+            </div>
             <vlayout vflex="true" style="overflow: auto">
             <tree id="tree" >
                 <treecols>

@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<listbox id="processVersionsListbox" height="100px" hflex="true" checkmark="false" span="true" emptyMessage="Select exactly one process!">
+<listbox id="processVersionsListbox" hflex="true" checkmark="false" span="true" emptyMessage="Select exactly one process!">
     <listhead sizable="true">
         <listheader hflex="min" label="Branch" sort="auto(version.name)"/>
         <listheader hflex="min" label="Version" sort="auto(version.name)"/>
