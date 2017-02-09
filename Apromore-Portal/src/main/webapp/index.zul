@@ -1,9 +1,3 @@
-<?page title="Apromore - Advanced process model repository" contentType="text/html;charset=UTF-8" ?>
-
-<?component name="Menu" macroURI="macros/menu.zul" ?>
-<?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
-<?component name="Navigation" macroURI="macros/navigation.zul" ?>
-<?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
 <!--
   ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
@@ -24,6 +18,12 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
+<?page title="Apromore - Advanced process model repository" contentType="text/html;charset=UTF-8" ?>
+
+<?component name="Menu" macroURI="macros/menu.zul" ?>
+<?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
+<?component name="Navigation" macroURI="macros/navigation.zul" ?>
+<?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
 <!--<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>-->
 <?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
 <?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
@@ -126,7 +126,7 @@
             </west>
 
             <center id="mainPanel">
-                <div height="100%">
+                <div vflex="true">
                     <Menu id="menucomp" style="background-color: #F9F9F9;" width="100%"/>
                     <hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9; border-bottom: 1px solid #CFCFCF;">
                         <paging id="pg" style="border-bottom: 0px solid #F9F9F9;" />
@@ -170,7 +170,7 @@
                             <tab label="Processes"/>
                         </tabs>
                         <tabpanels id="tabpanels" >
-                            <tabpanel vflex="true" style="overflow: auto">
+                            <tabpanel vflex="true">
                                 <BaseListbox id="baseListboxProcesses" vflex="true"/>
                             </tabpanel>
                         </tabpanels>

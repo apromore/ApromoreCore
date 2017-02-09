@@ -19,15 +19,15 @@
   -->
 
 <listbox id="processSummariesListbox" hflex="true" vflex="true" span="true" autopaging="true" mold="paging" multiple="true" checkmark="false">
-    <listhead sizable="true" >
-        <listheader width="30px" visible="true" />
-        <listheader width="min"                label="Score" id="columnScore" visible="true" />
-        <listheader                            label="Name"              sort="auto(name)" />
-        <listheader width="min" align="center" label="Id"                sort="auto(id)" />
-        <listheader width="10em"               label="Original language" sort="auto(originalNativeType)" />
-        <listheader width="min"                label="Domain"            sort="auto(domain)" />
-        <listheader width="6em" align="center" label="Ranking"           sort="auto(ranking)" />
-        <listheader width="6em" align="center" label="Latest version"    sort="auto(lastVersion)" />
-        <listheader width="min"                label="Owner"             sort="auto(owner)" />
+    <listhead sizable="false">
+        <listheader width="32px" visible="true" />
+        <listheader hflex="min"                label="Score" id="columnScore" visible="true" />
+        <listheader                            label="Name"              /> <!-- name -->
+        <listheader hflex="min" align="center" label="Id"                /> <!-- id -->
+        <listheader hflex="min"                label="Original language" /> <!-- originalNativeType -->
+        <listheader hflex="min"                label="Domain"            /> <!-- domain -->
+        <listheader hflex="min" align="center" label="Ranking"           /> <!-- ranking -->
+        <listheader hflex="min" align="center" label="Latest version"    /> <!-- lastVersion -->
+        <listheader hflex="min"                label="Owner"             /> <!-- owner -->
     </listhead>
 </listbox>
