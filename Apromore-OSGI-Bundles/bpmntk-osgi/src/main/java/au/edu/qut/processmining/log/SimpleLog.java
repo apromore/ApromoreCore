@@ -30,6 +30,10 @@ public class SimpleLog {
     private Map<String, Integer> traces;
     private Map<Integer, String> events;
     private int size;
+    private long totalEvents;
+
+    private long longestTrace;
+    private long shortestTrace;
 
     private int startcode;
     private int endcode;
@@ -38,6 +42,10 @@ public class SimpleLog {
         this.traces = traces;
         this.events = events;
         this.size = 0;
+
+        totalEvents = -1;
+        longestTrace = -1;
+        shortestTrace = -1;
 
         for( int traceFrequency : traces.values() ) this.size += traceFrequency;
     }
@@ -51,4 +59,18 @@ public class SimpleLog {
 
     public void setEndcode(int endcode){ this.endcode = endcode; }
     public int getEndcode(){ return endcode; }
+
+    public void setTotalEvents(long totalEvents) { this.totalEvents = totalEvents; }
+    public long getTotalEvents() { return totalEvents; }
+
+    public int getDistinctTraces() { return traces.size(); }
+    public int getDistinctEvents() { return (events.size()-2); }
+
+    public void setLongestTrace(long length) { longestTrace = length; }
+    public long getLongestTrace() { return longestTrace; }
+
+    public void setShortestTrace(long length) { shortestTrace = length; }
+    public long getShortestTrace() {return shortestTrace; }
+
+    public int getAvgTraceLength(){ return (int)totalEvents/size; }
 }
