@@ -20,7 +20,7 @@
 
 <!-- controller is ShortMessageController -->
 <window id="shortmessage" style="background: #DAE7F6">
-    <grid>
+    <grid hflex="true">
         <columns>
             <column width="80px"></column>
             <column></column>
