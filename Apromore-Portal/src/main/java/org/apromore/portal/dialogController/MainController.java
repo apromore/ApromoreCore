@@ -407,42 +407,6 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    /**
-     * Display two process versions and allow their differences to be highlighted.
-     *
-     * @param process1 the process summary
-     * @param version1 the version of the process
-     * @param process2 the process summary
-     * @param version2 the version of the process
-     * @param nativeType the native type of the process
-     * @param annotation the annotation of that process
-     * @param readOnly is this model readonly or not
-     * @param requestParameterTypes request parameters types.
-     * @throws InterruptedException
-     */
-    public void compareProcesses(final ProcessSummaryType process1, final VersionSummaryType version1,
-            final ProcessSummaryType process2, final VersionSummaryType version2,
-            final String nativeType, final String annotation,
-            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
-        String instruction = "";
-
-        EditSessionType editSession1 = createEditSession(process1, version1, nativeType, annotation);
-        EditSessionType editSession2 = createEditSession(process2, version2, nativeType, annotation);
-
-        try {
-            String id = UUID.randomUUID().toString();
-            SignavioSession session = new SignavioSession(editSession1, editSession2, this, process1, version1, process2, version2, requestParameterTypes);
-            UserSessionManager.setEditSession(id, session);
-
-            String url = "macros/compareModelsInSignavio.zul?id=" + id;
-            instruction += "window.open('" + url + "');";
-
-            Clients.evalJavaScript(instruction);
-        } catch (Exception e) {
-            Messagebox.show("Cannot compare " + process1.getName() + " and " + process2.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-
     public void displayMessage(final String mes) {
         this.shortmessageC.displayMessage(mes);
     }
