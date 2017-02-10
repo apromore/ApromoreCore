@@ -64,23 +64,27 @@ public class ProcessListboxController extends BaseListboxController {
                     if (obj instanceof ProcessSummaryType) {
                         UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
                         getMainController().displayProcessVersions((ProcessSummaryType) obj);
-                    } if (obj instanceof FolderType) {
+                    } else {
+                    	getMainController().clearProcessVersions();
+                    }
+                    if (obj instanceof FolderType) {
                         List<Integer> folders = new ArrayList<>();
                         folders.add(((FolderType) obj).getId());
                         UserSessionManager.setSelectedFolderIds(folders);
                     }
-                } else if (getListBox().getSelectedItems().size() == 0) {
-                    getMainController().clearProcessVersions();
-                    UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
                 } else {
                     getMainController().clearProcessVersions();
-                    List<Integer> folders = new ArrayList<>();
-                    for (Object obj : getListModel().getSelection()) {
-                       if (obj instanceof FolderType) {
-                           folders.add(((FolderType) obj).getId());
-                       }
+                    if (getListBox().getSelectedItems().size() == 0) {
+                        UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
+                    } else {
+                        List<Integer> folders = new ArrayList<>();
+                        for (Object obj : getListModel().getSelection()) {
+                            if (obj instanceof FolderType) {
+                                folders.add(((FolderType) obj).getId());
+                            }
+                        }
+                        UserSessionManager.setSelectedFolderIds(folders);
                     }
-                    UserSessionManager.setSelectedFolderIds(folders);
                 }
             }
         });
@@ -94,6 +98,8 @@ public class ProcessListboxController extends BaseListboxController {
                         folders.add(((FolderType) obj).getId());
                         UserSessionManager.setSelectedFolderIds(folders);
                     }
+                } else {
+                    getMainController().clearProcessVersions();
                 }
             }
         });
