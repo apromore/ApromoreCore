@@ -31,7 +31,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
@@ -98,23 +97,6 @@ public class FolderTreeRenderer implements TreeitemRenderer {
                     while (!currentComponent.getId().equalsIgnoreCase("mainW")) {
                         currentComponent = currentComponent.getParent();
                     }
-
-                    List<FolderType> breadcrumbFolders = mainC.getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
-                    Collections.reverse(breadcrumbFolders);
-                    String content = "<table cellspacing='0' cellpadding='5' id='breadCrumbsTable'><tr>";
-
-                    int i = 0;
-                    for (FolderType breadcrumb : breadcrumbFolders) {
-                        if (i > 0) {
-                            content += "<td style='font-size: 9pt;'>&gt;</td>";
-                        }
-                        content += "<td><a class='breadCrumbLink' style='cursor: pointer; font-size: 9pt; color: Blue; text-decoration: underline;' id='" + breadcrumb.getId().toString() + "'>" + breadcrumb.getFolderName() + "</a></td>";
-                        i++;
-                    }
-
-                    content += "</tr></table>";
-                    mainC.breadCrumbs.setContent(content);
-                    Clients.evalJavaScript("bindBreadcrumbs();");
 
                     Html html = (Html) currentComponent.getFellow("folders");
 

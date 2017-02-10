@@ -891,9 +891,26 @@ public class MainController extends BaseController implements MainControllerInte
                     //Executions.sendRedirect(null);
                 }
             }
-
         }
     }
 
+    public void setBreadcrumbs(int selectedFolderId) {
+        List<FolderType> breadcrumbFolders = this.getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+        Collections.reverse(breadcrumbFolders);
+        String content = "<table cellspacing='0' cellpadding='5' id='breadCrumbsTable'><tr>";
+
+        int i = 0;
+        for (FolderType breadcrumb : breadcrumbFolders) {
+            if (i > 0) {
+                content += "<td style='font-size: 9pt;'>&gt;</td>";
+            }
+            content += "<td><a class='breadCrumbLink' style='cursor: pointer; font-size: 9pt; color: Blue; text-decoration: underline;' id='" + breadcrumb.getId().toString() + "'>" + breadcrumb.getFolderName() + "</a></td>";
+            i++;
+        }
+
+        content += "</tr></table>";
+        this.breadCrumbs.setContent(content);
+        Clients.evalJavaScript("bindBreadcrumbs();");
+    }
 }
 

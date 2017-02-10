@@ -88,21 +88,6 @@ public class ProcessListboxController extends BaseListboxController {
                 }
             }
         });
-        getListBox().addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (getListBox().getSelectedItems().size() == 1) {
-                    Object obj = getListModel().getSelection().iterator().next();
-                    if (obj instanceof FolderType) {
-                        List<Integer> folders = UserSessionManager.getSelectedFolderIds();
-                        folders.add(((FolderType) obj).getId());
-                        UserSessionManager.setSelectedFolderIds(folders);
-                    }
-                } else {
-                    getMainController().clearProcessVersions();
-                }
-            }
-        });
     }
 
     /*
