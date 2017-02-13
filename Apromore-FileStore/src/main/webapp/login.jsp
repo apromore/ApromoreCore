@@ -204,7 +204,7 @@
 
 <footer class="footer">
     <div class="web-description span12">
-        <h5>&copy; 2009-2015, The Apromore Initiative.</h5>
+        <h5>&copy; 2009-2017, The Apromore Initiative.</h5>
         <p>Except where otherwise noted, content on this site is licensed under a <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Licence</a></p>
         <p class="cc-logo"></p>
         <p>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -9,10 +9,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -65,15 +65,15 @@
         -->
 
         <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
-        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.jar"/>
+        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
 
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
         <!-- ibpstruct-editor-plugin renamed ~ibpstruct-editor-plugin elsewhere as a workaround for its dependency upon ibpstruct-logic
         <include name="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war"/>
         -->
-
-        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.0.jar"/>
+        <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
+        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
@@ -126,6 +126,11 @@
         <copy todir="${dir-virgo}/bin" overwrite="true">
             <fileset dir="Supplements/Virgo">
                 <filename name="dmk.sh"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir-virgo}/bin" overwrite="true">
+            <fileset dir="Supplements/Virgo">
+                <filename name="dmk.bat"/>
             </fileset>
         </copy>
         <copy todir="${dir-virgo}/repository/ext" overwrite="true">
@@ -232,12 +237,12 @@
     <target name="copy-virgo" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
-                <include name="**/target/bpmntk-osgi-1.0.jar"/>
+                <include name="**/target/bpmntk-osgi-1.1.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
-                <include name="**/target/eventstr-confchecking-osgi-1.0.jar"/>
+                <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
-                <include name="**/target/infrequent-behaviour-filter-osgi-1.0.jar"/>
+                <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
 
                 <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
                 <include name="**/target/json-osgi-20090211.jar"/>
@@ -338,7 +343,7 @@
     </target>
 
     <target name="install-sample-data">
-        <java jar="Supplements/cpfImporter/target/cpfImporter-1.0.one-jar.jar" fork="yes">
+        <java jar="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
             <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
 
             <!-- Configurable BPMN samples -->
@@ -401,7 +406,7 @@
     </target>
 
     <target name="install-comparison-data">
-        <java jar="Supplements/cpfImporter/target/cpfImporter-1.0.one-jar.jar" fork="yes">
+        <java jar="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
             <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
 
             <!-- Model to model -->

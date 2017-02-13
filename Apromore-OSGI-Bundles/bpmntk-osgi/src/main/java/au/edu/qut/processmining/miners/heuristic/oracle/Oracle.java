@@ -1,3 +1,23 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package au.edu.qut.processmining.miners.heuristic.oracle;
 
 import java.util.HashMap;
@@ -16,6 +36,7 @@ public class Oracle {
         Set<OracleItem> toMerge;
         boolean merged;
         boolean forced = true;
+        int counter = 0;
 
         while( oracleItems.size() != 1 ) {
 //            System.out.println("DEBUG - oracle items: " + oracleItems.size());
@@ -80,7 +101,7 @@ public class Oracle {
             if( !merged ) {
                 int tmpDistance;
                 int minDistance = Integer.MAX_VALUE;
-                System.out.println("WARNING - impossible merging oracle items, extending the concurrency relationships");
+//                System.out.println("WARNING - impossible merging oracle items, extending the concurrency relationships");
 
 //                if we have to force a merging, we try to merge the minimum distance couple of Oracle items
 //                that is: we are trying to introduce the less possible changes in the concurrency relationships
@@ -101,16 +122,18 @@ public class Oracle {
                 if(forced) matryoshka = OracleItem.forcedMergeANDs(toMerge);
                 else matryoshka = OracleItem.mergeANDs(toMerge);
 
-                System.out.println("WARNING - forcing AND merge ...");
+//                System.out.println("WARNING - forcing AND merge ...");
+                counter++;
                 for( OracleItem oi : toMerge ) {
-                    System.out.println("WARNING - f-AND: " + oi);
+//                    System.out.println("WARNING - f-AND: " + oi);
                     oracleItems.remove(oi);
                 }
                 oracleItems.add(matryoshka);
             }
         }
 
-        System.out.println("DEBUG - matryoshka: " + matryoshka);
+        if( counter != 0 ) System.out.println("DEBUG - forced AND merging: " + counter);
+//        System.out.println("DEBUG - matryoshka: " + matryoshka);
         return matryoshka;
     }
 

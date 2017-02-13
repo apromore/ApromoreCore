@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -36,7 +36,6 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.compare.CompareService;
-import org.apromore.service.EventLogService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -108,11 +107,7 @@ public class CompareController {
     private byte[] logByteArray2 = null;
     private String logFileName2 = null;
 
-    private static final String SIGNAVIO_SESSION = "SIGNAVIO_SESSION";
-    
     private CompareService compareService;
-    private EventLogService eventLogService;
-//    private PetriNet net;
     private ModelAbstractions model;
     VersionSummaryType version;
     ProcessSummaryType process;
@@ -120,10 +115,9 @@ public class CompareController {
     private HashSet<String> obs;
 
 
-    public CompareController(PortalContext portalContext, CompareService compareService, EventLogService eventLogService) {
+    public CompareController(PortalContext portalContext, CompareService compareService) {
         this.compareService = compareService;
         this.portalContext = portalContext;
-        this.eventLogService = eventLogService;
     }
 
     public void compareLLPopup(){
@@ -292,10 +286,9 @@ public class CompareController {
             String id = UUID.randomUUID().toString();
 
             SignavioSession session = new SignavioSession(editSession1, editSession2, null, process1, version1, process2, version2, requestParameterTypes);
-            Executions.getCurrent().getSession().setAttribute(SIGNAVIO_SESSION + id, session);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "macros/compareModelsInSignavio.zul?id=" + id;
+            String url = "../compare/compareModelsInSignavio.zul?id=" + id;
             instruction += "window.open('" + url + "');";
 
             Clients.evalJavaScript(instruction);
@@ -316,10 +309,9 @@ public class CompareController {
             String id = UUID.randomUUID().toString();
 
             SignavioSession session = new SignavioSession(editSession1, null, null, process1, version1, null, null, requestParameterTypes);
-            Executions.getCurrent().getSession().setAttribute(SIGNAVIO_SESSION + id, session);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "macros/compareModelToLogInSignavio.zul?id=" + id;
+            String url = "../compare/compareModelToLogInSignavio.zul?id=" + id;
             instruction += "window.open('" + url + "');";
 
             Clients.evalJavaScript(instruction);

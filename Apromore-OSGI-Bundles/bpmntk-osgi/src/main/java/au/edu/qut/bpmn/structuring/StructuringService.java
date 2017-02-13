@@ -1,3 +1,23 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package au.edu.qut.bpmn.structuring;
 
 import au.edu.qut.bpmn.structuring.core.StructuringCore;
@@ -63,8 +83,11 @@ public class StructuringService {
         diagramHandler = new DiagramHandler();
     }
 
+    public BPMNDiagram structureFlatBPMNDiagram(BPMNDiagram diagram) {
+        return structureFlatBPMNDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, true, false);
+    }
+
     public BPMNDiagram structureDiagram(BPMNDiagram diagram) {
-        this.diagram = diagram;
         return structureDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, true, false);
     }
 
@@ -106,6 +129,31 @@ public class StructuringService {
         System.out.println("PERFORMANCE - TIME: " + end + " ms");
 
         return this.diagram;
+    }
+
+    private BPMNDiagram structureFlatBPMNDiagram(BPMNDiagram diagram,
+                                                 String  policy,
+                                                 int     maxDepth,
+                                                 int     maxSolutions,
+                                                 int     maxChildren,
+                                                 int     maxStates,
+                                                 int     maxMinutes,
+                                                 boolean timeBounded,
+                                                 boolean keepBisimulation,
+                                                 boolean forceStructuring)
+    {
+        BPMNDiagram output;
+
+        this.diagram = diagramHandler.copyDiagram(diagram);
+
+        iBPStruct spi = new iBPStruct(  StructuringCore.Policy.valueOf(policy),
+                                        maxDepth, maxSolutions, maxChildren, maxStates,
+                                        maxMinutes, timeBounded, keepBisimulation, forceStructuring);
+        spi.setProcess(this.diagram.getNodes(), this.diagram.getFlows());
+        spi.structure();
+        output = spi.getDiagram();
+
+        return (output != null ? output : diagram);
     }
 
     private void structureDiagram() throws Exception {

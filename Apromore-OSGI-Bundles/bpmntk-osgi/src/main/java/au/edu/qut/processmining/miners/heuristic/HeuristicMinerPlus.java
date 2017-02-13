@@ -1,3 +1,23 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package au.edu.qut.processmining.miners.heuristic;
 
 import au.edu.qut.bpmn.helper.DiagramHandler;
@@ -8,12 +28,13 @@ import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
 import au.edu.qut.processmining.miners.heuristic.oracle.Oracle;
 import au.edu.qut.processmining.miners.heuristic.oracle.OracleItem;
-import au.edu.qut.processmining.miners.heuristic.ui.HMPlusUIResult;
+import au.edu.qut.processmining.miners.heuristic.ui.miner.HMPlusUIResult;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
 import de.hpi.bpt.graph.algo.rpst.RPST;
 import de.hpi.bpt.graph.algo.rpst.RPSTNode;
+import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.Vertex;
 import org.deckfour.xes.model.XLog;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -39,6 +60,9 @@ public class HeuristicMinerPlus {
     private int gateCounter;
     private HashMap<String, Gateway> candidateJoins;
 
+    private Set<Gateway> bondsEntries;
+    private Set<Gateway> rigidsEntries;
+
 
     public HeuristicMinerPlus() {}
 
@@ -46,14 +70,11 @@ public class HeuristicMinerPlus {
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
-    public BPMNDiagram mineBPMNModel(XLog log, double dependencyThreshold, double positiveObservations,
-                                     double relative2BestThreshold, boolean replaceIORs, HMPlusUIResult.StructuringTime structuringTime)
+    public BPMNDiagram mineBPMNModel(XLog log, double frequencyThreshold, double parallelismsThreshold,
+                                     boolean replaceIORs, HMPlusUIResult.StructuringTime structuringTime)
     {
         System.out.println("HM+ - starting ...");
         System.out.println("HM+ - [Setting] replace IORs: " + replaceIORs);
-        System.out.println("HM+ - [Setting] dependency threshold: " + dependencyThreshold);
-        System.out.println("HM+ - [Setting] positive observations: " + positiveObservations);
-        System.out.println("HM+ - [Setting] relative to best threshold: " + relative2BestThreshold);
         System.out.println("HM+ - [Setting] structuring: " + structuringTime);
 
         this.replaceIORs = replaceIORs;
@@ -62,7 +83,7 @@ public class HeuristicMinerPlus {
         this.log = LogParser.getSimpleLog(log);
         System.out.println("HM+ - log parsed successfully");
 
-        mineHeuristicNet(dependencyThreshold, positiveObservations, relative2BestThreshold);
+        mineHeuristicNet(frequencyThreshold, parallelismsThreshold);
         generateBPMNDiagramFromHeuristicNet();
 
         if( structuringTime == HMPlusUIResult.StructuringTime.POST ) structure();
@@ -70,9 +91,9 @@ public class HeuristicMinerPlus {
         return bpmnDiagram;
     }
 
-    private void mineHeuristicNet(double dependencyThreshold, double positiveObservations, double relative2BestThreshold) {
+    private void mineHeuristicNet(double frequencyThreshold, double parallelismsThreshold) {
         System.out.println("HM+ - mining heuristic net: starting");
-        heuristicNet = new HeuristicNet(log, dependencyThreshold, positiveObservations, relative2BestThreshold);
+        heuristicNet = new HeuristicNet(log, frequencyThreshold, parallelismsThreshold);
         heuristicNet.generateHeuristicNet();
         System.out.println("HM+ - mining heuristic net: done ");
     }
@@ -179,9 +200,16 @@ public class HeuristicMinerPlus {
             }
         }
 
+//        after generating the split hierarchy we should have only SPLITs,
+//        however, it may happen that some JOINs are generated as well (due to shared future)
+//        it is important that we do not leave any gateway that is both a SPLIT and a JOIN
+        (new DiagramHandler()).removeJoinSplit(bpmnDiagram);
+
 //        at this point, all the splits were generated, along with just a few joins
 //        now we focus only on the joins. we use the RPST in order to place INCLUSIVE joins
 //        which will be turned into AND or XOR joins later
+        bondsEntries = new HashSet<>();
+        rigidsEntries = new HashSet<>();
         System.out.println("HM+ - generating SESE joins ...");
         while( generateSESEjoins() );
 
@@ -194,7 +222,7 @@ public class HeuristicMinerPlus {
 
 //        finally, we turn all the inclusive joins placed, into proper joins: ANDs or XORs
         System.out.println("HM+ - turning inclusive joins ...");
-        replaceIORs();
+        if( replaceIORs ) replaceIORs();
 
         updateLabels(this.log.getEvents());
         System.out.println("HM+ - bpmn diagram generated successfully");
@@ -212,8 +240,8 @@ public class HeuristicMinerPlus {
 
         if( candidateJoins.containsKey(nextOracleItem.toString()) ) {
 //            these are joins, they are created considering the fact they share the same future (finalOracleItem)
-//            System.out.println("DEBUG - FOUND join for the Oracle item: " + nextOracleItem.toString());
             candidateJoin = candidateJoins.get(nextOracleItem.toString());
+            System.out.println("DEBUG - found " + candidateJoin.getGatewayType() + " join for the Oracle item: " + nextOracleItem.toString());
             bpmnDiagram.addFlow(entry, candidateJoin, "");
             return;
         }
@@ -260,20 +288,21 @@ public class HeuristicMinerPlus {
             String entry, exit, gatify, matchingGate, srcVertex;
 
 
-//            step 1. we build the graph from the BPMN Diagram, the graph is necessary to generate the RPST
+//            we build the graph from the BPMN Diagram, the graph is necessary to generate the RPST
+//            we build the graph from the BPMN Diagram, the graph is necessary to generate the RPST
 
             for( Flow f : bpmnDiagram.getFlows((Swimlane) null) ) {
                 bpmnSRC = f.getSource();
                 bpmnTGT = f.getTarget();
                 if( !vertexes.containsKey(bpmnSRC) ) {
-                    src = new Vertex(bpmnSRC.getLabel());  //this is still a unique number
+                    src = new Vertex(bpmnSRC.getLabel());  //this may not be anymore a unique number, but still a unique label
                     if( bpmnSRC instanceof Gateway ) gates.put(bpmnSRC.getLabel(), ((Gateway) bpmnSRC).getGatewayType());
                     vertexes.put(bpmnSRC, src);
                     nodes.put(bpmnSRC.getLabel(), bpmnSRC);
                 } else src = vertexes.get(bpmnSRC);
 
                 if( !vertexes.containsKey(bpmnTGT) ) {
-                    tgt = new Vertex(bpmnTGT.getLabel());  //this is still a unique number
+                    tgt = new Vertex(bpmnTGT.getLabel());  //this may not be anymore a unique number, but still a unique label
                     if( bpmnTGT instanceof Gateway ) gates.put(bpmnTGT.getLabel(), ((Gateway) bpmnTGT).getGatewayType());
                     vertexes.put(bpmnTGT, tgt);
                     nodes.put(bpmnTGT.getLabel(), bpmnTGT);
@@ -315,6 +344,9 @@ public class HeuristicMinerPlus {
 //                                    System.out.println("DEBUG - found a bond entry (" + entry + ") that is not a gateway");
                                     rpstBottomUpHierarchy.add(0, n);
                                     loops.add(n);
+                                } else {
+                                    if( n.getType() == TCType.R ) rigidsEntries.add((Gateway)nodes.get(entry));
+                                    else bondsEntries.add((Gateway)nodes.get(entry));
                                 }
                             }
                             toAnalize.addLast(n);
@@ -429,9 +461,10 @@ public class HeuristicMinerPlus {
     }
 
     private void replaceIORs() {
-        GatewayMap gatemap = new GatewayMap();
+        bondsEntries.removeAll(rigidsEntries);
+        GatewayMap gatemap = new GatewayMap(bondsEntries);
         System.out.println("DEBUG - doing the magic ...");
-        if( replaceIORs && gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
+        if( gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
         else System.out.println("ERROR - something went wrong initializing the gateway map");
     }
 
