@@ -130,7 +130,7 @@ public class MenuController extends Menubar {
                 // Add the menu item to the menu
                 Menu menu = menuMap.get(menuName);
                 Menuitem menuitem = new Menuitem();
-                menuitem.setImage("img/icon/bpmn-22x22.png");
+                menuitem.setImageContent(plugin.getIcon());
                 menuitem.setLabel(plugin.getLabel(Locale.getDefault()));
                 menu.getMenupopup().appendChild(menuitem);
                 menuitem.addEventListener("onClick", new EventListener<Event>() {
