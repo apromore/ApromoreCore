@@ -1,12 +1,29 @@
-Apromore Build Instructions with Eclipse Virgo
+Apromore Installation instructions
 
+There are two distributions of Apromore: a *standalone* distribution, which you can simply copy/paste somewhere and run,
+and a *custom* distribution, which requires you to manually install and configure Apromore.
+The standlone distribution runs on the H2 database by default and does not support the PQL query language.
+The custom distribution is for developers and advanced users. It can work on H2 or MySQL and allows greater flexibility
+(e.g. you can decide whether to have PQL, configure the DB root...).
+
+STANDALONE INSTALLATION
+=======================
 
 REQUIREMENTS
-============
+- Windows 7 or Mac OSX 10.8 to 10.11
+- Java 1.8
 
-Apromore has been successfully installed on the following platforms:
-- Windows 7
-- Mac OSX 10.8 to 10.11
+* Download Apromore from http://apromore.qut.edu.au/apromore.zip.
+* Unzip the file and open the folder Apromore-Server.
+* Start Apromore by executing the apromore.sh file in a Terminal if using Mac, or double-click on apromore.bat if using Windows.
+* Open Apromore by clicking on the apromore.html file.
+
+
+CUSTOM INSTALLATION
+====================
+
+REQUIREMENTS
+- Windows 7 or Mac OSX 10.8 to 10.11
 
 Ensure the following software is installed:
 - Java 1.8
@@ -22,19 +39,6 @@ Additional software required for ProDrift support:
 - R 3.3
 - rJava
 
-
-STANDALONE INSTALLATION
-====================
-
-* Download apromore from http://apromore.qut.edu.au/apromore.zip.
-* Unzip the file and open the folder Apromore-Server.
-* Start the apromore executing in the terminal the apromore.sh file, if using Mac, or the apromore.bat if using Windows.
-* Open apromore via the apromore.html file.
-
-
-DEFAULT INSTALLATION
-====================
-
 * Check out the Apromore source tree using git: 'git clone https://github.com/apromore/ApromoreCode.git'
 * Change to the root of the project you checked out of git.  'cd ApromoreCore'
 * Run the maven command 'mvn clean install'. This will build the Apromore manager, portal and editor and all the extra plugins.
@@ -47,7 +51,7 @@ DEFAULT INSTALLATION
 CONFIGURATION
 =============
 
-Almost all configuration occurs in the top level site.properties file.  The default version of this file from a fresh git
+Almost all configuration occurs in the top level site.properties file. The default version of this file from a fresh git
 checkout contains reasonable defaults that use H2 as the main database, but disable PQL (which requires MySQL or Postgres and
 more intricate configuration).
 
