@@ -6,6 +6,7 @@ The standlone distribution runs on the H2 database by default and does not suppo
 The custom distribution is for developers and advanced users. It can work on H2 or MySQL and allows greater flexibility
 (e.g. you can decide whether to have PQL, configure the DB root...).
 
+
 STANDALONE INSTALLATION
 =======================
 
