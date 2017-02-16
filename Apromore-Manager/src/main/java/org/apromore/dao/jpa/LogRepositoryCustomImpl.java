@@ -47,8 +47,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * implementation of the org.apromore.dao.ClusteringDao interface.
- * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
+ * implementation of the org.apromore.dao.LogRepositoryCustom interface.
+ * @author <a href="mailto:raffaele.conforti@qut.edu.au">Raffaele Conforti</a>
  */
 public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
@@ -56,9 +56,6 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
     @PersistenceContext
     private EntityManager em;
-
-    @Resource
-    private JdbcTemplate jdbcTemplate;
 
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 
@@ -134,7 +131,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
             try {
                 final String name = logNameId + "_" + logName + ".xes.gz";
-                exportToFile("processLogs/", name, log);
+                exportToFile("../Event-Logs-Repository/", name, log);
                 return logNameId;
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
@@ -148,7 +145,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         if (log != null) {
             try {
                 String name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
-                File file = new File("processLogs/" + name);
+                File file = new File("../Event-Logs-Repository/" + name);
                 file.delete();
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
@@ -159,7 +156,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
     public XLog getProcessLog(Log log) {
         if (log != null) {
             try {
-                String name = "processLogs/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
+                String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
                 return importFromFile(new XFactoryNaiveImpl(), name);
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());

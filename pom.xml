@@ -134,6 +134,8 @@
         <module>Similarity-Clusters-Portal-Plugin</module>
         <module>Infrequent-Behaviour-Filter-Logic</module>
         <module>Infrequent-Behaviour-Filter-Portal-Plugin</module>
+        <module>StageMining-Logic</module>
+        <module>StageMining-Portal-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
@@ -418,11 +420,13 @@
                 <artifactId>commons-collections4</artifactId>
                 <version>4.0</version>
             </dependency>
+			<!--
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.4</version>
             </dependency>
+			-->
 
             <!-- BPM Imports -->
             <dependency>
@@ -1191,11 +1195,13 @@
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.connector.version}</version>
             </dependency>
+			<!--
             <dependency>
                 <groupId>org.joda</groupId>
                 <artifactId>com.springsource.org.joda.time</artifactId>
                 <version>${joda-time.version}</version>
             </dependency>
+			-->
 
             <!-- WSDL / WS dependencies -->
             <dependency>

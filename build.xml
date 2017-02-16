@@ -80,6 +80,10 @@
 
         <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
+
+        <include name="StageMining-Logic/target/stagemining-logic-1.1.jar"/>
+        <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
+
         <!-- logfilter-editor-plugin renamed ~logfilter-editor-plugin elsewhere as a workaround for its dependency upon logfilter-logic
         <include name="Apromore-Plugins/plugin-editor/logfilter/target/logfilter-editor-plugin-1.1.war"/>
         -->

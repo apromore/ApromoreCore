@@ -114,41 +114,41 @@ public class MetricsPlugin extends PluginCustomGui {
 //        portalContext.getMessageHandler().displayInfo("Executing Metrics service...");
 //        runComputation(portalContext, processVersions);
 
-        try {
+//        try {
             if(processVersions.size() > 0) {
-                this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/metrics.zul", null, null);
-
-                this.size = (Radiogroup) this.settings.getFellow("size");
-                this.cfc = (Radiogroup) this.settings.getFellow("cfc");
-                this.acd = (Radiogroup) this.settings.getFellow("acd");
-                this.mcd = (Radiogroup) this.settings.getFellow("mcd");
-                this.cnc = (Radiogroup) this.settings.getFellow("cnc");
-                this.density = (Radiogroup) this.settings.getFellow("density");
-                this.structuredness = (Radiogroup) this.settings.getFellow("structuredness");
-                this.separability = (Radiogroup) this.settings.getFellow("separability");
-                this.duplicates = (Radiogroup) this.settings.getFellow("duplicates");
-
-                this.cancelButton = (Button) this.settings.getFellow("CancelButton");
-                this.okButton = (Button) this.settings.getFellow("OKButton");
-
-                this.cancelButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        cancel();
-                    }
-                });
-                this.okButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
+//                this.settings = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/metrics.zul", null, null);
+//
+//                this.size = (Radiogroup) this.settings.getFellow("size");
+//                this.cfc = (Radiogroup) this.settings.getFellow("cfc");
+//                this.acd = (Radiogroup) this.settings.getFellow("acd");
+//                this.mcd = (Radiogroup) this.settings.getFellow("mcd");
+//                this.cnc = (Radiogroup) this.settings.getFellow("cnc");
+//                this.density = (Radiogroup) this.settings.getFellow("density");
+//                this.structuredness = (Radiogroup) this.settings.getFellow("structuredness");
+//                this.separability = (Radiogroup) this.settings.getFellow("separability");
+//                this.duplicates = (Radiogroup) this.settings.getFellow("duplicates");
+//
+//                this.cancelButton = (Button) this.settings.getFellow("CancelButton");
+//                this.okButton = (Button) this.settings.getFellow("OKButton");
+//
+//                this.cancelButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+//                    public void onEvent(Event event) throws Exception {
+//                        cancel();
+//                    }
+//                });
+//                this.okButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+//                    public void onEvent(Event event) throws Exception {
                         runProcessComputation(portalContext, processVersions);
-                    }
-                });
-                this.settings.doModal();
+//                    }
+//                });
+//                this.settings.doModal();
             }else {
                 runLogComputation(portalContext, logVersions);
             }
 
-        } catch (IOException e) {
-            Messagebox.show("Something went wrong (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
+//        } catch (IOException e) {
+//            Messagebox.show("Something went wrong (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+//        }
     }
 
 
@@ -162,7 +162,7 @@ public class MetricsPlugin extends PluginCustomGui {
         Map<String, String> canonicalMetrics;
 
         this.settings.detach();
-
+/*
         boolean size = this.size.getSelectedIndex() == 0 ? true : false;
         boolean cfc = this.cfc.getSelectedIndex() == 0 ? true : false;
         boolean acd  = this.acd.getSelectedIndex() == 0 ? true : false;
@@ -172,7 +172,8 @@ public class MetricsPlugin extends PluginCustomGui {
         boolean structuredness = this.structuredness.getSelectedIndex() == 0 ? true : false;
         boolean separability = this.separability.getSelectedIndex() == 0 ? true : false;
         boolean duplicates  = this.duplicates.getSelectedIndex() == 0 ? true : false;
-/*
+*/
+
         boolean size = true;
         boolean cfc = true;
         boolean acd  = true;
@@ -182,7 +183,7 @@ public class MetricsPlugin extends PluginCustomGui {
         boolean structuredness = true;
         boolean separability = true;
         boolean duplicates  = true;
-*/
+
         try {
             for (ProcessSummaryType process : processVersions.keySet()) {
                 for (VersionSummaryType vst : processVersions.get(process)) {

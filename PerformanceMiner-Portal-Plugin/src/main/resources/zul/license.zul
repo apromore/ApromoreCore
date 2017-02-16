@@ -1,0 +1,57 @@
+<!--
+  ~ Copyright Â© 2009-2016 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<window id="perfmining_license" width="400px" height="200px" closable="false" sizable="false" maximizable="false" minimizable="false" position="center,center" title="License to use Highcharts">
+
+    <style>
+
+        <!-- Make Plain Grid -->
+        .GridLayoutNoBorder
+        {
+        border: none;
+        }
+
+    </style>
+    <vbox>
+        <grid>
+            <columns sizable="true">
+                <column width="50%"></column>
+                <column width="50%"></column>
+            </columns>
+            <rows>
+
+                <row spans="2">
+                    <html width="100%">
+                        This plugin uses <a href='http://www.highcharts.com' target="_blank">highcharts</a> under a non-commercial license. 
+                        A paid license must be obtained for the highcharts library if this plugin is used for any commercial purposes. 
+                        Refer to <a href='https://shop.highsoft.com/highcharts' target="_blank">Highcharts Licensing</a> for further information.
+                    </html>
+                </row>
+
+                <row id="Buttons" spans="2">
+                    <div align="center">
+                        <button id="OKButton" label="OK" image="img/ok.png" height="30px"></button>
+                        <button id="CancelButton" label="Cancel" image="img/cancel2.png" height="30px"></button>
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </vbox>
+</window>
