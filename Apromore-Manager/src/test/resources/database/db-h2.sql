@@ -550,6 +550,7 @@ CREATE TABLE search_history
 (
    id int auto_increment PRIMARY KEY NOT NULL,
    userId int,
+   position int,
    search varchar(200)
 )
 ;
