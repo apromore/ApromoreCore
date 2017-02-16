@@ -134,6 +134,8 @@
         <module>Similarity-Clusters-Portal-Plugin</module>
         <module>Infrequent-Behaviour-Filter-Logic</module>
         <module>Infrequent-Behaviour-Filter-Portal-Plugin</module>
+        <module>StageMining-Logic</module>
+        <module>StageMining-Portal-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
