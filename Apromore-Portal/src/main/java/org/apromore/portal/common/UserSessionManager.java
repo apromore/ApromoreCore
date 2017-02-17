@@ -106,7 +106,7 @@ public class UserSessionManager {
 
     public static void setCurrentFolder(FolderType folder) {
         setAttribute(CURRENT_FOLDER, folder);
-        //getMainController().setBreadcrumbs(folder.getId());  TODO: re-enable breadcrumb display; currently disabled due to ZK page references mysteriously vanishing
+        getMainController().setBreadcrumbs(folder.getId());
     }
 
     public static FolderType getCurrentFolder() {
