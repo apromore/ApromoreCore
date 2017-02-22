@@ -77,6 +77,7 @@
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
 
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
+        <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
         <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>

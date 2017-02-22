@@ -123,6 +123,7 @@
         <module>Infrequent-Behaviour-Filter-Logic</module>
         <module>Infrequent-Behaviour-Filter-Portal-Plugin</module>
         <module>Log-Visualizer-Logic</module>
+        <module>Log-Visualizer-Logic-WS</module>
         <module>Log-Visualizer-Portal-Plugin</module>
         <module>Metrics-Logic</module>
         <module>Metrics-Portal-Plugin</module>
