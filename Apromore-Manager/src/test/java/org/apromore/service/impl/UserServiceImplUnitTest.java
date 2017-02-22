@@ -124,14 +124,19 @@ public class UserServiceImplUnitTest {
         String username = "username";
         User usr = createUser();
         List<SearchHistory> histories = new ArrayList<>();
+        List<SearchHistory> oldHistories = new ArrayList<>();
         histories.add(new SearchHistory());
 
         expect(usrRepo.findByUsername(username)).andReturn(usr);
+        expect(searchHistoryRepo.findByUserOrderByIndexDesc(usr)).andReturn(oldHistories);
+        searchHistoryRepo.deleteInBatch((Set<SearchHistory>) anyObject());
         expect(searchHistoryRepo.save((Set<SearchHistory>) anyObject())).andReturn(histories);
         expect(usrRepo.save((User) anyObject())).andReturn(usr);
+        replay(searchHistoryRepo);
         replay(usrRepo);
 
         usrServiceImpl.updateUserSearchHistory(usr, histories);
+        verify(searchHistoryRepo);
         verify(usrRepo);
 
         assertThat(username, equalTo(usr.getUsername()));

@@ -29,6 +29,7 @@ import java.util.List;
 import org.apromore.dao.model.Membership;
 import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
+import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
 import org.apromore.model.*;
 import org.apromore.security.util.SecurityUtil;
@@ -89,6 +90,16 @@ public class UserMapper {
                 if (!userType.getPermissions().contains(permissionType)){
                     userType.getPermissions().add(permissionType);
                 }
+            }
+        }
+
+        List<SearchHistory> searchHistories = user.getSearchHistories();
+        if (searchHistories != null) {
+            for (SearchHistory searchHistory: searchHistories) {
+                SearchHistoriesType searchHistoriesType = new SearchHistoriesType();
+                searchHistoriesType.setSearch(searchHistory.getSearch());
+                searchHistoriesType.setNum(searchHistory.getIndex());
+                userType.getSearchHistories().add(searchHistoriesType);
             }
         }
 

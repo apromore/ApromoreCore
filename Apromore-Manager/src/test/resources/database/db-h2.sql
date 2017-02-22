@@ -550,6 +550,7 @@ CREATE TABLE search_history
 (
    id int auto_increment PRIMARY KEY NOT NULL,
    userId int,
+   position int,
    search varchar(200)
 )
 ;
@@ -1357,3 +1358,25 @@ CREATE UNIQUE INDEX id_primary_workspace ON workspace(id)
 ;
 CREATE INDEX workspace_user ON workspace(userId)
 ;
+CREATE VIEW keywords AS
+  SELECT process.id AS processId, process.id AS value
+  FROM process
+  UNION 
+  SELECT process.id AS processId, process.name AS word
+  FROM process
+  UNION 
+  SELECT process.id AS processId, process.domain AS domain
+  FROM process
+  UNION 
+  SELECT process.id AS processId, native_type.nat_type AS original_type
+  FROM process JOIN native_type ON (process.nativeTypeId = native_type.id)
+  UNION 
+  SELECT process.id AS processId, user.first_name AS firstname
+  FROM process JOIN user ON (process.owner = user.username)
+  UNION 
+  SELECT process.id AS processId, user.last_name AS lastname
+  FROM process JOIN user ON (process.owner = user.username)
+  UNION 
+  SELECT process_branch.processId AS processId, process_branch.branch_name AS branch_name
+  FROM process_branch;
+

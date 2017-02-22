@@ -72,17 +72,18 @@
         <!-- ibpstruct-editor-plugin renamed ~ibpstruct-editor-plugin elsewhere as a workaround for its dependency upon ibpstruct-logic
         <include name="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war"/>
         -->
+
+        <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
+        <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
+
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
 
-        <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
-        <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
-
-        <include name="StageMining-Logic/target/stagemining-logic-1.1.jar"/>
-        <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
+        <include name="PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
+        <include name="PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
 
         <!-- logfilter-editor-plugin renamed ~logfilter-editor-plugin elsewhere as a workaround for its dependency upon logfilter-logic
         <include name="Apromore-Plugins/plugin-editor/logfilter/target/logfilter-editor-plugin-1.1.war"/>
@@ -95,6 +96,9 @@
 
         <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
         
+        <include name="StageMining-Logic/target/stagemining-logic-1.1.jar"/>
+        <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
+
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
         <include name="APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
         <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
