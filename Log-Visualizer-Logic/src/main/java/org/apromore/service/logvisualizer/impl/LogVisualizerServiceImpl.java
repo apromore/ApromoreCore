@@ -42,6 +42,7 @@ import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.util.Pair;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
+import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.models.graphbased.directed.bpmn.elements.Event;
@@ -55,10 +56,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.swing.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Raffaele Conforti on 01/12/2016.
@@ -72,18 +70,18 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         LogVisualizerServiceImpl l = new LogVisualizerServiceImpl();
         XLog log = null;
         try {
-            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/ArtificialLess.xes.gz");
+            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/IdeaProjects/Models/Zip/Logs/BPI Challenge - 2012.xes.gz");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String s = l.visualizeLog(log, 0, 0);
+        String s = l.visualizeLog(log, 0, 0.5);
         System.out.println();
-        String s1 = l.visualizeLog(log, 0, 0.5);
     }
 
     @Override
     public String visualizeLog(XLog log, double activities, double arcs) {
         try {
+            arcs = arcs / 2;
             XEventClassifier classifier = new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier());
             XLogInfo logInfo = XLogInfoFactory.createLogInfo(log, classifier);
             MetricsRepository metrics = MetricsRepository.createRepository(logInfo);
@@ -97,33 +95,18 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             mutableFuzzyGraph.initializeGraph();
             mutableFuzzyGraph.setEdgeImpls();
 
-//            SimpleTransformer simpleTransformer = new SimpleTransformer();
-//            simpleTransformer.setThreshold(activities);
-
-//            NewConcurrencyEdgeTransformer newConcurrencyEdgeTransformer = new NewConcurrencyEdgeTransformer();
-//            newConcurrencyEdgeTransformer.setPreserveThreshold(arcs);
-//            newConcurrencyEdgeTransformer.setRatioThreshold(arcs);
-
-//            ConcurrencyEdgeTransformer concurrencyEdgeTransformer = new ConcurrencyEdgeTransformer();
-//            concurrencyEdgeTransformer.setPreserveThreshold(arcs);
-//            concurrencyEdgeTransformer.setRatioThreshold(arcs);
+            ConcurrencyEdgeTransformer concurrencyEdgeTransformer = new ConcurrencyEdgeTransformer();
+            concurrencyEdgeTransformer.setPreserveThreshold(arcs);
+            concurrencyEdgeTransformer.setRatioThreshold(arcs);
 
             FuzzyEdgeTransformer fuzzyEdgeTransformer = new FuzzyEdgeTransformer();
             fuzzyEdgeTransformer.setPreservePercentage(arcs);
             fuzzyEdgeTransformer.setSignificanceCorrelationRatio(arcs);
 
-//            BestEdgeTransformer bestEdgeTransformer = new BestEdgeTransformer();
-
             FastTransformer nodeFilter = new FastTransformer();
-//            nodeFilter.addPreTransformer(simpleTransformer);
             nodeFilter.addPreTransformer(fuzzyEdgeTransformer);
-//            nodeFilter.addInterimTransformer(bestEdgeTransformer);
             nodeFilter.setThreshold(activities);
             nodeFilter.transform(mutableFuzzyGraph);
-
-//            fuzzyEdgeTransformer.transform(mutableFuzzyGraph);
-//            mutableFuzzyGraph.initializeGraph();
-//            mutableFuzzyGraph.setEdgeImpls();
 
             Set<FMNode> nodes = mutableFuzzyGraph.getNodes();
             BPMNDiagram bpmnDiagram = new BPMNDiagramImpl("Fuzzy Model");
@@ -137,8 +120,9 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             Set<FMEdge<? extends FMNode, ? extends FMNode>> edges = mutableFuzzyGraph.getEdges();
             for (FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
                 try {
-                    if(edge.getCorrelation() >= 1 - arcs)
-                    createEdge(nodesMap, bpmnDiagram, edgesAdded, edge);
+                    if(edge.getCorrelation() >= 1 - arcs) {// && edge.getSignificance() >= 1 - arcs) {
+                        createEdge(nodesMap, bpmnDiagram, edgesAdded, edge);
+                    }
                 }catch (NullPointerException e) {
                     createNode(nodesMap, bpmnDiagram, edge.getSource());
                     createNode(nodesMap, bpmnDiagram, edge.getTarget());
@@ -166,6 +150,36 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 }
             }
 
+            for(Activity activity : bpmnDiagram.getActivities()) {
+                if(!existsPath(bpmnDiagram, start, activity)) {
+                    FMEdge<? extends FMNode, ? extends FMNode> best_edge = null;
+                    for (FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
+                        if(nodesMap.get(standardizeName(edge.getTarget().getLabel())).getLabel().equals(activity.getLabel())
+                                && !nodesMap.get(standardizeName(edge.getSource().getLabel())).getLabel().equals(activity.getLabel())
+                                && !existsPath(bpmnDiagram, activity, nodesMap.get(standardizeName(edge.getSource().getLabel())))) {
+                            if(best_edge == null || (edge.getCorrelation() > best_edge.getCorrelation() && edge.getSignificance() > best_edge.getSignificance())) {
+                                best_edge = edge;
+                            }
+                        }
+                    }
+                    if(best_edge != null) {
+                        createEdge(nodesMap, bpmnDiagram, edgesAdded, best_edge);
+                    }else {
+                        for (FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
+                            if(nodesMap.get(standardizeName(edge.getTarget().getLabel())).getLabel().equals(activity.getLabel())
+                                    && !nodesMap.get(standardizeName(edge.getSource().getLabel())).getLabel().equals(activity.getLabel())) {
+                                if(best_edge == null || (edge.getCorrelation() > best_edge.getCorrelation() && edge.getSignificance() > best_edge.getSignificance())) {
+                                    best_edge = edge;
+                                }
+                            }
+                        }
+                        if(best_edge != null) {
+                            createEdge(nodesMap, bpmnDiagram, edgesAdded, best_edge);
+                        }
+                    }
+                }
+            }
+
             Event end = bpmnDiagram.addEvent("End", Event.EventType.END, Event.EventTrigger.NONE, Event.EventUse.THROW, null);
             Set<String> lastActivity = new HashSet<>();
             Set<Pair<String, String>> endEdge = new HashSet<>();
@@ -182,6 +196,36 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                     if (!endEdge.contains(pair)){
                         bpmnDiagram.addFlow(nodesMap.get(name), end, "");
                         endEdge.add(pair);
+                    }
+                }
+            }
+
+            for(Activity activity : bpmnDiagram.getActivities()) {
+                if(!existsPath(bpmnDiagram, activity, end)) {
+                    FMEdge<? extends FMNode, ? extends FMNode> best_edge = null;
+                    for (FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
+                        if(nodesMap.get(standardizeName(edge.getSource().getLabel())).getLabel().equals(activity.getLabel())
+                                && !nodesMap.get(standardizeName(edge.getTarget().getLabel())).getLabel().equals(activity.getLabel())
+                                && !existsPath(bpmnDiagram, nodesMap.get(standardizeName(edge.getTarget().getLabel())), activity)) {
+                            if(best_edge == null || (edge.getCorrelation() > best_edge.getCorrelation() && edge.getSignificance() > best_edge.getSignificance())) {
+                                best_edge = edge;
+                            }
+                        }
+                    }
+                    if(best_edge != null) {
+                        createEdge(nodesMap, bpmnDiagram, edgesAdded, best_edge);
+                    }else {
+                        for (FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
+                            if(nodesMap.get(standardizeName(edge.getSource().getLabel())).getLabel().equals(activity.getLabel())
+                                    && !nodesMap.get(standardizeName(edge.getTarget().getLabel())).getLabel().equals(activity.getLabel())) {
+                                if(best_edge == null || (edge.getCorrelation() > best_edge.getCorrelation() && edge.getSignificance() > best_edge.getSignificance())) {
+                                    best_edge = edge;
+                                }
+                            }
+                        }
+                        if(best_edge != null) {
+                            createEdge(nodesMap, bpmnDiagram, edgesAdded, best_edge);
+                        }
                     }
                 }
             }
@@ -259,12 +303,40 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     }
 
     private String standardizeName(String name) {
-        if(!name.contains("(")) {
-            String name1 = name.substring(0, name.indexOf(" "));
-            String name2 = name.substring(name.indexOf(" ") + 1, name.lastIndexOf(" "));
-            return name1 + " (" + name2 + ")";
+        try {
+            Double.parseDouble(name.substring(name.lastIndexOf(" ")));
+            name = name.substring(0, name.lastIndexOf(" "));
+            if(!name.endsWith(")")) {
+                String name1 = name.substring(0, name.lastIndexOf(" "));
+                String name2 = name.substring(name.lastIndexOf(" ") + 1, name.length());
+                return name1 + " (" + name2 + ")";
+            }
+            return name;
+        }catch (NumberFormatException nfe) {
+
         }
         return name;
+    }
+
+    private boolean existsPath(BPMNDiagram diagram, BPMNNode source, BPMNNode target) {
+        Set<BPMNNode> visited = new HashSet<>();
+        List<BPMNNode> toVisit = new ArrayList<>();
+        toVisit.add(source);
+
+        while (toVisit.size() > 0) {
+            BPMNNode node = toVisit.remove(0);
+            if(node.equals(target)) return true;
+
+            visited.add(node);
+            for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : diagram.getEdges()) {
+                if(edge.getSource().equals(node)) {
+                    if(!visited.contains(edge.getTarget())) {
+                        toVisit.add(edge.getTarget());
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }
