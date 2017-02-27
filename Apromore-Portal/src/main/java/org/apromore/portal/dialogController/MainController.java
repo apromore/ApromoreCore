@@ -80,7 +80,7 @@ public class MainController extends BaseController implements MainControllerInte
 
     private NavigationController navigation;
 
-    public Html breadCrumbs;
+//    public Html breadCrumbs;
     private Paginal pg;
 
     private String host;
@@ -105,7 +105,7 @@ public class MainController extends BaseController implements MainControllerInte
             Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
 
             Window shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
-            this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
+//            this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
             this.pg = (Paginal) mainW.getFellow("pg");
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this);
@@ -895,6 +895,7 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public void setBreadcrumbs(int selectedFolderId) {
+/*
         List<FolderType> breadcrumbFolders = this.getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
         Collections.reverse(breadcrumbFolders);
         String content = "<table cellspacing='0' cellpadding='5' id='breadCrumbsTable'><tr>";
@@ -911,6 +912,7 @@ public class MainController extends BaseController implements MainControllerInte
         content += "</tr></table>";
         this.breadCrumbs.setContent(content);
         Clients.evalJavaScript("bindBreadcrumbs();");
+*/
     }
 }
 
