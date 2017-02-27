@@ -38,9 +38,8 @@
     <style src="css/site.css"/>
 
     <script type="text/javascript" src="js/jquery.js"></script>
-	<script type="text/javascript" src="js/highstock.js"></script>
+    <script type="text/javascript" src="js/highstock.js"></script>
     <script type="text/javascript" src="js/exporting.js" defer="true"></script>
-	<script type="text/javascript" src="js/go.js"></script>
 	
     <style dynamic="true">
         tr.z-row td.z-row-inner, tr.z-row td.z-cell, tr.z-group td.z-group-inner, tr.z-groupfoot td.z-groupfoot-inner {
