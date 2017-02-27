@@ -161,7 +161,7 @@ public class MetricsPlugin extends PluginCustomGui {
         Map<String, String> bpmnMetrics;
         Map<String, String> canonicalMetrics;
 
-        this.settings.detach();
+//        this.settings.detach();
 /*
         boolean size = this.size.getSelectedIndex() == 0 ? true : false;
         boolean cfc = this.cfc.getSelectedIndex() == 0 ? true : false;
