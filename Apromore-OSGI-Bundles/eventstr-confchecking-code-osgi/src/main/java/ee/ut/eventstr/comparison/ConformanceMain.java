@@ -29,11 +29,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -194,8 +190,7 @@ public class ConformanceMain {
 	       	logpessem = new SinglePORunPESSemantics<Integer>(logpes, sink);			
 			psp = new PrunedOpenPartialSynchronizedProduct<Integer>(logpessem, pnmlpes);
 			
-			psp.perform()
-				.prune()
+			psp.perform().prune()
 			;
 			verbalizer.addPSP(psp.getOperationSequence());				
 		}
@@ -213,8 +208,12 @@ public class ConformanceMain {
 		
 		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.ESPARZA, new HashSet<String>());
 		unfolder.computeUnfolding();
+
+		HashMap<String, String> map = new HashMap<>();
+		for(Transition t : unfolder.getUnfoldingAsPetriNet().getTransitions())
+			map.put(t.getName(), t.getName());
 		
-		Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
+		Unfolding2PES pes = new Unfolding2PES(unfolder, labels, map);
 		NewUnfoldingPESSemantics<Integer> pessem = new NewUnfoldingPESSemantics<Integer>(pes.getPES(), pes);
 		return pessem;
 	}

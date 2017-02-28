@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -221,7 +222,11 @@ public class ApromoreCompareMM {
 		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.EQUAL_PREDS, new HashSet<String>());
 		unfolder.computeUnfolding();
 
-		Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
+		HashMap<String, String> map = new HashMap<>();
+		for(Transition t : unfolder.getUnfoldingAsPetriNet().getTransitions())
+			map.put(t.getName(), t.getName());
+
+		Unfolding2PES pes = new Unfolding2PES(unfolder, labels, map);
 		return new PESSemantics<Integer>(pes.getPES());
 	}
 }
