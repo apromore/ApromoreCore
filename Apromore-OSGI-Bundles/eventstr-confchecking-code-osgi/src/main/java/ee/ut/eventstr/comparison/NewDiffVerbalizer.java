@@ -108,6 +108,32 @@ public class NewDiffVerbalizer<T> {
 		opSeqs.add(opSeq);
 	}
 
+	public void countMultMatching(HashMap<Integer, Integer> superCounter){
+		HashMap<Multiset<Integer>, Integer> counter = new HashMap<>();
+
+		for (Operation op: descendants.values()) {
+			State key = op.nextState;
+			if (!descendants.containsKey(key)) {
+				if (!counter.containsKey(key.c2))
+					counter.put(key.c2, 0);
+
+				counter.put(key.c2, counter.get(key.c2) + 1);
+			}
+		}
+
+		for(Entry<Multiset<Integer>, Integer> entry : counter.entrySet()){
+			if(entry.getValue() > 1)
+				System.out.println("\t" + entry.getKey() + " : " + entry.getValue());
+		}
+
+        for(Integer counterV : counter.values()){
+            if(!superCounter.containsKey(counterV))
+                superCounter.put(counterV, 0);
+
+            superCounter.put(counterV, superCounter.get(counterV) + 1);
+        }
+	}
+
 	public Set<String> verbalize() {
 		for (List<Operation> opSeq: opSeqs) {
 			addPSPBranchToGlobalPSP(opSeq);	
@@ -149,8 +175,16 @@ public class NewDiffVerbalizer<T> {
 				////   Verbalization
 				//// ==============================
 				if (pes1.getBRelation(ctx.getKey().getFirst(), p.getFirst()) == BehaviorRelation.CAUSALITY) {
-					statements.add(String.format("In the log, after '%s', '%s' occurs before '%s', while in the model they are concurrent", 
-							translate(pes1, ((Pair<Integer, Integer>)lastMatchMap.get(ctx.getValue()).target).getSecond()), //getFirst changed into getSecond
+
+					Pair context = (Pair<Integer, Integer>) lastMatchMap.get(ctx.getValue()).target;
+
+					if(ctx.getKey().getFirst().intValue() == ((Integer)context.getFirst()).intValue()) {
+						State ancestor = ancestors.get((State) lastMatchMap.get(ctx.getValue()).nextState).iterator().next();
+						context = (Pair<Integer, Integer>)  lastMatchMap.get(ancestor).target;
+					}
+
+					statements.add(String.format("In the log, after '%s', '%s' occurs before '%s', while in the model they are concurrent",
+							translate(pes1, (Integer) context.getFirst()),
 							translate(pes1, ctx.getKey().getFirst()), translate(pes1, p.getFirst())));
 				}
 				else {

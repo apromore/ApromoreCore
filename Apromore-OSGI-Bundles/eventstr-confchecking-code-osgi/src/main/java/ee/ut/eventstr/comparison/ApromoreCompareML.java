@@ -34,11 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -88,13 +84,26 @@ public class ApromoreCompareML {
         String folder1 = "fines/";
 		String folder2 = "fines/";
 
-//        String logString = folder + "conf_loop_log.xes";
-//        String modelString = folder + "conc_seq_insert.bpmn";
+		String folder = "models/";
+        String logString = folder + "conf_loop_log.xes";
+        String modelString = folder + "conc_seq_insert.bpmn";
 //        String logString = folder1 + "Repair/Example2/conc_seq_insert_log.xes";
 //        String modelString = folder2 + "Examples/Example1/conf_loop.bpmn";
 
-		String logString = "TestModels/TASKSKIP-2/bpLog3.xes";
-		String modelString = "TestModels/TASKSKIP-2/bp6.bpmn";
+//		String logString = "models/simplestClog.pnml_log.xes";
+//		String modelString = "models/simplestC.bpmn";
+
+//		String logString = "/Users/armascer/Downloads/newModelLog.pnml_log.xes";
+//		String modelString = "/Users/armascer/Downloads/NewModel.bpmn";
+
+//        String logString = "models/modelNet3.pnml_log.xes";
+//        String modelString = "models/m4.bpmn";
+
+//		String logString = "models/TrafficFines.xes";
+//        String modelString = "models/TrafficFInes.bpmn";
+
+//        String logString = "TestModels/CAUSCONC-1/bpLog3.xes";
+//        String modelString = "TestModels/CAUSCONC-1/bp3.bpmn";
 
 		//String logString = "financial/financial_log-filtered-10.xes";
 		//String folder = "financial/";
@@ -182,7 +191,7 @@ public class ApromoreCompareML {
 		for(DifferenceML dif : verbalizer.getDifferences().getDifferences())
 			System.out.println(dif.getSentence());
 
-//			NewDiffVerbalizer<Integer> verbalizer = comparator.analyzeDifferences(model, log, silents);
+//			NewDiffVerbalizer<Integer> verbalizer = comparator.analyzeDifferences(model.getNet(), log, silents);
 //			verbalizer.verbalize();
 //			System.out.println(verbalizer.getStatements());
 
@@ -336,8 +345,11 @@ public class ApromoreCompareML {
 
 		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.ESPARZA, silents);
 		unfolder.computeUnfolding();
+        HashMap<String, String> map = new HashMap<>();
+        for(Transition t : unfolder.getUnfoldingAsPetriNet().getTransitions())
+            map.put(t.getName(), t.getName());
 
-		Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
+		Unfolding2PES pes = new Unfolding2PES(unfolder, labels, map);
 		NewUnfoldingPESSemantics<Integer> pessem = new NewUnfoldingPESSemantics<Integer>(pes.getPES(), pes);
 		return pessem;
 	}

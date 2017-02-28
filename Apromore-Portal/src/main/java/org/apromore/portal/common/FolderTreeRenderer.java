@@ -112,7 +112,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
                         UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
                         UserSessionManager.setCurrentFolder(selectedFolder);
 
-                        mainC.reloadSummaries();
+                        mainC.reloadSummaries2();
                         mainC.clearProcessVersions();
                     }
                 } catch (Exception ex) {

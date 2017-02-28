@@ -112,9 +112,10 @@ public class ModelAbstractions {
 
         for(Transition t : net.getTransitions()) {
             String tName = t.getName();
-            if (!labelCounter.containsKey(tName))
+            if (!labelCounter.containsKey(tName)) {
                 labelCounter.put(tName, 0);
-            else {
+                mapLabelsO2N.put(t.getName(), tName);
+            }else {
                 t.setName(tName + "-" + labelCounter.get(tName));
                 labelCounter.put(tName, labelCounter.get(tName) + 1);
                 mapLabelsO2N.put(t.getName(), tName);
@@ -182,7 +183,7 @@ public class ModelAbstractions {
 
     public PESSemantics<Integer> getPESSemantics(Set<String> commonLabels) throws Exception {
         computeUnfolding(commonLabels);
-        parserPES = new Unfolding2PES(unfolder, labels);
+        parserPES = new Unfolding2PES(unfolder, labels, mapLabelsO2N);
         mapUnf2PES = parserPES.getMapEventsBP2ES();
         mapPES2Unf = parserPES.getMapEventsPES2Unf();
         mapPES2Net = new HashMap<>();
@@ -207,7 +208,7 @@ public class ModelAbstractions {
 
     public NewUnfoldingPESSemantics<Integer> getUnfoldingPESSemantics(PetriNet net, HashSet<String> silents) throws Exception {
         computeUnfolding2();
-        parserPES = new Unfolding2PES(unfolder, labels);
+        parserPES = new Unfolding2PES(unfolder, labels, mapLabelsO2N);
         mapUnf2PES = parserPES.getMapEventsBP2ES();
         mapPES2Unf = parserPES.getMapEventsPES2Unf();
         mapPES2Net = new HashMap<>();
@@ -262,17 +263,21 @@ public class ModelAbstractions {
     }
 
     public boolean isSynth(int i){
-        if(pessem == null)
-            return pes.getLabel(i).equals("_0_") || pes.getLabel(i).equals("_1_");
+       return getLabelPESS(i).equals("_0_") || getLabelPESS(i).equals("_1_");
+    }
 
-        return pessem.getLabel(i).equals("_0_") || pessem.getLabel(i).equals("_1_");
+    public String getLabelPESS(int i){
+        if(pessem == null)
+            return pes.getLabel(i);
+
+        return pessem.getLabel(i);
     }
 
     public HashSet<DNode> getEvtsConfPES(BitSet conf){
         HashSet<DNode> events = new HashSet<>();
 
         for (int i = conf.nextSetBit(0); i >= 0; i = conf.nextSetBit(i+1)) {
-            if(isSynth(i))
+            if(isSynth(i) || !labels.contains(getLabelPESS(i)))
                 continue;
 
             Set<DNode> localC = unfolder.getBP().getLocalConfig(mapPES2Unf.get(i));
