@@ -22,15 +22,25 @@ package org.apromore.plugin.portal.perfmining;
 
 // Java 2 Standard Edition packages
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 // Java 2 Enterprise Edition packages
 import javax.inject.Inject;
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.VersionSummaryType;
 
 // Third party packages
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.EventLogService;
 import org.apromore.service.perfmining.PerfMiningService;
+import org.deckfour.xes.model.XLog;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zul.Messagebox;
@@ -49,6 +59,8 @@ import org.apromore.service.ProcessService;
 public class PerfMiningPlugin extends DefaultPortalPlugin {
 
     private final PerfMiningService perfMiningService;
+    private final EventLogService eventLogService;
+    
     /*
     private final CanoniserService canoniserService;
     private final DomainService    domainService;
@@ -56,17 +68,10 @@ public class PerfMiningPlugin extends DefaultPortalPlugin {
     */
 
     @Inject
-    public PerfMiningPlugin(final PerfMiningService perfMiningService /*,
-                           final CanoniserService canoniserService,
-                           final DomainService    domainService,
-                           final ProcessService   processService */) {
+    public PerfMiningPlugin(final PerfMiningService perfMiningService, final EventLogService eventLogService) {
 
         this.perfMiningService = perfMiningService;
-        /*
-        this.canoniserService = canoniserService;
-        this.domainService    = domainService;
-        this.processService   = processService;
-        */
+        this.eventLogService = eventLogService;
     }
 
     @Override
@@ -81,11 +86,26 @@ public class PerfMiningPlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(PortalContext portalContext) {
+        Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
+        Set<LogSummaryType> selectedLogSummaryType = new HashSet<>();
+        for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet())
+        {
+            if(entry.getKey() instanceof LogSummaryType)
+            {
+                selectedLogSummaryType.add((LogSummaryType) entry.getKey());
+            }
+        }
+
+        Map<XLog, String> logs = new HashMap<>();
+        for(LogSummaryType logType : selectedLogSummaryType)
+        {
+            logs.put(eventLogService.getXLog(logType.getId()), logType.getName());
+        }
 
         portalContext.getMessageHandler().displayInfo("Executed process performance mining plug-in!");
 
         try {
-            new PerfMiningController(portalContext, this.perfMiningService);
+            new PerfMiningController(portalContext, this.perfMiningService, logs);
         } catch (IOException | SuspendNotAllowedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }

@@ -4,17 +4,17 @@
 
     <n:div id="chartdiv" style="height:80%;width:100%;"></n:div>	
     <div> 
-      <button id="updateButton" xmlns:w="client" w:onClick="sendToServer();">Update</button>
+      <button id="updateButton" xmlns:w="client" w:onClick="sendToServer();">Show/Update Summary Metrics</button>
       <grid id="perfminingresult_summarygrid" height="350px" 
           emptyMessage="Nothing in the box">        
           <columns>
               <column width="100px" label="" />
-              <column width="80px" label="AR" />
-              <column width="80px" label="DR" />
-              <column width="80px" label="ER" />
-              <column width="80px" label="CIP" />
-              <column width="200px" label="TIS" />
-              <column width="80px" label="FE" />
+              <column width="100px" label="Arrival Rate" />
+              <column width="100px" label="Departure Rate" />
+              <column width="100px" label="Exit Rate" />
+              <column width="100px" label="Cases in Stage" />
+              <column width="150px" label="Time in Stage" />
+              <column width="100px" label="Flow Efficiency" />
           </columns>
       </grid>
     </div>
