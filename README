@@ -31,12 +31,9 @@ Ensure the following software is installed:
 - Git 2.3.5
 
 Additional software required for PQL support:
-- MySQL 5.6.x
+- MySQL 5.6.x (https://dev.mysql.com/downloads/)
 - LoLA 2.0 (http://service-technology.org/lola/)
 
-Additional software required for ProDrift support:
-- R 3.3
-- rJava
 
 * Check out the Apromore source tree using git: 'git clone https://github.com/apromore/ApromoreCode.git'
 * Change to the root of the project you checked out of git.  'cd ApromoreCore'
@@ -113,6 +110,18 @@ In build.xml, uncomment the inclusion of the following PQL components in the "pi
 
 Also, uncomment the following component in the "copy-virgo" target:
 * PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar
+
+
+ACCESSING THE PORTAL
+====================
+* go to [apromore_domain]:9000/portal/login.zul
+* use "admin”/“password” to access as administrator, or create a new account.
+
+
+ACCESSING THE WEBDAV
+====================
+* go to [apromore_domain]:9000/filestore/login.html
+* use "admin”/“password” to access as administrator, or create a new account.
 
 
 SAMPLE DATA
