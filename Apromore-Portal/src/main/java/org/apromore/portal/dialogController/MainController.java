@@ -608,7 +608,7 @@ public class MainController extends BaseController implements MainControllerInte
     protected void displayWebDav() {
         String instruction;
         int offsetH = 100, offsetV = 200;
-        instruction = "window.open('" + Constants.WEB_DAV + "','','top=" + offsetH + ",left=" + offsetV
+        instruction = "window.open('" + host + "/filestore/dav" + "','','top=" + offsetH + ",left=" + offsetV
                 + ",height=600,width=800,scrollbars=1,resizable=1'); ";
         Clients.evalJavaScript(instruction);
     }
