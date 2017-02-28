@@ -70,7 +70,7 @@ public class Unfolding2PES {
 	private BiMap<DNode, Integer> mapEventsBP2ES;
     private HashMap<Integer, DNode> mapEventsPES2Unf;
 
-	public Unfolding2PES(Unfolder_PetriNet unfolder, Set<String> originalVisibleLabels) {
+	public Unfolding2PES(Unfolder_PetriNet unfolder, Set<String> originalVisibleLabels, HashMap<String, String> originalNames) {
 		this.sys = unfolder.getSys();
 		this.bp = unfolder.getBP();
 		this.orderedVisibleEventMap = new HashMap<>();
@@ -100,7 +100,7 @@ public class Unfolding2PES {
 		
 		int localId = 0;
 		for (DNode node: bp.getBranchingProcess().allEvents) {
-			String originalName = unfolder.getOriginalLabel(sys.properNames[node.id]);
+			String originalName = unfolder.getOriginalLabel(originalNames.get(sys.properNames[node.id]));
 			
 			localMap.put(node, localId++);
 
@@ -128,7 +128,7 @@ public class Unfolding2PES {
                 if(originalVisibleLabels.contains(originalName))
                     this.mapEventsPES2Unf.put(labels.size(), node);
 
-                labels.add(originalName);
+                labels.add(sys.properNames[node.id]);
 			}
 			
 			if (sinkEvent && node.isCutOff)
