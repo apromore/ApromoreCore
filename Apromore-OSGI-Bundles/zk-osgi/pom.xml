@@ -44,7 +44,7 @@
                     <instructions>
                         <Embed-Dependency>
                             artifactId=
-                            zk|zcommon|zel|zkbind|zkplus
+                            bsh|zk|zcommon|zel|zkbind|zkplus
                             |zul|zhtml|zweb|zjavassist-osgi|zkspring-core
                         </Embed-Dependency>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
@@ -52,7 +52,6 @@
                         <Bundle-Name>ZK OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.zkoss-osgi</Bundle-SymbolicName>
                         <Import-Package>
-                            !bsh,
                             !com.sun.jdi.*,
                             !org.zkoss.zsoup.*,
                             !javax.enterprise.*,
@@ -83,6 +82,12 @@
     </build>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>bsh</artifactId>
+            <version>1.0</version>
+        </dependency>
 
         <!-- ZK Libraries -->
         <dependency>
