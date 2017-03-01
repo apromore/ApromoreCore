@@ -64,6 +64,7 @@ public class PerfMiningController {
     private Button licenseCancelButton;
     
     private Window importW;
+    private boolean showImportW = true;
     private Button logFileUpload;
     private org.zkoss.util.media.Media logFile = null;
     private Button importNextbutton;
@@ -86,7 +87,20 @@ public class PerfMiningController {
     /**
      * @throws IOException if the <code>perfmining.zul</code> template can't be read from the classpath
      */
-    public PerfMiningController(PortalContext portalContext, PerfMiningService perfMiningService) throws IOException {
+    public PerfMiningController(PortalContext portalContext, PerfMiningService perfMiningService, Map<XLog, String> logs) throws IOException {
+        if(logs.size() > 0) {
+            if(logs.size() > 1) {
+                showError("Please select only one log!");
+            } 
+            else {
+                this.showImportW = false;
+                this.log = logs.keySet().iterator().next();
+            }
+        }
+        else {
+            this.showImportW = true;
+        }
+        
         this.portalContext = portalContext;
         this.perfMiningService = perfMiningService;
         
@@ -124,7 +138,19 @@ public class PerfMiningController {
        licenseOKbutton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 licenseW.detach();
-                importW.doModal();
+                if (showImportW) {
+                    importW.doModal();
+                    configPreviousButton.setVisible(true);
+                }
+                else {
+                    SPFManager.getInstance().clear(); //start over for a new SPF
+                    readData(log, config, SPFManager.getInstance());
+                    config.setCheckStartCompleteEvents(true);
+                    initializeTimeZoneBox();
+                    initializeCaseStatusList();
+                    configW.doModal();
+                    configPreviousButton.setVisible(false);
+                }
             }
         });      
        

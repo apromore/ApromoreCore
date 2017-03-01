@@ -83,7 +83,7 @@
     </beans:bean>
 
     <beans:bean id="successHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
-        <beans:property name="defaultTargetUrl" value="/index.html"/>
+        <beans:property name="defaultTargetUrl" value="/dav"/>
     </beans:bean>
 
     <beans:bean id="failureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">

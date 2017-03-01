@@ -80,7 +80,7 @@ public class Unfolder_PetriNet {
 			bp.setSilent(silent);
 			
 			mapDNodeTrans = new HashMap<>();
-			
+
 			for (Node trans : net.getTransitions())
 				mapDNodeTrans.put(sys.getResultNode(trans).id, trans);
 			
