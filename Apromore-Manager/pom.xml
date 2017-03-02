@@ -305,10 +305,17 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
+		<!--
         <dependency>
             <groupId>org.joda</groupId>
             <artifactId>com.springsource.org.joda.time</artifactId>
         </dependency>
+		-->
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>com.springsource.org.apache.derby</artifactId>
+			<version>10.5.1000001.764942</version>
+		</dependency>		
 
         <!-- Spring dependencies -->
         <dependency>
@@ -609,6 +616,45 @@
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES</artifactId>
         </dependency>
+		
+		<!-- GUI related dependencies -->
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.joda-time</artifactId>
+            <version>2.3_1</version>
+        </dependency>
+		
+		
+		<!--
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>com.springsource.org.jfree</artifactId>
+            <version>1.0.12</version>
+        </dependency> 
+		-->
+		
+		<!--
+		<dependency>
+			<groupId>org.jfree.chart</groupId>
+			<artifactId>com.springsource.org.jfree.chart</artifactId>
+			<version>1.0.9</version>
+		</dependency>
+		-->
+		<!--
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.jcommon</artifactId>
+			<version>1.0.15_1</version>
+		</dependency>
+		-->
+		<!--
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.jfreechart</artifactId>
+			<version>1.0.12_1</version>
+		</dependency> 
+		-->
+				
     </dependencies>
 
 </project>

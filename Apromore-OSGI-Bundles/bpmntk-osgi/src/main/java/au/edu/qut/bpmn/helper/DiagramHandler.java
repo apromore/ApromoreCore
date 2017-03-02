@@ -84,7 +84,7 @@ public class DiagramHandler {
                 for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : removable ) diagram.removeEdge(e);
             }
 
-//       System.out.println("DEBUG - join/split removed: " + jsCounter);
+       System.out.println("DEBUG - join/split removed: " + jsCounter);
     }
 
     public void touch(BPMNDiagram diagram) {

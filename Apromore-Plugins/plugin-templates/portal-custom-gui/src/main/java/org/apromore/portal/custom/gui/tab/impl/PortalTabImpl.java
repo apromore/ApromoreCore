@@ -79,7 +79,7 @@ public class PortalTabImpl extends AbstractPortalTab {
         list.appendChild(head);
 
         for (Listheader idListHeader: listheaders) {
-            head.appendChild(idListHeader);
+            head.appendChild((Listheader) idListHeader.clone());
         }
 
         TabItem item = null;

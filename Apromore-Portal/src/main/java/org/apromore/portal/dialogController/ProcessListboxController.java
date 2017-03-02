@@ -64,34 +64,25 @@ public class ProcessListboxController extends BaseListboxController {
                     if (obj instanceof ProcessSummaryType) {
                         UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
                         getMainController().displayProcessVersions((ProcessSummaryType) obj);
-                    } if (obj instanceof FolderType) {
+                    } else {
+                    	getMainController().clearProcessVersions();
+                    }
+                    if (obj instanceof FolderType) {
                         List<Integer> folders = new ArrayList<>();
                         folders.add(((FolderType) obj).getId());
                         UserSessionManager.setSelectedFolderIds(folders);
                     }
-                } else if (getListBox().getSelectedItems().size() == 0) {
-                    getMainController().clearProcessVersions();
-                    UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
                 } else {
                     getMainController().clearProcessVersions();
-                    List<Integer> folders = new ArrayList<>();
-                    for (Object obj : getListModel().getSelection()) {
-                       if (obj instanceof FolderType) {
-                           folders.add(((FolderType) obj).getId());
-                       }
-                    }
-                    UserSessionManager.setSelectedFolderIds(folders);
-                }
-            }
-        });
-        getListBox().addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (getListBox().getSelectedItems().size() == 1) {
-                    Object obj = getListModel().getSelection().iterator().next();
-                    if (obj instanceof FolderType) {
-                        List<Integer> folders = UserSessionManager.getSelectedFolderIds();
-                        folders.add(((FolderType) obj).getId());
+                    if (getListBox().getSelectedItems().size() == 0) {
+                        UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
+                    } else {
+                        List<Integer> folders = new ArrayList<>();
+                        for (Object obj : getListModel().getSelection()) {
+                            if (obj instanceof FolderType) {
+                                folders.add(((FolderType) obj).getId());
+                            }
+                        }
                         UserSessionManager.setSelectedFolderIds(folders);
                     }
                 }

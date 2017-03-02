@@ -38,6 +38,9 @@ public class SearchExpressionBuilderUnitTest {
     private static final String SEARCH_EXPRESSION_OR = " (  p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' ) or  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' ) ) ";
     private static final String SEARCH_EXPRESSION_AND = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' ) and  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' )";
     private static final String SEARCH_EXPRESSION_AND_OR = " (  p.id in (select k.processId FROM Keywords k WHERE k.value like '%yawl%' ) or  p.id in (select k.processId FROM Keywords k WHERE k.value like '%protos%' ) )  and  p.id in (select k.processId FROM Keywords k WHERE k.value like '%invoicing%' )";
+    private static final String SEARCH_EXPRESSION_APOSTROPHE = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%''apostrophe''%' )";
+    private static final String SEARCH_EXPRESSION_2APOSTROPHE = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%double''''apostrophe%' )";
+    private static final String SEARCH_EXPRESSION_BACKSLASH = " p.id in (select k.processId FROM Keywords k WHERE k.value like '%\\backslash\\%' )";
     
     private String expression;
     private SearchExpressionBuilder seb;
@@ -68,6 +71,7 @@ public class SearchExpressionBuilderUnitTest {
         assertThat(expression, equalTo(SEARCH_EXPRESSION_SINGLE));
 
         expression = seb.buildSearchConditions("(yawl;protos)");
+        System.err.println(expression);
         assertThat(expression, containsString("'%yawl%'"));
         assertThat(expression, containsString("'%protos%'"));
         assertThat(expression, equalTo(SEARCH_EXPRESSION_OR));
@@ -77,5 +81,14 @@ public class SearchExpressionBuilderUnitTest {
 
         expression = seb.buildSearchConditions("(yawl;protos),invoicing");
         assertThat(expression, equalTo(SEARCH_EXPRESSION_AND_OR));
+
+        expression = seb.buildSearchConditions("'apostrophe'");
+        assertThat(expression, equalTo(SEARCH_EXPRESSION_APOSTROPHE));
+
+        expression = seb.buildSearchConditions("double''apostrophe");
+        assertThat(expression, equalTo(SEARCH_EXPRESSION_2APOSTROPHE));
+
+        expression = seb.buildSearchConditions("\\backslash\\");
+        assertThat(expression, equalTo(SEARCH_EXPRESSION_BACKSLASH));
     }
 }

@@ -71,7 +71,6 @@ public class QueryableProcessAttributePlugin extends DefaultParameterAwarePlugin
     public Listheader getListheader() {
         Listheader listheader = new Listheader();
         listheader.setAlign("center");
-        listheader.setHflex("0");
         listheader.setLabel("PQL");
         listheader.setWidth("3em");
         return listheader;

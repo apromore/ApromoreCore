@@ -38,7 +38,7 @@
     <properties>
         <deploy.dir>${project.build.directory}/repository</deploy.dir>
 
-        <filestore.version>1.0</filestore.version>
+        <filestore.version>1.1</filestore.version>
     </properties>
 
     <scm>

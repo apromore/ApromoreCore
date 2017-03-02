@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<?page title="Apromore - Advanced process model repository" contentType="text/html;charset=UTF-8" ?>
+<?page title="Apromore - Advanced Process Analytics Platform" contentType="text/html;charset=UTF-8" ?>
 
 <?component name="Menu" macroURI="macros/menu.zul" ?>
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
@@ -38,6 +38,9 @@
     <style src="css/site.css"/>
 
     <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/highstock.js"></script>
+    <script type="text/javascript" src="js/exporting.js" defer="true"></script>
+	
     <style dynamic="true">
         tr.z-row td.z-row-inner, tr.z-row td.z-cell, tr.z-group td.z-group-inner, tr.z-groupfoot td.z-groupfoot-inner {
             padding: 1px 1px 1px 1px;
@@ -86,7 +89,7 @@
 
     <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
 
-        <div height="40px">
+        <div height="40px" style="background-color: #CDE6F5;">
             <div style="float:left; margin-top: 5px;" >
                 <!--<toolbarbutton id="releaseNotes"  mode="toggle">-->
                     <!--<attribute name="onCheck">-->
@@ -142,6 +145,7 @@
                         </hbox>
                     </hbox>
 
+<!--
                     <window id="breadCrumbsWindow" apply="org.apromore.portal.dialogController.FolderController" visible="false">
                         <html>
                             <![CDATA[
@@ -163,6 +167,7 @@
                     </window>
 
                     <html id="breadCrumbs" width="100%" height="10" style="font-family: arial; font-size: 12px; font-weight: normal;" />
+-->
                     <html id="folders" width="100%" visible="false" height="100%"/>
 
                     <tabbox id="tabbox" vflex="true">

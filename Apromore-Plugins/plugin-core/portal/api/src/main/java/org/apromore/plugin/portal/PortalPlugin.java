@@ -21,6 +21,7 @@ package org.apromore.plugin.portal;
 
 import org.apromore.plugin.ParameterAwarePlugin;
 
+import java.awt.image.RenderedImage;
 import java.util.Locale;
 
 /**
@@ -37,6 +38,15 @@ public interface PortalPlugin extends ParameterAwarePlugin {
      * @return
      */
     String getLabel(Locale locale);
+
+    /**
+     * Icon for the plug-in.
+     *
+     * This is used for the menu item.
+     *
+     * @return PNG-formatted image file data, roughly 16x16 size
+     */
+    RenderedImage getIcon();
 
     /**
      * Label of the group of plug-ins this one belongs to.

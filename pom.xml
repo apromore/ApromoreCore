@@ -120,10 +120,15 @@
         <module>Compare-Portal-Plugin</module>
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>
+        <module>Infrequent-Behaviour-Filter-Logic</module>
+        <module>Infrequent-Behaviour-Filter-Portal-Plugin</module>
         <module>Log-Visualizer-Logic</module>
+        <module>Log-Visualizer-Logic-WS</module>
         <module>Log-Visualizer-Portal-Plugin</module>
         <module>Metrics-Logic</module>
         <module>Metrics-Portal-Plugin</module>
+        <module>PerformanceMiner-Logic</module>
+        <module>PerformanceMiner-Portal-Plugin</module>
         <module>PQL-Indexer-Portal-Plugin</module>
         <module>PQL-Logic</module>
         <module>PQL-Logic-WS</module>
@@ -132,8 +137,6 @@
         <module>ProDrift-Portal-Plugin</module>
         <module>Quaestio-Portal-Plugin</module>
         <module>Similarity-Clusters-Portal-Plugin</module>
-        <module>Infrequent-Behaviour-Filter-Logic</module>
-        <module>Infrequent-Behaviour-Filter-Portal-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
@@ -188,7 +191,7 @@
         <!-- Apromore Dependency Versions -->
         <apql.version>1.0</apql.version>
         <manager-client.version>1.1</manager-client.version>
-        <filestore-client.version>1.0</filestore-client.version>
+        <filestore-client.version>1.1</filestore-client.version>
         <apromore.schema.version>1.1</apromore.schema.version>
         <apromore.plugin.version>1.1</apromore.plugin.version>
         <apromore.plugin.custom.gui.version>1.1.0</apromore.plugin.custom.gui.version>
@@ -247,7 +250,7 @@
         <jackson.version>1.9.12</jackson.version>
         <xmlbeans.version>2.4.0</xmlbeans.version>
 
-        <zk.version>6.5.3</zk.version>
+        <zk.version>8.0.2.2</zk.version>
         <zk.spring.version>3.1</zk.spring.version>
         <zk.security.version>3.1</zk.security.version>
 
@@ -269,7 +272,7 @@
         <ipsedixit.version>1.0.0</ipsedixit.version>
         <spring-ws-tests.version>2.0.0.RELEASE</spring-ws-tests.version>
 
-        <build-tools.version>1.0</build-tools.version>
+        <build-tools.version>1.1</build-tools.version>
         <test-tools.version>1.1</test-tools.version>
         <jbpt.version>0.2.433</jbpt.version>
         <bpstruct.version>0.1.117</bpstruct.version>
@@ -371,7 +374,7 @@
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>zk-osgi</artifactId>
-                <version>8.0.2.2</version>
+                <version>${zk.version}</version>
             </dependency>
 
             <dependency>
@@ -394,7 +397,7 @@
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>prodrift-osgi</artifactId>
-                <version>2.3</version>
+                <version>2.4</version>
             </dependency>
 
             <!-- Editor -->
@@ -417,11 +420,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>4.0</version>
-            </dependency>
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>2.4</version>
             </dependency>
 
             <!-- BPM Imports -->
@@ -1191,11 +1189,6 @@
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.connector.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.joda</groupId>
-                <artifactId>com.springsource.org.joda.time</artifactId>
-                <version>${joda-time.version}</version>
-            </dependency>
 
             <!-- WSDL / WS dependencies -->
             <dependency>
@@ -1310,6 +1303,11 @@
             <dependency>
                 <groupId>org.zkoss.common</groupId>
                 <artifactId>zcommon</artifactId>
+                <version>${zk.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.zkoss.common</groupId>
+                <artifactId>zjavassist-osgi</artifactId>
                 <version>${zk.version}</version>
             </dependency>
             <dependency>

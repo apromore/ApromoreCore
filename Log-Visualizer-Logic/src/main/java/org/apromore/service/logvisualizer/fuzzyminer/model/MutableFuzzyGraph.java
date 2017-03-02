@@ -59,9 +59,6 @@ public class MutableFuzzyGraph extends AbstractDirectedGraph<FMNode, FMEdge<? ex
     protected double[][] actBinaryRespectiveSignificance;
     protected double[][] actBinaryRespectiveCorrelation;
 
-    public static final String eventNameKey = "concept:name";
-    public static final String eventTypeKey = "lifecycle:transition";
-
     protected static NumberFormat numberFormat = NumberFormat.getInstance();
     {
         numberFormat.setMinimumFractionDigits(3);

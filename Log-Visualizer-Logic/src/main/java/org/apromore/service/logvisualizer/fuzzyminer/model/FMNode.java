@@ -24,12 +24,7 @@ public class FMNode extends AbstractDirectedGraphNode {
         this.index = index;
         this.nodeLabel = label;
         this.isInnerPatternGraphNode = false;
-        this.getAttributeMap().put("ProM_Vis_attr_squareBB", Boolean.valueOf(false));
-        this.getAttributeMap().put("ProM_Vis_attr_resizable", Boolean.valueOf(true));
         this.getAttributeMap().put("ProM_Vis_attr_label", label);
-        this.getAttributeMap().put("ProM_Vis_attr_horizontal alignment", Integer.valueOf(0));
-        this.getAttributeMap().put("ProM_Vis_attr_showLabel", Boolean.valueOf(true));
-        this.getAttributeMap().put("ProM_Vis_attr_fillcolor", FMColors.getPrimitiveBackgroundColor());
     }
 
     public boolean isDirectlyConnectedTo(FMNode other) {

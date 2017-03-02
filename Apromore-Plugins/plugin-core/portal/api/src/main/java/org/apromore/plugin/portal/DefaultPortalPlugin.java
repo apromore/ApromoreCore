@@ -22,7 +22,12 @@ package org.apromore.plugin.portal;
 
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.Locale;
+import javax.imageio.ImageIO;
 
 /**
  * Default implementation for a parameter-aware PortalPlugin. Subclass this class to create a new PortalPlugin rather than implementing the interface directly.
@@ -38,6 +43,27 @@ public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements 
     @Override
     public String getGroupLabel(Locale locale) {
         return "Plugins";
+    }
+
+    /**
+     * Default implementation will look for the resource <code>/icon.png</code> in the
+     * current classloader.  If this resource doesn't exist, a green "plugin" icon will
+     * be used instead.
+     */
+    @Override
+    public RenderedImage getIcon() {
+        try {
+            InputStream in = getClass().getClassLoader().getResourceAsStream("/icon.png");
+            if (in == null) {
+                in = DefaultPortalPlugin.class.getClassLoader().getResourceAsStream("/icon.png");
+            }
+            BufferedImage icon = ImageIO.read(in);
+            in.close();
+            return icon;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

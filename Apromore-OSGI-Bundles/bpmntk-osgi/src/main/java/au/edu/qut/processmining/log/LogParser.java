@@ -20,6 +20,7 @@
 
 package au.edu.qut.processmining.log;
 
+import au.edu.qut.processmining.log.graph.fuzzy.FuzzyNet;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -34,9 +35,11 @@ public class LogParser {
     private static final int STARTCODE = 0;
     private static final int ENDCODE = -1;
 
+    public static FuzzyNet initFuzzyNet(XLog log) { return (new FuzzyNet(log)); }
+
     public static SimpleLog getSimpleLog(XLog log) {
-//        System.out.println("LOGP - starting ... ");
-//        System.out.println("LOGP - input log size: " + log.size());
+        System.out.println("LOGP - starting ... ");
+        System.out.println("LOGP Parser - input log size: " + log.size());
 
         SimpleLog sLog;
 
@@ -104,9 +107,9 @@ public class LogParser {
             traces.put(sTrace, traces.get(sTrace)+1);
         }
 
-//        System.out.println("LOGP - total events parsed: " + totalEvents);
-//        System.out.println("LOGP - total distinct events: " + (events.size() - 2) );
-//        System.out.println("LOGP - total distinct traces: " + traces.size() );
+        System.out.println("LOGP - total events parsed: " + totalEvents);
+        System.out.println("LOGP - total distinct events: " + (events.size() - 2) );
+        System.out.println("LOGP - total distinct traces: " + traces.size() );
 
 //        for( String t : traces.keySet() ) System.out.println("DEBUG - ["+ traces.get(t) +"] trace: " + t);
 
