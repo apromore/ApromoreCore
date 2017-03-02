@@ -157,7 +157,7 @@ public class ImportController extends BaseController {
         fileName = media.getName();
         String[] list_extensions = fileName.split("\\.");
         extension = list_extensions[list_extensions.length - 1];
-        if(!extension.equals("zip") && !extension.equals("gz") && !extension.equals("xes") && !extension.equals("mxml")) {
+        if(!extension.equalsIgnoreCase("zip") && !extension.equalsIgnoreCase("gz") && !extension.equalsIgnoreCase("xes") && !extension.equalsIgnoreCase("mxml")) {
             fileType = this.mainC.getNativeTypes().get(extension);
             if (fileType == null) {
                 throw new ExceptionImport("Unsupported extension.");
@@ -170,7 +170,7 @@ public class ImportController extends BaseController {
     private void importFile() throws InterruptedException, IOException, ExceptionDomains, ExceptionAllUsers, JAXBException {
         if(extension.equals("zip")) {
             extractArchiveOrFile();
-        }else if(fileName.endsWith("xes") || fileName.endsWith("xes.gz") || fileName.endsWith("mxml") || fileName.endsWith("mxml.gz")) {
+        }else if(fileName.toLowerCase().endsWith("xes") || fileName.toLowerCase().endsWith("xes.gz") || fileName.toLowerCase().endsWith("mxml") || fileName.toLowerCase().endsWith("mxml.gz")) {
             importLog();
         }else {
             importProcess(this.mainC, this, this.media.getStreamData(), this.fileName.split("\\.")[0], this.nativeType, this.fileName);
