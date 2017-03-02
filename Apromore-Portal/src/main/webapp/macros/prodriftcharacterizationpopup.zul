@@ -17,17 +17,16 @@
   ~ License along with this program.
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
-<popup id="popupID">
-    <vbox width="100px">
+<vbox width="600px">
 
-        <listbox id="myBox" model="${characterizationStatements}" height="200px" width="100%">
-            <listhead>
-                <listheader label="Load On Demand"/>
-            </listhead>
-            <listitem label="${each.characterizationStatement}">
-            </listitem>
-        </listbox>
+    <!--<label value="Characterization Statements" style="font-size: 14px; font-weight: bold;" />-->
+    <listbox id="myBox" model="${driftItem.characterizationStatements}" height="200px" width="100%">
+        <listhead>
+            <listheader label="Characterization Statements"/>
+        </listhead>
+        <template name="modell">
+            <listitem label="${each}"></listitem>
+        </template>
+    </listbox>
 
-    </vbox>
-
-</popup>
+</vbox>
