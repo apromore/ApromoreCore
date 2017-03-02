@@ -74,7 +74,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String s = l.visualizeLog(log, 0.5, 1);
+        String s = l.visualizeLog(log, 0.5, 0.5);
         System.out.println();
     }
 
@@ -117,6 +117,9 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             Map<FMEdge<? extends FMNode, ? extends FMNode>, Integer> cache = new HashMap<>();
             Set<Pair<String, String>> edgesAdded = new HashSet<>();
             Set<FMEdge<? extends FMNode, ? extends FMNode>> edges = mutableFuzzyGraph.getEdges();
+
+            populateExistsInLogCache(log, edges, cache);
+
             for (FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
                 try {
                     if(existsInLog(log, edge, cache) && getEdgeScore(edge) > 1 - arcs) {
@@ -152,6 +155,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                     FMEdge<? extends FMNode, ? extends FMNode> best_edge = null;
                     for (FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
                         if (existsInLog(log, edge, cache)
+                                && nodesMap.get(standardizeName(edge.getTarget().getLabel())) != null
+                                && nodesMap.get(standardizeName(edge.getSource().getLabel())) != null
                                 && nodesMap.get(standardizeName(edge.getTarget().getLabel())).getLabel().equals(activity.getLabel())
                                 && !nodesMap.get(standardizeName(edge.getSource().getLabel())).getLabel().equals(activity.getLabel())
                                 && !existsPath(bpmnDiagram, activity, nodesMap.get(standardizeName(edge.getSource().getLabel())))) {
@@ -165,6 +170,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                     } else {
                         for (FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
                             if (existsInLog(log, edge, cache)
+                                    && nodesMap.get(standardizeName(edge.getTarget().getLabel())) != null
+                                    && nodesMap.get(standardizeName(edge.getSource().getLabel())) != null
                                     && nodesMap.get(standardizeName(edge.getTarget().getLabel())).getLabel().equals(activity.getLabel())
                                     && !nodesMap.get(standardizeName(edge.getSource().getLabel())).getLabel().equals(activity.getLabel())) {
                                 if (best_edge == null || (getEdgeScore(edge) > getEdgeScore(best_edge))) {
@@ -202,6 +209,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                     FMEdge<? extends FMNode, ? extends FMNode> best_edge = null;
                     for (FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
                         if (existsInLog(log, edge, cache)
+                                && nodesMap.get(standardizeName(edge.getSource().getLabel())) != null
+                                && nodesMap.get(standardizeName(edge.getTarget().getLabel())) != null
                                 && nodesMap.get(standardizeName(edge.getSource().getLabel())).getLabel().equals(activity.getLabel())
                                 && !nodesMap.get(standardizeName(edge.getTarget().getLabel())).getLabel().equals(activity.getLabel())
                                 && !existsPath(bpmnDiagram, nodesMap.get(standardizeName(edge.getTarget().getLabel())), activity)) {
@@ -215,6 +224,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                     } else {
                         for (FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
                             if (existsInLog(log, edge, cache)
+                                    && nodesMap.get(standardizeName(edge.getSource().getLabel())) != null
+                                    && nodesMap.get(standardizeName(edge.getTarget().getLabel())) != null
                                     && nodesMap.get(standardizeName(edge.getSource().getLabel())).getLabel().equals(activity.getLabel())
                                     && !nodesMap.get(standardizeName(edge.getTarget().getLabel())).getLabel().equals(activity.getLabel())) {
                                 if (best_edge == null || (edge.getCorrelation() > best_edge.getCorrelation() && edge.getSignificance() > best_edge.getSignificance())) {
@@ -260,26 +271,44 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return name1 + " (" + name2 + ")";
     }
 
+    private void populateExistsInLogCache(XLog log, Set<FMEdge<? extends FMNode, ? extends FMNode>> edges, Map<FMEdge<? extends FMNode, ? extends FMNode>, Integer> cache) {
+        Map<Pair<String, String>, Integer> map = new HashMap<>();
+        Integer value;
+        for(XTrace trace : log) {
+            for(int i = 0; i < trace.size() - 1; i++) {
+                Pair<String, String> pair = new Pair(extractEventName(trace.get(i)), extractEventName(trace.get(i + 1)));
+                if((value = map.get(pair)) == null) {
+                    value = 1;
+                }else {
+                    value++;
+                }
+                map.put(pair, value);
+            }
+        }
+
+        for(FMEdge<? extends FMNode, ? extends FMNode> edge : edges) {
+            Integer res = 0;
+            Set<String> sources = new HashSet<>();
+            Set<String> targets = new HashSet<>();
+
+            populateSetOfLabels(sources, edge.getSource());
+            populateSetOfLabels(targets, edge.getTarget());
+
+            for(String source : sources) {
+                for(String target : targets) {
+                    if((value = map.get(new Pair<>(source, target))) != null) {
+                        res += value;
+                    }
+                }
+            }
+            cache.put(edge, res);
+        }
+    }
+
     private boolean existsInLog(XLog log, FMEdge<? extends FMNode, ? extends FMNode> edge, Map<FMEdge<? extends FMNode, ? extends FMNode>, Integer> cache) {
         Integer res;
         if((res = cache.get(edge)) != null) return res > 0;
-
-        Set<String> sources = new HashSet<>();
-        Set<String> targets = new HashSet<>();
-
-        populateSetOfLabels(sources, edge.getSource());
-        populateSetOfLabels(targets, edge.getTarget());
-
-        res = 0;
-        for(XTrace trace : log) {
-            for(int i = 0; i < trace.size() - 1; i++) {
-                if(sources.contains(extractEventName(trace.get(i))) && targets.contains(extractEventName(trace.get(i + 1)))) {
-                    res++;
-                }
-            }
-        }
-        cache.put(edge, res);
-        return res > 0;
+        else return false;
     }
 
     private void populateSetOfLabels(Set<String> set, FMNode node) {
