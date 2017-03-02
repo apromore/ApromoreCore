@@ -18,9 +18,8 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package au.edu.qut.processmining.miners.heuristic.oracle;
+package au.edu.qut.processmining.miners.yam.oracle;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,10 +63,7 @@ public class Oracle {
                     merged = true;
                     matryoshka = OracleItem.mergeXORs(toMerge);
 //                    System.out.println("DEBUG - merging XORs ...");
-                    for( OracleItem oi : toMerge ) {
-//                        System.out.println("DEBUG - XOR: " + oi);
-                        oracleItems.remove(oi);
-                    }
+                    oracleItems.removeAll(toMerge);
                     oracleItems.add(matryoshka);
                 } else break;
             }
@@ -88,10 +84,7 @@ public class Oracle {
                 merged = true;
                 matryoshka = OracleItem.mergeANDs(toMerge);
 //                System.out.println("DEBUG - merging ANDs ...");
-                for( OracleItem oi : toMerge ) {
-//                    System.out.println("DEBUG - AND: " + oi);
-                    oracleItems.remove(oi);
-                }
+                oracleItems.removeAll(toMerge);
                 oracleItems.add(matryoshka);
             }
 
@@ -124,10 +117,7 @@ public class Oracle {
 
 //                System.out.println("WARNING - forcing AND merge ...");
                 counter++;
-                for( OracleItem oi : toMerge ) {
-//                    System.out.println("WARNING - f-AND: " + oi);
-                    oracleItems.remove(oi);
-                }
+                oracleItems.removeAll(toMerge);
                 oracleItems.add(matryoshka);
             }
         }

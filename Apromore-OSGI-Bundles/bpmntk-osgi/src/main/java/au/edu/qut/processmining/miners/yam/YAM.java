@@ -18,17 +18,17 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package au.edu.qut.processmining.miners.heuristic;
+package au.edu.qut.processmining.miners.yam;
 
 import au.edu.qut.bpmn.helper.DiagramHandler;
 import au.edu.qut.bpmn.helper.GatewayMap;
 import au.edu.qut.bpmn.structuring.StructuringService;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
-import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
-import au.edu.qut.processmining.miners.heuristic.oracle.Oracle;
-import au.edu.qut.processmining.miners.heuristic.oracle.OracleItem;
-import au.edu.qut.processmining.miners.heuristic.ui.miner.HMPlusUIResult;
+import au.edu.qut.processmining.miners.yam.dfgp.DirectlyFollowGraphPlus;
+import au.edu.qut.processmining.miners.yam.oracle.Oracle;
+import au.edu.qut.processmining.miners.yam.oracle.OracleItem;
+import au.edu.qut.processmining.miners.yam.ui.miner.YAMUIResult;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
@@ -48,14 +48,14 @@ import java.util.*;
 /**
  * Created by Adriano on 24/10/2016.
  */
-public class HeuristicMinerPlus {
+public class YAM {
 
     private SimpleLog log;
-    private HeuristicNet heuristicNet;
+    private DirectlyFollowGraphPlus dfgp;
     private BPMNDiagram bpmnDiagram;
 
     private boolean replaceIORs;
-    private HMPlusUIResult.StructuringTime structuringTime;
+    private YAMUIResult.StructuringTime structuringTime;
 
     private int gateCounter;
     private HashMap<String, Gateway> candidateJoins;
@@ -64,41 +64,40 @@ public class HeuristicMinerPlus {
     private Set<Gateway> rigidsEntries;
 
 
-    public HeuristicMinerPlus() {}
+    public YAM() {}
 
-    public HeuristicNet getHeuristicNet() { return heuristicNet; }
+    public DirectlyFollowGraphPlus getDfgp() { return dfgp; }
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
     public BPMNDiagram mineBPMNModel(XLog log, double frequencyThreshold, double parallelismsThreshold,
-                                     boolean replaceIORs, HMPlusUIResult.StructuringTime structuringTime)
+                                     boolean replaceIORs, YAMUIResult.StructuringTime structuringTime)
     {
-        System.out.println("HM+ - starting ...");
-        System.out.println("HM+ - [Setting] replace IORs: " + replaceIORs);
-        System.out.println("HM+ - [Setting] structuring: " + structuringTime);
+//        System.out.println("YAM - starting ...");
+        System.out.println("YAM - [Settings] replace IORs: " + replaceIORs);
+//        System.out.println("YAM - [Settings] structuring: " + structuringTime);
 
         this.replaceIORs = replaceIORs;
         this.structuringTime = structuringTime;
 
         this.log = LogParser.getSimpleLog(log);
-        System.out.println("HM+ - log parsed successfully");
+//        System.out.println("YAM - log parsed successfully");
 
-        mineHeuristicNet(frequencyThreshold, parallelismsThreshold);
-        generateBPMNDiagramFromHeuristicNet();
+        generateDFGP(frequencyThreshold, parallelismsThreshold);
+        transformDFGPintoBPMN();
 
-        if( structuringTime == HMPlusUIResult.StructuringTime.POST ) structure();
+        if( structuringTime == YAMUIResult.StructuringTime.POST ) structure();
 
         return bpmnDiagram;
     }
 
-    private void mineHeuristicNet(double frequencyThreshold, double parallelismsThreshold) {
-        System.out.println("HM+ - mining heuristic net: starting");
-        heuristicNet = new HeuristicNet(log, frequencyThreshold, parallelismsThreshold);
-        heuristicNet.generateHeuristicNet();
-        System.out.println("HM+ - mining heuristic net: done ");
+    private void generateDFGP(double frequencyThreshold, double parallelismsThreshold) {
+        dfgp = new DirectlyFollowGraphPlus(log, frequencyThreshold, parallelismsThreshold);
+        dfgp.buildDFGP();
     }
 
-    private void generateBPMNDiagramFromHeuristicNet() {
+    private void transformDFGPintoBPMN() {
+        DiagramHandler helper = new DiagramHandler();
         HashMap<Integer, BPMNNode> mapping = new HashMap<>();
         BPMNNode entry = null;
         BPMNNode exit = null;
@@ -117,9 +116,9 @@ public class HeuristicMinerPlus {
         OracleItem finalOracleItem;
         HashSet<OracleItem> oracleItems;
 
-//        we retrieve the starting BPMN diagram from the Heuristic Net,
-//        it is a Heuristic Net with start and end events, but no gateways
-        bpmnDiagram = heuristicNet.convertIntoBPMNDiagram();
+//        we retrieve the starting BPMN diagram from the DFGP,
+//        it is a DFGP with start and end events, but no gateways
+        bpmnDiagram = dfgp.convertIntoBPMNDiagram();
         candidateJoins = new HashMap<>();
 
 //        firstly we generate the split gateways
@@ -132,13 +131,13 @@ public class HeuristicMinerPlus {
 
         if( entry == null || exit == null ) {
 //            this should never happen
-            System.out.println("ERROR - entry(" + entry + ") OR exit(" + exit + ") not found in the Heuristic Diagram");
+            System.out.println("ERROR - entry(" + entry + ") OR exit(" + exit + ") not found in the DFGP-diagram");
             return;
         }
 
-        System.out.println("HM+ - generating bpmn diagram");
+//        System.out.println("YAM - generating bpmn diagram");
 
-//        we perform a breadth-first exploration of the Heuristic Diagram
+//        we perform a breadth-first exploration of the DFGP-diagram
 //        every time we find a node with multiple outgoing edges we stop
 //        and we generate the corresponding hierarchy of gateways
 
@@ -181,7 +180,7 @@ public class HeuristicMinerPlus {
 //                    if exclusive we do not have to care about it
 //                    if directly follow, it will be processed later
                     for( int b : successors )
-                        if( (a !=  b) && (heuristicNet.areConcurrent(a, b)) ) oracleItem.fillFuture(b);
+                        if( (a !=  b) && (dfgp.areConcurrent(a, b)) ) oracleItem.fillFuture(b);
 
                     oracleItem.engrave();
                     oracleItems.add(oracleItem);
@@ -203,29 +202,30 @@ public class HeuristicMinerPlus {
 //        after generating the split hierarchy we should have only SPLITs,
 //        however, it may happen that some JOINs are generated as well (due to shared future)
 //        it is important that we do not leave any gateway that is both a SPLIT and a JOIN
-        (new DiagramHandler()).removeJoinSplit(bpmnDiagram);
+        helper.removeJoinSplit(bpmnDiagram);
 
 //        at this point, all the splits were generated, along with just a few joins
 //        now we focus only on the joins. we use the RPST in order to place INCLUSIVE joins
 //        which will be turned into AND or XOR joins later
         bondsEntries = new HashSet<>();
         rigidsEntries = new HashSet<>();
-        System.out.println("HM+ - generating SESE joins ...");
+//        System.out.println("YAM - generating SESE joins ...");
         while( generateSESEjoins() );
 
 //        this second method adds the remaining joins, which were no entry neither exits of any RPST node
-        System.out.println("HM+ - generating inner joins ...");
+//        System.out.println("YAM - generating inner joins ...");
         generateInnerJoins();
 
 
-        if( structuringTime == HMPlusUIResult.StructuringTime.PRE ) structure();
+        if( structuringTime == YAMUIResult.StructuringTime.PRE ) structure();
+        helper.fixSoundness(bpmnDiagram);
 
 //        finally, we turn all the inclusive joins placed, into proper joins: ANDs or XORs
-        System.out.println("HM+ - turning inclusive joins ...");
+//        System.out.println("YAM - turning inclusive joins ...");
         if( replaceIORs ) replaceIORs();
 
         updateLabels(this.log.getEvents());
-        System.out.println("HM+ - bpmn diagram generated successfully");
+        System.out.println("YAM - bpmn diagram generated successfully");
     }
 
     private void generateSplitsHierarchy(BPMNNode entry, OracleItem nextOracleItem, Map<Integer, BPMNNode> mapping) {
@@ -241,7 +241,7 @@ public class HeuristicMinerPlus {
         if( candidateJoins.containsKey(nextOracleItem.toString()) ) {
 //            these are joins, they are created considering the fact they share the same future (finalOracleItem)
             candidateJoin = candidateJoins.get(nextOracleItem.toString());
-            System.out.println("DEBUG - found " + candidateJoin.getGatewayType() + " join for the Oracle item: " + nextOracleItem.toString());
+//            System.out.println("DEBUG - found " + candidateJoin.getGatewayType() + " join for the Oracle item: " + nextOracleItem.toString());
             bpmnDiagram.addFlow(entry, candidateJoin, "");
             return;
         }
@@ -463,7 +463,7 @@ public class HeuristicMinerPlus {
     private void replaceIORs() {
         bondsEntries.removeAll(rigidsEntries);
         GatewayMap gatemap = new GatewayMap(bondsEntries);
-        System.out.println("DEBUG - doing the magic ...");
+//        System.out.println("DEBUG - doing the magic ...");
         if( gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
         else System.out.println("ERROR - something went wrong initializing the gateway map");
     }

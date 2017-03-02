@@ -1,17 +1,17 @@
-package au.edu.qut.processmining.miners.heuristic.ui.net;
+package au.edu.qut.processmining.miners.yam.ui.dfgp;
 
 /**
  * Created by Adriano on 23/01/2017.
  */
-public class HNMUIResult {
+public class DFGPUIResult {
 
     public static final double FREQUENCY_THRESHOLD = 1.0;
-    public static final double PARALLELISMS_THRESHOLD = 0.30;
+    public static final double PARALLELISMS_THRESHOLD = 0.10;
 
     private double frequencyThreshold;
     private double parallelismsThreshold;
 
-    public HNMUIResult() {
+    public DFGPUIResult() {
         frequencyThreshold = FREQUENCY_THRESHOLD;
         parallelismsThreshold = PARALLELISMS_THRESHOLD;
     }

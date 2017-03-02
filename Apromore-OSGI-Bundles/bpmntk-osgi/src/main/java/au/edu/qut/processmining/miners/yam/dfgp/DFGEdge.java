@@ -18,60 +18,48 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package au.edu.qut.processmining.miners.heuristic.net;
+package au.edu.qut.processmining.miners.yam.dfgp;
 
 import au.edu.qut.processmining.log.graph.LogEdge;
-
-import java.text.DecimalFormat;
 
 /**
  * Created by Adriano on 24/10/2016.
  */
-public class HeuristicEdge extends LogEdge {
-
-    private static DecimalFormat dFormat = new DecimalFormat(".###");
+public class DFGEdge extends LogEdge {
 
     private int frequency;
-    private double localDependencyScore;
 
-    public HeuristicEdge(HeuristicNode source, HeuristicNode target){
+    public DFGEdge(DFGNode source, DFGNode target){
         super(source, target);
         frequency = 0;
-        localDependencyScore = 0;
     }
 
-    public HeuristicEdge(HeuristicNode source, HeuristicNode target, String label){
+    public DFGEdge(DFGNode source, DFGNode target, String label){
         super(source, target, label);
         frequency = 0;
-        localDependencyScore = 0;
     }
 
-    public HeuristicEdge(HeuristicNode source, HeuristicNode target, int frequency){
+    public DFGEdge(DFGNode source, DFGNode target, int frequency){
         super(source, target);
         this.frequency = frequency;
-        localDependencyScore = 0;
     }
 
-    public HeuristicEdge(HeuristicNode source, HeuristicNode target, String label, int frequency){
+    public DFGEdge(DFGNode source, DFGNode target, String label, int frequency){
         super(source, target, label);
         this.frequency = frequency;
-        localDependencyScore = 0;
     }
 
     public void increaseFrequency() { frequency++; }
     public void increaseFrequency(int amount) { frequency += amount; }
 
-    public double getLocalDependencyScore() { return localDependencyScore; }
-    public void setLocalDependencyScore(double localDependencyScore) { this.localDependencyScore = localDependencyScore; }
-
     public int getFrequency(){ return frequency; }
 
     @Override
-    public String toString() { return dFormat.format(localDependencyScore) + "/" + frequency; }
+    public String toString() { return Integer.toString(frequency); }
 
     @Override
     public int compareTo(Object o) {
-        if( (o instanceof HeuristicEdge) ) return Double.compare(((HeuristicEdge) o).getLocalDependencyScore(), localDependencyScore);
+        if( (o instanceof DFGEdge) ) return frequency - ((DFGEdge) o).frequency;
         else return -1;
     }
 }

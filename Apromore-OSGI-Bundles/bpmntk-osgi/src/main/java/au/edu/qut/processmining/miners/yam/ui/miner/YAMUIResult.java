@@ -1,22 +1,22 @@
-package au.edu.qut.processmining.miners.heuristic.ui.miner;
+package au.edu.qut.processmining.miners.yam.ui.miner;
 
-import au.edu.qut.processmining.miners.heuristic.ui.net.HNMUIResult;
+import au.edu.qut.processmining.miners.yam.ui.dfgp.DFGPUIResult;
 
 /**
  * Created by Adriano on 29/02/2016.
  */
-public class HMPlusUIResult {
+public class YAMUIResult {
 
     public enum StructuringTime {NONE, POST, PRE}
     public static final StructuringTime STRUCT_POLICY = StructuringTime.NONE;
     private boolean replaceIORs;
 
-    private HNMUIResult hnmParams;
+    private DFGPUIResult dfgpParams;
 
     private StructuringTime structuringTime;
 
-    public HMPlusUIResult() {
-        hnmParams = new HNMUIResult();
+    public YAMUIResult() {
+        dfgpParams = new DFGPUIResult();
         structuringTime = STRUCT_POLICY;
         replaceIORs = true;
     }
@@ -28,16 +28,16 @@ public class HMPlusUIResult {
     public void setReplaceIORs(boolean replaceIORs) { this.replaceIORs = replaceIORs; }
 
     public double getFrequencyThreshold() {
-        return hnmParams.getFrequencyThreshold();
+        return dfgpParams.getFrequencyThreshold();
     }
     public void setFrequencyThreshold(double frequencyThreshold) {
-        hnmParams.setFrequencyThreshold(frequencyThreshold);
+        dfgpParams.setFrequencyThreshold(frequencyThreshold);
     }
 
     public double getParallelismsThreshold() {
-        return hnmParams.getParallelismsThreshold();
+        return dfgpParams.getParallelismsThreshold();
     }
     public void setParallelismsThreshold(double parallelismsThreshold) {
-        hnmParams.setParallelismsThreshold(parallelismsThreshold);
+        dfgpParams.setParallelismsThreshold(parallelismsThreshold);
     }
 }

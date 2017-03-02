@@ -20,9 +20,10 @@
 
 package au.edu.qut.promplugins;
 
-import au.edu.qut.processmining.log.LogAnalizer;
-import au.edu.qut.processmining.log.LogParser;
-import au.edu.qut.processmining.log.graph.fuzzy.FuzzyNet;
+import au.edu.qut.processmining.miners.yam.dfgp.DirectlyFollowGraphPlus;
+import au.edu.qut.processmining.miners.yam.YAM;
+import au.edu.qut.processmining.miners.yam.ui.miner.YAMUI;
+import au.edu.qut.processmining.miners.yam.ui.miner.YAMUIResult;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -31,26 +32,45 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
 /**
- * Created by Adriano on 17/06/2016.
+ * Created by Adriano on 25/10/2016.
  */
+
 @Plugin(
-        name = "Discover Eventually Follow Graph from Log",
+        name = "Discover BPMN model with YAM",
         parameterLabels = { "Event Log" },
-        returnLabels = { "Fuzzy Net" },
+        returnLabels = { "YAM output" },
         returnTypes = { BPMNDiagram.class },
         userAccessible = true,
-        help = "Returns the eventually follow graph of a log"
+        help = "Returns a BPMN model mined with YAM"
 )
-public class EventuallyFollowGraphPlugin {
+public class YAMPlugin {
+
     @UITopiaVariant(
-            affiliation = "Queensland University of Technology",
+            affiliation = "University of Tartu",
             author = "Adriano Augusto",
-            email = "a.augusto@qut.edu.au"
+            email = "adriano.augusto@ut.ee"
     )
-    @PluginVariant(variantLabel = "Discover Eventually Follow Graph from Log", requiredParameterLabels = {0})
-    public static BPMNDiagram getFuzzyNetFromLog(UIPluginContext context, XLog log) {
-        LogAnalizer analizer = new LogAnalizer(log);
-        analizer.runAnalysis();
-        return null; //TODO
+    @PluginVariant(variantLabel = "Discover BPMN model with YAM", requiredParameterLabels = {0})
+    public static BPMNDiagram discoverBPMNModelWithYAM(UIPluginContext context, XLog log) {
+        boolean debug = false;
+        BPMNDiagram output;
+
+        YAMUI gui = new YAMUI();
+        YAMUIResult result = gui.showGUI(context, "Setup HM+");
+
+        YAM hmp = new YAM();
+        hmp.mineBPMNModel( log, result.getFrequencyThreshold(), result.getParallelismsThreshold(),
+                                result.isReplaceIORs(), result.getStructuringTime());
+
+        DirectlyFollowGraphPlus dfgp = hmp.getDfgp();
+
+        if( debug ) {
+            dfgp.printFrequencies();
+            dfgp.printParallelisms();
+        }
+
+        output = hmp.getBPMNDiagram();
+
+        return output;
     }
 }

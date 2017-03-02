@@ -20,13 +20,15 @@
 
 package au.edu.qut.promplugins;
 
-import au.edu.qut.processmining.miners.heuristic.net.HeuristicNet;
-import au.edu.qut.processmining.miners.heuristic.HeuristicMinerPlus;
-import au.edu.qut.processmining.miners.heuristic.ui.miner.HMPlusUI;
-import au.edu.qut.processmining.miners.heuristic.ui.miner.HMPlusUIResult;
+import au.edu.qut.processmining.log.LogParser;
+import au.edu.qut.processmining.log.SimpleLog;
+import au.edu.qut.processmining.miners.yam.dfgp.DirectlyFollowGraphPlus;
+import au.edu.qut.processmining.miners.yam.ui.dfgp.DFGPUI;
+import au.edu.qut.processmining.miners.yam.ui.dfgp.DFGPUIResult;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
+import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -36,41 +38,36 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
  */
 
 @Plugin(
-        name = "Mine BPMN model with HM+",
+        name = "Generate DFG+",
         parameterLabels = { "Event Log" },
-        returnLabels = { "HM+ output BPMN model" },
+        returnLabels = { "DFG+" },
         returnTypes = { BPMNDiagram.class },
         userAccessible = true,
-        help = "Returns a BPMN model mined with Heuristic Miner Plus"
+        help = "Returns the DFG+ of the input log"
 )
-public class HeuristicMinerPlusPlugin {
+public class DFGPPlugin {
 
     @UITopiaVariant(
             affiliation = "University of Tartu",
             author = "Adriano Augusto",
             email = "adriano.augusto@ut.ee"
     )
-    @PluginVariant(variantLabel = "Mine BPMN model with HM+", requiredParameterLabels = {0})
-    public static BPMNDiagram mineBPMNModelWithHMP(UIPluginContext context, XLog log) {
+    @PluginVariant(variantLabel = "Generate DFG+", requiredParameterLabels = {0})
+    public static BPMNDiagram generateDFGP(UIPluginContext context, XLog log) {
         boolean debug = false;
-        BPMNDiagram output;
 
-        HMPlusUI gui = new HMPlusUI();
-        HMPlusUIResult result = gui.showGUI(context, "Setup HM+");
+        DFGPUI gui = new DFGPUI();
+        DFGPUIResult result = gui.showGUI(context, "Setup for DFG+");
 
-        HeuristicMinerPlus hmp = new HeuristicMinerPlus();
-        hmp.mineBPMNModel( log, result.getFrequencyThreshold(), result.getParallelismsThreshold(),
-                                result.isReplaceIORs(), result.getStructuringTime());
-
-        HeuristicNet heuristicNet = hmp.getHeuristicNet();
+        SimpleLog sLog = LogParser.getSimpleLog(log);
+        DirectlyFollowGraphPlus net = new DirectlyFollowGraphPlus(sLog, result.getFrequencyThreshold(), result.getParallelismsThreshold());
+        net.buildDFGP();
 
         if( debug ) {
-            heuristicNet.printFrequencies();
-            heuristicNet.printParallelisms();
+            net.printFrequencies();
+            net.printParallelisms();
         }
 
-        output = hmp.getBPMNDiagram();
-
-        return output;
+        return net.getDFGP(true);
     }
 }

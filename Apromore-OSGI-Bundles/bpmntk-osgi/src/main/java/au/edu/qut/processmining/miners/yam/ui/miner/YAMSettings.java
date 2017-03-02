@@ -1,6 +1,6 @@
-package au.edu.qut.processmining.miners.heuristic.ui.miner;
+package au.edu.qut.processmining.miners.yam.ui.miner;
 
-import au.edu.qut.processmining.miners.heuristic.ui.net.HNMUIResult;
+import au.edu.qut.processmining.miners.yam.ui.dfgp.DFGPUIResult;
 import com.fluxicon.slickerbox.components.NiceDoubleSlider;
 import com.fluxicon.slickerbox.components.NiceSlider;
 import com.fluxicon.slickerbox.factory.SlickerFactory;
@@ -17,19 +17,19 @@ import java.util.LinkedList;
 /**
  * Created by Adriano on 29/02/2016.
  */
-public class HMPlusSettings extends ProMPropertiesPanel {
+public class YAMSettings extends ProMPropertiesPanel {
 
     private static final long serialVersionUID = 1L;
-    private static final String DIALOG_NAME = "Select Heuristic Miner Params";
+    private static final String DIALOG_NAME = "Select YAM Params";
 
-    final HMPlusUIResult result;
+    final YAMUIResult result;
 
-    NiceDoubleSlider frequencyThreshold;
+//    NiceDoubleSlider frequencyThreshold;
     NiceDoubleSlider parallelismsThreshold;
     JCheckBox replaceIORs;
-    ProMComboBox structuring;
+//    ProMComboBox structuring;
 
-    public HMPlusSettings() {
+    public YAMSettings() {
         super(DIALOG_NAME);
 
         HMPItemListener hmpil = new HMPItemListener();
@@ -39,31 +39,31 @@ public class HMPlusSettings extends ProMPropertiesPanel {
         structuringTime.addLast("PRE");
         structuringTime.addLast("POST");
 
-        result = new HMPlusUIResult();
+        result = new YAMUIResult();
 
-        structuring = this.addComboBox("Structuring Time", structuringTime);
-        structuring.addActionListener(hmpil);
+//        structuring = this.addComboBox("Structuring Time", structuringTime);
+//        structuring.addActionListener(hmpil);
 
         replaceIORs = this.addCheckBox("Replace IORs", true);
         replaceIORs.addChangeListener(hmpil);
 
-        frequencyThreshold = SlickerFactory.instance().createNiceDoubleSlider("Frequency Threshold", 0.00, 1.00, HNMUIResult.FREQUENCY_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
-        frequencyThreshold.addChangeListener(hmpil);
-        this.add(frequencyThreshold);
-        frequencyThreshold.setVisible(true);
+//        frequencyThreshold = SlickerFactory.instance().createNiceDoubleSlider("Frequency Threshold", 0.00, 1.00, DFGPUIResult.FREQUENCY_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
+//        frequencyThreshold.addChangeListener(hmpil);
+//        this.add(frequencyThreshold);
+//        frequencyThreshold.setVisible(true);
 
-        parallelismsThreshold = SlickerFactory.instance().createNiceDoubleSlider("Parallelisms Threshold", 0.00, 1.00, HNMUIResult.PARALLELISMS_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
+        parallelismsThreshold = SlickerFactory.instance().createNiceDoubleSlider("Parallelisms Threshold", 0.00, 0.20, DFGPUIResult.PARALLELISMS_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
         parallelismsThreshold.addChangeListener(hmpil);
         this.add(parallelismsThreshold);
         parallelismsThreshold.setVisible(true);
 
-        result.setFrequencyThreshold(HNMUIResult.FREQUENCY_THRESHOLD);
-        result.setParallelismsThreshold(HNMUIResult.PARALLELISMS_THRESHOLD);
+        result.setFrequencyThreshold(DFGPUIResult.FREQUENCY_THRESHOLD);
+        result.setParallelismsThreshold(DFGPUIResult.PARALLELISMS_THRESHOLD);
         result.setReplaceIORs(replaceIORs.isSelected());
-        result.setStructuringTime(HMPlusUIResult.STRUCT_POLICY);
+        result.setStructuringTime(YAMUIResult.STRUCT_POLICY);
     }
 
-    public HMPlusUIResult getSelections() {
+    public YAMUIResult getSelections() {
         return result;
     }
 
@@ -71,7 +71,7 @@ public class HMPlusSettings extends ProMPropertiesPanel {
 
         @Override
         public void stateChanged(ChangeEvent e) {
-            result.setFrequencyThreshold(frequencyThreshold.getValue());
+//            result.setFrequencyThreshold(frequencyThreshold.getValue());
             result.setParallelismsThreshold(parallelismsThreshold.getValue());
             result.setReplaceIORs(replaceIORs.isSelected());
         }
@@ -81,13 +81,13 @@ public class HMPlusSettings extends ProMPropertiesPanel {
             if( e.getSource() instanceof JComboBox ) {
                 switch( ((JComboBox)e.getSource()).getSelectedIndex() ) {
                     case 0:
-                        result.setStructuringTime(HMPlusUIResult.StructuringTime.NONE);
+                        result.setStructuringTime(YAMUIResult.StructuringTime.NONE);
                         break;
                     case 1:
-                        result.setStructuringTime(HMPlusUIResult.StructuringTime.PRE);
+                        result.setStructuringTime(YAMUIResult.StructuringTime.PRE);
                         break;
                     case 2:
-                        result.setStructuringTime(HMPlusUIResult.StructuringTime.POST);
+                        result.setStructuringTime(YAMUIResult.StructuringTime.POST);
                         break;
                 }
             }

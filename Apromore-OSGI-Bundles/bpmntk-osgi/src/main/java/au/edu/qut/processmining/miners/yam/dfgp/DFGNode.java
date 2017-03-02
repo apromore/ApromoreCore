@@ -18,16 +18,16 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package au.edu.qut.processmining.miners.heuristic.net;
+package au.edu.qut.processmining.miners.yam.dfgp;
 
 import au.edu.qut.processmining.log.graph.LogNode;
 
 /**
  * Created by Adriano on 24/10/2016.
  */
-public class HeuristicNode extends LogNode {
+public class DFGNode extends LogNode {
 
-    public HeuristicNode() { super(); }
-    public HeuristicNode(String label) { super(label); }
-    public HeuristicNode(String label, int code) { super(label, code); }
+    public DFGNode() { super(); }
+    public DFGNode(String label) { super(label); }
+    public DFGNode(String label, int code) { super(label, code); }
 }
