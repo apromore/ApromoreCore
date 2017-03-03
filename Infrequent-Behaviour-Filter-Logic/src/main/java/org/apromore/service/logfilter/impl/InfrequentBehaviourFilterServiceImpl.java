@@ -25,8 +25,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.service.logfilter.InfrequentBehaviourFilterService;
+import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -115,7 +118,14 @@ public class InfrequentBehaviourFilterServiceImpl extends DefaultParameterAwareP
             }
         }
 
-        InfrequentBehaviourFilter filter = new InfrequentBehaviourFilter(new XEventNameClassifier());
+        XEventClassifier classifier = new XEventNameClassifier();
+        InfrequentBehaviourFilter filter = new InfrequentBehaviourFilter(classifier);
+        for(XTrace t : log) {
+            System.out.println(t);
+            for(XEvent e : t) {
+                System.out.println(classifier.getClassIdentity(e));
+            }
+        }
         return filter.filterLog(log);
     }
 
