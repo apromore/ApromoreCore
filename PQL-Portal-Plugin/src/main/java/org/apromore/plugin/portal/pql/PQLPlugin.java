@@ -65,7 +65,7 @@ public class PQLPlugin extends PluginCustomGui {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Query with PQL (2)";
+        return "Query with PQL (simple UI)";
     }
 
     @Override
