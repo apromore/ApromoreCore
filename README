@@ -12,7 +12,7 @@ REQUIREMENTS
 - Windows 7 or Mac OSX 10.8 to 10.11
 - Java 1.8
 
-* Download Apromore from http://apromore.qut.edu.au/apromore.zip.
+* Download Apromore from http://apromore-build.qut.edu.au/apromore.zip.
 * Unzip the file and open the folder Apromore-Server.
 * Start Apromore by executing the apromore.sh file in a Terminal if using Mac, or double-click on apromore.bat if using Windows.
 * Open Apromore by clicking on the apromore.html file.
