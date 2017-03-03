@@ -48,6 +48,89 @@
     <property name="dir-deploy" location="${basedir}/Apromore-Plugins/plugin-deployment/"/>
     <property name="dir-osgi" location="${basedir}/Apromore-OSGI-Bundles/"/>
 
+    <fileset id="pickupRepoStandAlone" dir=".">
+        <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
+        <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
+        <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
+
+        <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
+
+        <include name="BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
+
+        <include name="Cmapper-Portal-Plugin/target/cmapper-portal-plugin-1.1.war"/>
+
+        <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
+        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
+
+        <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
+        <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
+
+        <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
+        <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
+
+        <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
+        <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
+        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
+
+        <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
+        <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
+
+        <include name="PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
+        <include name="PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
+
+        <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
+        <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
+
+        <include name="Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
+
+        <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
+    </fileset>
+
+    <fileset id="pickupRepoServer" dir=".">
+        <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
+        <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
+        <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
+
+        <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
+
+        <include name="BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
+
+        <include name="Cmapper-Portal-Plugin/target/cmapper-portal-plugin-1.1.war"/>
+
+        <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
+        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
+
+        <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
+        <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
+
+        <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
+        <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
+
+        <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
+        <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
+        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
+
+        <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
+        <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
+
+        <include name="PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
+        <include name="PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
+
+        <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
+        <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
+
+        <include name="Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
+
+        <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
+
+        <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying -->
+        <include name="APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
+        <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
+        <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
+        <include name="PQL-Logic-WS/target/pql-logic-ws-1.1.war"/>
+        <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
+    </fileset>
+
     <fileset id="pickupRepo" dir=".">
         <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
         <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
@@ -96,9 +179,11 @@
         <include name="Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
 
         <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
-        
+
+        <!--
         <include name="StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
+        -->
 
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
         <include name="APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
@@ -174,7 +259,6 @@
                 <include name="pickup/*.par"/>
                 <include name="pickup/*.plan"/>
                 <exclude name="pickup/org.eclipse.virgo.apps.repository_3.6.4.RELEASE.par"/>
-                <exclude name="pickup/org.eclipse.virgo.apps.splash_3.6.4.RELEASE.jar"/>
                 <exclude name="pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar"/>
             </fileset>
         </delete>
@@ -243,6 +327,135 @@
         </exec>
     </target>
 
+    <target name="copy-virgo-standalone" depends="clean-virgo">
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset dir="${dir-osgi}">
+                <include name="**/target/bpmntk-osgi-1.1.jar"/>
+                <include name="**/target/similaritysearch-osgi-1.1.jar"/>
+                <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
+                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
+            </fileset>
+
+            <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
+            <fileset dir="Supplements/">
+                <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset refid="usrRepo"/>
+        </copy>
+        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
+            <fileset refid="pickupRepoStandAlone"/>
+        </copy>
+
+        <!-- Force the BPMN Miner plugin to be alphabetically after the iBPStruct plugin it depends upon -->
+        <copy file="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
+        <copy file="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
+
+        <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
+        <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
+        <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
+
+        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
+            <fileset dir="${dir-annotation}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-canoniser}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-logic-plugins}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-portal-plugins}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+                <exclude name="sample/target/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-deploy}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="copy-virgo-server" depends="clean-virgo">
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset dir="${dir-osgi}">
+                <include name="**/target/bpmntk-osgi-1.1.jar"/>
+                <include name="**/target/similaritysearch-osgi-1.1.jar"/>
+                <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
+                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
+            </fileset>
+
+            <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
+            <fileset dir="Supplements/">
+                <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset refid="usrRepo"/>
+        </copy>
+        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
+            <fileset refid="pickupRepoServer"/>
+        </copy>
+
+        <!-- Force the BPMN Miner plugin to be alphabetically after the iBPStruct plugin it depends upon -->
+        <copy file="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
+        <copy file="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
+
+        <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
+        <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
+        <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
+
+        <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing -->
+        <copy file="PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
+
+
+        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
+            <fileset dir="${dir-annotation}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-canoniser}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-logic-plugins}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-portal-plugins}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+                <exclude name="sample/target/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-deploy}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+        </copy>
+
+        <!-- PQL indexing bot -->
+        <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
+    </target>
+
     <target name="copy-virgo" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
@@ -278,9 +491,9 @@
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
 
-        <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing
+        <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing -->
         <copy file="PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
-        -->
+
 
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset dir="${dir-annotation}">
