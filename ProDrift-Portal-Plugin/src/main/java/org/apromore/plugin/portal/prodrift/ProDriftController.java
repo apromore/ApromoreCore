@@ -20,9 +20,9 @@
 
 package org.apromore.plugin.portal.prodrift;
 
-import ee.ut.eventstr.driftdetector.ControlFlowDriftDetector_EventStream;
-import ee.ut.eventstr.model.ProDriftDetectionResult;
-import ee.ut.eventstr.util.XLogManager;
+import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
+import org.apromore.prodrift.model.ProDriftDetectionResult;
+import org.apromore.prodrift.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.prodrift.model.prodrift.CharStatement;
 import org.apromore.service.prodrift.ProDriftDetectionService;
@@ -94,6 +94,9 @@ public class ProDriftController {
 
         Intbox maxWinValueEventsRealIntBox = (Intbox) proDriftW.getFellow("maxWinValueEventsReal");
         maxWinValueEventsRealIntBox.setValue(desiredWinSizeEventsReal);
+
+        Intbox winSizeCoefficientIntBoX = (Intbox) proDriftW.getFellow("winSizeCoefficient");
+        winSizeCoefficientIntBoX.setValue(ControlFlowDriftDetector_EventStream.winSizeCoefficient);
 
         this.logFileUpload = (Button) this.proDriftW.getFellow("logFileUpload");
 
@@ -242,8 +245,7 @@ public class ProDriftController {
         Intbox activityCountIntBoX = (Intbox) proDriftW.getFellow("activityCount");
         activityCountIntBoX.setValue(activityCount);
 
-        Intbox winSizeCoefficientIntBoX = (Intbox) proDriftW.getFellow("winSizeCoefficient");
-        winSizeCoefficientIntBoX.setValue(ControlFlowDriftDetector_EventStream.winSizeCoefficient);
+
 
         if(caseCount / winSizeDividedBy < desiredWinSizeRuns)
         {

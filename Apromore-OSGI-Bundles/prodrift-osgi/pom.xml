@@ -137,12 +137,11 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            ee.ut.eventstr,
-                            ee.ut.eventstr.driftcharacterization,
-                            ee.ut.eventstr.driftdetector,
-                            ee.ut.eventstr.model,
-                            ee.ut.eventstr.util,
-                            ee.ut.mining.log
+                            org.apromore.prodrift.eventstr,
+                            org.apromore.prodrift.driftcharacterization,
+                            org.apromore.prodrift.driftdetector,
+                            org.apromore.prodrift.model,
+                            org.apromore.prodrift.util
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -267,11 +266,11 @@
 
 
 
-        <dependency>
+        <!--<dependency>
             <groupId>ee.ut</groupId>
             <artifactId>prodrift</artifactId>
             <version>2.4</version>
-        </dependency>
+        </dependency>-->
 
 
 

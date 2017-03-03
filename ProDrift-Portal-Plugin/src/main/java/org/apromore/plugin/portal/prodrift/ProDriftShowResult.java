@@ -20,8 +20,8 @@
 
 package org.apromore.plugin.portal.prodrift;
 
-import ee.ut.eventstr.model.ProDriftDetectionResult;
-import ee.ut.eventstr.util.XLogManager;
+import org.apromore.prodrift.model.ProDriftDetectionResult;
+import org.apromore.prodrift.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.prodrift.model.prodrift.Drift;
 import org.deckfour.xes.model.XLog;

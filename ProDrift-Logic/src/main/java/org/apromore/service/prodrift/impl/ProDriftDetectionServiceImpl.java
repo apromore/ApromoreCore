@@ -20,9 +20,9 @@
 
 package org.apromore.service.prodrift.impl;
 
-import ee.ut.eventstr.driftdetector.ControlFlowDriftDetector_EventStream;
-import ee.ut.eventstr.driftdetector.ControlFlowDriftDetector_RunStream;
-import ee.ut.eventstr.model.ProDriftDetectionResult;
+import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
+import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_RunStream;
+import org.apromore.prodrift.model.ProDriftDetectionResult;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.plugin.provider.PluginProvider;
 import org.apromore.service.CanoniserService;
