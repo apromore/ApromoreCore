@@ -20,7 +20,7 @@
 
 package org.apromore.service.prodrift;
 
-import ee.ut.eventstr.model.ProDriftDetectionResult;
+import org.apromore.prodrift.model.ProDriftDetectionResult;
 import org.deckfour.xes.model.XLog;
 
 /**
