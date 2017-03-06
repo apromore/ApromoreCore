@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 public class RedirectionServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-        response.setHeader("Location", "/portal/zkau" + request.getPathInfo());
+        response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+        response.setHeader("Location", "/zkau" + request.getPathInfo());
     }
 }
