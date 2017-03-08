@@ -75,7 +75,7 @@
                     ORYX.CONFIG.WINDOW_HEIGHT        = 600;
 
                     // Replace any current model in oryxEditor1 with 
-                    var reloadJSON = function(json) {
+                    function reloadJSON(json) {
                         // Remove the existing model from the canvas
                         oryxEditor1.getCanvas().getChildShapes().each(function (shape) {
                             oryxEditor1.deleteShape(shape);
@@ -88,7 +88,7 @@
                     ORYX.Editor.prototype.displayMLDifference = function(type, start, a, b, newTasks, end, greys) {
 
                         // Find the shapes corresponding to the function arguments resource IDs
-                        var indexJSON = function(json) {
+                        function indexJSON(json) {
                             var shapes = {};
                             json.childShapes.each(function (shape) {
                                 shapes[shape.resourceId] = shape;
@@ -99,7 +99,7 @@
                         var json = jQuery.extend(true, {}, editorConfig);
                         var shapes = indexJSON(json);
 
-                        var addFlowNode = function(id, stencilId, x, y, w, h) {
+                        function addFlowNode(id, stencilId, x, y, w, h) {
                             var addition = {
                                 "bounds": {
                                     "lowerRight": { "x": x + w/2, "y": y + h/2 },
@@ -120,8 +120,8 @@
                             return addition;
                         };
 
-                        var addSequenceFlow = function(id, source, target, waypoints) {
-                            var findCenter = function(shape) {
+                        function addSequenceFlow(id, source, target, waypoints) {
+                            function findCenter(shape) {
                                 return { x: (shape.bounds.lowerRight.x - shape.bounds.upperLeft.x)/2, y: (shape.bounds.lowerRight.y - shape.bounds.upperLeft.y)/2 }; 
                             };
 
@@ -153,20 +153,20 @@
                             shapes[source].outgoing.push({ resourceId: id });
                         };
 
-                        var highlight = function(shape) {
+                        function highlight(shape) {
                             shape.properties["selected"] = true;
                             shape.properties["selectioncolor"] = "#FF0000";
                         };
 
-                        var shapeCenter = function(shape) {
+                        function shapeCenter(shape) {
                             return {x: (shape.bounds.lowerRight.x + shape.bounds.upperLeft.x) / 2,
                                     y: (shape.bounds.lowerRight.y + shape.bounds.upperLeft.y) / 2};
                         }
 
-                        var distance = function(a, b) { return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y)); };
+                        function distance(a, b) { return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y)); };
 
                         // Find a point at least minSpacing away from points a and b, forming at least a right angle.  Sign +1 or -1 selects the two solutions.
-                        var lagrangePoint = function(a, b, minSpacing, sign) {
+                        function lagrangePoint(a, b, minSpacing, sign) {
                             var dx = (b.y - a.y);
                             var dy = (a.x - b.x);
                             var scale = sign * Math.max(minSpacing / Math.sqrt(dx * dx + dy * dy), 0.5);
@@ -174,7 +174,7 @@
                         };
 
                         // Create a gateway from the Start element, splitting between elements A and B and rejoining to the End element
-                        var createSplitAndJoin = function(gatewayStencilId) {
+                        function createSplitAndJoin(gatewayStencilId) {
                             if (message = validate(["start.length == 1", "a.length == 1", "b.length == 1", "end.length == 1"])) { alert(message); }
                             var cs = shapeCenter(shapes[start[0]]);
                             var ca = shapeCenter(shapes[a[0]]);
@@ -200,7 +200,7 @@
                             addSequenceFlow("sid-endplus-end", endplus, end[0]);
                         }
 
-                        var validate = function(constraints) {
+                        function validate(constraints) {
                             var violations = constraints
                                 .map(function(constraint, index, constraints) { return eval(constraint) ? null : constraint; })
                                 .filter(function(x) { return x });
@@ -311,6 +311,40 @@
                         for (var i = greys.length; i--;) {
                             shapes[greys[i]].getShape().node.setAttributeNS(null, "style", "opacity: 0.25");
                         }
+                        console.dir(json);
+
+                        ORYX.Editor.prototype.commitMLDifference = function() {
+
+
+                            // Remove the greyed-out elements
+                            for (var i = greys.length; i--;) {
+                                function removeElement(shape) {
+                                    json.childShapes.each(function (childShape) {
+                                        if (childShape && childShape.resourceId == shape.resourceId) {
+                                            console.log("Removing edge " + shape.resourceId);
+                                            json.childShapes.remove(childShape);
+                                        }
+                                    }.bind(this));
+                                }
+                                removeElement(shapes[greys[i]].getShape());
+                            }
+
+                            // Remove red highlighting from added elements
+                            json.childShapes.each(function (childShape) {
+                                if (childShape && childShape.properties.bordercolor == "#FF0000") {
+                                    childShape.properties.bordercolor = "#000000";
+                                }
+                                if (childShape && childShape.properties.selected) {
+                                    childShape.properties.selected = false;
+                                }
+                            }.bind(this));
+
+                            reloadJSON(json);
+                        }
+                    }
+
+                    ORYX.Editor.prototype.commitMLDifference = function() {
+                        alert("You can't commit a difference until you have selected one.");
                     }
 
                     var oryxEditor1;
@@ -376,6 +410,26 @@
 
                         Ext.select('svg').setVisible(false);
 
+                        ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
+                            new Ajax.Request('${arg.exportPath}', {
+                                parameters: {'data': json},
+                                method: 'POST',
+
+                                onSuccess: function(transport) {
+                                    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', transport.responseText));
+                                }.bind(this),
+
+                                onFailure: function(transport) {
+                                    Ext.Msg.show({
+                                        title: "Error",
+                                        msg: "Failed to save the Process!",
+                                        buttons: Ext.Msg.OK,
+                                        icon: Ext.Msg.ERROR
+                                    }).getDialog().syncSize()
+                                }.bind(this)
+                            });
+                        };
+
                         ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(json, svg) {
                             new Ajax.Request('${arg.exportPath}', {
                                 parameters: {'data': json},
@@ -407,7 +461,9 @@
             <n:td style="vertical-align: top" width="20%" height="600">
                 <tree>
                     <treecols>
-                        <treecol label="Differences"/>
+                        <treecol label="Differences">
+                            <button id="commit" label="Commit" style="float: right"/>
+                        </treecol>
                     </treecols>
                     <treechildren id="differences"></treechildren>
                 </tree>
