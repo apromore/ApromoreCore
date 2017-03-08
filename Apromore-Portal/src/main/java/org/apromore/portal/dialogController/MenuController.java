@@ -34,6 +34,8 @@ import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.ExplicitComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
@@ -44,11 +46,10 @@ import org.zkoss.zul.*;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class MenuController extends Menubar {
 
-    private static final Logger LOGGER = Logger.getLogger(MenuController.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
 
     private final MainController mainC;
     private Menubar menuB;
@@ -127,12 +128,23 @@ public class MenuController extends Menubar {
                 }
                 assert menuMap.containsKey(menuName);
 
-                // Add the menu item to the menu
+                // Create the menu item
                 Menu menu = menuMap.get(menuName);
                 Menuitem menuitem = new Menuitem();
                 menuitem.setImageContent(plugin.getIcon());
                 menuitem.setLabel(plugin.getLabel(Locale.getDefault()));
-                menu.getMenupopup().appendChild(menuitem);
+
+                // Insert the menu item alphabetically into the menu
+                Menuitem precedingMenuitem = null;
+                List<Menuitem> existingMenuitems = menu.getMenupopup().getChildren();
+                for (Menuitem existingMenuitem: existingMenuitems) {
+                    if (menuitem.getLabel().compareTo(existingMenuitem.getLabel()) <= 0) {
+                        precedingMenuitem = existingMenuitem;
+                        break;
+                    }
+                }
+                menu.getMenupopup().insertBefore(menuitem, precedingMenuitem);
+
                 menuitem.addEventListener("onClick", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {

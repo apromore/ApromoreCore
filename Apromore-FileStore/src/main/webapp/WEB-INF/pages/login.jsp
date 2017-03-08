@@ -247,12 +247,12 @@
             <h5>&copy; 2009-2017, The Apromore Initiative.</h5>
             <p>Except where otherwise noted, content on this site is licensed under a <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Licence</a></p>
             <p class="cc-logo"></p>
-            <p>
-                All models and other information  stored in the repository are third party materials that have been uploaded by other users, unless expressly indicated otherwise by QUT. QUT  makes the repository material available ‘as is’ and does not check the currency, accuracy, reliability, performance, completeness, suitability or workabliity of the repository material or whether repository materials uploaded by other users infringe anyone’s intellectual property rights. You use the repository material at your own risk.
-            </p>
-            <p>
-                To the fullest extent permitted by law, QUT excludes all liability whether in contract, tort (including negligence), statute or otherwise for any direct or indirect losses, damages, expenses, claims and liability that you may incur as a result or arising from any use of the repository material. To the extent legislation does not allow particular liability to be excluded, it is limited to the fullest extent permitted by such legislation.
-            </p>
+            <h:p>
+                All models and other information stored in the repository are third-party materials that have been uploaded by other users, unless expressly indicated otherwise by the Hosting University (QUT or University of Tartu). The Hosting University makes the repository material available ‘as is’ and does not check the currency, accuracy, reliability, performance, completeness, suitability or workability of the repository material or whether repository materials uploaded by other users infringe anyone’s intellectual property rights. You use the repository material at your own risk.
+            </h:p>
+            <h:p>
+                To the fullest extent permitted by law, the Hosting University excludes all liability whether in contract, tort (including negligence), statute or otherwise for any direct or indirect losses, damages, expenses, claims and liability that you may incur as a result or arising from any use of the repository material. To the extent legislation does not allow particular liability to be excluded, it is limited to the fullest extent permitted by such legislation.
+            </h:p>
         </div>
     </footer>
 </body>

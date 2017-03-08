@@ -1,25 +1,25 @@
 Apromore Installation instructions
 
-There are two distributions of Apromore: a *standalone* distribution, which you can simply copy/paste somewhere and run, and a *custom* distribution, which requires you to manually install and configure Apromore.
-The standlone distribution runs on the H2 database by default and does not support the PQL query language.
-The custom distribution is for developers and advanced users. It can work on H2 or MySQL and allows greater flexibility (e.g. you can decide whether to have PQL, configure the DB root...).
+There are two distributions of Apromore: a *one-click* distribution, which you can simply copy/paste somewhere and run, and a *full-fledged* distribution, which requires you to manually install and configure Apromore.
+The one-click distribution runs on the H2 database by default and does not support the PQL query language.
+The full-fledged distribution is for developers and advanced users. It can work on H2 or MySQL and allows greater flexibility (e.g. you can decide whether to have PQL, configure the DB root...).
 
 
-STANDALONE INSTALLATION
+ONE-CLICK INSTALLATION
 =======================
 
 REQUIREMENTS
 - Windows 7 or Mac OSX 10.8 to 10.11
 - Java 1.8
 
-* Download Apromore from http://apromore.qut.edu.au/apromore.zip.
+* Download Apromore from http://apromore-build.qut.edu.au/apromore.zip.
 * Unzip the file and open the folder Apromore-Server.
 * Start Apromore by executing the apromore.sh file in a Terminal if using Mac, or double-click on apromore.bat if using Windows.
 * Open Apromore by clicking on the apromore.html file.
 
 
-CUSTOM INSTALLATION
-====================
+FULL-FLEDGED INSTALLATION
+=========================
 
 REQUIREMENTS
 - Windows 7 or Mac OSX 10.8 to 10.11

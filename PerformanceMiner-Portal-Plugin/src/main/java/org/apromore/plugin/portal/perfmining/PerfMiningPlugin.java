@@ -61,11 +61,8 @@ public class PerfMiningPlugin extends DefaultPortalPlugin {
     private final PerfMiningService perfMiningService;
     private final EventLogService eventLogService;
     
-    /*
-    private final CanoniserService canoniserService;
-    private final DomainService    domainService;
-    private final ProcessService   processService;
-    */
+    private String label = "Mine Process Performance";
+    private String groupLabel = "Analyze";
 
     @Inject
     public PerfMiningPlugin(final PerfMiningService perfMiningService, final EventLogService eventLogService) {
@@ -76,12 +73,20 @@ public class PerfMiningPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Mine Process Performance";
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Analyze";
+        return groupLabel;
+    }
+
+    public void setGroupLabel(String groupLabel) {
+        this.groupLabel = groupLabel;
     }
 
     @Override
