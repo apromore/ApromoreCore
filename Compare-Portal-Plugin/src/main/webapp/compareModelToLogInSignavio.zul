@@ -313,8 +313,7 @@
                         }
                         console.dir(json);
 
-                        ORYX.Editor.prototype.commitMLDifference = function() {
-
+                        ORYX.Editor.prototype.repairMLDifference = function() {
 
                             // Remove the greyed-out elements
                             for (var i = greys.length; i--;) {
@@ -343,8 +342,8 @@
                         }
                     }
 
-                    ORYX.Editor.prototype.commitMLDifference = function() {
-                        alert("You can't commit a difference until you have selected one.");
+                    ORYX.Editor.prototype.repairMLDifference = function() {
+                        alert("You must select a difference to repair.");
                     }
 
                     var oryxEditor1;
@@ -462,7 +461,7 @@
                 <tree>
                     <treecols>
                         <treecol label="Differences">
-                            <button id="commit" label="Commit" style="float: right"/>
+                            <button id="apply" label="Apply" style="float: right"/>
                         </treecol>
                     </treecols>
                     <treechildren id="differences"></treechildren>

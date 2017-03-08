@@ -236,7 +236,7 @@ public class ModelToLogComparisonController extends BaseController {
 
     public void onCreate() throws InterruptedException {
         Treechildren treechildren = (Treechildren) this.getFellowIfAny("differences");
-        Button commitButton = (Button) this.getFellowIfAny("commit");
+        Button applyButton = (Button) this.getFellowIfAny("apply");
         if (treechildren != null) {
             try {
                 JSONArray array = this.differences.getJSONArray("differences");
@@ -263,8 +263,8 @@ public class ModelToLogComparisonController extends BaseController {
                 throw ie;
             }
         }
-        if (commitButton != null) {
-            commitButton.setWidgetListener("onClick", "oryxEditor1.commitMLDifference()");
+        if (applyButton != null) {
+            applyButton.setWidgetListener("onClick", "oryxEditor1.repairMLDifference()");
         }
     }
 
