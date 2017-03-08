@@ -30,14 +30,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Kludge to redirect ZK asynchronous updates back to the portal.
+ * Kludge to redirect ZK into loading its static content from the existing versions in the portal.
  *
  * @author <a href=mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 public class RedirectionServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-        response.setHeader("Location", "/zkau" + request.getPathInfo());
+        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        response.setHeader("Location", "/zkau/web" + request.getPathInfo());
     }
 }

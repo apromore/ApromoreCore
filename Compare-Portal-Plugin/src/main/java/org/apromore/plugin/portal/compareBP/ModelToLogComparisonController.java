@@ -53,6 +53,7 @@ import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.UserType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.ConfigBean;
@@ -87,6 +88,14 @@ public class ModelToLogComparisonController extends BaseController {
 
     public ModelToLogComparisonController() {
         super();
+
+        if (userSessionManager.getCurrentUser() == null) {
+            LOGGER.warn("Faking user session with admin(!)");
+            UserType user = new UserType();
+            user.setId("8");
+            user.setUsername("admin");
+            userSessionManager.setCurrentUser(user);
+        }
 
         String id = Executions.getCurrent().getParameter("id");
         if (id != null) {
