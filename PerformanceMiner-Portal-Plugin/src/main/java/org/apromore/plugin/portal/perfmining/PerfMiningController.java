@@ -88,9 +88,13 @@ public class PerfMiningController {
      * @throws IOException if the <code>perfmining.zul</code> template can't be read from the classpath
      */
     public PerfMiningController(PortalContext portalContext, PerfMiningService perfMiningService, Map<XLog, String> logs) throws IOException {
+        this.portalContext = portalContext;
+        this.perfMiningService = perfMiningService;
+        
         if(logs.size() > 0) {
             if(logs.size() > 1) {
                 showError("Please select only one log!");
+                return;
             } 
             else {
                 this.showImportW = false;
@@ -100,9 +104,6 @@ public class PerfMiningController {
         else {
             this.showImportW = true;
         }
-        
-        this.portalContext = portalContext;
-        this.perfMiningService = perfMiningService;
         
         //-----------------------------------------------------------------
         // INITIALIZE COMPONENTS
@@ -257,8 +258,8 @@ public class PerfMiningController {
     
     public void showError(String error) {
         portalContext.getMessageHandler().displayInfo(error);
-        Label errorLabel = (Label) this.importW.getFellow("errorLabel");
-        errorLabel.setValue(error);
+//        Label errorLabel = (Label) this.importW.getFellow("errorLabel");
+//        errorLabel.setValue(error);
     }
     
     private void initializeTimeZoneBox() {

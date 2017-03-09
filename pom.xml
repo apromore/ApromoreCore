@@ -129,6 +129,8 @@
         <module>Metrics-Portal-Plugin</module>
         <module>PerformanceMiner-Logic</module>
         <module>PerformanceMiner-Portal-Plugin</module>
+        <module>StageMining-Logic</module>
+        <module>StageMining-Portal-Plugin</module>		
         <module>PQL-Indexer-Portal-Plugin</module>
         <module>PQL-Logic</module>
         <module>PQL-Logic-WS</module>
