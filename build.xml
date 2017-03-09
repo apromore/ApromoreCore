@@ -180,10 +180,8 @@
 
         <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
 
-        <!--
         <include name="StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
-        -->
 
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
         <include name="APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
