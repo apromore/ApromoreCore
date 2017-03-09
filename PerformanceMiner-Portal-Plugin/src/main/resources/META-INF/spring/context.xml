@@ -34,7 +34,7 @@
 
     <!-- Other OSGi services this component consumes -->
     <reference id="perfMningService" interface="org.apromore.service.perfmining.PerfMiningService"/>
-	<reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
+    <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
 
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal" />

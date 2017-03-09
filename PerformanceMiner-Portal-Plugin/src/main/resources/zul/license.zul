@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="perfmining_license" width="400px" height="200px" closable="false" sizable="false" maximizable="false" minimizable="false" position="center,center" title="License to use Highcharts">
+<window id="perfmining_license" width="600px" height="400px" closable="false" sizable="false" maximizable="false" minimizable="false" position="center,center" title="Conditions of Use">
 
     <style>
 
@@ -38,10 +38,20 @@
             <rows>
 
                 <row spans="2">
-                    <html width="100%">
+                    <html width="100%" style="color:red">>
                         This plugin uses <a href='http://www.highcharts.com' target="_blank">highcharts</a> under a non-commercial license. 
                         A paid license must be obtained for the highcharts library if this plugin is used for any commercial purposes. 
                         Refer to <a href='https://shop.highsoft.com/highcharts' target="_blank">Highcharts Licensing</a> for further information.
+                    </html>
+                </row>
+
+                <row spans="2">
+                    <html width="100%" style="color:blue">>
+                        This plugin accepts logs with some special conditions: (1) every trace must have an attribute named <b>status</b> of string type that defines the completion status of the case, 
+                        e.g. statuses can be 'complete', 'declined', and 'cancelled'; (2) every event must have an attribute named <b>stage</b> of string type that defines which stage that event belongs to, 
+                        e.g. stages can be helpdesk levels in IT incident handling or phases of loan application processing (e.g. admission, review, offer, negotiate, and finalization); 
+                        (3) Events of the <b>same activity</b> must be in the same stage; (4) Stages in every case must follow a <b>consistent staging order</b>, e.g. stage1 followed by stage2 followed by stage3.
+                        Running the plugin with logs not meeting these conditions may return less meaningful results or errors.
                     </html>
                 </row>
 
