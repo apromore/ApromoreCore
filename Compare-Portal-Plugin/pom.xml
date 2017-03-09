@@ -74,6 +74,7 @@
                             org.springframework.ws.soap.server.endpoint.mapping,
                             org.springframework.ws.transport.http,
                             org.zkoss.zel.impl,
+                            org.zkoss.zk.au.http,
                             org.zkoss.zk.ui.http,
                             *
                         </Import-Package>

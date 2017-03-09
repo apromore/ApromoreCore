@@ -203,7 +203,9 @@ public class MetricsPlugin extends PluginCustomGui {
                     if(bpmnMetrics == null) LOGGER.info("GOT NULL!");
                     else {
                         List<TabRowValue> rows = new ArrayList<>();
-                        for (String key : bpmnMetrics.keySet()) {
+                        String[] keys = bpmnMetrics.keySet().toArray(new String[bpmnMetrics.size()]);
+                        Arrays.sort(keys);
+                        for (String key : keys) {
                             LOGGER.info(key + " : " + bpmnMetrics.get(key));
                             rows.add(createTabRowValue(key, bpmnMetrics.get(key), canonicalMetrics.get(key)));
                         }
@@ -213,7 +215,7 @@ public class MetricsPlugin extends PluginCustomGui {
                         listheaders.add(new Listheader("value on BPMN"));
                         listheaders.add(new Listheader("value on CPF"));
 
-                        addTab(procName + ": logfilter", "", rows, listheaders, null, portalContext);
+                        addTab(procName + ": Model Metrics", "", rows, listheaders, null, portalContext);
                     }
 
                     LOGGER.info("Metrics - done!");

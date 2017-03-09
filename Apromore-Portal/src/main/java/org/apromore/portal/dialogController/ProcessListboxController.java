@@ -30,6 +30,8 @@ import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.SummaryItemRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -42,6 +44,7 @@ import org.apromore.model.FolderType;
 public class ProcessListboxController extends BaseListboxController {
 
     private static final long serialVersionUID = -6874531673992239378L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessListboxController.class);
 
     private Listheader columnScore;
 
@@ -59,33 +62,27 @@ public class ProcessListboxController extends BaseListboxController {
         getListBox().addEventListener(Events.ON_SELECT, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (getListBox().getSelectedItems().size() == 1) {
-                    Object obj = getListModel().getSelection().iterator().next();
-                    if (obj instanceof ProcessSummaryType) {
-                        UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
-                        getMainController().displayProcessVersions((ProcessSummaryType) obj);
-                    } else {
-                    	getMainController().clearProcessVersions();
-                    }
-                    if (obj instanceof FolderType) {
-                        List<Integer> folders = new ArrayList<>();
-                        folders.add(((FolderType) obj).getId());
-                        UserSessionManager.setSelectedFolderIds(folders);
-                    }
-                } else {
-                    getMainController().clearProcessVersions();
-                    if (getListBox().getSelectedItems().size() == 0) {
-                        UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
-                    } else {
-                        List<Integer> folders = new ArrayList<>();
-                        for (Object obj : getListModel().getSelection()) {
-                            if (obj instanceof FolderType) {
-                                folders.add(((FolderType) obj).getId());
-                            }
-                        }
-                        UserSessionManager.setSelectedFolderIds(folders);
+
+                // List the selected folders and processes
+                List<Integer> folderIdList = new ArrayList<>();
+                List<ProcessSummaryType> processSummaryList = new ArrayList<>();
+                for (Object selectedItem: getListModel().getSelection()) {
+                    if (selectedItem instanceof FolderType) {
+                        folderIdList.add(((FolderType) selectedItem).getId());
+                    } else if (selectedItem instanceof ProcessSummaryType) {
+                        processSummaryList.add((ProcessSummaryType) selectedItem);
                     }
                 }
+
+                // If there's a unique selected process, show its versions
+                if (processSummaryList.size() == 1) {
+                    getMainController().displayProcessVersions(processSummaryList.get(0));
+                } else {
+                    getMainController().clearProcessVersions();
+                }
+
+                // Set the selected folders
+                UserSessionManager.setSelectedFolderIds(folderIdList);
             }
         });
     }
