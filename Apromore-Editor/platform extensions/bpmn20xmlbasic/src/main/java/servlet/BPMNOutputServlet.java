@@ -35,6 +35,7 @@ import javax.xml.bind.ValidationEventHandler;
 import javax.xml.validation.SchemaFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
@@ -74,19 +75,19 @@ public class BPMNOutputServlet extends HttpServlet {
         /* Transform and return as YAWL XML */
         try {
             if (jsonData == null || jsonData.isEmpty()) {
-                res.setStatus(500);
+                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 res.setContentType("text/plain; charset=UTF-8");
                 res.getWriter().write("Empty or missing parameter 'data'!");
             } else {
                 ByteArrayOutputStream bpmn = getBPMNfromJson(req, jsonData);
                 res.setContentType("application/xml; charset=UTF-8");
-                res.setStatus(200);
+                res.setStatus(HttpServletResponse.SC_OK);
                 res.getWriter().write(bpmn.toString("UTF-8"));
             }
         } catch (Exception e) {
             try {
-                LOGGER.severe(e.toString());
-                res.setStatus(500);
+                LOGGER.log(Level.SEVERE, "JSON to BPMN conversion failed: " + e.getMessage(), e);
+                res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 res.setContentType("text/plain; charset=UTF-8");
                 if (e.getCause() != null) {
                     res.getWriter().write(e.getCause().getMessage());

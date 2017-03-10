@@ -28,6 +28,8 @@ import org.apromore.portal.dialogController.MainController;
 
 import java.util.Set;
 
+import org.deckfour.xes.model.XLog;
+
 /**
  * Stores the Signavio Session information for an edit session.
  *
@@ -40,6 +42,7 @@ public class SignavioSession {
     private ProcessSummaryType process, process2;
     private VersionSummaryType version, version2;
     private Set<RequestParameterType<?>> params;
+    private XLog log;
 
     /**
      * Public Default Constructor.
@@ -99,6 +102,14 @@ public class SignavioSession {
 
     public void setProcess(ProcessSummaryType process) {
         this.process = process;
+    }
+
+    public XLog getLog() {
+        return log;
+    }
+
+    public void setLog(XLog log) {
+        this.log = log;
     }
 
     public VersionSummaryType getVersion() {

@@ -207,7 +207,7 @@ public class CompareController {
             Set<RequestParameterType<?>> requestParameters = new HashSet<>();
             requestParameters.add(new RequestParameterType<String>("m1_differences_json", DifferencesML.toJSON(differences)));
 
-            compareProcessLog(process, version, "BPMN 2.0", null, null, requestParameters);
+            compareProcessLog(process, version, "BPMN 2.0", null, null, requestParameters, log);
 
         } catch (Exception e) {
             Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -299,7 +299,7 @@ public class CompareController {
 
     public void compareProcessLog(final ProcessSummaryType process1, final VersionSummaryType version1,
                                  final String nativeType, final String annotation,
-                                 final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) {
+                                 final String readOnly, Set<RequestParameterType<?>> requestParameterTypes, XLog log) {
         String instruction = "";
 
         String username = this.portalContext.getCurrentUser().getUsername();
@@ -309,6 +309,7 @@ public class CompareController {
             String id = UUID.randomUUID().toString();
 
             SignavioSession session = new SignavioSession(editSession1, null, null, process1, version1, null, null, requestParameterTypes);
+            session.setLog(log);
             UserSessionManager.setEditSession(id, session);
 
             String url = "../compare/compareModelToLogInSignavio.zul?id=" + id;

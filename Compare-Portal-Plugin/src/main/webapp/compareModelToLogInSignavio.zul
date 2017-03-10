@@ -339,6 +339,55 @@
                             }.bind(this));
 
                             reloadJSON(json);
+
+                            // Inverse function to JSON.parse, because JSON.stringify isn't
+                            function stringify(obj) {
+
+                                var t = typeof (obj);
+	                        if (t != "object" || obj === null) {
+
+		                    // simple data type
+		                    if (t == "string") obj = '"'+obj+'"';
+		                    return String(obj);
+
+	                        }
+	                        else {
+
+		                    // recurse array or object
+		                    var n, v, json = [], arr = (obj && obj.constructor == Array);
+
+		                    for (n in obj) {
+			                v = obj[n]; t = typeof(v);
+
+			                if (t == "string") v = '"'+v+'"';
+			                else if (t == "object" && v !== null) v = stringify(v);
+
+                                        if (t != "function") json.push((arr ? "" : '"' + n + '":') + String(v));
+		                    }
+
+		                    return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
+	                        }
+                            };
+
+                            // Convert the repaired model from JSON to BPMN and re-invoke the comparison logic
+                            new Ajax.Request('${arg.exportPath}', {
+                                parameters: {'data': stringify(json)},
+                                method: 'POST',
+
+                                onSuccess: function(transport) {
+                                    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRepair', transport.responseText));
+                                    editorConfig = json;
+                                }.bind(this),
+
+                                onFailure: function(transport) {
+                                    Ext.Msg.show({
+                                        title: "Error",
+                                        msg: "Failed to recalculate differences!",
+                                        buttons: Ext.Msg.OK,
+                                        icon: Ext.Msg.ERROR
+                                    }).getDialog().syncSize()
+                                }.bind(this)
+                            });
                         }
                     }
 
