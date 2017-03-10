@@ -495,15 +495,16 @@ public class DiffMLGraphicalVerbalizer {
 				if (curr.labels.contains(op.label)) {
 					if (DEBUG)
 						System.out.printf("In the log, '%s' is repeated after '%s'\n", translate(pes1, (Integer) op.target), curr);
-					String sentence = String.format("In the log, '%s' is repeated after '%s'",
-							translate(pes1, (Integer) op.target),
+					String sentence = String.format("In the log, '%s' is repeated after '%s'", translate(pes1, (Integer) op.target),
 							translate(pes1, ((Pair<Integer, Integer>)lastMatch.target).getFirst()));
+
+					Integer startEvent =  ((Pair<Integer, Integer>)lastMatch.target).getSecond();
 
                     Integer toFind = findEvent(translate(pes1, (Integer) op.target));
                     List<Integer> singleton = new LinkedList<>();
                     singleton.add(toFind);
 
-                    DifferenceML diff = printTasksHLRep(singleton, pes2, net, loader, sentence);
+                    DifferenceML diff = printTasksHLRep(startEvent, singleton, pes2, net, loader, sentence);
                     if(diff != null) {
                         diff.setType("UNMREPETITION");
                         differences.add(diff);
@@ -1753,7 +1754,7 @@ public class DiffMLGraphicalVerbalizer {
         return null;
     }
 
-    private DifferenceML printTasksHLRep(List<Integer> events, NewUnfoldingPESSemantics<Integer> pes, PetriNet net, BPMNReader loader, String sentence) {
+    private DifferenceML printTasksHLRep(Integer startEvent, List<Integer> events, NewUnfoldingPESSemantics<Integer> pes, PetriNet net, BPMNReader loader, String sentence) {
         List<String> start = new ArrayList<>();
         List<String> end = new ArrayList<>();
         List<String> greys = new ArrayList<>();
@@ -1764,47 +1765,47 @@ public class DiffMLGraphicalVerbalizer {
         BitSet union = null;
         HashMap<String, String> startColors = new HashMap<>();
 
-        for(Integer event : events){
-            if(event == -1) {
-                markEnd = true;
-                continue;
-            }
+//        for(Integer event : events){
+//            if(event == -1) {
+//                markEnd = true;
+//                continue;
+//            }
+//
+//            if(!commonLabels.contains(pes.getLabel(event)))
+//                continue;
+//
+//            BitSet conf1 = pes.getLocalConfiguration(event);
+//            Trace<Integer> trace = new Trace<>();
+//            trace.addAllStrongCauses(pes.getEvents(conf1));
 
-            if(!commonLabels.contains(pes.getLabel(event)))
-                continue;
-
-            BitSet conf1 = pes.getLocalConfiguration(event);
-            Trace<Integer> trace = new Trace<>();
-            trace.addAllStrongCauses(pes.getEvents(conf1));
-
-            FlowNode task = model.getTaskFromEvent(event);
+            FlowNode task = model.getTaskFromEvent(startEvent);
             start.add(task.getId());
 
-            if(inter == null)
-                inter = (BitSet) conf1.clone();
-            else
-                inter.and(conf1);
+//            if(inter == null)
+//                inter = (BitSet) conf1.clone();
+//            else
+//                inter.and(conf1);
+//
+//            if(union == null)
+//                union = (BitSet) conf1.clone();
+//            else
+//                union.or(conf1);
+//        }
 
-            if(union == null)
-                union = (BitSet) conf1.clone();
-            else
-                union.or(conf1);
-        }
-
-        Queue<Multiset<Integer>> queue = new LinkedList<>();
-        Multiset ms = getMultiset(union);
-        queue.offer(ms);
-        HashSet<Multiset<Integer>> visited = new HashSet<>();
-        visited.add(ms);
+//        Queue<Multiset<Integer>> queue = new LinkedList<>();
+//        Multiset ms = getMultiset(union);
+//        queue.offer(ms);
+//        HashSet<Multiset<Integer>> visited = new HashSet<>();
+//        visited.add(ms);
 
         HashMap<String, String> endColors = new HashMap<>();
 
-        while(!queue.isEmpty()) {
-            Multiset<Integer> current = queue.poll();
-            Set<Integer> extensions = pes.getPossibleExtensions(current);
-            endColors = new HashMap<>();
+//        while(!queue.isEmpty()) {
+//            Multiset<Integer> current = queue.poll();
+//            Set<Integer> extensions = pes.getPossibleExtensions(current);
+//            endColors = new HashMap<>();
 
-            for (Integer event : extensions) {
+            for (Integer event : pes.getDirectSuccessors(startEvent)) {
                 if (!commonLabels.contains(pes.getLabel(event)))
                     continue;
 
@@ -1812,43 +1813,54 @@ public class DiffMLGraphicalVerbalizer {
                 Trace<Integer> trace = new Trace<>();
                 trace.addAllStrongCauses(pes.getEvents(conf1));
 
-                FlowNode task = model.getTaskFromEvent(event);
-                end.add(task.getId());
+                FlowNode task2Add = model.getTaskFromEvent(event);
+                end.add(task2Add.getId());
             }
 
-            if(end.isEmpty()) {
-                for(Integer ext : extensions) {
-                    Multiset<Integer> copy = HashMultiset.<Integer> create(current);
-                    copy.add(ext);
-                    if(!visited.contains(copy)){
-                        queue.add(copy);
-                        visited.add(copy);
-                    }
-                }
-            }else
-                break;
-        }
+//            if(end.isEmpty()) {
+//                for(Integer ext : extensions) {
+//                    Multiset<Integer> copy = HashMultiset.<Integer> create(current);
+//                    copy.add(ext);
+//                    if(!visited.contains(copy)){
+//                        queue.add(copy);
+//                        visited.add(copy);
+//                    }
+//                }
+//            }else
+//                break;
+//        }
 
-        for(String element : startColors.keySet())
-            if(!startColors.containsKey(element) && !start.contains(element))
-                greys.add(element);
-
-        for(String element : endColors.keySet())
-            if(!startColors.containsKey(element) && !start.contains(element) && !start.contains(element))
-                greys.add(element);
+//        for(String element : startColors.keySet())
+//            if(!startColors.containsKey(element) && !start.contains(element))
+//                greys.add(element);
+//
+//        for(String element : endColors.keySet())
+//            if(!startColors.containsKey(element) && !start.contains(element) && !start.contains(element))
+//                greys.add(element);
 
         HashSet<String> allReleventEdges = new HashSet<>();
         allReleventEdges.addAll(start);
         allReleventEdges.addAll(end);
-        allReleventEdges.addAll(greys);
+//        allReleventEdges.addAll(greys);
         HashSet<String> flows = getEdgesBetween(allReleventEdges);
         greys.addAll(flows);
+
+        List<String> newTasks = new LinkedList<>();
+        for(Integer event : events) {
+            if (event == -1) {
+                markEnd = true;
+                continue;
+            }
+            if (commonLabels.contains(pes.getLabel(event)))
+                newTasks.add(pes.getLabel(event));
+        }
 
         DifferenceML diff = new DifferenceML();
         diff.setSentence(sentence);
         diff.setStart(start);
         diff.setEnd(end);
         diff.setGreys(greys);
+        diff.setNewTasks(newTasks);
 
         // For testing
         HashMap<String, String> newColorsBP = new HashMap<>();
@@ -1862,7 +1874,7 @@ public class DiffMLGraphicalVerbalizer {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
         return diff;
     }

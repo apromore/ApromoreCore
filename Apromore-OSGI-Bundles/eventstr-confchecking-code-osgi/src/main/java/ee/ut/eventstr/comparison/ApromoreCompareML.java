@@ -71,9 +71,7 @@ public class ApromoreCompareML {
 			fileInputStream.close();
 
 			return bFile;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e){ e.printStackTrace(); }
 
 		return null;
 	}
@@ -85,8 +83,9 @@ public class ApromoreCompareML {
 		String folder2 = "fines/";
 
 		String folder = "models/";
-        String logString = folder + "conf_loop_log.xes";
-        String modelString = folder + "conc_seq_insert.bpmn";
+
+        String logString = folder + "bpLog8.xes";
+        String modelString = folder + "bp2.bpmn";
 //        String logString = folder1 + "Repair/Example2/conc_seq_insert_log.xes";
 //        String modelString = folder2 + "Examples/Example1/conf_loop.bpmn";
 
