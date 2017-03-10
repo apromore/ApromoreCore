@@ -285,18 +285,21 @@
                             break;
 
                         case "UNMREPETITION":
-                            if (message = validate(["start.length == 1", "end.length == 1"])) { alert(message); }
-                            var repeating = start[0];
-                            var following = end[0];
-                            var cs = shapeCenter(shapes[repeating]);
-                            var ce = shapeCenter(shapes[following]);
-                            var cm = lagrangePoint(cs, ce, 90, +1);
-
+                            if (message = validate(["start.length == 1", "newTasks.length == 1", "end.length == 1"])) { alert(message); }
+                            var s = start[0];
+                            var e = end[0];
+                            var cs = shapeCenter(shapes[s]);
+                            var ce = shapeCenter(shapes[e]);
+                            var cm = lagrangePoint(cs, ce, 0, +1);
+                            var cr = lagrangePoint(cs, ce, 270, +1);
                             var middle = addFlowNode("sid-a", "Exclusive_Databased_Gateway", cm.x, cm.y, 40, 40);
-                            highlight(shapes[repeating]);
-                            addSequenceFlow("sid-start-xor", repeating, middle.resourceId, [{x: (cs.x + cm.x)/2 + (cs.y - cm.y)/5, y: (cs.y + cm.y)/2 - (cs.x - cm.x)/5}]);
-                            addSequenceFlow("sid-xor-start", middle.resourceId, repeating, [{x: (cs.x + cm.x)/2 - (cs.y - cm.y)/5, y: (cs.y + cm.y)/2 + (cs.x - cm.x)/5}]);
-                            addSequenceFlow("sid-xor-end", middle.resourceId, following);
+                            var repeating = addFlowNode("sid-b", "Task", cr.x, cr.y, 100, 80);
+                            repeating["properties"]["name"] = newTasks[0];
+                            repeating["properties"]["bgcolor"] = "white";
+                            addSequenceFlow("sid-start-xor", s, middle.resourceId);
+                            addSequenceFlow("sid-xor-end", middle.resourceId, e);
+                            addSequenceFlow("sid-xor-repeating", middle.resourceId, repeating.resourceId, [{x: (cr.x + cm.x)/2 - (cr.y - cm.y)/2, y: (cr.y + cm.y)/2 + (cr.x - cm.x)/2}]);
+                            addSequenceFlow("sid-repeating-xor", repeating.resourceId, middle.resourceId, [{x: (cr.x + cm.x)/2 + (cr.y - cm.y)/2, y: (cr.y + cm.y)/2 - (cr.x - cm.x)/2}]);
                             break;
 
 			default:
@@ -332,6 +335,9 @@
                             json.childShapes.each(function (childShape) {
                                 if (childShape && childShape.properties.bordercolor == "#FF0000") {
                                     childShape.properties.bordercolor = "#000000";
+                                }
+                                if (childShape && childShape.stencil.id == "Task" && childShape.properties.bgcolor == "white") {
+                                    childShape.properties.bgcolor = "#FFFFCC";
                                 }
                                 if (childShape && childShape.properties.selected) {
                                     childShape.properties.selected = false;
