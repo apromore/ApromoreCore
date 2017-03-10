@@ -247,6 +247,7 @@
                             var cm = lagrangePoint(cs, ce, 130, +1);
 
                             var middle = addFlowNode("sid-a", "Task", cm.x, cm.y, 100, 80);
+                            middle.properties.tasktype = "None";
                             middle["properties"]["name"] = newTasks[0];
                             middle["properties"]["bgcolor"] = "white";
 
@@ -294,6 +295,7 @@
                             var cr = lagrangePoint(cs, ce, 270, +1);
                             var middle = addFlowNode("sid-a", "Exclusive_Databased_Gateway", cm.x, cm.y, 40, 40);
                             var repeating = addFlowNode("sid-b", "Task", cr.x, cr.y, 100, 80);
+                            repeating.properties.tasktype = "None";
                             repeating["properties"]["name"] = newTasks[0];
                             repeating["properties"]["bgcolor"] = "white";
                             addSequenceFlow("sid-start-xor", s, middle.resourceId);
