@@ -112,6 +112,7 @@
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
         <module>APQL-Portal-Plugin</module>
+        <module>BIMP-Portal-Plugin</module>
         <module>BPMNDiagramImporter-Logic</module>
         <module>BPMNMiner-Logic</module>
         <module>BPMNMiner-Portal-Plugin</module>
