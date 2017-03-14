@@ -477,7 +477,7 @@ public class NewDiffVerbalizer<T> {
 							pred == null || pred.label.equals("_0_") ? "<start state>": pred.label, //String.format("%s%s", pred.label, pred.target), 
 							succ == null || succ.label.equals("_1_") ? "<end state>": succ.label); //String.format("%s%s", succ.label, succ.target));
 					}
-					statements.add(String.format("In the model, '%s' occurs after '%s' instead of '%s'", 
+					statements.add(String.format("In the model, '%s' occurs after '%s' instead of '%s'",
 					translate(pes1, ((Pair<Integer, Integer>)pred.target).getFirst()),
 					translate(pes1, ((Pair<Integer, Integer>)pred.target).getSecond()),
 					translate(pes1, (Integer) op.target)));
@@ -527,7 +527,7 @@ public class NewDiffVerbalizer<T> {
 //					System.out.println(translate(pes2, ((Pair<Integer, Integer>)succ.target).getFirst()));
 //					System.out.println(translate(pes2, ((Pair<Integer, Integer>)succ.target).getSecond()));
 					
-					statements.add(String.format("In the model, '%s' occurs after '%s' instead of '%s'", 
+					statements.add(String.format("In the model, '%s' occurs after '%s' instead of '%s'",
 							translate(pes2, ((Pair<Integer, Integer>)pred.target).getFirst()),
 							translate(pes2, ((Pair<Integer, Integer>)pred.target).getSecond()),
 							translate(pes2, (Integer) op.target)));

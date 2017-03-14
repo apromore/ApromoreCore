@@ -46,8 +46,8 @@ public class PrimeEventStructure <T> {
 	BehaviorRelation[][] matrix;
 	private HashSet<String> cyclicTasks;
 
-	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality,
-							   BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict, List<Integer> sources, List<Integer> sinks) {
+	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality, BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict,
+							   List<Integer> sources, List<Integer> sinks) {
 		this.causality = causality;
 		this.dcausality = dcausality;
 		this.invcausality = invcausality;
@@ -59,9 +59,8 @@ public class PrimeEventStructure <T> {
 		this.cyclicTasks = new HashSet<>();
 	}
 
-	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality,
-			BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict, List<Integer> sources, List<Integer> sinks,
-				Map<Integer, Integer> occurrences, double[][] fmatrix) {
+	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality, BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict,
+							   List<Integer> sources, List<Integer> sinks, Map<Integer, Integer> occurrences, double[][] fmatrix) {
 		this.causality = causality;
 		this.dcausality = dcausality;
 		this.invcausality = invcausality;
