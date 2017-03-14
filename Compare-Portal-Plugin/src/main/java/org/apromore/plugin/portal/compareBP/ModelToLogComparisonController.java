@@ -46,12 +46,9 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Tree;
-import org.zkoss.zul.Treecell;
-import org.zkoss.zul.Treechildren;
-import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.Treerow;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Window;
 
 // Local packages
@@ -227,11 +224,17 @@ public class ModelToLogComparisonController extends BaseController {
     }
 
     public void onCreate() throws InterruptedException {
-        Treechildren treechildren = (Treechildren) this.getFellowIfAny("differences");
-        Button applyButton = (Button) this.getFellowIfAny("apply");
-        if (treechildren != null) {
-            Tree parent = (Tree) treechildren.getParent();
-            parent.clear();
+
+        Toolbar hbox = (Toolbar) this.getFellowIfAny("differences");
+        if (hbox != null) {
+            Component parent = (Component) hbox.getParent();
+            
+            // Remove any pre-extant list items
+            Component sibling = hbox.getNextSibling();
+            while (sibling != null) {
+                parent.removeChild(sibling);
+                sibling = hbox.getNextSibling();
+            }
 
             // Add the current differences
             try {
@@ -240,17 +243,11 @@ public class ModelToLogComparisonController extends BaseController {
                     JSONObject difference = array.getJSONObject(i);
 
                     // Add UI for this difference
-                    Treeitem item = new Treeitem();
+                    Button label = new Button(difference.getString("sentence"));
+                    label.setStyle("background: inherit; border: none; margin: 5px; text-align: initial; white-space: normal; ");
+                    label.setWidgetListener("onClick", differenceToJavascript(i, difference));
 
-                    Treerow row = new Treerow();
-                    item.appendChild(row);
-
-                    Treecell cell = new Treecell(difference.getString("sentence"));
-                    row.appendChild(cell);
-
-                    cell.setWidgetListener("onClick", differenceToJavascript(difference));
-
-                    treechildren.appendChild(item);
+                    parent.appendChild(label);
                 }
 
             } catch (JSONException e) {
@@ -260,16 +257,19 @@ public class ModelToLogComparisonController extends BaseController {
                 throw ie;
             }
         }
+
+        Button applyButton = (Button) this.getFellowIfAny("apply");
         if (applyButton != null) {
             // The repairMLDifference function will send an onRepair event to the ZK asynchronous updater when it completes
             applyButton.setWidgetListener("onClick", "oryxEditor1.repairMLDifference()");
         }
     }
 
-    private String differenceToJavascript(JSONObject difference) throws JSONException {
+    private String differenceToJavascript(int buttonIndex, JSONObject difference) throws JSONException {
             LOGGER.info("differenceToJavascript: " + difference);
 
             return "oryxEditor1.displayMLDifference(" +
+                    buttonIndex + "," +
                     "\"" + difference.optString("type") + "\"," +
                     difference.optJSONArray("start")    + "," +
                     difference.optJSONArray("a")        + "," +

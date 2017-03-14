@@ -85,7 +85,7 @@
                         oryxEditor1.importJSON(json, true);
                     };
 
-                    ORYX.Editor.prototype.displayMLDifference = function(type, start, a, b, newTasks, end, greys) {
+                    ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a, b, newTasks, end, greys) {
 
                         // Find the shapes corresponding to the function arguments resource IDs
                         function indexJSON(json) {
@@ -514,15 +514,14 @@
 
     <n:table>
         <n:tr>
-            <n:td style="vertical-align: top" width="20%" height="600">
-                <tree>
-                    <treecols>
-                        <treecol label="Differences">
-                            <button id="apply" label="Apply" style="float: right"/>
-                        </treecol>
-                    </treecols>
-                    <treechildren id="differences"></treechildren>
-                </tree>
+            <n:td style="vertical-align: top" width="20%">
+                <vbox hflex="1">
+                    <toolbar id="differences" hflex="1">
+                        <label hflex="1">Differences</label>
+                        <button id="apply" label="Apply" style="float: right"/>
+                    </toolbar>
+                    <label>Baz</label>
+                </vbox>
             </n:td>
             <n:td valign="top"><n:div id="oryx-canvas1"></n:div></n:td>
         </n:tr>
