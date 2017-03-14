@@ -22,6 +22,7 @@ package ee.ut.eventstr.comparison.differences;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 
@@ -33,26 +34,32 @@ import java.util.LinkedList;
  */
 
 public class DifferencesML {
-	private LinkedList<DifferenceML> differences;
-	private int numberOfDifferences;
-	private int commonLabels;
+    private LinkedList<DifferenceML> differences;
+    private int numberOfDifferences;
+    private int commonLabels;
 
-	public DifferencesML() {
-		differences = new LinkedList<DifferenceML>();
-		setNumberOfDifferences(0);
-		commonLabels = 0;
-	}
+    public DifferencesML() {
+        differences = new LinkedList<DifferenceML>();
+        setNumberOfDifferences(0);
+        commonLabels = 0;
+    }
 
-	public void add(DifferenceML diff) {
-		if (!contains(diff)) {
-			differences.add(diff);
-			setNumberOfDifferences(differences.size());
-		}
-	}
+    public void add(DifferenceML diff) {
+        if (!contains(diff)) {
+            differences.add(diff);
+            setNumberOfDifferences(differences.size());
+            Collections.sort(differences);
+        }
+    }
 
-	public LinkedList<DifferenceML> getDifferences() {
-		return differences;
-	}
+    public LinkedList<DifferenceML> getDifferences() {
+        return differences;
+    }
+
+    public void remove(DifferenceML diff2Remove) {
+        differences.remove(diff2Remove);
+        setNumberOfDifferences(differences.size());
+    }
 
 	public void setDifferences(LinkedList<DifferenceML> differences) {
 		this.differences = differences;
