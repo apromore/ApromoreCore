@@ -241,6 +241,7 @@
                         case "TASKABS4":
                         case "TASKABSLog":
                         case "TASKSUB":
+                        case "TASKRELOC":
                             if (message = validate(["start.length == 1", "newTasks.length == 1", "end.length == 1"])) { alert(message); }
                             var cs = shapeCenter(shapes[start[0]]);
                             var ce = shapeCenter(shapes[end[0]]);
@@ -256,20 +257,23 @@
                             break;
 
                         case "TASKSKIP1":
-                            if (message = validate(["start.length == 1", "a.length == 1", "end.length == 1"])) { alert(message); }
+                            if (message = validate(["start.length == 1", "a.length >= 1", "end.length == 1"])) { alert(message); }
                             var cs = shapeCenter(shapes[start[0]]);
-                            var cm = shapeCenter(shapes[a[0]]);
+                            var cm1 = shapeCenter(shapes[a[0]]);
+                            var cm2 = shapeCenter(shapes[a[a.length - 1]]);
                             var ce = shapeCenter(shapes[end[0]]);
-                            var g1 = lagrangePoint(cs, cm, 90, +1);
-                            var g2 = lagrangePoint(cm, ce, 90, +1);
+                            var g1 = lagrangePoint(cs, cm1, 90, +1);
+                            var g2 = lagrangePoint(cm2, ce, 90, +1);
 
                             var startplus = addFlowNode("sid-startplus", "Exclusive_Databased_Gateway", g1.x, g1.y, 40, 40).resourceId;
                             var endplus = addFlowNode("sid-endplus", "Exclusive_Databased_Gateway", g2.x, g2.y, 40, 40).resourceId;
                             addSequenceFlow("sid-startplus-endplus", startplus, endplus);
                             addSequenceFlow("sid-start-startplus", start[0], startplus);
                             addSequenceFlow("sid-startplus-a", startplus, a[0]);
-                            highlight(shapes[a[0]]);
-                            addSequenceFlow("sid-a-endplus", a[0], endplus);
+                            for (i=0; i < a.length; i++) {
+                                highlight(shapes[a[i]]);
+                            }
+                            addSequenceFlow("sid-a-endplus", a[a.length - 1], endplus);
                             addSequenceFlow("sid-endplus-end", endplus, end[0]);
                             break;
 
