@@ -308,6 +308,21 @@
                             addSequenceFlow("sid-repeating-xor", repeating.resourceId, middle.resourceId, [{x: (cr.x + cm.x)/2 + (cr.y - cm.y)/2, y: (cr.y + cm.y)/2 - (cr.x - cm.x)/2}]);
                             break;
 
+                        case "TASKSWAP":
+                            if (message = validate(["start.length == 1", "a.length == 1", "b.length == 1", "end.length == 1"])) { alert(message); }
+                            var cs = shapeCenter(shapes[start[0]]);
+                            var ca = shapeCenter(shapes[a[0]]);
+                            var cb = shapeCenter(shapes[b[0]]);
+                            var ce = shapeCenter(shapes[end[0]]);
+                            var sb = lagrangePoint(cs, cb, 0, +1);
+                            var ae = lagrangePoint(ca, ce, 0, -1);
+                            highlight(shapes[a[0]]);
+                            highlight(shapes[b[0]]);
+                            addSequenceFlow("sid-start-b", start[0], b[0], [sb]);
+                            addSequenceFlow("sid-b-a", b[0], a[0]);
+                            addSequenceFlow("sid-a-end", a[0], end[0], [ae]);
+                            break;
+
 			default:
                             alert("Unsupported difference type \"" + type + "\"");
                             return;
