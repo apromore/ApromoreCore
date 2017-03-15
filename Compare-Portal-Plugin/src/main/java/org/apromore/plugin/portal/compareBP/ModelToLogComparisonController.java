@@ -243,11 +243,23 @@ public class ModelToLogComparisonController extends BaseController {
                     JSONObject difference = array.getJSONObject(i);
 
                     // Add UI for this difference
-                    Button label = new Button(difference.getString("sentence") + " (" + difference.getDouble("ranking") + ")");
-                    label.setStyle("background: inherit; border: none; margin: 5px; text-align: initial; white-space: normal; ");
-                    label.setWidgetListener("onClick", differenceToJavascript(i, difference));
+                    Button button = new Button(difference.getString("sentence") + " (" + difference.getDouble("ranking") + ")");
+                    button.setStyle("background: inherit; border: none; margin: 5px; text-align: initial; white-space: normal; ");
+                    button.addEventListener("onClick", new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                            for (Component component: button.getParent().getChildren()) {
+                                if (component instanceof Button) {
+                                    Button b = (Button) component;
+                                    b.setStyle(button == b
+                                        ? "background: inherit; border: 1px solid red; margin: 5px; text-align: initial; white-space: normal; "
+                                        : "background: inherit; border: none; margin: 5px; text-align: initial; white-space: normal; ");
+                                }
+                            }
+                        }
+                    });
+                    button.setWidgetListener("onClick", differenceToJavascript(i, difference));
 
-                    parent.appendChild(label);
+                    parent.appendChild(button);
                 }
 
             } catch (JSONException e) {
