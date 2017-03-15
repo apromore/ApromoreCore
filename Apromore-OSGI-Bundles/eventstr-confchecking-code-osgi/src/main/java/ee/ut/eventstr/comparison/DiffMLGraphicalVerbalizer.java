@@ -254,7 +254,8 @@ public class DiffMLGraphicalVerbalizer {
                 //// ==============================
                 ////   Verbalization
                 //// ==============================
-                if (pes1.getBRelation(event1, event2) == BehaviorRelation.CAUSALITY){
+                if (pes2.getBRelation(event1A, event2A).equals(BehaviorRelation.CONCURRENCY) &&
+                        (pes1.getBRelation(event1, event2) == BehaviorRelation.CAUSALITY || pes1.getBRelation(event1, event2) == BehaviorRelation.INV_CAUSALITY)){
                     Pair context = (Pair<Integer, Integer>) lastMatchMap.get(ctx.getValue()).target;
 
                     if(event1.intValue() == ((Integer)context.getFirst()).intValue()) {
@@ -283,29 +284,9 @@ public class DiffMLGraphicalVerbalizer {
                         diff.setType("CAUSCONC1");
                         differences.add(diff);
                     }
-                }else if (pes2.getBRelation(ctx.getKey().getSecond(), p.getSecond()) == BehaviorRelation.INV_CAUSALITY){
-                    System.out.println(pes2.getDirectSuccessors(ctx.getKey().getSecond()).size());
-                    Integer context = -1;
-                    if(pes2.getDirectSuccessors(ctx.getKey().getSecond()).size() > 0)
-                            context = pes2.getDirectSuccessors(ctx.getKey().getSecond()).iterator().next();
-                    String contextString = "<start event>";
-                    if(context > -1)
-                        contextString = translate(pes2, context);
-
-                        String sentence = String.format("In the log, after '%s', '%s' occurs before '%s', while in the model they occur in the reverse order",
-                                contextString, translate(pes2, ctx.getKey().getSecond()), translate(pes2, p.getSecond()));
-
-                        // Start ranking
-                        float counter = Math.min(logpes.getEventOccurrenceCount(p.getFirst()), logpes.getEventOccurrenceCount(ctx.getKey().getFirst()));
-                        float ranking = counter/ (float)logpes.getTotalTraceCount();
-                        // End ranking
-
-                        DifferenceML diff = print2Tasks(context, ctx.getKey().getSecond(), p.getSecond(), pes2, net, loader, sentence, ranking);
-                        if(diff != null) {
-                            diff.setType("CAUSCONC2");
-                            differences.add(diff);
-                        }
-                } else {
+                }
+                else if(pes1.getBRelation(event1, event2).equals(BehaviorRelation.CONCURRENCY) &&
+                        (pes2.getBRelation(event1A, event2A) == BehaviorRelation.CAUSALITY || pes2.getBRelation(event1A, event2A) == BehaviorRelation.INV_CAUSALITY)){
                     Integer context = ((Pair<Integer, Integer>) lastMatchMap.get(ctx.getValue()).target).getSecond();
                     String contextString = translate(pes2, context);
                     String sentence = String.format("In the model, after '%s', '%s' occurs before '%s', while in the log they are concurrent",
@@ -321,6 +302,28 @@ public class DiffMLGraphicalVerbalizer {
                         diff.setType("CAUSCONC2");
                         differences.add(diff);
                     }
+                } else if (pes1.getBRelation(event1, event2).equals(BehaviorRelation.CAUSALITY) && pes2.getBRelation(event1A, event2A).equals(BehaviorRelation.INV_CAUSALITY)){
+                    System.out.println(pes2.getDirectSuccessors(ctx.getKey().getSecond()).size());
+                    Integer context = -1;
+                    if(pes2.getDirectPredecessors(event2A).size() > 0)
+                            context = pes2.getDirectPredecessors(event2A).iterator().next();
+                    String contextString = "<start event>";
+                    if(context > -1)
+                        contextString = translate(pes2, context);
+
+                        String sentence = String.format("In the log, after '%s', '%s' occurs before '%s', while in the model they occur in the reverse order",
+                                contextString, translate(pes2, ctx.getKey().getSecond()), translate(pes2, p.getSecond()));
+
+                        // Start ranking
+                        float counter = Math.min(logpes.getEventOccurrenceCount(p.getFirst()), logpes.getEventOccurrenceCount(ctx.getKey().getFirst()));
+                        float ranking = counter/ (float)logpes.getTotalTraceCount();
+                        // End ranking
+
+                        DifferenceML diff = print2Tasks(context, ctx.getKey().getSecond(), p.getSecond(), pes2, net, loader, sentence, ranking);
+                        if(diff != null) {
+                            diff.setType("TASKSWAP");
+                            differences.add(diff);
+                        }
                 }
 			}
 		}
@@ -795,6 +798,7 @@ public class DiffMLGraphicalVerbalizer {
 
                     System.out.println("Targets = " +  targets);
                     DifferenceML diff = printTasksGO2(before, targets, after, pes2, net, loader, sentence, ranking);
+//					DifferenceML diff = printTasksHL2(before, targets, after, pes2, net, loader, sentence, ranking);
 
                     if(diff != null) {
                         diff.setType("TASKABSModel");
@@ -1481,20 +1485,20 @@ public class DiffMLGraphicalVerbalizer {
 					epred.clear(ep);
 					fpred.clear(fp);
 
-                    if(pes2.getBRelation(localF, fp).equals(BehaviorRelation.INV_CAUSALITY)){
-                        Integer temporal = localF;
-                        localF = fp;
-                        fp = localF;
-                    }
+//                    if(pes2.getBRelation(localF, fp).equals(BehaviorRelation.INV_CAUSALITY)){
+//                        Integer temporal = localF;
+//                        localF = fp;
+//                        fp = temporal;
+//                    }
+//
+//                    if(pes1.getBRelation(e, ep).equals(BehaviorRelation.INV_CAUSALITY)){
+//                        Integer temporal = ep;
+//                        ep = e;
+//                        e = temporal;
+//                    }
 
-                    if(pes1.getBRelation(e, ep).equals(BehaviorRelation.INV_CAUSALITY)){
-                        Integer temporal = ep;
-                        ep = e;
-                        e = ep;
-                    }
-
-					if (!pes1.getBRelation(e, ep).equals(BehaviorRelation.CONFLICT) && !pes2.getBRelation(localF, fp).equals(BehaviorRelation.CONFLICT) &&
-                            (pes1.getBRelation(e, ep).equals(BehaviorRelation.CONCURRENCY) || pes2.getBRelation(localF, fp).equals(BehaviorRelation.CONCURRENCY))
+					if (!pes1.getBRelation(e, ep).equals(BehaviorRelation.CONFLICT) && !pes2.getBRelation(localF, fp).equals(BehaviorRelation.CONFLICT)
+//							&& (pes1.getBRelation(e, ep).equals(BehaviorRelation.CONCURRENCY) || pes2.getBRelation(localF, fp).equals(BehaviorRelation.CONCURRENCY))
                             && !causallyConsistent(e, ep, localF, fp))
 						pairDiff.add(new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs));
 //						return new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs);
@@ -1522,28 +1526,28 @@ public class DiffMLGraphicalVerbalizer {
 
 					cutoffs.add(fp);
 
-					localF = pes2.unshift(f, fp);
+					localF = pes2.unshift(localF, fp);
 
-                    if(pes2.getBRelation(localF, fp).equals(BehaviorRelation.INV_CAUSALITY)){
-                        Integer temporal = localF;
-                        localF = fp;
-                        fp = localF;
-                    }
+//                    if(pes2.getBRelation(localF, fp).equals(BehaviorRelation.INV_CAUSALITY)){
+//                        Integer temporal = localF;
+//                        localF = fp;
+//                        fp = temporal;
+//                    }
+//
+//                    if(pes1.getBRelation(e, ep).equals(BehaviorRelation.INV_CAUSALITY)){
+//                        Integer temporal = ep;
+//                        ep = e;
+//                        e = temporal;
+//                    }
 
-                    if(pes1.getBRelation(e, ep).equals(BehaviorRelation.INV_CAUSALITY)){
-                        Integer temporal = ep;
-                        ep = e;
-                        e = ep;
-                    }
-
-					if (!pes1.getBRelation(e, ep).equals(BehaviorRelation.CONFLICT) && !pes2.getBRelation(localF, fp).equals(BehaviorRelation.CONFLICT) &&
-                            (pes1.getBRelation(e, ep).equals(BehaviorRelation.CONCURRENCY) || pes2.getBRelation(localF, fp).equals(BehaviorRelation.CONCURRENCY))
+                    if (!pes1.getBRelation(e, ep).equals(BehaviorRelation.CONFLICT) && !pes2.getBRelation(localF, fp).equals(BehaviorRelation.CONFLICT)
+//                            && (pes1.getBRelation(e, ep).equals(BehaviorRelation.CONCURRENCY) || pes2.getBRelation(localF, fp).equals(BehaviorRelation.CONCURRENCY))
                             && !causallyConsistent(e, ep, localF, fp))
-						pairDiff.add(new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs));
+                        pairDiff.add(new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs));
 //						return new Pair<>(Arrays.asList(e,ep,localF,fp), cutoffs);
 					break;
 				case RHIDENSHIFT:
-					localF = pes2.unshift(f, fp);
+					localF = pes2.unshift(localF, fp);
 
 					int corrFpp = pes2.getCorresponding(fp);
 					for (Integer pred: pes2.getDirectPredecessors(fp))
@@ -1560,7 +1564,7 @@ public class DiffMLGraphicalVerbalizer {
 	}
 
 	private boolean causallyConsistent(Integer e, Integer ep, Integer f, Integer fp) {
-		return pes1.getBRelation(ep, e) == pes2.getBRelation(fp, f);
+		return pes1.getBRelation(e, ep) == pes2.getBRelation(f, fp);
 	}
 
 	private void addPSPBranchToGlobalPSP(List<Operation> opSeq) {
@@ -2933,11 +2937,11 @@ public class DiffMLGraphicalVerbalizer {
 
             FlowNode task = model.getTaskFromEvent(startN);
 
-            if(model.getBpmnModel().getDirectSuccessors(task).size() == 1 &&
-                    (model.getBpmnModel().getDirectSuccessors(task).iterator().next() instanceof AndGateway ||
-                            model.getBpmnModel().getDirectSuccessors(task).iterator().next() instanceof XorGateway))
-                start.add(model.getBpmnModel().getDirectSuccessors(task).iterator().next().getId());
-            else
+//            if(model.getBpmnModel().getDirectSuccessors(task).size() == 1 &&
+//                    (model.getBpmnModel().getDirectSuccessors(task).iterator().next() instanceof AndGateway ||
+//                            model.getBpmnModel().getDirectSuccessors(task).iterator().next() instanceof XorGateway))
+//                start.add(model.getBpmnModel().getDirectSuccessors(task).iterator().next().getId());
+//            else
                 start.add(task.getId());
             history.removeAll(model.getTasksFromConf(pes.getLocalConfiguration(startN)));
         }
@@ -3006,6 +3010,121 @@ public class DiffMLGraphicalVerbalizer {
 
         return diff;
     }
+
+	private DifferenceML printTasksHL2(Integer startN, List<Integer> events, Integer endN, NewUnfoldingPESSemantics<Integer> pes, PetriNet net, BPMNReader loader, String sentence, float ranking) {
+		List<String> start = new ArrayList<>();
+		List<String> a = new ArrayList<>();
+		List<String> end = new ArrayList<>();
+		List<String> greys = new ArrayList<>();
+
+		BitSet inter = null;
+		BitSet union = null;
+
+		HashMap<String, String> aColors = new HashMap<>();
+
+		for(Integer event : events){
+			if(!commonLabels.contains(pes.getLabel(event)))
+				continue;
+
+			BitSet conf1 = pes.getLocalConfiguration(event);
+			Trace<Integer> trace = new Trace<>();
+			trace.addAllStrongCauses(pes.getEvents(conf1));
+
+			FlowNode task = model.getTaskFromEvent(event);
+			a.add(task.getId());
+
+			if(inter == null)
+				inter = (BitSet) conf1.clone();
+			else
+				inter.and(conf1);
+
+			if(union == null)
+				union = (BitSet) conf1.clone();
+			else
+				union.or(conf1);
+		}
+
+		if(inter == null)
+			return null;
+
+		HashSet<FlowNode> history = new HashSet<>();
+		for(Integer event : events)
+			history.addAll(model.getTasksFromConf(pes.getLocalConfiguration(event)));
+
+		if(startN == -2) {
+			FlowNode task = model.getStart();
+			start.add(task.getId());
+		}else if(commonLabels.contains(pes.getLabel(startN))){
+			BitSet conf1 = pes.getLocalConfiguration(startN);
+			Trace<Integer> trace = new Trace<>();
+			trace.addAllStrongCauses(pes.getEvents(conf1));
+
+			FlowNode task = model.getTaskFromEvent(startN);
+			start.add(task.getId());
+			history.removeAll(model.getTasksFromConf(pes.getLocalConfiguration(startN)));
+		}
+
+		HashMap<String, String> endColors = new HashMap<>();
+
+		if(endN < 0){
+			endColors.put(model.getEnd().getId(), "green");
+			end.add(model.getEnd().getId());
+		}else if(commonLabels.contains(pes.getLabel(endN))){
+			BitSet conf1 = pes.getLocalConfiguration(endN);
+			Trace<Integer> trace = new Trace<>();
+			trace.addAllStrongCauses(pes.getEvents(conf1));
+
+			FlowNode task = model.getTaskFromEvent(endN);
+			end.add(task.getId());
+		}
+
+		for(String element : endColors.keySet())
+			if(!start.contains(element) && !endColors.containsKey(element) && !end.contains(element) && !a.contains(element))
+				greys.add(element);
+
+//		greys.addAll(a);
+
+		HashSet<String> allReleventEdges = new HashSet<>();
+		allReleventEdges.addAll(start);
+		allReleventEdges.addAll(end);
+		allReleventEdges.addAll(greys);
+		HashSet<String> flows = getEdgesBetween(allReleventEdges);
+		greys.addAll(flows);
+
+		for(FlowNode nodeModel : model.getBpmnModel().getFlowNodes())
+			if(nodeModel instanceof Activity && greys.contains(nodeModel.getId())) {
+				for (ControlFlow flow : model.getBpmnModel().getIncomingEdges(nodeModel))
+					greys.add(flow.getId());
+
+				for (ControlFlow flow : model.getBpmnModel().getOutgoingEdges(nodeModel))
+					greys.add(flow.getId());
+			}
+
+		DifferenceML diff = new DifferenceML(ranking);
+		diff.setSentence(sentence);
+		diff.setStart(start);
+        diff.setStart(a);
+		diff.setEnd(end);
+		diff.setGreys(greys);
+
+		// For testing
+		HashMap<String, String> newColorsBP = new HashMap<>();
+		for (String s : a)
+			newColorsBP.put(s, "gray");
+
+		for (String s : start)
+			newColorsBP.put(s, "blue");
+
+		for (String s : end)
+			newColorsBP.put(s, "blue");
+
+		for (String s : greys)
+			newColorsBP.put(s, "gray");
+
+//        printModels("m", "1", net, loader, null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+
+		return diff;
+	}
 
     private DifferenceML addTasks(List<Integer> events, NewUnfoldingPESSemantics<Integer> pes, PetriNet net, BPMNReader loader, String sentence, float ranking) {
         List<String> start = new ArrayList<>();
