@@ -24,6 +24,7 @@ package org.apromore.plugin.portal.compareBP;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.*;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
@@ -238,12 +239,14 @@ public class ModelToLogComparisonController extends BaseController {
 
             // Add the current differences
             try {
+                final DecimalFormat rankingFormat = new DecimalFormat("##%");
+
                 JSONArray array = this.differences.getJSONArray("differences");
                 for (int i=0; i < array.length(); i++) {
                     JSONObject difference = array.getJSONObject(i);
 
                     // Add UI for this difference
-                    Button button = new Button(difference.getString("sentence") + " (" + difference.getDouble("ranking") + ")");
+                    Button button = new Button(difference.getString("sentence") + " (" + rankingFormat.format(difference.getDouble("ranking")) + " of traces)");
                     button.setStyle("background: inherit; border: none; margin: 5px; text-align: initial; white-space: normal; ");
                     button.addEventListener("onClick", new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {
