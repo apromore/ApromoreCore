@@ -224,6 +224,12 @@ public class ModelToLogComparisonController extends BaseController {
         });
     }
 
+    private String buttonCSSStyle(boolean isSelected) {
+        return "background: " + (isSelected ? "#DDEEFF" : "inherit") + "; " +
+               "border: " + (isSelected ? "1px solid red" : "none") + "; " +
+               "margin: 5px; text-align: initial; white-space: normal";
+    }
+
     public void onCreate() throws InterruptedException {
 
         Toolbar hbox = (Toolbar) this.getFellowIfAny("differences");
@@ -247,15 +253,13 @@ public class ModelToLogComparisonController extends BaseController {
 
                     // Add UI for this difference
                     Button button = new Button(difference.getString("sentence") + " (" + rankingFormat.format(difference.getDouble("ranking")) + " of traces)");
-                    button.setStyle("background: inherit; border: none; margin: 5px; text-align: initial; white-space: normal; ");
+                    button.setStyle(buttonCSSStyle(false));
                     button.addEventListener("onClick", new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {
                             for (Component component: button.getParent().getChildren()) {
                                 if (component instanceof Button) {
                                     Button b = (Button) component;
-                                    b.setStyle(button == b
-                                        ? "background: inherit; border: 1px solid red; margin: 5px; text-align: initial; white-space: normal; "
-                                        : "background: inherit; border: none; margin: 5px; text-align: initial; white-space: normal; ");
+                                    b.setStyle(buttonCSSStyle(button == b));
                                 }
                             }
                         }
