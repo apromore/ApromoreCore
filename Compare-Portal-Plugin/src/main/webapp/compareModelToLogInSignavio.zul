@@ -99,7 +99,12 @@
                         var json = jQuery.extend(true, {}, editorConfig);
                         var shapes = indexJSON(json);
 
+                        function uuid() {
+                            return "uuid-" + Math.random().toString();
+                        }
+
                         function addFlowNode(id, stencilId, x, y, w, h) {
+                            id = uuid();
                             var addition = {
                                 "bounds": {
                                     "lowerRight": { "x": x + w/2, "y": y + h/2 },
@@ -121,6 +126,8 @@
                         };
 
                         function addSequenceFlow(id, source, target, waypoints) {
+                            id = uuid();
+
                             function findCenter(shape) {
                                 return { x: (shape.bounds.lowerRight.x - shape.bounds.upperLeft.x)/2, y: (shape.bounds.lowerRight.y - shape.bounds.upperLeft.y)/2 }; 
                             };
