@@ -63,14 +63,13 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         dataRow.setParent(treeItem);
         treeItem.setValue(ctn);
 
-        if (folder.getParentId() == null || folder.getParentId() == 0 || checkOpenFolderTree(folder, UserSessionManager.getCurrentFolder())) {
-            treeItem.setOpen(true);
-            if (UserSessionManager.getCurrentFolder() != null && folder.getId().equals(UserSessionManager.getCurrentFolder().getId())) {
-                treeItem.setSelected(true);
-            }
-        } else {
-            treeItem.setOpen(false);
+        // Select (only) the current folder
+        if (UserSessionManager.getCurrentFolder() != null && folder.getId().equals(UserSessionManager.getCurrentFolder().getId())) {
+            treeItem.setSelected(true);
         }
+
+        // Open all super-folders of the current folder
+        treeItem.setOpen(folderContainsSubfolder(folder, UserSessionManager.getCurrentFolder()));
 
         Hlayout hl = new Hlayout();
         if (folder.getId() == 0) {
@@ -125,19 +124,15 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 
     /* Check the folder tree and make sure we return true if we are looking at a folder that is opened by a user.
      * Could be multiples levels down the tree. */
-    private boolean checkOpenFolderTree(FolderType folder, FolderType currentFolder) {
+    private boolean folderContainsSubfolder(FolderType folder, FolderType currentFolder) {
         boolean found = false;
         if (currentFolder != null) {
-            if (currentFolder.getId().equals(folder.getId())) {
-                found = true;
-            }
             if (!found) {
                 found = checkDownTheFolderTree(folder.getFolders(), currentFolder);
             }
         }
         return found;
     }
-
 
     private boolean checkDownTheFolderTree(List<FolderType> subFolders, FolderType currentFolder) {
         boolean result = false;
@@ -157,5 +152,4 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         }
         return result;
     }
-
 }
