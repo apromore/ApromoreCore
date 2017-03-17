@@ -22,9 +22,12 @@ package org.apromore.portal.dialogController;
 
 import java.util.Collection;
 
+import org.apromore.model.FolderType;
 import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
+import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.common.FolderTreeRenderer;
+import org.apromore.portal.common.UserSessionManager;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -88,5 +91,35 @@ public class NavigationController extends BaseController {
             }
         }
     }
+ 
+    public void currentFolderChanged() {
+        updateFolders(tree, UserSessionManager.getCurrentFolder());
+    }
 
+    /**
+     * Update all folders at or below the passed component, setting them to be correctly opened or selected
+     */
+    private static boolean updateFolders(Component component, FolderType currentFolder) {
+
+        boolean containsCurrentFolder = false;
+        for (Component child: component.getChildren()) {
+            boolean childContainsCurrentFolder = updateFolders(child, currentFolder);
+            containsCurrentFolder = containsCurrentFolder || childContainsCurrentFolder;
+        }
+
+        if (component instanceof Treeitem) {
+            Treeitem treeitem = (Treeitem) component;
+
+            Object value = treeitem.getValue();
+            if (value instanceof FolderTreeNode) {
+                FolderType folder = (FolderType) ((FolderTreeNode) value).getData();
+                boolean match = currentFolder.equals(folder);
+                treeitem.setSelected(match);
+                containsCurrentFolder = containsCurrentFolder || match || folder.getId() == 0;
+            }
+            treeitem.setOpen(containsCurrentFolder);
+        }
+
+        return containsCurrentFolder;
+    }
 }

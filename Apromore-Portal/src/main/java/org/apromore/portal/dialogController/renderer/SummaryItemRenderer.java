@@ -156,7 +156,8 @@ public class SummaryItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 UserSessionManager.setCurrentFolder(folder);
-                mainController.reloadSummaries();
+                mainController.reloadSummaries2();
+                mainController.currentFolderChanged();
             }
         });
     }
