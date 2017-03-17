@@ -69,7 +69,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         }
 
         // Open all super-folders of the current folder
-        treeItem.setOpen(folderContainsSubfolder(folder, UserSessionManager.getCurrentFolder()));
+        treeItem.setOpen(folder.getId() == 0 || folderContainsSubfolder(folder, UserSessionManager.getCurrentFolder()));
 
         Hlayout hl = new Hlayout();
         if (folder.getId() == 0) {
