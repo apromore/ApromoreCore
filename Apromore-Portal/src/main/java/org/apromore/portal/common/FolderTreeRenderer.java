@@ -72,6 +72,7 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         treeItem.setOpen(folder.getId() == 0 || folderContainsSubfolder(folder, UserSessionManager.getCurrentFolder()));
 
         Hlayout hl = new Hlayout();
+        hl.setValign("middle");
         if (folder.getId() == 0) {
             hl.appendChild(new Image("/img/home-folder24.png"));
         } else {
