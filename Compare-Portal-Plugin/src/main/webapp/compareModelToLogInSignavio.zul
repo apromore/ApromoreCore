@@ -303,7 +303,7 @@
                             var cs = shapeCenter(shapes[s]);
                             var ce = shapeCenter(shapes[e]);
                             var cm = lagrangePoint(cs, ce, 0, +1);
-                            var cr = lagrangePoint(cs, ce, 270, +1);
+                            var cr = lagrangePoint(lagrangePoint(cs, cm, 100, +1), lagrangePoint(cm, ce, 100, +1), 0, +1);
                             var middle = addFlowNode("sid-a", "Exclusive_Databased_Gateway", cm.x, cm.y, 40, 40);
                             var repeating = addFlowNode("sid-b", "Task", cr.x, cr.y, 100, 80);
                             repeating.properties.tasktype = "None";
@@ -311,8 +311,10 @@
                             repeating["properties"]["bgcolor"] = "white";
                             addSequenceFlow("sid-start-xor", s, middle.resourceId);
                             addSequenceFlow("sid-xor-end", middle.resourceId, e);
-                            addSequenceFlow("sid-xor-repeating", middle.resourceId, repeating.resourceId, [{x: (cr.x + cm.x)/2 - (cr.y - cm.y)/2, y: (cr.y + cm.y)/2 + (cr.x - cm.x)/2}]);
-                            addSequenceFlow("sid-repeating-xor", repeating.resourceId, middle.resourceId, [{x: (cr.x + cm.x)/2 + (cr.y - cm.y)/2, y: (cr.y + cm.y)/2 - (cr.x - cm.x)/2}]);
+                            var mr = {x: (cr.x + cm.x)/2 - (cr.y - cm.y)/2, y: (cr.y + cm.y)/2 + (cr.x - cm.x)/2};
+                            var rm = {x: (cr.x + cm.x)/2 + (cr.y - cm.y)/2, y: (cr.y + cm.y)/2 - (cr.x - cm.x)/2};
+                            addSequenceFlow("sid-xor-repeating", middle.resourceId, repeating.resourceId, [lagrangePoint(cm, mr, 0, -1), lagrangePoint(mr, cr, 0, -1)]);
+                            addSequenceFlow("sid-repeating-xor", repeating.resourceId, middle.resourceId, [lagrangePoint(cr, rm, 0, -1), lagrangePoint(rm, cm, 0, -1)]);
                             break;
 
                         case "TASKSWAP":
