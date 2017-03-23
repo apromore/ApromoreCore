@@ -23,6 +23,7 @@ package ee.ut.eventstr.comparison.differences;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -35,7 +36,7 @@ import java.util.List;
  * models. 
  */
 
-public class DifferenceML {
+public class DifferenceML implements Comparable<DifferenceML>{
 	private String sentence;
 	private List<String> start;
 	private List<String> a;
@@ -43,9 +44,15 @@ public class DifferenceML {
 	private List<String> end;
 	private List<String> greys;
     private List<String> newTasks;
-    private String type;
+	private String type;
+	private float ranking;
 
-	public DifferenceML(){}
+	public DifferenceML(float ranking){
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+
+        this.ranking = Float.parseFloat(df.format(ranking));
+    }
 
 	public DifferenceML(String sentence) {
 		this.sentence = sentence;
@@ -115,6 +122,8 @@ public class DifferenceML {
         this.newTasks = new ArrayList<>(new HashSet<>(newTasks));
     }
 
+    public float getRanking(){ return ranking; }
+
 	public static String toJSON(DifferencesML diffs) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -126,4 +135,10 @@ public class DifferenceML {
 
 		return null;
 	}
+
+    public int compareTo(DifferenceML differenceML){
+        if(this.ranking > differenceML.ranking)
+            return -1;
+        return 1;
+    }
 }

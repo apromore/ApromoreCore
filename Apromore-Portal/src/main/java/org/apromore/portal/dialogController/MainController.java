@@ -195,6 +195,10 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public void loadWorkspace() {
+        loadWorkspace(true);
+    }
+
+    private void loadWorkspace(boolean loadTree) {
         setHeaderText((Toolbarbutton) this.getFellow("releaseNotes"));
 
         String userId = UserSessionManager.getCurrentUser().getId();
@@ -203,7 +207,9 @@ public class MainController extends BaseController implements MainControllerInte
 
         int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
 
-        this.loadTree();
+        if (loadTree) {
+            this.loadTree();
+        }
 
         List<FolderType> folders = this.getService().getSubFolders(userId, currentParentFolderId);
         if (UserSessionManager.getCurrentFolder() != null) {
@@ -216,32 +222,14 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    public void loadWorkspace2() {
-        setHeaderText((Toolbarbutton) this.getFellow("releaseNotes"));
-
-        String userId = UserSessionManager.getCurrentUser().getId();
-        updateTabs(userId);
-        updateActions();
-
-        int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
-
-        //this.loadTree();
-
-        List<FolderType> folders = this.getService().getSubFolders(userId, currentParentFolderId);
-        if (UserSessionManager.getCurrentFolder() != null) {
-            FolderType folder = UserSessionManager.getCurrentFolder();
-            folder.getFolders().clear();
-            for (FolderType newFolder : folders) {
-                folder.getFolders().add(newFolder);
-            }
-            UserSessionManager.setCurrentFolder(folder);
-        }
-    }
-
-    public void loadTree() {
+    private void loadTree() {
         List<FolderType> folders = this.getService().getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
         UserSessionManager.setTree(folders);
         this.navigation.loadWorkspace();
+    }
+
+    public void currentFolderChanged() {
+        navigation.currentFolderChanged();
     }
 
     /**
@@ -306,7 +294,7 @@ public class MainController extends BaseController implements MainControllerInte
 	    (model.getTotalCount() > 1 ? " elements." : " element.")
 	);
 
-        loadWorkspace();
+        loadWorkspace(true);
     }
 
     public void reloadSummaries2() {
@@ -323,7 +311,7 @@ public class MainController extends BaseController implements MainControllerInte
 	    (model.getTotalCount() > 1 ? " elements." : " element.")
 	);
 
-        loadWorkspace2();
+        loadWorkspace(false);
     }
 
 //    public void reloadLogSummaries() {

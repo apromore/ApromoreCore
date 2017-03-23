@@ -28,10 +28,12 @@
             <menuitem id="processEdit" label="Edit model" disabled="true" image="/img/edit.png"/>
             <menuitem id="dataEdit" label="Edit meta data" disabled="true" image="/img/edit_metadata.png"/>
             <menuitem id="processDelete" label="Delete" disabled="true" image="/img/delete.png"/>
+            <!--
             <menuseparator/>
             <menuitem id="processCopy" label="Copy" disabled="true" image="/img/copy.png"/>
             <menuitem id="processPaste" label="Paste" disabled="true" image="/img/paste.png"/>
             <menuitem id="processMove" label="Move" disabled="true" image="/img/move.png"/>
+            -->
         </menupopup>
     </menu>
 </menubar>

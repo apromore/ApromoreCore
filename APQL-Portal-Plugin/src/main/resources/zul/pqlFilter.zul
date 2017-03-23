@@ -22,7 +22,7 @@
 <window id="queryWindow" title="PQL Query" width="1000px" height="700px" closable="true" position="center" sizable="true">
     <vbox>
         <applet id="apql"
-                codebase="../apql/applets/"
+                codebase="apql/applets/"
                 archive="APQL.jar"
                 code="com.apql.Apql.APQLApplet.class"
                 mayscript="true"

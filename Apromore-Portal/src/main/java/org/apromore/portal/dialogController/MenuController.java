@@ -66,12 +66,14 @@ public class MenuController extends Menubar {
         Menuitem editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
         Menuitem editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
         Menuitem deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
+        /*
         Menuitem copyMI = (Menuitem) this.menuB.getFellow("processCopy");
         copyMI.setDisabled(true);
         Menuitem pasteMI = (Menuitem) this.menuB.getFellow("processPaste");
         pasteMI.setDisabled(true);
         Menuitem moveMI = (Menuitem) this.menuB.getFellow("processMove");
         moveMI.setDisabled(true);
+        */
 
         createMI.addEventListener("onClick", new EventListener<Event>() {
             @Override

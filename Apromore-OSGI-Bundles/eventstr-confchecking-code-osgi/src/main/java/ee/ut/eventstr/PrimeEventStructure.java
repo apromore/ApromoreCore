@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class PrimeEventStructure <T> {
 	BitSet[] causality;
@@ -37,12 +38,16 @@ public class PrimeEventStructure <T> {
 	protected List<String> labels;
 	List<Integer> sources;
 	List<Integer> sinks;
+	int tracecount;
+	
+	protected Map<Integer, Integer> occurrences;
+	protected double[][] fmatrix;
 	
 	BehaviorRelation[][] matrix;
 	private HashSet<String> cyclicTasks;
 
-	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality,
-			BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict, List<Integer> sources, List<Integer> sinks) {
+	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality, BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict,
+							   List<Integer> sources, List<Integer> sinks) {
 		this.causality = causality;
 		this.dcausality = dcausality;
 		this.invcausality = invcausality;
@@ -52,6 +57,27 @@ public class PrimeEventStructure <T> {
 		this.sources = sources;
 		this.sinks = sinks;
 		this.cyclicTasks = new HashSet<>();
+	}
+
+	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality, BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict,
+							   List<Integer> sources, List<Integer> sinks, Map<Integer, Integer> occurrences, double[][] fmatrix) {
+		this.causality = causality;
+		this.dcausality = dcausality;
+		this.invcausality = invcausality;
+		this.concurrency = concurrency;
+		this.conflict = conflict;
+		this.labels = labels;
+		this.sources = sources;
+		this.sinks = sinks;
+		this.cyclicTasks = new HashSet<>();
+		
+		this.occurrences = occurrences;
+		this.fmatrix = fmatrix;
+		
+		tracecount = 0;
+		for (int sink: sinks) {
+			tracecount += occurrences.get(sink);
+		}
 	}
 	
 	public BehaviorRelation[][] getBRelMatrix() {
@@ -65,13 +91,17 @@ public class PrimeEventStructure <T> {
 					if (causality[i].get(j)) {
 						matrix[i][j] = BehaviorRelation.CAUSALITY;
 						matrix[j][i] = BehaviorRelation.INV_CAUSALITY;
-					} else if (invcausality[i].get(j)) {
+					} 
+					else if (invcausality[i].get(j)) {
 						matrix[i][j] = BehaviorRelation.INV_CAUSALITY;
 						matrix[j][i] = BehaviorRelation.CAUSALITY;
-					} else if (concurrency[i].get(j))
+					} 
+					else if (concurrency[i].get(j)) {
 						matrix[i][j] = matrix[j][i] = BehaviorRelation.CONCURRENCY;
-					else
+					}
+					else {
 						matrix[i][j] = matrix[j][i] = BehaviorRelation.CONFLICT;
+					}
 				}
 			}
 		}
@@ -82,6 +112,23 @@ public class PrimeEventStructure <T> {
 		return dcausality;
 	}
 	
+	public double[][] getFreqMatrix() {
+		return fmatrix;
+	}
+	
+	public int getEventOccurrenceCount(int event) {
+		return occurrences.get(event);
+	}
+	
+	public double getEventFrequency(int event) {
+		return getEventOccurrenceCount(event) / tracecount;
+	}
+	
+	// get amount of traces in the log of this event structure
+	public int getTotalTraceCount() {
+		return tracecount;
+	}
+
 	public String toDot() {
 		StringWriter str = new StringWriter();
 		PrintWriter out = new PrintWriter(str);
@@ -131,7 +178,6 @@ public class PrimeEventStructure <T> {
 		
 		return str.toString();
 	}
-
 	
 	public List<String> getLabels() {
 		return labels;

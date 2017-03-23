@@ -71,9 +71,7 @@ public class ApromoreCompareML {
 			fileInputStream.close();
 
 			return bFile;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e){ e.printStackTrace(); }
 
 		return null;
 	}
@@ -85,8 +83,11 @@ public class ApromoreCompareML {
 		String folder2 = "fines/";
 
 		String folder = "models/";
-        String logString = folder + "conf_loop_log.xes";
-        String modelString = folder + "conc_seq_insert.bpmn";
+
+        String logString = folder + "Loan_baseline_parallel_move_log.xes";
+        String modelString = folder + "Loan_baseline.bpmn";
+//		String logString = folder + "bpLog11.xes";
+//		String modelString = folder + "bp2.bpmn";
 //        String logString = folder1 + "Repair/Example2/conc_seq_insert_log.xes";
 //        String modelString = folder2 + "Examples/Example1/conf_loop.bpmn";
 
@@ -146,6 +147,8 @@ public class ApromoreCompareML {
 		silents.add("t6");
 		silents.add("t7");
 		silents.add("t8");
+        silents.add("t9");
+        silents.add("t10");
 		silents.add("t15");
 		silents.add("t16");
 		silents.add("t17");
@@ -188,8 +191,8 @@ public class ApromoreCompareML {
 			DiffMLGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model, log, silents);
 			verbalizer.verbalize();
 			System.out.println(DifferencesML.toJSON(verbalizer.getDifferences()));
-		for(DifferenceML dif : verbalizer.getDifferences().getDifferences())
-			System.out.println(dif.getSentence());
+			for(DifferenceML dif : verbalizer.getDifferences().getDifferences())
+				System.out.println(dif.getSentence() + " ---> " + dif.getRanking());
 
 //			NewDiffVerbalizer<Integer> verbalizer = comparator.analyzeDifferences(model.getNet(), log, silents);
 //			verbalizer.verbalize();

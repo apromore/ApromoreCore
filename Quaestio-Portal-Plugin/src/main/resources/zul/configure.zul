@@ -20,7 +20,7 @@
 
 <window width="1000px" closable="true" position="center" title="Configure process model with Quaestio">
     <applet id="quaestio"
-         codebase="../quaestio/applets/"
+         codebase="quaestio/applets/"
          archive="quaestio-applet.jar"
          code="com.processconfiguration.quaestio.QuaestioApplet"
          mayscript="true"

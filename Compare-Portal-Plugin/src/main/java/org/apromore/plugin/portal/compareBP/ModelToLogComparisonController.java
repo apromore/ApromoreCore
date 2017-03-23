@@ -23,29 +23,33 @@ package org.apromore.plugin.portal.compareBP;
 // Java 2 Standard packages
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.*;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
+import ee.ut.eventstr.comparison.differences.*;
 import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.portal.context.EditorPluginResolver;
+import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.au.AuResponse;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Treecell;
-import org.zkoss.zul.Treechildren;
-import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.Treerow;
+import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Window;
 
 // Local packages
@@ -61,6 +65,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
+import org.apromore.service.compare.CompareService;
 
 import javax.inject.Inject;
 import org.apromore.portal.dialogController.BaseController;
@@ -78,16 +83,20 @@ public class ModelToLogComparisonController extends BaseController {
 
     private MainController mainC;
 
-    private EditSessionType editSession1, editSession2;
-    private ProcessSummaryType process, process2;
-    private VersionSummaryType version, version2;
+    private EditSessionType editSession1;
+    private ProcessSummaryType process;
+    private VersionSummaryType version;
     private Set<RequestParameterType<?>> params;
+    private XLog log;
     private JSONObject differences;
 
+    private CompareService compareService;
     @Inject private UserSessionManager userSessionManager;
 
     public ModelToLogComparisonController() {
         super();
+
+        compareService = (CompareService) SpringUtil.getBean("compareService");
 
         if (userSessionManager.getCurrentUser() == null) {
             LOGGER.warn("Faking user session with admin(!)");
@@ -105,21 +114,16 @@ public class ModelToLogComparisonController extends BaseController {
             }
 
             editSession1 = session.getEditSession();
-            editSession2 = session.getEditSession2();
             mainC = session.getMainC();
             process = session.getProcess();
             version = session.getVersion();
-            process2 = session.getProcess2();
-            version2 = session.getVersion2();
             params =  session.getParams();
+            log = session.getLog();
         }
 
         Map<String, Object> param = new HashMap<>();
         try {
             String title = editSession1.getProcessName() + " (" + editSession1.getNativeType() + ")";
-            if (editSession2 != null) {
-                title += " vs " + editSession2.getProcessName() + " (" + editSession2.getNativeType() + ")";
-            }
             this.setTitle(title);
 
             ExportFormatResultType exportResult1 =
@@ -143,35 +147,6 @@ public class ModelToLogComparisonController extends BaseController {
             param.put("importPath", getImportPath(editSession1.getNativeType()));
             param.put("exportPath", getExportPath(editSession1.getNativeType()));
             param.put("editor", config.getSiteEditor());
-
-            if (editSession2 != null) {
-                ExportFormatResultType exportResult2 =
-                    getService().exportFormat(editSession2.getProcessId(),
-                            editSession2.getProcessName(),
-                            editSession2.getOriginalBranchName(),
-                            editSession2.getCurrentVersionNumber(),
-                            editSession2.getNativeType(),
-                            editSession2.getAnnotation(),
-                            editSession2.isWithAnnotation(),
-                            editSession2.getUsername(),
-                            params);
-
-                String data2 = StreamUtil.convertStreamToString(exportResult2.getNative().getInputStream());
-                param.put("jsonData2", data2.replace("\n", " ").replace("'", "\\u0027").trim());
-
-                title += " differences with " + editSession2.getProcessName();
-                pluginMessages = null;
-                if (exportResult1.getMessage() != null) {
-                    pluginMessages = new PluginMessages();
-                    pluginMessages.getMessage().addAll(exportResult1.getMessage().getMessage());
-                }
-                if (exportResult2.getMessage() != null) {
-                    if (pluginMessages == null) {
-                        pluginMessages = new PluginMessages();
-                    }
-                    pluginMessages.getMessage().addAll(exportResult2.getMessage().getMessage());
-                }
-            }
 
             this.setTitle(title);
             if (mainC != null) {
@@ -201,7 +176,6 @@ public class ModelToLogComparisonController extends BaseController {
                 }
             }
 
-
             List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve();
             param.put("plugins", editorPlugins);
 
@@ -212,6 +186,22 @@ public class ModelToLogComparisonController extends BaseController {
             e.printStackTrace();
         }
 
+        this.addEventListener("onRepair", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws InterruptedException {
+                String bpmnString = eventToString(event);
+                try {
+                    ModelAbstractions model = new ModelAbstractions(bpmnString.getBytes(Charset.forName("UTF-8")));
+                    DifferencesML differencesML = compareService.discoverBPMNModel(model, log, new HashSet<String>());
+                    differences = new JSONObject(DifferencesML.toJSON(differencesML));
+                    LOGGER.info("Obtained differences: " + differences);
+                    onCreate();
+
+                } catch (Exception e) {
+                    LOGGER.error("Unable to obtain differences", e);
+                }
+            }
+        });
         this.addEventListener("onSave", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
@@ -234,28 +224,51 @@ public class ModelToLogComparisonController extends BaseController {
         });
     }
 
+    private String buttonCSSStyle(boolean isSelected) {
+        return "background: " + (isSelected ? "#DDEEFF" : "inherit") + "; " +
+               "border: " + (isSelected ? "1px solid red" : "none") + "; " +
+               "margin: 5px; text-align: initial; white-space: normal";
+    }
+
     public void onCreate() throws InterruptedException {
-        Treechildren treechildren = (Treechildren) this.getFellowIfAny("differences");
-        Button applyButton = (Button) this.getFellowIfAny("apply");
-        if (treechildren != null) {
+
+        Toolbar hbox = (Toolbar) this.getFellowIfAny("differences");
+        if (hbox != null) {
+            Component parent = (Component) hbox.getParent();
+            
+            // Remove any pre-extant list items
+            Component sibling = hbox.getNextSibling();
+            while (sibling != null) {
+                parent.removeChild(sibling);
+                sibling = hbox.getNextSibling();
+            }
+
+            // Add the current differences
             try {
+                final DecimalFormat rankingFormat = new DecimalFormat("##%");
+
                 JSONArray array = this.differences.getJSONArray("differences");
                 for (int i=0; i < array.length(); i++) {
                     JSONObject difference = array.getJSONObject(i);
 
                     // Add UI for this difference
-                    Treeitem item = new Treeitem();
+                    Button button = new Button(difference.getString("sentence") + " (" + rankingFormat.format(difference.getDouble("ranking")) + " of traces)");
+                    button.setStyle(buttonCSSStyle(false));
+                    button.addEventListener("onClick", new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                            for (Component component: button.getParent().getChildren()) {
+                                if (component instanceof Button) {
+                                    Button b = (Button) component;
+                                    b.setStyle(buttonCSSStyle(button == b));
+                                }
+                            }
+                        }
+                    });
+                    button.setWidgetListener("onClick", differenceToJavascript(i, difference));
 
-                    Treerow row = new Treerow();
-                    item.appendChild(row);
-
-                    Treecell cell = new Treecell(difference.getString("sentence"));
-                    row.appendChild(cell);
-
-                    cell.setWidgetListener("onClick", differenceToJavascript(difference));
-
-                    treechildren.appendChild(item);
+                    parent.appendChild(button);
                 }
+
             } catch (JSONException e) {
                 InterruptedException ie = new InterruptedException("Unable to parse differences JSON");
                 ie.initCause(e);
@@ -263,15 +276,19 @@ public class ModelToLogComparisonController extends BaseController {
                 throw ie;
             }
         }
+
+        Button applyButton = (Button) this.getFellowIfAny("apply");
         if (applyButton != null) {
+            // The repairMLDifference function will send an onRepair event to the ZK asynchronous updater when it completes
             applyButton.setWidgetListener("onClick", "oryxEditor1.repairMLDifference()");
         }
     }
 
-    private String differenceToJavascript(JSONObject difference) throws JSONException {
+    private String differenceToJavascript(int buttonIndex, JSONObject difference) throws JSONException {
             LOGGER.info("differenceToJavascript: " + difference);
 
             return "oryxEditor1.displayMLDifference(" +
+                    buttonIndex + "," +
                     "\"" + difference.optString("type") + "\"," +
                     difference.optJSONArray("start")    + "," +
                     difference.optJSONArray("a")        + "," +
