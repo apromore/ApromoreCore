@@ -222,7 +222,7 @@ public class YAM {
 
 //        finally, we turn all the inclusive joins placed, into proper joins: ANDs or XORs
 //        System.out.println("YAM - turning inclusive joins ...");
-        if( replaceIORs ) replaceIORs();
+        replaceIORs();
 
         updateLabels(this.log.getEvents());
         System.out.println("YAM - bpmn diagram generated successfully");
@@ -462,7 +462,7 @@ public class YAM {
 
     private void replaceIORs() {
         bondsEntries.removeAll(rigidsEntries);
-        GatewayMap gatemap = new GatewayMap(bondsEntries);
+        GatewayMap gatemap = new GatewayMap(bondsEntries, replaceIORs);
 //        System.out.println("DEBUG - doing the magic ...");
         if( gatemap.generateMap(bpmnDiagram) ) gatemap.detectAndReplaceIORs();
         else System.out.println("ERROR - something went wrong initializing the gateway map");

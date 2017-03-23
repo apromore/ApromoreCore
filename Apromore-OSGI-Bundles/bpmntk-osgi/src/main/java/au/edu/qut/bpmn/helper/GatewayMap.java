@@ -66,13 +66,16 @@ public class GatewayMap {
     private DominatorTree domTree;
 
     private Set<Gateway> bondsEntries;
+    private boolean applyHagen;
 
 
     public GatewayMap() {
+        this.applyHagen = false;
         this.bondsEntries = new HashSet<>();
     }
 
-    public GatewayMap(Set<Gateway> bondsEntries) {
+    public GatewayMap(Set<Gateway> bondsEntries, boolean applyHagen) {
+        this.applyHagen = applyHagen;
         this.bondsEntries = bondsEntries;
 //        System.out.println("Gatemap - bonds entries: " + bondsEntries.size());
     }
@@ -771,6 +774,8 @@ public class GatewayMap {
                     }
                 }
             }
+
+            if( !applyHagen ) return Gateway.GatewayType.INCLUSIVE;
 
 //            at this point, we have to deal with the loop-injections inside this fragment,
 //            we have collected these during the backward exploration

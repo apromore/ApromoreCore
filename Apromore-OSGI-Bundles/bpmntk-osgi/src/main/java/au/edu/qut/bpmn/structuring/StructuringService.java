@@ -91,6 +91,10 @@ public class StructuringService {
         return structureDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, true, false);
     }
 
+    public BPMNDiagram structureDiagramWithPullUp(BPMNDiagram diagram) {
+        return structureDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, false, false);
+    }
+
     public BPMNDiagram structureDiagram(BPMNDiagram diagram,
                                         String  policy,
                                         int     maxDepth,
