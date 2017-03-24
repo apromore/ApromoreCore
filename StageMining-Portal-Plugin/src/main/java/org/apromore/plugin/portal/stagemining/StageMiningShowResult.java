@@ -55,18 +55,18 @@ public class StageMiningShowResult { //extends SelectorComposer<Window> {
     /**
      * @throws IOException if the <code>prodriftshowresult.zul</code> template can't be read from the classpath
      */
-    public StageMiningShowResult(final PortalContext portalContext, DecompositionTree tree, XLog currentLog) throws IOException, JSONException, Exception {
+    public StageMiningShowResult(final PortalContext portalContext, final DecompositionTree tree, final XLog currentLog) throws IOException, JSONException, Exception {
         this.portalContext = portalContext;
         this.resultW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/result.zul", null, null);
         Button createLogButton = (Button)resultW.getFellow("stageminingresult_createLogButton");
         
         createLogButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                Window createLogW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/createlog.zul", null, null);
+                final Window createLogW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/createlog.zul", null, null);
                 Button createLogOKButton = (Button)createLogW.getFellow("createLogOKButton");
                 Button createLogCancelButton = (Button)createLogW.getFellow("createLogCancelButton");
 
-                Listbox createLogEndEventListbox = (Listbox)createLogW.getFellow("createLogEndEventListBox");
+                final Listbox createLogEndEventListbox = (Listbox)createLogW.getFellow("createLogEndEventListBox");
                 List<String> endingEventList = getEndingEvents(currentLog);
                 ListModelList<String> statusListModel = new ListModelList<String>(endingEventList);
                 createLogEndEventListbox.setModel(statusListModel);
