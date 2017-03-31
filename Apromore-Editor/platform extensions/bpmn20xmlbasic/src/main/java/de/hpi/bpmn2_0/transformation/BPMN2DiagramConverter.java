@@ -411,15 +411,10 @@ public class BPMN2DiagramConverter {
         }
     }
 
-    public void getBPMN(String bpmnString, String encoding, OutputStream jsonStream) {
+    public void getBPMN(String bpmnString, String encoding, OutputStream jsonStream, ClassLoader classLoader) {
         // Parse BPMN from XML to JAXB
-        Unmarshaller unmarshaller;
         try {
-            StreamSource source = new StreamSource(new StringReader(bpmnString));
-            unmarshaller = newContext().createUnmarshaller();
-            unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
-            Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
-
+            Definitions definitions = parseBPMN(bpmnString, classLoader);
             logger.fine("Parsed BPMN");
 
             BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
@@ -448,6 +443,26 @@ public class BPMN2DiagramConverter {
     private static JAXBContext newContext() throws JAXBException {
         return JAXBContext.newInstance(Definitions.class, Configurable.class, ConfigurationAnnotationAssociation.class, ConfigurationAnnotationShape.class,
             Variants.class);
+    }
+
+    private static JAXBContext newContext(ClassLoader classLoader) throws JAXBException {
+        return JAXBContext.newInstance("de.hpi.bpmn2_0.model", classLoader);
+    }
+
+    public static Definitions parseBPMN(String bpmnString) throws JAXBException {
+        StreamSource source = new StreamSource(new StringReader(bpmnString));
+        Unmarshaller unmarshaller = newContext().createUnmarshaller();
+        unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
+        Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
+        return definitions;
+    }
+
+    public static Definitions parseBPMN(String bpmnString, ClassLoader classLoader) throws JAXBException {
+        StreamSource source = new StreamSource(new StringReader(bpmnString));
+        Unmarshaller unmarshaller = newContext(classLoader).createUnmarshaller();
+        unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
+        Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
+        return definitions;
     }
 
     /**
