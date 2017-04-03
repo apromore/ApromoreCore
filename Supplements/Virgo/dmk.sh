@@ -190,9 +190,8 @@ then
 
         JAVA_OPTS="$JAVA_OPTS \
                     -server \
-                    -Xmx2g \
-                    -Xmn1g \
-                    -XX:MaxPermSize=1g"
+                    -Xmx12g \
+                    -Xmn1g"
 
 		cd $KERNEL_HOME; exec $JAVA_EXECUTABLE \
 			$JAVA_OPTS \

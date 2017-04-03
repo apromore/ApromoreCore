@@ -59,7 +59,7 @@ public class CandidatesEntitiesController {
             Listitem listItem = new Listitem();
             listItem.setLabel(candidate);
             this.candidates.appendChild(listItem);
-            listItem.setSelected(true);
+            listItem.setSelected(false);
         }
 
         this.cancelButton = (Button) this.candidateEntitiesW.getFellow("entityCancelButton");
