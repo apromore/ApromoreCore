@@ -35,6 +35,23 @@
                 </selectbox>
             </groupbox>
             <groupbox width="285px">
+                <caption label="Select Type of Model"/>
+                <radiogroup id="bpmnMinerFlat">
+                    <grid>
+                        <columns>
+                            <column />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <radio id="flat" label="Flat" selected="true"/>
+                                <radio id="hierarchical" label="Hierarchical" />
+                            </row>
+                        </rows>
+                    </grid>
+                </radiogroup>
+            </groupbox>
+            <groupbox width="285px">
                 <caption label="Select Dependency Discover Algorithm"/>
                 <radiogroup id="bpmnMinerDependencyAlgorithm">
                     <grid>
@@ -78,8 +95,8 @@
                         </columns>
                         <rows>
                             <row>
-                                <radio id="filtered" label="Yes" selected="true"/>
-                                <radio id="notFiltered" label="No"/>
+                                <radio id="filtered" label="Yes"/>
+                                <radio id="notFiltered" label="No" selected="true"/>
                             </row>
                         </rows>
                     </grid>
