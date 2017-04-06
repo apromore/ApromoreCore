@@ -58,7 +58,7 @@ import org.apromore.service.loganimation.LogAnimationService;
 @Component("plugin")
 public class LogAnimationPlugin extends DefaultPortalPlugin {
 
-    private String label = "Animate logs";
+    private String label = "Animate Logs";
     private String groupLabel = "Analyze";
 
     @Inject private EventLogService eventLogService;

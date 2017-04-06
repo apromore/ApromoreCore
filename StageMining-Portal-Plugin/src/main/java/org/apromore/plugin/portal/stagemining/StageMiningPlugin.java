@@ -80,7 +80,7 @@ public class StageMiningPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Analyze";
+        return "Discover";
     }
 
     @Override
