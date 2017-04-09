@@ -47,8 +47,10 @@
                     <unpackBundle>false</unpackBundle>
                     <instructions>
                         <Import-Package>
+                            <!-- Dynamically loaded by JAXB in order to parse BPMN -->
                             com.sun.xml.bind.v2,
                             de.hpi.bpmn2_0.model,
+
                             org.processmining.plugins.signaturediscovery.encoding,
                             org.springframework.beans.factory.aspectj,
                             *
