@@ -22,7 +22,9 @@ package org.apromore.plugin.portal.loganimation;
 
 // Java 2 Standard Edition
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -120,11 +122,12 @@ public class LogAnimationPlugin extends DefaultPortalPlugin {
 
             // Fetch the XLog representations of the logs
             List<LogAnimationService.Log> logs = new ArrayList<>();
+            Iterator<String> colors = Arrays.asList("#0088FF", "#FF8800", "#88FF00").iterator();
             for (LogSummaryType logSummary: logSummaries) {
                 LogAnimationService.Log log = new LogAnimationService.Log();
                 log.fileName = "Dummy";
                 log.xlog     = eventLogService.getXLog(logSummary.getId());
-                log.color    = "green";
+                log.color    = colors.hasNext() ? colors.next() : "red";
                 logs.add(log);
             }
             

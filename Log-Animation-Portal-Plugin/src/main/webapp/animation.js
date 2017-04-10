@@ -902,14 +902,19 @@ LogCase.prototype = {
         var end   = begin + dur;
 
         if (begin <= t && t <= end && !alreadyMarkedIndices[i]) {
-        var marker = {
-            begin:   begin,
-            end:     end,
-            index:   i,
-            element: this.createPathMarker(t, dt, this.getPathElement(path), begin, dur, this.offset)
-        };
-            svgDocumentG.appendChild(marker.element);
-        this.pathMarkers.push(marker);
+            var pathElement = this.getPathElement(path);
+            if (!pathElement) {
+                console.log("Unable to create marker");
+            } else {
+                var marker = {
+                    begin:   begin,
+                    end:     end,
+                    index:   i,
+                    element: this.createPathMarker(t, dt, this.getPathElement(path), begin, dur, this.offset)
+                };
+                svgDocumentG.appendChild(marker.element);
+                this.pathMarkers.push(marker);
+            }
         }
     }
 
