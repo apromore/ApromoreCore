@@ -1110,3 +1110,87 @@ LogCase.prototype = {
         return marker;
     }
 };
+
+        var lastSliderValue = 11;
+        var speedRatio;
+
+        var $j = jQuery.noConflict();
+
+        var controller = new Controller();
+
+        function switchPlayPause(e) {
+            controller.switchPlayPause(e);
+        }
+
+        function fastForward() {
+            controller.fastforward();
+        }
+
+        function fastBackward() {
+            controller.fastBackward();
+        }
+
+        function nextTrace() {
+            controller.nextTrace();
+        }
+
+        function previousTrace() {
+            controller.previousTrace();
+        }
+
+        function start(e) {
+            lastSliderValue = 11;
+            $j("#slider2").slider({ value: 11 });
+            controller.start();
+        }
+
+        function end(e) {
+            lastSliderValue = 1;
+            $j("#rate_slider").slider({ value: 1 });
+            controller.end();
+        }
+
+        function toggleCaseLabelVisibility() {
+            var input = $j("input#toggleCaseLabelVisibility")[0];
+            controller.setCaseLabelsVisible(input.checked);
+        }
+
+        //////////////////////////////Load animation workspace after document has been fully loaded
+        $j(window).load(function(){
+                var resStepValues = [.00001, .0001, .0005, .001, .005, .01, .05, .1, .2, .5, 1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 10000];
+                var $jslider2 = $j( "#slider2" ).slider({
+                        orientation: "vertical",
+                        step: 1,
+                        min: 1,
+                        max: 20,
+                        value: 11
+                });
+                $jslider2.slider("pips", {
+                        labels:resStepValues,
+                        rest:"label"
+                });
+
+                //$jslider2.slider("pips").slider("float");
+
+                var lastSliderValue = 11;
+                //alert(lastSliderValue);
+
+                $j("#slider2").on( "slidechange", function(event,ui) {
+                        //speedRatio = (ui.value/lastSliderValue)*$j("#speedfactor").val();
+                        //alert("speedRatio: " + speedRatio + " uiValue: " + ui.value + " speedfactor:" + $j("#speedfactor").val());
+                        speedRatio = (resStepValues[ui.value-1]/resStepValues[lastSliderValue-1]);
+                        //alert("ui.value=" + ui.value + " last value=" + lastSliderValue + " speed ratio=" + speedRatio);
+                        controller.changeSpeed(speedRatio);
+                        lastSliderValue = ui.value;
+                });
+
+                /*
+                 * Set up svg document
+                 *      - Prepare enough space on the top for timeline and progress indicators
+                 *      - Then, attach initial timeline
+                 *  - Attach progress indicators
+                 */
+
+                var timelineE = controller.createTimeline();
+        });
+        //////////////////////////End of window load

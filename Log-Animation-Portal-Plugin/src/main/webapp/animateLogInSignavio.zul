@@ -24,18 +24,24 @@
         xmlns:z="http://www.zkoss.org/2005/zul"
         use="org.apromore.plugin.portal.loganimation.LogAnimationController">
 
-    <n:style media="screen" type="text/css">
+    <style media="screen" type="text/css">
         @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
         @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/file-upload.css");
         @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/xtheme-gray.css");
-    </n:style>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/xtheme-smoky.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/custom-style.css" type="text/css"/>
+    </style>
 
-    <n:div id="oryxwrapper" style="display: none">
-        <n:script>
+    <link rel="stylesheet" href="/loganimation/styles.css"/>
+    <link rel="stylesheet" href="/loganimation/jquery-ui.css"/>
+    <link rel="stylesheet" href="/loganimation/jquery-ui.theme.css"/>
+    <link rel="stylesheet" href="/loganimation/jquery-ui-slider-pips.css" type="text/css"/>
+
+    <link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
+    <link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
+    <link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/xtheme-smoky.css" type="text/css"/>
+    <link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/custom-style.css" type="text/css"/>
+
+    <div id="oryxwrapper" style="display: none">
+        <script>
             <![CDATA[
                 if (!ORYX) {
                     var ORYX = {};
@@ -45,27 +51,32 @@
                 }
                 ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
             ]]>
-        </n:script>
+        </script>
 
         <!-- JavaScript Dependencies of Signavio Process Editor -->
-        <n:script src="/${arg.editor}/libs/prototype-1.5.1.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/utils.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+        <script src="/${arg.editor}/libs/prototype-1.5.1.js" type="text/javascript"/>
+        <script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/>
+        <script src="/${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
+        <script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
+        <script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
+        <script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
+        <script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
+        <script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
+        <script src="/${arg.editor}/libs/utils.js" type="text/javascript"/>
+        <script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+
+        <script src="/loganimation/jquery-1.10.2.min.js" type="text/javascript"/>
+        <script src="/loganimation/jquery-ui.min.js" type="text/javascript"/>
+        <script src="/loganimation/jquery-ui-slider-pips.min.js" type="text/javascript"/>
+        <script src="/loganimation/animation.js" type="text/javascript"/>
 
         <!-- Include all Editor plug-ins -->
         <z:zk forEach="${arg.plugins}">
-            <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
+            <script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
 
-        <n:span id="oryxstartupcode">
-            <n:script>
+        <span id="oryxstartupcode">
+            <script>
                 <![CDATA[
                     var urlData = '${arg.url}';
 
@@ -175,10 +186,7 @@
 
                         Ext.select('svg').setVisible(false);
                     };
-                ]]>
-            </n:script>
-            <n:script>
-                <![CDATA[
+
                     function initialize() {
                         $j("#start").get(0).disabled = true;
                         $j("#pause").get(0).disabled = true;
@@ -201,20 +209,20 @@
                         $j("#slider2").get(0).disabled = false;
                     }
                 ]]>
-            </n:script>
-        </n:span>
-    </n:div>
+            </script>
+        </span>
+    </div>
 
-    <n:div id="oryx-canvas"></n:div>
+    <div id="oryx-canvas"></div>
     
     <div id="controls" style="position: absolute; top: 100%; left: 0; width: 100%">
         <!-- Modify div attributes to adjust the control panel, e.g. size, position, and color -->
-        <div id="playback_controls" style="background: #EEEE; border: 1px solid black; padding: 10px; position: relative; left: 0; top: -180px; height: 170px; width: 100%; overflow: hidden">
+        <div id="playback_controls" style="background: #EEEEEE; border: 1px solid black; padding: 10px; position: relative; left: 0; top: -180px; height: 170px; width: 100%; overflow: hidden">
 
             <!-- SVG for the timeline -->
             <n:svg id="timeline_svg" xmlns="http://www.w3.org/2000/svg" width="2000px" height="60px" viewBox="0 0 2000 60" style="padding-left:20px"></n:svg>
 
-            <div id="buttons_and_rate" style="float:left; text-align: center; margin-top: 5px; padding: 0px; width: 250px; top: -40px; height: 100px; overflow: hidden; background-color:#EEEEDD;">
+            <div id="buttons_and_rate" style="float:left; text-align: center; margin-top: 5px; padding: 0px; width: 250px; top: -40px; height: 100px; overflow: hidden; background-color:#EEEEEE;">
                 <button id='start' onclick="start(event);" style="border: 1px solid gray; padding: 0">
                     <img src="images/control_start.png" alt="Start" width="24" height="24" style="border: 0; padding: 0"/>
                 </button>
@@ -238,7 +246,7 @@
                 </button>
             </div>
 
-            <div id="progress_display" style="float:left; margin-top: 5px; padding: 0px; padding-left: 0px; left: 250px; top: -40px; height: 100px; overflow: hidden; background-color: #EEEEBB;">
+            <div id="progress_display" style="float:left; margin-top: 5px; padding: 0px; padding-left: 0px; left: 250px; top: -40px; height: 100px; overflow: hidden; background-color: #EEEEEE;">
 
                 <!-- Running Clock -->
                 <table style="display: inline-table; vertical-align: top">
@@ -271,128 +279,9 @@
             </div>
         </div>
 
-        <!-- Modify div attributes to adjust the zoom panel, e.g. size, position, and color -->
-        <div id="zoom_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 30px; top: -400px; width: 25px; height: 150px; overflow: hidden">
-            <div id="zoom_slider" disabled="disabled" style="left: 10px; top: 10px"></div>
-        </div>
-
         <!-- Modify div attributes to adjust the speed panel, e.g. size, position, and color -->
-        <div id="speed_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 60px; top: -400px; width: 100px; height: 220px; overflow: hidden">
+        <div id="speed_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 30px; top: -400px; width: 100px; height: 220px; overflow: hidden">
             <div id="slider2" disabled="disabled" style="left: 10px; top: 10px; height:200px;"></div>
         </div>
     </div>
-
-    <n:script src="/loganimation/jquery-1.10.2.min.js" type="text/javascript"/>
-    <n:script src="/loganimation/jquery-ui.min.js" type="text/javascript"/>
-    <n:script src="/loganimation/jquery-ui-slider-pips.min.js" type="text/javascript"/>
-    <n:script src="/loganimation/animation.js" type="text/javascript"/>
-
-    <script type="text/javascript" charset="utf-8">
-        var lastSliderValue = 11;
-        var speedRatio;
-                
-        var $j = jQuery.noConflict();
-        
-        var controller = new Controller();      
-        
-    function switchPlayPause(e) {               
-                controller.switchPlayPause(e);          
-    }
-    
-    function fastForward() {
-        controller.fastforward();
-    }
-
-    function fastBackward() {
-        controller.fastBackward();
-    }
-    
-    function nextTrace() {
-        controller.nextTrace();
-    }    
-    
-    function previousTrace() {
-        controller.previousTrace();
-    }  
-    
-    function start(e) {
-        lastSliderValue = 11;
-        $j("#slider2").slider({ value: 11 });
-        controller.start();
-    }   
-
-    function end(e) {
-        lastSliderValue = 1;
-        $j("#rate_slider").slider({ value: 1 });
-        controller.end();
-    }
-
-    function toggleCaseLabelVisibility() {
-                var input = $j("input#toggleCaseLabelVisibility")[0];
-                controller.setCaseLabelsVisible(input.checked);
-    }
-    
-        //////////////////////////////Load animation workspace after document has been fully loaded
-        $j(window).load(function(){     
-                var resStepValues = [.00001, .0001, .0005, .001, .005, .01, .05, .1, .2, .5, 1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 10000];
-                var $jslider2 = $j( "#slider2" ).slider({
-                        orientation: "vertical",
-                        step: 1,
-                        min: 1,
-                        max: 20,
-                        value: 11
-                });
-                $jslider2.slider("pips", {
-                        labels:resStepValues,
-                        rest:"label"
-                });
-                
-                //$jslider2.slider("pips").slider("float");
-           
-                var lastSliderValue = 11;
-                //alert(lastSliderValue);
-                
-                $j("#slider2").on( "slidechange", 
-                                                function(event,ui) {
-                                                        //speedRatio = (ui.value/lastSliderValue)*$j("#speedfactor").val();
-                                                        //alert("speedRatio: " + speedRatio + " uiValue: " + ui.value + " speedfactor:" + $j("#speedfactor").val());
-                                                        speedRatio = (resStepValues[ui.value-1]/resStepValues[lastSliderValue-1]);
-                                                        //alert("ui.value=" + ui.value + " last value=" + lastSliderValue + " speed ratio=" + speedRatio);
-                                                        controller.changeSpeed(speedRatio);
-                                                        lastSliderValue = ui.value; 
-                                                                                });             
-        
-                // Zoom slider
-
-                $j( "#zoom_slider" ).slider({
-                        orientation: "vertical",
-                        step: 1,
-                        min: 0,
-                        max: 10,
-                        value: 5 
-                });
-
-                $j("#zoom_slider").on( "slidechange", function(event, ui) {
-                        console.log("Zoom slider at " + ui.value);
-                        var groupE = $j("div#svgLoc > svg > g").get(0);
-                        var bbox = groupE.getBBox();
-                        var transform =
-                                "translate(" + (+bbox.x + (bbox.width/2)) + "," + (+bbox.y +(bbox.height/2)) + ") " +
-                                "scale(" + (ui.value / 6.6667 + 0.25) + ") " +
-                                "translate(" + (-bbox.x - (bbox.width/2)) + "," + (-bbox.y - (bbox.height/2)) + ")";
-                        groupE.setAttribute("transform", transform);
-                });
-
-                /*
-                 * Set up svg document
-                 *      - Prepare enough space on the top for timeline and progress indicators
-                 *      - Then, attach initial timeline
-                 *  - Attach progress indicators
-                 */
-
-                var timelineE = controller.createTimeline();
-        });
-        //////////////////////////End of window load
-    </script>
-
 </z:window>
