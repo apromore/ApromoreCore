@@ -42,7 +42,7 @@
 
     <beans:bean id="plugin2" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
         <beans:property name="groupLabel" value="Monitor" />
-        <beans:property name="label" value="Animate log" />
+        <beans:property name="label" value="Animate Logs" />
     </beans:bean>
 
     <!-- Exposes the component as OSGi service -->
