@@ -500,6 +500,7 @@ public class Graph {
 
         switch(type) {
             case PUSHDOWN:
+                if( !keepBisimulation ) return false;
                 if( jsLimitation ) {
                     if( exitGate.equals(entry) && (outgoing.get(entry).size() != 1) ) {
                         //System.out.println("WARNING - found invalid move [PUSHDOWN: join/split on entry]!");
@@ -653,10 +654,12 @@ public class Graph {
             return false;
         }
 
-        simplify();
+//        simplify();
         this.move++;
         return true;
     }
+
+    public void enablePullUp() {keepBisimulation = false;}
 
     public void setPID(int pid) { this.PID = pid; }
 
@@ -756,5 +759,6 @@ public class Graph {
         removePath(pid);
         allPaths.remove(pid);
     }
+
 
 }
