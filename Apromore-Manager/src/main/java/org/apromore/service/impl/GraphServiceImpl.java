@@ -518,7 +518,9 @@ public class GraphServiceImpl implements GraphService {
                     }
 
                     for (ObjectAttribute attrib : object.getObjectAttributes()) {
-                        cpfObject.setAttribute(attrib.getName(), attrib.getValue(), XMLUtils.stringToAnyElement(attrib.getAny()));
+                        if (attrib.getAny() != null) {
+                            cpfObject.setAttribute(attrib.getName(), attrib.getValue(), XMLUtils.stringToAnyElement(attrib.getAny()));
+                        }
                     }
 
                     canonical.addObject(cpfObject);
@@ -590,7 +592,9 @@ public class GraphServiceImpl implements GraphService {
                 objectReference.setObjectRefType(objectRef.getType());
 
                 for (ObjectRefAttribute type : objectRef.getObjectRefAttributes()) {
-                    objectReference.setAttribute(type.getName(), type.getValue(), XMLUtils.stringToAnyElement(type.getAny()));
+                    if (type.getAny() != null) {
+                        objectReference.setAttribute(type.getName(), type.getValue(), XMLUtils.stringToAnyElement(type.getAny()));
+                    }
                 }
 
                 cpfNode.addObjectReference(objectReference);

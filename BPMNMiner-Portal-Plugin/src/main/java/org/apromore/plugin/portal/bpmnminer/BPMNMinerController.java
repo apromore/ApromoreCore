@@ -86,6 +86,7 @@ public class BPMNMinerController {
 
     private Textbox modelName;
     private Selectbox miningAlgorithms;
+    private Radiogroup flatModel;
     private Radiogroup dependencyAlgorithms;
     private Radiogroup filterLog;
     private Radiogroup sortLog;
@@ -175,6 +176,7 @@ public class BPMNMinerController {
             listModelArray.addToSelection(arrayMiningAlgorithms[2]);
             this.miningAlgorithms.setModel(listModelArray);
 
+            this.flatModel = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerFlat");
             this.dependencyAlgorithms = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerDependencyAlgorithm");
             this.filterLog = (Radiogroup) this.bpmnMinerW.getFellow("noiseFilter");
             this.sortLog = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerSort");
@@ -290,11 +292,15 @@ public class BPMNMinerController {
             if(log == null) {
                 Messagebox.show("Please select a log.");
             }else {
-                erModel = new DiscoverERmodel();
-                listCandidates = erModel.generateAllAttributes(log);
-                Collections.sort(listCandidates);
+                if(flatModel.getSelectedIndex() == 0) {
+                    noEntityException();
+                }else {
+                    erModel = new DiscoverERmodel();
+                    listCandidates = erModel.generateAllAttributes(log);
+                    Collections.sort(listCandidates);
 
-                new CandidatesEntitiesController(this, listCandidates);
+                    new CandidatesEntitiesController(this, listCandidates);
+                }
             }
 
         } catch (IOException e) {

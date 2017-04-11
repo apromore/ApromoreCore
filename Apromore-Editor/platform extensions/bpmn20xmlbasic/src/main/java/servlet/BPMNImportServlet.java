@@ -60,7 +60,7 @@ public class BPMNImportServlet extends HttpServlet {
             res.setContentType("application/json");
             res.setStatus(200);
             BPMN2DiagramConverter bpmnConverter = new BPMN2DiagramConverter("/signaviocore/editor/");
-            bpmnConverter.getBPMN(bpmnData, "UTF-8", out);
+            bpmnConverter.getBPMN(bpmnData, "UTF-8", out, getClass().getClassLoader());
         } catch (Exception e) {
             try {
                 LOGGER.severe(e.toString());

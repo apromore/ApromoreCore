@@ -252,7 +252,7 @@ public class ModelToLogComparisonController extends BaseController {
                     JSONObject difference = array.getJSONObject(i);
 
                     // Add UI for this difference
-                    Button button = new Button(difference.getString("sentence") + " (" + rankingFormat.format(difference.getDouble("ranking")) + " of traces)");
+                    final Button button = new Button(difference.getString("sentence") + " (" + rankingFormat.format(difference.getDouble("ranking")) + " of traces)");
                     button.setStyle(buttonCSSStyle(false));
                     button.addEventListener("onClick", new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {

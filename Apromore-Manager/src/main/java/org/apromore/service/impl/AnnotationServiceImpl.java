@@ -106,7 +106,7 @@ public class AnnotationServiceImpl implements AnnotationService {
             }
         } catch (PluginNotFoundException | AnnotationProcessorException e) {
             LOGGER.warn("Plugin not found for '" + sourceType + "' and '" + targetType + "'.");
-            LOGGER.warn("WARNING",e);
+            LOGGER.debug("Plugin not found because of exception",e);
 
         }
 

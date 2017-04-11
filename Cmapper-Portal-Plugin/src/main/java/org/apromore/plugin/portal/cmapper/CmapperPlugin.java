@@ -81,7 +81,7 @@ public class CmapperPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Define configuration mapping";
+        return "Define Configuration Mapping";
     }
 
     @Override

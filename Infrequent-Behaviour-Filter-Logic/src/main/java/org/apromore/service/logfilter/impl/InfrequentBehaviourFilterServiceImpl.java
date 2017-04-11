@@ -120,12 +120,6 @@ public class InfrequentBehaviourFilterServiceImpl extends DefaultParameterAwareP
 
         XEventClassifier classifier = new XEventNameClassifier();
         InfrequentBehaviourFilter filter = new InfrequentBehaviourFilter(classifier);
-        for(XTrace t : log) {
-            System.out.println(t);
-            for(XEvent e : t) {
-                System.out.println(classifier.getClassIdentity(e));
-            }
-        }
         return filter.filterLog(log);
     }
 
