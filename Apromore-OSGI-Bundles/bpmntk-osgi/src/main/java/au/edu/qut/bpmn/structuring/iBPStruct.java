@@ -48,7 +48,6 @@ public class iBPStruct {
     private int maxMinutes;
     private boolean timeBounded;
     private boolean keepBisimulation;
-    private boolean forceStructuring;
     private int g = 0;
 
     private DiagramHandler diagramHandler;
@@ -93,13 +92,11 @@ public class iBPStruct {
         this.maxMinutes = maxMinutes;
         this.timeBounded = timeBounded;
         this.keepBisimulation = keepBisimulation;
-        this.forceStructuring = forceStructuring;
 
         diagramHandler = new DiagramHandler();
 
         System.out.println("iBPStruct - starting: ");
         System.out.println("iBPStruct - [Setting] policy: " + policy);
-        System.out.println("iBPStruct - [Setting] force structuring: " + forceStructuring);
         System.out.println("iBPStruct - [Setting] pull-up: " + (!keepBisimulation));
 
         if( policy == StructuringCore.Policy.ASTAR ) {
@@ -251,18 +248,6 @@ public class iBPStruct {
         if( !graph.recompose(structuredRigids) ) {
             System.out.println("ERROR - impossible recompose the diagram.");
             return false;
-        }
-
-        if( forceStructuring && (graph.getAlivePaths().size() != 1) ) {
-            System.out.println("DEBUG - trying to wide the view.");
-            rigids = new HashSet<>();
-            rigids.add(graph.minimalDecomposition());
-            core = new StructuringCore(policy, maxDepth, maxSol, maxChildren, maxStates, maxMinutes, timeBounded);
-            structuredRigids = core.structureAll(rigids);
-            if( !graph.recompose(structuredRigids) ) {
-                System.out.println("ERROR - impossible recompose the diagram.");
-                return false;
-            }
         }
 
         //printGraph();

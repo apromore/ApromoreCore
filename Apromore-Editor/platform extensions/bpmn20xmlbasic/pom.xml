@@ -56,8 +56,11 @@
                             |junit <!-- TODO Why is Junit needed at runtime? -->
                             ;inline=true
                         </Embed-Dependency>
-                        <Export-Package>
+                        <Import-Package>
                             com.sun.xml.bind.v2,
+                            *
+                        </Import-Package>
+                        <Export-Package>
                             de.hpi.bpmn2_0.exceptions,
                             de.hpi.bpmn2_0.factory,
                             de.hpi.bpmn2_0.model,
@@ -78,7 +81,11 @@
                             org.apache.commons.collections4.bidimap,
                             org.jgrapht,
                             org.oryxeditor.server,
-                            servlet
+                            servlet,
+                            <!-- TOOO: Move these classes to Log-Animation-Logic -->
+                            de.hpi.bpmn2_0.animation,
+                            de.hpi.bpmn2_0.replay,
+                            org.processmining.plugins.signaturediscovery.encoding
                         </Export-Package>
                     </instructions>
                 </configuration>

@@ -48,8 +48,8 @@ import org.apromore.plugin.portal.PortalContext;
 @Component("plugin")
 public class LogVisualizerPlugin extends DefaultPortalPlugin {
 
-    private String label = "Visualize log";
-    private String groupLabel = "Analyze";
+    private String label = "Visualize Log";
+    private String groupLabel = "Discover";
 
     @Inject private EventLogService eventLogService;
     @Inject private LogVisualizerService logVisualizerService;

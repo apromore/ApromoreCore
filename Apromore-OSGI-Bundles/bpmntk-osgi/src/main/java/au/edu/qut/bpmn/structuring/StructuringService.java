@@ -53,6 +53,7 @@ public class StructuringService {
     private boolean timeBounded;
     private boolean keepBisimulation;
     private boolean forceStructuring;
+    private boolean removeClones;
 
     private BPMNDiagram diagram;		//initial diagram
     private DiagramHandler diagramHandler;
@@ -83,16 +84,15 @@ public class StructuringService {
         diagramHandler = new DiagramHandler();
     }
 
-    public BPMNDiagram structureFlatBPMNDiagram(BPMNDiagram diagram) {
-        return structureFlatBPMNDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, true, false);
-    }
 
     public BPMNDiagram structureDiagram(BPMNDiagram diagram) {
+        removeClones = true;
         return structureDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, true, false);
     }
 
-    public BPMNDiagram structureDiagramWithPullUp(BPMNDiagram diagram) {
-        return structureDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, false, false);
+    public BPMNDiagram structureDiagram(BPMNDiagram diagram, boolean pullup, boolean removeClones) {
+        this.removeClones = removeClones;
+        return structureDiagram(diagram, "ASTAR", MAX_DEPTH, MAX_SOL, MAX_CHILDREN, MAX_STATES, MAX_MINUTES, true, !pullup, false);
     }
 
     public BPMNDiagram structureDiagram(BPMNDiagram diagram,
@@ -135,30 +135,6 @@ public class StructuringService {
         return this.diagram;
     }
 
-    private BPMNDiagram structureFlatBPMNDiagram(BPMNDiagram diagram,
-                                                 String  policy,
-                                                 int     maxDepth,
-                                                 int     maxSolutions,
-                                                 int     maxChildren,
-                                                 int     maxStates,
-                                                 int     maxMinutes,
-                                                 boolean timeBounded,
-                                                 boolean keepBisimulation,
-                                                 boolean forceStructuring)
-    {
-        BPMNDiagram output;
-
-        this.diagram = diagramHandler.copyDiagram(diagram);
-
-        iBPStruct spi = new iBPStruct(  StructuringCore.Policy.valueOf(policy),
-                                        maxDepth, maxSolutions, maxChildren, maxStates,
-                                        maxMinutes, timeBounded, keepBisimulation, forceStructuring);
-        spi.setProcess(this.diagram.getNodes(), this.diagram.getFlows());
-        spi.structure();
-        output = spi.getDiagram();
-
-        return (output != null ? output : diagram);
-    }
 
     private void structureDiagram() throws Exception {
         unmappableEdges = new HashSet<>();
@@ -478,8 +454,7 @@ public class StructuringService {
             structuredDiagram = null;
         }
 
-        diagramHandler.removeDuplicates(structuredDiagram);
-//        diagramHandler.removeEmptyParallelFlows(structuredDiagram);
+        if(removeClones) diagramHandler.removeDuplicates(structuredDiagram);
         idToDiagram.put(processID, structuredDiagram);
         rebuildOrder.addLast(processID);
     }

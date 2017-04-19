@@ -26,6 +26,7 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.dialogController.MainController;
 
+import java.util.HashMap;
 import java.util.Set;
 
 import org.deckfour.xes.model.XLog;
@@ -35,7 +36,7 @@ import org.deckfour.xes.model.XLog;
  *
  * @author Cameron James
  */
-public class SignavioSession {
+public class SignavioSession extends HashMap {
 
     private EditSessionType editSession, editSession2;
     private MainController mainC;

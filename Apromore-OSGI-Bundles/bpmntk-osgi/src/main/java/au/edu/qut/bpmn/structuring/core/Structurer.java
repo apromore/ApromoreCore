@@ -28,11 +28,9 @@ import java.util.*;
  * Created by Adriano on 29/02/2016.
  */
 
-public class Structurer implements Runnable {
+public class Structurer {
 
-    private StructuringState iState;
-    private HashSet<StructuringState> solutions;
-    private HashSet<StructuringState> zombies;
+    /* */
     private StructuringCore.Policy policy;
     private int maxDepth;
     private int maxSol;
@@ -42,7 +40,13 @@ public class Structurer implements Runnable {
     private long startingTime;
     private long timeBound;
 
-    public Structurer(StructuringState iState, StructuringCore.Policy policy, int maxDepth, int maxSol, int maxChildren, int maxStates, int maxMinutes, boolean timeBounded) {
+    private boolean stop;
+
+    private StructuringState iState;
+    private HashSet<StructuringState> solutions;
+    private HashSet<StructuringState> zombies;
+
+    public Structurer(StructuringCore.Policy policy, int maxDepth, int maxSol, int maxChildren, int maxStates, int maxMinutes, boolean timeBounded) {
         System.out.println("DEBUG - new structurer created.");
         this.policy = policy;
         this.maxDepth = (maxDepth == 0 ? Integer.MAX_VALUE : maxDepth);
@@ -50,19 +54,19 @@ public class Structurer implements Runnable {
         this.maxChildren = (maxChildren == 0 ? Integer.MAX_VALUE : maxChildren);
         this.maxStates = maxStates;
         this.timeBounded = timeBounded;
-        this.iState = iState;
 
+        timeBound = 60000 * maxMinutes;
+        stop = false;
+    }
+
+    public Graph getStructuredRigid(StructuringState iState) {
+        StructuringState best;
+
+        this.iState = iState;
         solutions = new HashSet<>();
         zombies = new HashSet<>();
 
-        timeBound = 60000 * maxMinutes;
-
-        if(timeBounded) System.out.println("DEBUG - [structurer: A*] time bound in ms: " + timeBound);
-
-    }
-
-    public Graph getSolution() {
-        StructuringState best;
+        this.structure();
 
         if( solutions.isEmpty() ) {
             if( zombies.isEmpty() ) {
@@ -77,13 +81,13 @@ public class Structurer implements Runnable {
         return best.getGraph();
     }
 
-    public void run() {
+    private void structure() {
         StructuringState state;
         StructuringState next;
         PriorityQueue<StructuringState> children;
         LinkedList<StructuringState> toVisit;
-        PriorityQueue<StructuringState> toVisitSorted;
-        SmartQueue toVisitQuick;
+        PriorityQueue<StructuringState> toVisitSorted = null;
+        SmartQueue toVisitQuick = null;
         ArrayList<StructuringState> tmpChildren;
 
         System.out.println("DEBUG - new structurer running.");
@@ -143,7 +147,14 @@ public class Structurer implements Runnable {
                 toVisitSorted = new PriorityQueue<>();
                 toVisitSorted.add(iState);
                 while( true ) {
-                    if( toVisitSorted.isEmpty() ) return;
+                    if( toVisitSorted.isEmpty() ) {
+//                        if( solutions.isEmpty() && !stop) {
+//                            for(StructuringState ss : zombies) ss.getGraph().enablePullUp();
+//                            timeBound = timeBound*2;
+//                            stop = true;
+//                        } else return;
+                        return;
+                    }
                     state = toVisitSorted.poll();
                     if( state.isSolved() ) {
                         solutions.add(state);
@@ -163,19 +174,19 @@ public class Structurer implements Runnable {
                     if( timeBounded )
                         if( (System.currentTimeMillis() - startingTime) > timeBound ) {
                             System.out.println("DEBUG - [structurer: A*] found " + solutions.size() + " solutions. Switching policy to LIMITED A*");
-                            toVisitSorted = null;
                             break;
                         }
                 }
 
             case LIM_ASTAR:
+                if( toVisitSorted == null  || toVisitSorted.isEmpty() ) toVisitSorted.add(iState);
                 if( timeBounded ) {
                     System.out.println("DEBUG - [structurer: LIMITED A*] switched policy!");
                     startingTime = System.currentTimeMillis();
                 }
                 maxSol += solutions.size();
                 toVisitQuick = new SmartQueue(maxStates);
-                toVisitQuick.add(iState);
+                for( StructuringState ss : toVisitSorted ) toVisitQuick.add(ss);
                 while( true ) {
                     if( toVisitQuick.isEmpty() || (solutions.size() > maxSol) ) return;
                     c = 0;
@@ -204,6 +215,7 @@ public class Structurer implements Runnable {
                 if( timeBounded ) {
                     System.out.println("DEBUG - [structurer: LIMITED DEPTH] switched policy!");
                     startingTime = System.currentTimeMillis();
+                    if( toVisitQuick != null && !toVisitQuick.isEmpty() ) iState =  toVisitQuick.poll();
                 }
                 tmpChildren = new ArrayList<>();
                 toVisit = new LinkedList<>();
@@ -230,7 +242,7 @@ public class Structurer implements Runnable {
                         toVisit.addFirst(tmpChildren.get(0));
                         if(tmpChildren.remove(0).getCost() == 0) {
                             tmpChildren = new ArrayList<>();
-                            System.out.println("DEBUG - [structurer: LIMITED DEPTH] move had cost 0.");
+//                            System.out.println("DEBUG - [structurer: LIMITED DEPTH] move had cost 0.");
                             break;
                         }
                     }

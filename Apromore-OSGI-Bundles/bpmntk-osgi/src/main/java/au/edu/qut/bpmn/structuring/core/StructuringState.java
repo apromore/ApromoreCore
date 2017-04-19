@@ -83,6 +83,10 @@ public class StructuringState implements Comparable<StructuringState> {
         int prev;
 
         Move possibleMove;
+        ArrayList<Move> moves;
+        int mCounter;
+        int totalCost;
+        boolean apply;
 
         toVisit.addFirst(gate);
         visited.add(exit);
@@ -118,36 +122,67 @@ public class StructuringState implements Comparable<StructuringState> {
 
             if( (oSize == 1) && (iSize != 0) && !gate.equals(exit) ) {
                 //this means iSize > 1
+                evolution = new Graph(rigid);
+                moves = new ArrayList<>();
                 next = outgoing.get(0); //the only outgoing path;
+
                 for( int pid : incoming ) {
                     if( !rigid.isMoveValid(pid, next, Move.MoveType.PUSHDOWN) ) continue;
                     possibleMove = new Move(pid, next, Move.MoveType.PUSHDOWN);
                     possibleMove.setCost(rigid.getPath(next).getWeight());
-                    evolution = new Graph(rigid);
-                    if( evolution.applyMove(possibleMove, gate) )  {
-                        nextState = new StructuringState(evolution, this.cost + possibleMove.getCost());
-                        children.add(nextState);
-                    }// else System.out.println("WARNING - discarding invalid structuring state.");
-                    if( iSize == 2 ) break;
+                    moves.add(possibleMove);
                 }
-                continue;
+
+                apply = false;
+                totalCost = this.cost;
+                mCounter = moves.size();
+                for( Move m : moves ) {
+                    if( mCounter == 1 ) break; //we cannot apply all the moves, but all minus one.
+                    if( evolution.applyMove(m, gate) ) {
+                        totalCost+=m.getCost();
+                        apply = true;
+                        mCounter--;
+                    }
+                }
+
+                if( apply ) {
+                    evolution.simplify();
+                    nextState = new StructuringState(evolution, totalCost);
+                    children.add(nextState);
+                }
+                continue; //we do not need to analise the pull-up case
             }
 
             if( (oSize != 0) && (iSize == 1) && !gate.equals(entry) ) {
                 //this means oSize > 1
+                evolution = new Graph(rigid);
+                moves = new ArrayList<>();
                 prev = incoming.get(0); //the only incoming path;
+
                 for( int pid : outgoing ) {
                     if( !rigid.isMoveValid(pid, prev, Move.MoveType.PULLUP) ) continue;
                     possibleMove = new Move(pid, prev, Move.MoveType.PULLUP);
                     possibleMove.setCost(rigid.getPath(prev).getWeight());
-                    evolution = new Graph(rigid);
-                    if( evolution.applyMove(possibleMove, gate) )  {
-                        nextState = new StructuringState(evolution, this.cost + possibleMove.getCost());
-                        children.add(nextState);
-                    }// else System.out.println("WARNING - discarding invalid structuring state.");
-                    if( oSize == 2 ) break;
+                    moves.add(possibleMove);
                 }
-                continue;
+
+                apply = false;
+                totalCost = this.cost;
+                mCounter = moves.size();
+                for( Move m : moves ) {
+                    if( mCounter == 1 ) break; //we cannot apply all the moves, but all minus one.
+                    if( evolution.applyMove(m, gate) ) {
+                        totalCost+=m.getCost();
+                        apply = true;
+                        mCounter--;
+                    }
+                }
+
+                if( apply ) {
+                    evolution.simplify();
+                    nextState = new StructuringState(evolution, totalCost);
+                    children.add(nextState);
+                }
             }
         }
 

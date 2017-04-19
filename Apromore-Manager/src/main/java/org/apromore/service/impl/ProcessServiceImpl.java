@@ -419,7 +419,7 @@ public class ProcessServiceImpl implements ProcessService {
             return exportResult;
         } catch (Exception e) {
             LOGGER.error("Failed to export process model {} to format {}", name, format);
-            LOGGER.error("Original exception was: ", e);
+            LOGGER.debug("Original exception was: ", e);
             throw new ExportFormatException(e);
         }
     }

@@ -44,9 +44,8 @@ public class StructuringCore {
     private int maxMinutes;
     private boolean timeBounded;
 
-    private Set<Graph> structuredGraphs;
-    private Set<Structurer> structurers;
-    private Set<Thread> structThreads;
+    private Set<Graph> structuredRigids;
+    private Structurer structurer;
 
     public StructuringCore(Policy policy, int maxDepth, int maxSol, int maxChildren, int maxStates, int maxMinutes, boolean timeBounded) {
         this.policy = policy;
@@ -58,28 +57,11 @@ public class StructuringCore {
         this.timeBounded = timeBounded;
     }
 
-    public Set<Graph> structureAll(Set<Graph> graphs) {
-
-        structurers = new HashSet<>();
-        structThreads = new HashSet<>();
-
-        for( Graph g : graphs )
-            structurers.add(new Structurer(new StructuringState(g, 0), policy, maxDepth, maxSol, maxChildren, maxStates, maxMinutes, timeBounded));
-
-        for( Structurer s : structurers )
-            structThreads.add(new Thread(s));
-
-        for( Thread t : structThreads ) t.start();
-
-        try {
-            for( Thread t : structThreads ) t.join();
-        } catch(Exception e) {
-            System.out.println("ERROR - something went wrong synchronizing the threads.");
-        }
-
-        structuredGraphs = new HashSet<>();
-        for( Structurer s : structurers ) structuredGraphs.add(s.getSolution());
-        return structuredGraphs;
+    public Set<Graph> structureAll(Set<Graph> rigids) {
+        structurer = new Structurer(policy, maxDepth, maxSol, maxChildren, maxStates, maxMinutes, timeBounded);
+        structuredRigids = new HashSet<>();
+        for( Graph g : rigids ) structuredRigids.add(structurer.getStructuredRigid(new StructuringState(g, 0)));
+        return structuredRigids;
     }
 
 }
