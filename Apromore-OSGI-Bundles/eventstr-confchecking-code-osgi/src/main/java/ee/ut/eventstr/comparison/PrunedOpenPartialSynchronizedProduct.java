@@ -136,19 +136,18 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 	
 	public PrunedOpenPartialSynchronizedProduct<T> perform() {
 		Queue<State> open = new PriorityQueue<State>(
-//				new Comparator<State>() {
-//					@Override
-//					public int compare(State o1, State o2) {
-//						int costCValue = Short.compare(o2.cost, o1.cost);
-//						if (costCValue != 0)
-//							return costCValue;
+				new Comparator<State>() {
+					@Override
+					public int compare(State o1, State o2) {
+						int costCValue = Short.compare(o2.cost, o1.cost);
+						if (costCValue != 0)
+							return costCValue;
 //						else if(o1.c1.cardinality() != o2.c1.cardinality())
 //							return Integer.compare(o2.c1.cardinality(),o1.c1.cardinality());
 //						else if(o1.c2.size() != o2.c2.size())
 //							return Integer.compare(o2.c2.size(), o1.c2.size());
-//
-//						return -1;
-//					}}
+						return -1;
+					}}
 		);
 
 		root = getState(new BitSet(), HashMultiset.<String> create(), HashMultiset.<Integer> create());
