@@ -21,7 +21,6 @@
 package org.apromore.plugin.portal.compareBP;
 
 // Java 2 Standard Edition packages
-import java.io.ByteArrayInputStream;
 import java.util.*;
 
 import ee.ut.eventstr.comparison.differences.ModelAbstractions;
@@ -38,46 +37,30 @@ import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.math3.analysis.function.Exp;
-import org.apromore.canoniser.Canoniser;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.context.PluginPortalContext;
-import org.apromore.portal.dialogController.MainController;
 import org.apromore.service.compare.CompareService;
 import org.deckfour.xes.model.XLog;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.petri.io.PNMLSerializer;
-import org.processmining.exporting.bpmn.BPMNExport;
-import org.processmining.models.graphbased.directed.petrinet.Petrinet;
-import org.processmining.plugins.bpmn.converter.BPMNConverter;
-import org.processmining.plugins.bpmn.converter.PetriNetToBPMNConverterPlugin;
-import org.semanticweb.kaon2.jb;
-import org.semanticweb.kaon2.lo;
 import org.springframework.stereotype.Component;
 
 // Local packages
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.CanoniserService;
-import org.apromore.service.DomainService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.EventLogService;
-import org.apromore.service.helper.UserInterfaceHelper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.zkoss.zul.Messagebox;
 
 @Component("plugin")
 public class ComparePlugin extends DefaultPortalPlugin {

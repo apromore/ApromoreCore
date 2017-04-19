@@ -43,7 +43,7 @@ import java.util.Date;
  * Created by Adriano Augusto on 18/04/2016.
  */
 @Service
-public class InfrequentBehaviourFilterServiceImpl extends DefaultParameterAwarePlugin implements InfrequentBehaviourFilterService {
+public class  InfrequentBehaviourFilterServiceImpl extends DefaultParameterAwarePlugin implements InfrequentBehaviourFilterService {
 
     private final static String LPSOLVE55 = "lpsolve55.dll";
     private final static String LPSOLVE55J = "lpsolve55j.dll";

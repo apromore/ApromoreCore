@@ -31,7 +31,7 @@
     -->
 
     <groupId>org.apromore</groupId>
-    <artifactId>infrequent-behaviour-filter-osgi</artifactId>
+    <artifactId>bpmnminer-osgi</artifactId>
     <version>1.1</version>
     <packaging>bundle</packaging>
 
@@ -86,12 +86,12 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=noisefiltering-event-commandline
+                            artifactId=bpmnminer-commandline
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-                        <Bundle-Name>Infrequent Behaviour Filter OSGI</Bundle-Name>
-                        <Bundle-SymbolicName>org.infrequent-behaviour-filter-osgi</Bundle-SymbolicName>
+                        <Bundle-Name>BPMNMiner OSGI</Bundle-Name>
+                        <Bundle-SymbolicName>org.bpmnminer-osgi</Bundle-SymbolicName>
                         <Import-Bundle>
                             com.springsource.org.apache.tools.ant;version="[1.8.3,1.8.3]"
                         </Import-Bundle>
@@ -115,9 +115,18 @@
                             org.deckfour.xes.out,
                             org.deckfour.xes.util,
                             org.deckfour.xes.xstream,
+                            org.eclipse.collections.*,
+                            javax.*,
                         </Import-Package>
                         <Export-Package>
-                            com.raffaeleconforti.noisefiltering.event,
+                            com.raffaeleconforti.bpmnminer.*,
+                            com.raffaeleconforti.context.*,
+                            com.raffaeleconforti.foreignkeydiscovery.*,
+                            com.raffaeleconforti.log.util,
+                            org.processmining.contexts.*,
+                            org.processmining.framework.*,
+                            org.processmining.models.*,
+                            org.processmining.plugins.*,
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -127,9 +136,21 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>log-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.raffaeleconforti</groupId>
-            <artifactId>noisefiltering-event-commandline</artifactId>
+            <artifactId>bpmnminer-commandline</artifactId>
             <version>1.0.20170418</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>eclipse-collections-osgi</artifactId>
+            <version>1.1</version>
         </dependency>
     </dependencies>
 </project>

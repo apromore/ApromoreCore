@@ -350,11 +350,13 @@
     <target name="copy-virgo-standalone" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
+                <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
                 <include name="**/target/bpmntk-osgi-1.1.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
             </fileset>
 
@@ -411,11 +413,13 @@
     <target name="copy-virgo-server" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
+                <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
                 <include name="**/target/bpmntk-osgi-1.1.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
             </fileset>
 
@@ -479,11 +483,13 @@
     <target name="copy-virgo" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
+                <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
                 <include name="**/target/bpmntk-osgi-1.1.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
 
                 <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly

@@ -23,7 +23,7 @@ package org.apromore.toolbox.clustering.dissimilarity;
 import java.util.List;
 import javax.inject.Inject;
 
-import org.apache.commons.collections.map.MultiKeyMap;
+import org.apache.commons.collections15.map.MultiKeyMap;
 import org.apromore.toolbox.clustering.containment.ContainmentRelation;
 import org.apromore.dao.FragmentDistanceRepository;
 import org.apromore.dao.model.FragmentDistance;

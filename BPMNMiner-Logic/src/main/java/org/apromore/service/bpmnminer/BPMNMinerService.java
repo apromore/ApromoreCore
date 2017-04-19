@@ -20,8 +20,6 @@
 
 package org.apromore.service.bpmnminer;
 
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.model.Detail;
 import org.deckfour.xes.model.XLog;
 
 import java.util.List;

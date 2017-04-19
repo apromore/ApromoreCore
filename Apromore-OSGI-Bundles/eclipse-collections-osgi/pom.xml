@@ -31,7 +31,7 @@
     -->
 
     <groupId>org.apromore</groupId>
-    <artifactId>infrequent-behaviour-filter-osgi</artifactId>
+    <artifactId>eclipse-collections-osgi</artifactId>
     <version>1.1</version>
     <packaging>bundle</packaging>
 
@@ -86,38 +86,20 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=noisefiltering-event-commandline
+                            artifactId=eclipse-collections
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-                        <Bundle-Name>Infrequent Behaviour Filter OSGI</Bundle-Name>
-                        <Bundle-SymbolicName>org.infrequent-behaviour-filter-osgi</Bundle-SymbolicName>
+                        <Bundle-Name>Eclipse Collections OSGI</Bundle-Name>
+                        <Bundle-SymbolicName>org.eclipse-collections-osgi</Bundle-SymbolicName>
                         <Import-Bundle>
                             com.springsource.org.apache.tools.ant;version="[1.8.3,1.8.3]"
                         </Import-Bundle>
                         <Import-Package>
-                            org.deckfour.spex,
-                            org.deckfour.spex.util,
-                            org.deckfour.xes.classification,
-                            org.deckfour.xes.extension,
-                            org.deckfour.xes.extension.std,
-                            org.deckfour.xes.extension.std.cost,
-                            org.deckfour.xes.factory,
-                            org.deckfour.xes.id,
-                            org.deckfour.xes.in,
-                            org.deckfour.xes.info,
-                            org.deckfour.xes.info.impl,
-                            org.deckfour.xes.logging,
-                            org.deckfour.xes.model,
-                            org.deckfour.xes.model.buffered,
-                            org.deckfour.xes.model.impl,
-                            org.deckfour.xes.nikefs2,
-                            org.deckfour.xes.out,
-                            org.deckfour.xes.util,
-                            org.deckfour.xes.xstream,
+
                         </Import-Package>
                         <Export-Package>
-                            com.raffaeleconforti.noisefiltering.event,
+                            org.eclipse.collections.*,
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -127,9 +109,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>noisefiltering-event-commandline</artifactId>
-            <version>1.0.20170418</version>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+            <version>8.0.0-M1</version>
         </dependency>
     </dependencies>
 </project>

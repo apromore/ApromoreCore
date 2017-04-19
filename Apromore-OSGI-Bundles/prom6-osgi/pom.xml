@@ -129,6 +129,8 @@
                             !cern.colt.function.tdouble.*,
                             !cern.colt.matrix.*,
                             !com.csvreader.*,
+                            !com.fasterxml.*,
+                            !com.ning.*,
                             !com.univocity.*,
                             !de.congrace.*;
                             !gnu.trove.*,
@@ -137,6 +139,7 @@
                             !jargs.gnu.*,
                             !junit.*,
                             !net.sf.*,
+                            !org.apache.*,
                             !org.fife.*,
                             !org.freehep.*,
                             !org.junit.*,

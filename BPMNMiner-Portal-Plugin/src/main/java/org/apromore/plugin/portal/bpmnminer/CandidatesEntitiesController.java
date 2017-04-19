@@ -20,7 +20,7 @@
 
 package org.apromore.plugin.portal.bpmnminer;
 
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
+import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;

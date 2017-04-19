@@ -51,6 +51,10 @@
                     <instructions>
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
+                            org.processmining.contexts.*;version="[1.0,2.0)",
+                            org.processmining.framework.*;version="[1.0,2.0)",
+                            org.processmining.models.*;version="[1.0,2.0)",
+                            org.processmining.plugins.*;version="[1.0,2.0)",
                             *
                         </Import-Package>
                         <Export-Package>
@@ -69,7 +73,7 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
+            <artifactId>bpmnminer-osgi</artifactId>
             <!--
             <exclusions>
                 <exclusion>

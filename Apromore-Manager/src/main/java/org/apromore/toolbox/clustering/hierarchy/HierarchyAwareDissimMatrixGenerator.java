@@ -32,7 +32,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import nl.tue.tm.is.led.StringEditDistance;
-import org.apache.commons.collections.map.MultiKeyMap;
+import org.apache.commons.collections15.map.MultiKeyMap;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.FragmentDistanceRepository;
 import org.apromore.dao.FragmentVersionRepository;
