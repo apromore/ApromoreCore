@@ -112,7 +112,7 @@
                             prom6-plugins|
                             slickerbox|
                             slickerbox1|
-                            tableLayout|
+                            tablelayout|
                             uitopia|
                             widgets
                         </Embed-Dependency>
@@ -696,7 +696,7 @@
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
-            <artifactId>tableLayout</artifactId>
+            <artifactId>tablelayout</artifactId>
             <version>6.5.20170418</version>
         </dependency>
         <dependency>
