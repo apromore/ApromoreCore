@@ -572,7 +572,7 @@
         </delete>
         <java classname="org.h2.tools.RunScript">
             <classpath>
-                <pathelement location="Apromore-Assembly/Manager-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+                <pathelement location="Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/repository/usr/h2-1.2.128.jar"/>
             </classpath>
             <arg value="-url"/>
             <arg value="jdbc:h2:Apromore-Assembly/Manager-Repository"/>
@@ -581,7 +581,7 @@
         </java>
         <java classname="org.h2.tools.RunScript">
             <classpath>
-                <pathelement location="Apromore-Assembly/Manager-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+                <pathelement location="Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/repository/usr/h2-1.2.128.jar"/>
             </classpath>
             <arg value="-url"/>
             <arg value="jdbc:h2:Apromore-Assembly/Manager-Repository"/>
