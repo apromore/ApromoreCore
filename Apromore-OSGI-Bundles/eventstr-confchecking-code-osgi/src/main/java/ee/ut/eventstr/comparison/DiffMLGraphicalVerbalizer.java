@@ -2424,29 +2424,29 @@ public class DiffMLGraphicalVerbalizer {
             history2.removeAll(model.getTasksFromConf(pes.getLocalConfiguration(context)));
         }
 
-//        Set<String> future1 = pes.getPossibleFutureAsLabels(getMultiset(conf1));
-//        Set<String> future2 = pes.getPossibleFutureAsLabels(getMultiset(conf2));
-//        future1.retainAll(future2);
+        Set<String> future1 = pes.getPossibleFutureAsLabels(getMultiset(conf1));
+        Set<String> future2 = pes.getPossibleFutureAsLabels(getMultiset(conf2));
+        future1.retainAll(future2);
 
 		HashSet<FlowNode> tasks = new HashSet<>();
 		tasks.add(model.getTaskFromEvent(event1));
 		tasks.add(model.getTaskFromEvent(event2));
 
-//        HashMap<String, String> endColors = new HashMap<>();
-//        HashMap<String, String> colorsBPMN = getEnd(event1, event2, future1);
-//        for (Entry<String, String> entry : colorsBPMN.entrySet()) {
-//            if (entry.getValue().equals("red"))
-//                end.add(entry.getKey());
-//            else if(!start.contains(entry.getKey()) && !a.contains(entry.getKey()) && !end.contains(entry.getKey()))
-//                endColors.put(entry.getKey(), "green");
-//        }
+        HashMap<String, String> endColors = new HashMap<>();
+        HashMap<String, String> colorsBPMN = getEnd(event1, event2, future1);
+        for (Entry<String, String> entry : colorsBPMN.entrySet()) {
+            if (entry.getValue().equals("red"))
+                end.add(entry.getKey());
+            else if(!start.contains(entry.getKey()) && !a.contains(entry.getKey()) && !end.contains(entry.getKey()))
+                endColors.put(entry.getKey(), "green");
+        }
 
-        Pair<FlowNode, HashSet<FlowNode>> nextCommon = getNextCommon(tasks);
-        end.add(nextCommon.getFirst().getId());
+//        Pair<FlowNode, HashSet<FlowNode>> nextCommon = getNextCommon(tasks);
+//        end.add(nextCommon.getFirst().getId());
 
-//        for(String element : endColors.keySet())
-//            if(!start.contains(element) && !a.contains(element) && !b.contains(element) && !matched.contains(element))
-//                greys.add(element);
+        for(String element : endColors.keySet())
+            if(!start.contains(element) && !a.contains(element) && !b.contains(element) && !matched.contains(element))
+                greys.add(element);
 
 //		Pair<FlowNode, HashSet<FlowNode>> nextCommon = getNextCommon(tasks);
 //		end.add(nextCommon.getFirst().getId());
