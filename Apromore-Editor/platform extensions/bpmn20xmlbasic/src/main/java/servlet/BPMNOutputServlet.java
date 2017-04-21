@@ -108,9 +108,9 @@ public class BPMNOutputServlet extends HttpServlet {
         Diagram2BpmnConverter converter = new Diagram2BpmnConverter(diagram, AbstractBpmnFactory.getFactoryClasses());
         Definitions definitions = converter.getDefinitionsFromDiagram();
 
-        Marshaller marshaller = JAXBContext.newInstance(Definitions.class,
-                ConfigurationAnnotationAssociation.class,
-                ConfigurationAnnotationShape.class).createMarshaller();
+        Marshaller marshaller = JAXBContext.newInstance("de.hpi.bpmn2_0.model:de.hpi.bpmn2_0.model.extension.synergia",
+                                                        getClass().getClassLoader())
+                                           .createMarshaller();
         marshaller.setEventHandler(new BPMNValidationEventHandler());
         marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty(PREFIX_MAPPER, new BPMNPrefixMapper());
