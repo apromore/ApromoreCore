@@ -767,6 +767,13 @@
             <version>6.5.20170418</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
         <!--<dependency>-->
             <!--<groupId>com.raffaeleconforti</groupId>-->
             <!--<artifactId>bpmnminer-logic</artifactId>-->

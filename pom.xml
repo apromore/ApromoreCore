@@ -80,7 +80,6 @@
 
         <!-- PROM -->
         <module>Apromore-OSGI-Bundles/jdom2-osgi</module>
-        <module>Apromore-OSGI-Bundles/fodina-osgi</module>
         <module>Apromore-OSGI-Bundles/log-osgi</module>
         <module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
         <module>Apromore-OSGI-Bundles/prom6-osgi</module>
