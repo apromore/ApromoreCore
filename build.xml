@@ -258,6 +258,7 @@
                 <include name="java6-server.profile"/>
             </fileset>
         </copy>
+        <delete file="${dir-virgo}/pickup/org.eclipse.virgo.apps.splash_3.6.4.RELEASE.jar" />
         <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
     </target>
 
