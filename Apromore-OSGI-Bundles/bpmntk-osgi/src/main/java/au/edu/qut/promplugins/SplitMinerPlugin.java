@@ -20,10 +20,10 @@
 
 package au.edu.qut.promplugins;
 
-import au.edu.qut.processmining.miners.yam.dfgp.DirectlyFollowGraphPlus;
-import au.edu.qut.processmining.miners.yam.YAM;
-import au.edu.qut.processmining.miners.yam.ui.miner.YAMUI;
-import au.edu.qut.processmining.miners.yam.ui.miner.YAMUIResult;
+import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
+import au.edu.qut.processmining.miners.splitminer.SplitMiner;
+import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUI;
+import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -36,29 +36,29 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
  */
 
 @Plugin(
-        name = "Discover BPMN model with YAM",
+        name = "Discover BPMN model with SplitMiner",
         parameterLabels = { "Event Log" },
-        returnLabels = { "YAM output" },
+        returnLabels = { "SplitMiner output" },
         returnTypes = { BPMNDiagram.class },
         userAccessible = true,
-        help = "Returns a BPMN model mined with YAM"
+        help = "Returns a BPMN model mined with SplitMiner"
 )
-public class YAMPlugin {
+public class SplitMinerPlugin {
 
     @UITopiaVariant(
             affiliation = "University of Tartu",
             author = "Adriano Augusto",
             email = "adriano.augusto@ut.ee"
     )
-    @PluginVariant(variantLabel = "Discover BPMN model with YAM", requiredParameterLabels = {0})
-    public static BPMNDiagram discoverBPMNModelWithYAM(UIPluginContext context, XLog log) {
+    @PluginVariant(variantLabel = "Discover BPMN model with SplitMiner", requiredParameterLabels = {0})
+    public static BPMNDiagram discoverBPMNModelWithSplitMiner(UIPluginContext context, XLog log) {
         boolean debug = false;
         BPMNDiagram output;
 
-        YAMUI gui = new YAMUI();
-        YAMUIResult result = gui.showGUI(context, "Setup HM+");
+        SplitMinerUI gui = new SplitMinerUI();
+        SplitMinerUIResult result = gui.showGUI(context, "Setup HM+");
 
-        YAM hmp = new YAM();
+        SplitMiner hmp = new SplitMiner();
         hmp.mineBPMNModel( log, result.getFrequencyThreshold(), result.getParallelismsThreshold(),
                                 result.isReplaceIORs(), result.getStructuringTime());
 

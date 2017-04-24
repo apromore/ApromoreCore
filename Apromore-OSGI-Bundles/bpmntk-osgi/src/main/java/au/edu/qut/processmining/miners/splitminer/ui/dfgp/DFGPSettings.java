@@ -1,4 +1,4 @@
-package au.edu.qut.processmining.miners.yam.ui.dfgp;
+package au.edu.qut.processmining.miners.splitminer.ui.dfgp;
 
 import com.fluxicon.slickerbox.components.NiceDoubleSlider;
 import com.fluxicon.slickerbox.components.NiceSlider;

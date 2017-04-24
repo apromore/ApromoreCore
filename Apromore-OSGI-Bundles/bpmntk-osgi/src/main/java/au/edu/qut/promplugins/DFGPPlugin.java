@@ -22,13 +22,12 @@ package au.edu.qut.promplugins;
 
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
-import au.edu.qut.processmining.miners.yam.dfgp.DirectlyFollowGraphPlus;
-import au.edu.qut.processmining.miners.yam.ui.dfgp.DFGPUI;
-import au.edu.qut.processmining.miners.yam.ui.dfgp.DFGPUIResult;
+import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
+import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUI;
+import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
-import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;

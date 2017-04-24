@@ -1,4 +1,4 @@
-package au.edu.qut.processmining.miners.yam.ui.dfgp;
+package au.edu.qut.processmining.miners.splitminer.ui.dfgp;
 
 /**
  * Created by Adriano on 23/01/2017.

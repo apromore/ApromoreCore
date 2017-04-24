@@ -1,11 +1,11 @@
-package au.edu.qut.processmining.miners.yam.ui.miner;
+package au.edu.qut.processmining.miners.splitminer.ui.miner;
 
-import au.edu.qut.processmining.miners.yam.ui.dfgp.DFGPUIResult;
+import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 
 /**
  * Created by Adriano on 29/02/2016.
  */
-public class YAMUIResult {
+public class SplitMinerUIResult {
 
     public enum StructuringTime {NONE, POST, PRE}
     public static final StructuringTime STRUCT_POLICY = StructuringTime.NONE;
@@ -15,7 +15,7 @@ public class YAMUIResult {
 
     private StructuringTime structuringTime;
 
-    public YAMUIResult() {
+    public SplitMinerUIResult() {
         dfgpParams = new DFGPUIResult();
         structuringTime = STRUCT_POLICY;
         replaceIORs = true;

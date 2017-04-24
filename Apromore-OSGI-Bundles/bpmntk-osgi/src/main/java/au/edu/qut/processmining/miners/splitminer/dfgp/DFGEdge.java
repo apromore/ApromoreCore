@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package au.edu.qut.processmining.miners.yam.dfgp;
+package au.edu.qut.processmining.miners.splitminer.dfgp;
 
 import au.edu.qut.processmining.log.graph.LogEdge;
 

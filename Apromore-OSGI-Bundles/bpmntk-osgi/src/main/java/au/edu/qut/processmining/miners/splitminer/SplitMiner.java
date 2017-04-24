@@ -18,17 +18,17 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package au.edu.qut.processmining.miners.yam;
+package au.edu.qut.processmining.miners.splitminer;
 
 import au.edu.qut.bpmn.helper.DiagramHandler;
 import au.edu.qut.bpmn.helper.GatewayMap;
 import au.edu.qut.bpmn.structuring.StructuringService;
 import au.edu.qut.processmining.log.LogParser;
 import au.edu.qut.processmining.log.SimpleLog;
-import au.edu.qut.processmining.miners.yam.dfgp.DirectlyFollowGraphPlus;
-import au.edu.qut.processmining.miners.yam.oracle.Oracle;
-import au.edu.qut.processmining.miners.yam.oracle.OracleItem;
-import au.edu.qut.processmining.miners.yam.ui.miner.YAMUIResult;
+import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
+import au.edu.qut.processmining.miners.splitminer.oracle.Oracle;
+import au.edu.qut.processmining.miners.splitminer.oracle.OracleItem;
+import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
@@ -48,14 +48,14 @@ import java.util.*;
 /**
  * Created by Adriano on 24/10/2016.
  */
-public class YAM {
+public class SplitMiner {
 
     private SimpleLog log;
     private DirectlyFollowGraphPlus dfgp;
     private BPMNDiagram bpmnDiagram;
 
     private boolean replaceIORs;
-    private YAMUIResult.StructuringTime structuringTime;
+    private SplitMinerUIResult.StructuringTime structuringTime;
 
     private int gateCounter;
     private HashMap<String, Gateway> candidateJoins;
@@ -64,29 +64,29 @@ public class YAM {
     private Set<Gateway> rigidsEntries;
 
 
-    public YAM() {}
+    public SplitMiner() {}
 
     public DirectlyFollowGraphPlus getDfgp() { return dfgp; }
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
     public BPMNDiagram mineBPMNModel(XLog log, double frequencyThreshold, double parallelismsThreshold,
-                                     boolean replaceIORs, YAMUIResult.StructuringTime structuringTime)
+                                     boolean replaceIORs, SplitMinerUIResult.StructuringTime structuringTime)
     {
-//        System.out.println("YAM - starting ...");
-        System.out.println("YAM - [Settings] replace IORs: " + replaceIORs);
-//        System.out.println("YAM - [Settings] structuring: " + structuringTime);
+//        System.out.println("SplitMiner - starting ...");
+        System.out.println("SplitMiner - [Settings] replace IORs: " + replaceIORs);
+//        System.out.println("SplitMiner - [Settings] structuring: " + structuringTime);
 
         this.replaceIORs = replaceIORs;
         this.structuringTime = structuringTime;
 
         this.log = LogParser.getSimpleLog(log);
-//        System.out.println("YAM - log parsed successfully");
+//        System.out.println("SplitMiner - log parsed successfully");
 
         generateDFGP(frequencyThreshold, parallelismsThreshold);
         transformDFGPintoBPMN();
 
-        if( structuringTime == YAMUIResult.StructuringTime.POST ) structure();
+        if( structuringTime == SplitMinerUIResult.StructuringTime.POST ) structure();
 
         return bpmnDiagram;
     }
@@ -135,7 +135,7 @@ public class YAM {
             return;
         }
 
-//        System.out.println("YAM - generating bpmn diagram");
+//        System.out.println("SplitMiner - generating bpmn diagram");
 
 //        we perform a breadth-first exploration of the DFGP-diagram
 //        every time we find a node with multiple outgoing edges we stop
@@ -209,23 +209,23 @@ public class YAM {
 //        which will be turned into AND or XOR joins later
         bondsEntries = new HashSet<>();
         rigidsEntries = new HashSet<>();
-//        System.out.println("YAM - generating SESE joins ...");
+//        System.out.println("SplitMiner - generating SESE joins ...");
         while( generateSESEjoins() );
 
 //        this second method adds the remaining joins, which were no entry neither exits of any RPST node
-//        System.out.println("YAM - generating inner joins ...");
+//        System.out.println("SplitMiner - generating inner joins ...");
         generateInnerJoins();
 
 
-        if( structuringTime == YAMUIResult.StructuringTime.PRE ) structure();
+        if( structuringTime == SplitMinerUIResult.StructuringTime.PRE ) structure();
         helper.fixSoundness(bpmnDiagram);
 
 //        finally, we turn all the inclusive joins placed, into proper joins: ANDs or XORs
-//        System.out.println("YAM - turning inclusive joins ...");
+//        System.out.println("SplitMiner - turning inclusive joins ...");
         replaceIORs();
 
         updateLabels(this.log.getEvents());
-        System.out.println("YAM - bpmn diagram generated successfully");
+        System.out.println("SplitMiner - bpmn diagram generated successfully");
     }
 
     private void generateSplitsHierarchy(BPMNNode entry, OracleItem nextOracleItem, Map<Integer, BPMNNode> mapping) {

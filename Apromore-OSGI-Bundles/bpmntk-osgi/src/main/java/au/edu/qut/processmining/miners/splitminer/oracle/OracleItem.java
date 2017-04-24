@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package au.edu.qut.processmining.miners.yam.oracle;
+package au.edu.qut.processmining.miners.splitminer.oracle;
 
 import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 

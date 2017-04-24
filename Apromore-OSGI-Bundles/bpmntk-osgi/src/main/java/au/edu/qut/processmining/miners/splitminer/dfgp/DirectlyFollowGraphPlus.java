@@ -18,10 +18,10 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package au.edu.qut.processmining.miners.yam.dfgp;
+package au.edu.qut.processmining.miners.splitminer.dfgp;
 
 import au.edu.qut.processmining.log.SimpleLog;
-import au.edu.qut.processmining.miners.yam.ui.dfgp.DFGPUIResult;
+import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 import org.apache.commons.lang3.StringUtils;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;

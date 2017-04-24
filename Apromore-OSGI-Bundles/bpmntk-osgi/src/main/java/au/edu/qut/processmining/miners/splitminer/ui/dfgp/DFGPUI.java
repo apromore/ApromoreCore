@@ -1,4 +1,4 @@
-package au.edu.qut.processmining.miners.yam.ui.dfgp;
+package au.edu.qut.processmining.miners.splitminer.ui.dfgp;
 
 import org.deckfour.uitopia.api.event.TaskListener;
 import org.processmining.contexts.uitopia.UIPluginContext;
