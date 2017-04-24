@@ -20,7 +20,6 @@
 
 package org.apromore.service.logvisualizer.impl;
 
-import au.edu.qut.util.ImportEventLog;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.service.logvisualizer.LogVisualizerService;
 import org.apromore.service.logvisualizer.fuzzyminer.model.*;
@@ -66,18 +65,18 @@ import java.util.*;
 public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implements LogVisualizerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerServiceImpl.class);
 
-    public static void main(String[] args) {
-        LogVisualizerServiceImpl l = new LogVisualizerServiceImpl();
-        XLog log = null;
-        try {
-//            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/IdeaProjects/ApromoreCodeServerNew/Compare-Logic/src/test/resources/CAUSCONC-1/bpLog3.xes");
-            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/IdeaProjects/Models/Zip/Logs/BPI Challenge - 2012.xes.gz");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        String s = l.visualizeLog(log, 0.5, 0.5);
-        System.out.println();
-    }
+//    public static void main(String[] args) {
+//        LogVisualizerServiceImpl l = new LogVisualizerServiceImpl();
+//        XLog log = null;
+//        try {
+////            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/IdeaProjects/ApromoreCodeServerNew/Compare-Logic/src/test/resources/CAUSCONC-1/bpLog3.xes");
+//            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/IdeaProjects/Models/Zip/Logs/BPI Challenge - 2012.xes.gz");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        String s = l.visualizeLog(log, 0.5, 0.5);
+//        System.out.println();
+//    }
 
     @Override
     public String visualizeLog(XLog log, double activities, double arcs) {

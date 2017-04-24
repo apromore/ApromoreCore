@@ -166,6 +166,7 @@ public class ModelAbstractions {
         // Unfolding
         unfolder = new Unfolder_PetriNet(net, BPstructBP.MODE.ESPARZA, silent);
         unfolder.computeUnfolding();
+
         mapUnf2Net = unfolder.getMapDNodeTrans();
 
         commonLabels.addAll(mapLabelsO2N.keySet());

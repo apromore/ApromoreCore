@@ -1,12 +1,5 @@
 package org.apromore.plugin.portal.perfmining.view.system;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.perfmining.Visualization;
 import org.jfree.data.time.TimePeriod;
@@ -15,15 +8,6 @@ import org.jfree.data.xy.XYDataset;
 import org.apromore.service.perfmining.models.SPF;
 import org.apromore.service.perfmining.models.Stage;
 import org.apromore.plugin.portal.perfmining.view.SPFView;
-import org.joda.time.DateTime;
-import org.processmining.framework.util.ui.widgets.ProMTable;
-import org.springframework.stereotype.Component;
-import org.zkoss.bind.annotation.AfterCompose;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.ForwardEvent;
-import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;

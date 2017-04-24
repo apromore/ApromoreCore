@@ -72,6 +72,11 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom6-osgi</artifactId>
+            <version>6.0</version>
+        </dependency>
     </dependencies>
     
 <!--    <repositories>

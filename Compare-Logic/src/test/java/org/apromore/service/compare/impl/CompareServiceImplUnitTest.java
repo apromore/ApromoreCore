@@ -49,7 +49,6 @@ import org.junit.Test;
 import ee.ut.eventstr.comparison.differences.DifferencesML;
 import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import org.apromore.service.compare.CompareService;
-import org.semanticweb.kaon2.ob;
 
 /**
  * Tests for {@link CompareServiceImpl}.

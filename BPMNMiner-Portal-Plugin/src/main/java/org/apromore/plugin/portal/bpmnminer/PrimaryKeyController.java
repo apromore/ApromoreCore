@@ -20,9 +20,9 @@
 
 package org.apromore.plugin.portal.bpmnminer;
 
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
+import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -82,7 +82,7 @@ public class PrimaryKeyController {
             // build a list of all keys (sets of attribute names)
             String[] keyList = new String[currentData.primaryKeys.length]; //change if user can select any attributes for identifiers
             for (int i = 0; i < currentData.primaryKeys.length; i++) {
-                HashSet<String> attr = currentData.primaryKeys[i];
+                Set<String> attr = currentData.primaryKeys[i];
                 keyList[i] = DiscoverERmodel.keyToString(attr);
             }
 

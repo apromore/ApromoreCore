@@ -45,11 +45,18 @@
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>BPMNTK OSGI</Bundle-Name>
                         <Bundle-SymbolicName>org.bpmntk-osgi</Bundle-SymbolicName>
+                        <Import-Bundle>
+                            org.bpmnminer-osgi;bundle-version="[1.1,2.0]"
+                        </Import-Bundle>
                         <Import-Package>
                             !ee.ut.comptech,
                             !junit.framework.*,
                             !org.junit.*,
                             !org.omg.spec.bpmn._20100524.model.*,
+                            org.processmining.contexts.*;version="[1.0,2.0)",
+                            org.processmining.framework.*;version="[1.0,2.0)",
+                            org.processmining.models.*;version="[1.0,2.0)",
+                            org.processmining.plugins.*;version="[1.0,2.0)",
                             *
                         </Import-Package>
                         <Export-Package>
@@ -75,7 +82,8 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
+            <artifactId>bpmnminer-osgi</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>

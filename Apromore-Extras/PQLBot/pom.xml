@@ -177,7 +177,7 @@
     <dependency>
       <groupId>org.deckfour.xes</groupId>
       <artifactId>OpenXES</artifactId>
-      <version>6.5</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <!--
@@ -221,49 +221,48 @@
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>efficientstorage</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>inductiveminer</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>petrinets</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>pnetreplayer</artifactId>
-      <version>1.0</version>
-      <scope>runtime</scope>
+      <version>6.5.20170418</version>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>prom6-contexts</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>prom6-framework</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>prom6-models</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>uitopia</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
 
