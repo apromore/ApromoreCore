@@ -127,7 +127,7 @@ public class DirectlyFollowGraphPlus {
         for( DFGEdge edge : edges ) {
             src = mapping.get(edge.getSource().getCode());
             tgt = mapping.get(edge.getTarget().getCode());
-            diagram.addFlow(src, tgt, edge.toString());
+            diagram.addFlow(src, tgt, "");
         }
 
         return diagram;
