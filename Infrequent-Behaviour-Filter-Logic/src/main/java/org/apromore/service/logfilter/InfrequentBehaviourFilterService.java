@@ -23,7 +23,7 @@ package org.apromore.service.logfilter;
 import org.deckfour.xes.model.XLog;
 
 /**
- * Created by Adriano Augusto on 18/04/2016.
+ * Created by Raffaele Conforti on 18/04/2016.
  */
 public interface InfrequentBehaviourFilterService {
 

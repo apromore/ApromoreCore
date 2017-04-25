@@ -51,7 +51,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
 
 /**
- * Metrics service. Created by Adriano Augusto 18/04/2016
+ * Created by Raffaele Conforti on 18/04/2016.
  */
 @Component("plugin")
 public class InfrequentBehaviourFilterPlugin extends PluginCustomGui {

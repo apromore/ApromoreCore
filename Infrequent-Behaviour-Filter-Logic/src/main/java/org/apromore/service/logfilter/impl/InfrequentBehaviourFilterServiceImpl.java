@@ -40,7 +40,7 @@ import java.io.OutputStream;
 import java.util.Date;
 
 /**
- * Created by Adriano Augusto on 18/04/2016.
+ * Created by Raffaele Conforti on 18/04/2016.
  */
 @Service
 public class  InfrequentBehaviourFilterServiceImpl extends DefaultParameterAwarePlugin implements InfrequentBehaviourFilterService {
