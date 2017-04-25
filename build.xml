@@ -67,6 +67,9 @@
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
 
+        <include name="Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
+        <include name="Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
+
         <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
 
@@ -112,6 +115,9 @@
 
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
+
+        <include name="Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
+        <include name="Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
 
         <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
@@ -174,6 +180,9 @@
         <!-- ibpstruct-editor-plugin renamed ~ibpstruct-editor-plugin elsewhere as a workaround for its dependency upon ibpstruct-logic
         <include name="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war"/>
         -->
+
+        <include name="Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
+        <include name="Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
 
         <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>

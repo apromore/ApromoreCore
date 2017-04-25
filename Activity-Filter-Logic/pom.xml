@@ -31,48 +31,29 @@
         <relativePath>../</relativePath>
     </parent>
 
-    <artifactId>bpmnminer-logic</artifactId>
+    <artifactId>activity-filter-logic</artifactId>
     <packaging>bundle</packaging>
-    <name>BPMNMiner-logic</name>
+    <name>Activity Filter Logic</name>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <!--
-                    There is some problem in the bpstruct JAR that causes the newer version to throw an error!
-                    So we use the older version as workaround
-                -->
                 <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
-                        <Import-Bundle>
-                            org.bpmnminer-osgi;bundle-version="[1.1,2.0]",
-                            org.eclipse-collections-osgi;bundle-version="[1.1,2.0]"
-                        </Import-Bundle>
                         <Import-Package>
-                            com.raffaeleconforti.bpmnminer.*,
-                            com.raffaeleconforti.context,
-                            com.raffaeleconforti.foreignkeydiscovery.*,
-                            com.raffaeleconforti.log.*,
-                            org.apromore.service.ibpstruct.*,
-                            org.deckfour.xes.*,
-                            org.eclipse.collections.*,
-                            org.processmining.contexts.*;version="[1.0,2.0)",
-                            org.processmining.framework.*;version="[1.0,2.0)",
-                            org.processmining.models.*;version="[1.0,2.0)",
-                            org.processmining.plugins.*;version="[1.0,2.0)",
                             org.springframework.beans.factory.aspectj,
-                            javax.inject,
-                            javax.swing,
-                            org.slf4j,
-                            org.springframework.stereotype
+                            org.processmining.contexts.*;version="[6.0,10.0)",
+                            org.processmining.framework.*;version="[6.0,10.0)",
+                            org.processmining.models.*;version="[6.0,10.0)",
+                            org.processmining.plugins.*;version="[6.0,10.0)",
+                            *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.bpmnminer
+                            org.apromore.service.logfilter.activity
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -81,11 +62,6 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>ibpstruct-logic</artifactId>
-            <version>1.1</version>
-        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
@@ -99,33 +75,21 @@
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.context</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>bpmnminer-osgi</artifactId>
-            <version>1.1</version>
+            <artifactId>prom6-osgi</artifactId>
+            <version>6.0</version>
         </dependency>
         <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>bpmnminer-commandline</artifactId>
-            <version>1.0.20170425</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>eclipse-collections-osgi</artifactId>
-            <version>1.1</version>
+            <groupId>org.processmining</groupId>
+            <artifactId>log</artifactId>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.collections</groupId>
-            <artifactId>eclipse-collections</artifactId>
-            <version>8.0.0-M1</version>
+            <groupId>org.processmining</groupId>
+            <artifactId>prom6-framework</artifactId>
+            <version>6.5.20170418</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.raffaeleconforti</groupId>-->
-            <!--<artifactId>bpmnminer-commandline</artifactId>-->
-            <!--<version>1.0.20170425</version>-->
-        <!--</dependency>-->
     </dependencies>
 </project>
 

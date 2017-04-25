@@ -122,6 +122,8 @@
         <module>Compare-Portal-Plugin</module>
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>
+        <module>Activity-Filter-Logic</module>
+        <module>Activity-Filter-Portal-Plugin</module>
         <module>Infrequent-Behaviour-Filter-Logic</module>
         <module>Infrequent-Behaviour-Filter-Portal-Plugin</module>
         <module>Log-Animation-Logic</module>

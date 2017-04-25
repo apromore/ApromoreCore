@@ -32,7 +32,7 @@ import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
-import org.apromore.service.logfilter.InfrequentBehaviourFilterService;
+import org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
