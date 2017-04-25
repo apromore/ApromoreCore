@@ -77,7 +77,7 @@ public class GatewayMap {
     public GatewayMap(Set<Gateway> bondsEntries, boolean applyHagen) {
         this.applyHagen = applyHagen;
         this.bondsEntries = bondsEntries;
-//        System.out.println("Gatemap - bonds entries: " + bondsEntries.size());
+//        debug("Gatemap - bonds entries: " + bondsEntries.size());
     }
 
     public BPMNDiagram getGatewayMap() {
@@ -152,13 +152,13 @@ public class GatewayMap {
             this.entry = tmpChild;
             entry = tmpChild;
         } else {
-            System.out.println("ERROR - first gateway not found");
+            debug("ERROR - first gateway not found");
             return false;
         }
 
 //        now, we create the map starting from the entry gateway
 //        exploration is performed depth-first
-//        System.out.println("Gatemap - generating paths ...");
+//        debug("Gatemap - generating paths ...");
         toVisit.add(0, entry);
         visited.add(exit);
 
@@ -185,7 +185,7 @@ public class GatewayMap {
                 if( !gateways.contains(tmpChild) && !tmpChild.equals(exit) ) {
 //                    we found a node with multiple children that is not a gateway OR
 //                    a node with zero children that is not the main exit
-                    System.out.println("ERROR - found a weird node while generating a paths");
+                    debug("ERROR - found a weird node while generating a paths");
                     return false;
                 }
 
@@ -199,13 +199,13 @@ public class GatewayMap {
 
         generateFakeEntryAndExit();
 
-//        System.out.println("DEBUG - exit gate: " + exit.getLabel() );
-//        System.out.println("DEBUG - gateways: " + gateways.size() );
+//        debug("DEBUG - exit gate: " + exit.getLabel() );
+//        debug("DEBUG - gateways: " + gateways.size() );
 
 //        at this point we need to check that there are NO join/split gateways (just for debug)
         if( !checkGateways() ) return false;
 
-//        System.out.println("DEBUG - flows: " + flows.size() );
+//        debug("DEBUG - flows: " + flows.size() );
 
 //        finally, we explore the gateway map created in order to:
 //        1. find loops
@@ -223,7 +223,7 @@ public class GatewayMap {
         BPMNNode src;
         BPMNNode tgt;
 
-//        System.out.println("Gatemap - starting initialization");
+//        debug("Gatemap - starting initialization");
 
         this.children = new HashMap<>();
         this.parents = new HashMap<>();
@@ -254,35 +254,35 @@ public class GatewayMap {
         if( (ends.size() == 1) && (starts.size() == 1) ) {
             for( BPMNNode s : starts ) {
                 entry = s;
-                //System.out.println("DEBUG - entry: " + s);
-                //System.out.println("DEBUG - graph.entry: " + graph.getEntry());
+                //debug("DEBUG - entry: " + s);
+                //debug("DEBUG - graph.entry: " + graph.getEntry());
                 if( !parents.containsKey(s) ) {
                     parents.put(s, new ArrayList<BPMNNode>());
-                    //System.out.println("DEBUG - added entry in parents.");
+                    //debug("DEBUG - added entry in parents.");
                 } else {
-                    System.out.println("ERROR - found one single entry but with parent nodes.");
+                    debug("ERROR - found one single entry but with parent nodes.");
                     return false;
                 }
             }
 
             for( BPMNNode s : ends ) {
                 exit = s;
-                //System.out.println("DEBUG - exit: " + s);
-                //System.out.println("DEBUG - graph.exit: " + graph.getExit());
+                //debug("DEBUG - exit: " + s);
+                //debug("DEBUG - graph.exit: " + graph.getExit());
                 if( !children.containsKey(s) ) {
                     children.put(s, new ArrayList<BPMNNode>());
-                    //System.out.println("DEBUG - added exit in children.");
+                    //debug("DEBUG - added exit in children.");
                 } else {
-                    System.out.println("ERROR - found one single exit but with children nodes.");
+                    debug("ERROR - found one single exit but with children nodes.");
                     return false;
                 }
             }
         } else {
-            System.out.println("ERROR - found multiple entry(" + starts.size() + ") or exit(" + ends.size() + ") points.");
+            debug("ERROR - found multiple entry(" + starts.size() + ") or exit(" + ends.size() + ") points.");
             return false;
         }
 
-//        System.out.println("Gatemap - initialization completed");
+//        debug("Gatemap - initialization completed");
         return true;
     }
 
@@ -298,11 +298,11 @@ public class GatewayMap {
             if( isJoin && isSplit ) errors++;
         }
 
-//        System.out.println("Gatemap - splits: " + splits );
-//        System.out.println("Gatemap - joins: " + joins );
+//        debug("Gatemap - splits: " + splits );
+//        debug("Gatemap - joins: " + joins );
 
         if( errors != 0 ) {
-            System.out.println("ERROR - found join/split gateways: " + errors );
+            debug("ERROR - found join/split gateways: " + errors );
             return false;
         }
 
@@ -322,11 +322,11 @@ public class GatewayMap {
 
     private void exploreMap() {
         if( !(entry instanceof Gateway) || !(exit instanceof Gateway)) {
-            System.out.println("ERROR - the entry gateway is NOT a gateway");
+            debug("ERROR - the entry gateway is NOT a gateway");
             return;
         }
 
-//        System.out.println("DEBUG - exploring gatemap ...");
+//        debug("DEBUG - exploring gatemap ...");
 
 //        this must be the first method to be executed
         detectLoops((Gateway) entry);
@@ -358,22 +358,22 @@ public class GatewayMap {
         HashSet<GatewayMapFlow> loopEdges = new HashSet<>();
         HashSet<GatewayMapFlow> forwardEdges = new HashSet<>();
 
-        //System.out.println("DEBUG - outgoing size: " + unvisited.size() );
+        //debug("DEBUG - outgoing size: " + unvisited.size() );
 
         exploreLoops(entry, unvisited, visiting, visitedGates, visitedFlows, loopEdges, forwardEdges);
 
-        //System.out.println("DEBUG - forwardEdges size: " + forwardEdges.size() );
-        //System.out.println("DEBUG - loops size: " + loopEdges.size() );
+        //debug("DEBUG - forwardEdges size: " + forwardEdges.size() );
+        //debug("DEBUG - loops size: " + loopEdges.size() );
         for( GatewayMapFlow flow : loopEdges )
             if( !forwardEdges.contains(flow) ) {
                 flow.setLoop();
                 l++;
             }
 
-//        System.out.println("Gatemap - loops: " + l);
-//        System.out.println("Gatemap - unvisited gates: " + unvisited.size());
-//        System.out.println("Gatemap - visited gates: " + visitedGates.size());
-//        System.out.println("Gatemap - visited flows: " + visitedFlows.size());
+//        debug("Gatemap - loops: " + l);
+//        debug("Gatemap - unvisited gates: " + unvisited.size());
+//        debug("Gatemap - visited gates: " + visitedGates.size());
+//        debug("Gatemap - visited flows: " + visitedFlows.size());
     }
 
     private boolean exploreLoops(Gateway entry, HashSet<Gateway> unvisited, HashSet<Gateway> visiting,
@@ -385,7 +385,7 @@ public class GatewayMap {
         boolean forwardEdge = false;
         boolean visited = true;
 
-//        System.out.println("DEBUG - loop visiting: " + entry.getLabel());
+//        debug("DEBUG - loop visiting: " + entry.getLabel());
 
         unvisited.remove(entry);
         visiting.add(entry);
@@ -498,7 +498,7 @@ public class GatewayMap {
                 }
             }
 
-//        System.out.println("Gatemap - loop-joins: " + loopJoins.size());
+        debug("Gatemap - loop-joins: " + loopJoins.size());
     }
 
     private void populatedIORHierarchy(Gateway entry) {
@@ -530,7 +530,7 @@ public class GatewayMap {
 
         iorsHierarchy = new IORsHierarchy();
         for( Gateway g : gatesDepth.keySet() ) iorsHierarchy.put(g, gatesDepth.get(g));
-//        System.out.println("DEBUG - IORs found: " + iorsHierarchy.size());
+        debug("DEBUG - IORs found: " + iorsHierarchy.size());
     }
 
 
@@ -597,7 +597,7 @@ public class GatewayMap {
 //                    join as fragment exit we put a token generator which will throw a token to each
 //                    other incoming flow of the IOR fragment exit
 //                    memo: we should never get inside this IF, because we set all the loop-joins to XORs before
-                    System.out.println("WARNING - this should not happen!: found a loop-join: " + ior.getLabel());
+                    debug("WARNING - this should not happen!: found a loop-join: " + ior.getLabel());
                     ior.setGatewayType(Gateway.GatewayType.DATABASED);
                     loop = true;
                     break;
@@ -641,22 +641,22 @@ public class GatewayMap {
             }
 
             if( !loop ) {
-//                System.out.println("DEBUG - changing IOR: " + ior.getLabel() + "");
-//                System.out.println("DEBUG - xors: " + toVisit.size());
+                debug("DEBUG - changing IOR: " + ior.getLabel() + "");
+//                debug("DEBUG - xors: " + toVisit.size());
                 iorType = replaceIOR(dominator, gatesDepth.get(ior), toVisit, visitedGates, visitedFlows, domFrontier, new HashMap<Gateway, Set<GatewayMapFlow>>());
                 ior.setGatewayType(iorType);
                 counter++;
             }
         }
 
-//        System.out.println("DEBUG - IORs removed: " + counter);
+//        debug("DEBUG - IORs removed: " + counter);
         helper.removeTrivialGateways(bpmnDiagram);
     }
 
     private Gateway getDominator(Gateway ior) {
         int domID = domTree.getInfo(gateIDs.get(ior)).getDom().getNode();
         Gateway dominator = idToGate.get(domID);
-//        System.out.println("DEBUG - DOM: " + dominator.getLabel() + " > " + ior.getLabel());
+//        debug("DEBUG - DOM: " + dominator.getLabel() + " > " + ior.getLabel());
         return dominator;
     }
 
@@ -720,7 +720,7 @@ public class GatewayMap {
 //                            however, if there are no AND gateways or they are only entry or exit of BONDs
 //                            we can set the IORs as a XOR, for this reason we need to keep track of the
 //                            presence of AND gateways that are not entries or exits of BONDs, this is done here
-//                        System.out.println("DEBUG - found an AND gateway: " + g.getLabel());
+//                        debug("DEBUG - found an AND gateway: " + g.getLabel());
 
                         if( !bondsEntries.contains(g) ) {
                             onlyXORs = false;
@@ -745,29 +745,29 @@ public class GatewayMap {
             }
 
             if( onlyXORs ) {
-//                System.out.println("DEBUG - turning an IOR into a XOR");
+                debug("DEBUG - turning an IOR into a XOR");
                 return Gateway.GatewayType.DATABASED;
             }
 
             changes = new HashMap<>();
             loopChanges = new ArrayList<>();
             for( Gateway xor : visitedGates.keySet() ) {
-//                System.out.println("DEBUG - visited gates for: " + xor.getLabel());
+                debug("DEBUG - visited gates for: " + xor.getLabel());
                 for( Gateway g : visitedGates.get(xor) ) {
-//                    System.out.println("DEBUG - gate: " + g.getLabel());
+                    debug("DEBUG - gate: " + g.getLabel());
                     if( (g.getGatewayType() == Gateway.GatewayType.PARALLEL) || (outgoings.get(g).size() == 1) ) continue;
 //                    if we are here, it means g is a decision (XOR split gateway)
                     for( GatewayMapFlow of : outgoings.get(g) ) {
-//                        System.out.println("DEBUG - outgoing: " + of.getSource().getLabel() + " -> " + of.getTarget().getLabel());
+                        debug("DEBUG - outgoing: " + of.getSource().getLabel() + " -> " + of.getTarget().getLabel());
                         if( (g == dominator) && !domFrontier.contains(of) ) {
-//                            System.out.println("DEBUG - not frontier");
+                            debug("DEBUG - not frontier");
                             continue;
                         }
                         if( visitedFlows.get(xor).contains(of) ) {
-//                            System.out.println("DEBUG - visited");
+                            debug("DEBUG - visited");
                             continue;
                         }
-//                        System.out.println("DEBUG - adding a token generator");
+//                        debug("DEBUG - adding a token generator");
 //                        here we keep track of where we should put new token generators
                         if( changes.containsKey(of) ) changes.get(of).addXOR2BeFeed(xor);
                         else changes.put(of, new SingleTokenGen(xor, g, of));
@@ -780,12 +780,12 @@ public class GatewayMap {
 //            at this point, we have to deal with the loop-injections inside this fragment,
 //            we have collected these during the backward exploration
             for( Gateway loopInj : loopInjections.keySet() ) {
-//                System.out.println("DEBUG - checking loopjoin: " + loopInj.getLabel());
+//                debug("DEBUG - checking loopjoin: " + loopInj.getLabel());
                 if( loopInjections.get(loopInj).isEmpty() ) continue;
                 tmp = new HashSet<>();
                 for( Gateway xor : visitedGates.keySet() ) {
                     if( !visitedGates.get(xor).contains(loopInj) ) tmp.add(xor);
-//                    else System.out.println("DEBUG - visited from: " + xor.getLabel());
+//                    else debug("DEBUG - visited from: " + xor.getLabel());
                 }
                 if(!tmp.isEmpty()) loopChanges.add(new MultipleTokenGen(tmp, loopInjections.get(loopInj), loopInj));
             }
@@ -796,7 +796,7 @@ public class GatewayMap {
 
         } else return replaceIOR(dominator, iorDepth, toVisit, visitedGates, visitedFlows, domFrontier, loopInjections);
 
-//        System.out.println("DEBUG - turning an IOR into a AND");
+//        debug("DEBUG - turning an IOR into a AND");
         return Gateway.GatewayType.PARALLEL;
     }
 
@@ -808,7 +808,7 @@ public class GatewayMap {
 
         if( (eFlow.first instanceof Gateway) && (((Gateway) eFlow.first).getGatewayType() == Gateway.GatewayType.PARALLEL) && (outgoings.get(eFlow.first).size() > 1) ) and = (Gateway) eFlow.first;
         else {
-//            System.out.println("DEBUG - creating a token generator" + "and_" + eFlow.id);
+//            debug("DEBUG - creating a token generator" + "and_" + eFlow.id);
             GID++;
             and = bpmnDiagram.addGateway("tg_"+GID, Gateway.GatewayType.PARALLEL);
             bpmnDiagram.addFlow(eGate, and, "");
@@ -839,7 +839,7 @@ public class GatewayMap {
         GatewayMapFlow finalInjection;
 
         if( xors.isEmpty() ) return;
-//        System.out.println("DEBUG - placing a multiple token generator: " + xors.size());
+//        debug("DEBUG - placing a multiple token generator: " + xors.size());
 
         if( injections.size() > 1 ) {
 //            if we have a loop-join with more than two injection flows,
@@ -923,7 +923,7 @@ public class GatewayMap {
 //        NOTE: this method does not work if the SRC or the TGT are not present in the gateway map
 //              remember to add first the gateways and then the flows
         if( !((src instanceof Gateway) && (tgt instanceof Gateway)) ) {
-            System.out.println("WARNING - cannot add the flow: not a flow instance");
+            debug("WARNING - cannot add the flow: not a flow instance");
             return null;
         }
 
@@ -967,7 +967,7 @@ public class GatewayMap {
         Gateway entry = flow.getSource();
         Gateway exit = flow.getTarget();
 
-//        System.out.println("DEBUG - removing flow");
+//        debug("DEBUG - removing flow");
 
         flows.remove(flow);
         outgoings.get(entry).remove(flow);
@@ -1063,7 +1063,7 @@ public class GatewayMap {
         IORsHierarchy() { hierarchy = new HashMap<>(); size = 0; }
 
         void put(Gateway gate, int depth) {
-//            System.out.println("DEBUG - adding: " + gate.getLabel() + " - depth: " + depth);
+//            debug("DEBUG - adding: " + gate.getLabel() + " - depth: " + depth);
             if( gate.getGatewayType() != Gateway.GatewayType.INCLUSIVE ) return;
             if( !hierarchy.containsKey(depth) ) hierarchy.put(depth, new ArrayList<Gateway>());
             hierarchy.get(depth).add(gate);
@@ -1075,12 +1075,18 @@ public class GatewayMap {
             Gateway ior = hierarchy.get(min).remove(0);
             if( hierarchy.get(min).isEmpty() ) hierarchy.remove(min);
             size--;
-//            System.out.println("DEBUG - extracting: " + ior.getLabel() + " - depth: " + min);
+//            debug("DEBUG - extracting: " + ior.getLabel() + " - depth: " + min);
             return ior;
         }
 
         int size() { return size; }
         boolean isEmpty() { return (size == 0); }
+    }
+
+
+    private void debug(String s) {
+        if( s.contains("DEBUG") && true ) System.out.println(s);
+        else System.out.println(s);
     }
 
 }
