@@ -28,7 +28,7 @@ import javax.inject.Inject;
 
 // Third party packages
 import org.apromore.service.EventLogService;
-import org.apromore.service.logfilter.InfrequentBehaviourFilterService;
+import org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService;
 import org.springframework.stereotype.Component;
 
 // Local packages

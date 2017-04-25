@@ -18,15 +18,15 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.service.logfilter;
+package org.apromore.service.logfilter.activity;
 
 import org.deckfour.xes.model.XLog;
 
 /**
  * Created by Raffaele Conforti on 18/04/2016.
  */
-public interface InfrequentBehaviourFilterService {
+public interface ActivityFilterService {
 
-    XLog filterLog(XLog log);
+    XLog filterLog(XLog log, int percentage);
 
 }

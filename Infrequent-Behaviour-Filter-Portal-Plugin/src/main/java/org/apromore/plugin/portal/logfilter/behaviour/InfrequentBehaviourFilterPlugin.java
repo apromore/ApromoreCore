@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.logfilter;
+package org.apromore.plugin.portal.logfilter.behaviour;
 
 // Java 2 Standard Edition packages
 import java.io.*;
@@ -38,7 +38,7 @@ import org.apromore.dao.LogRepository;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.service.EventLogService;
-import org.apromore.service.logfilter.InfrequentBehaviourFilterService;
+import org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +110,7 @@ public class InfrequentBehaviourFilterPlugin extends PluginCustomGui {
             int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
 
             eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
-                    logST.getName() + "_filtered", new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
+                    logST.getName() + "_behavioural_filtered", new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     logST.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     logST.isMakePublic());
 

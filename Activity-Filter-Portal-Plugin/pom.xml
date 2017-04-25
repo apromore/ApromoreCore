@@ -25,33 +25,39 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apromore</groupId>
-        <artifactId>apromore</artifactId>
+        <groupId>org.apromore.plugin</groupId>
+        <artifactId>plugin</artifactId>
         <version>1.1</version>
-        <relativePath>../</relativePath>
+        <relativePath>../Apromore-Plugins/</relativePath>
     </parent>
 
-    <artifactId>infrequent-behaviour-filter-logic</artifactId>
     <packaging>bundle</packaging>
-    <name>Infrequent Behaviour Filter service</name>
+    <!-- Unique name of the plug-in -->
+    <artifactId>activity-filter-portal-plugin</artifactId>
+    <name>Activity Filter portal plugin</name>
+    <description>Activity Filter Plugin</description>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
-                <extensions>true</extensions>
                 <configuration>
+                    <!-- Generally, no change should be necessary here unless your plug-in relies on a non-OSGi dependency -->
                     <instructions>
                         <Import-Package>
+                            <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
+                            org.apromore.plugin,
                             org.springframework.beans.factory.aspectj,
-                            com.raffaeleconforti.noisefiltering.event,
                             *
                         </Import-Package>
-                        <Export-Package>
-                            org.apromore.service.logfilter.behaviour
-                        </Export-Package>
+                        <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGi bundle
+                        <Embed-Dependency>
+                            artifactId=fooBar
+                        </Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Embed-Directory>lib</Embed-Directory>
+                        -->
                     </instructions>
                 </configuration>
             </plugin>
@@ -61,27 +67,22 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>apromore-manager</artifactId>
-            <version>${manager-client.version}</version>
+            <artifactId>activity-filter-logic</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>org.springframework.context</artifactId>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-plugin-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>infrequent-behaviour-filter-osgi</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.raffaeleconforti</groupId>
-            <artifactId>noisefiltering-event-commandline</artifactId>
-            <version>1.0.20170425</version>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-custom-gui</artifactId>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
-</project>
 
+</project>

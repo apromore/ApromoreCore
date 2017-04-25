@@ -31,7 +31,7 @@
     <context:spring-configured />
 
     <!-- Other OSGi services this component consumes -->
-    <reference id="infrequentBehaviourFilter" interface="org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService"/>
+    <reference id="activityFilter" interface="org.apromore.service.logfilter.activity.ActivityFilterService"/>
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
 
     <!-- Exposes the component as OSGi service -->

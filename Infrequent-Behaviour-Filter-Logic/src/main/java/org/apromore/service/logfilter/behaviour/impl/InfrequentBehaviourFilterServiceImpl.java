@@ -18,13 +18,13 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.service.logfilter.impl;
+package org.apromore.service.logfilter.behaviour.impl;
 
 import com.raffaeleconforti.noisefiltering.event.InfrequentBehaviourFilter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
-import org.apromore.service.logfilter.InfrequentBehaviourFilterService;
+import org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XEvent;
