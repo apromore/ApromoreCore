@@ -83,7 +83,7 @@ public class PORuns2PES {
 		Map<Integer, Integer> occurrences = new HashMap<Integer, Integer>();
 		for (Integer event: equivalenceClasses.keySet())
 			occurrences.put(event, equivalenceClasses.get(event).size());
-		
+
 		double[][] fmatrix = new double[size][size];
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {

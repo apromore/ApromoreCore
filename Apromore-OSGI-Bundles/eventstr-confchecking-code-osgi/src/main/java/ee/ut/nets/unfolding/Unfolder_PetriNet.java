@@ -263,7 +263,7 @@ public class Unfolder_PetriNet {
 		for(DNode n : inverseMap.keySet())
 			repetitionIndex.put(inverseMap.get(n), repetitionI.get(n.id));
 		
-		System.out.println("Repetitions = " + repetitionIndex);
+//		System.out.println("Repetitions = " + repetitionIndex);
 	}
 	
 	private HashSet<DNode> countOcc(DNode n) {
