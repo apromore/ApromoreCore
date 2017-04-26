@@ -81,6 +81,19 @@ public class MergeModels {
         HashSet<String> labelsg1 = extractLabels(g1);
         HashSet<String> labelsg2 = extractLabels(g2);
 
+        for(Edge e : g1.getEdges()) {
+            if(labelsg1.size() == e.getLabels().size()) {
+                e.getLabels().clear();
+                System.out.println("clear");
+            }
+        }
+        for(Edge e : g2.getEdges()) {
+            if(labelsg2.size() == e.getLabels().size()) {
+                e.getLabels().clear();
+                System.out.println("clear");
+            }
+        }
+
         HashSet<String> labelsg1g2 = new HashSet<String>();
         labelsg1g2.addAll(labelsg1);
         labelsg1g2.addAll(labelsg2);
@@ -178,15 +191,22 @@ public class MergeModels {
                     Edge e = merged.containsEdge(vp.getLeft().getID(), cLeft.getID());
 
                     if (e != null) {
-                        if(e.getLabels().size() > 0 && e.getLabels().size() < labelsg1.size()) {
-                            e.addLabels(getLabelsInclusive(labels, labelsg2));
-                        }else if(e.getLabels().size() == 0) {
-                            if(labels.size() > 0 && labels.size() < labelsg2.size()) {
-                                e.addLabels(labelsg1);
-                                e.addLabels(getLabelsExclusive(labels, labelsg2));
-                            }
-                        }else if(e.getLabels().size() == labelsg1.size()) {
-                            e.addLabels(getLabelsInclusive(labels, labelsg2));
+//                        if(e.getLabels().size() > 0 && e.getLabels().size() < labelsg1.size()) {
+//                            e.addLabels(getLabelsInclusive(labels, labelsg2));
+//                        }else if(e.getLabels().size() == 0) {
+//                            if(labels.size() > 0 && labels.size() < labelsg2.size()) {
+//                                e.addLabels(labelsg1);
+//                                e.addLabels(getLabelsExclusive(labels, labelsg2));
+//                            }
+//                        }else if(e.getLabels().size() == labelsg1.size()) {
+//                            e.addLabels(getLabelsInclusive(labels, labelsg2));
+//                        }
+                        if(e.getLabels().size() > 0 || labels.size() > 0) {
+                            if(e.getLabels().size() == 0) e.addLabels(labelsg1);
+                            if(labels.size() == 0) e.addLabels(labelsg2);
+                        }
+                        if(e.getLabels().size() == labelsg1g2.size()) {
+                            e.getLabels().clear();
                         }
                     }
                 }
@@ -271,7 +291,7 @@ public class MergeModels {
 
                     merged.addVertex(newSink);
                     Edge edge = merged.connectVertices(g1Sink, newSink);
-                    HashSet<String> originalLabels = new HashSet<String>();
+//                    HashSet<String> originalLabels = new HashSet<String>();
 
                     for (Vertex v : g1SourceFoll) {
                         HashSet<String> labels = merged.removeEdge(g1Sink.getID(), v.getID());
@@ -279,16 +299,19 @@ public class MergeModels {
                         g1Sink.removeChild(v.getID());
                         v.removeParent(g1Sink.getID());
 
-                        Edge e = merged.containsEdge(newSink.getID(), v.getID());
-                        if(e != null && e.getLabels().size() > 0) {
-                            merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg1));
-                        }else if(e == null) {
-                            merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg1));
-                        }else {
-                            merged.connectVertices(newSink, v, getLabelsExclusive(labels, labelsg1));
-                        }
+//                        Edge e = merged.containsEdge(newSink.getID(), v.getID());
+//                        if(e != null && e.getLabels().size() > 0) {
+//                            merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg1));
+//                        }else if(e == null) {
+//                            merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg1));
+//                        }else {
+//                            merged.connectVertices(newSink, v, getLabelsExclusive(labels, labelsg1));
+//                        }
+                        Edge e = merged.connectVertices(newSink, v);
+                        if(labels.size() > 0) e.addLabels(labels);
+                        else e.addLabels(labelsg1);
 
-                        originalLabels.addAll(labels);
+//                        originalLabels.addAll(labels);
                     }
 
                     for (Vertex v : g2SourceFoll) {
@@ -297,16 +320,19 @@ public class MergeModels {
                         g1Sink.removeChild(v.getID());
                         v.removeParent(g2Sink.getID());
 
-                        Edge e = merged.containsEdge(newSink.getID(), v.getID());
-                        if(e != null && e.getLabels().size() > 0) {
-                            merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg2));
-                        }else if(e == null) {
-                            merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg2));
-                        }else {
-                            merged.connectVertices(newSink, v, getLabelsExclusive(labels, labelsg2));
-                        }
+//                        Edge e = merged.containsEdge(newSink.getID(), v.getID());
+//                        if(e != null && e.getLabels().size() > 0) {
+//                            merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg2));
+//                        }else if(e == null) {
+//                            merged.connectVertices(newSink, v, getLabelsInclusive(labels, labelsg2));
+//                        }else {
+//                            merged.connectVertices(newSink, v, getLabelsExclusive(labels, labelsg2));
+//                        }
+                        Edge e = merged.connectVertices(newSink, v);
+                        if(labels.size() > 0) e.addLabels(labels);
+                        else e.addLabels(labelsg2);
 
-                        originalLabels.addAll(labels);
+//                        originalLabels.addAll(labels);
                     }
 
 //                    edge.addLabels(originalLabels);
@@ -316,13 +342,21 @@ public class MergeModels {
                         if (!containsVertex(mapping, v)) {
                             HashSet<String> labels = merged.removeEdge(g2Sink.getID(), v.getID());
 
-                            Edge e = merged.containsEdge(g1Sink.getID(), v.getID());
-                            if(e != null && e.getLabels().size() > 0) {
-                                merged.connectVertices(g1Sink, v, getLabelsInclusive(labels, labelsg2));
-                            }else if(e == null) {
-                                merged.connectVertices(g1Sink, v, getLabelsInclusive(labels, labelsg2));
-                            }else {
-                                merged.connectVertices(g1Sink, v, getLabelsExclusive(labels, labelsg2));
+//                            Edge e = merged.containsEdge(g1Sink.getID(), v.getID());
+//                            if(e != null && e.getLabels().size() > 0) {
+//                                merged.connectVertices(g1Sink, v, getLabelsInclusive(labels, labelsg2));
+//                            }else if(e == null) {
+//                                merged.connectVertices(g1Sink, v, getLabelsInclusive(labels, labelsg2));
+//                            }else {
+//                                merged.connectVertices(g1Sink, v, getLabelsExclusive(labels, labelsg2));
+//                            }
+                            Edge e = merged.connectVertices(g1Sink, v);
+                            if(e.getLabels().size() > 0) {
+                                if (labels.size() > 0) e.addLabels(labels);
+                                else e.addLabels(labelsg2);
+                            }else if (labels.size() > 0) {
+                                e.addLabels(labelsg1);
+                                e.addLabels(labels);
                             }
                         }
                     }
@@ -352,8 +386,8 @@ public class MergeModels {
                         v.removeChild(g1Source.getID());
 
 //                        merged.connectVertices(v, newSource, getLabelsExclusive(labels, labelsg1));
-                        merged.connectVertices(v, newSource, getLabelsInclusive(labels, labelsg1));
-//                        merged.connectVertices(v, newSource);
+//                        merged.connectVertices(v, newSource, getLabelsInclusive(labels, labelsg1));
+                        merged.connectVertices(v, newSource);
                     }
 
                     for (Vertex v : g2SourcePrev) {
@@ -363,8 +397,8 @@ public class MergeModels {
                         v.removeChild(g2Source.getID());
 
 //                        merged.connectVertices(v, newSource, getLabelsExclusive(labels, labelsg2));
-                        merged.connectVertices(v, newSource, getLabelsInclusive(labels, labelsg2));
-//                        merged.connectVertices(v, newSource);
+//                        merged.connectVertices(v, newSource, getLabelsInclusive(labels, labelsg2));
+                        merged.connectVertices(v, newSource);
                     }
                 }
                 // this is gateway
@@ -374,8 +408,8 @@ public class MergeModels {
                         if (!containsVertex(mapping, v)) {
                             HashSet<String> labels = merged.removeEdge(v.getID(), g2Source.getID());
 //                            merged.connectVertices(v, g1Source, getLabelsExclusive(labels, labelsg2));
-                            merged.connectVertices(v, g1Source, getLabelsInclusive(labels, labelsg2));
-//                            merged.connectVertices(v, g1Source);
+//                            merged.connectVertices(v, g1Source, getLabelsInclusive(labels, labelsg2));
+                            merged.connectVertices(v, g1Source).getLabels().clear();
                         }
                     }
                 }
@@ -393,17 +427,17 @@ public class MergeModels {
                         Vertex v2 = getMappingPair(mapping, v);
                         if (v2 != null) {
                             Edge e2 = g2.containsEdge(v2.getID(), vp.getRight().getID());
-                            if (e2 != null) {
-                                if(e.getLabels().size() > 0 && e.getLabels().size() < labelsg1.size()) {
-                                    e.addLabels(getLabelsInclusive(e2.getLabels(), labelsg2));
-                                }else if(e.getLabels().size() == 0 && getLabelsExclusive(e2.getLabels(), labelsg2).size() > 0) {
-                                    e.addLabels(labelsg1);
-                                    e.addLabels(getLabelsExclusive(e2.getLabels(), labelsg2));
-                                }else if(e.getLabels().size() == labelsg1.size()) {
-                                    e.addLabels(getLabelsInclusive(e2.getLabels(), labelsg2));
-                                }
-                                // the common part should also have the labels of both graph
-                            }
+//                            if (e2 != null) {
+//                                if(e.getLabels().size() > 0 && e.getLabels().size() < labelsg1.size()) {
+//                                    e.addLabels(getLabelsInclusive(e2.getLabels(), labelsg2));
+//                                }else if(e.getLabels().size() == 0 && getLabelsExclusive(e2.getLabels(), labelsg2).size() > 0) {
+//                                    e.addLabels(labelsg1);
+//                                    e.addLabels(getLabelsExclusive(e2.getLabels(), labelsg2));
+//                                }else if(e.getLabels().size() == labelsg1.size()) {
+//                                    e.addLabels(getLabelsInclusive(e2.getLabels(), labelsg2));
+//                                }
+//                                // the common part should also have the labels of both graph
+//                            }
                         }
                     }
                 }
@@ -568,7 +602,8 @@ public class MergeModels {
     }
 
     private static HashSet<String> getLabelsExclusive(HashSet<String> labels, HashSet<String> labelSet) {
-        if(labels != null && labels.size() > 0 && labels.size() < labelSet.size()) {
+//        if(labels != null && labels.size() > 0 && labels.size() < labelSet.size()) {
+        if(labels != null && labels.size() > 0 && !labels.containsAll(labelSet)) {
             return labels;
         }else {
             return new HashSet<>();
@@ -576,7 +611,8 @@ public class MergeModels {
     }
 
     private static HashSet<String> getLabelsInclusive(HashSet<String> labels, HashSet<String> labelSet) {
-        if(labels != null && labels.size() > 0 && labels.size() < labelSet.size()) {
+//        if(labels != null && labels.size() > 0 && labels.size() < labelSet.size()) {
+        if(labels != null && labels.size() > 0 && !labels.containsAll(labelSet)) {
             return labels;
         }else {
             return labelSet;
