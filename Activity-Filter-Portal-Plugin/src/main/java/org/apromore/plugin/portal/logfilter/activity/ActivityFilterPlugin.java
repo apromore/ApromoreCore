@@ -28,14 +28,11 @@ import java.util.*;
 import javax.inject.Inject;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import java.util.EventListener;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 // Third party packages
-import org.apromore.common.Constants;
-import org.apromore.dao.LogRepository;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.service.EventLogService;
@@ -52,8 +49,6 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
 
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
-
 /**
  * Metrics service. Created by Raffaele Conforti 18/04/2016
  */
@@ -64,7 +59,9 @@ public class ActivityFilterPlugin extends PluginCustomGui {
     @Inject private EventLogService eventLogService;
     @Inject private ActivityFilterService activityFilterService;
 
+    private XLog log;
     private Window window;
+    private Listbox event_types;
     private Slider threshold;
     private Button cancelButton;
     private Button okButton;
@@ -94,8 +91,20 @@ public class ActivityFilterPlugin extends PluginCustomGui {
         if (selectedLogSummaryType.size() == 0) {
 
         }else if (selectedLogSummaryType.size() == 1) {
+            retreiveLog(selectedLogSummaryType);
+            String[] classes = activityFilterService.getLifecycleClasses(log);
+
             try {
                 this.window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/activityFilter.zul", null, null);
+
+                this.event_types = (Listbox) this.window.getFellow("activityFilterList");
+                for(String candidate : classes) {
+                    Listitem listItem = new Listitem();
+                    listItem.setLabel(candidate);
+                    this.event_types.appendChild(listItem);
+                    listItem.setSelected(false);
+                }
+
                 this.threshold = (Slider) this.window.getFellow("activityFilterThreshold");
                 this.cancelButton = (Button) this.window.getFellow("activityFilterCancelButton");
                 this.okButton = (Button) this.window.getFellow("activityFilterOKButton");
@@ -120,14 +129,28 @@ public class ActivityFilterPlugin extends PluginCustomGui {
         }
     }
 
+    private void retreiveLog(Set<LogSummaryType> selectedLogSummaryType) {
+        LogSummaryType logST= selectedLogSummaryType.iterator().next();
+        log = eventLogService.getXLog(logST.getId());
+    }
+
     protected void cancel() {
         this.window.detach();
     }
 
     protected void runComputation(PortalContext portalContext, Set<LogSummaryType> selectedLogSummaryType, int percentage) {
-        LogSummaryType logST= selectedLogSummaryType.iterator().next();
+        LogSummaryType logST = selectedLogSummaryType.iterator().next();
 
-        XLog xlog = activityFilterService.filterLog(eventLogService.getXLog(logST.getId()), percentage);
+        String[] remove = new String[event_types.getItemCount() - event_types.getSelectedCount()];
+        int i = 0;
+        for(Listitem item : event_types.getItems()) {
+            if(!item.isSelected()) {
+                remove[i] = item.getLabel();
+                i++;
+            }
+        }
+
+        XLog xlog = activityFilterService.filterLog(log, remove, percentage);
 
         try {
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

@@ -22,6 +22,11 @@ package org.apromore.service.logfilter.activity.impl;
 
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.service.logfilter.activity.ActivityFilterService;
+import org.deckfour.xes.classification.XEventClass;
+import org.deckfour.xes.classification.XEventClasses;
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.info.XLogInfo;
+import org.deckfour.xes.info.impl.XLogInfoImpl;
 import org.deckfour.xes.model.XLog;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +37,23 @@ import org.springframework.stereotype.Service;
 public class ActivityFilterServiceImpl extends DefaultParameterAwarePlugin implements ActivityFilterService {
 
     @Override
-    public XLog filterLog(XLog log, int percentage) {
+    public String[] getLifecycleClasses(XLog log) {
+        XEventClassifier classifier = XLogInfoImpl.LIFECYCLE_TRANSITION_CLASSIFIER;
+        XLogInfo logInfo = XLogInfoImpl.create(log, classifier);
+        XEventClasses eventClasses = logInfo.getEventClasses(classifier);
+        String[] classes = new String[eventClasses.size()];
+        int i = 0;
+        for(XEventClass eventClass : eventClasses.getClasses()) {
+            classes[i] = eventClass.toString();
+            i++;
+        }
+        return classes;
+    }
+
+    @Override
+    public XLog filterLog(XLog log, String[] classes_to_remove, int percentage) {
         LogFilter filter = new LogFilter();
-        return filter.filter(log, percentage);
+        return filter.filter(log, classes_to_remove, percentage);
     }
 
 }
