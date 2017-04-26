@@ -184,12 +184,14 @@ public class LogAnimationController extends BaseController {
         });
     }
 
+    /*
     public void onCreate() throws InterruptedException {
 
         //Window window = (Window) this.getFellowIfAny("win");  // If we needed a dynamic ZK UI, we'd be able to mutate it here
 
-        Clients.evalJavaScript("initialize()");
+        //Clients.evalJavaScript("initialize()");
     }
+    */
 
     /**
      * @param json
