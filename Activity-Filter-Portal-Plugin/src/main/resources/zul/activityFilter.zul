@@ -20,6 +20,11 @@
 
 <window id="win" width="300px" closable="false" position="center" title="Activity Filter">
     <vbox>
+        <listbox id="activityFilterList" width="400px" rows="10" checkmark="true" multiple="true">
+            <listhead>
+                <listheader label="Event Types"/>
+            </listhead>
+        </listbox>
         <groupbox width="285px">
             <caption label="Activity Threshold Value" />
             <slider id="activityFilterThreshold" mold="scale" maxpos="100" curpos="90" width="270px"/>

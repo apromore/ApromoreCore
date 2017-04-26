@@ -27,6 +27,7 @@ import org.deckfour.xes.model.XLog;
  */
 public interface ActivityFilterService {
 
-    XLog filterLog(XLog log, int percentage);
+    String[] getLifecycleClasses(XLog log);
+    XLog filterLog(XLog log, String[] classes_to_remove, int percentage);
 
 }

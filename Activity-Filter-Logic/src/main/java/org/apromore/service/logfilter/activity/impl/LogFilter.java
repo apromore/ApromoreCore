@@ -22,6 +22,7 @@ public class LogFilter {
     private int eventTypeStep;
     private int eventFilterStep;
     private SimpleStep[] mySteps;
+    private String[] classes_to_remove;
 
     /**
      * Runs the simple log filter on the given log.
@@ -30,11 +31,12 @@ public class LogFilter {
      *            The given log.
      * @return The filtered log (depends on the settings chosen by the user).
      */
-    public XLog filter(XLog log, int percentage) {
+    public XLog filter(XLog log, String[] classes_to_remove, int percentage) {
         this.percentage = percentage;
         nofSteps = 0;
         eventTypeStep = nofSteps++;
         eventFilterStep = nofSteps++;
+        this.classes_to_remove = classes_to_remove;
 
         mySteps = new SimpleStep[nofSteps];
 
@@ -141,25 +143,13 @@ public class LogFilter {
         }
 
         public XLog getLog() {
-            String[] toRemove = listRemove.toArray(new String[listRemove.size()]);
             String[] toSkip = new String[0];
-            //			PluginContext filterContext = context.createChildContext("Default Log Filter");
             DefaultLogFilter filter = new DefaultLogFilter();
-            return filter.filter(null, log, toRemove, toSkip);
+            return filter.filter(null, log, classes_to_remove, toSkip);
         }
 
         public void initComponents(XLog log) {
             setLog(log);
-            logInfo = XLogInfoImpl.create(log, classifier);
-            eventClasses = logInfo.getEventClasses(classifier);
-
-            for (XEventClass event : eventClasses.getClasses()) {
-                if (event.toString().equalsIgnoreCase("complete")) {
-                    listKeep.add(event.toString());
-                }else {
-                    listRemove.add(event.toString());
-                }
-            }
         }
     }
 
