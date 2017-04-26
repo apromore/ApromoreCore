@@ -67,6 +67,9 @@
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
 
+        <include name="Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
+        <include name="Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
+
         <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
 
@@ -113,6 +116,9 @@
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
 
+        <include name="Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
+        <include name="Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
+
         <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
 
@@ -140,12 +146,12 @@
         <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
+        -->
         <include name="APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
         <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
         <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
         <include name="PQL-Logic-WS/target/pql-logic-ws-1.1.war"/>
         <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
-        -->
     </fileset>
 
     <fileset id="pickupRepo" dir=".">
@@ -174,6 +180,9 @@
         <!-- ibpstruct-editor-plugin renamed ~ibpstruct-editor-plugin elsewhere as a workaround for its dependency upon ibpstruct-logic
         <include name="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war"/>
         -->
+
+        <include name="Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
+        <include name="Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
 
         <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
@@ -258,6 +267,7 @@
                 <include name="java6-server.profile"/>
             </fileset>
         </copy>
+        <delete file="${dir-virgo}/pickup/org.eclipse.virgo.apps.splash_3.6.4.RELEASE.jar" />
         <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
     </target>
 
@@ -350,11 +360,13 @@
     <target name="copy-virgo-standalone" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
+                <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
                 <include name="**/target/bpmntk-osgi-1.1.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
             </fileset>
 
@@ -411,11 +423,13 @@
     <target name="copy-virgo-server" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
+                <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
                 <include name="**/target/bpmntk-osgi-1.1.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
             </fileset>
 
@@ -479,11 +493,13 @@
     <target name="copy-virgo" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
+                <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
                 <include name="**/target/bpmntk-osgi-1.1.jar"/>
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
 
                 <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
@@ -566,7 +582,7 @@
         </delete>
         <java classname="org.h2.tools.RunScript">
             <classpath>
-                <pathelement location="Apromore-Assembly/Manager-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+                <pathelement location="Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
             </classpath>
             <arg value="-url"/>
             <arg value="jdbc:h2:Apromore-Assembly/Manager-Repository"/>
@@ -575,7 +591,7 @@
         </java>
         <java classname="org.h2.tools.RunScript">
             <classpath>
-                <pathelement location="Apromore-Assembly/Manager-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+                <pathelement location="Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
             </classpath>
             <arg value="-url"/>
             <arg value="jdbc:h2:Apromore-Assembly/Manager-Repository"/>

@@ -22,25 +22,24 @@ package org.apromore.plugin.portal.bpmnminer;
 
 import java.io.*;
 import java.util.*;
-import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
 
+import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
+import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
+import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
-import org.apromore.service.logfilter.InfrequentBehaviourFilterService;
+import org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.Data;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
-import org.processmining.plugins.bpmn.miner.subprocessminer.ui.SelectMinerUI;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -71,13 +70,12 @@ public class BPMNMinerController {
     private String nativeType = "BPMN 2.0";
 
     private String[] arrayMiningAlgorithms = new String[] {
-            SelectMinerUI.IM,
-            SelectMinerUI.HM6,
-            SelectMinerUI.HMWO5,
-//            "Fodina Miner",
-            SelectMinerUI.ALPHA,
-            SelectMinerUI.ILP,
-            SelectMinerUI.HMW5
+            SelectMinerResult.SM,
+            SelectMinerResult.IM,
+            SelectMinerResult.HM6,
+            SelectMinerResult.HM5,
+            SelectMinerResult.ALPHA,
+            SelectMinerResult.ILP
     };
     private String[] arrayDependencyAlgorithms = new String[] {
             "Normal",
@@ -103,7 +101,7 @@ public class BPMNMinerController {
     private List<String> listCandidates;
     private boolean[] selected;
     private Label l;
-    private HashMap<String, Data> data;
+    private Map<String, Data> data;
 
     private org.zkoss.util.media.Media logFile = null;
     private byte[] logByteArray = null;
@@ -173,7 +171,7 @@ public class BPMNMinerController {
             this.modelName = (Textbox) this.bpmnMinerW.getFellow("bpmnMinerModelName");
             this.miningAlgorithms = (Selectbox) this.bpmnMinerW.getFellow("bpmnMinerMiningAlgorithm");
             ListModelArray listModelArray = new ListModelArray<Object>(arrayMiningAlgorithms);
-            listModelArray.addToSelection(arrayMiningAlgorithms[2]);
+            listModelArray.addToSelection(arrayMiningAlgorithms[0]);
             this.miningAlgorithms.setModel(listModelArray);
 
             this.flatModel = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerFlat");
@@ -398,21 +396,21 @@ public class BPMNMinerController {
         String name = "";
 
         switch (selected) {
-            case 0 : name = SelectMinerUI.IM; break;
-            case 1 : name = SelectMinerUI.HM6; break;
-            case 2 : name = SelectMinerUI.HMWO5; break;
-            case 3 : name = SelectMinerUI.ALPHA; break;
-            case 4 : name = SelectMinerUI.ILP; break;
-            case 5 : name = SelectMinerUI.HMW5;
+            case 0 : name = SelectMinerResult.SM; break;
+            case 1 : name = SelectMinerResult.IM; break;
+            case 2 : name = SelectMinerResult.HM6; break;
+            case 3 : name = SelectMinerResult.HM5; break;
+            case 4 : name = SelectMinerResult.ALPHA; break;
+            case 5 : name = SelectMinerResult.ILP;
         }
 
-        if(name.equals(SelectMinerUI.ALPHA)) return SelectMinerUI.ALPHAPOS;
-        else if(name.equals(SelectMinerUI.HM6)) return SelectMinerUI.HMPOS6;
-        else if(name.equals(SelectMinerUI.HMW5)) return SelectMinerUI.HMWPOS5;
-        else if(name.equals(SelectMinerUI.HMWO5)) return SelectMinerUI.HMWOPOS5;
-        else if(name.equals(SelectMinerUI.ILP)) return SelectMinerUI.ILPPOS;
-        else if(name.equals(SelectMinerUI.IM)) return SelectMinerUI.IMPOS;
+        if(name.equals(SelectMinerResult.ALPHA)) return SelectMinerResult.ALPHAPOS;
+        else if(name.equals(SelectMinerResult.HM6)) return SelectMinerResult.HMPOS6;
+        else if(name.equals(SelectMinerResult.HM5)) return SelectMinerResult.HMPOS5;
+        else if(name.equals(SelectMinerResult.SM)) return SelectMinerResult.SMPOS;
+        else if(name.equals(SelectMinerResult.ILP)) return SelectMinerResult.ILPPOS;
+        else if(name.equals(SelectMinerResult.IM)) return SelectMinerResult.IMPOS;
 
-        return SelectMinerUI.HMWOPOS5;
+        return SelectMinerResult.SMPOS;
     }
 }

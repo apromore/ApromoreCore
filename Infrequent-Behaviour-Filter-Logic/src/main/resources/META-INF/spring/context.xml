@@ -45,9 +45,9 @@
     <!-- Other OSGi services this component consumes -->
 
     <!-- Dynamically instantiate a Spring bean for classes within the given package with the @Service annotation -->
-    <context:component-scan base-package="org.apromore.service.logfilter.impl"/>
+    <context:component-scan base-package="org.apromore.service.logfilter.behaviour.impl"/>
 
     <!-- Make the example service Spring bean visible from outside this OSGi bundle -->
-    <osgi:service ref="infrequentBehaviourFilterServiceImpl" interface="org.apromore.service.logfilter.InfrequentBehaviourFilterService" auto-export="interfaces"/>
+    <osgi:service ref="infrequentBehaviourFilterServiceImpl" interface="org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService" auto-export="interfaces"/>
 
 </beans>

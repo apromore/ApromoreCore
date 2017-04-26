@@ -25,25 +25,26 @@ import javax.swing.UIManager;
 
 import javax.inject.Inject;
 
-import au.edu.qut.context.FakePluginContext;
-import au.edu.qut.util.LogOptimizer;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel.ForeignKeyData;
+import com.raffaeleconforti.bpmnminer.subprocessminer.BPMNSubProcessMiner;
+import com.raffaeleconforti.bpmnminer.subprocessminer.EntityDiscoverer;
+import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
+import com.raffaeleconforti.context.FakePluginContext;
+import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.ConceptualModel;
+import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Entity;
+import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
+import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
+import com.raffaeleconforti.log.util.LogOptimizer;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
-import org.processmining.models.graphbased.directed.conceptualmodels.ConceptualModel;
-import org.processmining.models.graphbased.directed.conceptualmodels.Entity;
 import org.processmining.plugins.bpmn.BpmnDefinitions;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.Data;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.ForeignKeyData;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
-import org.processmining.plugins.bpmn.miner.subprocessminer.BPMNSubProcessMiner;
-import org.processmining.plugins.bpmn.miner.subprocessminer.EntityDiscoverer;
-import org.processmining.plugins.bpmn.miner.subprocessminer.ui.SelectMinerResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -91,7 +92,7 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
             try {
                 List<String> allAttributes = erModel.generateAllAttributes(log);
                 allAttributes.removeAll(listCandidates);
-                HashMap<String, Data> data = erModel.generateData(log, allAttributes);
+                UnifiedMap<String, Data> data = erModel.generateData(log, allAttributes);
                 Map<Set<String>, String> primaryKeys_entityName = generateEntitiesNames(erModel, primaryKeySelections);
                 erModel.setPrimaryKeysEntityName(primaryKeys_entityName);
                 concModel = erModel.createConceptualModel(primaryKeySelections, data);
@@ -108,9 +109,11 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
                 }
                 erModel.updateConceptualModel(primaryKeys_entityName, fkeyData, concModel, selectedFKeys, dependencyAlgorithm);
 
-                groupEntities = entityDiscoverer.discoverGroupEntities(concModel, null, true, true);
+//                groupEntities = entityDiscoverer.discoverGroupEntities(concModel, null, true, true);
+                groupEntities = entityDiscoverer.setGroupEntities(concModel, null, true);
                 candidatesEntities = entityDiscoverer.discoverCandidatesEntities(concModel, groupEntities);
-                selectedEntities = entityDiscoverer.selectEntities(groupEntities, candidatesEntities, true, true);
+                selectedEntities = candidatesEntities;
+//                selectedEntities = entityDiscoverer.selectEntities(groupEntities, candidatesEntities, true, true);
             } catch (NoEntityException nee) {
                 concModel = null;
                 groupEntities = new ArrayList<Entity>();
@@ -127,7 +130,7 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
 
         BPMNSubProcessMiner bpmnSubProcessMiner = new BPMNSubProcessMiner(fakePluginContext);
 
-        BPMNDiagram diagram = bpmnSubProcessMiner.mineBPMNModel(fakePluginContext, log, sortLog, selectMinerResult, dependencyAlgorithm, concModel,
+        BPMNDiagram diagram = bpmnSubProcessMiner.mineBPMNModel(fakePluginContext, log, sortLog, selectMinerResult, dependencyAlgorithm, entityDiscoverer, concModel,
                 groupEntities, candidatesEntities, selectedEntities, true);
 
         for(Activity activity : diagram.getActivities()) {

@@ -32,9 +32,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.MapIterator;
-import org.apache.commons.collections.keyvalue.MultiKey;
-import org.apache.commons.collections.map.MultiKeyMap;
+import org.apache.commons.collections15.MapIterator;
+import org.apache.commons.collections15.keyvalue.MultiKey;
+import org.apache.commons.collections15.map.MultiKeyMap;
 import org.apromore.dao.FragmentDistanceRepositoryCustom;
 import org.apromore.dao.dataObject.DistanceDO;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;

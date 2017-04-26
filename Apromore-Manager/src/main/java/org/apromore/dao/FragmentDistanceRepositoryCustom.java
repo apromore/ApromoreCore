@@ -22,7 +22,7 @@ package org.apromore.dao;
 
 import java.util.List;
 
-import org.apache.commons.collections.map.MultiKeyMap;
+import org.apache.commons.collections15.map.MultiKeyMap;
 import org.apromore.dao.dataObject.DistanceDO;
 
 /**

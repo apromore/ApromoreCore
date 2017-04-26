@@ -107,8 +107,9 @@
                                 method: 'POST',
 
                                 onSuccess: function(transport) {
-                                    var editorConfig = Ext.decode(transport.responseText);
-                                    editor.importJSON(editorConfig, true);
+                                    jsonModel = Ext.decode(transport.responseText);
+                                    editor.importJSON(jsonModel, true);
+                                    initialize();
 
                                     // Call Auto-Layout if everything is available
                                     window.setTimeout(function() {

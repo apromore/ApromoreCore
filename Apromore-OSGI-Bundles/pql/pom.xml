@@ -151,22 +151,22 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>efficientstorage</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>inductiveminer</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>processtree</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>prom6-contexts</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
@@ -176,7 +176,7 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>uitopia</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
 
     </dependencies>

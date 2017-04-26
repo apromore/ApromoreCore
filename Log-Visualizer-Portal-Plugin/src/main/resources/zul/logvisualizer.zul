@@ -29,11 +29,11 @@
             <rows>
                 <row>
                     <label>Percentage Activities</label>
-                    <slider id="slider1" curpos="100"/>
+                    <slider id="slider1" mold="scale" maxpos="100" curpos="100"/>
                 </row>
                 <row>
                     <label>Percentage Arcs</label>
-                    <slider id="slider2" curpos="100"/>
+                    <slider id="slider2" mold="scale" maxpos="100" curpos="100"/>
                 </row>
             </rows>
         </grid>

@@ -67,6 +67,10 @@
                             org.springframework.beans.factory.aspectj,
                             org.apromore.plugin,
                             org.apromore.plugin.editor,
+                            org.processmining.contexts.*;version="[1.0,2.0)",
+                            org.processmining.framework.*;version="[1.0,2.0)",
+                            org.processmining.models.*;version="[1.0,2.0)",
+                            org.processmining.plugins.*;version="[1.0,2.0)",
                             *
                         </Import-Package>
                         <!-- Context path, please use a unique path -->

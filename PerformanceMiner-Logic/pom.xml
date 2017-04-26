@@ -108,12 +108,16 @@
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.context</artifactId>
         </dependency>
-        
-<!--        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>com.springsource.org.apache.derby</artifactId>
-            <version>10.5.1000001.764942</version>
-        </dependency>-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+        </dependency>
+
+        <!--        <dependency>
+                    <groupId>org.apache.derby</groupId>
+                    <artifactId>com.springsource.org.apache.derby</artifactId>
+                    <version>10.5.1000001.764942</version>
+                </dependency>-->
         
     </dependencies>
    

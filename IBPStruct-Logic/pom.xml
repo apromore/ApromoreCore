@@ -50,6 +50,10 @@
                             au.edu.qut.bpmn.structuring,
                             au.edu.qut.bpmn.exporter.*,
                             au.edu.qut.bpmn.exporter.impl.*,
+                            org.processmining.contexts.*;version="[1.0,2.0)",
+                            org.processmining.framework.*;version="[1.0,2.0)",
+                            org.processmining.models.*;version="[1.0,2.0)",
+                            org.processmining.plugins.*;version="[1.0,2.0)",
                             *
                         </Import-Package>
                         <Export-Package>
@@ -78,7 +82,10 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpmntk-osgi</artifactId>
-            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpmnminer-osgi</artifactId>
         </dependency>
     </dependencies>
 </project>

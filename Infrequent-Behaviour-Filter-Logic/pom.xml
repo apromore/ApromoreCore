@@ -50,7 +50,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.logfilter
+                            org.apromore.service.logfilter.behaviour
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>noisefiltering-event-commandline</artifactId>
-            <version>1.0.20170125</version>
+            <version>1.0.20170425</version>
         </dependency>
     </dependencies>
 </project>

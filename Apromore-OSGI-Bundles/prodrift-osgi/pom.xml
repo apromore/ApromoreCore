@@ -209,9 +209,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.processmining</groupId>
+            <groupId>org.deckfour.xes</groupId>
             <artifactId>spex</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
 
         <dependency>
@@ -226,12 +226,12 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>log</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>logabstractions</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.jbpt</groupId>
