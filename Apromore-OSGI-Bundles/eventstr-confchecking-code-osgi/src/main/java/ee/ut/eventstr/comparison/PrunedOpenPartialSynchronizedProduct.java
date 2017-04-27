@@ -139,7 +139,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 				new Comparator<State>() {
 					@Override
 					public int compare(State o1, State o2) {
-						int costCValue = Short.compare(o2.cost, o1.cost);
+						int costCValue = Short.compare(o1.cost, o2.cost);
 						if (costCValue != 0)
 							return costCValue;
 //						else if(o1.c1.cardinality() != o2.c1.cardinality())
@@ -487,7 +487,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 		
 		this.relevantStates = gvisited;
 		
-		System.out.println("Number of relevant states: " + relevantStates.size());
+		//System.out.println("Number of relevant states: " + relevantStates.size());
 		
 		return this;
 	}

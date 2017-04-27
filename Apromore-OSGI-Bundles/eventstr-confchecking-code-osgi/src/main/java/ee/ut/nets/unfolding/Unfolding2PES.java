@@ -149,7 +149,7 @@ public class Unfolding2PES {
 			}
 			if (!visibleSinks.contains(cutoff)) {
 				cutoffCorrespondingMap.put(orderedVisibleEventMap.get(cutoff), orderedVisibleEventMap.get(corresponding));
-				System.out.printf("Cutoff: %s, Corresponding: %s\n", unfolder.getOriginalLabel(sys.properNames[cutoff.id]), unfolder.getOriginalLabel(sys.properNames[corresponding.id]));
+				//System.out.printf("Cutoff: %s, Corresponding: %s\n", unfolder.getOriginalLabel(sys.properNames[cutoff.id]), unfolder.getOriginalLabel(sys.properNames[corresponding.id]));
 			}
 		}
 		

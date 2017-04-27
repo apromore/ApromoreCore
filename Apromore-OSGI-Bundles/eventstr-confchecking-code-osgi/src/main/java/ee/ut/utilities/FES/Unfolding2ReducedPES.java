@@ -104,7 +104,7 @@ public class Unfolding2ReducedPES {
 				labels.add(sys.properNames[corresponding.id]);				
 			}
 			cutoffCorrespondingMap.put(orderedVisibleEventMap.get(cutoff), orderedVisibleEventMap.get(corresponding));
-			System.out.printf("Cutoff: %s, Corresponding: %s\n", sys.properNames[cutoff.id], sys.properNames[corresponding.id]);
+			//System.out.printf("Cutoff: %s, Corresponding: %s\n", sys.properNames[cutoff.id], sys.properNames[corresponding.id]);
 		}
 		
 		localId = numberOfEvents;

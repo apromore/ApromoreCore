@@ -386,8 +386,8 @@ public class NewOpenPartialSynchronizedProduct<T> {
 		
 		this.relevantStates = gvisited;
 		
-		System.out.println("Number of final states: " + lMATCHES.values().size());
-		System.out.println("Number of relevant states: " + relevantStates.size());
+		//System.out.println("Number of final states: " + lMATCHES.values().size());
+		//System.out.println("Number of relevant states: " + relevantStates.size());
 		
 		return this;
 	}

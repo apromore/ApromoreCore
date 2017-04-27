@@ -82,14 +82,14 @@ public class ApromoreCompareML {
         String folder1 = "fines/";
 		String folder2 = "fines/";
 
-		String folder = "models/";
+		String folder = "demo2/";
 
 //        String logString = folder + "Loan_baseline_parallel_move_log.xes";
 //        String modelString = folder + "Loan_baseline.bpmn";
 //		String logString = folder + "bpLog11.xes";
 //		String modelString = folder + "bp2.bpmn";
-		String logString = folder + "TrafficFines_step5.xes";
-		String modelString = folder + "TrafficFinesOriginalLeoni.bpmn";
+		String logString = folder + "BPI.xes";
+		String modelString = folder + "s.bpmn";
 //        String logString = folder1 + "Repair/Example2/conc_seq_insert_log.xes";
 //        String modelString = folder2 + "Examples/Example1/conf_loop.bpmn";
 
