@@ -35,7 +35,6 @@ import de.hpi.bpmn2_0.transformation.AbstractVisitor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import servlet.BPMNAnimationServlet;
 
 public class ModelChecker extends AbstractVisitor {
     int numberOfStartEvent = 0;

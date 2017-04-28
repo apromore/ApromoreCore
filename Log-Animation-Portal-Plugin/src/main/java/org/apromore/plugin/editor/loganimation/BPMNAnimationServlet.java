@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package servlet;
+package org.apromore.plugin.editor.loganimation;
 
 import de.hpi.bpmn2_0.animation.AnimationJSONBuilder;
 import org.json.JSONException;
@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -199,7 +200,7 @@ public class BPMNAnimationServlet extends HttpServlet {
             */              
             
             //Reading backtracking properties for testing
-            String propertyFile = "/editor/animation/properties.xml";
+            String propertyFile = "/properties.xml";
             InputStream is = getServletContext().getResourceAsStream(propertyFile);            
             Properties props = new Properties();            
             props.loadFromXML(is);
@@ -283,7 +284,7 @@ public class BPMNAnimationServlet extends HttpServlet {
             
         } catch (Exception e) {
             try {
-                LOGGER.severe(e.toString());
+                LOGGER.log(Level.SEVERE, "Failed to POST logs", e);
                 /*
                 res.setStatus(500);
                 res.setContentType("text/plain");

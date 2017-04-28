@@ -21,18 +21,18 @@
 
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1"/>
 
-	<link rel="stylesheet" href="../../libs/animation/styles.css">
-	<link rel="stylesheet" href="../../libs/animation/jquery-ui.css">
-	<link rel="stylesheet" href="../../libs/animation/jquery-ui.theme.css">
-	<link rel="stylesheet" type="text/css" href="../../libs/animation/jquery-ui-slider-pips.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="jquery-ui.css">
+    <link rel="stylesheet" href="jquery-ui.theme.css">
+    <link rel="stylesheet" href="jquery-ui-slider-pips.css">
 	
-	<!-- these stylesheets are copied from Signavio -->
-	<link id="cOHC2" rel="Stylesheet" media="screen" href="../../editor/css/theme_norm.css" type="text/css">
-    <link id="cOHC3" rel="Stylesheet" media="screen" href="../../editor/css/theme_norm_signavio.css" type="text/css">
-    <link id="cOHC4" rel="Stylesheet" media="screen" href="../../explorer/src/css/xtheme-smoky.css" type="text/css">
-    <link id="cOHC5" rel="Stylesheet" media="screen" href="../../explorer/src/css/custom-style.css" type="text/css">
+    <!-- these stylesheets are copied from Signavio -->
+    <link id="cOHC2" rel="Stylesheet" media="screen" href="/editor/editor/css/theme_norm.css" type="text/css">
+    <link id="cOHC3" rel="Stylesheet" media="screen" href="/editor/editor/css/theme_norm_signavio.css" type="text/css">
+    <link id="cOHC4" rel="Stylesheet" media="screen" href="/editor/explorer/src/css/xtheme-smoky.css" type="text/css">
+    <link id="cOHC5" rel="Stylesheet" media="screen" href="/editor/explorer/src/css/custom-style.css" type="text/css">
     <!-- end of stylesheet copied from Signavio -->	
 	
 	<script>
@@ -78,25 +78,25 @@
             
             <div id="buttons_and_rate" style="float:left; text-align: center; margin-top: 5px; padding: 0px; width: 250px; top: -40px; height: 100px; overflow: hidden; background-color:#EEEEDD;">
                 <button id='start' onclick="start(event);" style="border: 1px solid gray; padding: 0">
-                        <img src="../../libs/animation/images/control_start.png" alt="Start" width="24" height="24" style="border: 0; padding: 0"/>
+                        <img src="images/control_start.png" alt="Start" width="24" height="24" style="border: 0; padding: 0"/>
                 </button>
 				<button id='previousTrace' onclick="previousTrace();" disabled="disabled" style="border: 1px solid gray; padding: 0; background-color: none">
-                        <img src="../../libs/animation/images/control_previoustrace.png" alt="Forward" width="24" height="24" style="padding: 0"/>
+                        <img src="images/control_previoustrace.png" alt="Forward" width="24" height="24" style="padding: 0"/>
                 </button>                
                 <button id='backward' onclick="fastBackward();" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                        <img src="../../libs/animation/images/control_rewind.png" alt="Backward" width="24" height="24" style="padding: 0"/>
+                        <img src="images/control_rewind.png" alt="Backward" width="24" height="24" style="padding: 0"/>
                 </button>
                 <button id="pause" onclick="switchPlayPause();" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                        <img src="../../libs/animation/images/control_play.png" alt="Play" width="24" height="24" style="padding: 0"/>
+                        <img src="images/control_play.png" alt="Play" width="24" height="24" style="padding: 0"/>
                 </button>
                 <button id='forward' onclick="fastForward();" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                        <img src="../../libs/animation/images/control_fastforward.png" alt="Forward" width="24" height="24" style="padding: 0"/>
+                        <img src="images/control_fastforward.png" alt="Forward" width="24" height="24" style="padding: 0"/>
                 </button>
                 <button id='nextTrace' onclick="nextTrace();" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                        <img src="../../libs/animation/images/control_nexttrace.png" alt="Next Trace" width="24" height="24" style="padding: 0"/>
+                        <img src="images/control_nexttrace.png" alt="Next Trace" width="24" height="24" style="padding: 0"/>
                 </button>   
                 <button id='end' onclick="end(event);" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                        <img src="../../libs/animation/images/control_end.png" alt="End" width="24" height="24" style="padding: 0"/>
+                        <img src="images/control_end.png" alt="End" width="24" height="24" style="padding: 0"/>
                 </button>                
             </div>
 
@@ -148,11 +148,11 @@
 
         <div id="svgLoc" style="width:100%; height:550px; overflow: scroll;"></div>
 	
-	<script src="../../libs/animation/jquery-1.10.2.min.js"></script>
-	<script src="../../libs/animation/jquery-ui.min.js"></script>
-	<script src="../../libs/animation/jquery-ui-slider-pips.min.js"></script>
-	<script src="../../libs/prototype-1.5.1.js"></script>
-	<script src="../../libs/animation/animation.js"></script>
+	<script src="jquery-1.10.2.min.js"></script>
+	<script src="jquery-ui.min.js"></script>
+	<script src="jquery-ui-slider-pips.min.js"></script>
+	<script src="/editor/libs/prototype-1.5.1.js"></script>
+	<script src="editor_animation.js"></script>
 	<script type="text/javascript" charset="utf-8">
 	
 	var lastSliderValue = 11;
