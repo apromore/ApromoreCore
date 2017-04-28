@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package servlet;
+package org.apromore.plugin.editor.loganimation;
 
 import java.io.File;
 import java.io.FileInputStream;

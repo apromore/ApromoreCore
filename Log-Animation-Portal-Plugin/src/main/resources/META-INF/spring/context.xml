@@ -46,6 +46,9 @@
     </beans:bean>
 
     <!-- Exposes the component as OSGi service -->
+    <context:component-scan base-package="org.apromore.plugin.editor.loganimation" />
+    <service ref="editorPlugin" interface="org.apromore.plugin.editor.EditorPlugin" auto-export="interfaces" />
+
     <context:component-scan base-package="org.apromore.plugin.portal.loganimation" />
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
     <service ref="plugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
