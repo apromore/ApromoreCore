@@ -326,6 +326,17 @@
         </exec>
     </target>
 
+    <target name="start-virgo-standalone" depends="set-permissions,copy-virgo-standalone">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean"/>
+        </exec>
+    </target>
+
     <target name="debug-virgo" depends="set-permissions,copy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
@@ -369,7 +380,6 @@
                 <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
             </fileset>
-
             <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
             <fileset dir="Supplements/">
                 <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
