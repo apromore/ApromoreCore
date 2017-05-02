@@ -52,7 +52,7 @@
                     <instructions>
                         <Embed-Dependency>
                             artifactId=
-                            jaxb2-basics-runtime|commons-collections4|jgrapht-core
+                            jaxb2-basics-runtime
                             |junit <!-- TODO Why is Junit needed at runtime? -->
                             ;inline=true
                         </Embed-Dependency>
@@ -78,14 +78,8 @@
                             de.hpi.bpmn2_0.model.participant,
                             de.hpi.bpmn2_0.transformation,
                             de.hpi.diagram,
-                            org.apache.commons.collections4.bidimap,
-                            org.jgrapht,
                             org.oryxeditor.server,
-                            servlet,
-                            <!-- TOOO: Move these classes to Log-Animation-Logic -->
-                            de.hpi.bpmn2_0.animation,
-                            de.hpi.bpmn2_0.replay,
-                            org.processmining.plugins.signaturediscovery.encoding
+                            servlet
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -139,23 +133,6 @@
             <version>${jaxb-api.version}</version>
         </dependency>
 
-        <!-- Embedded non-OSGI dependencies -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-core</artifactId>
-            <version>0.9.1</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- TODO why is this needed and not embedded? -->
         <dependency>
             <groupId>org.json</groupId>
