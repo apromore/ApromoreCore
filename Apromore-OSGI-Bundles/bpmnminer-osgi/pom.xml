@@ -144,7 +144,7 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-commandline</artifactId>
-            <version>1.0.20170425</version>
+            <version>1.0.20170504</version>
         </dependency>
 
         <dependency>
