@@ -21,7 +21,15 @@
 package au.edu.qut.processmining.miners.splitminer.dfgp;
 
 import au.edu.qut.processmining.log.SimpleLog;
+import au.edu.qut.processmining.log.graph.LogNode;
 import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
+import com.raffaeleconforti.automaton.Automaton;
+import com.raffaeleconforti.automaton.Edge;
+import com.raffaeleconforti.automaton.Node;
+import com.raffaeleconforti.ilpsolverwrapper.ILPSolver;
+import com.raffaeleconforti.ilpsolverwrapper.impl.lpsolve.LPSolve_Solver;
+import com.raffaeleconforti.noisefiltering.event.infrequentbehaviour.automaton.AutomatonInfrequentBehaviourDetector;
+import com.raffaeleconforti.noisefiltering.event.optimization.wrapper.WrapperInfrequentBehaviourSolver;
 import org.apache.commons.lang3.StringUtils;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
@@ -127,7 +135,7 @@ public class DirectlyFollowGraphPlus {
         for( DFGEdge edge : edges ) {
             src = mapping.get(edge.getSource().getCode());
             tgt = mapping.get(edge.getTarget().getCode());
-            diagram.addFlow(src, tgt, "");
+            diagram.addFlow(src, tgt, edge.toString());
         }
 
         return diagram;
@@ -144,7 +152,10 @@ public class DirectlyFollowGraphPlus {
         buildDirectlyFollowsGraph();                //first method to execute
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
         detectParallelisms(parallelismsThreshold);  //depends on detectLoops()
-        filter();                                   //depends on detectParallelisms()
+        System.out.println("DEBUG - edges before filtering: " + edges.size());
+//        filter();                                   //depends on detectParallelisms()
+        filterWithRaf();
+        System.out.println("DEBUG - edges after filtering: " + edges.size());
         exploreAndRemove();                         //last method to execute
     }
 
@@ -359,7 +370,6 @@ public class DirectlyFollowGraphPlus {
         ArrayList<DFGEdge> frequencyOrderedBestEdges = new ArrayList<>(bestEdges);
 
         for( DFGEdge e : new HashSet<>(edges) ) this.removeEdge(e, false);
-//        System.out.println("DEBUG - edges before filtering: " + edges.size());
 //        System.out.println("DEBUG - edges before filtering: " + frequencyOrderedBestEdges.size());
 
         Collections.sort(frequencyOrderedBestEdges);
@@ -385,7 +395,66 @@ public class DirectlyFollowGraphPlus {
 //            }
 //        }
 
-//        System.out.println("DEBUG - edges after filtering: " + edges.size());
+    }
+
+
+    private void filterWithRaf() {
+        Automaton<String> automaton = new Automaton<>();
+        Set<Edge<String>> removable;
+        LogNode src, tgt;
+        int srcID, tgtID;
+
+        Map<Integer, Node<String>> anodes = new HashMap<>();
+        Map<Edge<String>, DFGEdge> aedges = new HashMap<>();
+
+        Node<String> srcANode, tgtANode;
+        Edge<String> aedge;
+
+        for( DFGEdge e : edges ) {
+            src = e.getSource();
+            tgt = e.getTarget();
+
+            srcID = src.getCode();
+            tgtID = tgt.getCode();
+
+            if((srcANode = anodes.get(srcID)) == null ) {
+                srcANode = new Node<>(Integer.toString(srcID));
+                srcANode.setFrequency(src.getFrequency());
+                anodes.put(srcID, srcANode);
+                automaton.addNode(srcANode);
+            }
+
+
+            if( !anodes.containsKey(tgtID) ) {
+                tgtANode = new Node<>(Integer.toString(tgtID));
+                tgtANode.setFrequency(tgt.getFrequency());
+                anodes.put(tgtID, tgtANode);
+                automaton.addNode(tgtANode);
+            } else tgtANode = anodes.get(tgtID);
+
+            aedge = new Edge<>(srcANode, tgtANode);
+            automaton.addEdge(aedge);
+            aedges.put(aedge, e);
+        }
+
+        automaton.getAutomatonStart();
+        automaton.getAutomatonEnd();
+        automaton.createDirectedGraph();
+
+        ILPSolver ilp_solver = new LPSolve_Solver();
+        WrapperInfrequentBehaviourSolver<String> solver;
+
+        AutomatonInfrequentBehaviourDetector aibd = new AutomatonInfrequentBehaviourDetector(AutomatonInfrequentBehaviourDetector.AVE);
+        Set<Edge<String>> infrequentEdges = aibd.discoverInfrequentEdges(automaton, 1.0);
+
+        solver = new WrapperInfrequentBehaviourSolver<>(automaton, infrequentEdges, automaton.getNodes());
+        removable = solver.identifyRemovableEdges(ilp_solver);
+
+        for(Edge<String> ae : removable) {
+            System.out.println("DEBUG - removing edge: " + ae.getSource().getData() + " > " + ae.getTarget().getData());
+            edges.remove(aedges.get(ae));
+        }
+
     }
 
     private void exploreAndRemove() {

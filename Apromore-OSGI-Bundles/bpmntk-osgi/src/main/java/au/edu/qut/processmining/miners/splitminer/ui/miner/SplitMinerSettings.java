@@ -51,7 +51,7 @@ public class SplitMinerSettings extends ProMPropertiesPanel {
 //        this.add(frequencyThreshold);
 //        frequencyThreshold.setVisible(true);
 
-        parallelismsThreshold = SlickerFactory.instance().createNiceDoubleSlider("Parallelisms Threshold", 0.00, 0.20, DFGPUIResult.PARALLELISMS_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
+        parallelismsThreshold = SlickerFactory.instance().createNiceDoubleSlider("Parallelisms Threshold", 0.00, 1.00, DFGPUIResult.PARALLELISMS_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
         parallelismsThreshold.addChangeListener(hmpil);
         this.add(parallelismsThreshold);
         parallelismsThreshold.setVisible(true);

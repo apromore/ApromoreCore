@@ -486,7 +486,7 @@ public class SplitMiner {
 
         for( BPMNNode n : bpmnDiagram.getNodes() ) {
             if( n instanceof Activity ) label = events.get(Integer.valueOf(n.getLabel()));
-            else label = n.getLabel();
+            else label = "";
             copy = helper.copyNode(duplicateDiagram, n, label);
             if( copy != null ) originalToCopy.put(n, copy);
             else System.out.println("ERROR - diagram labels updating failed [1].");
@@ -496,7 +496,7 @@ public class SplitMiner {
             src = originalToCopy.get(f.getSource());
             tgt = originalToCopy.get(f.getTarget());
 
-            if( src != null && tgt != null ) duplicateDiagram.addFlow(src, tgt, f.getLabel());
+            if( src != null && tgt != null ) duplicateDiagram.addFlow(src, tgt, "");
             else System.out.println("ERROR - diagram labels updating failed [2].");
         }
         bpmnDiagram = duplicateDiagram;

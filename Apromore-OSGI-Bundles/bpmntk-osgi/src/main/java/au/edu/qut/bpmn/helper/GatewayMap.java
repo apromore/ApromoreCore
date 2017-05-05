@@ -498,7 +498,7 @@ public class GatewayMap {
                 }
             }
 
-        debug("Gatemap - loop-joins: " + loopJoins.size());
+//        debug("Gatemap - loop-joins: " + loopJoins.size());
     }
 
     private void populatedIORHierarchy(Gateway entry) {
@@ -530,7 +530,7 @@ public class GatewayMap {
 
         iorsHierarchy = new IORsHierarchy();
         for( Gateway g : gatesDepth.keySet() ) iorsHierarchy.put(g, gatesDepth.get(g));
-        debug("DEBUG - IORs found: " + iorsHierarchy.size());
+//        debug("DEBUG - IORs found: " + iorsHierarchy.size());
     }
 
 
@@ -641,7 +641,7 @@ public class GatewayMap {
             }
 
             if( !loop ) {
-                debug("DEBUG - changing IOR: " + ior.getLabel() + "");
+//                debug("DEBUG - changing IOR: " + ior.getLabel() + "");
 //                debug("DEBUG - xors: " + toVisit.size());
                 iorType = replaceIOR(dominator, gatesDepth.get(ior), toVisit, visitedGates, visitedFlows, domFrontier, new HashMap<Gateway, Set<GatewayMapFlow>>());
                 ior.setGatewayType(iorType);
@@ -745,26 +745,26 @@ public class GatewayMap {
             }
 
             if( onlyXORs ) {
-                debug("DEBUG - turning an IOR into a XOR");
+//                debug("DEBUG - turning an IOR into a XOR");
                 return Gateway.GatewayType.DATABASED;
             }
 
             changes = new HashMap<>();
             loopChanges = new ArrayList<>();
             for( Gateway xor : visitedGates.keySet() ) {
-                debug("DEBUG - visited gates for: " + xor.getLabel());
+//                debug("DEBUG - visited gates for: " + xor.getLabel());
                 for( Gateway g : visitedGates.get(xor) ) {
-                    debug("DEBUG - gate: " + g.getLabel());
+//                    debug("DEBUG - gate: " + g.getLabel());
                     if( (g.getGatewayType() == Gateway.GatewayType.PARALLEL) || (outgoings.get(g).size() == 1) ) continue;
 //                    if we are here, it means g is a decision (XOR split gateway)
                     for( GatewayMapFlow of : outgoings.get(g) ) {
-                        debug("DEBUG - outgoing: " + of.getSource().getLabel() + " -> " + of.getTarget().getLabel());
+//                        debug("DEBUG - outgoing: " + of.getSource().getLabel() + " -> " + of.getTarget().getLabel());
                         if( (g == dominator) && !domFrontier.contains(of) ) {
-                            debug("DEBUG - not frontier");
+//                            debug("DEBUG - not frontier");
                             continue;
                         }
                         if( visitedFlows.get(xor).contains(of) ) {
-                            debug("DEBUG - visited");
+//                            debug("DEBUG - visited");
                             continue;
                         }
 //                        debug("DEBUG - adding a token generator");
@@ -1085,7 +1085,7 @@ public class GatewayMap {
 
 
     private void debug(String s) {
-        if( s.contains("DEBUG") && true ) System.out.println(s);
+        if( s.contains("DEBUG") && false ) System.out.println(s);
         else System.out.println(s);
     }
 
