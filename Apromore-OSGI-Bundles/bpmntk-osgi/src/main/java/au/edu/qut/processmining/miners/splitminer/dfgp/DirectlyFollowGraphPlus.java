@@ -147,15 +147,15 @@ public class DirectlyFollowGraphPlus {
 
     public void buildDFGP() {
 //        System.out.println("DFGP - starting ... ");
-        System.out.println("DFGP - [Settings] parallelisms threshold: " + parallelismsThreshold);
+//        System.out.println("DFGP - [Settings] parallelisms threshold: " + parallelismsThreshold);
 
         buildDirectlyFollowsGraph();                //first method to execute
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
         detectParallelisms(parallelismsThreshold);  //depends on detectLoops()
-        System.out.println("DEBUG - edges before filtering: " + edges.size());
-//        filter();                                   //depends on detectParallelisms()
-        filterWithRaf();
-        System.out.println("DEBUG - edges after filtering: " + edges.size());
+//        System.out.println("DEBUG - edges before filtering: " + edges.size());
+        if(true) filter();                          //depends on detectParallelisms()
+        else filterWithRaf();
+//        System.out.println("DEBUG - edges after filtering: " + edges.size());
         exploreAndRemove();                         //last method to execute
     }
 

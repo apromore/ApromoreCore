@@ -104,9 +104,9 @@ public class LogParser {
             traces.put(sTrace, traces.get(sTrace)+1);
         }
 
-        System.out.println("LOGP - total events parsed: " + totalEvents);
-        System.out.println("LOGP - total distinct events: " + (events.size() - 2) );
-        System.out.println("LOGP - total distinct traces: " + traces.size() );
+//        System.out.println("LOGP - total events parsed: " + totalEvents);
+//        System.out.println("LOGP - total distinct events: " + (events.size() - 2) );
+//        System.out.println("LOGP - total distinct traces: " + traces.size() );
 
 //        for( String t : traces.keySet() ) System.out.println("DEBUG - ["+ traces.get(t) +"] trace: " + t);
 
