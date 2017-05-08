@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -35,6 +35,7 @@ import javax.xml.bind.ValidationEventHandler;
 import javax.xml.validation.SchemaFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
@@ -74,19 +75,19 @@ public class BPMNOutputServlet extends HttpServlet {
         /* Transform and return as YAWL XML */
         try {
             if (jsonData == null || jsonData.isEmpty()) {
-                res.setStatus(500);
+                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 res.setContentType("text/plain; charset=UTF-8");
                 res.getWriter().write("Empty or missing parameter 'data'!");
             } else {
                 ByteArrayOutputStream bpmn = getBPMNfromJson(req, jsonData);
                 res.setContentType("application/xml; charset=UTF-8");
-                res.setStatus(200);
+                res.setStatus(HttpServletResponse.SC_OK);
                 res.getWriter().write(bpmn.toString("UTF-8"));
             }
         } catch (Exception e) {
             try {
-                LOGGER.severe(e.toString());
-                res.setStatus(500);
+                LOGGER.log(Level.SEVERE, "JSON to BPMN conversion failed: " + e.getMessage(), e);
+                res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 res.setContentType("text/plain; charset=UTF-8");
                 if (e.getCause() != null) {
                     res.getWriter().write(e.getCause().getMessage());
@@ -107,9 +108,9 @@ public class BPMNOutputServlet extends HttpServlet {
         Diagram2BpmnConverter converter = new Diagram2BpmnConverter(diagram, AbstractBpmnFactory.getFactoryClasses());
         Definitions definitions = converter.getDefinitionsFromDiagram();
 
-        Marshaller marshaller = JAXBContext.newInstance(Definitions.class,
-                ConfigurationAnnotationAssociation.class,
-                ConfigurationAnnotationShape.class).createMarshaller();
+        Marshaller marshaller = JAXBContext.newInstance("de.hpi.bpmn2_0.model:de.hpi.bpmn2_0.model.extension.synergia",
+                                                        getClass().getClassLoader())
+                                           .createMarshaller();
         marshaller.setEventHandler(new BPMNValidationEventHandler());
         marshaller.setProperty(JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty(PREFIX_MAPPER, new BPMNPrefixMapper());

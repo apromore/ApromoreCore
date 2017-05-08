@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -289,8 +289,10 @@ public class Diagram2BpmnConverter {
     /**
      * Creates the BPMN 2.0 elements for the parent's child shapes recursively.
      *
-     * @param childShapes The list of parent's child shapes
-     * @param parent      The parent {@link BPMNElement}
+     * As a side effect, it populates {@link this.bpmnElements} and {@link this.diagramChilds}.
+     *
+     * @param shape  the JSON Signavio shape to be converted into a BPMNShape
+     * @return the corresponding BPMNShape for <var>shape</var>, or <code>null</code> if the <var>shape</var> is the top-level canvas shape
      * @throws ClassNotFoundException
      * @throws InstantiationException
      * @throws IllegalAccessException
@@ -359,15 +361,27 @@ public class Diagram2BpmnConverter {
 
                 BPMNElement activity = this.bpmnElements.get(shape.getResourceId());
                 BPMNElement event = this.bpmnElements.get(outShape.getResourceId());
+
+                // Remove the intermediate catch event
+                SubProcess activitySubProcess = ((Activity) activity.getNode()).getSubProcess();
+                SubProcess subProcess = ((FlowElement) event.getNode()).getSubProcess();
+                if (subProcess == null) {
+                    this.diagramChilds.remove(event);
+                } else {
+                    subProcess.removeChild(event.getNode());
+                    subProcess.getFlowElement().remove(event.getNode());
+                }
+
+                // Recreate the intermediate catch event as a boundary event
                 IntermediateCatchEventFactory.changeToBoundaryEvent(activity, event);
 
-                this.diagramChilds.add(event);
-
-//                System.out.println("StencilID: " + outShape.getStencilId());
-//                outShape.setStencilId("BoundaryEvent");
-//                System.out.println("new- StencilID: " + outShape.getStencilId());
-//                System.out.println("new- StencilID: " + outShape.getQualifiedStencilId());
-
+                // Add the boundary event
+                SubProcess subProcess2 = ((FlowElement) event.getNode()).getSubProcess();
+                if (subProcess2 == null) {
+                    this.diagramChilds.add(event);
+                } else {
+                    subProcess2.addChild(event.getNode());
+                }
             }
         }
     }
@@ -828,7 +842,6 @@ public class Diagram2BpmnConverter {
             }
             this.processes.add(currentProcess);
 
-
             addNode(currentProcess,
                     this.getBpmnElementForNode(allNodes.get(0)), allNodes);
 
@@ -1008,7 +1021,11 @@ public class Diagram2BpmnConverter {
         allNodes.remove(node);
 
         node.setProcess(process);
-        process.addChild(node);
+        if (process.getFlowElement().contains(node)) {
+            System.err.println("Tried to add " + node.getId() + " twice to process " + process.getId());
+        } else {
+            process.addChild(node);
+        }
 
         /* Handle sequence flows */
         /* Attention: navigate into both directions! */
@@ -1043,12 +1060,10 @@ public class Diagram2BpmnConverter {
         }
 
         /* Handle boundary events */
-        /* Attention: navigate into both directions! */
         if (node instanceof BoundaryEvent) {
-            if (((BoundaryEvent) node).getAttachedToRef() != null) {
-                addNode(process, this
-                        .getBpmnElementForNode(((BoundaryEvent) node)
-                                .getAttachedToRef()), allNodes);
+            Activity activity = ((BoundaryEvent) node).getAttachedToRef();
+            if (activity != null) {
+                addNode(process, this.getBpmnElementForNode(activity), allNodes);
             }
         } else if (node instanceof Activity) {
             for (BoundaryEvent event : ((Activity) node).getBoundaryEventRefs()) {
@@ -1080,6 +1095,15 @@ public class Diagram2BpmnConverter {
             if (node instanceof Activity || node instanceof Event
                     || node instanceof Gateway) {
                 allNodes.add(node);
+            }
+
+            if (node instanceof Activity) {
+                Activity activity = (Activity) node;
+                List<BPMNElement> list = new ArrayList(activity.getAttachedBoundaryEvents().size());
+                for (BoundaryEvent boundaryEvent: activity.getAttachedBoundaryEvents()) {
+                    list.add(this.bpmnElements.get(boundaryEvent.getId()));
+                }
+                getAllNodesRecursively(list, allNodes);
             }
         }
     }

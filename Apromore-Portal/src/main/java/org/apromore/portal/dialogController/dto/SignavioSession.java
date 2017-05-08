@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -26,20 +26,24 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.dialogController.MainController;
 
+import java.util.HashMap;
 import java.util.Set;
+
+import org.deckfour.xes.model.XLog;
 
 /**
  * Stores the Signavio Session information for an edit session.
  *
  * @author Cameron James
  */
-public class SignavioSession {
+public class SignavioSession extends HashMap {
 
     private EditSessionType editSession, editSession2;
     private MainController mainC;
     private ProcessSummaryType process, process2;
     private VersionSummaryType version, version2;
     private Set<RequestParameterType<?>> params;
+    private XLog log;
 
     /**
      * Public Default Constructor.
@@ -99,6 +103,14 @@ public class SignavioSession {
 
     public void setProcess(ProcessSummaryType process) {
         this.process = process;
+    }
+
+    public XLog getLog() {
+        return log;
+    }
+
+    public void setLog(XLog log) {
+        this.log = log;
     }
 
     public VersionSummaryType getVersion() {

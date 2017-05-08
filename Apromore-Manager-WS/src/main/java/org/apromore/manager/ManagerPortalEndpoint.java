@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -1249,31 +1249,31 @@ public class ManagerPortalEndpoint {
         return new ObjectFactory().createGetProcessGroupsResponse(res);
     }
 
-    @PayloadRoot(localPart = "GetProcessesOrLogsRequest", namespace = NAMESPACE)
+    @PayloadRoot(localPart = "GetProcessesRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<GetProcessesOrLogsOutputMsgType> getProcessesOrLogs(@RequestPayload final JAXBElement<GetProcessesOrLogsInputMsgType> req) {
-        LOGGER.trace("Executing operation getProcessesOrLogs");
-        GetProcessesOrLogsInputMsgType payload = req.getValue();
-        GetProcessesOrLogsOutputMsgType res = new GetProcessesOrLogsOutputMsgType();
+    public JAXBElement<GetProcessesOutputMsgType> getProcesses(@RequestPayload final JAXBElement<GetProcessesInputMsgType> req) {
+        LOGGER.trace("Executing operation getProcesses");
+        GetProcessesInputMsgType payload = req.getValue();
+        GetProcessesOutputMsgType res = new GetProcessesOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
 
-        res.setProcessesOrLogs(uiHelper.buildSummaryList(payload.getUserId(), payload.getFolderId(), payload.getPageIndex(), payload.getPageSize()));
+        res.setProcesses(uiHelper.buildProcessSummaryList(payload.getUserId(), payload.getFolderId(), payload.getPageIndex(), payload.getPageSize()));
 
-        return new ObjectFactory().createGetProcessesOrLogsResponse(res);
+        return new ObjectFactory().createGetProcessesResponse(res);
     }
 
     @PayloadRoot(localPart = "GetLogsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetLogsOutputMsgType> getLogs(@RequestPayload final JAXBElement<GetLogsInputMsgType> req) {
-        LOGGER.error("Executing operation getLogs");
+        LOGGER.trace("Executing operation getLogs");
         GetLogsInputMsgType payload = req.getValue();
         GetLogsOutputMsgType res = new GetLogsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
-        LOGGER.error("Executing operation getLogs1");
+
         res.setLogs(uiHelper.buildLogSummaryList(payload.getUserId(), payload.getFolderId(), payload.getPageIndex(), payload.getPageSize()));
-        LOGGER.error("Executing operation getLogs2");
+
         return new ObjectFactory().createGetLogsResponse(res);
     }
 

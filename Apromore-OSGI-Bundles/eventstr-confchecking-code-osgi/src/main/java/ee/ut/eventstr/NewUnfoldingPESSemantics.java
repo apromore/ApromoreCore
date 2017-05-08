@@ -1,25 +1,37 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package ee.ut.eventstr;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multiset;
+import com.google.common.collect.*;
 
+import ee.ut.bpmn.replayer.Pomset;
 import ee.ut.nets.unfolding.Unfolding2PES;
 import ee.ut.org.processmining.framework.util.Pair;
+import org.jbpt.graph.DirectedGraph;
+import org.jbpt.hypergraph.abs.Vertex;
 
 public class NewUnfoldingPESSemantics<T>{
 	private Unfolding2PES unfMetadata;
@@ -89,17 +101,17 @@ public class NewUnfoldingPESSemantics<T>{
 
 	private Map<BitSet, Multiset<Integer>> reverseMap = new HashMap<>();
 	protected Map<BitSet, BitSet> futures = new LinkedHashMap<>();
-	
+
 	private void computePreFuture(BitSet conf) {
 		if (!futures.containsKey(conf)) {
 			BitSet future = new BitSet();
-			
+
 			for (int e = conf.nextSetBit(0); e >= 0; e = conf.nextSetBit(e+1))
 				future.or(pes.conflict[e]);
 
 			future.flip(0, pes.labels.size());
 			future.andNot(conf);
-			
+
 			for (Integer e: unfMetadata.getInvisibleEvents())
 				future.clear(e);
 
@@ -111,15 +123,15 @@ public class NewUnfoldingPESSemantics<T>{
 		BitSet shiftedV = getShifted(v);
 		reverseMap.put(shiftedV, v);
 		BitSet future = futures.get(shiftedV);
-		
+
 		for(Integer ext: getPossibleExtensions(v)) {
 			Pair<Multiset<Integer>, Boolean> pair = extend(v, ext);
-						
+
 			Multiset<Integer> w = pair.getFirst();
 			BitSet shiftedW = getShifted(w);
-			
+
 			computePreFuture(shiftedW);
-			
+
 			if (pair.getSecond() &&  reverseMap.containsKey(shiftedW)) {
 				BitSet concset = (BitSet)getConcurrencySet(ext).clone();
 				concset.and(shiftedW);
@@ -236,6 +248,96 @@ public class NewUnfoldingPESSemantics<T>{
 	
 	public List<String> getLabels() {
 		return pes.labels;
+	}
+
+	public List<String> getLabels(Set<Integer> next) {
+		List<String> labels = new LinkedList<>();
+
+		for(Integer evt : next)
+			labels.add(getLabel(evt));
+
+		return labels;
+	}
+
+	public Pomset getPomset(BitSet bs) {
+		DirectedGraph confgraph = new DirectedGraph();
+		BiMap<Vertex, Integer> map = HashBiMap.<Vertex, Integer> create();
+		HashMap<Integer, String> labels = new HashMap<>();
+
+		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1))
+			if(!getLabel(i).equals("_0_") && !getLabel(i).equals("_1_")){
+				Vertex v = new Vertex(getLabel(i));
+				map.put(v, i);
+				labels.put(i, getLabel(i));
+			}
+
+		HashSet<Integer> conf = bS2int(bs);
+		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1))
+			if(!(getLabel(i).equals("_0_") && getDirectPredecessors(i).isEmpty()) && !(getLabel(i).equals("_1_") && getDirectSuccessors(i).isEmpty())){
+				BitSet pred = getOrderBS(conf, i);
+
+				for (int j = pred.nextSetBit(0); j >= 0; j = pred.nextSetBit(j + 1))
+					if(!getLabel(j).equals("_0_") && !getLabel(j).equals("_1_")){
+						confgraph.addEdge(map.inverse().get(j), map.inverse().get(i));
+					}
+			}
+
+		return new Pomset(confgraph, map, labels);
+	}
+
+	public Pomset getPomset(BitSet bs, HashSet<String> obs) {
+		DirectedGraph confgraph = new DirectedGraph();
+		BiMap<Vertex, Integer> map = HashBiMap.<Vertex, Integer> create();
+		HashMap<Integer, String> labels = new HashMap<>();
+
+		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1))
+			if(!getLabel(i).equals("_0_") && !getLabel(i).equals("_1_") && obs.contains(getLabel(i))){
+				Vertex v = new Vertex(getLabel(i));
+				map.put(v, i);
+				labels.put(i, getLabel(i));
+				confgraph.addVertex(v);
+			}
+
+		HashSet<Integer> conf = bS2int(bs);
+		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1))
+			if(!(getLabel(i).equals("_0_") && getDirectPredecessors(i).isEmpty()) && !(getLabel(i).equals("_1_") && getDirectSuccessors(i).isEmpty())
+					&& obs.contains(getLabel(i))){
+				BitSet pred = getOrderBS(conf, i);
+
+				for (int j = pred.nextSetBit(0); j >= 0; j = pred.nextSetBit(j + 1))
+					if(!getLabel(j).equals("_0_") && !getLabel(j).equals("_1_") && obs.contains(getLabel(j)))
+						confgraph.addEdge(map.inverse().get(j), map.inverse().get(i));
+			}
+
+		return new Pomset(confgraph, map, labels);
+	}
+
+	public HashSet<Integer> bS2int(BitSet bs) {
+		HashSet<Integer> indexes = new HashSet<>();
+
+		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1))
+			indexes.add(i);
+
+		return indexes;
+	}
+
+	public BitSet getOrderBS(Set<Integer> evts, int i) {
+		BitSet causes = new BitSet(pes.labels.size());
+
+		for(Integer p : evts)
+			if(pes.causality[p].get(i))
+				causes.set(p);
+
+		return causes;
+	}
+
+	public Set<Integer> getEvents(BitSet bs) {
+		Set<Integer> events = new HashSet<>();
+
+		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1))
+			events.add(i);
+
+		return events;
 	}
 
 	public boolean isSubset(BitSet a, BitSet b) {
@@ -362,5 +464,9 @@ public class NewUnfoldingPESSemantics<T>{
 					dconf.set(succ);
 		}
 		return dconf;
+	}
+
+	public void setLabels(List<String> newLabels) {
+		this.pes.setLabels(newLabels);
 	}
 }

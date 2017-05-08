@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -71,6 +71,7 @@ public class UIHelper implements UserInterfaceHelper {
     private ProcessRepository pRepository;
     private LogRepository lRepository;
     private GroupProcessRepository gpRepository;
+    private GroupLogRepository glRepository;
     private ProcessModelVersionRepository pmvRepository;
     private FolderRepository fRepository;
     private WorkspaceService workspaceService;
@@ -90,6 +91,7 @@ public class UIHelper implements UserInterfaceHelper {
                     final ProcessRepository processRepository,
                     final LogRepository logRepository,
                     final GroupProcessRepository groupProcessRepository,
+                    final GroupLogRepository groupLogRepository,
                     final ProcessModelVersionRepository processModelVersionRepository,
                     final FolderRepository folderRepository,
                     final WorkspaceService workspaceService) {
@@ -98,6 +100,7 @@ public class UIHelper implements UserInterfaceHelper {
         this.pRepository = processRepository;
         this.lRepository = logRepository;
         this.gpRepository = groupProcessRepository;
+        this.glRepository = groupLogRepository;
         this.pmvRepository = processModelVersionRepository;
         this.fRepository = folderRepository;
         this.workspaceService = workspaceService;
@@ -233,27 +236,6 @@ public class UIHelper implements UserInterfaceHelper {
         return processSummaries;
     }
 
-    public SummariesType buildSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
-        assert pageSize != null;
-        assert pageIndex != null;
-
-        Page<Process> processes = workspaceService.getProcesses(userId, folderId, new PageRequest(pageIndex, pageSize));
-        Page<Log> logs = workspaceService.getLogs(userId, folderId, new PageRequest(pageIndex, pageSize));
-
-        SummariesType summaries = new SummariesType();
-        summaries.setTotalCount(pRepository.count() + lRepository.count());
-        summaries.setOffset(new Long(pageIndex * pageSize));
-        summaries.setCount(new Long(processes.getTotalElements()) + new Long(logs.getTotalElements()));
-        for (Process process: processes.getContent()) {
-            summaries.getSummary().add(buildProcessSummary(process));
-        }
-        for (Log log: logs.getContent()) {
-            summaries.getSummary().add(buildLogSummary(log));
-        }
-
-        return summaries;
-    }
-
     @Override
     public SummariesType buildLogSummaryList(String userId, Integer folderId, Integer pageIndex, Integer pageSize) {
         assert pageSize != null;
@@ -335,13 +317,13 @@ public class UIHelper implements UserInterfaceHelper {
 
 //        buildVersionSummaryTypeList(logSummaryType, null, process);
 
-//        List<GroupLog> groupLogs = gpRepository.findByProcessId(log.getId());
+        List<GroupLog> groupLogs = glRepository.findByLogId(log.getId());
         boolean hasRead = true, hasWrite = true, hasOwnership = true;
-//        for (GroupProcess groupProcess: groupProcesses) {
-//            hasRead = hasRead || groupProcess.getHasRead();
-//            hasWrite = hasWrite || groupProcess.getHasWrite();
-//            hasOwnership = hasOwnership || groupProcess.getHasOwnership();
-//        }
+        for (GroupLog groupLog: groupLogs) {
+            hasRead = hasRead || groupLog.getHasRead();
+            hasWrite = hasWrite || groupLog.getHasWrite();
+            hasOwnership = hasOwnership || groupLog.getHasOwnership();
+        }
         logSummaryType.setHasRead(hasRead);
         logSummaryType.setHasWrite(hasWrite);
         logSummaryType.setHasOwnership(hasOwnership);

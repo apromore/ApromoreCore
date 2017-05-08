@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -147,23 +147,6 @@ public class FolderController extends GenericForwardComposer {
             }
 
             if (selectedFolder != null) {
-                List<FolderType> breadcrumbFolders = UserSessionManager.getMainController().getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
-                Collections.reverse(breadcrumbFolders);
-                String content = "<table cellspacing='0' cellpadding='5' id='breadCrumbsTable'><tr>";
-
-                int i = 0;
-                for (FolderType breadcrumb : breadcrumbFolders) {
-                    if (i > 0) {
-                        content += "<td style='font-size: 9pt;'>&gt;</td>";
-                    }
-                    content += "<td><a class='breadCrumbLink' style='cursor: pointer; font-size: 9pt; color: Blue; text-decoration: underline;' id='" + breadcrumb.getId().toString() + "'>" + breadcrumb.getFolderName() + "</a></td>";
-                    i++;
-                }
-
-                content += "</tr></table>";
-                UserSessionManager.getMainController().breadCrumbs.setContent(content);
-                Clients.evalJavaScript("bindBreadcrumbs();");
-
                 UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
                 UserSessionManager.setCurrentFolder(selectedFolder);
 

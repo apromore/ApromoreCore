@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -8,10 +8,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -33,6 +33,23 @@
                         <label value="${each}" />
                     </template>
                 </selectbox>
+            </groupbox>
+            <groupbox width="285px">
+                <caption label="Select Type of Model"/>
+                <radiogroup id="bpmnMinerFlat">
+                    <grid>
+                        <columns>
+                            <column />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <radio id="flat" label="Flat" selected="true"/>
+                                <radio id="hierarchical" label="Hierarchical" />
+                            </row>
+                        </rows>
+                    </grid>
+                </radiogroup>
             </groupbox>
             <groupbox width="285px">
                 <caption label="Select Dependency Discover Algorithm"/>
@@ -63,6 +80,23 @@
                             <row>
                                 <radio id="sort" label="Yes" selected="true"/>
                                 <radio id="notSort" label="No"/>
+                            </row>
+                        </rows>
+                    </grid>
+                </radiogroup>
+            </groupbox>
+            <groupbox width="285px">
+                <caption label="Filter-out Noise from Log"/>
+                <radiogroup id="noiseFilter">
+                    <grid>
+                        <columns>
+                            <column />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <radio id="filtered" label="Yes"/>
+                                <radio id="notFiltered" label="No" selected="true"/>
                             </row>
                         </rows>
                     </grid>

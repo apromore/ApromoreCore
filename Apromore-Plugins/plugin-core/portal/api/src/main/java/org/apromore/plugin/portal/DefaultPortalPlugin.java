@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -22,7 +22,12 @@ package org.apromore.plugin.portal;
 
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.InputStream;
+import java.io.IOException;
 import java.util.Locale;
+import javax.imageio.ImageIO;
 
 /**
  * Default implementation for a parameter-aware PortalPlugin. Subclass this class to create a new PortalPlugin rather than implementing the interface directly.
@@ -38,6 +43,27 @@ public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements 
     @Override
     public String getGroupLabel(Locale locale) {
         return "Plugins";
+    }
+
+    /**
+     * Default implementation will look for the resource <code>/icon.png</code> in the
+     * current classloader.  If this resource doesn't exist, a green "plugin" icon will
+     * be used instead.
+     */
+    @Override
+    public RenderedImage getIcon() {
+        try {
+            InputStream in = getClass().getClassLoader().getResourceAsStream("/icon.png");
+            if (in == null) {
+                in = DefaultPortalPlugin.class.getClassLoader().getResourceAsStream("/icon.png");
+            }
+            BufferedImage icon = ImageIO.read(in);
+            in.close();
+            return icon;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

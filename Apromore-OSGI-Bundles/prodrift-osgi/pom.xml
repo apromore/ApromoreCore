@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -8,10 +8,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -30,7 +30,7 @@
 
     <groupId>org.apromore</groupId>
     <artifactId>prodrift-osgi</artifactId>
-    <version>2.1</version>
+    <version>2.4</version>
     <packaging>bundle</packaging>
 
     <build>
@@ -47,7 +47,7 @@
                                 By doing so these non-osgi dependencies are not included in the assembly projects!
                              -->
                             artifactId=<!--jfreechart| -->
-                            java_cup|jsc|lingpipe|OpenXESdrift|jama|spex|weka-dev|prodrift
+                            java_cup|jsc|lingpipe|jama|spex|weka-dev|prodrift
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
@@ -137,13 +137,22 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            ee.ut.eventstr,
-                            ee.ut.eventstr.driftdetector,
-                            ee.ut.eventstr.model,
-                            ee.ut.eventstr.util,
-                            ee.ut.mining.log
+                            org.apromore.prodrift.eventstr,
+                            org.apromore.prodrift.driftcharacterization,
+                            org.apromore.prodrift.driftdetector,
+                            org.apromore.prodrift.model,
+                            org.apromore.prodrift.util
                         </Export-Package>
                     </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -151,7 +160,7 @@
 
     <dependencies>
 
-	<!-- prodrift-->
+        <!-- prodrift-->
 
         <dependency>
             <groupId>org.apromore</groupId>
@@ -162,20 +171,20 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>log-osgi</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
         </dependency>
 
-<!--        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom5-lib</artifactId>
-            <version>1.0</version>
-        </dependency>
+        <!--        <dependency>
+                    <groupId>org.processmining</groupId>
+                    <artifactId>prom5-lib</artifactId>
+                    <version>1.0</version>
+                </dependency>
 
-        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>prom6-framework</artifactId>
-            <version>1.0</version>
-        </dependency>-->
+                <dependency>
+                    <groupId>org.processmining</groupId>
+                    <artifactId>prom6-framework</artifactId>
+                    <version>1.0</version>
+                </dependency>-->
 
         <dependency>
             <groupId>org.jfree</groupId>
@@ -192,11 +201,6 @@
             <artifactId>lingpipe</artifactId>
             <version>4.1.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXESdrift</artifactId>
-            <version>1.0</version>
-        </dependency>
 
         <dependency>
             <groupId>jama</groupId>
@@ -205,9 +209,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.processmining</groupId>
+            <groupId>org.deckfour.xes</groupId>
             <artifactId>spex</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
 
         <dependency>
@@ -222,12 +226,12 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>log</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>logabstractions</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.jbpt</groupId>
@@ -261,43 +265,49 @@
             <version>1.4.8</version>
         </dependency>
 
-
-
-
-
+<!--
         <dependency>
+            <groupId>org.processmining</groupId>
+            <artifactId>jri</artifactId>
+            <version>1.0</version>
+        </dependency>
+-->
+
+
+
+        <!--<dependency>
             <groupId>ee.ut</groupId>
             <artifactId>prodrift</artifactId>
-            <version>2.1</version>
-        </dependency>
-
-
-
-
-<!--        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <version>2.0</version>
-        </dependency>
-        -->
-
-<!--        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>log</artifactId>
-            <version>1.0</version>
+            <version>2.4</version>
         </dependency>-->
-<!--        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>logabstractions</artifactId>
-            <version>1.0</version>
-        </dependency>-->
+
+
+
+
+        <!--        <dependency>
+                    <groupId>org.deckfour.xes</groupId>
+                    <artifactId>OpenXES</artifactId>
+                    <version>2.0</version>
+                </dependency>
+                -->
+
+        <!--        <dependency>
+                    <groupId>org.processmining</groupId>
+                    <artifactId>log</artifactId>
+                    <version>1.0</version>
+                </dependency>-->
+        <!--        <dependency>
+                    <groupId>org.processmining</groupId>
+                    <artifactId>logabstractions</artifactId>
+                    <version>1.0</version>
+                </dependency>-->
 
         <!-- No-->
-<!--        <dependency>
-            <groupId>org.processmining</groupId>
-            <artifactId>weka</artifactId>
-            <version>1.0</version>
-        </dependency>-->
+        <!--        <dependency>
+                    <groupId>org.processmining</groupId>
+                    <artifactId>weka</artifactId>
+                    <version>1.0</version>
+                </dependency>-->
         <!-- No-->
 
 

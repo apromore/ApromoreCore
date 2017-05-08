@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -9,10 +9,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -33,7 +33,7 @@
 
     <artifactId>bpmnminer-logic</artifactId>
     <packaging>bundle</packaging>
-    <name>BPMN Miner service</name>
+    <name>BPMNMiner-logic</name>
 
     <build>
         <plugins>
@@ -49,10 +49,27 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
+                        <Import-Bundle>
+                            org.bpmnminer-osgi;bundle-version="[1.1,2.0]",
+                            org.eclipse-collections-osgi;bundle-version="[1.1,2.0]"
+                        </Import-Bundle>
                         <Import-Package>
-                            org.springframework.beans.factory.aspectj,
+                            com.raffaeleconforti.bpmnminer.*,
+                            com.raffaeleconforti.context,
+                            com.raffaeleconforti.foreignkeydiscovery.*,
+                            com.raffaeleconforti.log.*,
                             org.apromore.service.ibpstruct.*,
-                            *
+                            org.deckfour.xes.*,
+                            org.eclipse.collections.*,
+                            org.processmining.contexts.*;version="[1.0,2.0)",
+                            org.processmining.framework.*;version="[1.0,2.0)",
+                            org.processmining.models.*;version="[1.0,2.0)",
+                            org.processmining.plugins.*;version="[1.0,2.0)",
+                            org.springframework.beans.factory.aspectj,
+                            javax.inject,
+                            javax.swing,
+                            org.slf4j,
+                            org.springframework.stereotype
                         </Import-Package>
                         <Export-Package>
                             org.apromore.service.bpmnminer
@@ -82,6 +99,33 @@
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.context</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpmnminer-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.raffaeleconforti</groupId>
+            <artifactId>bpmnminer-commandline</artifactId>
+            <version>1.0.20170504</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>eclipse-collections-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+            <version>8.0.0-M1</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.raffaeleconforti</groupId>-->
+            <!--<artifactId>bpmnminer-commandline</artifactId>-->
+            <!--<version>1.0.20170504</version>-->
+        <!--</dependency>-->
     </dependencies>
 </project>
 

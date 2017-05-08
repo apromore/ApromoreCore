@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -21,7 +21,6 @@
 package org.apromore.plugin.portal.compareBP;
 
 // Java 2 Standard Edition packages
-import java.io.ByteArrayInputStream;
 import java.util.*;
 
 import ee.ut.eventstr.comparison.differences.ModelAbstractions;
@@ -38,50 +37,31 @@ import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.math3.analysis.function.Exp;
-import org.apromore.canoniser.Canoniser;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.context.PluginPortalContext;
-import org.apromore.portal.dialogController.MainController;
 import org.apromore.service.compare.CompareService;
 import org.deckfour.xes.model.XLog;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.petri.io.PNMLSerializer;
-import org.processmining.exporting.bpmn.BPMNExport;
-import org.processmining.models.graphbased.directed.petrinet.Petrinet;
-import org.processmining.plugins.bpmn.converter.BPMNConverter;
-import org.processmining.plugins.bpmn.converter.PetriNetToBPMNConverterPlugin;
-import org.semanticweb.kaon2.jb;
-import org.semanticweb.kaon2.lo;
 import org.springframework.stereotype.Component;
 
 // Local packages
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.CanoniserService;
-import org.apromore.service.DomainService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.EventLogService;
-import org.apromore.service.helper.UserInterfaceHelper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.zkoss.zul.Messagebox;
-
-/**
- * A user interface to the BPMN miner service.
- */
 @Component("plugin")
 public class ComparePlugin extends DefaultPortalPlugin {
     private final CompareService compareService;
@@ -94,6 +74,8 @@ public class ComparePlugin extends DefaultPortalPlugin {
     private String groupLabel = "Analyze";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComparePlugin.class.getCanonicalName());
+
+    @Inject private org.apromore.portal.ConfigBean portalConfig;
 
     @Inject
     public ComparePlugin(final CompareService compareService, final ProcessService processService, final CanoniserService canoniserService, final EventLogService eventLogService){
@@ -148,8 +130,6 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(PortalContext context) {
-        LOGGER.info("Executing");
-
         Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
         Set<LogSummaryType> selectedLogSummaryType = new HashSet<>();
         Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
@@ -193,13 +173,15 @@ public class ComparePlugin extends DefaultPortalPlugin {
                 logs.add(eventLogService.getXLog(logType.getId()));
             }
 
-            CompareController controller = new CompareController(context, compareService, eventLogService);
+            CompareController controller = new CompareController(context, compareService);
 
             if(logs.size() == 2){
                 controller.compareLL(logs.get(0), logs.get(1));
                 return;
             }else if(logs.size() == 1 && selectedProcessVersions.size() == 1){
-                controller.compareML(nets.get(0), observable.get(0), logs.get(0));
+                ModelAbstractions model = toModelAbstractions(procS.get(0), verS.get(0));
+
+                controller.compareML(model, new HashSet<String>(), logs.get(0), procS.get(0), verS.get(0));
                 return;
             }else if(selectedProcessVersions.size() == 2){
                 context.getMessageHandler().displayInfo("Performing comparison.");
@@ -227,7 +209,8 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
             switch (selectedProcessVersions.size()) {
                 case 1:
-                    controller.compareMLPopup(nets.get(0), observable.get(0));
+                    ModelAbstractions model = toModelAbstractions(procS.get(0), verS.get(0));
+                    controller.compareMLPopup(model, observable.get(0), procS.get(0), verS.get(0));
                     context.getMessageHandler().displayInfo("Performed conformance checker.");
                     break;
                 default:

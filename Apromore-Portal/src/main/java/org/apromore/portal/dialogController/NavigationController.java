@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -22,9 +22,12 @@ package org.apromore.portal.dialogController;
 
 import java.util.Collection;
 
+import org.apromore.model.FolderType;
 import org.apromore.portal.common.FolderTree;
 import org.apromore.portal.common.FolderTreeModel;
+import org.apromore.portal.common.FolderTreeNode;
 import org.apromore.portal.common.FolderTreeRenderer;
+import org.apromore.portal.common.UserSessionManager;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -34,7 +37,7 @@ import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Window;
 
-public class                                         NavigationController extends BaseController {
+public class NavigationController extends BaseController {
 
     private MainController mainC;
     private Tree tree;
@@ -88,5 +91,35 @@ public class                                         NavigationController extend
             }
         }
     }
+ 
+    public void currentFolderChanged() {
+        updateFolders(tree, UserSessionManager.getCurrentFolder());
+    }
 
+    /**
+     * Update all folders at or below the passed component, setting them to be correctly opened or selected
+     */
+    private static boolean updateFolders(Component component, FolderType currentFolder) {
+
+        boolean containsCurrentFolder = false;
+        for (Component child: component.getChildren()) {
+            boolean childContainsCurrentFolder = updateFolders(child, currentFolder);
+            containsCurrentFolder = containsCurrentFolder || childContainsCurrentFolder;
+        }
+
+        if (component instanceof Treeitem) {
+            Treeitem treeitem = (Treeitem) component;
+
+            Object value = treeitem.getValue();
+            if (value instanceof FolderTreeNode) {
+                FolderType folder = (FolderType) ((FolderTreeNode) value).getData();
+                boolean match = currentFolder.equals(folder);
+                treeitem.setSelected(match);
+                containsCurrentFolder = containsCurrentFolder || match || folder.getId() == 0;
+            }
+            treeitem.setOpen(containsCurrentFolder);
+        }
+
+        return containsCurrentFolder;
+    }
 }

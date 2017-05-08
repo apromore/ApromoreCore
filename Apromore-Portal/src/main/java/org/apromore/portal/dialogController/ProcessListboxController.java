@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -30,6 +30,8 @@ import org.apromore.plugin.portal.PortalProcessAttributePlugin;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.renderer.SummaryItemRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -42,6 +44,7 @@ import org.apromore.model.FolderType;
 public class ProcessListboxController extends BaseListboxController {
 
     private static final long serialVersionUID = -6874531673992239378L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessListboxController.class);
 
     private Listheader columnScore;
 
@@ -59,42 +62,27 @@ public class ProcessListboxController extends BaseListboxController {
         getListBox().addEventListener(Events.ON_SELECT, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (getListBox().getSelectedItems().size() == 1) {
-                    Object obj = getListModel().getSelection().iterator().next();
-                    if (obj instanceof ProcessSummaryType) {
-                        UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
-                        getMainController().displayProcessVersions((ProcessSummaryType) obj);
-                    } if (obj instanceof FolderType) {
-                        List<Integer> folders = new ArrayList<>();
-                        folders.add(((FolderType) obj).getId());
-                        UserSessionManager.setSelectedFolderIds(folders);
+
+                // List the selected folders and processes
+                List<Integer> folderIdList = new ArrayList<>();
+                List<ProcessSummaryType> processSummaryList = new ArrayList<>();
+                for (Object selectedItem: getListModel().getSelection()) {
+                    if (selectedItem instanceof FolderType) {
+                        folderIdList.add(((FolderType) selectedItem).getId());
+                    } else if (selectedItem instanceof ProcessSummaryType) {
+                        processSummaryList.add((ProcessSummaryType) selectedItem);
                     }
-                } else if (getListBox().getSelectedItems().size() == 0) {
-                    getMainController().clearProcessVersions();
-                    UserSessionManager.setSelectedFolderIds(new ArrayList<Integer>());
+                }
+
+                // If there's a unique selected process, show its versions
+                if (processSummaryList.size() == 1) {
+                    getMainController().displayProcessVersions(processSummaryList.get(0));
                 } else {
                     getMainController().clearProcessVersions();
-                    List<Integer> folders = new ArrayList<>();
-                    for (Object obj : getListModel().getSelection()) {
-                       if (obj instanceof FolderType) {
-                           folders.add(((FolderType) obj).getId());
-                       }
-                    }
-                    UserSessionManager.setSelectedFolderIds(folders);
                 }
-            }
-        });
-        getListBox().addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (getListBox().getSelectedItems().size() == 1) {
-                    Object obj = getListModel().getSelection().iterator().next();
-                    if (obj instanceof FolderType) {
-                        List<Integer> folders = UserSessionManager.getSelectedFolderIds();
-                        folders.add(((FolderType) obj).getId());
-                        UserSessionManager.setSelectedFolderIds(folders);
-                    }
-                }
+
+                // Set the selected folders
+                UserSessionManager.setSelectedFolderIds(folderIdList);
             }
         });
     }

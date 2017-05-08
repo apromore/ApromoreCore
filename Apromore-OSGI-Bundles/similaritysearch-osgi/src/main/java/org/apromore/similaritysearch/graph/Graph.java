@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -31,8 +31,8 @@ public class Graph {
     private List<Edge> edges = new ArrayList<Edge>();
     private List<Vertex> vertices = new ArrayList<Vertex>();
 
-    private HashMap<String, VertexObject> objectMap = new HashMap<String, VertexObject>();
-    private HashMap<String, VertexResource> resourceMap = new HashMap<String, VertexResource>();
+    private Map<String, VertexObject> objectMap = new HashMap<String, VertexObject>();
+    private Map<String, VertexResource> resourceMap = new HashMap<String, VertexResource>();
 
     public String name;
     public String ID;
@@ -45,13 +45,13 @@ public class Graph {
     // time that merging takes with graph cleaning
     public long cleanTime = 0;
 
-    private HashSet<String> graphLabels = new HashSet<String>();
-    private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
-    private static HashMap<String, String> edgeLabelMap = new HashMap<String, String>();
+    private Set<String> graphLabels = new HashSet<String>();
+    private Map<String, Vertex> vertexMap = new HashMap<String, Vertex>();
+    private static Map<String, String> edgeLabelMap = new HashMap<String, String>();
     private boolean isConfigurableGraph = false;
 
 
-    public HashSet<String> getGraphLabel1() {
+    public Set<String> getGraphLabel1() {
         return graphLabels;
     }
 
@@ -70,9 +70,9 @@ public class Graph {
         }
     }
 
-    private HashSet<String> performFullDominanceSearch(Vertex v) {
+    private Set<String> performFullDominanceSearch(Vertex v) {
         ArrayList<Vertex> toProcess = new ArrayList<Vertex>(v.getChildren());
-        HashSet<String> domList = new HashSet<String>();
+        Set<String> domList = new HashSet<String>();
 
         while (toProcess.size() > 0) {
             Vertex process = toProcess.remove(0);
@@ -137,7 +137,7 @@ public class Graph {
         graphLabels.add(graphLabel);
     }
 
-    public void addGraphLabels(HashSet<String> graphLabel) {
+    public void addGraphLabels(Set<String> graphLabel) {
         graphLabels.addAll(graphLabel);
     }
 
@@ -178,13 +178,13 @@ public class Graph {
         return result;
     }
 
-    private HashSet<String> getCombinedLabels(Vertex v, boolean parents) {
-        HashSet<String> labels = new HashSet<String>();
+    private Set<String> getCombinedLabels(Vertex v, boolean parents) {
+        Set<String> labels = new HashSet<String>();
 
         if (parents) {
             for (Vertex p : v.getParents()) {
                 Edge e = containsEdge(p.getID(), v.getID());
-                HashSet<String> eLabels = e.getLabels();
+                Set<String> eLabels = e.getLabels();
                 if (e != null && eLabels != null && eLabels.size() > 0) {
                     labels.addAll(eLabels);
                 }
@@ -192,7 +192,7 @@ public class Graph {
         } else {
             for (Vertex p : v.getChildren()) {
                 Edge e = containsEdge(v.getID(), p.getID());
-                HashSet<String> eLabels = e.getLabels();
+                Set<String> eLabels = e.getLabels();
                 if (e != null && eLabels != null && eLabels.size() > 0) {
                     labels.addAll(eLabels);
                 }
@@ -201,18 +201,18 @@ public class Graph {
         return labels;
     }
 
-    private boolean containsNewEdgeLabels(HashSet<String> labels1, HashSet<String> labels2) {
+    private boolean containsNewEdgeLabels(Set<String> labels1, Set<String> labels2) {
 
         for (String l : labels1) {
             if (!labels2.contains(l)) {
                 return true;
             }
         }
-        // all edge labels are presented in second hashset
+        // all edge labels are presented in second Set
         return false;
     }
 
-    private void setLabelsToParents(HashSet<String> labels, Vertex v, ArrayList<Vertex> toProcessConfGWs) {
+    private void setLabelsToParents(Set<String> labels, Vertex v, ArrayList<Vertex> toProcessConfGWs) {
         ArrayList<Vertex> toProcessVertices = new ArrayList<Vertex>();
         toProcessVertices.add(v);
 
@@ -244,7 +244,7 @@ public class Graph {
         }
     }
 
-    private void setLabelsToChildren(HashSet<String> labels, Vertex v, ArrayList<Vertex> toProcessConfGWs) {
+    private void setLabelsToChildren(Set<String> labels, Vertex v, ArrayList<Vertex> toProcessConfGWs) {
         ArrayList<Vertex> toProcessVertices = new ArrayList<Vertex>();
         toProcessVertices.add(v);
 
@@ -276,8 +276,8 @@ public class Graph {
         }
     }
 
-    private HashSet<String> extractLabels() {
-        HashSet<String> labels = new HashSet<String>();
+    private Set<String> extractLabels() {
+        Set<String> labels = new HashSet<String>();
         for(Edge edge : getEdges()) {
             labels.addAll(edge.getLabels());
         }
@@ -287,6 +287,7 @@ public class Graph {
     public void addLabelsToUnNamedEdges() {
         // the graph is not configurable
         // add all new labels
+
         if (!isConfigurableGraph) {
             // add the graph name to the labels
             // the graphs that are to be merged must have different names
@@ -303,38 +304,13 @@ public class Graph {
             }
 
             // find the labels for edges that does not have labels
-            HashSet<String> labels = extractLabels();
+            Set<String> labels = extractLabels();
             if(labels.size() == 0) labels.add(label);
 
             for (Edge e : edges) {
-                boolean found = false;
-                for (Vertex v : vertices) {
-                    if(e.getToVertex().equals(v.getID())) {
-                        if (v.getType().equals(Type.gateway)) {
-                            found = true;
-                            int countTo = 0;
-                            int countFrom = 0;
-                            for (Edge e1 : edges) {
-                                if (e1.getFromVertex().equals(v.getID())) {
-                                    countFrom++;
-                                }
-                            }
-                            if (countFrom > 1) {
-                                e.addLabels(labels);
-                            }
-                        }
-                        break;
-                    }
-                }
-                if(!found) {
-                    for (Vertex v : vertices) {
-                        if(e.getToVertex().equals(v.getID()) && !v.getType().equals(Type.gateway)) {
-                            e.addLabels(labels);
-                            break;
-                        }
-                    }
-                }
+                if(e.getLabels().size() == 0) e.addLabels(labels);
             }
+
             for (Vertex v : vertices) {
                 if (v.getType().equals(Vertex.Type.gateway)) {
                     if (v.getGWType().equals(Vertex.GWType.and)) {
@@ -379,7 +355,7 @@ public class Graph {
         while (toProcessConfGWs.size() > 0) {
             Vertex currentGW = toProcessConfGWs.remove(0);
             if (isJoin(currentGW)) {
-                HashSet<String> labelsForChildren = getCombinedLabels(currentGW, true);
+                Set<String> labelsForChildren = getCombinedLabels(currentGW, true);
                 setLabelsToChildren(labelsForChildren, currentGW, toProcessConfGWs);
 
                 for (Vertex p : currentGW.getParents()) {
@@ -395,7 +371,7 @@ public class Graph {
             }
             // must be split
             else {
-                HashSet<String> labelsForParents = getCombinedLabels(currentGW, false);
+                Set<String> labelsForParents = getCombinedLabels(currentGW, false);
                 setLabelsToParents(labelsForParents, currentGW, toProcessConfGWs);
 
                 for (Vertex ch : currentGW.getChildren()) {
@@ -413,8 +389,8 @@ public class Graph {
     }
 
     public void reorganizeIDs() {
-        HashMap<String, String> idMap = new HashMap<String, String>();
-        HashMap<String, Vertex> vertexMapTmp = new HashMap<String, Vertex>();
+        Map<String, String> idMap = new HashMap<String, String>();
+        Map<String, Vertex> vertexMapTmp = new HashMap<String, Vertex>();
 
         for (Vertex v : vertices) {
             String oldID = v.getID();
@@ -485,7 +461,7 @@ public class Graph {
                 Vertex vParent = v.getParents().get(0);
 
                 vChild.removeParent(v.getID());
-                HashSet<String> labels = removeEdge(v.getID(), vChild.getID());
+                Set<String> labels = removeEdge(v.getID(), vChild.getID());
                 vParent.removeChild(v.getID());
                 labels.addAll(removeEdge(vParent.getID(), v.getID()));
                 connectVertices(vParent, vChild, labels);
@@ -618,7 +594,7 @@ public class Graph {
                 for (Vertex child : gwChildren) {
                     gw.removeChild(child.getID());
                     child.removeParent(gw.getID());
-                    HashSet<String> labels = removeEdge(gw.getID(), child.getID());
+                    Set<String> labels = removeEdge(gw.getID(), child.getID());
                     connectVertices(v, child, labels);
                 }
                 connectVertices(gw, v);
@@ -662,7 +638,7 @@ public class Graph {
                             g1.setConfigurable(true);
                         }
 
-                        HashSet<String> labels = removeEdge(g2.getParents().get(0).getID(), g2.getID());
+                        Set<String> labels = removeEdge(g2.getParents().get(0).getID(), g2.getID());
 
                         g2.getParents().get(0).removeChild(g2.getID());
                         connectVertices(g2.getParents().get(0), g1, labels);
@@ -695,7 +671,7 @@ public class Graph {
                                 gwC.setConfigurable(true);
                             }
 
-                            HashSet<String> l1 = removeEdge(g1.getID(), toRemove.getID());
+                            Set<String> l1 = removeEdge(g1.getID(), toRemove.getID());
                             l1.addAll(removeEdge(g2.getID(), toRemove.getID()));
 
                             if (c1 != null) {
@@ -703,14 +679,14 @@ public class Graph {
                             }
 
                             for (Vertex parent : toRemove.getParents()) {
-                                HashSet<String> labels1 = removeEdge(parent.getID(), toRemove.getID());
+                                Set<String> labels1 = removeEdge(parent.getID(), toRemove.getID());
                                 parent.removeChild(toRemove.getID());
                                 connectVertices(parent, gwC, labels1);
                                 l1.addAll(labels1);
                             }
 
                             for (Vertex child : toRemove.getChildren()) {
-                                HashSet<String> labels1 = removeEdge(toRemove.getID(), child.getID());
+                                Set<String> labels1 = removeEdge(toRemove.getID(), child.getID());
                                 child.removeParent(toRemove.getID());
                                 labels1.addAll(l1);
                                 connectVertices(gwC, child, labels1);
@@ -861,7 +837,7 @@ public class Graph {
                         gw.removeChild(toProcess.getID());
                         toProcess.removeParent(gw.getID());
 
-                        HashSet<String> labels = removeEdge(gw.getID(), toProcess.getID());
+                        Set<String> labels = removeEdge(gw.getID(), toProcess.getID());
                         Vertex v = toProcess;
                         boolean needConf = false;
                         while (v != null) {
@@ -900,7 +876,7 @@ public class Graph {
     }
 
     private boolean canRemoveCycle(Vertex gw, Vertex toProcess) {
-        HashSet<String> edgeLabels = getEdgeLabels(gw.getID(), toProcess.getID());
+        Set<String> edgeLabels = getEdgeLabels(gw.getID(), toProcess.getID());
 
         // process outgoing arcs
         Vertex v = toProcess.prevConfVertex;
@@ -912,7 +888,7 @@ public class Graph {
                 if (vCh.equals(lastV)) {
                     continue;
                 }
-                HashSet<String> childLabels = getEdgeLabels(v.getID(), vCh.getID());
+                Set<String> childLabels = getEdgeLabels(v.getID(), vCh.getID());
                 for (String label : edgeLabels) {
                     if (childLabels.contains(label)) {
                         return false;
@@ -969,18 +945,18 @@ public class Graph {
                 // merge these spilts
                 if (tmp != null/* && tmp.isConfigurable()*/ && canMerge(tmp, v)) {
                     v.removeChild(tmp.getID());
-                    HashSet<String> label = removeEdge(v.getID(), tmp.getID());
+                    Set<String> label = removeEdge(v.getID(), tmp.getID());
 
                     ArrayList<Vertex> toConnect = tmp.getChildren();
 
                     for (Vertex tmpChild : toConnect) {
-                        HashSet<String> labels = removeEdge(tmp.getID(), tmpChild.getID());
+                        Set<String> labels = removeEdge(tmp.getID(), tmpChild.getID());
 
-                        HashSet<String> labelsToExclude = new HashSet<>(labels.size());
+                        Set<String> labelsToExclude = new HashSet<>(labels.size());
                         labelsToExclude.addAll(labels);
                         labelsToExclude.removeAll(label);
 
-                        HashSet<String> labelsToAdd = new HashSet<>(labels.size());
+                        Set<String> labelsToAdd = new HashSet<>(labels.size());
                         labelsToAdd.addAll(labels);
                         labelsToAdd.removeAll(labelsToExclude);
 
@@ -1010,19 +986,17 @@ public class Graph {
                 // merge these spilts
                 if (tmp != null /*&& tmp.isConfigurable()*/ && canMerge(tmp, v)) {
                     tmp.removeParent(v.getID());
-                    HashSet<String> label = removeEdge(v.getID(), tmp.getID());
+                    Set<String> label = removeEdge(v.getID(), tmp.getID());
 
                     ArrayList<Vertex> toConnect = v.getParents();
 
                     for (Vertex vParent : toConnect) {
-                        HashSet<String> labels = removeEdge(vParent.getID(), v.getID());
+                        Set<String> labels = removeEdge(vParent.getID(), v.getID());
 
-                        HashSet<String> labelsToExclude = new HashSet<>(labels.size());
-                        labelsToExclude.addAll(labels);
+                        Set<String> labelsToExclude = new HashSet<>(labels);
                         labelsToExclude.removeAll(label);
 
-                        HashSet<String> labelsToAdd = new HashSet<>(labels.size());
-                        labelsToAdd.addAll(labels);
+                        Set<String> labelsToAdd = new HashSet<>(labels);
                         labelsToAdd.removeAll(labelsToExclude);
 
                         vParent.removeChild(v.getID());
@@ -1123,27 +1097,23 @@ public class Graph {
 //				}
                 Vertex parent = v.getParents().get(0);
                 Vertex child = v.getChildren().get(0);
-                HashSet<String> parentLabels = removeEdge(parent.getID(), v.getID());
-                HashSet<String> childLabels = removeEdge(v.getID(), child.getID());
+                Set<String> parentLabels = removeEdge(parent.getID(), v.getID());
+                Set<String> childLabels = removeEdge(v.getID(), child.getID());
 
                 removeVertex(v.getID());
                 parent.removeChild(v.getID());
                 child.removeParent(v.getID());
 
-                HashSet<String> labels = new HashSet<>(parentLabels.size() + childLabels.size());
-                labels.addAll(parentLabels);
+                Set<String> labels = new HashSet<>(parentLabels);
                 labels.addAll(childLabels);
 
-                HashSet<String> labelsToExclude1 = new HashSet<>(labels.size());
-                labelsToExclude1.addAll(labels);
+                Set<String> labelsToExclude1 = new HashSet<>(labels);
                 labelsToExclude1.removeAll(parentLabels);
 
-                HashSet<String> labelsToExclude2 = new HashSet<>(labels.size());
-                labelsToExclude2.addAll(labels);
+                Set<String> labelsToExclude2 = new HashSet<>(labels);
                 labelsToExclude2.removeAll(childLabels);
 
-                HashSet<String> labelsToAdd = new HashSet<>(labels.size());
-                labelsToAdd.addAll(labels);
+                Set<String> labelsToAdd = new HashSet<>(labels);
                 labelsToAdd.removeAll(labelsToExclude1);
                 labelsToAdd.removeAll(labelsToExclude2);
 
@@ -1156,7 +1126,7 @@ public class Graph {
 
     }
 
-    public Edge connectVertices(Vertex v1, Vertex v2, HashSet<String> labels) {
+    public Edge connectVertices(Vertex v1, Vertex v2, Set<String> labels) {
         if (v1.getID().equals(v2.getID())) {
             return null;
         }
@@ -1208,7 +1178,7 @@ public class Graph {
         }
     }
 
-    public HashMap<String, Vertex> getVertexMap() {
+    public Map<String, Vertex> getVertexMap() {
         return vertexMap;
     }
 
@@ -1236,7 +1206,7 @@ public class Graph {
         return null;
     }
 
-    public HashSet<String> removeEdge(String from, String to) {
+    public Set<String> removeEdge(String from, String to) {
         Edge toremove = containsEdge(from, to);
 
         if (toremove == null) {
@@ -1247,7 +1217,7 @@ public class Graph {
         }
     }
 
-    public HashSet<String> getEdgeLabels(String from, String to) {
+    public Set<String> getEdgeLabels(String from, String to) {
         Edge e = containsEdge(from, to);
 
         if (e == null) {
@@ -1452,7 +1422,7 @@ public class Graph {
         objectMap.put(o.getId(), o);
     }
 
-    public HashMap<String, VertexObject> getObjects() {
+    public Map<String, VertexObject> getObjects() {
         return objectMap;
     }
 
@@ -1464,7 +1434,7 @@ public class Graph {
         resourceMap.put(v.getId(), v);
     }
 
-    public HashMap<String, VertexResource> getResources() {
+    public Map<String, VertexResource> getResources() {
         return resourceMap;
     }
 }

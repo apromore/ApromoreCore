@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 // Third party packages
 import org.apromore.service.EventLogService;
+import org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService;
 import org.springframework.stereotype.Component;
 
 // Local packages
@@ -50,6 +51,7 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
     private final DomainService       domainService;
     private final ProcessService      processService;
     private final EventLogService     eventLogService;
+    private final InfrequentBehaviourFilterService infrequentBehaviourFilterService;
     private final UserInterfaceHelper userInterfaceHelper;
 
     @Inject
@@ -58,13 +60,15 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
                            final DomainService domainService,
                            final ProcessService processService,
                            final EventLogService eventLogService,
+                           final InfrequentBehaviourFilterService infrequentBehaviourFilterService,
                            final UserInterfaceHelper userInterfaceHelper) {
 
-        this.bpmnMinerService    = bpmnMinerService;
-        this.canoniserService    = canoniserService;
-        this.domainService       = domainService;
-        this.processService      = processService;
-        this.eventLogService = eventLogService;
+        this.bpmnMinerService                   = bpmnMinerService;
+        this.canoniserService                   = canoniserService;
+        this.domainService                      = domainService;
+        this.processService                     = processService;
+        this.eventLogService                    = eventLogService;
+        this.infrequentBehaviourFilterService   = infrequentBehaviourFilterService;
         this.userInterfaceHelper = userInterfaceHelper;
     }
 
@@ -83,7 +87,7 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
 
         context.getMessageHandler().displayInfo("Executed BPMN miner plug-in!");
 
-        new BPMNMinerController(context, bpmnMinerService, canoniserService, domainService, processService, eventLogService, userInterfaceHelper);
+        new BPMNMinerController(context, bpmnMinerService, canoniserService, domainService, processService, eventLogService, infrequentBehaviourFilterService, userInterfaceHelper);
     }
 
 }

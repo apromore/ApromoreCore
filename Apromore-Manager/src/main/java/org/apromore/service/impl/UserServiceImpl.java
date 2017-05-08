@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -22,7 +22,9 @@ package org.apromore.service.impl;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apromore.dao.SearchHistoryRepository;
 import org.apromore.dao.UserRepository;
@@ -30,6 +32,8 @@ import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -43,6 +47,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static final Integer MIN_SEARCH_SAVE = 0;
     private static final Integer MAX_SEARCH_SAVE = 10;
@@ -111,33 +117,25 @@ public class UserServiceImpl implements UserService {
         User dbUser = userRepo.findByUsername(user.getUsername());
 
         if (searchHistories != null) {
-            searchHistories = updateSearchHistoriesWithUser(dbUser, searchHistories);
-            if (searchHistories.size() > 10) {
-               for (SearchHistory searchHistory : searchHistories) {
-                   if (searchHistory.getIndex() > MIN_SEARCH_SAVE && searchHistory.getIndex() < MAX_SEARCH_SAVE) {
-                       history.add(searchHistory);
-                   }
-               }
-            } else {
-                history = searchHistories;
+            Set<String> existingSearchTerms = new HashSet<>();
+            for (int position = 0; history.size() < 10 && position < searchHistories.size(); position++) {
+                 SearchHistory searchHistory = searchHistories.get(position);
+                 if (!existingSearchTerms.contains(searchHistory.getSearch())) {
+                     searchHistory.setIndex(history.size());
+                     searchHistory.setUser(dbUser);
+                     history.add(searchHistory);
+                     existingSearchTerms.add(searchHistory.getSearch());
+                 }
             }
         }
         user.setSearchHistories(history);
 
+        // Delete existing search history
+        List<SearchHistory> existingSearchHistory = searchHistoryRepo.findByUserOrderByIndexDesc(dbUser);
+        searchHistoryRepo.deleteInBatch(existingSearchHistory);
+
         searchHistoryRepo.save(history);
+        dbUser.setSearchHistories(history);
         userRepo.save(dbUser);
     }
-
-    /* Need to update the search history records with the user we are attaching to. */
-    private List<SearchHistory> updateSearchHistoriesWithUser(User user, List<SearchHistory> searchHistories) {
-        List<SearchHistory> updatedSearchHistories = new ArrayList<>();
-        if (user != null && searchHistories != null) {
-            for (SearchHistory searchHistory : searchHistories) {
-                searchHistory.setUser(user);
-                updatedSearchHistories.add(searchHistory);
-            }
-        }
-        return updatedSearchHistories;
-    }
-
 }

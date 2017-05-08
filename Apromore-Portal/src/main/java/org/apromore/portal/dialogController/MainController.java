@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -80,7 +80,7 @@ public class MainController extends BaseController implements MainControllerInte
 
     private NavigationController navigation;
 
-    public Html breadCrumbs;
+//    public Html breadCrumbs;
     private Paginal pg;
 
     private String host;
@@ -105,7 +105,7 @@ public class MainController extends BaseController implements MainControllerInte
             Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
 
             Window shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
-            this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
+//            this.breadCrumbs = (Html) mainW.getFellow("breadCrumbs");
             this.pg = (Paginal) mainW.getFellow("pg");
             this.shortmessageC = new ShortMessageController(shortmessageW);
             this.simplesearch = new SimpleSearchController(this);
@@ -195,15 +195,21 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     public void loadWorkspace() {
+        loadWorkspace(true);
+    }
+
+    private void loadWorkspace(boolean loadTree) {
         setHeaderText((Toolbarbutton) this.getFellow("releaseNotes"));
 
-		String userId = UserSessionManager.getCurrentUser().getId();
+        String userId = UserSessionManager.getCurrentUser().getId();
         updateTabs(userId);
         updateActions();
 
         int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
 
-        this.loadTree();
+        if (loadTree) {
+            this.loadTree();
+        }
 
         List<FolderType> folders = this.getService().getSubFolders(userId, currentParentFolderId);
         if (UserSessionManager.getCurrentFolder() != null) {
@@ -216,10 +222,14 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    public void loadTree() {
+    private void loadTree() {
         List<FolderType> folders = this.getService().getWorkspaceFolderTree(UserSessionManager.getCurrentUser().getId());
         UserSessionManager.setTree(folders);
         this.navigation.loadWorkspace();
+    }
+
+    public void currentFolderChanged() {
+        navigation.currentFolderChanged();
     }
 
     /**
@@ -284,7 +294,24 @@ public class MainController extends BaseController implements MainControllerInte
 	    (model.getTotalCount() > 1 ? " elements." : " element.")
 	);
 
-        loadWorkspace();
+        loadWorkspace(true);
+    }
+
+    public void reloadSummaries2() {
+        this.simplesearch.clearSearches();
+        switchToProcessSummaryView();
+        pg.setActivePage(0);
+
+        FolderType currentFolder = UserSessionManager.getCurrentFolder();
+        List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
+        ProcessListboxController.SummaryListModel model = this.baseListboxController.displaySummaries(subFolders, false);
+
+        this.displayMessage(
+            model.getSize() + " out of " + model.getTotalCount() +
+	    (model.getTotalCount() > 1 ? " elements." : " element.")
+	);
+
+        loadWorkspace(false);
     }
 
 //    public void reloadLogSummaries() {
@@ -404,42 +431,6 @@ public class MainController extends BaseController implements MainControllerInte
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
             Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-
-    /**
-     * Display two process versions and allow their differences to be highlighted.
-     *
-     * @param process1 the process summary
-     * @param version1 the version of the process
-     * @param process2 the process summary
-     * @param version2 the version of the process
-     * @param nativeType the native type of the process
-     * @param annotation the annotation of that process
-     * @param readOnly is this model readonly or not
-     * @param requestParameterTypes request parameters types.
-     * @throws InterruptedException
-     */
-    public void compareProcesses(final ProcessSummaryType process1, final VersionSummaryType version1,
-            final ProcessSummaryType process2, final VersionSummaryType version2,
-            final String nativeType, final String annotation,
-            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
-        String instruction = "";
-
-        EditSessionType editSession1 = createEditSession(process1, version1, nativeType, annotation);
-        EditSessionType editSession2 = createEditSession(process2, version2, nativeType, annotation);
-
-        try {
-            String id = UUID.randomUUID().toString();
-            SignavioSession session = new SignavioSession(editSession1, editSession2, this, process1, version1, process2, version2, requestParameterTypes);
-            UserSessionManager.setEditSession(id, session);
-
-            String url = "macros/compareModelsInSignavio.zul?id=" + id;
-            instruction += "window.open('" + url + "');";
-
-            Clients.evalJavaScript(instruction);
-        } catch (Exception e) {
-            Messagebox.show("Cannot compare " + process1.getName() + " and " + process2.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -644,7 +635,7 @@ public class MainController extends BaseController implements MainControllerInte
     protected void displayWebDav() {
         String instruction;
         int offsetH = 100, offsetV = 200;
-        instruction = "window.open('" + Constants.WEB_DAV + "','','top=" + offsetH + ",left=" + offsetV
+        instruction = "window.open('" + host + "/filestore/dav" + "','','top=" + offsetH + ",left=" + offsetV
                 + ",height=600,width=800,scrollbars=1,resizable=1'); ";
         Clients.evalJavaScript(instruction);
     }
@@ -927,9 +918,28 @@ public class MainController extends BaseController implements MainControllerInte
                     //Executions.sendRedirect(null);
                 }
             }
-
         }
     }
 
+    public void setBreadcrumbs(int selectedFolderId) {
+/*
+        List<FolderType> breadcrumbFolders = this.getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
+        Collections.reverse(breadcrumbFolders);
+        String content = "<table cellspacing='0' cellpadding='5' id='breadCrumbsTable'><tr>";
+
+        int i = 0;
+        for (FolderType breadcrumb : breadcrumbFolders) {
+            if (i > 0) {
+                content += "<td style='font-size: 9pt;'>&gt;</td>";
+            }
+            content += "<td><a class='breadCrumbLink' style='cursor: pointer; font-size: 9pt; color: Blue; text-decoration: underline;' id='" + breadcrumb.getId().toString() + "'>" + breadcrumb.getFolderName() + "</a></td>";
+            i++;
+        }
+
+        content += "</tr></table>";
+        this.breadCrumbs.setContent(content);
+        Clients.evalJavaScript("bindBreadcrumbs();");
+*/
+    }
 }
 

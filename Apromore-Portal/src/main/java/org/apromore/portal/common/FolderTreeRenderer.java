@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -31,7 +31,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
@@ -64,16 +63,16 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         dataRow.setParent(treeItem);
         treeItem.setValue(ctn);
 
-        if (folder.getParentId() == null || folder.getParentId() == 0 || checkOpenFolderTree(folder, UserSessionManager.getCurrentFolder())) {
-            treeItem.setOpen(true);
-            if (UserSessionManager.getCurrentFolder() != null && folder.getId().equals(UserSessionManager.getCurrentFolder().getId())) {
-                treeItem.setSelected(true);
-            }
-        } else {
-            treeItem.setOpen(false);
+        // Select (only) the current folder
+        if (UserSessionManager.getCurrentFolder() != null && folder.getId().equals(UserSessionManager.getCurrentFolder().getId())) {
+            treeItem.setSelected(true);
         }
 
+        // Open all super-folders of the current folder
+        treeItem.setOpen(folder.getId() == 0 || folderContainsSubfolder(folder, UserSessionManager.getCurrentFolder()));
+
         Hlayout hl = new Hlayout();
+        hl.setValign("middle");
         if (folder.getId() == 0) {
             hl.appendChild(new Image("/img/home-folder24.png"));
         } else {
@@ -99,23 +98,6 @@ public class FolderTreeRenderer implements TreeitemRenderer {
                         currentComponent = currentComponent.getParent();
                     }
 
-                    List<FolderType> breadcrumbFolders = mainC.getService().getBreadcrumbs(UserSessionManager.getCurrentUser().getId(), selectedFolderId);
-                    Collections.reverse(breadcrumbFolders);
-                    String content = "<table cellspacing='0' cellpadding='5' id='breadCrumbsTable'><tr>";
-
-                    int i = 0;
-                    for (FolderType breadcrumb : breadcrumbFolders) {
-                        if (i > 0) {
-                            content += "<td style='font-size: 9pt;'>&gt;</td>";
-                        }
-                        content += "<td><a class='breadCrumbLink' style='cursor: pointer; font-size: 9pt; color: Blue; text-decoration: underline;' id='" + breadcrumb.getId().toString() + "'>" + breadcrumb.getFolderName() + "</a></td>";
-                        i++;
-                    }
-
-                    content += "</tr></table>";
-                    mainC.breadCrumbs.setContent(content);
-                    Clients.evalJavaScript("bindBreadcrumbs();");
-
                     Html html = (Html) currentComponent.getFellow("folders");
 
                     if (html != null) {
@@ -130,7 +112,8 @@ public class FolderTreeRenderer implements TreeitemRenderer {
                         UserSessionManager.setPreviousFolder(UserSessionManager.getCurrentFolder());
                         UserSessionManager.setCurrentFolder(selectedFolder);
 
-                        mainC.reloadSummaries();
+                        mainC.reloadSummaries2();
+                        mainC.clearProcessVersions();
                     }
                 } catch (Exception ex) {
                     LOGGER.error("FolderTree Renderer failed to render an item", ex);
@@ -142,19 +125,15 @@ public class FolderTreeRenderer implements TreeitemRenderer {
 
     /* Check the folder tree and make sure we return true if we are looking at a folder that is opened by a user.
      * Could be multiples levels down the tree. */
-    private boolean checkOpenFolderTree(FolderType folder, FolderType currentFolder) {
+    private boolean folderContainsSubfolder(FolderType folder, FolderType currentFolder) {
         boolean found = false;
         if (currentFolder != null) {
-            if (currentFolder.getId().equals(folder.getId())) {
-                found = true;
-            }
             if (!found) {
                 found = checkDownTheFolderTree(folder.getFolders(), currentFolder);
             }
         }
         return found;
     }
-
 
     private boolean checkDownTheFolderTree(List<FolderType> subFolders, FolderType currentFolder) {
         boolean result = false;
@@ -174,5 +153,4 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         }
         return result;
     }
-
 }

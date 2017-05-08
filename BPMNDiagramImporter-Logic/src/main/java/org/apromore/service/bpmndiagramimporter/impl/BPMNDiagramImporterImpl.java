@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -236,7 +236,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
                 if( e.getParentSubProcess() != null ) {
                     e.setExceptionFor(e.getParentSubProcess());
                     e.getParentSubProcess().incNumOfBoundaryEvents();
-                    LOGGER.info("found ghost boundary event: " + e.getId() + " for " + e.getParentSubProcess().getId());
+                    LOGGER.info("FIX - found ghost boundary event: " + e.getId() + " for " + e.getParentSubProcess().getId());
                     SubProcess parentProcess = e.getParentSubProcess().getParentSubProcess();
                     Swimlane pool = e.getParentSubProcess().getParentPool();
                     e.getParentSubProcess().getChildren().remove(e);
@@ -245,7 +245,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
                     e.setParentSwimlane(pool);
                     for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : diagram.getOutEdges(e) )
                         fixExceptionFlowParents(oe.getTarget(), pool, parentProcess);
-                } else LOGGER.error("error fixing ghost boundary event: " + e.getId());
+                } else LOGGER.error("ERROR - impossible to fix ghost boundary event: " + e.getId());
             }
     }
 

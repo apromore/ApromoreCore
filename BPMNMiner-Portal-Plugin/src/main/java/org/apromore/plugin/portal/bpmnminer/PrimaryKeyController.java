@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -20,9 +20,9 @@
 
 package org.apromore.plugin.portal.bpmnminer;
 
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
+import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -82,7 +82,7 @@ public class PrimaryKeyController {
             // build a list of all keys (sets of attribute names)
             String[] keyList = new String[currentData.primaryKeys.length]; //change if user can select any attributes for identifiers
             for (int i = 0; i < currentData.primaryKeys.length; i++) {
-                HashSet<String> attr = currentData.primaryKeys[i];
+                Set<String> attr = currentData.primaryKeys[i];
                 keyList[i] = DiscoverERmodel.keyToString(attr);
             }
 
@@ -94,7 +94,9 @@ public class PrimaryKeyController {
 
             if(keyList.length > 1) {
                 Selectbox selectbox = new Selectbox();
-                selectbox.setModel(new ListModelArray<Object>(keyList));
+                ListModelArray listModelArray = new ListModelArray<Object>(keyList);
+                listModelArray.addToSelection(keyList[0]);
+                selectbox.setModel(listModelArray);
                 selectbox.setId("" + dataIndex);
                 selectbox.setParent(row);
             }else {

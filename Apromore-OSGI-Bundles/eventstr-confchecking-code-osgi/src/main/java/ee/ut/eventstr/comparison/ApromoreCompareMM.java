@@ -1,3 +1,23 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package ee.ut.eventstr.comparison;
 
 import java.io.BufferedWriter;
@@ -7,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,17 +50,17 @@ public class ApromoreCompareMM {
 	public static void main(String[] args) throws Exception {
 //		String modelName1 = "bpm2014/model77.bpmn";
 //		String modelName2 = "bpm2014/model64.bpmn";
-		String modelName1 = "models1/v3.bpmn";
-		String modelName2 = "models1/v4.bpmn";
+		String modelName1 = "LoanApp/Loan_baseline.bpmn";
+		String modelName2 = "LoanApp/Loan_baseline_branch1.bpmn";
 		
 		ModelAbstractions model1 = new ModelAbstractions(getFileAsArray(modelName1));
 		ModelAbstractions model2 = new ModelAbstractions(getFileAsArray(modelName2));
 		
 		ApromoreCompareMM comparator = new ApromoreCompareMM();
-		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, new HashSet<String>(model1.getReader().mapNew2OldLbls.values()), new HashSet<String>(model2.getReader().mapNew2OldLbls.values()));
+		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, new HashSet<String>(model1.getLabels()), new HashSet<String>(model2.getLabels()));
 		verbalizer.verbalize();
 		
-		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
+//		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
 		System.out.println(verbalizer.getStatements());
 	}
 
@@ -146,13 +167,13 @@ public class ApromoreCompareMM {
 		Set<String> common = new HashSet<>(obs1);
 		common.retainAll(obs2);
 
-		PESSemantics<Integer> pnmlpes1 = model1.getPES(common);
-		PESSemantics<Integer> pnmlpes2 = model2.getPES(common);
+		PESSemantics<Integer> pnmlpes1 = model1.getPESSemantics(common);
+		PESSemantics<Integer> pnmlpes2 = model2.getPESSemantics(common);
 
 		PartialSynchronizedProduct<Integer> psp = new PartialSynchronizedProduct<>(pnmlpes1, pnmlpes2);
 		PartialSynchronizedProduct<Integer> pre = psp.perform();
 
-		write(psp.toDot(), "psp1.dot");
+//		write(psp.toDot(), "psp1.dot");
 		
 		HashSet<String> commonLabels = new HashSet<>(pnmlpes1.getLabels());
 		commonLabels.retainAll(pnmlpes2.getLabels());
@@ -169,7 +190,7 @@ public class ApromoreCompareMM {
 		// psp.setVerbalizer(verbalizer);
 		// pre.prune();
 
-		write(psp.toDot(), "psp.dot");
+//		write(psp.toDot(), "psp.dot");
 
 		return verbalizer;
 	}
@@ -201,7 +222,11 @@ public class ApromoreCompareMM {
 		Unfolder_PetriNet unfolder = new Unfolder_PetriNet(net, MODE.EQUAL_PREDS, new HashSet<String>());
 		unfolder.computeUnfolding();
 
-		Unfolding2PES pes = new Unfolding2PES(unfolder, labels);
+		HashMap<String, String> map = new HashMap<>();
+		for(Transition t : unfolder.getUnfoldingAsPetriNet().getTransitions())
+			map.put(t.getName(), t.getName());
+
+		Unfolding2PES pes = new Unfolding2PES(unfolder, labels, map);
 		return new PESSemantics<Integer>(pes.getPES());
 	}
 }

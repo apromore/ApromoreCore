@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -119,19 +119,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Page<Log> getLogs(String userId, Integer folderId, Pageable pageable) {
-        Page<Log> res;
-        if(folderId == 0) {
-            LOGGER.warning("ERROR1");
-            res = logRepo.findLogsByUser(userId, pageable);
-            LOGGER.warning("ERROR2 " + res);
-        }else {
-            LOGGER.warning("ERROR3");
-            res = logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
-            LOGGER.warning("ERROR4 " + res);
-        }
-        return res;
-//        return (folderId == 0) ? logRepo.findLogsByUser(userId, pageable)
-//                : logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
+        return (folderId == 0) ? logRepo.findLogsByUser(userId, pageable)
+                               : logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
     }
 
     @Override

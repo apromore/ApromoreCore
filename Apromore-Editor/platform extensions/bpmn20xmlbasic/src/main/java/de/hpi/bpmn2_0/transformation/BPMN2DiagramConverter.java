@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -192,12 +192,7 @@ public class BPMN2DiagramConverter {
                         if (that.getAttachedToRef() == null) {
                             throw new IllegalArgumentException(that.getId() + " has no attachedToRef attribute");
                         }
-                        logger.info(that.getId() + " attachedTo " + that.getAttachedToRef().getId());
-                        logger.info(that.getId() + " boundary event refs: " + that.getAttachedToRef().getBoundaryEventRefs());
-                        logger.info(that.getId() + " attached boundary event refs: " + that.getAttachedToRef().getAttachedBoundaryEvents());
                         that.getAttachedToRef().getAttachedBoundaryEvents().addAll(that.getAttachedToRef().getBoundaryEventRefs());
-                        logger.info(that.getId() + " new attached boundary event refs: " + that.getAttachedToRef().getAttachedBoundaryEvents());
-                        logger.info(that.getAttachedToRef().getId() + " outgoing " + that.getOutgoing());
                     }
                 });
             }
@@ -279,6 +274,8 @@ public class BPMN2DiagramConverter {
         diagram.setProperty("targetnamespace",    "http://www.signavio.com/bpmn20");
         diagram.setProperty("typelanguage",       "http://www.w3.org/2001/XMLSchema");
             
+        Map<Process, BasicShape> poolMap = new HashMap<>();
+        BasicShape parentShape = diagram;
         for (BaseElement root: definitions.getRootElement()) {
 
             // For Configurable BPMN, look for the pc:configurationMapping element
@@ -291,9 +288,43 @@ public class BPMN2DiagramConverter {
             }
 
             // Child elements
+            if (root instanceof Collaboration) {
+                for (Participant participant: ((Collaboration) root).getParticipant()) {
+                    DiagramElement pool = bpmndiMap.get(participant);
+
+                    // Create the pool in JSON
+                    BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration, 0, 0);
+                    pool.acceptVisitor(visitor);
+                    BasicShape poolShape = visitor.getShape();
+                    diagram.addChildShape(poolShape);
+
+                    if (participant.getProcessRef() != null) {
+                        poolMap.put(participant.getProcessRef(), poolShape);
+                        parentShape = poolShape;
+                    }
+                }
+            }
+
             if (root instanceof Process) {
                 Process process = (Process) root;
-                flowElementsToShapes(process.getFlowElement(), diagram, bpmndiMap, messageRefSet, absentInConfiguration, 0, 0);
+                BasicShape poolShape = poolMap.get(process);
+
+                // Swimlane handling
+                Map<FlowNode, BasicShape> laneMap = new HashMap<>();
+                for (LaneSet pool: process.getLaneSet()) {
+                    for (Lane lane: pool.getAllLanes()) {
+                        DiagramElement laneDiagramElement = bpmndiMap.get(lane);
+                        BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(diagram, bpmndiMap, absentInConfiguration, 0, 0);
+                        laneDiagramElement.acceptVisitor(visitor);
+                        BasicShape laneShape = visitor.getShape();
+                        poolShape.addChildShape(laneShape);
+                        for (FlowNode flowNode: lane.getFlowNodeRef()) {
+                            laneMap.put(flowNode, laneShape);
+                        }
+                    }
+                }
+
+                flowElementsToShapes(process.getFlowElement(), parentShape, bpmndiMap, messageRefSet, absentInConfiguration, 0, 0, laneMap);
             }
         }
 
@@ -316,33 +347,54 @@ public class BPMN2DiagramConverter {
                                       final Set<String>                     messageRefSet,
                                       final Set<SequenceFlow>               absentInConfiguration,
                                       final double                          originX,
-                                      final double                          originY) {
+                                      final double                          originY,
+                                      final Map<FlowNode, BasicShape>       laneMap) {
 
         Map<BoundaryEvent, BasicShape> boundaryEventShapeMap = new HashMap<>();
         Map<FlowNode, BasicShape>      subProcessShapeMap    = new HashMap<>();
 
         for (final FlowElement flowElement: flowElements) {
-            System.out.println("Analyzing flow element id " + flowElement.getId());
-            BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(shape, bpmndiMap, absentInConfiguration, originX, originY);
+            logger.fine("Analyzing flow element id " + flowElement.getId());
+
+            double x = originX;
+            double y = originY;
+            if (flowElement instanceof FlowNode) {
+                FlowNode flowNode = (FlowNode) flowElement;
+
+                if (laneMap.containsKey(flowNode)) {
+                    Point point = laneMap.get(flowNode).getBounds().getUpperLeft();
+                    x += point.getX();
+                    y += point.getY();
+                }
+            }
+
+            BPMN2DiagramConverterVisitor visitor = new BPMN2DiagramConverterVisitor(shape, bpmndiMap, absentInConfiguration, x, y);
             DiagramElement diagramElement = bpmndiMap.get(flowElement);
+            BasicShape parentShape = shape;
             if(diagramElement == null) continue;
             diagramElement.acceptVisitor(visitor);
 
             if (flowElement instanceof FlowNode) {
-                subProcessShapeMap.put((FlowNode) flowElement, visitor.getShape());
+                FlowNode flowNode = (FlowNode) flowElement;
+
+                if (laneMap.containsKey(flowNode)) {
+                    parentShape = laneMap.get(flowNode);
+                }
+
+                subProcessShapeMap.put(flowNode, visitor.getShape());
             }
 
             if (flowElement instanceof SubProcess) {
                 SubProcess subProcess = (SubProcess) flowElement;
                 de.hpi.bpmn2_0.model.bpmndi.dc.Bounds bounds = ((BPMNShape) diagramElement).getBounds();
-		flowElementsToShapes(subProcess.getFlowElement(), visitor.getShape(), bpmndiMap, messageRefSet, absentInConfiguration, bounds.getX(), bounds.getY());
+		flowElementsToShapes(subProcess.getFlowElement(), visitor.getShape(), bpmndiMap, messageRefSet, absentInConfiguration, bounds.getX(), bounds.getY(), laneMap);
             }
 
             if (!messageRefSet.contains(visitor.getShape().getResourceId())) {
                 if (flowElement instanceof BoundaryEvent) {
                     boundaryEventShapeMap.put((BoundaryEvent) flowElement, visitor.getShape());
                 } else {
-                    shape.addChildShape(visitor.getShape());
+                    parentShape.addChildShape(visitor.getShape());
                 }
             }
         }
@@ -358,16 +410,11 @@ public class BPMN2DiagramConverter {
             }
         }
     }
-    
-    public void getBPMN(String bpmnString, String encoding, OutputStream jsonStream) {
-        // Parse BPMN from XML to JAXB
-        Unmarshaller unmarshaller;
-        try {
-            StreamSource source = new StreamSource(new StringReader(bpmnString));
-            unmarshaller = newContext().createUnmarshaller();
-            unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
-            Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
 
+    public void getBPMN(String bpmnString, String encoding, OutputStream jsonStream, ClassLoader classLoader) {
+        // Parse BPMN from XML to JAXB
+        try {
+            Definitions definitions = parseBPMN(bpmnString, classLoader);
             logger.fine("Parsed BPMN");
 
             BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
@@ -398,6 +445,26 @@ public class BPMN2DiagramConverter {
             Variants.class);
     }
 
+    private static JAXBContext newContext(ClassLoader classLoader) throws JAXBException {
+        return JAXBContext.newInstance("de.hpi.bpmn2_0.model", classLoader);
+    }
+
+    public static Definitions parseBPMN(String bpmnString) throws JAXBException {
+        StreamSource source = new StreamSource(new StringReader(bpmnString));
+        Unmarshaller unmarshaller = newContext().createUnmarshaller();
+        unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
+        Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
+        return definitions;
+    }
+
+    public static Definitions parseBPMN(String bpmnString, ClassLoader classLoader) throws JAXBException {
+        StreamSource source = new StreamSource(new StringReader(bpmnString));
+        Unmarshaller unmarshaller = newContext(classLoader).createUnmarshaller();
+        unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
+        Definitions definitions = unmarshaller.unmarshal(source, Definitions.class).getValue();
+        return definitions;
+    }
+
     /**
      * Take a BPMN XML file as input and generate an equivalent Signavio JSON file as output.
      * Synergia extensions for configurable BPMN are additionally supported in the input file.
@@ -405,14 +472,14 @@ public class BPMN2DiagramConverter {
      */
     public static void main(String[] args) throws JAXBException, JSONException {
         try {
-            logger.info("Starting test for " + args[0]);
+            logger.fine("Starting test for " + args[0]);
 
             // Parse BPMN from XML to JAXB
             Unmarshaller unmarshaller = newContext().createUnmarshaller();
             unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
             Definitions definitions = unmarshaller.unmarshal(new StreamSource(new File(args[0])), Definitions.class).getValue();
 
-            logger.fine("Parsed BPMN");
+            logger.finer("Parsed BPMN");
 
             // Convert BPMN to JSON
             BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
@@ -422,12 +489,12 @@ public class BPMN2DiagramConverter {
 
             List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
 
-            logger.fine("Diagrams=" + diagrams);
+            logger.finer("Diagrams=" + diagrams);
             for (BasicDiagram diagram : diagrams) {
                 System.out.println(diagram.getString());
             }
 
-            logger.info("Completed test for " + args[0]);
+            logger.fine("Completed test for " + args[0]);
         } catch (Throwable t) {
             t.printStackTrace();
         }

@@ -1,11 +1,33 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package ee.ut.eventstr;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class PrimeEventStructure <T> {
 	BitSet[] causality;
@@ -16,12 +38,16 @@ public class PrimeEventStructure <T> {
 	protected List<String> labels;
 	List<Integer> sources;
 	List<Integer> sinks;
+	int tracecount;
+	
+	protected Map<Integer, Integer> occurrences;
+	protected double[][] fmatrix;
 	
 	BehaviorRelation[][] matrix;
 	private HashSet<String> cyclicTasks;
 
-	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality,
-			BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict, List<Integer> sources, List<Integer> sinks) {
+	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality, BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict,
+							   List<Integer> sources, List<Integer> sinks) {
 		this.causality = causality;
 		this.dcausality = dcausality;
 		this.invcausality = invcausality;
@@ -32,10 +58,33 @@ public class PrimeEventStructure <T> {
 		this.sinks = sinks;
 		this.cyclicTasks = new HashSet<>();
 	}
+
+	public PrimeEventStructure(List<String> labels, BitSet[] causality, BitSet[] dcausality, BitSet[] invcausality, BitSet[] concurrency, BitSet[] conflict,
+							   List<Integer> sources, List<Integer> sinks, Map<Integer, Integer> occurrences, double[][] fmatrix) {
+		this.causality = causality;
+		this.dcausality = dcausality;
+		this.invcausality = invcausality;
+		this.concurrency = concurrency;
+		this.conflict = conflict;
+		this.labels = labels;
+		this.sources = sources;
+		this.sinks = sinks;
+		this.cyclicTasks = new HashSet<>();
+		
+		this.occurrences = occurrences;
+		this.fmatrix = fmatrix;
+		
+		tracecount = 0;
+		for (int sink: sinks) {
+			tracecount += occurrences.get(sink);
+		}
+	}
 	
 	public BehaviorRelation[][] getBRelMatrix() {
 		if (matrix == null) {
 			int size = labels.size();
+
+			System.out.println("\nSize: " + size);
 			matrix = new BehaviorRelation[size][size];
 			
 			for (int i = 0; i < size; i++) {
@@ -44,13 +93,17 @@ public class PrimeEventStructure <T> {
 					if (causality[i].get(j)) {
 						matrix[i][j] = BehaviorRelation.CAUSALITY;
 						matrix[j][i] = BehaviorRelation.INV_CAUSALITY;
-					} else if (invcausality[i].get(j)) {
+					} 
+					else if (invcausality[i].get(j)) {
 						matrix[i][j] = BehaviorRelation.INV_CAUSALITY;
 						matrix[j][i] = BehaviorRelation.CAUSALITY;
-					} else if (concurrency[i].get(j))
+					} 
+					else if (concurrency[i].get(j)) {
 						matrix[i][j] = matrix[j][i] = BehaviorRelation.CONCURRENCY;
-					else
+					}
+					else {
 						matrix[i][j] = matrix[j][i] = BehaviorRelation.CONFLICT;
+					}
 				}
 			}
 		}
@@ -61,6 +114,23 @@ public class PrimeEventStructure <T> {
 		return dcausality;
 	}
 	
+	public double[][] getFreqMatrix() {
+		return fmatrix;
+	}
+	
+	public int getEventOccurrenceCount(int event) {
+		return occurrences.get(event);
+	}
+	
+	public double getEventFrequency(int event) {
+		return getEventOccurrenceCount(event) / tracecount;
+	}
+	
+	// get amount of traces in the log of this event structure
+	public int getTotalTraceCount() {
+		return tracecount;
+	}
+
 	public String toDot() {
 		StringWriter str = new StringWriter();
 		PrintWriter out = new PrintWriter(str);
@@ -78,6 +148,10 @@ public class PrimeEventStructure <T> {
 		out.println("}");
 		
 		return str.toString();
+	}
+
+	public void setLabels(List<String> labels) {
+		this.labels = new ArrayList<>(labels);
 	}
 
 	public String toDot(BitSet conf, BitSet hidings) {
@@ -106,7 +180,6 @@ public class PrimeEventStructure <T> {
 		
 		return str.toString();
 	}
-
 	
 	public List<String> getLabels() {
 		return labels;

@@ -1,5 +1,28 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package ee.ut.nets.unfolding;
 
+import hub.top.petrinet.Node;
+import hub.top.petrinet.PetriNet;
+import hub.top.petrinet.Transition;
 import hub.top.uma.DNode;
 import hub.top.uma.DNodeBP;
 
@@ -28,6 +51,7 @@ import ee.ut.graph.cliques.CCliqueFinder;
 import ee.ut.graph.transitivity.BitsetDAGTransitivity;
 import ee.ut.graph.transitivity.MatrixBasedTransitivity;
 import ee.ut.org.processmining.framework.util.Pair;
+import hub.top.uma.DNodeSet;
 
 public class Unfolding2PES {
 	private BPstructBPSys sys;
@@ -42,9 +66,11 @@ public class Unfolding2PES {
 	private Set<Integer> invisibleEvents;
 	private Set<Integer> terminalEvents;
 	private Map<Integer, BiMap<Integer, Integer>> isomorphism;
-	private HashSet<String> cyclicTasks; 	
+	private HashSet<String> cyclicTasks;
+	private BiMap<DNode, Integer> mapEventsBP2ES;
+    private HashMap<Integer, DNode> mapEventsPES2Unf;
 
-	public Unfolding2PES(Unfolder_PetriNet unfolder, Set<String> originalVisibleLabels) {
+	public Unfolding2PES(Unfolder_PetriNet unfolder, Set<String> originalVisibleLabels, HashMap<String, String> originalNames) {
 		this.sys = unfolder.getSys();
 		this.bp = unfolder.getBP();
 		this.orderedVisibleEventMap = new HashMap<>();
@@ -58,7 +84,9 @@ public class Unfolding2PES {
 		this.labels = new ArrayList<>();
 		
 		this.visibleLabels = new HashSet<>(originalVisibleLabels);
-		
+		this.mapEventsBP2ES = HashBiMap. <DNode, Integer>create();
+        this.mapEventsPES2Unf = new HashMap<>();
+
 		int numberOfEvents = bp.getBranchingProcess().allEvents.size();
 		int numberOfConditions = bp.getBranchingProcess().allConditions.size();
 		int fullSize = numberOfConditions + numberOfEvents + 3;
@@ -72,7 +100,7 @@ public class Unfolding2PES {
 		
 		int localId = 0;
 		for (DNode node: bp.getBranchingProcess().allEvents) {
-			String originalName = unfolder.getOriginalLabel(sys.properNames[node.id]);
+			String originalName = unfolder.getOriginalLabel(originalNames.get(sys.properNames[node.id]));
 			
 			localMap.put(node, localId++);
 
@@ -95,7 +123,12 @@ public class Unfolding2PES {
 					invisibleSinks.put(orderedVisibleEventMap.size(), node);
 
 				orderedVisibleEventMap.put(node, orderedVisibleEventMap.size());
-				labels.add(originalName);
+				this.mapEventsBP2ES.put(node, labels.size());
+
+                if(originalVisibleLabels.contains(originalName))
+                    this.mapEventsPES2Unf.put(labels.size(), node);
+
+                labels.add(sys.properNames[node.id]);
 			}
 			
 			if (sinkEvent && node.isCutOff)
@@ -116,7 +149,7 @@ public class Unfolding2PES {
 			}
 			if (!visibleSinks.contains(cutoff)) {
 				cutoffCorrespondingMap.put(orderedVisibleEventMap.get(cutoff), orderedVisibleEventMap.get(corresponding));
-				System.out.printf("Cutoff: %s, Corresponding: %s\n", unfolder.getOriginalLabel(sys.properNames[cutoff.id]), unfolder.getOriginalLabel(sys.properNames[corresponding.id]));
+				//System.out.printf("Cutoff: %s, Corresponding: %s\n", unfolder.getOriginalLabel(sys.properNames[cutoff.id]), unfolder.getOriginalLabel(sys.properNames[corresponding.id]));
 			}
 		}
 		
@@ -362,7 +395,6 @@ public class Unfolding2PES {
 		return visibleLabels.contains(sys.properNames[dnode.id]);
 	}
 
-
 	public Integer getCorrespondingEvent(int ev) {
 		return cutoffCorrespondingMap.get(ev);
 	}
@@ -374,4 +406,10 @@ public class Unfolding2PES {
 	public HashSet<String> getCyclicTasks() {
 		return cyclicTasks;
 	}
+
+    public BiMap<DNode, Integer> getMapEventsBP2ES(){ return  mapEventsBP2ES; }
+
+    public HashMap<Integer, DNode> getMapEventsPES2Unf() {
+        return mapEventsPES2Unf;
+    }
 }

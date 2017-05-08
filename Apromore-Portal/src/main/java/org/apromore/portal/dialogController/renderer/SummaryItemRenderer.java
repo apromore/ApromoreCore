@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -62,20 +62,22 @@ public class SummaryItemRenderer implements ListitemRenderer {
       */
     @Override
     public void render(Listitem listItem, Object obj, int index) {
+        List<PortalProcessAttributePlugin> plugins = (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins");
+
         listItem.setStyle("height: 25px");
         if (obj instanceof ProcessSummaryType) {
-            renderProcessSummary(listItem, (ProcessSummaryType) obj);
+            renderProcessSummary(listItem, (ProcessSummaryType) obj, plugins);
         } else if (obj instanceof LogSummaryType) {
-            renderLogSummary(listItem, (LogSummaryType) obj);
+            renderLogSummary(listItem, (LogSummaryType) obj, plugins);
         } else if (obj instanceof FolderType) {
-            renderFolder(listItem, (FolderType) obj);
+            renderFolder(listItem, (FolderType) obj, plugins);
         } else {
             LOGGER.error("Unknown item to render in the process summary list box.");
         }
     }
 
     /* Used to render the process summary information into the list box. */
-    private void renderProcessSummary(final Listitem listItem, final ProcessSummaryType process) {
+    private void renderProcessSummary(final Listitem listItem, final ProcessSummaryType process, final List<PortalProcessAttributePlugin> plugins) {
         listItem.appendChild(renderProcessImage());
         listItem.appendChild(renderProcessScore(process));
         listItem.appendChild(renderName(process));
@@ -87,7 +89,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         listItem.appendChild(renderOwner(process));
 
         // Append columns for any process attributes supplied via plugins
-        for (PortalProcessAttributePlugin plugin: (List<PortalProcessAttributePlugin>) SpringUtil.getBean("portalProcessAttributePlugins")) {
+        for (PortalProcessAttributePlugin plugin: plugins) {
             listItem.appendChild(plugin.getListcell(process));
         }
 
@@ -116,29 +118,46 @@ public class SummaryItemRenderer implements ListitemRenderer {
     }
 
     /* Used to render the process summary information into the list box. */
-    private void renderLogSummary(final Listitem listItem, final LogSummaryType log) {
+    private void renderLogSummary(final Listitem listItem, final LogSummaryType log, final List<PortalProcessAttributePlugin> plugins) {
         listItem.appendChild(renderLogImage());
         listItem.appendChild(renderNA());
         listItem.appendChild(renderName(log));
         listItem.appendChild(renderId(log));
-        listItem.appendChild(renderNA());
+        listItem.appendChild(renderOpenXES());
         listItem.appendChild(renderDomain(log));
         listItem.appendChild(renderNA());
         listItem.appendChild(renderNA());
         listItem.appendChild(renderOwner(log));
+
+        // Append columns for any log attributes supplied via plugins
+        for (PortalProcessAttributePlugin plugin: plugins) {
+            listItem.appendChild(plugin.getListcell(log));
+        }
     }
 
     /* Used to render folders in the list of process models. */
-    private void renderFolder(final Listitem listitem, final FolderType folder) {
+    private void renderFolder(final Listitem listitem, final FolderType folder, final List<PortalProcessAttributePlugin> plugins) {
         listitem.appendChild(renderFolderImage());
-        listitem.appendChild(renderFolderId(folder));
+        listitem.appendChild(new Listcell());
         listitem.appendChild(renderFolderName(folder));
+        listitem.appendChild(renderFolderId(folder));
+
+        // Skip 5 columns that don't apply to folders
+        Listcell spacer = new Listcell();
+        spacer.setSpan(5);
+        listitem.appendChild(spacer);
+
+        // Append columns for any folder attributes supplied via plugins
+        for (PortalProcessAttributePlugin plugin: plugins) {
+            listitem.appendChild(plugin.getListcell(folder));
+        }
 
         listitem.addEventListener(Events.ON_DOUBLE_CLICK, new EventListener<Event>() {
             @Override
             public void onEvent(Event event) throws Exception {
                 UserSessionManager.setCurrentFolder(folder);
-                mainController.reloadSummaries();
+                mainController.reloadSummaries2();
+                mainController.currentFolderChanged();
             }
         });
     }
@@ -160,7 +179,6 @@ public class SummaryItemRenderer implements ListitemRenderer {
         Label name = new Label(folder.getFolderName());
         Listcell lc = new Listcell();
         lc.appendChild(name);
-        lc.setSpan(7);
         return lc;
     }
 
@@ -176,6 +194,10 @@ public class SummaryItemRenderer implements ListitemRenderer {
         lc.appendChild(new Image(Constants.PROCESS_ICON));
         lc.setStyle(CENTRE_ALIGN);
         return lc;
+    }
+
+    protected Listcell renderOpenXES() {
+        return wrapIntoListCell(new Label("OpenXES"));
     }
 
     protected Listcell renderNA() {

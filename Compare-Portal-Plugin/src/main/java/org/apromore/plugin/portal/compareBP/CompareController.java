@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -23,9 +23,7 @@ package org.apromore.plugin.portal.compareBP;
 import java.io.*;
 import java.util.*;
 
-import ee.ut.eventstr.comparison.differences.Difference;
-import ee.ut.eventstr.comparison.differences.Differences;
-import ee.ut.eventstr.comparison.differences.ModelAbstractions;
+import ee.ut.eventstr.comparison.differences.*;
 import hub.top.petrinet.PetriNet;
 import org.apache.tools.ant.types.resources.selectors.Compare;
 import org.apromore.helper.Version;
@@ -38,7 +36,6 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.compare.CompareService;
-import org.apromore.service.EventLogService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -110,18 +107,17 @@ public class CompareController {
     private byte[] logByteArray2 = null;
     private String logFileName2 = null;
 
-    private static final String SIGNAVIO_SESSION = "SIGNAVIO_SESSION";
-    
     private CompareService compareService;
-    private EventLogService eventLogService;
-    private PetriNet net;
+    private ModelAbstractions model;
+    VersionSummaryType version;
+    ProcessSummaryType process;
+
     private HashSet<String> obs;
 
 
-    public CompareController(PortalContext portalContext, CompareService compareService, EventLogService eventLogService) {
+    public CompareController(PortalContext portalContext, CompareService compareService) {
         this.compareService = compareService;
         this.portalContext = portalContext;
-        this.eventLogService = eventLogService;
     }
 
     public void compareLLPopup(){
@@ -198,22 +194,30 @@ public class CompareController {
         compareProcesses(process1, version1, process2, version2, "BPMN 2.0", null, null, requestParameters);
     }
 
-    public void compareML(PetriNet net, HashSet<String> obs1, XLog log) {
-        this.net = net;
+    public void compareML(ModelAbstractions model, HashSet<String> obs1, XLog log, ProcessSummaryType process, VersionSummaryType version) {
+        this.model = model;
+        this.process = process;
+        this.version = version;
         this.obs = obs1;
         this.log = log;
 
         try {
-            Set<String> differences = compareService.discoverBPMNModel(net, log, obs);
+            DifferencesML differences = compareService.discoverBPMNModel(model, log, obs);
 
-            makeResultWindows(differences);
+            Set<RequestParameterType<?>> requestParameters = new HashSet<>();
+            requestParameters.add(new RequestParameterType<String>("m1_differences_json", DifferencesML.toJSON(differences)));
+
+            compareProcessLog(process, version, "BPMN 2.0", null, null, requestParameters, log);
+
         } catch (Exception e) {
             Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
-    public void compareMLPopup(PetriNet net, HashSet<String> obs1) {
-        this.net = net;
+    public void compareMLPopup(ModelAbstractions model, HashSet<String> obs1, ProcessSummaryType process, VersionSummaryType version) {
+        this.model = model;
+        this.process = process;
+        this.version = version;
         this.obs = obs1;
 
         try {
@@ -282,15 +286,38 @@ public class CompareController {
             String id = UUID.randomUUID().toString();
 
             SignavioSession session = new SignavioSession(editSession1, editSession2, null, process1, version1, process2, version2, requestParameterTypes);
-            Executions.getCurrent().getSession().setAttribute(SIGNAVIO_SESSION + id, session);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "macros/compareModelsInSignavio.zul?id=" + id;
+            String url = "../compare/compareModelsInSignavio.zul?id=" + id;
             instruction += "window.open('" + url + "');";
 
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
             Messagebox.show("Cannot compare " + process1.getName() + " and " + process2.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    public void compareProcessLog(final ProcessSummaryType process1, final VersionSummaryType version1,
+                                 final String nativeType, final String annotation,
+                                 final String readOnly, Set<RequestParameterType<?>> requestParameterTypes, XLog log) {
+        String instruction = "";
+
+        String username = this.portalContext.getCurrentUser().getUsername();
+        EditSessionType editSession1 = createEditSession(username,process1, version1, nativeType, annotation);
+
+        try {
+            String id = UUID.randomUUID().toString();
+
+            SignavioSession session = new SignavioSession(editSession1, null, null, process1, version1, null, null, requestParameterTypes);
+            session.setLog(log);
+            UserSessionManager.setEditSession(id, session);
+
+            String url = "../compare/compareModelToLogInSignavio.zul?id=" + id;
+            instruction += "window.open('" + url + "');";
+
+            Clients.evalJavaScript(instruction);
+        } catch (Exception e) {
+            Messagebox.show("Cannot compare " + process1.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
@@ -459,16 +486,8 @@ public class CompareController {
         if(log == null) {
             Messagebox.show("Please select a log.");
         }else {
-
             try {
-//                String result = "";
-                Set<String> differences = compareService.discoverBPMNModel(net, log, obs);
-
-//                for (String s : differences)
-//                    result += s + "\n";
-
-                makeResultWindows(differences);
-//                Messagebox.show(result, "Differences", Messagebox.OK, Messagebox.INFORMATION);
+                compareML(model, obs, log, process, version);
             } catch (Exception e) {
                 Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
             }

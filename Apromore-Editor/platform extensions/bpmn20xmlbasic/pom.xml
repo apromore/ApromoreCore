@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -9,10 +9,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -52,12 +52,15 @@
                     <instructions>
                         <Embed-Dependency>
                             artifactId=
-                            jaxb2-basics-runtime|commons-collections4|jgrapht-core
+                            jaxb2-basics-runtime
                             |junit <!-- TODO Why is Junit needed at runtime? -->
                             ;inline=true
                         </Embed-Dependency>
-                        <Export-Package>
+                        <Import-Package>
                             com.sun.xml.bind.v2,
+                            *
+                        </Import-Package>
+                        <Export-Package>
                             de.hpi.bpmn2_0.exceptions,
                             de.hpi.bpmn2_0.factory,
                             de.hpi.bpmn2_0.model,
@@ -75,8 +78,6 @@
                             de.hpi.bpmn2_0.model.participant,
                             de.hpi.bpmn2_0.transformation,
                             de.hpi.diagram,
-                            org.apache.commons.collections4.bidimap,
-                            org.jgrapht,
                             org.oryxeditor.server,
                             servlet
                         </Export-Package>
@@ -97,10 +98,17 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+		<!--
         <dependency>
             <groupId>org.joda</groupId>
             <artifactId>com.springsource.org.joda.time</artifactId>
             <version>${joda-time.version}</version>
+        </dependency>
+		-->
+		<dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.joda-time</artifactId>
+            <version>2.3_1</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
@@ -125,23 +133,6 @@
             <version>${jaxb-api.version}</version>
         </dependency>
 
-        <!-- Embedded non-OSGI dependencies -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-core</artifactId>
-            <version>0.9.1</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- TODO why is this needed and not embedded? -->
         <dependency>
             <groupId>org.json</groupId>

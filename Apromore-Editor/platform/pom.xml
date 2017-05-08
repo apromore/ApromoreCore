@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -9,10 +9,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -71,7 +71,7 @@
             <plugin>
                 <groupId>org.apromore</groupId>
                 <artifactId>sscompressor-maven-plugin</artifactId>
-                <version>1.0</version>
+                <version>1.1</version>
                 <configuration>
                     <ssDirString>${project.basedir}/src/main/stencilsets</ssDirString>
                     <outDirString>${project.basedir}/target/sscompressor</outDirString>
@@ -178,7 +178,7 @@
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Import-Bundle>
-                            org.apache.catalina;version="[7.0.35.v201302131125,7.0.35.v201302131125]",
+                            org.apache.catalina;version="[7.0,8)",
                             org.apromore.editor-platform-extension-bpmn2_0;version="[1.2,2)",
                             org.apromore.editor-platform-extension-diagram;version="[1.2,2)",
                             org.apromore.editor-platform-extension-downloader;version="[1.2,2)",
@@ -198,10 +198,10 @@
                             org.springframework.web;bundle-version="[3.1.0,4.0)",
                             org.springframework.beans;bundle-version="[3.1.0,4.0)",
                             org.springframework.context;bundle-version="[3.1.0,4.0)",
-                            org.springframework.security.core;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.config;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.web;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
+                            org.springframework.security.core;version="[3.1.0,4.0)",
+                            org.springframework.security.config;version="[3.1.0,4.0)",
+                            org.springframework.security.web;version="[3.1.0,4.0)",
+                            org.springframework.security.remoting;version="[3.1.0,4.0)",
                             org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             com.springsource.javax.validation;version="[1.0.0.GA,1.0.0.GA]",
                             com.springsource.org.apache.tools.ant;version="[1.8.3,1.8.3]"
@@ -218,8 +218,6 @@
                             net.sf.cglib.core,
                             net.sf.cglib.reflect,
                             !net.sf.saxon,
-                            !org.apache.xml.resolver,
-                            !org.apache.xml.resolver.helpers,
                             !com.sun.image.codec.jpeg,
                             !javax.media.jai,
                             !junit.framework,
@@ -441,15 +439,10 @@
             </exclusions>
         </dependency>
 
-        <!-- TODO: Those aren't OSGI!! Why are they here and not embedded? Are those really needed? -->
         <dependency>
             <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.10.0</version>
+            <artifactId>json-osgi</artifactId>
+            <version>20090211</version>
         </dependency>
 
         <!-- Signavio platform extensions -->

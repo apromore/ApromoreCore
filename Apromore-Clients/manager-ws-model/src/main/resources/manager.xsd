@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -9,10 +9,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -74,8 +74,8 @@
     <xs:element name="GetProcessGroupsResponse" type="tns:GetProcessGroupsOutputMsgType"/>
     <xs:element name="CreateUserRequest" type="tns:CreateUserInputMsgType"/>
     <xs:element name="CreateUserResponse" type="tns:CreateUserOutputMsgType"/>
-    <xs:element name="GetProcessesOrLogsRequest" type="tns:GetProcessesOrLogsInputMsgType"/>
-    <xs:element name="GetProcessesOrLogsResponse" type="tns:GetProcessesOrLogsOutputMsgType"/>
+    <xs:element name="GetProcessesRequest" type="tns:GetProcessesInputMsgType"/>
+    <xs:element name="GetProcessesResponse" type="tns:GetProcessesOutputMsgType"/>
     <xs:element name="GetLogsRequest" type="tns:GetLogsInputMsgType"/>
     <xs:element name="GetLogsResponse" type="tns:GetLogsOutputMsgType"/>
     <xs:element name="CreateFolderRequest" type="tns:CreateFolderInputMsgType"/>
@@ -924,17 +924,17 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="GetProcessesOrLogsInputMsgType">
+    <xs:complexType name="GetProcessesInputMsgType">
         <xs:attribute name="userId" type="xs:string"/>
         <xs:attribute name="folderId" type="xs:int"/>
         <xs:attribute name="pageIndex" type="xs:int"/>
         <xs:attribute name="pageSize" type="xs:int"/>
     </xs:complexType>
 
-    <xs:complexType name="GetProcessesOrLogsOutputMsgType">
+    <xs:complexType name="GetProcessesOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="ProcessesOrLogs" type="tns:SummariesType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Processes" type="tns:SummariesType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
 
     </xs:complexType>

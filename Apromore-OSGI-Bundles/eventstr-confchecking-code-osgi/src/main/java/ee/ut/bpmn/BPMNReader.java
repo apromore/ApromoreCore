@@ -1,3 +1,23 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package ee.ut.bpmn;
 
 import java.io.IOException;
@@ -8,6 +28,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -53,7 +75,8 @@ public class BPMNReader {
 	private BiMap<org.jbpt.petri.Node, FlowNode> nodesBPMN = HashBiMap.<org.jbpt.petri.Node, FlowNode>create();
 	private BiMap<Node, FlowNode> map = HashBiMap.<Node, FlowNode>create();
 	private Bpmn<BpmnControlFlow<FlowNode>, FlowNode> bp = new Bpmn<BpmnControlFlow<FlowNode>, FlowNode>();
-	public HashMap<String, String> mapNew2OldLbls = new HashMap<String, String>();
+//	public HashMap<String, String> mapNew2OldLbls = new HashMap<String, String>();
+//    public HashMap<String, Integer> labelCounter = new HashMap<String, Integer>();
 	
 	private PetriNet net = new PetriNet();
 	private org.jbpt.petri.PetriNet netJBPT = new org.jbpt.petri.PetriNet();
@@ -64,6 +87,12 @@ public class BPMNReader {
 	private Set<Subprocess> subprocesses = new HashSet<>();
 
 	private HashSet<String> taskLabels = new HashSet<>();
+
+    private Multimap<FlowNode, org.jbpt.petri.Node> tasksJBPTTrans = HashMultimap.<FlowNode, org.jbpt.petri.Node> create();// HashBiMap.<FlowNode, org.jbpt.petri.Node> create();
+    private Multimap<org.jbpt.petri.Node, FlowNode> tasksJBPTTransReverse = HashMultimap.<org.jbpt.petri.Node, FlowNode> create();;// HashBiMap.<FlowNode, org.jbpt.petri.Node> create();
+
+    private BiMap<FlowNode, hub.top.petrinet.Node> tasksUMATrans;
+    private HashMap<hub.top.petrinet.Node, FlowNode> tasksUMATransReverse;
 	
     public BPMNReader(InputStream input) throws JDOMException, IOException {
         SAXBuilder saxBuilder = new SAXBuilder();  
@@ -82,7 +111,7 @@ public class BPMNReader {
 		XPathExpression<Element> boundaryEventSelector = xpfac.compile(".//bpmn:boundaryEvent", Filters.element(), null, ns);
 		
 		XPathExpression<Element> parentExp = xpfac.compile("(./ancestor::*[name() ='subProcess' or name() = 'process'])[last()]", Filters.element(), null, ns);
-		
+
 		for (Element process : procExp.evaluate(document) ) {
 			addProcess(process);
 			
@@ -131,11 +160,18 @@ public class BPMNReader {
 				String targetRef = sequenceFlow.getAttributeValue("targetRef");
 				Node source = nodes.get(sourceRef);
 				Node target = nodes.get(targetRef);
+
+				BpmnControlFlow flow = bp.addControlFlow(map.get(source), map.get(target));
+				flow.setId(sequenceFlow.getAttributeValue("id"));
+				System.out.println(flow.getId());
 				
-				bp.addControlFlow(map.get(source), map.get(target));
-				
-				if (source != null && target != null)
-					source.connectTo(target.getInputPlace());
+				if (source != null && target != null) {
+                    source.connectTo(target.getInputPlace());
+
+                    if(source instanceof ExclusiveGateway && bp.getAllSuccessors(map.get(source)).size() >= 2) {
+                        tasksJBPTTransReverse.put(source.getTransition(), map.get(source));
+                    }
+                }
 			}
 			
 			Node proc = nodes.get(process.getAttributeValue("id"));
@@ -162,10 +198,15 @@ public class BPMNReader {
 					endEvent.connectToNOk(parent.getNOk());
 				}
 			}
-		
+
+        this.tasksUMATrans = HashBiMap.<FlowNode, hub.top.petrinet.Node> create();
+        this.tasksUMATransReverse = new HashMap<>();
 		this.net = jbptToUma(netJBPT);
+        System.out.println();
     }
-    
+
+
+//	TODO: plug map transformation
     public PetriNet jbptToUma(org.jbpt.petri.PetriNet net) {
         PetriNet copy = new PetriNet();
         Map<Vertex, Place> places = new HashMap<>();
@@ -182,6 +223,12 @@ public class BPMNReader {
             String name = trans.getLabel()== null  || trans.getLabel().isEmpty() ? "t" + index++ : trans.getLabel();
             Transition newTrans = copy.addTransition(name);
             transitions.put(trans, newTrans);
+
+            if(tasksJBPTTransReverse.containsKey(trans))
+                for(FlowNode node : tasksJBPTTransReverse.get(trans)) {
+                    tasksUMATrans.put(node, newTrans);
+                    tasksUMATransReverse.put(newTrans, node);
+                }
         }
 
         for (Flow flow: net.getFlow()) {
@@ -207,17 +254,15 @@ public class BPMNReader {
 		map.get(node).setId(id);
 		bp.addGateway((Gateway) map.get(node));
 
+        // Mapping for the nodes and the transitions resulting from the transformation
+        nodesBPMN.put(node.getTransition(), map.get(node));
+        tasksJBPTTrans.put(map.get(node), node.getTransition());
+        tasksJBPTTransReverse.put(node.getTransition(),map.get(node));
+
 		node.setParent((Subprocess)nodes.get(parentId));		
 	}
 
-//	public PetriNet getPetriNet() {
-//    	return PetriNetUtils.jbptToUma(net);
-//    }
-    
-	private void addErrorEvent(Element endEvent, Element parentProcess) {
-		// TODO Auto-generated method stub
-		
-	}
+	private void addErrorEvent(Element endEvent, Element parentProcess) { /* TODO Auto-generated method stub */ }
 
 	private void addTerminateEvent(Element endEvent, Element parentProcess, Bpmn<BpmnControlFlow<FlowNode>, FlowNode> bp) {
 		String id = endEvent.getAttributeValue("id");
@@ -272,7 +317,12 @@ public class BPMNReader {
 		map.put(node, new XorGateway());
 		map.get(node).setId(id);
 		bp.addGateway((Gateway) map.get(node));
-		
+
+        // Mapping for the nodes and the transitions resulting from the transformation
+        nodesBPMN.put(node.getTransition(), map.get(node));
+        tasksJBPTTrans.put(map.get(node), node.getTransition());
+        tasksJBPTTransReverse.put(node.getTransition(), map.get(node));
+
 		node.setParent((Subprocess)nodes.get(parentId));
 	}
 
@@ -283,20 +333,29 @@ public class BPMNReader {
 		Subprocess parent = (Subprocess)nodes.get(parentId);
 		
 		Node node;
-		if (parent.isRootProcess() || USE_SIMPLE) node = new SimpleTask(task, netJBPT, mapNew2OldLbls);
-		else node = new Task(task, netJBPT, mapNew2OldLbls);
-		
+		if (parent.isRootProcess() || USE_SIMPLE) node = new SimpleTask(task, netJBPT);//, mapNew2OldLbls, labelCounter);
+		else node = new Task(task, netJBPT);//, mapNew2OldLbls);
+
+        String originalName = task.getAttributeValue("name").trim();
+
 		nodes.put(id, node);
-		map.put(node, new Activity(task.getAttributeValue("name").trim()));
+		map.put(node, new Activity(originalName));
 		map.get(node).setId(id);
-//		taskLabels.add(task.getAttributeValue("name").trim());
+
 		taskLabels.add(node.getTransition().getName());
-//		System.out.println(node.getTransition().getName());
-		mapNew2OldLbls.put(node.getTransition().getName(), task.getAttributeValue("name").trim());
-		bp.addTask((Activity) map.get(node));
-		nodesBPMN.put(node.getTransition(), map.get(node));
-		
-		node.setParent(parent);
+//		mapNew2OldLbls.put(node.getTransition().getName(), originalName);
+//
+//        if(!labelCounter.containsKey(originalName))
+//            labelCounter.put(originalName, 0);
+//        else
+//            labelCounter.put(originalName, labelCounter.get(originalName) + 1);
+
+        nodesBPMN.put(node.getTransition(), map.get(node));
+        tasksJBPTTrans.put(map.get(node), node.getTransition());
+        tasksJBPTTransReverse.put(node.getTransition(), map.get(node));
+
+        bp.addTask((Activity) map.get(node));
+        node.setParent(parent);
 	}
 
 	private void addStartEvent(Element startEvent, Element parentProcess, Bpmn<BpmnControlFlow<FlowNode>, FlowNode> bp) {
@@ -305,8 +364,8 @@ public class BPMNReader {
 		Subprocess parent = (Subprocess)nodes.get(parentId);
 		
 		Node node;
-		if (parent.isRootProcess() || USE_SIMPLE) node = new SimpleTask(startEvent, netJBPT, mapNew2OldLbls);
-		else node = new Task(startEvent, netJBPT, mapNew2OldLbls);
+		if (parent.isRootProcess() || USE_SIMPLE) node = new SimpleTask(startEvent, netJBPT);//, mapNew2OldLbls, labelCounter);
+		else node = new Task(startEvent, netJBPT);//, mapNew2OldLbls);
 		
 		nodes.put(id, node);
 		map.put(node, new StartEvent());
@@ -354,7 +413,8 @@ public class BPMNReader {
 		return bp.getFlowNodes();
 	}
 	
-	public PetriNet getNet(){
-		return net;
-	}
+	public PetriNet getNet(){ return net; }
+
+    public BiMap<FlowNode, hub.top.petrinet.Node> getTasksUMATrans() { return tasksUMATrans; }
+    public HashMap<hub.top.petrinet.Node, FlowNode> getTasksUMATransReverse() { return tasksUMATransReverse; }
 }

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -8,10 +8,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -72,6 +72,7 @@
                             org.pql.query
                         </Export-Package>
                         <Import-Package>
+                            !bsh,
                             com.mysql.jdbc,
                             !com.csvreader,
                             !com.jgraph.components.labels,
@@ -150,22 +151,22 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>efficientstorage</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>inductiveminer</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>processtree</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>prom6-contexts</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
         <dependency>
             <groupId>org.processmining</groupId>
@@ -175,7 +176,7 @@
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>uitopia</artifactId>
-            <version>1.0</version>
+            <version>6.5.20170418</version>
         </dependency>
 
     </dependencies>

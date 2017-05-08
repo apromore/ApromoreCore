@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -27,21 +27,22 @@ import org.apromore.similaritysearch.common.Settings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 
 public class Vertex {
 
     private Graphics graphics;
-    public HashSet<String> dominance;
+    public Set<String> dominance;
     private HashMap<String, String> annotationMap = new HashMap<String, String>();
-    public HashSet<VertexObjectRef> objectRefs = new HashSet<VertexObjectRef>();
-    public HashSet<VertexResourceRef> resourceRefs = new HashSet<VertexResourceRef>();
+    public Set<VertexObjectRef> objectRefs = new HashSet<VertexObjectRef>();
+    public Set<VertexResourceRef> resourceRefs = new HashSet<VertexResourceRef>();
 
     public HashMap<String, String> getAnnotationMap() {
         return annotationMap;
     }
 
-    public void addAnnotationsForGw(HashSet<String> edgeLabels) {
+    public void addAnnotationsForGw(Set<String> edgeLabels) {
         for (String model : edgeLabels) {
             if (!annotationMap.containsKey(model)) {
                 annotationMap.put(model, "xor");

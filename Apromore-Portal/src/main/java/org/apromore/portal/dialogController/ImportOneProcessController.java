@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -64,7 +64,7 @@ public class ImportOneProcessController extends BaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImportOneProcessController.class);
 
     private final MainController mainC;
-    private final ImportListProcessesController importProcessesC;
+    private final ImportController importProcessesC;
     private final Window importOneProcessWindow;
     private final String fileName;
     private final Label defaultOwner;
@@ -73,7 +73,6 @@ public class ImportOneProcessController extends BaseController {
     private final Textbox creationDateTb;
     private final Textbox processNameTb;
     private final Textbox versionNumberTb;
-    private final Checkbox makePublicCb;
     private final SelectDynamicListController domainCB;
     private final SelectDynamicListController ownerCB;
     private final InputStream nativeProcess; // the input stream read from uploaded file
@@ -91,12 +90,13 @@ public class ImportOneProcessController extends BaseController {
     private String readCreated;
     private String readLastupdate;
     private String readAuthor;
+    private boolean isPublic;
 
     private Set<PluginInfo> canoniserInfos;
     private final PluginPropertiesHelper pluginPropertiesHelper;
 
-    public ImportOneProcessController(final MainController mainC, final ImportListProcessesController importProcessesC, final InputStream xml_is,
-            final String processName, final String nativeType, final String fileName) throws SuspendNotAllowedException, InterruptedException,
+    public ImportOneProcessController(final MainController mainC, final ImportController importProcessesC, final InputStream xml_is,
+                                      final String processName, final String nativeType, final String fileName, final boolean isPublic) throws SuspendNotAllowedException, InterruptedException,
             ExceptionDomains, ExceptionAllUsers, IOException {
         this.importProcessesC = importProcessesC;
         this.mainC = mainC;
@@ -105,6 +105,7 @@ public class ImportOneProcessController extends BaseController {
         this.processName = processName;
         this.nativeProcess = new ByteArrayInputStream(IOUtils.toByteArray(xml_is));
         this.nativeType = nativeType;
+        this.isPublic = isPublic;
         this.importOneProcessWindow = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
         this.importOneProcessWindow.setTitle(this.importOneProcessWindow.getTitle() + " (file: " + this.fileName + ")");
         Rows rows = (Rows) this.importOneProcessWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
@@ -115,16 +116,14 @@ public class ImportOneProcessController extends BaseController {
         Row lastUpdateR = (Row) rows.getChildren().get(4);
         Row documentationR = (Row) rows.getChildren().get(5);
         Row domainR = (Row) rows.getChildren().get(6);
-        Row publicR = (Row) rows.getChildren().get(7);
 
         this.processNameTb = (Textbox) processNameR.getChildren().get(1);
         this.versionNumberTb = (Textbox) versionNumberR.getChildren().get(1);
         this.creationDateTb = (Textbox) creationDateR.getChildren().get(1);
         this.lastUpdateTb = (Textbox) lastUpdateR.getChildren().get(1);
         this.documentationTb = (Textbox) documentationR.getChildren().get(1);
-        this.makePublicCb = (Checkbox) publicR.getChildren().get(1);
 
-        Div buttonsD = (Div) publicR.getNextSibling().getNextSibling().getNextSibling().getNextSibling().getFirstChild();
+        Div buttonsD = (Div) importOneProcessWindow.getFellow("div");
         this.okButton = (Button) buttonsD.getFirstChild();
         this.okForAllButton = (Button) buttonsD.getChildren().get(1);
         this.cancelButton = (Button) buttonsD.getChildren().get(2);
@@ -306,7 +305,6 @@ public class ImportOneProcessController extends BaseController {
         this.creationDateTb.setValue(readCreated);
         this.lastUpdateTb.setValue(readLastupdate);
         this.defaultOwner.setValue(readAuthor);
-        this.makePublicCb.setChecked(false);
     }
 
     private void cancel() throws InterruptedException, IOException {
@@ -335,7 +333,7 @@ public class ImportOneProcessController extends BaseController {
             String version = this.versionNumberTb.getValue();
             ImportProcessResultType importResult = getService().importProcess(owner, folderId, this.nativeType, this.processNameTb.getValue(),
                     version, getNativeProcess(), domain, this.documentationTb.getValue(), this.creationDateTb.getValue(),
-                    this.lastUpdateTb.getValue(), this.makePublicCb.isChecked(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
+                    this.lastUpdateTb.getValue(), isPublic, pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
 
             this.mainC.showPluginMessages(importResult.getMessage());
             this.importProcessesC.getImportedList().add(this);

@@ -12,7 +12,7 @@
 <?link rel="shortcut icon" href="img/favicon.ico" ?>
 
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -168,10 +168,10 @@
 
                                     <h:div class="span7">
                                         <h:h4 class="welcome">
-                                            <h:small>Advanced Process Model Repository</h:small>
+                                            <h:small>Advanced Process Analytics Platform</h:small>
                                         </h:h4>
                                         <h:p>
-                                            Apromore is an open-source repository to store and disclose business process models of a variety of types and languages, such as BPMN, eEPCs, AML and YAWL. Most importantly, Apromore aims to provide state-of-the-art features to facilitate the management of large process model collections, including features to evaluate, filter, design and present large collections of business process models. It relies on a highly-extensible plugin architecture based on OSGi. Visit <a href="http://www.apromore.org">www.apromore.org</a> for more information and development resources.
+                                            Apromore is an online business process analytics platform. Originally conceived as an advanced process model repository, today Apromore offers a wide range of features which go beyond those for managing large process model collections, and include state-of-the-art process mining analytics for the automated discovery of block-structured, hierarchical BPMN models, for the behavior-based comparison of process models and event logs for conformance checking, for the detection of process drifts from event logs, the replaying of event logs on top of BPMN models, the visual analysis of process performance, and for much more. It relies on a highly-extensible plugin architecture based on OSGi. Visit <a href="http://www.apromore.org">www.apromore.org</a> for more information and development resources.
                                         </h:p>
                                         <h:p align="center">
                                             <h:img src="img/apromore_logo.png"/>
@@ -207,11 +207,11 @@
 
                                     <h:div class="span7">
                                         <h:h4 class="welcome">
-                                            <h:small>Advanced Process Model Repository</h:small>
+                                            <h:small>Advanced Process Analytics Platform</h:small>
                                         </h:h4>
                                         <h:hr class="margin-mm "/>
                                         <h:p>
-                                            Apromore is an open-source repository to store and disclose business process models of a variety of types and languages, such as BPMN, eEPCs, AML and YAWL. Most importantly, Apromore aims to provide state-of-the-art features to facilitate the management of large process model collections, including features to evaluate, filter, design and present large collections of business process models. It relies on a highly-extensible plugin architecture based on OSGi. Visit <a href="http://www.apromore.org">www.apromore.org</a> for more information and development resources.
+                                            Apromore is an online business process analytics platform. Originally conceived as an advanced process model repository, today Apromore offers a wide range of features which go beyond those for managing large process model collections, and include state-of-the-art process mining analytics for the automated discovery of block-structured, hierarchical BPMN models, for the behavior-based comparison of process models and event logs for conformance checking, for the detection of process drifts from event logs, the replaying of event logs on top of BPMN models, the visual analysis of process performance, and for much more. It relies on a highly-extensible plugin architecture based on OSGi. Visit <a href="http://www.apromore.org">www.apromore.org</a> for more information and development resources.
                                         </h:p>
                                         <h:p align="center">
                                             <h:img src="img/apromore_logo.png"/>
@@ -296,14 +296,14 @@
 
             <h:footer class="footer">
                 <h:div class="web-description span12">
-                    <h:h5><![CDATA[ &copy; ]]> 2009-2016, The Apromore Initiative.</h:h5>
+                    <h:h5><![CDATA[ &copy; ]]> 2009-2017, The Apromore Initiative.</h:h5>
                     <h:p>Except where otherwise noted, content on this site is licensed under a <h:a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Licence</h:a></h:p>
                     <h:p class="cc-logo"/>
                     <h:p>
-                        All models and other information  stored in the repository are third party materials that have been uploaded by other users, unless expressly indicated otherwise by QUT. QUT  makes the repository material available ‘as is’ and does not check the currency, accuracy, reliability, performance, completeness, suitability or workabliity of the repository material or whether repository materials uploaded by other users infringe anyone’s intellectual property rights. You use the repository material at your own risk.
+                        All models and other information stored in the repository are third-party materials that have been uploaded by other users, unless expressly indicated otherwise by the Hosting University (QUT or University of Tartu). The Hosting University makes the repository material available ‘as is’ and does not check the currency, accuracy, reliability, performance, completeness, suitability or workability of the repository material or whether repository materials uploaded by other users infringe anyone’s intellectual property rights. You use the repository material at your own risk.
                     </h:p>
                     <h:p>
-                         To the fullest extent permitted by law, QUT excludes all liability whether in contract, tort (including negligence), statute or otherwise for any direct or indirect losses, damages, expenses, claims and liability that you may incur as a result or arising from any use of the repository material. To the extent legislation does not allow particular liability to be excluded, it is limited to the fullest extent permitted by such legislation.
+                        To the fullest extent permitted by law, the Hosting University excludes all liability whether in contract, tort (including negligence), statute or otherwise for any direct or indirect losses, damages, expenses, claims and liability that you may incur as a result or arising from any use of the repository material. To the extent legislation does not allow particular liability to be excluded, it is limited to the fullest extent permitted by such legislation.
                     </h:p>
                 </h:div>
             </h:footer>

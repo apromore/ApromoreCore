@@ -282,6 +282,15 @@ CREATE TABLE group_process
    has_ownership bit DEFAULT 0 NOT NULL
 )
 ;
+CREATE TABLE group_log (
+  id int auto_increment PRIMARY KEY NOT NULL,
+  groupId int NOT NULL,
+  logId int NOT NULL,
+  has_read bit DEFAULT 0 NOT NULL,
+  has_write bit DEFAULT 0 NOT NULL,
+  has_ownership bit DEFAULT 0 NOT NULL
+)
+;
 CREATE TABLE history_event (
   id int auto_increment PRIMARY KEY NOT NULL,
   status varchar(50) NOT NULL,
@@ -420,6 +429,18 @@ CREATE TABLE process
    public_model bit DEFAULT 0 NOT NULL
 )
 ;
+CREATE TABLE log (
+  id int auto_increment PRIMARY KEY NOT NULL,
+  folderId int DEFAULT NULL,
+  name varchar(255) NOT NULL,
+  file_path varchar(255) NOT NULL,
+  public_log bit DEFAULT 0 NOT NULL,
+  domain varchar(255),
+  ranking varchar(10),
+  createDate varchar(40),
+  owner int
+)
+;
 CREATE TABLE process_branch
 (
    id int auto_increment PRIMARY KEY NOT NULL,
@@ -529,6 +550,7 @@ CREATE TABLE search_history
 (
    id int auto_increment PRIMARY KEY NOT NULL,
    userId int,
+   position int,
    search varchar(200)
 )
 ;
@@ -1336,3 +1358,25 @@ CREATE UNIQUE INDEX id_primary_workspace ON workspace(id)
 ;
 CREATE INDEX workspace_user ON workspace(userId)
 ;
+CREATE VIEW keywords AS
+  SELECT process.id AS processId, process.id AS value
+  FROM process
+  UNION 
+  SELECT process.id AS processId, process.name AS word
+  FROM process
+  UNION 
+  SELECT process.id AS processId, process.domain AS domain
+  FROM process
+  UNION 
+  SELECT process.id AS processId, native_type.nat_type AS original_type
+  FROM process JOIN native_type ON (process.nativeTypeId = native_type.id)
+  UNION 
+  SELECT process.id AS processId, user.first_name AS firstname
+  FROM process JOIN user ON (process.owner = user.username)
+  UNION 
+  SELECT process.id AS processId, user.last_name AS lastname
+  FROM process JOIN user ON (process.owner = user.username)
+  UNION 
+  SELECT process_branch.processId AS processId, process_branch.branch_name AS branch_name
+  FROM process_branch;
+

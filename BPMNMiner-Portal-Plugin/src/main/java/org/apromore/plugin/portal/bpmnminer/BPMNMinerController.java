@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -24,21 +24,22 @@ import java.io.*;
 import java.util.*;
 import javax.xml.datatype.DatatypeFactory;
 
+import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
+import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
+import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
+import org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.Data;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
-import org.processmining.plugins.bpmn.miner.preprocessing.functionaldependencies.NoEntityException;
-import org.processmining.plugins.bpmn.miner.subprocessminer.ui.SelectMinerUI;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -69,13 +70,12 @@ public class BPMNMinerController {
     private String nativeType = "BPMN 2.0";
 
     private String[] arrayMiningAlgorithms = new String[] {
-            SelectMinerUI.IM,
-            SelectMinerUI.HM6,
-            SelectMinerUI.HMWO5,
-//            "Fodina Miner",
-            SelectMinerUI.ALPHA,
-            SelectMinerUI.ILP,
-            SelectMinerUI.HMW5
+            SelectMinerResult.SM,
+            SelectMinerResult.IM,
+            SelectMinerResult.HM6,
+            SelectMinerResult.HM5,
+            SelectMinerResult.ALPHA,
+            SelectMinerResult.ILP
     };
     private String[] arrayDependencyAlgorithms = new String[] {
             "Normal",
@@ -84,7 +84,9 @@ public class BPMNMinerController {
 
     private Textbox modelName;
     private Selectbox miningAlgorithms;
+    private Radiogroup flatModel;
     private Radiogroup dependencyAlgorithms;
+    private Radiogroup filterLog;
     private Radiogroup sortLog;
     private Radiogroup structProcess;
     private Slider interruptingEventTolerance;
@@ -99,7 +101,7 @@ public class BPMNMinerController {
     private List<String> listCandidates;
     private boolean[] selected;
     private Label l;
-    private HashMap<String, Data> data;
+    private Map<String, Data> data;
 
     private org.zkoss.util.media.Media logFile = null;
     private byte[] logByteArray = null;
@@ -110,6 +112,7 @@ public class BPMNMinerController {
     private final DomainService domainService;
     private final ProcessService processService;
     private final EventLogService eventLogService;
+    private final InfrequentBehaviourFilterService infrequentBehaviourFilterService;
     private final UserInterfaceHelper userInterfaceHelper;
 
     public BPMNMinerController(PortalContext portalContext,
@@ -118,6 +121,7 @@ public class BPMNMinerController {
                                DomainService domainService,
                                ProcessService processService,
                                EventLogService eventLogService,
+                               InfrequentBehaviourFilterService infrequentBehaviourFilterService,
                                UserInterfaceHelper userInterfaceHelper) {
 
         this.portalContext       = portalContext;
@@ -125,8 +129,9 @@ public class BPMNMinerController {
         this.canoniserService    = canoniserService;
         this.domainService       = domainService;
         this.processService      = processService;
-        this.eventLogService = eventLogService;
+        this.eventLogService     = eventLogService;
         this.userInterfaceHelper = userInterfaceHelper;
+        this.infrequentBehaviourFilterService = infrequentBehaviourFilterService;
 
         try {
             List<String> domains = domainService.findAllDomains();
@@ -165,9 +170,13 @@ public class BPMNMinerController {
 
             this.modelName = (Textbox) this.bpmnMinerW.getFellow("bpmnMinerModelName");
             this.miningAlgorithms = (Selectbox) this.bpmnMinerW.getFellow("bpmnMinerMiningAlgorithm");
-            this.miningAlgorithms.setModel(new ListModelArray<Object>(arrayMiningAlgorithms));
+            ListModelArray listModelArray = new ListModelArray<Object>(arrayMiningAlgorithms);
+            listModelArray.addToSelection(arrayMiningAlgorithms[0]);
+            this.miningAlgorithms.setModel(listModelArray);
 
+            this.flatModel = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerFlat");
             this.dependencyAlgorithms = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerDependencyAlgorithm");
+            this.filterLog = (Radiogroup) this.bpmnMinerW.getFellow("noiseFilter");
             this.sortLog = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerSort");
             this.structProcess = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerStructProcess");
             this.interruptingEventTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerInterruptingEventTolerance");
@@ -281,10 +290,15 @@ public class BPMNMinerController {
             if(log == null) {
                 Messagebox.show("Please select a log.");
             }else {
-                erModel = new DiscoverERmodel();
-                listCandidates = erModel.generateAllAttributes(log);
+                if(flatModel.getSelectedIndex() == 0) {
+                    noEntityException();
+                }else {
+                    erModel = new DiscoverERmodel();
+                    listCandidates = erModel.generateAllAttributes(log);
+                    Collections.sort(listCandidates);
 
-                new CandidatesEntitiesController(this, listCandidates);
+                    new CandidatesEntitiesController(this, listCandidates);
+                }
             }
 
         } catch (IOException e) {
@@ -324,6 +338,10 @@ public class BPMNMinerController {
         try {
 
             this.bpmnMinerW.detach();
+
+            if(filterLog.getSelectedIndex() == 0) {
+                log = infrequentBehaviourFilterService.filterLog(log);
+            }
 
             String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, getSelectedAlgorithm(), dependencyAlgorithms.getSelectedIndex()+1,
                     ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
@@ -378,21 +396,21 @@ public class BPMNMinerController {
         String name = "";
 
         switch (selected) {
-            case 0 : name = SelectMinerUI.IM; break;
-            case 1 : name = SelectMinerUI.HM6; break;
-            case 2 : name = SelectMinerUI.HMWO5; break;
-            case 3 : name = SelectMinerUI.ALPHA; break;
-            case 4 : name = SelectMinerUI.ILP; break;
-            case 5 : name = SelectMinerUI.HMW5;
+            case 0 : name = SelectMinerResult.SM; break;
+            case 1 : name = SelectMinerResult.IM; break;
+            case 2 : name = SelectMinerResult.HM6; break;
+            case 3 : name = SelectMinerResult.HM5; break;
+            case 4 : name = SelectMinerResult.ALPHA; break;
+            case 5 : name = SelectMinerResult.ILP;
         }
 
-        if(name.equals(SelectMinerUI.ALPHA)) return SelectMinerUI.ALPHAPOS;
-        else if(name.equals(SelectMinerUI.HM6)) return SelectMinerUI.HMPOS6;
-        else if(name.equals(SelectMinerUI.HMW5)) return SelectMinerUI.HMWPOS5;
-        else if(name.equals(SelectMinerUI.HMWO5)) return SelectMinerUI.HMWOPOS5;
-        else if(name.equals(SelectMinerUI.ILP)) return SelectMinerUI.ILPPOS;
-        else if(name.equals(SelectMinerUI.IM)) return SelectMinerUI.IMPOS;
+        if(name.equals(SelectMinerResult.ALPHA)) return SelectMinerResult.ALPHAPOS;
+        else if(name.equals(SelectMinerResult.HM6)) return SelectMinerResult.HMPOS6;
+        else if(name.equals(SelectMinerResult.HM5)) return SelectMinerResult.HMPOS5;
+        else if(name.equals(SelectMinerResult.SM)) return SelectMinerResult.SMPOS;
+        else if(name.equals(SelectMinerResult.ILP)) return SelectMinerResult.ILPPOS;
+        else if(name.equals(SelectMinerResult.IM)) return SelectMinerResult.IMPOS;
 
-        return SelectMinerUI.HMPOS6;
+        return SelectMinerResult.SMPOS;
     }
 }

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright Â© 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -8,17 +8,17 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window width="1100px" title="Process Drift Detection" position="top,center" closable="true" maximizable="false">
+<window width="1100px" id="prodriftresultswin" title="Process Drift Detection" position="top,center" closable="true" maximizable="false">
     <vbox align="center">
 
         <image id="pValueDiagramImg"/>
@@ -26,13 +26,24 @@
         <div align="left">
             <button id="savesublogs" label="Save Sublogs" image="img/save.gif" disabled="false"></button>
         </div>
-
-        <listbox id="resultDescription" width="100%" height="100%" rows="5">
-            <listhead>
-                <listheader label="Detected drifts" sort="auto" />
-            </listhead>
-        </listbox>
-
-
+        <div align="left">
+            <label id="characterizationLabel" value="Please click on each detected drift below to see its characterization statements." />
+        </div>
+        <grid id="prodriftGrid" height="200px" width="100%">
+            <columns>
+                <column label="Detected drifts" style="font-size: 14px; font-weight: bold;"/>
+            </columns>
+            <template name="model">
+                <row style="cursor:pointer" popup="char_${each.driftPoint}, position=overlap_after"> <!--tooltip="char_${each.driftPoint}"-->
+                    <div>
+                        <label value="${each.driftStatement}" />
+                        <popup id="char_${each.driftPoint}">
+                            <include src="macros/prodriftcharacterizationpopup.zul"
+                                     driftItem="${each}" />
+                        </popup>
+                    </div>
+                </row>
+            </template>
+        </grid>
     </vbox>
 </window>

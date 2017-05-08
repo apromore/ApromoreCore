@@ -1,3 +1,23 @@
+/*
+ * Copyright © 2009-2017 The Apromore Initiative.
+ *
+ * This file is part of "Apromore".
+ *
+ * "Apromore" is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this program.
+ * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ */
+
 package ee.ut.eventstr.comparison;
 
 import java.io.PrintWriter;
@@ -115,8 +135,21 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 	}
 	
 	public PrunedOpenPartialSynchronizedProduct<T> perform() {
-		Queue<State> open = new PriorityQueue<>();
-		
+		Queue<State> open = new PriorityQueue<State>(
+				new Comparator<State>() {
+					@Override
+					public int compare(State o1, State o2) {
+						int costCValue = Short.compare(o1.cost, o2.cost);
+						if (costCValue != 0)
+							return costCValue;
+//						else if(o1.c1.cardinality() != o2.c1.cardinality())
+//							return Integer.compare(o2.c1.cardinality(),o1.c1.cardinality());
+//						else if(o1.c2.size() != o2.c2.size())
+//							return Integer.compare(o2.c2.size(), o1.c2.size());
+						return -1;
+					}}
+		);
+
 		root = getState(new BitSet(), HashMultiset.<String> create(), HashMultiset.<Integer> create());
 		
 		open.offer(root);
@@ -160,7 +193,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 							
 							State nstate = getState(c1p, labels, extPair.getFirst());
 							nstate.cost = s.cost; // A matching operation does not change the current cost
-							
+
 							Operation operation;
 							if (extPair.getSecond())
 								operation = Operation.matchnshift(nstate, new Pair<>(e1, e2), label1);
@@ -208,14 +241,14 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 					Pair<Integer, Integer> pair = (Pair)operation.target;
 					int e1 = pair.getFirst();
 					int e2 = pair.getSecond();
-					for (int e1p = kept1.nextSetBit(0); e1p >= 0; e1p = kept1.nextSetBit(e1p + 1))
-						if (pes1.getBRelation(e1, e1p) == BehaviorRelation.CONCURRENCY)
-							continue nextCandidate;
-					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1))
-						if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY)
-							continue nextCandidate;		
-					kept1.set(e1);
-					kept2.set(e2);
+//					for (int e1p = kept1.nextSetBit(0); e1p >= 0; e1p = kept1.nextSetBit(e1p + 1))
+//						if (pes1.getBRelation(e1, e1p) == BehaviorRelation.CONCURRENCY)
+//							continue nextCandidate;
+//					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1))
+//						if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY)
+//							continue nextCandidate;
+//					kept1.set(e1);
+//					kept2.set(e2);
 
 					switch (operation.nextState.action) {
 					case CREATED:
@@ -454,7 +487,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 		
 		this.relevantStates = gvisited;
 		
-		System.out.println("Number of relevant states: " + relevantStates.size());
+		//System.out.println("Number of relevant states: " + relevantStates.size());
 		
 		return this;
 	}

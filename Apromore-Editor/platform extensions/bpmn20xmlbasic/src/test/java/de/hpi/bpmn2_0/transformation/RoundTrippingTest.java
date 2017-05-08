@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -62,6 +62,12 @@ public class RoundTrippingTest {
   @Test public void testCase12() throws Exception {
       roundTrip("Case 12.bpmn");
   }
+
+  /** Confirm that a BPMN boundary event within a subprocess survives a round trip. */
+  @Test public void testBoundaryInSubProcess() throws Exception { roundTrip("boundary-in-subprocess.bpmn"); }
+
+  /** Confirm that a BPMNb boundary event attached to a subprocess survives a round trip. */
+  @Test public void testBoundaryOnSubProcess() throws Exception { roundTrip("boundary-on-subprocess.bpmn"); }
 
   /**
    * @param fileName  a BPMN file in the test/resources/data directory

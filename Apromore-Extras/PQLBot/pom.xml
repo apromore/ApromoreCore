@@ -1,3 +1,23 @@
+<!--
+  ~ Copyright © 2009-2017 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -157,7 +177,7 @@
     <dependency>
       <groupId>org.deckfour.xes</groupId>
       <artifactId>OpenXES</artifactId>
-      <version>2.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <!--
@@ -201,49 +221,48 @@
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>efficientstorage</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>inductiveminer</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>petrinets</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>pnetreplayer</artifactId>
-      <version>1.0</version>
-      <scope>runtime</scope>
+      <version>6.5.20170418</version>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>prom6-contexts</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>prom6-framework</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>prom6-models</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.processmining</groupId>
       <artifactId>uitopia</artifactId>
-      <version>1.0</version>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
 

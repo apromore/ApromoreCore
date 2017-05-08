@@ -1,27 +1,40 @@
-Apromore Build Instructions with Eclipse Virgo
-TEST PA
+Apromore Installation instructions
+
+There are two distributions of Apromore: a *one-click* distribution, which you can simply copy/paste somewhere and run, and a *full-fledged* distribution, which requires you to manually install and configure Apromore.
+The one-click distribution runs on the H2 database by default and does not support the PQL query language.
+The full-fledged distribution is for developers and advanced users. It can work on H2 or MySQL and allows greater flexibility (e.g. you can decide whether to have PQL, configure the DB root...).
+
+
+ONE-CLICK INSTALLATION
+=======================
+=======
 
 REQUIREMENTS
-============
+- Windows 7 or Mac OSX 10.8 to 10.11
+- Java 1.8
 
-Apromore has been successfully installed on the following platforms:
-- Windows 7
-- Linux (specifically ubuntu only when running OracleJVM)
-- Mac OSX 10.8 to 10.11
+* Download Apromore from http://apromore-build.qut.edu.au/apromore.zip.
+* Unzip the file and open the folder Apromore-Server.
+* Start Apromore by executing the apromore.sh file in a Terminal if using Mac, or double-click on apromore.bat if using Windows.
+* Open Apromore by clicking on the apromore.html file.
+
+
+FULL-FLEDGED INSTALLATION
+=========================
+
+REQUIREMENTS
+- Windows 7 or Mac OSX 10.8 to 10.11
 
 Ensure the following software is installed:
-- Java 1.7
+- Java 1.8
 - Maven 3.3.9
 - Ant 1.9.2
 - Git 2.3.5
 
 Additional software required for PQL support:
-- MySQL 5.6.x
+- MySQL 5.6.x (https://dev.mysql.com/downloads/)
 - LoLA 2.0 (http://service-technology.org/lola/)
 
-
-DEFAULT INSTALLATION
-====================
 
 * Check out the Apromore source tree using git: 'git clone https://github.com/apromore/ApromoreCode.git'
 * Change to the root of the project you checked out of git.  'cd ApromoreCore'
@@ -35,7 +48,7 @@ DEFAULT INSTALLATION
 CONFIGURATION
 =============
 
-Almost all configuration occurs in the top level site.properties file.  The default version of this file from a fresh git
+Almost all configuration occurs in the top level site.properties file. The default version of this file from a fresh git
 checkout contains reasonable defaults that use H2 as the main database, but disable PQL (which requires MySQL or Postgres and
 more intricate configuration).
 
@@ -66,10 +79,10 @@ $ mysqladmin --user=root --password=MAcri create apromore
 Create a user named 'apromore' with the required permissions
 $ mysql --user=root --password=MAcri
 	CREATE USER 'apromore'@'localhost' IDENTIFIED BY 'MAcri';
-	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES ON apromore.* TO 'apromore'@'localhost';
+	GRANT SELECT, INSERT, UPDATE, DELETE, LOCK TABLES, EXECUTE, SHOW VIEW ON apromore.* TO 'apromore'@'localhost';
 
 Create and populate the database tables.
-$ mysql --user=apromore --password=MAcri < Supplements/database/db-mysql.sql
+$ mysql --user=root --password=MAcri < Supplements/database/db-mysql.sql
 
 At the end of the db-mysql.sql script is where we populate some of the system data including user information. Currently, we have a few users setup that are developers or affiliates and they can be used or you can choose to add your own.  All passwords are encrypted but they are 'password' for the time being and we don't have a facility just yet to allow a user to change their password. This is coming soon as well as a setup utility to allow the creation of a user on first running.
 
@@ -95,6 +108,21 @@ In build.xml, uncomment the inclusion of the following PQL components in the "pi
 * PQL-Logic/target/pql-logic-1.1.jar
 * PQL-Logic-WS/target/pql-logic-ws-1.1.war
 * PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar
+
+Also, uncomment the following component in the "copy-virgo" target:
+* PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar
+
+
+ACCESSING THE PORTAL
+====================
+* go to [apromore_domain]:9000/portal/login.zul
+* use "admin”/“password” to access as administrator, or create a new account.
+
+
+ACCESSING THE WEBDAV
+====================
+* go to [apromore_domain]:9000/filestore/login.html
+* use "admin”/“password” to access as administrator, or create a new account.
 
 
 SAMPLE DATA
@@ -125,7 +153,7 @@ Models always show up in the log as unable to be indexed.
 * Check that LoLA executable is correctly configured.
 
 Where is the server log?
-* Apromore-Assembly/virgo-tomcat-server-3.6.2.RELEASE/serviceability/logs/log.log
+* Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/serviceability/logs/log.log
 
 I grabbed the PQL.MySQL-1.2.sql file directly from the PQL sources and it doesn't work!
 * Edit the file and change the uuid attribute of the jbpt_petri_nodes table from VARCHAR(50) to VARCHAR(100) in two places

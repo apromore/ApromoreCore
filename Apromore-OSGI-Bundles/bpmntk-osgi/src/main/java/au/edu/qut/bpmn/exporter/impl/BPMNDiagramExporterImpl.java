@@ -1,6 +1,5 @@
-package au.edu.qut.bpmn.exporter.impl;
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -9,21 +8,26 @@ package au.edu.qut.bpmn.exporter.impl;
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
+package au.edu.qut.bpmn.exporter.impl;
+
 import au.edu.qut.bpmn.exporter.BPMNDiagramExporter;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.plugins.bpmn.BpmnDefinitions;
+
+import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 /**
  * Created by Adriano on 29/10/2015.
@@ -38,6 +42,17 @@ public class BPMNDiagramExporterImpl implements BPMNDiagramExporter {
 
         UIContext context = new UIContext();
         UIPluginContext uiPluginContext = context.getMainPluginContext();
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    UIManager.setLookAndFeel(new MetalLookAndFeel());
+                } catch (UnsupportedLookAndFeelException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 

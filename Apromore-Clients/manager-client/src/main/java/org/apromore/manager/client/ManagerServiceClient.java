@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -357,19 +357,36 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public SummariesType getProcessOrLogSummaries(String userId, int folderId, int pageIndex, int pageSize) {
-        LOGGER.debug("Preparing GetProcessOrLogRequest.....");
+    public SummariesType getProcessSummaries(String userId, int folderId, int pageIndex, int pageSize) {
+        LOGGER.debug("Preparing GetProcessRequest.....");
 
-        GetProcessesOrLogsInputMsgType msg = new GetProcessesOrLogsInputMsgType();
+        GetProcessesInputMsgType msg = new GetProcessesInputMsgType();
         msg.setUserId(userId);
         msg.setFolderId(folderId);
         msg.setPageIndex(pageIndex);
         msg.setPageSize(pageSize);
 
-        JAXBElement<GetProcessesOrLogsInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesOrLogsRequest(msg);
+        JAXBElement<GetProcessesInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessesRequest(msg);
 
-        JAXBElement<GetProcessesOrLogsOutputMsgType> response = (JAXBElement<GetProcessesOrLogsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
-        return response.getValue().getProcessesOrLogs();
+        JAXBElement<GetProcessesOutputMsgType> response = (JAXBElement<GetProcessesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getProcesses();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public SummariesType getLogSummaries(String userId, int folderId, int pageIndex, int pageSize) {
+        LOGGER.debug("Preparing GetLogRequest.....");
+
+        GetLogsInputMsgType msg = new GetLogsInputMsgType();
+        msg.setUserId(userId);
+        msg.setFolderId(folderId);
+        msg.setPageIndex(pageIndex);
+        msg.setPageSize(pageSize);
+
+        JAXBElement<GetLogsInputMsgType> request = WS_CLIENT_FACTORY.createGetLogsRequest(msg);
+
+        JAXBElement<GetLogsOutputMsgType> response = (JAXBElement<GetLogsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getLogs();
     }
 
     @Override

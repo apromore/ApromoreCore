@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -518,7 +518,9 @@ public class GraphServiceImpl implements GraphService {
                     }
 
                     for (ObjectAttribute attrib : object.getObjectAttributes()) {
-                        cpfObject.setAttribute(attrib.getName(), attrib.getValue(), XMLUtils.stringToAnyElement(attrib.getAny()));
+                        if (attrib.getAny() != null) {
+                            cpfObject.setAttribute(attrib.getName(), attrib.getValue(), XMLUtils.stringToAnyElement(attrib.getAny()));
+                        }
                     }
 
                     canonical.addObject(cpfObject);
@@ -590,7 +592,9 @@ public class GraphServiceImpl implements GraphService {
                 objectReference.setObjectRefType(objectRef.getType());
 
                 for (ObjectRefAttribute type : objectRef.getObjectRefAttributes()) {
-                    objectReference.setAttribute(type.getName(), type.getValue(), XMLUtils.stringToAnyElement(type.getAny()));
+                    if (type.getAny() != null) {
+                        objectReference.setAttribute(type.getName(), type.getValue(), XMLUtils.stringToAnyElement(type.getAny()));
+                    }
                 }
 
                 cpfNode.addObjectReference(objectReference);

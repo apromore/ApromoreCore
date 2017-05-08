@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -75,7 +75,7 @@ public class SearchExpressionBuilder {
                 } else if (currentChar.compareTo("(") == 0) {
                     res.add(" ( ");
                 } else if (currentChar.compareTo(" ") != 0) {
-                    term = currentChar;
+                    term = escape(currentChar);
                     state = 2;
                 }
             } else {
@@ -92,7 +92,7 @@ public class SearchExpressionBuilder {
                     res.add(" ) ");
                     state = 1;
                 } else if (currentChar.compareTo(" ") != 0) {
-                    term += currentChar;
+                    term += escape(currentChar);
                 }
             }
         }
@@ -100,6 +100,21 @@ public class SearchExpressionBuilder {
             res.add(term);
         }
         return res;
+    }
+
+    /**
+     * @param character  a single character
+     * @return the JPQL-escaped version of the <var>character</var>
+     * @see http://docs.oracle.com/cd/E11035_01/kodo41/full/html/ejb3_langref.html#ejb3_langref_lit
+     */
+    private String escape(String character) {
+        assert character.length() == 1;
+        switch (character) {
+        case "'":
+            return "''";
+        default:
+            return character;
+        }
     }
 
 }

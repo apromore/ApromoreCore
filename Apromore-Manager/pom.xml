@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -9,10 +9,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -78,10 +78,10 @@
                             org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
                             org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
-                            org.springframework.security.core;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.config;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.web;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
-                            org.springframework.security.remoting;version="[3.1.4.RELEASE,3.1.4.RELEASE]",
+                            org.springframework.security.core;version="[3.1.0,4.0)",
+                            org.springframework.security.config;version="[3.1.0,4.0)",
+                            org.springframework.security.web;version="[3.1.0,4.0)",
+                            org.springframework.security.remoting;version="[3.1.0,4.0)",
                             org.apromore.manager-security;version="[1.1,1.1]",
                             org.apromore.manager-ws-model;version="[1.1,1.1]",
                             org.apromore.filestore-client;version="[1.0,1.1]"
@@ -124,7 +124,8 @@
                             org.apromore.mapper,
                             org.apromore.scheduler,
                             org.apromore.service.*,
-                            org.apromore.toolbox.*
+                            org.apromore.toolbox.*,
+                            org.apromore.util
                         </Export-Package>
                         <JPA-PersistenceUnits>Apromore</JPA-PersistenceUnits>
                     </instructions>
@@ -153,6 +154,17 @@
     </build>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.collections-generic</artifactId>
+            <version>4.01_1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+        </dependency>
 
         <!-- Clients -->
         <dependency>
@@ -304,10 +316,17 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
+		<!--
         <dependency>
             <groupId>org.joda</groupId>
             <artifactId>com.springsource.org.joda.time</artifactId>
         </dependency>
+		-->
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>com.springsource.org.apache.derby</artifactId>
+			<version>10.5.1000001.764942</version>
+		</dependency>		
 
         <!-- Spring dependencies -->
         <dependency>
@@ -601,14 +620,52 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpmntk-osgi</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES</artifactId>
-            <version>2.0</version>
         </dependency>
+		
+		<!-- GUI related dependencies -->
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.joda-time</artifactId>
+            <version>2.3_1</version>
+        </dependency>
+
+
+        <!--
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>com.springsource.org.jfree</artifactId>
+            <version>1.0.12</version>
+        </dependency> 
+        -->
+		
+		<!--
+		<dependency>
+			<groupId>org.jfree.chart</groupId>
+			<artifactId>com.springsource.org.jfree.chart</artifactId>
+			<version>1.0.9</version>
+		</dependency>
+		-->
+		<!--
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.jcommon</artifactId>
+			<version>1.0.15_1</version>
+		</dependency>
+		-->
+		<!--
+		<dependency>
+			<groupId>org.apache.servicemix.bundles</groupId>
+			<artifactId>org.apache.servicemix.bundles.jfreechart</artifactId>
+			<version>1.0.12_1</version>
+		</dependency> 
+		-->
+				
     </dependencies>
 
 </project>

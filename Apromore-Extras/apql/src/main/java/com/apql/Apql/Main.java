@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -46,6 +46,7 @@ import javax.xml.soap.SOAPException;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 
 public class Main extends JPanel {
 
@@ -207,6 +208,29 @@ public class Main extends JPanel {
         loadSave.add(load);
         loadSave.add(save);
         menuBar.add(loadSave);
+
+        Action aboutItem = new AbstractAction("PQL Utilities") {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    browse(new URL("http://processquerying.com/pql-utilities/"));
+                }
+                catch (Exception exception) {}  // if the browser doesn't get launched, it's no disaster
+            }
+        };
+
+        Action tutorialItem = new AbstractAction("PQL Screencasts") {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    browse(new URL("http://processquerying.com/pql-screencasts/"));
+                }
+                catch (Exception exception) {}  // if the browser doesn't get launched, it's no disaster
+            }
+        };
+
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.add(aboutItem).setPreferredSize(new Dimension(200, 30));
+        helpMenu.add(tutorialItem).setPreferredSize(new Dimension(200, 30));
+        menuBar.add(helpMenu);
 
         expandIcon=new ImageIcon("/icons/expand.png");
 //        viewController.setMainPanel(this);
@@ -410,9 +434,16 @@ public class Main extends JPanel {
 
     public static void main(String[] args) throws Exception {
         ViewController.getController().setUsername("admin");
-        Main application = new Main(new URI("http://localhost:9000/manager/services"),
-                                    new URI("http://localhost:9000/portal/services"),
-                                    new URI("http://localhost:9000/pql/services"));
+        
+        String base = "http://localhost:9000";
+        if (args.length > 0) {
+            base = args[0];
+        }
+        System.out.println("Args: " + args);
+        System.out.println("Base URI: " + base);
+        Main application = new Main(new URI(base + "/manager/services"),
+                                    new URI(base + "/portal/services"),
+                                    new URI(base + "/pql/services"));
 
         JFrame frame = new JFrame();
         frame.add(application);
@@ -424,5 +455,12 @@ public class Main extends JPanel {
         frame.pack();
         frame.setLocationRelativeTo(null);  // center of the screen
         frame.setVisible(true);
+    }
+
+    /**
+     * @param url  an web page URL to (re)display
+     */
+    protected void browse(final URL url) throws Exception {
+        Desktop.getDesktop().browse(url.toURI());
     }
 }

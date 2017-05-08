@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -8,10 +8,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -22,20 +22,18 @@
 <menubar id="operationMenu" width="100%">
     <menu id="process" label="File">
         <menupopup>
-            <menuitem id="createProcess" label="Create model" disabled="true" image="/img/new.png"/>
+            <menuitem id="createProcess" label="Create Model" disabled="true" image="/img/new.png"/>
             <menuitem id="fileImport" label="Import" disabled="true" image="/img/import.png"/>
             <menuitem id="fileExport" label="Export" disabled="true" image="/img/export.png"/>
-            <menuitem id="fileImportLog" label="Import Log" disabled="true" image="/img/import.png"/>
-            <menuitem id="fileExportLog" label="Export Log" disabled="true" image="/img/export.png"/>
-            <menuitem id="processEdit" label="Edit model" disabled="true" image="/img/edit.png"/>
-            <menuitem id="dataEdit" label="Edit meta data" disabled="true" image="/img/edit_metadata.png"/>
+            <menuitem id="processEdit" label="Edit Model" disabled="true" image="/img/edit.png"/>
+            <menuitem id="dataEdit" label="Edit Metadata" disabled="true" image="/img/edit_metadata.png"/>
             <menuitem id="processDelete" label="Delete" disabled="true" image="/img/delete.png"/>
+            <!--
             <menuseparator/>
             <menuitem id="processCopy" label="Copy" disabled="true" image="/img/copy.png"/>
             <menuitem id="processPaste" label="Paste" disabled="true" image="/img/paste.png"/>
             <menuitem id="processMove" label="Move" disabled="true" image="/img/move.png"/>
-            <menuseparator/>
-            <menuitem id="processDeploy" label="Deploy Process to YAWL" disabled="true" image="/img/deploy.png"/>
+            -->
         </menupopup>
     </menu>
 </menubar>

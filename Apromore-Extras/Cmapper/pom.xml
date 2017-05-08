@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  ~ Copyright © 2009-2016 The Apromore Initiative.
+  ~ Copyright © 2009-2017 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -9,10 +9,10 @@
   ~ published by the Free Software Foundation; either version 3 of the
   ~ License, or (at your option) any later version.
   ~
-  ~ "Apromore" is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Lesser General Public License for more details.
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Lesser General Public
   ~ License along with this program.
@@ -79,102 +79,37 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                        <exclude>WEB-INF/**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>com.github.lookfirst:sardine</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>com.sun.xml:com.springsource.com.sun.xml.bind</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>commons-codec:commons-codec</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apache.httpcomponents:com.springsource.org.apache.httpcomponents.httpclient</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apache.httpcomponents:httpcore</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apromore:filestore-client</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apromore:manager-client</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.apromore:manager-ws-model</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework:org.springframework.beans</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework:org.springframework.context</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework:org.springframework.core</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework.ws:org.springframework.ws</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework.ws:org.springframework.xml</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>org.springframework:org.springframework.oxm</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                            </filters>
-                            <minimizeJar>${minimizeJar}</minimizeJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.github.lookfirst:sardine</include>
+                                    <include>com.sun.xml:com.springsource.com.sun.xml.bind</include>
+                                    <include>commons-io:commons-io</include>
+                                    <include>net.sf.javabdd:javabdd</include>
+                                    <include>org.apache.httpcomponents:com.springsource.org.apache.httpcomponents.httpclient</include>
+                                    <include>org.apache.httpcomponents:httpcore</include>
+                                    <include>org.apromore:anf-schema</include>
+                                    <include>org.apromore:bpmn-schema</include>
+                                    <include>org.apromore:cmap-schema</include>
+                                    <include>org.apromore:cpf-schema</include>
+                                    <include>org.apromore:filestore-client</include>
+                                    <include>org.apromore:manager-client</include>
+                                    <include>org.apromore:manager-ws-model</include>
+                                    <include>org.apromore.plugin:bpmncmap</include>
+                                    <include>org.apromore.plugin:canoniser-bpmn</include>
+                                    <include>org.apromore.plugin:canoniser-api</include>
+                                    <include>org.apromore.plugin:plugin-api</include>
+                                    <include>org.jvnet.jaxb2_commons:jaxb2-basics-runtime</include>
+                                    <include>org.slf4j:jcl-over-slf4j</include>
+                                    <include>org.slf4j:slf4j-api</include>
+                                    <include>org.springframework:org.springframework.beans</include>
+                                    <include>org.springframework:org.springframework.context</include>
+                                    <include>org.springframework:org.springframework.core</include>
+                                    <include>org.springframework:org.springframework.oxm</include>
+                                    <include>org.springframework.ws:org.springframework.ws</include>
+                                    <include>org.springframework.ws:org.springframework.xml</include>
+                                </includes>
+                            </artifactSet>
+                            <minimizeJar>false</minimizeJar>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.processconfiguration.cmapper.Main</mainClass>
@@ -227,7 +162,7 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>bpmncmap</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>

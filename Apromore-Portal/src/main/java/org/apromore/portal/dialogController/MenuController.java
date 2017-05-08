@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2016 The Apromore Initiative.
+ * Copyright © 2009-2017 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -8,10 +8,10 @@
  * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
- * "Apromore" is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
+ * "Apromore" is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program.
@@ -34,6 +34,8 @@ import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.ExplicitComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
@@ -44,11 +46,10 @@ import org.zkoss.zul.*;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class MenuController extends Menubar {
 
-    private static final Logger LOGGER = Logger.getLogger(MenuController.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
 
     private final MainController mainC;
     private Menubar menuB;
@@ -62,18 +63,17 @@ public class MenuController extends Menubar {
         Menuitem createMI = (Menuitem) this.menuB.getFellow("createProcess");
         Menuitem importMI = (Menuitem) this.menuB.getFellow("fileImport");
         Menuitem exportMI = (Menuitem) this.menuB.getFellow("fileExport");
-        Menuitem importLogMI = (Menuitem) this.menuB.getFellow("fileImportLog");
-        Menuitem exportLogMI = (Menuitem) this.menuB.getFellow("fileExportLog");
         Menuitem editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
         Menuitem editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
         Menuitem deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
-        Menuitem deployMI = (Menuitem) this.menuB.getFellow("processDeploy");
+        /*
         Menuitem copyMI = (Menuitem) this.menuB.getFellow("processCopy");
         copyMI.setDisabled(true);
         Menuitem pasteMI = (Menuitem) this.menuB.getFellow("processPaste");
         pasteMI.setDisabled(true);
         Menuitem moveMI = (Menuitem) this.menuB.getFellow("processMove");
         moveMI.setDisabled(true);
+        */
 
         createMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
@@ -84,13 +84,7 @@ public class MenuController extends Menubar {
         importMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
-                importModel();
-            }
-        });
-        importLogMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                importLog();
+                importFile();
             }
         });
         editModelMI.addEventListener("onClick", new EventListener<Event>() {
@@ -108,25 +102,13 @@ public class MenuController extends Menubar {
         exportMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
-                exportNative();
-            }
-        });
-        exportLogMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                exportLog();
+                exportFile();
             }
         });
         deleteMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
                 deleteSelectedElements();
-            }
-        });
-        deployMI.addEventListener("onClick", new EventListener<Event>() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                deployProcessModel();
             }
         });
 
@@ -148,12 +130,23 @@ public class MenuController extends Menubar {
                 }
                 assert menuMap.containsKey(menuName);
 
-                // Add the menu item to the menu
+                // Create the menu item
                 Menu menu = menuMap.get(menuName);
                 Menuitem menuitem = new Menuitem();
-                menuitem.setImage("img/icon/bpmn-22x22.png");
+                menuitem.setImageContent(plugin.getIcon());
                 menuitem.setLabel(plugin.getLabel(Locale.getDefault()));
-                menu.getMenupopup().appendChild(menuitem);
+
+                // Insert the menu item alphabetically into the menu
+                Menuitem precedingMenuitem = null;
+                List<Menuitem> existingMenuitems = menu.getMenupopup().getChildren();
+                for (Menuitem existingMenuitem: existingMenuitems) {
+                    if (menuitem.getLabel().compareTo(existingMenuitem.getLabel()) <= 0) {
+                        precedingMenuitem = existingMenuitem;
+                        break;
+                    }
+                }
+                menu.getMenupopup().insertBefore(menuitem, precedingMenuitem);
+
                 menuitem.addEventListener("onClick", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
@@ -167,23 +160,6 @@ public class MenuController extends Menubar {
         }
     }
 
-
-    /**
-     * Deploy process mdel to a running process engine
-     * @throws InterruptedException
-     * @throws WrongValueException
-     */
-    protected void deployProcessModel() throws WrongValueException, InterruptedException, ParseException {
-        this.mainC.eraseMessage();
-        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedElementsAndVersions();
-        if (selectedProcessVersions.size() == 1 && selectedProcessVersions.keySet().iterator().next() instanceof ProcessSummaryType) {
-            Map<ProcessSummaryType, List<VersionSummaryType>> processSummaryVersions = new HashMap<>();
-            processSummaryVersions.put((ProcessSummaryType) selectedProcessVersions.keySet().iterator().next(), selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()));
-            new DeployProcessModelController(this.mainC, processSummaryVersions.entrySet().iterator().next());
-        } else {
-            this.mainC.displayMessage("Please select exactly one process model!");
-        }
-    }
 
     protected void createModel() throws InterruptedException {
         this.mainC.eraseMessage();
@@ -271,6 +247,18 @@ public class MenuController extends Menubar {
         }
     }
 
+    protected void exportFile() throws Exception {
+        if(this.mainC.getSelectedElements().size() == 1) {
+            SummaryType summaryType = this.mainC.getSelectedElements().iterator().next();
+            System.out.println(summaryType);
+            if (summaryType instanceof LogSummaryType) {
+                exportLog();
+            } else if (summaryType instanceof ProcessSummaryType) {
+                exportNative();
+            }
+        }
+    }
+
 
     /**
      * Export all selected process versions, each of which in a native format to be chosen by the user
@@ -329,19 +317,10 @@ public class MenuController extends Menubar {
         }
     }
 
-    protected void importModel() throws InterruptedException {
+    protected void importFile() throws InterruptedException {
         this.mainC.eraseMessage();
         try {
-            new ImportListProcessesController(mainC);
-        } catch (DialogException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-
-    protected void importLog() throws InterruptedException {
-        this.mainC.eraseMessage();
-        try {
-            new ImportLogController(mainC);
+            new ImportController(mainC);
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
