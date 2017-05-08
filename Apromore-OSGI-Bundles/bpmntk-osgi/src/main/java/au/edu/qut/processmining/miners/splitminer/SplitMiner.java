@@ -74,7 +74,7 @@ public class SplitMiner {
                                      boolean replaceIORs, SplitMinerUIResult.StructuringTime structuringTime)
     {
 //        System.out.println("SplitMiner - starting ...");
-        System.out.println("SplitMiner - [Settings] replace IORs: " + replaceIORs);
+//        System.out.println("SplitMiner - [Settings] replace IORs: " + replaceIORs);
 //        System.out.println("SplitMiner - [Settings] structuring: " + structuringTime);
 
         this.replaceIORs = replaceIORs;
@@ -225,7 +225,7 @@ public class SplitMiner {
         replaceIORs();
 
         updateLabels(this.log.getEvents());
-        System.out.println("SplitMiner - bpmn diagram generated successfully");
+//        System.out.println("SplitMiner - bpmn diagram generated successfully");
     }
 
     private void generateSplitsHierarchy(BPMNNode entry, OracleItem nextOracleItem, Map<Integer, BPMNNode> mapping) {
