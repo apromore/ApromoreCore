@@ -117,7 +117,9 @@
                             org.deckfour.xes.xstream,
                         </Import-Package>
                         <Export-Package>
-                            com.raffaeleconforti.noisefiltering.event,
+                            com.raffaeleconforti.noisefiltering.event.*,
+                            com.raffaeleconforti.automaton.*,
+                            com.raffaeleconforti.ilpsolverwrapper.*,
                         </Export-Package>
                     </instructions>
                 </configuration>

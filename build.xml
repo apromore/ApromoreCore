@@ -644,18 +644,18 @@
             <arg value="94 Discretionary experience 4.bpmn"/>
 
             <!-- PQL samples -->
-            <arg value="-from"/> <arg value="Supplements/samples/pql"/>
-            <arg value="-to"/>   <arg value="pql"/>
-            <arg value="1.pnml"/>
-            <arg value="2.pnml"/>
-            <arg value="3.pnml"/>
-            <arg value="4.pnml"/>
-            <arg value="5.pnml"/>
-            <arg value="6.pnml"/>
-            <arg value="7.pnml"/>
-            <arg value="8.pnml"/>
-            <arg value="9.pnml"/>
-            <arg value="10.pnml"/>
+            <!--<arg value="-from"/> <arg value="Supplements/samples/pql"/>-->
+            <!--<arg value="-to"/>   <arg value="pql"/>-->
+            <!--<arg value="1.pnml"/>-->
+            <!--<arg value="2.pnml"/>-->
+            <!--<arg value="3.pnml"/>-->
+            <!--<arg value="4.pnml"/>-->
+            <!--<arg value="5.pnml"/>-->
+            <!--<arg value="6.pnml"/>-->
+            <!--<arg value="7.pnml"/>-->
+            <!--<arg value="8.pnml"/>-->
+            <!--<arg value="9.pnml"/>-->
+            <!--<arg value="10.pnml"/>-->
 
             <!-- Log animation samples -->
             <arg value="-from"/> <arg value="Supplements/samples/repairExample"/>
@@ -679,77 +679,77 @@
 
             <!-- Model to model -->
             <arg value="-from"/>    <arg value="Supplements/samples/model-to-model"/>
-            <arg value="-to"/>      <arg value="model-to-model"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Model"/>
             <arg value="Model1.bpmn"/>
             <arg value="Model2.bpmn"/>
 
             <!-- Model to log -->
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CAUSCONC-1"/>
-            <arg value="-to"/>      <arg value="model-to-log/CAUSCONC-1"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/CAUSCONC-1"/>
             <arg value="bp3.bpmn"/>
             <arg value="bpLog3.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CAUSCONC-2"/>
-            <arg value="-to"/>      <arg value="model-to-log/CAUSCONC-2"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/CAUSCONC-2"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog4.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CONFLICT-1"/>
-            <arg value="-to"/>      <arg value="model-to-log/CONFLICT-1"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-1"/>
             <arg value="bp5.bpmn"/>
             <arg value="bpLog4.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CONFLICT-2"/>
-            <arg value="-to"/>      <arg value="model-to-log/CONFLICT-2"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-2"/>
             <arg value="bp3.bpmn"/>
             <arg value="bpLog5.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CONFLICT-3"/>
-            <arg value="-to"/>      <arg value="model-to-log/CONFLICT-3"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-3"/>
             <arg value="bp5.bpmn"/>
             <arg value="bpLog3.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CONFLICT-4"/>
-            <arg value="-to"/>      <arg value="model-to-log/CONFLICT-4"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-4"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog5.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKABS-1"/>
-            <arg value="-to"/>      <arg value="model-to-log/TASKABS-1"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-1"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog12.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKABS-2"/>
-            <arg value="-to"/>      <arg value="model-to-log/TASKABS-2"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-2"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog2.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKABS-3"/>
-            <arg value="-to"/>      <arg value="model-to-log/TASKABS-3"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-3"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog3B.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKABS-4"/>
-            <arg value="-to"/>      <arg value="model-to-log/TASKABS-4"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-4"/>
             <arg value="bp4.bpmn"/>
             <arg value="bpLog3.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKRELOC-1"/>
-            <arg value="-to"/>      <arg value="model-to-log/TASKRELOC-1"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKRELOC-1"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog10.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKSKIP-1"/>
-            <arg value="-to"/>      <arg value="model-to-log/TASKSKIP-1"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSKIP-1"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog11.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKSKIP-2"/>
-            <arg value="-to"/>      <arg value="model-to-log/TASKSKIP-2"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSKIP-2"/>
             <arg value="bp6.bpmn"/>
             <arg value="bpLog3.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKSUB"/>
-            <arg value="-to"/>      <arg value="model-to-log/TASKSUB"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSUB"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog9.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/UNMREPETITION"/>
-            <arg value="-to"/>      <arg value="model-to-log/UNMREPETITION"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/UNMREPETITION"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog8.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/UNOBSACYCLICINTER"/>
-            <arg value="-to"/>      <arg value="model-to-log/UNOBSACYCLICINTER"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/UNOBSACYCLICINTER"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog2.xes"/>
             <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/UNOBSCYCLICINTER"/>
-            <arg value="-to"/>      <arg value="model-to-log/UNOBSCYCLICINTER"/>
+            <arg value="-to"/>      <arg value="Compare/Model to Log/UNOBSCYCLICINTER"/>
             <arg value="bp.bpmn"/>
             <arg value="bpLog.xes"/>
         </java>
