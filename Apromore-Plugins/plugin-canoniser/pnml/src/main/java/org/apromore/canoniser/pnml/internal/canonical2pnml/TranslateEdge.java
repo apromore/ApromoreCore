@@ -78,7 +78,8 @@ public class TranslateEdge {
             if (!(arcsource instanceof PlaceType)) {
                 incomingArc.setSource(arcsource);
             }
-            else {  // insert a silent transition before the place
+            else {  
+            	// Insert a silent transition before the place
                 TransitionType transition = new TransitionType();
                 transition.setId(String.valueOf(ids++));
                 transition.setGraphics(TranslateNode.newGraphicsNodeType(TranslateNode.dummyPosition(), TranslateNode.blindTransitionDefaultDimension()));
@@ -105,7 +106,8 @@ public class TranslateEdge {
             if (!(arctarget instanceof PlaceType)) {
                 outgoingArc.setTarget(arctarget);
             }
-            else {  // insert a silent transition after the place
+            else {  
+            	// Insert a silent transition after the place
                 TransitionType transition = new TransitionType();
                 transition.setId(String.valueOf(ids++));
                 transition.setGraphics(TranslateNode.newGraphicsNodeType(TranslateNode.dummyPosition(), TranslateNode.blindTransitionDefaultDimension()));
@@ -124,7 +126,7 @@ public class TranslateEdge {
 
             data.put_originalid_map(BigInteger.valueOf(Long.valueOf(place.getId())), edge.getOriginalID());
         }
-        else {  // !data.isCpfEdgePnmlPlace()
+        else {  
             ArcType arc = new ArcType();
             arc.setId(String.valueOf(ids++));
 
@@ -150,6 +152,35 @@ public class TranslateEdge {
                 arctarget = place;
             }
 
+            ArcType removeArc = null;
+            // Implemented method to reconnect misbehaving place to place edge
+            if (arcsource instanceof PlaceType && arctarget instanceof PlaceType ) {
+            	// Iterate through every arc to get the arc that has the source place as target
+            	for (ArcType arcList : data.getNet().getArc()) {
+            		
+            		if (arcList.getTarget() instanceof PlaceType) {
+            			PlaceType aclistTarget = (PlaceType) arcList.getTarget();
+            			
+            			if (aclistTarget.getId().equals(arcsource.getId())) {
+	            				            			
+	            			if(arcList.getSource() instanceof TransitionType) {
+	            				TransitionType transitionSource = (TransitionType) arcList.getSource();
+	            				org.apromore.pnml.NodeType nodeTransitionSource = (org.apromore.pnml.NodeType) transitionSource;
+	            				org.apromore.pnml.NodeType buffer = arcsource;
+	            				data.getNet().getPlace().remove((PlaceType) buffer);
+	            				arcsource = nodeTransitionSource;
+
+	            				data.getRunningPlaceMap().remove(source);
+	            				removeArc = arcList;
+	            			}
+            			}
+            		}   			
+            	}
+            }
+            
+            if (removeArc != null)
+            	data.getNet().getArc().remove(removeArc);
+            
             arc.setSource(arcsource);
             arc.setTarget(arctarget);
             ArcNameType inscription = new ArcNameType();
