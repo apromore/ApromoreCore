@@ -65,12 +65,12 @@ public class PQLPlugin extends PluginCustomGui {
 
     @Override
     public String getLabel(Locale locale) {
-        return "PQL Query";
+        return "Query with PQL (2)";
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Analysis";
+        return "Analyze";
     }
 
     @Override

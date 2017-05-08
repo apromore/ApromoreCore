@@ -80,17 +80,18 @@
 
         <!-- OSGI -->
         <module>Apromore-OSGI-Bundles/antlr4</module>
+        <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
+        <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
+        <module>Apromore-OSGI-Bundles/eventstr-confchecking-code-osgi</module>
         <module>Apromore-OSGI-Bundles/ini4j</module>
-        <module>Apromore-OSGI-Bundles/postgres</module>
         <module>Apromore-OSGI-Bundles/irthemis</module>
         <module>Apromore-OSGI-Bundles/json</module>
         <module>Apromore-OSGI-Bundles/jbpt-petri</module>
-        <module>Apromore-OSGI-Bundles/pql</module>
-        <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
-        <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
-        <module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>
+        <module>Apromore-OSGI-Bundles/lucene-osgi</module>
         <module>Apromore-OSGI-Bundles/pnapi-bpdiff-osgi</module>
-		<module>Apromore-OSGI-Bundles/eventstr-confchecking-code-osgi</module>
+        <module>Apromore-OSGI-Bundles/postgres</module>
+        <module>Apromore-OSGI-Bundles/pql</module>
+        <module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>
 
         <!-- PROM -->
         <module>Apromore-OSGI-Bundles/log-osgi</module>
@@ -107,24 +108,30 @@
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
+        <module>APQL-Portal-Plugin</module>
         <module>BPMNDiagramImporter-Logic</module>
         <module>BPMNMiner-Logic</module>
         <module>BPMNMiner-Portal-Plugin</module>
+        <module>Cmapper-Portal-Plugin</module>
+        <module>Compare-Logic</module>
+        <module>Compare-Portal-Plugin</module>
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>
         <module>Metrics-Logic</module>
         <module>Metrics-Portal-Plugin</module>
         <module>PQL-Logic</module>
+        <module>PQL-Logic-WS</module>
         <module>PQL-Portal-Plugin</module>
         <module>ProDrift-Logic</module>
         <module>ProDrift-Portal-Plugin</module>
-        <module>Compare-Logic</module>
-        <module>Compare-Portal-Plugin</module>
+        <module>Quaestio-Portal-Plugin</module>
+        <module>Similarity-Clusters-Portal-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
         <module>Apromore-Extras/Quaestio</module>
         <module>Apromore-Extras/apql</module>
+        <module>Apromore-Extras/PQLBot</module>
 
         <!-- Clients that we can distribute -->
         <module>Apromore-Clients/manager-ws-model</module>

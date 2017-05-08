@@ -70,14 +70,20 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Analysis";
+        return "Analyze";
     }
 
     @Override
     public void execute(PortalContext context) {
         // Show a message on the portal
         try {
-            Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = context.getSelection().getSelectedProcessModelVersions();
+            Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
+            Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
+            for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
+                if(entry.getKey() instanceof ProcessSummaryType) {
+                    selectedProcessVersions.put((ProcessSummaryType) entry.getKey(), entry.getValue());
+                }
+            }
 
             // At least 2 process versions must be selected. Not necessarily of different processes
             if (selectedProcessVersions.size() != 1) {
@@ -89,7 +95,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
 
         } catch (Exception e) {
-            context.getMessageHandler().displayError("Unable to perform merge", e);
+            context.getMessageHandler().displayError("Unable to perform search", e);
         }
     }
 
@@ -170,7 +176,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
     protected void searchSimilarProcesses() throws InterruptedException {
         String message;
         try {
-            ProcessSummariesType resultToDisplay;
+            SummariesType resultToDisplay;
             Boolean latestVersions = "latestVersions".compareTo(allVersionsChoiceRG.getSelectedItem().getId()) == 0;
 
             Integer folderId = 0;
@@ -189,25 +195,25 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
                     ((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
                     ((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
 
-            ProcessSummariesType result = similarityService.searchForSimilarProcesses(
+            SummariesType result = similarityService.searchForSimilarProcesses(
                     process.getId(), version.getName(),
                     latestVersions, folderId, context.getCurrentUser().getId(),
                     this.algosLB.getSelectedItem().getLabel(), parametersType);
 
-            message = "Search returned " + result.getProcessSummary().size();
-            if (result.getProcessSummary().size() > 1) {
+            message = "Search returned " + result.getSummary().size();
+            if (result.getSummary().size() > 1) {
                 message += " processes.";
             } else {
                 message += " process.";
             }
 
-            if (result.getProcessSummary() != null && result.getProcessSummary().size() > 1) {
+            if (result.getSummary() != null && result.getSummary().size() > 1) {
                 resultToDisplay = sort(process, result);
             } else {
                 resultToDisplay = result;
             }
 
-            if(result.getTotalProcessCount() > 1) {
+            if(result.getTotalCount() > 1) {
                 displayProcessSummaries(process.getName() + ": Sim Search", resultToDisplay, context);
             }
 
@@ -251,13 +257,16 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
         return p;
     }
 
-    private ProcessSummariesType sort(ProcessSummaryType process, ProcessSummariesType toBeSorted) {
-        ProcessSummariesType res = new ProcessSummariesType();
-        for (int i = 0; i < toBeSorted.getProcessSummary().size(); i++) {
-            if (toBeSorted.getProcessSummary().get(i).getId().equals(process.getId())) {
-                res.getProcessSummary().add(0, toBeSorted.getProcessSummary().get(i));
-            } else {
-                sortInsertion(sortVersions(toBeSorted.getProcessSummary().get(i)), res);
+    private SummariesType sort(ProcessSummaryType process, SummariesType toBeSorted) {
+        SummariesType res = new SummariesType();
+        for (int i = 0; i < toBeSorted.getSummary().size(); i++) {
+            if(toBeSorted.getSummary().get(i) instanceof ProcessSummaryType) {
+                ProcessSummaryType processSummaryType = (ProcessSummaryType) toBeSorted.getSummary().get(i);
+                if (toBeSorted.getSummary().get(i).getId().equals(process.getId())) {
+                    res.getSummary().add(0, processSummaryType);
+                } else {
+                    sortInsertion(sortVersions(processSummaryType), res);
+                }
             }
         }
         return res;
@@ -291,13 +300,20 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
      * @param process
      * @param sortedList
      */
-    private void sortInsertion(ProcessSummaryType process, ProcessSummariesType sortedList) {
+    private void sortInsertion(ProcessSummaryType process, SummariesType sortedList) {
         int i = 0;
-        while (i < sortedList.getProcessSummary().size() &&
-                sortedList.getProcessSummary().get(i).getVersionSummaries().get(0).getScore() > process.getVersionSummaries().get(0).getScore()) {
+        while (check(sortedList, i)) {
             i++;
         }
-        sortedList.getProcessSummary().add(i, process);
+        sortedList.getSummary().add(i, process);
+    }
+
+    private boolean check(SummariesType sortedList, int i) {
+        if(sortedList.getSummary().get(i) instanceof ProcessSummaryType) {
+            ProcessSummaryType processSummaryType = (ProcessSummaryType) sortedList.getSummary().get(i);
+            return i < sortedList.getSummary().size() && processSummaryType.getVersionSummaries().get(0).getScore() > process.getVersionSummaries().get(0).getScore();
+        }
+        return false;
     }
 
     protected void updateActions() {

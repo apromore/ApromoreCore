@@ -68,6 +68,8 @@ public class QueryableProcessAttributePlugin extends DefaultParameterAwarePlugin
     /** {@inheritDoc} */
     public Listheader getListheader() {
         Listheader listheader = new Listheader();
+        listheader.setAlign("center");
+        listheader.setHflex("0");
         listheader.setLabel("PQL");
         listheader.setWidth("3em");
         return listheader;
@@ -79,45 +81,32 @@ public class QueryableProcessAttributePlugin extends DefaultParameterAwarePlugin
      * @param process 
      */
     public Listcell getListcell(ProcessSummaryType process) {
-
-        List<VersionSummaryType> list = process.getVersionSummaries();
-        VersionSummaryType lastVersion = list.get(list.size() - 1);  // get the last version
-        ExternalId externalId = new ExternalId(process.getId(), "MAIN", new Version(lastVersion.getVersionNumber()));
-
-        // Associate an icon with the indexing status
-        String iconPath;
-        String tooltip;
+        int id = 0;
+        String branch = null;
+        Version version = null;
         try {
-            IndexStatus status = pqlService.getIndexStatus(externalId);
-            switch (status) {
-            case UNINDEXED:
-                iconPath = PQL_UNINDEXED_ICON;
-                tooltip = "Unindexed";
-                break;
-            case INDEXING:
-                iconPath = PQL_INDEXING_ICON;
-                tooltip = "Indexing";
-                break;
-            case INDEXED:
-                iconPath = PQL_INDEXED_ICON;
-                tooltip = "Indexed";
-                break;
-            case CANNOTINDEX:
-                iconPath = PQL_CANNOTINDEX_ICON;
-                tooltip = "Cannot index";
-                break;
-            default:
-                iconPath = PQL_ERROR_ICON;
-                tooltip  = "Unknown index status code: " + status;
-            }
-        } catch (Exception e) {
-            LOGGER.warn("Unable to get index status for process " + externalId, e);
-            iconPath = PQL_ERROR_ICON;
-            tooltip = e.toString();
-        }
-        assert iconPath != null;
+            id = process.getId();
+            List<VersionSummaryType> list = process.getVersionSummaries();
+            VersionSummaryType lastVersion = list.get(list.size() - 1);  // get the last version
+            version = new Version(lastVersion.getVersionNumber());
+            branch = "MAIN";
+            IndexStatus status = pqlService.getIndexStatus(new ExternalId(id, branch, version));
 
-        // Return a list cell containing the indexing status icon
+            // Associate an icon with the indexing status
+            switch (status) {
+            case UNINDEXED:   return createListcell(PQL_UNINDEXED_ICON,   "Unindexed");
+            case INDEXING:    return createListcell(PQL_INDEXING_ICON,    "Indexing");
+            case INDEXED:     return createListcell(PQL_INDEXED_ICON,     "Indexed");
+            case CANNOTINDEX: return createListcell(PQL_CANNOTINDEX_ICON, "Cannot index");
+            default:          return createListcell(PQL_ERROR_ICON,       "Unknown index status code: " + status);
+            }
+        } catch (Throwable e) {
+            LOGGER.warn("Unable to obtain index status for process " + id + "/" + branch + "/" + version, e);
+            return createListcell(PQL_ERROR_ICON, e.toString());
+        }
+    }
+
+    private Listcell createListcell(String iconPath, String tooltip) {
         Listcell lc = new Listcell();
         lc.appendChild(new Image(iconPath));
         lc.setStyle(CENTRE_ALIGN);

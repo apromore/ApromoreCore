@@ -21,7 +21,8 @@
 package org.apromore.portal.common;
 
 import org.apromore.model.FolderType;
-import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.SummaryType;
 import org.zkoss.zul.DefaultTreeNode;
 
 /**
@@ -55,20 +56,20 @@ public class FolderTreeNode extends DefaultTreeNode {
         setType(type);
     }
 
-    public FolderTreeNode(ProcessSummaryType data) {
+    public FolderTreeNode(SummaryType data) {
         super(data);
     }
 
-    public FolderTreeNode(ProcessSummaryType data, DefaultTreeNode[] children) {
+    public FolderTreeNode(SummaryType data, DefaultTreeNode[] children) {
         super(data, children);
     }
 
-    public FolderTreeNode(ProcessSummaryType data, DefaultTreeNode[] children, boolean open) {
+    public FolderTreeNode(SummaryType data, DefaultTreeNode[] children, boolean open) {
         super(data, children);
         setOpen(open);
     }
 
-    public FolderTreeNode(ProcessSummaryType data, DefaultTreeNode[] children, boolean open, FolderTreeNodeTypes type) {
+    public FolderTreeNode(SummaryType data, DefaultTreeNode[] children, boolean open, FolderTreeNodeTypes type) {
         super(data, children);
         setOpen(open);
         setType(type);

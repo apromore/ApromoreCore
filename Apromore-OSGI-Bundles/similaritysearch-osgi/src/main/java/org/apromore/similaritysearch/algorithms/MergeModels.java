@@ -251,7 +251,7 @@ public class MergeModels {
             ArrayList<VertexPair> sources = findSources(region);
             ArrayList<VertexPair> sinks = findSinks(region);
 
-            // process sinks
+            // process sinks (SPLIT)
             for (VertexPair sink : sinks) {
 
                 Vertex g1Sink = sink.getLeft();
@@ -309,7 +309,7 @@ public class MergeModels {
                         originalLabels.addAll(labels);
                     }
 
-                    edge.addLabels(originalLabels);
+//                    edge.addLabels(originalLabels);
                 } else {
                     for (Vertex v : g2SourceFoll) {
                         v.removeParent(g2Sink.getID());
@@ -329,7 +329,7 @@ public class MergeModels {
                 }
             }
 
-            // process sources
+            // process sources (JOIN)
             for (VertexPair source : sources) {
                 Vertex g1Source = source.getLeft();
                 Vertex g2Source = source.getRight();
@@ -444,11 +444,11 @@ public class MergeModels {
 
         long mergeTime = System.currentTimeMillis();
 
-//        for (Edge e : merged.getEdges()) {
-//            if(e.getLabels().size() == 0) {
-//               e.addLabels(labelsg1g2);
-//            }
-//        }
+        for (Edge e : merged.getEdges()) {
+            if(e.getLabels().size() == 0) {
+               e.addLabels(labelsg1g2);
+            }
+        }
 
         merged.cleanGraph();
 
@@ -524,6 +524,13 @@ public class MergeModels {
         for (Edge e : merged.getEdges()) {
             e.addLabelToModel();
         }
+
+        for (Edge e : merged.getEdges()) {
+            if(e.getLabels().size() == labelsg1g2.size()) {
+                e.getLabels().clear();
+            }
+        }
+
 
         long cleanTime = System.currentTimeMillis();
 

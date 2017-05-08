@@ -20,6 +20,8 @@
 
 package org.apromore.plugin.portal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Tab;
 
 import java.util.ArrayList;
@@ -32,15 +34,18 @@ import java.util.List;
  */
 public class SessionTab {
 
-    private static SessionTab sessionTab;
-    private HashMap<String, LinkedList<Tab>> mapTabs;
+    private static SessionTab sessionTab;  // singleton instance
+    private static Logger LOGGER = LoggerFactory.getLogger(SessionTab.class);
+    private HashMap<String, LinkedList<Tab>> mapTabs;  // value is the set of tabs for a user's session, keyed on their user ID
     private PortalContext portalContext;
 
     private SessionTab(PortalContext portalContext) {
+        assert portalContext != null;
         mapTabs = new HashMap<>();
         this.portalContext = portalContext;
     }
 
+    /** @param portalContext must not be <code>null</code> */
     public static SessionTab getSessionTab(PortalContext portalContext) {
         if(sessionTab == null) {
             sessionTab = new SessionTab(portalContext);
@@ -57,26 +62,29 @@ public class SessionTab {
         return tabs;
     }
 
+    /** @param id  a user ID
+     *  @return the tabs associated with that user's session */
     public List<Tab> getTabsSession(String id) {
         return new ArrayList<>(getTabs(id));
     }
 
-    public void addTabToSessionNoRefresh(String id, Tab tab) {
+    /** @param refresh  whether to refresh the tab bar in the UI */
+    public void addTabToSession(String id, Tab tab, boolean refresh) {
+        LOGGER.debug("Adding " + tab + " id=" + id + " to " + getTabs(id) + " refresh=" + refresh);
         getTabs(id).add(tab);
+        if (refresh) {
+            portalContext.refreshContent();
+        }
+        LOGGER.debug("Added " + tab + " id=" + id + " to " + getTabs(id));
     }
 
-    public void addTabToSession(String id, Tab tab) {
-        getTabs(id).add(tab);
-        portalContext.refreshContent();
-    }
-
-    public void removeTabFromSessionNoRefresh(String id, Tab tab) {
+    /** @param refresh  whether to refresh the tab bar in the UI */
+    public void removeTabFromSession(String id, Tab tab, boolean refresh) {
+        LOGGER.debug("Removing " + tab + " id=" + id + " from " + getTabs(id) + " refresh=" + refresh);
         getTabs(id).remove(tab);
+        if (refresh) {
+            portalContext.refreshContent();
+        }
+        LOGGER.debug("Removed " + tab + " id=" + id + " from " + getTabs(id));
     }
-
-    public void removeTabFromSession(String id, Tab tab) {
-        getTabs(id).remove(tab);
-        portalContext.refreshContent();
-    }
-
 }

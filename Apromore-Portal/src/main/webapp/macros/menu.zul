@@ -20,11 +20,13 @@
 
 <!-- Controller is  MenuController-->
 <menubar id="operationMenu" width="100%">
-    <menu id="process" label="Process">
+    <menu id="process" label="File">
         <menupopup>
             <menuitem id="createProcess" label="Create model" disabled="true" image="/img/new.png"/>
             <menuitem id="fileImport" label="Import" disabled="true" image="/img/import.png"/>
             <menuitem id="fileExport" label="Export" disabled="true" image="/img/export.png"/>
+            <menuitem id="fileImportLog" label="Import Log" disabled="true" image="/img/import.png"/>
+            <menuitem id="fileExportLog" label="Export Log" disabled="true" image="/img/export.png"/>
             <menuitem id="processEdit" label="Edit model" disabled="true" image="/img/edit.png"/>
             <menuitem id="dataEdit" label="Edit meta data" disabled="true" image="/img/edit_metadata.png"/>
             <menuitem id="processDelete" label="Delete" disabled="true" image="/img/delete.png"/>
@@ -33,28 +35,7 @@
             <menuitem id="processPaste" label="Paste" disabled="true" image="/img/paste.png"/>
             <menuitem id="processMove" label="Move" disabled="true" image="/img/move.png"/>
             <menuseparator/>
-            <menuitem id="processDeploy" label="Deploy Process" disabled="true" image="/img/deploy.png"/>
-        </menupopup>
-    </menu>
-    <menu id="filtering" label="Filtering">
-        <menupopup>
-            <menuitem id="similarityClusters" label="Clone Detection" disabled="true" image="/img/approx_clones.png"/>
-            <menuitem id="compare" label="Compare Processes" disabled="true" image="/img/compare.png"/>
-            <menuitem id="queryPQL" label="PQL Query" disabled="true" image="/img/query.png"/>
-        </menupopup>
-    </menu>
-    <menu id="design" label="Design">
-        <menupopup>
-            <!--
-            <menuitem id="structProcess" label="Structure process" disabled="true" image="img/BPStruct.png"/>
-            <menuseparator/>
-            <menuitem id="miningBPMNMiner" label="Automated discovery" disabled="true" image="img/icon/bpmn-22x22.png"/>
-            <menuseparator/>
-            <menuitem id="designMerging" label="Merging" disabled="true" image="/img/merge.png"/>
-            <menuseparator/>
-            -->
-            <menuitem id="designConfiguration" label="Questionnaire-driven configuration" disabled="true" image="/img/configuration.png"/>
-            <menuitem id="designCmap" label="Define model:questionnaire mapping" disabled="true" image="/img/cmap.png"/>
+            <menuitem id="processDeploy" label="Deploy Process to YAWL" disabled="true" image="/img/deploy.png"/>
         </menupopup>
     </menu>
 </menubar>

@@ -21,6 +21,7 @@
 package org.apromore.plugin.portal;
 
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 
 import java.util.List;
@@ -35,11 +36,11 @@ public interface PortalSelection {
     /**
      * @return a Map of the selected processes and respective versions
      */
-    Map<ProcessSummaryType, List<VersionSummaryType>> getSelectedProcessModelVersions();
+    Map<SummaryType, List<VersionSummaryType>> getSelectedProcessModelVersions();
 
     /**
      * @return the Set of currently selected process models
      */
-    Set<ProcessSummaryType> getSelectedProcessModels();
+    Set<SummaryType> getSelectedProcessModels();
 
 }

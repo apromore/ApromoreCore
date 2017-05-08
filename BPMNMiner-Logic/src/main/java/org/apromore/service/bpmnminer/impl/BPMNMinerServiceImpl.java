@@ -21,8 +21,9 @@
 package org.apromore.service.bpmnminer.impl;
 
 import java.util.*;
-import javax.inject.Inject;
 import javax.swing.UIManager;
+
+import javax.inject.Inject;
 
 import au.edu.qut.context.FakePluginContext;
 import au.edu.qut.util.LogOptimizer;
@@ -30,6 +31,7 @@ import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.models.graphbased.directed.conceptualmodels.ConceptualModel;
 import org.processmining.models.graphbased.directed.conceptualmodels.Entity;
 import org.processmining.plugins.bpmn.BpmnDefinitions;
@@ -117,9 +119,6 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
             }
         }
 
-        if(miningAlgorithm == 0) miningAlgorithm = 1;
-        else if(miningAlgorithm == 1) miningAlgorithm = 0;
-
         SelectMinerResult selectMinerResult = new SelectMinerResult(miningAlgorithm, interruptingEventTolerance, multiInstancePercentage,
                 multiInstanceTolerance, timerEventPercentage, timerEventTolerance, noiseThreshold);
 
@@ -127,6 +126,12 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
         BPMNSubProcessMiner bpmnSubProcessMiner = new BPMNSubProcessMiner(fakePluginContext);
         BPMNDiagram diagram = bpmnSubProcessMiner.mineBPMNModel(fakePluginContext, log, sortLog, selectMinerResult, dependencyAlgorithm, concModel,
                 groupEntities, candidatesEntities, selectedEntities, true);
+
+        for(Activity activity : diagram.getActivities()) {
+            if(activity.getLabel().endsWith("+complete")) {
+                activity.getAttributeMap().put("ProM_Vis_attr_label", activity.getLabel().substring(0, activity.getLabel().indexOf("+complete")));
+            }
+        }
 
         if( structProcess ) diagram = ibpstructService.structureProcess(diagram);
 

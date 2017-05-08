@@ -71,7 +71,7 @@ import org.apromore.graph.canonical.ResourceTypeEnum;
 import org.apromore.helper.PluginHelper;
 import org.apromore.helper.Version;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.SummariesType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.plugin.process.ProcessPlugin;
 import org.apromore.service.*;
@@ -120,7 +120,7 @@ import org.apache.commons.io.IOUtils;
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
-public class ProcessServiceImpl extends AbstractObservable implements ProcessService {
+public class ProcessServiceImpl implements ProcessService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
@@ -207,8 +207,8 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
      *      {@inheritDoc}
      */
     @Override
-    public ProcessSummariesType readProcessSummaries(final Integer folderId, final String searchExpression) {
-        ProcessSummariesType processSummaries = null;
+    public SummariesType readProcessSummaries(final Integer folderId, final String searchExpression) {
+        SummariesType processSummaries = null;
 
         try {
             // Firstly, do we need to use the searchExpression
@@ -255,16 +255,13 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
             }
 
             pmv = addProcess(process, processName, version, Constants.TRUNK_NAME, created, lastUpdate, cpf, nativeType);
+            LOGGER.info("Process model version: " + pmv);
             formatSrv.storeNative(processName, pmv, created, lastUpdate, user, nativeType, Constants.INITIAL_ANNOTATION, cpf);
 
             workspaceSrv.addProcessToFolder(process.getId(), folderId);
             LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>IMPORT: "+ processName+" "+process.getId());//call when net is change and then save
 
-            // Index for PQL
-            //notifyUpdate(pmv);
-
-            // Notify process plugin providers
-            notifyProcessPlugins(pmv);
+            notifyProcessPlugins(pmv);  // Notify process plugin providers
 
         } catch (UserNotFoundException | JAXBException | IOException e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
@@ -283,16 +280,18 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
      * @param pmv  the changed process model version
      */
     private void notifyProcessPlugins(ProcessModelVersion pmv) {
-        LOGGER.info("Notifying " + processPlugins.size() + " process plugins");
+        LOGGER.info("Notifying " + processPlugins.size() + " process plugins of change in " + pmv);
         for (ProcessPlugin processPlugin: processPlugins) {
             LOGGER.info("Notifying process plugin " + processPlugin);
             try {
-                int id = pmv.getId();
+                int id = pmv.getProcessBranch().getProcess().getId();
                 String branch = pmv.getProcessBranch().getBranchName();
                 Version version = new Version(pmv.getVersionNumber());
                 processPlugin.processChanged(id, branch, version);
             } catch (ProcessPlugin.ProcessChangedException e) {
                 LOGGER.warn("Process plugin " + processPlugin + " failed to change process", e);
+            } catch (Throwable e) {
+                LOGGER.error("Failed to notify process plugin", e);
             }
         }
     }
@@ -315,7 +314,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
                 Process process = processRepo.findOne(processId);
                 pmv = addProcess(process, processName, versionNumber, newBranchName, now, now, cpf, nativeType);
 
-                notifyUpdate(pmv);  // update PQL index
+                notifyProcessPlugins(pmv);  // Notify process plugin providers
                 LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATE: ", processName);//call when net is change and then save
 
             } else {
@@ -324,7 +323,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
                     throw new ImportException("Permission to change this model denied.  No user specified.");
                 } else if (canUserWriteProcess(user, processId)) {
                     pmv = updateExistingProcess(processId, processName, originalBranchName, versionNumber, originalVersionNumber, lockStatus, cpf, nativeType);
-                    notifyUpdate(pmv);  // update the PQL index
+                    notifyProcessPlugins(pmv);  // Notify process plugin providers
                     LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>UPDATEEXISTINGPROCESS: ", processName);//call when a net is created, change version
                 } else {
                     throw new ImportException("Permission to change this model denied.  Try saving as a new branch instead.");
@@ -700,7 +699,7 @@ public class ProcessServiceImpl extends AbstractObservable implements ProcessSer
                     }
 
                     // Also delete the PQL index for this process model version
-                    notifyDelete(pvid);
+                    //notifyDelete(pvid);
 
                     // Notify process plugin providers
                     notifyProcessPlugins(pvid);
