@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>noisefiltering-event-commandline</artifactId>
-            <version>1.0.20170504</version>
+            <version>1.0.20170509</version>
         </dependency>
     </dependencies>
 </project>
