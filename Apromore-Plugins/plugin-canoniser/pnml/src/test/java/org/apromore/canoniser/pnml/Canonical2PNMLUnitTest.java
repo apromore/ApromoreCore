@@ -256,7 +256,7 @@ public class Canonical2PNMLUnitTest {
 
 
     // Internal methods
-    
+
     private PnmlType decanonise(final String  cpfFileName,
                                 final String  anfFileName,
                                 final String  pnmlFileName,
