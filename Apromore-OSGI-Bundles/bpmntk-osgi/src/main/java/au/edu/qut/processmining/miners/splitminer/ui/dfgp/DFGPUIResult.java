@@ -10,11 +10,18 @@ public class DFGPUIResult {
 
     private double frequencyThreshold;
     private double parallelismsThreshold;
+    private FilterType filterType;
+
+    public enum FilterType{STD, GUB, LPS, WTH}
 
     public DFGPUIResult() {
         frequencyThreshold = FREQUENCY_THRESHOLD;
         parallelismsThreshold = PARALLELISMS_THRESHOLD;
+        filterType = FilterType.STD;
     }
+
+    public FilterType getFilterType() { return filterType; }
+    public void setFilterType(FilterType filterType) { this.filterType = filterType; }
 
     public double getFrequencyThreshold() {
         return frequencyThreshold;
