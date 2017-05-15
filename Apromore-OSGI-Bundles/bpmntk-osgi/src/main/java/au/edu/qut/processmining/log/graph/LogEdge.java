@@ -57,9 +57,12 @@ public class LogEdge implements Comparable {
 
     public void setSource(LogNode source){ this.source = source; }
     public LogNode getSource(){ return source; }
+    public int getSourceCode() { return source.getCode(); }
+
 
     public void setTarget(LogNode target) { this.target = target; }
     public LogNode getTarget(){ return target; }
+    public int getTargetCode() { return target.getCode(); }
 
     @Override
     public int compareTo(Object o) {

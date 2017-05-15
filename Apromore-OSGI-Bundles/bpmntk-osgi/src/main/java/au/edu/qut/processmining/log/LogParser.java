@@ -20,12 +20,14 @@
 
 package au.edu.qut.processmining.log;
 
-import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by Adriano on 14/06/2016.
@@ -35,13 +37,16 @@ public class LogParser {
     private static final int STARTCODE = 0;
     private static final int ENDCODE = -1;
 
+
     public static SimpleLog getSimpleLog(XLog log) {
 //        System.out.println("LOGP - starting ... ");
 //        System.out.println("LOGP - input log size: " + log.size());
 
         SimpleLog sLog;
 
-        HashMap<String, Integer> parsed = new HashMap<>();  //this maps the original name of an event to its code
+        HashSet<String> labels = new HashSet<>();
+        ArrayList<String> orderedLabels;
+        HashMap<String, Integer> labelsToIDs = new HashMap<>();  //this maps the original name of an event to its code
         HashMap<Integer, String> events = new HashMap<>();  //this maps the code of the event to its original name
         HashMap<String, Integer> traces = new HashMap<>();  //this is the simple log, each trace is a string associated to its frequency
 
@@ -54,7 +59,7 @@ public class LogParser {
         XEvent event;
         String label;
 
-        int eventCounter;
+        int LID;
         long totalEvents;
         long oldTotalEvents;
 
@@ -68,9 +73,34 @@ public class LogParser {
         events.put(STARTCODE, "autogen-start");
         events.put(ENDCODE, "autogen-end");
 
-        totalEvents = 0;
-        eventCounter = 1;
 
+        for( tIndex = 0; tIndex < totalTraces; tIndex++ ) {
+            /*  we firstly get all the concept names
+            *   and we map them into numbers for fast processing
+            */
+
+            trace = log.get(tIndex);
+            traceSize = trace.size();
+
+            for( eIndex = 0; eIndex < traceSize; eIndex++ ) {
+                event = trace.get(eIndex);
+                label = event.getAttributes().get("concept:name").toString();
+                labels.add(label);
+            }
+        }
+
+        orderedLabels = new ArrayList<>(labels);
+        Collections.sort(orderedLabels);
+
+        LID = 1;
+        for( String l : orderedLabels ) {
+            labelsToIDs.put(l, LID);
+            events.put(LID, l);
+//            System.out.println("DEBUG - ID:label - " + LID + ":" + l);
+            LID++;
+        }
+
+        totalEvents = 0;
         for( tIndex = 0; tIndex < totalTraces; tIndex++ ) {
             /* we convert each trace in the log into a string
             *  each string will be a sequence of "::x" terminated with "::", where:
@@ -86,18 +116,11 @@ public class LogParser {
                 totalEvents++;
                 event = trace.get(eIndex);
                 label = event.getAttributes().get("concept:name").toString();
-
-                if( !parsed.containsKey(label) ) {
-                    parsed.put(label, eventCounter);
-                    events.put(eventCounter, label);
-                    eventCounter++;
-                }
-
-                sTrace += ":" + parsed.get(label).toString() + ":";
+                sTrace += ":" + labelsToIDs.get(label).toString() + ":";
             }
             sTrace += ":" + Integer.toString(ENDCODE) + "::";
-            traceLength = totalEvents - oldTotalEvents;
 
+            traceLength = totalEvents - oldTotalEvents;
             if( longestTrace < traceLength ) longestTrace = traceLength;
             if( shortestTrace > traceLength ) shortestTrace = traceLength;
 

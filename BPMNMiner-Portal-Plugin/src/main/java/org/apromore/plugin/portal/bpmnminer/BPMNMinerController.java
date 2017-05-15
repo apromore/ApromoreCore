@@ -196,6 +196,7 @@ public class BPMNMinerController {
             });
             this.okButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
+                    setupMiningAlgorithm();
                     createCanditatesEntity();
                 }
             });
@@ -276,6 +277,10 @@ public class BPMNMinerController {
 
     protected void cancel() {
         this.bpmnMinerW.detach();
+    }
+
+    protected void setupMiningAlgorithm() {
+
     }
 
     protected void createCanditatesEntity() {

@@ -63,7 +63,7 @@ public class DFGPPlugin {
         net.buildDFGP();
 
         if( debug ) {
-            net.printFrequencies();
+            net.printNodes();
             net.printParallelisms();
         }
 

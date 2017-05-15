@@ -63,7 +63,7 @@ public class LogNode implements Comparable {
     public void setLabel(String label) { this.label = label; }
     public String getLabel() { return label; }
 
-    public void setCode(int code) { this.code = code; }
+//    public void setCode(int code) { this.code = code; }
     public int getCode() { return code; }
 
     public void increaseFrequency() { frequency++; }

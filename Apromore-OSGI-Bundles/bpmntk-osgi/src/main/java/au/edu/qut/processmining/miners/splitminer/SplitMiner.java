@@ -85,9 +85,13 @@ public class SplitMiner {
 //        System.out.println("SplitMiner - log parsed successfully");
 
         generateDFGP(frequencyThreshold, parallelismsThreshold, filterType);
-        transformDFGPintoBPMN();
-
-        if( structuringTime == SplitMinerUIResult.StructuringTime.POST ) structure();
+        try {
+            transformDFGPintoBPMN();
+            if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
+        } catch(Exception e) {
+            System.out.println("ERROR - something went wrong building translating DFG to BPMN");
+            return dfgp.convertIntoBPMNDiagram();
+        }
 
         return bpmnDiagram;
     }

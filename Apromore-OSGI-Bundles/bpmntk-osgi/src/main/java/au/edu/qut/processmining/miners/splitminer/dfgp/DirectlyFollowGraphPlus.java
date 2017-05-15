@@ -68,7 +68,6 @@ public class DirectlyFollowGraphPlus {
     private Set<Integer> loopsL1;
     private Set<DFGEdge> loopsL2;
     private Map<Integer, HashSet<Integer>> parallelisms;
-    private Set<DFGEdge> bestEdges;
 
     private double frequencyThreshold;
     private double parallelismsThreshold;
@@ -107,8 +106,8 @@ public class DirectlyFollowGraphPlus {
         }
 
         for( DFGEdge edge : edges ) {
-            src = mapping.get(edge.getSource().getCode());
-            tgt = mapping.get(edge.getTarget().getCode());
+            src = mapping.get(edge.getSourceCode());
+            tgt = mapping.get(edge.getTargetCode());
             diagram.addFlow(src, tgt, edge.toString());
         }
 
@@ -134,8 +133,8 @@ public class DirectlyFollowGraphPlus {
         }
 
         for( DFGEdge edge : edges ) {
-            src = mapping.get(edge.getSource().getCode());
-            tgt = mapping.get(edge.getTarget().getCode());
+            src = mapping.get(edge.getSourceCode());
+            tgt = mapping.get(edge.getTargetCode());
             diagram.addFlow(src, tgt, edge.toString());
         }
 
@@ -154,6 +153,7 @@ public class DirectlyFollowGraphPlus {
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
         detectParallelisms(parallelismsThreshold);  //depends on detectLoops()
 
+//        printEdges();
 //        System.out.println("DEBUG - edges before filtering: " + edges.size());
         switch(filterType) {                        //depends on detectParallelisms()
             case STD: standardFiltering();
@@ -183,7 +183,6 @@ public class DirectlyFollowGraphPlus {
         DFGNode node;
         DFGNode prevNode;
         DFGEdge edge;
-        String eLabel;
 
         DFGNode autogenStart;
         DFGNode autogenEnd;
@@ -259,8 +258,8 @@ public class DirectlyFollowGraphPlus {
 
 //        System.out.println("DFGP - evaluating loops length ONE ...");
         for( DFGEdge e : edges ) {
-            src = e.getSource().getCode();
-            tgt = e.getTarget().getCode();
+            src = e.getSourceCode();
+            tgt = e.getTargetCode();
             if( src == tgt ) {
                 loopsL1.add(src);
                 removableLoopEdges.add(e);
@@ -275,11 +274,10 @@ public class DirectlyFollowGraphPlus {
 //        for( int code : loopsL1 ) System.out.println("DEBUG - self-loop: " + code);
 
         for( DFGEdge e1 : edges )  {
-            src = e1.getSource().getCode();
-            tgt = e1.getTarget().getCode();
+            src = e1.getSourceCode();
+            tgt = e1.getTargetCode();
 
-//            if src OR tgt are length 1 loops,
-//            we do not evaluate length 2 loops for this edge,
+//            if src OR tgt are length 1 loops, we do not evaluate length 2 loops for this edge,
 //            because a length 1 loop in parallel with something else
 //            can generate pattern of the type [src :: tgt :: src] OR [tgt :: src :: tgt]
             if( !loopsL2.contains(e1) && dfgp.get(tgt).containsKey(src) && !loopsL1.contains(src) && !loopsL1.contains(tgt) ) {
@@ -324,14 +322,11 @@ public class DirectlyFollowGraphPlus {
 
         parallelisms = new HashMap<>();
 
-        for( DFGEdge e1 : edges ) {
-            src = e1.getSource().getCode();
-            tgt = e1.getTarget().getCode();
+        for (DFGEdge e1 : edges) {
+            src = e1.getSourceCode();
+            tgt = e1.getTargetCode();
 
-//            we never consider a possible parallelism and edge that is
-//            the best successor or predecessor of src or tgt
-
-            if( !loopsL2.contains(e1) && !removableEdges.contains(e1) && dfgp.get(tgt).containsKey(src) ) {
+            if (!loopsL2.contains(e1) && !removableEdges.contains(e1) && dfgp.get(tgt).containsKey(src)) {
 //                this means: src || tgt is candidate parallelism
                 e2 = dfgp.get(tgt).get(src);
 
@@ -339,14 +334,14 @@ public class DirectlyFollowGraphPlus {
                 tgt2src_frequency = e2.getFrequency();
                 parallelismScore = (double) (src2tgt_frequency - tgt2src_frequency) / (src2tgt_frequency + tgt2src_frequency);
 
-                if( Math.abs(parallelismScore) < epslon ) {
+                if (Math.abs(parallelismScore) < epslon) {
 //                    if parallelismScore is less than the threshold epslon,
 //                    we set src || tgt and vice-versa, and we remove e1 and e2
 //                    if( bestEdges.contains(e1) && !bestEdges.contains(e2) )  continue;
 //                    if( !bestEdges.contains(e1) && bestEdges.contains(e2) )  removableEdges.add(e1);
-                    if( !parallelisms.containsKey(src) ) parallelisms.put(src, new HashSet<Integer>());
+                    if (!parallelisms.containsKey(src)) parallelisms.put(src, new HashSet<Integer>());
                     parallelisms.get(src).add(tgt);
-                    if( !parallelisms.containsKey(tgt) ) parallelisms.put(tgt, new HashSet<Integer>());
+                    if (!parallelisms.containsKey(tgt)) parallelisms.put(tgt, new HashSet<Integer>());
                     parallelisms.get(tgt).add(src);
                     removableEdges.add(e1);
                     removableEdges.add(e2);
@@ -359,7 +354,19 @@ public class DirectlyFollowGraphPlus {
             }
         }
 
-        for( DFGEdge re : removableEdges ) this.removeEdge(re, true);
+        ArrayList<DFGEdge> orderedRemovableEdges = new ArrayList<>(removableEdges);
+        Collections.sort(orderedRemovableEdges);
+        while( !orderedRemovableEdges.isEmpty() ) {
+            DFGEdge re = orderedRemovableEdges.remove(0);
+            if( !this.removeEdge(re, true) ) {
+//                System.out.println("DEBUG - impossible remove: " + re.print());
+                src = re.getSourceCode();
+                tgt = re.getTargetCode();
+                if( parallelisms.containsKey(src) ) parallelisms.get(src).remove(tgt);
+                if( parallelisms.containsKey(tgt) ) parallelisms.get(tgt).remove(src);
+                if( (re = dfgp.get(tgt).get(src)) != null ) this.removeEdge(re, true);
+            }
+        }
 
 //        System.out.println("DFGP - parallelisms found: " + totalParallelisms);
     }
@@ -380,7 +387,7 @@ public class DirectlyFollowGraphPlus {
         int tgt;
         DFGEdge recoverableEdge;
 
-        bestEdges = getMostFrequentSuccessorsAndPredecessors();
+        Set<DFGEdge> bestEdges = getMostFrequentSuccessorsAndPredecessors();
         ArrayList<DFGEdge> frequencyOrderedBestEdges = new ArrayList<>(bestEdges);
 
         for( DFGEdge e : new HashSet<>(edges) ) this.removeEdge(e, false);
@@ -389,9 +396,9 @@ public class DirectlyFollowGraphPlus {
         for( int i = (frequencyOrderedBestEdges.size()-1); i >= 0; i-- ) {
             recoverableEdge = frequencyOrderedBestEdges.get(i);
 
-            src = recoverableEdge.getSource().getCode();
-            tgt = recoverableEdge.getTarget().getCode();
-            if( outgoings.get(src).isEmpty() || incomings.get(tgt).isEmpty() ) addEdge(recoverableEdge);
+            src = recoverableEdge.getSourceCode();
+            tgt = recoverableEdge.getTargetCode();
+            if( outgoings.get(src).isEmpty() || incomings.get(tgt).isEmpty() ) this.addEdge(recoverableEdge);
         }
     }
 
@@ -401,14 +408,13 @@ public class DirectlyFollowGraphPlus {
         int threshold;
         DFGEdge recoverableEdge;
 
-        bestEdges = getMostFrequentSuccessorsAndPredecessors();
+        Set<DFGEdge> bestEdges = getMostFrequentSuccessorsAndPredecessors();
         ArrayList<DFGEdge> frequencyOrderedOptimalEdges = new ArrayList<>(bestEdges);
 
         Collections.sort(frequencyOrderedOptimalEdges);
         threshold = frequencyOrderedOptimalEdges.get(frequencyOrderedOptimalEdges.size()/3).getFrequency();
-//        System.out.println("DEBUG - filter with threshold: " + threshold);
 
-        for( DFGEdge e : frequencyOrderedOptimalEdges ) this.removeEdge(e, false);
+        for( DFGEdge e : bestEdges ) this.removeEdge(e, false);
         for( DFGEdge e : new HashSet<>(edges) ) {
             if( e.getFrequency() > threshold ) frequencyOrderedOptimalEdges.add(e);
             this.removeEdge(e, false);
@@ -417,12 +423,11 @@ public class DirectlyFollowGraphPlus {
         Collections.sort(frequencyOrderedOptimalEdges);
         for( int i = (frequencyOrderedOptimalEdges.size()-1); i >= 0; i-- ) {
             recoverableEdge = frequencyOrderedOptimalEdges.get(i);
-//            System.out.println("DEBUG - edge: " + recoverableEdge.getFrequency());
-            if( recoverableEdge.getFrequency() > threshold ) addEdge(recoverableEdge);
+            if( recoverableEdge.getFrequency() > threshold ) this.addEdge(recoverableEdge);
             else {
-                src = recoverableEdge.getSource().getCode();
-                tgt = recoverableEdge.getTarget().getCode();
-                if( outgoings.get(src).isEmpty() || incomings.get(tgt).isEmpty()) addEdge(recoverableEdge);
+                src = recoverableEdge.getSourceCode();
+                tgt = recoverableEdge.getTargetCode();
+                if( outgoings.get(src).isEmpty() || incomings.get(tgt).isEmpty() ) this.addEdge(recoverableEdge);
             }
         }
 
@@ -442,7 +447,7 @@ public class DirectlyFollowGraphPlus {
         Node<String> srcANode, tgtANode;
         Edge<String> aedge;
 
-        bestEdges = getMostFrequentSuccessorsAndPredecessors();
+        Set<DFGEdge> bestEdges = getMostFrequentSuccessorsAndPredecessors();
 
         for( DFGEdge e : edges ) {
             src = e.getSource();
@@ -573,7 +578,7 @@ public class DirectlyFollowGraphPlus {
         while( !toVisit.isEmpty() ) {
             src = toVisit.removeFirst();
             for( DFGEdge oe : outgoings.get(src) ) {
-                tgt = oe.getTarget().getCode();
+                tgt = oe.getTargetCode();
                 if( !visited.contains(tgt) ) {
                     toVisit.addLast(tgt);
                     visited.add(tgt);
@@ -607,8 +612,8 @@ public class DirectlyFollowGraphPlus {
     }
 
     private void addEdge(DFGEdge e) {
-        int src = e.getSource().getCode();
-        int tgt = e.getTarget().getCode();
+        int src = e.getSourceCode();
+        int tgt = e.getTargetCode();
 
         edges.add(e);
         incomings.get(tgt).add(e);
@@ -618,24 +623,29 @@ public class DirectlyFollowGraphPlus {
 //        System.out.println("DEBUG - added edge: " + src + " -> " + tgt);
     }
 
-    private void removeEdge(DFGEdge e, boolean safe) {
-        int src = e.getSource().getCode();
-        int tgt = e.getTarget().getCode();
-        if( safe && ((incomings.get(tgt).size() == 1) || (outgoings.get(src).size() == 1)) ) return;
+    private boolean removeEdge(DFGEdge e, boolean safe) {
+        int src = e.getSourceCode();
+        int tgt = e.getTargetCode();
+        if( safe && ((incomings.get(tgt).size() == 1) || (outgoings.get(src).size() == 1)) ) return false;
         incomings.get(tgt).remove(e);
         outgoings.get(src).remove(e);
         dfgp.get(src).remove(tgt);
         edges.remove(e);
+        return true;
 //        System.out.println("DEBUG - removed edge: " + src + " -> " + tgt);
     }
 
 
     /* DEBUG methods */
 
-    public void printFrequencies() {
-        System.out.println("DEBUG - printing frequencies:");
-        for( DFGNode node : nodes.values() )
-            System.out.println("DEBUG - " + node.getCode() + " = " + node.getFrequency());
+    private void printEdges() {
+        for(DFGEdge e : edges)
+            System.out.println("DEBUG - edge : " + e.print());
+    }
+
+    public void printNodes() {
+        for( DFGNode n : nodes.values() )
+            System.out.println("DEBUG - node : " + n.print());
     }
 
     public void printParallelisms() {

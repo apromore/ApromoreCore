@@ -57,11 +57,15 @@ public class DFGEdge extends LogEdge {
     @Override
     public String toString() { return Integer.toString(frequency); }
 
+    public String print() { return getSourceCode() + " > " + getTargetCode() + " [" + getFrequency() + "]"; }
+
     @Override
     public int compareTo(Object o) {
         if( (o instanceof DFGEdge) ) {
-            if( frequency == (((DFGEdge) o).frequency) ) return source.getCode() - target.getCode();
-            else return frequency - ((DFGEdge) o).frequency;
+            if( frequency == (((DFGEdge) o).frequency) ) {
+                if( getSourceCode() == ((DFGEdge) o).getSourceCode() ) return getTargetCode() - ((DFGEdge) o).getTargetCode();
+                else return getSourceCode() - ((DFGEdge) o).getSourceCode();
+            } else return frequency - ((DFGEdge) o).frequency;
         } else return -1;
     }
 }
