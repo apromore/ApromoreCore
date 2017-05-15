@@ -13,9 +13,9 @@ public class DFGPUI {
     public DFGPUIResult showGUI(UIPluginContext context, String title) {
 
         DFGPSettings dfgpSettings = new DFGPSettings();
-        TaskListener.InteractionResult guiResult = context.showWizard(title, true, true, dfgpSettings);
+        TaskListener.InteractionResult GUI = context.showWizard(title, true, true, dfgpSettings);
 
-        if( guiResult == TaskListener.InteractionResult.CANCEL ) {
+        if( GUI == TaskListener.InteractionResult.CANCEL ) {
             context.getFutureResult(0).cancel(true);
             throw new CancellationException("The wizard has been cancelled.");
         }

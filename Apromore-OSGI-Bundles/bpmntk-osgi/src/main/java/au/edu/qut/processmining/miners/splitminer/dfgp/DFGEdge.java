@@ -59,7 +59,9 @@ public class DFGEdge extends LogEdge {
 
     @Override
     public int compareTo(Object o) {
-        if( (o instanceof DFGEdge) ) return frequency - ((DFGEdge) o).frequency;
-        else return -1;
+        if( (o instanceof DFGEdge) ) {
+            if( frequency == (((DFGEdge) o).frequency) ) return source.getCode() - target.getCode();
+            else return frequency - ((DFGEdge) o).frequency;
+        } else return -1;
     }
 }

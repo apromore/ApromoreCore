@@ -28,6 +28,7 @@ import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
 import au.edu.qut.processmining.miners.splitminer.oracle.Oracle;
 import au.edu.qut.processmining.miners.splitminer.oracle.OracleItem;
+import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
@@ -70,7 +71,7 @@ public class SplitMiner {
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
-    public BPMNDiagram mineBPMNModel(XLog log, double frequencyThreshold, double parallelismsThreshold,
+    public BPMNDiagram mineBPMNModel(XLog log, double frequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType,
                                      boolean replaceIORs, SplitMinerUIResult.StructuringTime structuringTime)
     {
 //        System.out.println("SplitMiner - starting ...");
@@ -83,7 +84,7 @@ public class SplitMiner {
         this.log = LogParser.getSimpleLog(log);
 //        System.out.println("SplitMiner - log parsed successfully");
 
-        generateDFGP(frequencyThreshold, parallelismsThreshold);
+        generateDFGP(frequencyThreshold, parallelismsThreshold, filterType);
         transformDFGPintoBPMN();
 
         if( structuringTime == SplitMinerUIResult.StructuringTime.POST ) structure();
@@ -91,8 +92,8 @@ public class SplitMiner {
         return bpmnDiagram;
     }
 
-    private void generateDFGP(double frequencyThreshold, double parallelismsThreshold) {
-        dfgp = new DirectlyFollowGraphPlus(log, frequencyThreshold, parallelismsThreshold);
+    private void generateDFGP(double frequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType) {
+        dfgp = new DirectlyFollowGraphPlus(log, frequencyThreshold, parallelismsThreshold, filterType);
         dfgp.buildDFGP();
     }
 

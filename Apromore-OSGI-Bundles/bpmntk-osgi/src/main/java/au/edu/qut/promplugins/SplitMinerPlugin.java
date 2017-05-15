@@ -58,18 +58,9 @@ public class SplitMinerPlugin {
         SplitMinerUI gui = new SplitMinerUI();
         SplitMinerUIResult result = gui.showGUI(context, "Setup HM+");
 
-        SplitMiner hmp = new SplitMiner();
-        hmp.mineBPMNModel( log, result.getFrequencyThreshold(), result.getParallelismsThreshold(),
-                                result.isReplaceIORs(), result.getStructuringTime());
-
-        DirectlyFollowGraphPlus dfgp = hmp.getDfgp();
-
-        if( debug ) {
-            dfgp.printFrequencies();
-            dfgp.printParallelisms();
-        }
-
-        output = hmp.getBPMNDiagram();
+        SplitMiner sm = new SplitMiner();
+        output = sm.mineBPMNModel( log, result.getFrequencyThreshold(), result.getParallelismsThreshold(),
+                                        result.getFilterType(), result.isReplaceIORs(), result.getStructuringTime());
 
         return output;
     }

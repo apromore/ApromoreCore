@@ -20,6 +20,7 @@
 
 package au.edu.qut.processmining.log;
 
+import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -113,7 +114,7 @@ public class LogParser {
 //        System.out.println("DEBUG - final mapping:");
 //        for( int code : events.keySet() ) System.out.println("DEBUG - " + code + " = " + events.get(code));
 
-        sLog = new SimpleLog(traces, events);
+        sLog = new SimpleLog(traces, events, log);
         sLog.setStartcode(STARTCODE);
         sLog.setEndcode(ENDCODE);
         sLog.setTotalEvents(totalEvents);
