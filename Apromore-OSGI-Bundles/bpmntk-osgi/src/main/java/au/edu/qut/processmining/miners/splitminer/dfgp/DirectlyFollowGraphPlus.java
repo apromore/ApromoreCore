@@ -69,7 +69,7 @@ public class DirectlyFollowGraphPlus {
     private Set<DFGEdge> loopsL2;
     private Map<Integer, HashSet<Integer>> parallelisms;
 
-    private double frequencyThreshold;
+    private double percentileFrequencyThreshold;
     private double parallelismsThreshold;
     private DFGPUIResult.FilterType filterType;
 
@@ -77,11 +77,11 @@ public class DirectlyFollowGraphPlus {
         this(log, DFGPUIResult.FREQUENCY_THRESHOLD, DFGPUIResult.PARALLELISMS_THRESHOLD, DFGPUIResult.FilterType.STD);
     }
 
-    public DirectlyFollowGraphPlus(SimpleLog log, double frequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType) {
+    public DirectlyFollowGraphPlus(SimpleLog log, double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType) {
         this.log = log;
         this.startcode = log.getStartcode();
         this.endcode = log.getEndcode();
-        this.frequencyThreshold = frequencyThreshold;
+        this.percentileFrequencyThreshold = percentileFrequencyThreshold;
         this.parallelismsThreshold = parallelismsThreshold;
         this.filterType = filterType;
     }
@@ -153,19 +153,16 @@ public class DirectlyFollowGraphPlus {
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
         detectParallelisms(parallelismsThreshold);  //depends on detectLoops()
 
-//        printEdges();
-//        System.out.println("DEBUG - edges before filtering: " + edges.size());
         switch(filterType) {                        //depends on detectParallelisms()
-            case STD: standardFiltering();
+            case STD: standardFilter();
                 break;
             case GUB: generateNoiseFilteredDFG();
                 break;
-            case LPS: noiseFiltering(false);
+            case LPS: noiseFilter(false);
                 break;
             case WTH: filterWithThreshold();
                 break;
         }
-//        System.out.println("DEBUG - edges after filtering: " + edges.size());
 
         exploreAndRemove();                         //last method to execute
     }
@@ -371,6 +368,14 @@ public class DirectlyFollowGraphPlus {
 //        System.out.println("DFGP - parallelisms found: " + totalParallelisms);
     }
 
+    private int getFilteringThreshold() {
+        ArrayList<DFGEdge> frequencyOrderedEdges = new ArrayList<>(edges);
+        Collections.sort(frequencyOrderedEdges);
+        int i = (int)Math.round(frequencyOrderedEdges.size()*percentileFrequencyThreshold);
+
+        return frequencyOrderedEdges.get(i).getFrequency();
+    }
+
     private Set<DFGEdge> getMostFrequentSuccessorsAndPredecessors() {
         Set<DFGEdge> bestEdges = new HashSet<>();
 
@@ -382,7 +387,7 @@ public class DirectlyFollowGraphPlus {
         return bestEdges;
     }
 
-    private void standardFiltering() {
+    private void standardFilter() {
         int src;
         int tgt;
         DFGEdge recoverableEdge;
@@ -405,24 +410,20 @@ public class DirectlyFollowGraphPlus {
     private void filterWithThreshold() {
         int src;
         int tgt;
-        int threshold;
+        int threshold = getFilteringThreshold();
         DFGEdge recoverableEdge;
 
-        Set<DFGEdge> bestEdges = getMostFrequentSuccessorsAndPredecessors();
-        ArrayList<DFGEdge> frequencyOrderedOptimalEdges = new ArrayList<>(bestEdges);
+        ArrayList<DFGEdge> orderedMostFrequentEdges = new ArrayList<>(getMostFrequentSuccessorsAndPredecessors());
 
-        Collections.sort(frequencyOrderedOptimalEdges);
-        threshold = frequencyOrderedOptimalEdges.get(frequencyOrderedOptimalEdges.size()/3).getFrequency();
-
-        for( DFGEdge e : bestEdges ) this.removeEdge(e, false);
+        for( DFGEdge e : orderedMostFrequentEdges ) this.removeEdge(e, false);
         for( DFGEdge e : new HashSet<>(edges) ) {
-            if( e.getFrequency() > threshold ) frequencyOrderedOptimalEdges.add(e);
+            if( e.getFrequency() > threshold ) orderedMostFrequentEdges.add(e);
             this.removeEdge(e, false);
         }
 
-        Collections.sort(frequencyOrderedOptimalEdges);
-        for( int i = (frequencyOrderedOptimalEdges.size()-1); i >= 0; i-- ) {
-            recoverableEdge = frequencyOrderedOptimalEdges.get(i);
+        Collections.sort(orderedMostFrequentEdges);
+        for( int i = (orderedMostFrequentEdges.size()-1); i >= 0; i-- ) {
+            recoverableEdge = orderedMostFrequentEdges.get(i);
             if( recoverableEdge.getFrequency() > threshold ) this.addEdge(recoverableEdge);
             else {
                 src = recoverableEdge.getSourceCode();
@@ -430,16 +431,16 @@ public class DirectlyFollowGraphPlus {
                 if( outgoings.get(src).isEmpty() || incomings.get(tgt).isEmpty() ) this.addEdge(recoverableEdge);
             }
         }
-
     }
 
-
-    private void noiseFiltering(boolean gurobi) {
+    private void noiseFilter(boolean gurobi) {
+        System.out.println("DEBUG - edges before filtering: " + edges.size());
         ILPSolver ilp_solver;
         Automaton<String> automaton = new Automaton<>();
         Set<Edge<String>> removable = new HashSet<>();
         LogNode src, tgt;
         int srcID, tgtID;
+        int threshold = getFilteringThreshold();
 
         Map<Integer, Node<String>> anodes = new HashMap<>();
         Map<Edge<String>, DFGEdge> aedges = new HashMap<>();
@@ -472,10 +473,12 @@ public class DirectlyFollowGraphPlus {
             } else tgtANode = anodes.get(tgtID);
 
             aedge = new Edge<>(srcANode, tgtANode);
-            aedge.setFrequency(e.getFrequency());
             automaton.addEdge(aedge);
             aedges.put(aedge, e);
-            if( !bestEdges.contains(e) ) removable.add(aedge);
+            if( !(bestEdges.contains(e) || (e.getFrequency() > threshold)) ) {
+                aedge.setInfrequent(true);
+                removable.add(aedge);
+            }
         }
 
 //        System.out.println("DEBUG - automaton start: " + automaton.getAutomatonStart());
@@ -484,6 +487,8 @@ public class DirectlyFollowGraphPlus {
         automaton.getAutomatonStart();
         automaton.getAutomatonEnd();
         automaton.createDirectedGraph();
+
+        for(Edge<String> e : automaton.getEdges()) e.setFrequency(getFrequency(automaton, e, AutomatonInfrequentBehaviourDetector.AVE));
 
         if(gurobi) ilp_solver = new Gurobi_Solver();
         else ilp_solver = new LPSolve_Solver();
@@ -496,10 +501,22 @@ public class DirectlyFollowGraphPlus {
 //            System.out.println("DEBUG - removing edge: " + ae.getSource().getData() + " > " + ae.getTarget().getData());
             edges.remove(aedges.get(ae));
         }
+        System.out.println("DEBUG - edges after filtering: " + edges.size());
+    }
+
+    private double getFrequency(Automaton<String> automaton, Edge<String> edge, int approach) {
+        if(approach == AutomatonInfrequentBehaviourDetector.MIN) {
+            return automaton.getEdgeFrequency(edge) / (Math.min(automaton.getNodeFrequency(edge.getSource()), automaton.getNodeFrequency(edge.getTarget())));
+        }else if(approach == AutomatonInfrequentBehaviourDetector.MAX) {
+            return automaton.getEdgeFrequency(edge) / (Math.max(automaton.getNodeFrequency(edge.getSource()), automaton.getNodeFrequency(edge.getTarget())));
+        }else if(approach == AutomatonInfrequentBehaviourDetector.AVE) {
+            return automaton.getEdgeFrequency(edge) / ((automaton.getNodeFrequency(edge.getSource()) + automaton.getNodeFrequency(edge.getTarget()))/2);
+        }
+        return 0.0;
     }
 
     private void generateNoiseFilteredDFG() {
-        double percentile = frequencyThreshold;
+        double percentile = percentileFrequencyThreshold;
 
         System.out.println("DEBUG - node before: " + nodes.size());
         System.out.println("DEBUG - edge before: " + edges.size());

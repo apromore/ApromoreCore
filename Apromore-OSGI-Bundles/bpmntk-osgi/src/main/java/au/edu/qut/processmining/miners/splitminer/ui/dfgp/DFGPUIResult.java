@@ -5,17 +5,17 @@ package au.edu.qut.processmining.miners.splitminer.ui.dfgp;
  */
 public class DFGPUIResult {
 
-    public static final double FREQUENCY_THRESHOLD = 1.0;
+    public static final double FREQUENCY_THRESHOLD = 0.33;
     public static final double PARALLELISMS_THRESHOLD = 0.10;
 
-    private double frequencyThreshold;
+    private double percentileFrequencyThreshold;
     private double parallelismsThreshold;
     private FilterType filterType;
 
     public enum FilterType{STD, GUB, LPS, WTH}
 
     public DFGPUIResult() {
-        frequencyThreshold = FREQUENCY_THRESHOLD;
+        percentileFrequencyThreshold = FREQUENCY_THRESHOLD;
         parallelismsThreshold = PARALLELISMS_THRESHOLD;
         filterType = FilterType.STD;
     }
@@ -23,11 +23,11 @@ public class DFGPUIResult {
     public FilterType getFilterType() { return filterType; }
     public void setFilterType(FilterType filterType) { this.filterType = filterType; }
 
-    public double getFrequencyThreshold() {
-        return frequencyThreshold;
+    public double getPercentileFrequencyThreshold() {
+        return percentileFrequencyThreshold;
     }
-    public void setFrequencyThreshold(double frequencyThreshold) {
-        this.frequencyThreshold = frequencyThreshold;
+    public void setPercentileFrequencyThreshold(double percentileFrequencyThreshold) {
+        this.percentileFrequencyThreshold = percentileFrequencyThreshold;
     }
 
     public double getParallelismsThreshold() {

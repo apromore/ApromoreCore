@@ -20,7 +20,6 @@
 
 package au.edu.qut.promplugins;
 
-import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
 import au.edu.qut.processmining.miners.splitminer.SplitMiner;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUI;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
@@ -59,7 +58,7 @@ public class SplitMinerPlugin {
         SplitMinerUIResult result = gui.showGUI(context, "Setup HM+");
 
         SplitMiner sm = new SplitMiner();
-        output = sm.mineBPMNModel( log, result.getFrequencyThreshold(), result.getParallelismsThreshold(),
+        output = sm.mineBPMNModel( log, result.getPercentileFrequencyThreshold(), result.getParallelismsThreshold(),
                                         result.getFilterType(), result.isReplaceIORs(), result.getStructuringTime());
 
         return output;

@@ -1,6 +1,5 @@
 package au.edu.qut.processmining.miners.splitminer.ui.miner;
 
-import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPSettings;
 import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUI;
 import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 import org.deckfour.uitopia.api.event.TaskListener;
@@ -28,7 +27,7 @@ public class SplitMinerUI {
         SplitMinerUIResult smUIResult = SplitMinerSettings.getSelections();
         smUIResult.setFilterType(dfgpUIResult.getFilterType());
         smUIResult.setParallelismsThreshold(dfgpUIResult.getParallelismsThreshold());
-        smUIResult.setFrequencyThreshold(dfgpUIResult.getFrequencyThreshold());
+        smUIResult.setPercentileFrequencyThreshold(dfgpUIResult.getPercentileFrequencyThreshold());
 
         return smUIResult;
     }

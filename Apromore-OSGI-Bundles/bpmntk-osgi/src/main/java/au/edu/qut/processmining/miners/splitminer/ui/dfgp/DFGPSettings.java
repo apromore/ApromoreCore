@@ -26,7 +26,7 @@ public class DFGPSettings extends ProMPropertiesPanel {
 
     HNItemListener hnil = new HNItemListener();
 
-//    NiceDoubleSlider frequencyThreshold;
+    NiceDoubleSlider percentileFrequencyThreshold;
     NiceDoubleSlider parallelismsThreshold;
     ProMComboBox filtering;
 
@@ -44,17 +44,17 @@ public class DFGPSettings extends ProMPropertiesPanel {
         filtering = this.addComboBox("Filter Type", filterType);
         filtering.addActionListener(hnil);
 
-//        frequencyThreshold = SlickerFactory.instance().createNiceDoubleSlider("Frequency Threshold", 0.00, 1.00, DFGPUIResult.FREQUENCY_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
-//        frequencyThreshold.addChangeListener(hnil);
-//        this.add(frequencyThreshold);
-//        frequencyThreshold.setVisible(true);
+        percentileFrequencyThreshold = SlickerFactory.instance().createNiceDoubleSlider("Percentile Frequency Threshold", 0.00, 1.00, DFGPUIResult.FREQUENCY_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
+        percentileFrequencyThreshold.addChangeListener(hnil);
+        this.add(percentileFrequencyThreshold);
+        percentileFrequencyThreshold.setVisible(true);
 
         parallelismsThreshold = SlickerFactory.instance().createNiceDoubleSlider("Parallelisms Threshold", 0.00, 1.00, DFGPUIResult.PARALLELISMS_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
         parallelismsThreshold.addChangeListener(hnil);
         this.add(parallelismsThreshold);
         parallelismsThreshold.setVisible(true);
 
-        result.setFrequencyThreshold(DFGPUIResult.FREQUENCY_THRESHOLD);
+        result.setPercentileFrequencyThreshold(DFGPUIResult.FREQUENCY_THRESHOLD);
         result.setParallelismsThreshold(DFGPUIResult.PARALLELISMS_THRESHOLD);
     }
 
@@ -66,7 +66,7 @@ public class DFGPSettings extends ProMPropertiesPanel {
 
         @Override
         public void stateChanged(ChangeEvent e) {
-//            result.setFrequencyThreshold(frequencyThreshold.getValue());
+            result.setPercentileFrequencyThreshold(percentileFrequencyThreshold.getValue());
             result.setParallelismsThreshold(parallelismsThreshold.getValue());
         }
 
