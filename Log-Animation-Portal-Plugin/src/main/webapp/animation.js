@@ -536,17 +536,6 @@ Controller.prototype = {
             }             
         }
        
-        //-------------------------------------------------
-        // Update SVG document
-        // In case of Chrome since setCurrentTime on SVG document does not 
-        // apply updated attributes (begin, duration) dynamically for SVG elements,
-        // must call reload document to make it effective 
-        //-------------------------------------------------
-        if ( jQuery.browser.webkit ) {
-            var content = $j("#svgLoc > svg").html();
-            svgDocument.innerHTML = content;
-        svgDocumentG = $j("#svgLoc > svg > g")[0];
-        }
         this.setCurrentTime(newTime);
     },
     
