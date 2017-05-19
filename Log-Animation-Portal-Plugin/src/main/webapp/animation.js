@@ -591,14 +591,14 @@ Controller.prototype = {
         var img = document.getElementById("pause").getElementsByTagName("img")[0];
         this.pauseAnimations();
         img.alt = "Play";
-        img.src = "/editor/libs/animation/images/control_play.png";
+        img.src = "images/control_play.png";
     },
 
     play: function() {
         var img = document.getElementById("pause").getElementsByTagName("img")[0];
         this.unpauseAnimations();
         img.alt = "Pause";
-        img.src = "/editor/libs/animation/images/control_pause.png";
+        img.src = "images/control_pause.png";
     },
     
     switchPlayPause: function () {
