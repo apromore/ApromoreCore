@@ -26,123 +26,134 @@
         </groupbox>
         <groupbox width="285px" open="false">
             <caption label="Additional Settings"/>
-            <groupbox width="285px">
-                <caption label="Select Mining Algorithm"/>
-                <selectbox name="Select Mining Algorithm" id="bpmnMinerMiningAlgorithm" model="${win$composer.miningAlgorithmsModel}" width="270px">
-                    <template name="model">
-                        <label value="${each}" />
-                    </template>
-                </selectbox>
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="Select Type of Model"/>
-                <radiogroup id="bpmnMinerFlat">
-                    <grid>
-                        <columns>
-                            <column />
-                            <column />
-                        </columns>
-                        <rows>
-                            <row>
-                                <radio id="flat" label="Flat" selected="true"/>
-                                <radio id="hierarchical" label="Hierarchical" />
-                            </row>
-                        </rows>
-                    </grid>
-                </radiogroup>
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="Select Dependency Discover Algorithm"/>
-                <radiogroup id="bpmnMinerDependencyAlgorithm">
-                    <grid>
-                        <columns>
-                            <column />
-                            <column />
-                        </columns>
-                        <rows>
-                            <row>
-                                <radio id="normal" label="Normal" selected="true"/>
-                                <radio id="noiseTolerant" label="Noise Tolerant" />
-                            </row>
-                        </rows>
-                    </grid>
-                </radiogroup>
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="Sort Log Based on Timestamp"/>
-                <radiogroup id="bpmnMinerSort">
-                    <grid>
-                        <columns>
-                            <column />
-                            <column />
-                        </columns>
-                        <rows>
-                            <row>
-                                <radio id="sort" label="Yes" selected="true"/>
-                                <radio id="notSort" label="No"/>
-                            </row>
-                        </rows>
-                    </grid>
-                </radiogroup>
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="Filter-out Noise from Log"/>
-                <radiogroup id="noiseFilter">
-                    <grid>
-                        <columns>
-                            <column />
-                            <column />
-                        </columns>
-                        <rows>
-                            <row>
-                                <radio id="filtered" label="Yes"/>
-                                <radio id="notFiltered" label="No" selected="true"/>
-                            </row>
-                        </rows>
-                    </grid>
-                </radiogroup>
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="Structured Process Model"/>
-                <radiogroup id="bpmnMinerStructProcess">
-                    <grid>
-                        <columns>
-                            <column />
-                            <column />
-                        </columns>
-                        <rows>
-                            <row>
-                                <radio id="structured" label="Yes" selected="true"/>
-                                <radio id="notStructured" label="No"/>
-                            </row>
-                        </rows>
-                    </grid>
-                </radiogroup>
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="InterruptingEvent Tolerance Value" />
-                <slider id="bpmnMinerInterruptingEventTolerance" mold="scale" maxpos="100" width="270px" />
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="MultiInstance Percentage Value" />
-                <slider id="bpmnMinerMultiInstancePercentage" mold="scale" maxpos="100" width="270px"/>
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="MultiInstance Tolerance Value" />
-                <slider id="bpmnMinerMultiInstanceTolerance" mold="scale" maxpos="100" curpos="50" width="270px"/>
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="TimerEvent Percentage Value" />
-                <slider id="bpmnMinerTimerEventPercentage" mold="scale" maxpos="100" width="270px"/>
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="TimerEvent Tolerance Value" />
-                <slider id="bpmnMinerTimerEventTolerance" mold="scale" maxpos="100" width="270px"/>
-            </groupbox>
-            <groupbox width="285px">
-                <caption label="Noise Threshold Value" />
-                <slider id="bpmnMinerNoiseThreshold" mold="scale" maxpos="100" curpos="50" width="270px"/>
-            </groupbox>
+            <grid>
+                <columns>
+                    <column />
+                    <column />
+                </columns>
+                <rows>
+                    <row>
+                        <label value="Select Mining Algorithm"/>
+                        <selectbox name="Select Mining Algorithm" id="bpmnMinerMiningAlgorithm" model="${win$composer.miningAlgorithmsModel}" width="270px">
+                            <template name="model">
+                                <label value="${each}" />
+                            </template>
+                        </selectbox>
+                    </row>
+                </rows>
+            </grid>
+            <radiogroup id="noiseFilter">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="Filter-out Noise from Log"/>
+                            <radio id="filtered" label="Yes"/>
+                            <radio id="notFiltered" label="No" selected="true"/>
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+            <radiogroup id="bpmnMinerStructProcess">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="Structured Process Model"/>
+                            <radio id="structured" label="Yes" selected="true"/>
+                            <radio id="notStructured" label="No"/>
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+            <radiogroup id="bpmnMinerSort">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="Sort Log Based on Timestamp"/>
+                            <radio id="sort" label="Yes" selected="true"/>
+                            <radio id="notSort" label="No"/>
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+            <radiogroup id="bpmnMinerFlat">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="Select Type of Model"/>
+                            <radio id="flat" label="Flat" selected="true"/>
+                            <radio id="hierarchical" label="Hierarchical" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+            <radiogroup id="bpmnMinerDependencyAlgorithm">
+                <grid>
+                    <columns>
+                        <column />
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="Select Dependency Discover Algorithm"/>
+                            <radio id="normal" label="Normal" selected="true"/>
+                            <radio id="noiseTolerant" label="Noise Tolerant" />
+                        </row>
+                    </rows>
+                </grid>
+            </radiogroup>
+            <grid>
+                <columns>
+                    <column />
+                    <column />
+                </columns>
+                <rows>
+                    <row>
+                        <label value="InterruptingEvent Tolerance Value" />
+                        <slider id="bpmnMinerInterruptingEventTolerance" mold="scale" maxpos="100" width="270px" />
+                    </row>
+                    <row>
+                        <label value="MultiInstance Percentage Value" />
+                        <slider id="bpmnMinerMultiInstancePercentage" mold="scale" maxpos="100" width="270px"/>
+                    </row>
+                    <row>
+                        <label value="MultiInstance Tolerance Value" />
+                        <slider id="bpmnMinerMultiInstanceTolerance" mold="scale" maxpos="100" curpos="50" width="270px"/>
+                    </row>
+                    <row>
+                        <label value="TimerEvent Percentage Value" />
+                        <slider id="bpmnMinerTimerEventPercentage" mold="scale" maxpos="100" width="270px"/>
+                    </row>
+                    <row>
+                        <label value="TimerEvent Tolerance Value" />
+                        <slider id="bpmnMinerTimerEventTolerance" mold="scale" maxpos="100" width="270px"/>
+                    </row>
+                    <row>
+                        <label value="Noise Threshold Value" />
+                        <slider id="bpmnMinerNoiseThreshold" mold="scale" maxpos="100" curpos="50" width="270px"/>
+                    </row>
+                </rows>
+            </grid>
         </groupbox>
         <div align="center">
             <button id="bpmnMinerCancelButton" label="Cancel" image="img/cancel2.png"></button>

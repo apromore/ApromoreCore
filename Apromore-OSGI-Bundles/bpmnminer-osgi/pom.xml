@@ -122,6 +122,7 @@
                             com.raffaeleconforti.bpmnminer.*,
                             com.raffaeleconforti.context.*,
                             com.raffaeleconforti.foreignkeydiscovery.*,
+                            com.raffaeleconforti.ilpsolverwrapper.*,
                             com.raffaeleconforti.log.util,
                             org.processmining.contexts.*,
                             org.processmining.framework.*,

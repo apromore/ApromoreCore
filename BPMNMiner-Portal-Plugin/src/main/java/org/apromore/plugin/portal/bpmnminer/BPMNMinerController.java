@@ -151,7 +151,7 @@ public class BPMNMinerController {
             }
 
             // At least 2 process versions must be selected. Not necessarily of different processes
-            if (selectedLogSummaryType.size() == 0) {
+            if (elements.size() == 0) {
                 this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMinerInput.zul", null, null);
                 this.l = (Label) this.bpmnMinerW.getFellow("fileName");
                 this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
