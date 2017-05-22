@@ -113,6 +113,7 @@
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
         <module>APQL-Portal-Plugin</module>
+        <module>BIMP-Editor-Plugin</module>
         <module>BIMP-Portal-Plugin</module>
         <module>BPMNDiagramImporter-Logic</module>
         <module>BPMNMiner-Logic</module>
@@ -343,7 +344,7 @@
         <maven.versions.plugin>2.0</maven.versions.plugin>
         <maven.war.plugin>2.6</maven.war.plugin>
         <maven.version.updater.plugin>1.0</maven.version.updater.plugin>
-        <maven.version.range>[3.0.3,3.4)</maven.version.range>
+        <maven.version.range>[3.0.3,3.5]</maven.version.range>
 
         <maven.wagon.svn.plugin>1.4</maven.wagon.svn.plugin>
         <maven.wagon-scm.extension>2.4</maven.wagon-scm.extension>

@@ -536,17 +536,6 @@ Controller.prototype = {
             }             
         }
        
-        //-------------------------------------------------
-        // Update SVG document
-        // In case of Chrome since setCurrentTime on SVG document does not 
-        // apply updated attributes (begin, duration) dynamically for SVG elements,
-        // must call reload document to make it effective 
-        //-------------------------------------------------
-        if ( jQuery.browser.webkit ) {
-            var content = $j("#svgLoc > svg").html();
-            svgDocument.innerHTML = content;
-        svgDocumentG = $j("#svgLoc > svg > g")[0];
-        }
         this.setCurrentTime(newTime);
     },
     
@@ -602,14 +591,14 @@ Controller.prototype = {
         var img = document.getElementById("pause").getElementsByTagName("img")[0];
         this.pauseAnimations();
         img.alt = "Play";
-        img.src = "/editor/libs/animation/images/control_play.png";
+        img.src = "images/control_play.png";
     },
 
     play: function() {
         var img = document.getElementById("pause").getElementsByTagName("img")[0];
         this.unpauseAnimations();
         img.alt = "Pause";
-        img.src = "/editor/libs/animation/images/control_pause.png";
+        img.src = "images/control_pause.png";
     },
     
     switchPlayPause: function () {
