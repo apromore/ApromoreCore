@@ -28,6 +28,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
@@ -57,9 +58,17 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     public User login(final String username, final String password) {
         Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username");
         query.setParameter("username", username);
-        User user = (User) query.getSingleResult();
+        User user;
+        try {
+            user = (User) query.getSingleResult();
 
-        if (user != null){
+        } catch (NoResultException e) {
+            // We also allow login using an email address for the username
+            System.out.println("Login BETA");
+            user = findUserByEmail(username);
+        }
+
+        if (user != null) {
             Membership membership = user.getMembership();
             if (membership != null && membership.getPassword().trim().equals(password.trim())) {
                 return user;
