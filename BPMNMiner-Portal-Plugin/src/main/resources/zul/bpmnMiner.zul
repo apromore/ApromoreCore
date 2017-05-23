@@ -19,20 +19,14 @@
   -->
 
 <window id="win" width="550px" closable="false" position="center,top" title="BPMN Miner">
-    <radiogroup id="noiseFilter" />
-    <radiogroup id="bpmnMinerStructProcess" />
-    <radiogroup id="bpmnMinerSort" />
-    <radiogroup id="bpmnMinerFlat" />
-    <radiogroup id="bpmnMinerDependencyAlgorithm" />
     <vbox>
         <grid>
             <columns>
                 <column width="250px" />
-                <column width="80px" />
                 <column />
             </columns>
             <rows>
-                <row spans="1,2">
+                <row>
                     <label value="Select Model Name"/>
                     <textbox name="Select Mining Algorithm" id="bpmnMinerModelName" width="270px" />
                 </row>
@@ -44,11 +38,10 @@
                 <grid>
                     <columns>
                         <column width="250px" />
-                        <column width="80px" />
                         <column />
                     </columns>
                     <rows>
-                        <row spans="1,2">
+                        <row>
                             <label value="Select Mining Algorithm"/>
                             <selectbox name="Select Mining Algorithm" id="bpmnMinerMiningAlgorithm" model="${win$composer.miningAlgorithmsModel}" width="270px">
                                 <template name="model">
@@ -57,56 +50,94 @@
                             </selectbox>
                         </row>
                         <row>
+                            <label value="Sort Log Based on Timestamp"/>
+                            <radiogroup id="bpmnMinerSort">
+                                <hlayout>
+                                    <radio id="sort" label="Yes" selected="true" radiogroup="bpmnMinerSort" />
+                                    <space /><space />
+                                    <radio id="notSort" label="No" radiogroup="bpmnMinerSort" />
+                                </hlayout>
+                            </radiogroup>
+                        </row>
+                        <row>
                             <label value="Filter-out Noise from Log"/>
-                            <radio id="filtered" label="Yes" radiogroup="noiseFilter"/>
-                            <radio id="notFiltered" label="No" selected="true" radiogroup="noiseFilter"/>
+                            <radiogroup id="noiseFilter">
+                                <hlayout>
+                                    <radio id="filtered" label="Yes" radiogroup="noiseFilter"/>
+                                    <space /><space />
+                                    <radio id="notFiltered" label="No" selected="true" radiogroup="noiseFilter"/>
+                                </hlayout>
+                            </radiogroup>
                         </row>
                         <row>
                             <label value="Structured Process Model"/>
-                            <radio id="structured" label="Yes" selected="true" radiogroup="bpmnMinerStructProcess" />
-                            <radio id="notStructured" label="No" radiogroup="bpmnMinerStructProcess" />
-                        </row>
-                        <row>
-                            <label value="Sort Log Based on Timestamp"/>
-                            <radio id="sort" label="Yes" selected="true" radiogroup="bpmnMinerSort" />
-                            <radio id="notSort" label="No" radiogroup="bpmnMinerSort" />
+                            <radiogroup id="bpmnMinerStructProcess">
+                                <hlayout>
+                                    <radio id="structured" label="Yes" selected="true" radiogroup="bpmnMinerStructProcess" />
+                                    <space /><space />
+                                    <radio id="notStructured" label="No" radiogroup="bpmnMinerStructProcess" />
+                                </hlayout>
+                            </radiogroup>
                         </row>
                         <row>
                             <label value="Select Type of Model"/>
-                            <radio id="flat" label="Flat" selected="true" radiogroup="bpmnMinerFlat" />
-                            <radio id="hierarchical" label="Hierarchical" radiogroup="bpmnMinerFlat" />
-                        </row>
-                        <row>
-                            <label value="Select Dependency Discover Algorithm"/>
-                            <radio id="normal" label="Normal" selected="true" radiogroup="bpmnMinerDependencyAlgorithm" />
-                            <radio id="noiseTolerant" label="Noise Tolerant" radiogroup="bpmnMinerDependencyAlgorithm" />
-                        </row>
-                        <row spans="1,2">
-                            <label value="InterruptingEvent Tolerance Value" />
-                            <slider id="bpmnMinerInterruptingEventTolerance" mold="scale" maxpos="100" width="270px" />
-                        </row>
-                        <row spans="1,2">
-                            <label value="MultiInstance Percentage Value" />
-                            <slider id="bpmnMinerMultiInstancePercentage" mold="scale" maxpos="100" width="270px"/>
-                        </row>
-                        <row spans="1,2">
-                            <label value="MultiInstance Tolerance Value" />
-                            <slider id="bpmnMinerMultiInstanceTolerance" mold="scale" maxpos="100" curpos="50" width="270px"/>
-                        </row>
-                        <row spans="1,2">
-                            <label value="TimerEvent Percentage Value" />
-                            <slider id="bpmnMinerTimerEventPercentage" mold="scale" maxpos="100" width="270px"/>
-                        </row>
-                        <row spans="1,2">
-                            <label value="TimerEvent Tolerance Value" />
-                            <slider id="bpmnMinerTimerEventTolerance" mold="scale" maxpos="100" width="270px"/>
-                        </row>
-                        <row spans="1,2">
-                            <label value="Noise Threshold Value" />
-                            <slider id="bpmnMinerNoiseThreshold" mold="scale" maxpos="100" curpos="50" width="270px"/>
+                            <radiogroup id="bpmnMinerFlat">
+                                <hlayout>
+                                    <radio id="flat" label="Flat" selected="true" radiogroup="bpmnMinerFlat" onCheck="closeExtra()"/>
+                                    <space /><space />
+                                    <radio id="hierarchical" label="Hierarchical" radiogroup="bpmnMinerFlat" onCheck="openExtra()"/>
+                                </hlayout>
+                            </radiogroup>
                         </row>
                     </rows>
                 </grid>
+                <panel id="hierarchicalSettings" title="Hierarchical Settings" width="100%" open="false"
+                       maximizable="false" minimizable="false" border="none" collapsible="false" closable="false">
+                    <panelchildren>
+                        <grid>
+                            <columns>
+                                <column width="250px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="Select Dependency Discover Algorithm"/>
+                                    <radiogroup id="bpmnMinerDependencyAlgorithm">
+                                        <hlayout>
+                                            <radio id="normal" label="Normal" selected="true" radiogroup="bpmnMinerDependencyAlgorithm" />
+                                            <separator /><separator />
+                                            <radio id="noiseTolerant" label="Noise Tolerant" radiogroup="bpmnMinerDependencyAlgorithm" />
+                                        </hlayout>
+                                    </radiogroup>
+                                </row>
+                                <row>
+                                    <label value="InterruptingEvent Tolerance Value" />
+                                    <slider id="bpmnMinerInterruptingEventTolerance" mold="scale" maxpos="100" width="270px" />
+                                </row>
+                                <row>
+                                    <label value="MultiInstance Percentage Value" />
+                                    <slider id="bpmnMinerMultiInstancePercentage" mold="scale" maxpos="100" width="270px"/>
+                                </row>
+                                <row>
+                                    <label value="MultiInstance Tolerance Value" />
+                                    <slider id="bpmnMinerMultiInstanceTolerance" mold="scale" maxpos="100" curpos="50" width="270px"/>
+                                </row>
+                                <row>
+                                    <label value="TimerEvent Percentage Value" />
+                                    <slider id="bpmnMinerTimerEventPercentage" mold="scale" maxpos="100" width="270px"/>
+                                </row>
+                                <row>
+                                    <label value="TimerEvent Tolerance Value" />
+                                    <slider id="bpmnMinerTimerEventTolerance" mold="scale" maxpos="100" width="270px"/>
+                                </row>
+                                <row>
+                                    <label value="Noise Threshold Value" />
+                                    <slider id="bpmnMinerNoiseThreshold" mold="scale" maxpos="100" curpos="50" width="270px"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </panelchildren>
+                </panel>
             </panelchildren>
         </panel>
         <div align="center">
@@ -114,4 +145,12 @@
             <button id="bpmnMinerOKButton" label="OK" image="img/ok.png"></button>
         </div>
     </vbox>
+    <zscript>
+        void openExtra() {
+        hierarchicalSettings.setOpen(true);
+        }
+        void closeExtra() {
+        hierarchicalSettings.setOpen(false);
+        }
+    </zscript>
 </window>

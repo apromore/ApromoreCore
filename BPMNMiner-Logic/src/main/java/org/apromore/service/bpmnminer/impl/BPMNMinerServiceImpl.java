@@ -131,6 +131,7 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
 
         BPMNSubProcessMiner bpmnSubProcessMiner = new BPMNSubProcessMiner(fakePluginContext);
 
+        LOGGER.error("Algorithm " + dependencyAlgorithm);
         BPMNDiagram diagram = bpmnSubProcessMiner.mineBPMNModel(fakePluginContext, log, sortLog, selectMinerResult, dependencyAlgorithm, entityDiscoverer, concModel,
                 groupEntities, candidatesEntities, selectedEntities, true);
 
