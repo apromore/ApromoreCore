@@ -151,7 +151,7 @@ public class BPMNMinerController {
             }
 
             // At least 2 process versions must be selected. Not necessarily of different processes
-            if (selectedLogSummaryType.size() == 0) {
+            if (elements.size() == 0) {
                 this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMinerInput.zul", null, null);
                 this.l = (Label) this.bpmnMinerW.getFellow("fileName");
                 this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
@@ -175,10 +175,31 @@ public class BPMNMinerController {
             this.miningAlgorithms.setModel(listModelArray);
 
             this.flatModel = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerFlat");
+//            this.flatModel = new Radiogroup();
+//            flatModel.appendChild(this.bpmnMinerW.getFellow("flat"));
+//            flatModel.appendChild(this.bpmnMinerW.getFellow("hierarchical"));
+
             this.dependencyAlgorithms = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerDependencyAlgorithm");
+//            this.dependencyAlgorithms = new Radiogroup();
+//            dependencyAlgorithms.appendChild(this.bpmnMinerW.getFellow("normal"));
+//            dependencyAlgorithms.appendChild(this.bpmnMinerW.getFellow("noiseTolerant"));
+
             this.filterLog = (Radiogroup) this.bpmnMinerW.getFellow("noiseFilter");
+//            this.filterLog = new Radiogroup();
+//            this.filterLog.appendChild(this.bpmnMinerW.getFellow("filtered"));
+//            this.filterLog.appendChild(this.bpmnMinerW.getFellow("notFiltered"));
+
             this.sortLog = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerSort");
+//            this.sortLog = new Radiogroup();
+//            this.sortLog.appendChild(this.bpmnMinerW.getFellow("sort"));
+//            this.sortLog.appendChild(this.bpmnMinerW.getFellow("notSort"));
+
             this.structProcess = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerStructProcess");
+//            this.structProcess = new Radiogroup();
+//            this.structProcess.appendChild(this.bpmnMinerW.getFellow("structured"));
+//            this.structProcess.appendChild(this.bpmnMinerW.getFellow("notStructured"));
+
+
             this.interruptingEventTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerInterruptingEventTolerance");
             this.multiInstancePercentage = (Slider) this.bpmnMinerW.getFellow("bpmnMinerMultiInstancePercentage");
             this.multiInstanceTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerMultiInstanceTolerance");
