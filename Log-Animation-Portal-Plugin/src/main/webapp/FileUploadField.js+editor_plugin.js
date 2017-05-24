@@ -166,7 +166,7 @@ ORYX.Plugins.LogAnimation = ORYX.Plugins.AbstractPlugin.extend({
             'functionality': this.showDialog.bind(this),
             'group': 'Configuration',
             'icon': "/loganimation/images/icon.png",
-            'description': 'Animate logs... (plugin)',
+            'description': 'Animate logs...',
             'index': 1
         });
     },
@@ -242,36 +242,11 @@ ORYX.Plugins.LogAnimation = ORYX.Plugins.AbstractPlugin.extend({
                             },
                             waitMsg: 'Uploading process log(s)...',
                             success: function(fp, action) {
-
-                                //var json =  this.facade.getJSON();
-                                //json = Ext.encode(json);
-
-                                var element = document.getElementById("jsonForAnimation");
-                                if (!element) {
-                                        element = document.createElement("input");
-                                        element.setAttribute("type", "hidden");
-                                        element.setAttribute("id", "jsonForAnimation");
-                                        document.body.appendChild(element);
-                                }
-                                element.setAttribute("value", json);
-
                                 action.result.success = undefined;  // only had this property to humor Ext2JS's file uploader
-
                                 var data = Ext.encode(action.result);
-                                console.log("data");
-                                console.dir(action.result);
-                                console.log(data);
-
-                                var element2 = document.getElementById("jsonForAnimation2");
-                                if (!element2) {
-                                        element2 = document.createElement("input");
-                                        element2.setAttribute("type", "hidden");
-                                        element2.setAttribute("id", "jsonForAnimation2");
-                                        document.body.appendChild(element2);
-                                }
-                                element2.setAttribute("value", data);
-
-                                window.open('/loganimation/animation.html', "_blank");
+                                var newWindow = window.open('/loganimation/animateLogInSignavio.zul' + location.search);
+                                newWindow.animationData = data;
+                                window.close();
                             },
                             failure:  function(fp, action) {
                                 switch (action.failureType) {

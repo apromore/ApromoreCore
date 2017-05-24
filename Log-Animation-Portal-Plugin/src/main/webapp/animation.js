@@ -279,7 +279,6 @@ Controller.prototype = {
         this.svgDocuments.push($j("div#playback_controls > svg")[0]);
         var svg3 = $j("div#progress_display > svg")[0];
         this.svgDocuments.push(svg3);
-        console.dir(this.svgDocuments);
 
         var tokenE = svgDocument.getElementById("progressAnimation");
         if (tokenE != null) {
