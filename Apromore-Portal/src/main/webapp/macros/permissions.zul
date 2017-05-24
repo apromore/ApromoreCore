@@ -25,7 +25,7 @@
             overflow: hidden;
         }
     </style>
-    <listbox id="lstPermissions" vflex="true" span="true" height="300px"
+    <listbox id="lstPermissions" vflex="max" span="true"
              autopaging="true" mold="paging" multiple="true">
         <listhead sizable="true">
             <listheader hflex="min" label="Name" sort="auto(name)"/>
