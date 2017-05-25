@@ -70,23 +70,6 @@ function toViewportCoords(groupE) {
     return pt.matrixTransform(matrix);
 }
 
-/* *****************************************************
- * Get new point after applying transformation matrix
- * on an input point
- * point: the input point to be converted, with x,y coordinate attribute
- * ctm: transformation matrix, obtained from getCTM method of any SVG element
- * Return: a new point with x,y coordinate attribute
- * ***************************************************/
-function getPointFromCTM(point, transformMatrix) {
-    var newPoint  = svgDocument.createSVGPoint();
-    newPoint.x = point.x;
-    newPoint.y = point.y;
-    newPoint = newPoint.matrixTransform(transformMatrix);
-    return newPoint;
-}
-
-
-
 function drawCoordinateOrigin() {
         var svg = svgDocument;
         var pt  = svg.createSVGPoint();
@@ -956,8 +939,8 @@ LogCase.prototype = {
         var outgoingPathE = $j("#svg-"+modelNode.outgoingFlow).find("g").find("g").find("g").find("path").get(0);
         var outgoingStartPoint = outgoingPathE.getPointAtLength(0);
     
-        var startPoint = getPointFromCTM(incomingEndPoint, incomingPathE.getCTM());
-        var endPoint = getPointFromCTM(outgoingStartPoint, outgoingPathE.getCTM());
+        var startPoint = incomingEndPoint.matrixTransform(incomingPathE.getCTM());
+        var endPoint = outgoingStartPoint.matrixTransform(outgoingPathE.getCTM());
     
         var nodeRectE = $j("#svg-" + node.id).find("g").find("g").find("g").find("rect").get(0);
         var taskRectPoints = getViewportPoints(nodeRectE); //only for tokens running on the edge of task shape (not used now)
