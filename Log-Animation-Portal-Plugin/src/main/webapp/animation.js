@@ -949,15 +949,6 @@ LogCase.prototype = {
         // Create path element
         //---------------------------------------------------------
     
-        var rectWidth = nodeRectE.getBBox().width;
-        var rectHeight = nodeRectE.getBBox().height;
-        var radius;
-        if (rectWidth < rectHeight) {
-            radius = (rectHeight)/2;
-        } else {
-            radius = (rectWidth)/2;
-        }
-
         if (node.isVirtual == "false") { //go through center
             var path =  "m" + startPoint.x + "," + startPoint.y + " L" + taskRectPoints.cc.x + "," + taskRectPoints.cc.y +
                         " L" + endPoint.x + "," + endPoint.y;
