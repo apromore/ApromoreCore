@@ -59,6 +59,8 @@
                             ee.ut.*,
                             hub.top.petrinet,
 -->
+                            com.sun.xml.bind.v2,
+                            de.hpi.bpmn2_0.model.extension.synergia,
                             org.apromore.plugin,
                             org.apromore.portal.dialogController.dto,
                             org.apromore.portal.util,
@@ -124,7 +126,7 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>portal-plugin-api</artifactId>
+            <artifactId>editor-plugin-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

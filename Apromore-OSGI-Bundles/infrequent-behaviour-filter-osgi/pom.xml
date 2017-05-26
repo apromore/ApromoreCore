@@ -117,7 +117,9 @@
                             org.deckfour.xes.xstream,
                         </Import-Package>
                         <Export-Package>
-                            com.raffaeleconforti.noisefiltering.event,
+                            com.raffaeleconforti.noisefiltering.event.*,
+                            com.raffaeleconforti.automaton.*,
+                            com.raffaeleconforti.ilpsolverwrapper.*,
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -129,7 +131,7 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>noisefiltering-event-commandline</artifactId>
-            <version>1.0.20170425</version>
+            <version>1.0.20170522</version>
         </dependency>
     </dependencies>
 </project>

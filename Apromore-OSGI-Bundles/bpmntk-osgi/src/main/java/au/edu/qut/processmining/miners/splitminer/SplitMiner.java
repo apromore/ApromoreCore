@@ -28,6 +28,7 @@ import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
 import au.edu.qut.processmining.miners.splitminer.oracle.Oracle;
 import au.edu.qut.processmining.miners.splitminer.oracle.OracleItem;
+import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
@@ -70,11 +71,12 @@ public class SplitMiner {
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
-    public BPMNDiagram mineBPMNModel(XLog log, double frequencyThreshold, double parallelismsThreshold,
+    public BPMNDiagram mineBPMNModel(XLog log, double percentileFrequencyThreshold, double parallelismsThreshold,
+                                     DFGPUIResult.FilterType filterType, boolean percentileOnBest,
                                      boolean replaceIORs, SplitMinerUIResult.StructuringTime structuringTime)
     {
 //        System.out.println("SplitMiner - starting ...");
-        System.out.println("SplitMiner - [Settings] replace IORs: " + replaceIORs);
+//        System.out.println("SplitMiner - [Settings] replace IORs: " + replaceIORs);
 //        System.out.println("SplitMiner - [Settings] structuring: " + structuringTime);
 
         this.replaceIORs = replaceIORs;
@@ -83,16 +85,20 @@ public class SplitMiner {
         this.log = LogParser.getSimpleLog(log);
 //        System.out.println("SplitMiner - log parsed successfully");
 
-        generateDFGP(frequencyThreshold, parallelismsThreshold);
-        transformDFGPintoBPMN();
-
-        if( structuringTime == SplitMinerUIResult.StructuringTime.POST ) structure();
+        generateDFGP(percentileFrequencyThreshold, parallelismsThreshold, filterType, percentileOnBest);
+        try {
+            transformDFGPintoBPMN();
+            if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
+        } catch(Exception e) {
+            System.out.println("ERROR - something went wrong building translating DFG to BPMN");
+            return dfgp.convertIntoBPMNDiagram();
+        }
 
         return bpmnDiagram;
     }
 
-    private void generateDFGP(double frequencyThreshold, double parallelismsThreshold) {
-        dfgp = new DirectlyFollowGraphPlus(log, frequencyThreshold, parallelismsThreshold);
+    private void generateDFGP(double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType, boolean percentileOnBest) {
+        dfgp = new DirectlyFollowGraphPlus(log, percentileFrequencyThreshold, parallelismsThreshold, filterType, percentileOnBest);
         dfgp.buildDFGP();
     }
 
@@ -216,7 +222,6 @@ public class SplitMiner {
 //        System.out.println("SplitMiner - generating inner joins ...");
         generateInnerJoins();
 
-
         if( structuringTime == SplitMinerUIResult.StructuringTime.PRE ) structure();
         helper.fixSoundness(bpmnDiagram);
 
@@ -225,7 +230,8 @@ public class SplitMiner {
         replaceIORs();
 
         updateLabels(this.log.getEvents());
-        System.out.println("SplitMiner - bpmn diagram generated successfully");
+        helper.removeSelfLoopMarkers(bpmnDiagram);
+//        System.out.println("SplitMiner - bpmn diagram generated successfully");
     }
 
     private void generateSplitsHierarchy(BPMNNode entry, OracleItem nextOracleItem, Map<Integer, BPMNNode> mapping) {
@@ -486,7 +492,7 @@ public class SplitMiner {
 
         for( BPMNNode n : bpmnDiagram.getNodes() ) {
             if( n instanceof Activity ) label = events.get(Integer.valueOf(n.getLabel()));
-            else label = n.getLabel();
+            else label = "";
             copy = helper.copyNode(duplicateDiagram, n, label);
             if( copy != null ) originalToCopy.put(n, copy);
             else System.out.println("ERROR - diagram labels updating failed [1].");
@@ -496,7 +502,7 @@ public class SplitMiner {
             src = originalToCopy.get(f.getSource());
             tgt = originalToCopy.get(f.getTarget());
 
-            if( src != null && tgt != null ) duplicateDiagram.addFlow(src, tgt, f.getLabel());
+            if( src != null && tgt != null ) duplicateDiagram.addFlow(src, tgt, "");
             else System.out.println("ERROR - diagram labels updating failed [2].");
         }
         bpmnDiagram = duplicateDiagram;

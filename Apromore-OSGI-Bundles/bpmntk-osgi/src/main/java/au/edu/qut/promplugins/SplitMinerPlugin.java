@@ -20,7 +20,6 @@
 
 package au.edu.qut.promplugins;
 
-import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
 import au.edu.qut.processmining.miners.splitminer.SplitMiner;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUI;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
@@ -36,12 +35,12 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
  */
 
 @Plugin(
-        name = "Discover BPMN model with SplitMiner",
+        name = "Discover BPMN model with Split Miner",
         parameterLabels = { "Event Log" },
         returnLabels = { "SplitMiner output" },
         returnTypes = { BPMNDiagram.class },
         userAccessible = true,
-        help = "Returns a BPMN model mined with SplitMiner"
+        help = "Returns a BPMN model mined with Split Miner"
 )
 public class SplitMinerPlugin {
 
@@ -50,7 +49,7 @@ public class SplitMinerPlugin {
             author = "Adriano Augusto",
             email = "adriano.augusto@ut.ee"
     )
-    @PluginVariant(variantLabel = "Discover BPMN model with SplitMiner", requiredParameterLabels = {0})
+    @PluginVariant(variantLabel = "Discover BPMN model with Split Miner", requiredParameterLabels = {0})
     public static BPMNDiagram discoverBPMNModelWithSplitMiner(UIPluginContext context, XLog log) {
         boolean debug = false;
         BPMNDiagram output;
@@ -58,18 +57,10 @@ public class SplitMinerPlugin {
         SplitMinerUI gui = new SplitMinerUI();
         SplitMinerUIResult result = gui.showGUI(context, "Setup HM+");
 
-        SplitMiner hmp = new SplitMiner();
-        hmp.mineBPMNModel( log, result.getFrequencyThreshold(), result.getParallelismsThreshold(),
-                                result.isReplaceIORs(), result.getStructuringTime());
-
-        DirectlyFollowGraphPlus dfgp = hmp.getDfgp();
-
-        if( debug ) {
-            dfgp.printFrequencies();
-            dfgp.printParallelisms();
-        }
-
-        output = hmp.getBPMNDiagram();
+        SplitMiner sm = new SplitMiner();
+        output = sm.mineBPMNModel( log, result.getPercentileFrequencyThreshold(), result.getParallelismsThreshold(),
+                                        result.getFilterType(), result.isPercentileOnbest(),
+                                        result.isReplaceIORs(), result.getStructuringTime());
 
         return output;
     }

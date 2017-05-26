@@ -183,19 +183,6 @@
     </welcome-file-list>
 
 
-    <!-- Bruce: BPMN Animation Servlet -->
-    <servlet>
-        <display-name>BPMN Animation</display-name>
-        <servlet-name>BPMNAnimation</servlet-name>
-        <servlet-class>servlet.BPMNAnimationServlet</servlet-class>
-    </servlet>
- 
-    <servlet-mapping>
-        <servlet-name>BPMNAnimation</servlet-name>
-        <url-pattern>/editor/bpmnanimation</url-pattern>
-    </servlet-mapping>
-
-
     <!-- Servlets from the Oryx Downloader -->
     <servlet>
         <display-name>Oryx Legacy File Download Servlet</display-name>

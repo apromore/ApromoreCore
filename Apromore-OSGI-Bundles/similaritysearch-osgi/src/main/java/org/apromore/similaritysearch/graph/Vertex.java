@@ -27,21 +27,22 @@ import org.apromore.similaritysearch.common.Settings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 
 public class Vertex {
 
     private Graphics graphics;
-    public HashSet<String> dominance;
+    public Set<String> dominance;
     private HashMap<String, String> annotationMap = new HashMap<String, String>();
-    public HashSet<VertexObjectRef> objectRefs = new HashSet<VertexObjectRef>();
-    public HashSet<VertexResourceRef> resourceRefs = new HashSet<VertexResourceRef>();
+    public Set<VertexObjectRef> objectRefs = new HashSet<VertexObjectRef>();
+    public Set<VertexResourceRef> resourceRefs = new HashSet<VertexResourceRef>();
 
     public HashMap<String, String> getAnnotationMap() {
         return annotationMap;
     }
 
-    public void addAnnotationsForGw(HashSet<String> edgeLabels) {
+    public void addAnnotationsForGw(Set<String> edgeLabels) {
         for (String model : edgeLabels) {
             if (!annotationMap.containsKey(model)) {
                 annotationMap.put(model, "xor");

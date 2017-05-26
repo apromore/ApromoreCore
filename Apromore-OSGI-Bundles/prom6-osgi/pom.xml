@@ -777,7 +777,7 @@
         <!--<dependency>-->
             <!--<groupId>com.raffaeleconforti</groupId>-->
             <!--<artifactId>bpmnminer-logic</artifactId>-->
-            <!--<version>1.0.20170425</version>-->
+            <!--<version>1.0.20170522</version>-->
         <!--</dependency>-->
 
         <dependency>

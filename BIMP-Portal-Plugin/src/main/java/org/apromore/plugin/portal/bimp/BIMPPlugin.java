@@ -100,17 +100,8 @@ public class BIMPPlugin extends DefaultPortalPlugin {
             
             // Go to the BIMP page
             Clients.evalJavaScript(
-                "var form = document.createElement('form'); " +
-                "form.action = 'http://bimp.cs.ut.ee/simulator'; " +
-                "form.method = 'POST'; " +
-
-                "var input = document.createElement('input'); " +
-                "input.type = 'text'; " +
-                "input.name = 'file'; " +
-                "input.value = '" + bpmn.replaceAll("'", "\\' ").replaceAll("\n", " ") + "'; " +
-                "form.appendChild(input); " +
-
-                "form.submit();");
+                "var bimpWindow = window.open('/bimp/simulator.html','bimp'); " +
+                "bimpWindow.apromoreBPMN = '" + bpmn.replaceAll("'", "\\' ").replaceAll("\n", " ") + "'; ");
 
         } catch (RepositoryException e) {
             Messagebox.show("Unable to read " + procName, "Attention", Messagebox.OK, Messagebox.ERROR);

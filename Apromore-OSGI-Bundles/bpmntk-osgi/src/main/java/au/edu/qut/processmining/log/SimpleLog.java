@@ -20,6 +20,8 @@
 
 package au.edu.qut.processmining.log;
 
+import org.deckfour.xes.model.XLog;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +29,7 @@ import java.util.Map;
  * Created by Adriano on 27/10/2016.
  */
 public class SimpleLog {
+    private XLog xlog;
     private Map<String, Integer> traces;
     private Map<Integer, String> events;
     private int size;
@@ -38,7 +41,7 @@ public class SimpleLog {
     private int startcode;
     private int endcode;
 
-    public SimpleLog(Map<String, Integer> traces, Map<Integer, String> events) {
+    public SimpleLog(Map<String, Integer> traces, Map<Integer, String> events, XLog xlog) {
         this.traces = traces;
         this.events = events;
         this.size = 0;
@@ -48,11 +51,14 @@ public class SimpleLog {
         shortestTrace = -1;
 
         for( int traceFrequency : traces.values() ) this.size += traceFrequency;
+
+        this.xlog = xlog;
     }
 
     public Map<String, Integer> getTraces() { return traces; }
     public Map<Integer, String> getEvents() { return events; }
     public int size() { return size; }
+    public XLog getXLog() { return xlog; }
 
     public void setStartcode(int startcode){ this.startcode = startcode; }
     public int getStartcode(){ return startcode; }

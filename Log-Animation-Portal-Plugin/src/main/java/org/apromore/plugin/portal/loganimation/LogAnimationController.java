@@ -97,7 +97,6 @@ public class LogAnimationController extends BaseController {
         params =  session.getParams();
 
         LogAnimationService logAnimationService = (LogAnimationService) session.get("logAnimationService");
-        List<LogAnimationService.Log> logs = (List<LogAnimationService.Log>) session.get("logs");
 
         Map<String, Object> param = new HashMap<>();
         try {
@@ -119,9 +118,12 @@ public class LogAnimationController extends BaseController {
             PluginMessages pluginMessages = exportResult1.getMessage();
 
             String jsonData = StreamUtil.convertStreamToString(exportResult1.getNative().getInputStream());
-            String animationData = logAnimationService.createAnimation(jsonData, logs);
+            if (logAnimationService != null) {  // logAnimationService is null if invoked from the editor toobar
+                List<LogAnimationService.Log> logs = (List<LogAnimationService.Log>) session.get("logs");
+                String animationData = logAnimationService.createAnimation(jsonData, logs);
+                param.put("animationData", escapeQuotedJavascript(animationData));
+            }
             param.put("jsonData",      escapeQuotedJavascript(jsonData));
-            param.put("animationData", escapeQuotedJavascript(animationData));
             param.put("url",           getURL(editSession.getNativeType()));
             param.put("importPath",    getImportPath(editSession.getNativeType()));
             param.put("exportPath",    getExportPath(editSession.getNativeType()));

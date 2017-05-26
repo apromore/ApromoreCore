@@ -46,12 +46,14 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle>
                     <instructions>
+                        <Embed-Dependency>
+                            artifactId=commons-collections4|jgrapht-core;inline=true
+                        </Embed-Dependency>
                         <Import-Package>
                             <!-- Dynamically loaded by JAXB in order to parse BPMN -->
                             com.sun.xml.bind.v2,
                             de.hpi.bpmn2_0.model,
 
-                            org.processmining.plugins.signaturediscovery.encoding,
                             org.springframework.beans.factory.aspectj,
                             *
                         </Import-Package>
@@ -70,6 +72,11 @@
             <artifactId>com.springsource.javax.inject</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>editor-platform-extension-bpmn2_0</artifactId>
             <version>1.2</version>
@@ -81,6 +88,12 @@
         <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>OpenXES</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-core</artifactId>
+            <version>0.9.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

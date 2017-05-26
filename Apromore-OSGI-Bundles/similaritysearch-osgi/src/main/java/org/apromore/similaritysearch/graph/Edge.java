@@ -21,6 +21,7 @@
 package org.apromore.similaritysearch.graph;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class Edge {
 
@@ -80,13 +81,13 @@ public class Edge {
         labelAddedToModel = false;
     }
 
-    private HashSet<String> labels = new HashSet<String>();
+    private Set<String> labels = new HashSet<String>();
 
-    public HashSet<String> getLabels() {
+    public Set<String> getLabels() {
         return labels;
     }
 
-    public void addLabels(HashSet<String> labels) {
+    public void addLabels(Set<String> labels) {
         this.labels.addAll(labels);
     }
 

@@ -1,26 +1,41 @@
 package au.edu.qut.processmining.miners.splitminer.ui.dfgp;
 
+import static au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult.FilterType.WTH;
+
 /**
  * Created by Adriano on 23/01/2017.
  */
 public class DFGPUIResult {
+    public enum FilterType{STD, GUB, LPS, WTH}
 
-    public static final double FREQUENCY_THRESHOLD = 1.0;
+    public static final double FREQUENCY_THRESHOLD = 0.50;
     public static final double PARALLELISMS_THRESHOLD = 0.10;
+    public static final FilterType STD_FILTER = WTH;
+    public static final boolean PERCENTILE_ONBEST = true;
 
-    private double frequencyThreshold;
+    private double percentileFrequencyThreshold;
     private double parallelismsThreshold;
+    private FilterType filterType;
+    private boolean percentileOnbest;
 
     public DFGPUIResult() {
-        frequencyThreshold = FREQUENCY_THRESHOLD;
+        percentileFrequencyThreshold = FREQUENCY_THRESHOLD;
         parallelismsThreshold = PARALLELISMS_THRESHOLD;
+        filterType = STD_FILTER;
+        percentileOnbest = PERCENTILE_ONBEST;
     }
 
-    public double getFrequencyThreshold() {
-        return frequencyThreshold;
+    public boolean isPercentileOnbest() { return percentileOnbest; }
+    public void setPercentileOnbest(boolean percentileOnbest) { this.percentileOnbest = percentileOnbest; }
+
+    public FilterType getFilterType() { return filterType; }
+    public void setFilterType(FilterType filterType) { this.filterType = filterType; }
+
+    public double getPercentileFrequencyThreshold() {
+        return percentileFrequencyThreshold;
     }
-    public void setFrequencyThreshold(double frequencyThreshold) {
-        this.frequencyThreshold = frequencyThreshold;
+    public void setPercentileFrequencyThreshold(double percentileFrequencyThreshold) {
+        this.percentileFrequencyThreshold = percentileFrequencyThreshold;
     }
 
     public double getParallelismsThreshold() {

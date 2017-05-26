@@ -54,7 +54,6 @@
 			<notUsesIn namespace="http://b3mn.org/stencilset/xforms#"/>
 		</plugin>
 		<plugin source="apromoreSave.js" name="ORYX.Plugins.ApromoreSave"/>
-        <plugin source="apromoreBimp.js" name="ORYX.Plugins.ApromoreBimp"/>
 		<plugin source="view.js" name="ORYX.Plugins.View" />
 		<plugin source="dragdropresize.js" name="ORYX.Plugins.DragDropResize" />
 		<plugin source="shapeHighlighting.js" name="ORYX.Plugins.HighlightingSelectedShapes" />
@@ -81,8 +80,6 @@
 		</plugin>	
                 <plugin source="configurationExtension.js" name="ORYX.Plugins.ConfigurationExtension"/>
                 <plugin source="selectionExtension.js" name="ORYX.Plugins.SelectionExtension"/>
-                <plugin source="FileUploadField.js" name="file upload field"/> <!-- required by animationExtension.js -->
-                <plugin source="animationExtension.js" name="ORYX.Plugins.AnimationExtension"/>
 		
 		<!-- BPMN1.1 specific plugins -->
 		<plugin source="bpmn11.js" name="ORYX.Plugins.BPMN11">

@@ -82,21 +82,17 @@
         <servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ws</servlet-name>
-        <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>transformWsdlLocations</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet>
         <servlet-name>newUserRegistration</servlet-name>
         <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>resetPassword</servlet-name>
         <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <display-name>BPMN Animation</display-name>
+        <servlet-name>BPMNAnimation</servlet-name>
+        <servlet-class>org.apromore.plugin.editor.loganimation.BPMNAnimationServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -116,24 +112,16 @@
         <url-pattern>/zkau/web/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ws</servlet-name>
-        <url-pattern>/services/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ws</servlet-name>
-        <url-pattern>*.wsdl</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ws</servlet-name>
-        <url-pattern>*.xsd</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>newUserRegistration</servlet-name>
         <url-pattern>/register/newUserRegister/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>resetPassword</servlet-name>
         <url-pattern>/register/resetPassword/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BPMNAnimation</servlet-name>
+        <url-pattern>/bpmnanimation</url-pattern>
     </servlet-mapping>
 
     <session-config>
