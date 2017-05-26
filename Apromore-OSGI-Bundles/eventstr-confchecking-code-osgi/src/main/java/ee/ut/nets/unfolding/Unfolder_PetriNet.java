@@ -96,7 +96,7 @@ public class Unfolder_PetriNet {
 		transitionLabel = HashBiMap.<Node, String> create();
 		label2Label = new HashMap<>();
 		HashMap<String, Integer> counterLabel = new HashMap<>();
-		
+
 		counterLabel.put("silent", 0);
 		for(Transition t : net.getTransitions()){
 			

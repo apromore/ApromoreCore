@@ -82,14 +82,14 @@ public class ApromoreCompareML {
         String folder1 = "fines/";
 		String folder2 = "fines/";
 
-		String folder = "demo2/";
+		String folder = "models/";
 
 //        String logString = folder + "Loan_baseline_parallel_move_log.xes";
 //        String modelString = folder + "Loan_baseline.bpmn";
 //		String logString = folder + "bpLog11.xes";
 //		String modelString = folder + "bp2.bpmn";
-		String logString = folder + "BPI.xes";
-		String modelString = folder + "s.bpmn";
+		String logString = folder + "bpLog4.xes";
+		String modelString = folder + "bp5.bpmn";
 //        String logString = folder1 + "Repair/Example2/conc_seq_insert_log.xes";
 //        String modelString = folder2 + "Examples/Example1/conf_loop.bpmn";
 
@@ -190,7 +190,7 @@ public class ApromoreCompareML {
 //			verbalizer.verbalize();
 //			System.out.println(verbalizer.getStatements());
 
-			DiffMLGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model, log, silents);
+			DiffMLGraphicalVerbalizerNew verbalizer = comparator.analyzeDifferences(model, log, silents);
 			verbalizer.verbalize();
 			System.out.println(DifferencesML.toJSON(verbalizer.getDifferences()));
 			for(DifferenceML dif : verbalizer.getDifferences().getDifferences())
@@ -268,8 +268,8 @@ public class ApromoreCompareML {
 		return statementSet;
 	}
 
-	public DiffMLGraphicalVerbalizer analyzeDifferences(ModelAbstractions model, XLog log, HashSet<String> silents) throws Exception {
-		DiffMLGraphicalVerbalizer verbalizer = new DiffMLGraphicalVerbalizer(model, log, silents);
+	public DiffMLGraphicalVerbalizerNew analyzeDifferences(ModelAbstractions model, XLog log, HashSet<String> silents) throws Exception {
+		DiffMLGraphicalVerbalizerNew verbalizer = new DiffMLGraphicalVerbalizerNew(model, log, silents);
 
 //		SinglePORunPESSemantics<Integer> logpessem;
 //		PrunedOpenPartialSynchronizedProduct<Integer> psp;

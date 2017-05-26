@@ -54,8 +54,11 @@
 							ee.ut.eventstr.folding,
 							ee.ut.eventstr.freq,
 							ee.ut.bpmn,
+                            ee.ut.pnml,
 							ee.ut.eventstr,
 							ee.ut.eventstr.unfolding,
+							com.google.common.collect,
+							ee.ut.nets.unfolding,
 							ee.ut.eventstr.comparison.differences
 						</Export-Package>
 					</instructions>

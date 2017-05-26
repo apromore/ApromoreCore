@@ -128,7 +128,7 @@ public class Unfolding2PES {
                 if(originalVisibleLabels.contains(originalName))
                     this.mapEventsPES2Unf.put(labels.size(), node);
 
-                labels.add(sys.properNames[node.id]);
+                labels.add(originalNames.get(sys.properNames[node.id]));
 			}
 			
 			if (sinkEvent && node.isCutOff)

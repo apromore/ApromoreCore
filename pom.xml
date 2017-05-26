@@ -91,6 +91,7 @@
         <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
         <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
         <module>Apromore-OSGI-Bundles/eventstr-confchecking-code-osgi</module>
+        <module>Apromore-OSGI-Bundles/apm-verification-osgi</module>
         <module>Apromore-OSGI-Bundles/ini4j</module>
         <module>Apromore-OSGI-Bundles/irthemis</module>
         <module>Apromore-OSGI-Bundles/json</module>
@@ -120,6 +121,8 @@
         <module>Cmapper-Portal-Plugin</module>
         <module>Compare-Logic</module>
         <module>Compare-Portal-Plugin</module>
+        <module>APM-Logic</module>
+        <module>APM-Portal-Plugin</module>
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>
         <module>Activity-Filter-Logic</module>

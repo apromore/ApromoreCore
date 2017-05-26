@@ -154,9 +154,8 @@ public class ExpandedPomsetPrefix<T> {
 	}
 
 	public void mark(State state, Operation op) {
-		if (op.op == Op.LHIDE) {
+		if (op.op == Op.LHIDE)
 			return;
-		}
 		
 		BitSet bset = pack(state.c2);
 		if (bset.cardinality() == state.c2.size()) {			
@@ -239,9 +238,8 @@ public class ExpandedPomsetPrefix<T> {
 		List<Integer> elem;
 		Boolean found;
 		
-		for (Multiset<Integer> _run: runs) {
+		for (Multiset<Integer> _run: runs)
 			bitruns.add(pack(_run));
-		}
 
 		for (BitSet run: bitruns) {
 			if (!opMap.containsKey(run)) {
@@ -269,15 +267,14 @@ public class ExpandedPomsetPrefix<T> {
 								runcopy = (BitSet)run.clone();
 								runcopy.set(d2);
 								runcopy.clear(d);
-								if ((bitruns.contains(runcopy)) && (!pes.getInvisibleEvents().contains(d2))) {
+								if ((bitruns.contains(runcopy)) && (!pes.getInvisibleEvents().contains(d2)))
 									found = true;
-								}
 							}
 							
-							if ((!found) && (!pes.getDirectConflictSet(d).intersects(diff))) {
-								for (BitSet prev: opMap.keySet()) {
-									if (!prev.get(d)) {
-										for (BitSet next: adjList.get(prev)) {
+							if ((!found) && (!pes.getDirectConflictSet(d).intersects(diff)))
+								for (BitSet prev: opMap.keySet())
+									if (!prev.get(d))
+										for (BitSet next: adjList.get(prev))
 											if (next.get(d)) {
 												elem = new ArrayList<Integer>();
 												if (!pes.getInvisibleEvents().contains(d)) {
@@ -285,17 +282,11 @@ public class ExpandedPomsetPrefix<T> {
 													optional.put(stateMap.get(prev), elem);
 												}
 											}
-										}
-									}
-								}
-							}
 						}
 					}
 				}
 			}
 		}
-		
-		
 		
 		return optional;
 	}
@@ -337,7 +328,7 @@ public class ExpandedPomsetPrefix<T> {
 						additional.put(stateMap.get(curr), tasks);
 						stateFound = true;
 					}
-//					prev = (BitSet)curr.clone();
+					prev = (BitSet)curr.clone();
 				}
 			}
 		}

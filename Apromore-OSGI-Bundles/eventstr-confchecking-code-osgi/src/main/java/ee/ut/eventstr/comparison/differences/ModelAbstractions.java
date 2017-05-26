@@ -32,7 +32,11 @@ import com.google.common.collect.BiMap;
 import ee.ut.eventstr.NewUnfoldingPESSemantics;
 import ee.ut.nets.unfolding.BPstructBP;
 import hub.top.uma.DNode;
+import org.jbpt.hypergraph.abs.GObject;
+import org.jbpt.pm.Activity;
 import org.jbpt.pm.FlowNode;
+import org.jbpt.pm.Gateway;
+import org.jbpt.pm.XorGateway;
 import org.jbpt.pm.bpmn.Bpmn;
 import org.jbpt.pm.bpmn.BpmnControlFlow;
 import org.jbpt.utils.IOUtils;
@@ -233,9 +237,6 @@ public class ModelAbstractions {
 
         pessem.setLabels(newLabels);
 
-        for(int j =0 ; j < pessem.getLabels().size(); j++)
-            System.out.print(getTaskFromEvent(j));
-
         return pessem;
     }
 
@@ -288,6 +289,37 @@ public class ModelAbstractions {
         return events;
     }
 
+    public HashSet<GObject> getModelSegment(HashSet<Integer> events) {
+        HashSet<DNode> union = new HashSet<>();
+        HashSet<DNode> intersection = null;
+        HashSet<DNode> mappedEvts = new HashSet<>();
+
+        for(Integer event : events)
+            if(getTaskFromEvent(event) instanceof Activity) {
+                Set<DNode> localConf = unfolder.getBP().getLocalConfig(mapPES2Unf.get(event));
+                union.addAll(localConf);
+
+                if (intersection == null) intersection = new HashSet<>(localConf);
+                else intersection.retainAll(localConf);
+
+                mappedEvts.add(mapPES2Unf.get(event));
+            }
+
+        intersection.removeAll(mappedEvts);
+        union.removeAll(intersection);
+
+        HashSet<GObject> modelNodes = new HashSet<>();
+        for(DNode node : union)
+            if(mapUnf2Net.containsKey(node.id)) {
+                FlowNode task = mapTasks2TransReverse.get(mapUnf2Net.get(node.id));
+                modelNodes.add(task);
+                modelNodes.addAll(bpmnModel.getIncomingControlFlow(task));
+                modelNodes.addAll(bpmnModel.getOutgoingControlFlow(task));
+            }
+
+        return modelNodes;
+    }
+
     public FlowNode getTaskFromEvent(Integer i){
         Node eventTrans = mapPES2Net.get(i);
         return mapTasks2TransReverse.get(eventTrans);
@@ -307,6 +339,66 @@ public class ModelAbstractions {
                 return node;
 
         return null;
+    }
+
+    public FlowNode getCommonPredUnf(Integer evt1M, Integer evt2M) {
+        DNode evt1Unf = mapPES2Unf.get(evt1M);
+        DNode evt2Unf = mapPES2Unf.get(evt2M);
+
+        Set<DNode> localConf1 = new HashSet<>(unfolder.getBP().getLocalConfig(evt1Unf));
+        Set<DNode> localConf2 = unfolder.getBP().getLocalConfig(evt2Unf);
+
+        localConf1.retainAll(localConf2);
+        localConf1.remove(evt1Unf);
+        localConf1.remove(evt2Unf);
+
+        Comparator<DNode> comparator = new Comparator<DNode>() {
+            @Override
+            public int compare(DNode o1, DNode o2) {
+                return unfolder.getBP().getLocalConfig(o2).size() - unfolder.getBP().getLocalConfig(o1).size();
+            }
+        };
+
+        LinkedList<DNode> localConf1Ord = new LinkedList<>(localConf1);
+        Collections.sort(localConf1Ord, comparator);
+
+        DNode lastElem = localConf1Ord.getFirst();
+//        if(unfolder.getBP().getBranchingProcess().allEvents.contains(lastElem)) {
+//            com.google.gwt.dev.util.collect.HashSet<DNode> directSucc = unfolder.getBP().getBranchingProcess().getAllSuccessors(lastElem);
+//            if (mapTasks2TransReverse.containsKey(mapUnf2Net.get(directSucc.iterator().next().id)))
+//                lastElem = directSucc.iterator().next();
+//        }
+
+        FlowNode lastPred = mapTasks2TransReverse.get(mapUnf2Net.get(lastElem.id));
+        if(getBpmnModel().getDirectSuccessors(lastPred).iterator().next() instanceof Gateway)
+            lastPred = getBpmnModel().getDirectSuccessors(lastPred).iterator().next();
+
+        return lastPred;
+    }
+
+    public FlowNode getCommonSuccUnf(Integer evt1M, Integer evt2M) {
+        DNode evt1Unf = mapPES2Unf.get(evt1M);
+        DNode evt2Unf = mapPES2Unf.get(evt2M);
+
+        LinkedList<DNode> localConf1Ord = new LinkedList<>();
+
+        for(DNode evt : unfolder.getBP().getBranchingProcess().allEvents){
+            Set<DNode> localConf = unfolder.getBP().getLocalConfig(evt);
+            if(localConf.contains(evt1Unf) && localConf.contains(evt2Unf) && evt != evt1Unf && evt != evt2Unf)
+                localConf1Ord.add(evt);
+        }
+
+        Comparator<DNode> comparator = new Comparator<DNode>() {
+            @Override
+            public int compare(DNode o1, DNode o2) {
+                return unfolder.getBP().getLocalConfig(o1).size() - unfolder.getBP().getLocalConfig(o2).size();
+            }
+        };
+
+        Collections.sort(localConf1Ord, comparator);
+
+        return mapTasks2TransReverse.get(mapUnf2Net.get(localConf1Ord.getFirst().id));
+
     }
 
     public String getName(String path) {

@@ -142,16 +142,15 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 						int costCValue = Short.compare(o1.cost, o2.cost);
 						if (costCValue != 0)
 							return costCValue;
-//						else if(o1.c1.cardinality() != o2.c1.cardinality())
-//							return Integer.compare(o2.c1.cardinality(),o1.c1.cardinality());
-//						else if(o1.c2.size() != o2.c2.size())
-//							return Integer.compare(o2.c2.size(), o1.c2.size());
+						else if(o1.c1.cardinality() != o2.c1.cardinality())
+							return Integer.compare(o2.c1.cardinality(),o1.c1.cardinality());
+						else if(o1.c2.size() != o2.c2.size())
+							return Integer.compare(o2.c2.size(), o1.c2.size());
 						return -1;
 					}}
 		);
 
 		root = getState(new BitSet(), HashMultiset.<String> create(), HashMultiset.<Integer> create());
-		
 		open.offer(root);
 
 		while (!open.isEmpty()) {
@@ -177,8 +176,8 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 					c1p.set(e1);
 					
 					for (Integer e2: rpe) {
-						if (label1.equals(pes2.getLabel(e2)) &&
-								isOrderPreserving(s, e1, e2)) {
+						String label2 = pes2.getLabel(e2);
+						if (label1.equals(label2) && isOrderPreserving(s, e1, e2)) {
 							pruned1.set(e1); pruned2.set(e2);
 							
 //							if (prev != null && 
@@ -267,8 +266,8 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 				
 				nextCandidate2:
 				for (Integer e2: rpe) {
-					if (pruned2.get(e2) || kept2.get(e2))
-						continue;
+//					if (pruned2.get(e2) || kept2.get(e2))
+//						continue;
 					
 					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1))
 						if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY)
@@ -296,8 +295,8 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 				}
 				
 				for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1+1)) {					
-					if (pruned1.get(e1) || kept1.get(e1))
-						continue;
+//					if (pruned1.get(e1) || kept1.get(e1))
+//						continue;
 
 					BitSet c1p = (BitSet)s.c1.clone();
 					c1p.set(e1);
@@ -425,10 +424,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 	public void computeCost(State s) {
 		Multiset<Integer> c2copy = HashMultiset.create(s.c2);
 		c2copy.removeAll(pes2.getInvisibleEvents());
-		s.cost = (short)(
-				g(s.c1, c2copy, s.labels)
-				+ h(s)
-				);
+		s.cost = (short)(g(s.c1, c2copy, s.labels) + h(s));
 	}
 		
 	public int g(BitSet c1, Multiset<Integer> c2, Multiset<String> labels) {

@@ -207,7 +207,7 @@ public class DiffMLGraphicalVerbalizer {
 			addPSPBranchToGlobalPSP(opSeq);
 		prune();
 
-		Map<Pair<Operation, Operation>, Pair<State, State>> pending = new HashMap<>();
+        Map<Pair<Operation, Operation>, Pair<State, State>> pending = new HashMap<>();
 		findCausalityConcurrencyMismatches(root, new HashSet<Pair<State,Operation>>(), new HashSet<State>(), new LinkedList<Operation>(), pending);
 
 //		if (!pending.isEmpty())

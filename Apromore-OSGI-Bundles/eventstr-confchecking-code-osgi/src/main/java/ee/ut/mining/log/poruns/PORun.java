@@ -106,7 +106,7 @@ public class PORun implements PORunConst {
 			for (int j = i + 1; j < size - 1; j++) {
 				Integer vertex2 = vertices.get(j);
 				String label2 = labels.get(vertex2);
-				if (alphaRelations.areConcurrent(label1, label2)) {
+				if (!label1.equals(label2) && alphaRelations.areConcurrent(label1, label2)) {
 					adjmatrix[i][j] = false;
 					concurrency.put(vertex1, vertex2);
 					concurrency.put(vertex2, vertex1);
