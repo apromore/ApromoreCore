@@ -593,6 +593,15 @@ public class DirectlyFollowGraphPlus {
                 explore(n, n, startcode, path, in.getFrequency(), paths, capacities);
             }
         }
+
+        for( int n : nodes.keySet() ) {
+            if( n == startcode || n == endcode ) continue;
+            for( DFGEdge out : outgoings.get(n) ) {
+                path = new HashSet<>();
+                path.add(out);
+                explore(n, n, endcode, path, out.getFrequency(), paths, capacities);
+            }
+        }
     }
 
     private void explore(int next, int source, int sink, Set<DFGEdge> path, int capacity, Map<Integer, Map<Integer, Set<DFGEdge>>> paths, Map<Integer, Map<Integer, Integer>> capacities) {
