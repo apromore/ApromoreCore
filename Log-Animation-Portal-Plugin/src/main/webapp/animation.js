@@ -26,33 +26,29 @@ function getRandomInt(min, max) {
 }
 
 /* ******************************************************************
- * Return an object with four points coressponding to four corners of the input rect element
+ * Return an object with four points corresponding to four corners of the input rect element
  * These are coordinates within the SVG document viewport
  * Return object has four points: nw, ne, se, sw, cc (center) (each with x,y attribute)
-* ******************************************************************/
+ * ******************************************************************/
 function getViewportPoints(rect){
     var svg = svgDocument;
-    var pt  = svg.createSVGPoint();
-    var corners = {};
-    
-    var matrix  = rect.getCTM();
-    pt.x = rect.x.animVal.value;
-    pt.y = rect.y.animVal.value;
-    corners.nw = pt.matrixTransform(matrix);
-    
-    pt.x += rect.width.animVal.value;
-    corners.ne = pt.matrixTransform(matrix);
-    
-    pt.y += rect.height.animVal.value;
-    corners.se = pt.matrixTransform(matrix);
-    
-    pt.x -= rect.width.animVal.value;
-    corners.sw = pt.matrixTransform(matrix);
-    
-    pt.x += rect.width.animVal.value/2;
-    pt.y -= rect.height.animVal.value/2;
-    corners.cc = pt.matrixTransform(matrix);
-    
+
+    var matrix = rect.transform.baseVal.getItem(0).matrix;
+    var corners = {
+        nw: svg.createSVGPoint().matrixTransform(matrix),
+        ne: svg.createSVGPoint().matrixTransform(matrix),
+        sw: svg.createSVGPoint().matrixTransform(matrix),
+        se: svg.createSVGPoint().matrixTransform(matrix),
+        cc: svg.createSVGPoint().matrixTransform(matrix) };
+
+    var bbox = rect.getBBox();
+    corners.ne.x += bbox.width;
+    corners.se.x += bbox.width;
+    corners.se.y += bbox.height;
+    corners.sw.y += bbox.height;
+    corners.cc.x += bbox.width/2;
+    corners.cc.y += bbox.height/2;
+
     return corners;
 }
 
@@ -939,11 +935,11 @@ LogCase.prototype = {
         var outgoingPathE = $j("#svg-"+modelNode.outgoingFlow).find("g").find("g").find("g").find("path").get(0);
         var outgoingStartPoint = outgoingPathE.getPointAtLength(0);
     
-        var startPoint = incomingEndPoint.matrixTransform(incomingPathE.getCTM());
-        var endPoint = outgoingStartPoint.matrixTransform(outgoingPathE.getCTM());
+        var startPoint = incomingEndPoint;
+        var endPoint = outgoingStartPoint;
     
-        var nodeRectE = $j("#svg-" + node.id).find("g").find("g").find("g").find("rect").get(0);
-        var taskRectPoints = getViewportPoints(nodeRectE); //only for tokens running on the edge of task shape (not used now)
+        var nodeRectE = $j("#svg-" + node.id).find("g").get(0);
+        var taskRectPoints = getViewportPoints(nodeRectE);
     
         //---------------------------------------------------------
         // Create path element
