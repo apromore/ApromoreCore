@@ -19,7 +19,7 @@ import java.util.LinkedList;
 public class SplitMinerSettings extends ProMPropertiesPanel {
 
     private static final long serialVersionUID = 1L;
-    private static final String DIALOG_NAME = "Select SplitMiner Params";
+    private static final String DIALOG_NAME = "Select Split Miner Params";
 
     final SplitMinerUIResult result;
 

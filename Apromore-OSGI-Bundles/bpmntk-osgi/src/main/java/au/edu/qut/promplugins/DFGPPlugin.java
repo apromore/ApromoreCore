@@ -59,7 +59,9 @@ public class DFGPPlugin {
         DFGPUIResult result = gui.showGUI(context, "Setup for DFG+");
 
         SimpleLog sLog = LogParser.getSimpleLog(log);
-        DirectlyFollowGraphPlus net = new DirectlyFollowGraphPlus(sLog, result.getPercentileFrequencyThreshold(), result.getParallelismsThreshold(), result.getFilterType());
+        DirectlyFollowGraphPlus net = new DirectlyFollowGraphPlus(  sLog, result.getPercentileFrequencyThreshold(),
+                                                                    result.getParallelismsThreshold(),
+                                                                    result.getFilterType(), result.isPercentileOnbest());
         net.buildDFGP();
 
         if( debug ) {

@@ -71,7 +71,8 @@ public class SplitMiner {
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
-    public BPMNDiagram mineBPMNModel(XLog log, double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType,
+    public BPMNDiagram mineBPMNModel(XLog log, double percentileFrequencyThreshold, double parallelismsThreshold,
+                                     DFGPUIResult.FilterType filterType, boolean percentileOnBest,
                                      boolean replaceIORs, SplitMinerUIResult.StructuringTime structuringTime)
     {
 //        System.out.println("SplitMiner - starting ...");
@@ -84,7 +85,7 @@ public class SplitMiner {
         this.log = LogParser.getSimpleLog(log);
 //        System.out.println("SplitMiner - log parsed successfully");
 
-        generateDFGP(percentileFrequencyThreshold, parallelismsThreshold, filterType);
+        generateDFGP(percentileFrequencyThreshold, parallelismsThreshold, filterType, percentileOnBest);
         try {
             transformDFGPintoBPMN();
             if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
@@ -96,8 +97,8 @@ public class SplitMiner {
         return bpmnDiagram;
     }
 
-    private void generateDFGP(double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType) {
-        dfgp = new DirectlyFollowGraphPlus(log, percentileFrequencyThreshold, parallelismsThreshold, filterType);
+    private void generateDFGP(double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType, boolean percentileOnBest) {
+        dfgp = new DirectlyFollowGraphPlus(log, percentileFrequencyThreshold, parallelismsThreshold, filterType, percentileOnBest);
         dfgp.buildDFGP();
     }
 
@@ -221,7 +222,6 @@ public class SplitMiner {
 //        System.out.println("SplitMiner - generating inner joins ...");
         generateInnerJoins();
 
-
         if( structuringTime == SplitMinerUIResult.StructuringTime.PRE ) structure();
         helper.fixSoundness(bpmnDiagram);
 
@@ -230,6 +230,7 @@ public class SplitMiner {
         replaceIORs();
 
         updateLabels(this.log.getEvents());
+        helper.removeSelfLoopMarkers(bpmnDiagram);
 //        System.out.println("SplitMiner - bpmn diagram generated successfully");
     }
 

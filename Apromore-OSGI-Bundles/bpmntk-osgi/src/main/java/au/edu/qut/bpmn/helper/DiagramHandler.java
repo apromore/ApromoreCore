@@ -58,6 +58,29 @@ public class DiagramHandler {
         predecessors = null;
     }
 
+    public void removeSelfLoopMarkers(BPMNDiagram diagram) {
+        Gateway entry, exit;
+        BPMNEdge<? extends BPMNNode, ? extends BPMNNode> in, out;
+        in = null;
+        out = null;
+
+        for( Activity a : diagram.getActivities() )
+            if( a.isBLooped() ) {
+                a.setBLooped(false);
+                entry = diagram.addGateway("", Gateway.GatewayType.DATABASED, a.getParentSubProcess());
+                exit = diagram.addGateway("", Gateway.GatewayType.DATABASED, a.getParentSubProcess());
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getInEdges(a) ) in = e;
+                for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e : diagram.getOutEdges(a) ) out = e;
+                diagram.addFlow(in.getSource(), entry, "");
+                diagram.addFlow(exit, out.getTarget(), "");
+                diagram.addFlow(exit, entry, "");
+                diagram.addFlow(entry, a, "");
+                diagram.addFlow(a, exit, "");
+                diagram.removeEdge(in);
+                diagram.removeEdge(out);
+            }
+    }
+
     public void removeJoinSplit(BPMNDiagram diagram) {
 //        this method removes join/split gateways, transforming them into a sequence of a join and a split
         Gateway split;

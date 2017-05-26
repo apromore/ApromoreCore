@@ -24,11 +24,12 @@ public class DFGPSettings extends ProMPropertiesPanel {
 
     final DFGPUIResult result;
 
-    HNItemListener hnil = new HNItemListener();
+    DFGPItemListener dfgpil = new DFGPItemListener();
 
     NiceDoubleSlider percentileFrequencyThreshold;
     NiceDoubleSlider parallelismsThreshold;
     ProMComboBox filtering;
+    JCheckBox percentileOnBest;
 
     public DFGPSettings() {
         super(DIALOG_NAME);
@@ -36,33 +37,38 @@ public class DFGPSettings extends ProMPropertiesPanel {
         result = new DFGPUIResult();
 
         LinkedList<String> filterType = new LinkedList<>();
+        filterType.addLast("WTH");
         filterType.addLast("STD");
         filterType.addLast("GUB");
         filterType.addLast("LPS");
-        filterType.addLast("WTH");
 
         filtering = this.addComboBox("Filter Type", filterType);
-        filtering.addActionListener(hnil);
+        filtering.addActionListener(dfgpil);
+
+        percentileOnBest = this.addCheckBox("Percentile On Best", true);
+        percentileOnBest.addChangeListener(dfgpil);
 
         percentileFrequencyThreshold = SlickerFactory.instance().createNiceDoubleSlider("Percentile Frequency Threshold", 0.00, 1.00, DFGPUIResult.FREQUENCY_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
-        percentileFrequencyThreshold.addChangeListener(hnil);
+        percentileFrequencyThreshold.addChangeListener(dfgpil);
         this.add(percentileFrequencyThreshold);
         percentileFrequencyThreshold.setVisible(true);
 
         parallelismsThreshold = SlickerFactory.instance().createNiceDoubleSlider("Parallelisms Threshold", 0.00, 1.00, DFGPUIResult.PARALLELISMS_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
-        parallelismsThreshold.addChangeListener(hnil);
+        parallelismsThreshold.addChangeListener(dfgpil);
         this.add(parallelismsThreshold);
         parallelismsThreshold.setVisible(true);
 
-        result.setPercentileFrequencyThreshold(DFGPUIResult.FREQUENCY_THRESHOLD);
-        result.setParallelismsThreshold(DFGPUIResult.PARALLELISMS_THRESHOLD);
+        result.setFilterType(DFGPUIResult.FilterType.WTH);
+        result.setPercentileOnbest(percentileOnBest.isSelected());
+        result.setPercentileFrequencyThreshold(percentileFrequencyThreshold.getValue());
+        result.setParallelismsThreshold(parallelismsThreshold.getValue());
     }
 
     public DFGPUIResult getSelections() {
         return result;
     }
 
-    private class HNItemListener implements ChangeListener, ActionListener {
+    private class DFGPItemListener implements ChangeListener, ActionListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
@@ -75,20 +81,23 @@ public class DFGPSettings extends ProMPropertiesPanel {
             if( e.getSource() instanceof JComboBox) {
                 switch( ((JComboBox)e.getSource()).getSelectedIndex() ) {
                     case 0:
-                        result.setFilterType(DFGPUIResult.FilterType.STD);
+                        result.setFilterType(DFGPUIResult.FilterType.WTH);
+                        percentileFrequencyThreshold.setVisible(true);
                         break;
                     case 1:
-                        result.setFilterType(DFGPUIResult.FilterType.GUB);
+                        result.setFilterType(DFGPUIResult.FilterType.STD);
+                        percentileFrequencyThreshold.setVisible(false);
                         break;
                     case 2:
-                        result.setFilterType(DFGPUIResult.FilterType.LPS);
+                        result.setFilterType(DFGPUIResult.FilterType.GUB);
+                        percentileFrequencyThreshold.setVisible(false);
                         break;
                     case 3:
-                        result.setFilterType(DFGPUIResult.FilterType.WTH);
+                        result.setFilterType(DFGPUIResult.FilterType.LPS);
+                        percentileFrequencyThreshold.setVisible(true);
                         break;
                 }
             }
         }
     }
-
 }

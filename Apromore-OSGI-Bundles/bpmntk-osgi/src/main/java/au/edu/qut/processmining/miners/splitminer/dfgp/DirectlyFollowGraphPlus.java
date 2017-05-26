@@ -68,22 +68,26 @@ public class DirectlyFollowGraphPlus {
     private Set<Integer> loopsL1;
     private Set<DFGEdge> loopsL2;
     private Map<Integer, HashSet<Integer>> parallelisms;
+    private Set<DFGEdge> bestEdges;
 
     private double percentileFrequencyThreshold;
     private double parallelismsThreshold;
     private DFGPUIResult.FilterType filterType;
+    private int filterThreshold;
+    private boolean percentileOnBest;
 
     public DirectlyFollowGraphPlus(SimpleLog log) {
-        this(log, DFGPUIResult.FREQUENCY_THRESHOLD, DFGPUIResult.PARALLELISMS_THRESHOLD, DFGPUIResult.FilterType.STD);
+        this(log, DFGPUIResult.FREQUENCY_THRESHOLD, DFGPUIResult.PARALLELISMS_THRESHOLD, DFGPUIResult.STD_FILTER, DFGPUIResult.PERCENTILE_ONBEST);
     }
 
-    public DirectlyFollowGraphPlus(SimpleLog log, double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType) {
+    public DirectlyFollowGraphPlus(SimpleLog log, double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType, boolean percentileOnBest) {
         this.log = log;
         this.startcode = log.getStartcode();
         this.endcode = log.getEndcode();
         this.percentileFrequencyThreshold = percentileFrequencyThreshold;
         this.parallelismsThreshold = parallelismsThreshold;
         this.filterType = filterType;
+        this.percentileOnBest = percentileOnBest;
     }
 
     public BPMNDiagram getDFG() {
@@ -151,9 +155,10 @@ public class DirectlyFollowGraphPlus {
 
         buildDirectlyFollowsGraph();                //first method to execute
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
-        detectParallelisms(parallelismsThreshold);  //depends on detectLoops()
+        detectParallelisms();                       //depends on detectLoops()
 
-        switch(filterType) {                        //depends on detectParallelisms()
+        setupFilter();                              //depends on detectParallelisms()
+        switch(filterType) {                        //depends on setupFilter()
             case STD: standardFilter();
                 break;
             case GUB: generateNoiseFilteredDFG();
@@ -304,7 +309,7 @@ public class DirectlyFollowGraphPlus {
 //        System.out.println("DFGP - loops length TWO found: " + loopsL2.size()/2);
     }
 
-    private void detectParallelisms(double epslon) {
+    private void detectParallelisms() {
         int totalParallelisms = 0;
 
         DFGEdge e2;
@@ -331,11 +336,9 @@ public class DirectlyFollowGraphPlus {
                 tgt2src_frequency = e2.getFrequency();
                 parallelismScore = (double) (src2tgt_frequency - tgt2src_frequency) / (src2tgt_frequency + tgt2src_frequency);
 
-                if (Math.abs(parallelismScore) < epslon) {
+                if( Math.abs(parallelismScore) < parallelismsThreshold ) {
 //                    if parallelismScore is less than the threshold epslon,
 //                    we set src || tgt and vice-versa, and we remove e1 and e2
-//                    if( bestEdges.contains(e1) && !bestEdges.contains(e2) )  continue;
-//                    if( !bestEdges.contains(e1) && bestEdges.contains(e2) )  removableEdges.add(e1);
                     if (!parallelisms.containsKey(src)) parallelisms.put(src, new HashSet<Integer>());
                     parallelisms.get(src).add(tgt);
                     if (!parallelisms.containsKey(tgt)) parallelisms.put(tgt, new HashSet<Integer>());
@@ -368,23 +371,23 @@ public class DirectlyFollowGraphPlus {
 //        System.out.println("DFGP - parallelisms found: " + totalParallelisms);
     }
 
-    private int getFilteringThreshold() {
-        ArrayList<DFGEdge> frequencyOrderedEdges = new ArrayList<>(edges);
-        Collections.sort(frequencyOrderedEdges);
-        int i = (int)Math.round(frequencyOrderedEdges.size()*percentileFrequencyThreshold);
-
-        return frequencyOrderedEdges.get(i).getFrequency();
-    }
-
-    private Set<DFGEdge> getMostFrequentSuccessorsAndPredecessors() {
-        Set<DFGEdge> bestEdges = new HashSet<>();
+    private void setupFilter() {
+        bestEdges = new HashSet<>();
+        ArrayList<DFGEdge> frequencyOrderedEdges = new ArrayList<>();
+        int i;
 
         for( int node : nodes.keySet() ) {
             if( node != endcode ) bestEdges.add(Collections.max(outgoings.get(node)));
             if( node != startcode ) bestEdges.add(Collections.max(incomings.get(node)));
         }
 
-        return bestEdges;
+        if( percentileOnBest ) frequencyOrderedEdges.addAll(bestEdges);
+        else frequencyOrderedEdges.addAll(edges);
+
+        Collections.sort(frequencyOrderedEdges);
+        i = (int)Math.round(frequencyOrderedEdges.size()*percentileFrequencyThreshold);
+        if( i == frequencyOrderedEdges.size() ) i--;
+        filterThreshold = frequencyOrderedEdges.get(i).getFrequency();
     }
 
     private void standardFilter() {
@@ -392,7 +395,6 @@ public class DirectlyFollowGraphPlus {
         int tgt;
         DFGEdge recoverableEdge;
 
-        Set<DFGEdge> bestEdges = getMostFrequentSuccessorsAndPredecessors();
         ArrayList<DFGEdge> frequencyOrderedBestEdges = new ArrayList<>(bestEdges);
 
         for( DFGEdge e : new HashSet<>(edges) ) this.removeEdge(e, false);
@@ -410,21 +412,20 @@ public class DirectlyFollowGraphPlus {
     private void filterWithThreshold() {
         int src;
         int tgt;
-        int threshold = getFilteringThreshold();
         DFGEdge recoverableEdge;
 
-        ArrayList<DFGEdge> orderedMostFrequentEdges = new ArrayList<>(getMostFrequentSuccessorsAndPredecessors());
+        ArrayList<DFGEdge> orderedMostFrequentEdges = new ArrayList<>(bestEdges);
 
         for( DFGEdge e : orderedMostFrequentEdges ) this.removeEdge(e, false);
         for( DFGEdge e : new HashSet<>(edges) ) {
-            if( e.getFrequency() > threshold ) orderedMostFrequentEdges.add(e);
+            if( e.getFrequency() > filterThreshold) orderedMostFrequentEdges.add(e);
             this.removeEdge(e, false);
         }
 
         Collections.sort(orderedMostFrequentEdges);
         for( int i = (orderedMostFrequentEdges.size()-1); i >= 0; i-- ) {
             recoverableEdge = orderedMostFrequentEdges.get(i);
-            if( recoverableEdge.getFrequency() > threshold ) this.addEdge(recoverableEdge);
+            if( recoverableEdge.getFrequency() > filterThreshold) this.addEdge(recoverableEdge);
             else {
                 src = recoverableEdge.getSourceCode();
                 tgt = recoverableEdge.getTargetCode();
@@ -440,15 +441,12 @@ public class DirectlyFollowGraphPlus {
         Set<Edge<String>> removable = new HashSet<>();
         LogNode src, tgt;
         int srcID, tgtID;
-        int threshold = getFilteringThreshold();
 
         Map<Integer, Node<String>> anodes = new HashMap<>();
         Map<Edge<String>, DFGEdge> aedges = new HashMap<>();
 
         Node<String> srcANode, tgtANode;
         Edge<String> aedge;
-
-        Set<DFGEdge> bestEdges = getMostFrequentSuccessorsAndPredecessors();
 
         for( DFGEdge e : edges ) {
             src = e.getSource();
@@ -473,9 +471,9 @@ public class DirectlyFollowGraphPlus {
             } else tgtANode = anodes.get(tgtID);
 
             aedge = new Edge<>(srcANode, tgtANode);
-            automaton.addEdge(aedge);
+            automaton.addEdge(aedge, e.getFrequency());
             aedges.put(aedge, e);
-            if( !(bestEdges.contains(e) || (e.getFrequency() > threshold)) ) {
+            if( !(bestEdges.contains(e) || (e.getFrequency() > filterThreshold)) ) {
                 aedge.setInfrequent(true);
                 removable.add(aedge);
             }
@@ -552,7 +550,7 @@ public class DirectlyFollowGraphPlus {
         int totalParallelisms = 0;
 
         detectLoops();
-        detectParallelisms(parallelismsThreshold);
+        detectParallelisms();
 
         for( int src : oldParallelisms.keySet() )
             for( int tgt : oldParallelisms.get(src) ) {
@@ -580,6 +578,48 @@ public class DirectlyFollowGraphPlus {
             System.out.println("DEBUG - old parallelisms added: " + totalParallelisms);
     }
 
+    private void filterWithGuarantees() {
+        Map<Integer, Map<Integer, Set<DFGEdge>>> paths = new HashMap<>();
+        Map<Integer, Map<Integer, Integer>> capacities = new HashMap<>();
+        Set<DFGEdge> path;
+
+        for( int n : nodes.keySet() ) {
+            if( n == startcode || n == endcode ) continue;
+            paths.put(n, new HashMap<>());
+            capacities.put(n, new HashMap<>());
+            for( DFGEdge in : incomings.get(n) ) {
+                path = new HashSet<>();
+                path.add(in);
+                explore(n, n, startcode, path, in.getFrequency(), paths, capacities);
+            }
+        }
+    }
+
+    private void explore(int next, int source, int sink, Set<DFGEdge> path, int capacity, Map<Integer, Map<Integer, Set<DFGEdge>>> paths, Map<Integer, Map<Integer, Integer>> capacities) {
+        Set<DFGEdge> newPath;
+        int newCapacity;
+
+        for(DFGEdge in : incomings.get(next)) {
+            if( path.contains(in) ) return; //not interested in loops
+            newPath = new HashSet<>(path);
+            newPath.add(in);
+
+            newCapacity = capacity;
+            if( capacity > in.getFrequency() ) newCapacity = in.getFrequency();
+
+            next = (sink == startcode ? in.getSourceCode() : in.getTargetCode());
+            if( next == sink ) {
+                if( !paths.get(source).containsKey(sink) ) {
+                    paths.get(source).put(sink, path);
+                    capacities.get(source).put(sink, newCapacity);
+                } else if( (newCapacity > capacities.get(source).get(sink)) || ((newCapacity == capacities.get(source).get(sink)) && (newPath.size() < paths.get(source).get(sink).size())) ) {
+                    paths.get(source).put(sink, newPath);
+                    capacities.get(source).put(sink, newCapacity);
+                }
+            } else explore(next, source, sink, newPath, newCapacity, paths, capacities);
+        }
+    }
+
     private void exploreAndRemove() {
         int src, tgt;
 
@@ -587,6 +627,7 @@ public class DirectlyFollowGraphPlus {
         Set<Integer> visited = new HashSet<>();
         Set<Integer> unvisited = new HashSet<>();
 
+//      forward exploration
         toVisit.add(startcode);
         visited.add(startcode);
         unvisited.addAll(nodes.keySet());
@@ -604,7 +645,28 @@ public class DirectlyFollowGraphPlus {
             }
         }
 
-//        System.out.println("DFGP - removed nodes: " + unvisited.size());
+        for(int n : unvisited) removeNode(n);
+
+//      backward exploration
+        toVisit.add(endcode);
+        visited.clear();
+        visited.add(endcode);
+        unvisited.clear();
+        unvisited.addAll(nodes.keySet());
+        unvisited.remove(endcode);
+
+        while( !toVisit.isEmpty() ) {
+            tgt = toVisit.removeFirst();
+            for( DFGEdge oe : incomings.get(tgt) ) {
+                src = oe.getSourceCode();
+                if( !visited.contains(src) ) {
+                    toVisit.addLast(src);
+                    visited.add(src);
+                    unvisited.remove(src);
+                }
+            }
+        }
+
         for(int n : unvisited) removeNode(n);
     }
 
