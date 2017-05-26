@@ -26,11 +26,10 @@
         }
     </style>
     <hlayout spacing="5px" style="padding: 5px;">
-        <label value="Search" />
         <textbox id="txtSearch" value="" width="200px" />
-        <button label="Search" id="btnSearch"></button>
-        <button label="Clear" id="btnClear"></button>
-        <button label="Save Selected" id="btnSave"></button>
+        <button label="Search" id="btnSearch"/>
+        <button label="Clear" id="btnClear"/>
+        <button label="Save Selected" id="btnSave"/>
     </hlayout>
     <listbox id="lstGroups" vflex="true" span="true" visible="false" autopaging="true" mold="paging" multiple="true" checkmark="true">
         <listhead sizable="true" >
@@ -39,7 +38,7 @@
             <listheader hflex="min" label="Read" />
             <listheader hflex="min" label="Write" />
             <listheader hflex="min" label="Owner" />
-            <listheader hflex="min" label="Id" sort="auto(id)" visible="false" />
+            <listheader hflex="min" label="ID" sort="auto(id)" visible="false" />
         </listhead>
     </listbox>
 </vlayout>

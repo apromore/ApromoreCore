@@ -26,33 +26,29 @@ function getRandomInt(min, max) {
 }
 
 /* ******************************************************************
- * Return an object with four points coressponding to four corners of the input rect element
+ * Return an object with four points corresponding to four corners of the input rect element
  * These are coordinates within the SVG document viewport
  * Return object has four points: nw, ne, se, sw, cc (center) (each with x,y attribute)
-* ******************************************************************/
+ * ******************************************************************/
 function getViewportPoints(rect){
     var svg = svgDocument;
-    var pt  = svg.createSVGPoint();
-    var corners = {};
-    
-    var matrix  = rect.getCTM();
-    pt.x = rect.x.animVal.value;
-    pt.y = rect.y.animVal.value;
-    corners.nw = pt.matrixTransform(matrix);
-    
-    pt.x += rect.width.animVal.value;
-    corners.ne = pt.matrixTransform(matrix);
-    
-    pt.y += rect.height.animVal.value;
-    corners.se = pt.matrixTransform(matrix);
-    
-    pt.x -= rect.width.animVal.value;
-    corners.sw = pt.matrixTransform(matrix);
-    
-    pt.x += rect.width.animVal.value/2;
-    pt.y -= rect.height.animVal.value/2;
-    corners.cc = pt.matrixTransform(matrix);
-    
+
+    var matrix = rect.transform.baseVal.getItem(0).matrix;
+    var corners = {
+        nw: svg.createSVGPoint().matrixTransform(matrix),
+        ne: svg.createSVGPoint().matrixTransform(matrix),
+        sw: svg.createSVGPoint().matrixTransform(matrix),
+        se: svg.createSVGPoint().matrixTransform(matrix),
+        cc: svg.createSVGPoint().matrixTransform(matrix) };
+
+    var bbox = rect.getBBox();
+    corners.ne.x += bbox.width;
+    corners.se.x += bbox.width;
+    corners.se.y += bbox.height;
+    corners.sw.y += bbox.height;
+    corners.cc.x += bbox.width/2;
+    corners.cc.y += bbox.height/2;
+
     return corners;
 }
 
@@ -69,23 +65,6 @@ function toViewportCoords(groupE) {
     pt.y = rect.y;
     return pt.matrixTransform(matrix);
 }
-
-/* *****************************************************
- * Get new point after applying transformation matrix
- * on an input point
- * point: the input point to be converted, with x,y coordinate attribute
- * ctm: transformation matrix, obtained from getCTM method of any SVG element
- * Return: a new point with x,y coordinate attribute
- * ***************************************************/
-function getPointFromCTM(point, transformMatrix) {
-    var newPoint  = svgDocument.createSVGPoint();
-    newPoint.x = point.x;
-    newPoint.y = point.y;
-    newPoint = newPoint.matrixTransform(transformMatrix);
-    return newPoint;
-}
-
-
 
 function drawCoordinateOrigin() {
         var svg = svgDocument;
@@ -279,7 +258,6 @@ Controller.prototype = {
         this.svgDocuments.push($j("div#playback_controls > svg")[0]);
         var svg3 = $j("div#progress_display > svg")[0];
         this.svgDocuments.push(svg3);
-        console.dir(this.svgDocuments);
 
         var tokenE = svgDocument.getElementById("progressAnimation");
         if (tokenE != null) {
@@ -536,17 +514,6 @@ Controller.prototype = {
             }             
         }
        
-        //-------------------------------------------------
-        // Update SVG document
-        // In case of Chrome since setCurrentTime on SVG document does not 
-        // apply updated attributes (begin, duration) dynamically for SVG elements,
-        // must call reload document to make it effective 
-        //-------------------------------------------------
-        if ( jQuery.browser.webkit ) {
-            var content = $j("#svgLoc > svg").html();
-            svgDocument.innerHTML = content;
-        svgDocumentG = $j("#svgLoc > svg > g")[0];
-        }
         this.setCurrentTime(newTime);
     },
     
@@ -602,14 +569,14 @@ Controller.prototype = {
         var img = document.getElementById("pause").getElementsByTagName("img")[0];
         this.pauseAnimations();
         img.alt = "Play";
-        img.src = "/editor/libs/animation/images/control_play.png";
+        img.src = "images/control_play.png";
     },
 
     play: function() {
         var img = document.getElementById("pause").getElementsByTagName("img")[0];
         this.unpauseAnimations();
         img.alt = "Pause";
-        img.src = "/editor/libs/animation/images/control_pause.png";
+        img.src = "images/control_pause.png";
     },
     
     switchPlayPause: function () {
@@ -824,7 +791,7 @@ Controller.prototype = {
         timelineElement.appendChild(indicatorE); 
        
         // allow indicator to be dragged horizontally
-    timelineElement.setAttributeNS(null,"pointer-events","visible");
+        timelineElement.setAttributeNS(null,"pointer-events","visible");
         timelineElement.setAttributeNS(null,"onmousedown","controller.startIndicatorDrag(evt)");
         timelineElement.setAttributeNS(null,"onmousemove","controller.doIndicatorDrag(evt, " + startTopX + ", " + lineTopX + ")");
         timelineElement.setAttributeNS(null,"onmouseup","controller.endIndicatorDrag(evt)");
@@ -834,25 +801,25 @@ Controller.prototype = {
     },
 
     startIndicatorDrag: function(evt) {
-    this.dragging = true;
+        this.dragging = true;
     },
 
     doIndicatorDrag: function(evt, from, to) {
-    if (this.dragging) {
-        var time = (this.slotEngineUnit / 1000.0) * 120 * (evt.clientX - 50) / (to - from);
-        this.setCurrentTime(time);
-    }
+        if (this.dragging) {
+            var time = (this.slotEngineUnit / 1000.0) * 120 * (evt.clientX - 50) / (to - from);
+            this.setCurrentTime(time);
+        }
     },
 
     endIndicatorDrag: function(evt) {
-    this.dragging = false;
+        this.dragging = false;
     },
 
     setCaseLabelsVisible: function(visible) {
-    if (caseLabelsVisible != visible) {
-        caseLabelsVisible = visible;
-        this.updateMarkersOnce();
-    }
+        if (caseLabelsVisible != visible) {
+            caseLabelsVisible = visible;
+            this.updateMarkersOnce();
+        }
     }
 };
 
@@ -880,114 +847,105 @@ LogCase.prototype = {
 
     updateMarker: function(t, dt) {
 
-    // Delete any path markers which have moved beyond their interval
-    var newMarkers = []
-    var alreadyMarkedIndices = [];
-    while (this.pathMarkers.length > 0) {
-        var marker = this.pathMarkers.pop();
-        if (marker.begin <= t && t <= marker.end) {
-        alreadyMarkedIndices[marker.index] = true;
-        newMarkers.push(marker);
-        } else {
-        marker.element.remove();
-        }
-    }
-    this.pathMarkers = newMarkers;
-
-    // Insert any new path markers
-    for (var i = 0; i < this.tokenAnimation.paths.length; i++) {
-        var path  = this.tokenAnimation.paths[i];
-        var begin = parseFloat(path.begin);
-        var dur   = parseFloat(path.dur);
-        var end   = begin + dur;
-
-        if (begin <= t && t <= end && !alreadyMarkedIndices[i]) {
-            var pathElement = this.getPathElement(path);
-            if (!pathElement) {
-                console.log("Unable to create marker");
+        // Delete any path markers which have moved beyond their interval
+        var newMarkers = []
+        var alreadyMarkedIndices = [];
+        while (this.pathMarkers.length > 0) {
+            var marker = this.pathMarkers.pop();
+            if (marker.begin <= t && t <= marker.end) {
+                alreadyMarkedIndices[marker.index] = true;
+                newMarkers.push(marker);
             } else {
-                var marker = {
-                    begin:   begin,
-                    end:     end,
-                    index:   i,
-                    element: this.createPathMarker(t, dt, this.getPathElement(path), begin, dur, this.offset)
-                };
-                svgDocumentG.appendChild(marker.element);
-                this.pathMarkers.push(marker);
+                marker.element.remove();
             }
         }
-    }
+        this.pathMarkers = newMarkers;
 
-    // Delete any node markers which have moved beyond their interval
-    newMarkers = [];
-    alreadyMarkedIndices = [];
-    while (this.nodeMarkers.length > 0) {
-        var marker = this.nodeMarkers.pop();
-        if (marker.begin <= t && t <= marker.end) {
-        alreadyMarkedIndices[marker.index] = true;
-        newMarkers.push(marker);
-        } else {
-        marker.element.remove();
+        // Insert any new path markers
+        for (var i = 0; i < this.tokenAnimation.paths.length; i++) {
+            var path  = this.tokenAnimation.paths[i];
+            var begin = parseFloat(path.begin);
+            var dur   = parseFloat(path.dur);
+            var end   = begin + dur;
+
+            if (begin <= t && t <= end && !alreadyMarkedIndices[i]) {
+                var pathElement = this.getPathElement(path);
+                if (!pathElement) {
+                    console.log("Unable to create marker");
+                } else {
+                    var marker = {
+                        begin:   begin,
+                        end:     end,
+                        index:   i,
+                        element: this.createPathMarker(t, dt, this.getPathElement(path), begin, dur, this.offset)
+                    };
+                    svgDocumentG.appendChild(marker.element);
+                    this.pathMarkers.push(marker);
+                }
+            }
         }
-    }
-    this.nodeMarkers = newMarkers;
 
-    // Insert any new node markers
-    for (var i = 0; i < this.tokenAnimation.nodes.length; i++) {
-        var node  = this.tokenAnimation.nodes[i];
-        var begin = parseFloat(node.begin);
-        var dur   = parseFloat(node.dur);
-        var end   = begin + dur;
-
-        if (begin <= t && t <= end && !alreadyMarkedIndices[i]) {
-        var marker = {
-            begin:   begin,
-            end:     end,
-            index:   i,
-            element: this.createNodeMarker(t, dt, node, begin, dur, this.offset)
-        };
-        this.nodeMarkers.push(marker);
-            svgDocumentG.appendChild(marker.element);
+        // Delete any node markers which have moved beyond their interval
+        newMarkers = [];
+        alreadyMarkedIndices = [];
+        while (this.nodeMarkers.length > 0) {
+            var marker = this.nodeMarkers.pop();
+            if (marker.begin <= t && t <= marker.end) {
+                alreadyMarkedIndices[marker.index] = true;
+                newMarkers.push(marker);
+            } else {
+                marker.element.remove();
+            }
         }
-    }
+        this.nodeMarkers = newMarkers;
+
+        // Insert any new node markers
+        for (var i = 0; i < this.tokenAnimation.nodes.length; i++) {
+            var node  = this.tokenAnimation.nodes[i];
+            var begin = parseFloat(node.begin);
+            var dur   = parseFloat(node.dur);
+            var end   = begin + dur;
+
+            if (begin <= t && t <= end && !alreadyMarkedIndices[i]) {
+            var marker = {
+                begin:   begin,
+                end:     end,
+                index:   i,
+                element: this.createNodeMarker(t, dt, node, begin, dur, this.offset)
+            };
+            this.nodeMarkers.push(marker);
+                svgDocumentG.appendChild(marker.element);
+            }
+        }
     },
 
     getPathElement: function(path) {
-    var pathElement = this.pathElementCache[path.id];
-    if (!pathElement) {
-        pathElement = this.pathElementCache[path.id] = $j("#svg-"+path.id).find("g").find("g").find("g").find("path").get(0);
-    }
-    return pathElement;
+        var pathElement = this.pathElementCache[path.id];
+        if (!pathElement) {
+            pathElement = this.pathElementCache[path.id] = $j("#svg-"+path.id).find("g").find("g").find("g").find("path").get(0);
+        }
+        return pathElement;
     },
 
     createNodeMarker: function(t, dt, node, begin, dur, offset) {
-    var modelNode = findModelNode(node.id);
-    var incomingPathE = $j("#svg-"+modelNode.incomingFlow).find("g").find("g").find("g").find("path").get(0);
-    var incomingEndPoint = incomingPathE.getPointAtLength(incomingPathE.getTotalLength());
+        var modelNode = findModelNode(node.id);
+        var incomingPathE = $j("#svg-"+modelNode.incomingFlow).find("g").find("g").find("g").find("path").get(0);
+        var incomingEndPoint = incomingPathE.getPointAtLength(incomingPathE.getTotalLength());
 
         var outgoingPathE = $j("#svg-"+modelNode.outgoingFlow).find("g").find("g").find("g").find("path").get(0);
         var outgoingStartPoint = outgoingPathE.getPointAtLength(0);
     
-        var startPoint = getPointFromCTM(incomingEndPoint, incomingPathE.getCTM());
-        var endPoint = getPointFromCTM(outgoingStartPoint, outgoingPathE.getCTM());
+        var startPoint = incomingEndPoint;
+        var endPoint = outgoingStartPoint;
     
-        var nodeRectE = $j("#svg-" + node.id).find("g").find("g").find("g").find("rect").get(0);
-        var taskRectPoints = getViewportPoints(nodeRectE); //only for tokens running on the edge of task shape (not used now)
+        var nodeRectE = $j("#svg-" + node.id).find("g").get(0);
+        var taskRectPoints = getViewportPoints(nodeRectE);
     
         //---------------------------------------------------------
         // Create path element
         //---------------------------------------------------------
     
-        var rectWidth = nodeRectE.getBBox().width;
-        var rectHeight = nodeRectE.getBBox().height;
-        var radius;
-        if (rectWidth < rectHeight) {
-            radius = (rectHeight)/2;
-        } else {
-            radius = (rectWidth)/2;
-        }
-
-    if (node.isVirtual == "false") { //go through center
+        if (node.isVirtual == "false") { //go through center
             var path =  "m" + startPoint.x + "," + startPoint.y + " L" + taskRectPoints.cc.x + "," + taskRectPoints.cc.y +
                         " L" + endPoint.x + "," + endPoint.y;
             var pathId = node.id +"_path";
@@ -1013,8 +971,7 @@ LogCase.prototype = {
 
                 if (taskRectPoints.sw.y < getStraighLineFunctionValue(startPoint, endPoint, taskRectPoints.sw)) {
                     arrayAbove.push(taskRectPoints.sw);
-                }
-                else {
+                } else {
                     arrayBelow.push(taskRectPoints.sw);
                 }
 
@@ -1039,8 +996,7 @@ LogCase.prototype = {
                     var path =  "m" + startPoint.x + "," + startPoint.y + " " +
                                 "L" + arrayBelow[0].x + "," + arrayBelow[0].y + " " +
                                 "L" + endPoint.x + "," + endPoint.y;
-                }
-        else {
+                } else {
 
                     if (Math.abs(startPoint.x - taskRectPoints.sw.x) < 10) {
                         var path =  "m" + startPoint.x + "," + startPoint.y + " " +
@@ -1070,7 +1026,7 @@ LogCase.prototype = {
             }
         }
 
-    return this.createMarker(t, dt, path, begin, dur, offset);
+        return this.createMarker(t, dt, path, begin, dur, offset);
     },
 
     createPathMarker: function(t, dt, pathElement, begin, dur, offset) {

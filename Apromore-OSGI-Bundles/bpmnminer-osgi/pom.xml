@@ -96,6 +96,8 @@
                             com.springsource.org.apache.tools.ant;version="[1.8.3,1.8.3]"
                         </Import-Bundle>
                         <Import-Package>
+                            com.raffaeleconforti.automaton.*,
+                            com.raffaeleconforti.ilpsolverwrapper.*,
                             org.deckfour.spex,
                             org.deckfour.spex.util,
                             org.deckfour.xes.classification,
@@ -144,7 +146,7 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-commandline</artifactId>
-            <version>1.0.20170515</version>
+            <version>1.0.20170522</version>
         </dependency>
 
         <dependency>

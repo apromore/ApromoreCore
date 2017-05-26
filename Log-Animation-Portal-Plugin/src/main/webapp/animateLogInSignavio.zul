@@ -198,7 +198,10 @@
                         $j("#end").get(0).disabled = true;
                         $j("#slider2").get(0).disabled = true;          
 
-                        controller.reset('${arg.animationData}');
+                        if (!window.animationData) {  // animationData will be null is invoked from the portal menu
+                            window.animationData = '${arg.animationData}';
+                        }
+                        controller.reset(window.animationData);
   
                         $j("#start").get(0).disabled = false;
                         $j("#pause").get(0).disabled = false;
