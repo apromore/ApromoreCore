@@ -1,0 +1,20 @@
+-- Deadlock detection for variable models.
+   dartes  -- communication protocol of an complex Ada program
+   dpd     -- dining philosophers with dictionary
+   dph     -- dining philosophers with host
+   ftp     -- file transfer program
+   furnace -- remote furnace program
+   gas-nq  -- gas station (non-queuing)
+   key     -- manages keyboard/screen interaction in a window manager
+   mmgt    -- distributed memory manager.
+   over    -- automated highway system overtake protocol
+
+  Author: James Corbett (corbett@hawaii.edu)
+  Organization: University of Hawaii.
+  Reference: J.C. Corbett
+             "Evaluating Deadlock Detection Methods for Concurrent Software",
+	     IEEE Transactions in Software Engineering, vol. 22, no. 3,
+	     March 1996.
+
+  Recommended SMV flag: -f
+

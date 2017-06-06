@@ -1,0 +1,315 @@
+--NuSMV Specification for MSI protocol with transient states.
+--Single cache line per processor with 1-bit tag, 1-bit data
+--Simple memory and bus with RR arbitration
+--Jason Cantin 5/18/2001
+
+
+--*****************************************************************************
+MODULE Memory(bus_cmd, bus_data, bus_addr, snoop_resp)
+VAR
+  data : array 0..1 of boolean;
+
+ASSIGN
+  init(data[0]) := FALSE;
+  init(data[1]) := FALSE;
+  next(data[0]) :=
+    case
+        ((bus_cmd = RdX) | (bus_cmd = Rd)) & 
+		(snoop_resp = Owned) & (bus_addr = FALSE) : bus_data;
+        (bus_cmd = Wr) & (bus_addr = FALSE)	          : bus_data;
+        TRUE                                              : data[0];
+    esac;
+  next(data[1]) :=
+    case
+        ((bus_cmd = RdX) | (bus_cmd = Rd)) & 
+		(snoop_resp = Owned) & (bus_addr = TRUE)	: bus_data;
+        (bus_cmd = Wr) & (bus_addr = TRUE)			: bus_data;
+        TRUE    						: data[1];
+    esac;
+--END Memory
+--*****************************************************************************
+
+
+MODULE Cache(pr_req, pr_data, pr_addr, bus_cmd, bus_data, bus_addr, bus_avail)
+VAR
+  
+  impl_state    : {stable_I, stable_S, stable_M, pend_Rd_I, pend_RdX_I, 
+			pend_RdX_S, pend_WB_M};
+  data		: boolean;
+  tag		: boolean;
+
+DEFINE
+  invalid       := 	(impl_state = stable_I) | (impl_state = pend_Rd_I) | 
+			(impl_state = pend_RdX_I);
+  shared        := 	(impl_state = stable_S) | (impl_state = pend_RdX_S);
+  modified      := 	(impl_state = stable_M) | (impl_state = pend_WB_M);
+  pending	:= 	(impl_state = pend_Rd_I) | (impl_state = pend_RdX_I) | 
+			(impl_state = pend_RdX_S) | (impl_state = pend_WB_M);
+  snoop_hit	:=	(bus_addr = tag) & ((bus_cmd = Rd) | (bus_cmd = RdX));
+  satisfied	:=	((tag=pr_addr) & (pr_req=St) & modified) |
+			((tag=pr_addr) & (pr_req=Ld) & (shared | modified)) |
+			(pr_req = idle);
+  busy		:=	snoop_hit | !satisfied;
+
+ASSIGN
+
+  init(tag)		:= {FALSE,TRUE};
+  next(tag)		:=
+     case
+        bus_avail & (bus_cmd = Rd)			: bus_addr;
+        bus_avail & (bus_cmd = RdX)			: bus_addr;
+        TRUE						: tag;
+    esac;
+
+  init(data) := {FALSE,TRUE};
+  next(data) :=
+    case
+        (impl_state = stable_M) & (tag = pr_addr) & 
+					(pr_req = St)	: pr_data;
+        bus_avail & ((bus_cmd=Rd) | (bus_cmd=RdX))	: bus_data;
+        TRUE						: data;
+    esac;
+
+  init(impl_state) 	:= stable_I;
+  next(impl_state) 	:= 
+	case
+  		bus_avail	:
+		case
+			impl_state = pend_Rd_I		: stable_S;
+			impl_state = pend_RdX_I		: stable_M;
+			impl_state = pend_RdX_S		: stable_M;
+			impl_state = pend_WB_M		: stable_I;
+			TRUE				: impl_state;
+		esac;
+
+		!bus_avail & (bus_cmd = Rd) & (tag = bus_addr):
+		case
+			impl_state = stable_M		: stable_S;
+			impl_state = pend_WB_M		: stable_I;
+			TRUE				: impl_state;
+		esac;
+
+		!bus_avail & (bus_cmd = RdX) & (tag = bus_addr):
+		case
+			impl_state = stable_S		: stable_I;
+			impl_state = stable_M		: stable_I;
+			impl_state = pend_RdX_S		: pend_RdX_I;
+			impl_state = pend_WB_M		: stable_I;
+			TRUE				: impl_state;
+		esac;
+
+		!bus_avail & (pr_req = Ld) & (tag = pr_addr) 	:
+		case
+			impl_state = stable_I		: pend_Rd_I;
+			TRUE				: impl_state;
+		esac;
+	
+		!bus_avail & (pr_req = St) & (tag = pr_addr)	:
+		case
+			impl_state = stable_S		: pend_RdX_S;
+			impl_state = stable_I		: pend_RdX_I;
+			TRUE				: impl_state;
+ 		esac;
+
+		!bus_avail & (pr_req = Ld) & !(tag = pr_addr) 	:
+		case
+			impl_state = stable_I		: pend_Rd_I;
+			impl_state = stable_S		: pend_Rd_I;
+			impl_state = stable_M		: pend_WB_M;
+			TRUE				: impl_state;
+		esac;
+	
+		!bus_avail & (pr_req = St) & !(tag = pr_addr)	:
+		case
+			impl_state = stable_I		: pend_RdX_I;
+			impl_state = stable_S		: pend_RdX_I;
+			impl_state = stable_M		: pend_WB_M;
+			TRUE				: impl_state;
+ 		esac;
+		TRUE					: impl_state;	
+	esac;
+--END Cache
+--*****************************************************************************
+
+	
+MODULE Processor(cache_busy, cache_data)
+VAR
+  mem_req	:	{idle, Ld, St};
+  eff_addr	:	boolean;
+  register	:	boolean;
+
+ASSIGN
+  init(mem_req) := idle;
+  next(mem_req) := 
+	case
+		!cache_busy	:	{idle, Ld, St};
+		TRUE		:	mem_req;
+	esac;
+
+  init(eff_addr):= FALSE; 
+  next(eff_addr):=
+	case
+		!cache_busy	:	{FALSE,TRUE};
+		TRUE		:	eff_addr;
+	esac;
+
+  init(register):= FALSE; 
+  next(register):=
+	case
+		!cache_busy & (mem_req = St)	:	register;
+		!cache_busy & (mem_req = Ld)	:	cache_data;
+		TRUE				:	{FALSE,TRUE};
+	esac;
+--END Processor
+--*****************************************************************************
+
+
+MODULE Node(BUS_CMD, BUS_DATA, BUS_ADDR)
+VAR
+	p		: Processor(c.busy, c.data);
+	c		: Cache(p.mem_req, p.register, p.eff_addr, BUS_CMD, 
+				BUS_DATA, BUS_ADDR, bus_master);
+	bus_req		: {Rd, RdX, Wr, None};
+	bus_master	: boolean;
+DEFINE
+	bus_req_addr	:= 
+		case
+			(bus_req = Wr)	:	c.tag;
+			TRUE		:	p.eff_addr;
+		esac;
+	bus_req_data	:= c.data;
+	reply_owned	:= (BUS_ADDR = c.tag) & c.modified;
+ASSIGN
+  bus_req :=
+	case
+	(c.impl_state = pend_Rd_I)	:	Rd;
+	(c.impl_state = pend_RdX_I)	:	RdX;
+	(c.impl_state = pend_RdX_S)	:	RdX;
+	(c.impl_state = pend_WB_M)	:	Wr;
+	TRUE				:	None;
+	esac;
+--END Node
+--*****************************************************************************
+
+
+MODULE main
+VAR
+  BUS_CMD : 	{None, Rd, RdX, Wr};
+  BUS_DATA: 	boolean;
+  BUS_ADDR: 	boolean;
+  SNOOP_RESP: 	{Owned, None};
+  n0 : Node(BUS_CMD, BUS_DATA, BUS_ADDR);
+  n1 : Node(BUS_CMD, BUS_DATA, BUS_ADDR);
+  n2 : Node(BUS_CMD, BUS_DATA, BUS_ADDR);
+  m  : Memory(BUS_CMD, BUS_DATA, BUS_ADDR, SNOOP_RESP);
+  last_master :	{0,1,2};
+
+ASSIGN
+  BUS_CMD :=
+    case
+	n0.bus_master 	:	n0.bus_req;     
+ 	n1.bus_master	:	n1.bus_req;    
+	n2.bus_master	:	n2.bus_req;    
+	TRUE 		:	None;
+    esac;
+
+  BUS_ADDR :=
+    case
+	n0.bus_master 	:	n0.bus_req_addr;     
+ 	n1.bus_master	:	n1.bus_req_addr;    
+	n2.bus_master	:	n2.bus_req_addr;    
+	TRUE 		:	{FALSE,TRUE};
+    esac;
+
+  BUS_DATA :=
+    case        
+	((BUS_CMD = RdX) | (BUS_CMD = Rd)) 
+		& !(SNOOP_RESP = Owned) & (BUS_ADDR=FALSE) : m.data[0];
+        ((BUS_CMD = RdX) | (BUS_CMD = Rd)) 
+		& !(SNOOP_RESP = Owned) & (BUS_ADDR=TRUE)  : m.data[1];
+        n0.reply_owned                                     : n0.bus_req_data;
+        n1.reply_owned                                     : n1.bus_req_data;
+        n2.reply_owned                                     : n2.bus_req_data; 
+        TRUE               				   : {FALSE,TRUE};
+    esac;
+
+  SNOOP_RESP :=
+    case
+	n0.reply_owned | n1.reply_owned | n2.reply_owned	: Owned;
+	TRUE							: None;
+    esac;
+
+  init(last_master) := {0,1,2};
+  next(last_master) :=
+    case
+      n0.bus_master : 0;
+      n1.bus_master : 1;
+      n2.bus_master : 2;
+      TRUE             : last_master;
+    esac;
+
+  n0.bus_master :=
+    case
+      (last_master=2) : TRUE;
+      TRUE            : FALSE;
+    esac;
+
+  n1.bus_master :=
+    case
+      (last_master=0)  : TRUE;
+      TRUE             : FALSE;
+    esac;
+
+  n2.bus_master :=
+    case
+      (last_master=1) : TRUE;
+      TRUE            : FALSE;
+    esac;
+
+--END main
+--*****************************************************************************
+
+
+SPEC
+  AG EF (n0.c.invalid)
+
+SPEC
+  AG EF (n0.c.shared)
+
+SPEC
+  AG EF (n0.c.modified)
+
+SPEC 
+  AG !(n0.c.modified & n1.c.shared & (n0.c.tag = n1.c.tag))
+
+SPEC 
+  AG !(n0.c.modified & n1.c.modified & (n0.c.tag = n1.c.tag))
+
+
+--Extra rules for validation
+--SPEC
+--  AG EF (m.data[1] = 1)
+--SPEC
+--  AG EF (m.data[1] = 0)
+--SPEC 
+--  AG EF !(m.data[0] = m.data[1])
+--SPEC
+--  AG ((n0.c.shared) & (n0.c.tag = 0)) -> (n0.c.data = m.data[0])
+--SPEC
+--  AG EF ((n0.c.modified & (n0.c.tag = 0)) & (!(n0.c.data = m.data[0])))
+--SPEC
+--  AG EF ((n0.c.shared) & (n1.c.shared) & (n0.c.tag = n1.c.tag))
+--SPEC
+--  AG !(n0.bus_master & n1.bus_master)
+--SPEC
+--  AG EF (n0.bus_master)
+--SPEC
+--  AG EF (n1.bus_master)
+--SPEC
+--  AG EF (!n0.bus_master & !n1.bus_master)
+--SPEC
+--  AG (n0.p.mem_req = Ld) -> (EF (n0.c.shared | n0.c.modified))
+--SPEC
+--  AG (n0.p.mem_req = St) -> (EF (n0.c.modified))
+--SPEC 
+--  AG !(n0.c.modified & (n1.c.shared | n1.c.modified) & (n0.c.tag = n1.c.tag))

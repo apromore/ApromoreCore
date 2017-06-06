@@ -1,0 +1,1054 @@
+MODULE main
+VAR
+repeat : boolean;
+step : 0..4;
+again : boolean;
+idle : boolean;
+opstep : 0..17;
+
+log1 : rll1 (
+step,
+IN0097,
+IN0098,
+IN0148,
+IN0149,
+IN0054,
+IN0135,
+TT0276,
+IN0056,
+TS0297,
+IN0111,
+IN0108,
+log3.CR0285,
+TT0262,
+TS0271,
+IN0112,
+TS0272,
+IN0116,
+IN0114,
+TS0274,
+IN0122,
+IN0120,
+IN0053,
+TT0300,
+IN0102,
+log2.CR0080,
+IN0107,
+IN0103,
+IN0137,
+log2.CR0278,
+IN0136);
+
+log2 : rll2 (
+step,
+IN0095,
+IN0112,
+IN0113,
+log1.CR0307,
+IN0002,
+IN0148,
+TT0262,
+IN0094,
+IN0146,
+log1.CR0308,
+IN0145,
+TT0276,
+log1.CR0299,
+log3.CR0287,
+IN0107,
+IN0056,
+TS0297,
+log1.CR0048,
+log1.CR0261,
+log3.CR0285,
+log1.CR0270,
+TS0271,
+log1.CR0309,
+IN0103,
+IN0054,
+IN0136,
+IN0137,
+IN0138,
+log1.CR0101,
+IN0135);
+
+log3 : rll3 (
+step,
+TT0276,
+log1.CR0299,
+IN0112,
+IN0116,
+IN0122);
+
+
+-- timers
+ti0276 : timer(log2.TT0276l, step); -- Rung 63: MIXER WATER DELAY TIMER - 0.1 SEC - FIRST H20 CYCLE
+ti0297 : long_timer(log2.TS0297l, step); -- Rung 75: BURNER PURGE TIMER
+ti0262 : timer(log2.TT0262l, step); -- Rung 88: mixer start delay (5 sec)
+ti0271 : timer(log2.TS0271l, step); -- Rung 103: MIXER SLOW SPEED INTERVAL TIMER
+ti0272 : timer(log1.TS0272l, step); -- Rung 109: MIXER STAR NO 1 - START DELAY TIMER
+ti0274 : timer(log1.TS0274l, step); -- Rung 115: MIXER PAN NO 1 - START DELAY TIMER
+ti0300 : timer(log1.TT0300l, step); -- Rung 123: FLOP GATE CLOSE DURING WGH HOPPER DUMP TIMER
+
+
+-- hardware model
+bc56 : conveyor(log2.CR0065, IN0053, TRUE, step);
+wghgat : gate(log2.CR0081, log1.CR0082, step);
+wghhop : bucket(bc56.q, wghgat.z, step);
+mixgat : gate(log1.CR0101, !log1.CR0101, step);
+eirich : mixer((wghgat.z & (wghhop.h > 0)), mixgat.z, log1.CR0075, log2.CR0077, log1.CR0069, log1.CR0085, log1.CR0089, step);
+flare : burner(log1.CR0048, TRUE, IN0148, eirich.material, step);
+bc57 : conveyor(log2.CR0106, mixgat.z, TRUE, step);
+
+
+ASSIGN
+next(step) := 
+   case
+	(step = 0) : 1;
+	(step = 1) : 2;
+	(step = 2) : 3;
+	(step = 3) : 4;
+	(step = 4) & repeat: 1;
+	TRUE : 0;
+  esac;
+
+repeat := (log1.change | log2.change | log3.change);
+
+init(step) := 1;
+
+
+next(again) :=
+	case
+	  (step > 0) : again;
+	  (opstep = 4) : {FALSE,TRUE};
+	  TRUE : again;
+	esac;
+
+init(again) := FALSE;
+
+next(idle) :=
+	case
+	  ((step = 4) & !repeat) : {FALSE, TRUE};
+	  TRUE : idle;
+	esac;
+
+init(idle) := FALSE;
+ 
+next(opstep) :=
+	case
+	  (step = 0) : 
+		case
+	  	  (opstep = 0) : 1;
+	  	  (opstep = 1) : 2;
+	  	  (opstep = 2) & log3.CR0285 : 3;
+	          (opstep = 3) : 4;
+	  	  (opstep = 4) & log2.CR0080 : 5;
+		  (opstep = 5) : 6;
+	  	  (opstep = 6) & eirich.watsol : 7;
+	  	  (opstep = 7) : 8;
+	  	  (opstep = 8) : 9;
+		  (opstep = 9) : 10;
+		  (opstep = 10) & IN0137 : 11;
+	  	  (opstep = 11) : 12;
+	  	  (opstep = 12) : 
+			case
+			  !again : 13;
+			  TRUE : 2;
+			esac;
+	  	  (opstep = 13) : 14;
+	  	  (opstep = 14) : 15;
+		  (opstep = 15) : 16;
+		  (opstep = 16) : 17;
+		  (opstep = 17) & !log1.CR0048: 0;
+		  TRUE : opstep;
+		esac;
+	  TRUE : opstep;
+	esac;
+
+init(opstep) := 0;
+
+FAIRNESS
+!again
+
+SPEC
+AG AF (step = 0)
+
+SPEC
+AG AF (opstep = 17)
+
+DEFINE
+-- BC-57 CONVEYOR      START  NO P/B
+IN0146 := 
+	case
+	  idle : FALSE;
+	  (opstep = 0) : TRUE;
+	  TRUE : FALSE;
+	esac;
+
+-- MIXER -   START AUTO PUSHBUTTON NO P/B
+IN0111 := 
+	case
+	  idle : FALSE;
+	  (opstep = 1) : TRUE;
+	  TRUE : FALSE;
+	esac;
+
+
+-- BC-56 CONVEYOR START   NO P/B
+IN0095 :=
+	case
+	  idle : FALSE;
+	  (opstep = 3) : TRUE;
+	  TRUE : FALSE;
+	esac;
+
+
+-- BC56 stop P.B.
+IN0094 :=
+	case
+	  idle : TRUE;
+	  (opstep = 5) : FALSE;
+	  TRUE : TRUE;
+	esac;
+
+-- MIXER H20  STOP   NC P/B
+IN0056 := 
+	case
+	  idle : TRUE;
+	  (opstep = 7) : FALSE;
+	  TRUE : TRUE;
+	esac;
+
+-- MIXER DISCHARGE GATE OPEN P/B      NO P/B
+IN0135 := 
+	case
+	  idle : FALSE;
+	  (opstep = 9) : TRUE;
+	  TRUE : FALSE;
+	esac;
+
+-- MIXER DISCHARGE GATE CLOSE P/B      NC P/B
+IN0136 := 
+	case
+	  idle : TRUE;
+	  (opstep = 11) : FALSE;
+	  TRUE : TRUE;
+	esac;
+
+-- MIXER -   STOP
+IN0108 := 
+	case
+	  idle : TRUE;
+	  (opstep = 13) : FALSE;
+	  TRUE : TRUE;
+	esac;
+
+
+ -- #1 STAR   STOP P/B  NC P/B
+IN0114 := 
+	case
+	  idle : TRUE;
+	  (opstep = 14) : FALSE;
+	  TRUE : TRUE;
+	esac;
+
+-- #1 PAN    STOP P/B   NC P/B
+IN0120 := 
+	case
+	  idle : TRUE;
+	  (opstep = 15) : FALSE;
+	  TRUE : TRUE;
+	esac;
+
+-- BC57 stop P.B.
+IN0145 := 
+	case
+	  idle : TRUE;
+	  (opstep = 16) : FALSE;
+	  TRUE : TRUE;
+	esac;
+
+--
+-- Hardware Inputs
+--
+IN0097 := bc56.working; -- BC-56 CONVEYOR ZERO SPEED SWITCH -] [-
+IN0098 := bc56.working; -- BC-56 CONVEYOR "19M" 101-5  -] [-
+IN0112 := eirich.mf34; -- MIXER - ROTATION  FAST STARTER "34MF" -] [- (101-5)
+IN0113 := eirich.ms34; -- MIXER - ROTATION SLOW STARTER "34MS" -] [- (101-5)
+IN0148 := bc57.working; -- BC-57 CONVEYOR      ZERO SPEED SWITCH -] [-
+IN0149 := bc57.working; -- BC-57 conveyor "20 M"
+IN0054 := wghhop.full; -- TOLEDO SCALE SIGNAL -DISCHARGE WEIGH HOPPER
+IN0107 := flare.flame; -- BURNER "ON"  CR19     A-111466-NA
+IN0103 := wghgat.z; -- MIXER - WEIGH HOPPER GATE OPEN L/S  -] [-
+IN0138 := !mixgat.z; -- MIXER DISCHARGE GATE CLOSE L/S      -] [-
+IN0102 := !wghgat.z; -- mixer - weigh hopper dishcarge gate closed L/S
+IN0122 := eirich.m9; -- #1 PAN   "9M" 101-5  -] [-
+IN0116 := eirich.m7; -- #1 STAR   "7M" 101-5  -] [-
+IN0053 := (bc56.working & !wghhop.full); -- TOLEDO SCALE SIGNAL -RUN ROTARY VALVE
+IN0137 := mixgat.z; -- MIXER DISCHARGE GATE OPEN L/S      -] [-
+
+--
+-- Timers
+--
+TT0276 := ti0276.t; -- Rung 63: MIXER WATER DELAY TIMER - 0.1 SEC - FIRST H20 CYCLE
+TS0297 := ti0297.done; -- Rung 75: BURNER PURGE TIMER
+TT0262 := ti0262.t; -- Rung 88: mixer start delay (5 sec)
+TS0271 := ti0271.t; -- Rung 103: MIXER SLOW SPEED INTERVAL TIMER
+TS0272 := ti0272.t; -- Rung 109: MIXER STAR NO 1 - START DELAY TIMER
+TS0274 := ti0274.t; -- Rung 115: MIXER PAN NO 1 - START DELAY TIMER
+TT0300 := ti0300.t; -- Rung 123: FLOP GATE CLOSE DURING WGH HOPPER DUMP TIMER
+
+
+
+MODULE conveyor (RUN, SOURCE, DEST, step)
+VAR
+working : boolean;
+
+ASSIGN
+next(working) :=
+	case
+	  (step < 4) : working;
+	  TRUE : RUN;
+	esac;
+
+init(working) := FALSE;
+
+DEFINE
+q := working & SOURCE & DEST;
+
+
+
+MODULE mixer (FF, exit, water, slow, fast, star, pan, step)
+VAR
+material : boolean;
+watsol : boolean;
+ms34 : boolean;
+mf34 : boolean;
+m7 : boolean;
+m9 : boolean;
+
+ASSIGN
+next(material) := 
+	case
+	  (step < 4) : material;
+	  exit : FALSE;
+	  FF : TRUE;
+	  TRUE : material;
+	esac;
+
+init(material) := FALSE;
+
+
+next(watsol) := 
+	case
+	  (step < 4) : watsol;
+	  TRUE : water;
+	esac;
+
+init(watsol) := FALSE;
+
+next(ms34) := 
+	case
+	  (step < 4) : ms34;
+	  TRUE : slow;
+	esac;
+
+init(ms34) := FALSE;
+
+next(mf34) := 
+	case
+	  (step < 4) : mf34;
+	  TRUE : fast;
+	esac;
+
+init(mf34) := FALSE;
+
+next(m7) := 
+	case
+	  (step < 4) : m7;
+	   TRUE : star;
+	esac;
+
+init(m7) := FALSE;
+
+next(m9) := 
+	case
+	  (step < 4) : m9;
+	  TRUE : pan;
+	esac;
+
+init(m9) := FALSE;
+
+SPEC
+!EF(watsol & !material)
+
+SPEC
+!EF(material & !mf34 & !m7 & !m9)
+
+SPEC
+!EF EG material
+
+MODULE bucket (FF, exit, step)
+VAR
+h : 0..7;
+
+
+
+ASSIGN
+next(h) :=
+   case
+	(step > 0) : h;
+	exit : 0;
+	FF :
+	   case
+		h = 7 : h;
+		TRUE : h + 1;
+	   esac;
+	TRUE : h;
+   esac;
+
+init(h) := 0;
+
+DEFINE
+full := (h > 3);
+
+SPEC
+!EF(h = 7)
+
+SPEC
+!EF EG(h > 0)
+
+
+MODULE timer (EN, step)
+VAR
+t : boolean;
+
+ASSIGN
+next(t) :=
+	case
+	  !EN : FALSE;
+	  (step > 0) : t;
+	  TRUE : EN;
+	esac;
+
+init(t) := FALSE;
+
+
+MODULE med_timer (EN, step)
+VAR
+t : 0..2;
+
+ASSIGN
+next(t) :=
+	case
+	  !EN : 0;
+	  (step > 0) : t;
+	  (t = 0) : 1;
+	  (t = 1) : 2;
+	  (t = 2) : 2;
+	  TRUE : t;
+	esac;
+
+init(t) := 0;
+
+DEFINE
+done := (t = 2);
+
+MODULE long_timer (EN, step)
+
+VAR
+t : 0..2;
+done : boolean;
+
+ASSIGN
+next(t) :=
+	case
+	  !EN : 0;
+	  (step > 0) : t;
+	  (t = 0) : 1;
+	  (t = 1) : 2;
+	  (t = 2) : 2;
+	  TRUE : t;
+	esac;
+
+next(done) :=
+	case
+	  (step > 0) : done;
+	  !EN : FALSE;
+	  (t < 2) : FALSE;
+	  done : TRUE;
+	  TRUE : {FALSE, TRUE};
+	esac;
+
+init(t) := 0;
+init(done) := FALSE;
+
+FAIRNESS
+done
+	  
+MODULE burner (air, fan, flame_st, material, step)
+VAR
+air_sol : boolean;
+pilot_valve : boolean;
+main_valve : boolean;
+flame : boolean;
+
+ASSIGN
+next(air_sol) :=
+	case
+	  (step < 4) : air_sol;
+	  TRUE : air;
+	esac;
+
+init(air_sol) := FALSE;
+
+next(pilot_valve) :=
+	case
+	  (step < 4) : pilot_valve;
+	  TRUE : flame_st;
+	esac;
+
+init(pilot_valve) := FALSE;
+
+next(main_valve) := 
+	case
+	  (step < 4) : main_valve;
+	  !flame_st : FALSE;
+	  flame : TRUE;
+	  TRUE : main_valve;
+	esac;
+
+init(main_valve) := FALSE;
+
+next(flame) :=
+	case
+	  (step < 4) : flame;
+	  q & gas : TRUE;
+	  TRUE : FALSE;
+	esac;
+
+init(flame) := FALSE;
+
+DEFINE
+q := air_sol & fan;
+gas := pilot_valve | main_valve;
+
+SPEC
+!EF(main_valve & !flame)
+
+SPEC
+!EF EG(pilot_valve & !flame)
+
+SPEC
+!EF(material & !flame)
+
+MODULE gate(open, close, step)
+VAR
+z : boolean;
+
+ASSIGN
+next(z) := 
+	case
+	  (step > 0) : z;
+	  open : TRUE;
+	  close : FALSE;
+	  TRUE : z;
+	esac;
+
+init(z) := FALSE;
+
+SPEC
+!EF(open & close & (step = 0))
+
+SPEC
+!EF EG z
+
+MODULE rll1 (
+step,
+IN0097,
+IN0098,
+IN0148,
+IN0149,
+IN0054,
+IN0135,
+TT0276,
+IN0056,
+TS0297,
+IN0111,
+IN0108,
+CR0285,
+TT0262,
+TS0271,
+IN0112,
+TS0272,
+IN0116,
+IN0114,
+TS0274,
+IN0122,
+IN0120,
+IN0053,
+TT0300,
+IN0102,
+CR0080,
+IN0107,
+IN0103,
+IN0137,
+CR0278,
+IN0136)
+
+VAR
+CR0307 : boolean;
+CR0308 : boolean;
+CR0299 : boolean;
+CR0075 : boolean;
+CR0048 : boolean;
+CR0261 : boolean;
+f : boolean;
+CR0270 : boolean;
+CR0069 : boolean;
+TS0272l : boolean;
+CR0085 : boolean;
+TS0274l : boolean;
+CR0089 : boolean;
+CR0082 : boolean;
+m : boolean;
+TT0300l : boolean;
+CR0309 : boolean;
+o : boolean;
+CR0101 : boolean;
+p : boolean;
+change : boolean;
+
+ASSIGN
+--Rung 57, BC 56 zero speed + M starter soft contact
+next(CR0307) :=
+   case
+	(step = 1) : IN0097 & IN0098;
+	TRUE : CR0307;
+   esac;
+
+init(CR0307) := FALSE;
+
+
+
+-- Rung 60, BC57 zero speed + M strarter soft contact
+next(CR0308) :=
+   case
+	(step = 1) : IN0148 & IN0149;
+	TRUE : CR0308;
+   esac;
+
+init(CR0308) := FALSE;
+
+
+--Rung 63, Mixer dump latch
+next(CR0299) :=
+   case
+	(step = 1) : (IN0054 | CR0299) & !IN0135;
+	TRUE : CR0299;
+   esac;
+
+init(CR0299) := FALSE;
+
+
+
+--Rung 69, mixer water solenoid valve
+next(CR0075) :=
+   case
+	(step = 1) : TT0276 | (CR0075 & IN0056);
+	TRUE : CR0075;
+   esac;
+
+init(CR0075) := FALSE;
+
+
+
+--Rung 75, mixer burner air solenoid
+next(CR0048) :=
+   case
+	(step = 1) : (IN0148 | CR0048) & !TS0297;
+	TRUE : CR0048;
+   esac;
+
+init(CR0048) := FALSE;
+
+
+
+-- Rung 85, mixer start latch
+next(CR0261) :=
+   case
+	(step = 1) : f;
+	TRUE : CR0261;
+   esac;
+
+init(CR0261) := FALSE;
+
+f := (IN0111 | CR0261) & IN0108 & !CR0285;
+
+--Rung 103, mixer start relay
+next(CR0270) :=
+   case
+	(step = 1) : IN0108 & TT0262; 
+	TRUE : CR0270;
+   esac;
+
+init(CR0270) := FALSE;
+
+
+
+--Rung 107, mixer fast rotation starter number 1
+next(CR0069) :=
+   case
+	(step = 1) : TS0271;
+	TRUE : CR0069;
+   esac;
+
+init(CR0069) := FALSE;
+
+
+
+--Rung 110, mixer star #1 start delay (5 sec)
+next(TS0272l) :=
+   case
+	(step = 1) : IN0112; 
+	TRUE : TS0272l;
+   esac;
+
+init(TS0272l) := FALSE;
+
+
+--Rung 111, mixer star #1 mixer starter
+next(CR0085) :=
+   case
+	(step = 1) : TS0272 | (IN0116 & IN0114); 
+	TRUE : CR0085;
+   esac;
+
+init(CR0085) := FALSE;
+
+
+
+-- Rung 116, mixer pan number 1 start delay
+next(TS0274l) :=
+   case
+	(step = 1) : IN0116; 
+	TRUE : TS0274l;
+   esac;
+
+init(TS0274l) := FALSE;
+
+
+-- Rung 117, mixer pan number 1 motor starter
+next(CR0089) :=
+   case
+	(step = 1) : TS0274 | (IN0122 & IN0120);
+	TRUE : CR0089;
+   esac;
+
+init(CR0089) := FALSE;
+
+
+
+--Rung 123, mixer weigh hopper flop gate close
+next(CR0082) :=
+   case
+	(step = 1) : m; 
+	TRUE : CR0082;
+   esac;
+
+init(CR0082) := FALSE;
+
+m := (IN0053  | CR0082 | TT0300) & !IN0102;
+
+--Rung 124, flop gate close timer (2.5 sec)
+next(TT0300l) :=
+   case
+	(step = 1) : CR0080 & !IN0102; 
+	TRUE : TT0300l;
+   esac;
+
+init(TT0300l) := FALSE;
+
+
+--Rung127, weigh hopper open latch
+next(CR0309) :=
+   case
+	(step = 1) : o; 
+	TRUE : CR0309;
+   esac;
+
+init(CR0309) := FALSE;
+
+o := (IN0054 | CR0309) & !IN0053 & IN0107 & !IN0103
+			 & !IN0137 & !CR0080 & !IN0103;
+
+-- Rung 134, mixer discharge gate solenoid
+next(CR0101) :=
+   case
+	(step = 1) : p; 
+	TRUE : CR0101;
+   esac;
+
+init(CR0101) := FALSE;
+
+p := (IN0135 | CR0101) & !CR0278 & IN0136 & IN0149;
+
+next(change) :=
+     case
+	!(CR0307 = next(CR0307)) : TRUE;	
+	!(CR0308 = next(CR0308)) : TRUE;	
+	!(CR0299 = next(CR0299)) : TRUE;	
+	!(CR0075 = next(CR0075)) : TRUE;	
+	!(CR0048 = next(CR0048)) : TRUE;	
+	!(CR0261 = next(CR0261)) : TRUE;	
+	!(CR0270 = next(CR0270)) : TRUE;	
+	!(CR0069 = next(CR0069)) : TRUE;	
+	!(TS0272l = next(TS0272l)) : TRUE;	
+	!(CR0085 = next(CR0085)) : TRUE;	
+	!(TS0274l = next(TS0274l)) : TRUE;	
+	!(CR0089 = next(CR0089)) : TRUE;	
+	!(CR0082 = next(CR0082)) : TRUE;	
+	!(TT0300l = next(TT0300l)) : TRUE;	
+	!(CR0309 = next(CR0309)) : TRUE;	
+	!(CR0101 = next(CR0101)) : TRUE;	
+	(step < 4) : change;
+	TRUE : FALSE;
+    esac;
+
+init(change) := FALSE;
+
+MODULE rll2 (
+step,
+IN0095,
+IN0112,
+IN0113,
+CR0307,
+IN0002,
+IN0148,
+TT0262,
+IN0094,
+IN0146,
+CR0308,
+IN0145,
+TT0276,
+CR0299,
+CR0287,
+IN0107,
+IN0056,
+TS0297,
+CR0048,
+CR0261,
+CR0285,
+CR0270,
+TS0271,
+CR0309,
+IN0103,
+IN0054,
+IN0136,
+IN0137,
+IN0138,
+CR0101,
+IN0135)
+
+VAR
+CR0065 : boolean;
+q : boolean;
+CR0106 : boolean;
+TT0276l : boolean;
+TS0297l : boolean;
+TT0262l : boolean;
+TS0271l : boolean;
+CR0077 : boolean;
+CR0081 : boolean;
+CR0080 : boolean;
+ab : boolean;
+CR0278 : boolean;
+ac : boolean;
+change : boolean;
+
+ASSIGN
+--Rung 58, BC56 from surge hopper to mixer motor starter
+next(CR0065) :=
+   case
+	(step = 2) : q;
+	TRUE : CR0065;
+   esac;
+
+init(CR0065) := FALSE;
+
+q := (((IN0095 & (IN0112 | IN0113)) | CR0307) & IN0148) & IN0094;
+
+
+-- Rung 61, BC57 product conveyor starter 20M
+next(CR0106) :=
+   case
+	(step = 2) : (IN0146 | CR0308) & IN0145;
+	TRUE : CR0106;
+   esac;
+
+init(CR0106) := FALSE;
+
+
+
+--Rung 64, mixer water on delay timer (5 seconds) ?????
+next(TT0276l) :=
+   case
+	(step = 2) : 
+		case
+		  !TT0276 : CR0299 & !CR0287 & IN0107;
+		  TRUE : CR0299 & IN0056 & IN0107;
+		esac;
+	TRUE : TT0276l;
+   esac;
+
+init(TT0276l) := FALSE;
+
+
+
+
+--Rung 76, mixer burner purge timer (20 minutes)
+next(TS0297l) :=
+     case
+	(step = 2) : 
+	  case
+	    !TS0297 : !IN0148;
+	    TRUE : CR0048;
+	  esac;
+	TRUE : TS0297l;
+   esac;
+
+init(TS0297l) := FALSE;
+
+
+-- Rung 88, mixer start delay (5 seconds) (Must change to other format)
+next(TT0262l) :=
+   case
+	(step = 2) : 
+		case
+		  !TT0262 : CR0261;
+		  TRUE :  (CR0261 | CR0285);
+		esac;
+	TRUE : TT0262l;
+   esac;
+
+init(TT0262l) := FALSE;
+
+
+--Rung 104, mixer slow speed duration timer (8 seconds)
+next(TS0271l) :=
+	 case
+	   (step = 2) : CR0270;
+	    TRUE : TS0271l;
+	 esac;
+
+init(TS0271l) := FALSE;
+
+
+
+--Rung 105, mixer hopper rotation slow motor starter
+next(CR0077) :=
+   case
+	(step = 2) : CR0270 & !TS0271;
+	TRUE : CR0077;
+   esac;
+
+init(CR0077) := FALSE;
+
+
+--Rung 130, mixer weigh hopper flop gate open
+next(CR0081) :=
+   case
+	(step = 2) : CR0309 & !IN0103;
+	TRUE : CR0081;
+   esac;
+
+init(CR0081) := FALSE;
+
+
+
+--Rung 131, material in mixer light
+next(CR0080) :=
+   case
+	(step = 2) : ab;
+	TRUE : CR0080;
+   esac;
+
+init(CR0080) := FALSE;
+
+ab := ((IN0054 & IN0103) | (CR0080 & IN0136)) & !IN0137;
+
+-- Rung 137, mixer discharge gate closed latch
+next(CR0278) :=
+   case
+	(step = 2) : ac;
+	TRUE : CR0278;
+   esac;
+
+init(CR0278) := FALSE;
+
+ac := (IN0136 | CR0278) & !IN0138 & !CR0101 & !IN0135;
+
+next(change) :=
+    case
+	!(CR0065 = next(CR0065)) : TRUE;	
+	!(CR0106 = next(CR0106)) : TRUE;	
+	!(TT0276l = next(TT0276l)) : TRUE;	
+	!(TS0297l = next(TS0297l)) : TRUE;	
+	!(TT0262l = next(TT0262l)) : TRUE;	
+	!(TS0271l = next(TS0271l)) : TRUE;	
+	!(CR0077 = next(CR0077)) : TRUE;	
+	!(CR0081 = next(CR0081)) : TRUE;	
+	!(CR0080 = next(CR0080)) : TRUE;	
+	!(CR0278 = next(CR0278)) : TRUE;	
+	(step < 4) : change;
+	TRUE : FALSE;
+    esac;
+
+init(change) := FALSE;
+
+MODULE rll3 (
+step,
+TT0276,
+CR0299,
+IN0112,
+IN0116,
+IN0122)
+
+VAR
+CR0287 : boolean;
+CR0285 : boolean;
+change : boolean;
+
+ASSIGN
+--Rung 65, mixer water fill #1 complete latch
+next(CR0287) :=
+   case
+	(step = 3) : (TT0276 | CR0287) & CR0299;
+	TRUE : CR0287;
+   esac;
+
+init(CR0287) := FALSE;
+
+
+
+--Rung 122, mixer has started up successfully
+next(CR0285) :=
+   case
+	(step = 3) : IN0112 & IN0116 & IN0122;
+	TRUE : CR0285;
+   esac;
+
+init(CR0285) := FALSE;
+
+
+
+next(change) := 
+    case
+	!(CR0287 = next(CR0287)) : TRUE;	
+	!(CR0285 = next(CR0285)) : TRUE;	
+	(step < 4) : change;
+	TRUE : FALSE;
+    esac;
+
+init(change) := FALSE;
+

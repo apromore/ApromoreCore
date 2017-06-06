@@ -1,0 +1,8 @@
+This is the model of the MSI protocol with transient states.  
+There are three processors, each with one level of cache that stores
+1-bit of data and has a 1-bit tag. The caches are write-back,
+write-allocate. The bus arbitration is round-robin. There is a memory
+with two 1-bit locations.
+
+Author: Jason F. Cantin
+Organization: University of Wisconsin-Madison (USA)

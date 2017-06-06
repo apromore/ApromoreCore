@@ -1,23 +1,28 @@
 package nl.rug.ds.bpm.verification;
 
-import nl.rug.ds.bpm.specification.jaxb.BPMSpecification;
-import nl.rug.ds.bpm.specification.jaxb.Specification;
-import nl.rug.ds.bpm.specification.jaxb.SpecificationSet;
-import nl.rug.ds.bpm.event.listener.VerificationEventListener;
-import nl.rug.ds.bpm.event.listener.VerificationLogListener;
-import nl.rug.ds.bpm.specification.jaxb.SpecificationType;
-import nl.rug.ds.bpm.specification.marshaller.SpecificationUnmarshaller;
-import nl.rug.ds.bpm.verification.converter.KripkeConverter;
-import nl.rug.ds.bpm.verification.stepper.Marking;
-import nl.rug.ds.bpm.verification.stepper.Stepper;
-import nl.rug.ds.bpm.event.EventHandler;
-import nl.rug.ds.bpm.specification.map.SpecificationTypeMap;
-
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import nl.rug.ds.bpm.event.EventHandler;
+import nl.rug.ds.bpm.event.listener.VerificationEventListener;
+import nl.rug.ds.bpm.event.listener.VerificationLogListener;
+import nl.rug.ds.bpm.specification.jaxb.BPMSpecification;
+import nl.rug.ds.bpm.specification.jaxb.Specification;
+import nl.rug.ds.bpm.specification.jaxb.SpecificationSet;
+import nl.rug.ds.bpm.specification.jaxb.SpecificationType;
+import nl.rug.ds.bpm.specification.map.SpecificationTypeMap;
+import nl.rug.ds.bpm.specification.marshaller.SpecificationUnmarshaller;
+import nl.rug.ds.bpm.verification.model.kripke.Kripke;
+import nl.rug.ds.bpm.verification.stepper.Marking;
+import nl.rug.ds.bpm.verification.stepper.Stepper;
 
 /**
  * Created by p256867 on 4-4-2017.
@@ -33,32 +38,65 @@ public class Verifier {
     public Verifier(Stepper stepper) {
     	this.stepper = stepper;
     	eventHandler = new EventHandler();
-    	specificationTypeMap = new SpecificationTypeMap();
-		kripkeStructures = new HashSet<>();
     }
 	
 	public Verifier(Stepper stepper, EventHandler eventHandler) {
 		this.stepper = stepper;
 		this.eventHandler = eventHandler;
+	}
+	
+	public void verify(File specification, File nusmv2, boolean doReduction) {
 		specificationTypeMap = new SpecificationTypeMap();
 		kripkeStructures = new HashSet<>();
+		
+		if(!(specification.exists() && specification.isFile()))
+			eventHandler.logCritical("No such file " + specification.toString());
+		
+		SpecificationUnmarshaller unmarshaller = new SpecificationUnmarshaller(eventHandler, specification);
+		bpmSpecification = unmarshaller.getSpecification();
+		
+		verify(nusmv2, doReduction);
+	}
+	
+	public String[] verify(String specxml, File nusmv2, boolean doReduction) {
+		specificationTypeMap = new SpecificationTypeMap();
+		kripkeStructures = new HashSet<>();
+
+		SpecificationUnmarshaller unmarshaller;
+		try {
+			unmarshaller = new SpecificationUnmarshaller(eventHandler, new ByteArrayInputStream(specxml.getBytes("UTF-8")));
+			bpmSpecification = unmarshaller.getSpecification();
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+            String[] erroRes = {"Invalid specification xml"};
+			eventHandler.logCritical("Invalid specification xml");
+			return erroRes;
+		}
+		
+		return verify(nusmv2, doReduction);
+	}
+	
+	public void verify(BPMSpecification bpmSpecification, File nusmv2, boolean doReduction) {
+		specificationTypeMap = new SpecificationTypeMap();
+		kripkeStructures = new HashSet<>();
+		
+		this.bpmSpecification = bpmSpecification;
+		
+		verify(nusmv2, doReduction);
 	}
 
 	public void verify(BPMSpecification bpmSpecification, File nusmv2) {
-		this.bpmSpecification = bpmSpecification;
-
-		verify(nusmv2);
+    	verify(bpmSpecification, nusmv2, true);
 	}
 	
     public void verify(File specification, File nusmv2) {
-		if(!(specification.exists() && specification.isFile()))
-			eventHandler.logCritical("No such file " + specification.toString());
-
-		SpecificationUnmarshaller unmarshaller = new SpecificationUnmarshaller(eventHandler, specification);
-		bpmSpecification = unmarshaller.getSpecification();
-
-		verify(nusmv2);
+    	verify(specification, nusmv2, true);
 	}
+    
+    public void verify(String specxml, File nusmv2) {
+    	verify(specxml, nusmv2, true);
+    }
     
 	public void addEventListener(VerificationEventListener verificationEventListener) {
     	eventHandler.addEventListener(verificationEventListener);
@@ -76,9 +114,10 @@ public class Verifier {
 		eventHandler.removeLogListener(verificationLogListener);
 	}
 
-	private void verify(File nusmv2) {
-		if(!(nusmv2.exists() && nusmv2.isFile() && nusmv2.canExecute()))
-			eventHandler.logCritical("Unable to call NuSMV2 binary at " + nusmv2.toString());
+	private String[] verify(File nusmv2, boolean reduce) {
+		HashSet<String> results = new HashSet<>();
+//		if(!(nusmv2.exists() && nusmv2.isFile() && nusmv2.canExecute()))
+//			eventHandler.logCritical("Unable to call NuSMV2 binary at " + nusmv2.toString());
 
 		eventHandler.logInfo("Loading configuration file");
 		loadConfiguration();
@@ -90,14 +129,32 @@ public class Verifier {
 		int setid = 0;
 		for (SetVerifier verifier: verifiers) {
 			eventHandler.logInfo("Verifying set " + ++setid);
-			verifier.buildKripke();
-			verifier.verify(nusmv2);
+			verifier.buildKripke(reduce);
+			results.addAll(verifier.verify(nusmv2));
 		}
+
+		String[] finalRes = new String[results.size()];
+		int i = 0;
+		for(String res : results) {
+			finalRes[i] = res;
+			i++;
+		}
+
+        return finalRes;
 	}
 		
 	private void loadConfiguration() {
-		SpecificationUnmarshaller unmarshaller = new SpecificationUnmarshaller(eventHandler, this.getClass().getResourceAsStream("/resources/specificationTypes.xml"));
-		loadSpecificationTypes(unmarshaller.getSpecification(), specificationTypeMap);
+		try {
+//            File initialFile = new File("/Users/armascer/Work/ApromoreCode/ApromoreCode/Apromore-OSGI-Bundles/apm-verification-osgi/resources/specificationTypes.xml");
+//            InputStream targetStream = new FileInputStream(initialFile);
+            InputStream targetStream = new java.io.BufferedInputStream(this.getClass().getClassLoader().getResourceAsStream("specificationTypes.xml"));
+	
+			SpecificationUnmarshaller unmarshaller = new SpecificationUnmarshaller(eventHandler, targetStream);
+			loadSpecificationTypes(unmarshaller.getSpecification(), specificationTypeMap);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private List<SetVerifier> loadSpecification(BPMSpecification specification) {
@@ -137,10 +194,12 @@ public class Verifier {
 	}
 	
 	public static void setMaximumStates(int max) {
-    	KripkeConverter.setMaximumStates(max);
+    	Kripke.setMaximumStates(max);
     }
 	
-	public static int getMaximumStates() {
-    	return KripkeConverter.getMaximumStates();
-    }
+	public static int getMaximumStates() { return Kripke.getMaximumStates(); }
+	
+	public static void setLogLevel(int logLevel) { EventHandler.setLogLevel(logLevel); }
+	
+	public static int getLogLevel() { return EventHandler.getLogLevel(); }
 }

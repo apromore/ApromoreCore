@@ -1,0 +1,23 @@
+MODULE main
+VAR
+  request : {Tr, Fa};
+  state : {ready, busy};
+ASSIGN
+  init(state) := ready;
+  next(state) := case
+                   state = ready & (request = Tr): busy;
+                   TRUE : {ready,busy};
+                 esac;
+SPEC
+  AG((request = Tr) -> AF state = busy)
+
+PSLSPEC
+  AG ((request = Tr) -> AF (state = busy)) ;
+
+
+PSLSPEC
+  G((request = Tr) -> F state = busy);
+
+PSLSPEC
+  always ((request = Tr) -> eventually! state = busy);
+

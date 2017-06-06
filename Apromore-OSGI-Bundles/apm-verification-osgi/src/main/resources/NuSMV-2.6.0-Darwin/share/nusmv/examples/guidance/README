@@ -1,0 +1,8 @@
+-- Shuttle Digital Autopilot engines out (3E/O) contingency guidance 
+   requirements. 
+
+  Author: Sergey Berezin (berez@cs.cmu.edu)
+  Organization: Carnegie Mellon University.
+
+  Recommended SMV flag: -f
+

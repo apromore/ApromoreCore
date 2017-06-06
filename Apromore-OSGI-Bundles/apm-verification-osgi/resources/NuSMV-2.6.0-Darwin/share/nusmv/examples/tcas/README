@@ -1,0 +1,31 @@
+-- A model of part of a preliminary version of the system requirements
+   specification of TCAS II (Traffic Alert and Collision Avoidance
+   System II).  TCAS II is an aircraft collision avoidance system
+   required on most commercial aircraft in United States.
+
+  Author: William Chan (wchan@cs.washington.edu)
+  Reference:
+    @InProceedings( Anderson-FSE96,
+      title = "Model Checking Large Software Specifications", 
+      author = "Richard J. Anderson and Paul Beame and Steve Burns and
+                William Chan and Francesmary Modugno and David Notkin and
+                Jon D. Reese", 
+      booktitle = "Proceedings of the Fourth ACM SIGSOFT Symposium on the
+                   Foundations of Software Engineering", 
+      pages = "156--166", 
+      month = oct, 
+      year = 1996,
+      editor = "David Garlan",
+      address = "San Francisco, CA, USA",
+      publisher = "ACM",
+       note = "A full version to appear in IEEE Transactions on Software
+              Engineering" 
+    )
+    
+  Recommended SMV flag: -cp 10000
+       (this model's reachable state cannot be computed with 1.2GBytes).
+
+  Note:  Three variants are provided in the tcas directory.
+         "-t" represent cases with additional TRANS expression
+	    added to refine the space.
+         "16" represent scaled up version.

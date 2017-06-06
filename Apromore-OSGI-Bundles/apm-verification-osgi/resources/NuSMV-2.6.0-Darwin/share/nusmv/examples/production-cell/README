@@ -1,0 +1,9 @@
+-- The production cell control model.
+
+  Author: Kirsten Winter (kirsten@prosun.first.gmd.de)
+  Organization: GMD First
+  Reference: Kirsten Winter, "Model Checking for Abstract State Machines",
+	    Journal of Universal Computer Science, vol. 3, no. 5 (1997),
+	    689--701.  
+
+  Recommended SMV flag: -f

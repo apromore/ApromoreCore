@@ -1,0 +1,12 @@
+-- Batch reactor system models.
+
+  Author: Scott T Probst
+          (Contacts: Adam Leslie Turk <turk+@andrew.cmu.edu>)
+  Organization: Carnegie Mellon University
+  Reference:
+    Probst, S. T., and G. J. Powers,
+   "Automatic Verification of Control Logic in the Presence of Process Faults,"
+    presented at the 1994 AIChE Annual Meeting, San Francisco, CA,
+    November, 1994.  
+
+  Recommended SMV flag: -f

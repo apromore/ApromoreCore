@@ -1,0 +1,96 @@
+MODULE and-gate(in1,in2)
+VAR
+  out : boolean;
+ASSIGN
+  init(out) := FALSE;
+  next(out) := (in1 & in2) union out;
+
+MODULE and-gate-init(in1,in2,init-out)
+VAR
+  out : boolean;
+ASSIGN
+  init(out) := init-out;
+  next(out) := (in1 & in2) union out;
+
+MODULE or-gate(in1,in2)
+VAR
+  out : boolean;
+ASSIGN
+  init(out) := FALSE;
+  next(out) := (in1 | in2) union out;
+
+MODULE c-element(in1,in2)
+VAR
+  out : boolean;
+ASSIGN
+  init(out) := FALSE;
+  next(out) := 
+    case
+      in1 = in2 : in1 union out;
+      TRUE : out;
+    esac;
+
+MODULE mutex-half(inp,other-out)
+VAR
+  out : boolean;
+ASSIGN
+  init(out) := FALSE;
+  next(out) := inp union out;
+TRANS
+  !(next(out) & next(other-out))
+
+MODULE user
+VAR
+  req : boolean;
+ASSIGN
+  init(req) := FALSE;
+  next(req) := (!ack) union req;
+
+MODULE cell(left,right,token)
+VAR
+  u : user;
+  a : mutex-half(u.req,b.out);
+  b : mutex-half(left.req,a.out);
+  c : and-gate(a.out,!left.ack);
+  d : and-gate(b.out,!u.ack);
+  g : or-gate(c.out,d.out);
+  e : c-element(c.out,i.out);
+  f : c-element(d.out,i.out);
+  h : c-element(g.out,j.out);
+  k : and-gate(g.out,!h.out);
+  i : and-gate(h.out,!j.out);
+  l : and-gate(k.out,m.out);
+  j : or-gate(l.out,ack);
+  p : and-gate(k.out,n.out);
+  n : and-gate-init(!e.out,!m.out,!token);
+  m : and-gate-init(!f.out,!n.out,token);
+  r : and-gate(e.out,m.out);
+  q : and-gate(f.out,n.out);
+DEFINE
+  req := p.out;
+  left.ack := q.out;
+  u.ack := r.out;
+
+MODULE main
+VAR
+  e-06 : process cell(e-01,e-02,TRUE);
+  e-05 : process cell(e-06,e-01,FALSE);
+  e-04 : process cell(e-05,e-06,FALSE);
+  e-03 : process cell(e-04,e-05,TRUE);
+  e-02 : process cell(e-03,e-04,FALSE);
+  e-01 : process cell(e-02,e-03,FALSE);
+  e-16 : process cell(e-11,e-12,TRUE);
+  e-15 : process cell(e-16,e-11,FALSE);
+  e-14 : process cell(e-15,e-16,FALSE);
+  e-13 : process cell(e-14,e-15,TRUE);
+  e-12 : process cell(e-13,e-14,FALSE);
+  e-11 : process cell(e-12,e-13,FALSE);
+
+SPEC
+  AG (
+
+      !(e-11.u.ack & e-12.u.ack)
+
+      & !(e-11.u.ack & e-13.u.ack)
+      & !(e-12.u.ack & e-13.u.ack)
+     )

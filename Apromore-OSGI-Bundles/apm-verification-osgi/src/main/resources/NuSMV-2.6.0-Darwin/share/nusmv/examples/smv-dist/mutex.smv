@@ -1,0 +1,76 @@
+MODULE main
+
+
+VAR
+
+state1: {n1, t1, c1};
+
+ASSIGN
+
+init(state1) := n1;
+
+next(state1) := 
+case
+   (state1 = n1) & (state2 = t2): t1;
+   (state1 = n1) & (state2 = n2): t1;
+   (state1 = n1) & (state2 = c2): t1;
+   (state1 = t1) & (state2 = n2): c1;
+   (state1 = t1) & (state2 = t2) & (turn = 1):  c1;
+   (state1 = c1): n1;
+   TRUE : state1;
+esac;
+
+
+
+
+VAR
+
+state2: {n2, t2, c2};
+
+ASSIGN
+
+init(state2) := n2;
+
+next(state2) := 
+case
+   (state2 = n2) & (state1 = t1): t2;
+   (state2 = n2) & (state1 = n1): t2;
+   (state2 = n2) & (state1 = c1): t2;
+   (state2 = t2) & (state1 = n1): c2;
+   (state2 = t2) & (state1 = t1) & (turn = 2):  c2;
+   (state2 = c2): n2;
+   TRUE : state2;
+esac;
+
+
+VAR
+
+turn: {1, 2};
+
+ASSIGN
+
+init(turn) := 1;
+
+next(turn) := 
+case
+   (state1 = n1) & (state2 = t2): 2;
+   (state2 = n2) & (state1 = t1): 1;
+   TRUE : turn;
+esac;
+
+SPEC
+
+EF((state1 = c1) & (state2 = c2))
+
+SPEC
+
+AG((state1 = t1) -> AF (state1 = c1))
+
+SPEC
+
+AG((state2 = t2) -> AF (state2 = c2))
+
+
+
+
+

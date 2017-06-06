@@ -22,8 +22,6 @@ package ee.ut.eventstr.comparison;
 
 import com.google.common.collect.*;
 import ee.ut.bpmn.BPMNReader;
-import ee.ut.bpmn.replayer.Pomset;
-import ee.ut.bpmn.replayer.Trace;
 import ee.ut.eventstr.BehaviorRelation;
 import ee.ut.eventstr.NewUnfoldingPESSemantics;
 import ee.ut.eventstr.PESSemantics;
@@ -41,9 +39,7 @@ import hub.top.petrinet.PetriNet;
 import hub.top.petrinet.Transition;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.jbpt.graph.DirectedGraph;
 import org.jbpt.hypergraph.abs.GObject;
-import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.pm.*;
 import org.jbpt.pm.bpmn.Bpmn;
 import org.jbpt.pm.bpmn.BpmnControlFlow;
@@ -54,7 +50,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class DiffMLGraphicalVerbalizerNew {
     private DifferencesML differences;
@@ -209,7 +204,7 @@ public class DiffMLGraphicalVerbalizerNew {
                     usedHides.addAll(commonSubL.getSecond());
 
                     DifferenceML difference = getTASKRELOCDiff(commonSubL, path2Leaf);
-                    differences.add(difference);
+                    if(difference != null) differences.add(difference);
                 }
 
                 lhideCommonSL.removeAll(commonSubL.getFirst());
@@ -229,7 +224,7 @@ public class DiffMLGraphicalVerbalizerNew {
                     usedHides.addAll(hides);
 
                     DifferenceML difference = getTASKSKIPDiff(hides, path2Leaf, i);
-                    differences.add(difference);
+                    if(difference != null) differences.add(difference);
                 }
             }
             contiguousRHide.removeAll(toDeleteRHG);
@@ -248,7 +243,7 @@ public class DiffMLGraphicalVerbalizerNew {
                     usedHides.addAll(hides);
 
                     DifferenceML difference = getTASKRELOCDiff2(hides, path2Leaf, i);
-                    differences.add(difference);
+                    if(difference != null) differences.add(difference);
                 }
             }
             contiguousLHide.removeAll(toDeleteLHG);
@@ -267,7 +262,7 @@ public class DiffMLGraphicalVerbalizerNew {
                     usedHides.addAll(unmRepInterval);
 
                     DifferenceML difference = getUNMRepetitionDiff(hides, path2Leaf, i);
-                    differences.add(difference);
+                    if(difference != null) differences.add(difference);
                     i += unmRepInterval.size() + 2;
                 }
             }
@@ -291,7 +286,7 @@ public class DiffMLGraphicalVerbalizerNew {
                     usedHides.addAll(unmRepInterval);
 
                     DifferenceML difference = getUNMRepetitionDiff2(unmRepIntervalPair, path2Leaf, i, hides);
-                    differences.add(difference);
+                    if(difference != null) differences.add(difference);
                     i += unmRepInterval.size() + 2;
                 }
             }
@@ -329,7 +324,7 @@ public class DiffMLGraphicalVerbalizerNew {
                                 continue;
 
                             DifferenceML difference = getTASKSUBDiff(path2Leaf, source, target);
-                            differences.add(difference);
+                            if(difference != null) differences.add(difference);
 
                             if (contiguousLHide.contains(source)) {
                                 toDeleteLHG.add(source);
@@ -361,7 +356,7 @@ public class DiffMLGraphicalVerbalizerNew {
                         System.out.println("Impact  = " + impact);
 
                         DifferenceML difference = getTASKSUBDiff(path2Leaf, group, subt);
-                        differences.add(difference);
+                        if(difference != null) differences.add(difference);
                     }
                 }
             } else if (contiguousLHide.size() > 0 && contiguousRHide.size() == 0) {
@@ -373,16 +368,7 @@ public class DiffMLGraphicalVerbalizerNew {
                         usedHides.addAll(subt);
 
                         DifferenceML difference = getTASKSUBDiff(path2Leaf, subt, group);
-                        differences.add(difference);
-//
-//                        float impact = computeImpact(getMinimum(group));
-//                        System.out.println("Impact  = " + impact);
-//
-//                        String sentence = verbalizeTaskSub("log", path2Leaf.get(i).label, group, subt);
-//                        DifferenceML difference = new DifferenceML(impact);
-//                        difference.setSentence(sentence);
-//                        differences.add(difference);
-//                        System.out.println(sentence);
+                        if(difference != null) differences.add(difference);
                     }
                 }
             }
@@ -400,7 +386,7 @@ public class DiffMLGraphicalVerbalizerNew {
         for(State state : optionalIntervals.keySet()){
             for(List<Integer> interval : optionalIntervals.get(state)){
                 DifferenceML difference = getTASKRELOCDiff2(interval, state);
-                differences.add(difference);
+                if(difference != null) differences.add(difference);
 
                 if(acyclicIntervals.containsKey(state)){
                     Pair<State, List<Integer>> continuation = isContSkip(state, interval, acyclicIntervals);
@@ -466,7 +452,7 @@ public class DiffMLGraphicalVerbalizerNew {
                     }
 
                     DifferenceML difference = getTASKINSDiff(op, logCont, modelCont);
-                    differences.add(difference);
+                    if(difference != null) differences.add(difference);
                 } else {
                     usedHides.add(op);
 
@@ -482,7 +468,7 @@ public class DiffMLGraphicalVerbalizerNew {
                             extList.add(pes1.getLabel(i));
 
                         DifferenceML difference = getTASKABSLDiff(op, historyEvt, extList);
-                        differences.add(difference);
+                        if(difference != null) differences.add(difference);
                     } else {
                         BitSet historyEvt = pes2.getLocalConfiguration((Integer) op.target);
                         historyEvt.set((Integer) op.target, false);
@@ -492,7 +478,7 @@ public class DiffMLGraphicalVerbalizerNew {
                             extList.add(pes2.getLabel(evt));
 
                         DifferenceML difference = getTASKABSMDiff(op, historyEvt, extList);
-                        differences.add(difference);
+                        if(difference != null) differences.add(difference);
                     }
                 }
             }
@@ -524,6 +510,9 @@ public class DiffMLGraphicalVerbalizerNew {
         }
 
         String sentence = verbalizeTaskAbs("model", op.label, modelContextSt, pruned.toString());
+
+        if(!commonLabels.contains(pes2.getLabel((Integer) op.target)))
+            return null;
 
         FlowNode taskToHide = model.getTaskFromEvent((Integer) op.target);
 
@@ -635,8 +624,12 @@ public class DiffMLGraphicalVerbalizerNew {
         String sentence = verbalizeTaskIns(op.label, logContextSt, modelContextSt);
         System.out.println(sentence + " -- Impact = " + impact);
 
+        Integer event = (Integer)modelCont.target;
+        if(!commonLabels.contains(pes2.getLabel(event)))
+            return null;
+
         List<String> a = new LinkedList<>();
-        a.add(model.getTaskFromEvent((Integer)modelCont.target).getId());
+        a.add(model.getTaskFromEvent(event).getId());
 
         HashSet<Integer> ids = new HashSet<>();
         ids.add((Integer) modelCont.target);
@@ -706,7 +699,11 @@ public class DiffMLGraphicalVerbalizerNew {
 
         HashSet<Integer> ids = new HashSet<>();
         for(Operation op : rHidesOps)
-            ids.add((Integer) op.target);
+            if(commonLabels.contains(pes2.getLabel((Integer) op.target)))
+                ids.add((Integer) op.target);
+
+        if(ids.isEmpty())
+            return null;
 
         HashSet<GObject> modelElements = model.getModelSegment(ids);
         List<String> grey = new ArrayList<>();
@@ -757,7 +754,11 @@ public class DiffMLGraphicalVerbalizerNew {
 
         HashSet<Integer> ids = new HashSet<>();
         for(Operation op : pairMatches.getFirst())
+        if(commonLabels.contains(pes2.getLabel(((Pair<Integer,Integer>)op.target).getSecond())))
             ids.add(((Pair<Integer,Integer>)op.target).getSecond());
+
+        if(ids.isEmpty())
+            return null;
 
         LinkedList<Integer> idSort = new LinkedList<>(ids);
 
@@ -820,7 +821,11 @@ public class DiffMLGraphicalVerbalizerNew {
 
         HashSet<Integer> ids = new HashSet<>();
         for(Operation op : hides)
-            ids.add((Integer)op.target);
+            if(commonLabels.contains(pes2.getLabel((Integer)op.target)))
+                ids.add((Integer)op.target);
+
+        if(ids.isEmpty())
+            return null;
 
         HashSet<GObject> modelElements = model.getModelSegment(ids);
         HashSet<FlowNode> firstEl = findFirst(modelElements);
@@ -894,7 +899,11 @@ public class DiffMLGraphicalVerbalizerNew {
 
         LinkedList<Integer> intervalOrdered = new LinkedList<>();
         for(Integer id : interval)
-            intervalOrdered.add(id);
+            if(commonLabels.contains(pes2.getLabel(id)))
+                intervalOrdered.add(id);
+
+        if(intervalOrdered.isEmpty())
+            return null;
 
         Collections.sort(intervalOrdered, new Comparator<Integer>() {
             @Override
@@ -1003,7 +1012,15 @@ public class DiffMLGraphicalVerbalizerNew {
         String sentence = verbalizeTaskSkip("model", contextSt, getLabelsModel(ids));
         System.out.println(sentence + " -- Impact = " + impact);
 
-        HashSet<GObject> modelElements = model.getModelSegment(new HashSet<Integer>(ids));
+        HashSet<Integer> idsRelevant = new HashSet<>();
+        for(Integer id : ids)
+            if(commonLabels.contains(pes2.getLabel(id)))
+                idsRelevant.add(id);
+
+        if(idsRelevant.isEmpty())
+            return null;
+
+        HashSet<GObject> modelElements = model.getModelSegment(idsRelevant);
         HashSet<FlowNode> firstEl = findFirst(modelElements);
         HashSet<FlowNode> lastEl = findLast(modelElements);
 
@@ -1078,7 +1095,11 @@ public class DiffMLGraphicalVerbalizerNew {
 
         HashSet<Integer> ids = new HashSet<>();
         for(Operation op : hides)
-            ids.add((Integer)op.target);
+            if(commonLabels.contains(pes2.getLabel((Integer)op.target)))
+                ids.add((Integer)op.target);
+
+        if(ids.isEmpty())
+            return null;
 
         HashSet<GObject> modelElements = model.getModelSegment(ids);
         HashSet<FlowNode> firstEl = findFirst(modelElements);
@@ -1154,7 +1175,11 @@ public class DiffMLGraphicalVerbalizerNew {
 
         HashSet<Integer> ids = new HashSet<>();
         for(Operation op : hides)
-            ids.add((Integer)op.target);
+            if(commonLabels.contains(pes2.getLabel((Integer)op.target)))
+                ids.add((Integer)op.target);
+
+        if(ids.isEmpty())
+            return null;
 
         HashSet<GObject> modelElements = model.getModelSegment(ids);
         HashSet<FlowNode> firstEl = findFirst(modelElements);
@@ -1231,31 +1256,17 @@ public class DiffMLGraphicalVerbalizerNew {
 
         LinkedList<Operation> rHides = commonSubL.getSecond();
         List<String> greys = new ArrayList<>();
-        HashSet<FlowNode> preds = new HashSet<>();
-        HashSet<FlowNode> succs = new HashSet<>();
-        List<String> newTasks = new ArrayList<>();
-
         HashSet<Integer> ids = new HashSet<>();
         for(Operation op : rHides)
-            ids.add((Integer)op.target);
+            if(commonLabels.contains(pes2.getLabel((Integer)op.target)))
+                ids.add((Integer)op.target);
+
+        if(ids.isEmpty())
+            return null;
 
         HashSet<GObject> modelElements = model.getModelSegment(ids);
         for(GObject gObj: modelElements)
             greys.add(gObj.getId());
-
-//        for(Operation op : rHides) {
-//            FlowNode task = model.getTaskFromEvent((Integer) op.target);
-//            newTasks.add(op.label);
-//            greys.add(task.getId());
-//
-//            for(ControlFlow flow : model.getBpmnModel().getIncomingControlFlow(task))
-//                greys.add(flow.getId());
-//            for(ControlFlow flow : model.getBpmnModel().getOutgoingControlFlow(task))
-//                greys.add(flow.getId());
-//
-//            preds.addAll(model.getBpmnModel().getDirectPredecessors(task));
-//            succs.addAll(model.getBpmnModel().getDirectSuccessors(task));
-//        }
 
         LinkedList<Operation> predOps = getPredOps(commonSubL.getFirst().getFirst(), path2Leaf, "model");
         Integer event = predOps.getLast().op.equals(Op.MATCH) ?
@@ -1504,7 +1515,7 @@ public class DiffMLGraphicalVerbalizerNew {
                         } else continue;
 
                         DifferenceML difference = getConfMisDiff(bRLog, op, evt1P1, evt2P1, evt1P2, evt2P2);
-                        differences.add(difference);
+                        if(difference != null) differences.add(difference);
 
                         continue;
                     }
@@ -1534,38 +1545,7 @@ public class DiffMLGraphicalVerbalizerNew {
 
 
                                 DifferenceML difference = getConfMisDiff(bRLog, op, evt1P1, evt3P1, evt1P2, evt2P2);
-                                differences.add(difference);
-
-//                                String sentence = "";
-//                                float impact = 1.0f;
-//
-//                                if (bRLog.equals(BehaviorRelation.CONCURRENCY)) {
-//                                    float min = (float) Math.min(pes1.getPES().getEventOccurrenceCount(evt1P1), pes1.getPES().getEventOccurrenceCount(evt2P1));
-//                                    impact = computeImpact(min);
-//                                    System.out.println("Impact = " + impact);
-//
-//                                    // Priority No. 11 -- CONCCONF
-//                                    sentence = verbalizeConcConf("log", "model", op.label, pes1.getLabel(evt1P1), pes2.getLabel(evt3P1));
-//                                } else if (bRLog.equals(BehaviorRelation.CAUSALITY)) {
-//                                    float min = (float) Math.min(pes1.getPES().getEventOccurrenceCount(evt1P1), pes1.getPES().getEventOccurrenceCount(evt2P1));
-//                                    impact = computeImpact(min);
-//                                    System.out.println("Impact = " + impact);
-//
-//                                    // Priority No. 13 -- CAUSCONF
-//                                    sentence = verbalizeCausConf("log", "model", op.label, pes1.getLabel(evt1P1), pes2.getLabel(evt3P1));
-//                                } else if (bRLog.equals(BehaviorRelation.INV_CAUSALITY)) {
-//                                    float min = (float) Math.min(pes1.getPES().getEventOccurrenceCount(evt1P1), pes1.getPES().getEventOccurrenceCount(evt2P1));
-//                                    impact = computeImpact(min);
-//                                    System.out.println("Impact = " + impact);
-//
-//                                    // Priority No. 13 -- CAUSCONF
-//                                    sentence = verbalizeCausConf("log", "model", op.label, pes1.getLabel(evt3P1), pes2.getLabel(evt1P1));
-//                                } else
-//                                    sentence = "ERROR: CONFLICT RELATION";
-//
-//                                DifferenceML difference = new DifferenceML(impact);
-//                                difference.setSentence(sentence);
-
+                                if(difference != null) differences.add(difference);
                             } else {
                                 if(isRHide(pairInPath2Leaf.getSecond())) toRemoveR.add(pairInPath2Leaf.getSecond());
                                 else toRemoveL.add(pairInPath2Leaf.getSecond());
@@ -1577,7 +1557,7 @@ public class DiffMLGraphicalVerbalizerNew {
                                 BehaviorRelation bRLog = pes1.getBRelation(evt1P1, evt2P1);
 
                                 DifferenceML difference = getConfMisDiff2(bRModel, op, evt1P1, evt2P1, evt1P2, evt2P2);
-                                differences.add(difference);
+                                if(difference != null) differences.add(difference);
                             }
                         }else{
                             if(isRHide(pairInPath2Leaf.getSecond())) toRemoveR.add(pairInPath2Leaf.getSecond());
@@ -1596,7 +1576,7 @@ public class DiffMLGraphicalVerbalizerNew {
                             BehaviorRelation bRModel = pes2.getBRelation(evt1P2, evt2P2);
 
                             DifferenceML difference = getConfMisDiff3(op, bRLog, bRModel, evt1P1, evt2P1, evt1P2, evt2P2);
-                            differences.add(difference);
+                            if(difference != null) differences.add(difference);
                         }
                     } else {
                         // Matches
@@ -1617,39 +1597,7 @@ public class DiffMLGraphicalVerbalizerNew {
                             else toRemoveL.add(complementingPair.getSecond());
 
                             DifferenceML difference = getConfMisDiff(bRLog, op, evt1P1, evt2P1, evt2P2, evt3P2);
-                            differences.add(difference);
-
-//                            String sentence = "";
-//                            float impact = 1.0f;
-//
-//                            if (bRLog.equals(BehaviorRelation.CONCURRENCY)) {
-//                                float min = (float) Math.min(pes1.getPES().getEventOccurrenceCount(evt1P1), pes1.getPES().getEventOccurrenceCount(evt2P1));
-//                                impact = computeImpact(min);
-//                                System.out.println("Impact = " + impact);
-//
-//                                // Priority No. 11 -- CONCCONF
-//                                sentence = verbalizeConcConf("log", "model", op.label, pes2.getLabel(evt2P2), pes2.getLabel(evt3P2));
-//                            } else if (bRLog.equals(BehaviorRelation.CAUSALITY)) {
-//                                float min = (float) Math.min(pes1.getPES().getEventOccurrenceCount(evt1P1), pes1.getPES().getEventOccurrenceCount(evt2P1));
-//                                impact = computeImpact(min);
-//                                System.out.println("Impact = " + impact);
-//
-//                                // Priority No. 13 -- CAUSCONF
-//                                sentence =verbalizeCausConf("log", "model", op.label, pes2.getLabel(evt2P2), pes2.getLabel(evt3P2));
-//                            } else if (bRLog.equals(BehaviorRelation.INV_CAUSALITY)) {
-//                                float min = (float) Math.min(pes1.getPES().getEventOccurrenceCount(evt1P1), pes1.getPES().getEventOccurrenceCount(evt2P1));
-//                                impact = computeImpact(min);
-//                                System.out.println("Impact = " + impact);
-//
-//                                // Priority No. 13 -- CAUSCONF
-//                                sentence = verbalizeCausConf("log", "model", op.label, pes2.getLabel(evt3P2), pes2.getLabel(evt2P2));
-//                            } else
-//                                sentence = "ERROR: CONFLICT RELATION";
-//
-//                            DifferenceML difference = new DifferenceML(impact);
-//                            difference.setSentence(sentence);
-//                            differences.add(difference);
-//                            System.out.println(sentence);
+                            if(difference != null) differences.add(difference);
                         } else {
                             if(isRHide(pairInPath2Leaf.getFirst())) toRemoveR.add(pairInPath2Leaf.getFirst());
                             else toRemoveL.add(pairInPath2Leaf.getFirst());
@@ -1659,39 +1607,7 @@ public class DiffMLGraphicalVerbalizerNew {
 
 
                             DifferenceML difference = getConfMisDiff2(bRModel, op, evt1P1, evt2P1, evt2P1, evt3P1);
-                            differences.add(difference);
-
-//                            String sentence = "";
-//                            float impact = 1.0f;
-//
-//                            // Priority No. 12 -- CONCCONF
-//                            if (bRModel.equals(BehaviorRelation.CONCURRENCY)) {
-//                                float sum = pes1.getPES().getEventOccurrenceCount(evt1P1) + pes1.getPES().getEventOccurrenceCount(evt2P1);
-//                                impact = computeImpact(sum);
-//                                System.out.println("Impact = " + impact);
-//
-//                                sentence = verbalizeConcConf("model", "log", op.label, pes1.getLabel(evt2P1), pes1.getLabel(evt3P1));
-//                            } else if (bRModel.equals(BehaviorRelation.CAUSALITY)) {
-//                                float sum = pes1.getPES().getEventOccurrenceCount(evt1P1) + pes1.getPES().getEventOccurrenceCount(evt2P1);
-//                                impact = computeImpact(sum);
-//                                System.out.println("Impact = " + impact);
-//
-//                                // Priority No. 14 -- CAUSCONF
-//                                sentence = verbalizeCausConf("model", "log", op.label, pes1.getLabel(evt2P1), pes1.getLabel(evt3P1));
-//                            } else if (bRModel.equals(BehaviorRelation.INV_CAUSALITY)) {
-//                                float sum = pes1.getPES().getEventOccurrenceCount(evt1P1) + pes1.getPES().getEventOccurrenceCount(evt2P1);
-//                                impact = computeImpact(sum);
-//                                System.out.println("Impact = " + impact);
-//
-//                                // Priority No. 14 -- CAUSCONF
-//                                sentence = verbalizeCausConf("model", "log", op.label, pes1.getLabel(evt3P1), pes2.getLabel(evt2P2));
-//                            } else
-//                                sentence = "ERROR: CONFLICT RELATION";
-//
-//                            DifferenceML difference = new DifferenceML(impact);
-//                            difference.setSentence(sentence);
-//                            differences.add(difference);
-//                            System.out.println(sentence);
+                            if(difference != null) differences.add(difference);
                         }
                     }
                 }
@@ -1751,6 +1667,9 @@ public class DiffMLGraphicalVerbalizerNew {
         List<String> start = new LinkedList<>();
         List<String> end = new LinkedList<>();
         List<String> greys = new ArrayList<>();
+
+        if(!commonLabels.contains(pes2.getLabel(evt1M)) || !commonLabels.contains(pes2.getLabel(evt2M)))
+            return null;
 
         HashSet<Integer> ids = new HashSet<>();
         ids.add(evt1M);
@@ -1883,6 +1802,9 @@ public class DiffMLGraphicalVerbalizerNew {
         List<String> end = new LinkedList<>();
         List<String> greys = new ArrayList<>();
 
+        if(!commonLabels.contains(pes2.getLabel(evt1M)) || !commonLabels.contains(pes2.getLabel(evt2M)))
+            return null;
+
         HashSet<Integer> ids = new HashSet<>();
         ids.add(evt1M);
         ids.add(evt2M);
@@ -1980,6 +1902,9 @@ public class DiffMLGraphicalVerbalizerNew {
         List<String> start = new LinkedList<>();
         List<String> end = new LinkedList<>();
         List<String> greys = new ArrayList<>();
+
+        if(!commonLabels.contains(pes2.getLabel(evt1M)) || !commonLabels.contains(pes2.getLabel(evt2M)))
+            return null;
 
         HashSet<Integer> ids = new HashSet<>();
         ids.add(evt1M);
@@ -2092,9 +2017,6 @@ public class DiffMLGraphicalVerbalizerNew {
         // Operation 4 is the counter of op3 and it is NOT in the path2Leaf
         Operation op4 = null;
 
-//        if (isMatch(path2Leaf.get(i + 1))) {
-//            String matchLabelOp1 = path2Leaf.get(i + 1).label;
-
             for(int j = i+2; j < path2Leaf.size(); j++)
                 if(isMatch(op1) && isHide(path2Leaf.get(j))) {
                     op3 = path2Leaf.get(j);
@@ -2110,22 +2032,6 @@ public class DiffMLGraphicalVerbalizerNew {
                     op4 = counterImage.getSecond();
                 }
             }
-
-//            for (Operation op : descendants.get(contextOp.nextState)) {
-//                if (op.label.equals(matchLabel) && (isLHide(op) || isRHide(op))) {
-//                    op2 = op;
-//
-//                    for (int j = i + 1; j < path2Leaf.size(); j++)
-//                        if ((isLHide(path2Leaf.get(j)) && isLHide(op)) || (isRHide(path2Leaf.get(j)) && isRHide(op))) {
-//                            Operation counterOp3 = findRecursiveMatch(op2.nextState, path2Leaf.get(j).label);
-//                            if (counterOp3 != null) {
-//                                op3 = path2Leaf.get(j);
-//                                op4 = counterOp3;
-//                                break;
-//                            }
-//                        }
-//                }
-//            }
 
             // Double check in case a conflicting event could not be
             // matched in an optimal match
@@ -2147,23 +2053,6 @@ public class DiffMLGraphicalVerbalizerNew {
                     }
                 }
             }
-//        } else {
-//            String hideLabel = path2Leaf.get(i + 1).label;
-//            op1 = path2Leaf.get(i + 1);
-//            for (Operation op : descendants.get(contextOp.nextState))
-//                if (op.label.equals(hideLabel) && isMatch(op)) {
-//                    op2 = op;
-//
-//                    for (int j = i + 1; j < path2Leaf.size(); j++)
-//                        if (path2Leaf.get(j).op.equals(op.op)) {
-//                            Operation counterOp3 = findRecursiveHide(op2.nextState, path2Leaf.get(j).label, path2Leaf.get(i + 1).op);
-//                            if (counterOp3 != null) {
-//                                op3 = path2Leaf.get(j);
-//                                op4 = counterOp3;
-//                            }
-//                        }
-//                }
-//        }
 
         if (op1 == null || op3 == null)
             return null;
@@ -2237,7 +2126,7 @@ public class DiffMLGraphicalVerbalizerNew {
                             context = matchContext.label;
 
                         DifferenceML difference = getCAUSCONCDiff(matchedEvents.getFirst(), (Integer) opL.target, matchedEvents.getSecond(), (Integer) opR.target, context);
-                        differences.add(difference);
+                        if(difference != null) differences.add(difference);
 
                         toRemoveL.add(opL);
                         toRemoveR.add(opR);
@@ -2283,6 +2172,9 @@ public class DiffMLGraphicalVerbalizerNew {
 
         System.out.println(sentence + " -- Impact = " + impact);
 
+        if(!commonLabels.contains(pes2.getLabel(evt1M)) || !commonLabels.contains(pes2.getLabel(evt2M)))
+            return null;
+        
         HashSet<Integer> ids = new HashSet<>();
         ids.add(evt1M);
         ids.add(evt2M);
@@ -2886,7 +2778,7 @@ public class DiffMLGraphicalVerbalizerNew {
             difference.setStart(start);
             difference.setEnd(end);
             difference.setType("UNOBSACYCLICINTER");
-            differences.add(difference);
+            if(difference != null) differences.add(difference);
         }
     }
 
@@ -2901,7 +2793,7 @@ public class DiffMLGraphicalVerbalizerNew {
             System.out.println("Impact = " + impact);
 
             DifferenceML difference = getUNMRepetitionDiff(entry);
-            differences.add(difference);
+            if(difference != null) differences.add(difference);
         }
     }
 

@@ -20,6 +20,7 @@
 
 package org.apromore.plugin.portal.APM;
 
+import java.nio.charset.Charset;
 import java.util.*;
 
 import hub.top.petrinet.PetriNet;
@@ -37,6 +38,7 @@ public class APMController {
     private PortalContext portalContext;
     private Window resultsWin;
     private Button closeButton;
+    private Button downloadButton;
     private Rows rows;
     private Grid grid;
     private String nativeType = "BPMN 2.0";
@@ -58,20 +60,27 @@ public class APMController {
             this.prefix = prefix;
             String[] differences = apmService.getSpecification(nets, prefix);
 
-            makeResultWindows(differences[1]);
+            makeResultWindows(differences);
         } catch (Exception e) {
             Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
-    public void makeResultWindows(String results){
+    public void makeResultWindows(String[] results){
         try {
             this.resultsWin = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/results.zul", null, null);
             this.closeButton = (Button) this.resultsWin.getFellow("closeBtn");
+            this.downloadButton = (Button) this.resultsWin.getFellow("downloadBtn");
 
             this.closeButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     closeResults();
+                }
+            });
+
+            this.downloadButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    downloadResults(results[0]);
                 }
             });
 
@@ -80,7 +89,7 @@ public class APMController {
 
             ArrayList<String> gridData = new ArrayList<String>();
 
-            StringTokenizer token = new StringTokenizer(results, "\n");
+            StringTokenizer token = new StringTokenizer(results[1], "\n");
             while(token.hasMoreTokens())
                 gridData.add(token.nextToken());
 
@@ -98,6 +107,11 @@ public class APMController {
 
     protected void closeResults(){
         this.resultsWin.detach();
+    }
+
+    protected void downloadResults(String xmlString){
+        Filedownload.save(xmlString.getBytes(Charset.forName("UTF-8")), "application/xml",
+                "verification.xml");
     }
 
     public class SimpleRenderer implements RowRenderer<String> {

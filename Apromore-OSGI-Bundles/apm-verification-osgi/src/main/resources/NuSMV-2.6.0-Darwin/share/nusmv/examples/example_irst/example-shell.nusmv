@@ -1,0 +1,66 @@
+# this file contains a sample demo of the interaction with
+# the inseraction shell of nusmv
+
+# prints out the actual system settings:
+set
+
+# set the verbosity level to 2
+# set verbose_level 2
+
+# The model is read in from the file examples/gigamax.smv
+read_model -i examples/gigamax.smv
+
+# The file is built, using the file previously read in, and using
+# the ordering file read from file examples/ord/gigamax.ord
+# No partitioning performed.
+build_model -i examples/ord/gigamax.ord
+
+# We can check the formulae specified in the input file.
+check_ctlspec
+
+# We reset the whole system
+reset
+
+# The verbose level is set to 0.
+set verbose_level 0
+
+# The model is read in from the file examples/gigamax.smv
+read_model -i examples/gigamax.smv
+
+# The file is built, using the file previously read in.
+# We partition the model using the heuristic proposed in the paper
+# IWLS95 by Ranjan et al.
+build_model -m Iwls95CP
+
+# Computing the set of fairness constraints
+compute_fairness
+
+# We write the output order file
+write_order -f output_order.ord
+
+# We  force the variable reordering, using the exact method provided
+# by the CUDD BDD package
+dynamic_var_ordering -f exact
+
+# We write the new generated order on a different file
+write_order -f new_output_order.ord
+
+# We can check the formulae specified in the input file.
+check_ctlspec
+
+# We can activate the computation of reachable states
+compute_reachable
+
+# We can check new formulae, not specified in the input file.
+check_ctlspec -p " AG (p0.writable & p1.writable)"
+
+# The BDD statistics and options modifiable at command line can be
+# printed out by using the print_bdd_stats command.
+print_bdd_stats
+
+# To change a BDD package option you have to execute:
+# The "-s" command option prints the bdd parameter and statistics
+# after the modification
+set "BDD.Hard limit for cache size" 100
+set_bdd_parameters -s
+

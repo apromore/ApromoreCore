@@ -1,0 +1,12 @@
+-- (C) 2002 Roger Villemaire villemaire.roger@uqam.ca
+--
+-- Simple modulo N counter
+-- You must use the following NuSMV options
+-- The following line makes it a modulo 2 counter
+define(N,2)
+MODULE main
+VAR 
+  value : 0..eval(N-1);
+ASSIGN
+  init(value) := 0;
+  next(value) := value + 1 mod N;

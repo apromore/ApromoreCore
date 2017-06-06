@@ -1,0 +1,74 @@
+MODULE main
+
+VAR
+
+s0: {noncritical, trying, critical};
+
+s1: {noncritical, trying, critical};
+
+turn: boolean;
+
+pr0: process prc(s0, s1, turn, FALSE);
+
+pr1: process prc(s1, s0, turn, TRUE);
+
+ASSIGN
+
+init(turn) := FALSE;
+
+FAIRNESS
+!(s0 = critical)
+
+--FAIRNESS
+--!(s1 = critical)
+
+SPEC
+
+EF((s0 = critical) & (s1 = critical))
+
+SPEC
+
+AG((s0 = trying) -> AF (s0 = critical))
+
+SPEC
+
+AG((s1 = trying) -> AF (s1 = critical))
+
+SPEC
+
+AG((s0 = critical) -> A[(s0 = critical) U (!(s0 = critical) & A[!(s0 = critical) U (s1 = critical)])])
+
+SPEC
+
+AG((s1 = critical) -> A[(s1 = critical) U (!(s1 = critical) & A[!(s1 = critical) U (s0 = critical)])])
+
+MODULE prc(state0, state1, turn, turn0)
+
+ASSIGN
+
+init(state0) := noncritical;
+
+next(state0) := 
+case
+   (state0 = noncritical) : {trying,noncritical};
+   (state0 = trying) & (state1 = noncritical): critical;
+   (state0 = trying) & (state1 = trying) & (turn = turn0):  critical;
+   (state0 = critical) : {critical,noncritical};
+   TRUE : state0;
+esac;
+
+next(turn) :=
+case
+   turn = turn0 & state0 = critical: !turn;
+   TRUE : turn;
+esac;
+
+FAIRNESS
+running
+
+
+
+
+
+
+

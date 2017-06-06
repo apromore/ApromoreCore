@@ -112,9 +112,13 @@ public class NuSMVChecker extends AbstractChecker {
 
     protected Process createProcess() {
         try {
-            Process proc = Runtime.getRuntime().exec(checker.getAbsoluteFile() + " " + file.getAbsolutePath());
+            System.out.println("Start execution of NuSMV");
+            File nusmv = new File("/Users/armascer/Downloads/NuSMV-2.6.0-Darwin/bin/NuSMV");
+            System.out.println(nusmv.getAbsolutePath() + " " + file.getAbsolutePath());
+            Process proc = Runtime.getRuntime().exec(nusmv.getAbsolutePath() + " " + file.getAbsolutePath());
             return proc;
-        } catch (Throwable t) {
+        } catch (Exception e) {
+            e.printStackTrace();
             eventHandler.logError("Could not call model checker NuSMV2");
             eventHandler.logError("No checks were performed");
             return null;

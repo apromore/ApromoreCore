@@ -20,13 +20,16 @@
 
 <window id="modalDialog" title="Differences" border="normal" width="560px">
     <vlayout>
+        <div>
+            <button id="downloadBtn" label="Download specification"/>
+            <button id="closeBtn" label="close"/>
+        </div>
         <grid id="gridMD">
             <columns>
                 <column label="id" hflex="1"/>
-                <column label="Difference" hflex="2"/>
+                <column label="Specification" hflex="2"/>
             </columns>
             <rows></rows>
         </grid>
-        <button id="closeBtn" label="close"/>
     </vlayout>
 </window>

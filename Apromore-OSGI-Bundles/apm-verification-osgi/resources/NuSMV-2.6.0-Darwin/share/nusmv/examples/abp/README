@@ -1,0 +1,21 @@
+-- n-bit alternating bit protocol.  Documentation can be found
+   at the beginning of the SMV model.
+       
+  Author: Armin Biere  (armin@ira.uka.de, armin@cs.cmu.edu)
+  Organization: Universitat Karlsruhe.
+  Reference:
+    @inproceedings{ArminBiere97ii,
+      author = {Armin Biere},
+      title = {{$\mu$}cke -- Efficient {$\mu$}-Calculus Model Checking},
+      pages = {468--471},
+      booktitle = {International Conference on Computer-Aided Verification},
+      place = {Haifa, Israel},
+      year = {1997},
+      publisher = {Springer},
+      series = {LNCS},
+      number = {1254},
+      editors = {Orna Grumberg}
+    } 
+
+  Recommended SMV flag: none
+

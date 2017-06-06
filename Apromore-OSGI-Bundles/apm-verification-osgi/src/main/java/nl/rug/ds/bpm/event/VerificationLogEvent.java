@@ -5,6 +5,7 @@ package nl.rug.ds.bpm.event;
  */
 
 public class VerificationLogEvent {
+	public static final int DEBUG = -1;
 	public static final int VERBOSE = 0;
 	public static final int INFO = 1;
 	public static final int WARNING = 2;
@@ -29,6 +30,8 @@ public class VerificationLogEvent {
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		if(logLevel == DEBUG)
+			sb.append("DEBUG\t: ");
 		if(logLevel == VERBOSE)
 			sb.append("VERBOSE\t: ");
 		if(logLevel == INFO)

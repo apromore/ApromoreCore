@@ -124,6 +124,8 @@
         <module>Compare-Portal-Plugin</module>
         <module>APM-Logic</module>
         <module>APM-Portal-Plugin</module>
+        <module>APM-Compliance-Logic</module>
+        <module>APM-Compliance-Portal-Plugin</module>
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>
         <module>Activity-Filter-Logic</module>

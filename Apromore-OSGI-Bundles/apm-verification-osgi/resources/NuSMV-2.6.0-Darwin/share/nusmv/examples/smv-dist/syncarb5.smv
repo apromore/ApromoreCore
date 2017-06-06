@@ -1,0 +1,63 @@
+--syncarb.smv:
+
+MODULE arbiter-element(above,below,init-token)
+
+VAR
+  Persistent : boolean;
+  Token : boolean;
+  Request : boolean;
+
+ASSIGN
+  init(Token) := init-token;
+  next(Token) := token-in;
+  init(Persistent) := FALSE;
+  next(Persistent) := Request & (Persistent | Token);
+
+DEFINE
+  above.token-in := Token;
+  override-out := above.override-out | (Persistent & Token);
+  grant-out := !Request & below.grant-out;
+  ack-out := Request & (Persistent & Token | below.grant-out);
+
+SPEC
+  AG ((ack-out -> Request) & AF (!Request | ack-out))
+
+
+
+MODULE main
+
+VAR
+  e5 : arbiter-element(self,e4,FALSE);
+  e4 : arbiter-element(e5,e3,FALSE);
+  e3 : arbiter-element(e4,e2,FALSE);
+  e2 : arbiter-element(e3,e1,FALSE);
+  e1 : arbiter-element(e2,self,TRUE);
+
+DEFINE
+  grant-in := TRUE;
+  e1.token-in := token-in;
+  override-out := FALSE;
+  grant-out := grant-in & !e1.override-out;
+
+--SPEC
+--  AG (e5.Request -> ABF 0..4 (!e5.Request | e5.ack-out))
+
+--SPEC
+--  AG (!e1.Request & !e2.Request & !e3.Request & !e4.Request & e5.Request -> e5.ack-out)
+
+SPEC
+  AG (
+      !(e1.ack-out & e2.ack-out)
+
+      & !(e1.ack-out & e3.ack-out)
+      & !(e2.ack-out & e3.ack-out)
+
+      & !(e1.ack-out & e4.ack-out)
+      & !(e2.ack-out & e4.ack-out)
+      & !(e3.ack-out & e4.ack-out)
+
+      & !(e1.ack-out & e5.ack-out)
+      & !(e2.ack-out & e5.ack-out)
+      & !(e3.ack-out & e5.ack-out)
+      & !(e4.ack-out & e5.ack-out)
+     )

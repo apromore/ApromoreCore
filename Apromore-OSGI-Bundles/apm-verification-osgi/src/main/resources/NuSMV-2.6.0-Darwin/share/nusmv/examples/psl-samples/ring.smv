@@ -1,0 +1,31 @@
+MODULE main
+VAR
+  gate_1 : process inverter(gate_3.output);
+  gate_2 : process inverter(gate_1.output);
+  gate_3 : process inverter(gate_2.output);
+
+SPEC
+  (AG AF gate_1.output) & (AG AF !gate_1.output)
+
+PSLSPEC
+--  forall i in {1:3}: ((AG AF gate[i].output) & (AG AF !gate[i].output)) ;
+  ((AG AF gate_1.output) & (AG AF !gate_1.output)) & ((AG AF gate_2.output) & (AG AF !gate_2.output)) & ((AG AF gate_3.output) & (AG AF !gate_3.output)) ;
+
+PSLSPEC
+--  forall i in {1:3}: ((G F gate[i].output) & ( G F !gate[i].output)) ;
+  ((G F gate_1.output) & ( G F !gate_1.output)) & ((G F gate_2.output) & ( G F !gate_2.output)) & ((G F gate_3.output) & ( G F !gate_3.output)) ;
+
+PSLSPEC
+--  forall i in {1:3}: ((always eventually! gate[i].output) & ( always eventually! !gate[i].output)) ;
+  ((always eventually! gate_1.output) & ( always eventually! !gate_1.output)) & 
+  ((always eventually! gate_2.output) & ( always eventually! !gate_2.output)) &
+  ((always eventually! gate_3.output) & ( always eventually! !gate_3.output)) ;
+
+MODULE inverter(input)
+VAR
+  output : boolean;
+ASSIGN
+  init(output) := FALSE;
+  next(output) := !input;
+FAIRNESS
+  running

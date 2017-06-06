@@ -1,0 +1,196 @@
+-- This file describes three processes simulator, sort and
+-- sim_const, which are ever running.  The simulator process
+-- writes randomically values on the buffer, except when the
+-- buffer is full. In this case it waits until values are
+-- consumed. This process represents a simulator, which would
+-- generate data. Whenever a data is inserted, a flag
+-- indicating the buffer has to be sorted is set.  The
+-- process sim_cons consumes the data of the buffer, when the
+-- buffer is sorted.  Finally, the process sort sorts the
+-- buffer using a very naive sorting algorithm.
+
+
+MODULE main
+
+VAR
+  buffer: array 1..3 of {1,2,3,4};
+  bufsize: {0,1,2,3};
+  sim: process sim_cons(bufsize,buffer,sort_OK,sort_req);
+  sm : process simulator(bufsize,buffer,sort_OK,sort_req);
+  srt: process sort(buffer,bufsize,sort_OK,sort_req);
+  sort_OK : boolean;
+  sort_req : boolean;
+  lock : boolean;
+
+ASSIGN
+   init(bufsize) := 0;
+   init(sort_OK) := FALSE;
+   init(sort_req) := FALSE;
+
+SPEC
+   AG (sort_req -> AF(sort_OK))
+SPEC
+  AG (bufsize=3 -> AF(sim.val <= buffer[1] & sim.val <= buffer[2] & sim.val <= buffer[3]))
+SPEC
+  AG (bufsize=2 -> AF(sim.val <= buffer[1] & sim.val <= buffer[2]))
+SPEC 
+ AG (bufsize=1 -> AF(sim.val <= buffer[1]))
+
+
+MODULE simulator(bufsize,buffer,sort_OK,sort_req)
+
+VAR
+   state : {test,inc,poebuf,req,wait,bufful};
+ASSIGN
+   init(state) := test;
+   next(state) := 
+       case
+         state=test & bufsize < 3 : inc;
+         state=test & bufsize = 3 : bufful;
+         state=inc : poebuf;
+         state=poebuf: req;
+         state=req : wait;
+         state=wait & sort_OK : test;
+         state=bufful & bufsize < 3 : poebuf;
+         TRUE : state;
+       esac;
+   next(bufsize) :=
+       case 
+         state=inc & bufsize < 3: bufsize+1;
+         TRUE : bufsize;
+       esac;
+   next(buffer[1]) :=
+       case
+          state=poebuf & bufsize=1 : {1,2,3,4};
+          TRUE : buffer[1];
+       esac;
+   next(buffer[2]) :=
+       case
+          state=poebuf & bufsize=2 : {1,2,3,4};
+          TRUE : buffer[2];
+       esac;
+   next(buffer[3]) :=
+       case
+          state=poebuf & bufsize=3 : {1,2,3,4};
+          TRUE : buffer[3];
+       esac;
+   next(sort_req) :=
+       case
+          state=req : TRUE;
+          TRUE : sort_req;
+       esac;
+   next(sort_OK) :=
+       case
+         state=poebuf : FALSE;
+         TRUE : sort_OK;
+       esac;
+
+FAIRNESS
+  running
+
+MODULE sim_cons(bufsize, buffer,sort_OK,sort_req)
+VAR
+ state: {new_val,dec};
+ val: {0,1,2,3,4};
+ASSIGN
+   init(val) := 0;
+   init(state) := new_val;
+   next(state):=
+     case
+      state=new_val & sort_OK: dec;
+      state=dec : new_val;
+      TRUE :state;
+     esac;
+   next(val) :=
+     case
+       state=new_val & sort_OK & bufsize=1 : buffer[1];
+       state=new_val & sort_OK & bufsize=2: buffer[2];
+       state=new_val & sort_OK & bufsize=3: buffer[3];
+       TRUE : val; 
+     esac;
+   next(bufsize) :=
+     case
+      state=dec & bufsize=1 :0 ;
+      state=dec & bufsize=2 :1 ;
+      state=dec & bufsize=3 :2 ;
+      TRUE : bufsize;
+     esac;
+SPEC
+  AG (bufsize=3 -> AF(val <= buffer[1] & val <= buffer[2] & val <= buffer[3]))
+SPEC
+  AG (bufsize=2 -> AF(val <= buffer[1] & val <= buffer[2]))
+SPEC 
+ AG (bufsize=1 -> AF(val <= buffer[1]))
+
+MODULE sort(buffer,bufsize,sort_OK,sort_req)
+
+VAR
+  state: {wait,sort,subst,sort_ready};
+  buffer_aux: array 1..3 of {1,2,3,4};
+  ord : boolean;
+
+ASSIGN    
+  init(state) := wait;
+  init(ord) := FALSE;
+  next(state) :=
+    case
+     state=wait & sort_req : sort;
+     state=sort & ord : subst;
+     state=subst: sort_ready;
+     state = sort & !ord : sort;
+     state= sort_ready : wait;
+     TRUE :state;
+    esac; 
+    
+   next(buffer_aux[1]) :=
+    case
+     state= sort & buffer[2] > buffer[1] & bufsize > 1  : buffer[2];
+     TRUE : buffer[1];
+    esac;
+   next(buffer_aux[2]) :=
+    case
+     state = sort & buffer[2] > buffer[1]  & bufsize > 1 : buffer[1];
+     state=sort & buffer[3] > buffer[2]  & bufsize > 2: buffer[3];
+     TRUE : buffer[2];
+    esac;
+  next(buffer_aux[3]) :=
+    case
+     state=sort & buffer[3] > buffer[2]  & bufsize > 2: buffer[2];
+     TRUE : buffer[3];
+    esac;
+   next(ord) :=
+      case
+       state=sort & buffer_aux[1] > buffer_aux[2] & buffer_aux[1] > buffer_aux[3] & buffer_aux [2] > buffer_aux[3]  & bufsize = 3: TRUE;
+       state=sort & buffer_aux[1] > buffer_aux[2] & bufsize = 2: TRUE;
+       state=sort & (bufsize=1 | bufsize=0) : TRUE;
+      TRUE : ord; 
+      esac;
+   next(sort_OK) :=
+      case
+       state=sort_ready : TRUE;
+       TRUE : sort_OK;
+      esac;
+   next(sort_req) :=
+      case
+       state=sort_ready : FALSE;
+       TRUE : sort_req;
+      esac;
+   next(buffer[1]) :=
+     case
+       state=subst: buffer_aux[1];
+       TRUE : buffer[1];
+     esac;
+   next(buffer[2]) :=
+     case
+       state=subst: buffer_aux[2];
+       TRUE : buffer[2];
+     esac;
+   next(buffer[3]) :=
+     case
+       state=subst: buffer_aux[3];
+       TRUE : buffer[3];
+     esac;
+
+FAIRNESS
+ running
+

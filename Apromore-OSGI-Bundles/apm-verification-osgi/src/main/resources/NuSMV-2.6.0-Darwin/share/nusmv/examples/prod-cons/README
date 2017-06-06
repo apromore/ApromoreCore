@@ -1,0 +1,19 @@
+-- Producer consumer.
+
+  Author: Edelweis Helena Ache Garcez
+         (garcez@peanuts.Informatik.Uni-Tuebingen.De)
+  Organization: Tuebingen University.
+  Reference: 
+  @InProceedings{Hoe:Codes,
+     author ={Flemming Hoeg and Niels Mellergaard and Jorgen Staunstrup},
+     title = {The Priority Queue as an Example of Hardware/Software Codesign},
+     booktitle = {International Workshop on Hardware-Software Codesign 3.},
+     year =         1994,
+     pages =        {81--88}, 
+     month =        sep,
+     local =        {Grenoble, France},
+     address =      {New York},
+     organization = {ACM/IEEE}
+  }
+
+  Recommended SMV flag: -f

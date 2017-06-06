@@ -51,7 +51,8 @@
                             com.google.common.collect,
                             *</Import-Package>
                         <Export-Package>
-                            nl.rug.ds.bpm.variability
+                            nl.rug.ds.bpm.variability,
+                            nl.rug.ds.bpm.pnml.verifier
                         </Export-Package>
                     </instructions>
                 </configuration>

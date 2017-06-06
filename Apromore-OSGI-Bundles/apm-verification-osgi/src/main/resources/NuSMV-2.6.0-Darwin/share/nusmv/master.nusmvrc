@@ -1,0 +1,7 @@
+# This is an example of usage of master.nusmvrc
+# Copy this file in a location which is pointed by environment variable
+# NUSMV_LIBRARY_PATH
+# When NuSMV starts, will first execute the command contained in this
+# file, which can be exploited to set default aliases, options, etc.
+
+alias q quit

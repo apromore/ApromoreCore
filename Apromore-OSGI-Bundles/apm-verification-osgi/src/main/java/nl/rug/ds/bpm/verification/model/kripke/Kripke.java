@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Kripke {
+    private static int maxStates = 7000000;
     private TreeSet<String> atomicPropositions;
     private TreeSet<State> states;
     private TreeSet<State> initial;
@@ -17,19 +18,19 @@ public class Kripke {
         initial = new TreeSet<State>(new StateComparator());
     }
 
-    public boolean addInitial(State s) {
+    public synchronized boolean addInitial(State s) {
         addState(s);
         return initial.add(s);
     }
 
-    public boolean addState(State s) {
+    public synchronized boolean addState(State s) {
         boolean known = states.add(s);
         if (known)
             atomicPropositions.addAll(s.getAtomicPropositions());
         return known;
     }
 
-    public State addNext(State current, State next) {
+    public synchronized State addNext(State current, State next) {
         State known = states.ceiling(next);
         if(!next.equals(known)) {
             known = next;
@@ -68,6 +69,10 @@ public class Kripke {
 
         return relCount;
     }
+    
+    public static void setMaximumStates(int max) { maxStates = max; }
+    
+    public static int getMaximumStates() { return  maxStates; }
 
     @Override
     public String toString() {

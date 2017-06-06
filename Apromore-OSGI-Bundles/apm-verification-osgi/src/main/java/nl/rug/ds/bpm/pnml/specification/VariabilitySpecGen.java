@@ -59,7 +59,7 @@ public class VariabilitySpecGen {
 		
 		VariabilitySpecification vs = new VariabilitySpecification(filenames, "silent");
 		
-//		write2File(outputfile, SpecificationToXML.getXML(vs, "silent"));
+		write2File(outputfile, SpecificationToXML.getOutput(vs, "silent")[0]);
 	}
 
 	private List<String> getFileList(File[] files) {

@@ -40,6 +40,13 @@ public class PnmlStepper extends Stepper {
 		initializePlaceMap();
 	}
 	
+	public PnmlStepper(PetriNet pn) throws JDOMException, IOException {
+		super();
+		this.pn = pn;
+		initializeTransitionMaps();
+		initializePlaceMap();
+	}
+	
 	private void getPN() throws JDOMException, IOException {
 		pn = PNMLReader.parse(net);
 	}

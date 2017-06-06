@@ -2,20 +2,14 @@ package nl.rug.ds.bpm.pnml.verifier;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
+import hub.top.petrinet.*;
+import nl.rug.ds.bpm.verification.comparator.StringComparator;
 import org.jdom.JDOMException;
 
 import com.google.common.collect.Sets;
 
-import hub.top.petrinet.Place;
-import hub.top.petrinet.Transition;
 import nl.rug.ds.bpm.extpetrinet.ExtPetriNet;
 import nl.rug.ds.bpm.pnml.reader.ExtPNMLReader;
 import nl.rug.ds.bpm.verification.stepper.Marking;
@@ -37,14 +31,45 @@ public class ExtPnmlStepper extends Stepper {
 		initializeTransitionMaps();
 		initializePlaceMap();
 	}
-	
+
+	public ExtPnmlStepper(PetriNet pn) throws JDOMException, IOException {
+		super();
+		this.pn = getExtPN(pn);
+		initializeTransitionMaps();
+		initializePlaceMap();
+	}
+
 	private void getPN() throws JDOMException, IOException {
 		pn = ExtPNMLReader.parse(net);
 	}
 	
+	private ExtPetriNet getExtPN(PetriNet pn) {
+		ExtPetriNet epn = new ExtPetriNet();
+		HashMap<Node, Object> map = new HashMap<>();
+
+		for (Transition t: pn.getTransitions()) {
+			Object tNew  = epn.addTransition(t.getName());
+			map.put(t, tNew);
+		}
+		
+		for (Place p: pn.getPlaces()) {
+			Object pNew = epn.addPlace(p.getName());
+			map.put(p, pNew);
+		}
+		
+		for (Arc a: pn.getArcs()) {
+			if (a.getSource() instanceof Place)
+				epn.addArc((Place)map.get(a.getSource()), (Transition)map.get(a.getTarget()));
+			else
+				epn.addArc((Transition)map.get(a.getSource()), (Place)map.get(a.getTarget()));
+		}
+		
+		return epn;
+	}
+	
 	private void initializeTransitionMaps() {
-		transitionmap = new HashMap<String, Transition>();
-		transitionIdmap = new HashMap<String, Set<String>>();
+		transitionmap = new TreeMap<String, Transition>(new StringComparator());
+		transitionIdmap = new TreeMap<String, Set<String>>(new StringComparator());
 		
 		for (Transition t: pn.getTransitions()) {
 			transitionmap.put(getId(t), t);
@@ -57,7 +82,7 @@ public class ExtPnmlStepper extends Stepper {
 	}
 	
 	private void initializePlaceMap() {
-		placemap = new HashMap<String, Place>();
+		placemap = new TreeMap<String, Place>(new StringComparator());
 		
 		for (Place p: pn.getPlaces()) {
 			placemap.put(getId(p), p);

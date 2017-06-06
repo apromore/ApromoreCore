@@ -1,0 +1,3280 @@
+-- Generated from issta.smv.m4,v 1.4
+-- Alt_Bits 6
+-- Alt_Rate_Bits 6
+-- m4 -DSPEC_det -DSPEC_func -DSPEC_des -DSPEC_incdes -DSPEC_agree -DSPEC_cor issta.smv.m4
+
+
+
+
+
+
+MODULE main
+
+VAR
+
+
+Effective_SL :				1..7;
+Auto_SL	:			1..7;
+Altitude_Layer :			{Layer_1, Layer_2, Layer_3, Layer_4};
+Climb_Inhibit :				{Inhibited, Not_Inhibited};
+Increase_Climb_Inhibit :		{Inhibited, Not_Inhibited};
+Descend_Inhibit :			{Inhibited, Not_Inhibited};
+Increase_Descend_Inhibit :		{Inhibited, Not_Inhibited};
+Composite_RA :				{No_RA, Climb, Descend, Negative};
+Climb_VSL :				{No_Climb_VSL, VSL0, VSL500, VSL1000, VSL2000};
+Descend_VSL :				{No_Descend_VSL, VSL0, VSL500, VSL1000, VSL2000};
+Corrective_Climb :			{Yes, No};
+Corrective_Descend :			{Yes, No};
+Combined_Control :			{No_Advisory, CC_Corrective_Climb, CC_Corrective_Descend,	
+					 Preventitive, Altitude_Lost, Tracked_Dropped, 
+					 Clear_Of_Conflict};
+Vertical_Control :			{Other, Increase, Crossing, Maintain, Reversal};
+
+VAR prev_Composite_RA : {No_RA, Climb, Descend, Negative};
+ASSIGN
+  next(prev_Composite_RA) := case
+    next(Surveillance_Complete_Event): Composite_RA;
+    TRUE: prev_Composite_RA;
+  esac;
+
+VAR prev_Climb_VSL : {No_Climb_VSL, VSL0, VSL500, VSL1000, VSL2000};
+ASSIGN
+  next(prev_Climb_VSL) := case
+    next(Surveillance_Complete_Event): Climb_VSL;
+    TRUE: prev_Climb_VSL;
+  esac;
+
+VAR prev_Descend_VSL : {No_Descend_VSL, VSL0, VSL500, VSL1000, VSL2000};
+ASSIGN
+  next(prev_Descend_VSL) := case
+    next(Surveillance_Complete_Event): Descend_VSL;
+    TRUE: prev_Descend_VSL;
+  esac;
+
+
+
+DEFINE
+  in_RA_Negative:= (Composite_RA = Negative);
+  in_RA_Positive:= (Composite_RA = Climb) | (Composite_RA = Descend);
+  in_RA:= in_RA_Positive | in_RA_Negative;
+
+  prev_in_RA_Negative:= (prev_Composite_RA = Negative);
+  prev_in_RA_Positive:= 
+           (prev_Composite_RA = Climb)|(prev_Composite_RA = Descend);
+  prev_in_RA:= prev_in_RA_Positive | prev_in_RA_Negative;
+
+VAR
+
+Surveillance_Complete_Event :	boolean; 
+
+Auto_SL_Evaluated_Event :		boolean;
+Combined_Control_Evaluated_Event :	boolean;
+Composite_RA_Evaluated_Event 	:	boolean;
+Corrective_Climb_Evaluated_Event :	boolean;
+Corrective_Descend_Evaluated_Event :	boolean;
+Descend_Inhibit_Evaluated_Event : 	boolean;
+Effective_SL_Evaluated_Event :		boolean;
+Vertical_Control_Evaluated_Event :	boolean;
+
+
+
+VAR
+	Aircraft_Altitude_Limit_5: boolean;
+	Aircraft_Altitude_Limit_4: boolean;
+	Aircraft_Altitude_Limit_3: boolean;
+	Aircraft_Altitude_Limit_2: boolean;
+	Aircraft_Altitude_Limit_1: boolean;
+DEFINE
+	Aircraft_Altitude_Limit_8 := FALSE;
+	Aircraft_Altitude_Limit_7 := FALSE;
+	Aircraft_Altitude_Limit_6 := FALSE;
+ASSIGN
+  next(Aircraft_Altitude_Limit_5) := case stable: {FALSE,TRUE}; TRUE: Aircraft_Altitude_Limit_5; esac;
+  next(Aircraft_Altitude_Limit_4) := case stable: {FALSE,TRUE}; TRUE: Aircraft_Altitude_Limit_4; esac;
+  next(Aircraft_Altitude_Limit_3) := case stable: {FALSE,TRUE}; TRUE: Aircraft_Altitude_Limit_3; esac;
+  next(Aircraft_Altitude_Limit_2) := case stable: {FALSE,TRUE}; TRUE: Aircraft_Altitude_Limit_2; esac;
+  next(Aircraft_Altitude_Limit_1) := case stable: {FALSE,TRUE}; TRUE: Aircraft_Altitude_Limit_1; esac;
+
+VAR
+	Own_Alt_Barometric_6: boolean;
+	Own_Alt_Barometric_5: boolean;
+	Own_Alt_Barometric_4: boolean;
+	Own_Alt_Barometric_3: boolean;
+	Own_Alt_Barometric_2: boolean;
+	Own_Alt_Barometric_1: boolean;
+DEFINE
+	Own_Alt_Barometric_8 := Own_Alt_Barometric_6;
+	Own_Alt_Barometric_7 := Own_Alt_Barometric_6;
+ASSIGN
+  next(Own_Alt_Barometric_6) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Barometric_6; esac;
+  next(Own_Alt_Barometric_5) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Barometric_5; esac;
+  next(Own_Alt_Barometric_4) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Barometric_4; esac;
+  next(Own_Alt_Barometric_3) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Barometric_3; esac;
+  next(Own_Alt_Barometric_2) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Barometric_2; esac;
+  next(Own_Alt_Barometric_1) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Barometric_1; esac;
+
+VAR
+	Own_Alt_Radio_6: boolean;
+	Own_Alt_Radio_5: boolean;
+	Own_Alt_Radio_4: boolean;
+	Own_Alt_Radio_3: boolean;
+	Own_Alt_Radio_2: boolean;
+	Own_Alt_Radio_1: boolean;
+DEFINE
+	Own_Alt_Radio_8 := Own_Alt_Radio_6;
+	Own_Alt_Radio_7 := Own_Alt_Radio_6;
+ASSIGN
+  next(Own_Alt_Radio_6) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Radio_6; esac;
+  next(Own_Alt_Radio_5) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Radio_5; esac;
+  next(Own_Alt_Radio_4) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Radio_4; esac;
+  next(Own_Alt_Radio_3) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Radio_3; esac;
+  next(Own_Alt_Radio_2) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Radio_2; esac;
+  next(Own_Alt_Radio_1) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Radio_1; esac;
+
+VAR
+	Own_Alt_Rate_6: boolean;
+	Own_Alt_Rate_5: boolean;
+	Own_Alt_Rate_4: boolean;
+	Own_Alt_Rate_3: boolean;
+	Own_Alt_Rate_2: boolean;
+	Own_Alt_Rate_1: boolean;
+DEFINE
+	Own_Alt_Rate_8 := Own_Alt_Rate_6;
+	Own_Alt_Rate_7 := Own_Alt_Rate_6;
+ASSIGN
+  next(Own_Alt_Rate_6) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Rate_6; esac;
+  next(Own_Alt_Rate_5) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Rate_5; esac;
+  next(Own_Alt_Rate_4) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Rate_4; esac;
+  next(Own_Alt_Rate_3) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Rate_3; esac;
+  next(Own_Alt_Rate_2) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Rate_2; esac;
+  next(Own_Alt_Rate_1) := case stable: {FALSE,TRUE}; TRUE: Own_Alt_Rate_1; esac;
+
+
+VAR
+Altitude_Climb_Inhib_Active :		boolean;
+Config_Climb_Inhibit:			boolean;
+Increase_Climb_Inhibit_Discrete:	boolean;
+Own_Air_Status :			{Airborne, On_Ground};
+Radio_Altimeter_Status :		{Valid, Not_Valid};
+Traffic_Display_Permitted:		boolean;
+Lowest_Ground: {2,3,4,5,6,7, None};
+Mode_Selector :				{TA_RA, Standby, TA_Only, 3,4,5,6,7};
+
+
+ASSIGN
+
+next(Altitude_Climb_Inhib_Active) := case !stable: FALSE; TRUE: {FALSE,TRUE}; esac;
+next(Config_Climb_Inhibit) := case !stable: FALSE; TRUE: {FALSE,TRUE}; esac;
+next(Increase_Climb_Inhibit_Discrete) := case !stable: FALSE; TRUE: {FALSE,TRUE}; esac;
+next(Own_Air_Status) := case
+	!stable: Own_Air_Status;
+	TRUE: {Airborne, On_Ground};
+	esac;
+next(Radio_Altimeter_Status) := case
+	!stable: Radio_Altimeter_Status;
+	TRUE: {Valid, Not_Valid};
+	esac;
+next(Traffic_Display_Permitted) := case !stable: FALSE; TRUE: {FALSE,TRUE}; esac;
+next(Lowest_Ground) := case
+  	!stable: Lowest_Ground;
+	TRUE: {2,3,4,5,6,7, None};
+  	esac;
+next(Mode_Selector) := case
+	!stable: Mode_Selector;
+	TRUE: {TA_RA, Standby, TA_Only, 3,4,5,6,7};
+	esac;
+
+
+
+VAR prev1_Radio_Altimeter_Status : {Valid, Not_Valid};
+ASSIGN
+  next(prev1_Radio_Altimeter_Status) := case
+    next(Surveillance_Complete_Event): Radio_Altimeter_Status;
+    TRUE: prev1_Radio_Altimeter_Status;
+  esac;
+VAR prev2_Radio_Altimeter_Status : {Valid, Not_Valid};
+ASSIGN
+  next(prev2_Radio_Altimeter_Status) := case
+    next(Surveillance_Complete_Event): prev1_Radio_Altimeter_Status;
+    TRUE: prev2_Radio_Altimeter_Status;
+  esac;
+VAR prev3_Radio_Altimeter_Status : {Valid, Not_Valid};
+ASSIGN
+  next(prev3_Radio_Altimeter_Status) := case
+    next(Surveillance_Complete_Event): prev2_Radio_Altimeter_Status;
+    TRUE: prev3_Radio_Altimeter_Status;
+  esac;
+VAR prev4_Radio_Altimeter_Status : {Valid, Not_Valid};
+ASSIGN
+  next(prev4_Radio_Altimeter_Status) := case
+    next(Surveillance_Complete_Event): prev3_Radio_Altimeter_Status;
+    TRUE: prev4_Radio_Altimeter_Status;
+  esac;
+VAR prev5_Radio_Altimeter_Status : {Valid, Not_Valid};
+ASSIGN
+  next(prev5_Radio_Altimeter_Status) := case
+    next(Surveillance_Complete_Event): prev4_Radio_Altimeter_Status;
+    TRUE: prev5_Radio_Altimeter_Status;
+  esac;
+VAR prev6_Radio_Altimeter_Status : {Valid, Not_Valid};
+ASSIGN
+  next(prev6_Radio_Altimeter_Status) := case
+    next(Surveillance_Complete_Event): prev5_Radio_Altimeter_Status;
+    TRUE: prev6_Radio_Altimeter_Status;
+  esac;
+VAR prev7_Radio_Altimeter_Status : {Valid, Not_Valid};
+ASSIGN
+  next(prev7_Radio_Altimeter_Status) := case
+    next(Surveillance_Complete_Event): prev6_Radio_Altimeter_Status;
+    TRUE: prev7_Radio_Altimeter_Status;
+  esac;
+VAR prev8_Radio_Altimeter_Status : {Valid, Not_Valid};
+ASSIGN
+  next(prev8_Radio_Altimeter_Status) := case
+    next(Surveillance_Complete_Event): prev7_Radio_Altimeter_Status;
+    TRUE: prev8_Radio_Altimeter_Status;
+  esac;
+VAR prev9_Radio_Altimeter_Status : {Valid, Not_Valid};
+ASSIGN
+  next(prev9_Radio_Altimeter_Status) := case
+    next(Surveillance_Complete_Event): prev8_Radio_Altimeter_Status;
+    TRUE: prev9_Radio_Altimeter_Status;
+  esac;
+VAR prev10_Radio_Altimeter_Status : {Valid, Not_Valid};
+ASSIGN
+  next(prev10_Radio_Altimeter_Status) := case
+    next(Surveillance_Complete_Event): prev9_Radio_Altimeter_Status;
+    TRUE: prev10_Radio_Altimeter_Status;
+  esac;
+
+
+
+VAR
+OA_Evaluated_Event:		boolean;
+OA_1: 				OA(	stable,
+					Surveillance_Complete_Event,
+					Effective_SL_Evaluated_Event,
+					OA_Evaluated_Event,
+					Climb_Inhibit,
+					Descend_Inhibit,
+					Increase_Climb_Inhibit,
+					Increase_Descend_Inhibit,
+					Own_Tracked_Alt_Rate_1,
+					Own_Tracked_Alt_Rate_2,
+					Own_Tracked_Alt_Rate_3,
+					Own_Tracked_Alt_Rate_4,
+					Own_Tracked_Alt_Rate_5,
+					Own_Tracked_Alt_Rate_6,
+					Own_Tracked_Alt_Rate_7,
+					Own_Tracked_Alt_Rate_8,
+
+					FALSE,	
+					FALSE,	
+					FALSE,	
+					FALSE,	
+					TRUE
+					);
+
+
+
+
+
+ASSIGN
+init(OA_Evaluated_Event) := FALSE;
+
+next(Surveillance_Complete_Event) := case !stable: FALSE; TRUE: {FALSE,TRUE}; esac;
+
+next(OA_Evaluated_Event) := Effective_SL_Evaluated_Event;
+
+DEFINE
+  Some_OA_Sense_Climb:=
+	OA_1.in_Sense_Climb
+	|OA_1.in_Sense_Climb
+	;
+  Some_OA_Sense_Descend:=
+	OA_1.in_Sense_Descend
+	|OA_1.in_Sense_Descend
+	;
+
+  Some_OA_Sense_Climb_Negative:=
+	OA_1.in_Sense_Climb_Negative
+	|OA_1.in_Sense_Climb_Negative
+	;
+  Some_OA_Sense_Descend_Negative:=
+	OA_1.in_Sense_Descend_Negative
+	|OA_1.in_Sense_Descend_Negative
+	;
+  Some_OA_Sense_Climb_Positive:=
+	OA_1.in_Sense_Climb_Positive
+	|OA_1.in_Sense_Climb_Positive
+	;
+  Some_OA_Sense_Descend_Positive:=
+	OA_1.in_Sense_Descend_Positive
+	|OA_1.in_Sense_Descend_Positive
+	;
+
+  Some_OA_Sense_Climb_Negative_VSL0:=
+	OA_1.in_Sense_Climb_Negative_VSL0
+	|OA_1.in_Sense_Climb_Negative_VSL0
+	;
+  Some_OA_Sense_Climb_Negative_VSL500:=
+	OA_1.in_Sense_Climb_Negative_VSL500
+	|OA_1.in_Sense_Climb_Negative_VSL500
+	;
+  Some_OA_Sense_Climb_Negative_VSL1000:=
+	OA_1.in_Sense_Climb_Negative_VSL1000
+	|OA_1.in_Sense_Climb_Negative_VSL1000
+	;
+  Some_OA_Sense_Climb_Negative_VSL2000:=
+	OA_1.in_Sense_Climb_Negative_VSL2000
+	|OA_1.in_Sense_Climb_Negative_VSL2000
+	;
+
+  Some_OA_Sense_Descend_Negative_VSL0:=
+	OA_1.in_Sense_Descend_Negative_VSL0
+	|OA_1.in_Sense_Descend_Negative_VSL0
+	;
+  Some_OA_Sense_Descend_Negative_VSL500:=
+	OA_1.in_Sense_Descend_Negative_VSL500
+	|OA_1.in_Sense_Descend_Negative_VSL500
+	;
+  Some_OA_Sense_Descend_Negative_VSL1000:=
+	OA_1.in_Sense_Descend_Negative_VSL1000
+	|OA_1.in_Sense_Descend_Negative_VSL1000
+	;
+  Some_OA_Sense_Descend_Negative_VSL2000:=
+	OA_1.in_Sense_Descend_Negative_VSL2000
+	|OA_1.in_Sense_Descend_Negative_VSL2000
+	;
+  Some_OA_Sense_Climb_Increase:=
+        (OA_1.in_Sense_Climb_Positive_Increase)
+	|(OA_1.in_Sense_Climb_Positive_Increase)
+	;
+  Some_OA_Sense_Descend_Increase:=
+        (OA_1.in_Sense_Descend_Positive_Increase)
+	|(OA_1.in_Sense_Descend_Positive_Increase)
+	;
+
+  Some_OA_Altitude_Reporting_Lost := 
+	  (OA_1.in_Altitude_Reporting_Lost)
+	| (OA_1.in_Altitude_Reporting_Lost)
+	;
+  Some_OA_Threat_Reversal_Reversed :=
+	 (OA_1.Threat_Reversal = Reversed)
+	|(OA_1.Threat_Reversal = Reversed)
+	;
+  Some_OA_Threat_Crossing_Int_Crossing :=
+	 (OA_1.Threat_Crossing = Int_Crossing)
+	| (OA_1.Threat_Crossing = Int_Crossing)
+	;
+  Some_OA_Threat_Crossing_Own_Crossing :=
+	 (OA_1.Threat_Crossing = Own_Crossing)
+	| (OA_1.Threat_Crossing = Own_Crossing)
+	;
+
+
+
+prev_Some_OA_Threat_Advisory_RA :=
+  	OA_1.prev_in_Advisory_RA
+  	|OA_1.prev_in_Advisory_RA
+	;
+
+
+  prev_Some_OA_Sense_Climb_Increase :=
+  	OA_1.prev_in_Sense_Climb_Positive_Increase 
+  	|OA_1.prev_in_Sense_Climb_Positive_Increase 
+	;
+  prev_Some_OA_Sense_Descend_Increase :=
+  	OA_1.prev_in_Sense_Descend_Positive_Increase 
+  	|OA_1.prev_in_Sense_Descend_Positive_Increase 
+	;
+
+
+  Some_OA_Threat_Advisory_RA :=
+  	OA_1.in_Advisory_RA
+ 	|OA_1.in_Advisory_RA
+	;
+
+
+DEFINE
+	stable :=
+	  !Surveillance_Complete_Event &
+	  !OA_Evaluated_Event &
+	  !Descend_Inhibit_Evaluated_Event &
+	  !Auto_SL_Evaluated_Event &
+	  !Effective_SL_Evaluated_Event &
+	  !Composite_RA_Evaluated_Event &
+	  !Corrective_Climb_Evaluated_Event &
+	  !Corrective_Descend_Evaluated_Event &
+
+	  TRUE
+	  ;
+
+
+ASSIGN
+	init(Effective_SL) := 4;
+	init(Auto_SL)	:=  4;
+	init(Altitude_Layer) := Layer_1;
+	init(Climb_Inhibit) := 
+			case
+				t243 : Inhibited;
+				t244b : Not_Inhibited;
+			esac;
+	init(Increase_Climb_Inhibit) := Not_Inhibited;
+	init(Descend_Inhibit) :=  Not_Inhibited;
+	init(Increase_Descend_Inhibit) := Not_Inhibited;
+	init(Composite_RA) := No_RA;
+	init(Corrective_Climb) :=  No;
+	init(Corrective_Descend) :=  No;
+	init(Combined_Control) := No_Advisory;
+	init(Vertical_Control) := Other;
+
+
+	init(Auto_SL_Evaluated_Event) := FALSE;
+	init(Combined_Control_Evaluated_Event) := FALSE;
+	init(Composite_RA_Evaluated_Event) := FALSE;
+	init(Corrective_Climb_Evaluated_Event) := FALSE;
+	init(Corrective_Descend_Evaluated_Event) := FALSE;
+	init(Descend_Inhibit_Evaluated_Event) := FALSE;
+	init(Effective_SL_Evaluated_Event) := FALSE;
+	init(Vertical_Control_Evaluated_Event) := FALSE;
+
+
+
+
+
+
+ASSIGN
+
+	next(Altitude_Layer) := case 
+		t238a: Layer_2;
+		t238b: Layer_3;
+		t239a: Layer_4;
+		t239b: Layer_3;
+		t239c: Layer_2;
+		t240: Layer_1;
+		TRUE: Altitude_Layer;
+		esac;
+
+DEFINE
+	t238a := Surveillance_Complete_Event & Altitude_Layer = Layer_1
+			& ((Own_Tracked_Alt_8=FALSE & (case Own_Tracked_Alt_8&!FALSE:TRUE; !Own_Tracked_Alt_8&FALSE:FALSE;
+Own_Tracked_Alt_7&!FALSE:TRUE; !Own_Tracked_Alt_7&FALSE:FALSE;
+Own_Tracked_Alt_6&!FALSE:TRUE; !Own_Tracked_Alt_6&FALSE:FALSE;
+Own_Tracked_Alt_5&!TRUE:TRUE; !Own_Tracked_Alt_5&TRUE:FALSE;
+Own_Tracked_Alt_4&!FALSE:TRUE; !Own_Tracked_Alt_4&FALSE:FALSE;
+Own_Tracked_Alt_3&!TRUE:TRUE; !Own_Tracked_Alt_3&TRUE:FALSE;
+Own_Tracked_Alt_2&!FALSE:TRUE; !Own_Tracked_Alt_2&FALSE:FALSE;
+Own_Tracked_Alt_1&!TRUE:TRUE; !Own_Tracked_Alt_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_8&FALSE));
+	t238b := Surveillance_Complete_Event & Altitude_Layer = Layer_2
+			& ((Own_Tracked_Alt_8=FALSE & (case Own_Tracked_Alt_8&!FALSE:TRUE; !Own_Tracked_Alt_8&FALSE:FALSE;
+Own_Tracked_Alt_7&!FALSE:TRUE; !Own_Tracked_Alt_7&FALSE:FALSE;
+Own_Tracked_Alt_6&!TRUE:TRUE; !Own_Tracked_Alt_6&TRUE:FALSE;
+Own_Tracked_Alt_5&!FALSE:TRUE; !Own_Tracked_Alt_5&FALSE:FALSE;
+Own_Tracked_Alt_4&!TRUE:TRUE; !Own_Tracked_Alt_4&TRUE:FALSE;
+Own_Tracked_Alt_3&!FALSE:TRUE; !Own_Tracked_Alt_3&FALSE:FALSE;
+Own_Tracked_Alt_2&!FALSE:TRUE; !Own_Tracked_Alt_2&FALSE:FALSE;
+Own_Tracked_Alt_1&!TRUE:TRUE; !Own_Tracked_Alt_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_8&FALSE)); 
+	t239a := Surveillance_Complete_Event & Altitude_Layer = Layer_3
+			& ((Own_Tracked_Alt_8=FALSE & (case Own_Tracked_Alt_8&!FALSE:TRUE; !Own_Tracked_Alt_8&FALSE:FALSE;
+Own_Tracked_Alt_7&!FALSE:TRUE; !Own_Tracked_Alt_7&FALSE:FALSE;
+Own_Tracked_Alt_6&!TRUE:TRUE; !Own_Tracked_Alt_6&TRUE:FALSE;
+Own_Tracked_Alt_5&!TRUE:TRUE; !Own_Tracked_Alt_5&TRUE:FALSE;
+Own_Tracked_Alt_4&!TRUE:TRUE; !Own_Tracked_Alt_4&TRUE:FALSE;
+Own_Tracked_Alt_3&!TRUE:TRUE; !Own_Tracked_Alt_3&TRUE:FALSE;
+Own_Tracked_Alt_2&!FALSE:TRUE; !Own_Tracked_Alt_2&FALSE:FALSE;
+Own_Tracked_Alt_1&!TRUE:TRUE; !Own_Tracked_Alt_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_8&FALSE));
+	t239b := Surveillance_Complete_Event & Altitude_Layer = Layer_4
+			& ((FALSE=Own_Tracked_Alt_8 & (case FALSE&!Own_Tracked_Alt_8:TRUE; !FALSE&Own_Tracked_Alt_8:FALSE;
+FALSE&!Own_Tracked_Alt_7:TRUE; !FALSE&Own_Tracked_Alt_7:FALSE;
+TRUE&!Own_Tracked_Alt_6:TRUE; !TRUE&Own_Tracked_Alt_6:FALSE;
+TRUE&!Own_Tracked_Alt_5:TRUE; !TRUE&Own_Tracked_Alt_5:FALSE;
+TRUE&!Own_Tracked_Alt_4:TRUE; !TRUE&Own_Tracked_Alt_4:FALSE;
+FALSE&!Own_Tracked_Alt_3:TRUE; !FALSE&Own_Tracked_Alt_3:FALSE;
+TRUE&!Own_Tracked_Alt_2:TRUE; !TRUE&Own_Tracked_Alt_2:FALSE;
+TRUE&!Own_Tracked_Alt_1:TRUE; !TRUE&Own_Tracked_Alt_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Tracked_Alt_8));
+	t239c := Surveillance_Complete_Event & Altitude_Layer = Layer_3
+			& ((FALSE=Own_Tracked_Alt_8 & (case FALSE&!Own_Tracked_Alt_8:TRUE; !FALSE&Own_Tracked_Alt_8:FALSE;
+FALSE&!Own_Tracked_Alt_7:TRUE; !FALSE&Own_Tracked_Alt_7:FALSE;
+TRUE&!Own_Tracked_Alt_6:TRUE; !TRUE&Own_Tracked_Alt_6:FALSE;
+FALSE&!Own_Tracked_Alt_5:TRUE; !FALSE&Own_Tracked_Alt_5:FALSE;
+FALSE&!Own_Tracked_Alt_4:TRUE; !FALSE&Own_Tracked_Alt_4:FALSE;
+TRUE&!Own_Tracked_Alt_3:TRUE; !TRUE&Own_Tracked_Alt_3:FALSE;
+TRUE&!Own_Tracked_Alt_2:TRUE; !TRUE&Own_Tracked_Alt_2:FALSE;
+TRUE&!Own_Tracked_Alt_1:TRUE; !TRUE&Own_Tracked_Alt_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Tracked_Alt_8));
+	t240 := Surveillance_Complete_Event & Altitude_Layer = Layer_2
+			& ((FALSE=Own_Tracked_Alt_8 & (case FALSE&!Own_Tracked_Alt_8:TRUE; !FALSE&Own_Tracked_Alt_8:FALSE;
+FALSE&!Own_Tracked_Alt_7:TRUE; !FALSE&Own_Tracked_Alt_7:FALSE;
+FALSE&!Own_Tracked_Alt_6:TRUE; !FALSE&Own_Tracked_Alt_6:FALSE;
+TRUE&!Own_Tracked_Alt_5:TRUE; !TRUE&Own_Tracked_Alt_5:FALSE;
+FALSE&!Own_Tracked_Alt_4:TRUE; !FALSE&Own_Tracked_Alt_4:FALSE;
+FALSE&!Own_Tracked_Alt_3:TRUE; !FALSE&Own_Tracked_Alt_3:FALSE;
+TRUE&!Own_Tracked_Alt_2:TRUE; !TRUE&Own_Tracked_Alt_2:FALSE;
+TRUE&!Own_Tracked_Alt_1:TRUE; !TRUE&Own_Tracked_Alt_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Tracked_Alt_8));
+	ND_Altitude_Layer := 
+		(t238b & t240) 
+		| (t239a & t239c)
+		;
+
+
+
+
+DEFINE
+  C_Diff_OTA_GL_0 := FALSE;
+	Diff_OTA_GL_1 := !((!(Own_Tracked_Alt_1 <-> Ground_Level_1)) <-> C_Diff_OTA_GL_0);
+  C_Diff_OTA_GL_1 := (!Own_Tracked_Alt_1 & Ground_Level_1) | (C_Diff_OTA_GL_0 & (Own_Tracked_Alt_1 <-> Ground_Level_1));
+	Diff_OTA_GL_2 := !((!(Own_Tracked_Alt_2 <-> Ground_Level_2)) <-> C_Diff_OTA_GL_1);
+  C_Diff_OTA_GL_2 := (!Own_Tracked_Alt_2 & Ground_Level_2) | (C_Diff_OTA_GL_1 & (Own_Tracked_Alt_2 <-> Ground_Level_2));
+	Diff_OTA_GL_3 := !((!(Own_Tracked_Alt_3 <-> Ground_Level_3)) <-> C_Diff_OTA_GL_2);
+  C_Diff_OTA_GL_3 := (!Own_Tracked_Alt_3 & Ground_Level_3) | (C_Diff_OTA_GL_2 & (Own_Tracked_Alt_3 <-> Ground_Level_3));
+	Diff_OTA_GL_4 := !((!(Own_Tracked_Alt_4 <-> Ground_Level_4)) <-> C_Diff_OTA_GL_3);
+  C_Diff_OTA_GL_4 := (!Own_Tracked_Alt_4 & Ground_Level_4) | (C_Diff_OTA_GL_3 & (Own_Tracked_Alt_4 <-> Ground_Level_4));
+	Diff_OTA_GL_5 := !((!(Own_Tracked_Alt_5 <-> Ground_Level_5)) <-> C_Diff_OTA_GL_4);
+  C_Diff_OTA_GL_5 := (!Own_Tracked_Alt_5 & Ground_Level_5) | (C_Diff_OTA_GL_4 & (Own_Tracked_Alt_5 <-> Ground_Level_5));
+	Diff_OTA_GL_6 := !((!(Own_Tracked_Alt_6 <-> Ground_Level_6)) <-> C_Diff_OTA_GL_5);
+  C_Diff_OTA_GL_6 := (!Own_Tracked_Alt_6 & Ground_Level_6) | (C_Diff_OTA_GL_5 & (Own_Tracked_Alt_6 <-> Ground_Level_6));
+	Diff_OTA_GL_7 := !((!(Own_Tracked_Alt_7 <-> Ground_Level_7)) <-> C_Diff_OTA_GL_6);
+  C_Diff_OTA_GL_7 := (!Own_Tracked_Alt_7 & Ground_Level_7) | (C_Diff_OTA_GL_6 & (Own_Tracked_Alt_7 <-> Ground_Level_7));
+	Diff_OTA_GL_8 := !((!(Own_Tracked_Alt_8 <-> Ground_Level_8)) <-> C_Diff_OTA_GL_7);
+  C_Diff_OTA_GL_8 := (!Own_Tracked_Alt_8 & Ground_Level_8) | (C_Diff_OTA_GL_7 & (Own_Tracked_Alt_8 <-> Ground_Level_8));
+
+
+
+DEFINE 
+Diff_OTA_GL_LT_NODESLO := ((FALSE=Diff_OTA_GL_8 & (case FALSE&!Diff_OTA_GL_8:TRUE; !FALSE&Diff_OTA_GL_8:FALSE;
+FALSE&!Diff_OTA_GL_7:TRUE; !FALSE&Diff_OTA_GL_7:FALSE;
+FALSE&!Diff_OTA_GL_6:TRUE; !FALSE&Diff_OTA_GL_6:FALSE;
+FALSE&!Diff_OTA_GL_5:TRUE; !FALSE&Diff_OTA_GL_5:FALSE;
+FALSE&!Diff_OTA_GL_4:TRUE; !FALSE&Diff_OTA_GL_4:FALSE;
+FALSE&!Diff_OTA_GL_3:TRUE; !FALSE&Diff_OTA_GL_3:FALSE;
+FALSE&!Diff_OTA_GL_2:TRUE; !FALSE&Diff_OTA_GL_2:FALSE;
+TRUE&!Diff_OTA_GL_1:TRUE; !TRUE&Diff_OTA_GL_1:FALSE;
+ TRUE:FALSE; esac)) | (!FALSE&Diff_OTA_GL_8));
+
+DEFINE
+	t241-TRUE :=
+		Surveillance_Complete_Event &
+		Descend_Inhibit = Inhibited &
+		((Diff_OTA_GL_8=FALSE & (case Diff_OTA_GL_8&!FALSE:TRUE; !Diff_OTA_GL_8&FALSE:FALSE;
+Diff_OTA_GL_7&!FALSE:TRUE; !Diff_OTA_GL_7&FALSE:FALSE;
+Diff_OTA_GL_6&!FALSE:TRUE; !Diff_OTA_GL_6&FALSE:FALSE;
+Diff_OTA_GL_5&!FALSE:TRUE; !Diff_OTA_GL_5&FALSE:FALSE;
+Diff_OTA_GL_4&!FALSE:TRUE; !Diff_OTA_GL_4&FALSE:FALSE;
+Diff_OTA_GL_3&!FALSE:TRUE; !Diff_OTA_GL_3&FALSE:FALSE;
+Diff_OTA_GL_2&!TRUE:TRUE; !Diff_OTA_GL_2&TRUE:FALSE;
+Diff_OTA_GL_1&!FALSE:TRUE; !Diff_OTA_GL_1&FALSE:FALSE;
+ TRUE:FALSE; esac)) | (!Diff_OTA_GL_8&FALSE));
+	t241-2 :=
+		Surveillance_Complete_Event &
+		Descend_Inhibit = Not_Inhibited &
+		((FALSE=Diff_OTA_GL_8 & (case FALSE&!Diff_OTA_GL_8:TRUE; !FALSE&Diff_OTA_GL_8:FALSE;
+FALSE&!Diff_OTA_GL_7:TRUE; !FALSE&Diff_OTA_GL_7:FALSE;
+FALSE&!Diff_OTA_GL_6:TRUE; !FALSE&Diff_OTA_GL_6:FALSE;
+FALSE&!Diff_OTA_GL_5:TRUE; !FALSE&Diff_OTA_GL_5:FALSE;
+FALSE&!Diff_OTA_GL_4:TRUE; !FALSE&Diff_OTA_GL_4:FALSE;
+FALSE&!Diff_OTA_GL_3:TRUE; !FALSE&Diff_OTA_GL_3:FALSE;
+FALSE&!Diff_OTA_GL_2:TRUE; !FALSE&Diff_OTA_GL_2:FALSE;
+TRUE&!Diff_OTA_GL_1:TRUE; !TRUE&Diff_OTA_GL_1:FALSE;
+ TRUE:FALSE; esac)) | (!FALSE&Diff_OTA_GL_8));
+ASSIGN
+	next(Descend_Inhibit) := 
+		case
+			t241-TRUE : Not_Inhibited;
+			t241-2 : Inhibited;
+			TRUE : Descend_Inhibit;
+	  	esac;    
+	next(Descend_Inhibit_Evaluated_Event) := Surveillance_Complete_Event;
+
+ASSIGN
+	  next(Increase_Descend_Inhibit) := 
+		case
+			t242a :	Inhibited;
+			t242b : Not_Inhibited;
+			TRUE : Increase_Descend_Inhibit;
+		esac;
+
+DEFINE
+	  t242a :=
+			Surveillance_Complete_Event
+	  		& Increase_Descend_Inhibit = Not_Inhibited
+			& Radio_Altimeter_Status = Valid 
+			& ((FALSE=Own_Alt_Radio_8 & (case FALSE&!Own_Alt_Radio_8:TRUE; !FALSE&Own_Alt_Radio_8:FALSE;
+FALSE&!Own_Alt_Radio_7:TRUE; !FALSE&Own_Alt_Radio_7:FALSE;
+FALSE&!Own_Alt_Radio_6:TRUE; !FALSE&Own_Alt_Radio_6:FALSE;
+FALSE&!Own_Alt_Radio_5:TRUE; !FALSE&Own_Alt_Radio_5:FALSE;
+FALSE&!Own_Alt_Radio_4:TRUE; !FALSE&Own_Alt_Radio_4:FALSE;
+FALSE&!Own_Alt_Radio_3:TRUE; !FALSE&Own_Alt_Radio_3:FALSE;
+TRUE&!Own_Alt_Radio_2:TRUE; !TRUE&Own_Alt_Radio_2:FALSE;
+TRUE&!Own_Alt_Radio_1:TRUE; !TRUE&Own_Alt_Radio_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Alt_Radio_8));
+	  t242b :=
+			Surveillance_Complete_Event
+	  		& Increase_Descend_Inhibit = Inhibited & (
+			(!(Radio_Altimeter_Status = Valid)) | 
+			(!((Own_Alt_Radio_8=FALSE & (case Own_Alt_Radio_8&!FALSE:TRUE; !Own_Alt_Radio_8&FALSE:FALSE;
+Own_Alt_Radio_7&!FALSE:TRUE; !Own_Alt_Radio_7&FALSE:FALSE;
+Own_Alt_Radio_6&!FALSE:TRUE; !Own_Alt_Radio_6&FALSE:FALSE;
+Own_Alt_Radio_5&!FALSE:TRUE; !Own_Alt_Radio_5&FALSE:FALSE;
+Own_Alt_Radio_4&!FALSE:TRUE; !Own_Alt_Radio_4&FALSE:FALSE;
+Own_Alt_Radio_3&!FALSE:TRUE; !Own_Alt_Radio_3&FALSE:FALSE;
+Own_Alt_Radio_2&!TRUE:TRUE; !Own_Alt_Radio_2&TRUE:FALSE;
+Own_Alt_Radio_1&!TRUE:TRUE; !Own_Alt_Radio_1&TRUE:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Alt_Radio_8&FALSE)))
+			);
+
+ASSIGN
+	next(Climb_Inhibit) :=
+		case
+		t244a : Inhibited;
+		t245 : Not_Inhibited;
+		TRUE : Climb_Inhibit;
+		esac;
+
+DEFINE
+	  t243 := (Altitude_Climb_Inhib_Active & 
+			((Own_Tracked_Alt_8=Aircraft_Altitude_Limit_8 & (case Own_Tracked_Alt_8&!Aircraft_Altitude_Limit_8:TRUE; !Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8:FALSE;
+Own_Tracked_Alt_7&!Aircraft_Altitude_Limit_7:TRUE; !Own_Tracked_Alt_7&Aircraft_Altitude_Limit_7:FALSE;
+Own_Tracked_Alt_6&!Aircraft_Altitude_Limit_6:TRUE; !Own_Tracked_Alt_6&Aircraft_Altitude_Limit_6:FALSE;
+Own_Tracked_Alt_5&!Aircraft_Altitude_Limit_5:TRUE; !Own_Tracked_Alt_5&Aircraft_Altitude_Limit_5:FALSE;
+Own_Tracked_Alt_4&!Aircraft_Altitude_Limit_4:TRUE; !Own_Tracked_Alt_4&Aircraft_Altitude_Limit_4:FALSE;
+Own_Tracked_Alt_3&!Aircraft_Altitude_Limit_3:TRUE; !Own_Tracked_Alt_3&Aircraft_Altitude_Limit_3:FALSE;
+Own_Tracked_Alt_2&!Aircraft_Altitude_Limit_2:TRUE; !Own_Tracked_Alt_2&Aircraft_Altitude_Limit_2:FALSE;
+Own_Tracked_Alt_1&!Aircraft_Altitude_Limit_1:TRUE; !Own_Tracked_Alt_1&Aircraft_Altitude_Limit_1:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8))
+		) | Config_Climb_Inhibit;
+	  t244a := Climb_Inhibit = Not_Inhibited & 
+			Surveillance_Complete_Event
+			& ((
+			Composite_RA = No_RA & 
+			Altitude_Climb_Inhib_Active & 
+			((Own_Tracked_Alt_8=Aircraft_Altitude_Limit_8 & (case Own_Tracked_Alt_8&!Aircraft_Altitude_Limit_8:TRUE; !Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8:FALSE;
+Own_Tracked_Alt_7&!Aircraft_Altitude_Limit_7:TRUE; !Own_Tracked_Alt_7&Aircraft_Altitude_Limit_7:FALSE;
+Own_Tracked_Alt_6&!Aircraft_Altitude_Limit_6:TRUE; !Own_Tracked_Alt_6&Aircraft_Altitude_Limit_6:FALSE;
+Own_Tracked_Alt_5&!Aircraft_Altitude_Limit_5:TRUE; !Own_Tracked_Alt_5&Aircraft_Altitude_Limit_5:FALSE;
+Own_Tracked_Alt_4&!Aircraft_Altitude_Limit_4:TRUE; !Own_Tracked_Alt_4&Aircraft_Altitude_Limit_4:FALSE;
+Own_Tracked_Alt_3&!Aircraft_Altitude_Limit_3:TRUE; !Own_Tracked_Alt_3&Aircraft_Altitude_Limit_3:FALSE;
+Own_Tracked_Alt_2&!Aircraft_Altitude_Limit_2:TRUE; !Own_Tracked_Alt_2&Aircraft_Altitude_Limit_2:FALSE;
+Own_Tracked_Alt_1&!Aircraft_Altitude_Limit_1:TRUE; !Own_Tracked_Alt_1&Aircraft_Altitude_Limit_1:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8))
+			)|(
+			Composite_RA = No_RA
+			& Config_Climb_Inhibit
+			));
+	  t244b := ((!Config_Climb_Inhibit) & (!Altitude_Climb_Inhib_Active)) |
+	  	   ((!Config_Climb_Inhibit) & (
+			!((Own_Tracked_Alt_8=Aircraft_Altitude_Limit_8 & (case Own_Tracked_Alt_8&!Aircraft_Altitude_Limit_8:TRUE; !Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8:FALSE;
+Own_Tracked_Alt_7&!Aircraft_Altitude_Limit_7:TRUE; !Own_Tracked_Alt_7&Aircraft_Altitude_Limit_7:FALSE;
+Own_Tracked_Alt_6&!Aircraft_Altitude_Limit_6:TRUE; !Own_Tracked_Alt_6&Aircraft_Altitude_Limit_6:FALSE;
+Own_Tracked_Alt_5&!Aircraft_Altitude_Limit_5:TRUE; !Own_Tracked_Alt_5&Aircraft_Altitude_Limit_5:FALSE;
+Own_Tracked_Alt_4&!Aircraft_Altitude_Limit_4:TRUE; !Own_Tracked_Alt_4&Aircraft_Altitude_Limit_4:FALSE;
+Own_Tracked_Alt_3&!Aircraft_Altitude_Limit_3:TRUE; !Own_Tracked_Alt_3&Aircraft_Altitude_Limit_3:FALSE;
+Own_Tracked_Alt_2&!Aircraft_Altitude_Limit_2:TRUE; !Own_Tracked_Alt_2&Aircraft_Altitude_Limit_2:FALSE;
+Own_Tracked_Alt_1&!Aircraft_Altitude_Limit_1:TRUE; !Own_Tracked_Alt_1&Aircraft_Altitude_Limit_1:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8))
+			));
+	  t245 :=  Climb_Inhibit = Inhibited &
+		Surveillance_Complete_Event
+			& (
+	  		(Composite_RA = No_RA &
+			 !Config_Climb_Inhibit &			   
+			 !Altitude_Climb_Inhib_Active) |
+			(Composite_RA = No_RA &
+			 !Config_Climb_Inhibit &			   
+			!((Own_Tracked_Alt_8=Aircraft_Altitude_Limit_8 & (case Own_Tracked_Alt_8&!Aircraft_Altitude_Limit_8:TRUE; !Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8:FALSE;
+Own_Tracked_Alt_7&!Aircraft_Altitude_Limit_7:TRUE; !Own_Tracked_Alt_7&Aircraft_Altitude_Limit_7:FALSE;
+Own_Tracked_Alt_6&!Aircraft_Altitude_Limit_6:TRUE; !Own_Tracked_Alt_6&Aircraft_Altitude_Limit_6:FALSE;
+Own_Tracked_Alt_5&!Aircraft_Altitude_Limit_5:TRUE; !Own_Tracked_Alt_5&Aircraft_Altitude_Limit_5:FALSE;
+Own_Tracked_Alt_4&!Aircraft_Altitude_Limit_4:TRUE; !Own_Tracked_Alt_4&Aircraft_Altitude_Limit_4:FALSE;
+Own_Tracked_Alt_3&!Aircraft_Altitude_Limit_3:TRUE; !Own_Tracked_Alt_3&Aircraft_Altitude_Limit_3:FALSE;
+Own_Tracked_Alt_2&!Aircraft_Altitude_Limit_2:TRUE; !Own_Tracked_Alt_2&Aircraft_Altitude_Limit_2:FALSE;
+Own_Tracked_Alt_1&!Aircraft_Altitude_Limit_1:TRUE; !Own_Tracked_Alt_1&Aircraft_Altitude_Limit_1:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8))
+			));
+
+
+
+ASSIGN
+	next(Increase_Climb_Inhibit) :=
+		case
+		t246a : Inhibited;
+		t246b : Not_Inhibited;
+		TRUE : Increase_Climb_Inhibit;
+		esac;
+DEFINE
+
+	t246a := Increase_Climb_Inhibit = Not_Inhibited &
+		Surveillance_Complete_Event
+			& (
+		        (Composite_RA = No_RA &
+			 ((Own_Tracked_Alt_8=Aircraft_Altitude_Limit_8 & (case Own_Tracked_Alt_8&!Aircraft_Altitude_Limit_8:TRUE; !Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8:FALSE;
+Own_Tracked_Alt_7&!Aircraft_Altitude_Limit_7:TRUE; !Own_Tracked_Alt_7&Aircraft_Altitude_Limit_7:FALSE;
+Own_Tracked_Alt_6&!Aircraft_Altitude_Limit_6:TRUE; !Own_Tracked_Alt_6&Aircraft_Altitude_Limit_6:FALSE;
+Own_Tracked_Alt_5&!Aircraft_Altitude_Limit_5:TRUE; !Own_Tracked_Alt_5&Aircraft_Altitude_Limit_5:FALSE;
+Own_Tracked_Alt_4&!Aircraft_Altitude_Limit_4:TRUE; !Own_Tracked_Alt_4&Aircraft_Altitude_Limit_4:FALSE;
+Own_Tracked_Alt_3&!Aircraft_Altitude_Limit_3:TRUE; !Own_Tracked_Alt_3&Aircraft_Altitude_Limit_3:FALSE;
+Own_Tracked_Alt_2&!Aircraft_Altitude_Limit_2:TRUE; !Own_Tracked_Alt_2&Aircraft_Altitude_Limit_2:FALSE;
+Own_Tracked_Alt_1&!Aircraft_Altitude_Limit_1:TRUE; !Own_Tracked_Alt_1&Aircraft_Altitude_Limit_1:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8))
+			)|(
+			 Composite_RA = No_RA &
+			 Config_Climb_Inhibit)	|
+			(Composite_RA = No_RA &
+			Increase_Climb_Inhibit_Discrete)
+			);	
+	t246b := Increase_Climb_Inhibit = Inhibited &
+		Surveillance_Complete_Event
+	& ((
+			 (Composite_RA = No_RA) &		
+			 (!Config_Climb_Inhibit) &
+			 (!Altitude_Climb_Inhib_Active) &
+			 (!Increase_Climb_Inhibit_Discrete)
+			)|(
+			 (Composite_RA = No_RA) &		
+			 (!Config_Climb_Inhibit)	&
+			 (!Increase_Climb_Inhibit_Discrete) &		
+			 !((Own_Tracked_Alt_8=Aircraft_Altitude_Limit_8 & (case Own_Tracked_Alt_8&!Aircraft_Altitude_Limit_8:TRUE; !Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8:FALSE;
+Own_Tracked_Alt_7&!Aircraft_Altitude_Limit_7:TRUE; !Own_Tracked_Alt_7&Aircraft_Altitude_Limit_7:FALSE;
+Own_Tracked_Alt_6&!Aircraft_Altitude_Limit_6:TRUE; !Own_Tracked_Alt_6&Aircraft_Altitude_Limit_6:FALSE;
+Own_Tracked_Alt_5&!Aircraft_Altitude_Limit_5:TRUE; !Own_Tracked_Alt_5&Aircraft_Altitude_Limit_5:FALSE;
+Own_Tracked_Alt_4&!Aircraft_Altitude_Limit_4:TRUE; !Own_Tracked_Alt_4&Aircraft_Altitude_Limit_4:FALSE;
+Own_Tracked_Alt_3&!Aircraft_Altitude_Limit_3:TRUE; !Own_Tracked_Alt_3&Aircraft_Altitude_Limit_3:FALSE;
+Own_Tracked_Alt_2&!Aircraft_Altitude_Limit_2:TRUE; !Own_Tracked_Alt_2&Aircraft_Altitude_Limit_2:FALSE;
+Own_Tracked_Alt_1&!Aircraft_Altitude_Limit_1:TRUE; !Own_Tracked_Alt_1&Aircraft_Altitude_Limit_1:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Tracked_Alt_8&Aircraft_Altitude_Limit_8))
+			));
+
+
+ASSIGN
+       next(Auto_SL) := case  t247: 1;
+			      t248: 2;
+			      t249: 4;
+			      t250: 5;
+			      t251: 6;
+			      t252: 7;
+			      TRUE: Auto_SL;
+			esac;
+
+
+       next(Auto_SL_Evaluated_Event) := Descend_Inhibit_Evaluated_Event;
+
+DEFINE
+
+
+	t247 := case 
+		  Descend_Inhibit_Evaluated_Event 
+		  & Own_Air_Status = On_Ground 
+		  & Mode_Selector= Standby : TRUE;
+		  Descend_Inhibit_Evaluated_Event 
+		  & Own_Air_Status = On_Ground 
+		  & !Traffic_Display_Permitted: TRUE;
+		  TRUE : FALSE;
+                esac;
+        t248 := case
+		  Descend_Inhibit_Evaluated_Event 
+		  & ((Effective_SL=1)|(Effective_SL=2)|(Effective_SL=3))
+		  & ((FALSE=Own_Alt_Radio_8 & (case FALSE&!Own_Alt_Radio_8:TRUE; !FALSE&Own_Alt_Radio_8:FALSE;
+FALSE&!Own_Alt_Radio_7:TRUE; !FALSE&Own_Alt_Radio_7:FALSE;
+FALSE&!Own_Alt_Radio_6:TRUE; !FALSE&Own_Alt_Radio_6:FALSE;
+FALSE&!Own_Alt_Radio_5:TRUE; !FALSE&Own_Alt_Radio_5:FALSE;
+FALSE&!Own_Alt_Radio_4:TRUE; !FALSE&Own_Alt_Radio_4:FALSE;
+FALSE&!Own_Alt_Radio_3:TRUE; !FALSE&Own_Alt_Radio_3:FALSE;
+TRUE&!Own_Alt_Radio_2:TRUE; !TRUE&Own_Alt_Radio_2:FALSE;
+TRUE&!Own_Alt_Radio_1:TRUE; !TRUE&Own_Alt_Radio_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Alt_Radio_8))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne)
+		  & (Radio_Altimeter_Status = Valid): TRUE;
+		  Descend_Inhibit_Evaluated_Event 
+		  & !(Own_Air_Status=Airborne)
+		  & Traffic_Display_Permitted
+		  & ((Mode_Selector=TA_RA)|(Mode_Selector=TA_Only)
+		    |(Mode_Selector=3)|(Mode_Selector=4)|(Mode_Selector=5)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		  Descend_Inhibit_Evaluated_Event 
+		  & Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne): TRUE;
+		  Descend_Inhibit_Evaluated_Event 
+		  & (Effective_SL=4)
+		  & ((FALSE=Own_Alt_Radio_8 & (case FALSE&!Own_Alt_Radio_8:TRUE; !FALSE&Own_Alt_Radio_8:FALSE;
+FALSE&!Own_Alt_Radio_7:TRUE; !FALSE&Own_Alt_Radio_7:FALSE;
+FALSE&!Own_Alt_Radio_6:TRUE; !FALSE&Own_Alt_Radio_6:FALSE;
+FALSE&!Own_Alt_Radio_5:TRUE; !FALSE&Own_Alt_Radio_5:FALSE;
+FALSE&!Own_Alt_Radio_4:TRUE; !FALSE&Own_Alt_Radio_4:FALSE;
+FALSE&!Own_Alt_Radio_3:TRUE; !FALSE&Own_Alt_Radio_3:FALSE;
+FALSE&!Own_Alt_Radio_2:TRUE; !FALSE&Own_Alt_Radio_2:FALSE;
+TRUE&!Own_Alt_Radio_1:TRUE; !TRUE&Own_Alt_Radio_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Alt_Radio_8))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne)
+		  & (Radio_Altimeter_Status = Valid): TRUE;
+		  TRUE: FALSE;
+                 esac;
+          t249:= case
+		  Descend_Inhibit_Evaluated_Event 
+		  & ((Effective_SL=1)|(Effective_SL=2)|(Effective_SL=3))
+		  & ((Own_Alt_Radio_8=FALSE & (case Own_Alt_Radio_8&!FALSE:TRUE; !Own_Alt_Radio_8&FALSE:FALSE;
+Own_Alt_Radio_7&!FALSE:TRUE; !Own_Alt_Radio_7&FALSE:FALSE;
+Own_Alt_Radio_6&!FALSE:TRUE; !Own_Alt_Radio_6&FALSE:FALSE;
+Own_Alt_Radio_5&!FALSE:TRUE; !Own_Alt_Radio_5&FALSE:FALSE;
+Own_Alt_Radio_4&!FALSE:TRUE; !Own_Alt_Radio_4&FALSE:FALSE;
+Own_Alt_Radio_3&!FALSE:TRUE; !Own_Alt_Radio_3&FALSE:FALSE;
+Own_Alt_Radio_2&!TRUE:TRUE; !Own_Alt_Radio_2&TRUE:FALSE;
+Own_Alt_Radio_1&!TRUE:TRUE; !Own_Alt_Radio_1&TRUE:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Alt_Radio_8&FALSE))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne)
+		  & (Radio_Altimeter_Status = Valid): TRUE;
+		  Descend_Inhibit_Evaluated_Event 
+		  & ((Effective_SL=1)|(Effective_SL=2)|(Effective_SL=3))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne)
+		  & !(Radio_Altimeter_Status = Valid): TRUE;
+		  Descend_Inhibit_Evaluated_Event 
+		  & (Effective_SL=5)
+		  & ((FALSE=Own_Alt_Radio_8 & (case FALSE&!Own_Alt_Radio_8:TRUE; !FALSE&Own_Alt_Radio_8:FALSE;
+FALSE&!Own_Alt_Radio_7:TRUE; !FALSE&Own_Alt_Radio_7:FALSE;
+FALSE&!Own_Alt_Radio_6:TRUE; !FALSE&Own_Alt_Radio_6:FALSE;
+FALSE&!Own_Alt_Radio_5:TRUE; !FALSE&Own_Alt_Radio_5:FALSE;
+FALSE&!Own_Alt_Radio_4:TRUE; !FALSE&Own_Alt_Radio_4:FALSE;
+TRUE&!Own_Alt_Radio_3:TRUE; !TRUE&Own_Alt_Radio_3:FALSE;
+FALSE&!Own_Alt_Radio_2:TRUE; !FALSE&Own_Alt_Radio_2:FALSE;
+FALSE&!Own_Alt_Radio_1:TRUE; !FALSE&Own_Alt_Radio_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Alt_Radio_8))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne)
+		  & !(Radio_Altimeter_Status = Valid)
+			: TRUE;
+		  TRUE: FALSE;
+	         esac;
+          t250:= case
+		  Descend_Inhibit_Evaluated_Event 
+		  & (Effective_SL=4)
+		  & ((Own_Alt_Radio_8=FALSE & (case Own_Alt_Radio_8&!FALSE:TRUE; !Own_Alt_Radio_8&FALSE:FALSE;
+Own_Alt_Radio_7&!FALSE:TRUE; !Own_Alt_Radio_7&FALSE:FALSE;
+Own_Alt_Radio_6&!FALSE:TRUE; !Own_Alt_Radio_6&FALSE:FALSE;
+Own_Alt_Radio_5&!FALSE:TRUE; !Own_Alt_Radio_5&FALSE:FALSE;
+Own_Alt_Radio_4&!FALSE:TRUE; !Own_Alt_Radio_4&FALSE:FALSE;
+Own_Alt_Radio_3&!TRUE:TRUE; !Own_Alt_Radio_3&TRUE:FALSE;
+Own_Alt_Radio_2&!FALSE:TRUE; !Own_Alt_Radio_2&FALSE:FALSE;
+Own_Alt_Radio_1&!TRUE:TRUE; !Own_Alt_Radio_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Alt_Radio_8&FALSE))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne)
+		  & (Radio_Altimeter_Status = Valid): TRUE;
+		  Descend_Inhibit_Evaluated_Event 
+		  & (Effective_SL=4)
+		  & ((Own_Alt_Barometric_8=FALSE & (case Own_Alt_Barometric_8&!FALSE:TRUE; !Own_Alt_Barometric_8&FALSE:FALSE;
+Own_Alt_Barometric_7&!FALSE:TRUE; !Own_Alt_Barometric_7&FALSE:FALSE;
+Own_Alt_Barometric_6&!FALSE:TRUE; !Own_Alt_Barometric_6&FALSE:FALSE;
+Own_Alt_Barometric_5&!FALSE:TRUE; !Own_Alt_Barometric_5&FALSE:FALSE;
+Own_Alt_Barometric_4&!FALSE:TRUE; !Own_Alt_Barometric_4&FALSE:FALSE;
+Own_Alt_Barometric_3&!TRUE:TRUE; !Own_Alt_Barometric_3&TRUE:FALSE;
+Own_Alt_Barometric_2&!FALSE:TRUE; !Own_Alt_Barometric_2&FALSE:FALSE;
+Own_Alt_Barometric_1&!TRUE:TRUE; !Own_Alt_Barometric_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Alt_Barometric_8&FALSE))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne)
+		  & !(Radio_Altimeter_Status = Valid): TRUE;
+		  Descend_Inhibit_Evaluated_Event 
+		  & (Effective_SL=6)
+		  & ((FALSE=Own_Alt_Barometric_8 & (case FALSE&!Own_Alt_Barometric_8:TRUE; !FALSE&Own_Alt_Barometric_8:FALSE;
+FALSE&!Own_Alt_Barometric_7:TRUE; !FALSE&Own_Alt_Barometric_7:FALSE;
+FALSE&!Own_Alt_Barometric_6:TRUE; !FALSE&Own_Alt_Barometric_6:FALSE;
+TRUE&!Own_Alt_Barometric_5:TRUE; !TRUE&Own_Alt_Barometric_5:FALSE;
+FALSE&!Own_Alt_Barometric_4:TRUE; !FALSE&Own_Alt_Barometric_4:FALSE;
+FALSE&!Own_Alt_Barometric_3:TRUE; !FALSE&Own_Alt_Barometric_3:FALSE;
+TRUE&!Own_Alt_Barometric_2:TRUE; !TRUE&Own_Alt_Barometric_2:FALSE;
+TRUE&!Own_Alt_Barometric_1:TRUE; !TRUE&Own_Alt_Barometric_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Alt_Barometric_8))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne): TRUE;
+		  TRUE: FALSE;
+                 esac;
+          t251:= case
+		  Descend_Inhibit_Evaluated_Event 
+		  & (Effective_SL=5)
+		  & ((Own_Alt_Radio_8=FALSE & (case Own_Alt_Radio_8&!FALSE:TRUE; !Own_Alt_Radio_8&FALSE:FALSE;
+Own_Alt_Radio_7&!FALSE:TRUE; !Own_Alt_Radio_7&FALSE:FALSE;
+Own_Alt_Radio_6&!FALSE:TRUE; !Own_Alt_Radio_6&FALSE:FALSE;
+Own_Alt_Radio_5&!FALSE:TRUE; !Own_Alt_Radio_5&FALSE:FALSE;
+Own_Alt_Radio_4&!FALSE:TRUE; !Own_Alt_Radio_4&FALSE:FALSE;
+Own_Alt_Radio_3&!TRUE:TRUE; !Own_Alt_Radio_3&TRUE:FALSE;
+Own_Alt_Radio_2&!FALSE:TRUE; !Own_Alt_Radio_2&FALSE:FALSE;
+Own_Alt_Radio_1&!FALSE:TRUE; !Own_Alt_Radio_1&FALSE:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Alt_Radio_8&FALSE))
+		  & ((Own_Alt_Barometric_8=FALSE & (case Own_Alt_Barometric_8&!FALSE:TRUE; !Own_Alt_Barometric_8&FALSE:FALSE;
+Own_Alt_Barometric_7&!FALSE:TRUE; !Own_Alt_Barometric_7&FALSE:FALSE;
+Own_Alt_Barometric_6&!FALSE:TRUE; !Own_Alt_Barometric_6&FALSE:FALSE;
+Own_Alt_Barometric_5&!TRUE:TRUE; !Own_Alt_Barometric_5&TRUE:FALSE;
+Own_Alt_Barometric_4&!FALSE:TRUE; !Own_Alt_Barometric_4&FALSE:FALSE;
+Own_Alt_Barometric_3&!TRUE:TRUE; !Own_Alt_Barometric_3&TRUE:FALSE;
+Own_Alt_Barometric_2&!FALSE:TRUE; !Own_Alt_Barometric_2&FALSE:FALSE;
+Own_Alt_Barometric_1&!TRUE:TRUE; !Own_Alt_Barometric_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Alt_Barometric_8&FALSE))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne)
+		  & (Radio_Altimeter_Status = Valid): TRUE;
+		  Descend_Inhibit_Evaluated_Event 
+		  & (Effective_SL=5)
+		  & ((Own_Alt_Barometric_8=FALSE & (case Own_Alt_Barometric_8&!FALSE:TRUE; !Own_Alt_Barometric_8&FALSE:FALSE;
+Own_Alt_Barometric_7&!FALSE:TRUE; !Own_Alt_Barometric_7&FALSE:FALSE;
+Own_Alt_Barometric_6&!FALSE:TRUE; !Own_Alt_Barometric_6&FALSE:FALSE;
+Own_Alt_Barometric_5&!TRUE:TRUE; !Own_Alt_Barometric_5&TRUE:FALSE;
+Own_Alt_Barometric_4&!FALSE:TRUE; !Own_Alt_Barometric_4&FALSE:FALSE;
+Own_Alt_Barometric_3&!TRUE:TRUE; !Own_Alt_Barometric_3&TRUE:FALSE;
+Own_Alt_Barometric_2&!FALSE:TRUE; !Own_Alt_Barometric_2&FALSE:FALSE;
+Own_Alt_Barometric_1&!TRUE:TRUE; !Own_Alt_Barometric_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Alt_Barometric_8&FALSE))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne)
+		  & !(Radio_Altimeter_Status = Valid): TRUE;
+		  Descend_Inhibit_Evaluated_Event 
+		  & (Effective_SL=7)
+		  & ((FALSE=Own_Alt_Barometric_8 & (case FALSE&!Own_Alt_Barometric_8:TRUE; !FALSE&Own_Alt_Barometric_8:FALSE;
+FALSE&!Own_Alt_Barometric_7:TRUE; !FALSE&Own_Alt_Barometric_7:FALSE;
+TRUE&!Own_Alt_Barometric_6:TRUE; !TRUE&Own_Alt_Barometric_6:FALSE;
+FALSE&!Own_Alt_Barometric_5:TRUE; !FALSE&Own_Alt_Barometric_5:FALSE;
+FALSE&!Own_Alt_Barometric_4:TRUE; !FALSE&Own_Alt_Barometric_4:FALSE;
+TRUE&!Own_Alt_Barometric_3:TRUE; !TRUE&Own_Alt_Barometric_3:FALSE;
+TRUE&!Own_Alt_Barometric_2:TRUE; !TRUE&Own_Alt_Barometric_2:FALSE;
+TRUE&!Own_Alt_Barometric_1:TRUE; !TRUE&Own_Alt_Barometric_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Alt_Barometric_8))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne): TRUE;
+		  TRUE: FALSE;
+		 esac;
+         t252:= Descend_Inhibit_Evaluated_Event 
+		  & (Effective_SL=6)
+		  & ((Own_Alt_Barometric_8=FALSE & (case Own_Alt_Barometric_8&!FALSE:TRUE; !Own_Alt_Barometric_8&FALSE:FALSE;
+Own_Alt_Barometric_7&!FALSE:TRUE; !Own_Alt_Barometric_7&FALSE:FALSE;
+Own_Alt_Barometric_6&!TRUE:TRUE; !Own_Alt_Barometric_6&TRUE:FALSE;
+Own_Alt_Barometric_5&!FALSE:TRUE; !Own_Alt_Barometric_5&FALSE:FALSE;
+Own_Alt_Barometric_4&!TRUE:TRUE; !Own_Alt_Barometric_4&TRUE:FALSE;
+Own_Alt_Barometric_3&!FALSE:TRUE; !Own_Alt_Barometric_3&FALSE:FALSE;
+Own_Alt_Barometric_2&!FALSE:TRUE; !Own_Alt_Barometric_2&FALSE:FALSE;
+Own_Alt_Barometric_1&!TRUE:TRUE; !Own_Alt_Barometric_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Alt_Barometric_8&FALSE))
+		  & !Climb_Desc_Inhibit
+		  & (Own_Air_Status=Airborne);
+
+	ND_Auto_SL := 
+		(t247 & t248)
+		| (t247 & t249)
+		| (t247 & t250)
+		| (t247 & t251)
+		| (t247 & t252)
+		| (t248 & t249)
+		| (t248 & t250)
+		| (t248 & t251)
+		| (t248 & t252)
+		| (t249 & t250)
+		| (t249 & t251)
+		| (t249 & t252)
+		| (t250 & t251)
+		| (t250 & t252)
+		| (t251 & t252)
+		;
+
+
+ASSIGN
+      next(Effective_SL) := case t253: 1;
+			          t254: 2;
+				  t255: 3;
+				  t256: 4;
+				  t257: 5;
+				  t258: 6;
+				  t259: 7;
+				  TRUE: Effective_SL;
+                             esac;
+
+DEFINE
+ND_Effective_SL :=
+			  (t253 & t254) |
+			  (t253 & t255) |
+			  (t253 & t256) |
+			  (t253 & t257) |
+			  (t253 & t258) |
+			  (t253 & t259) | 
+			  (t254 & t255) |
+			  (t254 & t256) |
+			  (t254 & t257) |
+			  (t254 & t258) |
+			  (t254 & t259) | 
+			  (t255 & t256) |
+			  (t255 & t257) |
+			  (t255 & t258) |
+			  (t255 & t259) |
+			  (t256 & t257) |
+			  (t256 & t258) |
+			  (t256 & t259) | 
+			  (t257 & t258) |
+			  (t257 & t259) | 
+			  (t258 & t259);
+
+ASSIGN
+
+        next(Effective_SL_Evaluated_Event) := Auto_SL_Evaluated_Event;
+
+DEFINE
+         t253:= Auto_SL_Evaluated_Event 
+		 & (
+		 	(Auto_SL=1) 
+			| (Mode_Selector=Standby));
+
+	 t254 := Auto_SL_Evaluated_Event
+	 	& (
+			(Auto_SL=2) 
+			& !(Mode_Selector=Standby))
+		;
+
+         t255:= case
+		 Auto_SL_Evaluated_Event 
+		 & ((Auto_SL=4)|(Auto_SL=5)|(Auto_SL=6)|(Auto_SL=7))
+		 & (Lowest_Ground=3)
+		 & ((Mode_Selector=TA_RA)|(Mode_Selector=3)
+		    |(Mode_Selector=4)|(Mode_Selector=5)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & ((Auto_SL=4)|(Auto_SL=5)|(Auto_SL=6)|(Auto_SL=7))
+		 & ((Lowest_Ground=3)|(Lowest_Ground=4)
+		   |(Lowest_Ground=5)|(Lowest_Ground=6)
+		   |(Lowest_Ground=7)|(Lowest_Ground=None))
+		 & (Mode_Selector=3): TRUE; 
+		 TRUE : FALSE;
+                esac;
+         t256:= case
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=4)
+		 & ((Lowest_Ground=4)
+		   |(Lowest_Ground=5)|(Lowest_Ground=6)
+		   |(Lowest_Ground=7)|(Lowest_Ground=None))
+		 & ((Mode_Selector=TA_RA)
+		    |(Mode_Selector=4)|(Mode_Selector=5)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=4)
+		 & (Mode_Selector=TA_Only): TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=4)
+		 & (Lowest_Ground=2)
+		 & ((Mode_Selector=TA_RA)|(Mode_Selector=TA_Only)
+		    |(Mode_Selector=3)|(Mode_Selector=4)|(Mode_Selector=5)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & ((Auto_SL=4)|(Auto_SL=5)|(Auto_SL=6)|(Auto_SL=7))
+		 & (Lowest_Ground=4)
+		 & ((Mode_Selector=TA_RA)
+		    |(Mode_Selector=4)|(Mode_Selector=5)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & ((Auto_SL=4)|(Auto_SL=5)|(Auto_SL=6)|(Auto_SL=7))
+		 & ((Lowest_Ground=4)
+		   |(Lowest_Ground=5)|(Lowest_Ground=6)
+		   |(Lowest_Ground=7)|(Lowest_Ground=None))
+		 & (Mode_Selector=4) : TRUE;
+		 TRUE : FALSE;
+                esac;
+         t257:= case
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=5)
+		 & ((Lowest_Ground=5)|(Lowest_Ground=6)
+		   |(Lowest_Ground=7)|(Lowest_Ground=None))
+		 & ((Mode_Selector=TA_RA)
+		    |(Mode_Selector=5)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=5)
+		 & (Mode_Selector=TA_Only): TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=5)
+		 & (Lowest_Ground=2)
+		 & ((Mode_Selector=TA_RA)|(Mode_Selector=TA_Only)
+		    |(Mode_Selector=3)|(Mode_Selector=4)|(Mode_Selector=5)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & ((Auto_SL=5)|(Auto_SL=6)|(Auto_SL=7))
+		 & (Lowest_Ground=5)
+		 & ((Mode_Selector=TA_RA)
+		    |(Mode_Selector=5)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & ((Auto_SL=5)|(Auto_SL=6)|(Auto_SL=7))
+		 & ((Lowest_Ground=5)|(Lowest_Ground=6)
+		   |(Lowest_Ground=7)|(Lowest_Ground=None))
+		 & (Mode_Selector=5) : TRUE;
+		 TRUE : FALSE;
+                esac;
+         t258:= case
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=6)
+		 & ((Lowest_Ground=6)
+		   |(Lowest_Ground=7)|(Lowest_Ground=None))
+		 & ((Mode_Selector=TA_RA)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=6)
+		 & (Mode_Selector=TA_Only): TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=6)
+		 & (Lowest_Ground=2)
+		 & ((Mode_Selector=TA_RA)|(Mode_Selector=TA_Only)
+		    |(Mode_Selector=3)|(Mode_Selector=4)|(Mode_Selector=5)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & ((Auto_SL=6)|(Auto_SL=7))
+		 & (Lowest_Ground=6)
+		 & ((Mode_Selector=TA_RA)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & ((Auto_SL=6)|(Auto_SL=7))
+		 & ((Lowest_Ground=6)
+		   |(Lowest_Ground=7)|(Lowest_Ground=None))
+		 & (Mode_Selector=6) : TRUE;
+		 TRUE : FALSE;
+                esac;
+         t259:= case
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=7)
+		 & (Lowest_Ground=2)
+		 & ((Mode_Selector=TA_RA)|(Mode_Selector=TA_Only)
+		    |(Mode_Selector=3)|(Mode_Selector=4)|(Mode_Selector=5)
+		    |(Mode_Selector=6)|(Mode_Selector=7)) : TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=7)
+		 & (Mode_Selector=TA_Only): TRUE;
+		 Auto_SL_Evaluated_Event 
+		 & (Auto_SL=7)
+		 & ((Lowest_Ground=7)|(Lowest_Ground=None))
+		 & ((Mode_Selector=TA_RA)|(Mode_Selector=7)) : TRUE;
+		 TRUE : FALSE;
+                esac;
+
+
+DEFINE
+  t262a:= OA_Evaluated_Event
+          & All_OA_Evaluated
+	  & !Some_OA_Sense_Climb_Positive
+	  & !Some_OA_Sense_Climb_Negative
+	  & !Some_OA_Sense_Descend_Positive
+	  & !Some_OA_Sense_Descend_Negative
+	  ;
+
+  t262b:= OA_Evaluated_Event
+	  & Some_OA_Sense_Climb_Positive;
+
+  t263a:= OA_Evaluated_Event
+	  & Some_OA_Sense_Descend_Positive;
+
+   t263b:= OA_Evaluated_Event
+                & All_OA_Evaluated
+                & (Some_OA_Sense_Climb_Negative 
+               	  |Some_OA_Sense_Descend_Negative);
+	  
+
+   t264a:= !Some_OA_Sense_Climb_Negative
+		& Some_OA_Sense_Descend_Negative;
+
+   t264b:= Some_OA_Sense_Climb_Negative_VSL0;
+
+   t264c:= !Some_OA_Sense_Climb_Negative_VSL0
+                & Some_OA_Sense_Climb_Negative_VSL500;
+	     
+   t265a:= !Some_OA_Sense_Climb_Negative_VSL0
+                & !Some_OA_Sense_Climb_Negative_VSL500
+                & Some_OA_Sense_Climb_Negative_VSL1000;
+	     
+   t265b:= !Some_OA_Sense_Climb_Negative_VSL0
+                & !Some_OA_Sense_Climb_Negative_VSL500
+                & !Some_OA_Sense_Climb_Negative_VSL1000
+                & Some_OA_Sense_Climb_Negative_VSL2000;
+
+
+   t266b:= !Some_OA_Sense_Descend_Negative
+                & Some_OA_Sense_Climb_Negative;
+
+   t266c:= Some_OA_Sense_Descend_Negative_VSL0;
+
+   t267a:= !Some_OA_Sense_Descend_Negative_VSL0
+                & Some_OA_Sense_Descend_Negative_VSL500;
+	     
+   t267b:= !Some_OA_Sense_Descend_Negative_VSL0
+                & !Some_OA_Sense_Descend_Negative_VSL500
+                & Some_OA_Sense_Descend_Negative_VSL1000;
+	     
+   t268a:= !Some_OA_Sense_Descend_Negative_VSL0
+                & !Some_OA_Sense_Descend_Negative_VSL500
+                & !Some_OA_Sense_Descend_Negative_VSL1000
+                & Some_OA_Sense_Descend_Negative_VSL2000;
+
+
+   ND_Composite_RA :=
+   	(t262a & t262b)
+	| (t262a & t263a)
+	| (t262a & t263b)
+	| (t262b & t263a)
+	| (t262b & t263b)
+	| (t263a & t263b)
+	;
+
+   ND_Climb_VSL := t263b & (
+   	  (t264a & t264b)
+   	| (t264a & t264c)
+   	| (t264a & t265a)
+   	| (t264a & t265b)
+   	| (t264b & t264c)
+   	| (t264b & t265a)
+   	| (t264b & t265b)
+   	| (t264c & t265a)
+   	| (t264c & t265b)
+   	| (t265a & t265b)
+   	);
+
+   ND_Descend_VSL := t263b & (
+   	  (t266b & t266c)
+   	| (t266b & t267a)
+   	| (t266b & t267b)
+   	| (t266b & t268a)
+   	| (t266c & t267a)
+   	| (t266c & t267b)
+   	| (t266c & t268a)
+   	| (t267a & t267b)
+   	| (t267a & t268a)
+   	| (t267b & t268a)
+   	);
+   	
+ASSIGN 
+   next(Composite_RA):= case
+			 t262a: No_RA;
+			 t262b: Climb;
+			 t263a: Descend;
+			 t263b: Negative;
+			 TRUE: Composite_RA;
+                        esac;
+
+   next(Composite_RA_Evaluated_Event):= case
+			 t262a | t262b | t263a | t263b:TRUE;
+			 TRUE: FALSE;
+			 esac;
+
+   next(Climb_VSL):= case
+			 t263b & t264a:No_Climb_VSL;
+			 t263b & t264b:VSL0;
+			 t263b & t264c:VSL500;
+			 t263b & t265a:VSL1000;
+			 t263b & t265b:VSL2000;
+			 TRUE:Climb_VSL;
+                     esac;
+
+   next(Descend_VSL):= case
+			 t263b & t266b:No_Descend_VSL;
+			 t263b & t266c:VSL0;
+			 t263b & t267a:VSL500;
+			 t263b & t267b:VSL1000;
+			 t263b & t268a:VSL2000;
+			 TRUE:Descend_VSL;
+                     esac;
+
+
+ASSIGN
+  next(Corrective_Climb) := case
+    t269: Yes;
+    t270: No;
+    TRUE: Corrective_Climb;
+  esac;
+
+ASSIGN
+   next(Corrective_Climb_Evaluated_Event) := Composite_RA_Evaluated_Event;
+
+DEFINE
+  C_Diff_NSMALLRATE_HYSTERCOR_0 := FALSE;
+	Diff_NSMALLRATE_HYSTERCOR_1 := !((!(TRUE <-> TRUE)) <-> C_Diff_NSMALLRATE_HYSTERCOR_0);
+  C_Diff_NSMALLRATE_HYSTERCOR_1 := (!TRUE & TRUE) | (C_Diff_NSMALLRATE_HYSTERCOR_0 & (TRUE <-> TRUE));
+	Diff_NSMALLRATE_HYSTERCOR_2 := !((!(TRUE <-> TRUE)) <-> C_Diff_NSMALLRATE_HYSTERCOR_1);
+  C_Diff_NSMALLRATE_HYSTERCOR_2 := (!TRUE & TRUE) | (C_Diff_NSMALLRATE_HYSTERCOR_1 & (TRUE <-> TRUE));
+	Diff_NSMALLRATE_HYSTERCOR_3 := !((!(FALSE <-> FALSE)) <-> C_Diff_NSMALLRATE_HYSTERCOR_2);
+  C_Diff_NSMALLRATE_HYSTERCOR_3 := (!FALSE & FALSE) | (C_Diff_NSMALLRATE_HYSTERCOR_2 & (FALSE <-> FALSE));
+	Diff_NSMALLRATE_HYSTERCOR_4 := !((!(TRUE <-> FALSE)) <-> C_Diff_NSMALLRATE_HYSTERCOR_3);
+  C_Diff_NSMALLRATE_HYSTERCOR_4 := (!TRUE & FALSE) | (C_Diff_NSMALLRATE_HYSTERCOR_3 & (TRUE <-> FALSE));
+	Diff_NSMALLRATE_HYSTERCOR_5 := !((!(TRUE <-> FALSE)) <-> C_Diff_NSMALLRATE_HYSTERCOR_4);
+  C_Diff_NSMALLRATE_HYSTERCOR_5 := (!TRUE & FALSE) | (C_Diff_NSMALLRATE_HYSTERCOR_4 & (TRUE <-> FALSE));
+	Diff_NSMALLRATE_HYSTERCOR_6 := !((!(TRUE <-> FALSE)) <-> C_Diff_NSMALLRATE_HYSTERCOR_5);
+  C_Diff_NSMALLRATE_HYSTERCOR_6 := (!TRUE & FALSE) | (C_Diff_NSMALLRATE_HYSTERCOR_5 & (TRUE <-> FALSE));
+	Diff_NSMALLRATE_HYSTERCOR_7 := !((!(TRUE <-> FALSE)) <-> C_Diff_NSMALLRATE_HYSTERCOR_6);
+  C_Diff_NSMALLRATE_HYSTERCOR_7 := (!TRUE & FALSE) | (C_Diff_NSMALLRATE_HYSTERCOR_6 & (TRUE <-> FALSE));
+	Diff_NSMALLRATE_HYSTERCOR_8 := !((!(TRUE <-> FALSE)) <-> C_Diff_NSMALLRATE_HYSTERCOR_7);
+  C_Diff_NSMALLRATE_HYSTERCOR_8 := (!TRUE & FALSE) | (C_Diff_NSMALLRATE_HYSTERCOR_7 & (TRUE <-> FALSE));
+
+
+DEFINE
+  C_Diff_CG_HYSTERCOR_0 := FALSE;
+	Diff_CG_HYSTERCOR_1 := !((!(Climb_Goal_1 <-> TRUE)) <-> C_Diff_CG_HYSTERCOR_0);
+  C_Diff_CG_HYSTERCOR_1 := (!Climb_Goal_1 & TRUE) | (C_Diff_CG_HYSTERCOR_0 & (Climb_Goal_1 <-> TRUE));
+	Diff_CG_HYSTERCOR_2 := !((!(Climb_Goal_2 <-> TRUE)) <-> C_Diff_CG_HYSTERCOR_1);
+  C_Diff_CG_HYSTERCOR_2 := (!Climb_Goal_2 & TRUE) | (C_Diff_CG_HYSTERCOR_1 & (Climb_Goal_2 <-> TRUE));
+	Diff_CG_HYSTERCOR_3 := !((!(Climb_Goal_3 <-> FALSE)) <-> C_Diff_CG_HYSTERCOR_2);
+  C_Diff_CG_HYSTERCOR_3 := (!Climb_Goal_3 & FALSE) | (C_Diff_CG_HYSTERCOR_2 & (Climb_Goal_3 <-> FALSE));
+	Diff_CG_HYSTERCOR_4 := !((!(Climb_Goal_4 <-> FALSE)) <-> C_Diff_CG_HYSTERCOR_3);
+  C_Diff_CG_HYSTERCOR_4 := (!Climb_Goal_4 & FALSE) | (C_Diff_CG_HYSTERCOR_3 & (Climb_Goal_4 <-> FALSE));
+	Diff_CG_HYSTERCOR_5 := !((!(Climb_Goal_5 <-> FALSE)) <-> C_Diff_CG_HYSTERCOR_4);
+  C_Diff_CG_HYSTERCOR_5 := (!Climb_Goal_5 & FALSE) | (C_Diff_CG_HYSTERCOR_4 & (Climb_Goal_5 <-> FALSE));
+	Diff_CG_HYSTERCOR_6 := !((!(Climb_Goal_6 <-> FALSE)) <-> C_Diff_CG_HYSTERCOR_5);
+  C_Diff_CG_HYSTERCOR_6 := (!Climb_Goal_6 & FALSE) | (C_Diff_CG_HYSTERCOR_5 & (Climb_Goal_6 <-> FALSE));
+	Diff_CG_HYSTERCOR_7 := !((!(Climb_Goal_7 <-> FALSE)) <-> C_Diff_CG_HYSTERCOR_6);
+  C_Diff_CG_HYSTERCOR_7 := (!Climb_Goal_7 & FALSE) | (C_Diff_CG_HYSTERCOR_6 & (Climb_Goal_7 <-> FALSE));
+	Diff_CG_HYSTERCOR_8 := !((!(Climb_Goal_8 <-> FALSE)) <-> C_Diff_CG_HYSTERCOR_7);
+  C_Diff_CG_HYSTERCOR_8 := (!Climb_Goal_8 & FALSE) | (C_Diff_CG_HYSTERCOR_7 & (Climb_Goal_8 <-> FALSE));
+
+
+
+
+DEFINE
+  t269 := Corrective_Climb = No & Composite_RA_Evaluated_Event & ((
+  	Dont_Climb_Dont_Descend 
+	& t269_Descending
+	)|(
+	(!Dont_Climb_Dont_Descend)
+	& ((Diff_CG_HYSTERCOR_8=Own_Tracked_Alt_Rate_8 & (case Diff_CG_HYSTERCOR_8&!Own_Tracked_Alt_Rate_8:TRUE; !Diff_CG_HYSTERCOR_8&Own_Tracked_Alt_Rate_8:FALSE;
+Diff_CG_HYSTERCOR_7&!Own_Tracked_Alt_Rate_7:TRUE; !Diff_CG_HYSTERCOR_7&Own_Tracked_Alt_Rate_7:FALSE;
+Diff_CG_HYSTERCOR_6&!Own_Tracked_Alt_Rate_6:TRUE; !Diff_CG_HYSTERCOR_6&Own_Tracked_Alt_Rate_6:FALSE;
+Diff_CG_HYSTERCOR_5&!Own_Tracked_Alt_Rate_5:TRUE; !Diff_CG_HYSTERCOR_5&Own_Tracked_Alt_Rate_5:FALSE;
+Diff_CG_HYSTERCOR_4&!Own_Tracked_Alt_Rate_4:TRUE; !Diff_CG_HYSTERCOR_4&Own_Tracked_Alt_Rate_4:FALSE;
+Diff_CG_HYSTERCOR_3&!Own_Tracked_Alt_Rate_3:TRUE; !Diff_CG_HYSTERCOR_3&Own_Tracked_Alt_Rate_3:FALSE;
+Diff_CG_HYSTERCOR_2&!Own_Tracked_Alt_Rate_2:TRUE; !Diff_CG_HYSTERCOR_2&Own_Tracked_Alt_Rate_2:FALSE;
+Diff_CG_HYSTERCOR_1&!Own_Tracked_Alt_Rate_1:TRUE; !Diff_CG_HYSTERCOR_1&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:FALSE; esac)) | (!Diff_CG_HYSTERCOR_8&Own_Tracked_Alt_Rate_8))
+	)|(
+	New_Increase_Climb
+	));
+  t269_Descending := ((Diff_NSMALLRATE_HYSTERCOR_8=Own_Tracked_Alt_Rate_8 & (case Diff_NSMALLRATE_HYSTERCOR_8&!Own_Tracked_Alt_Rate_8:TRUE; !Diff_NSMALLRATE_HYSTERCOR_8&Own_Tracked_Alt_Rate_8:FALSE;
+Diff_NSMALLRATE_HYSTERCOR_7&!Own_Tracked_Alt_Rate_7:TRUE; !Diff_NSMALLRATE_HYSTERCOR_7&Own_Tracked_Alt_Rate_7:FALSE;
+Diff_NSMALLRATE_HYSTERCOR_6&!Own_Tracked_Alt_Rate_6:TRUE; !Diff_NSMALLRATE_HYSTERCOR_6&Own_Tracked_Alt_Rate_6:FALSE;
+Diff_NSMALLRATE_HYSTERCOR_5&!Own_Tracked_Alt_Rate_5:TRUE; !Diff_NSMALLRATE_HYSTERCOR_5&Own_Tracked_Alt_Rate_5:FALSE;
+Diff_NSMALLRATE_HYSTERCOR_4&!Own_Tracked_Alt_Rate_4:TRUE; !Diff_NSMALLRATE_HYSTERCOR_4&Own_Tracked_Alt_Rate_4:FALSE;
+Diff_NSMALLRATE_HYSTERCOR_3&!Own_Tracked_Alt_Rate_3:TRUE; !Diff_NSMALLRATE_HYSTERCOR_3&Own_Tracked_Alt_Rate_3:FALSE;
+Diff_NSMALLRATE_HYSTERCOR_2&!Own_Tracked_Alt_Rate_2:TRUE; !Diff_NSMALLRATE_HYSTERCOR_2&Own_Tracked_Alt_Rate_2:FALSE;
+Diff_NSMALLRATE_HYSTERCOR_1&!Own_Tracked_Alt_Rate_1:TRUE; !Diff_NSMALLRATE_HYSTERCOR_1&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:FALSE; esac)) | (!Diff_NSMALLRATE_HYSTERCOR_8&Own_Tracked_Alt_Rate_8));
+
+  t270 := Corrective_Climb = Yes & Composite_RA_Evaluated_Event &
+      ( (Dont_Climb_Dont_Descend &
+	  ((FALSE=Own_Tracked_Alt_Rate_8 & (case FALSE&!Own_Tracked_Alt_Rate_8:TRUE; !FALSE&Own_Tracked_Alt_Rate_8:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_7:TRUE; !FALSE&Own_Tracked_Alt_Rate_7:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_6:TRUE; !FALSE&Own_Tracked_Alt_Rate_6:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_5:TRUE; !FALSE&Own_Tracked_Alt_Rate_5:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_4:TRUE; !FALSE&Own_Tracked_Alt_Rate_4:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_3:TRUE; !TRUE&Own_Tracked_Alt_Rate_3:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_2:TRUE; !FALSE&Own_Tracked_Alt_Rate_2:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_1:TRUE; !TRUE&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:FALSE; esac)) | (!FALSE&Own_Tracked_Alt_Rate_8)) &
+	  Climb_RA_Weakened &
+	  t270_Not_Descending) |
+        (Dont_Climb_Dont_Descend &
+	  ((FALSE=Own_Tracked_Alt_Rate_8 & (case FALSE&!Own_Tracked_Alt_Rate_8:TRUE; !FALSE&Own_Tracked_Alt_Rate_8:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_7:TRUE; !FALSE&Own_Tracked_Alt_Rate_7:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_6:TRUE; !FALSE&Own_Tracked_Alt_Rate_6:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_5:TRUE; !FALSE&Own_Tracked_Alt_Rate_5:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_4:TRUE; !FALSE&Own_Tracked_Alt_Rate_4:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_3:TRUE; !TRUE&Own_Tracked_Alt_Rate_3:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_2:TRUE; !FALSE&Own_Tracked_Alt_Rate_2:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_1:TRUE; !TRUE&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:FALSE; esac)) | (!FALSE&Own_Tracked_Alt_Rate_8)) &
+	  Increase_RA_Ended &
+	  t270_Not_Descending) |
+        (!Dont_Climb_Dont_Descend &
+	  Climb_RA_Weakened &
+	((Own_Tracked_Alt_Rate_8=Climb_Goal_8 & (case Own_Tracked_Alt_Rate_8&!Climb_Goal_8:TRUE; !Own_Tracked_Alt_Rate_8&Climb_Goal_8:FALSE;
+Own_Tracked_Alt_Rate_7&!Climb_Goal_7:TRUE; !Own_Tracked_Alt_Rate_7&Climb_Goal_7:FALSE;
+Own_Tracked_Alt_Rate_6&!Climb_Goal_6:TRUE; !Own_Tracked_Alt_Rate_6&Climb_Goal_6:FALSE;
+Own_Tracked_Alt_Rate_5&!Climb_Goal_5:TRUE; !Own_Tracked_Alt_Rate_5&Climb_Goal_5:FALSE;
+Own_Tracked_Alt_Rate_4&!Climb_Goal_4:TRUE; !Own_Tracked_Alt_Rate_4&Climb_Goal_4:FALSE;
+Own_Tracked_Alt_Rate_3&!Climb_Goal_3:TRUE; !Own_Tracked_Alt_Rate_3&Climb_Goal_3:FALSE;
+Own_Tracked_Alt_Rate_2&!Climb_Goal_2:TRUE; !Own_Tracked_Alt_Rate_2&Climb_Goal_2:FALSE;
+Own_Tracked_Alt_Rate_1&!Climb_Goal_1:TRUE; !Own_Tracked_Alt_Rate_1&Climb_Goal_1:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_Rate_8&Climb_Goal_8))
+	  ) |
+        (!Dont_Climb_Dont_Descend &
+	  Increase_RA_Ended &
+	  ((Own_Tracked_Alt_Rate_8=Climb_Goal_8 & (case Own_Tracked_Alt_Rate_8&!Climb_Goal_8:TRUE; !Own_Tracked_Alt_Rate_8&Climb_Goal_8:FALSE;
+Own_Tracked_Alt_Rate_7&!Climb_Goal_7:TRUE; !Own_Tracked_Alt_Rate_7&Climb_Goal_7:FALSE;
+Own_Tracked_Alt_Rate_6&!Climb_Goal_6:TRUE; !Own_Tracked_Alt_Rate_6&Climb_Goal_6:FALSE;
+Own_Tracked_Alt_Rate_5&!Climb_Goal_5:TRUE; !Own_Tracked_Alt_Rate_5&Climb_Goal_5:FALSE;
+Own_Tracked_Alt_Rate_4&!Climb_Goal_4:TRUE; !Own_Tracked_Alt_Rate_4&Climb_Goal_4:FALSE;
+Own_Tracked_Alt_Rate_3&!Climb_Goal_3:TRUE; !Own_Tracked_Alt_Rate_3&Climb_Goal_3:FALSE;
+Own_Tracked_Alt_Rate_2&!Climb_Goal_2:TRUE; !Own_Tracked_Alt_Rate_2&Climb_Goal_2:FALSE;
+Own_Tracked_Alt_Rate_1&!Climb_Goal_1:TRUE; !Own_Tracked_Alt_Rate_1&Climb_Goal_1:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_Rate_8&Climb_Goal_8))
+	  ));
+
+  t270_Not_Descending := ((Own_Tracked_Alt_Rate_8=Diff_NSMALLRATE_HYSTERCOR_8 & (case Own_Tracked_Alt_Rate_8&!Diff_NSMALLRATE_HYSTERCOR_8:TRUE; !Own_Tracked_Alt_Rate_8&Diff_NSMALLRATE_HYSTERCOR_8:FALSE;
+Own_Tracked_Alt_Rate_7&!Diff_NSMALLRATE_HYSTERCOR_7:TRUE; !Own_Tracked_Alt_Rate_7&Diff_NSMALLRATE_HYSTERCOR_7:FALSE;
+Own_Tracked_Alt_Rate_6&!Diff_NSMALLRATE_HYSTERCOR_6:TRUE; !Own_Tracked_Alt_Rate_6&Diff_NSMALLRATE_HYSTERCOR_6:FALSE;
+Own_Tracked_Alt_Rate_5&!Diff_NSMALLRATE_HYSTERCOR_5:TRUE; !Own_Tracked_Alt_Rate_5&Diff_NSMALLRATE_HYSTERCOR_5:FALSE;
+Own_Tracked_Alt_Rate_4&!Diff_NSMALLRATE_HYSTERCOR_4:TRUE; !Own_Tracked_Alt_Rate_4&Diff_NSMALLRATE_HYSTERCOR_4:FALSE;
+Own_Tracked_Alt_Rate_3&!Diff_NSMALLRATE_HYSTERCOR_3:TRUE; !Own_Tracked_Alt_Rate_3&Diff_NSMALLRATE_HYSTERCOR_3:FALSE;
+Own_Tracked_Alt_Rate_2&!Diff_NSMALLRATE_HYSTERCOR_2:TRUE; !Own_Tracked_Alt_Rate_2&Diff_NSMALLRATE_HYSTERCOR_2:FALSE;
+Own_Tracked_Alt_Rate_1&!Diff_NSMALLRATE_HYSTERCOR_1:TRUE; !Own_Tracked_Alt_Rate_1&Diff_NSMALLRATE_HYSTERCOR_1:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_Rate_8&Diff_NSMALLRATE_HYSTERCOR_8));
+
+
+ASSIGN
+
+	next(Corrective_Descend) := case
+		t_271: Yes;
+		t_272: No;
+		TRUE: Corrective_Descend;
+		esac;
+
+	next(Corrective_Descend_Evaluated_Event) := Corrective_Climb_Evaluated_Event;
+
+DEFINE
+  C_Sum_SMALLRATE_HYSTERCOR_0 := FALSE;
+	Sum_SMALLRATE_HYSTERCOR_1 := !((!(TRUE <-> TRUE)) <-> C_Sum_SMALLRATE_HYSTERCOR_0);
+  C_Sum_SMALLRATE_HYSTERCOR_1 := (TRUE & TRUE) | (TRUE & C_Sum_SMALLRATE_HYSTERCOR_0) | (TRUE & C_Sum_SMALLRATE_HYSTERCOR_0);
+	Sum_SMALLRATE_HYSTERCOR_2 := !((!(FALSE <-> TRUE)) <-> C_Sum_SMALLRATE_HYSTERCOR_1);
+  C_Sum_SMALLRATE_HYSTERCOR_2 := (FALSE & TRUE) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_1) | (TRUE & C_Sum_SMALLRATE_HYSTERCOR_1);
+	Sum_SMALLRATE_HYSTERCOR_3 := !((!(TRUE <-> FALSE)) <-> C_Sum_SMALLRATE_HYSTERCOR_2);
+  C_Sum_SMALLRATE_HYSTERCOR_3 := (TRUE & FALSE) | (TRUE & C_Sum_SMALLRATE_HYSTERCOR_2) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_2);
+	Sum_SMALLRATE_HYSTERCOR_4 := !((!(FALSE <-> FALSE)) <-> C_Sum_SMALLRATE_HYSTERCOR_3);
+  C_Sum_SMALLRATE_HYSTERCOR_4 := (FALSE & FALSE) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_3) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_3);
+	Sum_SMALLRATE_HYSTERCOR_5 := !((!(FALSE <-> FALSE)) <-> C_Sum_SMALLRATE_HYSTERCOR_4);
+  C_Sum_SMALLRATE_HYSTERCOR_5 := (FALSE & FALSE) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_4) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_4);
+	Sum_SMALLRATE_HYSTERCOR_6 := !((!(FALSE <-> FALSE)) <-> C_Sum_SMALLRATE_HYSTERCOR_5);
+  C_Sum_SMALLRATE_HYSTERCOR_6 := (FALSE & FALSE) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_5) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_5);
+	Sum_SMALLRATE_HYSTERCOR_7 := !((!(FALSE <-> FALSE)) <-> C_Sum_SMALLRATE_HYSTERCOR_6);
+  C_Sum_SMALLRATE_HYSTERCOR_7 := (FALSE & FALSE) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_6) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_6);
+	Sum_SMALLRATE_HYSTERCOR_8 := !((!(FALSE <-> FALSE)) <-> C_Sum_SMALLRATE_HYSTERCOR_7);
+  C_Sum_SMALLRATE_HYSTERCOR_8 := (FALSE & FALSE) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_7) | (FALSE & C_Sum_SMALLRATE_HYSTERCOR_7);
+
+DEFINE
+  C_Sum_DG_HYSTERCOR_0 := FALSE;
+	Sum_DG_HYSTERCOR_1 := !((!(Descend_Goal_1 <-> TRUE)) <-> C_Sum_DG_HYSTERCOR_0);
+  C_Sum_DG_HYSTERCOR_1 := (Descend_Goal_1 & TRUE) | (Descend_Goal_1 & C_Sum_DG_HYSTERCOR_0) | (TRUE & C_Sum_DG_HYSTERCOR_0);
+	Sum_DG_HYSTERCOR_2 := !((!(Descend_Goal_2 <-> TRUE)) <-> C_Sum_DG_HYSTERCOR_1);
+  C_Sum_DG_HYSTERCOR_2 := (Descend_Goal_2 & TRUE) | (Descend_Goal_2 & C_Sum_DG_HYSTERCOR_1) | (TRUE & C_Sum_DG_HYSTERCOR_1);
+	Sum_DG_HYSTERCOR_3 := !((!(Descend_Goal_3 <-> FALSE)) <-> C_Sum_DG_HYSTERCOR_2);
+  C_Sum_DG_HYSTERCOR_3 := (Descend_Goal_3 & FALSE) | (Descend_Goal_3 & C_Sum_DG_HYSTERCOR_2) | (FALSE & C_Sum_DG_HYSTERCOR_2);
+	Sum_DG_HYSTERCOR_4 := !((!(Descend_Goal_4 <-> FALSE)) <-> C_Sum_DG_HYSTERCOR_3);
+  C_Sum_DG_HYSTERCOR_4 := (Descend_Goal_4 & FALSE) | (Descend_Goal_4 & C_Sum_DG_HYSTERCOR_3) | (FALSE & C_Sum_DG_HYSTERCOR_3);
+	Sum_DG_HYSTERCOR_5 := !((!(Descend_Goal_5 <-> FALSE)) <-> C_Sum_DG_HYSTERCOR_4);
+  C_Sum_DG_HYSTERCOR_5 := (Descend_Goal_5 & FALSE) | (Descend_Goal_5 & C_Sum_DG_HYSTERCOR_4) | (FALSE & C_Sum_DG_HYSTERCOR_4);
+	Sum_DG_HYSTERCOR_6 := !((!(Descend_Goal_6 <-> FALSE)) <-> C_Sum_DG_HYSTERCOR_5);
+  C_Sum_DG_HYSTERCOR_6 := (Descend_Goal_6 & FALSE) | (Descend_Goal_6 & C_Sum_DG_HYSTERCOR_5) | (FALSE & C_Sum_DG_HYSTERCOR_5);
+	Sum_DG_HYSTERCOR_7 := !((!(Descend_Goal_7 <-> FALSE)) <-> C_Sum_DG_HYSTERCOR_6);
+  C_Sum_DG_HYSTERCOR_7 := (Descend_Goal_7 & FALSE) | (Descend_Goal_7 & C_Sum_DG_HYSTERCOR_6) | (FALSE & C_Sum_DG_HYSTERCOR_6);
+	Sum_DG_HYSTERCOR_8 := !((!(Descend_Goal_8 <-> FALSE)) <-> C_Sum_DG_HYSTERCOR_7);
+  C_Sum_DG_HYSTERCOR_8 := (Descend_Goal_8 & FALSE) | (Descend_Goal_8 & C_Sum_DG_HYSTERCOR_7) | (FALSE & C_Sum_DG_HYSTERCOR_7);
+
+
+DEFINE
+	t_271 := Corrective_Descend = No & Corrective_Climb_Evaluated_Event & ((
+		Dont_Climb_Dont_Descend &
+		Climbing
+		) | (
+		New_Increase_Descend
+		) | (
+		!Dont_Climb_Dont_Descend &
+		Not_Meeting_Descend_Goal
+		));
+	Climbing := ((Own_Tracked_Alt_Rate_8=Sum_SMALLRATE_HYSTERCOR_8 & (case Own_Tracked_Alt_Rate_8&!Sum_SMALLRATE_HYSTERCOR_8:TRUE; !Own_Tracked_Alt_Rate_8&Sum_SMALLRATE_HYSTERCOR_8:FALSE;
+Own_Tracked_Alt_Rate_7&!Sum_SMALLRATE_HYSTERCOR_7:TRUE; !Own_Tracked_Alt_Rate_7&Sum_SMALLRATE_HYSTERCOR_7:FALSE;
+Own_Tracked_Alt_Rate_6&!Sum_SMALLRATE_HYSTERCOR_6:TRUE; !Own_Tracked_Alt_Rate_6&Sum_SMALLRATE_HYSTERCOR_6:FALSE;
+Own_Tracked_Alt_Rate_5&!Sum_SMALLRATE_HYSTERCOR_5:TRUE; !Own_Tracked_Alt_Rate_5&Sum_SMALLRATE_HYSTERCOR_5:FALSE;
+Own_Tracked_Alt_Rate_4&!Sum_SMALLRATE_HYSTERCOR_4:TRUE; !Own_Tracked_Alt_Rate_4&Sum_SMALLRATE_HYSTERCOR_4:FALSE;
+Own_Tracked_Alt_Rate_3&!Sum_SMALLRATE_HYSTERCOR_3:TRUE; !Own_Tracked_Alt_Rate_3&Sum_SMALLRATE_HYSTERCOR_3:FALSE;
+Own_Tracked_Alt_Rate_2&!Sum_SMALLRATE_HYSTERCOR_2:TRUE; !Own_Tracked_Alt_Rate_2&Sum_SMALLRATE_HYSTERCOR_2:FALSE;
+Own_Tracked_Alt_Rate_1&!Sum_SMALLRATE_HYSTERCOR_1:TRUE; !Own_Tracked_Alt_Rate_1&Sum_SMALLRATE_HYSTERCOR_1:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Tracked_Alt_Rate_8&Sum_SMALLRATE_HYSTERCOR_8));
+	Not_Meeting_Descend_Goal := ((Own_Tracked_Alt_Rate_8=Sum_DG_HYSTERCOR_8 & (case Own_Tracked_Alt_Rate_8&!Sum_DG_HYSTERCOR_8:TRUE; !Own_Tracked_Alt_Rate_8&Sum_DG_HYSTERCOR_8:FALSE;
+Own_Tracked_Alt_Rate_7&!Sum_DG_HYSTERCOR_7:TRUE; !Own_Tracked_Alt_Rate_7&Sum_DG_HYSTERCOR_7:FALSE;
+Own_Tracked_Alt_Rate_6&!Sum_DG_HYSTERCOR_6:TRUE; !Own_Tracked_Alt_Rate_6&Sum_DG_HYSTERCOR_6:FALSE;
+Own_Tracked_Alt_Rate_5&!Sum_DG_HYSTERCOR_5:TRUE; !Own_Tracked_Alt_Rate_5&Sum_DG_HYSTERCOR_5:FALSE;
+Own_Tracked_Alt_Rate_4&!Sum_DG_HYSTERCOR_4:TRUE; !Own_Tracked_Alt_Rate_4&Sum_DG_HYSTERCOR_4:FALSE;
+Own_Tracked_Alt_Rate_3&!Sum_DG_HYSTERCOR_3:TRUE; !Own_Tracked_Alt_Rate_3&Sum_DG_HYSTERCOR_3:FALSE;
+Own_Tracked_Alt_Rate_2&!Sum_DG_HYSTERCOR_2:TRUE; !Own_Tracked_Alt_Rate_2&Sum_DG_HYSTERCOR_2:FALSE;
+Own_Tracked_Alt_Rate_1&!Sum_DG_HYSTERCOR_1:TRUE; !Own_Tracked_Alt_Rate_1&Sum_DG_HYSTERCOR_1:FALSE;
+ TRUE:FALSE; esac)) | (!Own_Tracked_Alt_Rate_8&Sum_DG_HYSTERCOR_8));
+
+
+DEFINE
+
+	t_272 := Corrective_Descend = Yes & Corrective_Climb_Evaluated_Event &
+		(( 
+		Dont_Climb_Dont_Descend &
+		Corrective_Climb = No &
+		((TRUE=Own_Tracked_Alt_Rate_8 & (case TRUE&!Own_Tracked_Alt_Rate_8:TRUE; !TRUE&Own_Tracked_Alt_Rate_8:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_7:TRUE; !TRUE&Own_Tracked_Alt_Rate_7:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_6:TRUE; !TRUE&Own_Tracked_Alt_Rate_6:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_5:TRUE; !TRUE&Own_Tracked_Alt_Rate_5:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_4:TRUE; !TRUE&Own_Tracked_Alt_Rate_4:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_3:TRUE; !FALSE&Own_Tracked_Alt_Rate_3:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_2:TRUE; !TRUE&Own_Tracked_Alt_Rate_2:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_1:TRUE; !TRUE&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:FALSE; esac)) | (!TRUE&Own_Tracked_Alt_Rate_8)) &
+		Descend_RA_Weakened &
+		TRUE
+		) | (
+		Dont_Climb_Dont_Descend &
+		!Climb_RA_Weakened &
+		!Increase_RA_Ended &
+		((TRUE=Own_Tracked_Alt_Rate_8 & (case TRUE&!Own_Tracked_Alt_Rate_8:TRUE; !TRUE&Own_Tracked_Alt_Rate_8:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_7:TRUE; !TRUE&Own_Tracked_Alt_Rate_7:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_6:TRUE; !TRUE&Own_Tracked_Alt_Rate_6:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_5:TRUE; !TRUE&Own_Tracked_Alt_Rate_5:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_4:TRUE; !TRUE&Own_Tracked_Alt_Rate_4:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_3:TRUE; !FALSE&Own_Tracked_Alt_Rate_3:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_2:TRUE; !TRUE&Own_Tracked_Alt_Rate_2:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_1:TRUE; !TRUE&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:FALSE; esac)) | (!TRUE&Own_Tracked_Alt_Rate_8)) &
+		Descend_RA_Weakened &
+		TRUE
+		) | (
+		Dont_Climb_Dont_Descend &
+		Increase_RA_Ended &
+		Corrective_Climb = No &
+		((TRUE=Own_Tracked_Alt_Rate_8 & (case TRUE&!Own_Tracked_Alt_Rate_8:TRUE; !TRUE&Own_Tracked_Alt_Rate_8:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_7:TRUE; !TRUE&Own_Tracked_Alt_Rate_7:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_6:TRUE; !TRUE&Own_Tracked_Alt_Rate_6:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_5:TRUE; !TRUE&Own_Tracked_Alt_Rate_5:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_4:TRUE; !TRUE&Own_Tracked_Alt_Rate_4:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_3:TRUE; !FALSE&Own_Tracked_Alt_Rate_3:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_2:TRUE; !TRUE&Own_Tracked_Alt_Rate_2:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_1:TRUE; !TRUE&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:FALSE; esac)) | (!TRUE&Own_Tracked_Alt_Rate_8)) &
+		TRUE
+		) | (
+		!Dont_Climb_Dont_Descend &
+		Corrective_Climb = No &
+		Descend_RA_Weakened &
+		((Descend_Goal_8=Own_Tracked_Alt_Rate_8 & (case Descend_Goal_8&!Own_Tracked_Alt_Rate_8:TRUE; !Descend_Goal_8&Own_Tracked_Alt_Rate_8:FALSE;
+Descend_Goal_7&!Own_Tracked_Alt_Rate_7:TRUE; !Descend_Goal_7&Own_Tracked_Alt_Rate_7:FALSE;
+Descend_Goal_6&!Own_Tracked_Alt_Rate_6:TRUE; !Descend_Goal_6&Own_Tracked_Alt_Rate_6:FALSE;
+Descend_Goal_5&!Own_Tracked_Alt_Rate_5:TRUE; !Descend_Goal_5&Own_Tracked_Alt_Rate_5:FALSE;
+Descend_Goal_4&!Own_Tracked_Alt_Rate_4:TRUE; !Descend_Goal_4&Own_Tracked_Alt_Rate_4:FALSE;
+Descend_Goal_3&!Own_Tracked_Alt_Rate_3:TRUE; !Descend_Goal_3&Own_Tracked_Alt_Rate_3:FALSE;
+Descend_Goal_2&!Own_Tracked_Alt_Rate_2:TRUE; !Descend_Goal_2&Own_Tracked_Alt_Rate_2:FALSE;
+Descend_Goal_1&!Own_Tracked_Alt_Rate_1:TRUE; !Descend_Goal_1&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!Descend_Goal_8&Own_Tracked_Alt_Rate_8)) &
+		TRUE
+		) | (
+		!Dont_Climb_Dont_Descend &
+		Descend_RA_Weakened &
+		((Descend_Goal_8=Own_Tracked_Alt_Rate_8 & (case Descend_Goal_8&!Own_Tracked_Alt_Rate_8:TRUE; !Descend_Goal_8&Own_Tracked_Alt_Rate_8:FALSE;
+Descend_Goal_7&!Own_Tracked_Alt_Rate_7:TRUE; !Descend_Goal_7&Own_Tracked_Alt_Rate_7:FALSE;
+Descend_Goal_6&!Own_Tracked_Alt_Rate_6:TRUE; !Descend_Goal_6&Own_Tracked_Alt_Rate_6:FALSE;
+Descend_Goal_5&!Own_Tracked_Alt_Rate_5:TRUE; !Descend_Goal_5&Own_Tracked_Alt_Rate_5:FALSE;
+Descend_Goal_4&!Own_Tracked_Alt_Rate_4:TRUE; !Descend_Goal_4&Own_Tracked_Alt_Rate_4:FALSE;
+Descend_Goal_3&!Own_Tracked_Alt_Rate_3:TRUE; !Descend_Goal_3&Own_Tracked_Alt_Rate_3:FALSE;
+Descend_Goal_2&!Own_Tracked_Alt_Rate_2:TRUE; !Descend_Goal_2&Own_Tracked_Alt_Rate_2:FALSE;
+Descend_Goal_1&!Own_Tracked_Alt_Rate_1:TRUE; !Descend_Goal_1&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!Descend_Goal_8&Own_Tracked_Alt_Rate_8)) &
+		TRUE
+		) | (
+		!Dont_Climb_Dont_Descend &
+		!Climb_RA_Weakened &
+		!Increase_RA_Ended &
+		Descend_RA_Weakened &
+		((Descend_Goal_8=Own_Tracked_Alt_Rate_8 & (case Descend_Goal_8&!Own_Tracked_Alt_Rate_8:TRUE; !Descend_Goal_8&Own_Tracked_Alt_Rate_8:FALSE;
+Descend_Goal_7&!Own_Tracked_Alt_Rate_7:TRUE; !Descend_Goal_7&Own_Tracked_Alt_Rate_7:FALSE;
+Descend_Goal_6&!Own_Tracked_Alt_Rate_6:TRUE; !Descend_Goal_6&Own_Tracked_Alt_Rate_6:FALSE;
+Descend_Goal_5&!Own_Tracked_Alt_Rate_5:TRUE; !Descend_Goal_5&Own_Tracked_Alt_Rate_5:FALSE;
+Descend_Goal_4&!Own_Tracked_Alt_Rate_4:TRUE; !Descend_Goal_4&Own_Tracked_Alt_Rate_4:FALSE;
+Descend_Goal_3&!Own_Tracked_Alt_Rate_3:TRUE; !Descend_Goal_3&Own_Tracked_Alt_Rate_3:FALSE;
+Descend_Goal_2&!Own_Tracked_Alt_Rate_2:TRUE; !Descend_Goal_2&Own_Tracked_Alt_Rate_2:FALSE;
+Descend_Goal_1&!Own_Tracked_Alt_Rate_1:TRUE; !Descend_Goal_1&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!Descend_Goal_8&Own_Tracked_Alt_Rate_8)) &
+		TRUE
+		) | (
+		!Dont_Climb_Dont_Descend &
+		Increase_RA_Ended &
+		Corrective_Climb = No &
+		Descend_RA_Weakened &
+		((Descend_Goal_8=Own_Tracked_Alt_Rate_8 & (case Descend_Goal_8&!Own_Tracked_Alt_Rate_8:TRUE; !Descend_Goal_8&Own_Tracked_Alt_Rate_8:FALSE;
+Descend_Goal_7&!Own_Tracked_Alt_Rate_7:TRUE; !Descend_Goal_7&Own_Tracked_Alt_Rate_7:FALSE;
+Descend_Goal_6&!Own_Tracked_Alt_Rate_6:TRUE; !Descend_Goal_6&Own_Tracked_Alt_Rate_6:FALSE;
+Descend_Goal_5&!Own_Tracked_Alt_Rate_5:TRUE; !Descend_Goal_5&Own_Tracked_Alt_Rate_5:FALSE;
+Descend_Goal_4&!Own_Tracked_Alt_Rate_4:TRUE; !Descend_Goal_4&Own_Tracked_Alt_Rate_4:FALSE;
+Descend_Goal_3&!Own_Tracked_Alt_Rate_3:TRUE; !Descend_Goal_3&Own_Tracked_Alt_Rate_3:FALSE;
+Descend_Goal_2&!Own_Tracked_Alt_Rate_2:TRUE; !Descend_Goal_2&Own_Tracked_Alt_Rate_2:FALSE;
+Descend_Goal_1&!Own_Tracked_Alt_Rate_1:TRUE; !Descend_Goal_1&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!Descend_Goal_8&Own_Tracked_Alt_Rate_8)) &
+		TRUE
+		) | (
+		!Dont_Climb_Dont_Descend &
+		Increase_RA_Ended &
+		Descend_RA_Weakened &
+		((Descend_Goal_8=Own_Tracked_Alt_Rate_8 & (case Descend_Goal_8&!Own_Tracked_Alt_Rate_8:TRUE; !Descend_Goal_8&Own_Tracked_Alt_Rate_8:FALSE;
+Descend_Goal_7&!Own_Tracked_Alt_Rate_7:TRUE; !Descend_Goal_7&Own_Tracked_Alt_Rate_7:FALSE;
+Descend_Goal_6&!Own_Tracked_Alt_Rate_6:TRUE; !Descend_Goal_6&Own_Tracked_Alt_Rate_6:FALSE;
+Descend_Goal_5&!Own_Tracked_Alt_Rate_5:TRUE; !Descend_Goal_5&Own_Tracked_Alt_Rate_5:FALSE;
+Descend_Goal_4&!Own_Tracked_Alt_Rate_4:TRUE; !Descend_Goal_4&Own_Tracked_Alt_Rate_4:FALSE;
+Descend_Goal_3&!Own_Tracked_Alt_Rate_3:TRUE; !Descend_Goal_3&Own_Tracked_Alt_Rate_3:FALSE;
+Descend_Goal_2&!Own_Tracked_Alt_Rate_2:TRUE; !Descend_Goal_2&Own_Tracked_Alt_Rate_2:FALSE;
+Descend_Goal_1&!Own_Tracked_Alt_Rate_1:TRUE; !Descend_Goal_1&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!Descend_Goal_8&Own_Tracked_Alt_Rate_8)) &
+		TRUE
+		));
+
+
+
+DEFINE
+	t273a :=  Corrective_Descend_Evaluated_Event
+		& Composite_RA = No_RA
+		& !Some_OA_Altitude_Reporting_Lost
+		& !Some_Threat_Track_Dropped
+		& !Some_Threat_Clear_Of_Conflict;  
+
+	t273b :=  Corrective_Descend_Evaluated_Event
+		& in_RA
+		& Corrective_Climb = Yes;	  
+
+	t273c :=  Corrective_Descend_Evaluated_Event
+		& in_RA
+		& Corrective_Descend = Yes;	  
+
+	t273d :=  Corrective_Descend_Evaluated_Event
+		& in_RA
+		& Corrective_Climb = No	  
+		& Corrective_Descend = No;
+		
+	t273e :=  Corrective_Descend_Evaluated_Event
+		& Composite_RA = No_RA
+		& Some_OA_Altitude_Reporting_Lost		
+		& (  Combined_Control = Preventitive
+		   | Combined_Control = CC_Corrective_Climb
+		   | Combined_Control = CC_Corrective_Descend );
+
+	t273f :=  Corrective_Descend_Evaluated_Event
+		& Composite_RA = No_RA
+		& !Some_OA_Altitude_Reporting_Lost		
+		& Some_Threat_Track_Dropped
+		& (  Combined_Control = Preventitive
+		   | Combined_Control = CC_Corrective_Climb
+		   | Combined_Control = CC_Corrective_Descend );
+
+	t273g :=  Corrective_Descend_Evaluated_Event
+		& Composite_RA = No_RA
+		& !Some_OA_Altitude_Reporting_Lost		
+		& !Some_Threat_Track_Dropped
+		& Some_Threat_Clear_Of_Conflict  
+		& (  Combined_Control = Preventitive
+		   | Combined_Control = CC_Corrective_Climb
+		   | Combined_Control = CC_Corrective_Descend );
+
+	ND_Combined_Control :=
+		  (t273a & t273b)
+		| (t273a & t273c)
+		| (t273a & t273d)
+		| (t273a & t273e)
+		| (t273a & t273f)
+		| (t273a & t273g)
+		| (t273b & t273d)
+		| (t273b & t273e)
+		| (t273b & t273f)
+		| (t273b & t273g)
+		| (t273c & t273d)
+		| (t273c & t273e)
+		| (t273c & t273f)
+		| (t273c & t273g)
+		| (t273d & t273e)
+		| (t273d & t273f)
+		| (t273d & t273g)
+		| (t273e & t273f)
+		| (t273e & t273g)
+		| (t273f & t273g)
+		;
+
+ASSIGN
+
+	next(Combined_Control) :=
+		case
+			t273a : No_Advisory;
+			t273b & t273c : {CC_Corrective_Climb, CC_Corrective_Descend};
+			t273b : CC_Corrective_Climb;
+			t273c : CC_Corrective_Descend;
+			t273d : Preventitive;
+			t273e : Altitude_Lost;
+			t273f : Tracked_Dropped;
+			t273g : Clear_Of_Conflict;
+			TRUE     : Combined_Control;
+		esac;
+ASSIGN
+	next(Combined_Control_Evaluated_Event) := Corrective_Descend_Evaluated_Event;
+			
+
+
+DEFINE
+
+	t277a :=   Corrective_Descend_Evaluated_Event
+		&  !Some_OA_Sense_Descend_Increase
+		&  !Some_OA_Sense_Climb_Increase
+		&  !Some_OA_Threat_Reversal_Reversed
+		&  !(Composite_RA = Climb)
+		&  !(Composite_RA = Descend)
+		&  !Some_OA_Threat_Crossing_Own_Crossing 
+		&  !Some_OA_Threat_Crossing_Int_Crossing;
+
+	t277b :=   Corrective_Descend_Evaluated_Event
+		&  !Some_OA_Sense_Descend_Increase
+		&  !Some_OA_Sense_Climb_Increase
+		&  !Some_OA_Threat_Reversal_Reversed
+		&  !(Corrective_Climb = Yes)
+		&  !Some_OA_Threat_Crossing_Own_Crossing 
+		&  !Some_OA_Threat_Crossing_Int_Crossing;
+
+	t277c :=   Corrective_Descend_Evaluated_Event
+		&  !Some_OA_Sense_Descend_Increase
+		&  !Some_OA_Sense_Climb_Increase
+		&  !Some_OA_Threat_Reversal_Reversed
+		&  !(Corrective_Descend = Yes)
+		&  !Some_OA_Threat_Crossing_Own_Crossing 
+		&  !Some_OA_Threat_Crossing_Int_Crossing;
+
+	t277d :=   Corrective_Descend_Evaluated_Event
+		&  Some_OA_Sense_Descend_Increase;
+
+	t277e :=   Corrective_Descend_Evaluated_Event
+		&  Some_OA_Sense_Climb_Increase;
+
+	t277f :=   Corrective_Descend_Evaluated_Event
+		&  !Some_OA_Threat_Reversal_Reversed
+		&  Composite_RA = Climb
+		&  !Some_OA_Sense_Climb_Increase
+		&  !(Corrective_Climb = Yes)
+		&  !Some_OA_Threat_Crossing_Own_Crossing 
+		&  !Some_OA_Threat_Crossing_Int_Crossing;
+
+	t277g :=   Corrective_Descend_Evaluated_Event
+		&  !Some_OA_Threat_Reversal_Reversed
+		&  Composite_RA = Climb
+		&  !Some_OA_Sense_Climb_Increase
+		&  !(Corrective_Descend = Yes)
+		&  !Some_OA_Threat_Crossing_Own_Crossing 
+		&  !Some_OA_Threat_Crossing_Int_Crossing;
+
+	t277h :=   Corrective_Descend_Evaluated_Event
+		&  !Some_OA_Threat_Reversal_Reversed
+		&  Composite_RA = Descend
+		&  !Some_OA_Sense_Descend_Increase
+		&  !(Corrective_Climb = Yes)
+		&  !Some_OA_Threat_Crossing_Own_Crossing 
+		&  !Some_OA_Threat_Crossing_Int_Crossing;
+
+	t277i :=   Corrective_Descend_Evaluated_Event
+		&  !Some_OA_Threat_Reversal_Reversed
+		&  Composite_RA = Descend
+		&  !Some_OA_Sense_Descend_Increase
+		&  !(Corrective_Descend = Yes)
+		&  !Some_OA_Threat_Crossing_Own_Crossing 
+		&  !Some_OA_Threat_Crossing_Int_Crossing;
+
+	t277j :=   Corrective_Descend_Evaluated_Event
+		&  Composite_RA = Climb
+		&  !Some_OA_Sense_Climb_Increase
+		&  !(Corrective_Climb = Yes)
+		&  !(Corrective_Descend = Yes);
+
+	t277k :=   Corrective_Descend_Evaluated_Event
+		&  Composite_RA = Descend
+		&  !Some_OA_Sense_Descend_Increase
+		&  !(Corrective_Climb = Yes)
+		&  !(Corrective_Descend = Yes);
+
+	t277l :=   Corrective_Descend_Evaluated_Event
+		&  Some_OA_Threat_Reversal_Reversed
+		&  !(Composite_RA = Climb)
+		&  !(Composite_RA = Descend);
+
+	t277m :=   Corrective_Descend_Evaluated_Event
+		&  Some_OA_Threat_Reversal_Reversed
+		&  Corrective_Climb = Yes;
+
+	t277n :=   Corrective_Descend_Evaluated_Event
+		&  Some_OA_Threat_Reversal_Reversed
+		&  Corrective_Descend = Yes;	
+
+	t277-A := t277a | t277b | t277c;
+	t277-B := t277d | t277e;
+	t277-C := t277f | t277g | t277h | t277i;
+	t277-D := t277j | t277k;
+	t277-E := t277l | t277m;
+
+
+	ND_Vertical_Control :=
+		  (t277-A & t277-B)
+		| (t277-A & t277-C)
+		| (t277-A & t277-D)
+		| (t277-A & t277-E)
+		| (t277-B & t277-C)
+		| (t277-B & t277-D)
+		| (t277-B & t277-E)
+		| (t277-C & t277-D)
+		| (t277-C & t277-E)
+		| (t277-D & t277-E)
+		;
+
+ASSIGN
+
+	next(Vertical_Control) :=
+		case	
+			t277-A : Other;
+			t277-B : Increase;
+			t277-C : Crossing;
+			t277-D : Maintain;
+			t277-E : Reversal;
+			TRUE : Vertical_Control;
+		esac;
+ASSIGN
+	next(Vertical_Control_Evaluated_Event) := Corrective_Descend_Evaluated_Event;
+
+
+
+DEFINE
+  All_OA_Evaluated:= TRUE;
+
+  Climb_Desc_Inhibit := (Climb_Inhibit = Inhibited)
+			      &(Descend_Inhibit = Inhibited);
+
+
+  Climb_RA_Weakened := prev_Climb_Strength > Climb_Strength;
+
+  Descend_RA_Weakened := prev_Descend_Strength > Descend_Strength;
+
+
+  Dont_Climb_Dont_Descend :=
+    in_RA_Negative & 
+   (Climb_VSL in {VSL0, No_Climb_VSL}) & 
+   (Descend_VSL in {VSL0, No_Descend_VSL})
+	;
+
+  Increase_RA_Ended :=
+  	(prev_Some_OA_Sense_Climb_Increase & !Some_OA_Sense_Climb_Increase)
+  	|(prev_Some_OA_Sense_Descend_Increase & !Some_OA_Sense_Descend_Increase);
+
+
+DEFINE
+  New_Increase_Climb := 
+  	Some_OA_Sense_Climb_Increase 
+	& ((FALSE=Own_Tracked_Alt_Rate_8 & (case FALSE&!Own_Tracked_Alt_Rate_8:TRUE; !FALSE&Own_Tracked_Alt_Rate_8:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_7:TRUE; !FALSE&Own_Tracked_Alt_Rate_7:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_6:TRUE; !FALSE&Own_Tracked_Alt_Rate_6:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_5:TRUE; !TRUE&Own_Tracked_Alt_Rate_5:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_4:TRUE; !TRUE&Own_Tracked_Alt_Rate_4:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_3:TRUE; !FALSE&Own_Tracked_Alt_Rate_3:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_2:TRUE; !FALSE&Own_Tracked_Alt_Rate_2:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_1:TRUE; !TRUE&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Tracked_Alt_Rate_8))
+	& !prev_Some_OA_Sense_Climb_Increase;
+
+  New_Increase_Descend :=
+  	Some_OA_Sense_Descend_Increase 
+	& ((Own_Tracked_Alt_Rate_8=TRUE & (case Own_Tracked_Alt_Rate_8&!TRUE:TRUE; !Own_Tracked_Alt_Rate_8&TRUE:FALSE;
+Own_Tracked_Alt_Rate_7&!TRUE:TRUE; !Own_Tracked_Alt_Rate_7&TRUE:FALSE;
+Own_Tracked_Alt_Rate_6&!TRUE:TRUE; !Own_Tracked_Alt_Rate_6&TRUE:FALSE;
+Own_Tracked_Alt_Rate_5&!FALSE:TRUE; !Own_Tracked_Alt_Rate_5&FALSE:FALSE;
+Own_Tracked_Alt_Rate_4&!FALSE:TRUE; !Own_Tracked_Alt_Rate_4&FALSE:FALSE;
+Own_Tracked_Alt_Rate_3&!TRUE:TRUE; !Own_Tracked_Alt_Rate_3&TRUE:FALSE;
+Own_Tracked_Alt_Rate_2&!TRUE:TRUE; !Own_Tracked_Alt_Rate_2&TRUE:FALSE;
+Own_Tracked_Alt_Rate_1&!TRUE:TRUE; !Own_Tracked_Alt_Rate_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_Rate_8&TRUE))
+	& !prev_Some_OA_Sense_Descend_Increase;
+
+
+
+	Some_Threat_Clear_Of_Conflict := 
+		prev_Some_OA_Threat_Advisory_RA
+		& !Some_OA_Threat_Advisory_RA;
+
+	Some_Threat_Track_Dropped :=
+		(OA_1.prev_in_Advisory_RA & OA_1.in_Not_Tracked)
+		|(OA_1.prev_in_Advisory_RA & OA_1.in_Not_Tracked)
+		;
+
+
+
+
+DEFINE
+
+ Climb_Goal_case_1:= (Composite_RA = No_RA) | (in_RA_Negative & Climb_VSL = No_Climb_VSL) | (Composite_RA = Descend);	
+ Climb_Goal_case_2:= in_RA_Negative & Climb_VSL = VSL2000;
+ Climb_Goal_case_3:= in_RA_Negative & Climb_VSL = VSL1000;
+ Climb_Goal_case_4:= in_RA_Negative & Climb_VSL = VSL500;
+ Climb_Goal_case_5:= in_RA_Negative & Climb_VSL = VSL0;
+ Climb_Goal_case_6:= (Composite_RA = Climb);
+
+DEFINE
+  Climb_Goal_1 := case
+	Climb_Goal_case_1: FALSE;
+	Climb_Goal_case_2: FALSE;
+	Climb_Goal_case_3: FALSE;
+	Climb_Goal_case_4: TRUE;
+	Climb_Goal_case_5: FALSE;
+	Climb_Goal_case_6: Displayed_Model_Goal_1;
+	esac;
+  Climb_Goal_2 := case
+	Climb_Goal_case_1: FALSE;
+	Climb_Goal_case_2: FALSE;
+	Climb_Goal_case_3: TRUE;
+	Climb_Goal_case_4: TRUE;
+	Climb_Goal_case_5: FALSE;
+	Climb_Goal_case_6: Displayed_Model_Goal_2;
+	esac;
+  Climb_Goal_3 := case
+	Climb_Goal_case_1: FALSE;
+	Climb_Goal_case_2: TRUE;
+	Climb_Goal_case_3: TRUE;
+	Climb_Goal_case_4: FALSE;
+	Climb_Goal_case_5: FALSE;
+	Climb_Goal_case_6: Displayed_Model_Goal_3;
+	esac;
+  Climb_Goal_4 := case
+	Climb_Goal_case_1: FALSE;
+	Climb_Goal_case_2: TRUE;
+	Climb_Goal_case_3: FALSE;
+	Climb_Goal_case_4: TRUE;
+	Climb_Goal_case_5: FALSE;
+	Climb_Goal_case_6: Displayed_Model_Goal_4;
+	esac;
+  Climb_Goal_5 := case
+	Climb_Goal_case_1: FALSE;
+	Climb_Goal_case_2: FALSE;
+	Climb_Goal_case_3: TRUE;
+	Climb_Goal_case_4: TRUE;
+	Climb_Goal_case_5: FALSE;
+	Climb_Goal_case_6: Displayed_Model_Goal_5;
+	esac;
+  Climb_Goal_6 := case
+	Climb_Goal_case_1: TRUE;
+	Climb_Goal_case_2: TRUE;
+	Climb_Goal_case_3: TRUE;
+	Climb_Goal_case_4: TRUE;
+	Climb_Goal_case_5: FALSE;
+	Climb_Goal_case_6: Displayed_Model_Goal_6;
+	esac;
+  Climb_Goal_7 := case
+	Climb_Goal_case_1: TRUE;
+	Climb_Goal_case_2: TRUE;
+	Climb_Goal_case_3: TRUE;
+	Climb_Goal_case_4: TRUE;
+	Climb_Goal_case_5: FALSE;
+	Climb_Goal_case_6: Displayed_Model_Goal_7;
+	esac;
+  Climb_Goal_8 := case
+	Climb_Goal_case_1: TRUE;
+	Climb_Goal_case_2: TRUE;
+	Climb_Goal_case_3: TRUE;
+	Climb_Goal_case_4: TRUE;
+	Climb_Goal_case_5: FALSE;
+	Climb_Goal_case_6: Displayed_Model_Goal_8;
+	esac;
+
+
+
+
+
+DEFINE
+
+EQ_CVSL_0 := Climb_VSL=VSL0;
+EQ_CVSL_500 := Climb_VSL=VSL500;
+EQ_CVSL_1000 := Climb_VSL=VSL1000;
+EQ_CVSL_2000 := Climb_VSL=VSL2000;
+
+
+
+
+
+
+DEFINE
+  Climb_Strength := case
+    (Composite_RA = Climb) : 8;		
+    in_RA_Negative & Climb_VSL = VSL0 : 4;
+    in_RA_Negative & Climb_VSL = VSL500 : 3;
+    in_RA_Negative & Climb_VSL = VSL1000 : 2;
+    in_RA_Negative & Climb_VSL = VSL2000 : 1;
+    TRUE : 0;
+  esac;
+VAR prev_Climb_Strength : {0,1,2,3,4,8};
+ASSIGN
+  next(prev_Climb_Strength) := case
+    next(Surveillance_Complete_Event): Climb_Strength;
+    TRUE: prev_Climb_Strength;
+  esac;
+
+
+
+DEFINE
+  Descend_Goal_case_1:= (Composite_RA = No_RA) | (in_RA_Negative & Descend_VSL = No_Descend_VSL) | (Composite_RA = Climb);
+  Descend_Goal_case_2:= in_RA_Negative & Descend_VSL = VSL2000;
+  Descend_Goal_case_3:= in_RA_Negative & Descend_VSL = VSL1000;
+  Descend_Goal_case_4:= in_RA_Negative & Descend_VSL = VSL500;
+  Descend_Goal_case_5:= in_RA_Negative & Descend_VSL = VSL0;
+  Descend_Goal_case_6:= (Composite_RA = Descend);
+
+DEFINE
+  Descend_Goal_1 := case
+	Descend_Goal_case_1: TRUE;			
+	Descend_Goal_case_2: FALSE;
+	Descend_Goal_case_3: FALSE;
+	Descend_Goal_case_4: TRUE;
+	Descend_Goal_case_5: FALSE;
+	Descend_Goal_case_6: Displayed_Model_Goal_1;
+	esac;  Descend_Goal_2 := case
+	Descend_Goal_case_1: TRUE;			
+	Descend_Goal_case_2: FALSE;
+	Descend_Goal_case_3: TRUE;
+	Descend_Goal_case_4: FALSE;
+	Descend_Goal_case_5: FALSE;
+	Descend_Goal_case_6: Displayed_Model_Goal_2;
+	esac;  Descend_Goal_3 := case
+	Descend_Goal_case_1: TRUE;			
+	Descend_Goal_case_2: TRUE;
+	Descend_Goal_case_3: FALSE;
+	Descend_Goal_case_4: TRUE;
+	Descend_Goal_case_5: FALSE;
+	Descend_Goal_case_6: Displayed_Model_Goal_3;
+	esac;  Descend_Goal_4 := case
+	Descend_Goal_case_1: TRUE;			
+	Descend_Goal_case_2: FALSE;
+	Descend_Goal_case_3: TRUE;
+	Descend_Goal_case_4: FALSE;
+	Descend_Goal_case_5: FALSE;
+	Descend_Goal_case_6: Displayed_Model_Goal_4;
+	esac;  Descend_Goal_5 := case
+	Descend_Goal_case_1: TRUE;			
+	Descend_Goal_case_2: TRUE;
+	Descend_Goal_case_3: FALSE;
+	Descend_Goal_case_4: FALSE;
+	Descend_Goal_case_5: FALSE;
+	Descend_Goal_case_6: Displayed_Model_Goal_5;
+	esac;  Descend_Goal_6 := case
+	Descend_Goal_case_1: FALSE;			
+	Descend_Goal_case_2: FALSE;
+	Descend_Goal_case_3: FALSE;
+	Descend_Goal_case_4: FALSE;
+	Descend_Goal_case_5: FALSE;
+	Descend_Goal_case_6: Displayed_Model_Goal_6;
+	esac;  Descend_Goal_7 := case
+	Descend_Goal_case_1: FALSE;			
+	Descend_Goal_case_2: FALSE;
+	Descend_Goal_case_3: FALSE;
+	Descend_Goal_case_4: FALSE;
+	Descend_Goal_case_5: FALSE;
+	Descend_Goal_case_6: Displayed_Model_Goal_7;
+	esac;  Descend_Goal_8 := case
+	Descend_Goal_case_1: FALSE;			
+	Descend_Goal_case_2: FALSE;
+	Descend_Goal_case_3: FALSE;
+	Descend_Goal_case_4: FALSE;
+	Descend_Goal_case_5: FALSE;
+	Descend_Goal_case_6: Displayed_Model_Goal_8;
+	esac;
+
+
+
+
+DEFINE
+
+  EQ_DVSL_0 := Descend_VSL=VSL0;
+  EQ_DVSL_500 := Descend_VSL=VSL500;
+  EQ_DVSL_1000 := Descend_VSL=VSL1000;
+  EQ_DVSL_2000 := Descend_VSL=VSL2000;
+
+
+
+
+
+DEFINE
+	Descend_Strength := case
+	    (Composite_RA = Descend) : 8;
+	    in_RA_Negative & Descend_VSL = VSL0 : 4;
+	    in_RA_Negative & Descend_VSL = VSL500 : 3;
+	    in_RA_Negative & Descend_VSL = VSL1000 : 2;
+	    in_RA_Negative & Descend_VSL = VSL2000 : 1;
+	    TRUE : 0;
+	  esac;
+VAR prev_Descend_Strength : {0,1,2,3,4,8};
+ASSIGN
+  next(prev_Descend_Strength) := case
+    next(Surveillance_Complete_Event): Descend_Strength;
+    TRUE: prev_Descend_Strength;
+  esac;
+
+
+
+DEFINE
+
+
+  DMG_case_1 := !in_RA_Positive;
+
+  DMG_case_2 := 
+    (New_Climb | New_Threat) 
+    & !New_Increase_Climb
+    & !(Increase_Climb_Cancelled | Increase_Descend_Cancelled)
+    & Composite_RA = Climb
+    ;
+
+  DMG_case_3 :=
+    (New_Descend | New_Threat)
+    & !New_Increase_Descend
+    & !(Increase_Climb_Cancelled | Increase_Descend_Cancelled)
+    & Composite_RA = Descend
+    ;
+
+  DMG_case_4 := New_Increase_Climb;
+
+  DMG_case_5 := New_Increase_Descend;
+
+  DMG_case_6 := Increase_Climb_Cancelled & !New_Increase_Climb & in_RA_Positive; 
+
+  DMG_case_7 := Increase_Descend_Cancelled & !New_Increase_Descend & in_RA_Positive;
+
+  DMG_case_8 := !( DMG_case_1 | DMG_case_2 | DMG_case_3 | DMG_case_4 | DMG_case_5 | DMG_case_6 | DMG_case_7);
+
+  DMG_inconsistent :=
+  	(DMG_case_1 & DMG_case_2)
+  	| (DMG_case_1 & DMG_case_3)
+  	| (DMG_case_1 & DMG_case_4)
+  	| (DMG_case_1 & DMG_case_5)
+  	| (DMG_case_1 & DMG_case_6)
+  	| (DMG_case_1 & DMG_case_7)
+  	| (DMG_case_2 & DMG_case_3)
+  	| (DMG_case_2 & DMG_case_4)
+  	| (DMG_case_2 & DMG_case_5)
+  	| (DMG_case_2 & DMG_case_6)
+  	| (DMG_case_2 & DMG_case_7)
+  	| (DMG_case_3 & DMG_case_4)
+  	| (DMG_case_3 & DMG_case_5)
+  	| (DMG_case_3 & DMG_case_6)
+  	| (DMG_case_3 & DMG_case_7)
+  	| (DMG_case_4 & DMG_case_5)
+  	| (DMG_case_4 & DMG_case_6)
+  	| (DMG_case_4 & DMG_case_7)
+  	| (DMG_case_5 & DMG_case_6)
+  	| (DMG_case_5 & DMG_case_7)
+  	| (DMG_case_6 & DMG_case_7)
+	;
+
+DEFINE
+  DMG_case_2a := ((Own_Tracked_Alt_Rate_8=prev_Displayed_Model_Goal_8 & (case Own_Tracked_Alt_Rate_8&!prev_Displayed_Model_Goal_8:TRUE; !Own_Tracked_Alt_Rate_8&prev_Displayed_Model_Goal_8:FALSE;
+Own_Tracked_Alt_Rate_7&!prev_Displayed_Model_Goal_7:TRUE; !Own_Tracked_Alt_Rate_7&prev_Displayed_Model_Goal_7:FALSE;
+Own_Tracked_Alt_Rate_6&!prev_Displayed_Model_Goal_6:TRUE; !Own_Tracked_Alt_Rate_6&prev_Displayed_Model_Goal_6:FALSE;
+Own_Tracked_Alt_Rate_5&!prev_Displayed_Model_Goal_5:TRUE; !Own_Tracked_Alt_Rate_5&prev_Displayed_Model_Goal_5:FALSE;
+Own_Tracked_Alt_Rate_4&!prev_Displayed_Model_Goal_4:TRUE; !Own_Tracked_Alt_Rate_4&prev_Displayed_Model_Goal_4:FALSE;
+Own_Tracked_Alt_Rate_3&!prev_Displayed_Model_Goal_3:TRUE; !Own_Tracked_Alt_Rate_3&prev_Displayed_Model_Goal_3:FALSE;
+Own_Tracked_Alt_Rate_2&!prev_Displayed_Model_Goal_2:TRUE; !Own_Tracked_Alt_Rate_2&prev_Displayed_Model_Goal_2:FALSE;
+Own_Tracked_Alt_Rate_1&!prev_Displayed_Model_Goal_1:TRUE; !Own_Tracked_Alt_Rate_1&prev_Displayed_Model_Goal_1:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_Rate_8&prev_Displayed_Model_Goal_8)) &
+		((Own_Tracked_Alt_Rate_8=FALSE & (case Own_Tracked_Alt_Rate_8&!FALSE:TRUE; !Own_Tracked_Alt_Rate_8&FALSE:FALSE;
+Own_Tracked_Alt_Rate_7&!FALSE:TRUE; !Own_Tracked_Alt_Rate_7&FALSE:FALSE;
+Own_Tracked_Alt_Rate_6&!FALSE:TRUE; !Own_Tracked_Alt_Rate_6&FALSE:FALSE;
+Own_Tracked_Alt_Rate_5&!FALSE:TRUE; !Own_Tracked_Alt_Rate_5&FALSE:FALSE;
+Own_Tracked_Alt_Rate_4&!TRUE:TRUE; !Own_Tracked_Alt_Rate_4&TRUE:FALSE;
+Own_Tracked_Alt_Rate_3&!TRUE:TRUE; !Own_Tracked_Alt_Rate_3&TRUE:FALSE;
+Own_Tracked_Alt_Rate_2&!TRUE:TRUE; !Own_Tracked_Alt_Rate_2&TRUE:FALSE;
+Own_Tracked_Alt_Rate_1&!TRUE:TRUE; !Own_Tracked_Alt_Rate_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_Rate_8&FALSE)) ;
+  DMG_case_2b := ((prev_Displayed_Model_Goal_8=Own_Tracked_Alt_Rate_8 & (case prev_Displayed_Model_Goal_8&!Own_Tracked_Alt_Rate_8:TRUE; !prev_Displayed_Model_Goal_8&Own_Tracked_Alt_Rate_8:FALSE;
+prev_Displayed_Model_Goal_7&!Own_Tracked_Alt_Rate_7:TRUE; !prev_Displayed_Model_Goal_7&Own_Tracked_Alt_Rate_7:FALSE;
+prev_Displayed_Model_Goal_6&!Own_Tracked_Alt_Rate_6:TRUE; !prev_Displayed_Model_Goal_6&Own_Tracked_Alt_Rate_6:FALSE;
+prev_Displayed_Model_Goal_5&!Own_Tracked_Alt_Rate_5:TRUE; !prev_Displayed_Model_Goal_5&Own_Tracked_Alt_Rate_5:FALSE;
+prev_Displayed_Model_Goal_4&!Own_Tracked_Alt_Rate_4:TRUE; !prev_Displayed_Model_Goal_4&Own_Tracked_Alt_Rate_4:FALSE;
+prev_Displayed_Model_Goal_3&!Own_Tracked_Alt_Rate_3:TRUE; !prev_Displayed_Model_Goal_3&Own_Tracked_Alt_Rate_3:FALSE;
+prev_Displayed_Model_Goal_2&!Own_Tracked_Alt_Rate_2:TRUE; !prev_Displayed_Model_Goal_2&Own_Tracked_Alt_Rate_2:FALSE;
+prev_Displayed_Model_Goal_1&!Own_Tracked_Alt_Rate_1:TRUE; !prev_Displayed_Model_Goal_1&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!prev_Displayed_Model_Goal_8&Own_Tracked_Alt_Rate_8)) &
+		((prev_Displayed_Model_Goal_8=FALSE & (case prev_Displayed_Model_Goal_8&!FALSE:TRUE; !prev_Displayed_Model_Goal_8&FALSE:FALSE;
+prev_Displayed_Model_Goal_7&!FALSE:TRUE; !prev_Displayed_Model_Goal_7&FALSE:FALSE;
+prev_Displayed_Model_Goal_6&!FALSE:TRUE; !prev_Displayed_Model_Goal_6&FALSE:FALSE;
+prev_Displayed_Model_Goal_5&!FALSE:TRUE; !prev_Displayed_Model_Goal_5&FALSE:FALSE;
+prev_Displayed_Model_Goal_4&!TRUE:TRUE; !prev_Displayed_Model_Goal_4&TRUE:FALSE;
+prev_Displayed_Model_Goal_3&!TRUE:TRUE; !prev_Displayed_Model_Goal_3&TRUE:FALSE;
+prev_Displayed_Model_Goal_2&!TRUE:TRUE; !prev_Displayed_Model_Goal_2&TRUE:FALSE;
+prev_Displayed_Model_Goal_1&!TRUE:TRUE; !prev_Displayed_Model_Goal_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!prev_Displayed_Model_Goal_8&FALSE)) ;
+  DMG_case_3a := ((prev_Displayed_Model_Goal_8=Own_Tracked_Alt_Rate_8 & (case prev_Displayed_Model_Goal_8&!Own_Tracked_Alt_Rate_8:TRUE; !prev_Displayed_Model_Goal_8&Own_Tracked_Alt_Rate_8:FALSE;
+prev_Displayed_Model_Goal_7&!Own_Tracked_Alt_Rate_7:TRUE; !prev_Displayed_Model_Goal_7&Own_Tracked_Alt_Rate_7:FALSE;
+prev_Displayed_Model_Goal_6&!Own_Tracked_Alt_Rate_6:TRUE; !prev_Displayed_Model_Goal_6&Own_Tracked_Alt_Rate_6:FALSE;
+prev_Displayed_Model_Goal_5&!Own_Tracked_Alt_Rate_5:TRUE; !prev_Displayed_Model_Goal_5&Own_Tracked_Alt_Rate_5:FALSE;
+prev_Displayed_Model_Goal_4&!Own_Tracked_Alt_Rate_4:TRUE; !prev_Displayed_Model_Goal_4&Own_Tracked_Alt_Rate_4:FALSE;
+prev_Displayed_Model_Goal_3&!Own_Tracked_Alt_Rate_3:TRUE; !prev_Displayed_Model_Goal_3&Own_Tracked_Alt_Rate_3:FALSE;
+prev_Displayed_Model_Goal_2&!Own_Tracked_Alt_Rate_2:TRUE; !prev_Displayed_Model_Goal_2&Own_Tracked_Alt_Rate_2:FALSE;
+prev_Displayed_Model_Goal_1&!Own_Tracked_Alt_Rate_1:TRUE; !prev_Displayed_Model_Goal_1&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!prev_Displayed_Model_Goal_8&Own_Tracked_Alt_Rate_8)) &
+		((TRUE=Own_Tracked_Alt_Rate_8 & (case TRUE&!Own_Tracked_Alt_Rate_8:TRUE; !TRUE&Own_Tracked_Alt_Rate_8:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_7:TRUE; !TRUE&Own_Tracked_Alt_Rate_7:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_6:TRUE; !TRUE&Own_Tracked_Alt_Rate_6:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_5:TRUE; !TRUE&Own_Tracked_Alt_Rate_5:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_4:TRUE; !FALSE&Own_Tracked_Alt_Rate_4:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_3:TRUE; !FALSE&Own_Tracked_Alt_Rate_3:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_2:TRUE; !FALSE&Own_Tracked_Alt_Rate_2:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_1:TRUE; !TRUE&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!TRUE&Own_Tracked_Alt_Rate_8)) ;
+  DMG_case_3b := ((Own_Tracked_Alt_Rate_8=prev_Displayed_Model_Goal_8 & (case Own_Tracked_Alt_Rate_8&!prev_Displayed_Model_Goal_8:TRUE; !Own_Tracked_Alt_Rate_8&prev_Displayed_Model_Goal_8:FALSE;
+Own_Tracked_Alt_Rate_7&!prev_Displayed_Model_Goal_7:TRUE; !Own_Tracked_Alt_Rate_7&prev_Displayed_Model_Goal_7:FALSE;
+Own_Tracked_Alt_Rate_6&!prev_Displayed_Model_Goal_6:TRUE; !Own_Tracked_Alt_Rate_6&prev_Displayed_Model_Goal_6:FALSE;
+Own_Tracked_Alt_Rate_5&!prev_Displayed_Model_Goal_5:TRUE; !Own_Tracked_Alt_Rate_5&prev_Displayed_Model_Goal_5:FALSE;
+Own_Tracked_Alt_Rate_4&!prev_Displayed_Model_Goal_4:TRUE; !Own_Tracked_Alt_Rate_4&prev_Displayed_Model_Goal_4:FALSE;
+Own_Tracked_Alt_Rate_3&!prev_Displayed_Model_Goal_3:TRUE; !Own_Tracked_Alt_Rate_3&prev_Displayed_Model_Goal_3:FALSE;
+Own_Tracked_Alt_Rate_2&!prev_Displayed_Model_Goal_2:TRUE; !Own_Tracked_Alt_Rate_2&prev_Displayed_Model_Goal_2:FALSE;
+Own_Tracked_Alt_Rate_1&!prev_Displayed_Model_Goal_1:TRUE; !Own_Tracked_Alt_Rate_1&prev_Displayed_Model_Goal_1:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_Rate_8&prev_Displayed_Model_Goal_8)) &
+		((TRUE=prev_Displayed_Model_Goal_8 & (case TRUE&!prev_Displayed_Model_Goal_8:TRUE; !TRUE&prev_Displayed_Model_Goal_8:FALSE;
+TRUE&!prev_Displayed_Model_Goal_7:TRUE; !TRUE&prev_Displayed_Model_Goal_7:FALSE;
+TRUE&!prev_Displayed_Model_Goal_6:TRUE; !TRUE&prev_Displayed_Model_Goal_6:FALSE;
+TRUE&!prev_Displayed_Model_Goal_5:TRUE; !TRUE&prev_Displayed_Model_Goal_5:FALSE;
+FALSE&!prev_Displayed_Model_Goal_4:TRUE; !FALSE&prev_Displayed_Model_Goal_4:FALSE;
+FALSE&!prev_Displayed_Model_Goal_3:TRUE; !FALSE&prev_Displayed_Model_Goal_3:FALSE;
+FALSE&!prev_Displayed_Model_Goal_2:TRUE; !FALSE&prev_Displayed_Model_Goal_2:FALSE;
+TRUE&!prev_Displayed_Model_Goal_1:TRUE; !TRUE&prev_Displayed_Model_Goal_1:FALSE;
+ TRUE:TRUE; esac)) | (!TRUE&prev_Displayed_Model_Goal_8)) ;
+  DMG_case_6a := ((Own_Tracked_Alt_Rate_8=FALSE & (case Own_Tracked_Alt_Rate_8&!FALSE:TRUE; !Own_Tracked_Alt_Rate_8&FALSE:FALSE;
+Own_Tracked_Alt_Rate_7&!FALSE:TRUE; !Own_Tracked_Alt_Rate_7&FALSE:FALSE;
+Own_Tracked_Alt_Rate_6&!FALSE:TRUE; !Own_Tracked_Alt_Rate_6&FALSE:FALSE;
+Own_Tracked_Alt_Rate_5&!FALSE:TRUE; !Own_Tracked_Alt_Rate_5&FALSE:FALSE;
+Own_Tracked_Alt_Rate_4&!TRUE:TRUE; !Own_Tracked_Alt_Rate_4&TRUE:FALSE;
+Own_Tracked_Alt_Rate_3&!TRUE:TRUE; !Own_Tracked_Alt_Rate_3&TRUE:FALSE;
+Own_Tracked_Alt_Rate_2&!TRUE:TRUE; !Own_Tracked_Alt_Rate_2&TRUE:FALSE;
+Own_Tracked_Alt_Rate_1&!TRUE:TRUE; !Own_Tracked_Alt_Rate_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_Rate_8&FALSE)) ;
+  DMG_case_7a := ((TRUE=Own_Tracked_Alt_Rate_8 & (case TRUE&!Own_Tracked_Alt_Rate_8:TRUE; !TRUE&Own_Tracked_Alt_Rate_8:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_7:TRUE; !TRUE&Own_Tracked_Alt_Rate_7:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_6:TRUE; !TRUE&Own_Tracked_Alt_Rate_6:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_5:TRUE; !TRUE&Own_Tracked_Alt_Rate_5:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_4:TRUE; !FALSE&Own_Tracked_Alt_Rate_4:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_3:TRUE; !FALSE&Own_Tracked_Alt_Rate_3:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_2:TRUE; !FALSE&Own_Tracked_Alt_Rate_2:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_1:TRUE; !TRUE&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!TRUE&Own_Tracked_Alt_Rate_8)) ;
+
+DEFINE
+  Displayed_Model_Goal_1 := case
+	DMG_case_1: FALSE;
+	DMG_case_2: case
+		DMG_case_2a : Own_Tracked_Alt_Rate_1;
+		DMG_case_2b : prev_Displayed_Model_Goal_1;
+		TRUE: TRUE;
+		esac;
+	DMG_case_3: case
+		DMG_case_3a : Own_Tracked_Alt_Rate_1;
+		DMG_case_3b : prev_Displayed_Model_Goal_1;
+		TRUE: TRUE;
+		esac;
+	DMG_case_4: TRUE;
+	DMG_case_5: TRUE;
+	DMG_case_6: case
+		DMG_case_6a : Own_Tracked_Alt_Rate_1;
+		TRUE: TRUE;
+		esac;
+	DMG_case_7: case
+		DMG_case_7a : Own_Tracked_Alt_Rate_1;
+		TRUE: TRUE;
+		esac;
+	DMG_case_8: prev_Displayed_Model_Goal_1;
+	esac;
+  Displayed_Model_Goal_2 := case
+	DMG_case_1: FALSE;
+	DMG_case_2: case
+		DMG_case_2a : Own_Tracked_Alt_Rate_2;
+		DMG_case_2b : prev_Displayed_Model_Goal_2;
+		TRUE: TRUE;
+		esac;
+	DMG_case_3: case
+		DMG_case_3a : Own_Tracked_Alt_Rate_2;
+		DMG_case_3b : prev_Displayed_Model_Goal_2;
+		TRUE: FALSE;
+		esac;
+	DMG_case_4: FALSE;
+	DMG_case_5: TRUE;
+	DMG_case_6: case
+		DMG_case_6a : Own_Tracked_Alt_Rate_2;
+		TRUE: TRUE;
+		esac;
+	DMG_case_7: case
+		DMG_case_7a : Own_Tracked_Alt_Rate_2;
+		TRUE: FALSE;
+		esac;
+	DMG_case_8: prev_Displayed_Model_Goal_2;
+	esac;
+  Displayed_Model_Goal_3 := case
+	DMG_case_1: FALSE;
+	DMG_case_2: case
+		DMG_case_2a : Own_Tracked_Alt_Rate_3;
+		DMG_case_2b : prev_Displayed_Model_Goal_3;
+		TRUE: TRUE;
+		esac;
+	DMG_case_3: case
+		DMG_case_3a : Own_Tracked_Alt_Rate_3;
+		DMG_case_3b : prev_Displayed_Model_Goal_3;
+		TRUE: FALSE;
+		esac;
+	DMG_case_4: FALSE;
+	DMG_case_5: TRUE;
+	DMG_case_6: case
+		DMG_case_6a : Own_Tracked_Alt_Rate_3;
+		TRUE: TRUE;
+		esac;
+	DMG_case_7: case
+		DMG_case_7a : Own_Tracked_Alt_Rate_3;
+		TRUE: FALSE;
+		esac;
+	DMG_case_8: prev_Displayed_Model_Goal_3;
+	esac;
+  Displayed_Model_Goal_4 := case
+	DMG_case_1: FALSE;
+	DMG_case_2: case
+		DMG_case_2a : Own_Tracked_Alt_Rate_4;
+		DMG_case_2b : prev_Displayed_Model_Goal_4;
+		TRUE: TRUE;
+		esac;
+	DMG_case_3: case
+		DMG_case_3a : Own_Tracked_Alt_Rate_4;
+		DMG_case_3b : prev_Displayed_Model_Goal_4;
+		TRUE: FALSE;
+		esac;
+	DMG_case_4: TRUE;
+	DMG_case_5: FALSE;
+	DMG_case_6: case
+		DMG_case_6a : Own_Tracked_Alt_Rate_4;
+		TRUE: TRUE;
+		esac;
+	DMG_case_7: case
+		DMG_case_7a : Own_Tracked_Alt_Rate_4;
+		TRUE: FALSE;
+		esac;
+	DMG_case_8: prev_Displayed_Model_Goal_4;
+	esac;
+  Displayed_Model_Goal_5 := case
+	DMG_case_1: FALSE;
+	DMG_case_2: case
+		DMG_case_2a : Own_Tracked_Alt_Rate_5;
+		DMG_case_2b : prev_Displayed_Model_Goal_5;
+		TRUE: FALSE;
+		esac;
+	DMG_case_3: case
+		DMG_case_3a : Own_Tracked_Alt_Rate_5;
+		DMG_case_3b : prev_Displayed_Model_Goal_5;
+		TRUE: TRUE;
+		esac;
+	DMG_case_4: TRUE;
+	DMG_case_5: FALSE;
+	DMG_case_6: case
+		DMG_case_6a : Own_Tracked_Alt_Rate_5;
+		TRUE: FALSE;
+		esac;
+	DMG_case_7: case
+		DMG_case_7a : Own_Tracked_Alt_Rate_5;
+		TRUE: TRUE;
+		esac;
+	DMG_case_8: prev_Displayed_Model_Goal_5;
+	esac;
+  Displayed_Model_Goal_6 := case
+	DMG_case_1: FALSE;
+	DMG_case_2: case
+		DMG_case_2a : Own_Tracked_Alt_Rate_6;
+		DMG_case_2b : prev_Displayed_Model_Goal_6;
+		TRUE: FALSE;
+		esac;
+	DMG_case_3: case
+		DMG_case_3a : Own_Tracked_Alt_Rate_6;
+		DMG_case_3b : prev_Displayed_Model_Goal_6;
+		TRUE: TRUE;
+		esac;
+	DMG_case_4: FALSE;
+	DMG_case_5: TRUE;
+	DMG_case_6: case
+		DMG_case_6a : Own_Tracked_Alt_Rate_6;
+		TRUE: FALSE;
+		esac;
+	DMG_case_7: case
+		DMG_case_7a : Own_Tracked_Alt_Rate_6;
+		TRUE: TRUE;
+		esac;
+	DMG_case_8: prev_Displayed_Model_Goal_6;
+	esac;
+  Displayed_Model_Goal_7 := case
+	DMG_case_1: FALSE;
+	DMG_case_2: case
+		DMG_case_2a : Own_Tracked_Alt_Rate_7;
+		DMG_case_2b : prev_Displayed_Model_Goal_7;
+		TRUE: FALSE;
+		esac;
+	DMG_case_3: case
+		DMG_case_3a : Own_Tracked_Alt_Rate_7;
+		DMG_case_3b : prev_Displayed_Model_Goal_7;
+		TRUE: TRUE;
+		esac;
+	DMG_case_4: FALSE;
+	DMG_case_5: TRUE;
+	DMG_case_6: case
+		DMG_case_6a : Own_Tracked_Alt_Rate_7;
+		TRUE: FALSE;
+		esac;
+	DMG_case_7: case
+		DMG_case_7a : Own_Tracked_Alt_Rate_7;
+		TRUE: TRUE;
+		esac;
+	DMG_case_8: prev_Displayed_Model_Goal_7;
+	esac;
+  Displayed_Model_Goal_8 := case
+	DMG_case_1: FALSE;
+	DMG_case_2: case
+		DMG_case_2a : Own_Tracked_Alt_Rate_8;
+		DMG_case_2b : prev_Displayed_Model_Goal_8;
+		TRUE: FALSE;
+		esac;
+	DMG_case_3: case
+		DMG_case_3a : Own_Tracked_Alt_Rate_8;
+		DMG_case_3b : prev_Displayed_Model_Goal_8;
+		TRUE: TRUE;
+		esac;
+	DMG_case_4: FALSE;
+	DMG_case_5: TRUE;
+	DMG_case_6: case
+		DMG_case_6a : Own_Tracked_Alt_Rate_8;
+		TRUE: FALSE;
+		esac;
+	DMG_case_7: case
+		DMG_case_7a : Own_Tracked_Alt_Rate_8;
+		TRUE: TRUE;
+		esac;
+	DMG_case_8: prev_Displayed_Model_Goal_8;
+	esac;
+
+
+
+DEFINE
+  New_Climb := (Composite_RA = Climb) & !(prev_Composite_RA = Climb);
+  New_Descend := (Composite_RA = Descend) & !(prev_Composite_RA = Descend);
+  New_Threat :=
+  	(OA_1.in_Advisory_RA & !OA_1.prev_in_Advisory_RA)
+  	|(OA_1.in_Advisory_RA & !OA_1.prev_in_Advisory_RA)
+	;
+  Increase_Climb_Cancelled := 
+  	 !(OA_1.in_Sense_Climb_Positive_Increase | OA_1.in_Sense_Climb_Positive_Increase)
+  	&(OA_1.prev_in_Sense_Climb_Positive_Increase | OA_1.prev_in_Sense_Climb_Positive_Increase)
+	;
+  Increase_Descend_Cancelled := 
+  	 !(OA_1.in_Sense_Descend_Positive_Increase | OA_1.in_Sense_Descend_Positive_Increase)
+  	&(OA_1.prev_in_Sense_Descend_Positive_Increase | OA_1.prev_in_Sense_Descend_Positive_Increase)
+	;
+
+VAR
+VAR
+	prev_Displayed_Model_Goal_6: boolean;
+	prev_Displayed_Model_Goal_5: boolean;
+	prev_Displayed_Model_Goal_4: boolean;
+	prev_Displayed_Model_Goal_3: boolean;
+	prev_Displayed_Model_Goal_2: boolean;
+	prev_Displayed_Model_Goal_1: boolean;
+DEFINE
+	prev_Displayed_Model_Goal_8 := prev_Displayed_Model_Goal_6;
+	prev_Displayed_Model_Goal_7 := prev_Displayed_Model_Goal_6;
+ASSIGN
+  next(prev_Displayed_Model_Goal_6) := case
+	next(Surveillance_Complete_Event): Displayed_Model_Goal_6;
+	TRUE: prev_Displayed_Model_Goal_6;
+	esac;
+  next(prev_Displayed_Model_Goal_5) := case
+	next(Surveillance_Complete_Event): Displayed_Model_Goal_5;
+	TRUE: prev_Displayed_Model_Goal_5;
+	esac;
+  next(prev_Displayed_Model_Goal_4) := case
+	next(Surveillance_Complete_Event): Displayed_Model_Goal_4;
+	TRUE: prev_Displayed_Model_Goal_4;
+	esac;
+  next(prev_Displayed_Model_Goal_3) := case
+	next(Surveillance_Complete_Event): Displayed_Model_Goal_3;
+	TRUE: prev_Displayed_Model_Goal_3;
+	esac;
+  next(prev_Displayed_Model_Goal_2) := case
+	next(Surveillance_Complete_Event): Displayed_Model_Goal_2;
+	TRUE: prev_Displayed_Model_Goal_2;
+	esac;
+  next(prev_Displayed_Model_Goal_1) := case
+	next(Surveillance_Complete_Event): Displayed_Model_Goal_1;
+	TRUE: prev_Displayed_Model_Goal_1;
+	esac;
+
+
+
+VAR
+	prev_Ground_Level_6: boolean;
+	prev_Ground_Level_5: boolean;
+	prev_Ground_Level_4: boolean;
+	prev_Ground_Level_3: boolean;
+	prev_Ground_Level_2: boolean;
+	prev_Ground_Level_1: boolean;
+DEFINE
+	prev_Ground_Level_8 := prev_Ground_Level_6;
+	prev_Ground_Level_7 := prev_Ground_Level_6;
+ASSIGN
+  next(prev_Ground_Level_6) := case
+	next(Surveillance_Complete_Event): Ground_Level_6;
+	TRUE: prev_Ground_Level_6;
+	esac;
+  next(prev_Ground_Level_5) := case
+	next(Surveillance_Complete_Event): Ground_Level_5;
+	TRUE: prev_Ground_Level_5;
+	esac;
+  next(prev_Ground_Level_4) := case
+	next(Surveillance_Complete_Event): Ground_Level_4;
+	TRUE: prev_Ground_Level_4;
+	esac;
+  next(prev_Ground_Level_3) := case
+	next(Surveillance_Complete_Event): Ground_Level_3;
+	TRUE: prev_Ground_Level_3;
+	esac;
+  next(prev_Ground_Level_2) := case
+	next(Surveillance_Complete_Event): Ground_Level_2;
+	TRUE: prev_Ground_Level_2;
+	esac;
+  next(prev_Ground_Level_1) := case
+	next(Surveillance_Complete_Event): Ground_Level_1;
+	TRUE: prev_Ground_Level_1;
+	esac;
+
+DEFINE
+  C_GL_diff_0 := FALSE;
+	GL_diff_1 := !((!(Own_Tracked_Alt_1 <-> Own_Alt_Radio_1)) <-> C_GL_diff_0);
+  C_GL_diff_1 := (!Own_Tracked_Alt_1 & Own_Alt_Radio_1) | (C_GL_diff_0 & (Own_Tracked_Alt_1 <-> Own_Alt_Radio_1));
+	GL_diff_2 := !((!(Own_Tracked_Alt_2 <-> Own_Alt_Radio_2)) <-> C_GL_diff_1);
+  C_GL_diff_2 := (!Own_Tracked_Alt_2 & Own_Alt_Radio_2) | (C_GL_diff_1 & (Own_Tracked_Alt_2 <-> Own_Alt_Radio_2));
+	GL_diff_3 := !((!(Own_Tracked_Alt_3 <-> Own_Alt_Radio_3)) <-> C_GL_diff_2);
+  C_GL_diff_3 := (!Own_Tracked_Alt_3 & Own_Alt_Radio_3) | (C_GL_diff_2 & (Own_Tracked_Alt_3 <-> Own_Alt_Radio_3));
+	GL_diff_4 := !((!(Own_Tracked_Alt_4 <-> Own_Alt_Radio_4)) <-> C_GL_diff_3);
+  C_GL_diff_4 := (!Own_Tracked_Alt_4 & Own_Alt_Radio_4) | (C_GL_diff_3 & (Own_Tracked_Alt_4 <-> Own_Alt_Radio_4));
+	GL_diff_5 := !((!(Own_Tracked_Alt_5 <-> Own_Alt_Radio_5)) <-> C_GL_diff_4);
+  C_GL_diff_5 := (!Own_Tracked_Alt_5 & Own_Alt_Radio_5) | (C_GL_diff_4 & (Own_Tracked_Alt_5 <-> Own_Alt_Radio_5));
+	GL_diff_6 := !((!(Own_Tracked_Alt_6 <-> Own_Alt_Radio_6)) <-> C_GL_diff_5);
+  C_GL_diff_6 := (!Own_Tracked_Alt_6 & Own_Alt_Radio_6) | (C_GL_diff_5 & (Own_Tracked_Alt_6 <-> Own_Alt_Radio_6));
+	GL_diff_7 := !((!(Own_Tracked_Alt_7 <-> Own_Alt_Radio_7)) <-> C_GL_diff_6);
+  C_GL_diff_7 := (!Own_Tracked_Alt_7 & Own_Alt_Radio_7) | (C_GL_diff_6 & (Own_Tracked_Alt_7 <-> Own_Alt_Radio_7));
+	GL_diff_8 := !((!(Own_Tracked_Alt_8 <-> Own_Alt_Radio_8)) <-> C_GL_diff_7);
+  C_GL_diff_8 := (!Own_Tracked_Alt_8 & Own_Alt_Radio_8) | (C_GL_diff_7 & (Own_Tracked_Alt_8 <-> Own_Alt_Radio_8));
+
+
+DEFINE
+  GL_case_1:= Own_Air_Status = On_Ground;
+  GL_case_2:= !(Own_Air_Status = On_Ground) & Ground_Level_tmp1;
+  GL_case_3:= !(Own_Air_Status = On_Ground) & Ground_Level_tmp2;
+  GL_case_4:= !(Own_Air_Status = On_Ground) &
+		(prev_Ground_Level_1=FALSE&
+prev_Ground_Level_2=FALSE&
+prev_Ground_Level_3=FALSE&
+prev_Ground_Level_4=FALSE&
+prev_Ground_Level_5=FALSE&
+prev_Ground_Level_6=FALSE&
+prev_Ground_Level_7=TRUE&
+prev_Ground_Level_8=TRUE&
+TRUE) &
+		((FALSE=Own_Alt_Radio_8 & (case FALSE&!Own_Alt_Radio_8:TRUE; !FALSE&Own_Alt_Radio_8:FALSE;
+FALSE&!Own_Alt_Radio_7:TRUE; !FALSE&Own_Alt_Radio_7:FALSE;
+FALSE&!Own_Alt_Radio_6:TRUE; !FALSE&Own_Alt_Radio_6:FALSE;
+FALSE&!Own_Alt_Radio_5:TRUE; !FALSE&Own_Alt_Radio_5:FALSE;
+FALSE&!Own_Alt_Radio_4:TRUE; !FALSE&Own_Alt_Radio_4:FALSE;
+FALSE&!Own_Alt_Radio_3:TRUE; !FALSE&Own_Alt_Radio_3:FALSE;
+TRUE&!Own_Alt_Radio_2:TRUE; !TRUE&Own_Alt_Radio_2:FALSE;
+TRUE&!Own_Alt_Radio_1:TRUE; !TRUE&Own_Alt_Radio_1:FALSE;
+ TRUE:FALSE; esac)) | (!FALSE&Own_Alt_Radio_8)) &
+		Radio_Altimeter_Status = Valid;
+  GL_case_5:= !(Own_Air_Status = On_Ground) &
+		(prev_Ground_Level_1=FALSE&
+prev_Ground_Level_2=FALSE&
+prev_Ground_Level_3=FALSE&
+prev_Ground_Level_4=FALSE&
+prev_Ground_Level_5=FALSE&
+prev_Ground_Level_6=FALSE&
+prev_Ground_Level_7=TRUE&
+prev_Ground_Level_8=TRUE&
+TRUE) &
+		((Own_Alt_Radio_8=FALSE & (case Own_Alt_Radio_8&!FALSE:TRUE; !Own_Alt_Radio_8&FALSE:FALSE;
+Own_Alt_Radio_7&!FALSE:TRUE; !Own_Alt_Radio_7&FALSE:FALSE;
+Own_Alt_Radio_6&!FALSE:TRUE; !Own_Alt_Radio_6&FALSE:FALSE;
+Own_Alt_Radio_5&!FALSE:TRUE; !Own_Alt_Radio_5&FALSE:FALSE;
+Own_Alt_Radio_4&!FALSE:TRUE; !Own_Alt_Radio_4&FALSE:FALSE;
+Own_Alt_Radio_3&!FALSE:TRUE; !Own_Alt_Radio_3&FALSE:FALSE;
+Own_Alt_Radio_2&!TRUE:TRUE; !Own_Alt_Radio_2&TRUE:FALSE;
+Own_Alt_Radio_1&!TRUE:TRUE; !Own_Alt_Radio_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Alt_Radio_8&FALSE)) &
+		Radio_Altimeter_Status = Valid;
+  GL_case_6:= !(Own_Air_Status = On_Ground) &
+		!(prev_Ground_Level_1=FALSE&
+prev_Ground_Level_2=FALSE&
+prev_Ground_Level_3=FALSE&
+prev_Ground_Level_4=FALSE&
+prev_Ground_Level_5=FALSE&
+prev_Ground_Level_6=FALSE&
+prev_Ground_Level_7=TRUE&
+prev_Ground_Level_8=TRUE&
+TRUE) &
+		((Own_Alt_Radio_8=FALSE & (case Own_Alt_Radio_8&!FALSE:TRUE; !Own_Alt_Radio_8&FALSE:FALSE;
+Own_Alt_Radio_7&!FALSE:TRUE; !Own_Alt_Radio_7&FALSE:FALSE;
+Own_Alt_Radio_6&!FALSE:TRUE; !Own_Alt_Radio_6&FALSE:FALSE;
+Own_Alt_Radio_5&!FALSE:TRUE; !Own_Alt_Radio_5&FALSE:FALSE;
+Own_Alt_Radio_4&!FALSE:TRUE; !Own_Alt_Radio_4&FALSE:FALSE;
+Own_Alt_Radio_3&!FALSE:TRUE; !Own_Alt_Radio_3&FALSE:FALSE;
+Own_Alt_Radio_2&!TRUE:TRUE; !Own_Alt_Radio_2&TRUE:FALSE;
+Own_Alt_Radio_1&!TRUE:TRUE; !Own_Alt_Radio_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Alt_Radio_8&FALSE)) &	
+		Radio_Altimeter_Status = Valid;
+  GL_case_7:= !(Own_Air_Status = On_Ground) &
+		!(prev_Ground_Level_1=FALSE&
+prev_Ground_Level_2=FALSE&
+prev_Ground_Level_3=FALSE&
+prev_Ground_Level_4=FALSE&
+prev_Ground_Level_5=FALSE&
+prev_Ground_Level_6=FALSE&
+prev_Ground_Level_7=TRUE&
+prev_Ground_Level_8=TRUE&
+TRUE) &
+		((FALSE=Own_Alt_Radio_8 & (case FALSE&!Own_Alt_Radio_8:TRUE; !FALSE&Own_Alt_Radio_8:FALSE;
+FALSE&!Own_Alt_Radio_7:TRUE; !FALSE&Own_Alt_Radio_7:FALSE;
+FALSE&!Own_Alt_Radio_6:TRUE; !FALSE&Own_Alt_Radio_6:FALSE;
+FALSE&!Own_Alt_Radio_5:TRUE; !FALSE&Own_Alt_Radio_5:FALSE;
+FALSE&!Own_Alt_Radio_4:TRUE; !FALSE&Own_Alt_Radio_4:FALSE;
+FALSE&!Own_Alt_Radio_3:TRUE; !FALSE&Own_Alt_Radio_3:FALSE;
+TRUE&!Own_Alt_Radio_2:TRUE; !TRUE&Own_Alt_Radio_2:FALSE;
+TRUE&!Own_Alt_Radio_1:TRUE; !TRUE&Own_Alt_Radio_1:FALSE;
+ TRUE:FALSE; esac)) | (!FALSE&Own_Alt_Radio_8)) &	
+		Radio_Altimeter_Status = Valid;
+
+  Ground_Level_1 := case
+	GL_case_1: Own_Tracked_Alt_1;
+	GL_case_2: FALSE;
+	GL_case_3: prev_Ground_Level_1;
+	GL_case_4: GL_diff_1;
+	GL_case_5: prev_Ground_Level_1;
+	GL_case_6: TRUE;
+	GL_case_7: GL_diff_1;
+	esac;
+  Ground_Level_2 := case
+	GL_case_1: Own_Tracked_Alt_2;
+	GL_case_2: FALSE;
+	GL_case_3: prev_Ground_Level_2;
+	GL_case_4: GL_diff_2;
+	GL_case_5: prev_Ground_Level_2;
+	GL_case_6: TRUE;
+	GL_case_7: GL_diff_2;
+	esac;
+  Ground_Level_3 := case
+	GL_case_1: Own_Tracked_Alt_3;
+	GL_case_2: FALSE;
+	GL_case_3: prev_Ground_Level_3;
+	GL_case_4: GL_diff_3;
+	GL_case_5: prev_Ground_Level_3;
+	GL_case_6: TRUE;
+	GL_case_7: GL_diff_3;
+	esac;
+  Ground_Level_4 := case
+	GL_case_1: Own_Tracked_Alt_4;
+	GL_case_2: FALSE;
+	GL_case_3: prev_Ground_Level_4;
+	GL_case_4: GL_diff_4;
+	GL_case_5: prev_Ground_Level_4;
+	GL_case_6: TRUE;
+	GL_case_7: GL_diff_4;
+	esac;
+  Ground_Level_5 := case
+	GL_case_1: Own_Tracked_Alt_5;
+	GL_case_2: FALSE;
+	GL_case_3: prev_Ground_Level_5;
+	GL_case_4: GL_diff_5;
+	GL_case_5: prev_Ground_Level_5;
+	GL_case_6: TRUE;
+	GL_case_7: GL_diff_5;
+	esac;
+  Ground_Level_6 := case
+	GL_case_1: Own_Tracked_Alt_6;
+	GL_case_2: FALSE;
+	GL_case_3: prev_Ground_Level_6;
+	GL_case_4: GL_diff_6;
+	GL_case_5: prev_Ground_Level_6;
+	GL_case_6: TRUE;
+	GL_case_7: GL_diff_6;
+	esac;
+  Ground_Level_7 := case
+	GL_case_1: Own_Tracked_Alt_7;
+	GL_case_2: TRUE;
+	GL_case_3: prev_Ground_Level_7;
+	GL_case_4: GL_diff_7;
+	GL_case_5: prev_Ground_Level_7;
+	GL_case_6: FALSE;
+	GL_case_7: GL_diff_7;
+	esac;
+  Ground_Level_8 := case
+	GL_case_1: Own_Tracked_Alt_8;
+	GL_case_2: TRUE;
+	GL_case_3: prev_Ground_Level_8;
+	GL_case_4: GL_diff_8;
+	GL_case_5: prev_Ground_Level_8;
+	GL_case_6: FALSE;
+	GL_case_7: GL_diff_8;
+	esac;
+
+
+
+DEFINE
+	  Ground_Level_tmp1 := TRUE  & Radio_Altimeter_Status = Not_Valid & prev1_Radio_Altimeter_Status = Not_Valid & prev2_Radio_Altimeter_Status = Not_Valid & prev3_Radio_Altimeter_Status = Not_Valid & prev4_Radio_Altimeter_Status = Not_Valid & prev5_Radio_Altimeter_Status = Not_Valid & prev6_Radio_Altimeter_Status = Not_Valid & prev7_Radio_Altimeter_Status = Not_Valid & prev8_Radio_Altimeter_Status = Not_Valid & prev9_Radio_Altimeter_Status = Not_Valid & prev10_Radio_Altimeter_Status = Not_Valid;
+	  Ground_Level_tmp2 :=
+		(FALSE  | Radio_Altimeter_Status = Not_Valid  | prev1_Radio_Altimeter_Status = Not_Valid  | prev2_Radio_Altimeter_Status = Not_Valid  | prev3_Radio_Altimeter_Status = Not_Valid  | prev4_Radio_Altimeter_Status = Not_Valid  | prev5_Radio_Altimeter_Status = Not_Valid  | prev6_Radio_Altimeter_Status = Not_Valid  | prev7_Radio_Altimeter_Status = Not_Valid  | prev8_Radio_Altimeter_Status = Not_Valid  | prev9_Radio_Altimeter_Status = Not_Valid  | prev10_Radio_Altimeter_Status = Not_Valid )
+		& (FALSE  | Radio_Altimeter_Status = Valid  | prev1_Radio_Altimeter_Status = Valid  | prev2_Radio_Altimeter_Status = Valid  | prev3_Radio_Altimeter_Status = Valid  | prev4_Radio_Altimeter_Status = Valid  | prev5_Radio_Altimeter_Status = Valid  | prev6_Radio_Altimeter_Status = Valid  | prev7_Radio_Altimeter_Status = Valid  | prev8_Radio_Altimeter_Status = Valid  | prev9_Radio_Altimeter_Status = Valid  | prev10_Radio_Altimeter_Status = Valid );
+
+
+VAR
+	prev_Own_Tracked_Alt_Rate_6: boolean;
+	prev_Own_Tracked_Alt_Rate_5: boolean;
+	prev_Own_Tracked_Alt_Rate_4: boolean;
+	prev_Own_Tracked_Alt_Rate_3: boolean;
+	prev_Own_Tracked_Alt_Rate_2: boolean;
+	prev_Own_Tracked_Alt_Rate_1: boolean;
+DEFINE
+	prev_Own_Tracked_Alt_Rate_8 := prev_Own_Tracked_Alt_Rate_6;
+	prev_Own_Tracked_Alt_Rate_7 := prev_Own_Tracked_Alt_Rate_6;
+ASSIGN
+  next(prev_Own_Tracked_Alt_Rate_6) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_Rate_6;
+	TRUE: prev_Own_Tracked_Alt_Rate_6;
+	esac;
+  next(prev_Own_Tracked_Alt_Rate_5) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_Rate_5;
+	TRUE: prev_Own_Tracked_Alt_Rate_5;
+	esac;
+  next(prev_Own_Tracked_Alt_Rate_4) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_Rate_4;
+	TRUE: prev_Own_Tracked_Alt_Rate_4;
+	esac;
+  next(prev_Own_Tracked_Alt_Rate_3) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_Rate_3;
+	TRUE: prev_Own_Tracked_Alt_Rate_3;
+	esac;
+  next(prev_Own_Tracked_Alt_Rate_2) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_Rate_2;
+	TRUE: prev_Own_Tracked_Alt_Rate_2;
+	esac;
+  next(prev_Own_Tracked_Alt_Rate_1) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_Rate_1;
+	TRUE: prev_Own_Tracked_Alt_Rate_1;
+	esac;
+
+
+
+DEFINE
+  Own_Tracked_Alt_Rate_1 := Own_Alt_Rate_1;
+  Own_Tracked_Alt_Rate_2 := Own_Alt_Rate_2;
+  Own_Tracked_Alt_Rate_3 := Own_Alt_Rate_3;
+  Own_Tracked_Alt_Rate_4 := Own_Alt_Rate_4;
+  Own_Tracked_Alt_Rate_5 := Own_Alt_Rate_5;
+  Own_Tracked_Alt_Rate_6 := Own_Alt_Rate_6;
+  Own_Tracked_Alt_Rate_7 := Own_Alt_Rate_6;
+  Own_Tracked_Alt_Rate_8 := Own_Alt_Rate_6;
+
+
+
+
+VAR
+	prev_Own_Tracked_Alt_6: boolean;
+	prev_Own_Tracked_Alt_5: boolean;
+	prev_Own_Tracked_Alt_4: boolean;
+	prev_Own_Tracked_Alt_3: boolean;
+	prev_Own_Tracked_Alt_2: boolean;
+	prev_Own_Tracked_Alt_1: boolean;
+DEFINE
+	prev_Own_Tracked_Alt_8 := prev_Own_Tracked_Alt_6;
+	prev_Own_Tracked_Alt_7 := prev_Own_Tracked_Alt_6;
+ASSIGN
+  next(prev_Own_Tracked_Alt_6) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_6;
+	TRUE: prev_Own_Tracked_Alt_6;
+	esac;
+  next(prev_Own_Tracked_Alt_5) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_5;
+	TRUE: prev_Own_Tracked_Alt_5;
+	esac;
+  next(prev_Own_Tracked_Alt_4) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_4;
+	TRUE: prev_Own_Tracked_Alt_4;
+	esac;
+  next(prev_Own_Tracked_Alt_3) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_3;
+	TRUE: prev_Own_Tracked_Alt_3;
+	esac;
+  next(prev_Own_Tracked_Alt_2) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_2;
+	TRUE: prev_Own_Tracked_Alt_2;
+	esac;
+  next(prev_Own_Tracked_Alt_1) := case
+	next(Surveillance_Complete_Event): Own_Tracked_Alt_1;
+	TRUE: prev_Own_Tracked_Alt_1;
+	esac;
+
+
+
+
+
+VAR
+	Own_Tracked_Alt_6: boolean;
+	Own_Tracked_Alt_5: boolean;
+	Own_Tracked_Alt_4: boolean;
+	Own_Tracked_Alt_3: boolean;
+	Own_Tracked_Alt_2: boolean;
+	Own_Tracked_Alt_1: boolean;
+DEFINE
+	Own_Tracked_Alt_8 := Own_Tracked_Alt_6;
+	Own_Tracked_Alt_7 := Own_Tracked_Alt_6;
+ASSIGN
+  next(Own_Tracked_Alt_6) := case stable: {FALSE,TRUE}; TRUE: Own_Tracked_Alt_6; esac;
+  next(Own_Tracked_Alt_5) := case stable: {FALSE,TRUE}; TRUE: Own_Tracked_Alt_5; esac;
+  next(Own_Tracked_Alt_4) := case stable: {FALSE,TRUE}; TRUE: Own_Tracked_Alt_4; esac;
+  next(Own_Tracked_Alt_3) := case stable: {FALSE,TRUE}; TRUE: Own_Tracked_Alt_3; esac;
+  next(Own_Tracked_Alt_2) := case stable: {FALSE,TRUE}; TRUE: Own_Tracked_Alt_2; esac;
+  next(Own_Tracked_Alt_1) := case stable: {FALSE,TRUE}; TRUE: Own_Tracked_Alt_1; esac;
+
+
+
+
+
+DEFINE
+ND_move := FALSE
+|ND_Altitude_Layer
+| ND_Auto_SL
+| ND_Effective_SL
+	| ND_Composite_RA
+	| ND_Climb_VSL
+	| ND_Descend_VSL
+| ND_Combined_Control
+	;
+SPEC AG !ND_Auto_SL
+
+
+SPEC AG !(Composite_RA_Evaluated_Event & DMG_inconsistent)
+
+
+
+
+
+SPEC AG !(
+	Composite_RA = Descend
+	& Composite_RA_Evaluated_Event
+  	& Diff_OTA_GL_LT_NODESLO
+)
+
+
+
+SPEC AG !(
+	Radio_Altimeter_Status = Valid 
+	& Some_OA_Sense_Descend_Increase
+	& Composite_RA_Evaluated_Event
+	& LE_Own_Alt_Radio_ZNOINCDES)
+
+
+DEFINE LE_Own_Alt_Radio_ZNOINCDES := ((FALSE=Own_Alt_Radio_8 & (case FALSE&!Own_Alt_Radio_8:TRUE; !FALSE&Own_Alt_Radio_8:FALSE;
+FALSE&!Own_Alt_Radio_7:TRUE; !FALSE&Own_Alt_Radio_7:FALSE;
+FALSE&!Own_Alt_Radio_6:TRUE; !FALSE&Own_Alt_Radio_6:FALSE;
+FALSE&!Own_Alt_Radio_5:TRUE; !FALSE&Own_Alt_Radio_5:FALSE;
+FALSE&!Own_Alt_Radio_4:TRUE; !FALSE&Own_Alt_Radio_4:FALSE;
+FALSE&!Own_Alt_Radio_3:TRUE; !FALSE&Own_Alt_Radio_3:FALSE;
+TRUE&!Own_Alt_Radio_2:TRUE; !TRUE&Own_Alt_Radio_2:FALSE;
+TRUE&!Own_Alt_Radio_1:TRUE; !TRUE&Own_Alt_Radio_1:FALSE;
+ TRUE:TRUE; esac)) | (!FALSE&Own_Alt_Radio_8));
+
+
+SPEC AG ((Composite_RA = Climb & Composite_RA_Evaluated_Event) -> GE_Displayed_Model_Goal_Climb_Goal_Table_8)
+
+
+
+ASSIGN
+init(prev_Displayed_Model_Goal_1) := TRUE;
+init(prev_Displayed_Model_Goal_2) := TRUE;
+init(prev_Displayed_Model_Goal_3) := TRUE;
+init(prev_Displayed_Model_Goal_4) := TRUE;
+init(prev_Displayed_Model_Goal_5) := FALSE;
+init(prev_Displayed_Model_Goal_6) := FALSE;
+
+
+DEFINE
+GE_Displayed_Model_Goal_Climb_Goal_Table_8 := ((Displayed_Model_Goal_8=FALSE & (case Displayed_Model_Goal_8&!FALSE:TRUE; !Displayed_Model_Goal_8&FALSE:FALSE;
+Displayed_Model_Goal_7&!FALSE:TRUE; !Displayed_Model_Goal_7&FALSE:FALSE;
+Displayed_Model_Goal_6&!FALSE:TRUE; !Displayed_Model_Goal_6&FALSE:FALSE;
+Displayed_Model_Goal_5&!FALSE:TRUE; !Displayed_Model_Goal_5&FALSE:FALSE;
+Displayed_Model_Goal_4&!TRUE:TRUE; !Displayed_Model_Goal_4&TRUE:FALSE;
+Displayed_Model_Goal_3&!TRUE:TRUE; !Displayed_Model_Goal_3&TRUE:FALSE;
+Displayed_Model_Goal_2&!TRUE:TRUE; !Displayed_Model_Goal_2&TRUE:FALSE;
+Displayed_Model_Goal_1&!TRUE:TRUE; !Displayed_Model_Goal_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Displayed_Model_Goal_8&FALSE));
+
+
+
+
+--Changed by Bwolen
+SPEC AG !(Corrective_Descend_Evaluated_Event & Corrective_Climb = Yes & Corrective_Descend = Yes)
+
+
+
+TRANS
+( TRUE
+&!(  Surveillance_Complete_Event & Auto_SL_Evaluated_Event)
+&!(  Surveillance_Complete_Event & Combined_Control_Evaluated_Event)
+&!(  Surveillance_Complete_Event & Composite_RA_Evaluated_Event)
+&!(  Surveillance_Complete_Event & Corrective_Climb_Evaluated_Event)
+&!(  Surveillance_Complete_Event & Corrective_Descend_Evaluated_Event)
+&!(  Surveillance_Complete_Event & Descend_Inhibit_Evaluated_Event)
+&!(  Surveillance_Complete_Event & Effective_SL_Evaluated_Event)
+&!(  Surveillance_Complete_Event & Vertical_Control_Evaluated_Event)
+&!(  Surveillance_Complete_Event & OA_Evaluated_Event )
+&!(  Auto_SL_Evaluated_Event & Combined_Control_Evaluated_Event)
+&!(  Auto_SL_Evaluated_Event & Composite_RA_Evaluated_Event)
+&!(  Auto_SL_Evaluated_Event & Corrective_Climb_Evaluated_Event)
+&!(  Auto_SL_Evaluated_Event & Corrective_Descend_Evaluated_Event)
+&!(  Auto_SL_Evaluated_Event & Descend_Inhibit_Evaluated_Event)
+&!(  Auto_SL_Evaluated_Event & Effective_SL_Evaluated_Event)
+&!(  Auto_SL_Evaluated_Event & Vertical_Control_Evaluated_Event)
+&!(  Auto_SL_Evaluated_Event & OA_Evaluated_Event)
+&!(  Combined_Control_Evaluated_Event & Composite_RA_Evaluated_Event)
+&!(  Combined_Control_Evaluated_Event & Corrective_Climb_Evaluated_Event)
+&!(  Combined_Control_Evaluated_Event & Corrective_Descend_Evaluated_Event)
+&!(  Combined_Control_Evaluated_Event & Descend_Inhibit_Evaluated_Event)
+&!(  Combined_Control_Evaluated_Event & Effective_SL_Evaluated_Event)
+&!(  Combined_Control_Evaluated_Event & OA_Evaluated_Event)
+&!(  Composite_RA_Evaluated_Event & Corrective_Climb_Evaluated_Event)
+&!(  Composite_RA_Evaluated_Event & Corrective_Descend_Evaluated_Event)
+&!(  Composite_RA_Evaluated_Event & Descend_Inhibit_Evaluated_Event)
+&!(  Composite_RA_Evaluated_Event & Effective_SL_Evaluated_Event)
+&!(  Composite_RA_Evaluated_Event & Vertical_Control_Evaluated_Event)
+&!(  Composite_RA_Evaluated_Event & OA_Evaluated_Event)
+&!(  Corrective_Climb_Evaluated_Event & Corrective_Descend_Evaluated_Event)
+&!(  Corrective_Climb_Evaluated_Event & Descend_Inhibit_Evaluated_Event)
+&!(  Corrective_Climb_Evaluated_Event & Effective_SL_Evaluated_Event)
+&!(  Corrective_Climb_Evaluated_Event & Vertical_Control_Evaluated_Event)
+&!(  Corrective_Climb_Evaluated_Event & OA_Evaluated_Event)
+&!(  Corrective_Descend_Evaluated_Event & Descend_Inhibit_Evaluated_Event)
+&!(  Corrective_Descend_Evaluated_Event & Effective_SL_Evaluated_Event)
+&!(  Corrective_Descend_Evaluated_Event & Vertical_Control_Evaluated_Event)
+&!(  Corrective_Descend_Evaluated_Event & OA_Evaluated_Event)
+&!(  Descend_Inhibit_Evaluated_Event & Effective_SL_Evaluated_Event)
+&!(  Descend_Inhibit_Evaluated_Event & Vertical_Control_Evaluated_Event)
+&!(  Descend_Inhibit_Evaluated_Event & OA_Evaluated_Event)
+&!(  Effective_SL_Evaluated_Event & Vertical_Control_Evaluated_Event)
+&!(  Effective_SL_Evaluated_Event & OA_Evaluated_Event)
+&!(  Vertical_Control_Evaluated_Event & OA_Evaluated_Event)
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+MODULE OA(
+	stable,
+	Surveillance_Complete_Event,
+	Effective_SL_Evaluated_Event,
+	OA_Evaluated_Event,
+	Climb_Inhibit,
+	Descend_Inhibit,
+	Increase_Climb_Inhibit,
+	Increase_Descend_Inhibit,
+	Own_Tracked_Alt_Rate_1,
+	Own_Tracked_Alt_Rate_2,
+	Own_Tracked_Alt_Rate_3,
+	Own_Tracked_Alt_Rate_4,
+	Own_Tracked_Alt_Rate_5,
+	Own_Tracked_Alt_Rate_6,
+	Own_Tracked_Alt_Rate_7,
+	Own_Tracked_Alt_Rate_8,
+
+	No_Positive,
+	No_Negative,
+	No_Climb,
+	No_Descend,
+	dummy
+	)
+
+VAR
+
+Track_Status :		{Threat_Not_Tracked, Not_Tracked, Tracked};
+Sense :			{Climb,Descend};
+Strength:		{Strength_Not_Selected, VSL2000, VSL1000, VSL500, VSL0, Nominal, Increase};
+
+
+Advisory:		{RA, TA_RA_Delay};
+
+Altitude_Reporting:	{Yes, No, Lost};
+Threat_Reversal : 	{Reversed, Not_Reversed};
+Threat_Crossing : 	{Int_Crossing, Own_Crossing, No_Crossing};
+
+
+VAR prev_Advisory : {RA, TA_RA_Delay};
+ASSIGN
+  next(prev_Advisory) := case
+    next(Surveillance_Complete_Event): Advisory;
+    TRUE: prev_Advisory;
+  esac;
+
+
+VAR prev_Track_Status : {Threat_Not_Tracked, Not_Tracked, Tracked};
+ASSIGN
+  next(prev_Track_Status) := case
+    next(Surveillance_Complete_Event): Track_Status;
+    TRUE: prev_Track_Status;
+  esac;
+
+VAR prev_Sense : {Climb,Descend};
+ASSIGN
+  next(prev_Sense) := case
+    next(Surveillance_Complete_Event): Sense;
+    TRUE: prev_Sense;
+  esac;
+
+VAR prev_Strength : {Strength_Not_Selected, VSL2000, VSL1000, VSL500, VSL0, Nominal, Increase};
+ASSIGN
+  next(prev_Strength) := case
+    next(Surveillance_Complete_Event): Strength;
+    TRUE: prev_Strength;
+  esac;
+
+
+
+ASSIGN
+
+init(Track_Status) := Not_Tracked;
+init(prev_Track_Status) := Not_Tracked;
+
+next(Track_Status) := case
+	Effective_SL_Evaluated_Event : {Threat_Not_Tracked, Not_Tracked, Tracked};
+	TRUE : Track_Status;
+	esac;
+
+DEFINE
+  Dont_Increase_Climb := 
+  	FALSE
+	| !in_Sense_Climb_Positive
+	| Increase_Climb_Inhibit = Inhibited
+	| ((Own_Tracked_Alt_Rate_8=FALSE & (case Own_Tracked_Alt_Rate_8&!FALSE:TRUE; !Own_Tracked_Alt_Rate_8&FALSE:FALSE;
+Own_Tracked_Alt_Rate_7&!FALSE:TRUE; !Own_Tracked_Alt_Rate_7&FALSE:FALSE;
+Own_Tracked_Alt_Rate_6&!FALSE:TRUE; !Own_Tracked_Alt_Rate_6&FALSE:FALSE;
+Own_Tracked_Alt_Rate_5&!TRUE:TRUE; !Own_Tracked_Alt_Rate_5&TRUE:FALSE;
+Own_Tracked_Alt_Rate_4&!TRUE:TRUE; !Own_Tracked_Alt_Rate_4&TRUE:FALSE;
+Own_Tracked_Alt_Rate_3&!FALSE:TRUE; !Own_Tracked_Alt_Rate_3&FALSE:FALSE;
+Own_Tracked_Alt_Rate_2&!FALSE:TRUE; !Own_Tracked_Alt_Rate_2&FALSE:FALSE;
+Own_Tracked_Alt_Rate_1&!TRUE:TRUE; !Own_Tracked_Alt_Rate_1&TRUE:FALSE;
+ TRUE:TRUE; esac)) | (!Own_Tracked_Alt_Rate_8&FALSE))
+	| Climb_Inhibit = Inhibited			
+	| No_Positive
+	| No_Climb
+	;
+  Dont_Increase_Descend := 
+  	FALSE
+	| !in_Sense_Descend_Positive
+	| Increase_Descend_Inhibit = Inhibited
+	| ((TRUE=Own_Tracked_Alt_Rate_8 & (case TRUE&!Own_Tracked_Alt_Rate_8:TRUE; !TRUE&Own_Tracked_Alt_Rate_8:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_7:TRUE; !TRUE&Own_Tracked_Alt_Rate_7:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_6:TRUE; !TRUE&Own_Tracked_Alt_Rate_6:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_5:TRUE; !FALSE&Own_Tracked_Alt_Rate_5:FALSE;
+FALSE&!Own_Tracked_Alt_Rate_4:TRUE; !FALSE&Own_Tracked_Alt_Rate_4:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_3:TRUE; !TRUE&Own_Tracked_Alt_Rate_3:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_2:TRUE; !TRUE&Own_Tracked_Alt_Rate_2:FALSE;
+TRUE&!Own_Tracked_Alt_Rate_1:TRUE; !TRUE&Own_Tracked_Alt_Rate_1:FALSE;
+ TRUE:TRUE; esac)) | (!TRUE&Own_Tracked_Alt_Rate_8))
+	| Descend_Inhibit = Inhibited			
+	| No_Positive
+	| No_Descend
+	;
+  Dont_Descend :=
+  	Descend_Inhibit = Inhibited
+	| No_Positive
+	| No_Descend
+	;
+  Dont_Climb :=
+  	Climb_Inhibit = Inhibited
+	| No_Positive
+	| No_Climb
+	;
+
+ASSIGN
+
+next(Sense) := case
+	!Effective_SL_Evaluated_Event : Sense;
+	TRUE: {Climb,Descend};
+	esac;
+
+DEFINE
+
+SS := case
+	Dont_Climb & Dont_Descend & Dont_Increase_Climb & Dont_Increase_Descend:
+		{Strength_Not_Selected};
+	!Dont_Climb & Dont_Descend & Dont_Increase_Climb & Dont_Increase_Descend: case
+		next(Sense) = Climb: {Strength_Not_Selected, Nominal};
+		TRUE: {Strength_Not_Selected};
+		esac;
+	Dont_Climb & !Dont_Descend & Dont_Increase_Climb & Dont_Increase_Descend: case
+		next(Sense) = Descend: {Strength_Not_Selected, Nominal};
+		TRUE: {Strength_Not_Selected};
+		esac;
+	Dont_Climb & Dont_Descend & !Dont_Increase_Climb & Dont_Increase_Descend: case
+		next(Sense) = Descend: {Strength_Not_Selected};
+		TRUE: {Strength_Not_Selected, Increase};
+		esac;
+	Dont_Climb & Dont_Descend & Dont_Increase_Climb & !Dont_Increase_Descend: case
+		next(Sense) = Climb: {Strength_Not_Selected};
+		TRUE: {Strength_Not_Selected, Increase};
+		esac;
+	!Dont_Climb & !Dont_Descend & Dont_Increase_Climb & Dont_Increase_Descend:
+		{Strength_Not_Selected, Nominal};
+	!Dont_Climb & Dont_Descend & !Dont_Increase_Climb & Dont_Increase_Descend: case
+		next(Sense) = Descend: {Strength_Not_Selected};
+		TRUE: {Strength_Not_Selected, Nominal, Increase};
+		esac;
+	!Dont_Climb & Dont_Descend & Dont_Increase_Climb & !Dont_Increase_Descend: case
+		next(Sense) = Descend: {Strength_Not_Selected, Increase};
+		TRUE: {Strength_Not_Selected, Nominal};
+		esac;
+	Dont_Climb & !Dont_Descend & !Dont_Increase_Climb & Dont_Increase_Descend: case
+		next(Sense) = Climb: {Strength_Not_Selected, Increase};
+		TRUE: {Strength_Not_Selected, Nominal};
+		esac;
+	Dont_Climb & !Dont_Descend & Dont_Increase_Climb & !Dont_Increase_Descend: case
+		next(Sense) = Climb: {Strength_Not_Selected};
+		TRUE: {Strength_Not_Selected, Nominal, Increase};
+		esac;
+	Dont_Climb & Dont_Descend & !Dont_Increase_Climb & !Dont_Increase_Descend:
+		{Strength_Not_Selected, Increase};
+	Dont_Climb & !Dont_Descend & !Dont_Increase_Climb & !Dont_Increase_Descend: case
+		next(Sense) = Descend: {Strength_Not_Selected, Nominal, Increase};
+		TRUE: {Strength_Not_Selected, Increase};
+		esac;
+	!Dont_Climb & Dont_Descend & !Dont_Increase_Climb & !Dont_Increase_Descend: case
+		next(Sense) = Climb: {Strength_Not_Selected, Nominal, Increase};
+		TRUE: {Strength_Not_Selected, Increase};
+		esac;
+	!Dont_Climb & !Dont_Descend & Dont_Increase_Climb & !Dont_Increase_Descend: case
+		next(Sense) = Descend: {Strength_Not_Selected, Nominal, Increase};
+		TRUE: {Strength_Not_Selected, Nominal};
+		esac;
+	!Dont_Climb & !Dont_Descend & !Dont_Increase_Climb & Dont_Increase_Descend: case
+		next(Sense) = Climb: {Strength_Not_Selected, Nominal, Increase};
+		TRUE: {Strength_Not_Selected, Nominal};
+		esac;
+	TRUE: {Strength_Not_Selected, Nominal, Increase};
+	esac;
+
+ASSIGN
+next(Strength) := case
+	!Effective_SL_Evaluated_Event: Strength;
+	No_Negative: SS;
+	TRUE: SS union {VSL2000, VSL1000, VSL500, VSL0};
+	esac;
+
+
+
+next(Altitude_Reporting) := case
+	Effective_SL_Evaluated_Event : {Yes, No, Lost};
+	TRUE : Altitude_Reporting;
+	esac;
+next(Threat_Reversal) := case
+	Effective_SL_Evaluated_Event : case
+		next(Sense) = Sense: Not_Reversed;
+		TRUE: Reversed;
+		esac;
+	TRUE : Threat_Reversal;
+	esac;
+next(Threat_Crossing) := case
+	Effective_SL_Evaluated_Event : {Int_Crossing, Own_Crossing, No_Crossing};
+	TRUE : Threat_Crossing;
+	esac;
+
+next(Advisory) := case
+	Effective_SL_Evaluated_Event : {RA, TA_RA_Delay};
+	TRUE : Advisory;
+	esac;
+
+
+
+DEFINE
+
+in_Tracked := Track_Status = Tracked;
+in_Not_Tracked := Track_Status = Not_Tracked;
+in_Sense_Climb := in_Tracked & Sense = Climb;
+in_Sense_Descend := in_Tracked & Sense = Descend;
+in_Sense_Climb_Positive := in_Sense_Climb & Strength in {Nominal, Increase};
+in_Sense_Climb_Negative := in_Sense_Climb & Strength in {VSL2000, VSL1000, VSL500, VSL0};
+in_Sense_Descend_Positive := in_Sense_Descend & Strength in {Nominal, Increase};
+in_Sense_Descend_Negative := in_Sense_Descend & Strength in {VSL2000, VSL1000, VSL500, VSL0};
+in_Sense_Positive := in_Sense_Climb_Positive | in_Sense_Descend_Positive;
+in_Sense_Negative := in_Sense_Climb_Negative | in_Sense_Descend_Negative;
+in_Sense_Climb_Positive_Increase := in_Sense_Climb & Strength = Increase;
+in_Sense_Climb_Positive_Nominal := in_Sense_Climb & Strength = Nominal;
+in_Sense_Descend_Positive_Increase := in_Sense_Descend & Strength = Increase;
+in_Sense_Descend_Positive_Nominal := in_Sense_Descend & Strength = Nominal;
+in_Sense_Climb_Negative_VSL0 := in_Sense_Climb & Strength = VSL0;
+in_Sense_Climb_Negative_VSL500 := in_Sense_Climb & Strength = VSL500;
+in_Sense_Climb_Negative_VSL1000 := in_Sense_Climb & Strength = VSL1000;
+in_Sense_Climb_Negative_VSL2000 := in_Sense_Climb & Strength = VSL2000;
+in_Sense_Descend_Negative_VSL0 := in_Sense_Descend & Strength = VSL0;
+in_Sense_Descend_Negative_VSL500 := in_Sense_Descend & Strength = VSL500;
+in_Sense_Descend_Negative_VSL1000 := in_Sense_Descend & Strength = VSL1000;
+in_Sense_Descend_Negative_VSL2000 := in_Sense_Descend & Strength = VSL2000;
+
+in_Altitude_Reporting_Lost := in_Tracked & Altitude_Reporting = Lost;
+
+in_Advisory_RA := in_Tracked & Advisory = RA;
+
+prev_in_Tracked := prev_Track_Status = Tracked;
+prev_in_Not_Tracked := prev_Track_Status = Not_Tracked;
+prev_in_Sense_Climb := prev_in_Tracked & prev_Sense = Climb;
+prev_in_Sense_Descend := prev_in_Tracked & prev_Sense = Descend;
+prev_in_Sense_Climb_Positive := prev_in_Sense_Climb & prev_Strength in {Nominal, Increase};
+prev_in_Sense_Climb_Negative := prev_in_Sense_Climb & prev_Strength in {VSL2000, VSL1000, VSL500, VSL0};
+prev_in_Sense_Descend_Positive := prev_in_Sense_Climb & prev_Strength in {Nominal, Increase};
+prev_in_Sense_Descend_Negative := prev_in_Sense_Climb & prev_Strength in {VSL2000, VSL1000, VSL500, VSL0};
+prev_in_Sense_Climb_Positive_Increase := prev_in_Sense_Climb & prev_Strength = Increase;
+prev_in_Sense_Descend_Positive_Increase := prev_in_Sense_Descend & prev_Strength = Increase;	
+
+
+prev_in_Advisory_RA := prev_in_Sense_Climb & prev_Advisory = RA;
+

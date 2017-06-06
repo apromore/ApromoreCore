@@ -11,6 +11,8 @@ import java.util.Set;
  * Created by Heerko Groefsema on 10-Apr-17.
  */
 public class EventHandler {
+	private static int logLevel = 1;
+	
 	private Set<VerificationEventListener> verificationEventListenerSet;
 	private Set<VerificationLogListener> verificationLogListenerSet;
 	
@@ -42,40 +44,39 @@ public class EventHandler {
 			listener.verificationEvent(verificationEvent);
 	}
 	
+	public void logDebug(String message) {
+		pushLog(new VerificationLogEvent(VerificationLogEvent.DEBUG, message));
+	}
+	
 	public void logVerbose(String message) {
-		VerificationLogEvent verificationLogEvent = new VerificationLogEvent(VerificationLogEvent.VERBOSE, message);
-		
-		for(VerificationLogListener listener: verificationLogListenerSet)
-			listener.verificationLogEvent(verificationLogEvent);
+		pushLog(new VerificationLogEvent(VerificationLogEvent.VERBOSE, message));
 	}
 	
 	public void logInfo(String message) {
-		VerificationLogEvent verificationLogEvent = new VerificationLogEvent(VerificationLogEvent.INFO, message);
-		
-		for(VerificationLogListener listener: verificationLogListenerSet)
-			listener.verificationLogEvent(verificationLogEvent);
+		pushLog(new VerificationLogEvent(VerificationLogEvent.INFO, message));
 	}
 	
 	public void logWarning(String message) {
-		VerificationLogEvent verificationLogEvent = new VerificationLogEvent(VerificationLogEvent.WARNING, message);
-		
-		for(VerificationLogListener listener: verificationLogListenerSet)
-			listener.verificationLogEvent(verificationLogEvent);
+		pushLog(new VerificationLogEvent(VerificationLogEvent.WARNING, message));
 	}
 	
 	public void logError(String message) {
-		VerificationLogEvent verificationLogEvent = new VerificationLogEvent(VerificationLogEvent.ERROR, message);
-		
-		for(VerificationLogListener listener: verificationLogListenerSet)
-			listener.verificationLogEvent(verificationLogEvent);
+		pushLog(new VerificationLogEvent(VerificationLogEvent.ERROR, message));
 	}
 	
 	public void logCritical(String message) {
-		VerificationLogEvent verificationLogEvent = new VerificationLogEvent(VerificationLogEvent.CRITICAL, message);
-		
-		for(VerificationLogListener listener: verificationLogListenerSet)
-			listener.verificationLogEvent(verificationLogEvent);
+		pushLog(new VerificationLogEvent(VerificationLogEvent.CRITICAL, message));
 		
 		System.exit(-1);
 	}
+	
+	private void pushLog(VerificationLogEvent e) {
+		if(e.getLogLevel() >= EventHandler.logLevel)
+			for(VerificationLogListener listener: verificationLogListenerSet)
+				listener.verificationLogEvent(e);
+	}
+	
+	public static void setLogLevel(int logLevel) { EventHandler.logLevel = logLevel; }
+	
+	public static int getLogLevel() { return logLevel; }
 }

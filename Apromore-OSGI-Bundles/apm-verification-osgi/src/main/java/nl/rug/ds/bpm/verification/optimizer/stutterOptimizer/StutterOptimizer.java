@@ -215,7 +215,7 @@ public class StutterOptimizer {
 				//toPartion.add(next);
 				count++;
 				if (count >= eventCount) {
-					eventHandler.logInfo("Partitioning states into stutter blocks (at " + count + " states)");
+					eventHandler.logVerbose("Partitioning states into stutter blocks (at " + count + " states)");
 					eventCount += 160000;
 				}
 				

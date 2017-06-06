@@ -1,0 +1,16 @@
+-- A simple counter
+MODULE main
+VAR
+  y : 0..15;
+
+ASSIGN
+  init(y) := 0;
+
+TRANS
+  case
+    y = 7 :  next(y) = 0;
+    TRUE     :  next(y) = (y + 1) mod 16;
+  esac
+
+LTLSPEC
+ F(X y=8 | O y<3)
