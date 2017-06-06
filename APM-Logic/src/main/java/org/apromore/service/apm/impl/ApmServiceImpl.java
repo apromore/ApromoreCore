@@ -35,8 +35,9 @@ public class ApmServiceImpl implements APMService {
     String xml = "";
 
     @Override
-    public String[] getSpecification(PetriNet[] nets, String silentPrefix) {
+    public String[] getSpecification(PetriNet[] nets, String silentPrefix, Boolean viresp, Boolean viprec, Boolean veiresp, Boolean veresp, Boolean vconf, Boolean vpar) {
         VariabilitySpecification vs = new VariabilitySpecification(nets, "silent");
-        return SpecificationToXML.getOutput(vs, "silent");
+
+        return SpecificationToXML.getOutput(vs, "silent", viresp, viprec, veiresp, veresp, vconf, vpar);
     }
 }

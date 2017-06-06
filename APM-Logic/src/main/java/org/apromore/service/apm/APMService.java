@@ -26,5 +26,5 @@ import hub.top.petrinet.PetriNet;
  */
 public interface APMService {
 
-    String[] getSpecification(PetriNet[] nets, String silentPrefix);
+    String[] getSpecification(PetriNet[] nets, String silentPrefix, Boolean viresp, Boolean viprec, Boolean veiresp, Boolean veresp, Boolean vconf, Boolean vpar);
 }

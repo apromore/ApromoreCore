@@ -31,6 +31,7 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.dialogController.SelectDynamicListController;
 import org.apromore.service.apm.compliance.APMService;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -183,6 +184,13 @@ public class APMController {
             // the data append to each row with simple label
             row.appendChild(new Label(Integer.toString(index)));
             row.appendChild(new Label(data));
+
+            System.out.println(data + " -- " + data.contains("true"));
+            if(data.contains("true"))
+                row.setStyle("background:#C4E0B2;!important");
+            else
+                row.setStyle("background:#f0997c;!important");
+
             // we create a thumb up/down comment to each row
         }
     }
