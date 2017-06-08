@@ -163,7 +163,8 @@ public class DirectlyFollowGraphPlus {
                 break;
             case GUB: generateNoiseFilteredDFG();
                 break;
-            case LPS: noiseFilter(false);
+            case LPS: filterWithGuarantees();
+//                noiseFilter(false);
                 break;
             case WTH: filterWithThreshold();
                 break;
@@ -581,7 +582,10 @@ public class DirectlyFollowGraphPlus {
     private void filterWithGuarantees() {
         Map<Integer, Map<Integer, Set<DFGEdge>>> paths = new HashMap<>();
         Map<Integer, Map<Integer, Integer>> capacities = new HashMap<>();
+        Set<DFGEdge> selected;
         Set<DFGEdge> path;
+
+        System.out.println("DEBUG - edges before filtering: " + edges.size());
 
         for( int n : nodes.keySet() ) {
             if( n == startcode || n == endcode ) continue;
@@ -590,7 +594,7 @@ public class DirectlyFollowGraphPlus {
             for( DFGEdge in : incomings.get(n) ) {
                 path = new HashSet<>();
                 path.add(in);
-                explore(n, n, startcode, path, in.getFrequency(), paths, capacities);
+                explore(in.getSourceCode(), n, startcode, path, in.getFrequency(), paths, capacities);
             }
         }
 
@@ -599,27 +603,46 @@ public class DirectlyFollowGraphPlus {
             for( DFGEdge out : outgoings.get(n) ) {
                 path = new HashSet<>();
                 path.add(out);
-                explore(n, n, endcode, path, out.getFrequency(), paths, capacities);
+                explore(out.getTargetCode(), n, endcode, path, out.getFrequency(), paths, capacities);
             }
         }
+
+        selected = new HashSet<>();
+        for( int k : paths.keySet() )
+            for( Set<DFGEdge> s : paths.get(k).values() ) selected.addAll(s);
+
+        for( DFGEdge e : new HashSet<>(edges) ) if( !selected.contains(e) ) removeEdge(e, false);
+
+        System.out.println("DEBUG - edges after filtering: " + edges.size());
     }
 
     private void explore(int next, int source, int sink, Set<DFGEdge> path, int capacity, Map<Integer, Map<Integer, Set<DFGEdge>>> paths, Map<Integer, Map<Integer, Integer>> capacities) {
         Set<DFGEdge> newPath;
+        Set<DFGEdge> toExplore;
         int newCapacity;
 
-        for(DFGEdge in : incomings.get(next)) {
-            if( path.contains(in) ) return; //not interested in loops
+        System.out.println("DEBUG - EXPLORE: " + source + " -> " + sink);
+        if( sink == startcode ) toExplore = new HashSet<>(incomings.get(next));
+        else toExplore = new HashSet<>(outgoings.get(next));
+
+        for( DFGEdge e : toExplore ) {
+//            System.out.println("DEBUG - EXPLORE: " + e.print());
+            if( path.contains(e) ) continue; //not interested in loops
             newPath = new HashSet<>(path);
-            newPath.add(in);
+            newPath.add(e);
+
+            for(DFGEdge ee : newPath ) System.out.println("DEBUG - path: " + ee.print() );
 
             newCapacity = capacity;
-            if( capacity > in.getFrequency() ) newCapacity = in.getFrequency();
+            if( capacity > e.getFrequency() ) newCapacity = e.getFrequency();
 
-            next = (sink == startcode ? in.getSourceCode() : in.getTargetCode());
+            if( sink == startcode ) next = e.getSourceCode();
+            else next = e.getTargetCode();
+
             if( next == sink ) {
+                System.out.println("DEBUG - EXPLORE FINISHED: " + source + " -> " + sink);
                 if( !paths.get(source).containsKey(sink) ) {
-                    paths.get(source).put(sink, path);
+                    paths.get(source).put(sink, newPath);
                     capacities.get(source).put(sink, newCapacity);
                 } else if( (newCapacity > capacities.get(source).get(sink)) || ((newCapacity == capacities.get(source).get(sink)) && (newPath.size() < paths.get(source).get(sink).size())) ) {
                     paths.get(source).put(sink, newPath);
