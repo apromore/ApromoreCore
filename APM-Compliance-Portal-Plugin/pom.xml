@@ -34,7 +34,7 @@
     <packaging>war</packaging>
     <!-- Unique name of the plug-in -->
     <artifactId>apm-compliance-portal-plugin</artifactId>
-    <name>APM portal plugin</name>
+    <name>APM compliance portal plugin</name>
     <description>Some description</description>
 
     <build>

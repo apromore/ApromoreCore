@@ -33,7 +33,7 @@
 
     <artifactId>apm-compliance-logic</artifactId>
     <packaging>bundle</packaging>
-    <name>APM service</name>
+    <name>APM compliance service</name>
 
     <build>
         <plugins>
