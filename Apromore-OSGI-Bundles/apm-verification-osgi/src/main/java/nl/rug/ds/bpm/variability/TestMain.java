@@ -43,7 +43,10 @@ public class TestMain {
         try {
             PetriNet net = PNMLReader.parse(new File("nets/pnml.pnml"));
 
-            System.out.println(pnmlVerifier.verify(net, xml));
+            String[] results = pnmlVerifier.verify(net, xml);
+
+            for(int i =0; i < results.length; i++)
+                System.out.println(results[i]);
         }catch(Exception e){
             e.printStackTrace();
         }

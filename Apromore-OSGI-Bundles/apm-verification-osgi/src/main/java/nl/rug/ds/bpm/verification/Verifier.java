@@ -81,7 +81,8 @@ public class Verifier {
 		kripkeStructures = new HashSet<>();
 		
 		this.bpmSpecification = bpmSpecification;
-		
+
+		System.out.println("verifier");
 		verify(nusmv2, doReduction);
 	}
 

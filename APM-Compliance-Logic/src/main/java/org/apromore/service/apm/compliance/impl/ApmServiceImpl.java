@@ -36,4 +36,12 @@ public class ApmServiceImpl implements APMService {
         System.out.println("pnml verifier created");
         return pnmlVerifier.verify(net, xmlSpecification);
     }
+
+    @Override
+    public String[] getVerification(PetriNet net, String[] specifications){
+        System.out.println("enter compliance logic");
+        PnmlVerifier pnmlVerifier = new PnmlVerifier();
+        System.out.println("pnml verifier created");
+        return pnmlVerifier.verify(net, specifications);
+    }
 }
