@@ -55,7 +55,7 @@ public class BPMNSerializationTest {
 	//final static String path = "C:\\Users\\Sven Wagner-Boysen\\workspace\\oryx\\editor\\server\\src\\de\\hpi\\bpmn2_0\\";
 	final static String path = "platform extensions/bpmn20xmlbasic/src/de/hpi/bpmn2_0/";
 	//final static String schemaFilePath = "C:\\Users\\Sven Wagner-Boysen\\workspace\\oryx\\editor\\lib\\xsd\\bpmn20\\Bpmn20.xsd";
-	final static String schemaFilePath = "platform extensions/bpmn20xmlbasic/" + "src/test/xsd/BPMN20.xsd";
+	final static String schemaFilePath = "src/test/xsd/BPMN20.xsd";
 	
 	final static String batchPath = "C:\\Users\\Sven Wagner-Boysen\\Documents\\oryx\\BPMN2.0\\TestProcesses";
 	final static boolean doBatchTest = false;
