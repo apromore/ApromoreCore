@@ -119,7 +119,7 @@ public class DifferenceML implements Comparable<DifferenceML>{
     }
 
     public void setNewTasks(List<String> newTasks) {
-        this.newTasks = new ArrayList<>(new HashSet<>(newTasks));
+        this.newTasks = new ArrayList<>(new LinkedHashSet<>(newTasks));
     }
 
     public float getRanking(){ return ranking; }

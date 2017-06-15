@@ -200,6 +200,35 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
         return feedbackArray;
 	}
 
+	public String[] verify(PetriNet pn, String[] specifications) {
+		//Make step class for specific Petri net type
+		ExtPnmlStepper stepper;
+		try {
+			stepper = new ExtPnmlStepper(pn);
+
+			addSpecifications(specifications);
+			BPMSpecification bpmSpecification = getSpecifications();
+
+			//Make a verifier which uses that step class
+			Verifier verifier = new Verifier(stepper, eventHandler);
+			//Start verification
+			verifier.verify(bpmSpecification, nusmv2Binary, reduce);
+		} catch (Exception e) {
+			String[] res = {"Failed to load pnml"};
+			eventHandler.logCritical("Failed to load pnml");
+			return res;
+		}
+
+		String[] feedbackArray = new String[feedback.size()];
+		int i = 0;
+		for(String f : feedback){
+			feedbackArray[i] = f;
+			i++;
+		}
+
+		return feedbackArray;
+	}
+
 	public void verify(String pnml, String specification) {
 		File pnmlFile = new File(pnml);
 		File specificationFile = new File(specification);
@@ -287,7 +316,8 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
 	public void verificationEvent(VerificationEvent event) {
 		//Use for user feedback
 		//Event returns: specification id, formula, type, result, and specification itself
-        feedback.add(event.toString());
+//        feedback.add(event.toString());
+        feedback.add(event.getUserFriendlyFeedback());
 //		System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "] FEEDBACK\t: " + event.toString());
 	}
 	

@@ -675,6 +675,20 @@ public class DiffMLGraphicalVerbalizerNew {
     }
 
     private DifferenceML getTASKSUBDiff(LinkedList<Operation> path2Leaf, LinkedList<Operation> source, LinkedList<Operation> target) {
+        LinkedList<Operation> prunedSource = new LinkedList<>();
+        LinkedList<Operation> prunedTarget = new LinkedList<>();
+
+        for(Operation op: source)
+            if(commonLabels.contains(op.label))
+                prunedSource.add(op);
+
+        for(Operation op: target)
+            if(commonLabels.contains(op.label))
+                prunedTarget.add(op);
+
+        if(prunedSource.isEmpty() || prunedTarget.isEmpty())
+            return null;
+
         int i = Math.min(path2Leaf.indexOf(source.get(0)), path2Leaf.indexOf(target.get(0))) - 1;
 
         float impact = 1;
@@ -682,12 +696,12 @@ public class DiffMLGraphicalVerbalizerNew {
         LinkedList<Operation> rHidesOps;
         LinkedList<String> newTasks = new LinkedList<>();
 
-        if(source.getFirst().op.equals(Op.RHIDE)) {
-            impact = computeImpact(getMinimum(target));
-            rHidesOps = source;
+        if(prunedSource.getFirst().op.equals(Op.RHIDE)) {
+            impact = computeImpact(getMinimum(prunedTarget));
+            rHidesOps = prunedSource;
         }else {
-            impact = computeImpact(getMinimum(source));
-            rHidesOps = target;
+            impact = computeImpact(getMinimum(prunedSource));
+            rHidesOps = prunedTarget;
         }
 
         if (path2Leaf.indexOf(source.get(0)) < path2Leaf.indexOf(target.get(0)))
@@ -746,16 +760,27 @@ public class DiffMLGraphicalVerbalizerNew {
         return difference;
     }
 
+    public boolean containsIntervalLabel(LinkedList<Operation> interval, String label){
+        for(Operation op : interval)
+            if(op.label.equals(label))
+                return  true;
+
+        return false;
+    }
+
     private DifferenceML getUNMRepetitionDiff2(Pair<List<Operation>, LinkedList<Operation>> pairMatches, LinkedList<Operation> path2Leaf, int i, LinkedList<Operation> hides) {
         float impact = computeImpact(getMinimum(pairMatches.getSecond()));
+        Operation context = path2Leaf.get(path2Leaf.indexOf(hides.getFirst())-1);
+        boolean isUNMRep = true;
+
+        if((isRHide(context) || isMatch(context)) && !containsIntervalLabel(hides,context.label))
+            return getDuplicationDiff(pairMatches, path2Leaf, i, hides, impact, context);
 
         String sentence = verbalizeUnmRep("log", path2Leaf.get(i).label, hides);
-        System.out.println(sentence + " -- Impact = " + impact);
-
         HashSet<Integer> ids = new HashSet<>();
         for(Operation op : pairMatches.getFirst())
-        if(commonLabels.contains(pes2.getLabel(((Pair<Integer,Integer>)op.target).getSecond())))
-            ids.add(((Pair<Integer,Integer>)op.target).getSecond());
+            if(commonLabels.contains(pes2.getLabel(((Pair<Integer,Integer>)op.target).getSecond())))
+                ids.add(((Pair<Integer,Integer>)op.target).getSecond());
 
         if(ids.isEmpty())
             return null;
@@ -806,6 +831,60 @@ public class DiffMLGraphicalVerbalizerNew {
         difference.setA(a);
         difference.setEnd(end);
         difference.setType("UNMREPETITION2");
+
+        // DEBUG
+//        printDiff(start, end, new LinkedList<String>(), a);
+
+        return difference;
+    }
+
+    private DifferenceML getDuplicationDiff(Pair<List<Operation>, LinkedList<Operation>> pairMatches, LinkedList<Operation> path2Leaf, int i, LinkedList<Operation> hides, float impact, Operation context) {
+        String sentence = verbalizeUnmRep("log", path2Leaf.get(i).label, hides);
+        HashSet<Integer> ids = new HashSet<>();
+        for(Operation op : pairMatches.getFirst())
+            if(commonLabels.contains(pes2.getLabel(((Pair<Integer,Integer>)op.target).getSecond())))
+                ids.add(((Pair<Integer,Integer>)op.target).getSecond());
+
+        if(ids.isEmpty())
+            return null;
+
+        LinkedList<Integer> idSort = new LinkedList<>(ids);
+
+        Collections.sort(idSort, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return pes2.getLocalConfiguration(o1).cardinality() - pes2.getLocalConfiguration(o2).cardinality();
+            }
+        });
+
+        List<String> newTasks = new ArrayList<>();
+        for(Integer gObj: idSort)
+            newTasks.add(pes2.getLabel(gObj));
+
+        List<String> start = new LinkedList<>();
+        FlowNode startNode = null;
+        if(isMatch(context))
+            startNode = model.getTaskFromEvent(((Pair<Integer, Integer>)context.target).getSecond());
+        else
+            startNode = model.getTaskFromEvent((Integer)context.target);
+        start.add(startNode.getId());
+
+
+        List<String> end = new LinkedList<>();
+        FlowNode endNode = model.getBpmnModel().getDirectSuccessors(startNode).iterator().next();
+        end.add(endNode.getId());
+
+        List<String> greys = new LinkedList<>();
+        greys.add(model.getBpmnModel().getDirectedEdge(startNode, endNode).getId());
+
+        DifferenceML difference = new DifferenceML(impact);
+        difference.setSentence(sentence);
+
+        difference.setStart(start);
+        difference.setGreys(greys);
+        difference.setNewTasks(newTasks);
+        difference.setEnd(end);
+        difference.setType("UNMREPETITIONINTERVAL");
 
         // DEBUG
 //        printDiff(start, end, new LinkedList<String>(), a);
@@ -1063,10 +1142,16 @@ public class DiffMLGraphicalVerbalizerNew {
             }
 
         List<String> start = new LinkedList<>();
-        start.add(model.getBpmnModel().getDirectPredecessors(xorGSp).iterator().next().getId());
+        if(xorGSp != null)
+            start.add(model.getBpmnModel().getDirectPredecessors(xorGSp).iterator().next().getId());
+        else
+            start.add(model.getBpmnModel().getDirectPredecessors(firstEl).iterator().next().getId());
 
         List<String> end = new LinkedList<>();
-        end.add(model.getBpmnModel().getDirectSuccessors(xorGJn).iterator().next().getId());
+        if(xorGJn!=null)
+            end.add(model.getBpmnModel().getDirectSuccessors(xorGJn).iterator().next().getId());
+        else
+            end.add(model.getBpmnModel().getDirectSuccessors(lastEl).iterator().next().getId());
 
         DifferenceML difference = new DifferenceML(impact);
         difference.setSentence(sentence);
@@ -1269,7 +1354,7 @@ public class DiffMLGraphicalVerbalizerNew {
             greys.add(gObj.getId());
 
         LinkedList<Operation> predOps = getPredOps(commonSubL.getFirst().getFirst(), path2Leaf, "model");
-        Integer event = predOps.getLast().op.equals(Op.MATCH) ?
+        Integer event = isMatch(predOps.getLast())?
                 ((Pair<Integer, Integer>)predOps.getLast().target).getSecond() :
                 (Integer) predOps.getLast().target;
 
@@ -1751,7 +1836,7 @@ public class DiffMLGraphicalVerbalizerNew {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, model.getReader(), null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, model.getReader(), null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
 
         return difference;
@@ -1853,7 +1938,7 @@ public class DiffMLGraphicalVerbalizerNew {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, model.getReader(), null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, model.getReader(), null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
         return difference;
     }
@@ -1984,7 +2069,7 @@ public class DiffMLGraphicalVerbalizerNew {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, model.getReader(), null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, model.getReader(), null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
         return difference;
     }
@@ -2160,13 +2245,16 @@ public class DiffMLGraphicalVerbalizerNew {
             type = "CAUSCONC2";
         }else {
             // Priority No. 10 -- CAUSCONC
-            Integer first = evt1L;
-            Integer second = evt2L;
-            if(pes1.getBRelation(first, second).equals(BehaviorRelation.INV_CAUSALITY)){
-                first = (Integer) evt2L;
-                second = evt1L;
+            if(pes1.getBRelation(evt1L, evt2L).equals(BehaviorRelation.INV_CAUSALITY)){
+                Integer evtBk = evt1L;
+                evt1L = (Integer) evt2L;
+                evt2L = evtBk;
+
+                evtBk = evt1M;
+                evt1M = evt2M;
+                evt2M = evtBk;
             }
-            sentence = verbalizeCausConc("log", "model", context, pes1.getLabel(first), pes1.getLabel(second));
+            sentence = verbalizeCausConc("log", "model", context, pes1.getLabel(evt1L), pes1.getLabel(evt2L));
             type = "CAUSCONC1";
         }
 
@@ -2200,8 +2288,6 @@ public class DiffMLGraphicalVerbalizerNew {
                         greys.add(contF.getId());
 
                 firstEl = model.getBpmnModel().getDirectPredecessors(firstEl).iterator().next();
-
-
             }
 
             if(lastEl instanceof AndGateway) {
@@ -2221,8 +2307,14 @@ public class DiffMLGraphicalVerbalizerNew {
 
         start.add(firstEl.getId());
         end.add(lastEl.getId());
-        a.add(model.getTaskFromEvent(evt1M).getId());
-        b.add(model.getTaskFromEvent(evt2M).getId());
+
+//        if(type.equals("CAUSCONC1") && pes1.getBRelation(evt1L, evt2L).equals(BehaviorRelation.INV_CAUSALITY)){
+//            b.add(model.getTaskFromEvent(evt1M).getId());
+//            a.add(model.getTaskFromEvent(evt2M).getId());
+//        }else{
+            a.add(model.getTaskFromEvent(evt1M).getId());
+            b.add(model.getTaskFromEvent(evt2M).getId());
+//        }
 
         DifferenceML difference = new DifferenceML(impact);
         difference.setA(a);
@@ -2250,7 +2342,7 @@ public class DiffMLGraphicalVerbalizerNew {
         for (String s : greys)
             newColorsBP.put(s, "gray");
 
-        printModels("m", "1", net, model.getReader(), null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
+//        printModels("m", "1", net, model.getReader(), null, newColorsBP, new HashMap<String, Integer>(), new HashMap<String, Integer>());
 
 
         return difference;
