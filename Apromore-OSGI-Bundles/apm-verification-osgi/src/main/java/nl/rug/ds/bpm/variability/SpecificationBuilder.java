@@ -26,14 +26,24 @@ public class SpecificationBuilder {
 			target = ctl.substring(ctl.indexOf("{") + 1, ctl.indexOf("}"));
 			spec.addInputElement(new InputElement(target, "p"));
 			
-			target = ctl.substring(ctl.lastIndexOf("{") + 1, ctl.lastIndexOf("}"));
+			if (groupId.length() > 0) {
+				target = groupId;
+			}
+			else {
+				target = ctl.substring(ctl.lastIndexOf("{") + 1, ctl.lastIndexOf("}"));
+			}
 			spec.addInputElement(new InputElement(target, "q"));
 			
 			spec.addInputElement(new InputElement("silent", "s"));
 			
 			break;
 		case "AlwaysImmediatePrecedence":
-			target = ctl.substring(ctl.indexOf("{") + 1, ctl.indexOf("}"));
+			if (groupId.length() > 0) {
+				target = groupId;
+			}
+			else {
+				target = ctl.substring(ctl.indexOf("{") + 1, ctl.indexOf("}"));
+			}
 			spec.addInputElement(new InputElement(target, "p"));
 			
 			target = ctl.substring(ctl.lastIndexOf("{") + 1, ctl.lastIndexOf("}"));
@@ -77,14 +87,22 @@ public class SpecificationBuilder {
 	}
 	
 	public static Group getGroup(String ctl) {
+		return getGroup(ctl, "", "");
+	}
+	
+	public static Group getGroup(String ctl, String startSymbol, String endSymbol) {
 		Group group = new Group();
 		
 		List<String> el = new ArrayList<String>();
 		
 		String target;
-		int pos = ctl.indexOf("{");
+		int pos = ctl.indexOf(startSymbol);
+		pos = ctl.indexOf("{", pos + 1);
 		
-		while (pos >= 0) {
+		int endpos = ctl.indexOf(endSymbol);
+		if (endpos == 0) endpos = ctl.length();
+		
+		while ((pos >= 0) && (pos < endpos)) {
 			target = ctl.substring(pos + 1, ctl.indexOf("}", pos));
 			el.add(target);
 			

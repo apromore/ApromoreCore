@@ -1,12 +1,11 @@
 package nl.rug.ds.bpm.pnml.verifier;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import hub.top.petrinet.PetriNet;
 import nl.rug.ds.bpm.event.EventHandler;
@@ -15,7 +14,9 @@ import nl.rug.ds.bpm.event.VerificationLogEvent;
 import nl.rug.ds.bpm.event.listener.VerificationEventListener;
 import nl.rug.ds.bpm.event.listener.VerificationLogListener;
 import nl.rug.ds.bpm.specification.jaxb.BPMSpecification;
+import nl.rug.ds.bpm.specification.jaxb.Group;
 import nl.rug.ds.bpm.specification.marshaller.SpecificationMarshaller;
+import nl.rug.ds.bpm.specification.marshaller.SpecificationUnmarshaller;
 import nl.rug.ds.bpm.specification.parser.SetParser;
 import nl.rug.ds.bpm.verification.Verifier;
 
@@ -29,6 +30,9 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
 	private boolean reduce;
     private List<String> feedback;
     private String eventoutput;
+    BPMSpecification bpmSpecification;
+
+    private Map<String, Group> groupMap;
 
 //	public static void main(String[] args) {
 //		if (args.length > 2) {
@@ -73,6 +77,8 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
 
             eventoutput = "";
             feedback = new ArrayList<String>();
+
+            this.groupMap = new HashMap<String, Group>();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -146,6 +152,9 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
 	public void verify(PetriNet pn, BPMSpecification specification) {
 		//Make step class for specific Petri net type
 		ExtPnmlStepper stepper;
+        this.bpmSpecification = specification;
+        createGroupMap();
+
 		try {
 			stepper = new ExtPnmlStepper(pn);
 
@@ -162,6 +171,9 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
 		File pnmlFile = new File(pnml);
 		//Make step class for specific Petri net type
 		ExtPnmlStepper stepper;
+        this.bpmSpecification = bpmSpecification;
+        createGroupMap();
+
 		try {
 			stepper = new ExtPnmlStepper(pnmlFile);
 			
@@ -177,13 +189,16 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
 	public String[] verify(PetriNet pn, String specification) {
 		//Make step class for specific Petri net type
 		ExtPnmlStepper stepper;
+        this.bpmSpecification = getBPMSpecification(specification);
+        createGroupMap();
+
 		try {
 			stepper = new ExtPnmlStepper(pn);
 			
 			//Make a verifier which uses that step class
 			Verifier verifier = new Verifier(stepper, eventHandler);
 			//Start verification
-			verifier.verify(specification, nusmv2Binary, reduce);
+			verifier.verify(bpmSpecification, nusmv2Binary, reduce);
 		} catch (Exception e) {
 			String[] res = {"Failed to load pnml"};
 			eventHandler.logCritical("Failed to load pnml");
@@ -200,7 +215,39 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
         return feedbackArray;
 	}
 
-	public String[] verify(PetriNet pn, String[] specifications) {
+    private BPMSpecification getBPMSpecification(File specificationFile) {
+        SpecificationUnmarshaller unmarshaller;
+        BPMSpecification spec = null;
+        try {
+            unmarshaller = new SpecificationUnmarshaller(eventHandler, specificationFile);
+            spec = unmarshaller.getSpecification();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            String[] erroRes = {"Invalid specification xml"};
+            eventHandler.logCritical("Invalid specification xml");
+        }
+
+        return spec;
+    }
+
+    private BPMSpecification getBPMSpecification(String specification) {
+        SpecificationUnmarshaller unmarshaller;
+        BPMSpecification spec = null;
+		try {
+			unmarshaller = new SpecificationUnmarshaller(eventHandler, new ByteArrayInputStream(specification.getBytes("UTF-8")));
+			spec = unmarshaller.getSpecification();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+            String[] erroRes = {"Invalid specification xml"};
+			eventHandler.logCritical("Invalid specification xml");
+		}
+
+        return spec;
+    }
+
+    public String[] verify(PetriNet pn, String[] specifications) {
 		//Make step class for specific Petri net type
 		ExtPnmlStepper stepper;
 		try {
@@ -235,6 +282,8 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
 
 		//Make step class for specific Petri net type
 		ExtPnmlStepper stepper;
+        this.bpmSpecification = getBPMSpecification(specificationFile);
+        createGroupMap();
 		try {
 			stepper = new ExtPnmlStepper(pnmlFile);
 
@@ -242,14 +291,14 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
 			Verifier verifier = new Verifier(stepper, eventHandler);
 
 			//Start verification
-			verifier.verify(specificationFile, nusmv2Binary, reduce);
+			verifier.verify(this.bpmSpecification, nusmv2Binary, reduce);
 		}
 		catch (Exception e) {
 			eventHandler.logCritical("Failed to load pnml");
 		}
 	}
 
-	public void addSpecification(String line) {
+    public void addSpecification(String line) {
 		setParser.parse(line);
 	}
 
@@ -311,13 +360,20 @@ public class PnmlVerifier implements VerificationEventListener, VerificationLogL
 		return Verifier.getLogLevel();
 	}
 
+    private void createGroupMap() {
+        this.groupMap = new HashMap<>();
+        for (Group g: bpmSpecification.getGroups()) {
+            groupMap.put(g.getId(), g);
+        }
+    }
+
 	//Listener implementations
 	@Override
 	public void verificationEvent(VerificationEvent event) {
 		//Use for user feedback
 		//Event returns: specification id, formula, type, result, and specification itself
 //        feedback.add(event.toString());
-        feedback.add(event.getUserFriendlyFeedback());
+        feedback.add(event.getUserFriendlyFeedback(groupMap));
 //		System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "] FEEDBACK\t: " + event.toString());
 	}
 	

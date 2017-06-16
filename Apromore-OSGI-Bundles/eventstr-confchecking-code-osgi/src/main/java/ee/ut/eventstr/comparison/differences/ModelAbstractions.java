@@ -369,11 +369,19 @@ public class ModelAbstractions {
 //                lastElem = directSucc.iterator().next();
 //        }
 
-        FlowNode lastPred = mapTasks2TransReverse.get(mapUnf2Net.get(lastElem.id));
-        if(getBpmnModel().getDirectSuccessors(lastPred).iterator().next() instanceof Gateway)
-            lastPred = getBpmnModel().getDirectSuccessors(lastPred).iterator().next();
+        FlowNode lcs = null;
+        Iterator<DNode> it = localConf1Ord.iterator();
+        while(lcs == null && it.hasNext())
+            lcs = mapTasks2TransReverse.get(mapUnf2Net.get(it.next().id));
 
-        return lastPred;
+        if(lcs == null)
+            return getEnd();
+
+//        FlowNode lastPred = mapTasks2TransReverse.get(mapUnf2Net.get(lastElem.id));
+        if(getBpmnModel().getDirectSuccessors(lcs).iterator().next() instanceof Gateway)
+            lcs = getBpmnModel().getDirectSuccessors(lcs).iterator().next();
+
+        return lcs;
     }
 
     public FlowNode getCommonSuccUnf(Integer evt1M, Integer evt2M) {
@@ -397,7 +405,15 @@ public class ModelAbstractions {
 
         Collections.sort(localConf1Ord, comparator);
 
-        return mapTasks2TransReverse.get(mapUnf2Net.get(localConf1Ord.getFirst().id));
+        FlowNode lcs = null;
+        Iterator<DNode> it = localConf1Ord.iterator();
+        while(lcs == null && it.hasNext())
+            lcs = mapTasks2TransReverse.get(mapUnf2Net.get(it.next().id));
+
+        if(lcs == null)
+            return getEnd();
+
+        return lcs;
 
     }
 

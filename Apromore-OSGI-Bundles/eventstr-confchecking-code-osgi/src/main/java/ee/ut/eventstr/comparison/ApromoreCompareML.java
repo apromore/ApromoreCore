@@ -84,7 +84,7 @@ public class ApromoreCompareML {
 
 		String folder = "models/";
 
-        String logString = folder + "Loan_baseline_IRO_log.xes";
+        String logString = folder + "Loan_baseline_ROI_log.xes";
         String modelString = folder + "Loan_baseline.bpmn";
 //		String logString = folder + "bpLog11.xes";
 //		String modelString = folder + "bp2.bpmn";

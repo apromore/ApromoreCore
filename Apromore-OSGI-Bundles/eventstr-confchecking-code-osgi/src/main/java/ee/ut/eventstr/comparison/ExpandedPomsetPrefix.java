@@ -277,7 +277,7 @@ public class ExpandedPomsetPrefix<T> {
 										for (BitSet next: adjList.get(prev))
 											if (next.get(d)) {
 												elem = new ArrayList<Integer>();
-												if (!pes.getInvisibleEvents().contains(d)) {
+												if (!pes.getInvisibleEvents().contains(d) && !isCyclic(d)) {
 													elem.add(d);
 													optional.put(stateMap.get(prev), elem);
 												}
@@ -290,7 +290,19 @@ public class ExpandedPomsetPrefix<T> {
 		
 		return optional;
 	}
-	
+
+	private boolean isCyclic(int d) {
+        for(BitSet key : cycles.keySet()){
+            Pair<Multiset<Integer>, Multiset<Integer>> value = cycles.get(key);
+            Multiset<Integer> elemModel = value.getSecond();
+
+            if(elemModel.contains(d))
+                return true;
+        }
+
+        return false;
+	}
+
 	public Multimap<State, List<Integer>> getAdditionalAcyclicIntervals() {
 		Multimap<State, List<Integer>> additional = HashMultimap.create();
 		for (Multiset<Integer> _run: runs) {

@@ -207,9 +207,9 @@ public class APMController {
             row.appendChild(new Label(data));
 
             if(data.contains("is always") || data.contains("exists a path") || data.contains("never occur") || data.contains("are concurrent"))
-                row.setStyle("background:#C4E0B2;!important");
+                row.setStyle("background:#C4E0B2;!important;Border: #E3E3E3");
             else
-                row.setStyle("background:#f0997c;!important");
+                row.setStyle("background:#f0997c;!important;Border: #E3E3E3");
 
             // we create a thumb up/down comment to each row
         }

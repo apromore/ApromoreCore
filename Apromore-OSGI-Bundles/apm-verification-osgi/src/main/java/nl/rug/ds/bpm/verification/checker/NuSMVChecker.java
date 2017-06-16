@@ -115,6 +115,7 @@ public class NuSMVChecker extends AbstractChecker {
         try {
             System.out.println("Start execution of NuSMV from " + ConfigBean.getNuSMVPath());
             File nusmv = new File(ConfigBean.getNuSMVPath());
+//            File nusmv = new File("/Users/armascer/Downloads/NuSMV-2.6.0-Darwin/bin/NuSMV");
             System.out.println(nusmv.getAbsolutePath() + " " + file.getAbsolutePath());
             Process proc = Runtime.getRuntime().exec(nusmv.getAbsolutePath() + " " + file.getAbsolutePath());
             return proc;

@@ -62,7 +62,7 @@ public class APMCompliancePlugin extends DefaultPortalPlugin {
     private final CanoniserService canoniserService;
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
 
-    private String label = "Verify compliance";
+    private String label = "Verify Compliance";
     private String groupLabel = "Analyze";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APMCompliancePlugin.class.getCanonicalName());

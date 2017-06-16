@@ -1,7 +1,11 @@
 package nl.rug.ds.bpm.event;
 
+import nl.rug.ds.bpm.specification.jaxb.Element;
+import nl.rug.ds.bpm.specification.jaxb.Group;
 import nl.rug.ds.bpm.specification.jaxb.InputElement;
 import nl.rug.ds.bpm.specification.jaxb.Specification;
+
+import java.util.Map;
 
 /**
  * Created by Heerko Groefsema on 10-Apr-17.
@@ -17,11 +21,11 @@ public class VerificationEvent {
 		this.eval = eval;
 	}
 
-	public String getUserFriendlyFeedback() {
-		return verbalizeEvaluation();
+	public String getUserFriendlyFeedback(Map<String, Group> groupMap) {
+		return verbalizeEvaluation(groupMap);
 	}
 
-    public String verbalizeEvaluation(){
+    public String verbalizeEvaluation(Map<String, Group> groupMap){
         String sentence = "";
 
         String evalString = eval ? "is" : "is not";
@@ -31,35 +35,60 @@ public class VerificationEvent {
 
         switch (specification.getType()){
             case "AlwaysResponse":
-                sentence = specification.getInputElements().get(0).getElement() + " " + evalString + " always eventually followed by " + specification.getInputElements().get(1).getElement() + " --- " + specification.getType();
+                sentence = translateGroup(specification.getInputElements().get(0).getElement(), groupMap) + " " + evalString + " always eventually followed by " + translateGroup(specification.getInputElements().get(1).getElement(), groupMap) + " --- " + specification.getType();
                 break;
             case "AlwaysImmediateResponse":
-                sentence = specification.getInputElements().get(0).getElement() + " " + evalString + " always directly followed by " + specification.getInputElements().get(1).getElement() + /* " (with silent \"" + specification.getInputElements().get(2).getElement() + "\")" + */" --- " + specification.getType();
+                sentence = translateGroup(specification.getInputElements().get(0).getElement(),groupMap) + " " + evalString + " always directly followed by " + translateGroup(specification.getInputElements().get(1).getElement(), groupMap) + /* " (with silent \"" + specification.getInputElements().get(2).getElement() + "\")" + */" --- " + specification.getType();
                 break;
             case "AlwaysImmediatePrecedence":
-                sentence = specification.getInputElements().get(0).getElement() + " " + evalString + " always directly preceded by " + specification.getInputElements().get(1).getElement() + " --- " + specification.getType();
+                sentence = translateGroup(specification.getInputElements().get(0).getElement(), groupMap) + " " + evalString + " always directly preceded by " + translateGroup(specification.getInputElements().get(1).getElement(), groupMap) + " --- " + specification.getType();
                 break;
             case "ExistImmediateResponse":
-                sentence = "there exists " + evalString2 + " path where " + specification.getInputElements().get(0).getElement() + " is directly followed by " + specification.getInputElements().get(1).getElement() + /*" (accounting for silent steps \"" + specification.getInputElements().get(2).getElement() + "\")" +*/ " --- " + specification.getType();
+                sentence = "there exists " + evalString2 + " path where " + translateGroup(specification.getInputElements().get(0).getElement(), groupMap) + " is directly followed by " + translateGroup(specification.getInputElements().get(1).getElement(), groupMap) + /*" (accounting for silent steps \"" + specification.getInputElements().get(2).getElement() + "\")" +*/ " --- " + specification.getType();
                 break;
             case "ExistResponse":
-                sentence = "there exists " + evalString2 + " path where " + specification.getInputElements().get(0).getElement() + " is eventually followed by " + specification.getInputElements().get(1).getElement() + " --- " + specification.getType();
+                sentence = "there exists " + evalString2 + " path where " + translateGroup(specification.getInputElements().get(0).getElement(), groupMap) + " is eventually followed by " + translateGroup(specification.getInputElements().get(1).getElement(), groupMap) + " --- " + specification.getType();
                 break;
             case "AlwaysConflict":
-                sentence = specification.getInputElements().get(0).getElement() + " and " + specification.getInputElements().get(0).getElement() + " " +evalString3+ " occur together in the same path"  + " --- " + specification.getType();
+                sentence = translateGroup(specification.getInputElements().get(0).getElement(), groupMap) + " and " + translateGroup(specification.getInputElements().get(1).getElement(), groupMap) + " " +evalString3+ " occur together in the same path"  + " --- " + specification.getType();
                 break;
             case "AlwaysParallel":
-                sentence = "the activities in group " + specification.getInputElements().get(0).getElement() + " " + evalString4 + " concurrent" + " --- " + specification.getType();
+                sentence = "the activities in group " + translateGroup(specification.getInputElements().get(0).getElement(), groupMap) + " " + evalString4 + " concurrent" + " --- " + specification.getType();
                 break;
             default:
                 sentence = "Specification " + specification.getId() + " evaluated " + eval + " for " + specification.getType() + "(";
                 for (InputElement e: specification.getInputElements()) {
-                    sentence += e.getElement() + ", ";
+                    sentence += translateGroup(e.getElement(), groupMap) + ", ";
                 }
                 sentence = sentence.substring(0, sentence.length() - 2) + ")";
         }
 
         return sentence;
+    }
+
+    public String translateGroup(String element, Map<String, Group> groupMap){
+        if (groupMap.containsKey(element)) {
+            if (specification.getType().equals("AlwaysParallel")) {
+                return getGroupString(groupMap.get(element), "&") + " ";
+            }
+            else {
+                return getGroupString(groupMap.get(element), "|") + " ";
+            }
+        }
+
+        return element;
+    }
+
+    private String getGroupString(Group group, String separator) {
+        String grpstr = "(";
+
+        for (Element e: group.getElements()) {
+            grpstr += e.getId() + " " + separator + " ";
+        }
+
+        grpstr = grpstr.substring(0, grpstr.length() - 2 - separator.length()) + ")";
+
+        return grpstr;
     }
 	
 	public String getId() {
