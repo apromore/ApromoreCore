@@ -27,6 +27,7 @@ import javax.xml.datatype.DatatypeFactory;
 import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
@@ -53,6 +54,7 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.helper.UserInterfaceHelper;
+
 
 /**
  * Created by conforti on 10/04/15.
@@ -95,6 +97,8 @@ public class BPMNMinerController {
     private Slider timerEventPercentage;
     private Slider timerEventTolerance;
     private Slider noiseThreshold;
+
+    private MiningSettings params;
 
     private XLog log;
     private DiscoverERmodel erModel;
@@ -218,7 +222,6 @@ public class BPMNMinerController {
             this.okButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     setupMiningAlgorithm();
-                    createCanditatesEntity();
                 }
             });
             this.bpmnMinerW.doModal();
@@ -301,7 +304,12 @@ public class BPMNMinerController {
     }
 
     protected void setupMiningAlgorithm() {
+        bpmnMinerW.detach();
+        new MiningSettingsController(this, getSelectedAlgorithm());
+    }
 
+    public void setMiningSettings(MiningSettings params) {
+        this.params = params;
     }
 
     protected void createCanditatesEntity() {
@@ -369,7 +377,7 @@ public class BPMNMinerController {
                 log = infrequentBehaviourFilterService.filterLog(log);
             }
 
-            String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, getSelectedAlgorithm(), dependencyAlgorithms.getSelectedIndex()+1,
+            String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, getSelectedAlgorithm(), params, dependencyAlgorithms.getSelectedIndex()+1,
                     ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
                     ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
                     listCandidates, group);

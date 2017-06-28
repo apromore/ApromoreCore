@@ -20,6 +20,7 @@
 
 package org.apromore.service.bpmnminer;
 
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import org.deckfour.xes.model.XLog;
 
 import java.util.List;
@@ -31,7 +32,7 @@ import java.util.Set;
  */
 public interface BPMNMinerService {
 
-    String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
+    String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, MiningSettings params, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
                              double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
                              double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception;
 

@@ -36,6 +36,7 @@ import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Entity;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import com.raffaeleconforti.log.util.LogOptimizer;
+import com.raffaeleconforti.wrapper.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
@@ -67,7 +68,7 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
     }
 
     @Override
-    public String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
+    public String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, MiningSettings params, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
                                     double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
                                     double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception {
 
@@ -123,7 +124,7 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
             }
         }
 
-        SelectMinerResult selectMinerResult = new SelectMinerResult(miningAlgorithm, interruptingEventTolerance, multiInstancePercentage,
+        SelectMinerResult selectMinerResult = new SelectMinerResult(miningAlgorithm, params, interruptingEventTolerance, multiInstancePercentage,
                 multiInstanceTolerance, timerEventPercentage, timerEventTolerance, noiseThreshold);
 
         FakePluginContext fakePluginContext = new FakePluginContext();

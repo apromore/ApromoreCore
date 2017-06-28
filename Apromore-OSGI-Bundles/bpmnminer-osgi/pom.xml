@@ -122,6 +122,7 @@
                         </Import-Package>
                         <Export-Package>
                             com.raffaeleconforti.bpmnminer.*,
+                            com.raffaeleconforti.wrapper.settings.*,
                             com.raffaeleconforti.context.*,
                             com.raffaeleconforti.foreignkeydiscovery.*,
                             com.raffaeleconforti.log.util,
@@ -146,7 +147,7 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-commandline</artifactId>
-            <version>1.0.20170522</version>
+            <version>1.0.20170628</version>
         </dependency>
 
         <dependency>

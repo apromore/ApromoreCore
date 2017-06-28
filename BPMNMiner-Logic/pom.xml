@@ -58,6 +58,7 @@
                             com.raffaeleconforti.context,
                             com.raffaeleconforti.foreignkeydiscovery.*,
                             com.raffaeleconforti.log.*,
+                            com.raffaeleconforti.wrapper.settings.*,
                             org.apromore.service.ibpstruct.*,
                             org.deckfour.xes.*,
                             org.eclipse.collections.*,
@@ -108,7 +109,7 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-commandline</artifactId>
-            <version>1.0.20170522</version>
+            <version>1.0.20170628</version>
         </dependency>
 
         <dependency>
@@ -124,7 +125,7 @@
         <!--<dependency>-->
             <!--<groupId>com.raffaeleconforti</groupId>-->
             <!--<artifactId>bpmnminer-commandline</artifactId>-->
-            <!--<version>1.0.20170522</version>-->
+            <!--<version>1.0.20170628</version>-->
         <!--</dependency>-->
     </dependencies>
 </project>
