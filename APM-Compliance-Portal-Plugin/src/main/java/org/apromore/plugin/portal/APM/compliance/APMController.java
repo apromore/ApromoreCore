@@ -59,6 +59,8 @@ public class APMController {
     private Button okButton;
     private SelectDynamicListController domainCB;
 
+    private Textbox inputText;
+
     private Label l;
 
     private String specificationString = null;
@@ -108,7 +110,25 @@ public class APMController {
     }
 
     public void verify(){
-        makeResultWindows(apmService.getVerification(this.net, specificationString));
+        if(specificationString == null){
+            String text = this.inputText.getValue();
+            StringTokenizer token = new StringTokenizer(text, "\n");
+            String[] specifications = new String[token.countTokens()];
+            int i = 0;
+            while(token.hasMoreTokens()) {
+                String tok= token.nextToken();
+                System.out.println(tok);
+                specifications[i++] = tok;
+            }
+
+            System.out.println(" ----- " + specifications.length);
+
+            System.out.println(Arrays.asList(specifications).toString());
+            makeResultWindows(apmService.getVerification(this.net, specifications));
+        }
+        else
+            makeResultWindows(apmService.getVerification(this.net, specificationString));
+
     }
 
     public void popupXML() {
@@ -125,6 +145,7 @@ public class APMController {
 
             this.l = (Label) this.enterLogWin.getFellow("fileName");
             this.uploadLog = (Button) this.enterLogWin.getFellow("specificationUpload");
+            this.inputText = (Textbox) this.enterLogWin.getFellow("specificationTB");
             this.cancelButton = (Button) this.enterLogWin.getFellow("cancelButton");
             this.okButton = (Button) this.enterLogWin.getFellow("oKButton");
 
@@ -185,11 +206,10 @@ public class APMController {
             row.appendChild(new Label(Integer.toString(index)));
             row.appendChild(new Label(data));
 
-            System.out.println(data + " -- " + data.contains("true"));
-            if(data.contains("true"))
-                row.setStyle("background:#C4E0B2;!important");
+            if(data.contains("is always") || data.contains("exists a path") || data.contains("never occur") || data.contains("are concurrent"))
+                row.setStyle("background:#C4E0B2;!important;Border: #E3E3E3");
             else
-                row.setStyle("background:#f0997c;!important");
+                row.setStyle("background:#f0997c;!important;Border: #E3E3E3");
 
             // we create a thumb up/down comment to each row
         }

@@ -26,7 +26,7 @@ public class TestMain {
     }
 
     private String readXML() {
-        String fileName = "nets/specification.xml";
+        String fileName = "nets/verification.xml";
         try {
             byte[] encoded = Files.readAllBytes(Paths.get(fileName));
             return new String(encoded, StandardCharsets.UTF_8);
@@ -41,9 +41,12 @@ public class TestMain {
         PnmlVerifier pnmlVerifier = new PnmlVerifier();
         pnmlVerifier.setLogLevel(VerificationLogEvent.INFO);
         try {
-            PetriNet net = PNMLReader.parse(new File("nets/pnml.pnml"));
+            PetriNet net = PNMLReader.parse(new File("nets/booking_c.pnml"));
 
-            System.out.println(pnmlVerifier.verify(net, xml));
+            String[] results = pnmlVerifier.verify(net, xml);
+
+            for(int i =0; i < results.length; i++)
+                System.out.println(results[i]);
         }catch(Exception e){
             e.printStackTrace();
         }

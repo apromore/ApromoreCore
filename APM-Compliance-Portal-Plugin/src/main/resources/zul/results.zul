@@ -25,8 +25,8 @@
         </div>
         <grid id="gridMD">
             <columns>
-                <column label="id" hflex="1"/>
-                <column label="Specification" hflex="2"/>
+                <column label="id" width="50px"/>
+                <column label="Specification" width="500px"/>
             </columns>
             <rows></rows>
         </grid>

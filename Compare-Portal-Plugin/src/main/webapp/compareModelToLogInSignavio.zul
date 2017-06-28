@@ -338,6 +338,30 @@
                             addSequenceFlow("sid-repeating-xor", repeating.resourceId, middle.resourceId, [lagrangePoint(cr, rm, 0, -1), lagrangePoint(rm, cm, 0, -1)]);
                             break;
 
+                        case "UNMREPETITIONINTERVAL":
+                            if (message = validate(["start.length == 1", "end.length == 1"])) { alert(message); }
+                            var cs = shapeCenter(shapes[start[0]]);
+                            var ce = shapeCenter(shapes[end[0]]);
+                            var cm = lagrangePoint(cs, ce, 130, +1);
+
+                            var newTasksBPMN = {};
+                            var loc = cm.x
+                            for(var i = 0; i < newTasks.length; i++){
+                                var middle = addFlowNode("sid-a", "Task", loc, cm.y, 100, 80);
+                                middle.properties.tasktype = "None";
+                                middle["properties"]["name"] = newTasks[i];
+                                middle["properties"]["bgcolor"] = "white";
+
+                                newTasksBPMN[i] = middle;
+                                loc = loc + 130;
+                                if(i > 0)
+                                    addSequenceFlow("sid-start-ab", newTasksBPMN[i-1].resourceId, newTasksBPMN[i].resourceId);
+                            }
+
+                            addSequenceFlow("sid-start-a", start[0], newTasksBPMN[0].resourceId);
+                            addSequenceFlow("sid-a-end", newTasksBPMN[newTasks.length-1].resourceId, end[0]);
+                            break;
+
                         case "TASKSWAP":
                             if (message = validate(["start.length == 1", "a.length == 1", "b.length == 1", "end.length == 1"])) { alert(message); }
                             var cs = shapeCenter(shapes[start[0]]);

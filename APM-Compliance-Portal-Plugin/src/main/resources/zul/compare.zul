@@ -18,10 +18,13 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="win" width="300px" closable="false" position="center" title="Model to log comparison">
+<window id="win" width="300px" closable="false" position="center" title="Input specification or XML file">
     <vbox>
         <groupbox width="285px">
-            <label value="Specification File(.xml)" width="100%"/>
+            <label value="Direct input:" width="100%"/>
+            <textbox rows="5" cols="40" id="specificationTB">
+            </textbox>
+            <label value="OR Specification file(.xml):" width="100%"/>
             <hbox align="center">
                 <button id="specificationUpload" label="Upload" upload="true,maxsize=-1,multiple=false,native"/>
                 <label id="fileName" value="File Name" width="100%"/>

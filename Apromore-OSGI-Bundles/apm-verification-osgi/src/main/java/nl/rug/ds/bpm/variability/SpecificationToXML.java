@@ -45,8 +45,18 @@ public class SpecificationToXML {
 			specset = new SpecificationSet();
 			spectype = "AlwaysImmediateResponse";
 			for (String sp: vs.getViresp()) {
-				spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype);
+				grp = SpecificationBuilder.getGroup(sp, "U", "");
+				
+				if (grp.getElements().size() > 1) {
+					spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype, grp.getId());
+					bpmspec.addGroup(grp);
+				}
+				else {
+					spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype);
+				}
+						
 				specset.addSpecification(spec);
+				
 				id++;
 				
 				plaintext += sp + "\n";
@@ -61,7 +71,16 @@ public class SpecificationToXML {
 			specset = new SpecificationSet();
 			spectype = "AlwaysImmediatePrecedence";
 			for (String sp: vs.getViprec()) {
-				spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype);
+				grp = SpecificationBuilder.getGroup(sp, "", "U");
+				
+				if (grp.getElements().size() > 1) {
+					spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype, grp.getId());
+					bpmspec.addGroup(grp);
+				}
+				else {
+					spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype);
+				}
+				
 				specset.addSpecification(spec);
 				id++;
 

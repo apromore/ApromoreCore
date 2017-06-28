@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="modalDialog" title="Differences" border="normal" width="560px">
+<window id="modalDialog" title="Specification" border="normal" width="560px">
     <vlayout>
         <div>
             <button id="downloadBtn" label="Download specification"/>

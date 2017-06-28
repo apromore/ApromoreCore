@@ -27,4 +27,5 @@ import hub.top.petrinet.PetriNet;
 public interface APMService {
 
     String[] getVerification(PetriNet net, String xmlSpecification);
+    String[] getVerification(PetriNet net, String[] specification);
 }
