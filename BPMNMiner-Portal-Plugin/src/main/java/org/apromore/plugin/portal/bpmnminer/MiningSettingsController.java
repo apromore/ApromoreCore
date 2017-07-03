@@ -86,8 +86,6 @@ public class MiningSettingsController {
             cancel.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     miningSettins.detach();
-                    bpmnMinerController.setMiningSettings(null);
-                    bpmnMinerController.createCanditatesEntity();
                 }
             });
             ok.addEventListener("onClick", new EventListener<Event>() {
