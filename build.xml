@@ -64,10 +64,10 @@
 
         <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
         <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
-        
+
         <include name="APM-Logic/target/apm-logic-1.1.jar"/>
         <include name="APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
-        
+
         <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
 
@@ -89,6 +89,9 @@
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
+
+        <include name="BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
+        <include name="BEBoP-Portal-Plugin/target/gbebop-portal-plugin-1.1.jar"/>
 
         <include name="PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
         <include name="PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
@@ -123,10 +126,10 @@
 
         <include name="APM-Logic/target/apm-logic-1.1.jar"/>
         <include name="APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
-        
+
         <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
-        
+
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
 
@@ -145,6 +148,9 @@
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
+
+        <include name="BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
+        <include name="BEBoP-Portal-Plugin/target/gbebop-portal-plugin-1.1.jar"/>
 
         <include name="PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
         <include name="PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
@@ -192,10 +198,10 @@
 
         <include name="APM-Logic/target/apm-logic-1.1.jar"/>
         <include name="APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
-        
+
         <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
-        
+
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
         <!-- ibpstruct-editor-plugin renamed ~ibpstruct-editor-plugin elsewhere as a workaround for its dependency upon ibpstruct-logic
@@ -217,6 +223,9 @@
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
+
+        <include name="BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
+        <include name="BEBoP-Portal-Plugin/target/gbebop-portal-plugin-1.1.jar"/>
 
         <include name="PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
         <include name="PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
@@ -421,6 +430,7 @@
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
+        <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
 
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset dir="${dir-annotation}">
@@ -485,6 +495,7 @@
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
+        <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
 
         <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing
         <copy file="PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
@@ -560,6 +571,7 @@
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
+        <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
 
         <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing
         <copy file="PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
