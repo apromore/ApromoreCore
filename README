@@ -148,6 +148,9 @@ Server fails to start.
 Login screen appears, but "admin" / "password" doesn't work.
 * You may need to run "ant create-h2" to populate the H2 database.
 
+Can't view models by clicking them in the summary list.
+* Model diagrams are opened in new tabs/windows; you may need to disable popup blocking for Apromore in your browser settings.
+
 Models always show up in the log as unable to be indexed.
 * Check that LoLA executable is correctly configured.
 
