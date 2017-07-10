@@ -446,18 +446,17 @@ public class DirectlyFollowGraphPlus {
     }
 
     private void filterWithGuarantees() {
-        bestEdgesOnMaxCapacities();
-        computeFilterThreshold();
+//        bestEdgesOnMaxFrequencies();
+//        computeFilterThreshold();
 
-//        System.out.println("DEBUG - FWG : edges before filtering: " + edges.size());
-
-        for( DFGEdge e : new HashSet<>(edges) ) if( !bestEdges.contains(e) && !(e.getFrequency() > filterThreshold) ) removeEdge(e, false);
-
-//        System.out.println("DEBUG - FWG : edges after filtering: " + edges.size());
+        bestEdgesOnMaxCapacities(true);
+        for( DFGEdge e : new HashSet<>(edges) ) if(!bestEdges.contains(e)) removeEdge(e, false);
+//        for( DFGEdge e : new HashSet<>(edges) ) if( !bestEdges.contains(e) && !(e.getFrequency() > filterThreshold) ) removeEdge(e, false);
     }
 
-    private void bestEdgesOnMaxCapacities() {
+    private void bestEdgesOnMaxCapacities(boolean maximize) {
         int src, tgt, cap, maxCap;
+        DFGEdge bp, bs;
 
         LinkedList<Integer> toVisit = new LinkedList<>();
         Set<Integer> unvisited = new HashSet<>();
@@ -526,8 +525,14 @@ public class DirectlyFollowGraphPlus {
 
         bestEdges = new HashSet<>();
         for( int n : nodes.keySet() ) {
-            bestEdges.add(bestPredecessorFromSource.get(n));
-            bestEdges.add(bestSuccessorToSink.get(n));
+            bp = bestPredecessorFromSource.get(n);
+            bs = bestSuccessorToSink.get(n);
+            if( maximize ) {
+                for (DFGEdge e : incomings.get(n)) if (e.getFrequency() > bp.getFrequency()) bestEdges.add(e);
+                for (DFGEdge e : outgoings.get(n)) if (e.getFrequency() > bs.getFrequency()) bestEdges.add(e);
+            }
+            bestEdges.add(bp);
+            bestEdges.add(bs);
         }
         bestEdges.remove(null);
 
