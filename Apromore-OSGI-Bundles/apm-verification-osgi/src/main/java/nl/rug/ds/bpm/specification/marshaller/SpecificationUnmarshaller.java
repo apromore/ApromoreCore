@@ -1,14 +1,13 @@
 package nl.rug.ds.bpm.specification.marshaller;
 
-import nl.rug.ds.bpm.event.EventHandler;
-import nl.rug.ds.bpm.specification.map.SpecificationTypeMap;
-import nl.rug.ds.bpm.specification.jaxb.*;
+import java.io.File;
+import java.io.InputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
+
+import nl.rug.ds.bpm.event.EventHandler;
+import nl.rug.ds.bpm.specification.jaxb.BPMSpecification;
 
 /**
  * Created by Heerko Groefsema on 07-Apr-17.
@@ -24,7 +23,8 @@ public class SpecificationUnmarshaller {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			
 			specification = (BPMSpecification) unmarshaller.unmarshal(file);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			eventHandler.logCritical("Failed to load " + file.toString());
 		}
 	}
@@ -36,7 +36,9 @@ public class SpecificationUnmarshaller {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			
 			specification = (BPMSpecification) unmarshaller.unmarshal(is);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
 			eventHandler.logCritical("Failed to read input stream");
 		}
 	}

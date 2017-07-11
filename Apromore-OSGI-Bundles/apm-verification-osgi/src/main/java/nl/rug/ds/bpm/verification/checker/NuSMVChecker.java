@@ -1,5 +1,6 @@
 package nl.rug.ds.bpm.verification.checker;
 
+import nl.rug.ds.bpm.ConfigBean;
 import nl.rug.ds.bpm.event.EventHandler;
 import nl.rug.ds.bpm.verification.formula.NuSMVFormula;
 import nl.rug.ds.bpm.verification.model.kripke.Kripke;
@@ -112,9 +113,14 @@ public class NuSMVChecker extends AbstractChecker {
 
     protected Process createProcess() {
         try {
-            Process proc = Runtime.getRuntime().exec(checker.getAbsoluteFile() + " " + file.getAbsolutePath());
+            System.out.println("Start execution of NuSMV from " + ConfigBean.getNuSMVPath());
+            File nusmv = new File(ConfigBean.getNuSMVPath());
+//            File nusmv = new File("/Users/armascer/Downloads/NuSMV-2.6.0-Darwin/bin/NuSMV");
+            System.out.println(nusmv.getAbsolutePath() + " " + file.getAbsolutePath());
+            Process proc = Runtime.getRuntime().exec(nusmv.getAbsolutePath() + " " + file.getAbsolutePath());
             return proc;
-        } catch (Throwable t) {
+        } catch (Exception e) {
+            e.printStackTrace();
             eventHandler.logError("Could not call model checker NuSMV2");
             eventHandler.logError("No checks were performed");
             return null;

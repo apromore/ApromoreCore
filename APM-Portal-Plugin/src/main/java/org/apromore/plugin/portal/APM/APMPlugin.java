@@ -63,7 +63,7 @@ public class APMPlugin extends DefaultPortalPlugin {
     private final CanoniserService canoniserService;
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
 
-    private String label = "Extract variability specification";
+    private String label = "Extract Variability Specification";
     private String groupLabel = "Discover";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APMPlugin.class.getCanonicalName());
@@ -138,7 +138,7 @@ public class APMPlugin extends DefaultPortalPlugin {
         List<VersionSummaryType> verS = new ArrayList<>();
         List<PetriNet> nets = new ArrayList<>();
         List<HashSet<String>> observable = new ArrayList<>();
-        String prefix = "";
+        String prefix = "silent";
 
         try {
             for (ProcessSummaryType processSummary: selectedProcessVersions.keySet()) {

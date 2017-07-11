@@ -20,13 +20,18 @@
 
 package org.apromore.plugin.portal.APM;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import hub.top.petrinet.PetriNet;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.dialogController.SelectDynamicListController;
 import org.apromore.service.apm.APMService;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.*;
 
 /**
@@ -37,12 +42,24 @@ public class APMController {
     private PortalContext portalContext;
     private Window resultsWin;
     private Button closeButton;
+    private Button downloadButton;
     private Rows rows;
     private Grid grid;
     private String nativeType = "BPMN 2.0";
 
     private PetriNet[] nets;
     private String prefix;
+    private Checkbox viresp;
+    private Checkbox viprec;
+    private Checkbox veiresp;
+    private Checkbox veresp;
+    private Checkbox vconf;
+    private Checkbox vpar;
+
+    private Window enterLogWin;
+    private Button cancelButton;
+    private Button okButton;
+    private SelectDynamicListController domainCB;
 
     private APMService apmService;
 
@@ -56,22 +73,87 @@ public class APMController {
         try {
             this.nets = nets;
             this.prefix = prefix;
-            String[] differences = apmService.getSpecification(nets, prefix);
 
-            makeResultWindows(differences[1]);
+            popopWindowCheck();
         } catch (Exception e) {
             Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
-    public void makeResultWindows(String results){
+    public void getSpecification(){
+        try {
+            String[] differences = apmService.getSpecification(nets, prefix, viresp.isChecked(), viprec.isChecked(), veiresp.isChecked(), veresp.isChecked(), vconf.isChecked(), vpar.isChecked());
+            makeResultWindows(differences);
+        } catch (Exception e) {
+            Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    public void popopWindowCheck() {
+        try {
+            List<String> domains = new ListModelList<>();
+            this.domainCB = new SelectDynamicListController(domains);
+            this.domainCB.setReference(domains);
+            this.domainCB.setAutodrop(true);
+            this.domainCB.setWidth("85%");
+            this.domainCB.setHeight("100%");
+            this.domainCB.setAttribute("hflex", "1");
+
+            this.enterLogWin = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/checklist.zul", null, null);
+
+            this.viresp = (Checkbox) this.enterLogWin.getFellow("viresp");
+            this.viprec = (Checkbox) this.enterLogWin.getFellow("viprec");
+            this.veiresp = (Checkbox) this.enterLogWin.getFellow("veiresp");
+            this.veresp = (Checkbox) this.enterLogWin.getFellow("veresp");
+            this.vconf = (Checkbox) this.enterLogWin.getFellow("vconf");
+            this.vpar = (Checkbox) this.enterLogWin.getFellow("vpar");
+
+            this.viresp.setChecked(true);
+            this.viprec.setChecked(true);
+            this.veiresp.setChecked(true);
+            this.veresp.setChecked(true);
+            this.vconf.setChecked(true);
+            this.vpar.setChecked(true);
+
+            this.cancelButton = (Button) this.enterLogWin.getFellow("cancelBtn");
+            this.okButton = (Button) this.enterLogWin.getFellow("acceptBtn");
+
+            this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    cancel();
+                }
+            });
+            this.okButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    getSpecification();
+                    cancel();
+                }
+            });
+            this.enterLogWin.doModal();
+        }catch (IOException e) {
+            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    protected void cancel() {
+        this.enterLogWin.detach();
+    }
+
+    public void makeResultWindows(String[] results){
         try {
             this.resultsWin = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/results.zul", null, null);
             this.closeButton = (Button) this.resultsWin.getFellow("closeBtn");
+            this.downloadButton = (Button) this.resultsWin.getFellow("downloadBtn");
 
             this.closeButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     closeResults();
+                }
+            });
+
+            this.downloadButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    downloadResults(results[0]);
                 }
             });
 
@@ -80,7 +162,7 @@ public class APMController {
 
             ArrayList<String> gridData = new ArrayList<String>();
 
-            StringTokenizer token = new StringTokenizer(results, "\n");
+            StringTokenizer token = new StringTokenizer(results[1], "\n");
             while(token.hasMoreTokens())
                 gridData.add(token.nextToken());
 
@@ -98,6 +180,11 @@ public class APMController {
 
     protected void closeResults(){
         this.resultsWin.detach();
+    }
+
+    protected void downloadResults(String xmlString){
+        Filedownload.save(xmlString.getBytes(Charset.forName("UTF-8")), "application/xml",
+                "verification.xml");
     }
 
     public class SimpleRenderer implements RowRenderer<String> {

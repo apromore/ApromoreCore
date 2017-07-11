@@ -124,6 +124,8 @@
         <module>Compare-Portal-Plugin</module>
         <module>APM-Logic</module>
         <module>APM-Portal-Plugin</module>
+        <module>APM-Compliance-Logic</module>
+        <module>APM-Compliance-Portal-Plugin</module>
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>
         <module>Activity-Filter-Logic</module>
@@ -137,10 +139,12 @@
         <module>Log-Visualizer-Portal-Plugin</module>
         <module>Metrics-Logic</module>
         <module>Metrics-Portal-Plugin</module>
+        <module>BEBoP-Logic</module>
+        <module>BEBoP-Portal-Plugin</module>
         <module>PerformanceMiner-Logic</module>
         <module>PerformanceMiner-Portal-Plugin</module>
         <module>StageMining-Logic</module>
-        <module>StageMining-Portal-Plugin</module>		
+        <module>StageMining-Portal-Plugin</module>
         <module>PQL-Indexer-Portal-Plugin</module>
         <module>PQL-Logic</module>
         <module>PQL-Logic-WS</module>
@@ -293,7 +297,7 @@
         <taskmapping.version>0.1</taskmapping.version>
         <mathCollection.version>0.1</mathCollection.version>
         <lpsolve.version>55j</lpsolve.version>
-		
+
 		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
         <jbpt-petri.version>0.2.433</jbpt-petri.version>
         <v4-runtime.version>4.3</v4-runtime.version>
@@ -499,7 +503,7 @@
                 <artifactId>lpsolve</artifactId>
                 <version>${lpsolve.version}</version>
             </dependency>
-			
+
 			<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
             <dependency>
                 <groupId>org.jbpt</groupId>

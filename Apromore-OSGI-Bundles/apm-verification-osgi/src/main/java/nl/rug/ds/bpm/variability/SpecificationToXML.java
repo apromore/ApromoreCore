@@ -1,135 +1,170 @@
 package nl.rug.ds.bpm.variability;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+
+import nl.rug.ds.bpm.event.EventHandler;
+import nl.rug.ds.bpm.specification.jaxb.BPMSpecification;
+import nl.rug.ds.bpm.specification.jaxb.Group;
+import nl.rug.ds.bpm.specification.jaxb.Specification;
+import nl.rug.ds.bpm.specification.jaxb.SpecificationSet;
+import nl.rug.ds.bpm.specification.marshaller.SpecificationMarshaller;
 
 public class SpecificationToXML {
 	
 	public static String[] getOutput(VariabilitySpecification vs, String silentprefix) {
-		String xml = "";
-		Map<String, String> labelidmap = getLabelIdMap(vs.getAllLabels(), silentprefix);
-
-		String output[] = getSpecs(vs, labelidmap);
-
-		xml += "<variabilitySpecification>\n";
-		xml += getAPs(labelidmap);
-		xml += output[0];
-		xml += "</variabilitySpecification>";
-
-		output[0] = xml;
-
-		return output;
+		return getOutput(vs, silentprefix, new EventHandler(), true, true, true, true, true, true);
 	}
-
-	public static String getXML(VariabilitySpecification vs, String silentprefix) {
-		String xml = "";
-		Map<String, String> labelidmap = getLabelIdMap(vs.getAllLabels(), silentprefix);
-
-		xml += "<variabilitySpecification>\n";
-		xml += getAPs(labelidmap);
-		xml += getSpecs(vs, labelidmap)[0];
-		xml += "</variabilitySpecification>";
-
-		return xml;
+	
+	public static String[] getOutput(VariabilitySpecification vs, String silentprefix, EventHandler eventHandler) {
+		return getOutput(vs, silentprefix, eventHandler, true, true, true, true, true, true);
 	}
-
-	private static Map<String, String> getLabelIdMap(List<String> labels, String silentprefix) {
-		Map<String, String> labelidmap = new HashMap<String, String>();
-		int i = 0;
-
-		for (String lbl: labels) {
-			if ((!lbl.startsWith(silentprefix)) && (!lbl.equals("_0_")) && (!lbl.equals("_1_"))) {
-				labelidmap.put(lbl, "ap" + i);
-				i++;
-			}
-		}
-
-		return labelidmap;
+	
+	public static String[] getOutput(VariabilitySpecification vs, String silentprefix, 
+			Boolean viresp, Boolean viprec, Boolean veiresp, Boolean veresp, Boolean vconf, Boolean vpar) {
+		return getOutput(vs, silentprefix, new EventHandler(), viresp, viprec, veiresp, veresp, vconf, vpar);
 	}
-
-	private static String getAPs(Map<String, String> labelidmap) {
-		String aps = "";
-
-		aps += "\t<atomicPropositions>\n";
-
-		for (String lbl: labelidmap.keySet()) {
-			aps += "\t\t<atomicProposition id=\"{" + labelidmap.get(lbl) + "}\" name=\"" + lbl + "\"/>\n";
-		}
-
-		aps += "\t</atomicPropositions>\n";
-
-		return aps;
-	}
-
-	private static String[] getSpecs(VariabilitySpecification vs, Map<String, String> labelidmap) {
-		String output[] = new String[2];
-		String specs = "";
+	
+	public static String[] getOutput(VariabilitySpecification vs, String silentprefix, EventHandler eventHandler, 
+			Boolean viresp, Boolean viprec, Boolean veiresp, Boolean veresp, Boolean vconf, Boolean vpar) {
+		
+		String output[] = new String[2];		
 		String plaintext = "";
+		
+		SpecificationTypeLoader stl = new SpecificationTypeLoader(eventHandler);
+		
+		BPMSpecification bpmspec = new BPMSpecification();
+		SpecificationSet specset;
+		Specification spec;
+		Group grp;
+		String spectype;
+		
+		int id = 1;
+		
+		if (viresp) {
+			specset = new SpecificationSet();
+			spectype = "AlwaysImmediateResponse";
+			for (String sp: vs.getViresp()) {
+				grp = SpecificationBuilder.getGroup(sp, "U", "");
+				
+				if (grp.getElements().size() > 1) {
+					spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype, grp.getId());
+					bpmspec.addGroup(grp);
+				}
+				else {
+					spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype);
+				}
+						
+				specset.addSpecification(spec);
+				
+				id++;
+				
+				plaintext += sp + "\n";
+			}
+			bpmspec.addSpecificationType(stl.getSpecificationType(spectype));
+			bpmspec.addSpecificationSet(specset);
 
-		specs += "\t<specifications>\n";
-
-		for (String sp: vs.getViresp()) {
-			specs += getSpecLine(sp, "always immediate response", labelidmap, true);
-			plaintext += sp + "\n";
+			plaintext += "\n";
 		}
-		plaintext += "\n";
+		
+		if (viprec) {
+			specset = new SpecificationSet();
+			spectype = "AlwaysImmediatePrecedence";
+			for (String sp: vs.getViprec()) {
+				grp = SpecificationBuilder.getGroup(sp, "", "U");
+				
+				if (grp.getElements().size() > 1) {
+					spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype, grp.getId());
+					bpmspec.addGroup(grp);
+				}
+				else {
+					spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype);
+				}
+				
+				specset.addSpecification(spec);
+				id++;
 
-		for (String sp: vs.getViprec()) {
-			specs += getSpecLine(sp, "always immediate precedence", labelidmap, false);
-			plaintext += sp + "\n";
+				plaintext += sp + "\n";
+			}
+			bpmspec.addSpecificationType(stl.getSpecificationType(spectype));
+			bpmspec.addSpecificationSet(specset);
+
+			plaintext += "\n";
 		}
-		plaintext += "\n";
+		
+		if (veiresp) {
+			specset = new SpecificationSet();
+			spectype = "ExistImmediateResponse";
+			for (String sp: vs.getVeiresp()) {
+				spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype);
+				specset.addSpecification(spec);
+				id++;
 
-		for (String sp: vs.getVeiresp()) {
-			specs += getSpecLine(sp, "exist immediate response", labelidmap, true);
-			plaintext += sp + "\n";
+				plaintext += sp + "\n";
+			}
+			bpmspec.addSpecificationType(stl.getSpecificationType(spectype));
+			bpmspec.addSpecificationSet(specset);
+
+			plaintext += "\n";
 		}
-		plaintext += "\n";
+		
+		if (veresp) {
+			specset = new SpecificationSet();
+			spectype = "ExistResponse";
+			for (String sp: vs.getVerespReduced(false)) {
+				spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype);
+				specset.addSpecification(spec);
+				id++;
 
-		for (String sp: vs.getVerespReduced(false)) {
-			specs += getSpecLine(sp, "exist response", labelidmap, true);
-			plaintext += sp + "\n";
+				plaintext += sp + "\n";
+			}
+			bpmspec.addSpecificationType(stl.getSpecificationType(spectype));
+			bpmspec.addSpecificationSet(specset);
+
+			plaintext += "\n";
 		}
-		plaintext += "\n";
+		
+		if (vconf) {
+			specset = new SpecificationSet();
+			spectype = "AlwaysConflict";
+			for (String sp: vs.getVconf()) {
+				spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype);
+				specset.addSpecification(spec);
+				id++;
 
-		for (String sp: vs.getVconf()) {
-			specs += getSpecLine(sp, "always conflict", labelidmap, true);
-			plaintext += sp + "\n";
+				plaintext += sp + "\n";
+			}
+			bpmspec.addSpecificationType(stl.getSpecificationType(spectype));
+			bpmspec.addSpecificationSet(specset);
+
+			plaintext += "\n";
 		}
-		plaintext += "\n";
+		
+		if (vpar) {
+			specset = new SpecificationSet();
+			spectype = "AlwaysParallel";
+			for (String sp: vs.getVpar()) {
+				grp = SpecificationBuilder.getGroup(sp);
+				
+				spec = SpecificationBuilder.getSpecification(sp, "s" + id, spectype, grp.getId());
+				specset.addSpecification(spec);
+				bpmspec.addGroup(grp);
+				id++;
 
-		for (String sp: vs.getVpar()) {
-			specs += getSpecLine(sp, "exist parallel", labelidmap, true);
-			plaintext += sp + "\n";
+				plaintext += sp + "\n";
+			}
+			bpmspec.addSpecificationType(stl.getSpecificationType(spectype));
+			bpmspec.addSpecificationSet(specset);
+
 		}
-
-		specs += "\t</specifications>\n";
-
-		output[0] = specs;
+		
+		OutputStream os = new ByteArrayOutputStream();
+		new SpecificationMarshaller(eventHandler, bpmspec, os);
+		
+		output[0] = os.toString();
 		output[1] = plaintext;
-
+		
 		return output;
 	}
-
-	private static String getSpecLine(String spec, String type, Map<String, String> labelidmap, Boolean sourceIsFirstElement) {
-		String specline = "";
-		String source;
-		String reworkedspec = spec;
-
-		for (String lbl: labelidmap.keySet()) {
-			reworkedspec = reworkedspec.replace("{" + lbl + "}", "{" + labelidmap.get(lbl) + "}");
-		}
-
-		if (sourceIsFirstElement) {
-			source = reworkedspec.substring(reworkedspec.indexOf("{"), reworkedspec.indexOf("}") + 1);
-		}
-		else {
-			source = reworkedspec.substring(reworkedspec.lastIndexOf("{"), reworkedspec.lastIndexOf("}") + 1);
-		}
-
-		specline += "\t\t<specification id=\"Import\" language=\"CTL\" type=\"" + type + "\" source=\"" + source + "\">" + reworkedspec + "</specification>\n";
-
-		return specline;
-	}
+	
 }

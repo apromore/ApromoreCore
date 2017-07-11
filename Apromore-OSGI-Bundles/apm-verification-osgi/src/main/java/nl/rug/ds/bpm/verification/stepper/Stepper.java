@@ -9,6 +9,8 @@ import java.util.Set;
 public abstract class Stepper {
 	protected File net;
 	
+	public Stepper() {}
+	
 	public Stepper(File net) {
 		this.net = net;
 		if(!(net.exists() && net.isFile())) {
