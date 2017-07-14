@@ -72,7 +72,7 @@ public class Visualization {
             //----------------
             JSONObject jsonOneSeries = new JSONObject();
             jsonOneSeries.put("name", ds.getSeriesKey(i).toString());
-            jsonOneSeries.put("tooltip", "{valueDecimals: 2}");
+            jsonOneSeries.put("tooltip", "{valueDecimals: 0}");
             
             //For data array in one series
             JSONArray jsonOneSeriesData = new JSONArray();
