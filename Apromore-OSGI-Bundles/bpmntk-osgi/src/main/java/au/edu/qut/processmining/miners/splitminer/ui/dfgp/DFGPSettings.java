@@ -40,7 +40,7 @@ public class DFGPSettings extends ProMPropertiesPanel {
         filterType.addLast("WTH");
         filterType.addLast("FWG");
         filterType.addLast("STD");
-//        filterType.addLast("GUB");
+        filterType.addLast("DBG");
 
         filtering = this.addComboBox("Filter Type", filterType);
         filtering.addActionListener(dfgpil);
@@ -93,7 +93,7 @@ public class DFGPSettings extends ProMPropertiesPanel {
                         percentileFrequencyThreshold.setVisible(false);
                         break;
                     case 3:
-                        result.setFilterType(DFGPUIResult.FilterType.GUB);
+                        result.setFilterType(DFGPUIResult.FilterType.DBG);
                         percentileFrequencyThreshold.setVisible(false);
                         break;
                 }

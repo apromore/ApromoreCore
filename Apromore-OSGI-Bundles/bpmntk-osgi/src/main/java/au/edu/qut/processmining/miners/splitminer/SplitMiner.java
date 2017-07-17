@@ -231,8 +231,10 @@ public class SplitMiner {
 
         updateLabels(this.log.getEvents());
         helper.removeSelfLoopMarkers(bpmnDiagram);
-        helper.collapseSplitGateways(bpmnDiagram);
-        helper.collapseJoinGateways(bpmnDiagram);
+        helper.expandSplitGateways(bpmnDiagram);
+//        helper.expandJoinGateways(bpmnDiagram);
+//        helper.collapseSplitGateways(bpmnDiagram);
+//        helper.collapseJoinGateways(bpmnDiagram);
 //        System.out.println("SplitMiner - bpmn diagram generated successfully");
     }
 

@@ -159,7 +159,7 @@ public class DirectlyFollowGraphPlus {
 
         switch(filterType) {                        //depends on detectParallelisms()
             case FWG:
-                filterWithGuarantees();
+                filterWithGuarantees(percentileOnBest);
                 exploreAndRemove();
                 break;
             case WTH:
@@ -168,9 +168,11 @@ public class DirectlyFollowGraphPlus {
             case STD:
                 standardFilter();
                 break;
-            case GUB:
-                generateNoiseFilteredDFG();
+            case DBG:
+                filterWithGuarantees(percentileOnBest);
                 exploreAndRemove();
+//                generateNoiseFilteredDFG();
+//                exploreAndRemove();
                 break;
         }
 
@@ -445,13 +447,18 @@ public class DirectlyFollowGraphPlus {
         filterThreshold = frequencyOrderedEdges.get(i).getFrequency();
     }
 
-    private void filterWithGuarantees() {
-//        bestEdgesOnMaxFrequencies();
-//        computeFilterThreshold();
+    private void filterWithGuarantees(boolean filterWithThreshold) {
+        if( filterWithThreshold ) {
+            bestEdgesOnMaxFrequencies();
+            computeFilterThreshold();
+        }
 
-        bestEdgesOnMaxCapacities(true);
-        for( DFGEdge e : new HashSet<>(edges) ) if(!bestEdges.contains(e)) removeEdge(e, false);
-//        for( DFGEdge e : new HashSet<>(edges) ) if( !bestEdges.contains(e) && !(e.getFrequency() > filterThreshold) ) removeEdge(e, false);
+        bestEdgesOnMaxCapacities(!filterWithThreshold);
+        if( filterWithThreshold ) {
+            for( DFGEdge e : new HashSet<>(edges) ) if( !bestEdges.contains(e) && !(e.getFrequency() > filterThreshold) ) removeEdge(e, false);
+        } else {
+            for( DFGEdge e : new HashSet<>(edges) ) if( !bestEdges.contains(e) ) removeEdge(e, false);
+        }
     }
 
     private void bestEdgesOnMaxCapacities(boolean maximize) {
@@ -511,7 +518,8 @@ public class DirectlyFollowGraphPlus {
             for( DFGEdge ie : incomings.get(tgt) ) {
                 src = ie.getSourceCode();
                 maxCap = (cap > ie.getFrequency() ? ie.getFrequency() : cap);
-                if( maxCap > maxCapacitiesToSink.get(src) ) {
+                if( (maxCap > maxCapacitiesToSink.get(src)) ||
+                    ((maxCap == maxCapacitiesToSink.get(src)) && (bestSuccessorToSink.get(src).getFrequency() > ie.getFrequency())) ) {
                     maxCapacitiesToSink.put(src, maxCap);
                     bestSuccessorToSink.put(src, ie);
                     if( !toVisit.contains(src) ) unvisited.add(src);

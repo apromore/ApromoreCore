@@ -28,6 +28,8 @@ import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
+import java.util.HashSet;
+
 /**
  * Created by Adriano on 29/11/2016.
  */
@@ -52,7 +54,7 @@ public class ReplaceIORsPlugin {
         BPMNDiagram output;
 
         output = (new DiagramHandler()).copyDiagram(input);
-        GatewayMap gatemap = new GatewayMap();
+        GatewayMap gatemap = new GatewayMap(true);
         gatemap.generateMap(output);
         gatemap.detectAndReplaceIORs();
 

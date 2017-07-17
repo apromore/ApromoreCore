@@ -53,7 +53,7 @@ public class GatewayMapPlugin {
         BPMNDiagram output;
 
         copy = (new DiagramHandler()).copyDiagram(input);
-        GatewayMap gatemap = new GatewayMap();
+        GatewayMap gatemap = new GatewayMap(false);
         gatemap.generateMap(copy);
         output = gatemap.getGatewayMap();
 
