@@ -6,7 +6,7 @@ import static au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult.Fi
  * Created by Adriano on 23/01/2017.
  */
 public class DFGPUIResult {
-    public enum FilterType{STD, GUB, FWG, WTH}
+    public enum FilterType{STD, DBG, FWG, WTH}
 
     public static final double FREQUENCY_THRESHOLD = 0.40;
     public static final double PARALLELISMS_THRESHOLD = 0.10;

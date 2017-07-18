@@ -69,8 +69,8 @@ public class GatewayMap {
     private boolean applyHagen;
 
 
-    public GatewayMap() {
-        this.applyHagen = false;
+    public GatewayMap(boolean applyHagen) {
+        this.applyHagen = applyHagen;
         this.bondsEntries = new HashSet<>();
     }
 
@@ -569,7 +569,6 @@ public class GatewayMap {
         Map<Gateway, Set<Gateway>> toVisit;
         Map<Gateway, Set<Gateway>> visitedGates;
         Map<Gateway, Set<GatewayMapFlow>> visitedFlows;
-        Set<GatewayMapFlow> domFrontier;
 
         boolean loop;
 
@@ -586,7 +585,6 @@ public class GatewayMap {
             toVisit = new HashMap<>();
             visitedGates = new HashMap<>();
             visitedFlows = new HashMap<>();
-            domFrontier = new HashSet<>();
 
             loop = false;
             for( GatewayMapFlow igmf : new HashSet<>(incomings.get(ior)) ) {
@@ -643,7 +641,7 @@ public class GatewayMap {
             if( !loop ) {
 //                debug("DEBUG - changing IOR: " + ior.getLabel() + "");
 //                debug("DEBUG - xors: " + toVisit.size());
-                iorType = replaceIOR(dominator, gatesDepth.get(ior), toVisit, visitedGates, visitedFlows, domFrontier, new HashMap<Gateway, Set<GatewayMapFlow>>());
+                iorType = replaceIOR(dominator, gatesDepth.get(ior), toVisit, visitedGates, visitedFlows, new HashSet<>(), new HashMap<Gateway, Set<GatewayMapFlow>>());
                 ior.setGatewayType(iorType);
                 counter++;
             }
@@ -720,12 +718,12 @@ public class GatewayMap {
 //                            however, if there are no AND gateways or they are only entry or exit of BONDs
 //                            we can set the IORs as a XOR, for this reason we need to keep track of the
 //                            presence of AND gateways that are not entries or exits of BONDs, this is done here
-//                        debug("DEBUG - found an AND gateway: " + g.getLabel());
+//                        debug("DEBUG - found an AND-split gateway: " + g.getLabel());
 
-                        if( !bondsEntries.contains(g) ) {
-                            onlyXORs = false;
-                            break;
-                        }
+//                        if( !bondsEntries.contains(g) ) {
+//                            onlyXORs = false;
+//                            break;
+//                        }
 
                         for( GatewayMapFlow ogmf : outgoings.get(g) ) {
 //                                we need to check only the AND split and not the AND join,
@@ -736,7 +734,13 @@ public class GatewayMap {
 //                                therefore we do not know where it will go, and we need to turn the IOR into an AND
 //                                NOTE: the only AND or XOR joins were placed because they are exits of BONDs!
 //                                      only during the generation of the BONDs exit gateways we put joins that are not IORs
-                            if( !visitedFlows.get(xor).contains(ogmf) ) onlyXORs = false;
+
+//                            if( !visitedFlows.get(xor).contains(ogmf) ) onlyXORs = false;
+                            for( Gateway x : visitedGates.keySet() )
+                                if( !(x == xor) && (visitedFlows.get(x).contains(ogmf)) ) {
+                                    onlyXORs = false;
+                                    break;
+                                }
                         }
                     }
                     if( !onlyXORs ) break;
