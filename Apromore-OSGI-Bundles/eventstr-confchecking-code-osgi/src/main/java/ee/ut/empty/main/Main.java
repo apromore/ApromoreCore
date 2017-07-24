@@ -55,9 +55,10 @@ public class Main {
 		
 	    long time = System.nanoTime();
 		PORuns runs = new PORuns();
+		int iTrace = 0;
 
 		for (XTrace trace: log) {
-			PORun porun = new PORun(alphaRelations, trace);
+			PORun porun = new PORun(alphaRelations, trace, (iTrace++) + "");
 			runs.add(porun);
 		}
 		

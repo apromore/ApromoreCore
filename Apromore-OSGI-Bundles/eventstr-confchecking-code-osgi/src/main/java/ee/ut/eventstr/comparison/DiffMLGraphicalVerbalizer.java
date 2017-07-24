@@ -159,9 +159,10 @@ public class DiffMLGraphicalVerbalizer {
 		PORuns runs = new PORuns();
 		Set<Integer> eventlength = new HashSet<Integer>();
 		Set<Integer> succ;
+		int i = 0;
 
 		for (XTrace trace : log) {
-			PORun porun = new PORun(alphaRelations, trace);
+			PORun porun = new PORun(alphaRelations, trace, (i++) + "");
 			runs.add(porun);
 
 			succ = new HashSet<Integer>(porun.asSuccessorsList().values());

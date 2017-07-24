@@ -36,8 +36,8 @@ import ee.ut.mining.log.ConcurrencyRelations;
 
 public class AbstractingShort12LoopsPORun extends PORun {
 	
-	public AbstractingShort12LoopsPORun(ConcurrencyRelations alphaRelations, XTrace trace) {
-		super(alphaRelations, trace);
+	public AbstractingShort12LoopsPORun(ConcurrencyRelations alphaRelations, XTrace trace, String traceId) {
+		super(alphaRelations, trace, traceId);
 		Multimap<Integer, Integer> successors = asSuccessorsList();
 		Multimap<Integer, Integer> predecessors = asPredecessorsList();
 		Stack<Integer> open = new Stack<>();

@@ -41,8 +41,7 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.jbpt.hypergraph.abs.GObject;
 import org.jbpt.pm.*;
-import org.jbpt.pm.bpmn.Bpmn;
-import org.jbpt.pm.bpmn.BpmnControlFlow;
+import org.jbpt.pm.bpmn.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -123,9 +122,9 @@ public class DiffMLGraphicalVerbalizerNew {
         PORuns runs = new PORuns();
         Set<Integer> eventlength = new HashSet<Integer>();
         Set<Integer> succ;
-
+        int i = 0;
         for (XTrace trace : log) {
-            PORun porun = new PORun(alphaRelations, trace);
+            PORun porun = new PORun(alphaRelations, trace, (i++) + "");
             runs.add(porun);
 
             succ = new HashSet<Integer>(porun.asSuccessorsList().values());
@@ -287,7 +286,7 @@ public class DiffMLGraphicalVerbalizerNew {
                 int i = path2Leaf.indexOf(hides.get(0));
                 Pair<List<Operation>, LinkedList<Operation>> unmRepIntervalPair = look4UnmRep(path2Leaf, i, hides);
 
-                if (unmRepIntervalPair != null) {
+                if (unmRepIntervalPair != null && unmRepIntervalPair.getFirst().size() == hides.size()) {
                     LinkedList<Operation> unmRepInterval = unmRepIntervalPair.getSecond();
 
                     if(usedHides.containsAll(unmRepInterval))
@@ -519,16 +518,21 @@ public class DiffMLGraphicalVerbalizerNew {
                 pruned.add("start event");
             else if(label.equals("_1_"))
                 pruned.add("end event");
-            else
+            else if(commonLabels.contains(label))
                 pruned.add(label);
         }
+
+        FlowNode taskToHide = model.getTaskFromEvent((Integer) op.target);
+
+        if(pruned.isEmpty())
+            pruned.add(getTypeLabel(model.getBpmnModel().getDirectSuccessors(taskToHide).iterator().next()));
 
         String sentence = verbalizeTaskAbs("model", op.label, modelContextSt, pruned.toString());
 
         if(!commonLabels.contains(pes2.getLabel((Integer) op.target)))
             return null;
 
-        FlowNode taskToHide = model.getTaskFromEvent((Integer) op.target);
+
 
         FlowNode startTask = model.getBpmnModel().getDirectPredecessors(taskToHide).iterator().next();
         List<String> start = new LinkedList<>();
@@ -553,6 +557,19 @@ public class DiffMLGraphicalVerbalizerNew {
 //        printDiff(start, end, greys, new LinkedList<String>());
 
         return difference;
+    }
+
+    private String getTypeLabel(FlowNode next) {
+        if(next instanceof StartEvent)
+            return "start event";
+        else if(next instanceof EndEvent)
+            return "end event";
+        else if(next instanceof Gateway)
+            return "gateway";
+        else if(next instanceof Activity)
+            return next.getName();
+
+        return "end event";
     }
 
     private DifferenceML getTASKABSLDiff(Operation op, BitSet historyEvt, HashSet<String> extList) {
@@ -653,41 +670,45 @@ public class DiffMLGraphicalVerbalizerNew {
         if(!commonLabels.contains(pes2.getLabel(event)))
             return null;
 
-        List<String> a = new LinkedList<>();
-        a.add(model.getTaskFromEvent(event).getId());
+        List<String> newTasks = new LinkedList<>();
+        newTasks.add(pes2.getLabel(event));
 
         HashSet<Integer> ids = new HashSet<>();
-        ids.add((Integer) modelCont.target);
+        ids.add(pes2.getLast(logCont.nextState.c2, commonLabels));
 
-        HashSet<GObject> modelElements = model.getModelSegment(ids);
-        HashSet<FlowNode> firstEl = findFirst(modelElements);
-        HashSet<FlowNode> lastEl = findLast(modelElements);
+//        HashSet<GObject> modelElements = model.getModelSegment(ids);
+//        HashSet<FlowNode> firstEl = findFirst(modelElements);
+//        HashSet<FlowNode> lastEl = findLast(modelElements);
+        FlowNode startNode = model.getTaskFromEvent(pes2.getLast(logCont.nextState.c2, commonLabels));
+        FlowNode endNode = model.getBpmnModel().getDirectSuccessors(startNode).iterator().next();
 
         List<String> start = new LinkedList<>();
         List<String> greys = new ArrayList<>();
         List<String> end = new LinkedList<>();
 
-        for(GObject elem : modelElements)
-            a.add(elem.getId());
+        start.add(startNode.getId());
+        end.add(endNode.getId());
+        greys.add(model.getBpmnModel().getDirectedEdge(startNode, endNode).getId());
 
-        for(FlowNode gObj: firstEl) {
-            for(FlowNode st : model.getBpmnModel().getDirectPredecessors(gObj))
-                start.add(st.getId());
+//        for(GObject elem : modelElements)
+//            a.add(elem.getId());
 
-            for (ControlFlow flow : model.getBpmnModel().getIncomingControlFlow(gObj))
-                greys.add(flow.getId());
-        }
-
-        for(FlowNode gObj: lastEl) {
-            for(FlowNode en : model.getBpmnModel().getDirectSuccessors(gObj))
-                end.add(en.getId());
-
-            for (ControlFlow flow : model.getBpmnModel().getOutgoingControlFlow(gObj))
-                greys.add(flow.getId());
-        }
+//        for(FlowNode gObj: firstEl) {
+//            for(FlowNode st : model.getBpmnModel().getDirectPredecessors(gObj))
+//                start.add(st.getId());
+////            for (ControlFlow flow : model.getBpmnModel().getIncomingControlFlow(gObj))
+////                greys.add(flow.getId());
+//        }
+//
+//        for(FlowNode gObj: lastEl) {
+//            for(FlowNode en : model.getBpmnModel().getDirectSuccessors(gObj))
+//                end.add(en.getId());
+////            for (ControlFlow flow : model.getBpmnModel().getOutgoingControlFlow(gObj))
+////                greys.add(flow.getId());
+//        }
 
         DifferenceML difference = new DifferenceML(impact);
-        difference.setA(a);
+        difference.setNewTasks(newTasks);
         difference.setStart(start);
         difference.setGreys(greys);
         difference.setEnd(end);
@@ -731,9 +752,9 @@ public class DiffMLGraphicalVerbalizerNew {
 
 //        if (path2Leaf.indexOf(source.get(0)) < path2Leaf.indexOf(target.get(0)))
         if(isRHide(source.getFirst()))
-            sentence = verbalizeTaskSub("model", path2Leaf.get(i).label, source, target);
+            sentence = verbalizeTaskSub("model", getLabel(path2Leaf.get(i), path2Leaf, i), source, target);
         else
-            sentence = verbalizeTaskSub("model", path2Leaf.get(i).label, target, source);
+            sentence = verbalizeTaskSub("model", getLabel(path2Leaf.get(i), path2Leaf, i), target, source);
 
         System.out.println(sentence + " -- Impact = " + impact);
 
@@ -764,7 +785,7 @@ public class DiffMLGraphicalVerbalizerNew {
             for(FlowNode en : model.getBpmnModel().getDirectSuccessors(gObj))
                 end.add(en.getId());
 
-        if(source == rHidesOps) {
+        if(isRHide(source.getFirst())) {
             for (Operation tgt : target)
                 newTasks.add(tgt.label);
         }else{
@@ -784,6 +805,17 @@ public class DiffMLGraphicalVerbalizerNew {
 //        printDiff(start, end, grey);
 
         return difference;
+    }
+
+    private String getLabel(Operation operation, LinkedList<Operation> path2Leaf, int i) {
+        if (operation.label.equals("_0_"))
+            return "start event";
+        else if(operation.label.equals("_1_"))
+            return "end event";
+        else if(!commonLabels.contains(operation.label))
+            return getLabel(path2Leaf.get(i-1), path2Leaf, i-1);
+
+        return operation.label;
     }
 
     public boolean containsIntervalLabel(LinkedList<Operation> interval, String label){
@@ -834,10 +866,13 @@ public class DiffMLGraphicalVerbalizerNew {
         HashSet<GObject> modelElements = model.getModelSegment(ids);
         HashSet<FlowNode> firstEl = findFirst(modelElements);
         HashSet<FlowNode> lastEl = findLast(modelElements);
+        HashSet<String> seenLabels = new HashSet<>();
 
         for(GObject additionalTask : modelElements)
-            if(!a.contains(additionalTask.getId()) && additionalTask instanceof Activity)
+            if(!a.contains(additionalTask.getId()) && additionalTask instanceof Activity && !seenLabels.contains(additionalTask.getName())) {
                 a.add(additionalTask.getId());
+                seenLabels.add(additionalTask.getName());
+            }
 
         List<String> start = new LinkedList<>();
         List<String> end = new LinkedList<>();
@@ -945,12 +980,17 @@ public class DiffMLGraphicalVerbalizerNew {
 
         List<String> greys = new ArrayList<>();
         List<String> a = new ArrayList<>();
+        HashSet<String> seenLabels = new HashSet<>();
 
-        for(GObject elem : modelElements)
-            a.add(elem.getId());
+        for(GObject additionalTask : modelElements) {
+            if(!a.contains(additionalTask.getId()) && additionalTask instanceof Activity && !seenLabels.contains(additionalTask.getName())) {
+                a.add(additionalTask.getId());
+                seenLabels.add(additionalTask.getName());
+            }
+        }
 
-        FlowNode xorGSp = null;
-        FlowNode xorGJn = null;
+        FlowNode xorGSp = model.getBpmnModel().getDirectPredecessors(firstEl).iterator().next();
+        FlowNode xorGJn = model.getBpmnModel().getDirectSuccessors(lastEl).iterator().next();
 
         HashSet<FlowNode> greyNodes = new HashSet<>();
 
@@ -993,7 +1033,7 @@ public class DiffMLGraphicalVerbalizerNew {
         difference.setStart(start);
         difference.setEnd(end);
         difference.setGreys(greys);
-        difference.setType("UNMREPETITION");
+        difference.setType("UNMREPETITION2");
 
         // DEBUG
 //        printDiff(start, end, greys, a);
@@ -1374,10 +1414,13 @@ public class DiffMLGraphicalVerbalizerNew {
 
         LinkedList<Operation> rHides = commonSubL.getSecond();
         List<String> greys = new ArrayList<>();
+        List<String> newTasks = new ArrayList<>();
         HashSet<Integer> ids = new HashSet<>();
         for(Operation op : rHides)
-            if(commonLabels.contains(pes2.getLabel((Integer)op.target)))
-                ids.add((Integer)op.target);
+            if(commonLabels.contains(pes2.getLabel((Integer)op.target))) {
+                ids.add((Integer) op.target);
+                newTasks.add(pes2.getLabel((Integer)op.target));
+            }
 
         if(ids.isEmpty())
             return null;
@@ -1397,11 +1440,13 @@ public class DiffMLGraphicalVerbalizerNew {
         List<String> end = new ArrayList<>();
         FlowNode successor = model.getBpmnModel().getDirectSuccessors(model.getTaskFromEvent(event)).iterator().next();
         end.add(successor.getId());
+        greys.add(model.getBpmnModel().getDirectedEdge(model.getTaskFromEvent(event), successor).getId());
 
         DifferenceML difference = new DifferenceML(impact);
         difference.setSentence(sentence);
         difference.setStart(start);
         difference.setGreys(greys);
+        difference.setNewTasks(newTasks);
         difference.setEnd(end);
         difference.setType("TASKRELOC");
 
@@ -1456,9 +1501,14 @@ public class DiffMLGraphicalVerbalizerNew {
 
     private String getContext(BitSet configuration, NewUnfoldingPESSemantics<Integer> pes) {
         LinkedList<String> contextSt = new LinkedList<>();
-        for (int i = configuration.nextSetBit(0); i >= 0; i = configuration.nextSetBit(i+1))
-            if(commonLabels.contains(pes.getLabels().get(i)))
+        for (int i = configuration.nextSetBit(0); i >= 0; i = configuration.nextSetBit(i+1)) {
+            if (commonLabels.contains(pes.getLabels().get(i)))
                 contextSt.add(pes.getLabels().get(i));
+            else if(pes.getLabels().get(i).equals("_0_"))
+                contextSt.add("start event");
+            else if(pes.getLabels().get(i).equals("_1_"))
+                contextSt.add("end event");
+        }
 
         Collections.sort(contextSt);
         return contextSt.toString();
@@ -1478,19 +1528,18 @@ public class DiffMLGraphicalVerbalizerNew {
     }
 
     private String getContext(BitSet configuration, PrimeEventStructure<Integer> pes) {
-        String context = "[";
+        List<String> listStr = new LinkedList<>();
 
-        for (int i = configuration.nextSetBit(0); i >= 0; i = configuration.nextSetBit(i+1))
-            if(commonLabels.contains(pes.getLabels().get(i))){
-                if(context.length() > 1)
-                    context += ", ";
-                context += pes.getLabels().get(i);
-            }
+        for (int i = configuration.nextSetBit(0); i >= 0; i = configuration.nextSetBit(i+1)) {
+            if (commonLabels.contains(pes.getLabels().get(i)))
+                listStr.add(pes.getLabels().get(i));
+            else if (pes.getLabels().get(i).equals("_0_"))
+                listStr.add("start event");
+            else if (pes.getLabels().get(i).equals("_1_"))
+                listStr.add("end event");
+        }
 
-        if(context.endsWith(", "))
-            context = context.substring(0, context.length()-2);
-
-        return context + "]";
+        return listStr.toString();
     }
 
     private Operation getNextMatch(LinkedList<Operation> path2Leaf, int i) {
@@ -1556,9 +1605,9 @@ public class DiffMLGraphicalVerbalizerNew {
         return null;
     }
 
-    private String verbalizeUnobsAcyclic(String label, String context) {
-        return String.format("In the log, the interval %s does not occur after '%s'", label, context);
-    }
+//    private String verbalizeUnobsAcyclic(String label, String context) {
+//        return String.format("In the log, the interval %s does not occur after '%s'", label, context);
+//    }
 
     private String verbalizeTaskAbs(String rep, String first, String pre, String post) {
         return String.format("In the %s, '%s' occurs after '%s' and before '%s'", rep, first, pre, post);
@@ -2873,7 +2922,7 @@ public class DiffMLGraphicalVerbalizerNew {
             LinkedList<Integer> context = new LinkedList<>(entry.getKey().c2.elementSet());
 
             String sentence = String.format("In the log, the interval %s does not occur after '%s'",
-                    translate(entry.getValue()), pes2.getLabels(entry.getKey().c2.elementSet()).toString());
+                    translate(entry.getValue()), getLabels(pes2.getLabels(entry.getKey().c2.elementSet())).toString());
             float impact = 1.0f;
 
             LinkedList<Integer> orderedEvts = new LinkedList<>();
@@ -2890,9 +2939,14 @@ public class DiffMLGraphicalVerbalizerNew {
             Collections.sort(orderedEvts, comparator);
             Collections.sort(context, comparator);
 
-            List<String> newTasks = new LinkedList<>();
+            List<String> greys = new LinkedList<>();
             for(Integer evt : orderedEvts)
-                newTasks.add(pes2.getLabel(evt));
+                if(model.getTaskFromEvent(evt) != null) {
+                    FlowNode taskG = model.getTaskFromEvent(evt);
+                    greys.add(taskG.getId());
+                    greys.add(model.getBpmnModel().getIncomingControlFlow(taskG).iterator().next().getId());
+                    greys.add(model.getBpmnModel().getOutgoingControlFlow(taskG).iterator().next().getId());
+                }
 
             FlowNode startTask = null;
             int i = context.size()-1;
@@ -2910,12 +2964,26 @@ public class DiffMLGraphicalVerbalizerNew {
 
             DifferenceML difference = new DifferenceML(impact);
             difference.setSentence(sentence);
-            difference.setNewTasks(newTasks);
+            difference.setGreys(greys);
             difference.setStart(start);
             difference.setEnd(end);
             difference.setType("UNOBSACYCLICINTER");
             if(difference != null) differences.add(difference);
         }
+    }
+
+    private List<String> getLabels(List<String> labels) {
+        List<String> labelsTrimmed = new LinkedList<>();
+        for(String s : labels) {
+            if (s.equals("_0_"))
+                labelsTrimmed.add("start event");
+            else if(s.equals("_1_"))
+                labelsTrimmed.add("end event");
+            else if(commonLabels.contains(s))
+                labelsTrimmed.add(s);
+        }
+
+        return labelsTrimmed;
     }
 
     private void verbalizeAdditionalCyclicModelBehavior() {
@@ -2936,7 +3004,7 @@ public class DiffMLGraphicalVerbalizerNew {
     private Set<String> translate(Collection<Integer> multiset) {
         Set<String> set = new HashSet<>();
         for (Integer ev : multiset)
-            if (!pes2.getInvisibleEvents().contains(ev))
+            if (!pes2.getInvisibleEvents().contains(ev) && !pes2.getLabel(ev).equals("_0_") && !pes2.getLabel(ev).equals("_1_"))
                 set.add(translate(pes2, ev));
         return set;
     }

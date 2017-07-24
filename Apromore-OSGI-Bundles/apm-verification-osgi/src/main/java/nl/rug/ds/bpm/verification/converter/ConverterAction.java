@@ -65,7 +65,10 @@ public class ConverterAction extends RecursiveAction {
 		for (String id: ids) {
 			boolean exist = idMap.getIdToAp().containsKey(id);
 			
+			if (id.startsWith("silent")) id = "silent"; // this line has to be tested more thoroughly
+														// It's a quick fix to handle situations where multiple silents starting with "silent"
 			idMap.addID(id);
+			
 			aps.add(idMap.getAP(id));
 			
 			if(!exist)
