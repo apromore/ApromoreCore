@@ -195,6 +195,7 @@
     </modules>
 
     <properties>
+        <rootPath>${basedir}</rootPath>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source.version>1.8</java.source.version>
@@ -1616,6 +1617,37 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>validate-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <!-- *NOTE*: The default phase of validateRevision is verify, but in case you want to change it, you can do so by adding the phase here -->
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <!-- ... -->
+                    <!--<runOnlyOnce>true</runOnlyOnce>-->
+                    <!-- this is false by default, forces the plugin to generate the git.properties file -->
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+
+                    <!-- The path for the properties file to be generated. See Super Pom for default variable reference https://maven.apache.org/guides/introduction/introduction-to-the-pom.html -->
+                    <generateGitPropertiesFilename>${rootPath}/git.properties</generateGitPropertiesFilename>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
