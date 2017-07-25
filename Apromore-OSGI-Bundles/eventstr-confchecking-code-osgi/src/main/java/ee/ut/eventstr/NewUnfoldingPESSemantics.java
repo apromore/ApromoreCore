@@ -469,4 +469,17 @@ public class NewUnfoldingPESSemantics<T>{
 	public void setLabels(List<String> newLabels) {
 		this.pes.setLabels(newLabels);
 	}
+
+	public Integer getLast(Multiset<Integer> c2, HashSet<String> observable) {
+		Integer last = -1;
+		int histSize = 0;
+
+		for(Integer i : c2)
+			if(getLocalConfiguration(i).cardinality() > histSize && observable.contains(getLabel(i))){
+                last = i;
+                histSize = getLocalConfiguration(i).cardinality();
+		    }
+
+        return last;
+	}
 }

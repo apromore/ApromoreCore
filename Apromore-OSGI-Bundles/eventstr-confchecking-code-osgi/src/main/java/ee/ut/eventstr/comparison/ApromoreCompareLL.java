@@ -116,9 +116,10 @@ public class ApromoreCompareLL {
 		
 		PORuns runs = new PORuns();
 		PORun porun;
-		
+		int i =0;
+
 		for (XTrace trace: log) {
-			porun = new PORun(alphaRelations, trace);
+			porun = new PORun(alphaRelations, trace, (i++) + "");
 			
 			runs.add(porun);
 		}

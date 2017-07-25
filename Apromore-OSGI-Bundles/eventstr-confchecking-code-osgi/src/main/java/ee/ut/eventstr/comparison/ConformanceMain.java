@@ -229,9 +229,10 @@ public class ConformanceMain {
 
 		Set<Integer> eventlength = new HashSet<Integer>();
 		Set<Integer> succ;
-			
+		int i = 0;
+
 		for (XTrace trace: log) {
-			PORun porun = new PORun(alphaRelations, trace);
+			PORun porun = new PORun(alphaRelations, trace, (i++) + "");
 			
 			runs.add(porun);
 			
