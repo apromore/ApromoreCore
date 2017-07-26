@@ -257,6 +257,7 @@
         <include name="Apromore-Assembly/**/repository/usr/*.jar"/>
         <include name="Apromore-Assembly/**/repository/usr/*.war"/>
         <include name="site.properties"/>
+        <include name="git.properties"/>
     </fileset>
 
     <!-- Virgo Related -->

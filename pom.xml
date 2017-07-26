@@ -195,7 +195,7 @@
     </modules>
 
     <properties>
-        <rootPath>${basedir}</rootPath>
+        <gitPropertiesPath>../git.properties</gitPropertiesPath>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source.version>1.8</java.source.version>
@@ -1639,13 +1639,22 @@
                 </executions>
 
                 <configuration>
-                    <!-- ... -->
-                    <!--<runOnlyOnce>true</runOnlyOnce>-->
-                    <!-- this is false by default, forces the plugin to generate the git.properties file -->
+                    <!--<excludeProperties>-->
+                        <!--<excludeProperty>git.branch</excludeProperty>-->
+                        <!--<excludeProperty>git.build.*</excludeProperty>-->
+                        <!--<excludeProperty>git.closest.*</excludeProperty>-->
+                        <!--<excludeProperty>git.commit.message.*</excludeProperty>-->
+                        <!--<excludeProperty>git.commit.user.*</excludeProperty>-->
+                        <!--<excludeProperty>git.dirty</excludeProperty>-->
+                        <!--<excludeProperty>git.remote.origin.url</excludeProperty>-->
+                        <!--<excludeProperty>git.tags</excludeProperty>-->
+                    <!--</excludeProperties>-->
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>git.commit.id.abbrev</includeOnlyProperty>
+                        <includeOnlyProperty>git.commit.time</includeOnlyProperty>
+                    </includeOnlyProperties>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-
-                    <!-- The path for the properties file to be generated. See Super Pom for default variable reference https://maven.apache.org/guides/introduction/introduction-to-the-pom.html -->
-                    <generateGitPropertiesFilename>${rootPath}/git.properties</generateGitPropertiesFilename>
+                    <generateGitPropertiesFilename>${gitPropertiesPath}</generateGitPropertiesFilename>
                 </configuration>
             </plugin>
             <plugin>

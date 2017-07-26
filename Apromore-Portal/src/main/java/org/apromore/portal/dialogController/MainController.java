@@ -766,7 +766,14 @@ public class MainController extends BaseController implements MainControllerInte
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
         setHost("http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort());
-        setVersionNumber(config.getVersionNumber());
+        String date = config.getVersionBuildDate();
+        date = date.substring(0, date.indexOf("@") - 1);
+        String subversion = "";
+        StringTokenizer st = new StringTokenizer(date, ".");
+        while (st.hasMoreTokens()) {
+            subversion = st.nextToken() + subversion;
+        }
+        setVersionNumber(config.getMajorVersionNumber() + "." + subversion + "." + config.getMinorVersionNumber());
         setBuildDate(config.getVersionBuildDate());
     }
 
