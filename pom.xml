@@ -1650,11 +1650,14 @@
                         <!--<excludeProperty>git.tags</excludeProperty>-->
                     <!--</excludeProperties>-->
                     <includeOnlyProperties>
-                        <includeOnlyProperty>git.commit.id.abbrev</includeOnlyProperty>
+                        <includeOnlyProperty>git.commit.id.describe</includeOnlyProperty>
                         <includeOnlyProperty>git.commit.time</includeOnlyProperty>
                     </includeOnlyProperties>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <generateGitPropertiesFilename>${gitPropertiesPath}</generateGitPropertiesFilename>
+                    <gitDescribe>
+                        <dirty>-DEV</dirty>
+                    </gitDescribe>
                 </configuration>
             </plugin>
             <plugin>
