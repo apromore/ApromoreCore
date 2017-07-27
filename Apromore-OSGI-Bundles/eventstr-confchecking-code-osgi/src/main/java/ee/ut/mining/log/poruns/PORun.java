@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
+import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
@@ -52,17 +53,21 @@ public class PORun implements PORunConst {
 	protected Map<Integer, Integer> vertexIndexMap;
 	private Multimap<Integer, Integer> predList = null;
 
-	public PORun(ConcurrencyRelations alphaRelations, XTrace trace) {
-		this(alphaRelations, trace, null);
+	public PORun(ConcurrencyRelations alphaRelations, XTrace trace, String id) {
+		this(alphaRelations, trace, null, id);
 	}
 	
-	public PORun(ConcurrencyRelations alphaRelations, XTrace trace, Map<Integer, Pair<XEvent,String>> xeventMap) {
+	public PORun(ConcurrencyRelations alphaRelations, XTrace trace, Map<Integer, Pair<XEvent,String>> xeventMap, String idLog) {
 		this.labels = new HashMap<>();	
 		this.vertices = new ArrayList<>();
 		this.vertexIndexMap = new HashMap<>();
 		this.concurrency = HashMultimap.create();
-		
-		String traceId = trace.getAttributes().get("concept:name").toString();
+
+		XAttribute nameXML = trace.getAttributes().get("concept:name");
+        String traceId = "case" + idLog;
+        if(nameXML != null)
+            traceId = nameXML.toString();
+
 		// === Map events to local identifiers
 		Integer id = nextId.getAndIncrement();
 		vertices.add(id);

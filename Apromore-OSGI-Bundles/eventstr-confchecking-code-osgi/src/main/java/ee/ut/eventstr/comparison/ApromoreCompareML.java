@@ -82,10 +82,10 @@ public class ApromoreCompareML {
         String folder1 = "fines/";
 		String folder2 = "fines/";
 
-		String folder = "models/";
+		String folder = "modelsFabrizio/";
 
-        String logString = folder + "Loan_baseline_ROI_log.xes";
-        String modelString = folder + "Loan_baseline.bpmn";
+        String logString = folder + "bpi13Filt2.xes";
+        String modelString = folder + "bpi13rep.bpmn";
 //		String logString = folder + "bpLog11.xes";
 //		String modelString = folder + "bp2.bpmn";
 //		String logString = folder + "bpLog4.xes";
@@ -369,8 +369,9 @@ public class ApromoreCompareML {
 		Set<Integer> eventlength = new HashSet<Integer>();
 		Set<Integer> succ;
 
+		int i=0;
 		for (XTrace trace : log) {
-			PORun porun = new PORun(alphaRelations, trace);
+			PORun porun = new PORun(alphaRelations, trace, (i++) + "");
 
 			runs.add(porun);
 
