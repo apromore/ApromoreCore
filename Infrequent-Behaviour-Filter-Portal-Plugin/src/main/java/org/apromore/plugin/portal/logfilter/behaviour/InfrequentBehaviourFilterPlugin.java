@@ -62,7 +62,7 @@ public class InfrequentBehaviourFilterPlugin extends PluginCustomGui {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Filter Out Infrequent Behaviour";
+        return "Filter Out Infrequent Behavior";
     }
 
     @Override
