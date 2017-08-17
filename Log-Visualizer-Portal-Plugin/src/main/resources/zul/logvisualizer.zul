@@ -48,8 +48,8 @@
                 </row>
                 <row>
                     <n:div id="myDiagramDiv" style="border: solid 1px black; height: 85%; width: 100%">
-                        <button id="stageminingresult_layout" onClick="layout();" label="Layout (Dagre)" />
-                        <button id="stageminingresult_layout_cola" onClick="layout_cola();" label="Layout (Cola)" />
+                        <button id="stageminingresult_layout" xmlns:w="client" w:onClick="layout();" label="Layout (Dagre)" />
+                        <button id="stageminingresult_layout_cola" xmlns:w="client" w:onClick="layout_cola();" label="Layout (Cola)" />
                     </n:div>
                 </row>
             </rows>
