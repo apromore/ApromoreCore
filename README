@@ -2,7 +2,7 @@ Apromore Installation instructions
 
 There are two distributions of Apromore: a *one-click* distribution, which you can simply copy/paste somewhere and run, and a *full-fledged* distribution, which requires you to manually install and configure Apromore.
 The one-click distribution runs on the H2 database by default and does not support the PQL query language.
-The full-fledged distribution is for developers and advanced users. It can work on H2 or MySQL and allows greater flexibility (e.g. you can decide whether to have PQL, configure the DB root...).
+The full-fledged distribution is for developers and advanced users.  It can work on H2 or MySQL and allows greater flexibility (e.g. you can decide whether to have PQL, configure the DB root...).
 
 
 ONE-CLICK INSTALLATION
@@ -37,17 +37,17 @@ Additional software required for PQL support:
 
 * Check out the Apromore source tree using git: 'git clone https://github.com/apromore/ApromoreCode.git'
 * Change to the root of the project you checked out of git.  'cd ApromoreCore'
-* Run the maven command 'mvn clean install'. This will build the Apromore manager, portal and editor and all the extra plugins.
+* Run the maven command 'mvn clean install'.  This will build the Apromore manager, portal and editor and all the extra plugins.
 * Create an empty H2 database 'ant create-h2'.  Only do this once, unless you just want to reset to a blank database later on.
-* Run the ant command 'ant start-virgo'. This will install, configure and start Eclipse Virgo, and deploy Apromore.
-* Apromore runs on all modern browsers, browse http://localhost:9000/portal
+* Run the ant command 'ant start-virgo'.  This will install, configure and start Eclipse Virgo, and deploy Apromore.
+* Apromore runs on all modern browsers.  Browse http://localhost:9000
 * Ctrl-C on the command line will shut the server down.
 
 
 CONFIGURATION
 =============
 
-Almost all configuration occurs in the top level site.properties file. The default version of this file from a fresh git
+Almost all configuration occurs in the top level site.properties file.  The default version of this file from a fresh git
 checkout contains reasonable defaults that use H2 as the main database, but disable PQL (which requires MySQL or Postgres and
 more intricate configuration).
 
@@ -83,7 +83,7 @@ $ mysql --user=root --password=MAcri
 Create and populate the database tables.
 $ mysql --user=root --password=MAcri < Supplements/database/db-mysql.sql
 
-At the end of the db-mysql.sql script is where we populate some of the system data including user information. Currently, we have a few users setup that are developers or affiliates and they can be used or you can choose to add your own.  All passwords are encrypted but they are 'password' for the time being and we don't have a facility just yet to allow a user to change their password. This is coming soon as well as a setup utility to allow the creation of a user on first running.
+At the end of the db-mysql.sql script is where we populate some of the system data including user information.  Currently, we have a few users setup that are developers or affiliates and they can be used or you can choose to add your own.  All passwords are encrypted but they are 'password' for the time being and we don't have a facility just yet to allow a user to change their password.  This is coming soon as well as a setup utility to allow the creation of a user on first running.
 
 Edit the top-level site.properties file, replacing the H2 declarations in "Database and JPA" with the commented-out MySQL properties.
 Stop and restart the server so that it picks up the changes to site.properties.
@@ -147,6 +147,9 @@ Server fails to start.
 
 Login screen appears, but "admin" / "password" doesn't work.
 * You may need to run "ant create-h2" to populate the H2 database.
+
+Can't view models by clicking them in the summary list.
+* Model diagrams are opened in new tabs/windows; you may need to disable popup blocking for Apromore in your browser settings.
 
 Models always show up in the log as unable to be indexed.
 * Check that LoLA executable is correctly configured.
