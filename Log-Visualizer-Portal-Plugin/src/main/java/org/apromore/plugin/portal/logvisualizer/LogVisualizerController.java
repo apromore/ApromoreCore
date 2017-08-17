@@ -21,56 +21,102 @@
 package org.apromore.plugin.portal.logvisualizer;
 
 // Java 2 Standard Edition
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 
 // Third party packages
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.EventLogService;
 import org.apromore.service.logvisualizer.LogVisualizerService;
 import org.deckfour.xes.model.XLog;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Slider;
+import org.zkoss.zul.*;
 
 // Local packages
 
 
-public class LogVisualizerController extends GenericForwardComposer {
+public class LogVisualizerController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerController.class.getCanonicalName());
 
+    private PortalContext portalContext;
+    private LogVisualizerService logVisualizerService;
 
-    public void onClick$cancelButton(Event event) throws InterruptedException {
-        event.getTarget().detach();
-    }
+    private Window slidersWindow;
+    private Button cancelButton;
+    private Button okButton;
 
-    public void onClick$okButton(Event event) throws InterruptedException {
-        Integer logId = (Integer) event.getTarget().getAttribute("logId");
-        XLog log = (XLog) event.getTarget().getAttribute("log");
-        LogVisualizerService logVisualizerService = (LogVisualizerService) event.getTarget().getAttribute("logVisualizerService");
+    private XLog log;
 
-        Slider activities = (Slider) event.getTarget().getFellow("slider1");
-        Slider arcs = (Slider) event.getTarget().getFellow("slider2");
-        LOGGER.info("Invoking Log visualizer: logId=" + logId + " slider1=" + activities.getCurpos() / 100 + " slider2=" + arcs.getCurpos() / 100);
-        event.getTarget().detach();
+    public LogVisualizerController(PortalContext context, EventLogService eventLogService, LogVisualizerService logVisualizerService) {
+
+        this.portalContext          = context;
+        this.logVisualizerService   = logVisualizerService;
+
+        Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
+        if (elements.size() != 1) {
+            Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
+            return;
+        }
+        SummaryType summary = elements.keySet().iterator().next();
+        if (!(summary instanceof LogSummaryType)) {
+            Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
+            return;
+        }
+        LogSummaryType logSummary = (LogSummaryType) summary;
+        log = eventLogService.getXLog(logSummary.getId());
 
         try {
-            String id = UUID.randomUUID().toString();
+            this.slidersWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/logvisualizer.zul", null, null);
+            this.cancelButton = (Button) slidersWindow.getFellow("cancelButton");
+            this.okButton = (Button) slidersWindow.getFellow("okButton");
 
-            String data1 = logVisualizerService.visualizeLog(log, 1 - activities.getCurposInDouble() / 100 , arcs.getCurposInDouble() / 100 );
-            System.out.println(data1);
-            // Dummy implementation: should instead assign data1 by calling Log-Visualizer-Logic with the parameters logId, slider1, slider2
-//            String data1 = StreamUtil.convertStreamToString(new FileInputStream("/Users/raboczi/Project/ApromoreCode/SOAP/d.bpmn"));
+            this.cancelButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    cancel();
+                }
+            });
+            this.okButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    setArcAndActivityRatios();
+                }
+            });
 
-            Executions.getCurrent().getSession().setAttribute("SIGNAVIO_SESSION" + id, data1);
-
-            Clients.evalJavaScript("window.open('macros/openLogVisualizerInSignavio.zul?id=" + id + "');");
-
+            slidersWindow.doModal();
+//            setArcAndActivityRatios();
+        } catch (IOException e) {
+            context.getMessageHandler().displayError("Could not load component ", e);
         } catch (Exception e) {
-            Messagebox.show("Cannot visualize log with ID " + logId + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            e.printStackTrace();
         }
     }
+
+    public void cancel() throws InterruptedException {
+        slidersWindow.detach();
+    }
+
+    public void setArcAndActivityRatios() throws InterruptedException {
+        Slider activities = (Slider) slidersWindow.getFellow("slider1");
+        Slider arcs = (Slider) slidersWindow.getFellow("slider2");
+
+        try {
+            JSONArray array = logVisualizerService.generateJSONArrayFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100);
+
+            String jsonString = array.toString();
+            String javascript = "load('" + jsonString + "');";
+            System.out.println(javascript);
+            Clients.evalJavaScript("reset()");
+            Clients.evalJavaScript(javascript);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

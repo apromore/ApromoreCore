@@ -294,7 +294,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
 //                int procID = process.getId();
 //                String procName = process.getName();
 //                String branch = vst.getName();
-//                Version version = new Version(vst.getVersionNumber());
+//                Version version = new Version(vst.getMajorVersionNumber());
 //                String username = context.getCurrentUser().getUsername();
 //                int folderId = context.getCurrentFolder() == null ? 0 : context.getCurrentFolder().getId();
 //
