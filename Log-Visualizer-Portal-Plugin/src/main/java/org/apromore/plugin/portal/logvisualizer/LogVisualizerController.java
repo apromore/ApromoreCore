@@ -50,9 +50,16 @@ public class LogVisualizerController {
     private LogVisualizerService logVisualizerService;
 
     private Window slidersWindow;
-    private Button cancelButton;
-    private Button okButton;
 
+    private Textbox activitiesText;
+    private Textbox arcsText;
+    private Slider activities;
+    private Slider arcs;
+
+    private int arcs_value;
+    private int activities_value;
+
+    private boolean visualized = false;
     private XLog log;
 
     public LogVisualizerController(PortalContext context, EventLogService eventLogService, LogVisualizerService logVisualizerService) {
@@ -75,22 +82,75 @@ public class LogVisualizerController {
 
         try {
             this.slidersWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/logvisualizer.zul", null, null);
-            this.cancelButton = (Button) slidersWindow.getFellow("cancelButton");
-            this.okButton = (Button) slidersWindow.getFellow("okButton");
 
-            this.cancelButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+            this.activities = (Slider) slidersWindow.getFellow("slider1");
+            this.arcs = (Slider) slidersWindow.getFellow("slider2");
+            this.activitiesText = (Textbox) slidersWindow.getFellow("textbox1");
+            this.arcsText = (Textbox) slidersWindow.getFellow("textbox2");
+
+            this.activities.addEventListener("onScroll", new org.zkoss.zk.ui.event.EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    cancel();
+                    activitiesText.setText("" + activities.getCurpos());
+                    setArcAndActivityRatios();
                 }
             });
-            this.okButton.addEventListener("onClick", new org.zkoss.zk.ui.event.EventListener<Event>() {
+
+            this.arcs.addEventListener("onScroll", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    arcsText.setText("" + arcs.getCurpos());
+                    setArcAndActivityRatios();
+                }
+            });
+
+            this.activitiesText.addEventListener("onChange", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    int i = Integer.parseInt(activitiesText.getValue());
+                    if(i < 0) i = 0;
+                    else if(i > 100) i = 100;
+                    activitiesText.setText("" + i);
+                    activities.setCurpos(i);
+                    setArcAndActivityRatios();
+                }
+            });
+            this.activitiesText.addEventListener("onMouseOver", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    int i = Integer.parseInt(activitiesText.getValue());
+                    if(i < 0) i = 0;
+                    else if(i > 100) i = 100;
+                    activitiesText.setText("" + i);
+                    activities.setCurpos(i);
+                    setArcAndActivityRatios();
+                }
+            });
+
+            this.arcsText.addEventListener("onChange", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    int i = Integer.parseInt(arcsText.getValue());
+                    if(i < 0) i = 0;
+                    else if(i > 100) i = 100;
+                    arcsText.setText("" + i);
+                    arcs.setCurpos(i);
+                    setArcAndActivityRatios();
+                }
+            });
+            this.arcsText.addEventListener("onMouseOver", new org.zkoss.zk.ui.event.EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    int i = Integer.parseInt(arcsText.getValue());
+                    if(i < 0) i = 0;
+                    else if(i > 100) i = 100;
+                    arcsText.setText("" + i);
+                    arcs.setCurpos(i);
+                    setArcAndActivityRatios();
+                }
+            });
+
+            this.slidersWindow.addEventListener("onMouseOver", new org.zkoss.zk.ui.event.EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     setArcAndActivityRatios();
                 }
             });
 
-            slidersWindow.doModal();
-//            setArcAndActivityRatios();
+            this.slidersWindow.doModal();
         } catch (IOException e) {
             context.getMessageHandler().displayError("Could not load component ", e);
         } catch (Exception e) {
@@ -98,22 +158,20 @@ public class LogVisualizerController {
         }
     }
 
-    public void cancel() throws InterruptedException {
-        slidersWindow.detach();
-    }
-
     public void setArcAndActivityRatios() throws InterruptedException {
-        Slider activities = (Slider) slidersWindow.getFellow("slider1");
-        Slider arcs = (Slider) slidersWindow.getFellow("slider2");
-
         try {
-            JSONArray array = logVisualizerService.generateJSONArrayFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100);
+            if(activities_value != activities.getCurpos() || arcs_value != arcs.getCurpos() || !visualized) {
+                visualized = true;
+                activities_value = activities.getCurpos();
+                arcs_value = arcs.getCurpos();
 
-            String jsonString = array.toString();
-            String javascript = "load('" + jsonString + "');";
-            System.out.println(javascript);
-            Clients.evalJavaScript("reset()");
-            Clients.evalJavaScript(javascript);
+                JSONArray array = logVisualizerService.generateJSONArrayFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100);
+
+                String jsonString = array.toString();
+                String javascript = "load('" + jsonString + "');";
+                Clients.evalJavaScript("reset()");
+                Clients.evalJavaScript(javascript);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
