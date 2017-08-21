@@ -30,11 +30,16 @@ import java.util.Map;
 import javax.inject.Inject;
 
 // Third party packages
+import org.apromore.plugin.portal.stagemining.Visualization_cytoscape;
 import org.apromore.service.EventLogService;
 import org.apromore.service.logvisualizer.LogVisualizerService;
+import org.json.JSONException;
+import org.processmining.stagemining.models.DecompositionTree;
+import org.processmining.stagemining.models.graph.WeightedDirectedGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -74,31 +79,40 @@ public class LogVisualizerPlugin extends DefaultPortalPlugin {
         this.groupLabel = groupLabel;
     }
 
+//    @Override
+//    public void execute(PortalContext context) {
+//        LOGGER.info("Executing");
+//
+//        Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
+//        if (elements.size() != 1) {
+//            Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
+//            return;
+//        }
+//        SummaryType summary = elements.keySet().iterator().next();
+//        if (!(summary instanceof LogSummaryType)) {
+//            Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
+//            return;
+//        }
+//        LogSummaryType logSummary = (LogSummaryType) summary;
+//
+//        try {
+//            Window window = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/logvisualizer.zul", null, null);
+//
+//            window.setAttribute("logVisualizerService", logVisualizerService);
+//            window.setAttribute("logId", logSummary.getId());
+//            window.setAttribute("log", eventLogService.getXLog(logSummary.getId()));
+//            window.doModal();
+//        } catch (IOException e) {
+//            context.getMessageHandler().displayError("Could not load component ", e);
+//        }
+//    }
+
     @Override
     public void execute(PortalContext context) {
         LOGGER.info("Executing");
 
-        Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
-        if (elements.size() != 1) {
-            Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
-            return;
-        }
-        SummaryType summary = elements.keySet().iterator().next();
-        if (!(summary instanceof LogSummaryType)) {
-            Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
-            return;
-        }
-        LogSummaryType logSummary = (LogSummaryType) summary;
+        new LogVisualizerController(context, eventLogService, logVisualizerService);
 
-        try {
-            Window window = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/logvisualizer.zul", null, null);
 
-            window.setAttribute("logVisualizerService", logVisualizerService);
-            window.setAttribute("logId", logSummary.getId());
-            window.setAttribute("log", eventLogService.getXLog(logSummary.getId()));
-            window.doModal();
-        } catch (IOException e) {
-            context.getMessageHandler().displayError("Could not load component ", e);
-        }
     }
 }

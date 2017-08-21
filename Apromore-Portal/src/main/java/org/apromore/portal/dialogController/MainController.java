@@ -84,7 +84,8 @@ public class MainController extends BaseController implements MainControllerInte
     private Paginal pg;
 
     private String host;
-    private String versionNumber;
+    private String majorVersionNumber;
+    private String minorVersionNumber;
     private String buildDate;
 	
 	public static MainController getController() {
@@ -766,13 +767,24 @@ public class MainController extends BaseController implements MainControllerInte
     /* Load the props for this app. */
     private void loadProperties() throws IOException {
         setHost("http://" + config.getSiteExternalHost() + ":" + config.getSiteExternalPort());
-        setVersionNumber(config.getVersionNumber());
+        String date = config.getVersionBuildDate();
+        date = date.substring(0, date.indexOf("@") - 1);
+        String subversion = "";
+        StringTokenizer st = new StringTokenizer(date, ".");
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            if(token.length() == 4) token = token.substring(2);
+            subversion = token + subversion;
+        }
+        setMajorVersionNumber(config.getMajorVersionNumber() + "." + subversion);
+        setMinorVersionNumber(config.getMinorVersionNumber());
         setBuildDate(config.getVersionBuildDate());
     }
 
     /* From the data in the properties automagically update the label in the header. */
     private void setHeaderText(Toolbarbutton releaseNotes) {
-        releaseNotes.setLabel(String.format(WELCOME_TEXT, UserSessionManager.getCurrentUser().getFirstName(), versionNumber));
+        releaseNotes.setLabel(String.format(WELCOME_TEXT, UserSessionManager.getCurrentUser().getFirstName(), majorVersionNumber));
+        releaseNotes.setTooltiptext("Apromore version: " + majorVersionNumber + "." + minorVersionNumber);
     }
 
     /* From a list of version summary types find the max version number. */
@@ -812,12 +824,20 @@ public class MainController extends BaseController implements MainControllerInte
         host = newHost;
     }
 
-    public String getVersionNumber() {
-        return versionNumber;
+    public String getMajorVersionNumber() {
+        return majorVersionNumber;
     }
 
-    public void setVersionNumber(final String newVersionNumber) {
-        versionNumber = newVersionNumber;
+    public void setMajorVersionNumber(final String newMajorVersionNumber) {
+        majorVersionNumber = newMajorVersionNumber;
+    }
+
+    public String getMinorVersionNumber() {
+        return majorVersionNumber;
+    }
+
+    public void setMinorVersionNumber(final String newMinorVersionNumber) {
+        minorVersionNumber = newMinorVersionNumber;
     }
 
     public String getBuildDate() {

@@ -4,6 +4,7 @@
         xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
 
     <artifact type="configuration" name="site" version="0" />
+    <artifact type="configuration" name="git" version="0" />
 
     <!-- Load the Schemas for all the Canonisers and Web Application. -->
     <artifact type="bundle" name="org.apromore.anf-schema" version="[1.1.0, 2)"/>
