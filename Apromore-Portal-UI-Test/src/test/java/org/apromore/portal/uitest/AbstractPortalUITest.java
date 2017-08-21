@@ -50,11 +50,12 @@ public abstract class AbstractPortalUITest {
   // UI operations
   //
 
+  protected boolean isProcessModel(String name) {
+    return isElementPresent(By.xpath(MAIN_PANEL_XPATH + "//span[text()='" + name + "']"));
+  }
+
   protected void clickProcessModel(String name) {
-    assertTrue(
-      "Process named \"" + name + "\" does not exist.",
-      isElementPresent(By.xpath(MAIN_PANEL_XPATH + "//span[text()='" + name + "']"))
-    );
+    assertTrue("Process named \"" + name + "\" does not exist.", isProcessModel(name));
     driver.findElement(By.xpath(MAIN_PANEL_XPATH + "//span[text()='" + name + "']")).click();
   }
 
@@ -106,7 +107,8 @@ public abstract class AbstractPortalUITest {
 
   protected void deleteProcessModel(String name) {
     assertEquals(baseUrl + "index.zul", driver.getCurrentUrl());
-    clickProcessModel(name);
+    clickFolder("Home");  // This removes any pre-existing selection
+    clickProcessModel(name);  // Select the target process model
     driver.findElement(By.xpath(MAIN_PANEL_XPATH + "//button[@title='Delete']")).click();
     delay();
     driver.findElement(By.xpath("//div[div[text()='Alert']]//button[text()='Yes']")).click();
