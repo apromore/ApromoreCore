@@ -248,6 +248,7 @@ public class FileUITest extends AbstractPortalUITest {
       assertFalse(isElementPresent(By.xpath(EDIT_METADATA_DIALOG_XPATH)));  // Make sure the ZK dialog box was dismissed
       
     } finally {
+      clickFolder("Home");
       deleteProcessModel(TEST_PROCESS_NAME);
     }
   }
@@ -277,6 +278,7 @@ public class FileUITest extends AbstractPortalUITest {
 
     } finally {
       driver.findElement(By.xpath(EDIT_METADATA_DIALOG_XPATH + "//button[text()=' Cancel']")).click();
+      clickFolder("Home");
       deleteProcessModel(TEST_PROCESS_NAME);
     }
   }
