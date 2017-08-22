@@ -18,6 +18,7 @@ public abstract class AbstractPortalUITest {
 
   final static String LEFT_SIDEBAR_XPATH = "//div[@class='z-west']";
   final static String MAIN_PANEL_XPATH   = "//div[@class='z-center']";
+  final static String TAB_BAR_XPATH      = "//div[@class='z-tabs']";
   final static String MENU_BAR_XPATH     = "//div[@class='z-menubar z-menubar-horizontal']";
   final static String MENU_POPUP_XPATH   = "//div[@class='z-menupopup z-menupopup-shadow z-menupopup-open']";
 
@@ -54,6 +55,10 @@ public abstract class AbstractPortalUITest {
     return isElementPresent(By.xpath(MAIN_PANEL_XPATH + "//span[text()='" + name + "']"));
   }
 
+  protected boolean isTab(String name) {
+    return isElementPresent(By.xpath(TAB_BAR_XPATH + "//span[text()='" + name + "']"));
+  }
+
   protected void clickProcessModel(String name) {
     assertTrue("Process named \"" + name + "\" does not exist.", isProcessModel(name));
     driver.findElement(By.xpath(MAIN_PANEL_XPATH + "//span[text()='" + name + "']")).click();
@@ -69,6 +74,10 @@ public abstract class AbstractPortalUITest {
 
   protected void clickFolderDisclosure(String name) {
     driver.findElement(By.xpath(LEFT_SIDEBAR_XPATH + "//div[div/div/span/text()='" + name + "']//i")).click();
+  }
+
+  protected void closeTab(String name) {
+    driver.findElement(By.xpath(TAB_BAR_XPATH + "/ul/li/a[span/text()='" + name + "']/div/i")).click();
   }
 
   protected void createProcessModel(String name) {
