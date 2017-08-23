@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import org.junit.*;
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 import org.openqa.selenium.*;
 
 public class FileUITest extends AbstractPortalUITest {

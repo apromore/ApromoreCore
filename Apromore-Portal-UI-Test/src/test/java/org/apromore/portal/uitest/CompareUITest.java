@@ -1,16 +1,8 @@
 package org.apromore.portal.uitest;
 
-import java.time.Duration;
-import java.util.regex.Pattern;
-import java.util.concurrent.TimeUnit;
 import org.junit.*;
 import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.safari.SafariDriver;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.Select;
 
 public class CompareUITest extends AbstractPortalUITest {
 
