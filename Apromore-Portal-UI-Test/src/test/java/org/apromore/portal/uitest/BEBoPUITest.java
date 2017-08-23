@@ -49,7 +49,7 @@ public class BEBoPUITest extends AbstractPortalUITest {
     clickFolder("repair");
     delay();
 
-    clickProcessModel("repairExample");
+    clickProcessModel(name);
     delay();
     clickMenuBar("Discover");
     delay();
@@ -58,4 +58,3 @@ public class BEBoPUITest extends AbstractPortalUITest {
     assertTrue(isElementPresent(By.xpath(SETUP_DIALOG_XPATH)));
   }
 }
-
