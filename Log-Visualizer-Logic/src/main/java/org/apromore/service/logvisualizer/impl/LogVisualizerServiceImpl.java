@@ -69,7 +69,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerServiceImpl.class);
 
     private XEventClassifier full_classifier = new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier());
-//    private XEventClassifier classifier = new XEventAndClassifier(new XEventNameClassifier());
+    private XEventClassifier name_classifier = new XEventNameClassifier();
+    private XEventClassifier lifecycle_classifier = new XEventLifeTransClassifier();
 
     private HashBiMap<String, Integer> simplified_names;
     private IntIntHashMap activity_frequency;
@@ -85,6 +86,21 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private int start = 1;
     private int end = 2;
 
+    private final String START = "#C1C9B0";
+    private final String END = "#C0A3A1";
+
+    private final String BLUE_1 = "#F1EEF6";
+    private final String BLUE_2 = "#BDC9E1";
+    private final String BLUE_3 = "#74A9CF";
+    private final String BLUE_4 = "#2B8CBE";
+    private final String BLUE_5 = "#045A8D";
+
+    private final String RED_1 = "#FEF0D9";
+    private final String RED_2 = "#FDCC8A";
+    private final String RED_3 = "#FC8D59";
+    private final String RED_4 = "#E34A33";
+    private final String RED_5 = "#B30000";
+
     public static void main(String[] args) {
         LogVisualizerServiceImpl l = new LogVisualizerServiceImpl();
         XLog log = null;
@@ -94,8 +110,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         } catch (Exception e) {
             e.printStackTrace();
         }
-        JSONArray s = l.generateJSONArrayFromLog(log, 0.3, 1);
-        System.out.println();
+        JSONArray s = l.generateJSONArrayFromLog(log, 0.3, 1, true);
+        System.out.println(s);
     }
 
     @Override
@@ -128,10 +144,10 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     }
 
     @Override
-    public JSONArray generateJSONArrayFromLog(XLog log, double activities, double arcs) {
+    public JSONArray generateJSONArrayFromLog(XLog log, double activities, double arcs, boolean selected_frequency) {
         try {
             BPMNDiagram bpmnDiagram = generateDiagramFromLog(log, activities, arcs);
-            return generateJSONFromBPMN(bpmnDiagram);
+            return generateJSONFromBPMN(bpmnDiagram, selected_frequency);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -172,6 +188,9 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         simplified_names.put("Start", start);
         simplified_names.put("End", end);
 
+        int simplified_start = 1;
+        int simplified_end = 2;
+
         for(XTrace trace : log) {
             IntArrayList simplified_trace = new IntArrayList(trace.size());
 
@@ -180,6 +199,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
 
             for(XEvent event : trace) {
                 String name = full_classifier.getClassIdentity(event);
+//                String name = name_classifier.getClassIdentity(event);
+//                String lifecycle = lifecycle_classifier.getClassIdentity(event);
                 Integer simplified_event;
                 if((simplified_event = simplified_names.get(name)) == null) {
                     simplified_event = simplified_names.size() + 1;
@@ -327,15 +348,38 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return false;
     }
 
-    private JSONArray generateJSONFromBPMN(BPMNDiagram bpmnDiagram) throws JSONException {
+    private JSONArray generateJSONFromBPMN(BPMNDiagram bpmnDiagram, boolean selected_frequency) throws JSONException {
         JSONArray graph = new JSONArray();
         Map<BPMNNode, Integer> mapping = new HashMap<>();
         int i = 1;
+        int start_node = -1;
+        int end_node = -1;
         for(BPMNNode node : bpmnDiagram.getNodes()) {
             JSONObject jsonOneNode = new JSONObject();
             mapping.put(node, i);
             jsonOneNode.put("id", i);
-            jsonOneNode.put("name", node.getLabel());
+            if(node.getLabel().equals("Start")) {
+                start_node = i;
+                jsonOneNode.put("name", "");
+                jsonOneNode.put("shape", "ellipse");
+                jsonOneNode.put("color", START);
+                jsonOneNode.put("width", "15px");
+                jsonOneNode.put("height", "15px");
+            }else if(node.getLabel().equals("End")) {
+                end_node = i;
+                jsonOneNode.put("name", "");
+                jsonOneNode.put("shape", "ellipse");
+                jsonOneNode.put("color", END);
+                jsonOneNode.put("width", "15px");
+                jsonOneNode.put("height", "15px");
+            }else {
+                jsonOneNode.put("name", node.getLabel());
+                jsonOneNode.put("shape", "roundrectangle");
+                if(selected_frequency) jsonOneNode.put("color", getFrequencyColor(node, bpmnDiagram.getNodes()));
+                else jsonOneNode.put("color", getDurationColor(node, bpmnDiagram.getNodes()));
+                jsonOneNode.put("width", "60px");
+                jsonOneNode.put("height", "20px");
+            }
             JSONObject jsonDataNode = new JSONObject();
             jsonDataNode.put("data", jsonOneNode);
             graph.put(jsonDataNode);
@@ -366,6 +410,11 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             JSONObject jsonOneLink = new JSONObject();
             jsonOneLink.put("source", source);
             jsonOneLink.put("target", target);
+
+            if(source == start_node) jsonOneLink.put("style", "dashed");
+            else if(target == end_node) jsonOneLink.put("style", "dashed");
+            else jsonOneLink.put("style", "solid");
+
             jsonOneLink.put("strength", (Double.parseDouble(number) * 100.0 / maxWeight));
             jsonOneLink.put("label", number);
             JSONObject jsonDataLink = new JSONObject();
@@ -374,6 +423,34 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         }
 
         return graph;
+    }
+
+    private String getFrequencyColor(BPMNNode node, Set<BPMNNode> nodes) {
+        int max = 0;
+        for(BPMNNode n : nodes) {
+            max = Math.max(max, activity_frequency.get(simplified_names.get(n.getLabel())));
+        }
+        int step = max / 5;
+        int node_frequency = activity_frequency.get(simplified_names.get(node.getLabel()));
+        if(node_frequency >= (max - (1 * step))) return BLUE_5;
+        if(node_frequency >= (max - (2 * step))) return BLUE_4;
+        if(node_frequency >= (max - (3 * step))) return BLUE_3;
+        if(node_frequency >= (max - (4 * step))) return BLUE_2;
+        return BLUE_1;
+    }
+
+    private String getDurationColor(BPMNNode node, Set<BPMNNode> nodes) {
+        int max = 0;
+        for(BPMNNode n : nodes) {
+            max = Math.max(max, activity_frequency.get(simplified_names.get(n.getLabel())));
+        }
+        int step = max / 5;
+        int node_frequency = activity_frequency.get(simplified_names.get(node.getLabel()));
+        if(node_frequency >= (max - (1 * step))) return RED_5;
+        if(node_frequency >= (max - (2 * step))) return RED_4;
+        if(node_frequency >= (max - (3 * step))) return RED_3;
+        if(node_frequency >= (max - (4 * step))) return RED_2;
+        return RED_1;
     }
 
 }
