@@ -6,7 +6,7 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import org.openqa.selenium.*;
 
-public class BEBoPUITest extends AbstractPortalUITest {
+public class APMUITest extends AbstractPortalUITest {
 
   final String SETUP_DIALOG_XPATH = "/html/body/div[div[text()='Select the sets to incorporate in the specification']]";
   final String SPECIFICATION_DIALOG_XPATH = "/html/body/div[div[text()='Specification']]";

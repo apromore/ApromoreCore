@@ -69,13 +69,15 @@ public class FileUITest extends AbstractPortalUITest {
     processName.sendKeys(TEST_PROCESS_NAME);
     delay();
     assertEquals(TEST_PROCESS_NAME, processName.getAttribute("value"));
-    String portalWindowHandle = driver.getWindowHandle();
 
     // Test the "OK" button
     driver.findElement(By.xpath(CREATE_NEW_PROCESS_DIALOG_XPATH + "//button[text()=' OK']")).click();
     delay();
+    String editorWindowHandle = findNewWindowHandle();
 
     // Teardown
+    driver.switchTo().window(editorWindowHandle);
+    driver.close();
     driver.switchTo().window(portalWindowHandle);
     deleteProcessModel(TEST_PROCESS_NAME);
   }
@@ -211,14 +213,15 @@ public class FileUITest extends AbstractPortalUITest {
       clickProcessModel(TEST_PROCESS_NAME);
       clickMenuBar("File");
       clickMenuItem("Edit Model");
-      String portalWindowHandle = driver.getWindowHandle();
 
       // Test the "OK" button
       driver.findElement(By.xpath(EDIT_MODEL_DIALOG_XPATH + "//button[text()=' OK']")).click();
       delay();
-      // TODO: assert that the new editor tab was opened
       assertFalse(isElementPresent(By.xpath(EDIT_MODEL_DIALOG_XPATH)));  // Make sure the ZK dialog box was dismissed
+      String editorWindowHandle = findNewWindowHandle();  // Make sure the editor window was opened
 
+      driver.switchTo().window(editorWindowHandle);
+      driver.close();
       driver.switchTo().window(portalWindowHandle);
 
     } finally {

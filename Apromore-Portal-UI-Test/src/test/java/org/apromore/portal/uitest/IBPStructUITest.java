@@ -12,7 +12,7 @@ public class IBPStructUITest extends AbstractPortalUITest {
   public void cancel() throws Exception {
     final String TEST_PROCESS_NAME = "Test structured process";
 
-    popup("repairExample");
+    popup();
     driver.findElement(By.xpath(IBPSTRUCT_SETUP_DIALOG_XPATH + "//button[text()=' Cancel']")).click();
     delay();
     assertFalse(isElementPresent(By.xpath(IBPSTRUCT_SETUP_DIALOG_XPATH)));
@@ -22,7 +22,7 @@ public class IBPStructUITest extends AbstractPortalUITest {
   public void structure() throws Exception {
     final String TEST_PROCESS_NAME = "Test structured process";
 
-    popup("repairExample");
+    popup();
     assertFalse(isProcessModel(TEST_PROCESS_NAME));
     WebElement structuredProcessName = driver.findElement(By.name("Structured Process Name"));
     //assertEquals("structured_repairExample", structuredProcessName.getText());
@@ -35,7 +35,7 @@ public class IBPStructUITest extends AbstractPortalUITest {
     deleteProcessModel(TEST_PROCESS_NAME);
   }
 
-  private void popup(String name) {
+  private void popup() {
     clickFolder("Home");
     delay();
     clickFolder("repair");

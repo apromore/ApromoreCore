@@ -19,7 +19,6 @@ public class LogVisualizerUITest extends AbstractPortalUITest {
     clickMenuItem("Visualize Log");
     Thread.currentThread().sleep(2000);
 
-    //driver.switchTo().activeElement();
     WebElement activities = driver.findElement(By.xpath("//tr[td/div/span/text()='Activities']/td/div/input"));
     activities.clear();
     activities.sendKeys("60");

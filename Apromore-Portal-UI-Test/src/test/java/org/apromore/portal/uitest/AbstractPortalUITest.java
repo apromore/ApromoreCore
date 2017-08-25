@@ -1,6 +1,9 @@
 package org.apromore.portal.uitest;
 
 import java.time.Duration;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
 import org.junit.*;
@@ -15,6 +18,7 @@ public abstract class AbstractPortalUITest {
   private String       baseUrl = "http://localhost:9000/";
   private boolean      acceptNextAlert = true;
   private StringBuffer verificationErrors = new StringBuffer();
+  protected String     portalWindowHandle;
 
   final static String LEFT_SIDEBAR_XPATH = "//div[@class='z-west']";
   final static String MAIN_PANEL_XPATH   = "//div[@class='z-center']";
@@ -35,15 +39,54 @@ public abstract class AbstractPortalUITest {
     driver = (WebDriver) getClass().forName(driverClassName).newInstance();
     driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
     login();
+    portalWindowHandle = driver.getWindowHandle();
+
+    assertEquals(
+      "Expected only the portal window to be present",
+      Collections.singleton(portalWindowHandle),
+      driver.getWindowHandles()
+    );
+    assertFalse(
+      "Expected only the Processes tab to be present",
+      isElementPresent(By.xpath(TAB_BAR_XPATH + "/ul/li[2]"))
+    );
   }
 
   @After
   public void tearDown() throws Exception {
+
+   try {
+    Set<String> windowHandles = new HashSet<>();
+    windowHandles.addAll(driver.getWindowHandles());
+    windowHandles.remove(portalWindowHandle);
+    verifyTrue(
+      "The Portal " + portalWindowHandle + " should be the only window present, instead was " + windowHandles,
+      windowHandles.isEmpty()
+    );
+    for (String windowHandle: windowHandles) {
+      driver.switchTo().window(windowHandle);
+      driver.close();
+    }
+    driver.switchTo().window(portalWindowHandle);
+    verifyTrue(
+      "The Processes tab should be the only tab present",
+      !isElementPresent(By.xpath(TAB_BAR_XPATH + "/ul/li[2]"))
+    );
+    
     logout();
+   } finally {
     driver.quit();
     String verificationErrorString = verificationErrors.toString();
     if (!"".equals(verificationErrorString)) {
       fail(verificationErrorString);
+    }
+   }
+  }
+
+  private void verifyTrue(String message, boolean test) {
+    if (!test) {
+      if (verificationErrors.length() != 0) { verificationErrors.append("\n"); }
+      verificationErrors.append(message);
     }
   }
 
@@ -99,6 +142,9 @@ public abstract class AbstractPortalUITest {
 
     driver.findElement(By.xpath(CREATE_NEW_PROCESS_DIALOG_XPATH + "//button[text()=' OK']")).click();
     delay();
+    String newWindowHandle = findNewWindowHandle();
+    driver.switchTo().window(newWindowHandle);
+    driver.close();
     driver.switchTo().window(portalWindowHandle);
     assertTrue(
       "Process named \"" + name + "\" could not be created.",
@@ -126,6 +172,14 @@ public abstract class AbstractPortalUITest {
       "Process named \"" + name + "\" couldn't be removed.",
       isElementPresent(By.xpath(MAIN_PANEL_XPATH + "//span[text()='" + name + "']"))
     );
+  }
+
+  protected String findNewWindowHandle() {
+    Set<String> windowHandles = driver.getWindowHandles();
+    assertEquals("Expect the portal window " + portalWindowHandle + " and only one other; was " + windowHandles, 2, windowHandles.size());
+    assertTrue("Expect portal window " + portalWindowHandle + "; was " + windowHandles, windowHandles.contains(portalWindowHandle));
+    windowHandles.remove(portalWindowHandle);
+    return windowHandles.iterator().next();
   }
 
   /**
