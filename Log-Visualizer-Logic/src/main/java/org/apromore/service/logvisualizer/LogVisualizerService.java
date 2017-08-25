@@ -20,11 +20,8 @@
 
 package org.apromore.service.logvisualizer;
 
-import org.apromore.graph.canonical.Canonical;
 import org.deckfour.xes.model.XLog;
-import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-
-import java.util.Map;
+import org.json.JSONArray;
 
 /**
  * Created by Raffaele Conforti on 01/12/2016.
@@ -32,5 +29,7 @@ import java.util.Map;
 public interface LogVisualizerService {
 
     String visualizeLog(XLog log, double activities, double arcs);
+
+    JSONArray generateJSONArrayFromLog(XLog log, double activities, double arcs);
 
 }
