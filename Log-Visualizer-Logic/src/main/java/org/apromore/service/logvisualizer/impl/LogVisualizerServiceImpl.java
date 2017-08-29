@@ -45,11 +45,6 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.eclipse.collections.impl.tuple.Tuples;
-//import org.jgrapht.EdgeFactory;
-//import org.jgrapht.Graph;
-//import org.jgrapht.ext.DOTExporter;
-//import org.jgrapht.graph.ClassBasedEdgeFactory;
-//import org.jgrapht.graph.DefaultDirectedGraph;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,6 +63,11 @@ import javax.swing.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+
+//import org.jgrapht.ext.*;
+//import org.jgrapht.graph.DefaultDirectedGraph;
+//import java.io.FileWriter;
+//import java.io.IOException;
 
 /**
  * Created by Raffaele Conforti on 01/12/2016.
@@ -116,34 +116,51 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         XLog log = null;
         try {
 //            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/IdeaProjects/ApromoreCodeServerNew/Compare-Logic/src/test/resources/CAUSCONC-1/bpLog3.xes");
-//            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Raw data after import.xes.gz");
-            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Demonstration examples/Discover Process Model/Synthetic Log with Subprocesses.xes.gz");
+            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Raw data after import.xes.gz");
+//            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Demonstration examples/Discover Process Model/Synthetic Log with Subprocesses.xes.gz");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        JSONArray s = l.generateJSONArrayFromLog(log, 0, 0, true);
-        System.out.println(s);
-//        l.generateDOTFromLog(log, 0, 0, true);
+//        JSONArray s = l.generateJSONArrayFromLog(log, 0.39, 0, true);
+//        JSONArray s1 = l.generateJSONArrayFromLog(log, 0.4, 0, true);
+//        System.out.println(s);
+//        System.out.println(s1);
+//        System.out.println(l.visualizeLog(log, 0.34, 0));
+//        l.generateDOTFromLog(log, 0.37, 0);
     }
 
-//    public void generateDOTFromLog(XLog log, double activities, double arcs, boolean selected_frequency) {
+//    public void generateDOTFromLog(XLog log, double activities, double arcs) {
 //        try {
 //            BPMNDiagram bpmnDiagram = generateDiagramFromLog(log, activities, arcs);
-//            generateDOTFromBPMN(bpmnDiagram, selected_frequency);
+//            generateDOTFromBPMN(bpmnDiagram);
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
 //    }
 //
-//    private void generateDOTFromBPMN(BPMNDiagram bpmnDiagram, boolean selected_frequency) throws JSONException, IOException {
-//        DOTExporter dotExporter = new DOTExporter();
+//    private void generateDOTFromBPMN(BPMNDiagram bpmnDiagram) throws JSONException, IOException {
+//        IntegerNameProvider integerNameProvider = new IntegerNameProvider();
+//        StringNameProvider stringNameProvider = new StringNameProvider();
+//        ComponentAttributeProvider vertexAttributeProvider = new ComponentAttributeProvider() {
+//            @Override
+//            public Map<String, String> getComponentAttributes(Object o) {
+//                return new HashMap<>();
+//            }
+//        };
+//        ComponentAttributeProvider edgeAttributeProvider = new ComponentAttributeProvider() {
+//            @Override
+//            public Map<String, String> getComponentAttributes(Object o) {
+//                return new HashMap<>();
+//            }
+//        };
+//        DOTExporter dotExporter = new DOTExporter(integerNameProvider, stringNameProvider, null, vertexAttributeProvider, edgeAttributeProvider);
 //        DefaultDirectedGraph graph = new DefaultDirectedGraph(String.class);
 //
-//        for(BPMNNode node : bpmnDiagram.getNodes()) {
+//        for(BPMNNode node : getNodes(bpmnDiagram)) {
 //            graph.addVertex(node.getLabel());
 //        }
 //
-//        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
+//        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : getEdges(bpmnDiagram)) {
 //            graph.addEdge(edge.getSource().getLabel(), edge.getTarget().getLabel(), edge.getSource().getLabel() + " " + edge.getTarget().getLabel());
 //        }
 //
@@ -467,7 +484,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         int i = 1;
         int start_node = -1;
         int end_node = -1;
-        for(BPMNNode node : bpmnDiagram.getNodes()) {
+
+        for(BPMNNode node : getNodes(bpmnDiagram)) {
             JSONObject jsonOneNode = new JSONObject();
             mapping.put(node, i);
             jsonOneNode.put("id", i);
@@ -486,7 +504,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 jsonOneNode.put("width", "15px");
                 jsonOneNode.put("height", "15px");
             }else {
-                jsonOneNode.put("name", node.getLabel());
+                jsonOneNode.put("name", node.getLabel().replace("'", ""));
                 jsonOneNode.put("shape", "roundrectangle");
                 if(selected_frequency) jsonOneNode.put("color", getFrequencyColor(node, bpmnDiagram.getNodes()));
                 else jsonOneNode.put("color", getDurationColor(node, bpmnDiagram.getNodes()));
@@ -500,7 +518,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         }
 
         double maxWeight = 0.0;
-        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : getEdges(bpmnDiagram)) {
             String number = edge.getLabel();
             if (number.contains("[")) {
                 number = number.substring(1, number.length() - 1);
@@ -510,7 +528,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             maxWeight = Math.max(maxWeight, Double.parseDouble(number));
         }
 
-        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : getEdges(bpmnDiagram)) {
             int source = mapping.get(edge.getSource());
             int target = mapping.get(edge.getTarget());
             String number = edge.getLabel();
@@ -540,6 +558,33 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return graph;
     }
 
+    private BPMNNode[] getNodes(BPMNDiagram bpmnDiagram) {
+        Set<BPMNNode> nodes = bpmnDiagram.getNodes();
+        BPMNNode[] array_nodes = nodes.toArray(new BPMNNode[nodes.size()]);
+        Arrays.sort(array_nodes, new Comparator<BPMNNode>() {
+            @Override
+            public int compare(BPMNNode o1, BPMNNode o2) {
+                return o1.getLabel().compareTo(o2.getLabel());
+            }
+        });
+        return array_nodes;
+    }
+
+    private BPMNEdge<? extends BPMNNode, ? extends BPMNNode>[] getEdges(BPMNDiagram bpmnDiagram) {
+        Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> edges = bpmnDiagram.getEdges();
+        BPMNEdge<? extends BPMNNode, ? extends BPMNNode>[] array_edges = edges.toArray(new BPMNEdge[edges.size()]);
+        Arrays.sort(array_edges, new Comparator<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>>() {
+            @Override
+            public int compare(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> o1, BPMNEdge<? extends BPMNNode, ? extends BPMNNode> o2) {
+                if(o1.getSource().getLabel().equals(o2.getSource().getLabel())) {
+                    return o1.getTarget().getLabel().compareTo(o2.getTarget().getLabel());
+                }
+                return o1.getSource().getLabel().compareTo(o2.getSource().getLabel());
+            }
+        });
+        return array_edges;
+    }
+
     private int getEventFrequency(String event) {
         if(getEventNumber(event) == null) {
             String start_event = event + "+start";
@@ -559,7 +604,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private String getFrequencyColor(BPMNNode node, Set<BPMNNode> nodes) {
         int max = 0;
         for(BPMNNode n : nodes) {
-            max = Math.max(max, getEventFrequency(node.getLabel()));
+            max = Math.max(max, getEventFrequency(n.getLabel()));
         }
         int step = max / 5;
         int node_frequency = getEventFrequency(node.getLabel());
@@ -573,10 +618,10 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private String getDurationColor(BPMNNode node, Set<BPMNNode> nodes) {
         int max = 0;
         for(BPMNNode n : nodes) {
-            max = Math.max(max, activity_frequency.get(getEventNumber(n.getLabel())));
+            max = Math.max(max, getEventFrequency(n.getLabel()));
         }
         int step = max / 5;
-        int node_frequency = activity_frequency.get(getEventNumber(node.getLabel()));
+        int node_frequency = getEventFrequency(node.getLabel());
         if(node_frequency >= (max - (1 * step))) return RED_5;
         if(node_frequency >= (max - (2 * step))) return RED_4;
         if(node_frequency >= (max - (3 * step))) return RED_3;

@@ -63,8 +63,8 @@
 
                 diagram = cytoscape({
                     container: document.getElementById('myDiagramDiv'), // container to render in
-                    layout: {name: 'cose', padding: 10, randomize: true},
-                    zoom: 1,
+                    layout: {name: 'cose', padding: 10},
+                    zoom: 5,
                     pan: { x: 0, y: 0 },
                     minZoom: 1e-50,
                     maxZoom: 1e50,
