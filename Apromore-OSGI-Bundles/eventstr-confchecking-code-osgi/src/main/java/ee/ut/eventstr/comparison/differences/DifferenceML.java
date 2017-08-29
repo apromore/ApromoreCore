@@ -24,10 +24,7 @@ package ee.ut.eventstr.comparison.differences;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * This is the main container of a difference.
@@ -46,6 +43,18 @@ public class DifferenceML implements Comparable<DifferenceML>{
     private List<String> newTasks;
 	private String type;
 	private float ranking;
+
+//    private static final Map<String, Integer> typeRanking;
+//    static
+//    {
+//        typeRanking = new HashMap<String, Integer>();
+//        typeRanking.put("TASKRELOC",5);
+//        typeRanking.put("TASKSKIP",7);
+//        typeRanking.put("UNMREPETITION",8);
+//        typeRanking.put("UNOBSACYCLIC",9);
+//        typeRanking.put("UNOBSCYCLIC",10);
+//        typeRanking.put("TASKSUB",4);
+//    }
 
 	public DifferenceML(float ranking){
         DecimalFormat df = new DecimalFormat();
@@ -139,6 +148,13 @@ public class DifferenceML implements Comparable<DifferenceML>{
     public int compareTo(DifferenceML differenceML){
         if(this.ranking > differenceML.ranking)
             return -1;
+
+//        int tR1 = typeRanking.containsKey(this.getType()) ? typeRanking.get(this.type).intValue() : 0;
+//        int tR2 = typeRanking.containsKey(differenceML.getType()) ? typeRanking.get(differenceML.getType()).intValue() : 0;;
+//
+//        if(((tR1 == 0&& tR2 != 0) || (tR1 != 0&& tR2 == 0)) && tR1 > tR2)
+//            return -1;
+
         return 1;
     }
 }

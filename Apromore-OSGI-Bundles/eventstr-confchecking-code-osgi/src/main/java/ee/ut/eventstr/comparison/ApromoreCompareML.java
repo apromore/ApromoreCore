@@ -79,13 +79,13 @@ public class ApromoreCompareML {
 	public static void main(String[] args) {
 //		String modelString = "models/btm.bpmn";
 //		String logString = "logs/btl.xes";
-        String folder1 = "fines/";
-		String folder2 = "fines/";
+        String folder1 = "Hitachi/";
+		String folder2 = "Hitachi/";
 
-		String folder = "modelsFabrizio/";
+		String folder = "Hitachi/";
 
-        String logString = folder + "Refund_Manually_Designed_FullLog_FilteredNoEvents.xes";
-        String modelString = folder + "Refund_Manually_Designed_BaseModel.bpmn";
+        String logString = folder + "HI18.xes";
+        String modelString = folder + "ACBH.bpmn";
 //		String logString = folder + "bpLog11.xes";
 //		String modelString = folder + "bp2.bpmn";
 //		String logString = folder + "bpLog4.xes";

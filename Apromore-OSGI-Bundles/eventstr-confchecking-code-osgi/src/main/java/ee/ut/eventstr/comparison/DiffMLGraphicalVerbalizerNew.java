@@ -1524,6 +1524,9 @@ public class DiffMLGraphicalVerbalizerNew {
                 context += pes.getLabels().get(i);
             }
 
+        if(context.length() == 1)
+            context += "start event";
+
         return context + "]";
     }
 
@@ -1568,7 +1571,9 @@ public class DiffMLGraphicalVerbalizerNew {
     }
 
     private float computeImpact(float dividend) {
-        return dividend / (float) pes1.getPES().getTotalTraceCount();
+        float res = dividend / (float) pes1.getPES().getTotalTraceCount();
+
+        return res >= 0.1f ? res : 0.01f;
     }
 
     private HashSet<LinkedList<Operation>> filterOutAllEmpty(HashSet<LinkedList<Operation>> contiguousRHide) {
@@ -2950,10 +2955,13 @@ public class DiffMLGraphicalVerbalizerNew {
 
             FlowNode startTask = null;
             int i = context.size()-1;
-            while(startTask == null){
+            while(i >= 0 && startTask == null){
                 startTask = model.getTaskFromEvent(context.get(i));
                 i--;
             }
+
+            if(startTask == null)
+                startTask = model.getStart();
 
             List<String> start =  new LinkedList<>();
             start.add(startTask.getId());
