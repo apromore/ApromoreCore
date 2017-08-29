@@ -605,6 +605,7 @@
     <n:table>
         <n:tr>
             <n:td style="vertical-align: top" width="20%">
+                <n:div id="alignments" style="overflow:scroll;height:675px;">
                 <vbox hflex="1">
                     <toolbar id="differences" hflex="1">
                         <label hflex="1">Differences</label>
@@ -612,6 +613,7 @@
                     </toolbar>
                     <label>Baz</label>
                 </vbox>
+                </n:div>
             </n:td>
             <n:td valign="top"><n:div id="oryx-canvas1"></n:div></n:td>
         </n:tr>
