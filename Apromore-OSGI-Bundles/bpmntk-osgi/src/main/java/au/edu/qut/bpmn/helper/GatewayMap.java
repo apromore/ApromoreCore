@@ -20,7 +20,9 @@
 
 package au.edu.qut.bpmn.helper;
 
+import au.edu.qut.processmining.miners.splitminer.dfgp.DFGEdge;
 import ee.ut.comptech.*;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
@@ -641,7 +643,7 @@ public class GatewayMap {
             if( !loop ) {
 //                debug("DEBUG - changing IOR: " + ior.getLabel() + "");
 //                debug("DEBUG - xors: " + toVisit.size());
-                iorType = replaceIOR(dominator, gatesDepth.get(ior), toVisit, visitedGates, visitedFlows, new HashSet<>(), new HashMap<Gateway, Set<GatewayMapFlow>>());
+                iorType = replaceIOR(dominator, gatesDepth.get(ior), toVisit, visitedGates, visitedFlows, new HashSet<>(), new HashMap<>(), new HashSet<>());
                 ior.setGatewayType(iorType);
                 counter++;
             }
@@ -663,14 +665,14 @@ public class GatewayMap {
                                             Map<Gateway, Set<Gateway>> visitedGates,
                                             Map<Gateway, Set<GatewayMapFlow>> visitedFlows,
                                             Set<GatewayMapFlow> domFrontier,
-                                            Map<Gateway, Set<GatewayMapFlow>> loopInjections)
+                                            Map<Gateway, Set<GatewayMapFlow>> loopInjections,
+                                            HashSet<Gateway> ANDs)
     {
 //        this was described in comments above, in previous method, also this
 //        algorithm is in: "The Difficulty of Replacing an Inclusive OR-Join" (Favre et Volzer) - p. 12(167)
 
         HashSet<Gateway> tmp;
         boolean empty;
-        boolean onlyXORs;
         Gateway src;
         Map<GatewayMapFlow, SingleTokenGen> changes;
         ArrayList<MultipleTokenGen> loopChanges;
@@ -693,6 +695,7 @@ public class GatewayMap {
 //                        NOTE: if we are on a loop edge, and its depth is greater than the IOR to replace
 //                              it means this is an injecting back-edge, therefore we do not visit that gateway
                         visitedGates.get(xor).add(src);
+                        if( (src.getGatewayType() == Gateway.GatewayType.PARALLEL) && (outgoings.get(src).size() > 1) ) ANDs.add(src);
                         tmp.add(src);
                         empty = false;
                     }
@@ -705,51 +708,13 @@ public class GatewayMap {
 //        this second part is about the placing of the token generators
         if( empty ) {
 //            firstly we check if we need to set the IOR as AND or as XOR
-//            if this IOR is an exit of a fragment containing only XORs, OR
-//            if the fragment contains AND but they are entries/exits of BONDs
-//            the IOR is turned into a XOR, otherwise it is turned into an AND
-//            in this latter case we apply the algorithm of Favre et Volzer
-            onlyXORs = true;
-            for( Gateway xor : visitedGates.keySet() ) {
-                for( Gateway g : visitedGates.get(xor) ) {
-                    if( (g.getGatewayType() == Gateway.GatewayType.PARALLEL) && (outgoings.get(g).size() > 1) ) {
-//                            in case of an AND gateway we do not need to place token generators
-//                            because a token will arrive anyway at the IOR that will be replaced by an AND
-//                            however, if there are no AND gateways or they are only entry or exit of BONDs
-//                            we can set the IORs as a XOR, for this reason we need to keep track of the
-//                            presence of AND gateways that are not entries or exits of BONDs, this is done here
-//                        debug("DEBUG - found an AND-split gateway: " + g.getLabel());
-
-//                        if( !bondsEntries.contains(g) ) {
-//                            onlyXORs = false;
-//                            break;
-//                        }
-
-                        for( GatewayMapFlow ogmf : outgoings.get(g) ) {
-//                                we need to check only the AND split and not the AND join,
-//                                because we went through all the incoming flows of an AND join
-//                                during the backward exploration, so what we need to check is that
-//                                the outgoing flows of an AND split are all in our backward exploration
-//                                as well, otherwise we are in the presence of an 'escaping' flow from an AND split
-//                                therefore we do not know where it will go, and we need to turn the IOR into an AND
-//                                NOTE: the only AND or XOR joins were placed because they are exits of BONDs!
-//                                      only during the generation of the BONDs exit gateways we put joins that are not IORs
-
-//                            if( !visitedFlows.get(xor).contains(ogmf) ) onlyXORs = false;
-                            for( Gateway x : visitedGates.keySet() )
-                                if( !(x == xor) && (visitedFlows.get(x).contains(ogmf)) ) {
-                                    onlyXORs = false;
-                                    break;
-                                }
-                        }
-                    }
-                    if( !onlyXORs ) break;
-                }
-                if( !onlyXORs ) break;
-            }
-
-            if( onlyXORs ) {
-//                debug("DEBUG - turning an IOR into a XOR");
+//            if this IOR is an exit of a fragment containing only XORs, or
+//            if the fragment contains AND-splits but each of them produces tokens only
+//            for one incoming edge of the IOR, or for multiple incoming edge of the IOR
+//            but mutually exclusive, we set the IOR as XOR.
+//            otherwise we apply Haven & Volzer algorithm for IOR replacement
+            if( checkXOR(visitedGates, visitedFlows, ANDs) ) {
+//                System.out.println("DEBUG - found a XOR");
                 return Gateway.GatewayType.DATABASED;
             }
 
@@ -763,14 +728,7 @@ public class GatewayMap {
 //                    if we are here, it means g is a decision (XOR split gateway)
                     for( GatewayMapFlow of : outgoings.get(g) ) {
 //                        debug("DEBUG - outgoing: " + of.getSource().getLabel() + " -> " + of.getTarget().getLabel());
-                        if( (g == dominator) && !domFrontier.contains(of) ) {
-//                            debug("DEBUG - not frontier");
-                            continue;
-                        }
-                        if( visitedFlows.get(xor).contains(of) ) {
-//                            debug("DEBUG - visited");
-                            continue;
-                        }
+                        if( visitedFlows.get(xor).contains(of) || ((g == dominator) && !domFrontier.contains(of)) ) continue;
 //                        debug("DEBUG - adding a token generator");
 //                        here we keep track of where we should put new token generators
                         if( changes.containsKey(of) ) changes.get(of).addXOR2BeFeed(xor);
@@ -798,10 +756,57 @@ public class GatewayMap {
             for( SingleTokenGen tg : changes.values() ) placeTokenGenerator(tg);
             for( MultipleTokenGen mtg : loopChanges ) placeMultipleTokenGenerator(mtg);
 
-        } else return replaceIOR(dominator, iorDepth, toVisit, visitedGates, visitedFlows, domFrontier, loopInjections);
+        } else return replaceIOR(dominator, iorDepth, toVisit, visitedGates, visitedFlows, domFrontier, loopInjections, ANDs);
 
 //        debug("DEBUG - turning an IOR into a AND");
         return Gateway.GatewayType.PARALLEL;
+    }
+
+    private boolean checkXOR(Map<Gateway, Set<Gateway>> visitedGates, Map<Gateway, Set<GatewayMapFlow>> visitedFlows, HashSet<Gateway> ANDs) {
+
+        Set<GatewayMapFlow> V;
+        IntHashSet V1, V2, U1, U2;
+        HashMap<Gateway, HashMap<Gateway, IntHashSet>> visitedEdgesIDs = new HashMap<>();
+        HashMap<Gateway, HashMap<Gateway, IntHashSet>> unvisitedEdgesIDs = new HashMap<>();
+//        System.out.println("DEBUG - ANDs: " + ANDs.size());
+        for( Gateway and : ANDs ) {
+//            System.out.println("DEBUG - visiting AND: " + and.getLabel());
+            visitedEdgesIDs.put(and, new HashMap<>());
+            unvisitedEdgesIDs.put(and, new HashMap<>());
+            for( Gateway xor : visitedGates.keySet() ) {
+//                System.out.println("DEBUG - XOR: " + xor.getLabel());
+                V1 = new IntHashSet();
+                U1 = new IntHashSet();
+                V = visitedFlows.get(xor);
+                for( GatewayMapFlow oe : outgoings.get(and) ) {
+                    if( V.contains(oe) ) V1.add(oe.id);
+                    else U1.add(oe.id);
+                }
+                if( !V1.isEmpty() ) {
+                    visitedEdgesIDs.get(and).put(xor, V1);
+                    unvisitedEdgesIDs.get(and).put(xor, U1);
+                }
+//                System.out.println("DEBUG - Visited: " + visitedEdgesIDs.get(and).get(xor));
+//                System.out.println("DEBUG - Unvisited: " + unvisitedEdgesIDs.get(and).get(xor));
+            }
+        }
+
+        for( Gateway and : ANDs ) {
+//            System.out.println("DEBUG - checking AND: " + and.getLabel());
+            for( Gateway xor1 : visitedEdgesIDs.get(and).keySet() ) {
+//                System.out.println("DEBUG - analizing: " + xor1.getLabel());
+                V1 = new IntHashSet(visitedEdgesIDs.get(and).get(xor1));
+                U1 = new IntHashSet(unvisitedEdgesIDs.get(and).get(xor1));
+                for( Gateway xor2 : visitedEdgesIDs.get(and).keySet() ) {
+                    V2 = new IntHashSet(visitedEdgesIDs.get(and).get(xor2));
+                    U2 = new IntHashSet(unvisitedEdgesIDs.get(and).get(xor2));
+//                    System.out.println("DEBUG - comparing with: " + xor2.getLabel());
+                    if( U2.retainAll(U1) || (V2.retainAll(V1) && !V2.isEmpty()) ) return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private void placeTokenGenerator(SingleTokenGen tg) {

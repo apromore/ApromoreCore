@@ -159,7 +159,7 @@ public class DirectlyFollowGraphPlus {
 
         switch(filterType) {                        //depends on detectParallelisms()
             case FWG:
-                filterWithGuarantees(percentileOnBest);
+                filterWithGuarantees();
                 exploreAndRemove();
                 break;
             case WTH:
@@ -169,10 +169,8 @@ public class DirectlyFollowGraphPlus {
                 standardFilter();
                 break;
             case DBG:
-                filterWithGuarantees(percentileOnBest);
+                filterWithGuarantees();
                 exploreAndRemove();
-//                generateNoiseFilteredDFG();
-//                exploreAndRemove();
                 break;
         }
 
@@ -447,21 +445,16 @@ public class DirectlyFollowGraphPlus {
         filterThreshold = frequencyOrderedEdges.get(i).getFrequency();
     }
 
-    private void filterWithGuarantees(boolean filterWithThreshold) {
-        if( filterWithThreshold ) {
-            bestEdgesOnMaxFrequencies();
-            computeFilterThreshold();
-        }
+    private void filterWithGuarantees() {
+        bestEdgesOnMaxFrequencies();
+        computeFilterThreshold();
 
-        bestEdgesOnMaxCapacities(!filterWithThreshold);
-        if( filterWithThreshold ) {
-            for( DFGEdge e : new HashSet<>(edges) ) if( !bestEdges.contains(e) && !(e.getFrequency() > filterThreshold) ) removeEdge(e, false);
-        } else {
-            for( DFGEdge e : new HashSet<>(edges) ) if( !bestEdges.contains(e) ) removeEdge(e, false);
-        }
+        bestEdgesOnMaxCapacities();
+        for( DFGEdge e : new HashSet<>(edges) )
+            if( !bestEdges.contains(e) && !(e.getFrequency() > filterThreshold) ) removeEdge(e, false);
     }
 
-    private void bestEdgesOnMaxCapacities(boolean maximize) {
+    private void bestEdgesOnMaxCapacities() {
         int src, tgt, cap, maxCap;
         DFGEdge bp, bs;
 
@@ -493,7 +486,8 @@ public class DirectlyFollowGraphPlus {
             for( DFGEdge oe : outgoings.get(src) ) {
                 tgt = oe.getTargetCode();
                 maxCap = (cap > oe.getFrequency() ? oe.getFrequency() : cap);
-                if( maxCap > maxCapacitiesFromSource.get(tgt) ) {
+                if( (maxCap > maxCapacitiesFromSource.get(tgt)) ||
+                    ((maxCap == maxCapacitiesFromSource.get(tgt)) && (bestPredecessorFromSource.get(tgt).getFrequency() < oe.getFrequency())) ) {
                     maxCapacitiesFromSource.put(tgt, maxCap);
                     bestPredecessorFromSource.put(tgt, oe);
                     if( !toVisit.contains(tgt) ) unvisited.add(tgt);
@@ -519,7 +513,7 @@ public class DirectlyFollowGraphPlus {
                 src = ie.getSourceCode();
                 maxCap = (cap > ie.getFrequency() ? ie.getFrequency() : cap);
                 if( (maxCap > maxCapacitiesToSink.get(src)) ||
-                    ((maxCap == maxCapacitiesToSink.get(src)) && (bestSuccessorToSink.get(src).getFrequency() > ie.getFrequency())) ) {
+                    ((maxCap == maxCapacitiesToSink.get(src)) && (bestSuccessorToSink.get(src).getFrequency() < ie.getFrequency())) ) {
                     maxCapacitiesToSink.put(src, maxCap);
                     bestSuccessorToSink.put(src, ie);
                     if( !toVisit.contains(src) ) unvisited.add(src);
@@ -533,14 +527,8 @@ public class DirectlyFollowGraphPlus {
 
         bestEdges = new HashSet<>();
         for( int n : nodes.keySet() ) {
-            bp = bestPredecessorFromSource.get(n);
-            bs = bestSuccessorToSink.get(n);
-            if( maximize ) {
-                for (DFGEdge e : incomings.get(n)) if (e.getFrequency() > bp.getFrequency()) bestEdges.add(e);
-                for (DFGEdge e : outgoings.get(n)) if (e.getFrequency() > bs.getFrequency()) bestEdges.add(e);
-            }
-            bestEdges.add(bp);
-            bestEdges.add(bs);
+            bestEdges.add(bestPredecessorFromSource.get(n));
+            bestEdges.add(bestSuccessorToSink.get(n));
         }
         bestEdges.remove(null);
 
