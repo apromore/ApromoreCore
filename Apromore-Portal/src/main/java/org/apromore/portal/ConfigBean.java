@@ -31,12 +31,13 @@ public class ConfigBean {
     private String  siteFilestore;
     private String  siteManager;
     private String  sitePortal;
-    private String  versionNumber;
+    private String  majorVersionNumber;
+    private String minorVersionNumber;
     private String  versionBuildDate;
 
     public ConfigBean() {}
 
-    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String versionNumber, String versionBuildDate) {
+    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber, String versionBuildDate) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -45,7 +46,8 @@ public class ConfigBean {
             " site.filestore=" + siteFilestore +
             " site.manager=" + siteManager +
             " site.portal=" + sitePortal +
-            " version.number=" + versionNumber +
+            " majorversion.number=" + majorVersionNumber +
+            " minorversion.number=" + minorVersionNumber +
             " version.builddate=" + versionBuildDate);
 
         this.siteEditor         = siteEditor;
@@ -54,16 +56,18 @@ public class ConfigBean {
         this.siteFilestore      = siteFilestore;
         this.siteManager        = siteManager;
         this.sitePortal         = sitePortal;
-        this.versionNumber      = versionNumber;
+        this.majorVersionNumber = majorVersionNumber;
+        this.minorVersionNumber = minorVersionNumber;
         this.versionBuildDate   = versionBuildDate;
     }
 
-    public String getSiteEditor()       { return siteEditor; }
-    public String getSiteExternalHost() { return siteExternalHost; }
-    public int    getSiteExternalPort() { return siteExternalPort; }
-    public String getSiteFilestore()    { return siteFilestore; }
-    public String getSiteManager()      { return siteManager; }
-    public String getSitePortal()       { return sitePortal; }
-    public String getVersionNumber()    { return versionNumber; }
-    public String getVersionBuildDate() { return versionBuildDate; }
+    public String getSiteEditor()           { return siteEditor; }
+    public String getSiteExternalHost()     { return siteExternalHost; }
+    public int    getSiteExternalPort()     { return siteExternalPort; }
+    public String getSiteFilestore()        { return siteFilestore; }
+    public String getSiteManager()          { return siteManager; }
+    public String getSitePortal()           { return sitePortal; }
+    public String getMajorVersionNumber()   { return majorVersionNumber; }
+    public String getMinorVersionNumber()   { return minorVersionNumber; }
+    public String getVersionBuildDate()     { return versionBuildDate; }
 }
