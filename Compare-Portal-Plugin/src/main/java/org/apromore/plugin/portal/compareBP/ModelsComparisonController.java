@@ -23,6 +23,7 @@ package org.apromore.plugin.portal.compareBP;
 // Java 2 Standard packages
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.DecimalFormat;
 import java.util.*;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
@@ -37,16 +38,11 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.au.AuResponse;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Treecell;
-import org.zkoss.zul.Treechildren;
-import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.Treerow;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
 
 // Local packages
 import org.apromore.model.EditSessionType;
@@ -234,50 +230,143 @@ public class ModelsComparisonController extends BaseController {
     }
 
     public void onCreate() throws InterruptedException {
-        Treechildren treechildren = (Treechildren) this.getFellowIfAny("differences");
+//        Treechildren treechildren = (Treechildren) this.getFellowIfAny("differences");
+        Toolbar treechildren = (Toolbar) this.getFellowIfAny("differences");
         if (treechildren != null) {
+            Component parent = (Component) treechildren.getParent();
+
+            // Remove any pre-extant list items
+            Component sibling = treechildren.getNextSibling();
+            while (sibling != null) {
+                parent.removeChild(sibling);
+                sibling = treechildren.getNextSibling();
+            }
+
             Label m1Label = (Label) this.getFellow("m1-pes-size");
             m1Label.setValue(Integer.toString(m1PESSize));
 
             Label m2Label = (Label) this.getFellow("m2-pes-size");
             m2Label.setValue(Integer.toString(m2PESSize));
 
+            // Add the current differences
             try {
+                final DecimalFormat rankingFormat = new DecimalFormat("##%");
+
                 JSONArray array = this.differences.getJSONArray("differences");
                 for (int i=0; i < array.length(); i++) {
                     JSONObject difference = array.getJSONObject(i);
 
                     // Add UI for this difference
-                    Treeitem item = new Treeitem();
-
-                    Treerow row = new Treerow();
-                    item.appendChild(row);
-
-                    Treecell cell = new Treecell(difference.getString("sentence"));
-                    row.appendChild(cell);
-
                     String clean1 = "oryxEditor1.cleanDifferences()";
                     String clean2 = "oryxEditor2.cleanDifferences()";
 
+//                    Treeitem item = new Treeitem();
+//
+//                    Treerow row = new Treerow();
+//                    item.appendChild(row);
+//
+//                    Treecell cell = new Treecell(difference.getString("sentence"));
+//                    row.appendChild(cell);
+//
                     String sent1 = onCreateSentence("model 1", difference.optJSONObject("runsM1"), "oryxEditor1");
                     String sent2 = onCreateSentence("model 2", difference.optJSONObject("runsM2"), "oryxEditor2");
 
-                    if(sent1.length() > 0 && sent2.length() > 0)
-                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1 + ";"+ sent2);
-                    else if(sent1.length() > 0)
-                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1);
-                    else if(sent2.length() > 0)
-                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent2);
+//                    if(sent1.length() > 0 && sent2.length() > 0)
+//                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1 + ";"+ sent2);
+//                    else if(sent1.length() > 0)
+//                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1);
+//                    else if(sent2.length() > 0)
+//                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent2);
+//
+//                    treechildren.appendChild(item);
 
-                    treechildren.appendChild(item);
+                    // Add UI for this difference
+                    final Button button = new Button(difference.getString("sentence"));
+                    button.setStyle(buttonCSSStyle(false));
+                    button.addEventListener("onClick", new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                            for (Component component: button.getParent().getChildren()) {
+                                if (component instanceof Button) {
+                                    Button b = (Button) component;
+                                    b.setStyle(buttonCSSStyle(button == b));
+                                }
+                            }
+                        }
+                    });
+                    if(sent1.length() > 0 && sent2.length() > 0)
+                        button.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1 + ";"+ sent2);
+                    else if(sent1.length() > 0)
+                        button.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1);
+                    else if(sent2.length() > 0)
+                        button.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent2);
+
+//                    button.setWidgetListener("onClick", differenceToJavascript(i, difference));
+
+                    parent.appendChild(button);
                 }
+
             } catch (JSONException e) {
                 InterruptedException ie = new InterruptedException("Unable to parse differences JSON");
                 ie.initCause(e);
                 ie.printStackTrace();
                 throw ie;
             }
+//            try {
+//                JSONArray array = this.differences.getJSONArray("differences");
+//                for (int i=0; i < array.length(); i++) {
+//                    JSONObject difference = array.getJSONObject(i);
+//
+//                    // Add UI for this difference
+//                    Treeitem item = new Treeitem();
+//
+//                    Treerow row = new Treerow();
+//                    item.appendChild(row);
+//
+//                    Treecell cell = new Treecell(difference.getString("sentence"));
+//                    row.appendChild(cell);
+//
+//                    String clean1 = "oryxEditor1.cleanDifferences()";
+//                    String clean2 = "oryxEditor2.cleanDifferences()";
+//
+//                    String sent1 = onCreateSentence("model 1", difference.optJSONObject("runsM1"), "oryxEditor1");
+//                    String sent2 = onCreateSentence("model 2", difference.optJSONObject("runsM2"), "oryxEditor2");
+//
+//                    if(sent1.length() > 0 && sent2.length() > 0)
+//                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1 + ";"+ sent2);
+//                    else if(sent1.length() > 0)
+//                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent1);
+//                    else if(sent2.length() > 0)
+//                        cell.setWidgetListener("onClick", clean1 + ";" + clean2 + ";" + sent2);
+//
+//                    treechildren.appendChild(item);
+//                }
+//            } catch (JSONException e) {
+//                InterruptedException ie = new InterruptedException("Unable to parse differences JSON");
+//                ie.initCause(e);
+//                ie.printStackTrace();
+//                throw ie;
+//            }
         }
+    }
+
+    private String differenceToJavascript(int buttonIndex, JSONObject difference) throws JSONException {
+        LOGGER.info("differenceToJavascript: " + difference);
+
+        return "oryxEditor1.displayMLDifference(" +
+                buttonIndex + "," +
+                "\"" + difference.optString("type") + "\"," +
+                difference.optJSONArray("start")    + "," +
+                difference.optJSONArray("a")        + "," +
+                difference.optJSONArray("b")        + "," +
+                difference.optJSONArray("newTasks") + "," +
+                difference.optJSONArray("end")      + "," +
+                difference.optJSONArray("greys")    + ")";
+    }
+
+    private String buttonCSSStyle(boolean isSelected) {
+        return "background: " + (isSelected ? "#DDEEFF" : "inherit") + "; " +
+                "border: " + (isSelected ? "1px solid red" : "none") + "; " +
+                "margin: 5px; text-align: initial; white-space: normal";
     }
 
     private String onCreateRuns(final String modelName, JSONObject runsM1, Treeitem item, String oryxEditor) throws JSONException {

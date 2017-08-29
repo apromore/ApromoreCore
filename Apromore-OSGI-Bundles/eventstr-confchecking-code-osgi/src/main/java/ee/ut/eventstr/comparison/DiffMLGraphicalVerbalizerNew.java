@@ -742,7 +742,7 @@ public class DiffMLGraphicalVerbalizerNew {
         LinkedList<Operation> rHidesOps;
         LinkedList<String> newTasks = new LinkedList<>();
 
-        if(prunedSource.getFirst().op.equals(Op.RHIDE)) {
+        if(isRHide(prunedSource.getFirst())) {
             impact = computeImpact(getMinimum(prunedTarget));
             rHidesOps = prunedSource;
         }else {

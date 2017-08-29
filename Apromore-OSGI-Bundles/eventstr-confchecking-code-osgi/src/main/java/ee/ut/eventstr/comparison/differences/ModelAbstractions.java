@@ -312,8 +312,11 @@ public class ModelAbstractions {
         for(DNode node : union)
             if(mapUnf2Net.containsKey(node.id)) {
                 FlowNode task = mapTasks2TransReverse.get(mapUnf2Net.get(node.id));
+                if(task != null)
                 modelNodes.add(task);
+                if(task != null && bpmnModel.getIncomingControlFlow(task) != null)
                 modelNodes.addAll(bpmnModel.getIncomingControlFlow(task));
+                if(task != null && bpmnModel.getOutgoingControlFlow(task) != null)
                 modelNodes.addAll(bpmnModel.getOutgoingControlFlow(task));
             }
 

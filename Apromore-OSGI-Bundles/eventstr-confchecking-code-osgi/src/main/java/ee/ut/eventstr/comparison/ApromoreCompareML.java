@@ -84,8 +84,8 @@ public class ApromoreCompareML {
 
 		String folder = "modelsFabrizio/";
 
-        String logString = folder + "bpi13Filt2.xes";
-        String modelString = folder + "bpi13rep.bpmn";
+        String logString = folder + "Refund_Manually_Designed_FullLog_FilteredNoEvents.xes";
+        String modelString = folder + "Refund_Manually_Designed_BaseModel.bpmn";
 //		String logString = folder + "bpLog11.xes";
 //		String modelString = folder + "bp2.bpmn";
 //		String logString = folder + "bpLog4.xes";

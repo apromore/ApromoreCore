@@ -196,30 +196,39 @@
 
     <n:table>
         <n:tr>
-            <n:th rowspan="2" style="vertical-align: top" width="20%">
-                <vbox>
-		    <n:table>
-                        <n:tr style="display:none">
-                            <n:th>Model 1 size (PES)</n:th>
-                            <n:td><label id="m1-pes-size"/></n:td>
-                        </n:tr>
-                        <n:tr style="display:none">
-                            <n:th>Model 2 size (PES)</n:th>
-                            <n:td><label id="m2-pes-size"/></n:td>
-                        </n:tr>
-                    </n:table>
-                    <tree>
-                        <treecols>
-                            <treecol label="Difference"/>
-                        </treecols>
-                        <treechildren id="differences"></treechildren>
-                    </tree>
-                </vbox>
-            </n:th>
-            <n:th valign="top" height="300"><n:div id="oryx-canvas1"></n:div></n:th>
+            <n:td rowspan="2" style="vertical-align: top"  width="30%">
+                    <vbox>
+                        <n:table>
+                            <n:tr style="display:none">
+                                <n:th>Model 1 size (PES)</n:th>
+                                <n:td><label id="m1-pes-size"/></n:td>
+                            </n:tr>
+                            <n:tr style="display:none">
+                                <n:th>Model 2 size (PES)</n:th>
+                                <n:td><label id="m2-pes-size"/></n:td>
+                            </n:tr>
+                        </n:table>
+                        <!--<tree>
+                            <treecols>
+                                <treecol label="Difference"/>
+                            </treecols>
+                            <treechildren id="differences"></treechildren>
+                        </tree>-->
+                        <n:td style="vertical-align: top">
+                            <n:div id="alignments" style="overflow:scroll;height:675px;">
+                                <vbox hflex="1">
+                                    <toolbar id="differences" hflex="1">
+                                        <label hflex="1">Differences</label>
+                                    </toolbar>
+                                </vbox>
+                            </n:div>
+                        </n:td>
+                    </vbox>
+            </n:td>
+            <n:td valign="top" height="300"  width="70%"><n:div id="oryx-canvas1"></n:div></n:td>
         </n:tr>
         <n:tr>
-            <n:td valign="top"><n:div id="oryx-canvas2"></n:div></n:td>
+            <n:td valign="top" width="70%"><n:div id="oryx-canvas2"></n:div></n:td>
         </n:tr>
     </n:table>
 </window>
