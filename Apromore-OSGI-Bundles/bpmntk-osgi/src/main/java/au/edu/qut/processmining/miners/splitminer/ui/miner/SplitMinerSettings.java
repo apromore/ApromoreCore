@@ -24,6 +24,7 @@ public class SplitMinerSettings extends ProMPropertiesPanel {
     final SplitMinerUIResult result;
 
     JCheckBox replaceIORs;
+    JCheckBox removeSelfLoops;
 //    ProMComboBox structuring;
 
     public SplitMinerSettings() {
@@ -44,7 +45,11 @@ public class SplitMinerSettings extends ProMPropertiesPanel {
         replaceIORs = this.addCheckBox("Replace IORs", true);
         replaceIORs.addChangeListener(smpil);
 
+        removeSelfLoops = this.addCheckBox("Remove SelfLoops", false);
+        removeSelfLoops.addChangeListener(smpil);
+
         result.setReplaceIORs(replaceIORs.isSelected());
+        result.setRemoveSelfLoops(removeSelfLoops.isSelected());
         result.setStructuringTime(SplitMinerUIResult.STRUCT_POLICY);
     }
 
@@ -57,6 +62,7 @@ public class SplitMinerSettings extends ProMPropertiesPanel {
         @Override
         public void stateChanged(ChangeEvent e) {
             result.setReplaceIORs(replaceIORs.isSelected());
+            result.setRemoveSelfLoops(removeSelfLoops.isSelected());
         }
 
         @Override

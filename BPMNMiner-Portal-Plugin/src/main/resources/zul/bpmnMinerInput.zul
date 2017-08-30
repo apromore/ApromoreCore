@@ -73,8 +73,8 @@
                         </row>
                         <row>
                             <label value="Structured Process Model"/>
-                            <radio id="structured" label="Yes" selected="true" radiogroup="bpmnMinerStructProcess" />
-                            <radio id="notStructured" label="No" radiogroup="bpmnMinerStructProcess" />
+                            <radio id="structured" label="Yes" radiogroup="bpmnMinerStructProcess" />
+                            <radio id="notStructured" label="No" selected="true" radiogroup="bpmnMinerStructProcess" />
                         </row>
                         <row>
                             <label value="Select Type of Model"/>

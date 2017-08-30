@@ -73,9 +73,9 @@
                             <label value="Structured Process Model"/>
                             <radiogroup id="bpmnMinerStructProcess">
                                 <hlayout>
-                                    <radio id="structured" label="Yes" selected="true" radiogroup="bpmnMinerStructProcess" />
+                                    <radio id="structured" label="Yes" radiogroup="bpmnMinerStructProcess" />
                                     <space /><space />
-                                    <radio id="notStructured" label="No" radiogroup="bpmnMinerStructProcess" />
+                                    <radio id="notStructured" label="No" selected="true" radiogroup="bpmnMinerStructProcess" />
                                 </hlayout>
                             </radiogroup>
                         </row>
