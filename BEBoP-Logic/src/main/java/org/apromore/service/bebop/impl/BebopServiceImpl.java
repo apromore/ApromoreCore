@@ -693,7 +693,12 @@ public class BebopServiceImpl implements BebopService {
 
                 if (i==0) {
                     appoggio.put("GuidelineName", guidelinesListResult.get(i));
-                    appoggio.put("GuidelineDescription", guidelinesListResult.get(i + 1));
+                    if(guidelinesListResult.get(i).contains("Labeling XOR gateway")){
+                        appoggio.put("GuidelineDescription", "Make sure (X)OR split gateways are preceded (not necessarily immediately before) by a decision activity, whose outcomes are then modeled by the outgoing sequence flows of the split." +
+                                " Sequence flows coming out of diverging gateways of type exclusive, inclusive and complex should be labeled using their associated conditions stated as outcomes.");
+                    }else {
+                        appoggio.put("GuidelineDescription", guidelinesListResult.get(i + 1));
+                    }
                     i=i+1;
                 }else {
 
@@ -715,7 +720,12 @@ public class BebopServiceImpl implements BebopService {
                             appoggio = new JSONObject();
                             //ja.put(result);
                             appoggio.put("GuidelineName", guidelinesListResult.get(i));
-                            appoggio.put("GuidelineDescription", guidelinesListResult.get(i + 1));
+                            if(guidelinesListResult.get(i).contains("Labeling XOR gateway")){
+                                appoggio.put("GuidelineDescription", "Make sure (X)OR split gateways are preceded (not necessarily immediately before) by a decision activity, whose outcomes are then modeled by the outgoing sequence flows of the split." +
+                                        " Sequence flows coming out of diverging gateways of type exclusive, inclusive and complex should be labeled using their associated conditions stated as outcomes.");
+                            }else {
+                                appoggio.put("GuidelineDescription", guidelinesListResult.get(i + 1));
+                            }
                             i = i + 1;
                         }
                     }
@@ -1132,7 +1142,12 @@ public class BebopServiceImpl implements BebopService {
 
                 if (i==0) {
                     flagJson.put("GuidelineName", guidelinesListResult.get(i));
-                    flagJson.put("GuidelineDescription", guidelinesListResult.get(i + 1));
+                    if(guidelinesListResult.get(i).contains("Labeling XOR gateway")){
+                        flagJson.put("GuidelineDescription", "Make sure (X)OR split gateways are preceded (not necessarily immediately before) by a decision activity, whose outcomes are then modeled by the outgoing sequence flows of the split." +
+                                " Sequence flows coming out of diverging gateways of type exclusive, inclusive and complex should be labeled using their associated conditions stated as outcomes.");
+                    }else {
+                        flagJson.put("GuidelineDescription", guidelinesListResult.get(i + 1));
+                    }
                     i=i+1;
                 }else {
 
@@ -1152,7 +1167,14 @@ public class BebopServiceImpl implements BebopService {
                         if ((i + 1) < guidelinesListResult.size()) {
                             flagJson = new JSONObject();
                             flagJson.put("GuidelineName", guidelinesListResult.get(i));
-                            flagJson.put("GuidelineDescription", guidelinesListResult.get(i + 1));
+                            System.out.println("GuidelineName"+ guidelinesListResult.get(i));
+                            if(guidelinesListResult.get(i).contains("Labeling XOR gateway")){
+                                flagJson.put("GuidelineDescription", "Make sure (X)OR split gateways are preceded (not necessarily immediately before) by a decision activity, whose outcomes are then modeled by the outgoing sequence flows of the split." +
+                                        " Sequence flows coming out of diverging gateways of type exclusive, inclusive and complex should be labeled using their associated conditions stated as outcomes.");
+                            }else {
+                                flagJson.put("GuidelineDescription", guidelinesListResult.get(i + 1));
+                            }
+//                            flagJson.put("GuidelineDescription", guidelinesListResult.get(i + 1));
                             i = i + 1;
                         }
                     }
