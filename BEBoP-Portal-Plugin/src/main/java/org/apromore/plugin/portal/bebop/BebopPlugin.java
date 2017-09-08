@@ -109,8 +109,15 @@ public class BebopPlugin extends PluginCustomGui {
                 int j=0;
                for(int i=0;i<tableRows.size();i++){
                    if(!tableRows.get(i).contains("node")&&!tableRows.get(i).contains("sid")) {
-                       TabRowValue trv = createTabRowValue(tableRows.get(i));
-                       rows.add(trv);
+                       System.out.println("tableRows.get(i): "+tableRows.get(i));
+                       if(tableRows.get(i).contains("Label XOR split gateways with an interrogative phrase (do not label XOR join-gateways)")){
+                           TabRowValue trv = createTabRowValue("Make sure (X)OR split gateways are preceded (not necessarily immediately before) by a decision activity, whose outcomes are then modeled by the outgoing sequence flows of the split." +
+                                   " Sequence flows coming out of diverging gateways of type exclusive, inclusive and complex should be labeled using their associated conditions stated as outcomes.");
+                           rows.add(trv);
+                       }else {
+                           TabRowValue trv = createTabRowValue(tableRows.get(i));
+                           rows.add(trv);
+                       }
                        if (j % 2 != 0) rows.add(createTabRowValue(""));
                        j++;
                    }
