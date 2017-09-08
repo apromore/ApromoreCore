@@ -42,10 +42,10 @@ public class SplitMinerSettings extends ProMPropertiesPanel {
 //        structuring = this.addComboBox("Structuring Time", structuringTime);
 //        structuring.addActionListener(smpil);
 
-        replaceIORs = this.addCheckBox("Replace IORs", true);
+        replaceIORs = this.addCheckBox("Remove OR-joins", false);
         replaceIORs.addChangeListener(smpil);
 
-        removeSelfLoops = this.addCheckBox("Remove SelfLoops", false);
+        removeSelfLoops = this.addCheckBox("Remove Self-loops", false);
         removeSelfLoops.addChangeListener(smpil);
 
         result.setReplaceIORs(replaceIORs.isSelected());

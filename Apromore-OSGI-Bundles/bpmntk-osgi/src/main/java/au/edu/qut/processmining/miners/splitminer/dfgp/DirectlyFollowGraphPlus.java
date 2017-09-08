@@ -160,13 +160,14 @@ public class DirectlyFollowGraphPlus {
         switch(filterType) {                        //depends on detectParallelisms()
             case FWG:
                 filterWithGuarantees();
-                exploreAndRemove();
                 break;
             case WTH:
                 filterWithThreshold();
+                exploreAndRemove();
                 break;
             case STD:
                 standardFilter();
+                exploreAndRemove();
                 break;
             case DBG:
                 filterWithGuarantees();
@@ -332,7 +333,7 @@ public class DirectlyFollowGraphPlus {
             src = e1.getSourceCode();
             tgt = e1.getTargetCode();
 
-            if (!loopsL2.contains(e1) && !removableEdges.contains(e1) && dfgp.get(tgt).containsKey(src)) {
+            if( !loopsL1.contains(src) && !loopsL1.contains(tgt) && !loopsL2.contains(e1) && !removableEdges.contains(e1) && dfgp.get(tgt).containsKey(src) ) {
 //                this means: src || tgt is candidate parallelism
                 e2 = dfgp.get(tgt).get(src);
 
@@ -560,7 +561,7 @@ public class DirectlyFollowGraphPlus {
         }
 
         for(int n : unvisited) {
-            System.out.println("DEBUG - removed: " + nodes.get(n).print());
+            System.out.println("DEBUG - fwd removed: " + nodes.get(n).print());
             removeNode(n);
         }
 
@@ -582,7 +583,7 @@ public class DirectlyFollowGraphPlus {
         }
 
         for(int n : unvisited) {
-            System.out.println("DEBUG - removed: " + nodes.get(n).print());
+            System.out.println("DEBUG - bkw removed: " + nodes.get(n).print());
             removeNode(n);
         }
     }

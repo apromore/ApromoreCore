@@ -37,8 +37,8 @@ public class DFGPSettings extends ProMPropertiesPanel {
         result = new DFGPUIResult();
 
         LinkedList<String> filterType = new LinkedList<>();
-        filterType.addLast("WTH");
         filterType.addLast("FWG");
+        filterType.addLast("WTH");
         filterType.addLast("STD");
         filterType.addLast("DBG");
 
@@ -81,11 +81,11 @@ public class DFGPSettings extends ProMPropertiesPanel {
             if( e.getSource() instanceof JComboBox) {
                 switch( ((JComboBox)e.getSource()).getSelectedIndex() ) {
                     case 0:
-                        result.setFilterType(DFGPUIResult.FilterType.WTH);
+                        result.setFilterType(DFGPUIResult.FilterType.FWG);
                         percentileFrequencyThreshold.setVisible(true);
                         break;
                     case 1:
-                        result.setFilterType(DFGPUIResult.FilterType.FWG);
+                        result.setFilterType(DFGPUIResult.FilterType.WTH);
                         percentileFrequencyThreshold.setVisible(true);
                         break;
                     case 2:

@@ -68,7 +68,7 @@ public class SplitMiner {
 
     public SplitMiner() {}
 
-    public DirectlyFollowGraphPlus getDfgp() { return dfgp; }
+    public DirectlyFollowGraphPlus getDFGP() { return dfgp; }
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
@@ -232,11 +232,16 @@ public class SplitMiner {
         replaceIORs();
 
         updateLabels(this.log.getEvents());
+
         if(!removeSelfLoops) helper.removeSelfLoopMarkers(bpmnDiagram);
-        helper.expandSplitGateways(bpmnDiagram);
-//        helper.expandJoinGateways(bpmnDiagram);
-//        helper.collapseSplitGateways(bpmnDiagram);
-//        helper.collapseJoinGateways(bpmnDiagram);
+
+        if( replaceIORs ) {
+            helper.expandSplitGateways(bpmnDiagram);
+        } else {
+            helper.collapseSplitGateways(bpmnDiagram);
+            helper.collapseJoinGateways(bpmnDiagram);
+        }
+
 //        System.out.println("SplitMiner - bpmn diagram generated successfully");
     }
 
