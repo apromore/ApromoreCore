@@ -64,7 +64,7 @@
                 diagram = cytoscape({
                     container: document.getElementById('myDiagramDiv'), // container to render in
                     layout: {name: 'cose', padding: 10},
-                    zoom: 5,
+                    zoom: 2,
                     pan: { x: 0, y: 0 },
                     minZoom: 1e-50,
                     maxZoom: 1e50,
@@ -72,7 +72,7 @@
                     userZoomingEnabled: true,
                     panningEnabled: true,
                     userPanningEnabled: true,
-                    wheelSensitivity: 0.01,
+                    wheelSensitivity: 0.1,
 
                     style: cytoscape.stylesheet()
                         .selector('node').css({
@@ -102,7 +102,8 @@
                             'target-arrow-color': 'gray',
                             'label': 'data(label)',
                             'line-style': 'data(style)',
-                            'font-size': 7
+                            'font-size': 7,
+                            'text-margin-y': -10
                         }).selector('edge.questionable').css({
                             'line-style': 'dotted',
                             'target-arrow-shape': 'diamond'

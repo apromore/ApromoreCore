@@ -557,7 +557,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 jsonOneNode.put("width", "15px");
                 jsonOneNode.put("height", "15px");
             }else {
-                jsonOneNode.put("name", node.getLabel().replace("'", ""));
+                jsonOneNode.put("name", node.getLabel().replace("'", "") + "\\n" + getEventFrequency(false, node.getLabel()));
                 jsonOneNode.put("shape", "roundrectangle");
                 if(selected_frequency) jsonOneNode.put("color", getFrequencyColor(node, bpmnDiagram.getNodes()));
                 else jsonOneNode.put("color", getDurationColor(node, bpmnDiagram.getNodes()));
@@ -602,7 +602,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             BigDecimal bd = new BigDecimal((Double.parseDouble(number) * 100.0 / maxWeight));
             bd = bd.setScale(2, RoundingMode.HALF_UP);;
             jsonOneLink.put("strength", bd.doubleValue());
-            jsonOneLink.put("label", number);
+            jsonOneLink.put("label", number);//"\\n\\n" + number);
             JSONObject jsonDataLink = new JSONObject();
             jsonDataLink.put("data", jsonOneLink);
             graph.put(jsonDataLink);
@@ -638,16 +638,20 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return array_edges;
     }
 
-    private int getEventFrequency(String event) {
+    private int getEventFrequency(boolean min, String event) {
         if(getEventNumber(event) == null) {
             String start_event = event + "+start";
             String complete_event = event + "+complete";
             if(getEventNumber(start_event) != null && getEventNumber(complete_event) != null) {
-                return Math.min(getEventFrequency(start_event), getEventFrequency(complete_event));
+                if(min) {
+                    return Math.min(getEventFrequency(min, start_event), getEventFrequency(min, complete_event));
+                }else {
+                    return Math.max(getEventFrequency(min, start_event), getEventFrequency(min, complete_event));
+                }
             }else if(getEventNumber(start_event) != null) {
-                return getEventFrequency(start_event);
+                return getEventFrequency(min, start_event);
             }else {
-                return getEventFrequency(complete_event);
+                return getEventFrequency(min, complete_event);
             }
         }else {
             return activity_frequency.get(getEventNumber(event));
@@ -657,10 +661,10 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private String getFrequencyColor(BPMNNode node, Set<BPMNNode> nodes) {
         int max = 0;
         for(BPMNNode n : nodes) {
-            max = Math.max(max, getEventFrequency(n.getLabel()));
+            max = Math.max(max, getEventFrequency(true, n.getLabel()));
         }
         int step = max / 5;
-        int node_frequency = getEventFrequency(node.getLabel());
+        int node_frequency = getEventFrequency(true, node.getLabel());
         if(node_frequency >= (max - (1 * step))) return BLUE_5;
         if(node_frequency >= (max - (2 * step))) return BLUE_4;
         if(node_frequency >= (max - (3 * step))) return BLUE_3;
@@ -671,10 +675,10 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private String getDurationColor(BPMNNode node, Set<BPMNNode> nodes) {
         int max = 0;
         for(BPMNNode n : nodes) {
-            max = Math.max(max, getEventFrequency(n.getLabel()));
+            max = Math.max(max, getEventFrequency(true, n.getLabel()));
         }
         int step = max / 5;
-        int node_frequency = getEventFrequency(node.getLabel());
+        int node_frequency = getEventFrequency(true, node.getLabel());
         if(node_frequency >= (max - (1 * step))) return RED_5;
         if(node_frequency >= (max - (2 * step))) return RED_4;
         if(node_frequency >= (max - (3 * step))) return RED_3;
