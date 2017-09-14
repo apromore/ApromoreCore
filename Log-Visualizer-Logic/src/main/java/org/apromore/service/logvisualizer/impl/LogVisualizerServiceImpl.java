@@ -116,8 +116,9 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         XLog log = null;
         try {
 //            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/IdeaProjects/ApromoreCodeServerNew/Compare-Logic/src/test/resources/CAUSCONC-1/bpLog3.xes");
-            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Raw data after import.xes.gz");
+//            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Raw data after import.xes.gz");
 //            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Demonstration examples/Discover Process Model/Synthetic Log with Subprocesses.xes.gz");
+            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2017 - Loan Application (NoiseFilter).xes.gz");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,7 +127,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
 //        System.out.println(s);
 //        System.out.println(s1);
 //        System.out.println(l.visualizeLog(log, 0.34, 0));
-//        l.generateDOTFromLog(log, 0.37, 0);
+//        l.generateDOTFromLog(log, 0.0, 0.36);
     }
 
 //    public void generateDOTFromLog(XLog log, double activities, double arcs) {
@@ -209,6 +210,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
 
     private BPMNDiagram generateDiagramFromLog(XLog log, double activities, double arcs) {
         initializeDatastructures();
+        log = removeUnrequiredEvents(log);
         List<IntList> simplified_log = simplifyLog(log);
         filterLog(simplified_log, activities);
         retained_arcs = selectArcs(arcs);
@@ -269,6 +271,20 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         arcs_frequency = new ObjectIntHashMap<>();
     }
 
+    private XLog removeUnrequiredEvents(XLog log) {
+        for(XTrace trace : log) {
+            Iterator<XEvent> iterator = trace.iterator();
+            while (iterator.hasNext()) {
+                XEvent event = iterator.next();
+                String name = full_classifier.getClassIdentity(event);
+                if(name.contains("+") && !(isStartEvent(name) || isCompleteEvent(name))) {
+                    iterator.remove();
+                }
+            }
+        }
+        return log;
+    }
+
     private List<IntList> simplifyLog(XLog log) {
         List<IntList> simplified_log = new ArrayList<>();
 
@@ -327,14 +343,48 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
 //            for(int i = 0; i < filtered_trace.size() - 1; i++) {
 //                arcs_frequency.addToValue(Tuples.pair(filtered_trace.get(i), filtered_trace.get(i + 1)), 1);
 //            }
+            IntHashSet not_reached = new IntHashSet();
+            IntHashSet not_reaching = new IntHashSet();
+            for(int i = 0; i < filtered_trace.size(); i++) {
+                if(i != 0) not_reached.add(filtered_trace.get(i));
+                if(i != filtered_trace.size() - 1) not_reaching.add(filtered_trace.get(i));
+            }
+
             for(int i = 0; i < filtered_trace.size() - 1; i++) {
                 for(int j = i + 1; j < filtered_trace.size(); j++) {
-                    if (isAcceptableTarget(filtered_trace.get(i), filtered_trace.get(j))) {
+                    if (isAcceptableTarget(filtered_trace, filtered_trace.get(i), filtered_trace.get(j))) {
                         arcs_frequency.addToValue(Tuples.pair(filtered_trace.get(i), filtered_trace.get(j)), 1);
+                        not_reaching.remove(filtered_trace.get(i));
+                        not_reached.remove(filtered_trace.get(j));
 //                        System.out.println(getEventFullName(filtered_trace.get(i)) + "->" + getEventFullName(filtered_trace.get(j)));
                         break;
 //                    }else {
 //                        System.out.println(getEventFullName(filtered_trace.get(i)) + "-X" + getEventFullName(filtered_trace.get(j)));
+                    }
+                }
+            }
+
+            if(not_reaching.size() > 0 || not_reached.size() > 0) {
+                for (int j = filtered_trace.size() - 1; j > 0; j--) {
+                    if(not_reached.contains(filtered_trace.get(j))) {
+                        for (int i = j - 1; i >= 0; i--) {
+                            if (isAcceptableTarget(filtered_trace, filtered_trace.get(i), filtered_trace.get(j))) {
+                                arcs_frequency.addToValue(Tuples.pair(filtered_trace.get(i), filtered_trace.get(j)), 1);
+                                not_reaching.remove(filtered_trace.get(i));
+                                not_reached.remove(filtered_trace.get(j));
+                                break;
+                            }
+                        }
+                    }
+                }
+                for (int j = filtered_trace.size() - 1; j > 0; j--) {
+                    for (int i = j - 1; i >= 0; i--) {
+                        if (not_reaching.contains(filtered_trace.get(i)) && isAcceptableTarget(filtered_trace, filtered_trace.get(i), filtered_trace.get(j))) {
+                            arcs_frequency.addToValue(Tuples.pair(filtered_trace.get(i), filtered_trace.get(j)), 1);
+                            not_reaching.remove(filtered_trace.get(i));
+                            not_reached.remove(filtered_trace.get(j));
+                            break;
+                        }
                     }
                 }
             }
@@ -353,21 +403,24 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return filtered_log;
     }
 
-    private boolean isAcceptableTarget(int source_event, int target_event) {
+    private boolean isAcceptableTarget(IntArrayList trace, int source_event, int target_event) {
         if(source_event == 1 && target_event == 2) return false;
 
         String source_name = getEventFullName(source_event);
         String target_name = getEventFullName(target_event);
 
-        if(source_event == 1) return (isStartEvent(target_name) || isSingleTypeEvent(target_event));
-        if(target_event == 2) return (isCompleteEvent(source_name) || isSingleTypeEvent(source_event));
+        if(source_event == 1) return (isStartEvent(target_name) || isSingleTypeEvent(target_event) || isSingleTypeEvent(trace, target_event));
+        if(target_event == 2) return (isCompleteEvent(source_name) || isSingleTypeEvent(source_event) || isSingleTypeEvent(trace, source_event));
 
         if(isStartEvent(source_name)) {
             String expected_target_name = getCompleteEvent(source_name);
-            if (!isSingleTypeEvent(source_event)) return getEventNumber(expected_target_name) == target_event;
-            else return isStartEvent(target_name) || isSingleTypeEvent(target_event);
+            if (!isSingleTypeEvent(source_event) && !isSingleTypeEvent(trace, source_event)) {
+                return getEventNumber(expected_target_name) == target_event;
+            }else {
+                return isStartEvent(target_name) || isSingleTypeEvent(target_event) || isSingleTypeEvent(trace, target_event);
+            }
         }else if(isCompleteEvent(source_name)) {
-            return (isStartEvent(target_name) || isSingleTypeEvent(target_event));
+            return (isStartEvent(target_name) || isSingleTypeEvent(target_event) || isSingleTypeEvent(trace, target_event));
         }
         return false;
     }
@@ -641,6 +694,19 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         String name = getEventFullName(event);
         if(isStartEvent(name) && getEventNumber(getCompleteEvent(name)) != null) return false;
         if(isCompleteEvent(name) && getEventNumber(getStartEvent(name)) != null) return false;
+        return true;
+    }
+
+    private boolean isSingleTypeEvent(IntArrayList trace, int event) {
+        String name = getEventFullName(event);
+        String collapsed_name = getCollapsedEvent(name);
+
+        for(int i = 0; i < trace.size(); i++) {
+            if(collapsed_name.equals(getCollapsedEvent(getEventFullName(trace.get(i)))) && !name.equals(getEventFullName(trace.get(i)))) {
+                return false;
+            }
+        }
+
         return true;
     }
 
