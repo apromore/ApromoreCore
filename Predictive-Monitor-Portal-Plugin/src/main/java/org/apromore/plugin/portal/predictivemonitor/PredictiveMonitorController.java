@@ -23,6 +23,8 @@ package org.apromore.plugin.portal.predictivemonitor;
 // Java 2 Standard Edition
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,11 +35,15 @@ import java.util.Set;
 import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Iframe;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -52,17 +58,27 @@ import org.apromore.service.EventLogService;
 /**
  * In MVC terms, this is a controller whose corresponding model is {@link Dataflow} and corresponding view is <code>setup.zul</code>.
  */
-public class PredictiveMonitorController {
+public class PredictiveMonitorController implements EventListener<DataflowEvent> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(PredictiveMonitorController.class.getCanonicalName());
 
+    /** This is static only because I've been too lazy to implement proper persistence for it yet. */
     private static Dataflow dataflow = null;
 
-    private final Iframe iframe;
-    private final Button createDataflowButton;
-    private final Button deleteDataflowButton;
-    private final Button streamLogButton;
+    private Execution execution = Executions.getCurrent();
+    private final Window  window;
+    private final Listbox eventsListbox;
+    private final Button  createDataflowButton;
+    private final Button  deleteDataflowButton;
+    private final Button  streamLogButton;
 
+    private final Label   runningCasesLabel;
+    private final Label   completedCasesLabel;
+    private final Label   completedEventsLabel;
+    private final Label   averageCaseLengthLabel;
+    private final Label   averageCaseDurationLabel;
+
+    private final NumberFormat numberFormat = new DecimalFormat("0.##");
 
     private Dataflow getDataflow() {
         return dataflow;
@@ -72,29 +88,43 @@ public class PredictiveMonitorController {
         dataflow = newDataflow;
         updateUI();
         if (dataflow != null) {
-            try {
-                Thread.currentThread().sleep(1000);
-            } catch (InterruptedException e) {}
+            eventsListbox.setModel(dataflow.eventsModel);
         }
-        iframe.setSrc(getDataflow() == null ? "about:blank" : "http://localhost:8080");
     }
 
     private void updateUI() {
         createDataflowButton.setDisabled(getDataflow() != null);
         deleteDataflowButton.setDisabled(getDataflow() == null);
         streamLogButton.setDisabled(getDataflow() == null);
+
+        Dataflow dataflow = getDataflow();
+        if (dataflow != null) {
+            runningCasesLabel.setValue(Integer.toString(dataflow.caseCount - dataflow.completedCaseCount));
+            completedEventsLabel.setValue(Integer.toString(dataflow.completedEventCount));
+            completedCasesLabel.setValue(Integer.toString(dataflow.completedCaseCount));
+            if (dataflow.completedCaseCount > 0) {
+                averageCaseLengthLabel.setValue(numberFormat.format((dataflow.completedCaseEventCount / (double) dataflow.completedCaseCount)));
+                averageCaseDurationLabel.setValue(DataflowEvent.format(dataflow.totalCompletedCaseDuration.dividedBy(dataflow.completedCaseCount)));
+            }
+        }
     }
 
     public PredictiveMonitorController(PortalContext portalContext, EventLogService eventLogService, File nirdizatiPath) throws IOException {
 
-        Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/setup.zul", null, null);
+        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/setup.zul", null, null);
+        eventsListbox = (Listbox) window.getFellow("events");
 
-        iframe               = (Iframe) window.getFellow("iframe");
         createDataflowButton = (Button) window.getFellow("createDataflow");
         deleteDataflowButton = (Button) window.getFellow("deleteDataflow");
         streamLogButton      = (Button) window.getFellow("streamLog");
+
+        runningCasesLabel        = (Label) window.getFellow("runningCases");
+        completedCasesLabel      = (Label) window.getFellow("completedCases");
+        completedEventsLabel     = (Label) window.getFellow("completedEvents");
+        averageCaseLengthLabel   = (Label) window.getFellow("averageCaseLength");
+        averageCaseDurationLabel = (Label) window.getFellow("averageCaseDuration");
+        
         updateUI();
-        iframe.setSrc(getDataflow() == null ? "about:blank" : "http://localhost:8080");
 
         // Find the selected log
         Set<LogSummaryType> logSummaries = findSelectedLogs(portalContext);
@@ -106,10 +136,9 @@ public class PredictiveMonitorController {
         XLog log = eventLogService.getXLog(logSummary.getId());
 
         // Present the setup panel
-
         createDataflowButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                setDataflow(new Dataflow("bpi_12", "bpi12", nirdizatiPath));
+                setDataflow(new Dataflow("bpi_12", "bpi12", nirdizatiPath, window.getDesktop(), PredictiveMonitorController.this));
             }
         });
 
@@ -147,5 +176,14 @@ public class PredictiveMonitorController {
             }
         }
         return selectedLogSummaryType;
+    }
+
+    // Implementation of EventListener<DataflowEvent>
+
+    public void onEvent(DataflowEvent event) {
+        if (dataflow != null) {
+            dataflow.eventsModel.add(0, event);
+        }
+        updateUI();
     }
 }

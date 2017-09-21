@@ -18,15 +18,97 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window xmlns:n="http://www.zkoss.org/2005/zk/native" xmlns:w="http://www.zkoss.org/2005/zk/client"
-        xmlns:z="http://www.zkoss.org/2005/zul" width="100%" height="100%" closable="true" position="center" title="Predictive Monitoring setup">
+<window xmlns:n="http://www.zkoss.org/2005/zk/native"
+        xmlns:w="http://www.zkoss.org/2005/zk/client"
+        xmlns:z="http://www.zkoss.org/2005/zul"
+        id="win" width="100%" height="100%" closable="true" position="center" title="Predictive Monitoring setup">
     <vbox>
         <hbox>
         <button id="createDataflow" label="Create dataflow" />
         <button id="deleteDataflow" label="Delete dataflow" />
         <button id="streamLog" label="Stream log to dataflow" />
         </hbox>
-        <iframe id="iframe" src="http://localhost:8080" width="1200px" height="800px" style="border: 1px solid gray" />
+        <hbox>
+            <groupbox style="width: 150pt; text-align: center">
+                <caption>Running cases</caption>
+                <label id="runningCases" style="font-size: 48pt">-</label>
+            </groupbox>
+            <groupbox style="width: 150pt; text-align: center">
+                <caption>Completed cases</caption>
+                <label id="completedCases" style="font-size: 48pt">-</label>
+            </groupbox>
+            <groupbox style="width: 150pt; text-align: center">
+                <caption>Completed events</caption>
+                <label id="completedEvents" style="font-size: 48pt">-</label>
+            </groupbox>
+            <groupbox style="width: 150pt; text-align: center">
+                <caption>Average case length</caption>
+                <label id="averageCaseLength" style="font-size: 48pt">-</label>
+            </groupbox>
+            <groupbox style="width: 300pt; text-align: center">
+                <caption>Average case duration</caption>
+                <label id="averageCaseDuration" style="font-size: 48pt">-</label>
+            </groupbox>
+        </hbox>
+        <!--
+        <tabbox>
+            <tabs>
+                <tab>Detail view</tab>
+                <tab>Outcomes</tab>
+                <tab>Case duration</tab>
+                <tab>Remaining time</tab>
+                <tab>Case length</tab>
+            </tabs>
+            <tabpanels>
+                <tabpanel>
+                -->
+                    <listbox id="events" mold="paging">
+                        <listhead>
+                            <listheader label="Case"/>
+                            <listheader label="Completed"/>
+                            <listheader label="Events elapsed"/>
+                            <listheader label="Start time"/>
+                            <listheader label="Latest event time"/>
+                            <listheader label="End time"/>
+                            <listheader label="Duration"/>
+                            <!--
+                            <listheader label="Rejected"/>
+                            <listheader label="Slow"/>
+                            -->
+                        </listhead>
+                        <template name="model">
+                            <listitem style="${each.last ? 'background-color: #EEFFEE' : ''}">
+                                <listcell label="${each.caseId}"/>
+                                <listcell label="${each.last}"/>
+                                <listcell label="${each.index}"/>
+                                <listcell label="${each.startTime}"/>
+                                <listcell label="${each.time}"/>
+                                <listcell label="${each.endTime}"/>
+                                <listcell label="${each.formattedDuration}"/>
+                                <!--
+                                <listcell label="rejected"/>
+                                <listcell label="slow"/>
+                                -->
+                            </listitem>
+                        </template>
+                    </listbox>
+                <!--
+                </tabpanel>
+                <tabpanel>
+                    Pie charts for Slow vs Quick outcomes of running, completed and historical (training) cases.
+                </tabpanel>
+                <tabpanel>
+                    Bar chart of actual and predicted case durations.
+                </tabpanel>
+                <tabpanel>
+                    Bar chart of remaining time prediction for ongoing cases.
+                </tabpanel>
+                <tabpanel>
+                    Bar chart of case length of completed cases.
+                </tabpanel>
+            </tabpanels>
+        </tabbox>
+        -->
     </vbox>
 </window>
 
