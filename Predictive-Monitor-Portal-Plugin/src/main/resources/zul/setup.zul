@@ -24,6 +24,7 @@
         id="win" width="100%" height="100%" closable="true" position="center" title="Predictive Monitoring setup">
     <vbox>
         <hbox>
+        <button id="createPredictor" label="Create predictor" />
         <button id="createDataflow" label="Create dataflow" />
         <button id="deleteDataflow" label="Delete dataflow" />
         <button id="streamLog" label="Stream log to dataflow" />
@@ -45,7 +46,7 @@
                 <caption>Average case length</caption>
                 <label id="averageCaseLength" style="font-size: 48pt">-</label>
             </groupbox>
-            <groupbox style="width: 300pt; text-align: center">
+            <groupbox style="width: 400pt; text-align: center">
                 <caption>Average case duration</caption>
                 <label id="averageCaseDuration" style="font-size: 48pt">-</label>
             </groupbox>

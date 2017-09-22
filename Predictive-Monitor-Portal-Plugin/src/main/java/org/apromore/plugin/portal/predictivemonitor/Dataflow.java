@@ -107,8 +107,11 @@ class Dataflow implements Closeable {
      * @param logName  suffix for generated Kafka topics, e.g. "bpi_12"
      * @param tag  subfield to distinguish predictor training set data files, e.g. "bpi12"
      * @param nirdizatiDirectory
+     * @param desktop
+     * @param eventListener
+     * @param predictors  may be zero-length, but never <code>null</code>
      */
-    Dataflow(String logName, String tag, File nirdizatiDirectory, Desktop desktop, EventListener<DataflowEvent> eventListener) {
+    Dataflow(String logName, String tag, File nirdizatiDirectory, Desktop desktop, EventListener<DataflowEvent> eventListener, List<Predictor> predictors) {
         LOGGER.info("Create dataflow for log named " + logName + " with tag " + tag);
 
         this.nirdizatiDirectory = nirdizatiDirectory;
@@ -163,6 +166,7 @@ class Dataflow implements Closeable {
                                 JSONObject json = new JSONObject(record.value());
                                 DataflowEvent event = new DataflowEvent(json, latestEventInCaseMap);
 
+                                // TODO: synchronize all the following accesses to the parent instance's member fields
                                 String caseId = event.getCaseId();
                                 DataflowEvent latestEvent = latestEventInCaseMap.get(caseId);
                                 if (latestEvent == null || latestEvent.getIndex() < event.getIndex()) {
@@ -200,11 +204,12 @@ class Dataflow implements Closeable {
         consumerThread.start();
 
         // Create the processors
-        createProcessor("python", "PredictiveMethods/collate-events.py",                               kafkaHost, sinkTopic, prefixesTopic);
-        createProcessor("python", "PredictiveMethods/CaseOutcome/case-outcome-kafka-processor.py",     kafkaHost, prefixesTopic, predictionsTopic, tag, "label", "slow_probability");
-        //createProcessor("python", "PredictiveMethods/CaseOutcome/case-outcome-kafka-processor.py",     kafkaHost, prefixesTopic, predictionsTopic, tag, "label2", "rejected_probability");
-        createProcessor("python", "PredictiveMethods/RemainingTime/remaining-time-kafka-processor.py", kafkaHost, prefixesTopic, predictionsTopic, tag);
-        createProcessor("python", "PredictiveMethods/join-events-to-predictions.py",                   kafkaHost, prefixesTopic, predictionsTopic, sourceTopic, Integer.toUnsignedString(2));
+        LOGGER.info("Creating dataflow with " + predictors.size() + " predictor(s): " + predictors);
+        createProcessor("python", "PredictiveMethods/collate-events.py", kafkaHost, sinkTopic, prefixesTopic);
+        for (Predictor predictor: predictors) {
+            createProcessor(predictor.getArgs(kafkaHost, prefixesTopic, predictionsTopic, tag));
+        }
+        createProcessor("python", "PredictiveMethods/join-events-to-predictions.py", kafkaHost, prefixesTopic, predictionsTopic, sourceTopic, Integer.toUnsignedString(predictors.size()));
         //createProcessor("node", "server-kafka.js");
     }
 

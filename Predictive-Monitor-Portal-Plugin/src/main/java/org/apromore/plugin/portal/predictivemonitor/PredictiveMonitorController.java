@@ -25,8 +25,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,6 +70,8 @@ public class PredictiveMonitorController implements EventListener<DataflowEvent>
     private Execution execution = Executions.getCurrent();
     private final Window  window;
     private final Listbox eventsListbox;
+
+    private final Button  createPredictorButton;
     private final Button  createDataflowButton;
     private final Button  deleteDataflowButton;
     private final Button  streamLogButton;
@@ -79,6 +83,8 @@ public class PredictiveMonitorController implements EventListener<DataflowEvent>
     private final Label   averageCaseDurationLabel;
 
     private final NumberFormat numberFormat = new DecimalFormat("0.##");
+
+    private final List<Predictor> predictors = new LinkedList<>();
 
     private Dataflow getDataflow() {
         return dataflow;
@@ -93,6 +99,7 @@ public class PredictiveMonitorController implements EventListener<DataflowEvent>
     }
 
     private void updateUI() {
+        createPredictorButton.setDisabled(getDataflow() != null);
         createDataflowButton.setDisabled(getDataflow() != null);
         deleteDataflowButton.setDisabled(getDataflow() == null);
         streamLogButton.setDisabled(getDataflow() == null);
@@ -114,9 +121,10 @@ public class PredictiveMonitorController implements EventListener<DataflowEvent>
         window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/setup.zul", null, null);
         eventsListbox = (Listbox) window.getFellow("events");
 
-        createDataflowButton = (Button) window.getFellow("createDataflow");
-        deleteDataflowButton = (Button) window.getFellow("deleteDataflow");
-        streamLogButton      = (Button) window.getFellow("streamLog");
+        createPredictorButton = (Button) window.getFellow("createPredictor");
+        createDataflowButton  = (Button) window.getFellow("createDataflow");
+        deleteDataflowButton  = (Button) window.getFellow("deleteDataflow");
+        streamLogButton       = (Button) window.getFellow("streamLog");
 
         runningCasesLabel        = (Label) window.getFellow("runningCases");
         completedCasesLabel      = (Label) window.getFellow("completedCases");
@@ -125,6 +133,9 @@ public class PredictiveMonitorController implements EventListener<DataflowEvent>
         averageCaseDurationLabel = (Label) window.getFellow("averageCaseDuration");
         
         updateUI();
+
+        // The remaining time predictor is currently mandatory, due to fragility in the join-events-to-predictions Python script
+        predictors.add(new RemainingTimePredictor());
 
         // Find the selected log
         Set<LogSummaryType> logSummaries = findSelectedLogs(portalContext);
@@ -136,9 +147,18 @@ public class PredictiveMonitorController implements EventListener<DataflowEvent>
         XLog log = eventLogService.getXLog(logSummary.getId());
 
         // Present the setup panel
+        createPredictorButton.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                LOGGER.info("Create predictor");
+                predictors.add(new CaseOutcomePredictor());
+            }
+        });
+
         createDataflowButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                setDataflow(new Dataflow("bpi_12", "bpi12", nirdizatiPath, window.getDesktop(), PredictiveMonitorController.this));
+                setDataflow(new Dataflow("bpi_12", "bpi12", nirdizatiPath, window.getDesktop(), PredictiveMonitorController.this, predictors));
+                predictors.clear();
+                predictors.add(new RemainingTimePredictor());
             }
         });
 
