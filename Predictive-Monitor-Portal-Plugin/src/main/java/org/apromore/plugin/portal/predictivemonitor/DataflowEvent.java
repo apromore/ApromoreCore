@@ -51,6 +51,7 @@ public class DataflowEvent extends Event {
     private static Logger LOGGER = LoggerFactory.getLogger(DataflowEvent.class.getCanonicalName());
 
     // Event properties
+    private JSONObject json;
     private String activityName;
     private final int index;
     private final Date time;
@@ -102,6 +103,7 @@ public class DataflowEvent extends Event {
         JSONObject payload = json.getJSONObject("payload");
         JSONObject event = payload.getJSONObject("event");
 
+        this.json = json;
         this.activityName = event.getString("activity_name");
         this.index = Integer.parseInt(event.getString("event_nr"));
         this.time = dateFormat.parse(event.getString("time"));
@@ -122,6 +124,7 @@ public class DataflowEvent extends Event {
     }
 
     // Event property accessors
+    public JSONObject getJSON() { return json; }
     public String getActivityName() { return activityName; }
     public int getIndex() { return index; }
     public Date getTime() { return time; }

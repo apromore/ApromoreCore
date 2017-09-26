@@ -20,11 +20,33 @@
 
 package org.apromore.plugin.portal.predictivemonitor;
 
+// Java 2 Standard Edition
+import java.time.Duration;
+
+// Third party packages
+import org.json.JSONException;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
+import org.zkoss.zul.Listitem;
+
 class RemainingTimePredictor implements Predictor {
 
-    public String[] getArgs(String kafkaHost, String prefixesTopic, String predictionsTopic, String tag) {
-        //return new String[] { "python", "PredictiveMethods/CaseOutcome/case-outcome-kafka-processor.py", kafkaHost, prefixesTopic, predictionsTopic, tag, "label", "slow_probability"};
-        //return new String[] { "python", "PredictiveMethods/CaseOutcome/case-outcome-kafka-processor.py", kafkaHost, prefixesTopic, predictionsTopic, tag, "label2", "rejected_probability" }
-        return new String[] { "python", "PredictiveMethods/RemainingTime/remaining-time-kafka-processor.py", kafkaHost, prefixesTopic, predictionsTopic, tag };
+    public String[] getArgs(String pythonCommand, String kafkaHost, String prefixesTopic, String predictionsTopic, String tag) {
+        return new String[] { pythonCommand, "PredictiveMethods/RemainingTime/remaining-time-kafka-processor.py", kafkaHost, prefixesTopic, predictionsTopic, tag };
+    }
+
+    public void addHeaders(Listhead head) {
+        head.appendChild(new Listheader("Remaining Time"));
+    }
+
+    public void addCells(Listitem item, DataflowEvent event) {
+        String s;
+        try {
+            s = DataflowEvent.format(Duration.ofSeconds((event.getJSON().getLong("remainingTime"))));
+        } catch (JSONException e) {
+            s = "";
+        }
+        item.appendChild(new Listcell(s));
     }
 }

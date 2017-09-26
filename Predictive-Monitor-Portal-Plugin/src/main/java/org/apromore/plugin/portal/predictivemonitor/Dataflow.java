@@ -81,10 +81,11 @@ class Dataflow implements Closeable {
     private       Consumer<String, String> consumer;
     private       Thread                   consumerThread;
     final private List<Process>            processors = new ArrayList<>();
-    private       String                   sinkTopic;
+    private       String                   eventsTopic;
     final private Set<String>              topicNames = new HashSet<>();
-    private       String                   kafkaHost  = "localhost:9092";
+    private       String                   kafkaHost;
     private       File                     nirdizatiDirectory;
+    private       String                   pythonCommand;
     private       AtomicBoolean            closed     = new AtomicBoolean(false);
 
     // TODO: move these to the controller
@@ -106,22 +107,25 @@ class Dataflow implements Closeable {
      *
      * @param logName  suffix for generated Kafka topics, e.g. "bpi_12"
      * @param tag  subfield to distinguish predictor training set data files, e.g. "bpi12"
+     * @param kafkaHost  colon-delimited address and port, e.g. "localhost:9092"
      * @param nirdizatiDirectory
      * @param desktop
      * @param eventListener
      * @param predictors  may be zero-length, but never <code>null</code>
      */
-    Dataflow(String logName, String tag, File nirdizatiDirectory, Desktop desktop, EventListener<DataflowEvent> eventListener, List<Predictor> predictors) {
+    Dataflow(String logName, String tag, String kafkaHost, File nirdizatiDirectory, String pythonCommand, Desktop desktop, EventListener<DataflowEvent> eventListener, List<Predictor> predictors) {
         LOGGER.info("Create dataflow for log named " + logName + " with tag " + tag);
 
+        this.kafkaHost          = kafkaHost;
         this.nirdizatiDirectory = nirdizatiDirectory;
-        this.desktop = desktop;
-        this.eventListener = eventListener;
+        this.pythonCommand      = pythonCommand;
+        this.desktop            = desktop;
+        this.eventListener      = eventListener;
 
-        this.sinkTopic          = "events_" + logName;
+        this.eventsTopic        = "events_" + logName;
         String prefixesTopic    = "prefixes_" + logName;
         String predictionsTopic = "predictions_" + logName;
-        String sourceTopic      = "events_with_predictions";
+        String resultsTopic     = "events_with_predictions";
 
         // Create the topics
         Properties props = new Properties();
@@ -131,7 +135,7 @@ class Dataflow implements Closeable {
             ListTopicsResult result = adminClient.listTopics();
             Set<String> nameSet = result.names().get();
             LOGGER.info("Topic names: " + nameSet);
-            topicNames.addAll(Arrays.asList(sinkTopic, prefixesTopic, predictionsTopic, sourceTopic));
+            topicNames.addAll(Arrays.asList(eventsTopic, prefixesTopic, predictionsTopic, resultsTopic));
             LOGGER.info("Creating topics " + topicNames);
             List<NewTopic> topics = new ArrayList<>();
             for (String topicName: topicNames) {
@@ -149,7 +153,7 @@ class Dataflow implements Closeable {
         }
 
         // Listen to the source topic
-        props.put("group.id", "join(" + sinkTopic + "," + predictionsTopic + ")");
+        props.put("group.id", "join(" + eventsTopic + "," + predictionsTopic + ")");
         props.put("key.deserializer", StringDeserializer.class);
         props.put("value.deserializer", StringDeserializer.class);
         consumer = new KafkaConsumer(props);
@@ -158,7 +162,7 @@ class Dataflow implements Closeable {
                 try {
                     Map<String, DataflowEvent> latestEventInCaseMap = new HashMap<>();
 
-                    consumer.subscribe(Arrays.asList(sourceTopic));
+                    consumer.subscribe(Arrays.asList(resultsTopic));
                     while (!closed.get()) {
                         ConsumerRecords<String, String> records = consumer.poll(10000);
                         for (ConsumerRecord<String, String> record: records) {
@@ -205,12 +209,11 @@ class Dataflow implements Closeable {
 
         // Create the processors
         LOGGER.info("Creating dataflow with " + predictors.size() + " predictor(s): " + predictors);
-        createProcessor("python", "PredictiveMethods/collate-events.py", kafkaHost, sinkTopic, prefixesTopic);
+        createProcessor(pythonCommand, "PredictiveMethods/collate-events.py", kafkaHost, eventsTopic, prefixesTopic);
         for (Predictor predictor: predictors) {
-            createProcessor(predictor.getArgs(kafkaHost, prefixesTopic, predictionsTopic, tag));
+            createProcessor(predictor.getArgs(pythonCommand, kafkaHost, prefixesTopic, predictionsTopic, tag));
         }
-        createProcessor("python", "PredictiveMethods/join-events-to-predictions.py", kafkaHost, prefixesTopic, predictionsTopic, sourceTopic, Integer.toUnsignedString(predictors.size()));
-        //createProcessor("node", "server-kafka.js");
+        createProcessor(pythonCommand, "PredictiveMethods/join-events-to-predictions.py", kafkaHost, eventsTopic, predictionsTopic, resultsTopic, Integer.toUnsignedString(predictors.size()));
     }
 
     /**
@@ -288,7 +291,7 @@ class Dataflow implements Closeable {
             for (JSONObject json: jsons) {
                 json.put("time", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time")).toGregorianCalendar().getTime()));
                 //LOGGER.info("  JSON: " + json.get("time"));
-                producer.send(new ProducerRecord<String,String>(sinkTopic, json.toString()));
+                producer.send(new ProducerRecord<String,String>(eventsTopic, json.toString()));
             }
             LOGGER.info("Exported " + jsons.size() + " log events");
             

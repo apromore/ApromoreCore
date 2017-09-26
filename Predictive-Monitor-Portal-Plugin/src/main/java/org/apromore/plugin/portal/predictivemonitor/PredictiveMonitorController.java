@@ -23,9 +23,12 @@ package org.apromore.plugin.portal.predictivemonitor;
 // Java 2 Standard Edition
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -44,6 +47,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listheader;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
@@ -70,6 +77,7 @@ public class PredictiveMonitorController implements EventListener<DataflowEvent>
     private Execution execution = Executions.getCurrent();
     private final Window  window;
     private final Listbox eventsListbox;
+    //private final Listitem eventListitem;
 
     private final Button  createPredictorButton;
     private final Button  createDataflowButton;
@@ -86,14 +94,115 @@ public class PredictiveMonitorController implements EventListener<DataflowEvent>
 
     private final List<Predictor> predictors = new LinkedList<>();
 
+    public PredictiveMonitorController(PortalContext portalContext, EventLogService eventLogService, String kafkaHost, File nirdizatiPath, String pythonPath) throws IOException {
+
+        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/setup.zul", null, null);
+        eventsListbox = (Listbox) window.getFellow("events");
+        //eventListitem = (Listitem) window.getFellow("event");
+
+        createPredictorButton = (Button) window.getFellow("createPredictor");
+        createDataflowButton  = (Button) window.getFellow("createDataflow");
+        deleteDataflowButton  = (Button) window.getFellow("deleteDataflow");
+        streamLogButton       = (Button) window.getFellow("streamLog");
+
+        runningCasesLabel        = (Label) window.getFellow("runningCases");
+        completedCasesLabel      = (Label) window.getFellow("completedCases");
+        completedEventsLabel     = (Label) window.getFellow("completedEvents");
+        averageCaseLengthLabel   = (Label) window.getFellow("averageCaseLength");
+        averageCaseDurationLabel = (Label) window.getFellow("averageCaseDuration");
+        
+        updateUI();
+
+        // Find the selected log
+        Set<LogSummaryType> logSummaries = findSelectedLogs(portalContext);
+        if (logSummaries.size() != 1) {
+            Messagebox.show("Select exactly one log", "Attention", Messagebox.OK, Messagebox.ERROR);
+            return;
+        }
+        LogSummaryType logSummary = logSummaries.iterator().next();
+        XLog log = eventLogService.getXLog(logSummary.getId());
+
+        // Bind window components
+        createPredictorButton.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                LOGGER.info("Create predictors");
+                predictors.add(new CaseOutcomePredictor("Slow?", "label", "slow_probability"));
+                //predictors.add(new CaseOutcomePredictor("Rejected?", "label2", "rejected_probability"));
+                predictors.add(new RemainingTimePredictor());
+            }
+        });
+
+        createDataflowButton.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                setDataflow(new Dataflow("bpi_12", "bpi12", kafkaHost, nirdizatiPath, pythonPath, window.getDesktop(), PredictiveMonitorController.this, predictors));
+            }
+        });
+
+        deleteDataflowButton.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                if (getDataflow() != null) {
+                    getDataflow().close();
+                    setDataflow(null);
+                    predictors.clear();
+                } else {
+                    Messagebox.show("No dataflow to delete.", "Attention", Messagebox.OK, Messagebox.ERROR);
+                }
+            }
+        });
+
+        streamLogButton.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                if (getDataflow() != null) {
+                    getDataflow().exportLog(log);
+                } else {
+                    Messagebox.show("Cannot export log because dataflow has not been created yet.", "Attention", Messagebox.OK, Messagebox.ERROR);
+                }
+            }
+        });
+
+        window.doModal();
+    }
+
     private Dataflow getDataflow() {
         return dataflow;
     }
 
     private void setDataflow(Dataflow newDataflow) {
+
+        // TODO: remove any existing dynamic columns
+
         dataflow = newDataflow;
         updateUI();
         if (dataflow != null) {
+            //eventsListbox.getListhead().appendChild(new Listheader("Slow"));
+            for (Predictor predictor: predictors) {
+                predictor.addHeaders(eventsListbox.getListhead());
+            }
+            //eventListitem.appendChild(new Listcell("Dummy"));
+            eventsListbox.setRows(15);  // TODO: figure out how to make vflex work with this
+            eventsListbox.setItemRenderer(new ListitemRenderer<DataflowEvent> () {
+                public void render(Listitem item, DataflowEvent event, int index) {
+                    item.setStyle(event.isLast() ? "background-color: #EEFFEE" : "");
+                    item.appendChild(new Listcell(event.getCaseId()));
+                    item.appendChild(new Listcell(event.isLast() ? "Yes" : "No"));
+                    item.appendChild(new Listcell(Integer.toString(event.getIndex())));
+                    item.appendChild(new Listcell(formatTime(event.getStartTime())));
+                    item.appendChild(new Listcell(formatTime(event.getTime())));
+                    item.appendChild(new Listcell(formatTime(event.getEndTime())));
+                    item.appendChild(new Listcell(event.getFormattedDuration()));
+
+                    // Populate the columns added by predictors
+                    for (Predictor predictor: predictors) {
+                        predictor.addCells(item, event);
+                    }
+                }
+
+                final DateFormat dataFormat = new SimpleDateFormat("yyyy-MMM-dd h:mm:ss a");
+
+                private String formatTime(Date date) {
+                    return date == null ? "" : dataFormat.format(date);
+                }
+            });
             eventsListbox.setModel(dataflow.eventsModel);
         }
     }
@@ -114,76 +223,6 @@ public class PredictiveMonitorController implements EventListener<DataflowEvent>
                 averageCaseDurationLabel.setValue(DataflowEvent.format(dataflow.totalCompletedCaseDuration.dividedBy(dataflow.completedCaseCount)));
             }
         }
-    }
-
-    public PredictiveMonitorController(PortalContext portalContext, EventLogService eventLogService, File nirdizatiPath) throws IOException {
-
-        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/setup.zul", null, null);
-        eventsListbox = (Listbox) window.getFellow("events");
-
-        createPredictorButton = (Button) window.getFellow("createPredictor");
-        createDataflowButton  = (Button) window.getFellow("createDataflow");
-        deleteDataflowButton  = (Button) window.getFellow("deleteDataflow");
-        streamLogButton       = (Button) window.getFellow("streamLog");
-
-        runningCasesLabel        = (Label) window.getFellow("runningCases");
-        completedCasesLabel      = (Label) window.getFellow("completedCases");
-        completedEventsLabel     = (Label) window.getFellow("completedEvents");
-        averageCaseLengthLabel   = (Label) window.getFellow("averageCaseLength");
-        averageCaseDurationLabel = (Label) window.getFellow("averageCaseDuration");
-        
-        updateUI();
-
-        // The remaining time predictor is currently mandatory, due to fragility in the join-events-to-predictions Python script
-        predictors.add(new RemainingTimePredictor());
-
-        // Find the selected log
-        Set<LogSummaryType> logSummaries = findSelectedLogs(portalContext);
-        if (logSummaries.size() != 1) {
-            Messagebox.show("Select exactly one log", "Attention", Messagebox.OK, Messagebox.ERROR);
-            return;
-        }
-        LogSummaryType logSummary = logSummaries.iterator().next();
-        XLog log = eventLogService.getXLog(logSummary.getId());
-
-        // Present the setup panel
-        createPredictorButton.addEventListener("onClick", new EventListener<Event>() {
-            public void onEvent(Event event) throws Exception {
-                LOGGER.info("Create predictor");
-                predictors.add(new CaseOutcomePredictor());
-            }
-        });
-
-        createDataflowButton.addEventListener("onClick", new EventListener<Event>() {
-            public void onEvent(Event event) throws Exception {
-                setDataflow(new Dataflow("bpi_12", "bpi12", nirdizatiPath, window.getDesktop(), PredictiveMonitorController.this, predictors));
-                predictors.clear();
-                predictors.add(new RemainingTimePredictor());
-            }
-        });
-
-        deleteDataflowButton.addEventListener("onClick", new EventListener<Event>() {
-            public void onEvent(Event event) throws Exception {
-                if (getDataflow() != null) {
-                    getDataflow().close();
-                    setDataflow(null);
-                } else {
-                    Messagebox.show("No dataflow to delete.", "Attention", Messagebox.OK, Messagebox.ERROR);
-                }
-            }
-        });
-
-        streamLogButton.addEventListener("onClick", new EventListener<Event>() {
-            public void onEvent(Event event) throws Exception {
-                if (getDataflow() != null) {
-                    getDataflow().exportLog(log);
-                } else {
-                    Messagebox.show("Cannot export log because dataflow has not been created yet.", "Attention", Messagebox.OK, Messagebox.ERROR);
-                }
-            }
-        });
-
-        window.doModal();
     }
 
     private static Set<LogSummaryType> findSelectedLogs(PortalContext context) {
