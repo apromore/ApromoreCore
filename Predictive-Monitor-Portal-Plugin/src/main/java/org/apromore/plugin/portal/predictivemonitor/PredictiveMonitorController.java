@@ -65,7 +65,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 
 /**
- * In MVC terms, this is a controller whose corresponding model is {@link Dataflow} and corresponding view is <code>setup.zul</code>.
+ * In MVC terms, this is a controller whose corresponding model is {@link Dataflow} and corresponding view is <code>predictive_monitor.zul</code>.
  */
 public class PredictiveMonitorController implements EventListener<DataflowEvent> {
 
@@ -96,7 +96,7 @@ public class PredictiveMonitorController implements EventListener<DataflowEvent>
 
     public PredictiveMonitorController(PortalContext portalContext, EventLogService eventLogService, String kafkaHost, File nirdizatiPath, String pythonPath) throws IOException {
 
-        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/setup.zul", null, null);
+        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/predictive_monitor.zul", null, null);
         eventsListbox = (Listbox) window.getFellow("events");
         //eventListitem = (Listitem) window.getFellow("event");
 
