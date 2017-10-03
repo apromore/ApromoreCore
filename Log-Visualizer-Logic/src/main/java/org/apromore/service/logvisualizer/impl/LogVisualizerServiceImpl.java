@@ -32,6 +32,7 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.block.predicate.primitive.IntPredicate;
+import org.eclipse.collections.api.iterator.MutableIntIterator;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.tuple.Pair;
@@ -59,7 +60,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.swing.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
+
+//import org.jgrapht.ext.*;
+//import org.jgrapht.graph.DefaultDirectedGraph;
+//import java.io.FileWriter;
+//import java.io.IOException;
 
 /**
  * Created by Raffaele Conforti on 01/12/2016.
@@ -69,7 +77,10 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerServiceImpl.class);
 
     private XEventClassifier full_classifier = new XEventAndClassifier(new XEventNameClassifier(), new XEventLifeTransClassifier());
-//    private XEventClassifier classifier = new XEventAndClassifier(new XEventNameClassifier());
+    private XEventClassifier name_classifier = new XEventNameClassifier();
+    private XEventClassifier lifecycle_classifier = new XEventLifeTransClassifier();
+
+    private boolean contain_start_events = false;
 
     private HashBiMap<String, Integer> simplified_names;
     private IntIntHashMap activity_frequency;
@@ -85,18 +96,76 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private int start = 1;
     private int end = 2;
 
+    private final String START = "#C1C9B0";
+    private final String END = "#C0A3A1";
+
+    private final String BLUE_1 = "#F1EEF6";
+    private final String BLUE_2 = "#BDC9E1";
+    private final String BLUE_3 = "#74A9CF";
+    private final String BLUE_4 = "#2B8CBE";
+    private final String BLUE_5 = "#045A8D";
+
+    private final String RED_1 = "#FEF0D9";
+    private final String RED_2 = "#FDCC8A";
+    private final String RED_3 = "#FC8D59";
+    private final String RED_4 = "#E34A33";
+    private final String RED_5 = "#B30000";
+
     public static void main(String[] args) {
         LogVisualizerServiceImpl l = new LogVisualizerServiceImpl();
         XLog log = null;
         try {
 //            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/IdeaProjects/ApromoreCodeServerNew/Compare-Logic/src/test/resources/CAUSCONC-1/bpLog3.xes");
-            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Demonstration examples/Discover Process Model/Synthetic Log with Subprocesses.xes.gz");
+            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Raw data after import.xes.gz");
+//            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Demonstration examples/Discover Process Model/Synthetic Log with Subprocesses.xes.gz");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        JSONArray s = l.generateJSONArrayFromLog(log, 0.3, 1);
-        System.out.println();
+//        JSONArray s = l.generateJSONArrayFromLog(log, 0.39, 0, true);
+//        JSONArray s1 = l.generateJSONArrayFromLog(log, 0.4, 0, true);
+//        System.out.println(s);
+//        System.out.println(s1);
+//        System.out.println(l.visualizeLog(log, 0.34, 0));
+//        l.generateDOTFromLog(log, 0.37, 0);
     }
+
+//    public void generateDOTFromLog(XLog log, double activities, double arcs) {
+//        try {
+//            BPMNDiagram bpmnDiagram = generateDiagramFromLog(log, activities, arcs);
+//            generateDOTFromBPMN(bpmnDiagram);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private void generateDOTFromBPMN(BPMNDiagram bpmnDiagram) throws JSONException, IOException {
+//        IntegerNameProvider integerNameProvider = new IntegerNameProvider();
+//        StringNameProvider stringNameProvider = new StringNameProvider();
+//        ComponentAttributeProvider vertexAttributeProvider = new ComponentAttributeProvider() {
+//            @Override
+//            public Map<String, String> getComponentAttributes(Object o) {
+//                return new HashMap<>();
+//            }
+//        };
+//        ComponentAttributeProvider edgeAttributeProvider = new ComponentAttributeProvider() {
+//            @Override
+//            public Map<String, String> getComponentAttributes(Object o) {
+//                return new HashMap<>();
+//            }
+//        };
+//        DOTExporter dotExporter = new DOTExporter(integerNameProvider, stringNameProvider, null, vertexAttributeProvider, edgeAttributeProvider);
+//        DefaultDirectedGraph graph = new DefaultDirectedGraph(String.class);
+//
+//        for(BPMNNode node : getNodes(bpmnDiagram)) {
+//            graph.addVertex(node.getLabel());
+//        }
+//
+//        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : getEdges(bpmnDiagram)) {
+//            graph.addEdge(edge.getSource().getLabel(), edge.getTarget().getLabel(), edge.getSource().getLabel() + " " + edge.getTarget().getLabel());
+//        }
+//
+//        dotExporter.export(new FileWriter("dot.dot"), graph);
+//    }
 
     @Override
     public String visualizeLog(XLog log, double activities, double arcs) {
@@ -128,10 +197,10 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     }
 
     @Override
-    public JSONArray generateJSONArrayFromLog(XLog log, double activities, double arcs) {
+    public JSONArray generateJSONArrayFromLog(XLog log, double activities, double arcs, boolean selected_frequency) {
         try {
             BPMNDiagram bpmnDiagram = generateDiagramFromLog(log, activities, arcs);
-            return generateJSONFromBPMN(bpmnDiagram);
+            return generateJSONFromBPMN(bpmnDiagram, selected_frequency);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -156,7 +225,41 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             BPMNNode target = map.get(arc.getTwo());
             bpmnDiagram.addFlow(source, target, "[" + arcs_frequency.get(arc) + "]");
         }
-        return bpmnDiagram;
+        return collapseStartCompleteActivities(bpmnDiagram);
+    }
+
+    private BPMNDiagram collapseStartCompleteActivities(BPMNDiagram bpmnDiagram) {
+        BPMNDiagram diagram = new BPMNDiagramImpl("");
+
+        Map<String, BPMNNode> nodes_map = new HashMap<>();
+        for(BPMNNode node : bpmnDiagram.getNodes()) {
+            String collapsed_name = getCollapsedEvent(node.getLabel());
+            if(!nodes_map.containsKey(collapsed_name)) {
+                BPMNNode collapsed_node = diagram.addActivity(collapsed_name, false, false, false, false, false);
+                nodes_map.put(collapsed_name, collapsed_node);
+            }
+        }
+
+        Set<Pair<String, String>> edges = new HashSet<>();
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
+            String source_name = edge.getSource().getLabel();
+            String target_name = edge.getTarget().getLabel();
+
+            String collapsed_source_name = getCollapsedEvent(source_name);
+            String collapsed_target_name = getCollapsedEvent(target_name);
+
+            BPMNNode source = nodes_map.get(collapsed_source_name);
+            BPMNNode target = nodes_map.get(collapsed_target_name);
+
+            Pair pair = Tuples.pair(collapsed_source_name, collapsed_target_name);
+            if(!collapsed_source_name.equals(collapsed_target_name) || isSingleTypeEvent(getEventNumber(source_name)) || isCompleteEvent(source_name)) {
+                if(!edges.contains(pair)) {
+                    diagram.addFlow(source, target, edge.getLabel());
+                    edges.add(pair);
+                }
+            }
+        }
+        return diagram;
     }
 
     private void initializeDatastructures() {
@@ -180,8 +283,10 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
 
             for(XEvent event : trace) {
                 String name = full_classifier.getClassIdentity(event);
+                if(isStartEvent(name)) contain_start_events = true;
+
                 Integer simplified_event;
-                if((simplified_event = simplified_names.get(name)) == null) {
+                if((simplified_event = getEventNumber(name)) == null) {
                     simplified_event = simplified_names.size() + 1;
                     simplified_names.put(name, simplified_event);
                 }
@@ -219,8 +324,19 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 }
             });
 
+//            for(int i = 0; i < filtered_trace.size() - 1; i++) {
+//                arcs_frequency.addToValue(Tuples.pair(filtered_trace.get(i), filtered_trace.get(i + 1)), 1);
+//            }
             for(int i = 0; i < filtered_trace.size() - 1; i++) {
-                arcs_frequency.addToValue(Tuples.pair(filtered_trace.get(i), filtered_trace.get(i + 1)), 1);
+                for(int j = i + 1; j < filtered_trace.size(); j++) {
+                    if (isAcceptableTarget(filtered_trace.get(i), filtered_trace.get(j))) {
+                        arcs_frequency.addToValue(Tuples.pair(filtered_trace.get(i), filtered_trace.get(j)), 1);
+//                        System.out.println(getEventFullName(filtered_trace.get(i)) + "->" + getEventFullName(filtered_trace.get(j)));
+                        break;
+//                    }else {
+//                        System.out.println(getEventFullName(filtered_trace.get(i)) + "-X" + getEventFullName(filtered_trace.get(j)));
+                    }
+                }
             }
 
             filtered_log.add(filtered_trace);
@@ -237,6 +353,25 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return filtered_log;
     }
 
+    private boolean isAcceptableTarget(int source_event, int target_event) {
+        if(source_event == 1 && target_event == 2) return false;
+
+        String source_name = getEventFullName(source_event);
+        String target_name = getEventFullName(target_event);
+
+        if(source_event == 1) return (isStartEvent(target_name) || isSingleTypeEvent(target_event));
+        if(target_event == 2) return (isCompleteEvent(source_name) || isSingleTypeEvent(source_event));
+
+        if(isStartEvent(source_name)) {
+            String expected_target_name = getCompleteEvent(source_name);
+            if (!isSingleTypeEvent(source_event)) return getEventNumber(expected_target_name) == target_event;
+            else return isStartEvent(target_name) || isSingleTypeEvent(target_event);
+        }else if(isCompleteEvent(source_name)) {
+            return (isStartEvent(target_name) || isSingleTypeEvent(target_event));
+        }
+        return false;
+    }
+
     private IntHashSet selectActivities(double activities) {
         IntHashSet retained_activities = new IntHashSet();
         retained_activities.add(start);
@@ -247,8 +382,24 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             double current = sorted_activity_frequency.get(i).getTwo();
             if(current >= max * activities) {
                 retained_activities.add(sorted_activity_frequency.get(i).getOne());
-            }else {
-                return retained_activities;
+//            }else {
+//                return retained_activities;
+            }
+        }
+
+        if(contain_start_events) {
+            MutableIntIterator iterator = retained_activities.intIterator();
+            while (iterator.hasNext()) {
+                int i = iterator.next();
+                String name = getEventFullName(i);
+                String name_to_check = "";
+
+                if (isStartEvent(name)) name_to_check = getCompleteEvent(name);
+                else if (isCompleteEvent(name)) name_to_check = getStartEvent(name);
+
+                if (!isSingleTypeEvent(getEventNumber(name)) && !retained_activities.contains(getEventNumber(name_to_check))) {
+                    iterator.remove();
+                }
             }
         }
         return retained_activities;
@@ -327,15 +478,39 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return false;
     }
 
-    private JSONArray generateJSONFromBPMN(BPMNDiagram bpmnDiagram) throws JSONException {
+    private JSONArray generateJSONFromBPMN(BPMNDiagram bpmnDiagram, boolean selected_frequency) throws JSONException {
         JSONArray graph = new JSONArray();
         Map<BPMNNode, Integer> mapping = new HashMap<>();
         int i = 1;
-        for(BPMNNode node : bpmnDiagram.getNodes()) {
+        int start_node = -1;
+        int end_node = -1;
+
+        for(BPMNNode node : getNodes(bpmnDiagram)) {
             JSONObject jsonOneNode = new JSONObject();
             mapping.put(node, i);
             jsonOneNode.put("id", i);
-            jsonOneNode.put("name", node.getLabel());
+            if(node.getLabel().equals("Start")) {
+                start_node = i;
+                jsonOneNode.put("name", "");
+                jsonOneNode.put("shape", "ellipse");
+                jsonOneNode.put("color", START);
+                jsonOneNode.put("width", "15px");
+                jsonOneNode.put("height", "15px");
+            }else if(node.getLabel().equals("End")) {
+                end_node = i;
+                jsonOneNode.put("name", "");
+                jsonOneNode.put("shape", "ellipse");
+                jsonOneNode.put("color", END);
+                jsonOneNode.put("width", "15px");
+                jsonOneNode.put("height", "15px");
+            }else {
+                jsonOneNode.put("name", node.getLabel().replace("'", ""));
+                jsonOneNode.put("shape", "roundrectangle");
+                if(selected_frequency) jsonOneNode.put("color", getFrequencyColor(node, bpmnDiagram.getNodes()));
+                else jsonOneNode.put("color", getDurationColor(node, bpmnDiagram.getNodes()));
+                jsonOneNode.put("width", "60px");
+                jsonOneNode.put("height", "20px");
+            }
             JSONObject jsonDataNode = new JSONObject();
             jsonDataNode.put("data", jsonOneNode);
             graph.put(jsonDataNode);
@@ -343,7 +518,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         }
 
         double maxWeight = 0.0;
-        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : getEdges(bpmnDiagram)) {
             String number = edge.getLabel();
             if (number.contains("[")) {
                 number = number.substring(1, number.length() - 1);
@@ -353,20 +528,27 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             maxWeight = Math.max(maxWeight, Double.parseDouble(number));
         }
 
-        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : getEdges(bpmnDiagram)) {
             int source = mapping.get(edge.getSource());
             int target = mapping.get(edge.getTarget());
             String number = edge.getLabel();
             if(number.contains("[")) {
                 number = number.substring(1, number.length() - 1);
             }else {
-                number = "0";
+                number = "1";
             }
 
             JSONObject jsonOneLink = new JSONObject();
             jsonOneLink.put("source", source);
             jsonOneLink.put("target", target);
-            jsonOneLink.put("strength", (Double.parseDouble(number) * 100.0 / maxWeight));
+
+            if(source == start_node) jsonOneLink.put("style", "dashed");
+            else if(target == end_node) jsonOneLink.put("style", "dashed");
+            else jsonOneLink.put("style", "solid");
+
+            BigDecimal bd = new BigDecimal((Double.parseDouble(number) * 100.0 / maxWeight));
+            bd = bd.setScale(2, RoundingMode.HALF_UP);;
+            jsonOneLink.put("strength", bd.doubleValue());
             jsonOneLink.put("label", number);
             JSONObject jsonDataLink = new JSONObject();
             jsonDataLink.put("data", jsonOneLink);
@@ -374,6 +556,114 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         }
 
         return graph;
+    }
+
+    private BPMNNode[] getNodes(BPMNDiagram bpmnDiagram) {
+        Set<BPMNNode> nodes = bpmnDiagram.getNodes();
+        BPMNNode[] array_nodes = nodes.toArray(new BPMNNode[nodes.size()]);
+        Arrays.sort(array_nodes, new Comparator<BPMNNode>() {
+            @Override
+            public int compare(BPMNNode o1, BPMNNode o2) {
+                return o1.getLabel().compareTo(o2.getLabel());
+            }
+        });
+        return array_nodes;
+    }
+
+    private BPMNEdge<? extends BPMNNode, ? extends BPMNNode>[] getEdges(BPMNDiagram bpmnDiagram) {
+        Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> edges = bpmnDiagram.getEdges();
+        BPMNEdge<? extends BPMNNode, ? extends BPMNNode>[] array_edges = edges.toArray(new BPMNEdge[edges.size()]);
+        Arrays.sort(array_edges, new Comparator<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>>() {
+            @Override
+            public int compare(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> o1, BPMNEdge<? extends BPMNNode, ? extends BPMNNode> o2) {
+                if(o1.getSource().getLabel().equals(o2.getSource().getLabel())) {
+                    return o1.getTarget().getLabel().compareTo(o2.getTarget().getLabel());
+                }
+                return o1.getSource().getLabel().compareTo(o2.getSource().getLabel());
+            }
+        });
+        return array_edges;
+    }
+
+    private int getEventFrequency(String event) {
+        if(getEventNumber(event) == null) {
+            String start_event = event + "+start";
+            String complete_event = event + "+complete";
+            if(getEventNumber(start_event) != null && getEventNumber(complete_event) != null) {
+                return Math.min(getEventFrequency(start_event), getEventFrequency(complete_event));
+            }else if(getEventNumber(start_event) != null) {
+                return getEventFrequency(start_event);
+            }else {
+                return getEventFrequency(complete_event);
+            }
+        }else {
+            return activity_frequency.get(getEventNumber(event));
+        }
+    }
+
+    private String getFrequencyColor(BPMNNode node, Set<BPMNNode> nodes) {
+        int max = 0;
+        for(BPMNNode n : nodes) {
+            max = Math.max(max, getEventFrequency(n.getLabel()));
+        }
+        int step = max / 5;
+        int node_frequency = getEventFrequency(node.getLabel());
+        if(node_frequency >= (max - (1 * step))) return BLUE_5;
+        if(node_frequency >= (max - (2 * step))) return BLUE_4;
+        if(node_frequency >= (max - (3 * step))) return BLUE_3;
+        if(node_frequency >= (max - (4 * step))) return BLUE_2;
+        return BLUE_1;
+    }
+
+    private String getDurationColor(BPMNNode node, Set<BPMNNode> nodes) {
+        int max = 0;
+        for(BPMNNode n : nodes) {
+            max = Math.max(max, getEventFrequency(n.getLabel()));
+        }
+        int step = max / 5;
+        int node_frequency = getEventFrequency(node.getLabel());
+        if(node_frequency >= (max - (1 * step))) return RED_5;
+        if(node_frequency >= (max - (2 * step))) return RED_4;
+        if(node_frequency >= (max - (3 * step))) return RED_3;
+        if(node_frequency >= (max - (4 * step))) return RED_2;
+        return RED_1;
+    }
+
+    private String getEventFullName(int event) {
+        return simplified_names.inverse().get(event);
+    }
+
+    private Integer getEventNumber(String event) {
+        return simplified_names.get(event);
+    }
+    
+    private boolean isSingleTypeEvent(int event) {
+        String name = getEventFullName(event);
+        if(isStartEvent(name) && getEventNumber(getCompleteEvent(name)) != null) return false;
+        if(isCompleteEvent(name) && getEventNumber(getStartEvent(name)) != null) return false;
+        return true;
+    }
+
+    private boolean isStartEvent(String name) {
+        return name.endsWith("+start");
+    }
+
+    private boolean isCompleteEvent(String name) {
+        return name.endsWith("+complete");
+    }
+
+    private String getStartEvent(String name) {
+        return name.substring(0, name.length() - 8) + "start";
+    }
+
+    private String getCompleteEvent(String name) {
+        return name.substring(0, name.length() - 5) + "complete";
+    }
+
+    private String getCollapsedEvent(String name) {
+        if(isStartEvent(name)) return name.substring(0, name.length() - 6);
+        if(isCompleteEvent(name)) return name.substring(0, name.length() - 9);
+        return name;
     }
 
 }

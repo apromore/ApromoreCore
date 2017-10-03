@@ -30,6 +30,6 @@ public interface LogVisualizerService {
 
     String visualizeLog(XLog log, double activities, double arcs);
 
-    JSONArray generateJSONArrayFromLog(XLog log, double activities, double arcs);
+    JSONArray generateJSONArrayFromLog(XLog log, double activities, double arcs, boolean selected_frequency);
 
 }

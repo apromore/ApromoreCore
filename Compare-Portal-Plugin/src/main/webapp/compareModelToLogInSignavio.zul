@@ -602,7 +602,7 @@
         </n:span>
     </n:div>
 
-    <n:table>
+    <n:table width="100%">
         <n:tr>
             <n:td style="vertical-align: top" width="20%">
                 <n:div id="alignments" style="overflow:scroll;height:675px;">

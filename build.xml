@@ -80,6 +80,8 @@
         <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
 
+        <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+
         <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
 
@@ -138,6 +140,8 @@
 
         <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
+
+        <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
 
         <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
@@ -213,6 +217,8 @@
 
         <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
+
+        <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
 
         <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>

@@ -64,6 +64,7 @@ public class MiningSettingsController {
                     thresholds.add((Slider)miningSettins.getFellow("epsilonSM"));
                     thresholds.add((Slider)miningSettins.getFellow("etaSM"));
                     flags.add((Radiogroup)miningSettins.getFellow("replaceORsSM"));
+                    flags.add((Radiogroup)miningSettins.getFellow("removeSelfLoops"));
                     break;
                 case SelectMinerResult.IMPOS:
                     miningSettins.setTitle("Inductive Miner Setup");

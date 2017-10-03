@@ -305,18 +305,19 @@ public class ProDriftController {
             if (isSynthetic) {
                 ((Listitem)proDriftW.getFellow("synLog")).setSelected(true);
 
-                if((activityCount * activityCount * ControlFlowDriftDetector_EventStream.winSizeCoefficient)
+                ((Listitem)proDriftW.getFellow("FWIN")).setSelected(true);
+                /*if((activityCount * activityCount * ControlFlowDriftDetector_EventStream.winSizeCoefficient)
                         > maxWinValueEventsSynIntBoX.getValue())
                     ((Listitem)proDriftW.getFellow("FWIN")).setSelected(true);
                 else
-                    ((Listitem)proDriftW.getFellow("ADWIN")).setSelected(true);
+                    ((Listitem)proDriftW.getFellow("ADWIN")).setSelected(true);*/
 
                 ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(0.0);
                 winSizeIntBox.setValue(maxWinValueEventsSynIntBoX.getValue());
             }else {
                 ((Listitem)proDriftW.getFellow("reLog")).setSelected(true);
                 ((Listitem)proDriftW.getFellow("FWIN")).setSelected(true);
-                ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(3.5);
+                ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(5.0);
                 winSizeIntBox.setValue(maxWinValueEventsRealIntBoX.getValue());
             }
         else
@@ -373,7 +374,7 @@ public class ProDriftController {
                     Doublespinner noiseFilterSpinner = (Doublespinner) proDriftW.getFellow("noiseFilterSpinner");
                     float noiseFilterPercentage = (float)noiseFilterSpinner.getValue().doubleValue();
 
-                    boolean withConflict = isSynthetic ? true : false;
+                    boolean withConflict = /*isSynthetic ? true : */false;
 
                     Checkbox withCharacterizationCBox = (Checkbox) proDriftW.getFellow("withCharacterizationCBox");
                     boolean withCharacterization = withCharacterizationCBox.isChecked() ? true : false;

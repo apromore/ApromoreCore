@@ -36,6 +36,7 @@ import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 
@@ -55,10 +56,13 @@ public class LogVisualizerController {
     private Textbox arcsText;
     private Slider activities;
     private Slider arcs;
+    private Button frequency;
+    private Button duration;
 
     private int arcs_value;
     private int activities_value;
 
+    private boolean selected_frequency = true;
     private boolean visualized = false;
     private XLog log;
 
@@ -87,22 +91,24 @@ public class LogVisualizerController {
             this.arcs = (Slider) slidersWindow.getFellow("slider2");
             this.activitiesText = (Textbox) slidersWindow.getFellow("textbox1");
             this.arcsText = (Textbox) slidersWindow.getFellow("textbox2");
+            this.frequency = (Button) slidersWindow.getFellow("frequency");
+            this.duration = (Button) slidersWindow.getFellow("duration");
 
-            this.activities.addEventListener("onScroll", new org.zkoss.zk.ui.event.EventListener<Event>() {
+            this.activities.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     activitiesText.setText("" + activities.getCurpos());
                     setArcAndActivityRatios();
                 }
             });
 
-            this.arcs.addEventListener("onScroll", new org.zkoss.zk.ui.event.EventListener<Event>() {
+            this.arcs.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     arcsText.setText("" + arcs.getCurpos());
                     setArcAndActivityRatios();
                 }
             });
 
-            this.activitiesText.addEventListener("onChange", new org.zkoss.zk.ui.event.EventListener<Event>() {
+            this.activitiesText.addEventListener("onChange", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     int i = Integer.parseInt(activitiesText.getValue());
                     if(i < 0) i = 0;
@@ -112,7 +118,7 @@ public class LogVisualizerController {
                     setArcAndActivityRatios();
                 }
             });
-            this.activitiesText.addEventListener("onMouseOver", new org.zkoss.zk.ui.event.EventListener<Event>() {
+            this.activitiesText.addEventListener("onMouseOver", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     int i = Integer.parseInt(activitiesText.getValue());
                     if(i < 0) i = 0;
@@ -123,7 +129,7 @@ public class LogVisualizerController {
                 }
             });
 
-            this.arcsText.addEventListener("onChange", new org.zkoss.zk.ui.event.EventListener<Event>() {
+            this.arcsText.addEventListener("onChange", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     int i = Integer.parseInt(arcsText.getValue());
                     if(i < 0) i = 0;
@@ -133,18 +139,32 @@ public class LogVisualizerController {
                     setArcAndActivityRatios();
                 }
             });
-            this.arcsText.addEventListener("onMouseOver", new org.zkoss.zk.ui.event.EventListener<Event>() {
+            this.arcsText.addEventListener("onMouseOver", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     int i = Integer.parseInt(arcsText.getValue());
                     if(i < 0) i = 0;
                     else if(i > 100) i = 100;
                     arcsText.setText("" + i);
                     arcs.setCurpos(i);
+                    setArcAndActivityRatios();
+                }
+            });
+            this.frequency.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    selected_frequency = true;
+                    visualized = false;
+                    setArcAndActivityRatios();
+                }
+            });
+            this.duration.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    selected_frequency = false;
+                    visualized = false;
                     setArcAndActivityRatios();
                 }
             });
 
-            this.slidersWindow.addEventListener("onMouseOver", new org.zkoss.zk.ui.event.EventListener<Event>() {
+            this.slidersWindow.addEventListener("onMouseOver", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     setArcAndActivityRatios();
                 }
@@ -165,7 +185,7 @@ public class LogVisualizerController {
                 activities_value = activities.getCurpos();
                 arcs_value = arcs.getCurpos();
 
-                JSONArray array = logVisualizerService.generateJSONArrayFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100);
+                JSONArray array = logVisualizerService.generateJSONArrayFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, selected_frequency);
 
                 String jsonString = array.toString();
                 String javascript = "load('" + jsonString + "');";

@@ -114,6 +114,8 @@
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
         <module>APQL-Portal-Plugin</module>
+        <module>BEBoP-Logic</module>
+        <module>BEBoP-Portal-Plugin</module>
         <module>BIMP-Editor-Plugin</module>
         <module>BIMP-Portal-Plugin</module>
         <module>BPMNDiagramImporter-Logic</module>
@@ -139,12 +141,9 @@
         <module>Log-Visualizer-Portal-Plugin</module>
         <module>Metrics-Logic</module>
         <module>Metrics-Portal-Plugin</module>
-        <module>BEBoP-Logic</module>
-        <module>BEBoP-Portal-Plugin</module>
         <module>PerformanceMiner-Logic</module>
         <module>PerformanceMiner-Portal-Plugin</module>
-        <module>StageMining-Logic</module>
-        <module>StageMining-Portal-Plugin</module>
+        <module>Predictive-Monitor-Portal-Plugin</module>
         <module>PQL-Indexer-Portal-Plugin</module>
         <module>PQL-Logic</module>
         <module>PQL-Logic-WS</module>
@@ -153,6 +152,8 @@
         <module>ProDrift-Portal-Plugin</module>
         <module>Quaestio-Portal-Plugin</module>
         <module>Similarity-Clusters-Portal-Plugin</module>
+        <module>StageMining-Logic</module>
+        <module>StageMining-Portal-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
@@ -181,6 +182,7 @@
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
         <module>Apromore-Assembly/PQL-Indexer-Assembly</module>
+        <module>Apromore-Assembly/Predictive-Monitor-Assembly</module>
 
         <!-- Command line tools -->
         <module>Apromore-Extras/bpmncmap</module>

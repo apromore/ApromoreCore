@@ -56,6 +56,7 @@ public class SplitMiner {
     private BPMNDiagram bpmnDiagram;
 
     private boolean replaceIORs;
+    private boolean removeSelfLoops;
     private SplitMinerUIResult.StructuringTime structuringTime;
 
     private int gateCounter;
@@ -67,19 +68,20 @@ public class SplitMiner {
 
     public SplitMiner() {}
 
-    public DirectlyFollowGraphPlus getDfgp() { return dfgp; }
+    public DirectlyFollowGraphPlus getDFGP() { return dfgp; }
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
     public BPMNDiagram mineBPMNModel(XLog log, double percentileFrequencyThreshold, double parallelismsThreshold,
                                      DFGPUIResult.FilterType filterType, boolean percentileOnBest,
-                                     boolean replaceIORs, SplitMinerUIResult.StructuringTime structuringTime)
+                                     boolean replaceIORs, boolean removeSelfLoops, SplitMinerUIResult.StructuringTime structuringTime)
     {
 //        System.out.println("SplitMiner - starting ...");
 //        System.out.println("SplitMiner - [Settings] replace IORs: " + replaceIORs);
 //        System.out.println("SplitMiner - [Settings] structuring: " + structuringTime);
 
         this.replaceIORs = replaceIORs;
+        this.removeSelfLoops = removeSelfLoops;
         this.structuringTime = structuringTime;
 
         this.log = LogParser.getSimpleLog(log);
@@ -230,11 +232,16 @@ public class SplitMiner {
         replaceIORs();
 
         updateLabels(this.log.getEvents());
-        helper.removeSelfLoopMarkers(bpmnDiagram);
-        helper.expandSplitGateways(bpmnDiagram);
-//        helper.expandJoinGateways(bpmnDiagram);
-//        helper.collapseSplitGateways(bpmnDiagram);
-//        helper.collapseJoinGateways(bpmnDiagram);
+
+        if(!removeSelfLoops) helper.removeSelfLoopMarkers(bpmnDiagram);
+
+        if( replaceIORs ) {
+            helper.expandSplitGateways(bpmnDiagram);
+        } else {
+            helper.collapseSplitGateways(bpmnDiagram);
+            helper.collapseJoinGateways(bpmnDiagram);
+        }
+
 //        System.out.println("SplitMiner - bpmn diagram generated successfully");
     }
 

@@ -186,7 +186,16 @@ public class BebopServlet extends HttpServlet {
             //A way to possibly skip some guidelines
             //if(gName.equals("Exclusive Gateway Marking"))continue;
             //if(gName.equals("Labeling Converging Gateways"))continue;
-            gDesc=jsnObjFlag.getString("GuidelineDescription");
+
+            if(gName.contains("Labeling XOR Gateway")){
+                gDesc = "Make sure (X)OR split gateways are preceded (not necessarily immediately before) by a decision activity, whose outcomes are then modeled by the outgoing sequence flows of the split." +
+                        " Sequence flows coming out of diverging gateways of type exclusive, inclusive and complex should be labeled using their associated conditions stated as outcomes.";
+            }else {
+                gDesc = jsnObjFlag.getString("GuidelineDescription");
+            }
+
+            System.out.println("gName: "+gName);
+            System.out.println("gDesc: "+gDesc);
 
             JSONObject result = new JSONObject();
             result.put("GuidelineName",gName);
