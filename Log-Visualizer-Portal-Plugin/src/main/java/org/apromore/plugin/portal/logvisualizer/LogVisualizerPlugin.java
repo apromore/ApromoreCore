@@ -79,34 +79,6 @@ public class LogVisualizerPlugin extends DefaultPortalPlugin {
         this.groupLabel = groupLabel;
     }
 
-//    @Override
-//    public void execute(PortalContext context) {
-//        LOGGER.info("Executing");
-//
-//        Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
-//        if (elements.size() != 1) {
-//            Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
-//            return;
-//        }
-//        SummaryType summary = elements.keySet().iterator().next();
-//        if (!(summary instanceof LogSummaryType)) {
-//            Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
-//            return;
-//        }
-//        LogSummaryType logSummary = (LogSummaryType) summary;
-//
-//        try {
-//            Window window = (Window) context.getUI().createComponent(getClass().getClassLoader(), "zul/logvisualizer.zul", null, null);
-//
-//            window.setAttribute("logVisualizerService", logVisualizerService);
-//            window.setAttribute("logId", logSummary.getId());
-//            window.setAttribute("log", eventLogService.getXLog(logSummary.getId()));
-//            window.doModal();
-//        } catch (IOException e) {
-//            context.getMessageHandler().displayError("Could not load component ", e);
-//        }
-//    }
-
     @Override
     public void execute(PortalContext context) {
         LOGGER.info("Executing");
