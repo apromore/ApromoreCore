@@ -36,9 +36,19 @@
     <osgi-compendium:cm-properties id="properties" persistent-id="site" init-timeout="60"/>
     <context:property-placeholder properties-ref="properties"/>
 
+    <beans:bean id="kafkaHost" class="java.lang.String">
+        <beans:qualifier value="kafkaHost"/>
+        <beans:constructor-arg type="String" value="${kafka.host}"/>
+    </beans:bean>
+
     <beans:bean id="nirdizatiPath" class="java.io.File">
         <beans:qualifier value="nirdizatiPath"/>
         <beans:constructor-arg type="String" value="${nirdizati.path}"/>
+    </beans:bean>
+
+    <beans:bean id="pythonPath" class="java.lang.String">
+        <beans:qualifier value="pythonPath"/>
+        <beans:constructor-arg type="String" value="${python.path}"/>
     </beans:bean>
 
     <!-- Other OSGi services this component consumes -->
