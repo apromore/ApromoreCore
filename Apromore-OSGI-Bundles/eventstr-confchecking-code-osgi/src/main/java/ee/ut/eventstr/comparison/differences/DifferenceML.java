@@ -41,6 +41,10 @@ public class DifferenceML implements Comparable<DifferenceML>{
 	private List<String> end;
 	private List<String> greys;
     private List<String> newTasks;
+	// TASKRELOC
+	private List<String> start2;
+	private List<String> end2;
+
 	private String type;
 	private float ranking;
 
@@ -61,6 +65,9 @@ public class DifferenceML implements Comparable<DifferenceML>{
         df.setMaximumFractionDigits(2);
 
         this.ranking = Float.parseFloat(df.format(ranking));
+
+		this.start2 = new LinkedList<>();
+		this.end2 = new LinkedList<>();
     }
 
 	public DifferenceML(String sentence) {
@@ -83,8 +90,19 @@ public class DifferenceML implements Comparable<DifferenceML>{
 		return start;
 	}
 
+	public void setStart2(List<String> start2) {
+		this.start2 = new ArrayList<>(new HashSet<>(start2));
+	}
+
+	public List<String> getStart2() {
+		return start2;
+	}
+
 	public void setStart(List<String> start) {
-		this.start = new ArrayList<>(new HashSet<>(start));
+		this.start = new ArrayList<>();
+
+		if(!start.isEmpty())
+			this.start.add(start.get(0));
 	}
 
 	public List<String> getA() {
@@ -103,12 +121,23 @@ public class DifferenceML implements Comparable<DifferenceML>{
 		this.b = new ArrayList<>(new HashSet<>(b));
 	}
 
+	public List<String> getEnd2() {
+		return end2;
+	}
+
+	public void setEnd2(List<String> end2) {
+		this.end2 = new ArrayList<>(new HashSet<>(end2));
+	}
+
 	public List<String> getEnd() {
 		return end;
 	}
 
 	public void setEnd(List<String> end) {
-		this.end = new ArrayList<>(new HashSet<>(end));
+		this.end = new ArrayList<>();
+
+		if(!end.isEmpty())
+			this.end.add(end.get(0));
 	}
 
 	public List<String> getGreys() {
