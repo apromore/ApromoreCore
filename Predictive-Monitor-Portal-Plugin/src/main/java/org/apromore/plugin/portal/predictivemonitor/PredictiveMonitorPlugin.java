@@ -73,7 +73,7 @@ public class PredictiveMonitorPlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext portalContext) {
         try {
-            new PredictiveMonitorController(portalContext, eventLogService, kafkaHost, nirdizatiPath, pythonPath);
+            new SetupController(portalContext, eventLogService, kafkaHost, nirdizatiPath, pythonPath);
 
         } catch (Throwable e) {
             e.printStackTrace();

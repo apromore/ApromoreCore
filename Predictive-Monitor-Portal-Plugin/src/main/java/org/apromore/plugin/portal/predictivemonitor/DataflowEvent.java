@@ -51,8 +51,8 @@ public class DataflowEvent extends Event {
     private static Logger LOGGER = LoggerFactory.getLogger(DataflowEvent.class.getCanonicalName());
 
     // Event properties
-    private JSONObject json;
-    private String activityName;
+    private final JSONObject json;
+    private final String activityName;
     private final int index;
     private final Date time;
     private final boolean last;
