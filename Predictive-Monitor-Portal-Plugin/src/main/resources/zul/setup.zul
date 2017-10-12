@@ -1,0 +1,55 @@
+<!--
+  ~ Copyright © 2009-2017 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<window xmlns:n="http://www.zkoss.org/2005/zk/native"
+        xmlns:w="http://www.zkoss.org/2005/zk/client"
+        xmlns:z="http://www.zkoss.org/2005/zul"
+        id="win" closable="true" position="center" title="Predictive Monitoring setup">
+    <vbox>
+        <hbox>
+            <button id="createDataflow" label="Create dataflow" />
+            <button id="deleteDataflow" label="Delete dataflow" />
+            <button id="streamLog"      label="Stream log to dataflow" />
+            <button id="showDashboard"  label="Show dashboard" />
+        </hbox>
+        <listbox id="predictors" width="600px" nonselectableTags="" checkmark="true">
+            <auxhead>
+                <auxheader colspan="3">Predictors</auxheader>
+            </auxhead>
+            <listhead>
+                <listheader label="Predictive method"/>
+                <listheader label="Training log"/>
+                <listheader label="Parameters"/>
+            </listhead>
+            <template name="model">
+                <listitem>
+                    <listcell label="${each.name}"/>
+                    <listcell label="${each.trainingLog}"/>
+                    <listcell label="${each.parameters}"/>
+                </listitem>
+            </template>
+        </listbox>
+        <hbox>
+            <button id="createPredictor" label="Create predictor" />
+            <button id="deletePredictor" label="Delete predictor" />
+        </hbox>
+    </vbox>
+</window>
+

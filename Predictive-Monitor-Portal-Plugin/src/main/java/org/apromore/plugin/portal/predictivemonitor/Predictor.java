@@ -29,19 +29,22 @@ import org.zkoss.zul.Listitem;
 /**
  * Predictors are Kafka processors which generate annotations to log events.
  */
-interface Predictor {
+interface Predictor extends DataflowElement {
 
     /**
-     * Generate the command line which will create the predictor.
-     *
-     * @param pythonCommand  the Python command line interpreter
-     * @param kafkaHost  the URL of the Kafka broker, e.g. <code>localhost:9092</code>
-     * @param prefixesTopic  name of the source topic providing case prefixes
-     * @param predictionsTopic  name of the sink topic accepting predictions
-     * @param tag  log identifier, e.g. <code>bpi_12</code>
-     * @return list of command line arguments to execute a predictor
+     * @return human-legible text identifying the predictive method
      */
-    String[] getArgs(String pythonCommand, String kafkaHost, String prefixesTopic, String predictionsTopic, String tag);
+    String getName();
+
+    /**
+     * @return the training log used to produce this predictor
+     */
+    String getTrainingLog();
+
+    /**
+     * @return human-legible text describing the additional parameters configuring this predictor
+     */
+    String getParameters();
 
     /**
      * Add any required table columns for this predictor's per-event statistics.
