@@ -70,22 +70,23 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class Dataflow implements Closeable {
+public class Dataflow implements Closeable {
 
     final private static Logger LOGGER = LoggerFactory.getLogger(Dataflow.class.getCanonicalName());
 
     final private Consumer<String, String> consumer;
-    final private Thread consumerThread;
-    final private List<Process> processors = new ArrayList<>();
-    final private String eventsTopic;
-    final private Set<String> topicNames = new HashSet<>();
-    final private String kafkaHost;
-    final private File nirdizatiDirectory;
-    final private String pythonCommand;
-    final private AtomicBoolean closed = new AtomicBoolean(false);
+    final private Thread                   consumerThread;
+    final private List<Process>            processors = new ArrayList<>();
+    final private String                   eventsTopic;
+    final private Set<String>              topicNames = new HashSet<>();
+    final private String                   kafkaHost;
+    final private File                     nirdizatiDirectory;
+    final private String                   pythonCommand;
+    final private AtomicBoolean            closed = new AtomicBoolean(false);
+    final private String                   name;
 
-    final List<DataflowListener> listeners = Collections.synchronizedList(new ArrayList<>());
-    final private List<Predictor> predictors;
+    final List<DataflowListener>       listeners = Collections.synchronizedList(new ArrayList<>());
+    final private List<Predictor>      predictors;
     final private Set<DataflowElement> elements = new HashSet<>();
 
     // TODO: give these proper accessors, and reactive
@@ -102,15 +103,14 @@ class Dataflow implements Closeable {
      * The dataflow consists of various Kafka topics and python-based processor processes.
      *
      * @param logName  suffix for generated Kafka topics, e.g. "bpi_12"
-     * @param tag  subfield to distinguish predictor training set data files, e.g. "bpi12"
      * @param kafkaHost  colon-delimited address and port, e.g. "localhost:9092"
      * @param nirdizatiDirectory
      * @param pythonCommand
      * @param desktop
      * @param predictors  may be zero-length, but never <code>null</code>
      */
-    Dataflow(String logName, String tag, String kafkaHost, File nirdizatiDirectory, String pythonCommand, List<Predictor> predictors) {
-        LOGGER.info("Create dataflow for log named " + logName + " with tag " + tag);
+    Dataflow(String logName, String kafkaHost, File nirdizatiDirectory, String pythonCommand, List<Predictor> predictors) {
+        LOGGER.info("Create dataflow for log named " + logName);
 
         this.kafkaHost          = kafkaHost;
         this.nirdizatiDirectory = nirdizatiDirectory;
@@ -118,10 +118,12 @@ class Dataflow implements Closeable {
         this.predictors         = predictors;
         elements.addAll(predictors);
 
-        this.eventsTopic        = "events_" + logName;
-        String prefixesTopic    = "prefixes_" + logName;
-        String predictionsTopic = "predictions_" + logName;
-        String resultsTopic     = "events_with_predictions";
+        this.eventsTopic        = logName + "_events";
+        String prefixesTopic    = logName + "_prefixes";
+        String predictionsTopic = logName + "_predictions";
+        String resultsTopic     = logName + "_events_with_predictions";
+
+        this.name = logName;
 
         // Create the topics
         Properties props = new Properties();
@@ -188,7 +190,11 @@ class Dataflow implements Closeable {
                                 }
 
                                 for (DataflowListener listener: listeners) {
-                                    listener.notify(event);
+                                    try {
+                                        listener.notify(event);
+                                    } catch (Throwable t) {
+                                        LOGGER.warn("Mishap notifying event listener " + listener, t);
+                                    }
                                 }
 
                             } catch (JSONException e) {
@@ -224,6 +230,8 @@ class Dataflow implements Closeable {
     }
 
     List<Predictor> getPredictors() { return predictors; }
+
+    public String getName() { return name; }
 
     /**
      * Feed a log into the sink topic of the dataflow.

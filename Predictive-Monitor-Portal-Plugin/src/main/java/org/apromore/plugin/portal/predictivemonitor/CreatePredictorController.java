@@ -108,7 +108,7 @@ public class CreatePredictorController {
         cancelButton              = (Button)     window.getFellow("cancel");
 
         // Find the selected log
-        final Set<LogSummaryType> logSummaries = SetupController.findSelectedLogs(portalContext);
+        final Set<LogSummaryType> logSummaries = DataflowsController.findSelectedLogs(portalContext);
         if (logSummaries.size() != 1) {
             Messagebox.show("Select exactly one log", "Attention", Messagebox.OK, Messagebox.ERROR);
             return;

@@ -72,40 +72,29 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 
 /**
- * In MVC terms, this is a controller whose corresponding model is {@link Dataflow} and corresponding view is <code>setup.zul</code>.
+ * In MVC terms, this is a controller whose corresponding model is {@link Dataflow} and corresponding view is <code>predictive_monitor.zul</code>.
  */
-public class SetupController {
+public class DataflowsController {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(SetupController.class.getCanonicalName());
-
-    /** This is static only because I've been too lazy to implement proper persistence for it yet. */
-    private static Dataflow dataflow = null;
-
-    /** This is static only because I've been too lazy to implement proper persistence for it yet. */
-    private /*final*/ static ListModelList<Predictor> predictors = null;  // lazily initialized in constructor
+    private static Logger LOGGER = LoggerFactory.getLogger(DataflowsController.class.getCanonicalName());
 
     private final Window  window;
 
+    private final Listbox dataflowsListbox;
     private final Button  createDataflowButton;
     private final Button  deleteDataflowButton;
     private final Button  streamLogButton;
     private final Button  showDashboardButton;
-    private final Listbox predictorsListbox;
-    private final Button  createPredictorButton;
-    private final Button  deletePredictorButton;
 
-    public SetupController(PortalContext portalContext, EventLogService eventLogService, String kafkaHost, File nirdizatiPath, String pythonPath) throws IOException {
+    public DataflowsController(PortalContext portalContext, EventLogService eventLogService, String kafkaHost, File nirdizatiPath, String pythonPath) throws IOException {
 
-        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/setup.zul", null, null);
+        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/dataflows.zul", null, null);
 
+        dataflowsListbox      = (Listbox) window.getFellow("dataflows");
         createDataflowButton  = (Button) window.getFellow("createDataflow");
         deleteDataflowButton  = (Button) window.getFellow("deleteDataflow");
         streamLogButton       = (Button) window.getFellow("streamLog");
         showDashboardButton   = (Button) window.getFellow("showDashboard");
-        predictorsListbox     = (Listbox) window.getFellow("predictors");
-
-        createPredictorButton = (Button) window.getFellow("createPredictor");
-        deletePredictorButton = (Button) window.getFellow("deletePredictor");
 
         // Find the selected log
         Set<LogSummaryType> logSummaries = findSelectedLogs(portalContext);
@@ -119,93 +108,54 @@ public class SetupController {
         // Bind window components
         createDataflowButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                if (dataflow == null) {
-                    List<Predictor> selectedPredictors = new LinkedList<>();
-                    for (Predictor predictor: predictors) {  // .getSelection() only returns unordered Set, so do this the hard way
-                        if (predictors.isSelected(predictor)) {
-                            selectedPredictors.add(predictor);
-                        }
-                    }
-                    dataflow = new Dataflow("bpi_12", "bpi12", kafkaHost, nirdizatiPath, pythonPath, /*window.getDesktop(),*/ selectedPredictors);
-                    updateUI();
-
-                } else {
-                    Messagebox.show("Dataflow already exists.", "Attention", Messagebox.OK, Messagebox.ERROR);
-                }
+                new CreateDataflowController(portalContext, eventLogService, kafkaHost, nirdizatiPath, pythonPath);
             }
         });
 
         deleteDataflowButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                if (dataflow != null) {
-                    dataflow.close();
-                    dataflow = null;
-                    updateUI();
-
-                } else {
-                    Messagebox.show("No dataflow to delete.", "Attention", Messagebox.OK, Messagebox.ERROR);
+                List<Dataflow> selectedDataflows = new LinkedList<>();
+                for (Dataflow dataflow: Persistent.dataflows) {
+                    if (Persistent.dataflows.isSelected(dataflow)) {
+                        dataflow.close();
+                        selectedDataflows.add(dataflow);
+                    }
                 }
+                Persistent.dataflows.removeAll(selectedDataflows);
             }
         });
 
         streamLogButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                if (dataflow != null) {
-                    dataflow.exportLog(log);
-                    updateUI();
-
-                } else {
-                    Messagebox.show("Cannot export log because dataflow has not been created yet.", "Attention", Messagebox.OK, Messagebox.ERROR);
+                for (Dataflow dataflow: Persistent.dataflows) {
+                    if (Persistent.dataflows.isSelected(dataflow)) {
+                        dataflow.exportLog(log);
+                    }
                 }
             }
         });
 
         showDashboardButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                Desktop desktop = window.getDesktop();
-                window.detach();
-                new PredictiveMonitorController(portalContext, dataflow);
-            }
-        });
-
-        createPredictorButton.addEventListener("onClick", new EventListener<Event>() {
-            public void onEvent(Event event) throws Exception {
-                new CreatePredictorController(portalContext, predictors, eventLogService, nirdizatiPath, pythonPath);
-            }
-        });
-
-        deletePredictorButton.addEventListener("onClick", new EventListener<Event>() {
-            public void onEvent(Event event) throws Exception {
-                for (Predictor predictor: predictors.getSelection()) {
-                    predictor.delete();
+                for (Dataflow dataflow: Persistent.dataflows) {
+                    if (Persistent.dataflows.isSelected(dataflow)) {
+                        Desktop desktop = window.getDesktop();
+                        window.detach();
+                        new PredictiveMonitorController(portalContext, dataflow);
+                        return;
+                    }
                 }
-                predictors.removeAll(predictors.getSelection());
             }
         });
 
-        if (predictors == null) {
-            predictors = new ListModelList<>(new LinkedList<>());
-            try { predictors.add(new CaseOutcomePredictor("Slow?", "bpi12", "label", "slow_probability", nirdizatiPath, pythonPath)); } catch (IllegalStateException e) {}
-            try { predictors.add(new CaseOutcomePredictor("Slow?", "bpi17", "label", "slow_probability", nirdizatiPath, pythonPath)); } catch (IllegalStateException e) {}
-            try { predictors.add(new CaseOutcomePredictor("Rejected?", "bpi17", "label2", "rejected_probability", nirdizatiPath, pythonPath)); } catch (IllegalStateException e) {}
-            try { predictors.add(new RemainingTimePredictor("bpi12", nirdizatiPath, pythonPath)); } catch (IllegalStateException e) {}
-            try { predictors.add(new RemainingTimePredictor("bpi17", nirdizatiPath, pythonPath)); } catch (IllegalStateException e) {}
-
-            predictors.setMultiple(true);
+        if (Persistent.predictors == null) {
+            Persistent.initPredictors(nirdizatiPath, pythonPath);
         }
-        assert predictors != null;
+        assert Persistent.predictors != null;
 
-        predictorsListbox.setModel(predictors);
+        dataflowsListbox.setModel(Persistent.dataflows);
 
-        updateUI();
         window.doModal();
-    }
-
-    private void updateUI() {
-        createDataflowButton.setDisabled(dataflow != null);
-        deleteDataflowButton.setDisabled(dataflow == null);
-        streamLogButton.setDisabled(dataflow == null || dataflow.fed);
-        showDashboardButton.setDisabled(dataflow == null);
     }
 
     static Set<LogSummaryType> findSelectedLogs(PortalContext context) {

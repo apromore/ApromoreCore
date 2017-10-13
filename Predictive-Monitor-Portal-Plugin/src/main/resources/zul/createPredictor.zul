@@ -21,7 +21,7 @@
 <window xmlns:n="http://www.zkoss.org/2005/zk/native"
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:z="http://www.zkoss.org/2005/zul"
-        id="popup" closable="true" position="center" title="Predictive Monitoring: Create Predictor">
+        closable="true" position="center" title="Predictive Monitoring: Create Predictor">
     <vbox width="500px">
         <grid>
             <columns>

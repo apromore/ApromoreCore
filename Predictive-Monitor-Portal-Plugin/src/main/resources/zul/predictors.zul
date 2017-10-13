@@ -21,14 +21,8 @@
 <window xmlns:n="http://www.zkoss.org/2005/zk/native"
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:z="http://www.zkoss.org/2005/zul"
-        id="win" closable="true" position="center" title="Predictive Monitoring setup">
+        closable="true" position="center" title="Predictive Monitoring setup">
     <vbox>
-        <hbox>
-            <button id="createDataflow" label="Create dataflow" />
-            <button id="deleteDataflow" label="Delete dataflow" />
-            <button id="streamLog"      label="Stream log to dataflow" />
-            <button id="showDashboard"  label="Show dashboard" />
-        </hbox>
         <listbox id="predictors" width="600px" nonselectableTags="" checkmark="true">
             <auxhead>
                 <auxheader colspan="3">Predictors</auxheader>
