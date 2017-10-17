@@ -32,19 +32,13 @@ import org.zkoss.zul.ListModelList;
 class Persistent {
 
     /** This is static only because I've been too lazy to implement proper persistence for it yet. */
-    final static ListModelList<Dataflow> dataflows = new ListModelList<>();;
+    final static ListModelList<Dataflow> dataflows = new ListModelList<>();
 
     /** This is static only because I've been too lazy to implement proper persistence for it yet. */
-    static ListModelList<Predictor> predictors = null;  // lazily initialized in constructor
+    final static ListModelList<Predictor> predictors = new ListModelList<>();
 
-    static void initPredictors(File nirdizatiPath, String pythonPath) {
-        predictors = new ListModelList<>();
-        try { predictors.add(new CaseOutcomePredictor("Slow?", "bpi12", "label", "slow_probability", nirdizatiPath, pythonPath)); } catch (IllegalStateException e) {}
-        try { predictors.add(new CaseOutcomePredictor("Slow?", "bpi17", "label", "slow_probability", nirdizatiPath, pythonPath)); } catch (IllegalStateException e) {}
-        try { predictors.add(new CaseOutcomePredictor("Rejected?", "bpi17", "label2", "rejected_probability", nirdizatiPath, pythonPath)); } catch (IllegalStateException e) {}
-        try { predictors.add(new RemainingTimePredictor("bpi12", nirdizatiPath, pythonPath)); } catch (IllegalStateException e) {}
-        try { predictors.add(new RemainingTimePredictor("bpi17", nirdizatiPath, pythonPath)); } catch (IllegalStateException e) {}
-
+    static {
+        dataflows.setMultiple(true);
         predictors.setMultiple(true);
     }
 }

@@ -117,11 +117,6 @@ public class PredictorsController {
             }
         });
 
-        if (Persistent.predictors == null) {
-            Persistent.initPredictors(nirdizatiPath, pythonPath);
-        }
-        assert Persistent.predictors != null;
-
         predictorsListbox.setModel(Persistent.predictors);
 
         window.doModal();

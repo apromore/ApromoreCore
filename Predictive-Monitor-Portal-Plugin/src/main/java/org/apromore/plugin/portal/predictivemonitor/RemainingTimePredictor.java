@@ -30,6 +30,7 @@ import java.util.List;
 // Third party packages
 import org.deckfour.xes.model.XLog;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Listcell;
@@ -37,7 +38,7 @@ import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 
-public class RemainingTimePredictor extends AbstractPredictor /*ProcessDataflowElement implements Predictor*/ {
+public class RemainingTimePredictor extends AbstractPredictor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RemainingTimePredictor.class.getCanonicalName());
 
@@ -48,9 +49,9 @@ public class RemainingTimePredictor extends AbstractPredictor /*ProcessDataflowE
 
     private final File pkl;
 
-    RemainingTimePredictor(String tag, String trainingLog, XLog log, TrainingAlgorithm trainingAlgorithm, File nirdizatiPath, String pythonPath) throws InterruptedException, IOException {
+    RemainingTimePredictor(String tag, String trainingLog, XLog log, TrainingAlgorithm trainingAlgorithm, File nirdizatiPath, String pythonPath) throws InterruptedException, IOException, JSONException {
 
-        super(nirdizatiPath, pythonPath, "PredictiveMethods/RemainingTime/remaining-time-kafka-processor.py", /*kafkaHost, prefixesTopic, predictionsTopic,*/ null, null, null, tag);
+        super(nirdizatiPath, pythonPath, "PredictiveMethods/RemainingTime/remaining-time-kafka-processor.py", /*kafkaHost, prefixesTopic, predictionsTopic,*/ null, null, null, tag, /*datasetParamJSON*/ null);
 
         this.tag           = tag;
         this.trainingLog   = trainingLog;
@@ -58,24 +59,16 @@ public class RemainingTimePredictor extends AbstractPredictor /*ProcessDataflowE
         this.pythonPath    = pythonPath;
 
         File predictiveMethodPath = new File(new File(nirdizatiPath, "PredictiveMethods"), "RemainingTime");
-        pkl = new File(predictiveMethodPath, "predictive_monitor_" + tag + ".pkl");
+        pkl = new File(new File(new File(nirdizatiPath, "PredictiveMethods"), "pkl"), "predictive_monitor_" + tag + "_remtime.pkl");
         foo(predictiveMethodPath, pkl, tag, "dummy", log, trainingAlgorithm, nirdizatiPath, pythonPath, true);
     }
 
-    RemainingTimePredictor(String tag, File nirdizatiPath, String pythonPath) {
+    protected JSONObject createDatasetParam(JSONObject json, TrainingAlgorithm trainingAlgorithm) throws JSONException {
+        JSONObject remainingTimeJSON = new JSONObject();
+        json.put("RemainingTime", remainingTimeJSON);
+        trainingAlgorithm.addParametersToJSON(remainingTimeJSON);
 
-        super(nirdizatiPath, pythonPath, "PredictiveMethods/RemainingTime/remaining-time-kafka-processor.py", /*kafkaHost, prefixesTopic, predictionsTopic,*/ null, null, null, tag);
-
-        this.tag           = tag;
-        this.trainingLog   = "(pre-trained)";
-        this.nirdizatiPath = nirdizatiPath;
-        this.pythonPath    = pythonPath;
-
-        File predictiveMethodPath = new File(new File(nirdizatiPath, "PredictiveMethods"), "RemainingTime");
-        pkl = new File(predictiveMethodPath, "predictive_monitor_" + tag + ".pkl");
-        if (!pkl.exists()) {
-            throw new IllegalStateException("Predictor \"" + tag + "\" doesn't exist");
-        }
+        return remainingTimeJSON;
     }
 
     public String getName() {
@@ -97,6 +90,7 @@ public class RemainingTimePredictor extends AbstractPredictor /*ProcessDataflowE
         this.args[2] = kafkaHost;
         this.args[3] = prefixesTopic;
         this.args[4] = predictionsTopic;
+        this.args[6] = datasetParamJSON.toString();
         super.start(kafkaHost, prefixesTopic, predictionsTopic);
     }
 

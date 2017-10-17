@@ -20,10 +20,9 @@
 
 package org.apromore.plugin.portal.predictivemonitor;
 
-// Java 2 Standard Editions
-import java.io.PrintWriter;
-
 // Third party packages
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.zkoss.zul.Window;
 
 /**
@@ -38,5 +37,5 @@ interface TrainingAlgorithm {
 
     void readParametersFromUI(Window window);
 
-    void writeParametersToPython(PrintWriter writer);
+    void addParametersToJSON(JSONObject json) throws JSONException;
 }

@@ -20,10 +20,9 @@
 
 package org.apromore.plugin.portal.predictivemonitor;
 
-// Java 2 Standard Editions
-import java.io.PrintWriter;
-
 // Third party packages
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Window;
 
@@ -44,15 +43,9 @@ public class RandomForestTrainingAlgorithm implements TrainingAlgorithm {
         maxFeatures  = ((Decimalbox) window.getFellow("maxFeatures")).doubleValue();
     }
 
-    public void writeParametersToPython(PrintWriter writer) {
-        writer.println(
-            "# Training algorithm parameters\n" +
-            "cls_method = {}\n" +
-            "n_estimators = {}\n" +
-            "max_features = {}\n" +
-            "\n" +
-            "cls_method[dataset] = \"rf\"\n" +
-            "n_estimators[dataset] = " + nEstimators + "\n" +
-            "max_features[dataset] = " + maxFeatures);
+    public void addParametersToJSON(JSONObject json) throws JSONException {
+        json.put("cls_method", "rf");
+        json.put("n_estimators", nEstimators);
+        json.put("max_features", maxFeatures);
     }
 }
