@@ -75,13 +75,7 @@
                                             if(synLog.selected){
                                                 winSizeIntBox.value = maxWinValueEventsSyn.value;
                                                 FWIN.selected = true;
-                                               <!-- if(activityCount.value * activityCount.value *-->
-                                               <!--     winSizeCoefficient.value > maxWinValueEventsSyn.value){-->
-                                               <!--     FWIN.selected = true;-->
-                                               <!-- }else{-->
-                                               <!--     ADWIN.selected = true;-->
-                                               <!-- }-->
-                                                noiseFilterSpinner.value = 0;
+                                               noiseFilterSpinner.value = 0;
                                             }else{
                                                 winSizeIntBox.value = maxWinValueEventsReal.value;
                                                 FWIN.selected = true;
@@ -144,12 +138,6 @@
                                             winSizeIntBox.value = maxWinValueEventsSyn.value;
 
                                             FWIN.selected = true;
-                                               <!-- if(activityCount.value * activityCount.value *-->
-                                               <!--     winSizeCoefficient.value > maxWinValueEventsSyn.value){-->
-                                               <!--     FWIN.selected = true;-->
-                                               <!-- }else{-->
-                                               <!--     ADWIN.selected = true;-->
-                                               <!-- }-->
 
                                             noiseFilterSpinner.value = 0;
                                         }else{

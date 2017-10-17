@@ -54,7 +54,16 @@
     <!-- Other OSGi services this component consumes -->
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
 
-    <!-- Exposes the component as OSGi service -->
-    <context:component-scan base-package="org.apromore.plugin.portal.predictivemonitor" />
+    <!-- Exposes the components as OSGi services -->
+    <beans:bean id="plugin" class="org.apromore.plugin.portal.predictivemonitor.PredictorsPlugin">
+        <beans:property name="groupLabel" value="Monitor" />
+        <beans:property name="label" value="Train Predictor with Log" />
+    </beans:bean>
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+    <beans:bean id="plugin2" class="org.apromore.plugin.portal.predictivemonitor.PredictiveMonitorPlugin">
+        <beans:property name="groupLabel" value="Monitor" />
+        <beans:property name="label" value="Predictively Monitor Log" />
+    </beans:bean>
+    <service ref="plugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+
 </beans:beans>

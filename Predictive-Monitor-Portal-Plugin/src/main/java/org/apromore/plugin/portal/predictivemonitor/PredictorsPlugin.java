@@ -39,12 +39,12 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 
-@Component("plugin")
-public class PredictiveMonitorPlugin extends DefaultPortalPlugin {
+@Component("plugin2")
+public class PredictorsPlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(PredictiveMonitorPlugin.class.getCanonicalName());
+    private static Logger LOGGER = LoggerFactory.getLogger(PredictorsPlugin.class.getCanonicalName());
 
-    private String label = "Predictively Monitor Log";
+    private String label = "Train Predictor with Log";
     private String groupLabel = "Monitor";
 
     @Inject private EventLogService eventLogService;
@@ -73,10 +73,11 @@ public class PredictiveMonitorPlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext portalContext) {
         try {
-            new DataflowsController(portalContext, eventLogService, kafkaHost, nirdizatiPath, pythonPath);
+            new PredictorsController(portalContext, eventLogService, kafkaHost, nirdizatiPath, pythonPath);
 
         } catch (Throwable e) {
             LOGGER.error("portalContext: " + portalContext + "  eventLogService: " + eventLogService + "  kafkaHost: " + kafkaHost + "  pythonPath: " + pythonPath, e);
+            //e.printStackTrace();
             Messagebox.show("Unable to display setup window", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }

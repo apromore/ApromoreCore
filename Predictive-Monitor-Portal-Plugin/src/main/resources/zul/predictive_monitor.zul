@@ -21,14 +21,8 @@
 <window xmlns:n="http://www.zkoss.org/2005/zk/native"
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:z="http://www.zkoss.org/2005/zul"
-        id="win" width="100%" height="100%" closable="true" position="center" title="Predictive Monitoring setup">
+        width="100%" height="100%" closable="true" position="center" title="Predictive Monitor">
     <vbox>
-        <hbox>
-        <button id="createPredictor" label="Create predictor" />
-        <button id="createDataflow" label="Create dataflow" />
-        <button id="deleteDataflow" label="Delete dataflow" />
-        <button id="streamLog" label="Stream log to dataflow" />
-        </hbox>
         <hbox>
             <groupbox style="width: 150pt; text-align: center">
                 <caption>Running cases</caption>
@@ -51,10 +45,12 @@
                 <label id="averageCaseDuration" style="font-size: 48pt">-</label>
             </groupbox>
         </hbox>
-        <!--
         <tabbox>
             <tabs>
-                <tab>Detail view</tab>
+                <tab>All events</tab>
+                <!--
+                <tab>Latest events</tab>
+                -->
                 <tab>Outcomes</tab>
                 <tab>Case duration</tab>
                 <tab>Remaining time</tab>
@@ -62,39 +58,33 @@
             </tabs>
             <tabpanels>
                 <tabpanel>
-                -->
                     <listbox id="events" mold="paging">
                         <listhead>
-                            <listheader label="Case"/>
-                            <listheader label="Completed"/>
-                            <listheader label="Events elapsed"/>
-                            <listheader label="Start time"/>
-                            <listheader label="Latest event time"/>
-                            <listheader label="End time"/>
-                            <listheader label="Duration"/>
-                            <!--
-                            <listheader label="Rejected"/>
-                            <listheader label="Slow"/>
-                            -->
+                            <listheader label="Case"              />
+                            <listheader label="Completed"         />
+                            <listheader label="Events elapsed"    />
+                            <listheader label="Start time"        />
+                            <listheader label="Latest event time" />
+                            <listheader label="End time"          />
+                            <listheader label="Duration"          />
                         </listhead>
-                        <template name="model">
-                            <listitem style="${each.last ? 'background-color: #EEFFEE' : ''}">
-                                <listcell label="${each.caseId}"/>
-                                <listcell label="${each.last}"/>
-                                <listcell label="${each.index}"/>
-                                <listcell label="${each.startTime}"/>
-                                <listcell label="${each.time}"/>
-                                <listcell label="${each.endTime}"/>
-                                <listcell label="${each.formattedDuration}"/>
-                                <!--
-                                <listcell label="rejected"/>
-                                <listcell label="slow"/>
-                                -->
-                            </listitem>
-                        </template>
                     </listbox>
-                <!--
                 </tabpanel>
+                <!--
+                <tabpanel>
+                    <listbox id="latestEvents" mold="paging">
+                        <listhead>
+                            <listheader label="Case"              />
+                            <listheader label="Completed"         />
+                            <listheader label="Events elapsed"    />
+                            <listheader label="Start time"        />
+                            <listheader label="Latest event time" />
+                            <listheader label="End time"          />
+                            <listheader label="Duration"          />
+                        </listhead>
+                    </listbox>
+                </tabpanel>
+                -->
                 <tabpanel>
                     Pie charts for Slow vs Quick outcomes of running, completed and historical (training) cases.
                 </tabpanel>
@@ -109,7 +99,6 @@
                 </tabpanel>
             </tabpanels>
         </tabbox>
-        -->
     </vbox>
 </window>
 

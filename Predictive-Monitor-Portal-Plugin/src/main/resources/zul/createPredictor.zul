@@ -1,0 +1,94 @@
+<!--
+  ~ Copyright © 2009-2017 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<window xmlns:n="http://www.zkoss.org/2005/zk/native"
+        xmlns:w="http://www.zkoss.org/2005/zk/client"
+        xmlns:z="http://www.zkoss.org/2005/zul"
+        closable="true" position="center" title="Predictive Monitoring: Create Predictor">
+    <vbox width="500px">
+        <grid>
+            <columns>
+               <column width="8em"/>
+               <column/>
+            </columns>
+            <rows>
+                <row>
+                    Predictive method:
+                    <selectbox id="predictiveMethod">
+                        <template name="model">
+                            <label value="${each}"/>
+                        </template>
+                    </selectbox>
+                </row>
+                <row>
+                    Dataset name:
+                    <textbox id="tag"/>
+                </row>
+                <!--
+                <row>
+                    case_id_col:
+                    <label>"case_id"</label>
+                </row>
+                <row>
+                    event_nr_col:
+                    <label>"event_nr"</label>
+                </row>
+                -->
+                <row>
+                    Label column:
+                    <selectbox id="labelCol">
+                        <template name="model">
+                            <label value="${each}"/>
+                        </template>
+                    </selectbox>
+                </row>
+                <row>
+                    Positive label:
+                    <textbox id="posLabel" value="true"/>
+                </row>
+                <row>
+                    Learning method:
+                    <selectbox id="clsMethod">
+                        <template name="model">
+                            <label value="${each.name}"/>
+                        </template>
+                    </selectbox>
+                </row>
+                <row>
+                    Estimators:
+                    <decimalbox id="nEstimators" value="250"/>
+                </row>
+                <row>
+                    Maximum features:
+                    <decimalbox id="maxFeatures" value="0.4"/>
+                </row>
+                <row>
+                    Learning rate:
+                    <decimalbox id="learningRate" value="0.03"/>
+                </row>
+            </rows>
+        </grid>
+        <div align="center">
+            <button id="ok" label="OK" image="img/ok.png"/>
+            <button id="cancel" label="Cancel" image="img/cancel2.png"/>
+        </div>
+    </vbox>
+</window>
+
