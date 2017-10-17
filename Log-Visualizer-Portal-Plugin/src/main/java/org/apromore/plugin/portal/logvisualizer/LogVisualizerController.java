@@ -41,7 +41,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Window;
 
 // Local packages
@@ -175,7 +174,7 @@ public class LogVisualizerController {
             this.frequency.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     frequency_vs_duration = LogVisualizerServiceImpl.FREQUENCY;
-                    avg_vs_max_vs_min = LogVisualizerServiceImpl.AVG;
+                    avg_vs_max_vs_min = LogVisualizerServiceImpl.MEAN;
                     visualized = false;
                     setArcAndActivityRatios();
                 }
@@ -183,7 +182,7 @@ public class LogVisualizerController {
             this.absolute_frequency.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     frequency_vs_duration = LogVisualizerServiceImpl.FREQUENCY;
-                    avg_vs_max_vs_min = LogVisualizerServiceImpl.AVG;
+                    avg_vs_max_vs_min = LogVisualizerServiceImpl.MEAN;
                     visualized = false;
                     setArcAndActivityRatios();
                 }
@@ -208,7 +207,7 @@ public class LogVisualizerController {
             this.duration.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     frequency_vs_duration = LogVisualizerServiceImpl.DURATION;
-                    avg_vs_max_vs_min = LogVisualizerServiceImpl.AVG;
+                    avg_vs_max_vs_min = LogVisualizerServiceImpl.MEAN;
                     visualized = false;
                     setArcAndActivityRatios();
                 }
@@ -216,7 +215,7 @@ public class LogVisualizerController {
 //            this.absolute_duration.addEventListener("onClick", new EventListener<Event>() {
 //                public void onEvent(Event event) throws Exception {
 //                    frequency_vs_duration = LogVisualizerServiceImpl.DURATION;
-//                    avg_vs_max_vs_min = LogVisualizerServiceImpl.AVG;
+//                    avg_vs_max_vs_min = LogVisualizerServiceImpl.MEAN;
 //                    visualized = false;
 //                    setArcAndActivityRatios();
 //                }

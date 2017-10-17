@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window width="100%" height="100%" sizable="false" maximizable="true" closable="true" position="center" title="Log Visualizer" contentStyle="overflow:auto">
+<window width="100%" height="100%" sizable="true" maximizable="true" closable="true" position="center" title="Log Visualizer" contentStyle="overflow:auto">
     <vbox>
         <grid>
             <columns>
@@ -34,8 +34,8 @@
                 </row>
                 <row>
                     <label>Arcs</label>
-                    <slider id="slider2" mold="scale" maxpos="100" width="100%" curpos="100"/>
-                    <textbox id="textbox2" value="100"/>
+                    <slider id="slider2" mold="scale" maxpos="100" width="100%" curpos="0"/>
+                    <textbox id="textbox2" value="0"/>
                 </row>
             </rows>
         </grid>
@@ -67,7 +67,7 @@
                 </row>
             </rows>
         </grid>
-        <n:div id="myDiagramDiv" xmlns:n="native" style="border: solid 1px black; height: 90%; width: 100%" />
+        <n:div id="myDiagramDiv" xmlns:n="native" style="height:75vh; width:100vh" />
         <script type="text/javascript">
             var diagram;
 
@@ -75,9 +75,8 @@
 
                 diagram = cytoscape({
                     container: document.getElementById('myDiagramDiv'), // container to render in
-                    layout: {name: 'cose', padding: 10},
-                    zoom: 2,
-                    pan: { x: 0, y: 0 },
+                    layout: {name: 'dagre', padding: 10},
+                    zoom: 1,
                     minZoom: 1e-50,
                     maxZoom: 1e50,
                     zoomingEnabled: true,
@@ -108,10 +107,10 @@
                             'width': 'mapData(strength, 0, 100, 1, 6)',
                             'target-arrow-shape': 'triangle',
                             'source-arrow-shape': '',
-                            'color': '#292929',
-                            'line-color': 'mapData(strength, 0, 100, #646464, #292929)',
-                            'source-arrow-color': 'mapData(strength, 0, 100, #646464, #292929)',
-                            'target-arrow-color': 'mapData(strength, 0, 100, #646464, #292929)',
+                            'color': 'data(color)',
+                            'line-color': 'data(color)',
+                            'source-arrow-color': 'data(color)',
+                            'target-arrow-color': 'data(color)',
                             'label': 'data(label)',
                             'line-style': 'data(style)',
                             'font-size': 7,
@@ -154,11 +153,11 @@
             }
 
             function layout() {
-                diagram.elements().layout({"name": 'dagre', avoidOverlap:true, edgeSep: 5, nodeSep:100, rankSep: 100, rankDir:'LR', edgeWeight: function( edge ){ return 100; }});
+                diagram.elements().layout({"name": 'dagre', zoom: cy.zoom(), pan: cy.pan(), avoidOverlap:true, edgeSep: 5, nodeSep:100, rankSep: 100, rankDir:'LR', edgeWeight: function( edge ){ return 100; }});
             }
 
             function layout_cola() {
-                diagram.elements().layout({"name": 'cola', randomize:false, avoidOverlap:true, flow:{ axis: 'x', minSeparation: 150 }});
+                diagram.elements().layout({"name": 'cola', zoom: cy.zoom(), pan: cy.pan(), randomize:false, avoidOverlap:true, flow:{ axis: 'x', minSeparation: 150 }});
             }
 
             zk.afterMount(function() {

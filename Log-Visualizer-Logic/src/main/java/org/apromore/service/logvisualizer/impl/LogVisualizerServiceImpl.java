@@ -42,6 +42,7 @@ import org.eclipse.collections.api.tuple.primitive.ObjectIntPair;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
@@ -63,10 +64,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.swing.*;
+import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.List;
 
 //import org.jgrapht.ext.*;
 //import org.jgrapht.graph.DefaultDirectedGraph;
@@ -101,9 +104,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private ObjectIntHashMap<Pair<Integer, Integer>> arcs_max_frequency;
     private ObjectIntHashMap<Pair<Integer, Integer>> arcs_min_frequency;
 
-    private ObjectLongHashMap<Pair<Integer, Integer>> arcs_duration;
-    private ObjectLongHashMap<Pair<Integer, Integer>> arcs_max_duration;
-    private ObjectLongHashMap<Pair<Integer, Integer>> arcs_min_duration;
+    private Map<Pair<Integer, Integer>, LongArrayList> arcs_duration_set;
 
     private MutableList<ObjectIntPair<Pair<Integer, Integer>>> sorted_arcs_frequency;
 
@@ -118,9 +119,11 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     public final static boolean FREQUENCY = true;
     public final static boolean DURATION = false;
 
-    public final static int AVG = 0;
-    public final static int MAX = 1;
-    public final static int MIN = 2;
+    public final static int TOTAL = 0;
+    public final static int MEAN = 1;
+    public final static int MEDIAN = 2;
+    public final static int MAX = 3;
+    public final static int MIN = 4;
 
     private final String START = "#C1C9B0";
     private final String END = "#C0A3A1";
@@ -140,7 +143,10 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private final String EDGE_START_COLOR_FREQUENCY = "#646464";
     private final String EDGE_END_COLOR_FREQUENCY  = "#292929";
     private final String EDGE_START_COLOR_DURATION  = "#646464";
-    private final String EDGE_END_COLOR_DURATION  = "#292929";
+    private final String EDGE_END_COLOR_DURATION  = "#8B0000";
+
+    private final ColorGradient frequency_gradient = new ColorGradient(new Color(100, 100, 100), new Color(41, 41, 41));
+    private final ColorGradient duration_gradient = new ColorGradient(new Color(100, 100, 100), new Color(139, 0, 0));
 
     public static void main(String[] args) {
         LogVisualizerServiceImpl l = new LogVisualizerServiceImpl();
@@ -202,7 +208,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     @Override
     public String visualizeLog(XLog log, double activities, double arcs) {
         try {
-            BPMNDiagram bpmnDiagram = generateDiagramFromLog(log, activities, arcs, FREQUENCY, AVG);
+            BPMNDiagram bpmnDiagram = generateDiagramFromLog(log, activities, arcs, FREQUENCY, MEAN);
 
             UIContext context = new UIContext();
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -258,20 +264,24 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             BPMNNode source = map.get(arc.getOne());
             BPMNNode target = map.get(arc.getTwo());
             if(frequency_vs_duration == FREQUENCY) {
-                if(avg_vs_min_vs_max == AVG) {
+                if(avg_vs_min_vs_max == MEAN) {
                     bpmnDiagram.addFlow(source, target, "[" + arcs_frequency.get(arc) + "]");
                 }else if(avg_vs_min_vs_max == MAX) {
                     bpmnDiagram.addFlow(source, target, "[" + arcs_max_frequency.get(arc) + "]");
-                }else {
+                }else if(avg_vs_min_vs_max == MIN) {
                     bpmnDiagram.addFlow(source, target, "[" + arcs_min_frequency.get(arc) + "]");
                 }
             }else {
-                if(avg_vs_min_vs_max == AVG) {
-                    bpmnDiagram.addFlow(source, target, "[" + arcs_duration.get(arc) / arcs_frequency.get(arc) + "]");
+                if(avg_vs_min_vs_max == TOTAL) {
+                    bpmnDiagram.addFlow(source, target, "[" + getArcTotalDuration(arc) + "]");
+                }else if(avg_vs_min_vs_max == MEAN) {
+                    bpmnDiagram.addFlow(source, target, "[" + getArcMeanDuration(arc) + "]");
+                }else if(avg_vs_min_vs_max == MEDIAN) {
+                    bpmnDiagram.addFlow(source, target, "[" + getArcMedianDuration(arc) + "]");
                 }else if(avg_vs_min_vs_max == MAX) {
-                    bpmnDiagram.addFlow(source, target, "[" + arcs_max_duration.get(arc) + "]");
-                }else {
-                    bpmnDiagram.addFlow(source, target, "[" + arcs_min_duration.get(arc) + "]");
+                    bpmnDiagram.addFlow(source, target, "[" + getArcMaxDuration(arc) + "]");
+                }else if(avg_vs_min_vs_max == MIN) {
+                    bpmnDiagram.addFlow(source, target, "[" + getArcMinDuration(arc) + "]");
                 }
             }
         }
@@ -324,9 +334,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         arcs_max_frequency = new ObjectIntHashMap<>();
         arcs_min_frequency = new ObjectIntHashMap<>();
 
-        arcs_duration = new ObjectLongHashMap<>();
-        arcs_max_duration = new ObjectLongHashMap<>();
-        arcs_min_duration = new ObjectLongHashMap<>();
+        arcs_duration_set = new UnifiedMap<>();
     }
 
     private XLog removeUnrequiredEvents(XLog log) {
@@ -525,14 +533,21 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     }
 
     private void updateArcDuration(Pair<Integer, Integer> arc, long duration) {
-        arcs_duration.addToValue(arc, duration);
+        LongArrayList durations = arcs_duration_set.get(arc);
+        if(durations == null) {
+            durations = new LongArrayList();
+            arcs_duration_set.put(arc, durations);
+        }
+        durations.add(duration);
 
-        Long value = Math.max(duration, arcs_max_duration.get(arc));
-        arcs_max_duration.put(arc, value);
-
-        value = Math.min(duration, arcs_min_duration.get(arc));
-        value = (value == 0 ? duration: value);
-        arcs_min_duration.put(arc, value);
+//        arcs_duration.addToValue(arc, duration);
+//
+//        Long value = Math.max(duration, arcs_max_duration.get(arc));
+//        arcs_max_duration.put(arc, value);
+//
+//        value = Math.min(duration, arcs_min_duration.get(arc));
+//        value = (value == 0 ? duration: value);
+//        arcs_min_duration.put(arc, value);
     }
 
     private boolean isAcceptableTarget(IntArrayList trace, int source_event, int target_event) {
@@ -562,10 +577,13 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         retained_activities.add(start);
         retained_activities.add(end);
 
-        long max = real_activity_frequency.max();
+//        double threshold = real_activity_frequency.max() * activities;
+        double threshold = Math.log10(real_activity_frequency.max()) * activities;
+
         for(int i = 0; i < sorted_activity_frequency.size(); i++) {
-            double current = sorted_activity_frequency.get(i).getTwo();
-            if(current >= max * activities) {
+//            double current = sorted_activity_frequency.get(i).getTwo();
+            double current = Math.log10(sorted_activity_frequency.get(i).getTwo());
+            if(current >= threshold) {
                 retained_activities.add(sorted_activity_frequency.get(i).getOne());
 //            }else {
 //                return retained_activities;
@@ -593,12 +611,14 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private HashSet<Pair<Integer, Integer>> selectArcs(double arcs) {
         HashSet<Pair<Integer, Integer>> retained_arcs = new HashSet();
 
-        double threshold = arcs_frequency.max() * arcs;
+//        double threshold = arcs_frequency.max() * arcs;
+        double threshold = Math.log10(arcs_frequency.max()) * arcs;
 
         retained_arcs.addAll(arcs_frequency.keySet());
 
         for(int i = sorted_arcs_frequency.size() - 1; i >= 0; i--) {
-            double current = sorted_arcs_frequency.get(i).getTwo();
+//            double current = sorted_arcs_frequency.get(i).getTwo();
+            double current = Math.log10(sorted_arcs_frequency.get(i).getTwo());
             Pair<Integer, Integer> arc = sorted_arcs_frequency.get(i).getOne();
             if(current < threshold) {
                 if(retained_arcs.contains(arc)) {
@@ -740,12 +760,15 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             if (frequency_vs_duration == DURATION && (source == start_node || target == end_node)) {
                 jsonOneLink.put("strength", 0);
                 jsonOneLink.put("label", "");
+                jsonOneLink.put("color", EDGE_START_COLOR_FREQUENCY);
             }else {
                 jsonOneLink.put("strength", bd.doubleValue());
                 if(frequency_vs_duration == FREQUENCY) {
                     jsonOneLink.put("label", number);
+                    jsonOneLink.put("color", "#" + Integer.toHexString(frequency_gradient.generateColor(bd.doubleValue() / 100).getRGB()).substring(2));
                 }else {
                     jsonOneLink.put("label", convertMilliseconds(number));
+                    jsonOneLink.put("color", "#" + Integer.toHexString(duration_gradient.generateColor(bd.doubleValue() / 100).getRGB()).substring(2));
                 }
             }
 
@@ -831,7 +854,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 return getEventFrequency(min, avg_vs_max_vs_min, complete_event);
             }
         }else {
-            if(avg_vs_max_vs_min == AVG) return activity_frequency.get(getEventNumber(event));
+            if(avg_vs_max_vs_min == MEAN) return activity_frequency.get(getEventNumber(event));
             else if(avg_vs_max_vs_min == MAX) return activity_max_frequency.get(getEventNumber(event));
             else return activity_min_frequency.get(getEventNumber(event));
         }
@@ -844,11 +867,41 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             Integer start_event_number = getEventNumber(start_event);
             Integer complete_event_number = getEventNumber(complete_event);
             if(start_event_number != null && complete_event_number != null) {
-                if(avg_vs_max_vs_min == AVG) return arcs_duration.get(Tuples.pair(start_event_number, complete_event_number));
-                else if(avg_vs_max_vs_min == MAX) return arcs_max_duration.get(Tuples.pair(start_event_number, complete_event_number));
-                else return arcs_min_duration.get(Tuples.pair(start_event_number, complete_event_number));
+                if(avg_vs_max_vs_min == MEAN) return getArcMeanDuration(Tuples.pair(start_event_number, complete_event_number));
+                else if(avg_vs_max_vs_min == MAX) return getArcMaxDuration(Tuples.pair(start_event_number, complete_event_number));
+                else return getArcMinDuration(Tuples.pair(start_event_number, complete_event_number));
             }else return 0;
         }else return 0;
+    }
+
+    private long getArcTotalDuration(Pair<Integer, Integer> arc) {
+        LongArrayList durations = arcs_duration_set.get(arc);
+        return durations.sum();
+    }
+
+    private long getArcMeanDuration(Pair<Integer, Integer> arc) {
+        LongArrayList durations = arcs_duration_set.get(arc);
+        return durations.sum() / durations.size();
+    }
+
+    private long getArcMedianDuration(Pair<Integer, Integer> arc) {
+        LongArrayList durations = arcs_duration_set.get(arc);
+        durations = durations.sortThis();
+        if(durations.size() % 2 == 0) {
+            return (durations.get(durations.size() / 2) + durations.get(durations.size() / 2 - 1)) / 2;
+        }else {
+            return durations.get(durations.size() / 2);
+        }
+    }
+
+    private long getArcMaxDuration(Pair<Integer, Integer> arc) {
+        LongArrayList durations = arcs_duration_set.get(arc);
+        return durations.max();
+    }
+
+    private long getArcMinDuration(Pair<Integer, Integer> arc) {
+        LongArrayList durations = arcs_duration_set.get(arc);
+        return durations.min();
     }
 
     private String getFrequencyColor(int avg_vs_max_vs_min, BPMNNode node, Set<BPMNNode> nodes) {
