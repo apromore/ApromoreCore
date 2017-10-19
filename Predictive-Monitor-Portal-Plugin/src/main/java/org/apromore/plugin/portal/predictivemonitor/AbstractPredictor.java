@@ -46,6 +46,9 @@ import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Label;
@@ -56,11 +59,14 @@ public abstract class AbstractPredictor extends ProcessDataflowElement implement
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractPredictor.class.getCanonicalName());
 
+    private   File       paramsFile;
+    protected JSONObject datasetParamJSON;
+
     AbstractPredictor(File dir, String... args) {
         super(dir, args);
     }
 
-    protected static void foo(File predictiveMethodPath, File pkl, String tag, String label, XLog log, TrainingAlgorithm trainingAlgorithm, File nirdizatiPath, String pythonPath, boolean needRemtime) throws InterruptedException, IOException {
+    protected void foo(File predictiveMethodPath, File pkl, String tag, String label, XLog log, TrainingAlgorithm trainingAlgorithm, File nirdizatiPath, String pythonPath, boolean needRemtime) throws InterruptedException, IOException, JSONException {
 
         // Validate input parameters
         if (pkl.exists()) {
@@ -70,80 +76,11 @@ public abstract class AbstractPredictor extends ProcessDataflowElement implement
             throw new IllegalArgumentException("Dataset name required");
         }
 
-        // Log attribute classification
-        for (XAttribute attribute: log.getAttributes().values()) {
-            LOGGER.info(" Log attribute: " + attribute.getKey());
-        }
+        this.paramsFile       = new File(new File(new File(nirdizatiPath, "PredictiveMethods"), "data"), "dataset_params.json");
+        this.datasetParamJSON = createDatasetParam(tag, log, trainingAlgorithm, needRemtime);
 
-        Set<String> staticCols = new HashSet<>();
-        for (XAttribute attribute: log.getGlobalTraceAttributes()) {
-            LOGGER.info(" Trace attribute: " + attribute.getKey());
-            switch (attribute.getKey()) {
-            case "concept:name":
-            case "variant":
-            case "variant-index":
-                break;
-            default:
-                staticCols.add(attribute.getKey());
-                break;
-            }
-        }
-        LOGGER.info("Static columns: " + formatAsPythonArray(staticCols));
-
-        Set<String> dynamicCols = new HashSet<>();
-        for (XAttribute attribute: log.getGlobalEventAttributes()) {
-            LOGGER.info(" Event attribute: " + attribute.getKey());
-            switch (attribute.getKey()) {
-            case "concept:name":
-            case "lifecycle:transition":
-            case "org:resource":
-            case "time:timestamp":
-            case "event_nr":
-            case "label":
-            case "last":
-                break;
-            default:
-                dynamicCols.add(attribute.getKey());
-                break;
-            }
-        }
-        if (needRemtime) {
-            dynamicCols.add("remtime");  // synthetic column
-        }
-        LOGGER.info("Dynamic columns: " + formatAsPythonArray(dynamicCols));
-
-        Set<String> catCols = new HashSet<>();
-        for (XEventClassifier classifier: log.getClassifiers()) {
-            catCols.addAll(Arrays.asList(classifier.getDefiningAttributeKeys()));
-        }
-        LOGGER.info("CatCols: " + formatAsPythonArray(catCols));
-
-        // Export the parameters as Python source code
-        File paramsFile = new File(new File(predictiveMethodPath, "batch"), "dataset_params.py");
-        try (PrintWriter writer = new PrintWriter(paramsFile)) {
-            writer.println(
-                "case_id_col = {}\n" +
-                "event_nr_col = {}\n" +
-                "label_col = {}\n" +
-                "pos_label = {}\n" +
-                "\n" +
-                "static_cols = {}\n" +
-                "dynamic_cols = {}\n" +
-                "cat_cols = {}\n" +
-                "\n" +
-                "# Dataset parameters\n" +
-                "dataset = \"" + tag + "\"\n" +
-                "case_id_col[dataset] = \"case_id\"\n" +
-                "event_nr_col[dataset] = \"event_nr\"\n" +
-                "label_col[dataset] = \"" + label + "\"\n" +
-                "pos_label[dataset] = \"true\"\n"+
-                "\n" +
-                "static_cols[dataset] = " + formatAsPythonArray(staticCols) + "\n" +
-                "dynamic_cols[dataset] = " + formatAsPythonArray(dynamicCols) + "\n" +
-                "cat_cols[dataset] = " + formatAsPythonArray(catCols) + "\n" +
-                "\n");
-            trainingAlgorithm.writeParametersToPython(writer);
-        }
+        // Export the parameters as JSON
+        exportDatasetParam();
 
         // Export the log in CSV format
         File csvFile = new File(new File(new File(nirdizatiPath, "PredictiveMethods"), "data"), ("train_" + tag + ".csv"));
@@ -160,8 +97,8 @@ public abstract class AbstractPredictor extends ProcessDataflowElement implement
         // Run the training script in a Python process
         ProcessBuilder pb = new ProcessBuilder(pythonPath, "train.py", tag, label);
         pb.directory(predictiveMethodPath);
-        pb.redirectError(File.createTempFile("error", ".txt"));
-        pb.redirectOutput(File.createTempFile("output", ".txt"));
+        pb.redirectError(new File("/tmp/error.txt") /*File.createTempFile("error", ".txt")*/);
+        pb.redirectOutput(new File("/tmp/out.txt") /*File.createTempFile("output", ".txt")*/);
         Process p = pb.start();
 
         // Await the result of the training script
@@ -172,16 +109,6 @@ public abstract class AbstractPredictor extends ProcessDataflowElement implement
         if (p.exitValue() != 0 || !pkl.isFile()) {
             throw new RuntimeException("Unable to create predictor, code=" + p.exitValue() + " pkl=" + pkl.isFile());
         }
-    }
-
-    private static String formatAsPythonArray(Collection<String> strings) {
-        String s = "[";
-        for (String string: strings) {
-            if (!"[".equals(s)) { s += ", "; }
-            s += "\"" + string + "\"";
-        }
-        s += "]";
-        return s;
     }
 
     private static void export(XLog log, File file) throws FileNotFoundException {
@@ -212,6 +139,95 @@ public abstract class AbstractPredictor extends ProcessDataflowElement implement
             }
         }
         LOGGER.info("Exported log to " + file);
+    }
+
+    protected JSONObject createDatasetParam(String tag, XLog log, TrainingAlgorithm trainingAlgorithm, boolean needRemtime)
+        throws FileNotFoundException, JSONException {
+
+        // Log attribute classification
+        for (XAttribute attribute: log.getAttributes().values()) {
+            LOGGER.info(" Log attribute: " + attribute.getKey());
+        }
+
+        Set<String> staticCols = new HashSet<>();
+        for (XAttribute attribute: log.getGlobalTraceAttributes()) {
+            LOGGER.info(" Trace attribute: " + attribute.getKey());
+            switch (attribute.getKey()) {
+            case "concept:name":
+            case "variant":
+            case "variant-index":
+                break;
+            default:
+                staticCols.add(attribute.getKey());
+                break;
+            }
+        }
+
+        Set<String> dynamicCols = new HashSet<>();
+        for (XAttribute attribute: log.getGlobalEventAttributes()) {
+            LOGGER.info(" Event attribute: " + attribute.getKey());
+            switch (attribute.getKey()) {
+            case "concept:name":
+            case "lifecycle:transition":
+            case "org:resource":
+            case "time:timestamp":
+            case "event_nr":
+            case "label":
+            case "last":
+                break;
+            default:
+                dynamicCols.add(attribute.getKey());
+                break;
+            }
+        }
+        if (needRemtime) {
+            dynamicCols.add("remtime");  // synthetic column
+        }
+
+        Set<String> catCols = new HashSet<>();
+        for (XEventClassifier classifier: log.getClassifiers()) {
+            catCols.addAll(Arrays.asList(classifier.getDefiningAttributeKeys()));
+        }
+
+        // Export the parameters as JSON
+        JSONObject json = new JSONObject();
+        JSONObject jsonTag = new JSONObject();
+        json.put(tag, jsonTag);
+        jsonTag.put("case_id_col", "case_id");
+        jsonTag.put("event_nr_col", "event_nr");
+        JSONObject methodJSON = createDatasetParam(jsonTag, trainingAlgorithm);
+        methodJSON.put("static_cols", new JSONArray(staticCols));
+        methodJSON.put("dynamic_cols", new JSONArray(dynamicCols));
+        methodJSON.put("cat_cols", new JSONArray(catCols));
+
+        return json;
+    }
+
+    protected void exportDatasetParam() throws FileNotFoundException, JSONException {
+
+        try (PrintWriter writer = new PrintWriter(paramsFile)) {
+            writer.println(datasetParamJSON.toString());
+        }
+    }
+
+    /**
+     * @param json  the parent JSON object
+     * @return the created JSON object, upon which the <code>static_cols</code>, <code>dynamic_cols</code>, and <code>cat_cols</code> attributes should be placed
+     */
+    protected abstract JSONObject createDatasetParam(JSONObject json, TrainingAlgorithm traininingAlgorithm) throws JSONException;
+
+    @Override
+    public void start(String kafkaHost, String prefixesTopic, String predictionsTopic) throws PredictorException {
+
+        // Export the parameters as JSON again (they've been overwritten by other predictors at this point)
+        try {
+            exportDatasetParam();
+
+        } catch (FileNotFoundException | JSONException e) {
+            throw new PredictorException("Unable to export dataset parameter file", e);
+        }
+
+        super.start(kafkaHost, prefixesTopic, predictionsTopic);
     }
 
     // Predictor methods

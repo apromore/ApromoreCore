@@ -35,7 +35,7 @@
                 </row>
             </rows>
         </grid>
-        <listbox id="predictors" width="600px" nonselectableTags="" checkmark="true">
+        <listbox id="predictors" width="600px" checkmark="true">
             <auxhead>
                 <auxheader colspan="3">Predictors</auxheader>
             </auxhead>

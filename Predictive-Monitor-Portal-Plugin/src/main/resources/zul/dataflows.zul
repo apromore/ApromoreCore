@@ -23,7 +23,7 @@
         xmlns:z="http://www.zkoss.org/2005/zul"
         closable="true" position="center" title="Predictive Monitoring setup">
     <vbox>
-        <listbox id="dataflows" width="600px" nonselectableTags="" checkmark="true">
+        <listbox id="dataflows" width="600px" checkmark="true">
             <auxhead>
                 <auxheader colspan="2">Predictive Monitors</auxheader>
             </auxhead>

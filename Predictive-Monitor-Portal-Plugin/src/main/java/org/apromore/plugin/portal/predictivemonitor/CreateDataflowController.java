@@ -22,44 +22,17 @@ package org.apromore.plugin.portal.predictivemonitor;
 
 // Java 2 Standard Edition
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TimeZone;
-import java.util.TreeMap;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 // Third party packages
-import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XAttributeTimestamp;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Listheader;
-import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 

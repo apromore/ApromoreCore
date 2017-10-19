@@ -40,7 +40,6 @@ import java.util.TreeMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 // Third party packages
-import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
@@ -147,11 +146,6 @@ public class DataflowsController {
                 }
             }
         });
-
-        if (Persistent.predictors == null) {
-            Persistent.initPredictors(nirdizatiPath, pythonPath);
-        }
-        assert Persistent.predictors != null;
 
         dataflowsListbox.setModel(Persistent.dataflows);
 

@@ -20,10 +20,9 @@
 
 package org.apromore.plugin.portal.predictivemonitor;
 
-// Java 2 Standard Editions
-import java.io.PrintWriter;
-
 // Third party packages
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Window;
 
@@ -46,17 +45,10 @@ public class GradientBoostingTrainingAlgorithm implements TrainingAlgorithm {
         learningRate = ((Decimalbox) window.getFellow("learningRate")).doubleValue();
     }
 
-    public void writeParametersToPython(PrintWriter writer) {
-        writer.println(
-            "# Training algorithm parameters\n" +
-            "cls_method = {}\n" + 
-            "n_estimators = {}\n" +
-            "max_features = {}\n" +
-            "learning_rate = {}\n" +
-            "\n" +
-            "cls_method[dataset] = \"gbm\"\n" +
-            "n_estimators[dataset] = " + nEstimators + "\n" +
-            "max_features[dataset] = " + maxFeatures  + "\n" +
-            "learning_rate[dataset] = " + learningRate);
+    public void addParametersToJSON(JSONObject json) throws JSONException {
+        json.put("cls_method", "gbm");
+        json.put("n_estimators", nEstimators);
+        json.put("max_features", maxFeatures);
+        json.put("learning_rate", learningRate);
     }
 }

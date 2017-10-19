@@ -44,7 +44,6 @@ import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
-import org.zkoss.zul.Listheader;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelArray;;
 import org.zkoss.zul.ListModelList;
@@ -55,9 +54,6 @@ import org.zkoss.zul.Window;
 
 // Local packages
 import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 
@@ -156,8 +152,9 @@ public class CreatePredictorController {
                 // Assign variables that depend on the predictive method
                 switch (predictiveMethodSelectbox.getSelectedIndex()) {
                 case 0:  // Case outcome
+                    final String positiveLabelValue = positiveLabelTextbox.getValue();
                     trainingAlgorithm.readParametersFromUI(window);
-                    predictor = new CaseOutcomePredictor("Slow?", tag, label, "slow_probability", logName, log, trainingAlgorithm, nirdizatiPath, pythonPath);
+                    predictor = new CaseOutcomePredictor("Slow?", tag, label, positiveLabelValue, "slow_probability", logName, log, trainingAlgorithm, nirdizatiPath, pythonPath);
                     break;
                 case 1:  // Remaining time
                     trainingAlgorithm.readParametersFromUI(window);
@@ -181,15 +178,5 @@ public class CreatePredictorController {
         });
 
         window.doModal();
-    }
-
-    private static String formatAsPythonArray(Collection<String> strings) {
-        String s = "[";
-        for (String string: strings) {
-            if (!"[".equals(s)) { s += ", "; }
-            s += "\"" + string + "\"";
-        }
-        s += "]";
-        return s;
     }
 }

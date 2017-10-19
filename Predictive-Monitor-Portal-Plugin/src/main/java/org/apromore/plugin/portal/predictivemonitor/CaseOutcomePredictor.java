@@ -29,6 +29,7 @@ import java.util.List;
 // Third party packages
 import org.deckfour.xes.model.XLog;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Listcell;
@@ -43,6 +44,7 @@ public class CaseOutcomePredictor extends AbstractPredictor {
     private final String headerText;
     private final String tag;
     private final String label;
+    private final String positiveLabelValue;
     private final String jsonField;
     private final String trainingLog;
     private final File   nirdizatiPath;
@@ -50,13 +52,14 @@ public class CaseOutcomePredictor extends AbstractPredictor {
 
     private final File pkl;
 
-    CaseOutcomePredictor(String headerText, String tag, String label, String jsonField, String trainingLog, XLog log, TrainingAlgorithm trainingAlgorithm, File nirdizatiPath, String pythonPath) throws InterruptedException, IOException {
+    CaseOutcomePredictor(String headerText, String tag, String label, String positiveLabelValue, String jsonField, String trainingLog, XLog log, TrainingAlgorithm trainingAlgorithm, File nirdizatiPath, String pythonPath) throws InterruptedException, IOException, JSONException {
 
-        super(nirdizatiPath, pythonPath, "PredictiveMethods/CaseOutcome/case-outcome-kafka-processor.py", /*kafkaHost, prefixesTopic, predictionsTopic,*/ null, null, null, tag, label, jsonField);
+        super(nirdizatiPath, pythonPath, "PredictiveMethods/CaseOutcome/case-outcome-kafka-processor.py", /*kafkaHost, prefixesTopic, predictionsTopic,*/ null, null, null, tag, /*datasetParamJSON*/ null, label, jsonField);
 
         this.headerText    = headerText;
         this.tag           = tag;
         this.label         = label;
+        this.positiveLabelValue = positiveLabelValue;
         this.jsonField     = jsonField;
         this.trainingLog   = trainingLog;
         this.nirdizatiPath = nirdizatiPath;
@@ -65,28 +68,19 @@ public class CaseOutcomePredictor extends AbstractPredictor {
         File predictiveMethodPath = new File(new File(nirdizatiPath, "PredictiveMethods"), "CaseOutcome");
 
         // Validate form fields
-        pkl = new File(predictiveMethodPath, "predictive_monitor_" + tag + "_" + label + ".pkl");
+        pkl = new File(new File(new File(nirdizatiPath, "PredictiveMethods"), "pkl"), "predictive_monitor_" + tag + "_" + label + ".pkl");
         foo(predictiveMethodPath, pkl, tag, label, log, trainingAlgorithm, nirdizatiPath, pythonPath, false);
     }
 
-    /** @throws IllegalStateException if there's no <code>.pkl</code> file for the given tag and label */
-    CaseOutcomePredictor(String headerText, String tag, String label, String jsonField, File nirdizatiPath, String pythonPath) {
+    protected JSONObject createDatasetParam(JSONObject json, TrainingAlgorithm trainingAlgorithm) throws JSONException {
+        JSONObject caseOutcomeJSON = new JSONObject();
+        json.put("CaseOutcome", caseOutcomeJSON);
+        JSONObject labelJSON = new JSONObject();
+        caseOutcomeJSON.put(this.label, labelJSON);
+        labelJSON.put("pos_label", this.positiveLabelValue);
+        trainingAlgorithm.addParametersToJSON(labelJSON);
 
-        super(nirdizatiPath, pythonPath, "PredictiveMethods/CaseOutcome/case-outcome-kafka-processor.py", /*kafkaHost, prefixesTopic, predictionsTopic,*/ null, null, null, tag, label, jsonField);
-
-        this.headerText    = headerText;
-        this.tag           = tag;
-        this.label         = label;
-        this.jsonField     = jsonField;
-        this.trainingLog   = "(pre-trained)";
-        this.nirdizatiPath = nirdizatiPath;
-        this.pythonPath    = pythonPath;
-        
-        File predictiveMethodPath = new File(new File(nirdizatiPath, "PredictiveMethods"), "CaseOutcome");
-        pkl = new File(predictiveMethodPath, "predictive_monitor_" + tag + "_" + label + ".pkl");
-        if (!pkl.exists()) {
-            throw new IllegalStateException("Predictor \"" + tag + "\" doesn't exist");
-        }
+        return caseOutcomeJSON;
     }
 
     public String getName() {
@@ -106,6 +100,7 @@ public class CaseOutcomePredictor extends AbstractPredictor {
         this.args[2] = kafkaHost;
         this.args[3] = prefixesTopic;
         this.args[4] = predictionsTopic;
+        this.args[6] = datasetParamJSON.toString();
         super.start(kafkaHost, prefixesTopic, predictionsTopic);
     }
 

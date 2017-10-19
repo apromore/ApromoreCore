@@ -102,9 +102,15 @@ public class ProcessDataflowElement implements DataflowElement {
         try {
             Process p = pb.start();
             processors.add(p);
-        } catch (IOException e) {
-            throw new PredictorException("Unable to start", e);
+        } catch (IOException | RuntimeException e) {
+            throw new PredictorException("Unable to start, args were: " + arrayToArrayList(args), e);
         }
+    }
+
+    private static <T> ArrayList<T> arrayToArrayList(T[] array) {
+        ArrayList<T> list = new ArrayList<T>();
+        for(T elmt : array) list.add(elmt);
+        return list;
     }
 
     public void stop() {
