@@ -23,6 +23,7 @@ package org.apromore.plugin.portal.logvisualizer;
 // Java 2 Standard Edition
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 // Third party packages
 import org.apromore.model.LogSummaryType;
@@ -31,14 +32,16 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.logvisualizer.LogVisualizerService;
+import org.apromore.service.logvisualizer.impl.LogVisualizerServiceImpl;
 import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
+import org.zkoss.zul.Window;
 
 // Local packages
 
@@ -56,13 +59,25 @@ public class LogVisualizerController {
     private Textbox arcsText;
     private Slider activities;
     private Slider arcs;
-    private Button frequency;
-    private Button duration;
 
-    private int arcs_value;
-    private int activities_value;
+    private Combobutton frequency;
+    private Menuitem absolute_frequency;
+    private Menuitem max_frequency;
+    private Menuitem min_frequency;
 
-    private boolean selected_frequency = true;
+    private Combobutton duration;
+    private Menuitem total_duration;
+    private Menuitem median_duration;
+    private Menuitem mean_duration;
+    private Menuitem max_duration;
+    private Menuitem min_duration;
+
+    private int arcs_value = 0;
+    private int activities_value = 100;
+
+    private boolean frequency_VS_duration = LogVisualizerServiceImpl.FREQUENCY;
+    private int total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.MEAN;
+
     private boolean visualized = false;
     private XLog log;
 
@@ -91,8 +106,18 @@ public class LogVisualizerController {
             this.arcs = (Slider) slidersWindow.getFellow("slider2");
             this.activitiesText = (Textbox) slidersWindow.getFellow("textbox1");
             this.arcsText = (Textbox) slidersWindow.getFellow("textbox2");
-            this.frequency = (Button) slidersWindow.getFellow("frequency");
-            this.duration = (Button) slidersWindow.getFellow("duration");
+
+            this.frequency = (Combobutton) slidersWindow.getFellow("frequency");
+            this.absolute_frequency = (Menuitem) slidersWindow.getFellow("absolute_frequency");
+            this.max_frequency = (Menuitem) slidersWindow.getFellow("max_frequency");
+            this.min_frequency = (Menuitem) slidersWindow.getFellow("min_frequency");
+
+            this.duration = (Combobutton) slidersWindow.getFellow("duration");
+            this.total_duration = (Menuitem) slidersWindow.getFellow("total_duration");
+            this.median_duration = (Menuitem) slidersWindow.getFellow("median_duration");
+            this.mean_duration = (Menuitem) slidersWindow.getFellow("mean_duration");
+            this.max_duration = (Menuitem) slidersWindow.getFellow("max_duration");
+            this.min_duration = (Menuitem) slidersWindow.getFellow("min_duration");
 
             this.activities.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -149,16 +174,84 @@ public class LogVisualizerController {
                     setArcAndActivityRatios();
                 }
             });
+
             this.frequency.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    selected_frequency = true;
+                    frequency_VS_duration = LogVisualizerServiceImpl.FREQUENCY;
+                    total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.MEAN;
                     visualized = false;
                     setArcAndActivityRatios();
                 }
             });
+            this.absolute_frequency.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    frequency_VS_duration = LogVisualizerServiceImpl.FREQUENCY;
+                    total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.TOTAL;
+                    visualized = false;
+                    setArcAndActivityRatios();
+                }
+            });
+            this.max_frequency.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    frequency_VS_duration = LogVisualizerServiceImpl.FREQUENCY;
+                    total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.MAX;
+                    visualized = false;
+                    setArcAndActivityRatios();
+                }
+            });
+            this.min_frequency.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    frequency_VS_duration = LogVisualizerServiceImpl.FREQUENCY;
+                    total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.MIN;
+                    visualized = false;
+                    setArcAndActivityRatios();
+                }
+            });
+
             this.duration.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    selected_frequency = false;
+                    frequency_VS_duration = LogVisualizerServiceImpl.DURATION;
+                    total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.MEAN;
+                    visualized = false;
+                    setArcAndActivityRatios();
+                }
+            });
+            this.total_duration.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    frequency_VS_duration = LogVisualizerServiceImpl.DURATION;
+                    total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.TOTAL;
+                    visualized = false;
+                    setArcAndActivityRatios();
+                }
+            });
+            this.median_duration.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    frequency_VS_duration = LogVisualizerServiceImpl.DURATION;
+                    total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.MEDIAN;
+                    visualized = false;
+                    setArcAndActivityRatios();
+                }
+            });
+            this.mean_duration.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    frequency_VS_duration = LogVisualizerServiceImpl.DURATION;
+                    total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.MEAN;
+                    visualized = false;
+                    setArcAndActivityRatios();
+                }
+            });
+            this.max_duration.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    frequency_VS_duration = LogVisualizerServiceImpl.DURATION;
+                    total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.MAX;
+                    visualized = false;
+                    setArcAndActivityRatios();
+                }
+            });
+            this.min_duration.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    frequency_VS_duration = LogVisualizerServiceImpl.DURATION;
+                    total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.MIN;
                     visualized = false;
                     setArcAndActivityRatios();
                 }
@@ -185,7 +278,7 @@ public class LogVisualizerController {
                 activities_value = activities.getCurpos();
                 arcs_value = arcs.getCurpos();
 
-                JSONArray array = logVisualizerService.generateJSONArrayFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, selected_frequency);
+                JSONArray array = logVisualizerService.generateJSONArrayFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, frequency_VS_duration, total_VS_median_VS_mean_VS_max_VS_min);
 
                 String jsonString = array.toString();
                 String javascript = "load('" + jsonString + "');";
