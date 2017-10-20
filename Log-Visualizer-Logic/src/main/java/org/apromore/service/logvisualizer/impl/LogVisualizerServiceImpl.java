@@ -27,6 +27,8 @@ import org.deckfour.xes.classification.XEventAndClassifier;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventLifeTransClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
+import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
@@ -46,7 +48,6 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.ObjectLongHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.eclipse.collections.impl.tuple.Tuples;
 import org.json.JSONArray;
@@ -145,21 +146,24 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private final String EDGE_START_COLOR_DURATION  = "#646464";
     private final String EDGE_END_COLOR_DURATION  = "#8B0000";
 
-    private final ColorGradient frequency_gradient = new ColorGradient(new Color(100, 100, 100), new Color(41, 41, 41));
-    private final ColorGradient duration_gradient = new ColorGradient(new Color(100, 100, 100), new Color(139, 0, 0));
+    private final ColorGradient activity_frequency_gradient = new ColorGradient(new Color(241, 238, 246), new Color(4, 90, 141));
+    private final ColorGradient activity_duration_gradient = new ColorGradient(new Color(254,240,217), new Color(179, 0, 0));
+    private final ColorGradient arc_frequency_gradient = new ColorGradient(new Color(100, 100, 100), new Color(41, 41, 41));
+    private final ColorGradient arc_duration_gradient = new ColorGradient(new Color(100, 100, 100), new Color(139, 0, 0));
 
     public static void main(String[] args) {
         LogVisualizerServiceImpl l = new LogVisualizerServiceImpl();
         XLog log = null;
         try {
 //            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/IdeaProjects/ApromoreCodeServerNew/Compare-Logic/src/test/resources/CAUSCONC-1/bpLog3.xes");
-            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Raw data after import.xes.gz");
+//            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Raw data after import.xes.gz");
+            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Users/conforti/Downloads/BPIC13_i.xes.gz");
 //            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Demonstration examples/Discover Process Model/Synthetic Log with Subprocesses.xes.gz");
 //            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2017 - Loan Application (NoiseFilter).xes.gz");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        JSONArray s = l.generateJSONArrayFromLog(log, 0.39, 0, DURATION, MIN);
+        JSONArray s = l.generateJSONArrayFromLog(log, 0, 100, FREQUENCY, MEAN);
 //        JSONArray s1 = l.generateJSONArrayFromLog(log, 0.4, 0, true);
 //        System.out.println(s);
 //        System.out.println(s1);
@@ -338,13 +342,39 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     }
 
     private XLog removeUnrequiredEvents(XLog log) {
+        boolean contain = false;
         for(XTrace trace : log) {
             Iterator<XEvent> iterator = trace.iterator();
             while (iterator.hasNext()) {
                 XEvent event = iterator.next();
                 String name = full_classifier.getClassIdentity(event);
-                if(name.contains("+") && !(isStartEvent(name) || isCompleteEvent(name))) {
-                    iterator.remove();
+                if(name.contains("+") && (isCompleteEvent(name))) {
+                    contain = true;
+                }
+            }
+        }
+
+        if(contain) {
+            for (XTrace trace : log) {
+                Iterator<XEvent> iterator = trace.iterator();
+                while (iterator.hasNext()) {
+                    XEvent event = iterator.next();
+                    String name = full_classifier.getClassIdentity(event);
+                    if (name.contains("+") && !(isStartEvent(name) || isCompleteEvent(name))) {
+                        iterator.remove();
+                    }
+                }
+            }
+        }else {
+            XConceptExtension xce = XConceptExtension.instance();
+            XLifecycleExtension xle = XLifecycleExtension.instance();
+            for (XTrace trace : log) {
+                Iterator<XEvent> iterator = trace.iterator();
+                while (iterator.hasNext()) {
+                    XEvent event = iterator.next();
+                    String name = full_classifier.getClassIdentity(event);
+                    xce.assignName(event, name.replace("+", "-"));
+                    xle.assignTransition(event, "complete");
                 }
             }
         }
@@ -367,6 +397,11 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             IntIntHashMap eventsCount = new IntIntHashMap();
             for(XEvent event : trace) {
                 String name = full_classifier.getClassIdentity(event);
+                if(name.contains("+")) {
+                    String prename = name.substring(0, name.indexOf("+"));
+                    String postname = name.substring(name.indexOf("+"));
+                    name = prename + postname.toLowerCase();
+                }
                 if(isStartEvent(name)) contain_start_events = true;
 
                 Integer simplified_event;
@@ -423,7 +458,10 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             for(int i = 0; i < trace.size(); i++) {
                 XEvent event = trace.get(i);
                 Long time = xte.extractTimestamp(event).getTime();
-                if(i == 0 || i == trace.size() - 1) {
+                if(i == 0) {
+                    simplified_times_trace.add(time);
+                }
+                if(i == trace.size() - 1) {
                     simplified_times_trace.add(time);
                 }
                 simplified_times_trace.add(time);
@@ -578,7 +616,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         retained_activities.add(end);
 
 //        double threshold = real_activity_frequency.max() * activities;
-        double threshold = Math.log10(real_activity_frequency.max()) * activities;
+        double threshold = 0.0;
+        if(real_activity_frequency.size() > 0) threshold = Math.log10(real_activity_frequency.max()) * activities;
 
         for(int i = 0; i < sorted_activity_frequency.size(); i++) {
 //            double current = sorted_activity_frequency.get(i).getTwo();
@@ -612,7 +651,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         HashSet<Pair<Integer, Integer>> retained_arcs = new HashSet();
 
 //        double threshold = arcs_frequency.max() * arcs;
-        double threshold = Math.log10(arcs_frequency.max()) * arcs;
+        double threshold = 0.0;
+        if(arcs_frequency.size() > 0) threshold = Math.log10(arcs_frequency.max()) * arcs;
 
         retained_arcs.addAll(arcs_frequency.keySet());
 
@@ -690,6 +730,13 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         int start_node = -1;
         int end_node = -1;
 
+        int string_length = 0;
+        for(BPMNNode node : getNodes(bpmnDiagram)) {
+            string_length = Math.max(string_length, node.getLabel().replace("'", "").length());
+        }
+        String width = (int) (string_length * 3.5)+ "px";
+        String textwidth = ((int) (string_length * 3.5) - 10) + "px";
+
         for(BPMNNode node : getNodes(bpmnDiagram)) {
             JSONObject jsonOneNode = new JSONObject();
             mapping.put(node, i);
@@ -701,6 +748,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 jsonOneNode.put("color", START);
                 jsonOneNode.put("width", "15px");
                 jsonOneNode.put("height", "15px");
+                jsonOneNode.put("textwidth", textwidth);
             }else if(node.getLabel().equals(end_name)) {
                 end_node = i;
                 jsonOneNode.put("name", "");
@@ -708,16 +756,18 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 jsonOneNode.put("color", END);
                 jsonOneNode.put("width", "15px");
                 jsonOneNode.put("height", "15px");
+                jsonOneNode.put("textwidth", textwidth);
             }else {
-                if(frequency_vs_duration == FREQUENCY) jsonOneNode.put("name", node.getLabel().replace("'", "") + "\\n" + getEventFrequency(false, avg_vs_max_vs_min, node.getLabel()));
-                else jsonOneNode.put("name", node.getLabel().replace("'", "") + "\\n" + convertMilliseconds("" + getEventDuration(avg_vs_max_vs_min, node.getLabel())));
+                if(frequency_vs_duration == FREQUENCY) jsonOneNode.put("name", node.getLabel().replace("'", "") + "\\n\\n" + getEventFrequency(false, avg_vs_max_vs_min, node.getLabel()));
+                else jsonOneNode.put("name", node.getLabel().replace("'", "") + "\\n\\n" + convertMilliseconds("" + getEventDuration(avg_vs_max_vs_min, node.getLabel())));
 
                 jsonOneNode.put("shape", "roundrectangle");
 
                 if(frequency_vs_duration == FREQUENCY) jsonOneNode.put("color", getFrequencyColor(avg_vs_max_vs_min, node, bpmnDiagram.getNodes()));
                 else jsonOneNode.put("color", getDurationColor(avg_vs_max_vs_min, node, bpmnDiagram.getNodes()));
-                jsonOneNode.put("width", "60px");
-                jsonOneNode.put("height", "20px");
+                jsonOneNode.put("width", width);
+                jsonOneNode.put("textwidth", textwidth);
+                jsonOneNode.put("height", "30px");
             }
             JSONObject jsonDataNode = new JSONObject();
             jsonDataNode.put("data", jsonOneNode);
@@ -765,10 +815,10 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 jsonOneLink.put("strength", bd.doubleValue());
                 if(frequency_vs_duration == FREQUENCY) {
                     jsonOneLink.put("label", number);
-                    jsonOneLink.put("color", "#" + Integer.toHexString(frequency_gradient.generateColor(bd.doubleValue() / 100).getRGB()).substring(2));
+                    jsonOneLink.put("color", "#" + Integer.toHexString(arc_frequency_gradient.generateColor(bd.doubleValue() / 100).getRGB()).substring(2));
                 }else {
                     jsonOneLink.put("label", convertMilliseconds(number));
-                    jsonOneLink.put("color", "#" + Integer.toHexString(duration_gradient.generateColor(bd.doubleValue() / 100).getRGB()).substring(2));
+                    jsonOneLink.put("color", "#" + Integer.toHexString(arc_duration_gradient.generateColor(bd.doubleValue() / 100).getRGB()).substring(2));
                 }
             }
 
@@ -910,12 +960,13 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             max = Math.max(max, getEventFrequency(true, avg_vs_max_vs_min, n.getLabel()));
         }
         int step = max / 5;
-        int node_frequency = getEventFrequency(true, avg_vs_max_vs_min, node.getLabel());
-        if(node_frequency >= (max - (1 * step))) return BLUE_5;
-        if(node_frequency >= (max - (2 * step))) return BLUE_4;
-        if(node_frequency >= (max - (3 * step))) return BLUE_3;
-        if(node_frequency >= (max - (4 * step))) return BLUE_2;
-        return BLUE_1;
+        double node_frequency = getEventFrequency(true, avg_vs_max_vs_min, node.getLabel());
+//        if(node_frequency >= (max - (1 * step))) return BLUE_5;
+//        if(node_frequency >= (max - (2 * step))) return BLUE_4;
+//        if(node_frequency >= (max - (3 * step))) return BLUE_3;
+//        if(node_frequency >= (max - (4 * step))) return BLUE_2;
+//        return BLUE_1;
+        return "#" + Integer.toHexString(activity_frequency_gradient.generateColor(node_frequency / max).getRGB()).substring(2);
     }
 
     private String getDurationColor(int avg_vs_max_vs_min, BPMNNode node, Set<BPMNNode> nodes) {
@@ -923,14 +974,16 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         for(BPMNNode n : nodes) {
             max = Math.max(max, getEventDuration(avg_vs_max_vs_min, n.getLabel()));
         }
+        if(max == 0) return "#FEF0D9";
         long step = max / 5;
-        long node_diration = getEventDuration(avg_vs_max_vs_min, node.getLabel());
-        if(node_diration == 0) return RED_1;
-        if(node_diration >= (max - (1 * step))) return RED_5;
-        if(node_diration >= (max - (2 * step))) return RED_4;
-        if(node_diration >= (max - (3 * step))) return RED_3;
-        if(node_diration >= (max - (4 * step))) return RED_2;
-        return RED_1;
+        double node_duration = getEventDuration(avg_vs_max_vs_min, node.getLabel());
+//        if(node_duration == 0) return RED_1;
+//        if(node_duration >= (max - (1 * step))) return RED_5;
+//        if(node_duration >= (max - (2 * step))) return RED_4;
+//        if(node_duration >= (max - (3 * step))) return RED_3;
+//        if(node_duration >= (max - (4 * step))) return RED_2;
+//        return RED_1;
+        return "#" + Integer.toHexString(activity_duration_gradient.generateColor(node_duration / max).getRGB()).substring(2);
     }
 
     private String getEventFullName(int event) {
@@ -962,11 +1015,11 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     }
 
     private boolean isStartEvent(String name) {
-        return name.endsWith("+start");
+        return name.toLowerCase().endsWith("+start");
     }
 
     private boolean isCompleteEvent(String name) {
-        return name.endsWith("+complete");
+        return name.toLowerCase().endsWith("+complete");
     }
 
     private String getStartEvent(String name) {

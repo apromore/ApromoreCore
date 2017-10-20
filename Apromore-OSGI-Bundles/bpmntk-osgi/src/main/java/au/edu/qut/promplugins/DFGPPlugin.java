@@ -25,6 +25,7 @@ import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
 import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUI;
 import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
+import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
@@ -58,7 +59,7 @@ public class DFGPPlugin {
         DFGPUI gui = new DFGPUI();
         DFGPUIResult result = gui.showGUI(context, "Setup for DFG+");
 
-        SimpleLog sLog = LogParser.getSimpleLog(log);
+        SimpleLog sLog = LogParser.getSimpleLog(log, new XEventNameClassifier());
         DirectlyFollowGraphPlus net = new DirectlyFollowGraphPlus(  sLog, result.getPercentileFrequencyThreshold(),
                                                                     result.getParallelismsThreshold(),
                                                                     result.getFilterType(), result.isPercentileOnbest());

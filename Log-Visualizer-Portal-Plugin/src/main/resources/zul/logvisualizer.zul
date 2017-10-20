@@ -56,18 +56,20 @@
                         </menupopup>
                     </combobutton>
                     <combobutton id="duration" label="Performance">
-                        <!--<menupopup>-->
-                            <!--<menuitem id="absolute_duration" label="Avg"/>-->
-                            <!--<menuitem id="max_duration" label="Max"/>-->
-                            <!--<menuitem id="min_duration" label="Min"/>-->
-                        <!--</menupopup>-->
+                        <menupopup>
+                            <menuitem id="total_duration" label="Absolute"/>
+                            <menuitem id="median_duration" label="Avg"/>
+                            <menuitem id="mean_duration" label="Median"/>
+                            <menuitem id="max_duration" label="Max"/>
+                            <menuitem id="min_duration" label="Min"/>
+                        </menupopup>
                     </combobutton>
                     <button id="logvisualizer_layout_dagre" xmlns:w="client" w:onClick="layout();" label="Layout (Dagre)" />
                     <button id="logvisualizer_layout_cola" xmlns:w="client" w:onClick="layout_cola();" label="Layout (Cola)" />
                 </row>
             </rows>
         </grid>
-        <n:div id="myDiagramDiv" xmlns:n="native" style="height:75vh; width:100vh" />
+        <n:div id="myDiagramDiv" xmlns:n="native" style="height:80vh; width:100vh" />
         <script type="text/javascript">
             var diagram;
 
@@ -94,7 +96,7 @@
                             'content': 'data(name)',
                             'text-wrap': 'wrap',
                             'text-valign': 'center',
-                            'text-max-width': '50px',
+                            'text-max-width': 'data(textwidth)',
                             'font-size': 7,
                             'text-border-width': 10,
                             'padding': 5
@@ -153,7 +155,7 @@
             }
 
             function layout() {
-                diagram.elements().layout({"name": 'dagre', zoom: cy.zoom(), pan: cy.pan(), avoidOverlap:true, edgeSep: 5, nodeSep:100, rankSep: 100, rankDir:'LR', edgeWeight: function( edge ){ return 100; }});
+                diagram.elements().layout({"name": 'dagre', zoom: cy.zoom(), pan: cy.pan(), avoidOverlap:true, edgeSep: 2, nodeSep:100, rankSep: 50, rankDir:'LR', edgeWeight: function( edge ){ return 50; }});
             }
 
             function layout_cola() {
