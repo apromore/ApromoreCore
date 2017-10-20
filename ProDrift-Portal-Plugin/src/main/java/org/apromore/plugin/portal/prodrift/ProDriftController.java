@@ -312,7 +312,7 @@ public class ProDriftController {
                 else
                     ((Listitem)proDriftW.getFellow("ADWIN")).setSelected(true);*/
 
-                ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(0.0);
+                ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(5.0);
                 winSizeIntBox.setValue(maxWinValueEventsSynIntBoX.getValue());
             }else {
                 ((Listitem)proDriftW.getFellow("reLog")).setSelected(true);

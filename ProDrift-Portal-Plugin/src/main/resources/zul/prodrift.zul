@@ -75,7 +75,7 @@
                                             if(synLog.selected){
                                                 winSizeIntBox.value = maxWinValueEventsSyn.value;
                                                 FWIN.selected = true;
-                                               noiseFilterSpinner.value = 0;
+                                               noiseFilterSpinner.value = 5.0;
                                             }else{
                                                 winSizeIntBox.value = maxWinValueEventsReal.value;
                                                 FWIN.selected = true;
@@ -139,7 +139,7 @@
 
                                             FWIN.selected = true;
 
-                                            noiseFilterSpinner.value = 0;
+                                            noiseFilterSpinner.value = 5.0;
                                         }else{
                                             winSizeIntBox.value = maxWinValueEventsReal.value;
                                             FWIN.selected = true;
