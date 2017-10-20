@@ -93,7 +93,7 @@ public class PQLServiceImpl extends DefaultPlugin implements PQLService, Process
      * @param version
      * @param branchName
      * @throws IOException  if the native PNML serialization couldn't be obtained from the <var>exportResult</var>
-     * @throws SQLException  if the model couldn't be store into the PQL database
+     * @throws SQLException  if the model couldn't be stored into the PQL database
      */
     private void storeModel(ExportFormatResultType exportResult, Integer procId, Version version, String branchName) throws IOException, SQLException {
 
