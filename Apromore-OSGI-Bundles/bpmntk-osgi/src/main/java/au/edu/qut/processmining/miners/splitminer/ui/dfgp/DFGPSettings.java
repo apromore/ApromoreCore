@@ -58,7 +58,7 @@ public class DFGPSettings extends ProMPropertiesPanel {
         this.add(parallelismsThreshold);
         parallelismsThreshold.setVisible(true);
 
-        result.setFilterType(DFGPUIResult.FilterType.WTH);
+        result.setFilterType(DFGPUIResult.FilterType.FWG);
         result.setPercentileOnbest(percentileOnBest.isSelected());
         result.setPercentileFrequencyThreshold(percentileFrequencyThreshold.getValue());
         result.setParallelismsThreshold(parallelismsThreshold.getValue());

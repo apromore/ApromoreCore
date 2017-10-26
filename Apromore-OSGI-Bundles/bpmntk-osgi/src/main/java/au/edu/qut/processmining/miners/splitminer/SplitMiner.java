@@ -92,7 +92,8 @@ public class SplitMiner {
             transformDFGPintoBPMN();
             if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
         } catch(Exception e) {
-            System.out.println("ERROR - something went wrong building translating DFG to BPMN");
+            System.out.println("ERROR - something went wrong translating DFG to BPMN");
+            e.printStackTrace();
             return dfgp.convertIntoBPMNDiagram();
         }
 

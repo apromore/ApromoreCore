@@ -45,7 +45,7 @@ public class SplitMinerSettings extends ProMPropertiesPanel {
         replaceIORs = this.addCheckBox("Remove OR-joins", false);
         replaceIORs.addChangeListener(smpil);
 
-        removeSelfLoops = this.addCheckBox("Remove Self-loops", false);
+        removeSelfLoops = this.addCheckBox("Remove Self-loops", true);
         removeSelfLoops.addChangeListener(smpil);
 
         result.setReplaceIORs(replaceIORs.isSelected());
