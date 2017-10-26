@@ -301,7 +301,7 @@
         <mathCollection.version>0.1</mathCollection.version>
         <lpsolve.version>55j</lpsolve.version>
 
-		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+        <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
         <jbpt-petri.version>0.2.433</jbpt-petri.version>
         <v4-runtime.version>4.3</v4-runtime.version>
         <mysql.version>5.1.21</mysql.version>
@@ -507,7 +507,7 @@
                 <version>${lpsolve.version}</version>
             </dependency>
 
-			<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+            <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
             <dependency>
                 <groupId>org.jbpt</groupId>
                 <artifactId>jbpt-petri-osgi</artifactId>
@@ -577,7 +577,7 @@
                 <artifactId>filestore-client</artifactId>
                 <version>${filestore-client.version}</version>
             </dependency>
-			<dependency>
+            <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>portal-client</artifactId>
                 <version>${portal-client.version}</version>
@@ -1642,14 +1642,14 @@
 
                 <configuration>
                     <!--<excludeProperties>-->
-                        <!--<excludeProperty>git.branch</excludeProperty>-->
-                        <!--<excludeProperty>git.build.*</excludeProperty>-->
-                        <!--<excludeProperty>git.closest.*</excludeProperty>-->
-                        <!--<excludeProperty>git.commit.message.*</excludeProperty>-->
-                        <!--<excludeProperty>git.commit.user.*</excludeProperty>-->
-                        <!--<excludeProperty>git.dirty</excludeProperty>-->
-                        <!--<excludeProperty>git.remote.origin.url</excludeProperty>-->
-                        <!--<excludeProperty>git.tags</excludeProperty>-->
+                    <!--<excludeProperty>git.branch</excludeProperty>-->
+                    <!--<excludeProperty>git.build.*</excludeProperty>-->
+                    <!--<excludeProperty>git.closest.*</excludeProperty>-->
+                    <!--<excludeProperty>git.commit.message.*</excludeProperty>-->
+                    <!--<excludeProperty>git.commit.user.*</excludeProperty>-->
+                    <!--<excludeProperty>git.dirty</excludeProperty>-->
+                    <!--<excludeProperty>git.remote.origin.url</excludeProperty>-->
+                    <!--<excludeProperty>git.tags</excludeProperty>-->
                     <!--</excludeProperties>-->
                     <includeOnlyProperties>
                         <includeOnlyProperty>git.commit.id.describe</includeOnlyProperty>

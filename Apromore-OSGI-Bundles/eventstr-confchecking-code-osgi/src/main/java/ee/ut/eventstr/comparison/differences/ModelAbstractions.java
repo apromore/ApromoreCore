@@ -289,7 +289,7 @@ public class ModelAbstractions {
         return events;
     }
 
-    public HashSet<GObject> getModelSegment(HashSet<Integer> events) {
+    public LinkedHashSet<GObject> getModelSegment(HashSet<Integer> events) {
         HashSet<DNode> union = new HashSet<>();
         HashSet<DNode> intersection = null;
         HashSet<DNode> mappedEvts = new HashSet<>();
@@ -308,8 +308,16 @@ public class ModelAbstractions {
         intersection.removeAll(mappedEvts);
         union.removeAll(intersection);
 
-        HashSet<GObject> modelNodes = new HashSet<>();
-        for(DNode node : union)
+        LinkedList<DNode> sorted = new LinkedList(union);
+        Collections.sort(sorted, new Comparator<DNode>() {
+            @Override
+            public int compare(DNode o1, DNode o2) {
+                return unfolder.getBP().getLocalConfig(o1).size() - unfolder.getBP().getLocalConfig(o2).size();
+            }
+        });
+
+        LinkedList<GObject> modelNodes = new LinkedList<>();
+        for(DNode node : sorted)
             if(mapUnf2Net.containsKey(node.id)) {
                 FlowNode task = mapTasks2TransReverse.get(mapUnf2Net.get(node.id));
                 if(task != null)
@@ -320,7 +328,7 @@ public class ModelAbstractions {
                 modelNodes.addAll(bpmnModel.getOutgoingControlFlow(task));
             }
 
-        return modelNodes;
+        return new LinkedHashSet<>(modelNodes);
     }
 
     public FlowNode getTaskFromEvent(Integer i){

@@ -74,17 +74,12 @@
 
                                             if(synLog.selected){
                                                 winSizeIntBox.value = maxWinValueEventsSyn.value;
-                                                if(activityCount.value * activityCount.value *
-                                                    winSizeCoefficient.value > maxWinValueEventsSyn.value){
-                                                    FWIN.selected = true;
-                                                }else{
-                                                    ADWIN.selected = true;
-                                                }
-                                                noiseFilterSpinner.value = 0;
+                                                FWIN.selected = true;
+                                               noiseFilterSpinner.value = 5.0;
                                             }else{
                                                 winSizeIntBox.value = maxWinValueEventsReal.value;
                                                 FWIN.selected = true;
-                                                noiseFilterSpinner.value = 3.5;
+                                                noiseFilterSpinner.value = 5.0;
                                             }
                                             noiseFilter.visible = true;
                                         }else{
@@ -142,18 +137,13 @@
                                                  onSelect="if(synLog.selected){
                                             winSizeIntBox.value = maxWinValueEventsSyn.value;
 
-                                            if(activityCount.value * activityCount.value *
-                                                winSizeCoefficient.value > maxWinValueEventsSyn.value){
-                                                FWIN.selected = true;
-                                            }else{
-                                                ADWIN.selected = true;
-                                            }
+                                            FWIN.selected = true;
 
-                                            noiseFilterSpinner.value = 0;
+                                            noiseFilterSpinner.value = 5.0;
                                         }else{
                                             winSizeIntBox.value = maxWinValueEventsReal.value;
                                             FWIN.selected = true;
-                                            noiseFilterSpinner.value = 3.5;
+                                            noiseFilterSpinner.value = 5.0;
                                         }
                                         ">
                                             <listitem id="synLog" label="Moderate (~30)" selected="true"/>
@@ -170,8 +160,8 @@
                                     <row id="fWinOrAwinChoice">
                                         <label value="Window Type" width="100%"/>
                                         <listbox id="fWinOrAwinLBox" width="100%" multiple="false" checkmark="true">
-                                            <listitem id="ADWIN" label="Adaptive window" selected="true"/>
-                                            <listitem id="FWIN" label="Fixed window"/>
+                                            <listitem id="ADWIN" label="Adaptive window"/>
+                                            <listitem id="FWIN" label="Fixed window" selected="true"/>
                                         </listbox>
                                     </row>
 

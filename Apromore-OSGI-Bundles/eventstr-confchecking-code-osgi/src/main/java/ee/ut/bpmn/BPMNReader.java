@@ -22,11 +22,7 @@ package ee.ut.bpmn;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -113,6 +109,11 @@ public class BPMNReader {
 		XPathExpression<Element> parentExp = xpfac.compile("(./ancestor::*[name() ='subProcess' or name() = 'process'])[last()]", Filters.element(), null, ns);
 
 		for (Element process : procExp.evaluate(document) ) {
+			List<Element> startEvents = startEventSelector.evaluate(process);
+
+			if(startEvents.isEmpty())
+				continue;
+
 			addProcess(process);
 			
 			for (Element subprocess: subprocExp.evaluate(process)) {
@@ -133,7 +134,7 @@ public class BPMNReader {
 					addParallelGateway(gateway, parentProcess, bp);
 			}
 			
-			for (Element startEvent: startEventSelector.evaluate(process)) {
+			for (Element startEvent: startEvents) {
 				Element parentProcess = parentExp.evaluateFirst(startEvent);				
 				addStartEvent(startEvent, parentProcess, bp);
 			}
@@ -154,14 +155,18 @@ public class BPMNReader {
 				addBoundaryEvent(boundaryEvent, (Subprocess)carryingProcess);
 			}
 			
-			
 			for (Element sequenceFlow: sequenceFlowSelector.evaluate(process)) {
 				String sourceRef = sequenceFlow.getAttributeValue("sourceRef");
 				String targetRef = sequenceFlow.getAttributeValue("targetRef");
 				Node source = nodes.get(sourceRef);
 				Node target = nodes.get(targetRef);
 
-				BpmnControlFlow flow = bp.addControlFlow(map.get(source), map.get(target));
+                BpmnControlFlow flow = null;
+                if(bp.getDirectedEdge(map.get(source), map.get(target)) != null)
+                    flow = (BpmnControlFlow) bp.getDirectedEdge(map.get(source), map.get(target));
+                else
+                    flow = bp.addControlFlow(map.get(source), map.get(target));
+
 				flow.setId(sequenceFlow.getAttributeValue("id"));
 				System.out.println(flow.getId());
 				
@@ -336,7 +341,7 @@ public class BPMNReader {
 		if (parent.isRootProcess() || USE_SIMPLE) node = new SimpleTask(task, netJBPT);//, mapNew2OldLbls, labelCounter);
 		else node = new Task(task, netJBPT);//, mapNew2OldLbls);
 
-        String originalName = task.getAttributeValue("name").trim();
+        String originalName = task.getAttributeValue("name").trim().replace('.','x');
 
 		nodes.put(id, node);
 		map.put(node, new Activity(originalName));

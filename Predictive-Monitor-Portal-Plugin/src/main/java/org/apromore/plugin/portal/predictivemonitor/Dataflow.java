@@ -24,18 +24,24 @@ package org.apromore.plugin.portal.predictivemonitor;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -44,9 +50,15 @@ import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DeleteTopicsResult;
 import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.errors.WakeupException;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.deckfour.xes.model.XAttributable;
 import org.deckfour.xes.model.XAttribute;
@@ -58,15 +70,32 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class Dataflow implements Closeable {
+public class Dataflow implements Closeable {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(Dataflow.class.getCanonicalName());
+    final private static Logger LOGGER = LoggerFactory.getLogger(Dataflow.class.getCanonicalName());
 
-    final private List<Process> processors = new ArrayList<>();
-    private       String        sinkTopic;
-    final private Set<String>   topicNames = new HashSet<>();
-    private       String        kafkaHost  = "localhost:9092";
-    private       File          nirdizatiDirectory;
+    final private Consumer<String, String> consumer;
+    final private Thread                   consumerThread;
+    final private List<Process>            processors = new ArrayList<>();
+    final private String                   eventsTopic;
+    final private Set<String>              topicNames = new HashSet<>();
+    final private String                   kafkaHost;
+    final private File                     nirdizatiDirectory;
+    final private String                   pythonCommand;
+    final private AtomicBoolean            closed = new AtomicBoolean(false);
+    final private String                   name;
+
+    final List<DataflowListener>       listeners = Collections.synchronizedList(new ArrayList<>());
+    final private List<Predictor>      predictors;
+    final private Set<DataflowElement> elements = new HashSet<>();
+
+    // TODO: give these proper accessors, and reactive
+    int caseCount = 0;
+    int completedEventCount = 0;
+    int completedCaseCount = 0;
+    int completedCaseEventCount = 0;
+    Duration totalCompletedCaseDuration = Duration.ZERO;
+    boolean fed = false;
 
     /**
      * Create a Nirdizati dataflow.
@@ -74,25 +103,37 @@ class Dataflow implements Closeable {
      * The dataflow consists of various Kafka topics and python-based processor processes.
      *
      * @param logName  suffix for generated Kafka topics, e.g. "bpi_12"
-     * @param tag  subfield to distinguish predictor training set data files, e.g. "bpi12"
+     * @param kafkaHost  colon-delimited address and port, e.g. "localhost:9092"
      * @param nirdizatiDirectory
+     * @param pythonCommand
+     * @param desktop
+     * @param predictors  may be zero-length, but never <code>null</code>
      */
-    Dataflow(String logName, String tag, File nirdizatiDirectory) {
-        LOGGER.info("Create dataflow for log named " + logName + " with tag " + tag);
+    Dataflow(String logName, String kafkaHost, File nirdizatiDirectory, String pythonCommand, List<Predictor> predictors) {
+        LOGGER.info("Create dataflow for log named " + logName);
 
+        this.kafkaHost          = kafkaHost;
         this.nirdizatiDirectory = nirdizatiDirectory;
-        this.sinkTopic          = "events_" + logName;
-        String prefixesTopic    = "prefixes_" + logName;
-        String predictionsTopic = "predictions_" + logName;
+        this.pythonCommand      = pythonCommand;
+        this.predictors         = predictors;
+        elements.addAll(predictors);
 
+        this.eventsTopic        = logName + "_events";
+        String prefixesTopic    = logName + "_prefixes";
+        String predictionsTopic = logName + "_predictions";
+        String resultsTopic     = logName + "_events_with_predictions";
+
+        this.name = logName;
+
+        // Create the topics
         Properties props = new Properties();
-        props.put("bootstrap.servers",  kafkaHost);
+        props.put("bootstrap.servers", kafkaHost);
 
         try (AdminClient adminClient = AdminClient.create(props)) {
             ListTopicsResult result = adminClient.listTopics();
             Set<String> nameSet = result.names().get();
             LOGGER.info("Topic names: " + nameSet);
-            topicNames.addAll(Arrays.asList(sinkTopic, prefixesTopic, predictionsTopic, "events_with_predictions"));
+            topicNames.addAll(Arrays.asList(eventsTopic, prefixesTopic, predictionsTopic, resultsTopic));
             LOGGER.info("Creating topics " + topicNames);
             List<NewTopic> topics = new ArrayList<>();
             for (String topicName: topicNames) {
@@ -109,32 +150,88 @@ class Dataflow implements Closeable {
             LOGGER.warn("Unable to list topics", e);
         }
 
-        createProcessor("python", "PredictiveMethods/collate-events.py",                               kafkaHost, sinkTopic, prefixesTopic);
-        createProcessor("python", "PredictiveMethods/CaseOutcome/case-outcome-kafka-processor.py",     kafkaHost, prefixesTopic, predictionsTopic, tag, "label", "slow_probability");
-        //createProcessor("python", "PredictiveMethods/CaseOutcome/case-outcome-kafka-processor.py",     kafkaHost, prefixesTopic, predictionsTopic, tag, "label2", "rejected_probability");
-        createProcessor("python", "PredictiveMethods/RemainingTime/remaining-time-kafka-processor.py", kafkaHost, prefixesTopic, predictionsTopic, tag);
-        createProcessor("python", "PredictiveMethods/join-events-to-predictions.py",                   kafkaHost, prefixesTopic, predictionsTopic, "events_with_predictions", Integer.toUnsignedString(2));
-        createProcessor("node", "server-kafka.js");
-    }
+        // Listen to the source topic
+        props.put("group.id", "join(" + eventsTopic + "," + predictionsTopic + ")");
+        props.put("key.deserializer", StringDeserializer.class);
+        props.put("value.deserializer", StringDeserializer.class);
+        consumer = new KafkaConsumer(props);
+        consumerThread = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Map<String, DataflowEvent> latestEventInCaseMap = new HashMap<>();
 
-    /**
-     * Spawn a process, recording it in <var>processes</var> so that the {@link #close} method can kill it later.
-     */
-    private void createProcessor(String... args) {
-        try {
-            LOGGER.info("Launching processor: " + args);
-            ProcessBuilder pb = new ProcessBuilder(args);
-            pb.directory(nirdizatiDirectory);
-            pb.redirectError(new File("/tmp/error.txt"));
-            pb.redirectOutput(new File("/tmp/output.txt"));
-            Process p = pb.start();
-            processors.add(p);
-            LOGGER.info("Launched processor");
+                    consumer.subscribe(Arrays.asList(resultsTopic));
+                    while (!closed.get()) {
+                        ConsumerRecords<String, String> records = consumer.poll(10000);
+                        for (ConsumerRecord<String, String> record: records) {
+                            try {
+                                JSONObject json = new JSONObject(record.value());
+                                DataflowEvent event = new DataflowEvent(json, latestEventInCaseMap);
 
-        } catch (IOException e) {
-            LOGGER.warn("Unable to create processor", e);
+                                // TODO: synchronize all the following accesses to the parent instance's member fields
+                                String caseId = event.getCaseId();
+                                DataflowEvent latestEvent = latestEventInCaseMap.get(caseId);
+                                if (latestEvent == null || latestEvent.getIndex() < event.getIndex()) {
+                                    if (latestEventInCaseMap.put(caseId, event) == null) {
+                                        caseCount++;
+                                    }
+                                }
+
+                                completedEventCount++;
+                                if (event.isLast()) {
+                                    Duration eventDuration = event.getDuration();
+                                    if (eventDuration == null) {  // TODO: figure out how to cope with out-of-order events
+                                        LOGGER.warn("Last event of case " + caseId + " did not have a duration; skipping it");
+                                    } else {
+                                        completedCaseCount++;
+                                        completedCaseEventCount += event.getIndex();
+                                        totalCompletedCaseDuration = totalCompletedCaseDuration.plus(event.getDuration());
+                                    }
+                                }
+
+                                for (DataflowListener listener: listeners) {
+                                    try {
+                                        listener.notify(event);
+                                    } catch (Throwable t) {
+                                        LOGGER.warn("Mishap notifying event listener " + listener, t);
+                                    }
+                                }
+
+                            } catch (JSONException e) {
+                                LOGGER.warn("Unable to parse consumer record as JSON object: " + record.value(), e);
+                            }
+                        }
+                    }
+
+                } catch (WakeupException e) {
+                    if (!closed.get()) {
+                        LOGGER.error("Wakeup exception while Kafka consumer thread wasn't closed", e);
+                    }
+                } catch (Throwable e) {
+                    LOGGER.error("Unexpected failure in Kafka consumer thread", e);
+                } finally {
+                    consumer.close();
+                }
+            }
+        });
+        consumerThread.start();
+
+        // Create the processors
+        LOGGER.info("Creating dataflow with " + predictors.size() + " predictor(s): " + predictors);
+        elements.add(new ProcessDataflowElement(nirdizatiDirectory, pythonCommand, "PredictiveMethods/collate-events.py", kafkaHost, eventsTopic, prefixesTopic));
+        elements.add(new ProcessDataflowElement(nirdizatiDirectory, pythonCommand, "PredictiveMethods/join-events-to-predictions.py", kafkaHost, eventsTopic, predictionsTopic, resultsTopic, Integer.toUnsignedString(predictors.size())));
+        for (DataflowElement element: elements) {
+            try {
+                element.start(kafkaHost, prefixesTopic, predictionsTopic);
+            } catch (PredictorException e) {
+                LOGGER.error("Unable to create dataflow element", e);
+            }
         }
     }
+
+    List<Predictor> getPredictors() { return predictors; }
+
+    public String getName() { return name; }
 
     /**
      * Feed a log into the sink topic of the dataflow.
@@ -143,6 +240,8 @@ class Dataflow implements Closeable {
      */
     void exportLog(XLog log) {
     
+        LOGGER.info("Exporting log events");
+
         // Configuration
         Properties props = new Properties();
         props.put("bootstrap.servers",  kafkaHost);
@@ -167,8 +266,8 @@ class Dataflow implements Closeable {
                 for (XEvent event: trace) {
                     JSONObject json = new JSONObject();
                     json.put("log", "bpi_12");
-                    json.put("sequence_nr", trace.getAttributes().get("concept:name").toString());
-                    json.put("remtime", 0); 
+                    json.put("case_id", trace.getAttributes().get("concept:name").toString());
+                    json.put("remtime", "0"); 
                     addAttributes(log, json);
                     addAttributes(trace, json);
                     addAttributes(event, json);
@@ -185,14 +284,18 @@ class Dataflow implements Closeable {
             }); 
             
             // Export to the Kafka topic
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             for (JSONObject json: jsons) {
-                LOGGER.info("  JSON: " + json.get("time"));
-                producer.send(new ProducerRecord<String,String>(sinkTopic, json.toString()));
-            }   
+                json.put("time", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time")).toGregorianCalendar().getTime()));
+                producer.send(new ProducerRecord<String,String>(eventsTopic, json.toString()));
+            }
+            fed = true;
+            LOGGER.info("Exported " + jsons.size() + " log events");
             
         } catch (DatatypeConfigurationException | JSONException e) {
             //Messagebox.show("Unable to export log", "Attention", Messagebox.OK, Messagebox.ERROR);
-            LOGGER.error("Unable to export log to Kafka topic", e);
+            LOGGER.error("Unable to export log events", e);
             return;
         }   
     }  
@@ -240,6 +343,13 @@ class Dataflow implements Closeable {
                 LOGGER.warn("Unable to kill process", e);
             }
         }
+        for (DataflowElement element: elements) {
+            element.stop();
+        }
+
+        // Kill the consumer thread
+        closed.set(true);
+        consumer.wakeup();
 
         // Delete the topics
         Properties props = new Properties();

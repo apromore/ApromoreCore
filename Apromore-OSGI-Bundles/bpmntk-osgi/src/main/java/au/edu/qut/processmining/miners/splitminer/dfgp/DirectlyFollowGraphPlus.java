@@ -757,7 +757,7 @@ public class DirectlyFollowGraphPlus {
         noisefilterParams.setRequiredStates(automatonOriginal.getNodes());
 
         XLog fxLog = filter.filterLog(new FakePluginContext(), xlog, noisefilterParams);
-        log = LogParser.getSimpleLog(fxLog);
+        log = LogParser.getSimpleLog(fxLog, classifier);
         buildDirectlyFollowsGraph();
         alignParallelisms(oldEvents);
         System.out.println("DEBUG - node after: " + nodes.size());

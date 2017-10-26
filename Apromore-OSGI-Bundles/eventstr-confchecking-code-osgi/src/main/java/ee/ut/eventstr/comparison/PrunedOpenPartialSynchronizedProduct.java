@@ -22,21 +22,7 @@ package ee.ut.eventstr.comparison;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 //import de.hpi.bpt.utils.IOUtils;
 
@@ -54,12 +40,14 @@ import ee.ut.org.processmining.framework.util.Pair;
 
 public class PrunedOpenPartialSynchronizedProduct<T> {
 	
-	public static class State implements Comparable<State> {
+	public static class State /*implements Comparable<State>*/ {
 		BitSet c1;
 		Multiset<Integer> c2;
 		Multiset<String> labels;
 		StateHint action;
 		public short cost = 0;
+        public short g = 0;
+        public short h = 0;
 		
 		State(BitSet c1, Multiset<String> labels, Multiset<Integer> c2) {
 			this.c1 = c1; this.c2 = c2; this.labels = labels;
@@ -135,27 +123,14 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 	}
 	
 	public PrunedOpenPartialSynchronizedProduct<T> perform() {
-		Queue<State> open = new PriorityQueue<State>(
-				new Comparator<State>() {
-					@Override
-					public int compare(State o1, State o2) {
-						int costCValue = Short.compare(o1.cost, o2.cost);
-						if (costCValue != 0)
-							return costCValue;
-						else if(o1.c1.cardinality() != o2.c1.cardinality())
-							return Integer.compare(o2.c1.cardinality(),o1.c1.cardinality());
-						else if(o1.c2.size() != o2.c2.size())
-							return Integer.compare(o2.c2.size(), o1.c2.size());
-						return -1;
-					}}
-		);
-
+		List<State> open = new LinkedList<>();
 		root = getState(new BitSet(), HashMultiset.<String> create(), HashMultiset.<Integer> create());
-		open.offer(root);
+		open.add(root);
 
 		while (!open.isEmpty()) {
-			State s = open.poll();
-			
+			State s = open.get(0);
+            open.remove(s);
+
 			if (isCandidate(s)) {
 				BitSet lpe = pes1.getPossibleExtensions(s.c1);				
 				Set<Integer> rpe = pes2.getPossibleExtensions(s.c2);
@@ -169,13 +144,33 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 				List<Operation> candidates = new ArrayList<Operation>();
 				BitSet pruned1 = new BitSet();
 				BitSet pruned2 = new BitSet();
+
+                List<Integer> orderedEvents = new LinkedList<>();
+                for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1+1))
+                    orderedEvents.add(e1);
+                Collections.sort(orderedEvents, new Comparator<Integer>() {
+                    @Override
+                    public int compare(Integer o1, Integer o2) {
+                        return pes1.getLabel(o1).compareTo(pes1.getLabel(o2));
+                    }
+                });
+
+                List<Integer> orderedEvents2 = new LinkedList<>(rpe);
+
+                Collections.sort(orderedEvents2, new Comparator<Integer>() {
+                    @Override
+                    public int compare(Integer o1, Integer o2) {
+                        return pes2.getLabel(o1).compareTo(pes2.getLabel(o2));
+                    }
+                });
 				
-				for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1+1)) {
+//				for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1+1)) {
+                for(int e1 : orderedEvents){
 					String label1 = pes1.getLabel(e1);
 					BitSet c1p = (BitSet)s.c1.clone();
 					c1p.set(e1);
 					
-					for (Integer e2: rpe) {
+					for (Integer e2: orderedEvents2) {
 						String label2 = pes2.getLabel(e2);
 						if (label1.equals(label2) && isOrderPreserving(s, e1, e2)) {
 							pruned1.set(e1); pruned2.set(e2);
@@ -192,6 +187,8 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 							
 							State nstate = getState(c1p, labels, extPair.getFirst());
 							nstate.cost = s.cost; // A matching operation does not change the current cost
+                            nstate.g = s.g;
+                            nstate.h = s.h;
 
 							Operation operation;
 							if (extPair.getSecond())
@@ -227,8 +224,13 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 						int costCValue = Short.compare(o1.nextState.cost, o2.nextState.cost);
 						if (costCValue != 0)
 							return costCValue;
+                        else if(o1.op.equals(Op.MATCH) && !o2.op.equals(Op.MATCH))
+                            return 1;
+                        else if(o2.op.equals(Op.MATCH) && !o1.op.equals(Op.MATCH))
+                            return -1;
 						else
 							return o1.label.compareTo(o2.label);
+//						return -1;
 					}
 				});
 
@@ -251,7 +253,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 
 					switch (operation.nextState.action) {
 					case CREATED:
-						open.offer(operation.nextState);
+						open.add(operation.nextState);
 						ancestors.put(operation.nextState, s);
 					case MERGED:							
 						descendants.put(s, operation);
@@ -265,7 +267,7 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 				pruned2.andNot(kept2);
 				
 				nextCandidate2:
-				for (Integer e2: rpe) {
+				for (Integer e2: orderedEvents2) {
 //					if (pruned2.get(e2) || kept2.get(e2))
 //						continue;
 					
@@ -276,12 +278,19 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 					
 					Pair<Multiset<Integer>, Boolean> extPair = pes2.extend(s.c2, e2);
 					State nstate = getState(s.c1, s.labels, extPair.getFirst());
-					
-					computeCost(nstate);
+                    computeCost(nstate);
+
+                    HashSet<String> labels1 = pes1.getLabels(pes1.getPossibleExtensions(nstate.c1));
+                    HashSet<String> labels2 = new HashSet<>(pes2.getLabels(pes2.getPossibleExtensions(nstate.c2)));
+                    labels1.retainAll(labels2);
+                    if(pes2.getInvisibleEvents().contains(e2) && s.cost == nstate.cost)
+                        if(s.c2.contains(e2) && labels1.isEmpty())
+                            continue;
+
 
 					switch (nstate.action) {
 					case CREATED:
-						open.offer(nstate);
+						open.add(nstate);
 						ancestors.put(nstate, s);
 					case MERGED:
 						if (extPair.getSecond())
@@ -294,7 +303,8 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 //					IOUtils.toFile("psp.dot", toDot());
 				}
 				
-				for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1+1)) {					
+//				for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1+1)) {
+                for(int e1 : orderedEvents){
 //					if (pruned1.get(e1) || kept1.get(e1))
 //						continue;
 
@@ -306,17 +316,38 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 
 					switch (nstate.action) {
 					case CREATED:
-						open.offer(nstate);
+						open.add(nstate);
 						ancestors.put(nstate, s);
 					case MERGED:
 						descendants.put(s, Operation.lhide(nstate, e1, pes1.getLabel(e1)));
 					default:
 					}
-					
-//					IOUtils.toFile("psp.dot", toDot());
 				}
 			}
+
+            open.sort(new Comparator<State>() {
+                @Override
+                public int compare(State o1, State o2) {
+                    int costCValue = Short.compare(o1.cost, o2.cost);
+                    if (costCValue != 0)
+                        return costCValue;
+//                    else if(o1.g != o2.g)
+                        return Short.compare(o1.g, o2.g);
+//                    else if (o1.h != o2.h)
+//                        return Short.compare(o1.h, o2.h);
+//                    else if(o1.labels.size() != o2.labels.size())
+//                        return o2.labels.size() - o1.labels.size();
+//                    else if(o1.c2.size() != o2.c2.size())
+//                        return o1.c2.size() - o2.c2.size();
+//						else if(o1.c1.cardinality() != o2.c1.cardinality())
+//							return Integer.compare(o2.c1.cardinality(),o1.c1.cardinality());
+//						else if(o1.c2.size() != o2.c2.size())
+//							return Integer.compare(o2.c2.size(), o1.c2.size());
+//                    return -1;
+                }
+            });
 		}
+
 		return this;
 	}
 	
@@ -424,7 +455,9 @@ public class PrunedOpenPartialSynchronizedProduct<T> {
 	public void computeCost(State s) {
 		Multiset<Integer> c2copy = HashMultiset.create(s.c2);
 		c2copy.removeAll(pes2.getInvisibleEvents());
-		s.cost = (short)(g(s.c1, c2copy, s.labels) + h(s));
+        s.g = (short) g(s.c1, c2copy, s.labels);
+        s.h =  (short) h(s);
+        s.cost =  (short) (s.g + s.h);
 	}
 		
 	public int g(BitSet c1, Multiset<Integer> c2, Multiset<String> labels) {

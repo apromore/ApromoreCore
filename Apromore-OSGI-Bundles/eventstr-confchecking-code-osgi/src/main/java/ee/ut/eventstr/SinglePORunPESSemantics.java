@@ -56,7 +56,15 @@ public class SinglePORunPESSemantics <T>{
 	public List<String> getLabels() {
 		return pes.labels;
 	}
-	
+
+	public HashSet<String> getLabels(BitSet events) {
+		HashSet<String> labels = new HashSet<>();
+		for (int e = events.nextSetBit(0); e >= 0; e = events.nextSetBit(e+1))
+			labels.add(pes.labels.get(e));
+
+		return labels;
+	}
+
 	public String getLabel(int e1) {
 		return pes.labels.get(e1);
 	}

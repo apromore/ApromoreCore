@@ -79,14 +79,14 @@ public class ApromoreCompareML {
 	public static void main(String[] args) {
 //		String modelString = "models/btm.bpmn";
 //		String logString = "logs/btl.xes";
-        String folder1 = "fines/";
-		String folder2 = "fines/";
+        String folder1 = "models/";
+		String folder2 = "models/";
 
-		String folder = "modelsFabrizio/";
+		String folder = "models/";
 
-        String logString = folder + "Refund_Manually_Designed_FullLog_FilteredNoEvents.xes";
-        String modelString = folder + "Refund_Manually_Designed_BaseModel.bpmn";
-//		String logString = folder + "bpLog11.xes";
+        String logString = folder + "Purchasing_SubProcess_NoAnalysis_All_Log.xes";
+        String modelString = folder + "Purchasing_SubProcess_NoAnalysis_BaseModel_test4.bpmn";
+//		String logString = folder + "bpLog11.xes";Purchasing_SubProcess_NoAnalysis_BaseModel_test.bpmn
 //		String modelString = folder + "bp2.bpmn";
 //		String logString = folder + "bpLog4.xes";
 //		String modelString = folder + "bp5.bpmn";
@@ -192,6 +192,7 @@ public class ApromoreCompareML {
 
 			DiffMLGraphicalVerbalizerNew verbalizer = comparator.analyzeDifferences(model, log, silents);
 			verbalizer.verbalize();
+			System.out.println("Number of differences: " + verbalizer.getDifferences().getDifferences().size());
 			System.out.println(DifferencesML.toJSON(verbalizer.getDifferences()));
 			for(DifferenceML dif : verbalizer.getDifferences().getDifferences())
 				System.out.println(dif.getSentence() + " ---> " + dif.getRanking());

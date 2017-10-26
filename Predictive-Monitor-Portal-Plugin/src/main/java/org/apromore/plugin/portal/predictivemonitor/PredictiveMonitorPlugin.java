@@ -48,7 +48,9 @@ public class PredictiveMonitorPlugin extends DefaultPortalPlugin {
     private String groupLabel = "Monitor";
 
     @Inject private EventLogService eventLogService;
+    @Inject @Named("kafkaHost") private String kafkaHost;
     @Inject @Named("nirdizatiPath") private File nirdizatiPath;
+    @Inject @Named("pythonPath") private String pythonPath;
 
     @Override
     public String getLabel(Locale locale) {
@@ -71,10 +73,10 @@ public class PredictiveMonitorPlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext portalContext) {
         try {
-            new PredictiveMonitorController(portalContext, eventLogService, nirdizatiPath);
+            new DataflowsController(portalContext, eventLogService, kafkaHost, nirdizatiPath, pythonPath);
 
         } catch (Throwable e) {
-            e.printStackTrace();
+            LOGGER.error("portalContext: " + portalContext + "  eventLogService: " + eventLogService + "  kafkaHost: " + kafkaHost + "  pythonPath: " + pythonPath, e);
             Messagebox.show("Unable to display setup window", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }

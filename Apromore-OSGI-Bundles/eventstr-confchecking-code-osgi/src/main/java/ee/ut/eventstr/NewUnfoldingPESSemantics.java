@@ -160,7 +160,9 @@ public class NewUnfoldingPESSemantics<T>{
 	}
 	
 	public Set<Integer> getPossibleExtensions(Multiset<Integer> conf) {
-		BitSet shiftedConf = mappings.get(conf);
+
+		BitSet shiftedConf = getActualConf(conf);
+
 		Set<Integer> pe = possibleExtensions.get(shiftedConf);
 		if (pe == null) {
 			BitSet conflicting = new BitSet();
@@ -189,13 +191,52 @@ public class NewUnfoldingPESSemantics<T>{
 		}
 		return pe;
 	}
-	
-	public Pair<Multiset<Integer>, Boolean> extend(Multiset<Integer> conf, Integer ext) {
+
+	private BitSet getActualConf(Multiset<Integer> conf) {
+        if(conf == null){
+            System.out.println("Null Conf");
+            return null;
+        }
+
+		BitSet baseline = mappings.get(conf);
+
+        while(true){
+            Multiset<Integer> newConf = HashMultiset.<Integer>create(bS2int(baseline));
+
+            if(mappings.containsKey(newConf)) {
+                BitSet baseline2 = mappings.get(newConf);
+
+                if (baseline.equals(baseline2))
+                    return baseline;
+                baseline = baseline2;
+            }
+            else{
+                if(newConf!=null) {
+                    BitSet bs2 = getBitSet(newConf);
+                    if(possibleExtensions.containsKey(bs2))
+                        return bs2;
+                }
+                return baseline;
+            }
+        }
+	}
+
+    private BitSet getBitSet(Multiset<Integer> newConf) {
+        BitSet bs = new BitSet();
+
+        for(Integer i : newConf)
+            bs.set(i);
+
+        return bs;
+    }
+
+    public Pair<Multiset<Integer>, Boolean> extend(Multiset<Integer> conf, Integer ext) {
 		Multiset<Integer> confp = HashMultiset.create(conf);
-		BitSet shiftedConfp = (BitSet)mappings.get(conf).clone();
+        BitSet shiftedConfp = (BitSet)getActualConf(conf).clone();
+//		BitSet shiftedConfp = (BitSet)mappings.get(conf).clone();
 		confp.add(ext);
 		boolean shift = false;
-		
+
 		if (unfMetadata.getCutoffEvents().contains(ext)) {
 			Integer cutoff = ext;
 			Integer corr = unfMetadata.getCorrespondingEvent(ext);
@@ -204,7 +245,6 @@ public class NewUnfoldingPESSemantics<T>{
 			BiMap<Integer, Integer> iso = unfMetadata.getIsomorphism().get(cutoff);
 			for (Integer ev: iso.keySet())
 				if (conf.contains(ev)) {
-					System.out.println("mapping Ie: " + ev);
 					shiftedConfp.clear(ev);
 					shiftedConfp.set(iso.get(ev));
 				}
@@ -212,6 +252,11 @@ public class NewUnfoldingPESSemantics<T>{
 			shift = true;
 		} else
 			shiftedConfp.set(ext);
+
+//        boolean flag = false;
+//        if(shiftedConfp.get(2) && shiftedConfp.get(3) ){
+//            extend(conf, ext);
+//        }
 		
 		mappings.put(confp, shiftedConfp);
 		
@@ -313,10 +358,15 @@ public class NewUnfoldingPESSemantics<T>{
 	}
 
 	public HashSet<Integer> bS2int(BitSet bs) {
+        if(bs == null) {
+            return null;
+        }
+
 		HashSet<Integer> indexes = new HashSet<>();
 
-		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1))
-			indexes.add(i);
+        if(bs.cardinality() > 0)
+		    for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1))
+			    indexes.add(i);
 
 		return indexes;
 	}
@@ -419,7 +469,6 @@ public class NewUnfoldingPESSemantics<T>{
 		BiMap<Integer, Integer> iso = unfMetadata.getIsomorphism().get(cutoff).inverse();
 		for (Integer ev: iso.keySet())
 			if (conf.get(ev)) {
-				System.out.println("mapping Ie: " + ev);
 				unshiftedConfp.clear(ev);
 				unshiftedConfp.set(iso.get(ev));
 			}
@@ -430,7 +479,6 @@ public class NewUnfoldingPESSemantics<T>{
 	public Integer unshift(Integer ev, Integer cutoff) {
 		Integer result = unfMetadata.getIsomorphism().get(cutoff).inverse().get(ev);
 		if (result != null) {
-			System.out.println("mapping Ie: " + ev);
 			return result;
 		} else
 			return ev;
@@ -443,7 +491,12 @@ public class NewUnfoldingPESSemantics<T>{
 	}
 
 	public Set<String> getPossibleFutureAsLabels(Multiset<Integer> conf) {
-		BitSet shiftedConf = getShifted(conf);
+        BitSet shiftedConf = getActualConf(conf);
+
+//        if(!futures.containsKey(shiftedConf)) {
+//            System.out.println(toDot());
+//            System.out.println("(" + conf + ")enter shift " + shiftedConf);
+//        }
 		BitSet bitset = futures.get(shiftedConf);
 
 		Set<String> set = new HashSet<>();

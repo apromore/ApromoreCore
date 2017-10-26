@@ -20,6 +20,7 @@
 
 package au.edu.qut.processmining.log;
 
+import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -38,7 +39,7 @@ public class LogParser {
     private static final int ENDCODE = -1;
 
 
-    public static SimpleLog getSimpleLog(XLog log) {
+    public static SimpleLog getSimpleLog(XLog log, XEventClassifier xEventClassifier) {
 //        System.out.println("LOGP - starting ... ");
 //        System.out.println("LOGP - input log size: " + log.size());
 
@@ -84,7 +85,7 @@ public class LogParser {
 
             for( eIndex = 0; eIndex < traceSize; eIndex++ ) {
                 event = trace.get(eIndex);
-                label = event.getAttributes().get("concept:name").toString();
+                label = xEventClassifier.getClassIdentity(event);
                 labels.add(label);
             }
         }
@@ -115,7 +116,7 @@ public class LogParser {
             for( eIndex = 0; eIndex < traceSize; eIndex++ ) {
                 totalEvents++;
                 event = trace.get(eIndex);
-                label = event.getAttributes().get("concept:name").toString();
+                label = xEventClassifier.getClassIdentity(event);
                 sTrace += ":" + labelsToIDs.get(label).toString() + ":";
             }
             sTrace += ":" + Integer.toString(ENDCODE) + "::";

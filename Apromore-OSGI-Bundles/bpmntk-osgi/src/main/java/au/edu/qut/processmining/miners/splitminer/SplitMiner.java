@@ -37,6 +37,7 @@ import de.hpi.bpt.graph.algo.rpst.RPST;
 import de.hpi.bpt.graph.algo.rpst.RPSTNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.Vertex;
+import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
@@ -72,7 +73,7 @@ public class SplitMiner {
 
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
-    public BPMNDiagram mineBPMNModel(XLog log, double percentileFrequencyThreshold, double parallelismsThreshold,
+    public BPMNDiagram mineBPMNModel(XLog log, XEventClassifier xEventClassifier, double percentileFrequencyThreshold, double parallelismsThreshold,
                                      DFGPUIResult.FilterType filterType, boolean percentileOnBest,
                                      boolean replaceIORs, boolean removeSelfLoops, SplitMinerUIResult.StructuringTime structuringTime)
     {
@@ -84,7 +85,7 @@ public class SplitMiner {
         this.removeSelfLoops = removeSelfLoops;
         this.structuringTime = structuringTime;
 
-        this.log = LogParser.getSimpleLog(log);
+        this.log = LogParser.getSimpleLog(log, xEventClassifier);
 //        System.out.println("SplitMiner - log parsed successfully");
 
         generateDFGP(percentileFrequencyThreshold, parallelismsThreshold, filterType, percentileOnBest);

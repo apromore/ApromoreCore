@@ -258,8 +258,8 @@ public class ControlFlowDriftDetector_RunStream implements ControlFlowDriftDetec
 		startOfGradDrifts = new ArrayList<>();
 		endOfGradDrifts = new ArrayList<>();
 		LastReadGradDrifts = new ArrayList<>();
-		
-		XLog eventStream = LogStreamer.logStreamer(log, null);
+
+		XLog eventStream = LogStreamer.logStreamer(log, null, logFileName);
 		
 		List<DriftPoint> DriftPointsList = new ArrayList<>();
 		
