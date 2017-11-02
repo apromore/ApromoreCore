@@ -127,7 +127,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 	private long OverallTime = 0;
 
 	private int numOfActivities = 0;
-	int winSizeDividedBy = 10;
+	int winSizeDividedBy = 5;
 	int activityLimit = 35;
 
 	private String driftSPOutput = "";
