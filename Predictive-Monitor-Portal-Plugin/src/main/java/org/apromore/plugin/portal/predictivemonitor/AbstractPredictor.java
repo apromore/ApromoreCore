@@ -28,11 +28,13 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,10 +44,15 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 // Third party packages
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XAttributeBoolean;
+import org.deckfour.xes.model.XAttributeContinuous;
+import org.deckfour.xes.model.XAttributeDiscrete;
+import org.deckfour.xes.model.XAttributeLiteral;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.impl.XAttributeDiscreteImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -111,34 +118,89 @@ public abstract class AbstractPredictor extends ProcessDataflowElement implement
         }
     }
 
+    /**
+     * @throws IllegalArgumentException if <var>log</var> has no columns
+     */
     private static void export(XLog log, File file) throws FileNotFoundException {
         LOGGER.info("Exporting log to " + file);
         try (PrintWriter writer = new PrintWriter(file)) {
-            writer.println("case_id,Resource,AMOUNT_REQ,proctime,time,elapsed,activity_name,label,event_nr,last,remtime");
+
+            // Write header
+            {
+                List<String> headers = new ArrayList<>();
+                headers.add("case_id");
+                for (final XAttribute attribute: log.getGlobalEventAttributes()) {
+                    headers.add(attribute.getKey());
+                }
+                //headers.add("remtime");
+
+                writeCSV(headers, writer);
+            }
+
+            // Write content
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            for (XTrace trace: log) {
+
+            for (final XTrace trace: log) {
                 XEvent lastEvent = trace.get(trace.size() - 1);
                 Date lastTime = ((XAttributeTimestamp) lastEvent.getAttributes().get("time:timestamp")).getValue();
-                for (XEvent event: trace) {
+
+                for (final XEvent event: trace) {
+                    List<String> items = new ArrayList<>();
+                    items.add(trace.getAttributes().get("concept:name").toString());
+                    for (final XAttribute globalEventAttribute: log.getGlobalEventAttributes()) {
+                        XAttribute attribute = event.getAttributes().get(globalEventAttribute.getKey());
+                        if (attribute instanceof XAttributeBoolean) {
+                            items.add(Boolean.toString(((XAttributeBoolean) attribute).getValue()));
+
+                        } else if (attribute instanceof XAttributeContinuous) {
+                            items.add(Double.toString(((XAttributeContinuous) attribute).getValue()));
+
+                        } else if (attribute instanceof XAttributeDiscrete) {
+                            items.add(Long.toString(((XAttributeDiscrete) attribute).getValue()));
+
+                        } else if (attribute instanceof XAttributeLiteral) {
+                            items.add(((XAttributeLiteral) attribute).getValue());
+
+                        } else if (attribute instanceof XAttributeTimestamp) {
+                            items.add(dateFormat.format(((XAttributeTimestamp) attribute).getValue()));
+
+                        } else {
+                            throw new UnsupportedOperationException("Attribute with unsupported type: " + attribute.getKey());
+                        }
+                    }
+
                     Date time = ((XAttributeTimestamp) event.getAttributes().get("time:timestamp")).getValue();
-                    writer.println(
-                        trace.getAttributes().get("concept:name") + "," +
-                        event.getAttributes().get("Resource") + "," +
-                        event.getAttributes().get("AMOUNT_REQ") + "," +
-                        event.getAttributes().get("proctime") + "," +
-                        dateFormat.format(time) + "," +
-                        event.getAttributes().get("elapsed") + "," +
-                        event.getAttributes().get("activity_name") + "," +
-                        event.getAttributes().get("label") + "," +
-                        event.getAttributes().get("event_nr") + "," +
-                        event.getAttributes().get("last") + "," +
-                        Long.toString((lastTime.getTime() - time.getTime()) / 1000)
-                    );
+                    //items.add(Long.toString((lastTime.getTime() - time.getTime()) / 1000));
+
+                    writeCSV(items, writer);
                 }
             }
+
+            LOGGER.info("Exported log to " + file);
         }
-        LOGGER.info("Exported log to " + file);
+    }
+
+    /**
+     * Format a series of strings into a comma separated line.
+     *
+     * @throws IllegalArgumentException if any of the <var>values</var> contains a comma
+     */
+    private static void writeCSV(Iterable<String> values, PrintWriter writer) {
+        Iterator<String> i = values.iterator();
+        if (i.hasNext()) {
+            do {
+                String value = i.next();
+                if (value.indexOf(",") != -1) {
+                    throw new IllegalArgumentException("Fields cannot contain commas: " + value);
+                }
+                writer.print(value);
+                if (i.hasNext()) {
+                    writer.print(",");
+                }
+            } while (i.hasNext());
+        }
+        writer.println();
     }
 
     protected JSONObject createDatasetParam(String tag, XLog log, TrainingAlgorithm trainingAlgorithm, boolean needRemtime)
@@ -173,6 +235,7 @@ public abstract class AbstractPredictor extends ProcessDataflowElement implement
             case "time:timestamp":
             case "event_nr":
             case "label":
+            case "label2":
             case "last":
                 break;
             default:
@@ -199,6 +262,10 @@ public abstract class AbstractPredictor extends ProcessDataflowElement implement
         methodJSON.put("static_cols", new JSONArray(staticCols));
         methodJSON.put("dynamic_cols", new JSONArray(dynamicCols));
         methodJSON.put("cat_cols", new JSONArray(catCols));
+
+        LOGGER.info("Static columns: " + staticCols);
+        LOGGER.info("Dynamic columns: " + dynamicCols);
+        LOGGER.info("Categorical columns: " + catCols);
 
         return json;
     }

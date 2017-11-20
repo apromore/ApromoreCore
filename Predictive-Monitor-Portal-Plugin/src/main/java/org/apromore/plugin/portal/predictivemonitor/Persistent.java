@@ -21,7 +21,7 @@
 package org.apromore.plugin.portal.predictivemonitor;
 
 // Java 2 Standard Edition
-import java.io.File;
+import java.util.List;
 
 // Third party packages
 import org.zkoss.zul.ListModelList;
@@ -31,8 +31,10 @@ import org.zkoss.zul.ListModelList;
  */
 class Persistent {
 
+    final static List<Dataflow> persistentDataflowList = new java.util.ArrayList<>();
+
     /** This is static only because I've been too lazy to implement proper persistence for it yet. */
-    final static ListModelList<Dataflow> dataflows = new ListModelList<>();
+    final static ListModelList<Dataflow> dataflows = new ListModelList<>(persistentDataflowList, true);
 
     /** This is static only because I've been too lazy to implement proper persistence for it yet. */
     final static ListModelList<Predictor> predictors = new ListModelList<>();

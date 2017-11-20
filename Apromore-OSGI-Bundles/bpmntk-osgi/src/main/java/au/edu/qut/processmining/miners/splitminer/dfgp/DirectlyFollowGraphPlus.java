@@ -170,8 +170,8 @@ public class DirectlyFollowGraphPlus {
                 exploreAndRemove();
                 break;
             case DBG:
-                filterWithGuarantees();
-                exploreAndRemove();
+//                filterWithGuarantees();
+//                exploreAndRemove();
                 break;
         }
 

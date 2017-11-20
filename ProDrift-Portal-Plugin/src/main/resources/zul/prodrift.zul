@@ -63,24 +63,11 @@
                                             }else{
                                                 CummulativeChangeRow.visible = false;
                                             }
-                                            if(activityCount.value >= activityLimit.value)
-                                            {
-                                                synLog.selected = false;
-                                                reLog.selected = true;
-                                            }else{
-                                                synLog.selected = true;
-                                                reLog.selected = false;
-                                            }
 
-                                            if(synLog.selected){
-                                                winSizeIntBox.value = maxWinValueEventsSyn.value;
-                                                FWIN.selected = true;
-                                               noiseFilterSpinner.value = 0;
-                                            }else{
-                                                winSizeIntBox.value = maxWinValueEventsReal.value;
-                                                FWIN.selected = true;
-                                                noiseFilterSpinner.value = 5.0;
-                                            }
+                                            winSizeIntBox.value = maxWinValueEvents.value;
+                                            ADWIN.selected = true;
+                                            noiseFilterSpinner.value = 5.0;
+
                                             noiseFilter.visible = true;
                                         }else{
                                             logType.visible = false;
@@ -131,26 +118,6 @@
                                         <checkbox id="gradDriftCBox" width="100%" label="Gradual drift"
                                                   checked="false"/>
                                     </row>
-                                    <row id="logType" visible="true">
-                                        <label value="Number of activities" width="100%"/>
-                                        <listbox id="logTypeLBox" width="100%" multiple="false" checkmark="true"
-                                                 onSelect="if(synLog.selected){
-                                            winSizeIntBox.value = maxWinValueEventsSyn.value;
-
-                                            FWIN.selected = true;
-
-                                            noiseFilterSpinner.value = 0;
-                                        }else{
-                                            winSizeIntBox.value = maxWinValueEventsReal.value;
-                                            FWIN.selected = true;
-                                            noiseFilterSpinner.value = 5.0;
-                                        }
-                                        ">
-                                            <listitem id="synLog" label="Moderate (~30)" selected="true"/>
-                                            <listitem id="reLog" label="Large"/>
-                                        </listbox>
-
-                                    </row>
                                     <row id="winsize" visible="true">
                                         <label value="Window Size" width="100%"/>
                                         <intbox id="winSizeIntBox" value="5000" width="100%"
@@ -160,8 +127,8 @@
                                     <row id="fWinOrAwinChoice">
                                         <label value="Window Type" width="100%"/>
                                         <listbox id="fWinOrAwinLBox" width="100%" multiple="false" checkmark="true">
-                                            <listitem id="ADWIN" label="Adaptive window"/>
-                                            <listitem id="FWIN" label="Fixed window" selected="true"/>
+                                            <listitem id="ADWIN" label="Adaptive window" selected="true"/>
+                                            <listitem id="FWIN" label="Fixed window"/>
                                         </listbox>
                                     </row>
 
@@ -183,11 +150,7 @@
                                         <intbox id="maxWinValueRuns" width="100%" disabled="true" visible="false"/>
                                     </row>
                                     <row spans="2" visible="false">
-                                        <intbox id="maxWinValueEventsSyn" width="100%" disabled="true" visible="false"/>
-                                    </row>
-                                    <row spans="2" visible="false">
-                                        <intbox id="maxWinValueEventsReal" width="100%" disabled="true"
-                                                visible="false"/>
+                                        <intbox id="maxWinValueEvents" width="100%" disabled="true" visible="false"/>
                                     </row>
                                     <row spans="2" visible="false">
                                         <intbox id="activityCount" width="100%" disabled="true"
@@ -195,10 +158,6 @@
                                     </row>
                                     <row spans="2" visible="false">
                                         <intbox id="winSizeCoefficient" width="100%" disabled="true"
-                                                visible="false"/>
-                                    </row>
-                                    <row spans="2" visible="false">
-                                        <intbox id="activityLimit" width="100%" disabled="true"
                                                 visible="false"/>
                                     </row>
                                 </rows>

@@ -154,7 +154,7 @@ public class CreatePredictorController {
                 case 0:  // Case outcome
                     final String positiveLabelValue = positiveLabelTextbox.getValue();
                     trainingAlgorithm.readParametersFromUI(window);
-                    predictor = new CaseOutcomePredictor("Slow?", tag, label, positiveLabelValue, "slow_probability", logName, log, trainingAlgorithm, nirdizatiPath, pythonPath);
+                    predictor = new CaseOutcomePredictor("High " + label + "?", tag, label, positiveLabelValue, label + "_probability", logName, log, trainingAlgorithm, nirdizatiPath, pythonPath);
                     break;
                 case 1:  // Remaining time
                     trainingAlgorithm.readParametersFromUI(window);

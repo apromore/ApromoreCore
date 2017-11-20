@@ -85,7 +85,7 @@
                         oryxEditor1.importJSON(json, true);
                     };
 
-                    ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys) {
+                    ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys, annotations) {
 
                         // Find the shapes corresponding to the function arguments resource IDs
                         function indexJSON(json) {
@@ -123,6 +123,45 @@
                             json.childShapes.push(addition);
                             shapes[id] = addition;
                             return addition;
+                        };
+
+                        function addAssociation(id, source, target, waypoints) {
+                            id = uuid();
+
+                            function findCenter(shape) {
+                                return { x: (shape.bounds.lowerRight.x - shape.bounds.upperLeft.x)/2, y: (shape.bounds.lowerRight.y - shape.bounds.upperLeft.y)/2 }; 
+                            };
+
+                            function findLeftEdge(shape) {
+                                return { x: 0, y: (shape.bounds.lowerRight.y - shape.bounds.upperLeft.y)/2 }; 
+                            };
+
+                            var addition = {
+                                "childShapes": [],
+                                "dockers": [
+                                    findCenter(shapes[source]),
+                                    findLeftEdge(shapes[target])
+                                ],
+                                "incoming": [],
+                                "labels": [],
+                                "outgoing": [
+                                    { "resourceId": target }
+                                ],
+                                "properties": {
+                                    "bordercolor": "#FF0000"
+                                },
+                                "resourceId": id,
+                                "stencil": { "id": "Association_Undirected" },
+                                "source": { "resourceId": source },
+                                "target": { "resourceId": target }
+                            };
+                            if (waypoints) {
+                                var endpoint = addition.dockers.pop();
+                                addition.dockers = addition.dockers.concat(waypoints);
+                                addition.dockers.push(endpoint);
+                            }
+                            json.childShapes.push(addition);
+                            shapes[source].outgoing.push({ resourceId: id });
                         };
 
                         function addSequenceFlow(id, source, target, waypoints) {
@@ -425,6 +464,14 @@
 			default:
                             alert("Unsupported difference type \"" + type + "\"");
                             return;
+                        }
+
+                        // Add annotation text
+                        if (annotations) {
+                            var anchor = shapeCenter(shapes[annotations[0]]);
+                            var balloon = addFlowNode("sid-balloon", "TextAnnotation", anchor.x + 100, anchor.y - 100, 100, 50);
+                            balloon["properties"]["text"] = annotations[1];
+                            addAssociation("sid-anchor-balloon", annotations[0], balloon.resourceId);
                         }
 
                         reloadJSON(json);

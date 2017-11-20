@@ -287,7 +287,7 @@ public class XLogManager {
 		XLog xlog = null;
 		try {
 			xlog = XLogManager.openLog(logFile, name);
-			XLog eventStream = LogStreamer.logStreamer(xlog, activityCount);
+			XLog eventStream = LogStreamer.logStreamer(xlog, activityCount, name);
 			caseCount.append(xlog.size());
 			eventCount.append(eventStream.size());
 		} catch (Exception e) {
@@ -303,7 +303,7 @@ public class XLogManager {
 			StringBuilder activityCount)
 	{
 		try {
-			XLog eventStream = LogStreamer.logStreamer(logFile, activityCount);
+			XLog eventStream = LogStreamer.logStreamer(logFile, activityCount, name);
 			caseCount.append(logFile.size());
 			eventCount.append(eventStream.size());
 		} catch (Exception e) {

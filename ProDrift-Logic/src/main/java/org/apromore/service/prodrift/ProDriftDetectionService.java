@@ -36,7 +36,6 @@ public interface ProDriftDetectionService {
      * @param xlog the log
      * @param logFileName log's name
      * @param isEventBased event based or run based
-     * @param isSynthetic syntheric log or real-life
      * @param withGradual detect gradual drift or not
      * @param winSize the window size
      * @param isAdwin Fixed window size or Adaptive window size("FWIN" or "ADWIN")
@@ -49,7 +48,7 @@ public interface ProDriftDetectionService {
      * @return the ProDriftDetectionResult
      * @throws ProDriftDetectionException if the drift detection failed
      */
-    ProDriftDetectionResult proDriftDetector(XLog xlog, String logFileName, boolean isEventBased, boolean isSynthetic,
+    ProDriftDetectionResult proDriftDetector(XLog xlog, String logFileName, boolean isEventBased,
                                              boolean withGradual, int winSize, boolean isAdwin, float noiseFilterPercentage,
                                              boolean withConflict, boolean withCharacterization, int cummulativeChange/*,
                                              Rengine engineR*/) throws ProDriftDetectionException;
