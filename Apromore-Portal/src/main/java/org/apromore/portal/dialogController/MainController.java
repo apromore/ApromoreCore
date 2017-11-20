@@ -25,12 +25,14 @@ import org.apromore.model.*;
 import org.apromore.model.Detail;
 import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.SessionTab;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
+import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.custom.gui.tab.PortalTab;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.dialogController.dto.VersionDetailType;
@@ -87,6 +89,8 @@ public class MainController extends BaseController implements MainControllerInte
     private String majorVersionNumber;
     private String minorVersionNumber;
     private String buildDate;
+
+    private PortalPlugin logVisualizerPlugin = null;
 	
 	public static MainController getController() {
         return controller;
@@ -432,6 +436,20 @@ public class MainController extends BaseController implements MainControllerInte
             Clients.evalJavaScript(instruction);
         } catch (Exception e) {
             Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+
+    public void visualizeLog() {
+        if(logVisualizerPlugin == null) {
+            for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
+                if (plugin.getName().equals("Log Visualizer")) {
+                    logVisualizerPlugin = plugin;
+                    break;
+                }
+            }
+        }
+        if(logVisualizerPlugin != null) {
+            logVisualizerPlugin.execute(new PluginPortalContext(this));
         }
     }
 

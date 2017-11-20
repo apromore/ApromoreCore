@@ -290,7 +290,7 @@ public class LogVisualizerController {
                     setArcAndActivityRatios();
                 }
             });
-            this.slidersWindow.addEventListener("onOpen", new EventListener<Event>() {
+            this.slidersWindow.addEventListener("onLoaded", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     setArcAndActivityRatios();
                 }

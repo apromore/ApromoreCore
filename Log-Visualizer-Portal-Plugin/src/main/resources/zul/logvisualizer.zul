@@ -189,6 +189,7 @@
 
             zk.afterMount(function() {
                 init();
+                zAu.send(new zk.Event(zk.Widget.$('$win'), 'onLoaded'));
             });
         </script>
     </vbox>
