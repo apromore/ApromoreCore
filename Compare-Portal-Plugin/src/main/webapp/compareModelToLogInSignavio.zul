@@ -85,7 +85,9 @@
                         oryxEditor1.importJSON(json, true);
                     };
 
-                    ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys) {
+                    ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys, annotations) {
+
+                        annotations = [ start[0], "Lorem ipsum" ];
 
                         // Find the shapes corresponding to the function arguments resource IDs
                         function indexJSON(json) {
@@ -425,6 +427,15 @@
 			default:
                             alert("Unsupported difference type \"" + type + "\"");
                             return;
+                        }
+
+                        // Add annotation text
+                        {
+/*
+                            var anchor = shapeCenter(shapes[annotations[0]);
+                            var balloon = addFlowNode("sid-balloon", "Task", anchor, 50, 100, 80);
+                            addSequenceFlow("sid-anchor-balloon", annotations[0], shapes[annotations[0], balloon);
+*/
                         }
 
                         reloadJSON(json);
