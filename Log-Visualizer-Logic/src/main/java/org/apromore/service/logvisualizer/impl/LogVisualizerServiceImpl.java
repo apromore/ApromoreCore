@@ -34,6 +34,7 @@ import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.impl.XLogImpl;
 import org.eclipse.collections.api.iterator.MutableIntIterator;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.IntList;
@@ -59,6 +60,8 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
+import org.processmining.models.graphbased.directed.bpmn.elements.Event;
 import org.processmining.plugins.bpmn.BpmnDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,13 +160,14 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         try {
 //            log = ImportEventLog.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/IdeaProjects/ApromoreCodeServerNew/Compare-Logic/src/test/resources/CAUSCONC-1/bpLog3.xes");
 //            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/Raw data after import.xes.gz");
-            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Users/conforti/Downloads/BPIC13_i.xes.gz");
-//            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Demonstration examples/Discover Process Model/Synthetic Log with Subprocesses.xes.gz");
+//            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Users/conforti/Downloads/BPIC13_i.xes.gz");
+            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/Dropbox/Demonstration examples/Discover Process Model/Synthetic Log with Subprocesses.xes.gz");
 //            log = LogImporter.importFromFile(new XFactoryNaiveImpl(), "/Volumes/Data/SharedFolder/Logs/BPI2017 - Loan Application (NoiseFilter).xes.gz");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        JSONArray s = l.generateJSONArrayFromLog(log, 0, 100, FREQUENCY, MEAN);
+        XLog flog = l.generateFilteredLog(log, 0, 100);
+//        JSONArray s = l.generateJSONArrayFromLog(log, 0, 100, FREQUENCY, MEAN);
 //        JSONArray s1 = l.generateJSONArrayFromLog(log, 0.4, 0, true);
 //        System.out.println(s);
 //        System.out.println(s1);
@@ -249,6 +253,46 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return null;
     }
 
+    @Override
+    public BPMNDiagram generateBPMNFromLog(XLog log, double activities, double arcs, boolean frequency_vs_duration, int avg_vs_min_vs_max) {
+        try {
+            BPMNDiagram bpmnDiagram = generateDiagramFromLog(log, activities, arcs, frequency_vs_duration, avg_vs_min_vs_max);
+            return insertBPMNGateways(bpmnDiagram);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public XLog generateFilteredLog(XLog log, double activities, double arcs) {
+        initializeDatastructures();
+        log = removeUnrequiredEvents(log);
+        List<IntList> simplified_log = simplifyLog(log);
+        List<LongList> simplified_times_log = simplifyTimesLog(log);
+        List<IntList> filtered_log = filterLog(simplified_log, simplified_times_log, activities);
+
+        XFactoryNaiveImpl factory = new XFactoryNaiveImpl();
+        XLog filtered_xlog = factory.createLog(log.getAttributes());
+        for(int trace = 0; trace < filtered_log.size(); trace++) {
+            XTrace filtered_xtrace = factory.createTrace(log.get(trace).getAttributes());
+            IntList filtered_trace = filtered_log.get(trace);
+            int unfiltered_event = 0;
+            for(int event = 1; event < filtered_trace.size() - 1; event++) {
+                while(!full_classifier.getClassIdentity(log.get(trace).get(unfiltered_event)).equals(getEventFullName(filtered_trace.get(event)))) {
+                    unfiltered_event++;
+                }
+                filtered_xtrace.add(log.get(trace).get(unfiltered_event));
+                unfiltered_event++;
+            }
+            if(filtered_xtrace.size() > 0) {
+                filtered_xlog.add(filtered_xtrace);
+            }
+        }
+
+        return filtered_xlog;
+    }
+
     private BPMNDiagram generateDiagramFromLog(XLog log, double activities, double arcs, boolean frequency_vs_duration, int avg_vs_min_vs_max) {
         initializeDatastructures();
         log = removeUnrequiredEvents(log);
@@ -268,7 +312,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             BPMNNode source = map.get(arc.getOne());
             BPMNNode target = map.get(arc.getTwo());
             if(frequency_vs_duration == FREQUENCY) {
-                if(avg_vs_min_vs_max == MEAN) {
+                if(avg_vs_min_vs_max == TOTAL) {
                     bpmnDiagram.addFlow(source, target, "[" + arcs_frequency.get(arc) + "]");
                 }else if(avg_vs_min_vs_max == MAX) {
                     bpmnDiagram.addFlow(source, target, "[" + arcs_max_frequency.get(arc) + "]");
@@ -473,8 +517,9 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return simplified_times_log;
     }
 
-    private void filterLog(List<IntList> log, List<LongList> times_log, double activities) {
+    private List<IntList> filterLog(List<IntList> log, List<LongList> times_log, double activities) {
         retained_activities = selectActivities(activities);
+        List<IntList> filtered_log = new ArrayList<>(log.size());
 
         for(int t = 0; t < log.size(); t++) {
             IntList trace = log.get(t);
@@ -488,6 +533,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                     filtered_time_trace.add(time_trace.get(i));
                 }
             }
+            filtered_log.add(filtered_trace);
 
             IntHashSet not_reached = new IntHashSet();
             IntHashSet not_reaching = new IntHashSet();
@@ -557,6 +603,8 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 return Integer.compare(o2.getTwo(), o1.getTwo());
             }
         });
+
+        return filtered_log;
     }
 
     private void updateArcFrequency(Pair<Integer, Integer> arc, int frequency) {
@@ -830,6 +878,46 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return graph;
     }
 
+    private BPMNDiagram insertBPMNGateways(BPMNDiagram bpmnDiagram) {
+        BPMNDiagram gatewayDiagram = new BPMNDiagramImpl(bpmnDiagram.getLabel());
+
+        Map<BPMNNode, BPMNNode> incoming = new HashMap<>();
+        Map<BPMNNode, BPMNNode> outgoing = new HashMap<>();
+
+        for(BPMNNode node : bpmnDiagram.getNodes()) {
+            BPMNNode node1;
+            if(node.getLabel().equals(start_name)) {
+                node1 = gatewayDiagram.addEvent(start_name, Event.EventType.START, Event.EventTrigger.NONE, Event.EventUse.CATCH, false, null);
+            }else if(node.getLabel().equals(end_name)) {
+                node1 = gatewayDiagram.addEvent(end_name, Event.EventType.END, Event.EventTrigger.NONE, Event.EventUse.THROW, false, null);
+            }else {
+                node1 = gatewayDiagram.addActivity(node.getLabel(), false, false, false, false, false);
+            }
+
+            if(bpmnDiagram.getInEdges(node).size() > 1) {
+                Gateway join = gatewayDiagram.addGateway("", Gateway.GatewayType.DATABASED);
+                gatewayDiagram.addFlow(join, node1, "");
+                incoming.put(node, join);
+            }else {
+                incoming.put(node, node1);
+            }
+
+            if(bpmnDiagram.getOutEdges(node).size() > 1) {
+                Gateway split = gatewayDiagram.addGateway("", Gateway.GatewayType.DATABASED);
+                gatewayDiagram.addFlow(node1, split, "");
+                outgoing.put(node, split);
+            }else {
+                outgoing.put(node, node1);
+            }
+        }
+
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
+            gatewayDiagram.addFlow(outgoing.get(edge.getSource()), incoming.get(edge.getTarget()), "");
+        }
+
+        return gatewayDiagram;
+    }
+
     private String convertMilliseconds(String number) {
         Double milliseconds = Double.parseDouble(number);
         Double seconds = milliseconds / 1000.0;
@@ -904,7 +992,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 return getEventFrequency(min, avg_vs_max_vs_min, complete_event);
             }
         }else {
-            if(avg_vs_max_vs_min == MEAN) return activity_frequency.get(getEventNumber(event));
+            if(avg_vs_max_vs_min == TOTAL) return activity_frequency.get(getEventNumber(event));
             else if(avg_vs_max_vs_min == MAX) return activity_max_frequency.get(getEventNumber(event));
             else return activity_min_frequency.get(getEventNumber(event));
         }

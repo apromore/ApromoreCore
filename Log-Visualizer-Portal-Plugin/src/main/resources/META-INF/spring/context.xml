@@ -36,6 +36,11 @@
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="logVisualizerService" interface="org.apromore.service.logvisualizer.LogVisualizerService"/>
 
+    <reference id="processService" interface="org.apromore.service.ProcessService"/>
+    <reference id="canoniserService" interface="org.apromore.service.CanoniserService"/>
+    <reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
+    <reference id="logAnimationPlugin" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
+
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.logvisualizer" />
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
