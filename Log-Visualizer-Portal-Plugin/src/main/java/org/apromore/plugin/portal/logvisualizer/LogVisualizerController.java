@@ -304,7 +304,7 @@ public class LogVisualizerController {
         }
     }
 
-    private void visualizeFrequency() {
+    private void visualizeFrequency() throws InterruptedException {
         frequency_VS_duration = LogVisualizerServiceImpl.FREQUENCY;
         if (absolute_frequency.isChecked()) {
             total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.TOTAL;
@@ -318,7 +318,7 @@ public class LogVisualizerController {
     }
 
 
-    private void visualizeDuration() {
+    private void visualizeDuration() throws InterruptedException {
         frequency_VS_duration = LogVisualizerServiceImpl.DURATION;
         if(total_duration.isChecked()){
             total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.TOTAL;
