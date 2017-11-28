@@ -1,0 +1,7 @@
+(sync-start-t0t1 )
+(sync-b-t1t2 )
+(sync-a-t2t3 )
+(sync-c-t3t4 )
+(sync-down-t4t5 )
+(del-end_activity-t5-t6 )
+; cost = 1 (general cost)

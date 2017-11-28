@@ -1,0 +1,6 @@
+/Users/Giuseppe/Desktop/Fast-Downard OK MAC/builds/release64/CMakeFiles/rebuild_cache.dir
+/Users/Giuseppe/Desktop/Fast-Downard OK MAC/builds/release64/CMakeFiles/edit_cache.dir
+/Users/Giuseppe/Desktop/Fast-Downard OK MAC/builds/release64/CMakeFiles/translate.dir
+/Users/Giuseppe/Desktop/Fast-Downard OK MAC/builds/release64/search/CMakeFiles/rebuild_cache.dir
+/Users/Giuseppe/Desktop/Fast-Downard OK MAC/builds/release64/search/CMakeFiles/edit_cache.dir
+/Users/Giuseppe/Desktop/Fast-Downard OK MAC/builds/release64/search/CMakeFiles/downward.dir

@@ -65,6 +65,9 @@
         <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
         <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
 
+        <include name="LTL-Conf-Logic/target/ltl-conf-logic-1.1.jar"/>
+        <include name="LTL-Conf-Portal-Plugin/target/ltl-conf-portal-plugin-1.1.war"/>
+
         <include name="APM-Logic/target/apm-logic-1.1.jar"/>
         <include name="APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
 
@@ -126,6 +129,9 @@
         <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
         <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
 
+        <include name="LTL-Conf-Logic/target/ltl-conf-logic-1.1.jar"/>
+        <include name="LTL-Conf-Portal-Plugin/target/ltl-conf-portal-plugin-1.1.war"/>
+        
         <include name="APM-Logic/target/apm-logic-1.1.jar"/>
         <include name="APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
 
@@ -200,6 +206,9 @@
         <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
         <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
 
+        <include name="LTL-Conf-Logic/target/ltl-conf-logic-1.1.jar"/>
+        <include name="LTL-Conf-Portal-Plugin/target/ltl-conf-portal-plugin-1.1.war"/>
+        
         <include name="APM-Logic/target/apm-logic-1.1.jar"/>
         <include name="APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
 
@@ -414,9 +423,14 @@
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/apm-verification-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
+                <include name="**/target/prom-pnml-osgi-1.1.jar"/>	
+		<include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+		<include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
+                <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
             </fileset>
             <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
             <fileset dir="Supplements/">
@@ -478,9 +492,14 @@
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/apm-verification-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
+		<include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
+		<include name="**/target/prom-pnml-osgi-1.1.jar"/>
+		<include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+		<include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
+                <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
             </fileset>
 
             <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
@@ -550,10 +569,14 @@
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/apm-verification-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
+                <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
+                <include name="**/target/prom-pnml-osgi-1.1.jar"/>
+                <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+                <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
-
+                <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
                 <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
                 <include name="**/target/json-osgi-20090211.jar"/>
                 -->

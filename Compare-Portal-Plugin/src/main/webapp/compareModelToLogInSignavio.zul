@@ -461,7 +461,7 @@
                             addSequenceFlow("sid-a-end", a[0], end[0], [ae]);
                             break;
 
-			default:
+			            default:
                             alert("Unsupported difference type \"" + type + "\"");
                             return;
                         }
@@ -475,12 +475,12 @@
                         }
 
                         reloadJSON(json);
-
                         // Reduce the opacity of greyed-out elements
                         shapes = indexJSON(this._canvas.toJSON());
                         for (var i = greys.length; i--;) {
                             shapes[greys[i]].getShape().node.setAttributeNS(null, "style", "opacity: 0.25");
                         }
+
                         console.dir(json);
 
                         ORYX.Editor.prototype.repairMLDifference = function() {
@@ -517,29 +517,28 @@
                             function stringify(obj) {
 
                                 var t = typeof (obj);
-	                        if (t != "object" || obj === null) {
+	                            if (t != "object" || obj === null) {
 
-		                    // simple data type
-		                    if (t == "string") obj = '"'+obj+'"';
-		                    return String(obj);
+                                    // simple data type
+                                    if (t == "string") obj = '"'+obj+'"';
+                                    return String(obj);
 
-	                        }
-	                        else {
+	                            }
+                                else {
+                                    // recurse array or object
+                                    var n, v, json = [], arr = (obj && obj.constructor == Array);
 
-		                    // recurse array or object
-		                    var n, v, json = [], arr = (obj && obj.constructor == Array);
+                                    for (n in obj) {
+                                        v = obj[n]; t = typeof(v);
 
-		                    for (n in obj) {
-			                v = obj[n]; t = typeof(v);
-
-			                if (t == "string") v = '"'+v+'"';
-			                else if (t == "object" && v !== null) v = stringify(v);
+                                        if (t == "string") v = '"'+v+'"';
+                                        else if (t == "object" && v !== null) v = stringify(v);
 
                                         if (t != "function") json.push((arr ? "" : '"' + n + '":') + String(v));
-		                    }
+                                    }
 
-		                    return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
-	                        }
+                                    return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
+                                }
                             };
 
                             // Convert the repaired model from JSON to BPMN and re-invoke the comparison logic
@@ -574,15 +573,15 @@
                     window.onOryxResourcesLoaded = function() {
                         var createEditor = function(id, jsonData) {
                             var editor = new ORYX.Editor ({
-				model : {
-				    id: id,
-				    stencilset : {
+				                model : {
+				                    id: id,
+				                    stencilset : {
                                         url : '${arg.url}',
                                         namespace : '${arg.url}'
                                     },
-				},
-				fullscreen : false
-			    });
+				                },
+				                fullscreen : false
+			                });
 
                             // Import new process model
                             new Ajax.Request('${arg.importPath}', {
@@ -627,7 +626,7 @@
                             return editor;
                         };
 
-			oryxEditor1 = createEditor('oryx-canvas1', '${arg.jsonData}');
+			            oryxEditor1 = createEditor('oryx-canvas1', '${arg.jsonData}');
 
                         Ext.select('svg').setVisible(false);
 

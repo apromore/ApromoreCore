@@ -1,0 +1,8 @@
+(sync-getdata-t0t1 )
+(sync-getanswersheet-t1t2 )
+(sync-singlecorrection-t2t3 )
+(sync-checkstateofcorrection-t3t4 )
+(sync-getanswersheet-t4t5 )
+(sync-singlecorrection-t5t6 )
+(sync-checkstateofcorrection-t6t7 )
+; cost = 0 (general cost)

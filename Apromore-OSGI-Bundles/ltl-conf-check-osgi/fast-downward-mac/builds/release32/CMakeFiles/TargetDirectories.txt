@@ -1,0 +1,6 @@
+/Users/Giuseppe/Fast-Downard/builds/release32/CMakeFiles/rebuild_cache.dir
+/Users/Giuseppe/Fast-Downard/builds/release32/CMakeFiles/edit_cache.dir
+/Users/Giuseppe/Fast-Downard/builds/release32/CMakeFiles/translate.dir
+/Users/Giuseppe/Fast-Downard/builds/release32/search/CMakeFiles/rebuild_cache.dir
+/Users/Giuseppe/Fast-Downard/builds/release32/search/CMakeFiles/edit_cache.dir
+/Users/Giuseppe/Fast-Downard/builds/release32/search/CMakeFiles/downward.dir
