@@ -295,9 +295,10 @@ public class ModelToLogComparisonController extends BaseController {
                     difference.optJSONArray("b")        + "," +
                     difference.optJSONArray("newTasks") + "," +
                     difference.optJSONArray("end")      + "," +
-                    difference.optJSONArray("start2")    + "," +
-                    difference.optJSONArray("end2")    + "," +
-                    difference.optJSONArray("greys")    + ")";
+                    difference.optJSONArray("start2")   + "," +
+                    difference.optJSONArray("end2")     + "," +
+                    difference.optJSONArray("greys")    + "," +
+                    difference.optJSONArray("annotations") + ")";
     }
 
     /**

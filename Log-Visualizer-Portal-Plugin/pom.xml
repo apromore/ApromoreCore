@@ -35,7 +35,7 @@
     <!-- Unique name of the plug-in -->
     <artifactId>log-visualizer-portal-plugin</artifactId>
     <version>1.1</version>
-    <name>Log visualizer portal plugin</name>
+    <name>Log Visualizer Portal Plugin</name>
     <description>Some description</description>
 
     <build>
@@ -57,6 +57,10 @@
                             <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             org.apromore.plugin,
                             org.springframework.beans.factory.aspectj,
+                            org.processmining.contexts.*;version="[6.0,10.0)",
+                            org.processmining.framework.*;version="[6.0,10.0)",
+                            org.processmining.models.*;version="[6.0,10.0)",
+                            org.processmining.plugins.*;version="[6.0,10.0)",
                             *
                         </Import-Package>
                         <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGi bundle
@@ -95,6 +99,22 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>stagemining-portal-plugin</artifactId>
             <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom6-osgi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-portal</artifactId>
+            <version>1.1</version>
+            <classifier>classes</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>log-animation-portal-plugin</artifactId>
+            <version>1.0</version>
+            <classifier>classes</classifier>
         </dependency>
     </dependencies>
 </project>

@@ -18,7 +18,8 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window width="100%" height="100%" sizable="true" maximizable="true" closable="true" position="center" title="Log Visualizer" contentStyle="overflow:auto">
+<?component name="menuitem" extends="menuitem" autocheck="true" checkmark="true" ?>
+<window id="win" width="100%" height="100%" sizable="true" maximizable="true" closable="true" position="center" title="Log Visualizer" contentStyle="overflow:auto">
     <vbox>
         <grid>
             <columns>
@@ -41,35 +42,43 @@
         </grid>
         <grid>
             <columns>
-                <column width="25%"/>
-                <column width="25%"/>
-                <column width="25%"/>
-                <column width="25%"/>
+                <column width="20%"/>
+                <column width="20%"/>
+                <column width="20%"/>
+                <column width="20%"/>
+                <column width="20%"/>
             </columns>
             <rows>
                 <row align="center">
                     <combobutton id="frequency" label="Frequency">
                         <menupopup>
-                            <menuitem id="absolute_frequency" label="Absolute"/>
-                            <menuitem id="max_frequency" label="Max"/>
-                            <menuitem id="min_frequency" label="Min"/>
+                            <menuitem id="absolute_frequency" label="Absolute" checked="true" onCheck='max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+                            <menuitem id="max_frequency" label="Max" onCheck='absolute_frequency.setChecked(false);min_frequency.setChecked(false)' />
+                            <menuitem id="min_frequency" label="Min" onCheck='max_frequency.setChecked(false);absolute_frequency.setChecked(false)' />
                         </menupopup>
                     </combobutton>
                     <combobutton id="duration" label="Performance">
                         <menupopup>
-                            <menuitem id="total_duration" label="Absolute"/>
-                            <menuitem id="median_duration" label="Avg"/>
-                            <menuitem id="mean_duration" label="Median"/>
-                            <menuitem id="max_duration" label="Max"/>
-                            <menuitem id="min_duration" label="Min"/>
+                            <menuitem id="total_duration" label="Absolute" checked="true" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+                            <menuitem id="median_duration" label="Avg" onCheck='total_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+                            <menuitem id="mean_duration" label="Median" onCheck='median_duration.setChecked(false);total_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+                            <menuitem id="max_duration" label="Max" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);total_duration.setChecked(false);min_duration.setChecked(false)' />
+                            <menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
                         </menupopup>
                     </combobutton>
-                    <button id="logvisualizer_layout_dagre" xmlns:w="client" w:onClick="layout();" label="Layout (Dagre)" />
-                    <button id="logvisualizer_layout_cola" xmlns:w="client" w:onClick="layout_cola();" label="Layout (Cola)" />
+                    <combobutton id="layout" label="Layout">
+                        <menupopup>
+                            <menuitem id="logvisualizer_layout_dagre" onClick='Clients.evalJavaScript("layout()")' label="Dagre" checked="true" onCheck='logvisualizer_layout_cola.setChecked(false)' />
+                            <menuitem id="logvisualizer_layout_cola" onClick='Clients.evalJavaScript("layout_cola()")' label="Cola" onCheck='logvisualizer_layout_dagre.setChecked(false)' />
+                        </menupopup>
+                    </combobutton>
+                    <button id="download_pdf" onClick='Clients.evalJavaScript("downloadPDF()")' label="Download" />
+                    <button id="animate" onClick='Clients.evalJavaScript("animate()")' label="Animate" />
                 </row>
             </rows>
         </grid>
         <n:div id="myDiagramDiv" xmlns:n="native" style="height:80vh; width:100vh" />
+        <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
         <script type="text/javascript">
             var diagram;
 
@@ -162,8 +171,25 @@
                 diagram.elements().layout({"name": 'cola', zoom: cy.zoom(), pan: cy.pan(), randomize:false, avoidOverlap:true, flow:{ axis: 'x', minSeparation: 150 }});
             }
 
+            function downloadPDF() {
+                // only jpeg is supported by jsPDF
+                var imgData = cy.png({full:true, maxWidth:2970, maxHeight:2100});
+                var pdf = new jsPDF('l', 'mm', 'a1');
+
+                pdf.setFontSize(40);
+                pdf.text(10, 20, "Powered by Apromore");
+                pdf.addImage(imgData, 'PNG', 20, 40, imgData.width, imgData.height);
+                pdf.save("download.pdf");
+            }
+
+            function animate() {
+                var json = cy.json();
+                zAu.send(new zk.Event(zk.Widget.$('$animate'), 'onAnimate', json));
+            }
+
             zk.afterMount(function() {
                 init();
+                zAu.send(new zk.Event(zk.Widget.$('$win'), 'onLoaded'));
             });
         </script>
     </vbox>

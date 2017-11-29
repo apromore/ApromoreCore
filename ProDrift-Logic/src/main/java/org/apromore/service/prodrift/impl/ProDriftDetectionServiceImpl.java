@@ -61,13 +61,13 @@ public class ProDriftDetectionServiceImpl implements ProDriftDetectionService {
     public ProDriftDetectionServiceImpl() {}
 
     /**
-     * @see ProDriftDetectionService#proDriftDetector(XLog, String, boolean, boolean,
+     * @see ProDriftDetectionService#proDriftDetector(XLog, String, boolean,
             boolean, int, boolean, float, boolean, boolean, int);
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public ProDriftDetectionResult proDriftDetector(XLog xlog, String logFileName, boolean isEventBased, boolean isSynthetic,
+    public ProDriftDetectionResult proDriftDetector(XLog xlog, String logFileName, boolean isEventBased,
                                                     boolean withGradual, int winSize, boolean isAdwin, float noiseFilterPercentage,
                                                     boolean withConflict, boolean withCharacterization, int cummulativeChange/*, Rengine engineR*/) throws ProDriftDetectionException {
 

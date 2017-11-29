@@ -144,7 +144,6 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
 
         if( structProcess ) diagram = ibpstructService.structureProcess(diagram);
 
-        System.out.println("Output file:");
         UIContext context = new UIContext();
         UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         UIPluginContext uiPluginContext = context.getMainPluginContext();

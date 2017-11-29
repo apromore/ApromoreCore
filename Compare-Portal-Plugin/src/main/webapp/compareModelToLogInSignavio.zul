@@ -85,7 +85,7 @@
                         oryxEditor1.importJSON(json, true);
                     };
 
-                    ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys) {
+                    ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys, annotations) {
 
                         // Find the shapes corresponding to the function arguments resource IDs
                         function indexJSON(json) {
@@ -123,6 +123,45 @@
                             json.childShapes.push(addition);
                             shapes[id] = addition;
                             return addition;
+                        };
+
+                        function addAssociation(id, source, target, waypoints) {
+                            id = uuid();
+
+                            function findCenter(shape) {
+                                return { x: (shape.bounds.lowerRight.x - shape.bounds.upperLeft.x)/2, y: (shape.bounds.lowerRight.y - shape.bounds.upperLeft.y)/2 }; 
+                            };
+
+                            function findLeftEdge(shape) {
+                                return { x: 0, y: (shape.bounds.lowerRight.y - shape.bounds.upperLeft.y)/2 }; 
+                            };
+
+                            var addition = {
+                                "childShapes": [],
+                                "dockers": [
+                                    findCenter(shapes[source]),
+                                    findLeftEdge(shapes[target])
+                                ],
+                                "incoming": [],
+                                "labels": [],
+                                "outgoing": [
+                                    { "resourceId": target }
+                                ],
+                                "properties": {
+                                    "bordercolor": "#FF0000"
+                                },
+                                "resourceId": id,
+                                "stencil": { "id": "Association_Undirected" },
+                                "source": { "resourceId": source },
+                                "target": { "resourceId": target }
+                            };
+                            if (waypoints) {
+                                var endpoint = addition.dockers.pop();
+                                addition.dockers = addition.dockers.concat(waypoints);
+                                addition.dockers.push(endpoint);
+                            }
+                            json.childShapes.push(addition);
+                            shapes[source].outgoing.push({ resourceId: id });
                         };
 
                         function addSequenceFlow(id, source, target, waypoints) {
@@ -422,18 +461,26 @@
                             addSequenceFlow("sid-a-end", a[0], end[0], [ae]);
                             break;
 
-			default:
+			            default:
                             alert("Unsupported difference type \"" + type + "\"");
                             return;
                         }
 
-                        reloadJSON(json);
+                        // Add annotation text
+                        if (annotations) {
+                            var anchor = shapeCenter(shapes[annotations[0]]);
+                            var balloon = addFlowNode("sid-balloon", "TextAnnotation", anchor.x + 100, anchor.y - 100, 100, 50);
+                            balloon["properties"]["text"] = annotations[1];
+                            addAssociation("sid-anchor-balloon", annotations[0], balloon.resourceId);
+                        }
 
+                        reloadJSON(json);
                         // Reduce the opacity of greyed-out elements
                         shapes = indexJSON(this._canvas.toJSON());
                         for (var i = greys.length; i--;) {
                             shapes[greys[i]].getShape().node.setAttributeNS(null, "style", "opacity: 0.25");
                         }
+
                         console.dir(json);
 
                         ORYX.Editor.prototype.repairMLDifference = function() {
@@ -470,29 +517,28 @@
                             function stringify(obj) {
 
                                 var t = typeof (obj);
-	                        if (t != "object" || obj === null) {
+	                            if (t != "object" || obj === null) {
 
-		                    // simple data type
-		                    if (t == "string") obj = '"'+obj+'"';
-		                    return String(obj);
+                                    // simple data type
+                                    if (t == "string") obj = '"'+obj+'"';
+                                    return String(obj);
 
-	                        }
-	                        else {
+	                            }
+                                else {
+                                    // recurse array or object
+                                    var n, v, json = [], arr = (obj && obj.constructor == Array);
 
-		                    // recurse array or object
-		                    var n, v, json = [], arr = (obj && obj.constructor == Array);
+                                    for (n in obj) {
+                                        v = obj[n]; t = typeof(v);
 
-		                    for (n in obj) {
-			                v = obj[n]; t = typeof(v);
-
-			                if (t == "string") v = '"'+v+'"';
-			                else if (t == "object" && v !== null) v = stringify(v);
+                                        if (t == "string") v = '"'+v+'"';
+                                        else if (t == "object" && v !== null) v = stringify(v);
 
                                         if (t != "function") json.push((arr ? "" : '"' + n + '":') + String(v));
-		                    }
+                                    }
 
-		                    return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
-	                        }
+                                    return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
+                                }
                             };
 
                             // Convert the repaired model from JSON to BPMN and re-invoke the comparison logic
@@ -527,15 +573,15 @@
                     window.onOryxResourcesLoaded = function() {
                         var createEditor = function(id, jsonData) {
                             var editor = new ORYX.Editor ({
-				model : {
-				    id: id,
-				    stencilset : {
+				                model : {
+				                    id: id,
+				                    stencilset : {
                                         url : '${arg.url}',
                                         namespace : '${arg.url}'
                                     },
-				},
-				fullscreen : false
-			    });
+				                },
+				                fullscreen : false
+			                });
 
                             // Import new process model
                             new Ajax.Request('${arg.importPath}', {
@@ -580,7 +626,7 @@
                             return editor;
                         };
 
-			oryxEditor1 = createEditor('oryx-canvas1', '${arg.jsonData}');
+			            oryxEditor1 = createEditor('oryx-canvas1', '${arg.jsonData}');
 
                         Ext.select('svg').setVisible(false);
 

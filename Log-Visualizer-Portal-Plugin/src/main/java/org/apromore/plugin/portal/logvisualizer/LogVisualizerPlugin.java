@@ -21,32 +21,23 @@
 package org.apromore.plugin.portal.logvisualizer;
 
 // Java 2 Standard Edition packages
-import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 // Java 2 Enterprise Edition packages
 import javax.inject.Inject;
 
 // Third party packages
-import org.apromore.plugin.portal.stagemining.Visualization_cytoscape;
+import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
+import org.apromore.service.CanoniserService;
 import org.apromore.service.EventLogService;
+import org.apromore.service.ProcessService;
+import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.logvisualizer.LogVisualizerService;
-import org.json.JSONException;
-import org.processmining.stagemining.models.DecompositionTree;
-import org.processmining.stagemining.models.graph.WeightedDirectedGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Window;
 
 // Local packages
-import org.apromore.model.SummaryType;
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 
@@ -58,6 +49,12 @@ public class LogVisualizerPlugin extends DefaultPortalPlugin {
 
     @Inject private EventLogService eventLogService;
     @Inject private LogVisualizerService logVisualizerService;
+
+    @Inject private ProcessService processService;
+    @Inject private CanoniserService canoniserService;
+    @Inject private UserInterfaceHelper userInterfaceHelper;
+
+    @Inject private LogAnimationPluginInterface logAnimationPluginInterface;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerPlugin.class.getCanonicalName());
 
@@ -83,7 +80,7 @@ public class LogVisualizerPlugin extends DefaultPortalPlugin {
     public void execute(PortalContext context) {
         LOGGER.info("Executing");
 
-        new LogVisualizerController(context, eventLogService, logVisualizerService);
+        new LogVisualizerController(context, eventLogService, logVisualizerService, processService, canoniserService, userInterfaceHelper, logAnimationPluginInterface);
 
 
     }
