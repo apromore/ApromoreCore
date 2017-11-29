@@ -49,10 +49,13 @@
 						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 						<Bundle-Name>LTL based conformance checker OSGi component</Bundle-Name>
 						<Bundle-SymbolicName>org.ltl-conf-check-osgi</Bundle-SymbolicName>
+                        <Import-Package>
+                            org.springframework.beans.factory.aspectj,
+                            *</Import-Package>
 						<Export-Package>
 							au.ltl.domain,
 							au.ltl.utils,
-							au.ltl.main
+							au.ltl.main,
 						</Export-Package>
 					</instructions>
 				</configuration>
@@ -61,7 +64,26 @@
 	</build>
 
 	<dependencies>
-		<dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>5.0.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.0.2.RELEASE</version>
+        </dependency>
+        <dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.gwt-dev</artifactId>
 			<version>2.6.0_1</version>

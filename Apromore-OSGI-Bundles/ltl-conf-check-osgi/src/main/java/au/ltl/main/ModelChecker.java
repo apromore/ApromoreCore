@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
+import au.ConfigBean;
 import au.ltl.extendedReader.XMLBrokerFactory2;
 import au.qut.org.processmining.framework.util.Pair;
 import com.google.gwt.thirdparty.guava.common.collect.HashMultimap;
@@ -47,6 +48,9 @@ import au.ltl.utils.ModelAbstractions;
 import au.ltl.utils.NetReplayer;
 import au.ltl.utils.UnfoldingDecomposer;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 
 public class ModelChecker {
 	private PetriNet net;
@@ -54,7 +58,8 @@ public class ModelChecker {
 	private ModelAbstractions model;
 	private InputStream XMLrulesFile;
 	private LinkedList<Constraint> LTLConstraintUserList;
-	protected static final String RESULT_FOLDER = "result"+File.separator;
+	private String FAST_DOWNWARD_DIR = ConfigBean.getDownwardPath();;
+	private String RESULTS_DIR = FAST_DOWNWARD_DIR+File.separator+"result";
 
     private HashMap<String, FlowNode> mapIdNode;
 
@@ -68,7 +73,7 @@ public class ModelChecker {
 		constant.setAddActionCost(addActionCost);
 		constant.setDeleteActionCost(deleteActionCost);
 		constant.setNumberOfTraces(1);
-		
+
 		Iterator<Activity> it = model.getBpmnModel().getActivities().iterator();
 		HashMap<String,Integer> task_numberOfTraces_map= new HashMap();
 		while(it.hasNext()){
@@ -77,7 +82,7 @@ public class ModelChecker {
 		}
 		constant.setTask_numberOfTraces_map(task_numberOfTraces_map);
 		
-        File resultFolder = new File("result");
+        File resultFolder = new File(RESULTS_DIR);
 		try {
 			FileUtils.deleteDirectory(resultFolder);
 			resultFolder.mkdirs();
@@ -220,7 +225,7 @@ public class ModelChecker {
 				try {
 
 					//br = new BufferedReader(new FileReader(FILENAME));
-					fr = new FileReader("result"+File.separator+trace.getTraceID()+"_"+constraint_name);
+					fr = new FileReader(RESULTS_DIR+File.separator+trace.getTraceID()+"_"+constraint_name);
 					br = new BufferedReader(fr);
 
 					String sCurrentLine;
@@ -285,7 +290,7 @@ public class ModelChecker {
 			Trace trace= it_traces.next();
 			try {
 
-				fr = new FileReader("result"+File.separator+trace.getTraceID()+"_all constraints");
+				fr = new FileReader(RESULTS_DIR+File.separator+trace.getTraceID()+"_all constraints");
 				br = new BufferedReader(fr);
 
 				String sCurrentLine;
@@ -473,7 +478,8 @@ public class ModelChecker {
 			sentence = sync + "/" + total + " traces do not require any modification of this task";
 		else if (del > 0){
 			sentence = del + "/" + total + " traces require the deletion of this task";
-			color = "grey";
+			if(del == total)
+				color = "grey";
 		}
 
         if(add > 0) {
@@ -504,10 +510,14 @@ public class ModelChecker {
 		if(isAddition){
 			ControlFlow<FlowNode> inputFlow = model.getBpmnModel().getIncomingEdges(mapIdNode.get(action.getTaskId())).iterator().next();
             RuleVisualization ruleAdd = new RuleVisualization(inputFlow.getId(),sentenceAdd, "grey");
-            ruleAdd.setType("addTask");
-			for(String newTask : toAdd) {
-                ruleAdd.addNewTask(newTask);
-                ruleAdd.addPrePost(inputFlow.getSource().getId(),inputFlow.getTarget().getId());
+			if(total != add) {
+				ruleAdd.setColor("green");
+			}else {
+				ruleAdd.setType("addTask");
+				for (String newTask : toAdd) {
+					ruleAdd.addNewTask(newTask);
+					ruleAdd.addPrePost(inputFlow.getSource().getId(), inputFlow.getTarget().getId());
+				}
 			}
             ruleMap.get(action.getRuleName()).add(ruleAdd);
 		}

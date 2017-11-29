@@ -186,13 +186,17 @@ public class LTLConfController {
             String tok= token.nextToken();
             specifications.add(new Constraint(tok, "Rule"+i));
             System.out.println(tok);
+            i++;
         }
 
         System.out.println(" ----- " + specifications.size());
         System.out.println(Arrays.asList(specifications).toString());
 
         try {
-            makeResultWindows(ltlConfService.checkConformanceLTL(this.model, new ByteArrayInputStream(this.specificationFile.getByteData()), specifications, Integer.parseInt(inputAddText.getValue()), Integer.parseInt(inputDeleteText.getValue())));
+            if(this.specificationFile != null)
+                makeResultWindows(ltlConfService.checkConformanceLTL(this.model, new ByteArrayInputStream(this.specificationFile.getByteData()), specifications, Integer.parseInt(inputAddText.getValue()), Integer.parseInt(inputDeleteText.getValue())));
+            else
+                makeResultWindows(ltlConfService.checkConformanceLTL(this.model, null, specifications, Integer.parseInt(inputAddText.getValue()), Integer.parseInt(inputDeleteText.getValue())));
         }catch(Exception e){
             e.printStackTrace();
         }

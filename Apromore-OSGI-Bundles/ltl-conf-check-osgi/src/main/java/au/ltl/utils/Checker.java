@@ -3,14 +3,9 @@ package au.ltl.utils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
+import au.ConfigBean;
 import com.google.gwt.thirdparty.guava.common.collect.HashMultimap;
 import com.google.gwt.thirdparty.guava.common.collect.Multimap;
 import org.processmining.ltl2automaton.plugins.automaton.Automaton;
@@ -39,13 +34,16 @@ public class Checker {
 	private String constraint_name;
 	
 	protected static final String PLAN_FOUND_DIR_PREFIX = "plan_found_";
-	protected static final String root = "/Users/armascer/Work/ApromoreCode/ApromoreCode/Apromore-OSGI-Bundles/ltl-conf-check-osgi/";
-	protected static final String FAST_DOWNWARD_DIR_MAC = root+"fast-downward-mac"+File.separator;
-	protected static final String FAST_DOWNWARD_DIR_WIN_LIN = root+"fast-downward-win-lin"+File.separator;
+//	protected static final String root = "/Users/armascer/Work/ApromoreCode/ApromoreCode/Apromore-OSGI-Bundles/ltl-conf-check-osgi/";
+//	protected static final String FAST_DOWNWARD_DIR_MAC = root+"fast-downward-mac"+File.separator;
+//	protected static final String FAST_DOWNWARD_DIR_WIN_LIN = root+"fast-downward-win-lin"+File.separator;
+	private String FAST_DOWNWARD_DIR = ConfigBean.getDownwardPath();
+
+    protected final String RESULTS_DIR = FAST_DOWNWARD_DIR+File.separator+"result";
+
 	protected static final String FAST_DOWNWARD_SCRIPT ="fast-downward.py";
 	protected static final String FAST_DOWNWARD_DOMAIN ="domain.pddl";
 	protected static final String FAST_DOWNWARD_PROBLEM ="problem.pddl";
-	protected static final String RESULT_FOLDER = "result"+File.separator;
 	protected Process plannerManagerProcess;
 	Constants constant;
 
@@ -507,9 +505,9 @@ public class Checker {
 				File fdScript;
 
 				String os=OSUtils.getOs();
-				if(os.equals("mac")){
-					fdScript = new File(FAST_DOWNWARD_DIR_MAC+FAST_DOWNWARD_SCRIPT);
-				}else fdScript = new File(FAST_DOWNWARD_DIR_WIN_LIN+FAST_DOWNWARD_SCRIPT);
+//				if(os.equals("mac")){
+					fdScript = new File(FAST_DOWNWARD_DIR+ File.separator + FAST_DOWNWARD_SCRIPT);
+//				}else fdScript = new File(FAST_DOWNWARD_DIR_WIN_LIN+FAST_DOWNWARD_SCRIPT);
 				
 				try {
 					commandComponents.add(fdScript.getCanonicalPath());
@@ -532,7 +530,7 @@ public class Checker {
 				commandComponents.add(fileOutput.getCanonicalPath());*/
 				
 				commandComponents.add("--plan-file");
-				commandComponents.add("result"+File.separator+trace.getTraceID()+"_"+constraint_name);
+				commandComponents.add(RESULTS_DIR+File.separator+trace.getTraceID()+"_"+constraint_name);
 				
 				//File resultFolder = new File( System.getProperty("user.dir")+File.separator+"result"+File.separator+trace.getTraceID()+"_"+constraint_name);
 				/*try {
@@ -542,9 +540,9 @@ public class Checker {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}*/
-				if(os.equals("mac")){
-					commandComponents.add(FAST_DOWNWARD_DIR_MAC+FAST_DOWNWARD_PROBLEM);  // problem file
-				}else 	commandComponents.add(FAST_DOWNWARD_DIR_WIN_LIN+FAST_DOWNWARD_PROBLEM);  // problem file
+//				if(os.equals("mac")){
+					commandComponents.add(FAST_DOWNWARD_DIR+ File.separator + FAST_DOWNWARD_PROBLEM);  // problem file
+//				}else 	commandComponents.add(FAST_DOWNWARD_DIR_WIN_LIN+FAST_DOWNWARD_PROBLEM);  // problem file
 
 
 				//QUI SI POTREBBE INSERIRE L OPZIONE PER CAMBIARE EURISTICA
@@ -553,6 +551,7 @@ public class Checker {
 
 				//convert the arraylist to an array for process builder
 				String[] commandArgs = commandComponents.toArray(new String[0]);
+
 
 				//context.log("Invoking planner..."); DA RIMETTERE QUANDO HO IL CONTEXT
 
@@ -590,13 +589,13 @@ public class Checker {
 		File problemFile;
 
 		String os=OSUtils.getOs();
-		if(os.equals("mac")){
-			domainFile = new File(FAST_DOWNWARD_DIR_MAC+FAST_DOWNWARD_DOMAIN);
-			problemFile = new File(FAST_DOWNWARD_DIR_MAC+FAST_DOWNWARD_PROBLEM);
-		}else {
-			domainFile = new File(FAST_DOWNWARD_DIR_WIN_LIN+FAST_DOWNWARD_DOMAIN);
-			problemFile = new File(FAST_DOWNWARD_DIR_WIN_LIN+FAST_DOWNWARD_PROBLEM);
-		}
+//		if(os.equals("mac")){
+			domainFile = new File(FAST_DOWNWARD_DIR + File.separator +FAST_DOWNWARD_DOMAIN);
+			problemFile = new File(FAST_DOWNWARD_DIR+ File.separator +FAST_DOWNWARD_PROBLEM);
+//		}else {
+//			domainFile = new File(FAST_DOWNWARD_DIR+FAST_DOWNWARD_DOMAIN);
+//			problemFile = new File(FAST_DOWNWARD_DIR+FAST_DOWNWARD_PROBLEM);
+//		}
 
 
 		if(domainFile.exists() && !domainFile.isDirectory()) { 
