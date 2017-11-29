@@ -643,7 +643,7 @@ public class GatewayMap {
             if( !loop ) {
 //                debug("DEBUG - changing IOR: " + ior.getLabel() + "");
 //                debug("DEBUG - xors: " + toVisit.size());
-                iorType = replaceIOR(dominator, gatesDepth.get(ior), toVisit, visitedGates, visitedFlows, new HashSet<>(), new HashMap<>(), new HashSet<>());
+                iorType = replaceIOR(dominator, gatesDepth.get(ior), toVisit, visitedGates, visitedFlows, new HashSet<GatewayMapFlow>(), new HashMap<Gateway, Set<GatewayMapFlow>>(), new HashSet<Gateway>());
                 ior.setGatewayType(iorType);
                 counter++;
             }
@@ -666,7 +666,7 @@ public class GatewayMap {
                                             Map<Gateway, Set<GatewayMapFlow>> visitedFlows,
                                             Set<GatewayMapFlow> domFrontier,
                                             Map<Gateway, Set<GatewayMapFlow>> loopInjections,
-                                            HashSet<Gateway> ANDs)
+                                            Set<Gateway> ANDs)
     {
 //        this was described in comments above, in previous method, also this
 //        algorithm is in: "The Difficulty of Replacing an Inclusive OR-Join" (Favre et Volzer) - p. 12(167)
@@ -762,7 +762,7 @@ public class GatewayMap {
         return Gateway.GatewayType.PARALLEL;
     }
 
-    private boolean checkXOR(Map<Gateway, Set<Gateway>> visitedGates, Map<Gateway, Set<GatewayMapFlow>> visitedFlows, HashSet<Gateway> ANDs) {
+    private boolean checkXOR(Map<Gateway, Set<Gateway>> visitedGates, Map<Gateway, Set<GatewayMapFlow>> visitedFlows, Set<Gateway> ANDs) {
 
         Set<GatewayMapFlow> V;
         IntHashSet V1, V2, U1, U2;
@@ -771,8 +771,8 @@ public class GatewayMap {
 //        System.out.println("DEBUG - ANDs: " + ANDs.size());
         for( Gateway and : ANDs ) {
 //            System.out.println("DEBUG - visiting AND: " + and.getLabel());
-            visitedEdgesIDs.put(and, new HashMap<>());
-            unvisitedEdgesIDs.put(and, new HashMap<>());
+            visitedEdgesIDs.put(and, new HashMap<Gateway, IntHashSet>());
+            unvisitedEdgesIDs.put(and, new HashMap<Gateway, IntHashSet>());
             for( Gateway xor : visitedGates.keySet() ) {
 //                System.out.println("DEBUG - XOR: " + xor.getLabel());
                 V1 = new IntHashSet();

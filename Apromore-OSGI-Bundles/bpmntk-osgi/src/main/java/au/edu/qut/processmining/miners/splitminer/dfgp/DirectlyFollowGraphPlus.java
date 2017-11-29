@@ -152,6 +152,8 @@ public class DirectlyFollowGraphPlus {
     public void buildDFGP() {
 //        System.out.println("DFGP - starting ... ");
 //        System.out.println("DFGP - [Settings] parallelisms threshold: " + parallelismsThreshold);
+//        System.out.println("DFGP - [Settings] percentile on best: " + percentileOnBest);
+//        System.out.println("DFGP - [Settings] parcentile threshold: " + percentileFrequencyThreshold);
 
         buildDirectlyFollowsGraph();                //first method to execute
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
@@ -444,6 +446,7 @@ public class DirectlyFollowGraphPlus {
         i = (int)Math.round(frequencyOrderedEdges.size()*percentileFrequencyThreshold);
         if( i == frequencyOrderedEdges.size() ) i--;
         filterThreshold = frequencyOrderedEdges.get(i).getFrequency();
+//        System.out.println("DEBUG - filter threshold: " + filterThreshold);
     }
 
     private void filterWithGuarantees() {
@@ -452,7 +455,7 @@ public class DirectlyFollowGraphPlus {
 
         bestEdgesOnMaxCapacities();
         for( DFGEdge e : new HashSet<>(edges) )
-            if( !bestEdges.contains(e) && !(e.getFrequency() > filterThreshold) ) removeEdge(e, false);
+            if( !bestEdges.contains(e) && !(e.getFrequency() >= filterThreshold) ) removeEdge(e, false);
     }
 
     private void bestEdgesOnMaxCapacities() {
@@ -487,8 +490,7 @@ public class DirectlyFollowGraphPlus {
             for( DFGEdge oe : outgoings.get(src) ) {
                 tgt = oe.getTargetCode();
                 maxCap = (cap > oe.getFrequency() ? oe.getFrequency() : cap);
-                if( (maxCap > maxCapacitiesFromSource.get(tgt)) ||
-                    ((maxCap == maxCapacitiesFromSource.get(tgt)) && (bestPredecessorFromSource.get(tgt).getFrequency() < oe.getFrequency())) ) {
+                if( (maxCap > maxCapacitiesFromSource.get(tgt)) ) { //|| ((maxCap == maxCapacitiesFromSource.get(tgt)) && (bestPredecessorFromSource.get(tgt).getFrequency() < oe.getFrequency())) ) {
                     maxCapacitiesFromSource.put(tgt, maxCap);
                     bestPredecessorFromSource.put(tgt, oe);
                     if( !toVisit.contains(tgt) ) unvisited.add(tgt);
@@ -513,8 +515,7 @@ public class DirectlyFollowGraphPlus {
             for( DFGEdge ie : incomings.get(tgt) ) {
                 src = ie.getSourceCode();
                 maxCap = (cap > ie.getFrequency() ? ie.getFrequency() : cap);
-                if( (maxCap > maxCapacitiesToSink.get(src)) ||
-                    ((maxCap == maxCapacitiesToSink.get(src)) && (bestSuccessorToSink.get(src).getFrequency() < ie.getFrequency())) ) {
+                if( (maxCap > maxCapacitiesToSink.get(src)) ) { //|| ((maxCap == maxCapacitiesToSink.get(src)) && (bestSuccessorToSink.get(src).getFrequency() < ie.getFrequency())) ) {
                     maxCapacitiesToSink.put(src, maxCap);
                     bestSuccessorToSink.put(src, ie);
                     if( !toVisit.contains(src) ) unvisited.add(src);
