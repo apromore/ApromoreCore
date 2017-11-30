@@ -28,7 +28,7 @@ public class DFGPSettings extends ProMPropertiesPanel {
 
     NiceDoubleSlider percentileFrequencyThreshold;
     NiceDoubleSlider parallelismsThreshold;
-    ProMComboBox filtering;
+//    ProMComboBox filtering;
     JCheckBox percentileOnBest;
 
     public DFGPSettings() {
@@ -42,8 +42,8 @@ public class DFGPSettings extends ProMPropertiesPanel {
         filterType.addLast("STD");
         filterType.addLast("DBG");
 
-        filtering = this.addComboBox("Filter Type", filterType);
-        filtering.addActionListener(dfgpil);
+//        filtering = this.addComboBox("Filter Type", filterType);
+//        filtering.addActionListener(dfgpil);
 
         percentileOnBest = this.addCheckBox("Percentile On Best", true);
         percentileOnBest.addChangeListener(dfgpil);
@@ -74,6 +74,7 @@ public class DFGPSettings extends ProMPropertiesPanel {
         public void stateChanged(ChangeEvent e) {
             result.setPercentileFrequencyThreshold(percentileFrequencyThreshold.getValue());
             result.setParallelismsThreshold(parallelismsThreshold.getValue());
+            result.setPercentileOnbest(percentileOnBest.isSelected());
         }
 
         @Override
