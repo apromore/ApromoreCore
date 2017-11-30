@@ -104,10 +104,10 @@ public class ModelChecker {
         mapIdNode.put(model.getEnd().getId(), model.getEnd());
     }
 
-    public HashMap<String, List<RuleVisualization>> checkNet() {
+	public HashMap<String, List<RuleVisualization>> checkNet() {
 		System.out.println("Check started");
 		HashSet<String> labels= new HashSet<String>();
-		Collection<Activity> a =model.getBpmnModel().getActivities();	
+		Collection<Activity> a =model.getBpmnModel().getActivities();
 		Iterator<Activity> it= a.iterator();
 		while(it.hasNext()){
 			Activity t=it.next();
@@ -119,28 +119,33 @@ public class ModelChecker {
 			activities_repository_vector.add(it_alphabet.next());
 		}
 		//st(activities_repository_vector);
-		
+
+
 		HashSet<String> commonLabels = new HashSet<String>(labels);
-        HashSet<String> silent = new HashSet<String>(labels);
-        for (Transition t : net.getTransitions())
-            silent.add(t.getName());
-        silent.removeAll(commonLabels);
-		        
-        UnfoldingDecomposer decomposer = new UnfoldingDecomposer(model);
+		HashSet<String> silent = new HashSet<String>(labels);
+		for (Transition t : net.getTransitions())
+			silent.add(t.getName());
+		silent.removeAll(commonLabels);
+
+		UnfoldingDecomposer decomposer = new UnfoldingDecomposer(model);
 		HashSet<Subnet> subNets = decomposer.getSubNets();
-        
+
+		st("qui1 "+ subNets.size());
+
 		Iterator <Subnet> it_sub=subNets.iterator();
 		while(it_sub.hasNext()){
 			Subnet net= it_sub.next();
 			NetReplayer replayer = new NetReplayer(net,model,silent, constant);
+			st("qui2");
 			replayer.getTraces();
 		}
-		
+
+
 		HashSet<Trace> trace_set= constant.getTraces();
-					
+
 		HashSet<Constraint> LTL_constraints_set =new HashSet<Constraint>(); // Set with all the constraints as Constraint class
 		HashSet<String> LTL_formulas_set =new HashSet<String>(); // Set with all the constraints as strings
-		
+
 		if(LTLConstraintUserList!=null){
 			Iterator<Constraint> it_c=LTLConstraintUserList.iterator();
 			while(it_c.hasNext()){
@@ -149,12 +154,12 @@ public class ModelChecker {
 				LTL_formulas_set.add(c.getLtlFormula());
 			}
 		}
-		
+
 		if(XMLrulesFile!=null){
 			extractConstraintsFromXml(LTL_constraints_set,LTL_formulas_set);
 		}
-		
-			
+
+
 		// Add the label in the constraints in the activity repository vector
 		Iterator <String> it_constr= LTL_formulas_set.iterator();
 		while(it_constr.hasNext()){
@@ -172,7 +177,7 @@ public class ModelChecker {
 		}
 
 		constant.setActivitiesRepository_vector(activities_repository_vector);
-		
+
 		Iterator<Trace> it_traces = trace_set.iterator();
 		while(it_traces.hasNext()){
 			Trace trace= it_traces.next();
@@ -185,35 +190,41 @@ public class ModelChecker {
 				Checker checker = new Checker(trace,local_constraint_set,constraint.getConstraintName(),constant);
 				checker.check();
 				i++;
-				
+
 			}
-			Checker checker = new Checker(trace,LTL_formulas_set,"all constraints", constant);
+			Checker checker = new Checker(trace,LTL_formulas_set,"all constraints",constant);
 			checker.check();
+
 		}
-		
-		
+
+
 		HashMap<String,Integer> task_numberOfTraces_map= constant.getTask_numberOfTraces_map();
 		it_traces = trace_set.iterator();
 		while(it_traces.hasNext()){
+			HashSet<String> insertedTask = new HashSet();
 			Trace t= it_traces.next();
 			Vector<String> or_tr = t.getOriginal_transaction_id();
 			for(int i =0;i<or_tr.size();i++){
-				int number=task_numberOfTraces_map.get(or_tr.elementAt(i));
-				number++;
-				task_numberOfTraces_map.replace(or_tr.elementAt(i), number);
+				if(!insertedTask.contains(or_tr.elementAt(i))){
+					int number=task_numberOfTraces_map.get(or_tr.elementAt(i));
+					number++;
+					task_numberOfTraces_map.replace(or_tr.elementAt(i), number);
+					insertedTask.add(or_tr.elementAt(i));
+				}
 			}
 		}
+
 		constant.setTask_numberOfTraces_map(task_numberOfTraces_map);
 		//st("");
-		//st(task_numberOfTraces_map);
+		st(task_numberOfTraces_map);
 		//st("");
-		
-		
+
+
 		// Create structure for Repairs list
 		BufferedReader br = null;
 		FileReader fr = null;
-		
-		HashMultimap<MyKeyCheckerResultMap,Action> checkerResultMap = HashMultimap.create();
+
+		HashMultimap<MyKeyCheckerResultMap,Action> checkerResultMap =HashMultimap.create();
 
 		Iterator <Constraint> it_costraints= LTL_constraints_set.iterator();
 		while(it_costraints.hasNext()){
@@ -232,6 +243,8 @@ public class ModelChecker {
 					Vector<String> transactionId=trace.getOriginal_transaction_id();
 					Iterator<String> it_tr =transactionId.iterator();
 					String actual_tr_id=it_tr.next();
+					HashMap<String,Action> insertedMapSyncDel =new HashMap();
+					HashMap<String,Action> insertedMapAdd =new HashMap();
 					while ((sCurrentLine = br.readLine()) != null) {
 						sCurrentLine=sCurrentLine.replaceAll("\\(","");
 						String[] parts = sCurrentLine.split("-");
@@ -239,14 +252,27 @@ public class ModelChecker {
 						if(actionName.equals("sync")){
 							MyKeyCheckerResultMap key= new MyKeyCheckerResultMap(constraint_name,actual_tr_id);
 							Action action= new Action("sync","");
-							checkerResultMap.put(key, action);
+							if(!insertedMapSyncDel.containsKey(actual_tr_id)){
+								checkerResultMap.put(key, action);
+								insertedMapSyncDel.put(actual_tr_id, action);
+							}
 							if(it_tr.hasNext()){
 								actual_tr_id=it_tr.next();
 							}else actual_tr_id=model.getEnd().getId();
 						}else if(actionName.equals("del")){
 							MyKeyCheckerResultMap key= new MyKeyCheckerResultMap(constraint_name,actual_tr_id);
 							Action action= new Action("del","");
-							checkerResultMap.put(key, action);
+							if(!insertedMapSyncDel.containsKey(actual_tr_id)){
+								checkerResultMap.put(key, action);
+								insertedMapSyncDel.put(actual_tr_id, action);
+							}else{
+								Action act=insertedMapSyncDel.get(actual_tr_id);
+								if(act.getActionType().equals("sync")){
+									checkerResultMap.remove(key, act);
+									insertedMapSyncDel.remove(actual_tr_id);
+									checkerResultMap.put(key, action);
+									insertedMapSyncDel.put(actual_tr_id, action);								}
+							}
 							if(it_tr.hasNext()){
 								actual_tr_id=it_tr.next();
 							}else actual_tr_id=model.getEnd().getId();
@@ -254,9 +280,12 @@ public class ModelChecker {
 							String labelToAdd = parts[1].replaceAll("\\*\\*\\*"," ");
 							MyKeyCheckerResultMap key= new MyKeyCheckerResultMap(constraint_name,actual_tr_id);
 							Action action= new Action("add",labelToAdd);
-							checkerResultMap.put(key, action);
+							if(!insertedMapAdd.containsKey(actual_tr_id)){
+								checkerResultMap.put(key, action);
+								insertedMapAdd.put(actual_tr_id, action);
+							}
 						}
-						
+
 					}
 
 				} catch (IOException e) {
@@ -284,7 +313,7 @@ public class ModelChecker {
 			}
 
 		}//while end
-			
+
 		it_traces = trace_set.iterator();
 		while(it_traces.hasNext()){
 			Trace trace= it_traces.next();
@@ -297,21 +326,37 @@ public class ModelChecker {
 				Vector<String> transactionId=trace.getOriginal_transaction_id();
 				Iterator<String> it_tr =transactionId.iterator();
 				String actual_tr_id=it_tr.next();
+				HashMap<String,Action> insertedMapSyncDel =new HashMap();
+				HashMap<String,Action> insertedMapAdd =new HashMap();
 				while ((sCurrentLine = br.readLine()) != null) {
 					sCurrentLine=sCurrentLine.replaceAll("\\(","");
 					String[] parts = sCurrentLine.split("-");
 					String actionName=parts[0];
+
 					if(actionName.equals("sync")){
 						MyKeyCheckerResultMap key= new MyKeyCheckerResultMap("All Constraints",actual_tr_id);
 						Action action= new Action("sync","");
-						checkerResultMap.put(key, action);
+						if(!insertedMapSyncDel.containsKey(actual_tr_id)){
+							checkerResultMap.put(key, action);
+							insertedMapSyncDel.put(actual_tr_id, action);
+						}
 						if(it_tr.hasNext()){
 							actual_tr_id=it_tr.next();
 						}else actual_tr_id=model.getEnd().getId();
 					}else if(actionName.equals("del")){
 						MyKeyCheckerResultMap key= new MyKeyCheckerResultMap("All Constraints",actual_tr_id);
 						Action action= new Action("del","");
-						checkerResultMap.put(key, action);
+						if(!insertedMapSyncDel.containsKey(actual_tr_id)){
+							checkerResultMap.put(key, action);
+							insertedMapSyncDel.put(actual_tr_id, action);
+						}else{
+							Action act=insertedMapSyncDel.get(actual_tr_id);
+							if(act.getActionType().equals("sync")){
+								checkerResultMap.remove(key, act);
+								insertedMapSyncDel.remove(actual_tr_id);
+								checkerResultMap.put(key, action);
+								insertedMapSyncDel.put(actual_tr_id, action);								}
+						}
 						if(it_tr.hasNext()){
 							actual_tr_id=it_tr.next();
 						}else actual_tr_id=model.getEnd().getId();
@@ -319,7 +364,10 @@ public class ModelChecker {
 						String labelToAdd = parts[1].replaceAll("\\*\\*\\*"," ");
 						MyKeyCheckerResultMap key= new MyKeyCheckerResultMap("All Constraints",actual_tr_id);
 						Action action= new Action("add",labelToAdd);
-						checkerResultMap.put(key, action);
+						if(!insertedMapAdd.containsKey(actual_tr_id)){
+							checkerResultMap.put(key, action);
+							insertedMapAdd.put(actual_tr_id, action);
+						}
 					}
 
 				}
@@ -346,8 +394,8 @@ public class ModelChecker {
 
 			}
 
-		}		
-		
+		}
+
 		LinkedList<Actions> actionsList=new LinkedList<>();
 		Set<MyKeyCheckerResultMap> keySet=checkerResultMap.keySet();
 		Iterator<MyKeyCheckerResultMap> it_keys=keySet.iterator();
@@ -383,9 +431,9 @@ public class ModelChecker {
 						}
 					}
 				}
-			
+
 			}
-			
+
 			Actions actions= new Actions(ruleName,taskId,numberOfTraces,action_list);
 			if(ruleName.equals("All Constraints")){
 				if(deleteNumber==numberOfTraces){
@@ -398,14 +446,13 @@ public class ModelChecker {
 					int numb=labelToAdd_numberOfTraces_map.get(label);
 					if(numb==numberOfTraces){
 						Repair repair= new Repair ("add",label);
-						repair_list.add(repair);					
+						repair_list.add(repair);
 					}
 				}
 				actions.setRepairList(repair_list);
-				
+
 			}
 			actionsList.add(actions);
-					
 		}
 
 //		try {
@@ -502,7 +549,10 @@ public class ModelChecker {
                 rule.setEnd(edge.getTarget().getId());
                 break;
             }
-        }
+        }else if(((float)del/(float)total) >= 0.33 && ((float)del/(float)total) <=0.66) rule.setColor("yellow");
+		else if(((float)del/(float)total) > 0.66 && ((float)del/(float)total) < 1.0) rule.setColor("orange");
+
+
 
         if(sentence.length() > 0)
             ruleMap.get(action.getRuleName()).add(rule);

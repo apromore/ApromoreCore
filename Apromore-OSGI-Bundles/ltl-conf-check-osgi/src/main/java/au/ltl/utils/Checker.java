@@ -530,7 +530,7 @@ public class Checker {
 				commandComponents.add(fileOutput.getCanonicalPath());*/
 				
 				commandComponents.add("--plan-file");
-				commandComponents.add(RESULTS_DIR+File.separator+trace.getTraceID()+"_"+constraint_name);
+				commandComponents.add(RESULTS_DIR + File.separator + trace.getTraceID()+"_"+constraint_name);
 				
 				//File resultFolder = new File( System.getProperty("user.dir")+File.separator+"result"+File.separator+trace.getTraceID()+"_"+constraint_name);
 				/*try {
@@ -558,6 +558,7 @@ public class Checker {
 
 				ProcessBuilder processBuilder = new ProcessBuilder(commandArgs);
 				try {
+					System.out.println(processBuilder.command());
 					plannerManagerProcess = processBuilder.start();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block

@@ -22,6 +22,7 @@ package org.apromore.plugin.portal.ltl.conformance;
 
 // Java 2 Standard packages
 
+import org.apromore.dao.model.Log;
 import org.apromore.model.*;
 import org.apromore.plugin.editor.EditorPlugin;
 import org.apromore.plugin.property.RequestParameterType;
@@ -33,7 +34,8 @@ import org.apromore.portal.dialogController.SaveAsDialogController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.util.StreamUtil;
-import org.deckfour.xes.model.XLog;
+import org.apromore.service.CanoniserService;
+import org.apromore.service.ProcessService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,11 +69,15 @@ public class ModelMisconformanceController extends BaseController {
     private ProcessSummaryType process;
     private VersionSummaryType version;
     private Set<RequestParameterType<?>> params;
-    private XLog log;
     private JSONObject differences;
+
+    private String nativeType = "BPMN 2.0";
 
 //    private CompareService compareService;
     @Inject private UserSessionManager userSessionManager;
+    @Inject private ProcessService processService;
+    @Inject private CanoniserService canoniserService;
+    private Component listDiff;
 
     public ModelMisconformanceController() {
         super();
@@ -96,7 +102,6 @@ public class ModelMisconformanceController extends BaseController {
             process = session.getProcess();
             version = session.getVersion();
             params =  session.getParams();
-            log = session.getLog();
         }
 
         Map<String, Object> param = new HashMap<>();
@@ -191,10 +196,12 @@ public class ModelMisconformanceController extends BaseController {
             }
         });
         this.addEventListener("onSaveAs", new EventListener<Event>() {
+
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
                     new SaveAsDialogController(process, version, editSession1, false, eventToString(event));
+                    System.out.println("saven print");
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);
                 }
@@ -213,6 +220,7 @@ public class ModelMisconformanceController extends BaseController {
         Toolbar hbox = (Toolbar) this.getFellowIfAny("differences");
         if (hbox != null) {
             Component parent = (Component) hbox.getParent();
+            listDiff = parent;
             
             // Remove any pre-extant list items
             Component sibling = hbox.getNextSibling();

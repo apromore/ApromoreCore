@@ -31,11 +31,11 @@
             </hbox>
             <hbox>
             <label value="Addition cost:" width="100%"/>
-            <textbox rows="1" cols="5" id="addCost"></textbox>
+            <textbox rows="1" cols="5" id="addCost" style="float: right"></textbox>
             </hbox>
             <hbox>
             <label value="Deletion cost:" width="100%"/>
-            <textbox rows="1" cols="5" id="deleteCost"></textbox>
+            <textbox rows="1" cols="5" id="deleteCost" style="float: right"></textbox>
             </hbox>
             <hbox>
             <label value="Specification file(.xml):" width="100%"/>

@@ -98,6 +98,7 @@
                         var json = jQuery.extend(true, {}, editorConfig);
                         var shapes = indexJSON(json);
                         var shapesCanvas = indexJSON(this._canvas.toJSON());
+                        var balloons = [];
 
                         function uuid() {
                             return "uuid-" + Math.floor((Math.random() * 1000000) + 1).toString();
@@ -118,6 +119,12 @@
                             }else if(color == 'grey'){
                                 // Reduce the opacity of greyed-out elements
                                 shapesCanvas[shape].getShape().node.setAttributeNS(null, "style", "opacity: 0.25");
+                            }else if(color == 'yellow'){
+                                shapes[shape].properties["selected"] = true;
+                                shapes[shape].properties["selectioncolor"] = "#E5FF00";
+                            }else if(color == 'orange'){
+                                shapes[shape].properties["selected"] = true;
+                                shapes[shape].properties["selectioncolor"] = "#FF9834";
                             }
                         };
 
@@ -220,12 +227,14 @@
                             }
                             json.childShapes.push(addition);
                             shapes[source].outgoing.push({ resourceId: id });
+                            balloons.push(addition);
                         };
 
                         // Add annotation text
                         function annotate(shape, annotation) {
                             var anchor = shapeCenter(shapes[shape]);
                             var balloon = addFlowNode("sid-balloon", "TextAnnotation", anchor.x + 100, anchor.y - 100, 100, 50);
+                            balloons.push(balloon);
                             balloon["properties"]["text"] = annotation;
                             addAssociation("sid-anchor-balloon", shape, balloon.resourceId);
                         }
@@ -292,6 +301,18 @@
                                 removeElement(shapes[greys[i]].getShape());
                             }
 
+                            for (var i = balloons.length; i--;) {
+                            function removeElement(shape) {
+                                    json.childShapes.each(function (childShape) {
+                                        if (childShape && childShape.resourceId == shape.resourceId) {
+                                            console.log("Removing edge " + shape.resourceId);
+                                            json.childShapes.remove(childShape);
+                                        }
+                                    }.bind(this));
+                                }
+                                removeElement(balloons[i]);
+                            }
+
                             // Remove red highlighting from added elements
                             json.childShapes.each(function (childShape) {
                                 if (childShape && childShape.properties.bordercolor == "#FF0000") {
@@ -306,53 +327,49 @@
                             }.bind(this));
 
                             reloadJSON(json);
+                            console.dir(json);
 
                             // Inverse function to JSON.parse, because JSON.stringify isn't
                             function stringify(obj) {
-
                                 var t = typeof (obj);
-	                        if (t != "object" || obj === null) {
+	                            if (t != "object" || obj === null) {
+                                    // simple data type
+                                    if (t == "string") obj = '"'+obj+'"';
 
-		                    // simple data type
-		                    if (t == "string") obj = '"'+obj+'"';
-		                    return String(obj);
+                                    return String(obj);
+                                }
+                                else {
+                                    // recurse array or object
+                                    var n, v, json = [], arr = (obj && obj.constructor == Array);
+                                    for (n in obj) {
+                                        v = obj[n]; t = typeof(v);
 
-	                        }
-	                        else {
-
-		                    // recurse array or object
-		                    var n, v, json = [], arr = (obj && obj.constructor == Array);
-
-		                    for (n in obj) {
-			                v = obj[n]; t = typeof(v);
-
-			                if (t == "string") v = '"'+v+'"';
-			                else if (t == "object" && v !== null) v = stringify(v);
-
-                                        if (t != "function") json.push((arr ? "" : '"' + n + '":') + String(v));
-		                    }
-
-		                    return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
-	                        }
+                                        if (t == "string") v = '"'+v+'"';
+                                        else if (t == "object" && v !== null) v = stringify(v);
+                                                    if (t != "function") json.push((arr ? "" : '"' + n + '":') + String(v));
+                                    }
+                                    return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
+                                }
                             };
 
-                            // Convert the repaired model from JSON to BPMN and re-invoke the comparison logic
+                            // Convert the repaired model from JSON to BPMN and save and close
                             new Ajax.Request('${arg.exportPath}', {
                                 parameters: {'data': stringify(json)},
                                 method: 'POST',
 
                                 onSuccess: function(transport) {
-                                    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRepair', transport.responseText));
-                                    editorConfig = json;
+                                    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', transport.responseText));
+                                    zk.Widget.$(jq("#alignments")).hide();
                                 }.bind(this),
 
                                 onFailure: function(transport) {
                                     Ext.Msg.show({
                                         title: "Error",
-                                        msg: "Failed to recalculate differences!",
+                                        msg: "Failed to save process as " + transport.responseText,
                                         buttons: Ext.Msg.OK,
                                         icon: Ext.Msg.ERROR
                                     }).getDialog().syncSize()
+                                    alert("Failed to save process as " + nativeFormat);
                                 }.bind(this)
                             });
                         }
@@ -368,15 +385,15 @@
                     window.onOryxResourcesLoaded = function() {
                         var createEditor = function(id, jsonData) {
                             var editor = new ORYX.Editor ({
-				model : {
-				    id: id,
-				    stencilset : {
-                                        url : '${arg.url}',
-                                        namespace : '${arg.url}'
-                                    },
-				},
-				fullscreen : false
-			    });
+                                model : {
+                                    id: id,
+                                    stencilset : {
+                                                        url : '${arg.url}',
+                                                        namespace : '${arg.url}'
+                                                    },
+                                },
+				                fullscreen : false
+			                });
 
                             // Import new process model
                             new Ajax.Request('${arg.importPath}', {
@@ -421,28 +438,28 @@
                             return editor;
                         };
 
-			oryxEditor1 = createEditor('oryx-canvas1', '${arg.jsonData}');
+			        oryxEditor1 = createEditor('oryx-canvas1', '${arg.jsonData}');
 
-                        Ext.select('svg').setVisible(false);
+                    Ext.select('svg').setVisible(false);
 
-                        ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
-                            new Ajax.Request('${arg.exportPath}', {
-                                parameters: {'data': json},
-                                method: 'POST',
+                    ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
+                        new Ajax.Request('${arg.exportPath}', {
+                               parameters: {'data': json},
+                               method: 'POST',
 
-                                onSuccess: function(transport) {
-                                    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', transport.responseText));
-                                }.bind(this),
+                               onSuccess: function(transport) {
+                                   zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', transport.responseText));
+                               }.bind(this),
 
-                                onFailure: function(transport) {
-                                    Ext.Msg.show({
-                                        title: "Error",
-                                        msg: "Failed to save the Process!",
-                                        buttons: Ext.Msg.OK,
-                                        icon: Ext.Msg.ERROR
-                                    }).getDialog().syncSize()
-                                }.bind(this)
-                            });
+                               onFailure: function(transport) {
+                                   Ext.Msg.show({
+                                       title: "Error",
+                                       msg: "Failed to save the Process!",
+                                       buttons: Ext.Msg.OK,
+                                       icon: Ext.Msg.ERROR
+                                   }).getDialog().syncSize()
+                               }.bind(this)
+                           });
                         };
 
                         ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(json, svg) {
@@ -475,7 +492,7 @@
         <n:tr>
             <n:td style="vertical-align: top">
                 <n:div id="alignments" style="overflow:scroll; height:95vh; width:40vh">
-                    <vbox hflex="1">
+                    <vbox id="differencesVB" hflex="1">
                         <toolbar id="differences" hflex="1">
                             <label hflex="1">Differences</label>
                             <button id="apply" label="Apply" style="float: right"/>

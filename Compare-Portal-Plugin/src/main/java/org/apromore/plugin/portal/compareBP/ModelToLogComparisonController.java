@@ -281,6 +281,7 @@ public class ModelToLogComparisonController extends BaseController {
         if (applyButton != null) {
             // The repairMLDifference function will send an onRepair event to the ZK asynchronous updater when it completes
             applyButton.setWidgetListener("onClick", "oryxEditor1.repairMLDifference()");
+
         }
     }
 
