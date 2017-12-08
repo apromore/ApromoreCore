@@ -67,7 +67,7 @@ public class LTLConfPlugin extends DefaultPortalPlugin {
     private final CanoniserService canoniserService;
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
 
-    private String label = "Check conformance (LTL)";
+    private String label = "Check compliance with Declare";
     private String groupLabel = "Analyze";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LTLConfPlugin.class.getCanonicalName());

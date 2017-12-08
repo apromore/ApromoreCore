@@ -189,6 +189,7 @@ public class ModelMisconformanceController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
+                    System.out.println(userSessionManager.getCurrentUser());
                     new SaveAsDialogController(process, version, editSession1, true, eventToString(event));
                 } catch (ExceptionFormats exceptionFormats) {
                     LOGGER.error("Error saving model.", exceptionFormats);

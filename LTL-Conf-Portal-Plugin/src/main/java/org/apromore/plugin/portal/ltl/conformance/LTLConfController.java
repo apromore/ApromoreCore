@@ -58,6 +58,8 @@ import org.zkoss.zul.Messagebox;
 
 import au.ltl.domain.Constraint;
 
+import javax.inject.Inject;
+
 public class LTLConfController {
 
     private Window resultsWin;
@@ -91,10 +93,13 @@ public class LTLConfController {
     private ModelAbstractions model;
     private ProcessSummaryType processSummaryType;
     private VersionSummaryType versionSummaryType;
+    @Inject
+    private UserSessionManager userSessionManager;
 
     public LTLConfController(PortalContext portalContext, LTLConfCheckService ltlConfService) {
         this.ltlConfService = ltlConfService;
         this.portalContext = portalContext;
+        System.out.println("Current user" + userSessionManager.getCurrentUser());
     }
 
     public void apmVerify(PetriNet net) {
