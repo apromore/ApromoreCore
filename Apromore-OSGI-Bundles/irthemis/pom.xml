@@ -45,7 +45,6 @@
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>Themis OSGI</Bundle-Name>
-                        <Bundle-SymbolicName>org.themis-osgi</Bundle-SymbolicName>
                         <Export-Package>
                             org.themis,
                             org.themis.ir,

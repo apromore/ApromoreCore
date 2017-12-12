@@ -50,8 +50,8 @@
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
                         <Import-Bundle>
-                            org.bpmnminer-osgi;bundle-version="[1.1,2.0]",
-                            org.eclipse-collections-osgi;bundle-version="[1.1,2.0]"
+                            org.apromore.bpmnminer-osgi;bundle-version="[1.1,2.0]",
+                            org.apromore.eclipse-collections-osgi;bundle-version="[1.1,2.0]"
                         </Import-Bundle>
                         <Import-Package>
                             com.raffaeleconforti.bpmnminer.*,

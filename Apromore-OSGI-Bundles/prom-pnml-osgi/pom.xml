@@ -48,7 +48,6 @@
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,/lib/PetriNets.jar</Bundle-ClassPath>
                         <Bundle-Name>Prom PNML OSGI</Bundle-Name>
-                        <Bundle-SymbolicName>org.prom-pnml-osgi</Bundle-SymbolicName>
                         <Import-Package>
                             !org.antlr.stringtemplate,
                             *

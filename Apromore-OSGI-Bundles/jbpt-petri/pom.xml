@@ -45,7 +45,6 @@
       <Embed-Transitive>false</Embed-Transitive>
       <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
       <Bundle-Name>jbpt-petri OSGI</Bundle-Name>
-      <Bundle-SymbolicName>org.jbpt.petri-osgi</Bundle-SymbolicName>
       <Export-Package>
        org.jbpt.automaton,
        org.jbpt.petri,

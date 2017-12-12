@@ -48,7 +48,6 @@
 						<Embed-Transitive>false</Embed-Transitive>
 						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 						<Bundle-Name>LTL based conformance checker OSGi component</Bundle-Name>
-						<Bundle-SymbolicName>org.ltl-conf-check-osgi</Bundle-SymbolicName>
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
                             *</Import-Package>

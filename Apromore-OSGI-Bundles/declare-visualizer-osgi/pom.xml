@@ -48,7 +48,6 @@
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,/lib/DeclareVisualizer.jar</Bundle-ClassPath>
                         <Bundle-Name>Declare Visualizer OSGI</Bundle-Name>
-                        <Bundle-SymbolicName>declare-visualizer-osgi</Bundle-SymbolicName>
                         <Export-Package>
 				            org.processmining.plugins.declare.visualizing,
                             info.clearthought.layout,

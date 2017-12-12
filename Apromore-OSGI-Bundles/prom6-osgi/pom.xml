@@ -119,7 +119,6 @@
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>ProM6 OSGI</Bundle-Name>
-                        <Bundle-SymbolicName>org.prom6-osgi</Bundle-SymbolicName>
                         <Import-Bundle>
                             com.springsource.org.apache.tools.ant;version="[1.8.3,1.8.3]"
                         </Import-Bundle>
