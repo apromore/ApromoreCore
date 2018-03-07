@@ -1,6 +1,6 @@
 package au.ltl.bpmnConverter;
 /*
- * Copyright © 2009-2017 The Apromore Initiative.
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *

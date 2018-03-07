@@ -9,6 +9,7 @@
     <artifact type="configuration" name="site" version="0" />
     <artifact type="configuration" name="git" version="0" />
 
+    <artifact type="bundle" name="org.apromore.prom6-osgi" version="[6, 7)"/>
 
     <!-- Manager -->
 
@@ -84,8 +85,6 @@
 
     <!-- Plugins that have to come first for dependency reasons -->
 
-    <artifact type="bundle" name="org.apromore.prom6-osgi" version="[6, 7)"/>
-
     <artifact type="bundle" name="org.apromore.apm-verification-osgi" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.bpmndiagramimporter-logic" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.bpmntk-osgi" version="[1.1.0, 2)"/>
@@ -130,6 +129,10 @@
     <artifact type="bundle" name="org.apromore.log-visualizer-logic-ws" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.log-visualizer-portal-plugin" version="[1.1.0, 2)"/>
 
+    <artifact type="bundle" name="org.apromore.ltl-conf-check-osgi" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.ltl-conf-logic" version="[1.1.0, 2)"/>
+    <artifact type="bundle" name="org.apromore.plugin.ltl-conf-portal-plugin" version="[1.1.0, 2)"/>
+
     <artifact type="bundle" name="org.apromore.merge-logic" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.merge-portal" version="[1.1.0, 2)"/>
 
@@ -144,7 +147,6 @@
 <!--
     <artifact type="bundle" name="org.apromore.predictive-monitor-logic" version="[1, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.predictive-monitor-portal-plugin" version="[1, 2)"/>
--->
 
     <artifact type="bundle" name="org.apromore.prodrift-logic" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.prodrift-portal-plugin" version="[1.1.0, 2)"/>
@@ -156,5 +158,6 @@
 
     <artifact type="bundle" name="org.apromore.stagemining-logic" version="[1.1.0, 2)"/>
     <artifact type="bundle" name="org.apromore.plugin.stagemining-portal-plugin" version="[1.1.0, 2)"/>
+-->
 
 </plan>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright © 2009-2017 The Apromore Initiative.
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -89,6 +89,11 @@
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
         <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
+        <include name="Apromore-OSGI-Bundles/ltl-to-automaton-osgi/target/ltl-to-automaton-osgi-1.1.jar"/>
+        <include name="Apromore-OSGI-Bundles/declare-visualizer-osgi/target/declare-visualizer-osgi-1.1.jar"/>
+        <include name="Apromore-OSGI-Bundles/ltl-conf-check-osgi/target/ltl-conf-check-osgi-1.1.jar"/>
+        <include name="LTL-Conf-Logic/target/ltl-conf-logic-1.1.jar"/>
+        <include name="LTL-Conf-Portal-Plugin/target/ltl-conf-portal-plugin-1.1.war"/>
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
         <include name="Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
