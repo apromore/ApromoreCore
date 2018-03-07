@@ -109,7 +109,6 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-commandline</artifactId>
-            <version>1.0.20171130</version>
         </dependency>
 
         <dependency>

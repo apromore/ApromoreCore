@@ -135,7 +135,6 @@
                 </exclusion>
                 <exclusion>
                     <groupId>com.raffaeleconforti</groupId>
-                    <artifactId>noisefiltering-event-commandline</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.processmining</groupId>
