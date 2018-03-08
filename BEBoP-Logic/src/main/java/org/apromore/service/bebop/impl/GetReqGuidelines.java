@@ -56,8 +56,8 @@ public class GetReqGuidelines {
 
     public static ArrayList<String> GetBEBoPfromStringModel( String modelString ) throws MalformedURLException, IOException {
 
-        String target = "http://90.147.167.207:8080/verification-component-understandability-plugin-1.0/validatemodel/put/?en";
-
+        String target = "http://pros.unicam.it:8080/BEBoP-1/validatemodel/put/?en";
+        
         //connection to the server and post of the model in String format
         URL myurl = new URL(target);
         HttpURLConnection con = (HttpURLConnection)myurl.openConnection();
@@ -79,16 +79,16 @@ public class GetReqGuidelines {
             String line = null;
             while ((line = br.readLine()) != null) {id.append(line + "\n");}
             br.close();
-            System.out.println(""+id.toString());
+            //System.out.println(""+id.toString());
 
         }else{
-            System.out.println(con.getResponseCode());
-            System.out.println(con.getResponseMessage());
+            //System.out.println(con.getResponseCode());
+            //System.out.println(con.getResponseMessage());
         }
 
         //second connection to the server
         //GET the id of the moel stored on the server
-        target = "http://90.147.167.207:8080/verification-component-understandability-plugin-1.0/validatemodel/"+id;
+        target = "http://pros.unicam.it:8080/BEBoP-1/validatemodel/"+id;
         URL obj = new URL(target);
         HttpURLConnection con2 = (HttpURLConnection) obj.openConnection();
 
@@ -96,8 +96,8 @@ public class GetReqGuidelines {
         con2.setRequestMethod("GET");
 
         int responseCode = con2.getResponseCode();
-        System.out.println("\nSending 'GET' request to URL : " + target);
-        System.out.println("Response Code : " + responseCode);
+        //System.out.println("\nSending 'GET' request to URL : " + target);
+        //System.out.println("Response Code : " + responseCode);
 
         //Handling the response from the server
         BufferedReader in = new BufferedReader(
@@ -108,7 +108,7 @@ public class GetReqGuidelines {
         while ((inputLine = in.readLine()) != null) {	response.append(inputLine);}
         in.close();
 
-        System.out.println(response.toString());
+        //System.out.println(response.toString());
 
         try{
 
