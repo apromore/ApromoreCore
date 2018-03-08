@@ -38,8 +38,8 @@
         <menu ref="parent"/>
         <menu ref="modules"/>
         <menu ref="reports"/>
-        <menu name="Links">
-            <item name="Confluence Page" href="http://apromore-build.qut.edu.au/confluence/"/>
-        </menu>
+        <!--<menu name=name"Links">-->
+            <!--<item name="Confluence Page" href="http://apromore-build.unimelb.edu.au/confluence/"/>-->
+        <!--</menu>-->
     </body>
 </project>
