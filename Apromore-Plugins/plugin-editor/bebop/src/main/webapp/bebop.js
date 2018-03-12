@@ -124,7 +124,7 @@ ORYX.Plugins.Bebop = ORYX.Plugins.AbstractPlugin.extend({
 
     showGuidelines: function (responseJson) {
 
-     //console.log("ResponseJson: "+responseJson);
+     ////console.log("ResponseJson: "+responseJson);
     // The color of the highlighting
         var color = "#DC143C";
 
@@ -175,7 +175,7 @@ ORYX.Plugins.Bebop = ORYX.Plugins.AbstractPlugin.extend({
                            	}]
                            });
 
-     console.log("textAreaPanel"+textAreaPanel);
+     //console.log("textAreaPanel"+textAreaPanel);
 
 
     // create the Grid
@@ -213,36 +213,36 @@ ORYX.Plugins.Bebop = ORYX.Plugins.AbstractPlugin.extend({
                 for ( i=0; i< retrievedShapes.size() ; i++ ){
 
                     //DEBUG
-                    //console.log("retrievedShapes.size(): "+retrievedShapes.size());
-                    //console.log("retrievedShapes.nodeId: "+retrievedShapes[i].nodeId);
-                    //console.log("retrievedShapes.resourceId: "+retrievedShapes[i].resourceId);
+                    ////console.log("retrievedShapes.size(): "+retrievedShapes.size());
+                    ////console.log("retrievedShapes.nodeId: "+retrievedShapes[i].nodeId);
+                    ////console.log("retrievedShapes.resourceId: "+retrievedShapes[i].resourceId);
 
                     var string = retrievedShapes[i].toString();
                     var result = string.indexOf("Pool");
 
                     //DEBUG
-                    //console.log("result = string.indexOf(Pool): "+result);
+                    ////console.log("result = string.indexOf(Pool): "+result);
 
                     if (result != -1){
                           //DEBUG
-//                        console.log("We have a Pool");
+//                        //console.log("We have a Pool");
 
                            if(nId == retrievedShapes[i].resourceId){
                                  retrievedShapes[i].setProperty("selected", true);
                                  retrievedShapes[i].setProperty("selectioncolor", color);
-                                 retrievedShapes[i].setProperty("bordercolor", color);
+                                 
                                  break;
                            }
 
                             var poolShapes = retrievedShapes[i].getChildShapes();
                             //DEBUG
-                            //console.log("poolShapes: "+poolShapes.size());
+                            ////console.log("poolShapes: "+poolShapes.size());
 
                              for ( j=0; j< poolShapes.size() ; j++ ){
                              //DEBUG
-                                //console.log("poolShapesID: "+poolShapes[j]);
-                                //console.log("poolShapesID.nodeId: "+poolShapes[j].nodeId);
-                                //console.log("poolShapesID.resourceId: "+poolShapes[j].resourceId);
+                                ////console.log("poolShapesID: "+poolShapes[j]);
+                                ////console.log("poolShapesID.nodeId: "+poolShapes[j].nodeId);
+                                ////console.log("poolShapesID.resourceId: "+poolShapes[j].resourceId);
                                  var string2 = poolShapes[j].toString();
                                  var result2 = string2.indexOf("Lane");
                                  if(nId == retrievedShapes[i].resourceId){
@@ -253,32 +253,32 @@ ORYX.Plugins.Bebop = ORYX.Plugins.AbstractPlugin.extend({
 
                                   if (result2 != -1){
                                   //DEBUG
-                                  //console.log("We have a Lane");
+                                  ////console.log("We have a Lane");
 
                                     if(nId == poolShapes[j].resourceId){
                                          poolShapes[j].setProperty("selected", true);
                                          poolShapes[j].setProperty("selectioncolor", color);
-                                         poolShapes[j].setProperty("bordercolor", color);
+                                         
                                          //DEBUG
-                                         //console.log("poolShapes[j].setProperty(selected, true): "+poolShapes[j]);
+                                         ////console.log("poolShapes[j].setProperty(selected, true): "+poolShapes[j]);
                                          break;
                                     }
 
                                     var laneShapes = poolShapes[j].getChildShapes();
                                     //DEBUG
-                                    //console.log("laneShapes: "+laneShapes.size());
+                                    ////console.log("laneShapes: "+laneShapes.size());
 
                                       for ( l=0; l< laneShapes.size() ; l++ ){
                                                 //DEBUG
-//                                             //console.log("laneShapesID: "+laneShapes[l]);
-//                                             //console.log("laneShapesID.nodeId: "+laneShapes[l].nodeId);
-//                                             //console.log("laneShapesID.resourceId: "+laneShapes[l].resourceId);
+//                                             ////console.log("laneShapesID: "+laneShapes[l]);
+//                                             ////console.log("laneShapesID.nodeId: "+laneShapes[l].nodeId);
+//                                             ////console.log("laneShapesID.resourceId: "+laneShapes[l].resourceId);
 
                                                 if(nId == laneShapes[l].resourceId){
                                                   laneShapes[l].setProperty("selected", true);
                                                   laneShapes[l].setProperty("selectioncolor", color);
                                                   //DEBUG
-                                                  //console.log("laneShapes[j].setProperty(selected, true)");
+                                                  ////console.log("laneShapes[j].setProperty(selected, true)");
                                                   break;
                                                   }
                                       }
@@ -287,13 +287,13 @@ ORYX.Plugins.Bebop = ORYX.Plugins.AbstractPlugin.extend({
                                    if(nId == poolShapes[j].resourceId){
                                   poolShapes[j].setProperty("selected", true);
                                   poolShapes[j].setProperty("selectioncolor", color);
-                                  poolShapes[j].setProperty("bordercolor", color);
+                                  
                                   break;
                                   }
 
                              }
                              //DEBUG
-                             // console.log("poolShapes[i]: "+retrievedShapes[i].getChildShapes());
+                             // //console.log("poolShapes[i]: "+retrievedShapes[i].getChildShapes());
 
                     }
                     if(nId == retrievedShapes[i].resourceId){
@@ -313,14 +313,14 @@ ORYX.Plugins.Bebop = ORYX.Plugins.AbstractPlugin.extend({
 
          updateText : function( testoGuideline  ){
             //DEBUG
-            //console.log("updateText textAreaPanel: "+textAreaPanel);
-            //console.log("updateText this.textAreaPanel.items.length: "+textAreaPanel.items.length);
-            //console.log("updateText this.textAreaPanel.items.items.length: "+textAreaPanel.items.items.length);
-            //console.log("updateText this.textAreaPanel.items[0]): "+textAreaPanel.items[0]);
-            //console.log("updateText this.textAreaPanel.items.items[0]: "+textAreaPanel.items.items[0]);
+            ////console.log("updateText textAreaPanel: "+textAreaPanel);
+            ////console.log("updateText this.textAreaPanel.items.length: "+textAreaPanel.items.length);
+            ////console.log("updateText this.textAreaPanel.items.items.length: "+textAreaPanel.items.items.length);
+            ////console.log("updateText this.textAreaPanel.items[0]): "+textAreaPanel.items[0]);
+            ////console.log("updateText this.textAreaPanel.items.items[0]: "+textAreaPanel.items.items[0]);
 
             textAreaPanel.items.items[0]=testoGuideline;
-            //console.log("updateText this.textAreaPanel.items.items[0]: "+textAreaPanel.items.items[0]);
+            ////console.log("updateText this.textAreaPanel.items.items[0]: "+textAreaPanel.items.items[0]);
 
             this.textAreaPanel.update('<iframe></iframe>');
 
@@ -335,72 +335,72 @@ ORYX.Plugins.Bebop = ORYX.Plugins.AbstractPlugin.extend({
                          var retrievedShapes = this.facade.getCanvas().getChildShapes();
                          for ( i=0; i< retrievedShapes.size() ; i++ ){
                                //DEBUG
-                               //console.log("retrievedShapes.nodeId: "+retrievedShapes[i].nodeId);
-                               //console.log("retrievedShapes.resourceId: "+retrievedShapes[i].resourceId);
+                               ////console.log("retrievedShapes.nodeId: "+retrievedShapes[i].nodeId);
+                               ////console.log("retrievedShapes.resourceId: "+retrievedShapes[i].resourceId);
 
                              var string = retrievedShapes[i].toString();
                               //DEBUG
-                              //console.log("retrievedShapes[i].toString(): "+string);
+                              ////console.log("retrievedShapes[i].toString(): "+string);
 
                              var result = string.indexOf("Pool");
                               //DEBUG
-                              //console.log("result = string.indexOf(Pool): "+result);
+                              ////console.log("result = string.indexOf(Pool): "+result);
 
                              if (result != -1){
                                 //DEBUG
-                                //console.log("We have a Pool");
+                                ////console.log("We have a Pool");
                                  retrievedShapes[i].setProperty("selected", false);
                                  retrievedShapes[i].setProperty("selectioncolor", false);
-                                 retrievedShapes[i].setProperty("bordercolor", false);
+                                 
                                   var poolShapes = retrievedShapes[i].getChildShapes();
                                   //DEBUG
-                                  //console.log("poolShapes: "+poolShapes.size());
+                                  ////console.log("poolShapes: "+poolShapes.size());
 
                                       for ( j=0; j< poolShapes.size() ; j++ ){
                                       //DEBUG
-                                      //console.log("poolShapesID: "+poolShapes[j]);
-                                      //console.log("poolShapesID.nodeId: "+poolShapes[j].nodeId);
-                                      //console.log("poolShapesID.resourceId: "+poolShapes[j].resourceId);
+                                      ////console.log("poolShapesID: "+poolShapes[j]);
+                                      ////console.log("poolShapesID.nodeId: "+poolShapes[j].nodeId);
+                                      ////console.log("poolShapesID.resourceId: "+poolShapes[j].resourceId);
                                           var string2 = poolShapes[j].toString();
                                           var result2 = string2.indexOf("Lane");
                                            if (result2 != -1){
                                            //DEBUG
-                                           //console.log("We have a Lane");
+                                           ////console.log("We have a Lane");
 
                                             poolShapes[j].setProperty("selected", false);
 
                                             poolShapes[j].setProperty("selectioncolor", false);
-                                            poolShapes[j].setProperty("bordercolor", false);
+                                            
 
                                             //DEBUG
-                                            //console.log("poolShapes[j].setProperty(selected, true): "+poolShapes[j]);
+                                            ////console.log("poolShapes[j].setProperty(selected, true): "+poolShapes[j]);
 
 
                                                var laneShapes = poolShapes[j].getChildShapes();
                                                //DEBUG
-                                               //console.log("laneShapes: "+laneShapes.size());
+                                               ////console.log("laneShapes: "+laneShapes.size());
 
                                                for ( l=0; l< laneShapes.size() ; l++ ){
                                                         //DEBUG
-         //                                             //console.log("laneShapesID: "+laneShapes[l]);
-//                                                      //console.log("laneShapesID.nodeId: "+laneShapes[l].nodeId);
-//                                                      //console.log("laneShapesID.resourceId: "+laneShapes[l].resourceId);
+         //                                             ////console.log("laneShapesID: "+laneShapes[l]);
+//                                                      ////console.log("laneShapesID.nodeId: "+laneShapes[l].nodeId);
+//                                                      ////console.log("laneShapesID.resourceId: "+laneShapes[l].resourceId);
 
                                                            laneShapes[l].setProperty("selected", false);
 
                                                             laneShapes[l].setProperty("selectioncolor", false);
-                                                            laneShapes[l].setProperty("bordercolor", false);
+                                                            
                                                         //DEBUG
-                                                        //console.log("laneShapes[j].setProperty(selected, true)");
+                                                        ////console.log("laneShapes[j].setProperty(selected, true)");
                                                }
                                            }
 
                                              poolShapes[j].setProperty("selected", false);
                                              poolShapes[j].setProperty("selectioncolor", false);
-                                             poolShapes[j].setProperty("bordercolor", false);
+                                             
                                       }
                                       //DEBUG
-                                     // console.log("poolShapes[i]: "+retrievedShapes[i].getChildShapes());
+                                     // //console.log("poolShapes[i]: "+retrievedShapes[i].getChildShapes());
 
                              }else{
                                 //We have no Pool
@@ -413,7 +413,7 @@ ORYX.Plugins.Bebop = ORYX.Plugins.AbstractPlugin.extend({
                                     if(!string.indexOf("Flow")){
                                      retrievedShapes[i].setProperty("selected", false);
                                      retrievedShapes[i].setProperty("selectioncolor", false);
-                                     retrievedShapes[i].setProperty("bordercolor", false);
+                                     
                                     }//else is a Flow then continue
                                 }
                              }
@@ -439,15 +439,15 @@ ORYX.Plugins.Bebop = ORYX.Plugins.AbstractPlugin.extend({
                 var gName = record.get('GuidelineName');
                 //DEBUG
                 //Ext.Msg.alert('Violated Guideline', gName+"<br /><br />"+gDesc);
-                //console.log(record);
+                ////console.log(record);
                 var nId = record.get('NodeID');
                 //DEBUG
-                //console.log("nId: "+nId);
+                ////console.log("nId: "+nId);
                 //this.elementColor2(nId);
                 this.resetElementColor();
                 this.elementColor(nId);
                 //DEBUG
-                //console.log("this.textAreaPanel"+this.textAreaPanel);
+                ////console.log("this.textAreaPanel"+this.textAreaPanel);
                 var newText = gName+"<br /><br />"+gDesc;
                 Ext.getCmp('id_textAreaPanel').body.update(newText);
 
@@ -466,11 +466,11 @@ grid.getColumnModel().setHidden(4, true);
 //grid.getColumnModel().setHidden(5, true);
 
 //DEBUG
-//console.log("jsonStore: "+jsonStore);
-//console.log("groupStore: "+groupStore);
-//console.log("grid.store: "+grid.store);
+////console.log("jsonStore: "+jsonStore);
+////console.log("groupStore: "+groupStore);
+////console.log("grid.store: "+grid.store);
 //DEBUG
-//console.log("After grid definition");
+////console.log("After grid definition");
 
         var formWindow = new Ext.Window({
             resizable: false,
@@ -521,7 +521,7 @@ grid.getColumnModel().setHidden(4, true);
             ]
         });
         formWindow.show()
-        console.log("After windows.show()");
+        //console.log("After windows.show()");
     },
 
 
