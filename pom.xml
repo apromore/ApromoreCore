@@ -121,6 +121,7 @@
         <module>APQL-Portal-Plugin</module>
         <module>BEBoP-Logic</module>
         <module>BEBoP-Portal-Plugin</module>
+        <module>BProVe-Logic</module>
         <module>BIMP-Editor-Plugin</module>
         <module>BIMP-Portal-Plugin</module>
         <module>BPMNDiagramImporter-Logic</module>

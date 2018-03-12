@@ -118,6 +118,7 @@
 
         <!-- Editor Plugins -->
         <module>plugin-editor/bebop</module>
+        <module>plugin-editor/bprove</module>
         <module>plugin-editor/sample</module>
         <module>plugin-editor/ibpstruct</module>
         <module>plugin-editor/metrics</module>
