@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -28,6 +30,10 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import plugin.bpmn.to.maude.handlers.PostMultipleParameters;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.swing.*;
 
@@ -93,62 +99,102 @@ public class GetReqEditor {
 	        }
 	    }
 	  
-	// new method for calling bprove webservice
+
 	public static PostMultipleParameters PostReq_BProve_Maude_WebService_Property( PostMultipleParameters inputM) throws Exception {
-		String address=null;
-		
-		address = defaultAddress+"BProVe_WebService/webapi/BPMNOS/model/verification";
-			
+        String address=null;
+        boolean parse = false;
+        if(inputM.getProperty()==null) {
+        	address = defaultAddress+"BProVe_WebService/webapi/BPMNOS/parseModel";
+            parse = true;
+        }else{
+            address = defaultAddress+"BProVe_WebService/webapi/BPMNOS/model/verification";
+            parse = false;
+        }
 
+		String jsonString = class2Json(inputM);
+		System.out.println("\njsonString: "+jsonString);
 		PostMultipleParameters resultM = new PostMultipleParameters();
-		try {
-			ObjectOutputStream out;
-			URL myurl = new URL(address);
-			HttpURLConnection con = (HttpURLConnection) myurl.openConnection();
-			con.setDoOutput(true);
-			con.setDoInput(true);
-			con.setRequestProperty("Content-Type", "application/xml;");
-			con.setRequestProperty("Accept", "application/xml");
-			con.setRequestProperty("Method", "POST");
-			out = new ObjectOutputStream(con.getOutputStream());
-			out.writeObject(inputM);
+		
+        try {
+			URL url = new URL(address);
+		    URLConnection con = url.openConnection();
+		    HttpURLConnection http = (HttpURLConnection)con;
+		    http.setRequestMethod("POST"); // PUT is another valid option
+		    http.setDoOutput(true);
+		    http.setDoInput(true);
+		    http.setRequestProperty("Content-Type", "application/json");
+		    http.setRequestProperty("Accept", "application/json");
+		    http.setRequestMethod("POST");
+		    
+		    
+		        
+		    byte[] out = jsonString.getBytes(StandardCharsets.UTF_8);
+		    int length = out.length;
 
-
-			///Handling the response from the server
-			StringBuilder result = new StringBuilder();
-			String resultString = null;
-			int HttpResult = con.getResponseCode();
-			if (HttpResult == HttpURLConnection.HTTP_OK) {
-
-				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
-
-				InputStream is = con.getInputStream();
-				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-				int nRead;
-				byte[] data = new byte[16384];
-				while ((nRead = is.read(data, 0, data.length)) != -1) {
-					buffer.write(data, 0, nRead);
-				}
-				buffer.flush();
-				ByteArrayInputStream in = new ByteArrayInputStream(buffer.toByteArray());
-				ObjectInputStream ois = new ObjectInputStream(in);
-				resultM = (PostMultipleParameters) ois.readObject();
-
-			}
-			else {
-				//JOptionPane.showMessageDialog(null, "response\n" + con.getResponseCode());
-				//System.out.println(con.getResponseCode());
-				//System.out.println(con.getResponseMessage());
-			}
-			out.close();
-		} catch (Exception e2) {
-			e2.printStackTrace();
-			//JOptionPane.showMessageDialog(null, "e2.printStackTrace();\n" + e2);
+		    http.setFixedLengthStreamingMode(length);
+		    http.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		    http.connect();
+		    try(OutputStream os = http.getOutputStream()) {
+		        os.write(out);
+		        os.close();
+		    }		
+		    
+		     BufferedReader inB = new BufferedReader(
+		                                    new InputStreamReader(
+		                                    		http.getInputStream()));
+		        String decodedString=new String();
+		        for (String line; (line = inB.readLine()) != null; decodedString += line);
+				inB.close();
+				resultM=json2Class(decodedString);	
+				System.out.println("\ndecodedString: "+decodedString);
+        } catch (Exception e2) {
+            e2.printStackTrace();
+           // JOptionPane.showMessageDialog(null, "e2.printStackTrace();\n" + e2);
 		}
 
-		return resultM;
+
+        return resultM;
 
 	}
+	
+	public static String class2Json(PostMultipleParameters pModel){
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonInString = null;
+		try {
+
+			// Convert object to JSON string
+			jsonInString = mapper.writeValueAsString(pModel);
+
+		} catch (JsonGenerationException e123) {
+			e123.printStackTrace();
+		} catch (JsonMappingException e123) {
+			e123.printStackTrace();
+		} catch (IOException e123) {
+			e123.printStackTrace();
+		}
+			return jsonInString;
+	   }
+			
+	   
+	   private static PostMultipleParameters json2Class(String jsonString) {
+			ObjectMapper mapper = new ObjectMapper();
+
+			PostMultipleParameters jsonPostMultipleParameters = new PostMultipleParameters();
+			
+			try {
+			
+				jsonPostMultipleParameters = mapper.readValue(jsonString, PostMultipleParameters.class);
+				
+
+			} catch (JsonGenerationException e) {
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return jsonPostMultipleParameters;
+		}
 
 
 }

@@ -431,8 +431,8 @@
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
                 <include name="**/target/prom-pnml-osgi-1.1.jar"/>	
-		<include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
-		<include name="**/target/declare-visualizer-osgi-1.1.jar"/>
+		        <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+		        <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>

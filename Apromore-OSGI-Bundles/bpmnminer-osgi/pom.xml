@@ -119,7 +119,7 @@
                         </Import-Package>
                         <Export-Package>
                             com.raffaeleconforti.bpmnminer.*,
-                            com.raffaeleconforti.wrapper.settings.*,
+                            com.raffaeleconforti.wrappers.settings.*,
                             com.raffaeleconforti.context.*,
                             com.raffaeleconforti.foreignkeydiscovery.*,
                             com.raffaeleconforti.log.util,

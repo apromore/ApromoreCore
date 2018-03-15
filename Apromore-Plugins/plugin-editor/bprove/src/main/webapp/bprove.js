@@ -84,11 +84,14 @@ ORYX.Plugins.Bprove = ORYX.Plugins.AbstractPlugin.extend({
         var textArea = document.getElementById("buttonArea");
         textArea.innerHTML = "Waiting for BProVe Response...";
 
+        //console.log("json:"+json);
+
         //First Ajax to get poolList and taskList and parsedModel
         new Ajax.Request(servlet, {
             parameters: {'data': json, 'property' : "getParsedModel", 'param' : false, 'type': mType},
             method: 'POST',
             asynchronous: true,
+            
 
             onSuccess: function (data) {
 

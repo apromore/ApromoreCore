@@ -50,6 +50,7 @@ import javax.swing.JOptionPane;
 import java.io.ObjectOutputStream;
 
 import plugin.bpmn.to.maude.handlers.MaudeOperationEditor;
+import plugin.bpmn.to.maude.getService.GetReqEditor;
 
 /**
  * Created by Fabrizio Fornari on 18/05/2017.
@@ -97,7 +98,7 @@ public class BproveServiceImpl implements BproveService {
 
                     inputM.setOriginalModel(modelString);
 
-                    parsedModel=PostReq_BProve_Maude_WebService_Property(inputM);
+                    parsedModel=GetReqEditor.PostReq_BProve_Maude_WebService_Property(inputM);
 
                 } catch (Exception e1) {
                    e1.printStackTrace();
@@ -117,69 +118,6 @@ public class BproveServiceImpl implements BproveService {
 
             }
 
-    public static PostMultipleParameters PostReq_BProve_Maude_WebService_Property( PostMultipleParameters inputM) throws Exception {
-        String address=null;
-        String defaultAddress = "http://pros.unicam.it:8080/";
-        //String defaultAddress = "http://localhost:8080/";
-        boolean parse = false;
-        if(inputM.getProperty()==null) {
-        	address = defaultAddress+"BProVe_WebService/webapi/BPMNOS/parseModel";
-            parse = true;
-        }else{
-            address = defaultAddress+"BProVe_WebService/webapi/BPMNOS/model/verification";
-            parse = false;
-        }
-
-        PostMultipleParameters resultM = new PostMultipleParameters();
-        try {
-            ObjectOutputStream out;
-            URL myurl = new URL(address);
-            HttpURLConnection con = (HttpURLConnection) myurl.openConnection();
-            con.setDoOutput(true);
-            con.setDoInput(true);
-            con.setRequestProperty("Content-Type", "application/xml;");
-            con.setRequestProperty("Accept", "application/xml");
-            con.setRequestProperty("Method", "POST");
-            out = new ObjectOutputStream(con.getOutputStream());
-            out.writeObject(inputM);
-
-
-            ///Handling the response from the server
-            StringBuilder result = new StringBuilder();
-            String resultString = null;
-            int HttpResult = con.getResponseCode();
-            if (HttpResult == HttpURLConnection.HTTP_OK) {
-
-                BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
-
-                InputStream is = con.getInputStream();
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                int nRead;
-                byte[] data = new byte[16384];
-                while ((nRead = is.read(data, 0, data.length)) != -1) {
-                    buffer.write(data, 0, nRead);
-                }
-                buffer.flush();
-                ByteArrayInputStream in = new ByteArrayInputStream(buffer.toByteArray());
-                ObjectInputStream ois = new ObjectInputStream(in);
-                resultM = (PostMultipleParameters) ois.readObject();
-
-            }
-            else {
-               // JOptionPane.showMessageDialog(null, "response\n" + con.getResponseCode());
-                System.out.println(con.getResponseCode());
-                System.out.println(con.getResponseMessage());
-            }
-            out.close();
-        } catch (Exception e2) {
-            e2.printStackTrace();
-           // JOptionPane.showMessageDialog(null, "e2.printStackTrace();\n" + e2);
-        }
-
-        return resultM;
-
-    }
-
 
 
 //MaudeOperation
@@ -194,7 +132,7 @@ public class BproveServiceImpl implements BproveService {
             result = MaudeOperationEditor.doMaudeOperation( modelToParse, parsedModel, propertyToVerify,  param,  poolName1,  poolName2,  taskName1 ,  taskName2 ,  msgName);
         } catch (Exception e3) {
             e3.printStackTrace();
-            JOptionPane.showMessageDialog(null, "MaudeOperationEditor.doMaudeOperation e3.printStackTrace();\n" + e3.getMessage());
+            //JOptionPane.showMessageDialog(null, "MaudeOperationEditor.doMaudeOperation e3.printStackTrace();\n" + e3.getMessage());
         }
             return result;
     }

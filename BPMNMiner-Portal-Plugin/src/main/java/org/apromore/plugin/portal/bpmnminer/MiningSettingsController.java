@@ -1,7 +1,7 @@
 package org.apromore.plugin.portal.bpmnminer;
 
 import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
-import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
