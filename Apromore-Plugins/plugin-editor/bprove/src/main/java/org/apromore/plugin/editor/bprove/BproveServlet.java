@@ -228,24 +228,24 @@ public class BproveServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         //String jsonData = request.getParameter("data");
 
-        //System.out.p.println("\nHandling Post\n");
+        //System.out.println("\nHandling Post\n");
         String jsonData = request.getParameter("data");
         String propertyToVerify = request.getParameter("property");
         //String propertyToVerify = "Can a Process End?";
         setPropertyToVerify(propertyToVerify);
 
-        //System.out.p.println("\nparam\n");
+        //System.out.println("\nparam\n");
         String param = request.getParameter("param");
-        //System.out.p.println(param);
+        //System.out.println(param);
         setParameterized(param);
         //String poolName1 = request.getParameter("poolName1");
         
         try{
-                    String parsedModelToBeUsed = request.getParameter("parsedModel");
-                    setParsedModelToBeUsed(parsedModelToBeUsed);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
+            String parsedModelToBeUsed = request.getParameter("parsedModel");
+            setParsedModelToBeUsed(parsedModelToBeUsed);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
 
         //if((poolName1!=null)&&(poolName1!="")&&(poolName1!=" ")){
             if(param.equals("true")){
@@ -281,7 +281,7 @@ public class BproveServlet extends HttpServlet {
                 } catch (Exception e4) {
                     e4.printStackTrace();
                 }
-                //System.out.p.println("\nparam true dentro if param = true\n");
+                //System.out.println("\nparam true dentro if param = true\n");
             }
 
                 try {
@@ -293,7 +293,7 @@ public class BproveServlet extends HttpServlet {
                         String bprove = parseModel(jsonData,request);
                         //JOptionPane.showMessageDialog(null, "\nbprove\n"+bprove);
                         //DEBUG
-                        //System.out.p.println("\nbprove\n"+bprove);
+                        //System.out.println("\nbprove\n"+bprove);
                         response.setContentType("application/json");
                         response.setStatus(200);
                         response.getWriter().write(bprove);}
@@ -314,7 +314,7 @@ public class BproveServlet extends HttpServlet {
     
    private String parseModel(String jsonData, HttpServletRequest request) throws Exception {
 
-    //System.out.p.println("\nInside parseModel \n");
+    //System.out.println("\nInside parseModel \n");
     String result=null;
 
     
@@ -340,9 +340,21 @@ public class BproveServlet extends HttpServlet {
         jaxbContext.createMarshaller().marshal(bpmn, baos);
         String process = baos.toString("utf-8");
 
-
+        
         //JOptionPane.showMessageDialog(null, "\nprocess\n"+process);
-        //System.out.p.println("\nprocess \n"+process);
+        // File file = new File("/Users/user/Desktop/BPMNMODELFROMFACADE"+".txt");
+        // FileWriter fw = null;
+        // try {
+        //   fw = new FileWriter(file);
+        //   fw.write(process);	
+        //   fw.flush();
+        // } catch (IOException e2) {
+        //     e2.printStackTrace();
+        // }
+
+
+
+        //System.out.println("\nprocess \n"+process);
         setoriginalModelhigh(process);
         
         String parsedModel = bproveService.getParsedModelBprove(process);
@@ -353,7 +365,7 @@ public class BproveServlet extends HttpServlet {
             return result;
         }
 
-        //System.out.p.println("\nBefore MaudeOperationEditor \n");
+        //System.out.println("\nBefore MaudeOperationEditor \n");
         //per ritornare il risultato
         result = bproveService.getMaudeOperation(getoriginalModelhigh(),getparsedModelhigh(),getPropertyToVerify(),getParameterized(), getPoolName1(),getPoolName2(),getTaskName1(),getTaskName2(),getMsgName());
 
