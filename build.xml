@@ -93,7 +93,6 @@
         <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
-        <include name="Metrics-Editor-Plugin/target/metrics-editor-plugin-1.1.war"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
 
         <include name="BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
@@ -160,7 +159,6 @@
         <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
-        <include name="Metrics-Editor-Plugin/target/metrics-editor-plugin-1.1.war"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
 
         <include name="BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
@@ -243,7 +241,6 @@
         <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
-        <include name="Metrics-Editor-Plugin/target/metrics-editor-plugin-1.1.war"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
 
         <include name="BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
@@ -434,8 +431,8 @@
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
                 <include name="**/target/prom-pnml-osgi-1.1.jar"/>	
-		<include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
-		<include name="**/target/declare-visualizer-osgi-1.1.jar"/>
+		        <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+		        <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/bpmnminer-osgi-1.1.jar"/>
                 <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
@@ -459,8 +456,7 @@
 
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
-        <copy file="Metrics-Editor-Plugin/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
-        <!--<copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>-->
+        <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
 
@@ -531,8 +527,7 @@
 
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
-        <copy file="Metrics-Editor-Plugin/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
-        <!--<copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>-->
+        <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
 
@@ -613,8 +608,7 @@
 
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
-        <copy file="Metrics-Editor-Plugin/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
-        <!--<copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>-->
+        <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
 
