@@ -121,7 +121,6 @@
         <module>plugin-editor/bprove</module>
         <module>plugin-editor/sample</module>
         <module>plugin-editor/ibpstruct</module>
-        <module>plugin-editor/metrics</module>
 
         <module>../Process-Plugin-API</module>
 
