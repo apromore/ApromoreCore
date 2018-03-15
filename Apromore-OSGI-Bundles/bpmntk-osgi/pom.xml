@@ -45,7 +45,7 @@
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>BPMNTK OSGI</Bundle-Name>
                         <Import-Bundle>
-                            <version>1.0.20180315</version>org.apromore.bpmnminer-osgi;bundle-version="[1.0,2.0]"
+                            org.apromore.bpmnminer-osgi;bundle-version="[1.0,2.0]"
                         </Import-Bundle>
                         <Import-Package>
                             !ee.ut.comptech,
