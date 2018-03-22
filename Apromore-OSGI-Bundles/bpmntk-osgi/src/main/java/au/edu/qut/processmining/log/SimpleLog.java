@@ -32,6 +32,7 @@ public class SimpleLog {
     private XLog xlog;
     private Map<String, Integer> traces;
     private Map<Integer, String> events;
+    private Map<String, Integer> reverseMap;
     private int size;
     private long totalEvents;
 
@@ -59,6 +60,9 @@ public class SimpleLog {
     public Map<Integer, String> getEvents() { return events; }
     public int size() { return size; }
     public XLog getXLog() { return xlog; }
+
+    public Map<String, Integer> getReverseMap() { return reverseMap; }
+    public void setReverseMap(Map<String, Integer> reverseMap) { this.reverseMap = reverseMap; }
 
     public void setStartcode(int startcode){ this.startcode = startcode; }
     public int getStartcode(){ return startcode; }

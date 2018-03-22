@@ -25,10 +25,11 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by Adriano on 14/06/2016.
@@ -38,6 +39,92 @@ public class LogParser {
     private static final int STARTCODE = 0;
     private static final int ENDCODE = -1;
 
+
+    public static SimpleLog getSimpleLog(String path) {
+        SimpleLog log;
+
+        HashSet<String> labels = new HashSet<>();
+        ArrayList<String> orderedLabels;
+        HashMap<String, Integer> labelsToIDs = new HashMap<>();  //this maps the original name of an event to its code
+        HashMap<Integer, String> events = new HashMap<>();  //this maps the code of the event to its original name
+        HashMap<String, Integer> reverseMap = new HashMap<>();  //this maps the event name to its code
+        HashMap<String, Integer> traces = new HashMap<>();  //this is the simple log, each trace is a string associated to its frequency
+
+        int frequency;
+        String trace;
+        String strace;
+        String event;
+        StringTokenizer tokenizer;
+
+        int LID;
+
+        BufferedReader reader;
+
+        events.put(STARTCODE, "autogen-start");
+        events.put(ENDCODE, "autogen-end");
+
+        try {
+            reader = new BufferedReader(new FileReader(path));
+
+            while( reader.ready() )
+            {
+                trace = reader.readLine();
+                tokenizer = new StringTokenizer(trace, "::");
+                tokenizer.nextToken();
+
+                while( tokenizer.hasMoreTokens() ) {
+                    event = tokenizer.nextToken();
+                    labels.add(event);
+                }
+            }
+
+            reader.close();
+
+            orderedLabels = new ArrayList<>(labels);
+            Collections.sort(orderedLabels);
+
+            LID = 1;
+            for (String l : orderedLabels) {
+                labelsToIDs.put(l, LID);
+                events.put(LID, l);
+                reverseMap.put(l, LID);
+                LID++;
+            }
+
+            reader = new BufferedReader(new FileReader(path));
+
+            while( reader.ready() )
+            {
+                trace = reader.readLine();
+                tokenizer = new StringTokenizer(trace, "::");
+                frequency = Integer.valueOf(tokenizer.nextToken());
+
+                strace = "::" + STARTCODE + "::";
+                while( tokenizer.hasMoreTokens() ) {
+                    event = tokenizer.nextToken();
+                    strace += (labelsToIDs.get(event) + "::");
+                }
+                strace += ENDCODE + "::";
+
+                if(!traces.containsKey(strace))  traces.put(strace, frequency);
+                else traces.put(strace, traces.get(strace) + frequency);
+            }
+
+            reader.close();
+
+            log = new SimpleLog(traces, events, null);
+            log.setReverseMap(reverseMap);
+            log.setStartcode(STARTCODE);
+            log.setEndcode(ENDCODE);
+
+        } catch ( IOException ioe ) {
+            System.out.println("ERROR - something went wrong while reading the log file: " + path);
+            return null;
+        }
+
+        return log;
+
+    }
 
     public static SimpleLog getSimpleLog(XLog log, XEventClassifier xEventClassifier) {
 //        System.out.println("LOGP - starting ... ");
@@ -49,6 +136,7 @@ public class LogParser {
         ArrayList<String> orderedLabels;
         HashMap<String, Integer> labelsToIDs = new HashMap<>();  //this maps the original name of an event to its code
         HashMap<Integer, String> events = new HashMap<>();  //this maps the code of the event to its original name
+        HashMap<String, Integer> reverseMap = new HashMap<>();  //this maps the event name to its code
         HashMap<String, Integer> traces = new HashMap<>();  //this is the simple log, each trace is a string associated to its frequency
 
         int tIndex; //index to iterate on the log traces
@@ -97,6 +185,7 @@ public class LogParser {
         for( String l : orderedLabels ) {
             labelsToIDs.put(l, LID);
             events.put(LID, l);
+            reverseMap.put(l, LID);
 //            System.out.println("DEBUG - ID:label - " + LID + ":" + l);
             LID++;
         }
@@ -139,6 +228,7 @@ public class LogParser {
 //        for( int code : events.keySet() ) System.out.println("DEBUG - " + code + " = " + events.get(code));
 
         sLog = new SimpleLog(traces, events, log);
+        sLog.setReverseMap(reverseMap);
         sLog.setStartcode(STARTCODE);
         sLog.setEndcode(ENDCODE);
         sLog.setTotalEvents(totalEvents);
