@@ -155,13 +155,8 @@ public class BebopServiceImpl implements BebopService {
 
             public static ArrayList<String> GetBEBoPfromStringModel( String modelString ) throws MalformedURLException, IOException {
 
-                //bckp machine 1
-                //target = "http://90.147.167.207:8080/verification-component-understandability-plugin-1.0/validatemodel/put/?en";
-                //bckp machine 2
-                String target = "http://90.147.102.20:8080/verification-component-understandability-plugin-1.0/validatemodel/put/?en";
-                //BEBoP official CNR machine
-//               String target = "http://understandabilitybpmn.isti.cnr.it:8080/verification-component-understandability-plugin/validatemodel/put/?en";
-
+                 String target = "http://pros.unicam.it:8080/BEBoP-1/validatemodel/put/?en";
+                
                 //connection to the server and post of the model in String format
                      URL myurl = new URL(target);
                      HttpURLConnection con = (HttpURLConnection)myurl.openConnection();
@@ -183,31 +178,25 @@ public class BebopServiceImpl implements BebopService {
                          String line = null;
                          while ((line = br.readLine()) != null) {id.append(line + "\n");}
                          br.close();
-                         System.out.println(""+id.toString());
+                         //System.out.println(""+id.toString());
 
                      }else{
-                         System.out.println(con.getResponseCode());
-                         System.out.println(con.getResponseMessage());
+                         //System.out.println(con.getResponseCode());
+                         //System.out.println(con.getResponseMessage());
                      }
 
                      //second connection to the server
-                     //GET the id of the moel stored on the server
-                //bckp machine 1
-                     //target = "http://90.147.167.207:8080/verification-component-understandability-plugin-1.0/validatemodel/"+id;
-                //bckp machine 2
-                     target = "http://90.147.102.20:8080/verification-component-understandability-plugin-1.0/validatemodel/"+id;
-                //BEBoP official CNR machine
-                     //target = "http://understandabilitybpmn.isti.cnr.it:8080/verification-component-understandability-plugin/validatemodel/"+id;
 
-                     URL obj = new URL(target);
+                    target = "http://pros.unicam.it:8080/BEBoP-1/validatemodel/"+id;
+                    URL obj = new URL(target);
                      HttpURLConnection con2 = (HttpURLConnection) obj.openConnection();
 
                      // optional default is GET
                      con2.setRequestMethod("GET");
 
                    	 int responseCode = con2.getResponseCode();
-                   	 System.out.println("\nSending 'GET' request to URL : " + target);
-                   	 System.out.println("Response Code : " + responseCode);
+                   	 //System.out.println("\nSending 'GET' request to URL : " + target);
+                   	 //System.out.println("Response Code : " + responseCode);
 
                      //Handling the response from the server
                      BufferedReader in = new BufferedReader(
@@ -218,7 +207,7 @@ public class BebopServiceImpl implements BebopService {
                    	 while ((inputLine = in.readLine()) != null) {	response.append(inputLine);}
                      in.close();
 
-                     System.out.println(response.toString());
+                     //System.out.println(response.toString());
 
                      try{
 
@@ -228,7 +217,7 @@ public class BebopServiceImpl implements BebopService {
                          GuidelinesFactory glres = (GuidelinesFactory) unmarshaller.unmarshal(reader);
                          ArrayList<String> ret =glres.getIDs();
                          //DEBUG
-                         //System.out.println("glres.getDefinitionID(): "+glres.getGuidelines().toString());
+                         ////System.out.println("glres.getDefinitionID(): "+glres.getGuidelines().toString());
                          return ret;
 
                      }catch( Exception e){
@@ -278,17 +267,17 @@ public class BebopServiceImpl implements BebopService {
                                String pId = p.getId().toString();
                                pId = pId.replace(" ", "_");
                                NodeBPMN nodeBPMN = new NodeBPMN(pId, p.getLabel(), p.getSwimlaneType().toString());
-                               System.out.println("\n Swimlane: " + pId + " " + p.getLabel() + " " + p.getSwimlaneType().toString());
+                               //System.out.println("\n Swimlane: " + pId + " " + p.getLabel() + " " + p.getSwimlaneType().toString());
                                nodesBPMN.add(nodeBPMN);
                            }
                        }catch(Exception e4){
                            StringWriter errors = new StringWriter();
                            e4.printStackTrace(new PrintWriter(errors));
-                           System.out.println("\nNo Swimlane");
+                           //System.out.println("\nNo Swimlane");
                            e4.printStackTrace();
                        }
 
-                       System.out.println("\n nodesBPMN.size()"+nodesBPMN.size());
+                       //System.out.println("\n nodesBPMN.size()"+nodesBPMN.size());
 
 
                        BPMNNode duplicate;
@@ -381,7 +370,7 @@ public class BebopServiceImpl implements BebopService {
                          }
                        }
 
-                       System.out.println("\n AfternodesBPMN.size()"+nodesBPMN.size());
+                       //System.out.println("\n AfternodesBPMN.size()"+nodesBPMN.size());
 
                        try {
 
@@ -389,7 +378,7 @@ public class BebopServiceImpl implements BebopService {
                            for (NodeBPMN g : nodesBPMN) {
                                if (g.getId().equals(guidelinesListResult.get(i))) {
 
-                                   System.out.println("\nINFONODOBPMN "+g.getId()+g.getName()+g.getType());
+                                   //System.out.println("\nINFONODOBPMN "+g.getId()+g.getName()+g.getType());
 
                                        String nodeInfo = "The Element with Id " + g.getId();
                                        if (g.getName()!=null) {
@@ -409,7 +398,7 @@ public class BebopServiceImpl implements BebopService {
 
                                        nodeInfo += " does not meet the guideline";
 
-                                       System.out.println("\ni: "+i+"nodeInfo: "+nodeInfo);
+                                       //System.out.println("\ni: "+i+"nodeInfo: "+nodeInfo);
 
                                    guidelinesListResult.set(i,nodeInfo);
 
@@ -418,7 +407,7 @@ public class BebopServiceImpl implements BebopService {
                            }
                        }
                        }  catch(Exception e5){
-                           System.out.println("String nodeInfo = ");
+                           //System.out.println("String nodeInfo = ");
                            StringWriter errors = new StringWriter();
                            e5.printStackTrace(new PrintWriter(errors));
                            e5.printStackTrace();
@@ -455,10 +444,10 @@ public class BebopServiceImpl implements BebopService {
 
                        resultGuideline = GetBEBoPfromStringModel(modelString);
 
-                         System.out.println("\nDopo resultGuideline = GetBEBoPfromStringModel(modelString);");
+                         //System.out.println("\nDopo resultGuideline = GetBEBoPfromStringModel(modelString);");
 
                        resultGuideline=GetGuidelinesListBPMN(resultGuideline , bpmnDiagram);
-                         System.out.println("\nDopo resultGuideline=GetGuidelinesListBPMN(resultGuideline , bpmnDiagram);");
+                         //System.out.println("\nDopo resultGuideline=GetGuidelinesListBPMN(resultGuideline , bpmnDiagram);");
 
                      }catch(Exception e2){
                        System.err.println("Unable to GetGuidelinesListBPMN: " + e2.getMessage());
@@ -491,7 +480,7 @@ public class BebopServiceImpl implements BebopService {
 
         }
 
-        System.out.println("QUESTOQUI: "+bpmnDiagram);
+        //System.out.println("QUESTOQUI: "+bpmnDiagram);
 
         ArrayList <String> resultGuideline = new ArrayList <String>();
 
@@ -500,10 +489,10 @@ public class BebopServiceImpl implements BebopService {
 
             resultGuideline = GetBEBoPfromStringModel(modelString);
 
-            System.out.println("\nDopo resultGuideline = GetBEBoPfromStringModel(modelString);");
+            //System.out.println("\nDopo resultGuideline = GetBEBoPfromStringModel(modelString);");
 
             resultGuidelineJson=GetGuidelinesListBPMNJson(resultGuideline , bpmnDiagram);
-            System.out.println("\nDopo resultGuideline=GetGuidelinesListBPMN(resultGuideline , bpmnDiagram);");
+            //System.out.println("\nDopo resultGuideline=GetGuidelinesListBPMN(resultGuideline , bpmnDiagram);");
 
         }catch(Exception e2){
             System.err.println("Unable to GetGuidelinesListBPMN: " + e2.getMessage());
@@ -520,7 +509,7 @@ public class BebopServiceImpl implements BebopService {
 
         ArrayList<String> guidelinesListResult = new ArrayList<String>();
 
-        System.out.println("\nguidelinesList: "+guidelinesList);
+        //System.out.println("\nguidelinesList: "+guidelinesList);
 
         guidelinesListResult=guidelinesList;
 
@@ -532,18 +521,18 @@ public class BebopServiceImpl implements BebopService {
                 pId = pId.replace(" ", "_");
                 NodeBPMN nodeBPMN = new NodeBPMN(pId, p.getLabel(), p.getSwimlaneType().toString());
                 //DEBUG
-                //System.out.println("\n Swimlane: " + pId + " " + p.getLabel() + " " + p.getSwimlaneType().toString());
+                ////System.out.println("\n Swimlane: " + pId + " " + p.getLabel() + " " + p.getSwimlaneType().toString());
                 nodesBPMN.add(nodeBPMN);
             }
         }catch(Exception e4){
             StringWriter errors = new StringWriter();
             e4.printStackTrace(new PrintWriter(errors));
-            System.out.println("\nNo Swimlane");
+            //System.out.println("\nNo Swimlane");
             e4.printStackTrace();
         }
 
         //DEBUG
-        //System.out.println("\n nodesBPMN.size()"+nodesBPMN.size());
+        ////System.out.println("\n nodesBPMN.size()"+nodesBPMN.size());
 
         for( BPMNNode node : bpmnDiagram.getNodes() ) {
 
@@ -634,7 +623,7 @@ public class BebopServiceImpl implements BebopService {
         }
 
         //DEBUG
-        //System.out.println("\n AfternodesBPMN.size()"+nodesBPMN.size());
+        ////System.out.println("\n AfternodesBPMN.size()"+nodesBPMN.size());
 
         //FINITO DI GENERARE I NODE
 
@@ -645,7 +634,7 @@ public class BebopServiceImpl implements BebopService {
                     if (g.getId().equals(guidelinesListResult.get(i))) {
 
                         //DEBUG
-                        //System.out.println("\nINFONODOBPMN "+g.getId()+g.getName()+g.getType());
+                        ////System.out.println("\nINFONODOBPMN "+g.getId()+g.getName()+g.getType());
 
                         String nodeInfo = "The Element with Id: " + g.getId();
                         if (g.getName()!=null) {
@@ -665,7 +654,7 @@ public class BebopServiceImpl implements BebopService {
 
                         nodeInfo += " does not meet the guideline";
                         //DEBUG
-                        //System.out.println("\ni: "+i+"nodeInfo: "+nodeInfo);
+                        ////System.out.println("\ni: "+i+"nodeInfo: "+nodeInfo);
 
                         guidelinesListResult.set(i,nodeInfo);
 
@@ -674,7 +663,7 @@ public class BebopServiceImpl implements BebopService {
                 }
             }
         }  catch(Exception e5){
-            System.out.println("String nodeInfo = ");
+            //System.out.println("String nodeInfo = ");
             StringWriter errors = new StringWriter();
             e5.printStackTrace(new PrintWriter(errors));
             e5.printStackTrace();
@@ -707,8 +696,8 @@ public class BebopServiceImpl implements BebopService {
                         JSONObject result = new JSONObject(appoggio, JSONObject.getNames(appoggio));
                         result.put("Node", guidelinesListResult.get(i));
                         //DEBUG
-                        //System.out.println("\n Result.PUT: "+ result.toString());
-                        // System.out.println("\n Node: "+ guidelinesListResult.get(i));
+                        ////System.out.println("\n Result.PUT: "+ result.toString());
+                        // //System.out.println("\n Node: "+ guidelinesListResult.get(i));
                         ja.put(j,result);
 
                         j++;
@@ -736,10 +725,10 @@ public class BebopServiceImpl implements BebopService {
             finalResult.put("Guidelines",ja);
 
             //DEBUG
-            //System.out.println("\nfinalResult.toString(): "+finalResult.toString());
+            ////System.out.println("\nfinalResult.toString(): "+finalResult.toString());
 
         }  catch(Exception e6){
-            System.out.println("SException e6 ");
+            //System.out.println("SException e6 ");
             StringWriter errors = new StringWriter();
             e6.printStackTrace(new PrintWriter(errors));
             e6.printStackTrace();
@@ -764,10 +753,10 @@ public class BebopServiceImpl implements BebopService {
 
          resultGuideline = GetBEBoPfromStringModel(model);
 
-         System.out.println("\nDopo resultGuideline = GetBEBoPfromStringModel(modelString);");
+         //System.out.println("\nDopo resultGuideline = GetBEBoPfromStringModel(modelString);");
 
          resultGuideline=GetGuidelinesListRealBPMNString(resultGuideline , bpmnDiagram);
-         System.out.println("\nDopo resultGuideline=GetGuidelinesListBPMN(resultGuideline , bpmnDiagram);");
+         //System.out.println("\nDopo resultGuideline=GetGuidelinesListBPMN(resultGuideline , bpmnDiagram);");
 
      }catch(Exception e2){
          System.err.println("Unable to GetGuidelinesListBPMN: " + e2.getMessage());
@@ -785,7 +774,7 @@ public class BebopServiceImpl implements BebopService {
         ArrayList<String> guidelinesListResult = new ArrayList<String>();
 
         //DEBUG
-        //System.out.println("\nguidelinesList: "+guidelinesList);
+        ////System.out.println("\nguidelinesList: "+guidelinesList);
 
         guidelinesListResult=guidelinesList;
 
@@ -796,18 +785,18 @@ public class BebopServiceImpl implements BebopService {
                 String pId = p.getId().toString();
                 pId = pId.replace(" ", "_");
                 NodeBPMN nodeBPMN = new NodeBPMN(pId, p.getLabel(), p.getSwimlaneType().toString());
-                System.out.println("\n Swimlane: " + pId + " " + p.getLabel() + " " + p.getSwimlaneType().toString());
+                //System.out.println("\n Swimlane: " + pId + " " + p.getLabel() + " " + p.getSwimlaneType().toString());
                 nodesBPMN.add(nodeBPMN);
             }
         }catch(Exception e4){
             StringWriter errors = new StringWriter();
             e4.printStackTrace(new PrintWriter(errors));
-            System.out.println("\nNo Swimlane");
+            //System.out.println("\nNo Swimlane");
             e4.printStackTrace();
         }
 
         //DEBUG
-        //System.out.println("\n nodesBPMN.size()"+nodesBPMN.size());
+        ////System.out.println("\n nodesBPMN.size()"+nodesBPMN.size());
 
 
         for( BPMNNode node : bpmnDiagram.getNodes() ) {
@@ -898,7 +887,7 @@ public class BebopServiceImpl implements BebopService {
             }
         }
 
-        System.out.println("\n AfternodesBPMN.size()"+nodesBPMN.size());
+        //System.out.println("\n AfternodesBPMN.size()"+nodesBPMN.size());
 
         //FINITO DI GENERARE I NODE
 
@@ -908,7 +897,7 @@ public class BebopServiceImpl implements BebopService {
                 for (NodeBPMN g : nodesBPMN) {
                     if (g.getId().equals(guidelinesListResult.get(i))) {
 
-                        System.out.println("\nINFONODOBPMN "+g.getId()+g.getName()+g.getType());
+                        //System.out.println("\nINFONODOBPMN "+g.getId()+g.getName()+g.getType());
 
                         String nodeInfo = "The Element with Id: " + g.getId();
                         if (g.getName()!=null) {
@@ -928,7 +917,7 @@ public class BebopServiceImpl implements BebopService {
 
                         nodeInfo += " does not meet the guideline";
 
-                        System.out.println("\ni: "+i+"nodeInfo: "+nodeInfo);
+                        //System.out.println("\ni: "+i+"nodeInfo: "+nodeInfo);
 
                         guidelinesListResult.set(i,nodeInfo);
 
@@ -937,7 +926,7 @@ public class BebopServiceImpl implements BebopService {
                 }
             }
         }  catch(Exception e5){
-            System.out.println("String nodeInfo = ");
+            //System.out.println("String nodeInfo = ");
             StringWriter errors = new StringWriter();
             e5.printStackTrace(new PrintWriter(errors));
             e5.printStackTrace();
@@ -963,14 +952,14 @@ public class BebopServiceImpl implements BebopService {
             resultGuideline = GetBEBoPfromStringModel(model);
 
             //DEBUG
-            //System.out.println("\nDopo resultGuideline = GetBEBoPfromStringModel(modelString);");
+            ////System.out.println("\nDopo resultGuideline = GetBEBoPfromStringModel(modelString);");
             //DEBUG
-            //System.out.println("resultGuidelineNow"+resultGuideline);
+            ////System.out.println("resultGuidelineNow"+resultGuideline);
 
             resultGuidelineJson=GetGuidelinesListBPMNJsonV2(resultGuideline, model);
 
             //DEBUG
-            //System.out.println("\nDopo resultGuideline=GetGuidelinesListBPMN(resultGuideline , bpmnDiagram);");
+            ////System.out.println("\nDopo resultGuideline=GetGuidelinesListBPMN(resultGuideline , bpmnDiagram);");
 
         }catch(Exception e2){
             System.err.println("Unable to GetGuidelinesListBPMN: " + e2.getMessage());
@@ -988,8 +977,8 @@ public class BebopServiceImpl implements BebopService {
         ArrayList<String> guidelinesListResult = new ArrayList<String>();
 
         //DEBUG
-        //System.out.println("\nguidelinesList: "+guidelinesList);
-        //System.out.println("\nListbpmnDiagram: "+bpmnDiagram);
+        ////System.out.println("\nguidelinesList: "+guidelinesList);
+        ////System.out.println("\nListbpmnDiagram: "+bpmnDiagram);
 
         guidelinesListResult=guidelinesList;
 
@@ -1000,11 +989,11 @@ public class BebopServiceImpl implements BebopService {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             //DEBUG
-            //System.out.println("\nBEFOREdBuilder\n");
+            ////System.out.println("\nBEFOREdBuilder\n");
 
             Document doc = dBuilder.parse(new InputSource(new ByteArrayInputStream(inputStringModel.getBytes("utf-8"))));
             //DEBUG
-            //System.out.println("\ndoc.getChildNodes().getLength(): "+doc.getChildNodes().getLength()+"\n");
+            ////System.out.println("\ndoc.getChildNodes().getLength(): "+doc.getChildNodes().getLength()+"\n");
 
 
         NodeList process = doc.getElementsByTagName("ns4:process");
@@ -1014,21 +1003,21 @@ public class BebopServiceImpl implements BebopService {
         //for() processes
             try {
                 for (int i = 0; i < process.getLength(); i++) {
-                    System.out.println("process: " + process.item(i).getNodeName());
+                    //System.out.println("process: " + process.item(i).getNodeName());
                     //for() process elements
                     for (int y = 0; y < process.item(i).getChildNodes().getLength(); y++) {
                         //DEBUG
-					    //System.out.println("childsnodes: "+process.item(i).getChildNodes().item(y).getNodeName());
+					    ////System.out.println("childsnodes: "+process.item(i).getChildNodes().item(y).getNodeName());
 
                         if(process.item(i).getChildNodes().item(y).getNodeName().equals("ns4:laneSet")){
                             //DEBUG
-                            //System.out.println("LANESETFOUND: "+process.item(i).getChildNodes().item(y).getAttributes().getNamedItem("id").getNodeValue());
+                            ////System.out.println("LANESETFOUND: "+process.item(i).getChildNodes().item(y).getAttributes().getNamedItem("id").getNodeValue());
                             NodeBPMN nodeBPMN = new NodeBPMN(process.item(i).getChildNodes().item(y).getAttributes().getNamedItem("id").getNodeValue(),
                                     "",
                                     "lane");
                             nodesBPMN.add(nodeBPMN);
                             //DEBUG
-                            //System.out.println("Add LANE");
+                            ////System.out.println("Add LANE");
 
                         }
 
@@ -1039,9 +1028,9 @@ public class BebopServiceImpl implements BebopService {
                             //                if (process.item(i).getChildNodes().item(y).getAttributes().getNamedItem("id").getNodeValue().equals(nodeToColor)) {
 
                             //DEBUG
-                            //System.out.println("Aggiungo Nodo");
-                            //System.out.println("QUIORA: "+process.item(i).getChildNodes().item(y));
-                            //System.out.println("Aggiunto Nodo");
+                            ////System.out.println("Aggiungo Nodo");
+                            ////System.out.println("QUIORA: "+process.item(i).getChildNodes().item(y));
+                            ////System.out.println("Aggiunto Nodo");
 
                             String name = process.item(i).getChildNodes().item(y).getAttributes().getNamedItem("name").getNodeValue();
                             String type = process.item(i).getChildNodes().item(y).getNodeName();
@@ -1049,9 +1038,9 @@ public class BebopServiceImpl implements BebopService {
                             String id = process.item(i).getChildNodes().item(y).getAttributes().getNamedItem("id").getNodeValue();
 
                             //DEBUG
-                            //System.out.println("\nName:" + name);
-                            //System.out.println("\nType:" + type);
-                            //System.out.println("\nId: " + id);
+                            ////System.out.println("\nName:" + name);
+                            ////System.out.println("\nType:" + type);
+                            ////System.out.println("\nId: " + id);
 
                             NodeBPMN nodeBPMN = new NodeBPMN(id,
                                     name,
@@ -1063,11 +1052,11 @@ public class BebopServiceImpl implements BebopService {
                     }
                 }
 
-                System.out.println("\n AfternodesBPMN.size()" + nodesBPMN.size());
+                //System.out.println("\n AfternodesBPMN.size()" + nodesBPMN.size());
             }catch(Exception e5){
                 StringWriter errors = new StringWriter();
                 e5.printStackTrace(new PrintWriter(errors));
-                System.out.println("\nRead XML error");
+                //System.out.println("\nRead XML error");
                 e5.printStackTrace();
             }
 
@@ -1075,7 +1064,7 @@ public class BebopServiceImpl implements BebopService {
         }catch(Exception e4){
             StringWriter errors = new StringWriter();
             e4.printStackTrace(new PrintWriter(errors));
-            System.out.println("\nDocumentBuilder error");
+            //System.out.println("\nDocumentBuilder error");
             e4.printStackTrace();
         }
 
@@ -1086,11 +1075,11 @@ public class BebopServiceImpl implements BebopService {
             for(int i=0; i<guidelinesListResult.size(); i++) {
                 for (NodeBPMN g : nodesBPMN) {
                     //DEBUG
-                    //System.out.println("\nINFONODOBPMN "+g.getId()+g.getName()+g.getType());
+                    ////System.out.println("\nINFONODOBPMN "+g.getId()+g.getName()+g.getType());
 
                     if (g.getId().equals(guidelinesListResult.get(i))) {
                         //DEBUG
-                        //System.out.println("\nINFONODOBPMN "+g.getId()+g.getName()+g.getType());
+                        ////System.out.println("\nINFONODOBPMN "+g.getId()+g.getName()+g.getType());
 
                         String nodeInfo = "The Element with Id: " + g.getId();
                         if (g.getName()!=null) {
@@ -1111,7 +1100,7 @@ public class BebopServiceImpl implements BebopService {
                         nodeInfo += " does not meet the guideline";
 
                         //DEBUG
-                        //System.out.println("\ni: "+i+"nodeInfo: "+nodeInfo);
+                        ////System.out.println("\ni: "+i+"nodeInfo: "+nodeInfo);
 
                         guidelinesListResult.set(i,nodeInfo);
 
@@ -1119,7 +1108,7 @@ public class BebopServiceImpl implements BebopService {
                 }
             }
         }  catch(Exception e5){
-            System.out.println("String nodeInfo = ");
+            //System.out.println("String nodeInfo = ");
             StringWriter errors = new StringWriter();
             e5.printStackTrace(new PrintWriter(errors));
             e5.printStackTrace();
@@ -1131,13 +1120,13 @@ public class BebopServiceImpl implements BebopService {
         try {
 
             //DEBUG
-            //System.out.println("\n guidelinesListResultSIZEEEEEE: "+ guidelinesListResult.size());
+            ////System.out.println("\n guidelinesListResultSIZEEEEEE: "+ guidelinesListResult.size());
 
 
             int j=0;
             for (int i = 0; i < guidelinesListResult.size(); i++) {
                 //DEBUG
-                System.out.println("\n guidelinesListResult.get(i): "+ guidelinesListResult.get(i));
+                //System.out.println("\n guidelinesListResult.get(i): "+ guidelinesListResult.get(i));
 
 
                 if (i==0) {
@@ -1167,7 +1156,7 @@ public class BebopServiceImpl implements BebopService {
                         if ((i + 1) < guidelinesListResult.size()) {
                             flagJson = new JSONObject();
                             flagJson.put("GuidelineName", guidelinesListResult.get(i));
-                            System.out.println("GuidelineName"+ guidelinesListResult.get(i));
+                            //System.out.println("GuidelineName"+ guidelinesListResult.get(i));
                             if(guidelinesListResult.get(i).contains("Labeling XOR gateway")){
                                 flagJson.put("GuidelineDescription", "Make sure (X)OR split gateways are preceded (not necessarily immediately before) by a decision activity, whose outcomes are then modeled by the outgoing sequence flows of the split." +
                                         " Sequence flows coming out of diverging gateways of type exclusive, inclusive and complex should be labeled using their associated conditions stated as outcomes.");
@@ -1183,20 +1172,20 @@ public class BebopServiceImpl implements BebopService {
 
             //DEBUG
             //for (HashMap.Entry entry : ja.entrySet()) {
-            //    System.out.println(entry.getKey() + ", " + entry.getValue());
+            //    //System.out.println(entry.getKey() + ", " + entry.getValue());
             //}
             //DEBUG
-            //for(int k=0;k<ja.size();k++)System.out.println("\n OGNI OGGETTO SALVATO: "+k+" "+ja.get(k).toString());
+            //for(int k=0;k<ja.size();k++)//System.out.println("\n OGNI OGGETTO SALVATO: "+k+" "+ja.get(k).toString());
 
 
             JSONObject finalResult = new JSONObject();
             finalResult.put("Guidelines",ja);
             //DEBUG
-            //System.out.println("\nfinalResult.toString(): "+finalResult.toString());
+            ////System.out.println("\nfinalResult.toString(): "+finalResult.toString());
 
 
         }  catch(Exception e6){
-            System.out.println("SException e6 ");
+            //System.out.println("SException e6 ");
             StringWriter errors = new StringWriter();
             e6.printStackTrace(new PrintWriter(errors));
             e6.printStackTrace();

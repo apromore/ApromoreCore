@@ -39,7 +39,7 @@ public class Checker {
 //	protected static final String FAST_DOWNWARD_DIR_WIN_LIN = root+"fast-downward-win-lin"+File.separator;
 	private String FAST_DOWNWARD_DIR = ConfigBean.getDownwardPath();
 
-    protected final String RESULTS_DIR = FAST_DOWNWARD_DIR+File.separator+"result";
+    protected String RESULTS_DIR = FAST_DOWNWARD_DIR+File.separator+"result";
 
 	protected static final String FAST_DOWNWARD_SCRIPT ="fast-downward.py";
 	protected static final String FAST_DOWNWARD_DOMAIN ="domain.pddl";
@@ -479,6 +479,7 @@ public class Checker {
 	private void invokePlanner() {
 		
 		File filePlan = new File( System.getProperty("user.dir")+File.separator+"sas_plan");
+        String os=OSUtils.getOs();
 
 		if(filePlan.exists() && !filePlan.isDirectory()) { 
 			filePlan.delete();
@@ -502,21 +503,28 @@ public class Checker {
 
 
 				// the path to the fast-downward launcher script
-				File fdScript;
+//				File fdScript;
 
-				String os=OSUtils.getOs();
+
 //				if(os.equals("mac")){
-					fdScript = new File(FAST_DOWNWARD_DIR+ File.separator + FAST_DOWNWARD_SCRIPT);
-//				}else fdScript = new File(FAST_DOWNWARD_DIR_WIN_LIN+FAST_DOWNWARD_SCRIPT);
-				
-				try {
-					commandComponents.add(fdScript.getCanonicalPath());
+                String pathFileScript ="";
 
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
+                if(os.equals("mac"))
+                    pathFileScript = FAST_DOWNWARD_DIR+ File.separator + FAST_DOWNWARD_SCRIPT;
+                else {
+                    pathFileScript = FAST_DOWNWARD_DIR + "/" + FAST_DOWNWARD_SCRIPT;
+                    RESULTS_DIR = FAST_DOWNWARD_DIR + "/" + "result";
+                }
+
+
+//				fdScript = new File(pathFileScript);
+//				}else fdScript = new File(FAST_DOWNWARD_DIR_WIN_LIN+FAST_DOWNWARD_SCRIPT);
+//				try {
+					commandComponents.add(pathFileScript);
+//				} catch (IOException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
 
 				// Fast-Downward is assumed to be built in advance both for 32 and 64 bits OS (both Windows and Unix-like).
 				commandComponents.add("--build");
@@ -530,7 +538,10 @@ public class Checker {
 				commandComponents.add(fileOutput.getCanonicalPath());*/
 				
 				commandComponents.add("--plan-file");
-				commandComponents.add(RESULTS_DIR+File.separator+trace.getTraceID()+"_"+constraint_name);
+                if(os.equals("mac"))
+				    commandComponents.add(RESULTS_DIR + File.separator + trace.getTraceID()+"_"+constraint_name);
+                else
+                    commandComponents.add(RESULTS_DIR + "/" + trace.getTraceID()+"_"+constraint_name);;
 				
 				//File resultFolder = new File( System.getProperty("user.dir")+File.separator+"result"+File.separator+trace.getTraceID()+"_"+constraint_name);
 				/*try {
@@ -540,9 +551,9 @@ public class Checker {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}*/
-//				if(os.equals("mac")){
-					commandComponents.add(FAST_DOWNWARD_DIR+ File.separator + FAST_DOWNWARD_PROBLEM);  // problem file
-//				}else 	commandComponents.add(FAST_DOWNWARD_DIR_WIN_LIN+FAST_DOWNWARD_PROBLEM);  // problem file
+				if(os.equals("mac")){
+					commandComponents.add(FAST_DOWNWARD_DIR + File.separator + FAST_DOWNWARD_PROBLEM);  // problem file
+				}else 	commandComponents.add(FAST_DOWNWARD_DIR + "/" + FAST_DOWNWARD_PROBLEM);  // problem file
 
 
 				//QUI SI POTREBBE INSERIRE L OPZIONE PER CAMBIARE EURISTICA
@@ -558,6 +569,7 @@ public class Checker {
 
 				ProcessBuilder processBuilder = new ProcessBuilder(commandArgs);
 				try {
+					System.out.println(processBuilder.command());
 					plannerManagerProcess = processBuilder.start();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -589,13 +601,13 @@ public class Checker {
 		File problemFile;
 
 		String os=OSUtils.getOs();
-//		if(os.equals("mac")){
+		if(os.equals("mac")){
 			domainFile = new File(FAST_DOWNWARD_DIR + File.separator +FAST_DOWNWARD_DOMAIN);
 			problemFile = new File(FAST_DOWNWARD_DIR+ File.separator +FAST_DOWNWARD_PROBLEM);
-//		}else {
-//			domainFile = new File(FAST_DOWNWARD_DIR+FAST_DOWNWARD_DOMAIN);
-//			problemFile = new File(FAST_DOWNWARD_DIR+FAST_DOWNWARD_PROBLEM);
-//		}
+		}else {
+            domainFile = new File(FAST_DOWNWARD_DIR + "/" +FAST_DOWNWARD_DOMAIN);
+            problemFile = new File(FAST_DOWNWARD_DIR+ "/" +FAST_DOWNWARD_PROBLEM);
+		}
 
 
 		if(domainFile.exists() && !domainFile.isDirectory()) { 

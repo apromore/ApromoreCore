@@ -50,13 +50,6 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
-<!--                        <Embed-Dependency>
-                            artifactId=com.springsource.org.apache.derby
-                        </Embed-Dependency>
-                        <Embed-Transitive>true</Embed-Transitive>
-                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-			<Bundle-Name>Performance Mining Service Logic</Bundle-Name>
-                        <Bundle-SymbolicName>perf-mining-logic</Bundle-SymbolicName>-->
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
                             org.joda.convert;resolution:=optional,

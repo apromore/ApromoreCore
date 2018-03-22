@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2017 The Apromore Initiative.
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -300,7 +300,7 @@ public class CanoniserServiceImplIntgTest {
         }
     }
 
-    // TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-4)
+    // TODO fix and enable test (cf. http://apromore-build.cis.unimelb.edu.au/jira/browse/APP-4)
     @Test
     public void convertOrderfulfilmentFromYAWLToEPML() throws CanoniserException, IOException {
         try {
@@ -312,7 +312,7 @@ public class CanoniserServiceImplIntgTest {
         }
     }
 
-    // TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-5)
+    // TODO fix and enable test (cf. http://apromore-build.cis.unimelb.edu.au/jira/browse/APP-5)
     @Test
     public void convertOrderfulfilmentFromYAWLToBPMN() throws CanoniserException, IOException {
         CanonisedProcess oFCanonised = canoniseYAWLModel("YAWL_models/orderfulfillment.yawl", "YAWL_models/orderfulfillment.ybkp");
@@ -325,7 +325,7 @@ public class CanoniserServiceImplIntgTest {
         }
     }
 
-    // TODO fix and enable test (cf. http://apromore-build.qut.edu.au/jira/browse/APP-6)
+    // TODO fix and enable test (cf. http://apromore-build.cis.unimelb.edu.au/jira/browse/APP-6)
     @Ignore
     @Test
     public void convertOrderfulfilmentFromYAWLToPNML() throws CanoniserException, IOException {

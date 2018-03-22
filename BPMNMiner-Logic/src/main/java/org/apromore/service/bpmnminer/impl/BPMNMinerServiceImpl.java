@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2017 The Apromore Initiative.
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -36,7 +36,7 @@ import com.raffaeleconforti.foreignkeydiscovery.conceptualmodels.Entity;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import com.raffaeleconforti.log.util.LogOptimizer;
-import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;

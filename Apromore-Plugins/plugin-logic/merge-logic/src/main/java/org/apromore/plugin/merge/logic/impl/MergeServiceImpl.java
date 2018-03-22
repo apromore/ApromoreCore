@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2017 The Apromore Initiative.
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -55,7 +55,7 @@ import java.util.List;
 /**
  * Implementation of the SimilarityService Contract.
  *
- * @author <a href="mailto:raffaele.conforti@qut.edu.au">Raffaele Conforti</a>
+ * @author <a href="mailto:raffaele.conforti@unimelb.edu.au">Raffaele Conforti</a>
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)

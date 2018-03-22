@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2017 The Apromore Initiative.
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -118,6 +118,7 @@
 
         <!-- Editor Plugins -->
         <module>plugin-editor/bebop</module>
+        <module>plugin-editor/bprove</module>
         <module>plugin-editor/sample</module>
         <module>plugin-editor/ibpstruct</module>
         <module>plugin-editor/metrics</module>

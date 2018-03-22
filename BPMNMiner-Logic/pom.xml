@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2017 The Apromore Initiative.
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -50,15 +50,15 @@
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
                         <Import-Bundle>
-                            org.bpmnminer-osgi;bundle-version="[1.1,2.0]",
-                            org.eclipse-collections-osgi;bundle-version="[1.1,2.0]"
+                            org.apromore.bpmnminer-osgi;bundle-version="[1.1,2.0]",
+                            org.apromore.eclipse-collections-osgi;bundle-version="[1.1,2.0]"
                         </Import-Bundle>
                         <Import-Package>
                             com.raffaeleconforti.bpmnminer.*,
                             com.raffaeleconforti.context,
                             com.raffaeleconforti.foreignkeydiscovery.*,
                             com.raffaeleconforti.log.*,
-                            com.raffaeleconforti.wrapper.settings.*,
+                            com.raffaeleconforti.wrappers.settings.*,
                             org.apromore.service.ibpstruct.*,
                             org.deckfour.xes.*,
                             org.eclipse.collections.*,
@@ -104,12 +104,10 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpmnminer-osgi</artifactId>
-            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>bpmnminer-commandline</artifactId>
-            <version>1.0.20170829</version>
         </dependency>
 
         <dependency>

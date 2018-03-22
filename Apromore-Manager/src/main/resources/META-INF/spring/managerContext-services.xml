@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2017 The Apromore Initiative.
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -35,6 +35,21 @@
     <bean id="gedmatrixbean" class="org.apromore.service.impl.GEDMatrixBeanImpl">
         <constructor-arg value="${ged.enabled}"/>
     </bean>
+
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="host" value="${mail.host}"/>
+        <property name="port" value="${mail.port}"/>
+        <property name="username" value="${mail.username}"/>
+        <property name="password" value="${mail.password}"/>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+
 
     <!-- ************************** Non WebServices ************************** -->
 

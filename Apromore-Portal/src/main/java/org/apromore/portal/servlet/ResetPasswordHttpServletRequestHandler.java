@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2017 The Apromore Initiative.
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -103,7 +103,7 @@ public class ResetPasswordHttpServletRequestHandler extends BaseServletRequestHa
 
     /* Reset the password and update the userType record. */
     private boolean resetUsersPassword(UserType userType, String newPswd) {
-        return manager.resetUserPassword(userType.getUsername(), SecurityUtil.hashPassword(newPswd));
+        return manager.resetUserPassword(userType.getUsername(), newPswd);
     }
 
     /* Check that all the data is correct and present so we can proceed with user registration. */

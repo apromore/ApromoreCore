@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright © 2009-2017 The Apromore Initiative.
+  ~ Copyright © 2009-2018 The Apromore Initiative.
   ~
   ~ This file is part of "Apromore".
   ~
@@ -106,7 +106,7 @@
                             org.springframework.security.config;version="[3.1.0,4.0)",
                             org.springframework.security.web;version="[3.1.0,4.0)",
                             org.springframework.security.remoting;version="[3.1.0,4.0)",
-                            org.zkoss-osgi;bundle-version="[6.5,9.0)",
+                            org.apromore.zk-osgi;bundle-version="[6.5,9.0)",
                             org.apromore.plugin.portal-custom-gui;version="[1.1,2.0)"
                         </Import-Bundle>
                         <Import-Package>

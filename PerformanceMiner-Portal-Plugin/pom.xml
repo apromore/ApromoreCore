@@ -51,7 +51,6 @@
                         <Embed-Transitive>false</Embed-Transitive>
 						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 						<Bundle-Name>Performance Mining Portal</Bundle-Name>
-                        <Bundle-SymbolicName>perfminingportal</Bundle-SymbolicName>
                         <Import-Package>
                             <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             org.apromore.plugin,

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2017 The Apromore Initiative.
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -20,7 +20,7 @@
 
 package org.apromore.service.bpmnminer;
 
-import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.model.XLog;
 
 import java.util.List;
