@@ -52,7 +52,8 @@
                             *</Import-Package>
                         <Export-Package>
                             nl.rug.ds.bpm.variability,
-                            nl.rug.ds.bpm.pnml.verifier
+                            nl.rug.ds.bpm.pnml.verifier,
+                            nl.rug.ds.bpm.pnml.verifier.apm
                         </Export-Package>
                     </instructions>
                 </configuration>

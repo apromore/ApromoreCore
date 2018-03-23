@@ -1,9 +1,6 @@
 package nl.rug.ds.bpm.specification.jaxb;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +15,8 @@ import java.util.stream.Collectors;
 public class Specification {
     private String id, type;
     private List<InputElement> inputElements;
+
+    @XmlTransient
     private SpecificationType specificationType;
 
     public Specification() {
@@ -42,10 +41,10 @@ public class Specification {
     public List<InputElement> getInputElements() { return inputElements; }
     public void addInputElement(InputElement inputElement) { inputElements.add(inputElement); }
 
+    @XmlTransient
     public SpecificationType getSpecificationType() {
         return specificationType;
     }
-
     public void setSpecificationType(SpecificationType specificationType) {
         if(specificationType.getId().equals(type))
             this.specificationType = specificationType;

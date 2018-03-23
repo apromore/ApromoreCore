@@ -3,7 +3,9 @@ package nl.rug.ds.bpm.verification.model.kripke;
 import nl.rug.ds.bpm.verification.comparator.StateComparator;
 import nl.rug.ds.bpm.verification.comparator.StringComparator;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class Kripke {
@@ -55,9 +57,10 @@ public class Kripke {
     }
 
     public Set<State> getSinkStates() {
-        return states.stream().filter(s -> s.getNextStates().isEmpty()).collect(Collectors.toSet());
+        //return states.stream().filter(s -> s.getNextStates().isEmpty()).collect(Collectors.toSet());
+        return states.stream().filter(s -> s.getNextStates().size() == 1).filter(s -> s.getNextStates().iterator().next() == s).collect(Collectors.toSet());
     }
-    
+
     public int getStateCount() {
         return states.size();
     }
@@ -69,9 +72,9 @@ public class Kripke {
 
         return relCount;
     }
-    
+
     public static void setMaximumStates(int max) { maxStates = max; }
-    
+
     public static int getMaximumStates() { return  maxStates; }
 
     @Override
@@ -109,14 +112,14 @@ public class Kripke {
 
         return ret;
     }
-    
+
     public String stats() {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append("|S| = " + states.size() + ", ");
         sb.append("|R| = " + states.stream().map(State::getNextStates).mapToInt(Set::size).sum() +", ");
         sb.append("|AP| = " + atomicPropositions.size());
-        
+
         return sb.toString();
     }
 }

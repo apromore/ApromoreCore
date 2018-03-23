@@ -1,6 +1,6 @@
 package nl.rug.ds.bpm.specification.marshaller;
 
-import nl.rug.ds.bpm.event.EventHandler;
+import nl.rug.ds.bpm.exception.SpecificationException;
 import nl.rug.ds.bpm.specification.jaxb.BPMSpecification;
 
 import javax.xml.bind.JAXBContext;
@@ -13,30 +13,30 @@ import java.io.OutputStream;
  * Created by Heerko Groefsema on 24-Apr-17.
  */
 public class SpecificationMarshaller {
-	
-	public SpecificationMarshaller(EventHandler eventHandler, BPMSpecification bpmSpecification, File file) {
+
+	public SpecificationMarshaller(BPMSpecification bpmSpecification, File file) throws SpecificationException {
 		try {
 			JAXBContext context = JAXBContext.newInstance(BPMSpecification.class);
 			Marshaller marshaller = context.createMarshaller();
-			
+
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			marshaller.marshal(bpmSpecification, file);
-			
+
 		} catch (JAXBException e) {
-			eventHandler.logError("Failed to write" + file.toString());
+			throw new SpecificationException("Failed to write" + file.toString());
 		}
 	}
-	
-	public SpecificationMarshaller(EventHandler eventHandler, BPMSpecification bpmSpecification, OutputStream stream) {
+
+	public SpecificationMarshaller(BPMSpecification bpmSpecification, OutputStream stream) throws SpecificationException {
 		try {
 			JAXBContext context = JAXBContext.newInstance(BPMSpecification.class);
 			Marshaller marshaller = context.createMarshaller();
-			
+
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			marshaller.marshal(bpmSpecification, stream);
-			
+
 		} catch (JAXBException e) {
-			eventHandler.logError("Failed to write to output stream");
+			throw new SpecificationException("Failed to write to output stream");
 		}
 	}
 }

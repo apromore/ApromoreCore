@@ -1,29 +1,81 @@
 package nl.rug.ds.bpm.event;
 
-import nl.rug.ds.bpm.specification.jaxb.Element;
-import nl.rug.ds.bpm.specification.jaxb.Group;
-import nl.rug.ds.bpm.specification.jaxb.InputElement;
-import nl.rug.ds.bpm.specification.jaxb.Specification;
+import nl.rug.ds.bpm.specification.jaxb.*;
+import nl.rug.ds.bpm.verification.checker.CheckerFormula;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 /**
  * Created by Heerko Groefsema on 10-Apr-17.
  */
 public class VerificationEvent {
-	private boolean eval;
-	private String formula;
-	private Specification specification;
-	
-	public VerificationEvent(Specification specification, String formula, boolean eval) {
-		this.specification = specification;
-		this.formula = formula;
-		this.eval = eval;
-	}
+    private boolean eval;
+    private CheckerFormula formula;
+    private Specification specification;
 
-	public String getUserFriendlyFeedback(Map<String, Group> groupMap) {
-		return verbalizeEvaluation(groupMap);
-	}
+    public VerificationEvent(Specification specification, CheckerFormula formula, boolean eval) {
+        this.formula = formula;
+        this.eval = eval;
+        this.specification = specification;
+    }
+
+    public String getId() {
+        return formula.getSpecification().getId();
+    }
+
+    public String getType() {
+        return formula.getSpecification().getType();
+    }
+
+    public String getFormulaString() {
+        return formula.getOriginalFormula();
+    }
+
+    public boolean getVerificationResult() {
+        return eval;
+    }
+
+    public CheckerFormula getFormula() {
+        return formula;
+    }
+
+    public String getMessage() {
+        Message message = formula.getSpecification().getSpecificationType().getMessage();
+        return (message == null ? getFormulaString() : mapInputs((eval ? message.getHold() : message.getFail())) + ".");
+    }
+
+    public String toString() {
+        return "Specification " + formula.getSpecification().getId() + (eval ? " holds" : " failed") + ": " + getMessage();
+    }
+
+    private String mapInputs(String s) {
+        String r = s;
+
+        for (Input input: formula.getSpecification().getSpecificationType().getInputs()) {
+            List<InputElement> elements = formula.getSpecification().getInputElements().stream().filter(element -> element.getTarget().equals(input.getValue())).collect(Collectors.toList());
+
+            String APBuilder = "";
+            if (elements.size() == 1) {
+                APBuilder = elements.get(0).getElement();
+            } else if (elements.size() > 1) {
+                Iterator<InputElement> inputElementIterator = elements.iterator();
+                APBuilder = inputElementIterator.next().getElement();
+                while (inputElementIterator.hasNext()) {
+                    APBuilder = APBuilder + (input.getType().equalsIgnoreCase("and") ? " and " : " or ") + inputElementIterator.next().getElement();
+                }
+            }
+            r = r.replaceAll(Matcher.quoteReplacement(input.getValue()), APBuilder.toString());
+        }
+        return r;
+    }
+
+    public String getUserFriendlyFeedback(Map<String, Group> groupMap) {
+        return verbalizeEvaluation(groupMap);
+    }
 
     public String verbalizeEvaluation(Map<String, Group> groupMap){
         String sentence = "";
@@ -90,26 +142,4 @@ public class VerificationEvent {
 
         return grpstr;
     }
-	
-	public String getId() {
-		return specification.getId();
-	}
-	
-	public String getType() {
-		return specification.getType();
-	}
-	
-	public String getFormula() { return formula; }
-	
-	public boolean getVerificationResult() {
-		return eval;
-	}
-	
-	public Specification getSpecification() {
-		return specification;
-	}
-	
-	public String toString() {
-		return "Specification " + specification.getId() + " evaluated " + eval + " for " + formula;
-	}
 }

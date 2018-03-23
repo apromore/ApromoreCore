@@ -8,9 +8,9 @@ import java.util.Set;
  */
 public abstract class Stepper {
 	protected File net;
-	
+
 	public Stepper() {}
-	
+
 	public Stepper(File net) {
 		this.net = net;
 		if(!(net.exists() && net.isFile())) {
@@ -18,8 +18,12 @@ public abstract class Stepper {
 			System.exit(-1);
 		}
 	}
-	
+
+	public abstract void setConditions(Set<String> conditions);
 	public abstract Marking initialMarking();
 	public abstract Set<Set<String>> parallelActivatedTransitions(Marking marking);
-	public abstract Set<Marking> fireTransition(Marking marking, String transition, Set<String> conditions);
+
+	public abstract Set<Marking> fireTransition(Marking marking, String transition);
+
+	public abstract Stepper clone();
 }

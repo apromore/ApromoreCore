@@ -45,7 +45,12 @@ public class CombinedEventStructure {
 	private Set<BitSet> directloops;
 	private Set<BitSet> invdirectloops;
 	
+	private BitSet mslevents; // mutual self loop events
+	
 	private BitSet syncevents; 
+	
+	// int selfloop event, bitset PESs that have that selfloop
+	private Map<Integer, BitSet> sleventmap; // self loop event map	
 	
 	// relations and their originating PES: 
 	// BitSet1 = behavioral relation with fromEvent and toEvent
@@ -83,6 +88,10 @@ public class CombinedEventStructure {
 		
 		syncevents = new BitSet();
 		
+		mslevents = new BitSet();
+		
+		sleventmap = new HashMap<Integer, BitSet>();
+		
 		dcmap = new HashMap<BitSet, BitSet>();
 		idcmap = new HashMap<BitSet, BitSet>();
 		tcmap = new HashMap<BitSet, BitSet>();
@@ -104,6 +113,7 @@ public class CombinedEventStructure {
 		NewUnfoldingPESSemantics<Integer> pessem = getPESSemantics(unfpes);
 		
 		Map<Integer, BitSet> correspondings = getCorrespondings(pessem);
+		
 //		System.out.println(getAllCausesOf(pessem, correspondings, pessem.getLabels().size() - 1, new BitSet()));
 		
 		// first add all labels
@@ -124,13 +134,35 @@ public class CombinedEventStructure {
 
 		// traverse cutoff traces and replace them with corresponding relations
 		int corr;
+		BitSet loopsucc;
+		BitSet looppred;
 		
 		for (int cutoff: pessem.getCutoffEvents()) {
 			corr = pessem.getCorresponding(cutoff);
-
-			// add existing loops 
-			if (getRealSuccessors(pessem, corr, new BitSet()).get(cutoff)) {
-				addLoop(cutoff, corr);
+						
+			// if the corresponding event is before the cutoff, then we're dealing with a loop
+			if (pessem.getCausesOf(cutoff).get(corr)) {
+				loopsucc = getRealSuccessors(pessem, corr, new BitSet());
+				if (pessem.getInvisibleEvents().contains(cutoff)) {
+					looppred = getRealPredecessors(pessem, cutoff, new BitSet());
+				}
+				else {
+					looppred = new BitSet();
+					looppred.set(cutoff);
+				}
+				
+				for (int p = looppred.nextSetBit(0); p >= 0; p = looppred.nextSetBit(p + 1)) {
+					for (int s = loopsucc.nextSetBit(0); s >= 0; s = loopsucc.nextSetBit(s + 1)) {
+						// check for selfloops
+						if (p == s) {
+							if (!sleventmap.containsKey(p)) sleventmap.put(p, new BitSet());
+							sleventmap.get(p).set(p);
+						}
+						else {
+							if (pessem.getCausesOf(p).get(s)) addLoop(p, s);
+						}
+					}
+				}
 			}
 			
 			// fix direct causality of cutoff event
@@ -302,6 +334,7 @@ public class CombinedEventStructure {
 	
 	private void addLoop(int e1, int e2) {
 		BitSet br = hash(e1, e2);
+		
 		if (e1 < e2) {
 			if (!dlpmap.containsKey(br)) dlpmap.put(br, new BitSet());
 			dlpmap.get(br).set(pesCount);
@@ -575,7 +608,51 @@ public class CombinedEventStructure {
 						break;
 				}
 			}
-			else if (relation.cardinality() > 1) {
+else if (relation.cardinality() > 1) {
+				
+				// if there is a concurrency relation, check whether there are other relations that come from the same PES. If so: remove that other relation
+				if (relation.get(5)) {					
+					if (dcmap.containsKey(key) && (dcmap.get(key).equals(ccmap.get(key)))) {
+						relation.clear(0);
+						dcmap.remove(key);
+					}
+					if (idcmap.containsKey(key) && (idcmap.get(key).equals(ccmap.get(key)))) {
+						relation.clear(1);
+						idcmap.remove(key);
+					}
+					if (tcmap.containsKey(key) && (tcmap.get(key).equals(ccmap.get(key)))) {
+						relation.clear(2);
+						tcmap.remove(key);
+					}
+					if (itcmap.containsKey(key) && (itcmap.get(key).equals(ccmap.get(key)))) {
+						relation.clear(3);
+						itcmap.remove(key);
+					}
+					if (cfmap.containsKey(key) && (cfmap.get(key).equals(ccmap.get(key)))) {
+						relation.clear(4);
+						cfmap.remove(key);
+					}
+					
+					// if after removing the other relations the concurrency relation is the only relation, it can be safely added to the concurrency set
+					if (relation.cardinality() == 1) {
+						concurrency.add(key);
+					}
+				}
+				
+				// if there is no PES for which the conflict relation is the only relation for [key], then the conflict relation can be removed
+				if (relation.get(4)) {					
+					if ((!(dcmap.containsKey(key) && (!dcmap.get(key).intersects(cfmap.get(key))))) && 
+							(!(idcmap.containsKey(key) && (!idcmap.get(key).intersects(cfmap.get(key))))) &&
+							(!(tcmap.containsKey(key) && (!tcmap.get(key).intersects(cfmap.get(key))))) &&
+							(!(itcmap.containsKey(key) && (!itcmap.get(key).intersects(cfmap.get(key))))) &&
+							(!(ccmap.containsKey(key) && (!ccmap.get(key).intersects(cfmap.get(key)))))) { 
+					
+						relation.clear(4);
+						cfmap.remove(key);
+						conflict.remove(key);
+					}
+				}
+				
 				if (relation.get(0)) {
 					if (dcmap.get(key).equals(relmap.get(key))) directcausals.add(key);
 				}
@@ -616,6 +693,12 @@ public class CombinedEventStructure {
 			}
 		}
 
+		for (int sl: sleventmap.keySet()) {
+			if (sleventmap.get(sl).cardinality() == pesCount) {
+				mslevents.set(sl);
+			}
+		}
+		
 		existcausals.addAll(transcausals);
 		invexistcausals.addAll(invtranscausals);
 	}
@@ -679,6 +762,8 @@ public class CombinedEventStructure {
 	public Set<BitSet> getMutualDirectLoops()	   {return directloops;}
 	public Set<BitSet> getMutualInvDirectLoops()   {return invdirectloops;}
 	
+	public BitSet getMutualSelfLoopEvents() {return mslevents;}
+
 	public Set<BitSet> getImmediateResponses() {
 		Set<BitSet> immresp = new HashSet<BitSet>();
 

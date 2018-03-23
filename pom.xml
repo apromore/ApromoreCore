@@ -135,6 +135,8 @@
         <module>APM-Portal-Plugin</module>
         <module>APM-Compliance-Logic</module>
         <module>APM-Compliance-Portal-Plugin</module>
+        <module>APM-Comp-Guards-Logic</module>
+        <module>APM-Comp-Guards-Portal-Plugin</module>
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>
         <module>Activity-Filter-Logic</module>

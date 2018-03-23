@@ -1,6 +1,7 @@
 package nl.rug.ds.bpm.specification.parser;
 
-import nl.rug.ds.bpm.event.EventHandler;
+import nl.rug.ds.bpm.log.LogEvent;
+import nl.rug.ds.bpm.log.Logger;
 import nl.rug.ds.bpm.specification.jaxb.*;
 import nl.rug.ds.bpm.specification.map.SpecificationTypeMap;
 
@@ -15,11 +16,9 @@ public class Parser {
 	private static Pattern bracketPattern = Pattern.compile("\\((.*?)\\)");
 	private static Pattern quotePattern = Pattern.compile("\"([^\"]*)\"");
 	
-	private EventHandler eventHandler;
 	private SpecificationTypeMap specificationTypeMap;
 	
-	public Parser(EventHandler eventHandler, SpecificationTypeMap specificationTypeMap) {
-		this.eventHandler = eventHandler;
+	public Parser(SpecificationTypeMap specificationTypeMap) {
 		this.specificationTypeMap = specificationTypeMap;
 	}
 	
@@ -56,7 +55,7 @@ public class Parser {
 							spec.addInputElement(element);
 						} else {
 							spec = null;
-							eventHandler.logError("Failed to find enough arguments for command: " + specification);
+							Logger.log("Failed to find enough arguments for command: " + specification, LogEvent.ERROR);
 							break;
 						}
 						i++;
@@ -64,17 +63,17 @@ public class Parser {
 				}
 				else {
 					spec = null;
-					eventHandler.logError("Failed to match specification type: " + specification);
+					Logger.log("Failed to match specification type: " + specification, LogEvent.ERROR);
 				}
 			}
 			else {
 				spec = null;
-				eventHandler.logError("Failed to match specification type: " + specification);
+				Logger.log("Failed to match specification type: " + specification, LogEvent.ERROR);
 			}
 		}
 		else {
 			spec = null;
-			eventHandler.logError("Failed to parse command: " + specification);
+			Logger.log("Failed to parse command: " + specification, LogEvent.ERROR);
 		}
 		
 		return spec;
@@ -110,17 +109,17 @@ public class Parser {
 					}
 				} else {
 					g = null;
-					eventHandler.logError("Failed to find enough arguments for command: " + group);
+					Logger.log("Failed to find enough arguments for command: " + group, LogEvent.ERROR);
 				}
 			}
 			else {
 				g = null;
-				eventHandler.logError("Failed to parse command: " + group);
+				Logger.log("Failed to parse command: " + group, LogEvent.ERROR);
 			}
 		}
 		else {
 			g = null;
-			eventHandler.logError("Failed to parse command: " + group);
+			Logger.log("Failed to parse command: " + group, LogEvent.ERROR);
 		}
 		
 		return g;

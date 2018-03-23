@@ -74,6 +74,9 @@
         <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
 
+	<include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
+        <include name="APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
+
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
 
@@ -137,6 +140,9 @@
 
         <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
+
+	<include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
+        <include name="APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
 
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
@@ -214,6 +220,9 @@
 
         <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
+
+	<include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
+        <include name="APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
 
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
         <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>

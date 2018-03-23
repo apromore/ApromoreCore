@@ -43,7 +43,8 @@ public class TestMain {
         try {
             PetriNet net = PNMLReader.parse(new File("nets/booking_c.pnml"));
 
-            String[] results = pnmlVerifier.verify(net, xml);
+//            String[] results = pnmlVerifier.verify(net, xml);
+            String[] results = {};
 
             for(int i =0; i < results.length; i++)
                 System.out.println(results[i]);

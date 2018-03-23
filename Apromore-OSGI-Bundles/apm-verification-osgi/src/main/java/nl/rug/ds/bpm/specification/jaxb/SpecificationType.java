@@ -16,6 +16,7 @@ public class SpecificationType {
     private String id;
     private List<Input> inputs;
     private List<Formula> formulas;
+    private Message message;
 
     public SpecificationType() {
         inputs = new ArrayList<>();
@@ -40,4 +41,8 @@ public class SpecificationType {
     @XmlElement(name = "formula")
     public List<Formula> getFormulas() { return formulas; }
     public void addFormula(Formula formula) { formulas.add(formula); }
+
+    @XmlElement(name = "message")
+    public Message getMessage() { return message; }
+    public void setMessage(Message message) { this.message = message; }
 }
