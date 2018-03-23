@@ -22,6 +22,8 @@ package org.apromore.plugin.portal.prodrift;
 
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
+import org.apromore.prodrift.model.ProDriftTerminator;
+import org.apromore.prodrift.util.LogStreamer;
 import org.apromore.prodrift.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.prodrift.model.prodrift.CharStatement;
@@ -59,15 +61,19 @@ public class ProDriftController {
 
     //    private byte[] logByteArray = null;
     private XLog xlog = null;
+    XLog eventStream = null;
     private String logFileName = null;
+
+    private ProDriftTerminator terminator = new ProDriftTerminator();
+    private boolean running = false;
 
     int caseCount = 0;
     int eventCount = 0;
     int activityCount = 0;
 
-    int desiredWinSizeRuns = 100;
-    int desiredWinSizeEvents = 5000;
-    int winSizeDividedBy = 5;
+    int defaultWinSizeRuns = 100;
+    int defaultWinSizeEvents = -1;
+    int winSizeDividedBy = 10;
 
 
 
@@ -82,10 +88,10 @@ public class ProDriftController {
         this.proDriftW.setTitle("ProDrift: Set Parameters.");
 
         Intbox maxWinValueRunsIntBox = (Intbox) proDriftW.getFellow("maxWinValueRuns");
-        maxWinValueRunsIntBox.setValue(desiredWinSizeRuns);
+        maxWinValueRunsIntBox.setValue(defaultWinSizeRuns);
 
         Intbox maxWinValueEventsSynIntBox = (Intbox) proDriftW.getFellow("maxWinValueEvents");
-        maxWinValueEventsSynIntBox.setValue(desiredWinSizeEvents);
+        maxWinValueEventsSynIntBox.setValue(defaultWinSizeEvents);
 
         Intbox winSizeCoefficientIntBoX = (Intbox) proDriftW.getFellow("winSizeCoefficient");
         winSizeCoefficientIntBoX.setValue(ControlFlowDriftDetector_EventStream.winSizeCoefficient);
@@ -186,16 +192,13 @@ public class ProDriftController {
     private void initializeLogVars(XLog xl, InputStream is, String logName) {
 
         final Label l = (Label) this.proDriftW.getFellow("fileName");
-        StringBuilder caseCountSB = new StringBuilder();
-        StringBuilder eventCountSB = new StringBuilder();
-        StringBuilder activityCountSB = new StringBuilder();
         boolean valild = false;
         xlog = null;
 
+        int winSize_timeBased = 0;
+
         if(is != null)
-            xlog = XLogManager.validateLog(is, logName, caseCountSB, eventCountSB, activityCountSB);
-        else if(xl != null)
-            xlog = XLogManager.validateLog(xl, logName, caseCountSB, eventCountSB, activityCountSB);
+            xlog = XLogManager.validateLog(is, logName);
 
         if (xlog == null) {
 
@@ -207,9 +210,17 @@ public class ProDriftController {
         } else {
 
             try {
-                caseCount = Integer.parseInt(caseCountSB.toString());
-                eventCount = Integer.parseInt(eventCountSB.toString());
-                activityCount = Integer.parseInt(activityCountSB.toString());
+                StringBuilder activityCountStr = new StringBuilder();
+                StringBuilder winSizeStr = new StringBuilder();
+
+                this.eventStream = LogStreamer.logStreamer(xlog, activityCountStr, winSizeStr, logName);
+
+                caseCount = xlog.size();
+                eventCount = eventStream.size();
+                activityCount = Integer.parseInt(activityCountStr.toString());
+
+                winSize_timeBased = Integer.parseInt(winSizeStr.toString());
+
             }catch (NumberFormatException ex) {}
 
             showError("");
@@ -221,13 +232,13 @@ public class ProDriftController {
 
             logFileName = logName;
 
-            setDefaultWinSizes();
+            setDefaultWinSizes(winSize_timeBased);
 
         }
 
     }
 
-    private void setDefaultWinSizes() {
+    private void setDefaultWinSizes(int winSize_timeBased) {
 
         Intbox maxWinValueRunsIntBoX = (Intbox) proDriftW.getFellow("maxWinValueRuns");
         Intbox maxWinValueEventsIntBoX = (Intbox) proDriftW.getFellow("maxWinValueEvents");
@@ -235,27 +246,35 @@ public class ProDriftController {
         Intbox activityCountIntBoX = (Intbox) proDriftW.getFellow("activityCount");
         activityCountIntBoX.setValue(activityCount);
 
-        desiredWinSizeEvents = activityCount * activityCount * 5;
+        if (winSize_timeBased < 100)
+            this.defaultWinSizeEvents = Math.max(winSize_timeBased, activityCount * activityCount * 5);
+        else
+            this.defaultWinSizeEvents = winSize_timeBased;
 
+        if(defaultWinSizeRuns > caseCount / 2)
+            defaultWinSizeRuns = caseCount / 2;
 
-        if (caseCount / winSizeDividedBy < desiredWinSizeRuns) {
+        if(defaultWinSizeEvents > eventCount / 2)
+            defaultWinSizeEvents = eventCount / 2;
 
-            maxWinValueRunsIntBoX.setValue(roundNum(caseCount / winSizeDividedBy));
+//        if (caseCount / winSizeDividedBy < defaultWinSizeRuns) {
+//
+//            maxWinValueRunsIntBoX.setValue(roundNum(caseCount / winSizeDividedBy));
+//
+//        } else {
+//
+            maxWinValueRunsIntBoX.setValue(defaultWinSizeRuns);
+//
+//        }
 
-        } else {
-
-            maxWinValueRunsIntBoX.setValue(desiredWinSizeRuns);
-
-        }
-
-        if ((eventCount / winSizeDividedBy) < desiredWinSizeEvents) {
-
-            maxWinValueEventsIntBoX.setValue(roundNum(eventCount / winSizeDividedBy));
-
-        } else {
-
-            maxWinValueEventsIntBoX.setValue(desiredWinSizeEvents);
-        }
+//        if ((eventCount / winSizeDividedBy) < desiredWinSizeEvents) {
+//
+//            maxWinValueEventsIntBoX.setValue(roundNum(eventCount / winSizeDividedBy));
+//
+//        } else {
+//
+            maxWinValueEventsIntBoX.setValue(defaultWinSizeEvents);
+//        }
 
 
         Listbox driftDetMechLBox = (Listbox) proDriftW.getFellow("driftDetMechLBox");
@@ -289,8 +308,8 @@ public class ProDriftController {
                 winSizeIntBox.setValue(maxWinValueEventsSynIntBoX.getValue());
             }else {*/
 //                ((Listitem)proDriftW.getFellow("reLog")).setSelected(true);
-            ((Listitem) proDriftW.getFellow("ADWIN")).setSelected(true);
-            ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(5.0);
+            ((Listitem) proDriftW.getFellow("FWIN")).setSelected(true);
+            ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(10.0);
             winSizeIntBox.setValue(maxWinValueEventsIntBoX.getValue());
 //            }
         }else
@@ -312,8 +331,13 @@ public class ProDriftController {
     }
 
     protected void cancel() throws IOException {
+   //     boolean detach = !running;
+//        terminator.terminate = true;
+    //    if(detach)
+    //    {
+            showError(""); this.proDriftW.detach();
+    //    }
 
-        showError(""); this.proDriftW.detach();
     }
 
     protected void proDriftDetector() {
@@ -360,10 +384,11 @@ public class ProDriftController {
 //                    }else
 //                        engineR = (Rengine) obj;
 
+                    running = true;
 
-                    ProDriftDetectionResult result = proDriftDetectionService.proDriftDetector(xlog, logFileName,
-                            isEventBased, withGradual, winSize, isAdwin, noiseFilterPercentage, withConflict,
-                            withCharacterization, cummulativeChange/*, engineR*/);
+                    ProDriftDetectionResult result = proDriftDetectionService.proDriftDetector(xlog, eventStream, logFileName,
+                            isEventBased, withGradual, winSize, activityCount, isAdwin, noiseFilterPercentage, withConflict,
+                            withCharacterization, cummulativeChange, terminator/*, engineR*/);
 
                     proDriftShowResults_(result, isEventBased, xlog, logFileName, withCharacterization, cummulativeChange);
                     message = "Completed Successfully";
@@ -389,6 +414,9 @@ public class ProDriftController {
         {
             showError("Please select a log file first.");
         }
+
+        running = false;
+        terminator.terminate = false;
     }
 
 

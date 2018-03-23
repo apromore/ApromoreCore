@@ -19,11 +19,6 @@
  */
 package org.apromore.prodrift.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -33,8 +28,6 @@ import jsc.independentsamples.SmirnovTest;
 
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.*;
-import org.jbpt.utils.IOUtils;
-import org.processmining.framework.util.Pair;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -178,7 +171,7 @@ public class XLogStats {
 		
 		
 		
-		log = LogStreamer.logStreamer(log, null);
+		log = LogStreamer.logStreamer(log, null, null);
 		
 		int count = 0, dateindex = 0;
 		
@@ -231,7 +224,7 @@ public class XLogStats {
 		
 		
 		
-		log = LogStreamer.logStreamer(log, null);
+		log = LogStreamer.logStreamer(log, null, null);
 		
 		int count = 0, dateindex = 0;
 		
@@ -292,7 +285,7 @@ public class XLogStats {
 //		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-		XLog logStream = LogStreamer.logStreamer(log, null);
+		XLog logStream = LogStreamer.logStreamer(log, null, null);
 		
 		List<Integer> histo = new ArrayList<Integer>();
 		List<LocalDateTime> dates = new ArrayList<LocalDateTime>();

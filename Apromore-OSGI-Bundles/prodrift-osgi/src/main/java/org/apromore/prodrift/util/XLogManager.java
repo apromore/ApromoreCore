@@ -27,7 +27,6 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -54,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
 
@@ -78,7 +76,6 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
-import org.deckfour.xes.model.impl.XEventImpl;
 import org.deckfour.xes.model.impl.XLogImpl;
 import org.deckfour.xes.model.impl.XTraceImpl;
 import org.deckfour.xes.out.XMxmlGZIPSerializer;
@@ -89,10 +86,6 @@ import org.deckfour.xes.out.XesXmlSerializer;
 //import org.processmining.processtree.Block;
 //import org.processmining.processtree.Node;
 //import org.processmining.processtree.ProcessTree;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
 
 
 public class XLogManager {
@@ -280,16 +273,12 @@ public class XLogManager {
 		
 	}
 	
-	public static XLog validateLog(InputStream logFile, String name, StringBuilder caseCount, StringBuilder eventCount,
-			StringBuilder activityCount)
+	public static XLog validateLog(InputStream logFile, String name)
 	{
 		
 		XLog xlog = null;
 		try {
 			xlog = XLogManager.openLog(logFile, name);
-			XLog eventStream = LogStreamer.logStreamer(xlog, activityCount, name);
-			caseCount.append(xlog.size());
-			eventCount.append(eventStream.size());
 		} catch (Exception e) {
 			return null;	
 		}
@@ -299,28 +288,13 @@ public class XLogManager {
 		
 	}
 	
-	public static XLog validateLog(XLog logFile, String name, StringBuilder caseCount, StringBuilder eventCount,
-			StringBuilder activityCount)
-	{
-		try {
-			XLog eventStream = LogStreamer.logStreamer(logFile, activityCount, name);
-			caseCount.append(logFile.size());
-			eventCount.append(eventStream.size());
-		} catch (Exception e) {
-			return null;	
-		}
-		
-		
-		return logFile;
-		
-	}
-	
+
 	public static List<XLog> getSubLogsAsXlogs(XLog lg, String logName, List<BigInteger> startOfTransitionPoints,	
 			List<BigInteger> endOfTransitionPoints, boolean isEventBased) throws Exception
 	{
 		
 		List<XLog> eventLogList = null;
-		XLog eventStream = LogStreamer.logStreamer(lg, null);
+		XLog eventStream = LogStreamer.logStreamer(lg, null, null);
 		removeEventFromEventStream(eventStream, "DRIFT_PO");
 		try{
 			
@@ -365,7 +339,7 @@ public class XLogManager {
 		XLog lg = xlog;
 	
 		List<ByteArrayOutputStream> eventLogList = null;
-		XLog eventStream = LogStreamer.logStreamer(lg, null);
+		XLog eventStream = LogStreamer.logStreamer(lg, null, null);
 		try{
 			
 			eventLogList = new ArrayList<ByteArrayOutputStream>();		

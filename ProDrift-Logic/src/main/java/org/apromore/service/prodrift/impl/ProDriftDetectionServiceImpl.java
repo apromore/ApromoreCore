@@ -25,6 +25,8 @@ import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_RunStream;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
 import org.apromore.dao.ProcessModelVersionRepository;
 import org.apromore.plugin.provider.PluginProvider;
+//import org.apromore.prodrift.model.ProDriftTerminator;
+import org.apromore.prodrift.model.ProDriftTerminator;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.prodrift.ProDriftDetectionException;
@@ -61,28 +63,28 @@ public class ProDriftDetectionServiceImpl implements ProDriftDetectionService {
     public ProDriftDetectionServiceImpl() {}
 
     /**
-     * @see ProDriftDetectionService#proDriftDetector(XLog, String, boolean,
-            boolean, int, boolean, float, boolean, boolean, int);
+     * @see ProDriftDetectionService#proDriftDetector(XLog, XLog, String, boolean,
+            boolean, int, int, boolean, float, boolean, boolean, int, ProDriftTerminator);
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = false)
-    public ProDriftDetectionResult proDriftDetector(XLog xlog, String logFileName, boolean isEventBased,
-                                                    boolean withGradual, int winSize, boolean isAdwin, float noiseFilterPercentage,
-                                                    boolean withConflict, boolean withCharacterization, int cummulativeChange/*, Rengine engineR*/) throws ProDriftDetectionException {
+    public ProDriftDetectionResult proDriftDetector(XLog xlog, XLog eventStream, String logFileName, boolean isEventBased,
+                                                    boolean withGradual, int winSize, int activityCount, boolean isAdwin, float noiseFilterPercentage,
+                                                    boolean withConflict, boolean withCharacterization, int cummulativeChange, ProDriftTerminator terminator/*, Rengine engineR*/) throws ProDriftDetectionException {
 
         ProDriftDetectionResult pddRes = null;
 
         if(isEventBased)
         {
 
-            ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(xlog, winSize, isAdwin, noiseFilterPercentage, withConflict, logFileName, withCharacterization, cummulativeChange);
+            ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(xlog, eventStream, winSize, activityCount, isAdwin, noiseFilterPercentage, withConflict, logFileName, withCharacterization, cummulativeChange, terminator);
             pddRes = driftDertector.ControlFlowDriftDetectorStart();
 
         }else
         {
 
-            ControlFlowDriftDetector_RunStream driftDertector = new ControlFlowDriftDetector_RunStream(xlog, winSize, isAdwin, logFileName, withGradual);
+            ControlFlowDriftDetector_RunStream driftDertector = new ControlFlowDriftDetector_RunStream(xlog, winSize, isAdwin, logFileName, withGradual, terminator);
             pddRes = driftDertector.ControlFlowDriftDetectorStart();
 
         }

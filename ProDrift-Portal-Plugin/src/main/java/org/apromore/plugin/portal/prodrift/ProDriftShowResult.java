@@ -49,7 +49,7 @@ import java.util.zip.ZipOutputStream;
 public class ProDriftShowResult extends Window  {
 
     private static final long serialVersionUID = 1L;
-    private PortalContext portalContext = null;
+    private final PortalContext portalContext;
     private Window proDriftW;
 
     private XLog xlog = null;
@@ -222,7 +222,7 @@ public class ProDriftShowResult extends Window  {
     }
 
     public void showError(String error) {
-        portalContext.getMessageHandler().displayError(error, null);
+        Messagebox.show(error, "", Messagebox.OK, Messagebox.ERROR);
     }
 
     protected void close() {

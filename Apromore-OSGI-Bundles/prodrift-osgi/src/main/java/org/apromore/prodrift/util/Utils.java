@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.math3.distribution.ChiSquaredDistribution;
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.exception.NotPositiveException;
+import org.apache.commons.math3.exception.NullArgumentException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
 import org.apromore.prodrift.config.InductiveMinerConfig;
 import org.apromore.prodrift.driftcharacterization.PairRelation;
 import org.apromore.prodrift.driftcharacterization.RelationImpact;
@@ -969,6 +975,233 @@ public class Utils {
 			e.printStackTrace();
 		}
 
+	}
+
+
+	public static double runChiSquareTest(long Alpha_FreqMatrix2[][])
+	{
+		int nRows = Alpha_FreqMatrix2.length;
+		int nCols = Alpha_FreqMatrix2[0].length;
+
+		double [][]counts_expected = Utils.getExpectedCounts(Alpha_FreqMatrix2);
+
+		int twentyPercentOfColumns = (int)Math.ceil(nCols * nRows / 5.0);
+
+		double[] combination = new double[nRows * nCols];
+
+		System.arraycopy(counts_expected[0], 0, combination, 0, nCols);
+		System.arraycopy(counts_expected[1], 0, combination, nCols, nCols);
+
+		Arrays.sort(combination);
+
+		double Alpha_FreqMatrix2_adjusted[][] = null;
+
+//		if(twentyPercentOfColumns < nCols * nRows)
+//		{
+
+		double borderCellVal = combination[twentyPercentOfColumns];
+
+		double divideBy = borderCellVal / 5.0f;
+
+		if(divideBy < 1) divideBy = 1.0;
+
+		Alpha_FreqMatrix2_adjusted = new double[nRows][nCols];
+
+		for(int m = 0; m < nCols; m++)
+		{
+			Alpha_FreqMatrix2_adjusted[0][m] = Alpha_FreqMatrix2[0][m]/divideBy;
+			Alpha_FreqMatrix2_adjusted[1][m] = Alpha_FreqMatrix2[1][m]/divideBy;
+
+			counts_expected[0][m] = counts_expected[0][m]/divideBy;
+			counts_expected[1][m] = counts_expected[1][m]/divideBy;
+		}
+
+		return chiSquareTest(Alpha_FreqMatrix2_adjusted, counts_expected);
+	}
+
+	public static double chiSquareTest(
+			final double[][] counts,
+			final double[][] counts_expected)
+			throws NullArgumentException, DimensionMismatchException,
+			NotPositiveException, MaxCountExceededException {
+
+		checkArray(counts);
+		double df = ((double) counts.length -1) * ((double) counts[0].length - 1);
+		// pass a null rng to avoid unneeded overhead as we will not sample from this distribution
+		final ChiSquaredDistribution distribution = new ChiSquaredDistribution(df);
+		return 1 - distribution.cumulativeProbability(chiSquare(counts, counts_expected));
+
+	}
+
+	public static double[][] getExpectedCounts(final long[][] counts){
+
+		int nRows = counts.length;
+		int nCols = counts[0].length;
+
+		// compute row, column and total sums
+		double[] rowSum = new double[nRows];
+		double[] colSum = new double[nCols];
+		double total = 0.0d;
+		for (int row = 0; row < nRows; row++) {
+			for (int col = 0; col < nCols; col++) {
+				rowSum[row] += counts[row][col];
+				colSum[col] += counts[row][col];
+				total += counts[row][col];
+			}
+		}
+
+		double[][] counts_expected = new double[nRows][nCols];
+
+		// compute expected counts
+		double sumSq = 0.0d;
+		double expected = 0.0d;
+		for (int row = 0; row < nRows; row++) {
+			for (int col = 0; col < nCols; col++) {
+				expected = (rowSum[row] * colSum[col]) / total;
+				counts_expected[row][col] = expected;
+			}
+		}
+
+//	        int num = 0;
+//	        for (int row = 0; row < nRows; row++) {
+//	        	            for (int col = 0; col < nCols; col++) {
+//	        	                expected = (rowSum[row] * colSum[col]) / total;
+//	        	                if(expected < 5)
+//	        	                	num++;
+//	        	            }
+//	        	        }
+//	        System.out.println(nRows * nCols);
+//	        System.out.println(num);
+
+		return counts_expected;
+
+	}
+
+	public static double[][] getExpectedCounts(final double[][] counts){
+
+		int nRows = counts.length;
+		int nCols = counts[0].length;
+
+		// compute row, column and total sums
+		double[] rowSum = new double[nRows];
+		double[] colSum = new double[nCols];
+		double total = 0.0d;
+		for (int row = 0; row < nRows; row++) {
+			for (int col = 0; col < nCols; col++) {
+				rowSum[row] += counts[row][col];
+				colSum[col] += counts[row][col];
+				total += counts[row][col];
+			}
+		}
+
+		double[][] counts_expected = new double[nRows][nCols];
+
+		// compute expected counts
+		double sumSq = 0.0d;
+		double expected = 0.0d;
+		for (int row = 0; row < nRows; row++) {
+			for (int col = 0; col < nCols; col++) {
+				expected = (rowSum[row] * colSum[col]) / total;
+				counts_expected[row][col] = expected;
+			}
+		}
+
+//        int num = 0;
+//        for (int row = 0; row < nRows; row++) {
+//        	            for (int col = 0; col < nCols; col++) {
+//        	                expected = (rowSum[row] * colSum[col]) / total;
+//        	                if(expected < 5)
+//        	                	num++;
+//        	            }
+//        	        }
+//        System.out.println(nRows * nCols);
+//        System.out.println(num);
+
+		return counts_expected;
+
+	}
+
+	public static double chiSquare(
+			final double[][] counts,
+			final double[][] counts_expected)
+	        /*throws NullArgumentException, NotPositiveException,
+	        DimensionMismatchException*/ {
+
+//	        checkArray(counts);
+		int nRows = counts.length;
+		int nCols = counts[0].length;
+
+		// compute expected counts and chi-square
+		double sumSq = 0.0d;
+		double expected = 0.0d;
+		for (int row = 0; row < nRows; row++) {
+			for (int col = 0; col < nCols; col++) {
+				expected = counts_expected[row][col];
+				sumSq += ((counts[row][col] - expected) *
+						(counts[row][col] - expected)) / expected;
+			}
+		}
+
+//	        int num = 0;
+//	        for (int row = 0; row < nRows; row++) {
+//	        	            for (int col = 0; col < nCols; col++) {
+//	        	                expected = (rowSum[row] * colSum[col]) / total;
+//	        	                if(expected < 5)
+//	        	                	num++;
+//	        	            }
+//	        	        }
+//	        System.out.println(nRows * nCols);
+//	        System.out.println(num);
+
+		return sumSq;
+
+	}
+
+
+	private static void checkArray(final double[][] in)
+			throws NullArgumentException, DimensionMismatchException,
+			NotPositiveException {
+
+		if (in.length < 2) {
+			throw new DimensionMismatchException(in.length, 2);
+		}
+
+		if (in[0].length < 2) {
+			throw new DimensionMismatchException(in[0].length, 2);
+		}
+
+		checkRectangular(in);
+		checkNonNegative(in);
+
+	}
+
+	private static void checkRectangular(final double[][] in)
+			throws NullArgumentException, DimensionMismatchException {
+		checkNotNull(in);
+		for (int i = 1; i < in.length; i++) {
+			if (in[i].length != in[0].length) {
+				throw new DimensionMismatchException(LocalizedFormats.DIFFERENT_ROWS_LENGTHS, in[i].length,
+						in[0].length);
+			}
+		}
+	}
+
+	private static void checkNotNull(Object o)
+			throws NullArgumentException {
+		if (o == null) {
+			throw new NullArgumentException();
+		}
+	}
+
+	public static void checkNonNegative(final double[][] in)
+			throws NotPositiveException {
+		for (int i = 0; i < in.length; i ++) {
+			for (int j = 0; j < in[i].length; j++) {
+				if (in[i][j] < 0) {
+					throw new NotPositiveException(in[i][j]);
+				}
+			}
+		}
 	}
 
 	public static void main(final String[] args) throws Exception {

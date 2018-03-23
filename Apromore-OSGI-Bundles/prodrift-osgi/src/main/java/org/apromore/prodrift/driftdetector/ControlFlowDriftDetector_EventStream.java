@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigInteger;
 import java.nio.file.Path;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,6 +65,7 @@ import org.apromore.prodrift.main.Main;
 import org.apromore.prodrift.mining.log.local.PrimeEventStructure;
 import org.apromore.prodrift.model.DriftPoint;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
+import org.apromore.prodrift.model.ProDriftTerminator;
 import org.apromore.prodrift.util.LinePlot;
 import org.apromore.prodrift.util.LogStreamer;
 import org.apromore.prodrift.util.MeanDelayCurve;
@@ -103,6 +103,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 	private FeatureExtractionConfig FEConfig = FeatureExtractionConfig.WB;
 	private NoiseFilterConfig noiseFilterConfig = NoiseFilterConfig.RemoveNoise_sum;
 
+	private ProDriftTerminator terminator = new ProDriftTerminator();
 	private String logFileName = "";
 
 	private Path logPath = null;
@@ -127,7 +128,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 	private long OverallTime = 0;
 
 	private int numOfActivities = 0;
-	int winSizeDividedBy = 5;
+	int winSizeDividedBy = 1;
 	int activityLimit = 35;
 
 	private String driftSPOutput = "";
@@ -177,8 +178,9 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 	private List<Integer> bigDiffCounts = new ArrayList<>();
 
 
-	public ControlFlowDriftDetector_EventStream(XLog logFIle, int winsize, boolean isAdwin,
-												float noiseFilterPercentage, boolean withConflict, String logFileName, boolean withCharacterization, int cummulativeChange) {
+	public ControlFlowDriftDetector_EventStream(XLog logFIle, XLog eventStream, int winsize, int activityCount, boolean isAdwin,
+												float noiseFilterPercentage, boolean withConflict, String logFileName, boolean withCharacterization, int cummulativeChange,
+												ProDriftTerminator terminator) {
 
 		Main.isStandAlone = true;
 //		XLog xl = XLogManager.readLog(is, logFileName);
@@ -190,13 +192,17 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 		startActivities = startAndEndActivities.get(0);
 		endActivities = startAndEndActivities.get(1);
 
-		StringBuilder sb = new StringBuilder();
-		eventStream = LogStreamer.logStreamer(log, sb, logFileName);
+//		StringBuilder sb = new StringBuilder();
+//		eventStream = LogStreamer.logStreamer(log, sb, null, logFileName);
 
-		numOfActivities = Integer.parseInt(sb.toString());
-
+		this.eventStream = eventStream;
+		numOfActivities = activityCount;
 		this.initialwinSize = winsize;
-		this.winSizeReal = winsize;
+		this.winSizeReal = this.initialwinSize;
+
+		this.terminator = terminator;
+
+
 		this.driftConfig = DriftConfig.AlphaRelation;
 		this.statisticTest = StatisticTestConfig.QS;
 		this.winConfig = isAdwin ? WindowConfig.ADWIN : WindowConfig.FWIN;
@@ -227,7 +233,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 	}
 
-	public ControlFlowDriftDetector_EventStream(XLog logFile, int winsize, boolean isAdwin, boolean withCharacterization) {
+	public ControlFlowDriftDetector_EventStream(XLog logFile, int winsize, boolean isAdwin, float noiseFilterPercentage, boolean withCharacterization) {
 
 		Main.isStandAlone = true;
 //		XLog xl = XLogManager.readLog(is, logFileName);
@@ -240,33 +246,44 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 		endActivities = startAndEndActivities.get(1);
 
 		StringBuilder sb = new StringBuilder();
-		eventStream = LogStreamer.logStreamer(log, sb, logFileName);
+		StringBuilder winSizeStr = new StringBuilder();
+		eventStream = LogStreamer.logStreamer(log, sb, winSizeStr, logFileName);
 
 		numOfActivities = Integer.parseInt(sb.toString());
+		if(winsize == -1)
+		{
+			int winSize_t = Integer.parseInt(winSizeStr.toString());
+			if(winSize_t < 100)
+				this.initialwinSize = Math.max(winSize_t, numOfActivities * numOfActivities * 5);
+			else
+				this.initialwinSize = winSize_t;
+		}
+		if(this.initialwinSize > eventStream.size() / 2)
+			this.initialwinSize = eventStream.size() / 2;
 
-		this.initialwinSize = winsize;
-		this.winSizeReal = winsize;
+		this.winSizeReal = this.initialwinSize;
+
 		this.driftConfig = DriftConfig.AlphaRelation;
 		this.statisticTest = StatisticTestConfig.QS;
 		this.winConfig = isAdwin ? WindowConfig.ADWIN : WindowConfig.FWIN;
 		this.IMConfig = InductiveMinerConfig.IM;
 		this.FEConfig = FeatureExtractionConfig.WBANB;
 
-		boolean isStandard = true;
-		if(numOfActivities < activityLimit)
-			isStandard = true;
-		else
-			isStandard = false;
+//		boolean isStandard = true;
+//		if(numOfActivities < activityLimit)
+//			isStandard = true;
+//		else
+//			isStandard = false;
 
-		this.noiseFilterConfig = NoiseFilterConfig.NoFilter;
-		this.relationNoiseThresh = 0f;
-		this.withConflict = true;
-		if(!isStandard)
-		{
-			this.noiseFilterConfig = NoiseFilterConfig.RemoveNoise_sum;
-			this.relationNoiseThresh = 3.5f / 100.0f;
+//		this.noiseFilterConfig = NoiseFilterConfig.NoFilter;
+//		this.relationNoiseThresh = 0f;
+//		this.withConflict = true;
+//		if(!isStandard)
+//		{
+			this.noiseFilterConfig = NoiseFilterConfig.RemoveNoise;
+			this.relationNoiseThresh = noiseFilterPercentage / 100.0f;
 			this.withConflict = false;
-		}
+//		}
 
 		this.logFileName = logFileName;
 		this.isCPNToolsLog = false;
@@ -321,7 +338,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 		endActivities = startAndEndActivities.get(1);
 
 		StringBuilder sb = new StringBuilder();
-		eventStream = LogStreamer.logStreamer(log, sb, logFileName);
+		eventStream = LogStreamer.logStreamer(log, sb, null, logFileName);
 
 		numOfActivities = Integer.parseInt(sb.toString());
 
@@ -1036,7 +1053,8 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 		int characterizationCounter = 0;
 
 		List<Long> time = new ArrayList<>();
-		for (; ;) {
+		for (; !this.terminator.terminate ;) {
+
 			long t1 = System.currentTimeMillis();
 
 			totalRelationFreq_bothWins[0] = 0;
@@ -1152,9 +1170,9 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 					}else if(statisticTest == StatisticTestConfig.QS)
 					{
-
-						ChiSquareTest cst = new ChiSquareTest();
-						pValue = cst.chiSquareTest(Alpha_FreqMatrix2);
+						pValue = Utils.runChiSquareTest(Alpha_FreqMatrix2);
+//						ChiSquareTest cst = new ChiSquareTest();
+//						pValue = cst.chiSquareTest(Alpha_FreqMatrix2);
 
 					}
 
@@ -1550,6 +1568,9 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 					if(winSize > winSizeLimit)
 						winSize = winSizeLimit;
 //		            }
+
+					if(winSize < initialwinSize)
+						winSize = initialwinSize;
 
 //		            System.out.println(winSize);
 

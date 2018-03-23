@@ -45,17 +45,18 @@ public class Test {
 	public static void main(String args[]) throws FileNotFoundException
 	{
 		
-		Path path = Paths.get("./Loan_baseline_conditional_move.mxml");
+		Path path = Paths.get("./Log.mxml.gz");
 		XLog xl = XLogManager.readLog(new FileInputStream(path.toString()), path.getFileName().toString());
 		
 		DriftConfig cf = DriftConfig.AlphaRelation;
 		ControlFlowDriftDetector cfdd = null;
 		if(cf == DriftConfig.AlphaRelation)
 		{
-			int initialWinSize = 3000; // # of events within a window
-			boolean useAdwin = true; // Adaptive window or Fixed window
+			int initialWinSize = -1; // # default is -1
+			boolean useAdwin = false; // Adaptive window or Fixed window
 			boolean withCharacterization = true; // Characterize detected drifts
-			cfdd = new ControlFlowDriftDetector_EventStream(xl, initialWinSize, useAdwin, withCharacterization);
+			float noiseFilterPercentage = 10.0f;
+			cfdd = new ControlFlowDriftDetector_EventStream(xl, initialWinSize, useAdwin, noiseFilterPercentage, withCharacterization);
 		}
 		else if(cf == DriftConfig.RUN)
 		{
