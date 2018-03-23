@@ -31,9 +31,12 @@ import org.apromore.dao.model.Permission;
 import org.apromore.dao.model.Role;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
+import org.apromore.security.util.SecurityUtil;
 import org.apromore.service.SecurityService;
 import org.apromore.service.WorkspaceService;
-import org.apromore.util.MailUtil;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -44,6 +47,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -58,10 +62,9 @@ public class SecurityServiceImpl implements SecurityService {
     private static final Logger LOGGER = Logger.getLogger(SecurityServiceImpl.class.getCanonicalName());
 
     private static final String  ROLE_USER     = "ROLE_USER";
-    private static final String  EMAIL_ADDRESS = "apromore@qut.edu.au";
     private static final String  EMAIL_SUBJECT = "Reset Password";
     private static final String  EMAIL_START   = "Hi, Here is your newly requested password: ";
-    private static final String  EMAIL_END     = ", Please try to login again!";
+    private static final String  EMAIL_END     = "\nPlease try to login again!";
 
 
     private UserRepository userRepo;
@@ -70,6 +73,7 @@ public class SecurityServiceImpl implements SecurityService {
     private PermissionRepository permissionRepo;
     private MembershipRepository membershipRepo;
     private WorkspaceService workspaceService;
+    private MailSender mailSender;
 
 
     /**
@@ -84,7 +88,8 @@ public class SecurityServiceImpl implements SecurityService {
                                final RoleRepository       roleRepository,
                                final PermissionRepository permissionRepository,
                                final MembershipRepository membershipRepository,
-                               final WorkspaceService     wrkSrv) {
+                               final WorkspaceService     wrkSrv,
+                               final MailSender           mailSender) {
 
         userRepo         = userRepository;
         groupRepo        = groupRepository;
@@ -92,6 +97,7 @@ public class SecurityServiceImpl implements SecurityService {
         permissionRepo   = permissionRepository;
         membershipRepo   = membershipRepository;
         workspaceService = wrkSrv;
+        this.mailSender  = mailSender;
     }
 
 
@@ -231,20 +237,31 @@ public class SecurityServiceImpl implements SecurityService {
      */
     @Override
     public boolean resetUserPassword(String username, String newPassword) {
+
         User user = userRepo.findByUsername(username);
         Membership membership = user.getMembership();
-        membership.setPassword(newPassword);
-        membership = membershipRepo.save(membership);
+        try {
+            // Email the password to the user
+            emailUserPassword(membership, newPassword);
 
-        // Email the password to the user
-        emailUserPassword(membership, newPassword);
+            // Change the password in the database
+            membership.setPassword(SecurityUtil.hashPassword(newPassword));
+            membership = membershipRepo.save(membership);
 
-        return membership.getPassword().equals(newPassword);
+            return membership.getPassword().equals(SecurityUtil.hashPassword(newPassword));
+
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Unable to reset password for user " + membership.getEmail(), e);
+            return false;
+        }
     }
 
     /* Email the Users Password to them. */
-    private void emailUserPassword(Membership membership, String newPswd) {
-        String emailText = EMAIL_START + newPswd + EMAIL_END;
-        MailUtil.sendEmailText(membership.getEmail(), EMAIL_ADDRESS, EMAIL_SUBJECT, emailText);
+    private void emailUserPassword(Membership membership, String newPswd) throws MailException {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(membership.getEmail());
+        message.setSubject(EMAIL_SUBJECT);
+        message.setText(EMAIL_START + newPswd + EMAIL_END);
+        mailSender.send(message);
     }
 }

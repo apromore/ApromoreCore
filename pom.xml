@@ -121,6 +121,7 @@
         <module>APQL-Portal-Plugin</module>
         <module>BEBoP-Logic</module>
         <module>BEBoP-Portal-Plugin</module>
+        <module>BProVe-Logic</module>
         <module>BIMP-Editor-Plugin</module>
         <module>BIMP-Portal-Plugin</module>
         <module>BPMNDiagramImporter-Logic</module>
@@ -396,12 +397,12 @@
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>bpmnminer-commandline</artifactId>
-                <version>1.0.20171130</version>
+                <version>1.0.20180315</version>
             </dependency>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>noisefiltering-event-commandline</artifactId>
-                <version>1.0.20171130</version>
+                <version>1.0.20180315</version>
             </dependency>
 
             <dependency>

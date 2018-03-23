@@ -71,6 +71,7 @@
         <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
         <include name="BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
         <include name="BEBoP-Portal-Plugin/target/gbebop-portal-plugin-1.1.jar"/>
+        <include name="BProVe-Logic/target/gbprove-logic-1.1.jar"/>
         <include name="BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
         <include name="BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
         <include name="BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>

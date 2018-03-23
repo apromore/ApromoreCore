@@ -122,7 +122,7 @@ public class MainController extends BaseController implements MainControllerInte
             Toolbarbutton signoutButton = (Toolbarbutton) this.getFellow("signoutButton");
             Toolbarbutton installedPluginsButton = (Toolbarbutton) this.getFellow("installedPlugins");
             Toolbarbutton webDavButton = (Toolbarbutton) this.getFellow("webDav");
-            Toolbarbutton developerResourcesButton = (Toolbarbutton) this.getFellow("developerResources");
+//            Toolbarbutton developerResourcesButton = (Toolbarbutton) this.getFellow("developerResources");
 
 
             setHeaderText(releaseNotes);
@@ -160,12 +160,12 @@ public class MainController extends BaseController implements MainControllerInte
                             displayWebDav();
                         }
                     });
-            developerResourcesButton.addEventListener("onClick",
-                    new EventListener<Event>() {
-                        public void onEvent(final Event event) throws Exception {
-                            displayDeveloperResources();
-                        }
-                    });
+//            developerResourcesButton.addEventListener("onClick",
+//                    new EventListener<Event>() {
+//                        public void onEvent(final Event event) throws Exception {
+//                            displayDeveloperResources();
+//                        }
+//                    });
             qe.subscribe(
                     new EventListener<Event>() {
                         @Override
@@ -659,14 +659,14 @@ public class MainController extends BaseController implements MainControllerInte
         Clients.evalJavaScript(instruction);
     }
 
-    @Command
-    protected void displayDeveloperResources() {
-        String instruction;
-        int offsetH = 100, offsetV = 200;
-        instruction = "window.open('" + Constants.DEVELOPER_RESOURCES + "','','top=" + offsetH + ",left=" + offsetV
-                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
-        Clients.evalJavaScript(instruction);
-    }
+//    @Command
+//    protected void displayDeveloperResources() {
+//        String instruction;
+//        int offsetH = 100, offsetV = 200;
+//        instruction = "window.open('" + Constants.DEVELOPER_RESOURCES + "','','top=" + offsetH + ",left=" + offsetV
+//                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
+//        Clients.evalJavaScript(instruction);
+//    }
 
 
 

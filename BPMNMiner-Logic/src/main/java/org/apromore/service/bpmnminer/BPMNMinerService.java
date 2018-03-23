@@ -20,7 +20,7 @@
 
 package org.apromore.service.bpmnminer;
 
-import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.model.XLog;
 
 import java.util.List;

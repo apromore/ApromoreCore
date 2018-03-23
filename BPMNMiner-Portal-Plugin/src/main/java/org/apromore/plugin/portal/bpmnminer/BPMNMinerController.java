@@ -27,7 +27,7 @@ import javax.xml.datatype.DatatypeFactory;
 import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
-import com.raffaeleconforti.wrapper.settings.MiningSettings;
+import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
