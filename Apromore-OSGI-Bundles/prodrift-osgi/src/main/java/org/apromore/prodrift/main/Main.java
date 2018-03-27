@@ -33,26 +33,25 @@ import java.util.Map;
 import org.apromore.prodrift.driftcharacterization.CharacterizationAccuracyResult;
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
-import org.apromore.prodrift.model.ProDriftTerminator;
 import org.apromore.prodrift.util.LogStreamer;
 import org.apromore.prodrift.util.XLogManager;
 import org.deckfour.xes.model.XLog;
 
 
 public class Main {
-	
+
 	public static List<String> logNameList = new ArrayList<>();
-	
+
 	public static Map<String, CharacterizationAccuracyResult> CharacterizationAccuracyMap = new LinkedHashMap<>();
-	
+
 	public static boolean completeCharacterizationExperiment = false;
 	public static boolean completeGoodnessOfKSPTExperiment = false;
-	
-	public static boolean isLogGenerationForNick = false;	
+
+	public static boolean isLogGenerationForNick = false;
 	public static String startActivity1 = "START";
 	public static String startActivity2 = "START";
 	public static String endActivity1 = "END";
-	
+
 	public static boolean isStandAlone = true;
 
 	public static void main(final String[] args) throws Exception
@@ -81,7 +80,7 @@ public class Main {
 				winSize = winSize_t;
 		}
 
-		ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(xl, eventStream, winSize, activityCount, isAdwin, noiseFilterPercentage, withConflict, logFileName, withCharacterization, cummulativeChange, new ProDriftTerminator());
+		ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(xl, eventStream, winSize, activityCount, isAdwin, noiseFilterPercentage, 0.1f, withConflict, logFileName, withCharacterization, cummulativeChange);
 
 		ProDriftDetectionResult result = driftDertector.ControlFlowDriftDetectorStart();
 

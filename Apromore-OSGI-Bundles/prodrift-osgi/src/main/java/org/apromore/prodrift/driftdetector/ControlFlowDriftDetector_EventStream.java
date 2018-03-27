@@ -65,7 +65,6 @@ import org.apromore.prodrift.main.Main;
 import org.apromore.prodrift.mining.log.local.PrimeEventStructure;
 import org.apromore.prodrift.model.DriftPoint;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
-import org.apromore.prodrift.model.ProDriftTerminator;
 import org.apromore.prodrift.util.LinePlot;
 import org.apromore.prodrift.util.LogStreamer;
 import org.apromore.prodrift.util.MeanDelayCurve;
@@ -103,7 +102,6 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 	private FeatureExtractionConfig FEConfig = FeatureExtractionConfig.WB;
 	private NoiseFilterConfig noiseFilterConfig = NoiseFilterConfig.RemoveNoise_sum;
 
-	private ProDriftTerminator terminator = new ProDriftTerminator();
 	private String logFileName = "";
 
 	private Path logPath = null;
@@ -137,7 +135,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 	private int ReduceWhenDimensionsAbove = 0;
 	private int minExpectedFrequency = 5;
 
-	private float oscilationFactor = 0.5f;
+	private float oscilationFactor = 0.1f;
 
 	private float relationNoiseThresh = 0.05f;
 
@@ -179,8 +177,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 
 	public ControlFlowDriftDetector_EventStream(XLog logFIle, XLog eventStream, int winsize, int activityCount, boolean isAdwin,
-												float noiseFilterPercentage, boolean withConflict, String logFileName, boolean withCharacterization, int cummulativeChange,
-												ProDriftTerminator terminator) {
+												float noiseFilterPercentage, float detectionSensitivity, boolean withConflict, String logFileName, boolean withCharacterization, int cummulativeChange) {
 
 		Main.isStandAlone = true;
 //		XLog xl = XLogManager.readLog(is, logFileName);
@@ -200,8 +197,15 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 		this.initialwinSize = winsize;
 		this.winSizeReal = this.initialwinSize;
 
-		this.terminator = terminator;
 
+
+
+		if(detectionSensitivity == 0.01)
+			oscilationFactor = 1;
+		else if(detectionSensitivity == 1)
+			oscilationFactor = 0;
+		else
+			oscilationFactor = 	1.0f - detectionSensitivity;
 
 		this.driftConfig = DriftConfig.AlphaRelation;
 		this.statisticTest = StatisticTestConfig.QS;
@@ -233,11 +237,18 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 	}
 
-	public ControlFlowDriftDetector_EventStream(XLog logFile, int winsize, boolean isAdwin, float noiseFilterPercentage, boolean withCharacterization) {
+	public ControlFlowDriftDetector_EventStream(XLog logFile, int winsize, boolean isAdwin, float noiseFilterPercentage, float detectionSensitivity, boolean withCharacterization) {
 
 		Main.isStandAlone = true;
 //		XLog xl = XLogManager.readLog(is, logFileName);
 		log = logFile;
+
+		if(detectionSensitivity == 0.01)
+			oscilationFactor = 1;
+		else if(detectionSensitivity == 1)
+			oscilationFactor = 0;
+		else
+			oscilationFactor = 	1.0f - detectionSensitivity;
 
 		List<Set<String>> startAndEndActivities = XLogManager.getStartAndEndActivities(log);
 //		List<Set<String>> startAndEndActivities = XLogManager.addStartAndEndActivities(log);
@@ -280,9 +291,9 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 //		this.withConflict = true;
 //		if(!isStandard)
 //		{
-			this.noiseFilterConfig = NoiseFilterConfig.RemoveNoise;
-			this.relationNoiseThresh = noiseFilterPercentage / 100.0f;
-			this.withConflict = false;
+		this.noiseFilterConfig = NoiseFilterConfig.RemoveNoise;
+		this.relationNoiseThresh = noiseFilterPercentage / 100.0f;
+		this.withConflict = false;
 //		}
 
 		this.logFileName = logFileName;
@@ -1053,7 +1064,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 		int characterizationCounter = 0;
 
 		List<Long> time = new ArrayList<>();
-		for (; !this.terminator.terminate ;) {
+		for (; ;) {
 
 			long t1 = System.currentTimeMillis();
 
@@ -1188,6 +1199,8 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 				pValue = 1;
 
 			}
+//			if(pValue < typicalThreshold)
+//				System.out.println();
 //			System.out.println(pValue);
 //			if(Double.isNaN(pValue))
 //				pValue = 0;

@@ -22,11 +22,9 @@ package org.apromore.plugin.portal.prodrift;
 
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
-import org.apromore.prodrift.model.ProDriftTerminator;
 import org.apromore.prodrift.util.LogStreamer;
 import org.apromore.prodrift.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.prodrift.model.prodrift.CharStatement;
 import org.apromore.service.prodrift.ProDriftDetectionService;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.Session;
@@ -64,7 +62,6 @@ public class ProDriftController {
     XLog eventStream = null;
     private String logFileName = null;
 
-    private ProDriftTerminator terminator = new ProDriftTerminator();
     private boolean running = false;
 
     int caseCount = 0;
@@ -310,6 +307,7 @@ public class ProDriftController {
 //                ((Listitem)proDriftW.getFellow("reLog")).setSelected(true);
             ((Listitem) proDriftW.getFellow("FWIN")).setSelected(true);
             ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(10.0);
+            ((Doublespinner) proDriftW.getFellow("driftDetectionSensitivitySpinner")).setValue(0.90);
             winSizeIntBox.setValue(maxWinValueEventsIntBoX.getValue());
 //            }
         }else
@@ -332,7 +330,6 @@ public class ProDriftController {
 
     protected void cancel() throws IOException {
    //     boolean detach = !running;
-//        terminator.terminate = true;
     //    if(detach)
     //    {
             showError(""); this.proDriftW.detach();
@@ -368,6 +365,9 @@ public class ProDriftController {
                     Doublespinner noiseFilterSpinner = (Doublespinner) proDriftW.getFellow("noiseFilterSpinner");
                     float noiseFilterPercentage = (float)noiseFilterSpinner.getValue().doubleValue();
 
+                    Doublespinner driftDetectionSensitivitySpinner = (Doublespinner) proDriftW.getFellow("driftDetectionSensitivitySpinner");
+                    float driftDetectionSensitivity = (float)driftDetectionSensitivitySpinner.getValue().doubleValue();
+
                     boolean withConflict = /*isSynthetic ? true : */false;
 
                     Checkbox withCharacterizationCBox = (Checkbox) proDriftW.getFellow("withCharacterizationCBox");
@@ -387,8 +387,8 @@ public class ProDriftController {
                     running = true;
 
                     ProDriftDetectionResult result = proDriftDetectionService.proDriftDetector(xlog, eventStream, logFileName,
-                            isEventBased, withGradual, winSize, activityCount, isAdwin, noiseFilterPercentage, withConflict,
-                            withCharacterization, cummulativeChange, terminator/*, engineR*/);
+                            isEventBased, withGradual, winSize, activityCount, isAdwin, noiseFilterPercentage, driftDetectionSensitivity, withConflict,
+                            withCharacterization, cummulativeChange/*, engineR*/);
 
                     proDriftShowResults_(result, isEventBased, xlog, logFileName, withCharacterization, cummulativeChange);
                     message = "Completed Successfully";
@@ -416,7 +416,6 @@ public class ProDriftController {
         }
 
         running = false;
-        terminator.terminate = false;
     }
 
 

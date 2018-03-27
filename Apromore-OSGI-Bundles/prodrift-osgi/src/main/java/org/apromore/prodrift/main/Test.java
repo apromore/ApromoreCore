@@ -41,22 +41,25 @@ import org.jfree.ui.RefineryUtilities;
 
 public class Test {
 
-	
+
 	public static void main(String args[]) throws FileNotFoundException
 	{
-		
-		Path path = Paths.get("./Log.mxml.gz");
+
+		Path path = Paths.get("./Frequency_40_60_short_normal.mxml");
 		XLog xl = XLogManager.readLog(new FileInputStream(path.toString()), path.getFileName().toString());
-		
+
 		DriftConfig cf = DriftConfig.AlphaRelation;
 		ControlFlowDriftDetector cfdd = null;
 		if(cf == DriftConfig.AlphaRelation)
 		{
 			int initialWinSize = -1; // # default is -1
 			boolean useAdwin = false; // Adaptive window or Fixed window
-			boolean withCharacterization = true; // Characterize detected drifts
-			float noiseFilterPercentage = 10.0f;
-			cfdd = new ControlFlowDriftDetector_EventStream(xl, initialWinSize, useAdwin, noiseFilterPercentage, withCharacterization);
+			boolean withCharacterization = false; // Characterize detected drifts
+
+			float noiseFilterPercentage = 0.0f; // 0-100
+			float driftDetectionSensitivity = 1f; // 0.01-1 (0.01 -> lowest sensitivity, 1 -> highest sensitivity)
+
+			cfdd = new ControlFlowDriftDetector_EventStream(xl, initialWinSize, useAdwin, noiseFilterPercentage, driftDetectionSensitivity, withCharacterization);
 		}
 		else if(cf == DriftConfig.RUN)
 		{
@@ -65,43 +68,43 @@ public class Test {
 			boolean detectGradualDrift = true; // Support gradual drift detection
 			cfdd = new ControlFlowDriftDetector_RunStream(xl, initialWinSize, useAdwin, detectGradualDrift);
 		}
-		
+
 		ProDriftDetectionResult result = cfdd.ControlFlowDriftDetectorStart();
-		
+
 		// visualize p-value diagram
-		result.getpValuesDiagram();		
+		result.getpValuesDiagram();
 		JFreeChart lineChart = result.getLineChart();
 		ChartPanel chartPanel = new ChartPanel(lineChart);
-		chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));		
+		chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
 		ApplicationFrame af = new ApplicationFrame("");
 		af.setContentPane(chartPanel);
 		af.pack();
 		RefineryUtilities.centerFrameOnScreen(af);
 		af.setVisible(true);
-		
-		
+
+
 		// print drift detection and characterization results
 		List<BigInteger> driftPoints = result.getDriftPoints();
-        Map<BigInteger, List<String>> characterizationMap = result.getCharacterizationMap();
+		Map<BigInteger, List<String>> characterizationMap = result.getCharacterizationMap();
 
-        for(int i = 0; i < result.getDriftStatements().size(); i++)
-        {
+		for(int i = 0; i < result.getDriftStatements().size(); i++)
+		{
 
 
-            BigInteger driftPoint = driftPoints.get(i);
-            System.out.println("(" + (i+1) + ") " + result.getDriftStatements().get(i));
-            List<String> charStatementsList = characterizationMap.get(driftPoint);
+			BigInteger driftPoint = driftPoints.get(i);
+			System.out.println("(" + (i+1) + ") " + result.getDriftStatements().get(i));
+			List<String> charStatementsList = characterizationMap.get(driftPoint);
 
-            if(charStatementsList != null){
-                int ind = 0;
-                System.out.println("************** Drift Characterization *******************");
+			if(charStatementsList != null){
+				int ind = 0;
+				System.out.println("************** Drift Characterization *******************");
 				for(String str : charStatementsList)
 					System.out.println("(" + (++ind) + ") " + str);
-            }
-            
-            System.out.println();
-            System.out.println();
+			}
 
-        }
+			System.out.println();
+			System.out.println();
+
+		}
 	}
 }

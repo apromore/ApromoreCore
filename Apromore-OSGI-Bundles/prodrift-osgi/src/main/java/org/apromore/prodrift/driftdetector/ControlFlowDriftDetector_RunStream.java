@@ -41,7 +41,6 @@ import org.apromore.prodrift.mining.log.local.PartiallyOrderedRun;
 import org.apromore.prodrift.mining.log.local.PrimeEventStructure;
 import org.apromore.prodrift.model.DriftPoint;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
-import org.apromore.prodrift.model.ProDriftTerminator;
 import org.apromore.prodrift.util.LinePlot;
 import org.apromore.prodrift.util.LogStreamer;
 import org.apromore.prodrift.util.MeanDelayCurve;
@@ -72,8 +71,7 @@ public class ControlFlowDriftDetector_RunStream implements ControlFlowDriftDetec
 	private String logFileName = "";
 	private String fileName_trace  = "./%s.mxml";
 
-	private ProDriftTerminator terminator = new ProDriftTerminator();
-	
+
 	private Path logPath = null;
 	
 	private String windowHeader = "";
@@ -112,7 +110,7 @@ public class ControlFlowDriftDetector_RunStream implements ControlFlowDriftDetec
 	
 	
 	public ControlFlowDriftDetector_RunStream(XLog xlog, int winsize, boolean isAdwin,
-			String logFileName, boolean TESTGRAD, ProDriftTerminator terminator) {
+			String logFileName, boolean TESTGRAD) {
 
 		Main.isStandAlone = true;
 		
@@ -120,7 +118,6 @@ public class ControlFlowDriftDetector_RunStream implements ControlFlowDriftDetec
 		xl = XLogManager.orderByTraceCompletionTimeStamp(xl);
 		log = xl;
 
-		this.terminator = terminator;
 		
 		this.initialwinSize = winsize;
 		this.winSizeReal = winsize;
@@ -315,7 +312,7 @@ public class ControlFlowDriftDetector_RunStream implements ControlFlowDriftDetec
 				int oldColumnCount = rfm[0].length;
 				
 				
-				for (; !this.terminator.terminate && logIdex < log.size(); logIdex++) {
+				for (; logIdex < log.size(); logIdex++) {
 					
 					switch (statisticTest) {
 						case KS:

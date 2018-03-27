@@ -67,8 +67,10 @@
                                             winSizeIntBox.value = maxWinValueEvents.value;
                                             FWIN.selected = true;
                                             noiseFilterSpinner.value = 10.0;
+                                            driftDetectionSensitivitySpinner.value = 0.90;
 
                                             noiseFilter.visible = true;
+                                            driftDetectionSensitivity.visible = true;
                                         }else{
                                             logType.visible = false;
                                             gradDriftRow.visible = true;
@@ -77,6 +79,7 @@
                                             winSizeIntBox.value = maxWinValueRuns.value;
                                             ADWIN.selected = true;
                                             noiseFilter.visible = false;
+                                            driftDetectionSensitivity.visible = false;
                                         }
                                         ">
                         <listitem id="evBased" label="Event-based (Alpha+)" selected="true"/>
@@ -139,6 +142,13 @@
                                                        mold="rounded"
                                                        constraint="no empty, min 0 max 100"/>
                                         <!--<slider id="noiseFilterSlider" mold="scale" maxpos="10" width="100%"/>-->
+                                    </row>
+
+                                    <row id="driftDetectionSensitivity">
+                                        <label value="Drift detection sensitivity (0.01 - 1)" width="100%"/>
+                                        <doublespinner id="driftDetectionSensitivitySpinner" width="100%" value="0.90" step="0.01"
+                                                        mold="rounded"
+                                                       constraint="no empty, min 0.01 max 1"/>
                                     </row>
                                     <!--<row id="conflictRow">-->
                                     <!--<label width="100%"/>-->

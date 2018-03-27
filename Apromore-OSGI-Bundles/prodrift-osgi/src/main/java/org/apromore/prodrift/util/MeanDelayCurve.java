@@ -41,63 +41,63 @@ import org.deckfour.xes.model.XTrace;
 public class MeanDelayCurve {
 
 	private LinePlot plotMD;
-	
+
 	private List<BigInteger> driftPoints = new ArrayList<>();
 	private List<BigInteger> startOfTransitionPoints = new ArrayList<>();
 	private List<BigInteger> endOfTransitionPoints = new ArrayList<>();
 	private List<BigInteger> lastReadTrace = new ArrayList<>();
 	private List<Double> pValuesAtDrifts = new ArrayList<>();
 	private List<Date> driftDates = new ArrayList<>();
-	
+
 	private double typicalThreshold;
 	private int numberOfDriftGoldStandard;
-	
+
 	public MeanDelayCurve(double typicalThreshold, int numberOfDriftGoldStandard) {
-		
+
 		this.typicalThreshold = typicalThreshold;
 		this.numberOfDriftGoldStandard = numberOfDriftGoldStandard;
 		plotMD = new LinePlot(this.getClass().getName(), "Mean Delay", "Threshold", "Delay");
-		
+
 	}
 
 	public void plot() {
 		plotMD.plot();
 	}
-	
+
 
 	public void AddMDCurve(String title, int winsize , ArrayList<Double> pValVector) {
 		int curveIndex = plotMD.AddCurve(title);
-		
+
 		double[] ThresholdList = new double[]{0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19};
 		boolean[] FiredDrift = new boolean[]{false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
 		ArrayList<ArrayList<Double>> delayList = new ArrayList<>();
 
 
-		
+
 		for (int tsIt = 0; tsIt < ThresholdList.length; tsIt++) {
 
 			plotMD.addEleVal(curveIndex, ThresholdList[tsIt], getMeanDelay(winsize, pValVector, ThresholdList[tsIt]));
 		}
 	}
-	
+
 	public double getMeanDelay(int winsize , ArrayList<Double> pValVector, double Threshold){
 		ArrayList<Boolean> Driftlabels = new ArrayList<>();
-		
+
 		int driftStep= (pValVector.size()-1+2*winsize) /(this.numberOfDriftGoldStandard+1);
 
 		for (int i = winsize; i < pValVector.size()+winsize; i++) {
-			if ((i+winsize)%driftStep== 0) 
+			if ((i+winsize)%driftStep== 0)
 				Driftlabels.add(false);
-			else 
+			else
 				Driftlabels.add(true);
-		}	
-		
+		}
+
 		boolean FiredDrift = false;
-		
+
 		int countDrift = 0;
 
 
-		
+
 		int driftPoint = 0;
 		double totalDelay = 0;
 		for (int drIt = 0; drIt < pValVector.size(); drIt++) {
@@ -114,22 +114,22 @@ public class MeanDelayCurve {
 		}
 		return (double) totalDelay/countDrift;
 	}
-	
-	
+
+
 	public confusionMat getConfMat(int logSize) {
 		int tP=0,fP=0,fN=0;
 		double totalDelay = 0;
-		
+
 		ArrayList<BigInteger> gold = GoldStandard(logSize);
 		int driftIndex = 0, goldIndex = 0;
-		
+
 		while ((driftIndex < driftPoints.size()) && (goldIndex < gold.size())){
 			if (  driftPoints.get(driftIndex).compareTo(gold.get(goldIndex)) < 0){
 				fP++;
 				driftIndex++;
 				continue;
 			}
-			
+
 			if (  driftPoints.get(driftIndex).compareTo(gold.get(goldIndex)) >= 0){
 				if (driftPoints.get(driftIndex).compareTo( (goldIndex + 1 == gold.size()  )? BigInteger.valueOf(logSize):gold.get(goldIndex+1)) < 0){
 					tP++;
@@ -138,19 +138,19 @@ public class MeanDelayCurve {
 				}
 				goldIndex++;
 			}
-			
+
 		}
-		
+
 		while (driftIndex < driftPoints.size()){
 			fP++;
 			driftIndex++;
-		} 
-		
+		}
+
 		fN = this.numberOfDriftGoldStandard - tP;
-		
+
 		return new confusionMat(tP, fP, fN, (double) totalDelay/tP);
 	}
-	
+
 
 	private ArrayList<BigInteger> GoldStandard(int logSize){
 		ArrayList<BigInteger> goldStandardDrifts = new ArrayList<>();
@@ -159,7 +159,7 @@ public class MeanDelayCurve {
 		}
 		return goldStandardDrifts;
 	}
-	
+
 //	private int getGoldStdDrift(ArrayList<Integer> gS, int position){
 //		int i=0;
 //		while (i<gS.size()){
@@ -167,22 +167,22 @@ public class MeanDelayCurve {
 //		}
 //		return null;
 //	}
-	
-	public void retreiveDrift(XLog xl, int logSize, ArrayList<Double> pValVector, ArrayList<Integer> winSizeVector, 
-			double threshold) {
-		
+
+	public void retreiveDrift(XLog xl, int logSize, ArrayList<Double> pValVector, ArrayList<Integer> winSizeVector,
+							  double threshold) {
+
 		endOfTransitionPoints.add(BigInteger.valueOf(0));
-		
+
 		List<Integer> winSizesAtTransition = new ArrayList<Integer>();
 		int driftIndex = 0;
-		
+
 		for (int i = 0; i < pValVector.size(); i++) {
 
 			int underCurveLength = 0;
 			int winSizeAtDrift = -1;
-			
+
 			winSizesAtTransition.clear();
-			
+
 			while (i < pValVector.size() && pValVector.get(i) <= threshold){
 				underCurveLength++;
 //				if(winSizeAtDrift == -1){
@@ -192,12 +192,12 @@ public class MeanDelayCurve {
 				winSizesAtTransition.add(winSizeVector.get(i));
 				i++;
 			}
-			 
+
 			int winSize = 0;
 			winSize = Utils.getMax(winSizesAtTransition.toArray());
-			
+
 			int underCurveDriftThreshhold = winSize / 2;
-			
+
 			if (underCurveLength > 0 && underCurveLength >= underCurveDriftThreshhold) {
 				if(!Main.isStandAlone)System.out.println("(" + (++driftIndex) + ")" + "Window size = " + winSize);
 				int FirstUnderCurve = i - underCurveLength;
@@ -212,34 +212,34 @@ public class MeanDelayCurve {
 				XTrace traceAtDrift = xl.get(FirstUnderCurve);
 				Date driftTime = XLogManager.getEventTime(traceAtDrift.get(traceAtDrift.size() - 1)).getValue();
 				if(!Main.isStandAlone)System.out.println("A drift has been detected at the time "+ driftTime);
-				
-				
+
+
 			}
 		}
-		
-		
+
+
 		startOfTransitionPoints.add(BigInteger.valueOf(logSize));
-		
+
 		List<List<Integer>> listOfLists = new ArrayList<List<Integer>>();
 		listOfLists.add(winSizeVector);
 		Utils.writeToFile_Integer("winSizeResource.csv", listOfLists);
 	}
-	
-	public void retreiveDrift_RunStream(XLog xl, XLog eventStream, int logSize, Path logPath, ArrayList<Double> pValVector, ArrayList<Integer> winSizeVector, 
-			double threshold, List<DriftPoint> DriftPointsList, boolean isCPNLogs) {
-		
+
+	public void retreiveDrift_RunStream(XLog xl, XLog eventStream, int logSize, Path logPath, ArrayList<Double> pValVector, ArrayList<Integer> winSizeVector,
+										double threshold, List<DriftPoint> DriftPointsList, boolean isCPNLogs) {
+
 		endOfTransitionPoints.add(BigInteger.valueOf(0));
-		
+
 		List<Integer> winSizesAtTransition = new ArrayList<Integer>();
 		int driftIndex = 0;
-		
+
 		for (int i = 0; i < pValVector.size(); i++) {
 
 			int underCurveLength = 0;
 			int winSizeAtDrift = -1;
-			
+
 			winSizesAtTransition.clear();
-			
+
 			while (i < pValVector.size() && pValVector.get(i) <= threshold){
 				underCurveLength++;
 //				if(winSizeAtDrift == -1){
@@ -249,12 +249,12 @@ public class MeanDelayCurve {
 				winSizesAtTransition.add(winSizeVector.get(i));
 				i++;
 			}
-			 
+
 			int winSize = 0;
 			winSize = Utils.getMax(winSizesAtTransition.toArray());
-			
+
 			int underCurveDriftThreshhold = winSize / 3;
-			
+
 			if (underCurveLength > 0 && underCurveLength >= underCurveDriftThreshhold) {
 				if(!Main.isStandAlone)System.out.println("(" + (++driftIndex) + ")" /*+ "Window size = " + winSize*/);
 				int FirstUnderCurve = i - underCurveLength;
@@ -270,136 +270,136 @@ public class MeanDelayCurve {
 				Date driftTime = XLogManager.getEventTime(traceAtDrift.get(traceAtDrift.size() - 1)).getValue();
 				driftDates.add(driftTime);
 				if(!Main.isStandAlone)System.out.println("The drift has been detected at the time: "+ driftTime);
-				
-				
+
+
 				// On event stream logs (CPN logs)
 				if(!Main.isStandAlone)
 				{
 					if(isCPNLogs)
 					{
-						
+
 						int driftPoint_event = XLogManager.getEventIndex(eventStream, traceAtDrift.get(traceAtDrift.size() - 1));
 						DriftPoint dp = getCorrespondingDriftPoint(driftPoint_event, DriftPointsList);
 						if(dp != null)
 						{
-							
+
 							if(dp.getTruePositive() == 0)
 							{
-								
+
 								dp.setTruePositive(1);
 								dp.setDriftPointDetected(driftPoint_event);
 								dp.setDriftTimeDetected(driftTime.getTime());
-								
+
 								XTrace lastReadTraceForDriftDetection = xl.get(driftPoint + underCurveDriftThreshhold);
 								int lastReadEventIndex = XLogManager.getEventIndex(eventStream, lastReadTraceForDriftDetection.get(lastReadTraceForDriftDetection.size() - 1));
 								dp.setDetectionDelay(lastReadEventIndex - dp.getDriftPointActual());
-								
+
 							}else
 							{
-								
+
 								dp.setFalsePositive(dp.getFalsePositive() + 1);
-								
+
 							}
-							
+
 						}else
 						{
-							
+
 							DriftPointsList.get(0).setFalsePositive(DriftPointsList.get(0).getFalsePositive() + 1);
-							
+
 						}
-						
-					}	
+
+					}
 				}
 			}
 		}
-		
+
 		if(!Main.isStandAlone)
 		{
 			if(isCPNLogs)
 			{
-				
+
 				BufferedWriter writer;
 				try {
 
 					String logPathString = logPath.toString();
 					String resultsPath = logPathString.substring(0, logPathString.lastIndexOf('.')) + "_resutls_RunStream.csv";
 					writer = new BufferedWriter(new FileWriter(new File(resultsPath)));
-					
+
 					writer.write("driftPointActual" + ",driftTimeActual" + ",IntraTraceDriftAreaStartPoint" + ",IntraTraceDriftAreaEndPoint" +
 							",driftPointDetected" + ",driftTimeDetected" + ",truePositive" +
 							",falsePositive" + ",detectionDelay(events)");
 					writer.write("\n");
-					
+
 					double truePositiveSum = 0, falsePositiveSum = 0;
 					int detectionDelaySum = 0;
 					for(DriftPoint dp : DriftPointsList)
 					{
-						
+
 						truePositiveSum += dp.getTruePositive();
 						falsePositiveSum += dp.getFalsePositive();
 						detectionDelaySum += dp.getDetectionDelay();
-						
+
 						dp.writeToFile(writer);
 						writer.write("\n");
-						
+
 					}
 					writer.write("\n");
-					
+
 					double precision = 0;
 					if(truePositiveSum != 0 || falsePositiveSum != 0)
 						precision = truePositiveSum / (truePositiveSum + falsePositiveSum);
-					
+
 					double recall = truePositiveSum / (double)ControlFlowDriftDetector_RunStream.numberOfDriftGoldStandard;
-					
+
 					double F_score = 0;
 					if(precision != 0 || recall != 0)
 						F_score = 2 * precision * recall / (precision + recall);
-					
+
 					int meanDelay = 0;
 					if(truePositiveSum != 0)
 						meanDelay = detectionDelaySum / (int)truePositiveSum;
-					
+
 					writer.write("Precision" + "," + precision + "," + "Recall" + "," + recall + "," + "F-score" + "," + F_score
-							 + "," + "Mean delay" + "," + meanDelay);
+							+ "," + "Mean delay" + "," + meanDelay);
 					writer.write("\n");
-					
-			        writer.close();
-				
+
+					writer.close();
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}		
-				
+				}
+
 			}
 		}
-		
-		
+
+
 		startOfTransitionPoints.add(BigInteger.valueOf(logSize));
-		
+
 //		List<List<Integer>> listOfLists = new ArrayList<List<Integer>>();
 //		listOfLists.add(winSizeVector);
 //		Utils.writeToFile_Integer("winSize_runs.csv", listOfLists);
 	}
 
-	
-	public void retreiveDrift_EventStream(XLog xl, int logSize, Path logPath, 
-			List<Double> pValVector, ArrayList<Integer> winSizeVector, 
-			double threshold, List<DriftPoint> DriftPointsList, 
-			String relationType, float oscilationRatio, boolean isCPNLogs, 
-			Map<BigInteger, List<String>> characterizationMap) 
+
+	public void retreiveDrift_EventStream(XLog xl, int logSize, Path logPath,
+										  List<Double> pValVector, ArrayList<Integer> winSizeVector,
+										  double threshold, List<DriftPoint> DriftPointsList,
+										  String relationType, float oscilationRatio, boolean isCPNLogs,
+										  Map<BigInteger, List<String>> characterizationMap)
 	{
-		
+
 		endOfTransitionPoints.add(BigInteger.valueOf(0));
-		
+
 		List<Integer> winSizesAtTransition = new ArrayList<Integer>();
 		int driftIndex = 0;
 		for (int i = 0; i < pValVector.size(); i++) {
 
 			int underCurveLength = 0;
 			int winSizeAtDrift = -1;
-			
+
 			winSizesAtTransition.clear();
-			
+
 			while (i < pValVector.size() && pValVector.get(i) <= threshold){
 				underCurveLength++;
 //				if(winSizeAtDrift == -1){
@@ -409,13 +409,15 @@ public class MeanDelayCurve {
 				winSizesAtTransition.add(winSizeVector.get(i));
 				i++;
 			}
-			 
+
 			int winSize = 0;
 			winSize = Utils.getMax(winSizesAtTransition.toArray());
 //			winSize = winSizesAtTransition.get(0); // win size when drops below threshold
-			
-			int underCurveDriftThreshhold = (int)(winSize * oscilationRatio);
-			
+
+			int underCurveDriftThreshhold = 1;
+			if(oscilationRatio != 0)
+				underCurveDriftThreshhold = (int)(winSize * oscilationRatio);
+
 			if (underCurveLength > 0 && underCurveLength >= underCurveDriftThreshhold) {
 				if(!Main.isStandAlone) System.out.println("(" + (++driftIndex) + ")"/* + "Window size = " + winSize*/);
 				int FirstUnderCurve = i - underCurveLength;
@@ -431,7 +433,7 @@ public class MeanDelayCurve {
 				Date driftTime = XLogManager.getEventTime(traceAtDrift.get(traceAtDrift.size() - 1)).getValue();
 				driftDates.add(driftTime);
 				if(!Main.isStandAlone) System.out.println("The drift has been detected at the time: "+ driftTime);
-				
+
 				if(!Main.isStandAlone)
 				{
 					if(characterizationMap != null)
@@ -446,187 +448,187 @@ public class MeanDelayCurve {
 								System.out.println(cIndex++ + ". " + charStatement);
 							}
 						}
-						
+
 					}
 					System.out.println("----------------------------------------------------------");
-					
+
 					if(isCPNLogs)
 					{
-						
+
 						DriftPoint dp = getCorrespondingDriftPoint(driftPoint, DriftPointsList);
 						if(dp != null)
 						{
-							
+
 							if(dp.getTruePositive() == 0)
 							{
-								
+
 								dp.setTruePositive(1);
 								dp.setDriftPointDetected(driftPoint);
 								dp.setDriftTimeDetected(driftTime.getTime());
 								dp.setDetectionDelay(dp.getDriftPointDetected() + underCurveDriftThreshhold - dp.getDriftPointActual());
-								
+
 							}else
 							{
-								
+
 								dp.setFalsePositive(dp.getFalsePositive() + 1);
-								
+
 							}
-							
+
 						}else
 						{
-							
+
 							DriftPointsList.get(0).setFalsePositive(DriftPointsList.get(0).getFalsePositive() + 1);
-							
+
 						}
-						
+
 					}
 				}
-				
-				
+
+
 			}
 		}
-		
+
 		if(!Main.isStandAlone)
 		{
 			String resultsPath = null;
 			if(logPath != null)
 			{
-				
+
 				String logPathString = logPath.toString();
 				resultsPath = logPathString.substring(0, logPathString.lastIndexOf('.')) + "_results_" + relationType + "_" + oscilationRatio + ".csv";
-				
+
 			}
-			
-			
+
+
 			if(isCPNLogs)
 			{
-				
+
 				BufferedWriter writer;
 				try {
 
 					writer = new BufferedWriter(new FileWriter(new File(resultsPath)));
-					
+
 					writer.write("driftPointActual" + ",driftTimeActual" + ",IntraTraceDriftAreaStartPoint" + ",IntraTraceDriftAreaEndPoint" +
 							",driftPointDetected" + ",driftTimeDetected" + ",truePositive" +
 							",falsePositive" + ",detectionDelay(events)");
 					writer.write("\n");
-					
+
 					double truePositiveSum = 0, falsePositiveSum = 0;
 					int detectionDelaySum = 0;
 					for(DriftPoint dp : DriftPointsList)
 					{
-						
+
 						truePositiveSum += dp.getTruePositive();
 						falsePositiveSum += dp.getFalsePositive();
 						detectionDelaySum += dp.getDetectionDelay();
-						
+
 						dp.writeToFile(writer);
 						writer.write("\n");
-						
+
 					}
 					writer.write("\n");
-					
+
 					double precision = 0;
 					if(truePositiveSum != 0 || falsePositiveSum != 0)
 						precision = truePositiveSum / (truePositiveSum + falsePositiveSum);
-					
+
 					double recall = truePositiveSum / (double)ControlFlowDriftDetector_EventStream.numberOfDriftGoldStandard;
-					
+
 					double F_score = 0;
 					if(precision != 0 || recall != 0)
 						F_score = 2 * precision * recall / (precision + recall);
-					
+
 					int meanDelay = 0;
 					if(truePositiveSum != 0)
 						meanDelay = detectionDelaySum / (int)truePositiveSum;
-					
+
 					writer.write("Precision" + "," + precision + "," + "Recall" + "," + recall + "," + "F-score" + "," + F_score
-							 + "," + "Mean delay" + "," + meanDelay);
-					
-			        writer.close();
-				
+							+ "," + "Mean delay" + "," + meanDelay);
+
+					writer.close();
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}	
-				
+				}
+
 			}
 		}
-		
+
 		startOfTransitionPoints.add(BigInteger.valueOf(logSize));
-		
+
 //		List<List<Integer>> listOfLists = new ArrayList<List<Integer>>();
 //		listOfLists.add(winSizeVector);
 //		Utils.writeToFile(resultsPath.substring(0, resultsPath.lastIndexOf('.')) + "_winVector.csv", listOfLists);
 	}
 
-	
+
 	private DriftPoint getCorrespondingDriftPoint(int detectedDriftIndex, List<DriftPoint> DriftPointsList)
 	{
-		
+
 		for(int i = DriftPointsList.size() - 1; i >= 0; i--)
 		{
-			
+
 			DriftPoint dp = DriftPointsList.get(i);
 			if(detectedDriftIndex >= dp.getDriftPointActual())
 				return dp;
-			
+
 		}
-		
+
 		return null;
-		
+
 	}
-	
+
 	public double getBasicPrecisionNOTWORKING(int winsize , ArrayList<Double> pValVector, double threshold) {
 		int tP=0,fP=0,fN=0;
-		
+
 		boolean FiredDrift = false;
 		boolean computingLenght = false;
 		int driftLenght=0;
-		
-		ArrayList<Boolean> Driftlabels = new ArrayList<>();	
+
+		ArrayList<Boolean> Driftlabels = new ArrayList<>();
 		int driftStep= (pValVector.size()-1+2*winsize) /(this.numberOfDriftGoldStandard+1);
 		for (int i = winsize; i < pValVector.size()+winsize; i++) {
-			if ((i+winsize)%driftStep== 0) 
+			if ((i+winsize)%driftStep== 0)
 				Driftlabels.add(false);
-			else 
+			else
 				Driftlabels.add(true);
 		}
-		
+
 		int pVVIt=0;
 		for ( pVVIt = 0; pVVIt < pValVector.size(); pVVIt++) {
 			boolean found = false;
 			while (pValVector.get(pVVIt) <= threshold && pVVIt<pValVector.size()) {found = true;
-			pVVIt++;}
+				pVVIt++;}
 			if (found) {tP++;
-			found = false;}
+				found = false;}
 		}
-		
+
 		int tN=0;
 		return (double)tP/this.numberOfDriftGoldStandard;
 	}
-	
-	
+
+
 	public void AddMDCurve_depricated(String title, int winsize , ArrayList<Double> pValVector) {
 		int curveIndex = plotMD.AddCurve(title);
-		
+
 		double[] ThresholdList = new double[]{0.01,0.02,0.03,0.04,0.05,0.06,0.07,0.08,0.09,0.1,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19};
 		boolean[] FiredDrift = new boolean[]{false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
 		ArrayList<ArrayList<Double>> delayList = new ArrayList<>();
 		for (int i = 0; i < ThresholdList.length; i++) delayList.add(new ArrayList<Double>());//initialize the list
 		ArrayList<Boolean> Driftlabels = new ArrayList<>();
-		
+
 		int driftStep= (pValVector.size()-1+2*winsize) /(this.numberOfDriftGoldStandard+1);
 //		Driftlabels.add(true);
 		for (int i = winsize; i < pValVector.size()+winsize; i++) {
-			if ((i+winsize)%driftStep== 0) 
+			if ((i+winsize)%driftStep== 0)
 				Driftlabels.add(false);
-			else 
+			else
 				Driftlabels.add(true);
-		}	
+		}
 //		Driftlabels.add(true);
 
-		
+
 		for (int tsIt = 0; tsIt < ThresholdList.length; tsIt++) {
 			int driftPoint = 0;
 			double totalDelay = 0;
@@ -644,7 +646,7 @@ public class MeanDelayCurve {
 			plotMD.addEleVal(curveIndex, ThresholdList[tsIt], totalDelay/delayList.get(tsIt).size());
 		}
 	}
-	
+
 	public List<BigInteger> getEndOfTransitionPoints() {
 		return endOfTransitionPoints;
 	}
@@ -692,8 +694,8 @@ public class MeanDelayCurve {
 	public void setDriftDates(List<Date> driftDates) {
 		this.driftDates = driftDates;
 	}
-	
-	
+
+
 //	public confusionMat getGradConfMat(int logSize, List<Integer> startOfGradDrifts, List<Integer> endOfGradDrifts, List<Integer> lastReadGradDrifts) {
 //
 //		int tP=0,fP=0,fN=0;
@@ -736,7 +738,7 @@ public class MeanDelayCurve {
 //		return new confusionMat(tP, fP, fN, (double) totalDelay/tP);
 //		
 //	}
-	
+
 //	public static void main(String[] args) {
 //		
 //		ArrayList<Double> Pvalue = new ArrayList<Double>();
