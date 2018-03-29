@@ -20,13 +20,25 @@
 
 <window width="1000px" closable="false" position="center,top" title="Process Drift Detection">
 
+   	<caption>
+        <a href="http://apromore.org/platform/features/prodrift" target="_blank">
+        <button label="Help" image="img/Help.png" style="float: right;"></button>
+        </a>
+    </caption>
+
+
     <style>
 
         <!-- Make Plain Grid -->
-        .GridLayoutNoBorder
-        {
-        border: none;
-        }
+                 .GridLayoutNoBorder
+                 {
+                 border: none;
+                 }
+
+                 .z-caption-content
+                 {
+                   width: 100%;
+                 }
 
     </style>
     <vbox>
@@ -185,8 +197,7 @@
                 <row id="driftButtons" spans="2">
                     <div align="center">
                         <button id="proDriftOKButton" label="OK" image="img/ok.png" disabled="false"></button>
-                        <button id="proDriftCancelButton" label="Cancel" image="img/cancel2.png">
-                        </button>
+                        <button id="proDriftCancelButton" label="Cancel" image="img/cancel2.png"></button>
                     </div>
                 </row>
             </rows>
