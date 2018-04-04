@@ -63,7 +63,7 @@ public class APMPlugin extends DefaultPortalPlugin {
     private final CanoniserService canoniserService;
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
 
-    private String label = "Extract Variability Specification";
+    private String label = "Extract CTL rules";
     private String groupLabel = "Discover";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APMPlugin.class.getCanonicalName());
