@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 
-@Component("plugin")
+@Component("frequencyPlugin")
 public class DiscoverProcessMapPlugin extends DefaultPortalPlugin {
 
     private String label = "Discover process map";

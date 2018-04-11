@@ -42,7 +42,7 @@ import java.util.Locale;
 // Third party packages
 // Local packages
 
-@Component("plugin")
+@Component("performancePlugin")
 public class DiscoverProcessPerformanceProcessMapPlugin extends DefaultPortalPlugin {
 
     private String label = "Mine process performance (frequency and duration statistics) on top of a process map";
