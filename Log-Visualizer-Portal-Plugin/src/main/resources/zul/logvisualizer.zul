@@ -20,6 +20,19 @@
 
 <?component name="menuitem" extends="menuitem" autocheck="true" checkmark="true" ?>
 <window id="win" width="100%" height="100%" sizable="true" maximizable="true" closable="true" position="center" title="Log Visualizer" contentStyle="overflow:auto">
+    <caption>
+        <a href="http://apromore.org/platform/features/discover-process-map" target="_blank">
+        <button label="Help" image="img/Help.png" style="float: right;"></button>
+        </a>
+    </caption>
+
+
+    <style>
+        .z-caption-content
+        {
+          width: 100%;
+        }
+    </style>
     <vbox>
         <grid>
             <columns>

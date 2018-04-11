@@ -33,6 +33,7 @@ import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.logvisualizer.LogVisualizerService;
+import org.apromore.service.logvisualizer.impl.LogVisualizerServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -42,9 +43,9 @@ import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 
 @Component("plugin")
-public class LogVisualizerPlugin extends DefaultPortalPlugin {
+public class DiscoverProcessMapPlugin extends DefaultPortalPlugin {
 
-    private String label = "Visualize Log";
+    private String label = "Discover process map";
     private String groupLabel = "Discover";
 
     @Inject private EventLogService eventLogService;
@@ -56,7 +57,7 @@ public class LogVisualizerPlugin extends DefaultPortalPlugin {
 
     @Inject private LogAnimationPluginInterface logAnimationPluginInterface;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerPlugin.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(DiscoverProcessMapPlugin.class.getCanonicalName());
 
     @Override
     public String getLabel(Locale locale) {
@@ -80,7 +81,7 @@ public class LogVisualizerPlugin extends DefaultPortalPlugin {
     public void execute(PortalContext context) {
         LOGGER.info("Executing");
 
-        new LogVisualizerController(context, eventLogService, logVisualizerService, processService, canoniserService, userInterfaceHelper, logAnimationPluginInterface);
+        new DiscoverProcessMapController(context, eventLogService, logVisualizerService, processService, canoniserService, userInterfaceHelper, logAnimationPluginInterface, LogVisualizerServiceImpl.FREQUENCY);
 
 
     }

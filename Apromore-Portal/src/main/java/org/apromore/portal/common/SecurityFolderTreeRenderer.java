@@ -147,6 +147,15 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                         }
                         break;
 
+                    case Log:
+                        SummaryType lsummaryType = (SummaryType) clickedNodeValue.getData();
+                        if(lsummaryType instanceof ProcessSummaryType) {
+                            LogSummaryType log = (LogSummaryType) lsummaryType;
+                            hasOwnership = log.isHasOwnership();
+                            selectedId = log.getId();
+                        }
+                        break;
+
                     default:
                         assert false: "Clicked tree node with type " + clickedNodeValue.getType() + " is not implemented";
                     }
