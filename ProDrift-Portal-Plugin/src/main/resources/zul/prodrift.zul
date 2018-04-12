@@ -77,9 +77,9 @@
                                             }
 
                                             winSizeIntBox.value = maxWinValueEvents.value;
-                                            FWIN.selected = true;
+                                            ADWIN.selected = true;
                                             noiseFilterSpinner.value = 10.0;
-                                            driftDetectionSensitivitySpinner.value = 0.90;
+                                            driftDetectionSensitivitySpinner.value = 0.70;
 
                                             noiseFilter.visible = true;
                                             driftDetectionSensitivity.visible = true;
@@ -158,7 +158,7 @@
 
                                     <row id="driftDetectionSensitivity">
                                         <label value="Drift detection sensitivity (0.01 - 1)" width="100%"/>
-                                        <doublespinner id="driftDetectionSensitivitySpinner" width="100%" value="0.90" step="0.01"
+                                        <doublespinner id="driftDetectionSensitivitySpinner" width="100%" value="0.70" step="0.01"
                                                         mold="rounded"
                                                        constraint="no empty, min 0.01 max 1"/>
                                     </row>

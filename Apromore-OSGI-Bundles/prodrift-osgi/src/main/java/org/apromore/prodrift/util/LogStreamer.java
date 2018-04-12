@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -79,8 +80,10 @@ public class LogStreamer {
 			}
 		});
 
-		if(numOfActivities != null)
-			numOfActivities.append(activities.size());
+		if(numOfActivities == null)
+			numOfActivities = new StringBuilder();
+
+		numOfActivities.append(activities.size());
 
 		long meanTraceDuration = sumTraceDuration / log.size();
 
@@ -107,6 +110,8 @@ public class LogStreamer {
 
 		if(eventCount > winSize) winSize = eventCount;
 
+		winSize = Math.max(winSize, activities.size() * activities.size() * 5);
+
 		if(winSizeStr == null)
 			winSizeStr = new StringBuilder();
 		winSizeStr.append(winSize);
@@ -127,6 +132,9 @@ public class LogStreamer {
 	public static XLog logStreamer(XLog log, List<String> distinctActivityNames, StringBuilder winSizeStr) {
 
 		XLog eventStream = new XLogImpl(log.getAttributes());
+
+		if(distinctActivityNames == null)
+			distinctActivityNames = new ArrayList<>();
 
 		// iterate through all the events of the log
 		long sumTraceDuration = 0;
@@ -159,7 +167,7 @@ public class LogStreamer {
 						eventStream.add(t1);
 
 						String evName = XLogManager.getEventName(e);
-						if (distinctActivityNames != null && !distinctActivityNames.contains(evName))
+						if (!distinctActivityNames.contains(evName))
 							distinctActivityNames.add(evName);
 
 					}
@@ -205,6 +213,9 @@ public class LogStreamer {
 
 		if(eventCount > winSize) winSize = eventCount;
 
+		winSize = Math.max(winSize, distinctActivityNames.size() *
+				distinctActivityNames.size() * 5);
+
 		if(winSizeStr == null)
 			winSizeStr = new StringBuilder();
 		winSizeStr.append(winSize);
@@ -239,9 +250,9 @@ public class LogStreamer {
 
 //		for(int i = 0; i < ls.size(); i++)
 //		{
-//			
+//
 //			System.out.println(XLogManager.getEventTime(ls.get(i).get(0)));
-//			
+//
 //		}
 
 

@@ -305,9 +305,9 @@ public class ProDriftController {
                 winSizeIntBox.setValue(maxWinValueEventsSynIntBoX.getValue());
             }else {*/
 //                ((Listitem)proDriftW.getFellow("reLog")).setSelected(true);
-            ((Listitem) proDriftW.getFellow("FWIN")).setSelected(true);
+            ((Listitem) proDriftW.getFellow("ADWIN")).setSelected(true);
             ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(10.0);
-            ((Doublespinner) proDriftW.getFellow("driftDetectionSensitivitySpinner")).setValue(0.90);
+            ((Doublespinner) proDriftW.getFellow("driftDetectionSensitivitySpinner")).setValue(0.70);
             winSizeIntBox.setValue(maxWinValueEventsIntBoX.getValue());
 //            }
         }else
