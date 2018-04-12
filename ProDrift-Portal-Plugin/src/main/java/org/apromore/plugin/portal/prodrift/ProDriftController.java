@@ -189,8 +189,8 @@ public class ProDriftController {
     private void initializeLogVars(XLog xl, InputStream is, String logName) {
 
         final Label l = (Label) this.proDriftW.getFellow("fileName");
-        boolean valild = false;
-        xlog = null;
+//        boolean valild = false;
+        xlog = xl;
 
         int winSize_timeBased = 0;
 
