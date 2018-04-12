@@ -75,7 +75,7 @@ public class StageMiningPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Mine Process Stages";
+        return "Mine process stages";
     }
 
     @Override
