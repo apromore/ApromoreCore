@@ -45,8 +45,8 @@ import java.util.Locale;
 @Component("performancePlugin")
 public class DiscoverProcessPerformanceProcessMapPlugin extends DefaultPortalPlugin {
 
-    private String label = "Mine process performance (frequency and duration statistics) on top of a process map";
-    private String groupLabel = "Analysis";
+    private String label = "Mine process performance on top of a process map";
+    private String groupLabel = "Analyze";
 
     @Inject private EventLogService eventLogService;
     @Inject private LogVisualizerService logVisualizerService;

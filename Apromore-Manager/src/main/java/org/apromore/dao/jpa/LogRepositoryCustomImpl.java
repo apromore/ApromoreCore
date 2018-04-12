@@ -61,7 +61,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
     private static final String GET_ALL_LOGS_JPA = "SELECT l FROM Log l ";
     private static final String GET_ALL_LOGS_FOLDER_JPA = "SELECT l FROM Log l JOIN l.folder f ";
-    private static final String GET_ALL_PUBLIC_JPA = "l.publicModel = true ";
+    private static final String GET_ALL_PUBLIC_JPA = "l.publicLog = true ";
     private static final String GET_ALL_FOLDER_JPA = "f.id = ";
     private static final String GET_ALL_SORT_JPA = " ORDER by l.id";
 
@@ -103,14 +103,16 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
             strQry.append(" WHERE ").append(conditions);
             strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);
             whereAdded = true;
-        } //else {
-        //   strQry.append(" WHERE ").append(GET_ALL_PUBLIC_JPA);
-        //}
-        if (whereAdded) {
-            strQry.append(" AND ");
-        } else {
-            strQry.append(" WHERE ");
         }
+        else {
+           strQry.append(" WHERE ").append(GET_ALL_PUBLIC_JPA);
+        }
+//        if (whereAdded) {
+            strQry.append(" AND ");
+//        } else {
+//            strQry.append(" WHERE ");
+//        }
+
         strQry.append(GET_ALL_FOLDER_JPA).append(folderId);
         strQry.append(GET_ALL_SORT_JPA);
 
