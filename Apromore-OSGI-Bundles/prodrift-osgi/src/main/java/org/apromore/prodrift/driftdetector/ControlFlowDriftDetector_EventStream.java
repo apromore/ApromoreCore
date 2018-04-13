@@ -2618,6 +2618,9 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 		int numOfDistinctActivities = Math.max(Activity_freq_detWin.size(), Activity_freq_refWin.size());
 		int suitableWindowSize = numOfDistinctActivities * numOfDistinctActivities * winSizeCoefficient;
 
+		if(suitableWindowSize < initialwinSize)
+			return initialwinSize;
+
 		int diff = Math.min(suitableWindowSize - winSize, (eventIndex - 2*winSize) / 2);
 
 		boolean hasWindowsExpanded = false, hasWindowsShrunk = false;

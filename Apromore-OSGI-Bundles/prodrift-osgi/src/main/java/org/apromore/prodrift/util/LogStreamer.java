@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeMap;
@@ -110,7 +111,7 @@ public class LogStreamer {
 
 		if(eventCount > winSize) winSize = eventCount;
 
-		winSize = Math.max(winSize, activities.size() * activities.size() * 5);
+		winSize = Math.max(winSize, activities.size() * activities.size() * ControlFlowDriftDetector_EventStream.winSizeCoefficient);
 
 		if(winSizeStr == null)
 			winSizeStr = new StringBuilder();
@@ -214,7 +215,7 @@ public class LogStreamer {
 		if(eventCount > winSize) winSize = eventCount;
 
 		winSize = Math.max(winSize, distinctActivityNames.size() *
-				distinctActivityNames.size() * 5);
+				distinctActivityNames.size() * ControlFlowDriftDetector_EventStream.winSizeCoefficient);
 
 		if(winSizeStr == null)
 			winSizeStr = new StringBuilder();
