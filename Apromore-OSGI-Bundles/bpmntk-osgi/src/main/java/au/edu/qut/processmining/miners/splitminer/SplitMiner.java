@@ -238,7 +238,7 @@ public class SplitMiner {
         if(!removeSelfLoops) helper.removeSelfLoopMarkers(bpmnDiagram);
 
         if( replaceIORs ) {
-            helper.expandSplitGateways(bpmnDiagram);
+//            helper.expandSplitGateways(bpmnDiagram);
         } else {
             helper.collapseSplitGateways(bpmnDiagram);
             helper.collapseJoinGateways(bpmnDiagram);
