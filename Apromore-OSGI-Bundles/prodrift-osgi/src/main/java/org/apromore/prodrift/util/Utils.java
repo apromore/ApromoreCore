@@ -985,7 +985,7 @@ public class Utils {
 
 		double [][]counts_expected = Utils.getExpectedCounts(Alpha_FreqMatrix2);
 
-		int twentyPercentOfColumns = (int)Math.ceil(nCols * nRows / 5.0);
+		int twentyPercentOfColumns = 0/*(int)Math.ceil(nCols * nRows / 5.0)*/;
 
 		double[] combination = new double[nRows * nCols];
 
