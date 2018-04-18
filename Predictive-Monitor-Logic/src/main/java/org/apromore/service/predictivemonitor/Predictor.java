@@ -22,8 +22,11 @@ package org.apromore.service.predictivemonitor;
 
 // Java 2 Standard Edition
 import java.io.File;
+import java.sql.Blob;
 
 public interface Predictor {
+    public Integer getId();
     public String getName();
-    public File getPklFile();
+    public String getType();
+    public byte[] /*Blob*/ getPkl();
 }

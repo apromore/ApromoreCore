@@ -21,7 +21,6 @@
 package org.apromore.plugin.portal.predictivemonitor;
 
 // Java 2 Standard Edition
-import java.io.File;
 import java.util.Locale;
 
 // Java 2 Enterprise Edition
@@ -38,6 +37,7 @@ import org.zkoss.zul.Messagebox;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
+import org.apromore.service.predictivemonitor.PredictiveMonitorService;
 
 @Component("plugin")
 public class PredictiveMonitorPlugin extends DefaultPortalPlugin {
@@ -48,9 +48,9 @@ public class PredictiveMonitorPlugin extends DefaultPortalPlugin {
     private String groupLabel = "Monitor";
 
     @Inject private EventLogService eventLogService;
+    @Inject private PredictiveMonitorService predictiveMonitorService;
     @Inject @Named("kafkaHost") private String kafkaHost;
-    @Inject @Named("nirdizatiPath") private File nirdizatiPath;
-    @Inject @Named("pythonPath") private String pythonPath;
+    @Inject @Named("eventsTopic") private String eventsTopic;
 
     @Override
     public String getLabel(Locale locale) {
@@ -73,10 +73,10 @@ public class PredictiveMonitorPlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext portalContext) {
         try {
-            new DataflowsController(portalContext, eventLogService, kafkaHost, nirdizatiPath, pythonPath);
+            new PredictiveMonitorsController(portalContext, eventLogService, predictiveMonitorService, kafkaHost, eventsTopic);
 
         } catch (Throwable e) {
-            LOGGER.error("portalContext: " + portalContext + "  eventLogService: " + eventLogService + "  kafkaHost: " + kafkaHost + "  pythonPath: " + pythonPath, e);
+            LOGGER.error("portalContext: " + portalContext + "  eventLogService: " + eventLogService + "  kafkaHost: " + kafkaHost + "  eventsTopic: " + eventsTopic);
             Messagebox.show("Unable to display setup window", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }

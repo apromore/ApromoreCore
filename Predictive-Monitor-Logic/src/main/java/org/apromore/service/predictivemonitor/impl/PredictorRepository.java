@@ -18,14 +18,13 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.service.dataflow.impl;
+package org.apromore.service.predictivemonitor.impl;
 
 // Third party packages
 import org.springframework.data.jpa.repository.JpaRepository;
 
-// Local classes
-import org.apromore.service.dataflow.Processor;
+public interface PredictorRepository extends JpaRepository<PredictorImpl, Integer> {
 
-public interface ProcessorRepository extends JpaRepository<Processor, Integer> {
-
+    public PredictorImpl findById(Integer id);
+    public PredictorImpl findByName(String name);
 }

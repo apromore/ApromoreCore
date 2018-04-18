@@ -21,41 +21,26 @@
 package org.apromore.plugin.portal.predictivemonitor;
 
 // Java 2 Standard Edition
-import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
 // Third party packages
-import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XAttributeTimestamp;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Decimalbox;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listcell;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelArray;;
+import org.zkoss.zul.Fileupload;
 import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Selectbox;
+import org.zkoss.util.media.Media;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 // Local packages
-import org.apromore.model.LogSummaryType;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.service.EventLogService;
+import org.apromore.service.predictivemonitor.PredictiveMonitorService;
+import org.apromore.service.predictivemonitor.Predictor;
 
 /**
  * UI for specifying the parameters of and creating a new {@link Predictor}.
@@ -66,107 +51,46 @@ public class CreatePredictorController {
 
     private final Window  window;
 
-    private final Selectbox  predictiveMethodSelectbox;
-    private final Textbox    tagTextbox;
-    private final Selectbox  labelColSelectbox;
-    private final Textbox    positiveLabelTextbox;
-    private final Selectbox  clsMethodSelectbox;
-    private final Decimalbox nEstimatorsDecimalbox;
-    private final Decimalbox maxFeaturesDecimalbox;
-    private final Decimalbox learningRateDecimalbox;
+    private final Textbox    nameTextbox;
+    private final Combobox   typeCombobox;
+    private final Fileupload pklFileupload;
     private final Button     okButton;
     private final Button     cancelButton;
 
-    private final ListModel<String> predictiveMethodModel = new ListModelArray<String>(new String[] {"Case outcome", "Remaining time"});
-    public ListModel<String> getPredictiveMethodModel() { return predictiveMethodModel; }
+    private Media pklMedia;
 
-    private final ListModel<String> labelColModel = new ListModelList<String>();
-    public ListModel<String> labelColModel() { return labelColModel; }
-
-    private final ListModel<TrainingAlgorithm> clsMethodModel = new ListModelArray<TrainingAlgorithm>(new TrainingAlgorithm[] {
-        new GradientBoostingTrainingAlgorithm(),
-        new RandomForestTrainingAlgorithm()});
-    public ListModel<TrainingAlgorithm> clsMethodModel() { return clsMethodModel; }
-
-    public CreatePredictorController(PortalContext portalContext, Collection<Predictor> predictors, EventLogService eventLogService, File nirdizatiPath, String pythonPath) throws IOException {
+    public CreatePredictorController(PortalContext portalContext, ListModelList<Predictor> predictorsListModel, PredictiveMonitorService predictiveMonitorService) throws IOException {
 
         window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/createPredictor.zul", null, null);
 
-        predictiveMethodSelectbox = (Selectbox)  window.getFellow("predictiveMethod");
-        tagTextbox                = (Textbox)    window.getFellow("tag");
-        labelColSelectbox         = (Selectbox)  window.getFellow("labelCol");
-        positiveLabelTextbox      = (Textbox)    window.getFellow("posLabel");
-        clsMethodSelectbox        = (Selectbox)  window.getFellow("clsMethod");
-        nEstimatorsDecimalbox     = (Decimalbox) window.getFellow("nEstimators");
-        maxFeaturesDecimalbox     = (Decimalbox) window.getFellow("maxFeatures");
-        learningRateDecimalbox    = (Decimalbox) window.getFellow("learningRate");
-        okButton                  = (Button)     window.getFellow("ok");
-        cancelButton              = (Button)     window.getFellow("cancel");
-
-        // Find the selected log
-        final Set<LogSummaryType> logSummaries = DataflowsController.findSelectedLogs(portalContext);
-        if (logSummaries.size() != 1) {
-            Messagebox.show("Select exactly one log", "Attention", Messagebox.OK, Messagebox.ERROR);
-            return;
-        }
-        final LogSummaryType logSummary = logSummaries.iterator().next();
-        final String logName = logSummary.getName();
-        final XLog log = eventLogService.getXLog(logSummary.getId());
-
-        // The log attributes are candidates to be the labelCol
-        for (XAttribute attribute: log.getGlobalEventAttributes()) {
-            LOGGER.info(" Event attribute: " + attribute.getKey());
-            switch (attribute.getKey()) {
-            case "concept:name":
-            case "lifecycle:transition":
-            case "org:resource":
-            case "time:timestamp":
-            case "event_nr":
-            case "last":
-                break;
-            default:
-                ((List<String>) labelColModel).add(attribute.getKey());
-                break;
-            }
-        }
+        nameTextbox   = (Textbox)    window.getFellow("name");
+        typeCombobox  = (Combobox)   window.getFellow("type");
+        pklFileupload = (Fileupload) window.getFellow("pkl");
+        okButton      = (Button)     window.getFellow("ok");
+        cancelButton  = (Button)     window.getFellow("cancel");
 
         // Bind window components
-        ((ListModelArray<String>) predictiveMethodModel).addToSelection(predictiveMethodModel.getElementAt(0));
-        predictiveMethodSelectbox.setModel(predictiveMethodModel);
 
-        ((ListModelList<String>) labelColModel).addToSelection(labelColModel.getElementAt(0));
-        labelColSelectbox.setModel(labelColModel);
-
-        ((ListModelArray<TrainingAlgorithm>) clsMethodModel).addToSelection(clsMethodModel.getElementAt(0));
-        clsMethodSelectbox.setModel(clsMethodModel);
+        pklFileupload.addEventListener("onUpload", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                LOGGER.info("Uploading pkl");
+                pklMedia = ((UploadEvent) event).getMedia();
+                LOGGER.info("Uploaded pkl " + event);
+            }
+        });
 
         okButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                LOGGER.info("Creating predictor");
-
-                final String    tag   = tagTextbox.getValue();
-                final String    label = labelColModel.getElementAt(labelColSelectbox.getSelectedIndex());
-                final TrainingAlgorithm trainingAlgorithm = clsMethodModel.getElementAt(clsMethodSelectbox.getSelectedIndex());
-                final Predictor predictor;
-
-                // Assign variables that depend on the predictive method
-                switch (predictiveMethodSelectbox.getSelectedIndex()) {
-                case 0:  // Case outcome
-                    final String positiveLabelValue = positiveLabelTextbox.getValue();
-                    trainingAlgorithm.readParametersFromUI(window);
-                    predictor = new CaseOutcomePredictor("High " + label + "?", tag, label, positiveLabelValue, label + "_probability", logName, log, trainingAlgorithm, nirdizatiPath, pythonPath);
-                    break;
-                case 1:  // Remaining time
-                    trainingAlgorithm.readParametersFromUI(window);
-                    predictor = new RemainingTimePredictor(tag, logName, log, trainingAlgorithm, nirdizatiPath, pythonPath);
-                    break;
-                default:
-                    Messagebox.show("Unsupported predictive method index: " + predictiveMethodSelectbox.getSelectedIndex(), "Attention", Messagebox.OK, Messagebox.ERROR);
+                if (pklMedia == null) {
+                    LOGGER.info("Not creating predictor; no pkl uploaded");
                     return;
                 }
 
-                LOGGER.info("Created predictor");
-                predictors.add(predictor);
+                LOGGER.info("Creating predictor");
+                Predictor predictor = predictiveMonitorService.createPredictor(nameTextbox.getValue(), typeCombobox.getValue(), pklMedia.getStreamData());
+                predictorsListModel.add(predictor);
+                LOGGER.info("Created predictor " + predictor.getName());
+
                 window.detach();
             }
         });

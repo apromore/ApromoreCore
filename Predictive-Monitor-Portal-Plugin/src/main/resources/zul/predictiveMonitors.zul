@@ -23,7 +23,7 @@
         xmlns:z="http://www.zkoss.org/2005/zul"
         closable="true" position="center" title="Predictive Monitoring setup">
     <vbox>
-        <listbox id="dataflows" width="600px" checkmark="true">
+        <listbox id="predictiveMonitors" width="600px" checkmark="true">
             <auxhead>
                 <auxheader colspan="2">Predictive Monitors</auxheader>
             </auxhead>
@@ -39,10 +39,10 @@
             </template>
         </listbox>
         <hbox>
-            <button id="createDataflow" label="Create dataflow" />
-            <button id="deleteDataflow" label="Delete dataflow" />
-            <button id="streamLog"      label="Stream log to dataflow" />
-            <button id="showDashboard"  label="Show dashboard" />
+            <button id="create"  label="Create dataflow" />
+            <button id="delete"  label="Delete dataflow" />
+            <button id="load"    label="Stream log to dataflow" />
+            <button id="monitor" label="Show dashboard" />
         </hbox>
     </vbox>
 </window>

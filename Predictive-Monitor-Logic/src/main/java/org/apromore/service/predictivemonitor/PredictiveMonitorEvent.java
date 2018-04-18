@@ -18,26 +18,13 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.predictivemonitor;
+package org.apromore.service.predictivemonitor;
 
-// Java 2 Standard Edition
-import java.util.Comparator;
+public interface PredictiveMonitorEvent {
 
-public class DataflowEventComparator implements Comparator<DataflowEvent> {
-
-    private final boolean ascending;
-
-    public DataflowEventComparator(boolean ascending) {
-        this.ascending = ascending;
-    }
-
-    public int compare(DataflowEvent lhs, DataflowEvent rhs) {
-        try {
-            return lhs.getCaseId().compareTo(rhs.getCaseId()) * (ascending ? 1 : -1);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
+    public Integer getId();
+    public PredictiveMonitor getPredictiveMonitor();
+    public String getCaseId();
+    public Integer getEventNr();
+    public String getJson();
 }

@@ -18,8 +18,13 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.predictivemonitor;
+package org.apromore.service.predictivemonitor.impl;
 
-public class PredictorException extends Exception {
-    public PredictorException(String message, Throwable cause) { super(message, cause); }
+// Third party packages
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PredictiveMonitorRepository extends JpaRepository<PredictiveMonitorImpl, Integer> {
+
+    public PredictiveMonitorImpl findById(Integer id);
+    public PredictiveMonitorImpl findByName(String name);
 }

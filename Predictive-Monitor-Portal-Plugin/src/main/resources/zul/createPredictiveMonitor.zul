@@ -21,7 +21,7 @@
 <window xmlns:n="http://www.zkoss.org/2005/zk/native"
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:z="http://www.zkoss.org/2005/zul"
-        closable="true" position="center" title="Predictive Monitoring: Create Dataflow">
+        closable="true" position="center" title="Predictive Monitoring: Create Predictive Monitor">
     <vbox width="500px">
         <grid>
             <columns>
@@ -30,7 +30,7 @@
             </columns>
             <rows>
                 <row>
-                    Dataset name:
+                    Name:
                     <textbox id="name"/>
                 </row>
             </rows>
@@ -40,15 +40,13 @@
                 <auxheader colspan="3">Predictors</auxheader>
             </auxhead>
             <listhead>
-                <listheader label="Predictive method"/>
-                <listheader label="Training log"/>
-                <listheader label="Parameters"/>
+                <listheader label="Name"/>
+                <listheader label="Type"/>
             </listhead>
             <template name="model">
                 <listitem>
                     <listcell label="${each.name}"/>
-                    <listcell label="${each.trainingLog}"/>
-                    <listcell label="${each.parameters}"/>
+                    <listcell label="${each.type}"/>
                 </listitem>
             </template>
         </listbox>
