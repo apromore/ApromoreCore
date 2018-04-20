@@ -90,6 +90,7 @@ public class PredictiveMonitorServiceImpl implements PredictiveMonitorService {
     private AdminClient adminClient;
     private String kafkaHost;
     private String controlTopic;
+    private String eventsTopic;
     private String prefixesTopic;
     private String predictionsTopic;
     private PredictiveMonitorRepository predictiveMonitorRepository;
@@ -104,6 +105,7 @@ public class PredictiveMonitorServiceImpl implements PredictiveMonitorService {
 
     @Inject public PredictiveMonitorServiceImpl(
         @Named("kafkaHost") String        kafkaHost,
+        @Named("eventsTopic") String      eventsTopic,
         @Named("prefixesTopic") String    prefixesTopic,
         @Named("predictionsTopic") String predictionsTopic,
         @Named("controlTopic") String     controlTopic,
@@ -113,6 +115,7 @@ public class PredictiveMonitorServiceImpl implements PredictiveMonitorService {
         JdbcTemplate                      jdbcTemplate)
     {
         assert kafkaHost != null;
+        assert eventsTopic != null;
         assert prefixesTopic != null;
         assert predictionsTopic != null;
         assert controlTopic != null;
@@ -131,6 +134,7 @@ public class PredictiveMonitorServiceImpl implements PredictiveMonitorService {
 
         this.adminClient = AdminClient.create(props);
         this.kafkaHost = kafkaHost;
+        this.eventsTopic = eventsTopic;
         this.prefixesTopic = prefixesTopic;
         this.predictionsTopic = predictionsTopic;
         this.controlTopic = controlTopic;
@@ -326,6 +330,102 @@ public class PredictiveMonitorServiceImpl implements PredictiveMonitorService {
 
     public List<PredictiveMonitor> getPredictiveMonitors() {
         return new ArrayList<>(predictiveMonitorRepository.findAll());
+    }
+
+    public void exportLogToPredictiveMonitor(XLog log, PredictiveMonitor predictiveMonitor) {
+        LOGGER.info("Exporting log to " + predictiveMonitor.getName());
+
+        // Configuration
+        Properties props = new Properties();
+        props.put("bootstrap.servers",  kafkaHost);
+        props.put("acks",               "all");
+        props.put("retries",            0);
+        props.put("batch.size",         16384);
+        props.put("linger.ms",          1);
+        //props.put("timeout.ms",         5000);
+        props.put("max.block.ms",       5000);
+        //props.put("metadata.fetch.timeout.ms", 5000);
+        //props.put("request.timeout.ms", 5000);
+        props.put("buffer.memory",      33554432);
+        props.put("key.serializer",     StringSerializer.class);
+        props.put("value.serializer",   StringSerializer.class);
+
+        try (Producer<String, String> producer = new KafkaProducer<>(props)) {
+
+            // Merge the XES events of all traces into a single list of JSON objects
+            List<JSONObject> jsons = new ArrayList<>();
+            for (XTrace trace: log) {
+                for (XEvent event: trace) {
+                    JSONObject json = new JSONObject();
+                    json.put("log", predictiveMonitor.getId());
+                    json.put("case_id", trace.getAttributes().get("concept:name").toString());
+                    addAttributes(log, json);
+                    addAttributes(trace, json);
+                    addAttributes(event, json);
+                    jsons.add(json);
+                }
+            }
+
+            // Sort the events by time
+            final DatatypeFactory f = DatatypeFactory.newInstance();
+            /*
+            The existence of the Comparator class will cause Virgo to fail to load this plugin.
+            See: https://jira.spring.io/browse/SPR-11719 as a best guess at why this might be
+
+            Collections.sort(jsons, new Comparator<JSONObject>() {
+                public int compare(JSONObject a, JSONObject b) {
+                    return f.newXMLGregorianCalendar(a.optString("time:timestamp")).compare(f.newXMLGregorianCalendar(b.optString("time:timestamp")));
+                }
+            });
+            */
+            if (true) { throw new Error("Uncomment lines 371-380 of PredictiveMonitorServiceImpl and recompile to re-enable the export method."); }
+
+            // Export to the Kafka topic
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            JSONArray columns = new JSONArray();
+            for (Predictor predictor: predictiveMonitor.getPredictors()) {
+                columns.put(predictor.getId());
+            }
+            for (JSONObject json: jsons) {
+                //json.put("time:timestamp", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
+                json.put("Activity_Start_Time", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
+                json.put("Activity_End_Time", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
+                json.put("Key", "1");
+                json.put("columns", columns);
+                producer.send(new ProducerRecord<String,String>(eventsTopic, json.toString()));
+            }
+            LOGGER.info("Exported " + jsons.size() + " log events");
+
+        } catch (DatatypeConfigurationException | JSONException e) {
+            LOGGER.error("Unable to export log events", e);
+            return;
+        }
+        LOGGER.info("Exported log to " + predictiveMonitor.getName());
+    }
+
+    private static void addAttributes(XAttributable attributable, JSONObject json) throws JSONException {
+        for (Map.Entry<String, XAttribute> entry: attributable.getAttributes().entrySet()) {
+            switch (entry.getKey()) {
+            case "concept:name":
+            case "creator":
+            case "library":
+            case "lifecycle:model":
+            case "lifecycle:transition":
+            case "org:resource":
+            case "variant":
+            case "variant-index":
+                break;
+/*
+            case "time:timestamp":
+                json.put("time", entry.getValue().toString());
+                break;
+*/
+            default:
+                json.put(entry.getKey(), entry.getValue().toString());
+                break;
+            }
+        }
     }
 
     /**

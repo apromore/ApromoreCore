@@ -26,6 +26,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Observer;
 
+// Third party packages
+import org.deckfour.xes.model.XLog;
+
 public interface PredictiveMonitorService {
 
     public void addObserver(Observer observer);
@@ -42,6 +45,7 @@ public interface PredictiveMonitorService {
     public void deletePredictiveMonitors(Iterable<PredictiveMonitor> predictiveMonitors);
     public PredictiveMonitor findPredictiveMonitorByName(String name);
     public List<PredictiveMonitor> getPredictiveMonitors();
+    public void exportLogToPredictiveMonitor(XLog log, PredictiveMonitor predictiveMonitor);
 
     // PredictiveMonitorEvents
     public List<PredictiveMonitorEvent> findPredictiveMonitorEvents(PredictiveMonitor predictiveMonitor);

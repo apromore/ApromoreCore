@@ -141,6 +141,7 @@ public class PredictiveMonitorsController {
             public void onEvent(Event event) throws Exception {
                 LOGGER.info("Loading");
                 for (PredictiveMonitor predictiveMonitor: predictiveMonitorsListModel.getSelection()) {
+                    //predictiveMonitorService.exportLogToPredictiveMonitor(log, predictiveMonitor);  TODO: switch to this instead of the local export() method
                     export(log, predictiveMonitor, kafkaHost);
                 }
                 LOGGER.info("Loaded");
