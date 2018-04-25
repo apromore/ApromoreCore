@@ -52,6 +52,7 @@ public class PORun implements PORunConst {
 	protected List<Integer> vertices;
 	protected Map<Integer, Integer> vertexIndexMap;
 	private Multimap<Integer, Integer> predList = null;
+	private String idTrace;
 
 	public PORun(ConcurrencyRelations alphaRelations, XTrace trace, String id) {
 		this(alphaRelations, trace, null, id);
@@ -62,6 +63,7 @@ public class PORun implements PORunConst {
 		this.vertices = new ArrayList<>();
 		this.vertexIndexMap = new HashMap<>();
 		this.concurrency = HashMultimap.create();
+		this.idTrace = idLog;
 
 		XAttribute nameXML = trace.getAttributes().get("concept:name");
         String traceId = "case" + idLog;
@@ -121,7 +123,9 @@ public class PORun implements PORunConst {
 		
 		MatrixBasedTransitivity.transitiveReduction(adjmatrix);
 	}
-	
+
+	public String getIdTrace(){ return idTrace; }
+
 	private String getEventName(XEvent e) {
 		return e.getAttributes().get(XConceptExtension.KEY_NAME).toString();
 	}

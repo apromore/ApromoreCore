@@ -118,8 +118,11 @@ public class DiffLLVerbalizer <T> {
 			context2.clear(secondMatchingEventPair.getSecond());
 			
 			String firstHidingLabel = firstHiding.label;
-			
-			
+
+            if(firstMatching.label.equals("_0_") || firstHidingLabel.equals("_0_") ||
+                    firstMatching.label.equals("_1_") || firstHidingLabel.equals("_1_"))
+                continue;
+
 			if (firstHiding.op == Op.LHIDE) {
 				Pair<Operation, Boolean> pair = findRHide(opSeq, diffIndexes, firstHidingLabel);
 				Operation secondHiding = pair.getFirst();
@@ -130,7 +133,6 @@ public class DiffLLVerbalizer <T> {
 					context2.set(firstMatchingEventPair.getSecond());
 
 					if (!globalDiffs.contains(context1, context2)) {
-
 						verbalizeBehDiffFromModelPerspective(firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)firstHiding.target, firstHidingLabel,
 								firstMatchingEventPair.getSecond(), firstMatching.label, (Integer)secondHiding.target, secondHiding.label);
 					}
@@ -144,7 +146,7 @@ public class DiffLLVerbalizer <T> {
 //								secondHiding.label, (Integer)secondHiding.target);
 						statements.add(
 								String.format("In log 2, after the occurrence of %s, %s is substituted by %s",
-										firstMatching.label,
+										getCorrectContext(firstMatching.label),
 										firstHiding.label,
 										secondHiding.label)
 						);
@@ -211,7 +213,13 @@ public class DiffLLVerbalizer <T> {
 								break;
 							}
 						}
-						
+
+
+                        if(firstMatching.label.equals("_0_") || firstHiding.label.equals("_0_") ||
+                                firstMatching.label.equals("_1_") || firstHiding.label.equals("_1_"))
+                            continue;
+
+
 						if (found) {
 //							context1.set(firstMatchingEventPair.getFirst());							
 //							context2.set(firstMatchingEventPair.getSecond());
@@ -220,9 +228,13 @@ public class DiffLLVerbalizer <T> {
 							context2.set(e2);
 							context1.set(firstMatchingEventPair.getFirst());
 
+                            if(firstMatching.label.equals("_0_") || firstHiding.label.equals("_0_") ||
+                                    firstMatching.label.equals("_1_") || firstHiding.label.equals("_1_"))
+                                continue;
+
 							if (!globalDiffs.contains(context1, context2)) {
 
-								verbalizeBehDiffFromModelPerspective(
+                                verbalizeBehDiffFromModelPerspective(
 										firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)firstHiding.target, firstHiding.label, 
 										firstMatchingEventPair.getSecond(), firstMatching.label, e2p, pes2.getLabel(e2p));
 							}							
@@ -295,11 +307,15 @@ public class DiffLLVerbalizer <T> {
 										break;
 									}
 								}
+
+                                if(secondMatching.label.equals("_0_") || firstHiding.label.equals("_0_") ||
+                                        secondMatching.label.equals("_1_") || firstHiding.label.equals("_1_"))
+                                    continue;
 								
 								if (found) {
 									context1.set(secondMatchingEventPair.getFirst());
 									context2.set(e2p);
-									context2.set(secondMatchingEventPair.getSecond());								
+									context2.set(secondMatchingEventPair.getSecond());
 
 									if (!globalDiffs.contains(context1, context2)) {
 
@@ -350,7 +366,11 @@ public class DiffLLVerbalizer <T> {
 											context1.set(firstMatchingEventPair.getFirst());
 											context2.set(firstMatchingEventPair.getSecond());
 											context2.set(e2p);
-											
+
+                                            if(firstMatching.label.equals("_0_") || firstHiding.label.equals("_0_") ||
+                                                    firstMatching.label.equals("_1_") || firstHiding.label.equals("_1_"))
+                                                continue;
+
 											if (!globalDiffs.contains(context1, context2)) {
 												
 												verbalizeBehDiffFromModelPerspective(
@@ -419,10 +439,14 @@ public class DiffLLVerbalizer <T> {
 					context1.set(firstMatchingEventPair.getFirst());
 					context2.set(firstMatchingEventPair.getSecond());
 
+                    if(firstMatching.label.equals("_0_") || secondHiding.label.equals("_0_") ||
+                            firstMatching.label.equals("_1_") || secondHiding.label.equals("_1_"))
+                        continue;
+
 					if (!globalDiffs.contains(context1, context2)) {
 						
 						verbalizeBehDiffFromModelPerspective(
-								firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)secondHiding.target, secondHiding.label, 
+								firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)secondHiding.target, secondHiding.label,
 								firstMatchingEventPair.getSecond(), firstMatching.label, (Integer)firstHiding.target, firstHiding.label);
 					}					
 				} 
@@ -512,7 +536,11 @@ public class DiffLLVerbalizer <T> {
 							context1.or(dconflict);
 							context1.set(e1);
 							context2.set(firstMatchingEventPair.getSecond());
-							
+
+							if(firstMatching.label.equals("_0_") || pes1.getLabel(e1p).equals("_0_") ||
+                                    firstMatching.label.equals("_1_") || pes1.getLabel(e1p).equals("_1_"))
+                                continue;
+
 							if (!globalDiffs.contains(context1, context2)) {
 								
 								verbalizeBehDiffFromModelPerspective(
@@ -566,6 +594,10 @@ public class DiffLLVerbalizer <T> {
 									context1.set(secondMatchingEventPair.getFirst());									
 									context2.set(secondMatchingEventPair.getSecond());
 
+                                    if(pes1.getLabel(e1p).equals("_0_") || secondMatching.label.equals("_0_") ||
+                                            pes1.getLabel(e1p).equals("_1_") || secondMatching.label.equals("_1_"))
+                                        continue;
+
 									if (!globalDiffs.contains(context1, context2)) {
 
 										verbalizeBehDiffFromModelPerspective(
@@ -595,6 +627,10 @@ public class DiffLLVerbalizer <T> {
 									context1.set(firstMatchingEventPair.getFirst());									
 									context2.set(firstMatchingEventPair.getSecond());
 
+                                    if(firstMatching.label.equals("_0_") || pes1.getLabel(e1p).equals("_0_") ||
+                                            firstMatching.label.equals("_1_") || pes1.getLabel(e1p).equals("_1_"))
+                                        continue;
+
 									if (!globalDiffs.contains(context1, context2)) {
 
 										verbalizeBehDiffFromModelPerspective(
@@ -619,6 +655,10 @@ public class DiffLLVerbalizer <T> {
 										context1.set(e1p);
 										context1.set(secondMatchingEventPair.getFirst());									
 										context2.set(secondMatchingEventPair.getSecond());
+
+                                        if(pes1.getLabel(e1p).equals("_0_") || secondMatching.label.equals("_0_") ||
+                                                pes1.getLabel(e1p).equals("_1_") || secondMatching.label.equals("_1_"))
+                                            continue;
 
 										if (!globalDiffs.contains(context1, context2)) {
 
@@ -693,13 +733,25 @@ public class DiffLLVerbalizer <T> {
 			}
 		}
 	}
-	
+
+	private String getCorrectContext(String label) {
+		if(label.equals("_0_"))
+			return "the start of the trace";
+		else if(label.equals("_1_"))
+			return "the end of the trace";
+		return label;
+	}
+
 	private void verbalizeBehDiffFromModelPerspective(Integer e1,
 			String e1l, Integer e1p, String e1pl,
 			Integer e2, String e2l, Integer e2p, String e2pl) {
 //		System.out.printf("In log 1, %s(%d) %s %s(%d), while in log 2 %s(%d) %s %s(%d)\n",
 //				e1l, e1, verbalizeBRel(pes1.getBRelation(e1, e1p)), e1pl, e1p,
 //				e2l, e2, verbalizeBRel(pes2.getBRelation(e2, e2p)), e2pl, e2p);
+
+        if(pes1.getBRelation(e1, e1p).equals(pes2.getBRelation(e2, e2p)))
+            return;
+
 		String br1 = verbalizeBRel(pes1.getBRelation(e1, e1p));
 		String br2 = verbalizeBRel(pes2.getBRelation(e2, e2p));
 		
@@ -963,7 +1015,7 @@ public class DiffLLVerbalizer <T> {
 		List<String> set = new ArrayList<String>();
 		
 		for (int ev = multiset.nextSetBit(0); ev >= 0; ev = multiset.nextSetBit(ev + 1)) {
-			set.add(opSeq.get(ev).label);
+			set.add(getCorrectContext(opSeq.get(ev).label));
 		}
 		return set;
 	}

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.deckfour.xes.model.XTrace;
 import org.jbpt.graph.DirectedEdge;
 import org.jbpt.graph.DirectedGraph;
 import org.jbpt.graph.Edge;
@@ -387,4 +388,13 @@ public class PESSemantics <T> {
 
 		return true;
 	}
+
+    public Set<XTrace> getTracesOf(Integer target) {
+        Set<XTrace> traces = new HashSet<>();
+
+        for(String idTrace : this.pes.getTracesOf(target))
+            traces.add(this.pes.getXTrace(idTrace));
+
+		return traces;
+    }
 }
