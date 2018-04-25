@@ -189,8 +189,8 @@ public class ProDriftController {
     private void initializeLogVars(XLog xl, InputStream is, String logName) {
 
         final Label l = (Label) this.proDriftW.getFellow("fileName");
-        boolean valild = false;
-        xlog = null;
+//        boolean valild = false;
+        xlog = xl;
 
         int winSize_timeBased = 0;
 
@@ -305,9 +305,9 @@ public class ProDriftController {
                 winSizeIntBox.setValue(maxWinValueEventsSynIntBoX.getValue());
             }else {*/
 //                ((Listitem)proDriftW.getFellow("reLog")).setSelected(true);
-            ((Listitem) proDriftW.getFellow("FWIN")).setSelected(true);
+            ((Listitem) proDriftW.getFellow("ADWIN")).setSelected(true);
             ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(10.0);
-            ((Doublespinner) proDriftW.getFellow("driftDetectionSensitivitySpinner")).setValue(0.90);
+            ((Doublespinner) proDriftW.getFellow("driftDetectionSensitivitySpinner")).setValue(0.50);
             winSizeIntBox.setValue(maxWinValueEventsIntBoX.getValue());
 //            }
         }else

@@ -18,23 +18,28 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.service.dataflow.impl;
+package org.apromore.service.predictivemonitor.impl;
+
+// Java 2 Standard Edition
+import java.sql.Blob;
+import java.util.Set;
 
 // Java 2 Enterprise Edition
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import static javax.persistence.FetchType.LAZY;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -42,18 +47,24 @@ import javax.persistence.UniqueConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// Local classes
+import org.apromore.service.predictivemonitor.PredictiveMonitor;
+import org.apromore.service.predictivemonitor.Predictor;
+
 @Entity
-@Table(name = "topic", uniqueConstraints = {
+@Table(name = "predictor", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"id"}),
     @UniqueConstraint(columnNames = {"name"}),
 })
-public class Topic {
+public class PredictorImpl implements Predictor {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(Topic.class.getCanonicalName());
+    private static Logger LOGGER = LoggerFactory.getLogger(PredictorImpl.class.getCanonicalName());
 
     private Integer id;
-    private DataflowImpl dataflow;
     private String name;
+    private String type;
+    //private Set<PredictiveMonitorImpl> predictiveMonitorImpls;
+    private byte[] /*Blob*/ pkl;
 
     // Database field accessors
 
@@ -62,7 +73,7 @@ public class Topic {
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
     /** @param newId  the new primary key */
@@ -70,24 +81,45 @@ public class Topic {
         this.id = newId;
     }
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "dataflowId", nullable = false)
-    public DataflowImpl getDataflow() {
-        return dataflow;
-    }
-
-    /** @param newId  the new primary key */
-    public void setDataflow(final DataflowImpl newDataflow) {
-        this.dataflow = newDataflow;
-    }
-
     @Column(name = "name", nullable = false)
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /** @param newId  the new primary key */
     public void setName(final String newName) {
         this.name = newName;
+    }
+
+    @Column(name = "type", nullable = false)
+    public String getType() {
+        return this.type;
+    }
+
+    /** @param newId  the new primary key */
+    public void setType(final String newType) {
+        this.type = newType;
+    }
+
+/*
+    @ManyToMany(mappedBy = "predictor")
+    public Set<PredictiveMonitorImpl> getPredictiveMonitorImpls() {
+        return predictiveMonitorImpls;
+    }
+
+    public void setPredictiveMonitorImpls(Set<PredictiveMonitorImpl> newPredictiveMonitorImpls) {
+        this.predictiveMonitorImpls = newPredictiveMonitorImpls;
+    }
+*/
+
+    @Lob //@Basic(fetch=LAZY)
+    @Column(name = "pkl", nullable = false)
+    public byte[] /*Blob*/ getPkl() {
+        return pkl;
+    }
+
+    /** @param newPkl  the new pkl data */
+    public void setPkl(final byte[] /*Blob*/ newPkl) {
+        this.pkl = newPkl;
     }
 }

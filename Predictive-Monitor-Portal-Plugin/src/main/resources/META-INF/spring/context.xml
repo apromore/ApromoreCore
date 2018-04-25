@@ -41,18 +41,14 @@
         <beans:constructor-arg type="String" value="${kafka.host}"/>
     </beans:bean>
 
-    <beans:bean id="nirdizatiPath" class="java.io.File">
-        <beans:qualifier value="nirdizatiPath"/>
-        <beans:constructor-arg type="String" value="${nirdizati.path}"/>
-    </beans:bean>
-
-    <beans:bean id="pythonPath" class="java.lang.String">
-        <beans:qualifier value="pythonPath"/>
-        <beans:constructor-arg type="String" value="${python.path}"/>
+    <beans:bean id="eventsTopic" class="java.lang.String">
+        <beans:qualifier value="eventsTopic"/>
+        <beans:constructor-arg type="String" value="${kafka.events.topic}"/>
     </beans:bean>
 
     <!-- Other OSGi services this component consumes -->
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
+    <reference id="predictiveMonitorService" interface="org.apromore.service.predictivemonitor.PredictiveMonitorService"/>
 
     <!-- Exposes the components as OSGi services -->
     <beans:bean id="plugin" class="org.apromore.plugin.portal.predictivemonitor.PredictorsPlugin">
@@ -60,6 +56,7 @@
         <beans:property name="label" value="Train Predictor with Log" />
     </beans:bean>
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+
     <beans:bean id="plugin2" class="org.apromore.plugin.portal.predictivemonitor.PredictiveMonitorPlugin">
         <beans:property name="groupLabel" value="Monitor" />
         <beans:property name="label" value="Predictively Monitor Log" />

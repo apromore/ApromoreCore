@@ -21,18 +21,14 @@
 package org.apromore.plugin.portal.logvisualizer;
 
 // Java 2 Standard Edition
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
 // Third party packages
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.helper.Version;
 import org.apromore.model.*;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
-import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
@@ -54,13 +50,12 @@ import org.zkoss.zul.*;
 import org.zkoss.zul.Window;
 
 import javax.swing.*;
-import javax.xml.datatype.DatatypeFactory;
 
 // Local packages
 
-public class LogVisualizerController {
+public class DiscoverProcessMapController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogVisualizerController.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(DiscoverProcessMapController.class.getCanonicalName());
 
     private PortalContext portalContext;
     private LogVisualizerService logVisualizerService;
@@ -95,13 +90,13 @@ public class LogVisualizerController {
     private int arcs_value = 0;
     private int activities_value = 100;
 
-    private boolean frequency_VS_duration = LogVisualizerServiceImpl.FREQUENCY;
+    private boolean frequency_VS_duration;
     private int total_VS_median_VS_mean_VS_max_VS_min = LogVisualizerServiceImpl.TOTAL;
 
     private boolean visualized = false;
     private XLog log;
 
-    public LogVisualizerController(PortalContext context, EventLogService eventLogService, LogVisualizerService logVisualizerService, ProcessService processService, CanoniserService canoniserService, UserInterfaceHelper userInterfaceHelper, LogAnimationPluginInterface logAnimationPlugin) {
+    public DiscoverProcessMapController(PortalContext context, EventLogService eventLogService, LogVisualizerService logVisualizerService, ProcessService processService, CanoniserService canoniserService, UserInterfaceHelper userInterfaceHelper, LogAnimationPluginInterface logAnimationPlugin, boolean frequency_VS_duration) {
 
         this.portalContext          = context;
         this.logVisualizerService   = logVisualizerService;
@@ -109,6 +104,7 @@ public class LogVisualizerController {
         this.canoniserService       = canoniserService;
         this.userInterfaceHelper    = userInterfaceHelper;
         this.logAnimationPlugin     = logAnimationPlugin;
+        this.frequency_VS_duration = frequency_VS_duration;
 
         Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
         if (elements.size() != 1) {

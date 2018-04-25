@@ -27,10 +27,9 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
 
-        <class>org.apromore.service.dataflow.impl.DataflowImpl</class>
-        <class>org.apromore.service.dataflow.Processor</class>
-        <class>org.apromore.service.dataflow.impl.Topic</class>
-        <class>org.apromore.service.predictivemonitor.impl.CommandProcessor</class>
+        <class>org.apromore.service.predictivemonitor.impl.PredictiveMonitorImpl</class>
+        <class>org.apromore.service.predictivemonitor.impl.PredictiveMonitorEventImpl</class>
+        <class>org.apromore.service.predictivemonitor.impl.PredictorImpl</class>
     </persistence-unit>
 
 </persistence>

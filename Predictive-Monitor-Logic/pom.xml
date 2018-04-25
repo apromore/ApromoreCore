@@ -76,8 +76,8 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.dataflow,
-                            org.apromore.service.predictivemonitor
+                            org.apromore.service.predictivemonitor,
+                            org.apromore.service.predictivemonitor.impl
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -106,13 +106,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>com.springsource.javax.inject</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.kafka-clients</artifactId>
-            <version>0.11.0.0_1</version>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
@@ -133,6 +136,11 @@
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json-osgi</artifactId>
+            <version>20090211</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

@@ -21,33 +21,11 @@
 package org.apromore.plugin.portal.predictivemonitor;
 
 // Java 2 Standard Edition
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TimeZone;
-import java.util.TreeMap;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 // Third party packages
-import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XAttributeTimestamp;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -64,15 +42,12 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 // Local packages
-import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.service.EventLogService;
+import org.apromore.service.predictivemonitor.PredictiveMonitorService;
+import org.apromore.service.predictivemonitor.Predictor;
 
 /**
- * In MVC terms, this is a controller whose corresponding model is {@link Dataflow} and corresponding view is <code>setup.zul</code>.
+ * In MVC terms, this is a controller whose corresponding model is the set of {@link Predictor}s and corresponding view is <code>predictors.zul</code>.
  */
 public class PredictorsController {
 
@@ -84,53 +59,31 @@ public class PredictorsController {
     private final Button  createPredictorButton;
     private final Button  deletePredictorButton;
 
-    public PredictorsController(PortalContext portalContext, EventLogService eventLogService, String kafkaHost, File nirdizatiPath, String pythonPath) throws IOException {
+    public PredictorsController(PortalContext portalContext, PredictiveMonitorService predictiveMonitorService) throws IOException {
 
         window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/predictors.zul", null, null);
 
-        predictorsListbox     = (Listbox) window.getFellow("predictors");
+        ListModelList<Predictor> predictorsListModel = Persistent.getPredictorsListModel(predictiveMonitorService);
+        predictorsListbox = (Listbox) window.getFellow("predictors");
+        predictorsListbox.setModel(predictorsListModel);
+
         createPredictorButton = (Button) window.getFellow("createPredictor");
         deletePredictorButton = (Button) window.getFellow("deletePredictor");
-
-        // Find the selected log
-        Set<LogSummaryType> logSummaries = findSelectedLogs(portalContext);
-        if (logSummaries.size() != 1) {
-            Messagebox.show("Select exactly one log", "Attention", Messagebox.OK, Messagebox.ERROR);
-            return;
-        }
-        LogSummaryType logSummary = logSummaries.iterator().next();
-        XLog log = eventLogService.getXLog(logSummary.getId());
 
         // Bind window components
         createPredictorButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                new CreatePredictorController(portalContext, Persistent.predictors, eventLogService, nirdizatiPath, pythonPath);
+                new CreatePredictorController(portalContext, predictorsListModel, predictiveMonitorService);
             }
         });
 
         deletePredictorButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                for (Predictor predictor: Persistent.predictors.getSelection()) {
-                    predictor.delete();
-                }
-                Persistent.predictors.removeAll(Persistent.predictors.getSelection());
+                predictiveMonitorService.deletePredictors(predictorsListModel.getSelection());
+                predictorsListModel.removeAll(predictorsListModel.getSelection());
             }
         });
 
-        predictorsListbox.setModel(Persistent.predictors);
-
         window.doModal();
-    }
-
-    static Set<LogSummaryType> findSelectedLogs(PortalContext context) {
-        Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
-        Set<LogSummaryType> selectedLogSummaryType = new HashSet<>();
-        Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = new HashMap<>();
-        for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
-            if(entry.getKey() instanceof LogSummaryType) {
-                selectedLogSummaryType.add((LogSummaryType) entry.getKey());
-            }
-        }
-        return selectedLogSummaryType;
     }
 }

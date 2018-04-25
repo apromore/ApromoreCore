@@ -86,7 +86,7 @@ public class DirectlyFollowGraphPlus {
         this.endcode = log.getEndcode();
         this.percentileFrequencyThreshold = percentileFrequencyThreshold;
         this.parallelismsThreshold = parallelismsThreshold;
-        this.filterType = filterType;
+        this.filterType = percentileFrequencyThreshold == 0 ? DFGPUIResult.FilterType.NOF : filterType;
         this.percentileOnBest = percentileOnBest;
     }
 
@@ -155,6 +155,8 @@ public class DirectlyFollowGraphPlus {
 //        System.out.println("DFGP - [Settings] percentile on best: " + percentileOnBest);
 //        System.out.println("DFGP - [Settings] parcentile threshold: " + percentileFrequencyThreshold);
 
+//        System.out.println("DEBUG - NO FILTER");
+
         buildDirectlyFollowsGraph();                //first method to execute
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
         detectParallelisms();                       //depends on detectLoops()
@@ -171,7 +173,7 @@ public class DirectlyFollowGraphPlus {
                 standardFilter();
                 exploreAndRemove();
                 break;
-            case DBG:
+            case NOF:
 //                filterWithGuarantees();
 //                exploreAndRemove();
                 break;
@@ -335,7 +337,7 @@ public class DirectlyFollowGraphPlus {
             src = e1.getSourceCode();
             tgt = e1.getTargetCode();
 
-            if( !loopsL1.contains(src) && !loopsL1.contains(tgt) && !loopsL2.contains(e1) && !removableEdges.contains(e1) && dfgp.get(tgt).containsKey(src) ) {
+            if( !loopsL1.contains(src) && !loopsL1.contains(tgt) /*&& !loopsL2.contains(e1)*/ && !removableEdges.contains(e1) && dfgp.get(tgt).containsKey(src) ) {
 //                this means: src || tgt is candidate parallelism
                 e2 = dfgp.get(tgt).get(src);
 

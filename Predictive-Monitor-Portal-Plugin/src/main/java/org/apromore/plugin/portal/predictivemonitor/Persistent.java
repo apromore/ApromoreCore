@@ -20,27 +20,34 @@
 
 package org.apromore.plugin.portal.predictivemonitor;
 
-// Java 2 Standard Edition
-import java.util.List;
-
 // Third party packages
 import org.zkoss.zul.ListModelList;
 
-/**
- * Placeholder for database-backed entities.
- */
-class Persistent {
+// Local packages
+import org.apromore.service.predictivemonitor.PredictiveMonitor;
+import org.apromore.service.predictivemonitor.PredictiveMonitorService;
+import org.apromore.service.predictivemonitor.Predictor;
 
-    final static List<Dataflow> persistentDataflowList = new java.util.ArrayList<>();
+public class Persistent {
 
-    /** This is static only because I've been too lazy to implement proper persistence for it yet. */
-    final static ListModelList<Dataflow> dataflows = new ListModelList<>(persistentDataflowList, true);
+    private static ListModelList<PredictiveMonitor> predictiveMonitorsListModel;
 
-    /** This is static only because I've been too lazy to implement proper persistence for it yet. */
-    final static ListModelList<Predictor> predictors = new ListModelList<>();
+    static ListModelList<PredictiveMonitor> getPredictiveMonitorsListModel(PredictiveMonitorService predictiveMonitorService) {
+        if (predictiveMonitorsListModel == null) {
+            predictiveMonitorsListModel = new ListModelList<PredictiveMonitor>(predictiveMonitorService.getPredictiveMonitors(), true);
+            predictiveMonitorsListModel.setMultiple(true);
+        }
+        return predictiveMonitorsListModel;
+    }
 
-    static {
-        dataflows.setMultiple(true);
-        predictors.setMultiple(true);
+
+    private static ListModelList<Predictor> predictorsListModel;
+
+    static ListModelList<Predictor> getPredictorsListModel(PredictiveMonitorService predictiveMonitorService) {
+        if (predictorsListModel == null) {
+            predictorsListModel = new ListModelList<Predictor>(predictiveMonitorService.getPredictors(), true);
+            predictorsListModel.setMultiple(true);
+        }
+        return predictorsListModel;
     }
 }

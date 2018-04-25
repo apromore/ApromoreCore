@@ -69,7 +69,7 @@ public interface LogRepository extends JpaRepository<Log, Integer>, LogRepositor
 //            "User u JOIN u.groups g2 " +
 //            "WHERE (l.folder is NULL) AND (u.rowGuid = ?1) AND (g1 = g2) ORDER BY l.id")
     @Query("SELECT DISTINCT l FROM Log l JOIN l.user ul " +
-            "WHERE (l.folder is NULL) AND (ul.rowGuid = ?1) ORDER BY l.id")
+            "WHERE (l.folder is NULL) AND ((l.publicLog = TRUE) OR (ul.rowGuid = ?1)) ORDER BY l.id")
     Page<Log> findLogsByUser(String userRowGuid, Pageable pageable);
 
     /**
@@ -83,7 +83,7 @@ public interface LogRepository extends JpaRepository<Log, Integer>, LogRepositor
 //            "User u JOIN u.groups g2 " +
 //            "WHERE (f.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2) ORDER BY l.id")
     @Query("SELECT DISTINCT l FROM Log l JOIN l.folder f JOIN l.user ul " +
-            "WHERE (f.id = ?1) AND (ul.rowGuid = ?2) ORDER BY l.id")
+            "WHERE (f.id = ?1) AND ((l.publicLog = TRUE) OR (ul.rowGuid = ?2)) ORDER BY l.id")
     Page<Log> findAllLogsInFolderForUser(Integer folderId, String userRowGuid, Pageable pageable);
 
     /**

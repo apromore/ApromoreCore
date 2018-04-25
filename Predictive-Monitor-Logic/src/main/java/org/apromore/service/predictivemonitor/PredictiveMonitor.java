@@ -22,8 +22,12 @@ package org.apromore.service.predictivemonitor;
 
 // Java 2 Standard Edition
 import java.io.Closeable;
+import java.util.Set;
 
 public interface PredictiveMonitor extends Closeable {
 
-    // No additional API
+    public Integer getId();
+    public String getName();
+    public Set<Predictor> getPredictors();
+    public Set<PredictiveMonitorEvent> getPredictiveMonitorEvents();
 }

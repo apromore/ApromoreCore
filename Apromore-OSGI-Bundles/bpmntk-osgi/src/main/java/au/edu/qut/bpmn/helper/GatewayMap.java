@@ -143,7 +143,7 @@ public class GatewayMap {
         if( !init(diagram) ) return false;
 
 //        we move from the start event to the first gateway,
-//        and we through away all the activities we find
+//        and we throw away all the activities we find
         tmpChild = this.entry;
         while( !gateways.contains(tmpChild) && (children.get(tmpChild).size() == 1) )
             tmpChild = children.get(tmpChild).get(0);
@@ -154,7 +154,7 @@ public class GatewayMap {
             this.entry = tmpChild;
             entry = tmpChild;
         } else {
-            debug("ERROR - first gateway not found");
+            debug("WARNING - first gateway not found");
             return false;
         }
 

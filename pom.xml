@@ -153,6 +153,7 @@
         <module>Metrics-Portal-Plugin</module>
         <module>PerformanceMiner-Logic</module>
         <module>PerformanceMiner-Portal-Plugin</module>
+        <module>Predictive-Monitor-Logic</module>
         <module>Predictive-Monitor-Portal-Plugin</module>
         <module>PQL-Indexer-Portal-Plugin</module>
         <module>PQL-Logic</module>
@@ -409,6 +410,12 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-math3</artifactId>
                 <version>3.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.servicemix.bundles</groupId>
+                <artifactId>org.apache.servicemix.bundles.kafka-clients</artifactId>
+                <version>1.0.0_2</version>
             </dependency>
 
             <dependency>

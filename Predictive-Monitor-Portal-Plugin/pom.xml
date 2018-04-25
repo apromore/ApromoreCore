@@ -36,7 +36,7 @@
     <artifactId>predictive-monitor-portal-plugin</artifactId>
     <version>1.0</version>
     <name>Predictive monitor portal plugin</name>
-    <description>UI to create and execute Nirdizati instances</description>
+    <description>UI for predictive monitors</description>
 
     <build>
         <plugins>
@@ -81,14 +81,23 @@
 
     <dependencies>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.servicemix.bundles</groupId>
             <artifactId>org.apache.servicemix.bundles.kafka-clients</artifactId>
-            <version>0.11.0.0_1</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
             <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>predictive-monitor-logic</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
