@@ -361,10 +361,22 @@ public class MenuController extends Menubar {
      */
     protected void editData() throws SuspendNotAllowedException, InterruptedException, ExceptionDomains, ExceptionAllUsers, ParseException {
         mainC.eraseMessage();
-        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedElementsAndVersions();
+        Map<SummaryType, List<VersionSummaryType>> selectedElements = mainC.getSelectedElementsAndVersions();
 
-        if (selectedProcessVersions.size() != 0) {
-            new EditListProcessDataController(mainC, selectedProcessVersions);
+        if (selectedElements.size() != 0) {
+            boolean all_processes = true;
+            boolean all_logs = true;
+            for(SummaryType summaryType : selectedElements.keySet()) {
+                if(summaryType instanceof LogSummaryType) all_processes = false;
+                if(summaryType instanceof ProcessSummaryType) all_logs = false;
+            }
+            if(all_logs) {
+                new EditListLogDataController(mainC, selectedElements);
+            }else if(all_processes) {
+                new EditListProcessDataController(mainC, selectedElements);
+            }else {
+                mainC.displayMessage("Select only processes or logs.");
+            }
         } else {
             mainC.displayMessage("No process version selected.");
         }
