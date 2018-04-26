@@ -827,7 +827,7 @@ public class ManagerServiceClient implements ManagerService {
 
         JAXBElement<EditLogDataInputMsgType> request = WS_CLIENT_FACTORY.createEditLogDataRequest(msg);
 
-        JAXBElement<EditProcessDataOutputMsgType> response = (JAXBElement<EditProcessDataOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        JAXBElement<EditLogDataOutputMsgType> response = (JAXBElement<EditLogDataOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         }
