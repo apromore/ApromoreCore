@@ -47,6 +47,8 @@ public class PORuns implements PORunConst {
 	private Multimap<Integer, Integer> predecessors;
 	private Multimap<Integer, Integer> concurrency;
 	private Multimap<Integer, Integer> eq;
+	private HashMultimap<Integer, String> evtsTraces;
+    private HashMultimap<Integer, String> evtsTracesMerged;
 	
 	public PORuns() {
 		this.sources = new ArrayList<>();
@@ -54,7 +56,9 @@ public class PORuns implements PORunConst {
 		this.labels = new HashMap<>();
 		this.successors = HashMultimap.create();
 		this.predecessors = HashMultimap.create();
-		this.concurrency = HashMultimap.create();		
+		this.concurrency = HashMultimap.create();
+		this.evtsTraces = HashMultimap.create();
+        this.evtsTracesMerged = HashMultimap.create();
 	}
 	
 	public void add(PORun run) {
@@ -64,6 +68,8 @@ public class PORuns implements PORunConst {
 		successors.putAll(run.asSuccessorsList());
 		predecessors.putAll(run.asPredecessorsList());
 		concurrency.putAll(run.getConcurrencyRelation());
+		for(Integer key : run.vertices)
+		    evtsTraces.put(key, run.getIdTrace());
 	}
 	
 	public void mergePrefix() {
@@ -75,10 +81,10 @@ public class PORuns implements PORunConst {
 		
 		Integer currentId = 0;
 		eq.putAll(currentId, sources);
+		evtsTracesMerged.putAll(currentId, getTraceIds(sources));
 		for (Integer source: sources) inveq.put(source, currentId);
 		nlabels.put(currentId, GLOBAL_SOURCE_LABEL);
-		
-		
+
 		Set<Integer> visited = new HashSet<Integer>(); 
 		Queue<Integer> open = new LinkedList<Integer>();
 		
@@ -102,6 +108,7 @@ public class PORuns implements PORunConst {
 						if (!inveq.containsKey(pivot)) {
 							Integer successor = currentId++;
 							eq.putAll(successor, partition);
+                            evtsTracesMerged.putAll(successor, getTraceIds(partition));
 							for (Integer event: partition) inveq.put(event, successor);
 							
 							nlabels.put(successor, labels.get(pivot));
@@ -135,8 +142,16 @@ public class PORuns implements PORunConst {
 		
 		sinks = new ArrayList<>(tmp);
 	}
-	
-	private Map<Set<Integer>, Set<Integer>> refinePartitionByImmediatePredecessorRelation(Map<Integer, Integer> req, Set<Integer> partition) {
+
+    private List<String> getTraceIds(Iterable<Integer> sources) {
+	    List<String> traceIds = new ArrayList<>();
+	    for(Integer i : sources)
+	        traceIds.addAll(evtsTraces.get(i));
+
+	    return traceIds;
+    }
+
+    private Map<Set<Integer>, Set<Integer>> refinePartitionByImmediatePredecessorRelation(Map<Integer, Integer> req, Set<Integer> partition) {
 		Map<Set<Integer>, Set<Integer>> rpartitions = new HashMap<Set<Integer>, Set<Integer>>();
 		
 		outer:
@@ -216,4 +231,8 @@ public class PORuns implements PORunConst {
 	public List<Integer> getSinks() {
 		return sinks;
 	}
+
+    public HashMultimap<Integer, String> getEvtsTracesMerged() {
+        return evtsTracesMerged;
+    }
 }

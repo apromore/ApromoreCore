@@ -44,58 +44,35 @@
                 <caption>Average case duration</caption>
                 <label id="averageCaseDuration" style="font-size: 48pt">-</label>
             </groupbox>
+            <vbox>
+                <groupbox style="text-align: center">
+                    <caption>Filter case</caption>
+                    <textbox id="filterCase"/>
+                </groupbox>
+                <button id="csv" label="Export as CSV"/>
+            </vbox>
         </hbox>
         <tabbox>
             <tabs>
-                <tab>All events</tab>
-                <!--
-                <tab>Latest events</tab>
-                -->
-                <tab>Outcomes</tab>
-                <tab>Case duration</tab>
-                <tab>Remaining time</tab>
-                <tab>Case length</tab>
+                <tab>Events</tab>
+                <tab>Cases</tab>
             </tabs>
             <tabpanels>
                 <tabpanel>
                     <listbox id="events" mold="paging">
                         <listhead>
-                            <listheader label="Case"              />
-                            <listheader label="Completed"         />
-                            <listheader label="Events elapsed"    />
-                            <listheader label="Start time"        />
-                            <listheader label="Latest event time" />
-                            <listheader label="End time"          />
-                            <listheader label="Duration"          />
+                            <listheader label="Case"/>
+                            <listheader label="Event #"/>
                         </listhead>
                     </listbox>
                 </tabpanel>
-                <!--
                 <tabpanel>
-                    <listbox id="latestEvents" mold="paging">
+                    <listbox id="cases" mold="paging">
                         <listhead>
-                            <listheader label="Case"              />
-                            <listheader label="Completed"         />
-                            <listheader label="Events elapsed"    />
-                            <listheader label="Start time"        />
-                            <listheader label="Latest event time" />
-                            <listheader label="End time"          />
-                            <listheader label="Duration"          />
+                            <listheader label="Case"/>
+                            <listheader label="Event #"/>
                         </listhead>
                     </listbox>
-                </tabpanel>
-                -->
-                <tabpanel>
-                    Pie charts for Slow vs Quick outcomes of running, completed and historical (training) cases.
-                </tabpanel>
-                <tabpanel>
-                    Bar chart of actual and predicted case durations.
-                </tabpanel>
-                <tabpanel>
-                    Bar chart of remaining time prediction for ongoing cases.
-                </tabpanel>
-                <tabpanel>
-                    Bar chart of case length of completed cases.
                 </tabpanel>
             </tabpanels>
         </tabbox>

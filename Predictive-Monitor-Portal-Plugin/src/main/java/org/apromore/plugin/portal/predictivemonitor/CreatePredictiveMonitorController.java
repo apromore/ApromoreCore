@@ -21,10 +21,8 @@
 package org.apromore.plugin.portal.predictivemonitor;
 
 // Java 2 Standard Edition
-import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 // Third party packages
 import org.slf4j.Logger;
@@ -33,24 +31,29 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 // Local packages
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.service.EventLogService;
+import org.apromore.service.predictivemonitor.PredictiveMonitorService;
+import org.apromore.service.predictivemonitor.PredictiveMonitor;
+import org.apromore.service.predictivemonitor.Predictor;
 
 /**
- * In MVC terms, this is a controller whose corresponding model is {@link Dataflow} and corresponding view is <code>predictive_monitor.zul</code>.
+ * In MVC terms, this is a controller whose corresponding model is {@link PredictiveMonitor} and corresponding view is <code>createPredictiveMonitor.zul</code>.
  */
-public class CreateDataflowController {
+public class CreatePredictiveMonitorController {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(CreateDataflowController.class.getCanonicalName());
+    private static Logger LOGGER = LoggerFactory.getLogger(CreatePredictiveMonitorController.class.getCanonicalName());
 
-    // TODO: pass dataflows and predictors as constructor parameters
-    public CreateDataflowController(PortalContext portalContext, EventLogService eventLogService, String kafkaHost, File nirdizatiPath, String pythonPath) throws IOException {
+    public CreatePredictiveMonitorController(PortalContext portalContext, PredictiveMonitorService predictiveMonitorService) throws IOException {
 
-        final Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/createDataflow.zul", null, null);
+        final Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/createPredictiveMonitor.zul", null, null);
+
+        final ListModelList<PredictiveMonitor> predictiveMonitorsListModel = Persistent.getPredictiveMonitorsListModel(predictiveMonitorService);
+        final ListModelList<Predictor> predictorsListModel = Persistent.getPredictorsListModel(predictiveMonitorService);
 
         final Button  createButton      = (Button) window.getFellow("create");
         final Button  cancelButton      = (Button) window.getFellow("cancel");
@@ -63,14 +66,9 @@ public class CreateDataflowController {
 
                 String name = nameTextbox.getValue();
 
-                List<Predictor> selectedPredictors = new LinkedList<>();
-                for (Predictor predictor: Persistent.predictors) {  // .getSelection() only returns unordered Set, so do this the hard way
-                    if (Persistent.predictors.isSelected(predictor)) {
-                        selectedPredictors.add(predictor);
-                    }
-                }
+                PredictiveMonitor predictiveMonitor = predictiveMonitorService.createPredictiveMonitor(name, new ArrayList<>(predictorsListModel.getSelection()));
+                predictiveMonitorsListModel.add(predictiveMonitor);
 
-                Persistent.dataflows.add(new Dataflow(name, kafkaHost, nirdizatiPath, pythonPath, selectedPredictors));
                 window.detach();
             }
         });
@@ -81,7 +79,7 @@ public class CreateDataflowController {
             }
         });
 
-        predictorsListbox.setModel(Persistent.predictors);
+        predictorsListbox.setModel(predictorsListModel);
 
         window.doModal();
     }

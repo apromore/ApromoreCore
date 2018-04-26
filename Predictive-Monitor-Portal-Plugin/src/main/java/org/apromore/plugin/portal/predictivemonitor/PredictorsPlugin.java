@@ -21,7 +21,6 @@
 package org.apromore.plugin.portal.predictivemonitor;
 
 // Java 2 Standard Edition
-import java.io.File;
 import java.util.Locale;
 
 // Java 2 Enterprise Edition
@@ -32,12 +31,15 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 
 // Local packages
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
+import org.apromore.service.predictivemonitor.PredictiveMonitorService;
+import org.apromore.service.predictivemonitor.Predictor;
 
 @Component("plugin2")
 public class PredictorsPlugin extends DefaultPortalPlugin {
@@ -47,10 +49,7 @@ public class PredictorsPlugin extends DefaultPortalPlugin {
     private String label = "Train Predictor with Log";
     private String groupLabel = "Monitor";
 
-    @Inject private EventLogService eventLogService;
-    @Inject @Named("kafkaHost") private String kafkaHost;
-    @Inject @Named("nirdizatiPath") private File nirdizatiPath;
-    @Inject @Named("pythonPath") private String pythonPath;
+    @Inject private PredictiveMonitorService predictiveMonitorService;
 
     @Override
     public String getLabel(Locale locale) {
@@ -73,11 +72,10 @@ public class PredictorsPlugin extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext portalContext) {
         try {
-            new PredictorsController(portalContext, eventLogService, kafkaHost, nirdizatiPath, pythonPath);
+            new PredictorsController(portalContext, predictiveMonitorService);
 
         } catch (Throwable e) {
-            LOGGER.error("portalContext: " + portalContext + "  eventLogService: " + eventLogService + "  kafkaHost: " + kafkaHost + "  pythonPath: " + pythonPath, e);
-            //e.printStackTrace();
+            LOGGER.error("portalContext: " + portalContext + "  predictiveMonitorService: "  + predictiveMonitorService, e);
             Messagebox.show("Unable to display setup window", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }

@@ -55,8 +55,28 @@
         <beans:constructor-arg type="String" value="${kafka.host}"/>
     </beans:bean>
 
+    <beans:bean id="eventsTopic" class="java.lang.String">
+        <beans:qualifier value="eventsTopic"/>
+        <beans:constructor-arg type="String" value="${kafka.events.topic}"/>
+    </beans:bean>
+
+    <beans:bean id="prefixesTopic" class="java.lang.String">
+        <beans:qualifier value="prefixesTopic"/>
+        <beans:constructor-arg type="String" value="${kafka.prefixes.topic}"/>
+    </beans:bean>
+
+    <beans:bean id="predictionsTopic" class="java.lang.String">
+        <beans:qualifier value="predictionsTopic"/>
+        <beans:constructor-arg type="String" value="${kafka.predictions.topic}"/>
+    </beans:bean>
+
+    <beans:bean id="controlTopic" class="java.lang.String">
+        <beans:qualifier value="controlTopic"/>
+        <beans:constructor-arg type="String" value="${kafka.control.topic}"/>
+    </beans:bean>
+
     <!-- JPA -->
-    <jpa:repositories base-package="org.apromore.service.dataflow.impl" repository-impl-postfix="CustomImpl" />
+    <jpa:repositories base-package="org.apromore.service.predictivemonitor.impl" repository-impl-postfix="CustomImpl" />
 
     <beans:bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
@@ -111,9 +131,6 @@
     <tx:annotation-driven/>
 
     <!-- Dynamically instantiate a Spring bean for classes within the given package with the @Service annotation -->
-    <context:component-scan base-package="org.apromore.service.dataflow"/>
-    <osgi:service ref="dataflowService" interface="org.apromore.service.dataflow.DataflowService" auto-export="interfaces"/>
-
     <context:component-scan base-package="org.apromore.service.predictivemonitor"/>
     <osgi:service ref="predictiveMonitorService" interface="org.apromore.service.predictivemonitor.PredictiveMonitorService" auto-export="interfaces"/>
 </beans:beans>

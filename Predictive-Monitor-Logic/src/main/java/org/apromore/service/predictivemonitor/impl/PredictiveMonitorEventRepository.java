@@ -18,24 +18,19 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.predictivemonitor;
+package org.apromore.service.predictivemonitor.impl;
+
+// Java 2 Standard Edition
+import java.util.List;
+import java.util.Set;
 
 // Third party packages
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.zkoss.zul.Window;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-/**
- * A machine learning training algorithm.
- */
-interface TrainingAlgorithm {
+public interface PredictiveMonitorEventRepository extends JpaRepository<PredictiveMonitorEventImpl, Integer> {
 
-    /**
-     * @return human-legible text identifying the training algorithm
-     */
-    String getName();
-
-    void readParametersFromUI(Window window);
-
-    void addParametersToJSON(JSONObject json) throws JSONException;
+    public PredictiveMonitorEventImpl findById(Integer id);
+    public Set<PredictiveMonitorEventImpl> findByEventNr(Integer eventNr);
+    public List<PredictiveMonitorEventImpl> findByPredictiveMonitor(PredictiveMonitorImpl predictiveMonitor);
+    public PredictiveMonitorEventImpl findByPredictiveMonitorAndCaseIdAndEventNr(PredictiveMonitorImpl predictiveMonitor, String caseId, Integer eventNr);
 }

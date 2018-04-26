@@ -20,50 +20,40 @@
 
 package ee.ut.eventstr.comparison;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.Table;
-
+import com.google.common.collect.*;
 import ee.ut.eventstr.BehaviorRelation;
 import ee.ut.eventstr.PESSemantics;
 import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.Op;
 import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.Operation;
 import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.State;
 import ee.ut.org.processmining.framework.util.Pair;
+import ee.ut.utilities.Triplet;
+import org.deckfour.xes.model.XTrace;
+
+import java.util.*;
 
 /**
  * @authors Nick van Beest, Luciano Garcia-Banuelos
  * @date 23/11/2016
  */
-public class DiffLLVerbalizer <T> {
+public class DiffLLVerbalizerTriplet<T> {
 	private PESSemantics<T> pes1;
 	private PESSemantics<T> pes2;
-	
+
 	private Set<Integer> unobservedEvents;
 	private Set<Integer> eventsConsideredByConflictRelation;
 	private List<List<Operation>> opSeqs;
-	
+
 	private Table<BitSet, BitSet, Map<Multiset<String>, State>> stateSpace;
 	private Multimap<State, Operation> descendants;
 	private State root;
-	
-	private Set<String> statements;
-	
+
+//	private Set<String> statements;
+	private HashSet<Triplet<String, Set<XTrace>, Set<XTrace>>> differences;
+
 	private Table<BitSet, BitSet, Map<Integer, int[]>> globalDiffs;
-	
-	public DiffLLVerbalizer(PESSemantics<T> pes1, PESSemantics<T> pes2) {
+
+	public DiffLLVerbalizerTriplet(PESSemantics<T> pes1, PESSemantics<T> pes2) {
 		this.pes1 = pes1;
 		this.pes2 = pes2;
 		this.unobservedEvents = new HashSet<>();
@@ -74,14 +64,15 @@ public class DiffLLVerbalizer <T> {
 		this.root = new State(new BitSet(), HashMultiset.<String>create(), new BitSet());
 		this.globalDiffs = HashBasedTable.create();
 		
-		this.statements = new HashSet<String>();
+//		this.statements = new HashSet<String>();
+		this.differences = new HashSet<Triplet<String, Set<XTrace>, Set<XTrace>>>();
 	}
 	
 	public void addPSP(List<Operation> opSeq) {
 		opSeqs.add(opSeq);
 	}
 
-	public Set<String> verbalize() {
+	public Set<Triplet<String, Set<XTrace>, Set<XTrace>>> verbalize() {
 		List<List<int[]>> lofl = new LinkedList<>();
 		for (List<Operation> opSeq: opSeqs) {
 			lofl.add(getADiffContexts(opSeq));
@@ -94,7 +85,7 @@ public class DiffLLVerbalizer <T> {
 			verbalizeDifferences(opSeq, diffIndexesList, index);
 		}
 		
-		return statements;
+		return differences;
 	}
 	
 	private void verbalizeDifferences(List<Operation> opSeq, List<int[]> diffIndexesList, int index) {
@@ -140,16 +131,13 @@ public class DiffLLVerbalizer <T> {
 				else if (secondHiding != null) {
 					// ========= Symmetric  <<==
 					if (!globalDiffs.contains(context1, context2)) {
-//						System.out.printf("In log 2, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
+//						System.out.printf("In the deviant behavior, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
 //								firstMatching.label, firstMatchingEventPair.getFirst(),
 //								firstHiding.label, (Integer)firstHiding.target,
 //								secondHiding.label, (Integer)secondHiding.target);
-						statements.add(
-								String.format("In log 2, after the occurrence of %s, %s is substituted by %s",
-										getCorrectContext(firstMatching.label),
-										firstHiding.label,
-										secondHiding.label)
-						);
+                        String statement = String.format("In the the deviant behavior, after the occurrence of %s, %s is substituted by %s",
+                                getCorrectContext(firstMatching.label), firstHiding.label, secondHiding.label);
+                        differences.add(new Triplet(statement, pes1.getTracesOf((Integer)firstHiding.target), pes2.getTracesOf((Integer)secondHiding.target)));
 					}
 				} 
 				else {
@@ -186,16 +174,13 @@ public class DiffLLVerbalizer <T> {
 								interval.set(diffIndexes[1]);
 							}
 							
-//							System.out.printf("In log 1, after the occurrence of %s, %s is repeated, while in log 2 it is not\n",
+//							System.out.printf("In the normal behavior, after the occurrence of %s, %s is repeated, while in the deviant behavior it is not\n",
 //									translate(past, opSeq),
 //									translate(interval, opSeq)
-//									);	
-							statements.add(
-									String.format("In log 1, after the occurrence of %s, %s is repeated, while in log 2 it is not",
-											translate(past, opSeq),
-											translate(interval, opSeq)
-									)
-							);	
+//									);
+                            String statement = String.format("In the normal behavior, after the occurrence of %s, %s is repeated, while in the deviant behavior it is not",
+                                    translate(past, opSeq), translate(interval, opSeq));
+							differences.add(new Triplet(statement, getTraces(interval, opSeq, Op.LHIDE), getTraces(interval, opSeq, Op.RHIDE)));
 						}
 					} 
 					else {
@@ -270,13 +255,12 @@ public class DiffLLVerbalizer <T> {
 
 								if (found) {
 									if (!globalDiffs.contains(context1, context2)) {
-//										System.out.printf("In log 2, %s(%s) can be skipped, while in log 1 it cannot\n",
+//										System.out.printf("In the deviant behavior, %s(%s) can be skipped, while in the normal behavior it cannot\n",
 //												translate(context1, 1), context1);
-										statements.add(		
-												String.format("In log 2, %s can be skipped, while in log 1 it cannot",
-														translate(context1, 1)
-												)
-										);
+										String statement = String.format("In the deviant behavior, %s can be skipped, while in the normal behavior it cannot",
+														translate(context1, 1));
+
+										differences.add(new Triplet<>(statement,getTracesOfBS(context1, 1), new HashSet<>()));
 									}
 								}
 								else {
@@ -410,16 +394,15 @@ public class DiffLLVerbalizer <T> {
 													interval.set(diffIndexes[1]);
 												}
 												
-//												System.out.printf("In log 1, %s occurs after %s, while in log 2 it does not\n",
+//												System.out.printf("In the normal behavior, %s occurs after %s, while in the deviant behavior it does not\n",
 //														translate(interval, opSeq),
 //														translate(past, opSeq)
 //													);
-												statements.add(
-														String.format("In log 1, %s occurs after %s, while in log 2 it does not",
+
+                                                String statement = String.format("In the normal behavior, %s occurs after %s, while in the deviant behavior it does not",
 																translate(interval, opSeq),
-																translate(past, opSeq)
-														)
-												);
+																translate(past, opSeq));
+												differences.add(new Triplet<>(statement, getTracesOfBS(past, 1), getTracesOfBS(past, 2)));
 											}
 										}
 									}
@@ -453,17 +436,13 @@ public class DiffLLVerbalizer <T> {
 				else if (secondHiding != null) {
 					// ========= Symmetric <<==
 					if (!globalDiffs.contains(context1, context2)) {
-//						System.out.printf("In log 2, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
+//						System.out.printf("In the deviant behavior, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
 //								firstMatching.label, firstMatchingEventPair.getFirst(),
 //								firstHiding.label, (Integer)firstHiding.target,
 //								secondHiding.label, (Integer)secondHiding.target);
-						statements.add(
-								String.format("In log 2, after the occurrence of %s, %s is substituted by %s",
-										firstMatching.label, 
-										firstHiding.label, 
-										secondHiding.label
-								)
-						);
+                        String statement = String.format("In the deviant behavior, after the occurrence of %s, %s is substituted by %s",
+										firstMatching.label,  firstHiding.label,  secondHiding.label);
+                        differences.add(new Triplet(statement, pes1.getTracesOf((Integer)firstHiding.target), pes2.getTracesOf((Integer)secondHiding.target)));
 					}
 				} 
 				else {
@@ -504,16 +483,13 @@ public class DiffLLVerbalizer <T> {
 								interval.set(diffIndexes[1]);
 							}
 							
-//							System.out.printf("In log 2, after the occurrence of %s, %s is repeated, while in log 1 it is not\n",
+//							System.out.printf("In the deviant behavior, after the occurrence of %s, %s is repeated, while in the normal behavior it is not\n",
 //									translate(past, opSeq),
 //									translate(interval, opSeq)
 //									);
-							statements.add(
-									String.format("In log 2, after the occurrence of %s, %s is repeated, while in log 1 it is not",
-											translate(past, opSeq),
-											translate(interval, opSeq)
-									)
-							);
+                            String statement =  String.format("In the deviant behavior, after the occurrence of %s, %s is repeated, while in the normal behavior it is not",
+											translate(past, opSeq), translate(interval, opSeq));
+							differences.add(new Triplet(statement, getTraces(interval, opSeq, Op.LHIDE), getTraces(interval, opSeq, Op.RHIDE) ));
 						}
 					} 
 					else {
@@ -580,13 +556,11 @@ public class DiffLLVerbalizer <T> {
 								
 								if (found) {
 									if (!globalDiffs.contains(context1, context2)) {
-//										System.out.printf("In log 1, %s(%s) can be skipped, while in log 2 it cannot\n",
+//										System.out.printf("In the normal behavior, %s(%s) can be skipped, while in the deviant behavior it cannot\n",
 //												translate(context2), context2);
-										statements.add(
-												String.format("In log 1, %s can be skipped, while in log 2 it cannot",
-														translate(context2)
-												)
-										);
+										String statement = String.format("In the normal behavior, %s can be skipped, while in the deviant behavior it cannot",
+														translate(context2));
+										differences.add(new Triplet(statement, getTraces(context2, opSeq, Op.LHIDE), getTraces(context2, opSeq, Op.RHIDE)));
 									}
 								} 
 								else {
@@ -699,16 +673,14 @@ public class DiffLLVerbalizer <T> {
 												interval.set(diffIndexes[1]);
 											}
 											
-//											System.out.printf("In log 2, %s occurs after %s, while in log 1 it does not\n",
+//											System.out.printf("In the deviant behavior, %s occurs after %s, while in the normal behavior it does not\n",
 //													translate(interval, opSeq),
 //													translate(past, opSeq)
 //												);
-											statements.add(
-													String.format("In log 2, %s occurs after %s, while in log 1 it does not",
+											String statement = String.format("In the deviant behavior, %s occurs after %s, while in the normal behavior it does not",
 															translate(interval, opSeq),
-															translate(past, opSeq)
-													)
-											);
+															translate(past, opSeq));
+											differences.add(new Triplet(statement,  getTracesOfBS(past, 1), getTracesOfBS(past, 2)));
 										}
 									}
 								}
@@ -734,7 +706,29 @@ public class DiffLLVerbalizer <T> {
 		}
 	}
 
-	private String getCorrectContext(String label) {
+    private Set<XTrace> getTraces(BitSet interval, List<Operation> opSeq, Op operation) {
+        HashSet<XTrace> set = null;
+
+        for (int ev = interval.nextSetBit(0); ev >= 0; ev = interval.nextSetBit(ev + 1)) {
+            if(opSeq.get(ev).op.equals(operation)) {
+                if (set == null)
+                    set = new HashSet(pes2.getTracesOf((Integer) opSeq.get(ev).target));
+                else
+                    set.retainAll(pes2.getTracesOf((Integer) opSeq.get(ev).target));
+            }else if(opSeq.get(ev).op.equals(Op.MATCH)) {
+                if(set == null)
+                    set = new HashSet(pes2.getTracesOf((Integer)((Pair) opSeq.get(ev).target).getSecond()));
+                else
+                    set.retainAll(pes2.getTracesOf((Integer)((Pair) opSeq.get(ev).target).getSecond()));
+            }
+        }
+
+        if(set == null)
+            set = new HashSet<>();
+        return set;
+    }
+
+    private String getCorrectContext(String label) {
 		if(label.equals("_0_"))
 			return "the start of the trace";
 		else if(label.equals("_1_"))
@@ -745,7 +739,7 @@ public class DiffLLVerbalizer <T> {
 	private void verbalizeBehDiffFromModelPerspective(Integer e1,
 			String e1l, Integer e1p, String e1pl,
 			Integer e2, String e2l, Integer e2p, String e2pl) {
-//		System.out.printf("In log 1, %s(%d) %s %s(%d), while in log 2 %s(%d) %s %s(%d)\n",
+//		System.out.printf("In the normal behavior, %s(%d) %s %s(%d), while in the deviant behavior %s(%d) %s %s(%d)\n",
 //				e1l, e1, verbalizeBRel(pes1.getBRelation(e1, e1p)), e1pl, e1p,
 //				e2l, e2, verbalizeBRel(pes2.getBRelation(e2, e2p)), e2pl, e2p);
 
@@ -771,13 +765,22 @@ public class DiffLLVerbalizer <T> {
 				e2pl = temp;
 			}
 		}
-		
-		statements.add(
-				String.format("In log 1, %s %s %s, while in log 2 %s %s %s",
-						e1l, br1, e1pl,
-						e2l, br2, e2pl
-				)
-		);		
+
+        HashSet<XTrace> intersectionP1 = new HashSet(pes1.getTracesOf(e1));
+        HashSet<XTrace> intersectionP2 = new HashSet(pes2.getTracesOf(e2));
+
+		if(pes1.getBRelation(e1, e1p).equals(BehaviorRelation.CONFLICT))
+            intersectionP1.addAll(pes1.getTracesOf(e1p));
+        else
+            intersectionP1.retainAll(pes1.getTracesOf(e1p));
+
+        if(pes2.getBRelation(e2, e2p).equals(BehaviorRelation.CONFLICT))
+            intersectionP2.addAll(pes2.getTracesOf(e2p));
+        else
+            intersectionP2.retainAll(pes2.getTracesOf(e2p));
+
+		String statement = String.format("In the normal behavior, %s %s %s, while in the deviant behavior %s %s %s", e1l, br1, e1pl, e2l, br2, e2pl);
+		differences.add(new Triplet(statement, intersectionP1, intersectionP2));
 	}
 
 	private String verbalizeBRel(BehaviorRelation bRelation) {
@@ -996,7 +999,27 @@ public class DiffLLVerbalizer <T> {
 		}
 		return set;
 	}
-	
+
+    private HashSet getTracesOfBS(BitSet multiset, int pes) {
+        HashSet<String> set = null;
+
+        for (int ev = multiset.nextSetBit(0); ev >= 0; ev = multiset.nextSetBit(ev + 1)) {
+            if (pes == 1) {
+                if(set == null)
+                    set = new HashSet(pes1.getTracesOf(ev));
+                else
+                    set.retainAll(pes1.getTracesOf(ev));
+            }
+            else {
+                if(set == null)
+                    set = new HashSet(pes2.getTracesOf(ev));
+                else
+                    set.retainAll(pes2.getTracesOf(ev));
+            }
+        }
+        return set;
+    }
+
 	private Object translate(BitSet multiset, int pes) {
 		List<String> set = new ArrayList<String>();
 		

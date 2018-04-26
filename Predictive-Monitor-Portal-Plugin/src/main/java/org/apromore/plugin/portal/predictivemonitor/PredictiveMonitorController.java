@@ -27,11 +27,27 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Set;
+import javax.xml.datatype.DatatypeFactory;
 
 // Third party packages
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Desktop;
@@ -45,142 +61,495 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.ListModelMap;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.event.ListDataEvent;
+import org.zkoss.zul.event.ListDataListener;
+import org.zkoss.zul.ext.Selectable;
+import org.zkoss.zul.ext.SelectionControl;;
 
 // Local packages
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.predictivemonitor.PredictiveMonitor;
+import org.apromore.service.predictivemonitor.PredictiveMonitorEvent;
+import org.apromore.service.predictivemonitor.PredictiveMonitorService;
+import org.apromore.service.predictivemonitor.Predictor;
 
 /**
- * In MVC terms, this is a controller whose corresponding model is {@link Dataflow} and corresponding view is <code>predictive_monitor.zul</code>.
+ * In MVC terms, this is a controller whose corresponding model is a set of {@link PredictiveMonitor}s and corresponding view is <code>predictiveMonitors.zul</code>.
  */
-public class PredictiveMonitorController implements Closeable, EventListener<DataflowEvent> {
+public class PredictiveMonitorController implements Observer {
 
     private static Logger LOGGER = LoggerFactory.getLogger(PredictiveMonitorController.class.getCanonicalName());
+    private static DatatypeFactory f;
 
-    private final Dataflow dataflow;
-    private final DataflowListener dataflowListener;
+    static {
+        try {
+            f = DatatypeFactory.newInstance();
+        } catch (Exception e) {
+            LOGGER.error("Unable to initialize DatatypeFactory", e);
+        }
+    }
+
+    private final PredictiveMonitor predictiveMonitor;
+    private final PredictiveMonitorService predictiveMonitorService;
+    private final Window window;
 
     private final Label runningCasesLabel;
     private final Label completedCasesLabel;
     private final Label completedEventsLabel;
     private final Label averageCaseLengthLabel;
     private final Label averageCaseDurationLabel;
+    private final Textbox filterCaseTextbox;
 
     private final NumberFormat numberFormat = new DecimalFormat("0.##");
 
-    private final ListModelList<DataflowEvent> eventsModel = new ListModelList<>();
-    //private final ListModelList<DataflowEvent> latestEventsModel = new ListModelList<>();
+    private final PredictiveMonitorListModel eventsModel;
+    private final PredictiveMonitorListModel casesModel;
+
+    private final List<PredictiveMonitorEvent> events = new ArrayList<>();
+    private final List<PredictiveMonitorEvent> caseEvents = new ArrayList<>();
+    private final Map<String, PredictiveMonitorEvent> caseFirstEventMap = new HashMap<>();
+
+    private final Listbox eventsListbox;
 
     /**
-     * @param dataflow  never <code>null</code>
+     * @param predictiveMonitor  never <code>null</code>
      */
-    public PredictiveMonitorController(PortalContext portalContext, Dataflow dataflow) throws IOException {
+    public PredictiveMonitorController(PortalContext portalContext, PredictiveMonitor predictiveMonitor, PredictiveMonitorService predictiveMonitorService) throws IOException {
 
-        this.dataflow = dataflow;
+        this.predictiveMonitor = predictiveMonitor;
+        this.predictiveMonitorService = predictiveMonitorService;
+        this.window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/predictiveMonitor.zul", null, null);
+        this.eventsModel = new PredictiveMonitorListModel(predictiveMonitorService, predictiveMonitor, window.getDesktop(), events);
+        this.casesModel = new PredictiveMonitorListModel(predictiveMonitorService, predictiveMonitor, window.getDesktop(), caseEvents);
 
-        Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/predictive_monitor.zul", null, null);
-
-        Listbox eventsListbox    = (Listbox) window.getFellow("events");
-        //Listbox latestEventsListbox = (Listbox) window.getFellow("latestEvents");
+        /*Listbox*/ eventsListbox    = (Listbox) window.getFellow("events");
+        Listbox casesListbox     = (Listbox) window.getFellow("cases");
 
         runningCasesLabel        = (Label) window.getFellow("runningCases");
         completedCasesLabel      = (Label) window.getFellow("completedCases");
         completedEventsLabel     = (Label) window.getFellow("completedEvents");
         averageCaseLengthLabel   = (Label) window.getFellow("averageCaseLength");
         averageCaseDurationLabel = (Label) window.getFellow("averageCaseDuration");
-        
-        updateUI();
+        filterCaseTextbox        = (Textbox) window.getFellow("filterCase");
 
-        for (Predictor predictor: dataflow.getPredictors()) {
-            predictor.addHeaders(eventsListbox.getListhead());
-            //predictor.addHeaders(latestEventsListbox.getListhead());
+        // Button callback
+        ((Button) window.getFellow("csv")).addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                Messagebox.show("Not yet implemented", "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
+        });
+        
+        // Add header columns
+        eventsListbox.getListhead().appendChild(new Listheader("Activity"));
+        casesListbox.getListhead().appendChild(new Listheader("Activity"));
+
+        eventsListbox.getListhead().appendChild(new Listheader("Event time"));
+        casesListbox.getListhead().appendChild(new Listheader("Event time"));
+
+        eventsListbox.getListhead().appendChild(new Listheader("Elapsed"));
+        casesListbox.getListhead().appendChild(new Listheader("Elapsed"));
+
+        Set<Predictor> predictors = predictiveMonitor.getPredictors();
+        for (Predictor predictor: predictors) {
+            switch (predictor.getType()) {
+            case "case outcome":
+                eventsListbox.getListhead().appendChild(new Listheader("Case outcome"));
+                casesListbox.getListhead().appendChild(new Listheader("Case outcome"));
+                break;
+
+            case "next activity":
+                eventsListbox.getListhead().appendChild(new Listheader("Next activity"));
+                casesListbox.getListhead().appendChild(new Listheader("Next activity"));
+                break;
+
+            case "remaining time":
+                eventsListbox.getListhead().appendChild(new Listheader("Predicted case end"));
+                eventsListbox.getListhead().appendChild(new Listheader("Remaining time"));
+                casesListbox.getListhead().appendChild(new Listheader("Predicted case end"));
+                casesListbox.getListhead().appendChild(new Listheader("Remaining time"));
+                break;
+
+            default:
+                eventsListbox.getListhead().appendChild(new Listheader(predictor.getType()));
+                casesListbox.getListhead().appendChild(new Listheader(predictor.getType()));
+            }
         }
+
         eventsListbox.setRows(15);  // TODO: figure out how to make vflex work with this
-        ListitemRenderer<DataflowEvent> renderer = new ListitemRenderer<DataflowEvent> () {
-            public void render(Listitem item, DataflowEvent event, int index) {
-                item.setStyle(event.isLast() ? "background-color: #EEFFEE" : "");
+        casesListbox.setRows(15);
+        ListitemRenderer<PredictiveMonitorEvent> renderer = new ListitemRenderer<PredictiveMonitorEvent> () {
+
+            final DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd h:mm:ss a");
+
+            private String formatTime(Date date) { return date == null ? "" : dateFormat.format(date); }
+
+            public void render(Listitem item, PredictiveMonitorEvent event, int index) {
+                JSONObject json;
+                try {
+                    json = new JSONObject(event.getJson());
+
+                } catch (JSONException e) {
+                    LOGGER.error("Unable to parse JSON from predictive monitor event", e);
+                    return;
+                }
+
+                boolean isLast = "true".equals(json.optString("last"));
+
+                // Hardcoded columns
                 item.appendChild(new Listcell(event.getCaseId()));
-                item.appendChild(new Listcell(event.isLast() ? "Yes" : "No"));
-                item.appendChild(new Listcell(Integer.toString(event.getIndex())));
-                item.appendChild(new Listcell(formatTime(event.getStartTime())));
-                item.appendChild(new Listcell(formatTime(event.getTime())));
-                item.appendChild(new Listcell(formatTime(event.getEndTime())));
-                item.appendChild(new Listcell(event.getFormattedDuration()));
+                item.appendChild(new Listcell(event.getEventNr().toString()));
+
+                // Activity
+                String value = "-";
+                String style = null;
+                try {
+                    value = json.getString("activity_name");
+                } catch (Exception e) { value = e.getMessage(); }
+                item.appendChild(new Listcell(value));
+
+                // Timestamp
+                value = "-";
+                Date timestamp = null;
+                try {
+                    /*Date*/ timestamp = f.newXMLGregorianCalendar(json.getString("time:timestamp")).toGregorianCalendar().getTime();
+                    value = formatTime(timestamp);
+                } catch (Exception e) { value = e.getMessage(); }
+                item.appendChild(new Listcell(value));
+
+                // Elapsed
+                value = "-";
+                try {
+                    PredictiveMonitorEvent firstEvent = caseFirstEventMap.get(event.getCaseId());
+                    JSONObject startJson = new JSONObject(firstEvent.getJson());
+                    Date start = f.newXMLGregorianCalendar(startJson.getString("time:timestamp")).toGregorianCalendar().getTime();
+                    Duration elapsed = Duration.between(Instant.ofEpochMilli(start.getTime()), Instant.ofEpochMilli(timestamp.getTime()));
+                    value = format(elapsed);
+                } catch (Exception e) { value = e.getMessage(); }
+                item.appendChild(new Listcell(value));
 
                 // Populate the columns added by predictors
-                for (Predictor predictor: dataflow.getPredictors()) {
-                    predictor.addCells(item, event);
+                JSONObject jsonPredictions = json.optJSONObject("predictions");
+                for (Predictor predictor: predictors) {
+                    switch (predictor.getType()) {
+                    case "case outcome":
+                        value = "-";
+                        style = null;
+                        try {
+                            double currentHighestProbability = -1;
+                            JSONObject histogram = jsonPredictions.getJSONObject("-1");
+                            Iterator i = histogram.keys();
+                            while (i.hasNext()) {
+                                String key = (String) i.next();
+                                double probability = histogram.getDouble(key);
+                                if (probability > currentHighestProbability) {
+                                    currentHighestProbability = probability;
+                                    int brightness = 155 + Math.min(100, (new Double((2.0 - 2.0 * probability) * 100)).intValue());
+                                    switch (key) {
+                                    case "true":
+                                        value = NumberFormat.getPercentInstance().format(probability) + " slow";
+                                        style = "background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")";
+                                        if (isLast) {
+                                            item.setStyle("background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")");
+                                        }
+                                        break;
+                                    case "false":
+                                        value = NumberFormat.getPercentInstance().format(probability) + " quick";
+                                        if (isLast) {
+                                            item.setStyle("background-color: rgb(" + brightness + ", " + 255 + ", " + brightness +")");
+                                        }
+                                        break;
+                                    default:
+                                        value = NumberFormat.getPercentInstance().format(probability) + " " + key;
+                                    }
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            value = e.getMessage();
+
+                        } finally {
+                            Listcell listcell = new Listcell(value);
+                            listcell.setStyle(style);
+                            item.appendChild(listcell);
+                        }
+                        break;
+
+                    case "next activity":
+                        value = "-";
+                        try {
+                            if (!isLast) {
+                                double currentHighestProbability = -1;
+                                JSONObject histogram = jsonPredictions.getJSONObject("next");
+                                Iterator i = histogram.keys();
+                                while (i.hasNext()) {
+                                    String key = (String) i.next();
+                                    double probability = histogram.getDouble(key);
+                                    if (probability > currentHighestProbability) {
+                                        value = NumberFormat.getPercentInstance().format(probability) + " " + key;
+                                        currentHighestProbability = probability;
+                                    }
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            value = e.getMessage();
+
+                        } finally {
+                            item.appendChild(new Listcell(value));
+                        }
+                        break;
+
+                    case "remaining time":
+                        // Predicted case end column
+                        value = "-";
+                        try {
+                            if ("true".equals(json.optString("last"))) {
+                                value = "Complete";
+
+                            } else {
+                                //final DatatypeFactory f = DatatypeFactory.newInstance();
+                                Calendar calendar = f.newXMLGregorianCalendar(json.getString("time:timestamp")).toGregorianCalendar();
+
+                                int remainingSeconds = jsonPredictions.getJSONObject("remtime").getInt("remtime");
+                                calendar.add(Calendar.SECOND, remainingSeconds);
+
+                                value = formatTime(calendar.getTime());
+                            }
+
+                        } catch (Exception e) {
+                            value = e.getMessage();
+
+                        } finally {
+                            item.appendChild(new Listcell(value));
+                        }
+
+                        // Remaining time column
+                        value = "-";
+                        try {
+                            value = "true".equals(json.optString("last")) ? "-" : format(Duration.ofSeconds(jsonPredictions.getJSONObject("remtime").getLong("remtime")));
+
+                        } catch (Exception e) {
+                            value = e.getMessage();
+
+                        } finally {
+                            item.appendChild(new Listcell(value));
+                        }
+                        break;
+
+                    default:
+                         item.appendChild(new Listcell("?"));
+                    }
                 }
-            }
-
-            final DateFormat dataFormat = new SimpleDateFormat("yyyy-MMM-dd h:mm:ss a");
-
-            private String formatTime(Date date) {
-                return date == null ? "" : dataFormat.format(date);
             }
         };
         eventsListbox.setItemRenderer(renderer);
-        Listheader header = (Listheader) eventsListbox.getListhead().getFirstChild();
-        header.setSortAscending(new DataflowEventComparator(true));
-        header.setSortDescending(new DataflowEventComparator(true));
         eventsListbox.setModel(eventsModel);
-
-        /*
-        latestEventsListbox.setRows(15);
-        latestEventsListbox.setItemRenderer(renderer);
-        latestEventsListbox.setModel(latestEventsModel);
-        */
-
-        this.dataflowListener = new DataflowListener() {
-            final Desktop desktop = window.getDesktop();
-            final EventListener eventListener = PredictiveMonitorController.this; 
-
-            public void notify(DataflowEvent event) {
-                Executions.schedule(desktop, eventListener, event);
-            }
-        };
-
-        dataflow.listeners.add(dataflowListener);
+        casesListbox.setItemRenderer(renderer);
+        casesListbox.setModel(casesModel);
+        predictiveMonitorService.addObserver(this);
+        reload();
 
         window.doModal();
     }
 
-    public void close() {
-        dataflow.listeners.remove(dataflowListener);
+    /**
+     * @param duration  arbitrary {@link Duration}
+     * @return the <var>duration</var> pretty-printed in a format resembling "240d 3h 59m 0s", or <code>null</code> if <var>duration</var> is <code>null</code>
+     */
+    static String format(Duration duration) {
+       if (duration == null) { return null; }
+       String result = duration.getSeconds() % 60 + "s";
+
+       long minutes = duration.toMinutes();
+       if (minutes == 0) { return result; }
+       result = minutes % 60 + "m " + result;
+
+       long hours = duration.toHours();
+       if (hours == 0) { return result; }
+       result = hours % 24 + "h " + result;
+
+       long days = duration.toDays();
+       if (days == 0) { return result; }
+       return days + "d " + result;
     }
 
-    private void updateUI() {
-        runningCasesLabel.setValue(Integer.toString(dataflow.caseCount - dataflow.completedCaseCount));
-        completedEventsLabel.setValue(Integer.toString(dataflow.completedEventCount));
-        completedCasesLabel.setValue(Integer.toString(dataflow.completedCaseCount));
-        if (dataflow.completedCaseCount > 0) {
-            averageCaseLengthLabel.setValue(numberFormat.format((dataflow.completedCaseEventCount / (double) dataflow.completedCaseCount)));
-            averageCaseDurationLabel.setValue(DataflowEvent.format(dataflow.totalCompletedCaseDuration.dividedBy(dataflow.completedCaseCount)));
-        }
+
+    // Implementation of Observer
+
+    private boolean needsReload = true;
+
+    /**
+     * Handle the addition of new predictions to the {@link PredictiveMonitor}.
+     *
+     * This method bridges between Kafka and ZK events.  It may be invoked from any thread.
+     */
+    public void update(Observable observable, Object arg) {
+        needsReload = true;
+        Event event = new Event("dummy", null, arg);
+        Executions.schedule(window.getDesktop(), eventsModel, event);
+        Executions.schedule(window.getDesktop(), casesModel, event);
     }
 
-    // Implementation of EventListener<DataflowEvent>
+    private void reload() {
+        if (!needsReload) { return; }
 
-    //final private Map<String, DataflowEvent> latestEventsMap = new HashMap<>();
+        int completedCaseCount = 0;
+        int completedCaseEventCount = 0;
+        int runningCaseCount = 0;
 
-    public void onEvent(DataflowEvent event) {
-        eventsModel.add(0, event);
+        List<PredictiveMonitorEvent> pmEvents = predictiveMonitorService.findPredictiveMonitorEvents(predictiveMonitor);
+        LOGGER.info("PMLM got " + pmEvents.size() + " event(s)");
+        Collections.reverse(pmEvents);
 
-        /*
-        String caseId = event.getCaseId();
-        DataflowEvent previousEvent = latestEventsMap.get(caseId);
-        if (previousEvent != null) {
-            latestEventsModel.remove(previousEvent);
-            latestEventsMap.remove(caseId);
+        // Reload events
+        events.clear();
+        String filterCase = filterCaseTextbox.getValue();
+        if (filterCase.isEmpty()) {
+            events.addAll(pmEvents);
+
+        } else {
+            for (PredictiveMonitorEvent pmEvent: pmEvents) {
+                if (filterCase.equals(pmEvent.getCaseId())) {
+                    events.add(pmEvent);
+                }
+            }
+            eventsListbox.setModel(eventsModel);
         }
-        if (!event.isLast()) {
-            latestEventsModel.add(0, event);
-            latestEventsMap.put(caseId, event);
-        }
-        */
 
-        updateUI();
+        // Populate caseFirstEventMap
+        for (PredictiveMonitorEvent pmEvent: pmEvents) {
+            if (pmEvent.getEventNr() == 1) {
+                caseFirstEventMap.put(pmEvent.getCaseId(), pmEvent);
+            }
+        }
+
+        // Reload most recent events for each case
+        caseEvents.clear();
+        Set<String> caseSet = new HashSet<>();
+        Duration totalCompletedCaseDuration = Duration.ZERO;
+        for (PredictiveMonitorEvent pmEvent: pmEvents) {
+            String caseId = pmEvent.getCaseId();
+            if (!caseSet.contains(caseId)) {
+                caseSet.add(caseId);
+                caseEvents.add(pmEvent);
+                try {
+                    JSONObject json = new JSONObject(pmEvent.getJson());
+                    if ("true".equals(json.optString("last"))) {
+                        completedCaseCount++;
+                        completedCaseEventCount += pmEvent.getEventNr();
+
+                        try {
+                            PredictiveMonitorEvent firstEvent = caseFirstEventMap.get(pmEvent.getCaseId());
+                            JSONObject startJson = new JSONObject(firstEvent.getJson());
+                            Date start = f.newXMLGregorianCalendar(startJson.getString("time:timestamp")).toGregorianCalendar().getTime();
+                            Date timestamp = f.newXMLGregorianCalendar(json.getString("time:timestamp")).toGregorianCalendar().getTime();
+                            Duration elapsed = Duration.between(Instant.ofEpochMilli(start.getTime()), Instant.ofEpochMilli(timestamp.getTime()));
+                            totalCompletedCaseDuration = totalCompletedCaseDuration.plus(elapsed);
+
+                        } catch (Exception e) {
+                            LOGGER.error("Unable calculate elapsed duration", e);
+                        }
+                    } else {
+                        runningCaseCount++;
+                    }
+                } catch (JSONException e) {
+                    LOGGER.error("Unable to parse event JSON", e);
+                }
+            }
+
+        }
+        Collections.sort(caseEvents, new Comparator<PredictiveMonitorEvent>() {
+            public int compare(PredictiveMonitorEvent lhs, PredictiveMonitorEvent rhs) { return Integer.parseInt(lhs.getCaseId()) - Integer.parseInt(rhs.getCaseId()); }
+        });
+
+        // Display aggregate statistics
+        completedEventsLabel.setValue(Integer.toString(pmEvents.size()));
+        completedCasesLabel.setValue(Integer.toString(completedCaseCount));
+        runningCasesLabel.setValue(Integer.toString(runningCaseCount));
+        if (completedCaseCount > 0) {
+            NumberFormat numberFormat = new DecimalFormat("0.##");
+            averageCaseLengthLabel.setValue(numberFormat.format((completedCaseEventCount / (double) completedCaseCount)));
+            averageCaseDurationLabel.setValue(format(totalCompletedCaseDuration.dividedBy(completedCaseCount)));
+        }
+
+        needsReload = false;
+    }
+
+    /**
+     * Wrap a {@link PredictiveMonitor} for use as a ZK {@link ListModel}.
+     */
+    private class PredictiveMonitorListModel implements EventListener<Event>, ListModel<PredictiveMonitorEvent>, Selectable<PredictiveMonitorEvent> {
+
+        private final Set<ListDataListener> listeners = new HashSet<>();
+        private final PredictiveMonitorService predictiveMonitorService;
+        private final PredictiveMonitor predictiveMonitor;
+        private final Desktop desktop;
+        private final List<PredictiveMonitorEvent> events;
+
+        PredictiveMonitorListModel(PredictiveMonitorService predictiveMonitorService, PredictiveMonitor predictiveMonitor, Desktop desktop, List<PredictiveMonitorEvent> events) {
+            this.predictiveMonitorService = predictiveMonitorService;
+            this.predictiveMonitor = predictiveMonitor;
+            this.desktop = desktop;
+            this.events = events;
+        }
+
+
+        // Implementation of EventListener
+
+        /**
+         * Handle the addition of new predictions to the {@link PredictiveMonitor}.
+         *
+         * This method is called on the main thread with events originating from {@link #update}.
+         * Events are then forwarded to {@link ListDataListener}s.
+         */
+        public void onEvent(Event event) {
+            //LOGGER.info("PMLM onEvent " + event);
+
+            reload();
+
+            // Notify ListDataListener observers
+            ListDataEvent listDataEvent = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, events.size());
+            for (ListDataListener listener: listeners) { listener.onChange(listDataEvent); }
+        }
+
+        // Implementation of ListModel
+
+        public void addListDataListener(ListDataListener l) {
+            listeners.add(l);
+        }
+
+        public PredictiveMonitorEvent getElementAt(int index) {
+            return events.get(index);
+        }
+
+        public int getSize() {
+            return events.size();
+        }
+
+        public void removeListDataListener(ListDataListener l) {
+            listeners.remove(l);
+        }
+
+        // Implementation of Selectable
+
+        private Boolean multiple = false;
+        private SelectionControl selectionControl = null;
+        private Set<PredictiveMonitorEvent> selection = new HashSet<>();
+
+        public boolean addToSelection(PredictiveMonitorEvent obj) { return selection.add(obj); }
+        public void clearSelection() { selection.clear(); }
+        public Set<PredictiveMonitorEvent> getSelection() { return selection; }
+        public SelectionControl getSelectionControl() { return selectionControl; }
+        public boolean isMultiple() { return multiple; }
+        public boolean isSelected(Object obj) { return selection.contains(obj); }
+        public boolean isSelectionEmpty() { return selection.isEmpty(); }
+        public boolean removeFromSelection(Object obj) { return selection.remove(obj); }
+        public void setMultiple(boolean m) { multiple = m; }
+        public void setSelection(Collection<? extends PredictiveMonitorEvent> s) { selection.clear();  selection.addAll(s); }
+        public void setSelectionControl(SelectionControl c) { this.selectionControl = c; }
     }
 }

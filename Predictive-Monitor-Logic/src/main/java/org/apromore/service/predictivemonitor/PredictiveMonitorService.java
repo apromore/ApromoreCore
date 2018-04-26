@@ -22,16 +22,31 @@ package org.apromore.service.predictivemonitor;
 
 // Java 2 Standard Edition
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Observer;
 
 // Third party packages
 import org.deckfour.xes.model.XLog;
 
 public interface PredictiveMonitorService {
 
-    //public String foo();
+    public void addObserver(Observer observer);
 
-    public Predictor createPredictor(String name, File pklFile);
+    // Predictors
+    public Predictor createPredictor(String name, String type, InputStream pklFile);
+    public void deletePredictors(Iterable<Predictor> predictors);
+    public Predictor findPredictorById(Integer id);
+    public Predictor findPredictorByName(String name);
     public List<Predictor> getPredictors();
-    public PredictiveMonitor createPredictiveMonitor(List<Predictor> predictors);
+
+    // PredictiveMonitors
+    public PredictiveMonitor createPredictiveMonitor(String name, List<Predictor> predictors);
+    public void deletePredictiveMonitors(Iterable<PredictiveMonitor> predictiveMonitors);
+    public PredictiveMonitor findPredictiveMonitorByName(String name);
+    public List<PredictiveMonitor> getPredictiveMonitors();
+    public void exportLogToPredictiveMonitor(XLog log, PredictiveMonitor predictiveMonitor);
+
+    // PredictiveMonitorEvents
+    public List<PredictiveMonitorEvent> findPredictiveMonitorEvents(PredictiveMonitor predictiveMonitor);
 }
