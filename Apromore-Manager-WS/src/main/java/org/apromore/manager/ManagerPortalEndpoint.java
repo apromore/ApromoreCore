@@ -166,7 +166,7 @@ public class ManagerPortalEndpoint {
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return WS_OBJECT_FACTORY.createEditProcessDataResponse(res);
+        return WS_OBJECT_FACTORY.createEditLogDataResponse(res);
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "EditProcessDataRequest")

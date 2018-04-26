@@ -73,5 +73,5 @@ public interface EventLogService {
 
     void exportToStream(OutputStream outputStream, XLog log) throws Exception;
 
-
+    void updateLogMetaData(Integer logId, String logName, boolean isPublic);
 }
