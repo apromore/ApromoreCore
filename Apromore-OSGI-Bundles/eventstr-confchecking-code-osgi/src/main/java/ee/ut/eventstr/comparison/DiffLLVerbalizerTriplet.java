@@ -39,6 +39,8 @@ import java.util.*;
 public class DiffLLVerbalizerTriplet<T> {
 	private PESSemantics<T> pes1;
 	private PESSemantics<T> pes2;
+	private String logName1;
+	private String logname2;
 
 	private Set<Integer> unobservedEvents;
 	private Set<Integer> eventsConsideredByConflictRelation;
@@ -53,9 +55,11 @@ public class DiffLLVerbalizerTriplet<T> {
 
 	private Table<BitSet, BitSet, Map<Integer, int[]>> globalDiffs;
 
-	public DiffLLVerbalizerTriplet(PESSemantics<T> pes1, PESSemantics<T> pes2) {
+	public DiffLLVerbalizerTriplet(PESSemantics<T> pes1, String logName1, PESSemantics<T> pes2, String logName2) {
 		this.pes1 = pes1;
 		this.pes2 = pes2;
+		this.logName1 = logName1;
+		this.logname2 = logName2;
 		this.unobservedEvents = new HashSet<>();
 		this.eventsConsideredByConflictRelation = new HashSet<>();
 		this.opSeqs = new ArrayList<>();
@@ -135,8 +139,12 @@ public class DiffLLVerbalizerTriplet<T> {
 //								firstMatching.label, firstMatchingEventPair.getFirst(),
 //								firstHiding.label, (Integer)firstHiding.target,
 //								secondHiding.label, (Integer)secondHiding.target);
-                        String statement = String.format("In the the deviant behavior, after the occurrence of %s, %s is substituted by %s",
-                                getCorrectContext(firstMatching.label), firstHiding.label, secondHiding.label);
+//                        String statement = String.format("In the the deviant behavior, after the occurrence of %s, %s is substituted by %s",
+//                                getCorrectContext(firstMatching.label), firstHiding.label, secondHiding.label);
+
+                        String statement = String.format("The %s allows %s to be substituted by %s after the occurrence of %s",
+								logname2, insertSquareBrackets(firstHiding.label), insertSquareBrackets(secondHiding.label), insertSquareBrackets(getCorrectContext(firstMatching.label)));
+
                         differences.add(new Triplet(statement, pes1.getTracesOf((Integer)firstHiding.target), pes2.getTracesOf((Integer)secondHiding.target)));
 					}
 				} 
@@ -178,8 +186,11 @@ public class DiffLLVerbalizerTriplet<T> {
 //									translate(past, opSeq),
 //									translate(interval, opSeq)
 //									);
-                            String statement = String.format("In the normal behavior, after the occurrence of %s, %s is repeated, while in the deviant behavior it is not",
-                                    translate(past, opSeq), translate(interval, opSeq));
+//                            String statement = String.format("In the normal behavior, after the occurrence of %s, %s is repeated, while in the deviant behavior it is not",
+//                                    translate(past, opSeq), translate(interval, opSeq));
+							String statement = String.format("The %s allows %s to be repeated after the occurrence of %s, while the %s does not",
+									logName1, insertSquareBrackets(translate(interval, opSeq)), insertSquareBrackets(translate(past, opSeq)), logname2);
+
 							differences.add(new Triplet(statement, getTraces(interval, opSeq, Op.LHIDE), getTraces(interval, opSeq, Op.RHIDE)));
 						}
 					} 
@@ -257,8 +268,10 @@ public class DiffLLVerbalizerTriplet<T> {
 									if (!globalDiffs.contains(context1, context2)) {
 //										System.out.printf("In the deviant behavior, %s(%s) can be skipped, while in the normal behavior it cannot\n",
 //												translate(context1, 1), context1);
-										String statement = String.format("In the deviant behavior, %s can be skipped, while in the normal behavior it cannot",
-														translate(context1, 1));
+//										String statement = String.format("In the deviant behavior, %s can be skipped, while in the normal behavior it cannot",
+//														translate(context1, 1));
+										String statement = String.format("The %s allows %s to be skipped, while the %s does not",
+												logname2, insertSquareBrackets(translate(context1, 1)), logName1);
 
 										differences.add(new Triplet<>(statement,getTracesOfBS(context1, 1), new HashSet<>()));
 									}
@@ -399,9 +412,13 @@ public class DiffLLVerbalizerTriplet<T> {
 //														translate(past, opSeq)
 //													);
 
-                                                String statement = String.format("In the normal behavior, %s occurs after %s, while in the deviant behavior it does not",
-																translate(interval, opSeq),
-																translate(past, opSeq));
+//                                                String statement = String.format("In the normal behavior, %s occurs after %s, while in the deviant behavior it does not",
+//																translate(interval, opSeq),
+//																translate(past, opSeq));
+
+												String statement = String.format("The %s allows %s to occur after %s, while the %s does not",
+														logName1, insertSquareBrackets(translate(interval, opSeq)), insertSquareBrackets(translate(past, opSeq)), logname2);
+
 												differences.add(new Triplet<>(statement, getTracesOfBS(past, 1), getTracesOfBS(past, 2)));
 											}
 										}
@@ -440,8 +457,12 @@ public class DiffLLVerbalizerTriplet<T> {
 //								firstMatching.label, firstMatchingEventPair.getFirst(),
 //								firstHiding.label, (Integer)firstHiding.target,
 //								secondHiding.label, (Integer)secondHiding.target);
-                        String statement = String.format("In the deviant behavior, after the occurrence of %s, %s is substituted by %s",
-										firstMatching.label,  firstHiding.label,  secondHiding.label);
+//                        String statement = String.format("In the deviant behavior, after the occurrence of %s, %s is substituted by %s",
+//										firstMatching.label,  firstHiding.label,  secondHiding.label);
+
+						String statement = String.format("The %s allows %s to be substituted by %s after the occurrence of %s",
+								logname2, insertSquareBrackets(firstHiding.label),  insertSquareBrackets(secondHiding.label), insertSquareBrackets(firstMatching.label));
+
                         differences.add(new Triplet(statement, pes1.getTracesOf((Integer)firstHiding.target), pes2.getTracesOf((Integer)secondHiding.target)));
 					}
 				} 
@@ -487,8 +508,12 @@ public class DiffLLVerbalizerTriplet<T> {
 //									translate(past, opSeq),
 //									translate(interval, opSeq)
 //									);
-                            String statement =  String.format("In the deviant behavior, after the occurrence of %s, %s is repeated, while in the normal behavior it is not",
-											translate(past, opSeq), translate(interval, opSeq));
+//                            String statement =  String.format("In the deviant behavior, after the occurrence of %s, %s is repeated, while in the normal behavior it is not",
+//											translate(past, opSeq), translate(interval, opSeq));
+
+							String statement =  String.format("The %s allows %s to be repeated after the occurrence of %s, while the %s does not",
+									logname2, insertSquareBrackets(translate(interval, opSeq)), insertSquareBrackets(translate(past, opSeq)), logName1);
+
 							differences.add(new Triplet(statement, getTraces(interval, opSeq, Op.LHIDE), getTraces(interval, opSeq, Op.RHIDE) ));
 						}
 					} 
@@ -558,8 +583,12 @@ public class DiffLLVerbalizerTriplet<T> {
 									if (!globalDiffs.contains(context1, context2)) {
 //										System.out.printf("In the normal behavior, %s(%s) can be skipped, while in the deviant behavior it cannot\n",
 //												translate(context2), context2);
-										String statement = String.format("In the normal behavior, %s can be skipped, while in the deviant behavior it cannot",
-														translate(context2));
+//										String statement = String.format("In the normal behavior, %s can be skipped, while in the deviant behavior it cannot",
+//														translate(context2));
+
+										String statement = String.format("The %s allows %s to be skipped, while the %s does not",
+												logName1, insertSquareBrackets(translate(context2)), logname2);
+
 										differences.add(new Triplet(statement, getTraces(context2, opSeq, Op.LHIDE), getTraces(context2, opSeq, Op.RHIDE)));
 									}
 								} 
@@ -677,9 +706,12 @@ public class DiffLLVerbalizerTriplet<T> {
 //													translate(interval, opSeq),
 //													translate(past, opSeq)
 //												);
-											String statement = String.format("In the deviant behavior, %s occurs after %s, while in the normal behavior it does not",
-															translate(interval, opSeq),
-															translate(past, opSeq));
+//											String statement = String.format("In the deviant behavior, %s occurs after %s, while in the normal behavior it does not",
+//															translate(interval, opSeq), translate(past, opSeq));
+
+											String statement = String.format("The %s allows %s to occur after %s, while the %s does not",
+													logname2, insertSquareBrackets(translate(interval, opSeq)), insertSquareBrackets(translate(past, opSeq)), logName1);
+
 											differences.add(new Triplet(statement,  getTracesOfBS(past, 1), getTracesOfBS(past, 2)));
 										}
 									}
@@ -779,15 +811,27 @@ public class DiffLLVerbalizerTriplet<T> {
         else
             intersectionP2.retainAll(pes2.getTracesOf(e2p));
 
-		String statement = String.format("In the normal behavior, %s %s %s, while in the deviant behavior %s %s %s", e1l, br1, e1pl, e2l, br2, e2pl);
+//		String statement = String.format("In the normal behavior, %s %s %s, while in the deviant behavior %s %s %s", e1l, br1, e1pl, e2l, br2, e2pl);
+		String statement = String.format("The %s allows %s %s %s, while the %s allows %s %s %s",
+				logName1, insertSquareBrackets(e1l), br1, insertSquareBrackets(e1pl), logname2, insertSquareBrackets(e2l), br2, insertSquareBrackets(e2pl));
+		if(br1.startsWith("cannot") && br2.startsWith("cannot")) {
+			statement = String.format("The %s does not allow %s to occur in the same run with %s, while the %s does not allow %s to occur in the same run with %s",
+					logName1, insertSquareBrackets(e1l), insertSquareBrackets(e1pl), logname2, insertSquareBrackets(e2l), insertSquareBrackets(e2pl));
+		}else if(br1.startsWith("cannot")) {
+			statement = String.format("The %s does not allow %s to occur in the same run with %s, while the %s allows %s %s %s",
+					logName1, insertSquareBrackets(e1l), insertSquareBrackets(e1pl), logname2, insertSquareBrackets(e2l), br2, insertSquareBrackets(e2pl));
+		}else if(br2.startsWith("cannot")) {
+			statement = String.format("The %s allows %s %s %s, while the %s does not allow %s to occur in the same run with %s",
+					logName1, insertSquareBrackets(e1l), br1, insertSquareBrackets(e1pl), logname2, insertSquareBrackets(e2l), insertSquareBrackets(e2pl));
+		}
 		differences.add(new Triplet(statement, intersectionP1, intersectionP2));
 	}
 
 	private String verbalizeBRel(BehaviorRelation bRelation) {
 		switch (bRelation) {
-		case CAUSALITY: return "occurs before";
-		case INV_CAUSALITY: return "occurs after";
-		case CONCURRENCY: return "occurs concurrently to";
+		case CAUSALITY: return "to occur before";
+		case INV_CAUSALITY: return "to occur after";
+		case CONCURRENCY: return "to occur concurrently to";
 		case CONFLICT: return "cannot occur in the same run with";
 		default:
 			break;
@@ -1042,5 +1086,10 @@ public class DiffLLVerbalizerTriplet<T> {
 		}
 		return set;
 	}
+
+	private Object insertSquareBrackets(Object label) {
+	    if(label instanceof  String) return "[" + label + "]";
+        else return label;
+    }
 	
 }

@@ -69,7 +69,7 @@ public class ApromoreCompareLL {
 
 			ApromoreCompareLL compareLL = new ApromoreCompareLL();
 
-			for(Triplet<String, Set<XTrace>, Set<XTrace>> triplet : compareLL.getDifferencesTriplets(log1, log2)){
+			for(Triplet<String, Set<XTrace>, Set<XTrace>> triplet : compareLL.getDifferencesTriplets(log1, "normal behaviour", log2, "deviant behaviour")){
 					System.out.println(triplet.getA());
                 	System.out.println(compare.translateTraces((Set<XTrace>)triplet.getB()));
                 	System.out.println(compare.translateTraces((Set<XTrace>)triplet.getC()));
@@ -144,7 +144,7 @@ public class ApromoreCompareLL {
 		return verbalizer.verbalize();
 	}
 
-	public Set<Triplet<String, Set<XTrace>, Set<XTrace>>> getDifferencesTriplets(XLog log1, XLog log2) {
+	public Set<Triplet<String, Set<XTrace>, Set<XTrace>>> getDifferencesTriplets(XLog log1, String logName1, XLog log2, String logName2) {
 		SinglePORunPESSemantics<Integer> logpessem1;
 		SinglePORunPESSemantics<Integer> logpessem2;
 		LogBasedPartialSynchronizedProduct<Integer> psp;
@@ -154,7 +154,7 @@ public class ApromoreCompareLL {
 
 		PESSemantics<Integer> fullLogPesSem1 = new PESSemantics<Integer>(logpes1);
 		PESSemantics<Integer> fullLogPesSem2 = new PESSemantics<Integer>(logpes2);
-		DiffLLVerbalizerTriplet<Integer> verbalizer = new DiffLLVerbalizerTriplet<>(fullLogPesSem1, fullLogPesSem2);
+		DiffLLVerbalizerTriplet<Integer> verbalizer = new DiffLLVerbalizerTriplet<>(fullLogPesSem1, logName1, fullLogPesSem2, logName2);
 
 		int mincost;
 		int curcost;
