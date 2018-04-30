@@ -419,7 +419,7 @@ public class DiffLLVerbalizerTriplet<T> {
 												String statement = String.format("The %s allows %s to occur after %s, while the %s does not",
 														logName1, insertSquareBrackets(translate(interval, opSeq)), insertSquareBrackets(translate(past, opSeq)), logname2);
 
-												differences.add(new Triplet<>(statement, getTracesOfBS(past, 1), getTracesOfBS(past, 2)));
+												differences.add(new Triplet<>(statement, getTracesOfBS(interval, 1), getTracesOfBS(past, 2)));
 											}
 										}
 									}
@@ -712,7 +712,7 @@ public class DiffLLVerbalizerTriplet<T> {
 											String statement = String.format("The %s allows %s to occur after %s, while the %s does not",
 													logname2, insertSquareBrackets(translate(interval, opSeq)), insertSquareBrackets(translate(past, opSeq)), logName1);
 
-											differences.add(new Triplet(statement,  getTracesOfBS(past, 1), getTracesOfBS(past, 2)));
+											differences.add(new Triplet(statement,  getTracesOfBS(interval, 1), getTracesOfBS(past, 2)));
 										}
 									}
 								}
@@ -743,10 +743,17 @@ public class DiffLLVerbalizerTriplet<T> {
 
         for (int ev = interval.nextSetBit(0); ev >= 0; ev = interval.nextSetBit(ev + 1)) {
             if(opSeq.get(ev).op.equals(operation)) {
-                if (set == null)
-                    set = new HashSet(pes2.getTracesOf((Integer) opSeq.get(ev).target));
-                else
-                    set.retainAll(pes2.getTracesOf((Integer) opSeq.get(ev).target));
+                if (set == null) {
+                    if(operation.equals(Op.LHIDE))
+                        set = new HashSet(pes1.getTracesOf((Integer) opSeq.get(ev).target));
+                    else
+                        set = new HashSet(pes2.getTracesOf((Integer) opSeq.get(ev).target));
+                }else {
+                    if(operation.equals(Op.LHIDE))
+                        set.retainAll(pes1.getTracesOf((Integer) opSeq.get(ev).target));
+                    else
+                        set.retainAll(pes2.getTracesOf((Integer) opSeq.get(ev).target));
+                }
             }else if(opSeq.get(ev).op.equals(Op.MATCH)) {
                 if(set == null)
                     set = new HashSet(pes2.getTracesOf((Integer)((Pair) opSeq.get(ev).target).getSecond()));

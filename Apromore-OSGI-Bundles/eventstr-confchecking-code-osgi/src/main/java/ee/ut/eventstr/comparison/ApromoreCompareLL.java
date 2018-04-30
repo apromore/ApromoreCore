@@ -57,10 +57,10 @@ public class ApromoreCompareLL {
 //		String log1Name = "/Users/abelarmas/Work/Research/Code/LogGenerator/nets/Net3.pnml_log.xes";
 //		String log2Name = "/Users/abelarmas/Work/Research/Code/LogGenerator/nets/Net5.pnml_log.xes";
 
-        String log1Name = "/Users/abelarmas/Dropbox/BPM2015-VarianceAnalysis/tool/ProDelta/Logs/base.MXML";
-        String log2Name = "/Users/abelarmas/Dropbox/BPM2015-VarianceAnalysis/tool/ProDelta/Logs/par_seq.mxml";
-//        String log1Name = "/Users/abelarmas/Downloads/DevianceMining-Correct2.xes";
-//        String log2Name = "/Users/abelarmas/Downloads/DevianceMining-Deviances2.xes";
+//        String log1Name = "/Users/abelarmas/Dropbox/BPM2015-VarianceAnalysis/tool/ProDelta/Logs/base.MXML";
+//        String log2Name = "/Users/abelarmas/Dropbox/BPM2015-VarianceAnalysis/tool/ProDelta/Logs/par_seq.mxml";
+        String log1Name = "/Users/abelarmas/Downloads/DevianceMining-Correct2.xes";
+        String log2Name = "/Users/abelarmas/Downloads/DevianceMining-Deviances2.xes";
 
 		ApromoreCompareLL compare = new ApromoreCompareLL();
 		try {
@@ -71,8 +71,8 @@ public class ApromoreCompareLL {
 
 			for(Triplet<String, Set<XTrace>, Set<XTrace>> triplet : compareLL.getDifferencesTriplets(log1, "normal behaviour", log2, "deviant behaviour")){
 					System.out.println(triplet.getA());
-                	System.out.println(compare.translateTraces((Set<XTrace>)triplet.getB()));
-                	System.out.println(compare.translateTraces((Set<XTrace>)triplet.getC()));
+//                	System.out.println(compare.translateTraces((Set<XTrace>)triplet.getB()));
+//                	System.out.println(compare.translateTraces((Set<XTrace>)triplet.getC()));
             }
 
 		}catch(Exception e){ e.printStackTrace(); }
