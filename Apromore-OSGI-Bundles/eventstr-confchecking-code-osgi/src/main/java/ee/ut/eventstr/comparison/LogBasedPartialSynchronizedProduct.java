@@ -153,6 +153,17 @@ public class LogBasedPartialSynchronizedProduct<T> {
 
 		open.offer(root);
 
+		Comparator<Operation> comparator = new Comparator<Operation>() {
+			@Override
+			public int compare(Operation o1, Operation o2) {
+				int costCValue = Short.compare(o1.nextState.cost, o2.nextState.cost);
+				if (costCValue != 0)
+					return costCValue;
+				else
+					return o1.label.compareTo(o2.label);
+			}
+		};
+
 		while (!open.isEmpty()) {
 			State s = open.poll();
 
@@ -224,16 +235,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 					}
 				}
 
-				Collections.sort(candidates, new Comparator<Operation>() {
-					@Override
-					public int compare(Operation o1, Operation o2) {
-						int costCValue = Short.compare(o1.nextState.cost, o2.nextState.cost);
-						if (costCValue != 0)
-							return costCValue;
-						else
-							return o1.label.compareTo(o2.label);
-					}
-				});
+				Collections.sort(candidates, comparator);
 
 				BitSet kept1 = new BitSet();
 				BitSet kept2 = new BitSet();
@@ -266,7 +268,8 @@ public class LogBasedPartialSynchronizedProduct<T> {
 				pruned1.andNot(kept1);
 				pruned2.andNot(kept2);
 
-				nextCandidate2: for (int e2 = rpe.nextSetBit(0); e2 >= 0; e2 = rpe.nextSetBit(e2 + 1)) {
+				nextCandidate2:
+                for (int e2 = rpe.nextSetBit(0); e2 >= 0; e2 = rpe.nextSetBit(e2 + 1)) {
 					if (pruned2.get(e2) || kept2.get(e2))
 						continue;
 
@@ -280,13 +283,11 @@ public class LogBasedPartialSynchronizedProduct<T> {
 
 					computeCost(nstate);
 
-					switch (nstate.action) {
-					case CREATED:
-						open.offer(nstate);
-						ancestors.put(nstate, s);
-					case MERGED:
-						descendants.put(s, Operation.rhide(nstate, e2, pes2.getLabel(e2)));
-					default:
+                    if(nstate.action == StateHint.CREATED) {
+                        open.offer(nstate);
+                        ancestors.put(nstate, s);
+                    } else if(nstate.action == StateHint.MERGED) {
+                        descendants.put(s, Operation.rhide(nstate, e2, pes2.getLabel(e2)));
 					}
 
 					// IOUtils.toFile("psp.dot", toDot());
@@ -302,13 +303,11 @@ public class LogBasedPartialSynchronizedProduct<T> {
 					State nstate = getState(c1p, s.labels, s.c2);
 					computeCost(nstate);
 
-					switch (nstate.action) {
-					case CREATED:
-						open.offer(nstate);
-						ancestors.put(nstate, s);
-					case MERGED:
-						descendants.put(s, Operation.lhide(nstate, e1, pes1.getLabel(e1)));
-					default:
+                    if(nstate.action == StateHint.CREATED) {
+                        open.offer(nstate);
+                        ancestors.put(nstate, s);
+                    } else if(nstate.action == StateHint.MERGED) {
+                        descendants.put(s, Operation.lhide(nstate, e1, pes1.getLabel(e1)));
 					}
 
 					// IOUtils.toFile("psp.dot", toDot());
@@ -333,6 +332,8 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		BitSet e1causes = pes1.getLocalConfiguration(e1);
 		BitSet e2causes = pes2.getLocalConfiguration(e2);
 
+        Pair<Integer, Integer> matchedEvents;
+        Integer hiddenEvent;
 		while (!open.isEmpty()) {
 			if (e1dpred.isEmpty() && e2dpred.isEmpty())
 				break;
@@ -342,66 +343,65 @@ public class LogBasedPartialSynchronizedProduct<T> {
 			for (State ancestor : ancestors.get(curr)) {
 				if (visited.contains(ancestor) || open.contains(ancestor))
 					continue;
-				for (Operation op : descendants.get(ancestor))
-					if (op.nextState.equals(curr)) {
-						// System.out.println(">> " + op);
-						if (op.op == Op.MATCH) {
-							@SuppressWarnings("unchecked")
-							Pair<Integer, Integer> matchedEvents = (Pair<Integer, Integer>) op.target;
-							e1dpred.clear(matchedEvents.getFirst());
-							e2dpred.clear(matchedEvents.getSecond());
+				for (Operation op : descendants.get(ancestor)) {
+                    if (op.nextState.equals(curr)) {
+                        // System.out.println(">> " + op);
+                        if (op.op == Op.MATCH) {
+                            matchedEvents = (Pair<Integer, Integer>) op.target;
+                            e1dpred.clear(matchedEvents.getFirst());
+                            e2dpred.clear(matchedEvents.getSecond());
 
-							if (!(e1causes.get(matchedEvents.getFirst()) == e2causes.get(matchedEvents.getSecond()))) {
-								// System.out.println("====== It is not order
-								// preserving!");
-								return false;
-							}
+                            if (e1causes.get(matchedEvents.getFirst()) != e2causes.get(matchedEvents.getSecond())) {
+                                // System.out.println("====== It is not order
+                                // preserving!");
+                                return false;
+                            }
 
-						} else if (op.op == Op.MATCHNSHIFT) {
-							@SuppressWarnings("unchecked")
-							Pair<Integer, Integer> matchedEvents = (Pair<Integer, Integer>) op.target;
-							e1dpred.clear(matchedEvents.getFirst());
-							e2dpred.clear(matchedEvents.getSecond());
+                        } else if (op.op == Op.MATCHNSHIFT) {
+                            matchedEvents = (Pair<Integer, Integer>) op.target;
+                            e1dpred.clear(matchedEvents.getFirst());
+                            e2dpred.clear(matchedEvents.getSecond());
 
-							// System.out.println("Performed inverse shift
-							// (+match): " + matchedEvents.getSecond());
-							if (pes2.getBRelation(e2, matchedEvents.getSecond()) != BehaviorRelation.CONCURRENCY) {
+                            // System.out.println("Performed inverse shift
+                            // (+match): " + matchedEvents.getSecond());
+                            if (pes2.getBRelation(e2, matchedEvents.getSecond()) != BehaviorRelation.CONCURRENCY) {
 
-								// e2causes = pes2.unshift(e2causes,
-								// matchedEvents.getSecond());
-								//
-								e2causes = pes2.getLocalConfiguration(matchedEvents.getSecond());
-							}
+                                // e2causes = pes2.unshift(e2causes,
+                                // matchedEvents.getSecond());
+                                //
+                                e2causes = pes2.getLocalConfiguration(matchedEvents.getSecond());
+                            }
 
-							if (!(e1causes.get(matchedEvents.getFirst()) == e2causes.get(matchedEvents.getSecond()))) {
-								// System.out.println("====== It is not order
-								// preserving! (after inverse shift)");
-								return false;
-							}
-						} else if (op.op == Op.RHIDENSHIFT || op.op == Op.RHIDE) {
-							Integer hiddenEvent = (Integer) op.target;
-							// if (e2dpred.contains(hiddenEvent)) {
-							e2dpred.clear(hiddenEvent);
-							e2dpred.or(pes2.getDirectPredecessors(hiddenEvent));
-							if (op.op == Op.RHIDENSHIFT
-									&& pes2.getBRelation(e2, hiddenEvent) != BehaviorRelation.CONCURRENCY) {
-								// System.out.println("Performed inverse shift:
-								// " + hiddenEvent);
+                            if (e1causes.get(matchedEvents.getFirst()) != e2causes.get(matchedEvents.getSecond())) {
+                                // System.out.println("====== It is not order
+                                // preserving! (after inverse shift)");
+                                return false;
+                            }
+                        } else if (op.op == Op.RHIDENSHIFT || op.op == Op.RHIDE) {
+                            hiddenEvent = (Integer) op.target;
+                            // if (e2dpred.contains(hiddenEvent)) {
+                            e2dpred.clear(hiddenEvent);
+                            e2dpred.or(pes2.getDirectPredecessors(hiddenEvent));
+                            if (op.op == Op.RHIDENSHIFT
+                                    && pes2.getBRelation(e2, hiddenEvent) != BehaviorRelation.CONCURRENCY) {
+                                // System.out.println("Performed inverse shift:
+                                // " + hiddenEvent);
 
-								// e2causes = pes2.unshift(e2causes,
-								// hiddenEvent);
-								//
-								e2causes.clear(hiddenEvent);
-								// e2causes =
-								// pes2.getLocalConfiguration(hiddenEvent);
-							}
-							// }
-						} else {
-							Integer hiddenEvent = (Integer) op.target;
-							e1dpred.clear(hiddenEvent);
-							e1dpred.or(pes1.getDirectPredecessors(hiddenEvent));
-						}
-					}
+                                // e2causes = pes2.unshift(e2causes,
+                                // hiddenEvent);
+                                //
+                                e2causes.clear(hiddenEvent);
+                                // e2causes =
+                                // pes2.getLocalConfiguration(hiddenEvent);
+                            }
+                            // }
+                        } else {
+                            hiddenEvent = (Integer) op.target;
+                            e1dpred.clear(hiddenEvent);
+                            e1dpred.or(pes1.getDirectPredecessors(hiddenEvent));
+                        }
+                    }
+                }
 				open.push(ancestor);
 			}
 		}
