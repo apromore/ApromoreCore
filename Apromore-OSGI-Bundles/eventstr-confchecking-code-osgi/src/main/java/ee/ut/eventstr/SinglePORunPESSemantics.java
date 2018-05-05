@@ -125,7 +125,7 @@ public class SinglePORunPESSemantics <T>{
 	public BitSet getDirectPredecessors(int e) {
 	    BitSet pred = cache.get(e);
 	    if(pred == null) {
-            pred = new BitSet();
+			pred = new BitSet();
             for (int i = 0; i < pes.labels.size(); i++) {
                 if (pes.dcausality[i].get(e)) {
                     pred.set(i);

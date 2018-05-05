@@ -49,6 +49,9 @@ import ee.ut.eventstr.BehaviorRelation;
 import ee.ut.eventstr.SinglePORunPESSemantics;
 import ee.ut.org.processmining.framework.util.Pair;
 
+import static ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.StateHint.CREATED;
+import static ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.StateHint.MERGED;
+
 public class LogBasedPartialSynchronizedProduct<T> {
 
 	public static class State implements Comparable<State> {
@@ -58,11 +61,26 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		StateHint action;
 		public short cost = 0;
 
+		int hashcode = -1;
+
 		State(BitSet c1, Multiset<String> labels, BitSet c2) {
 			this.c1 = c1;
 			this.c2 = c2;
 			this.labels = labels;
 		}
+
+		public int hashCode() {
+		    if(hashcode == -1) hashcode = c1.hashCode() + c2.hashCode() + labels.hashCode();
+		    return hashcode;
+        }
+
+        public boolean equals(Object o) {
+		    if(o instanceof State) {
+		        State s = (State) o;
+		        return (c1.equals(s.c1) && c2.equals(s.c2) && labels.equals(s.labels));
+            }
+            return false;
+        }
 
 		public String toString() {
 			return String.format("<%s,%s,%s,%d>", c1, labels, c2, cost);
@@ -86,6 +104,8 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		String label;
 		State nextState;
 		Object target;
+
+		int hashcode = -1;
 
 		private Operation(State state, Op op, Object target, String label) {
 			this.nextState = state;
@@ -113,6 +133,19 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		static Operation matchnshift(State state, Pair<Integer, Integer> target, String label) {
 			return new Operation(state, Op.MATCHNSHIFT, target, label);
 		}
+
+		public int hashCode() {
+		    if(hashcode == 1) hashcode = nextState.hashcode + target.hashCode() + op.hashCode() + label.hashCode();
+		    return hashcode;
+        }
+
+        public boolean equals(Object o) {
+		    if(o instanceof Operation) {
+                Operation ope = (Operation) o;
+                return nextState.equals(ope.nextState) && target.equals(ope.target) && op.equals(ope.op) && label.equals(ope.label);
+            }
+            return false;
+        }
 
 		public String toString() {
 			return String.format("%s(%s[%s])", op.toString().toLowerCase(), label, target);
@@ -181,59 +214,60 @@ public class LogBasedPartialSynchronizedProduct<T> {
 				BitSet pruned1 = new BitSet();
 				BitSet pruned2 = new BitSet();
 
-				for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1 + 1)) {
-					String label1 = pes1.getLabel(e1);
-					BitSet c1p = (BitSet) s.c1.clone();
-					c1p.set(e1);
-
-					for (int e2 = rpe.nextSetBit(0); e2 >= 0; e2 = rpe.nextSetBit(e2 + 1)) {
-						if (label1.equals(pes2.getLabel(e2)) && isOrderPreserving(s, e1, e2)) {
-							pruned1.set(e1);
-							pruned2.set(e2);
-
-							// if (prev != null &&
-							// pes1.getBRelation(e1, prevPair.getFirst()) ==
-							// BehaviorRelation.CONCURRENCY &&
-							// pes2.getBRelation(e2, prevPair.getSecond()) ==
-							// BehaviorRelation.CONCURRENCY &&
-							// label1.compareTo(prev.label) > 0)
-							// continue;
-
-							BitSet c2p = (BitSet) s.c2.clone();
-							c2p.set(e2);
-							Multiset<String> labels = HashMultiset.create(s.labels);
-							labels.add(label1);
-
-							State nstate = getState(c1p, labels, c2p);
-							nstate.cost = s.cost; // A matching operation does
-													// not change the current
-													// cost
-
-							Operation operation = Operation.match(nstate, new Pair<>(e1, e2), label1);
-
-							candidates.add(operation);
-
-							// switch (pair.getFirst()) {
-							// case CREATED:
-							// open.offer(nstate);
-							// ancestors.put(nstate, s);
-							// case MERGED:
-							// Operation operation;
-							// if (extPair.getSecond())
-							// operation = Operation.matchnshift(nstate, new
-							// Pair<>(e1, e2), label1);
-							// else
-							// operation = Operation.match(nstate, new
-							// Pair<>(e1, e2), label1);
-							//
-							// descendants.put(s, operation);
-							// default:
-							// }
-
-							// IOUtils.toFile("psp.dot", toDot());
-						}
-					}
-				}
+//				for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1 + 1)) {
+//					String label1 = pes1.getLabel(e1);
+//					BitSet c1p = (BitSet) s.c1.clone();
+//					c1p.set(e1);
+//
+//					for (int e2 = rpe.nextSetBit(0); e2 >= 0; e2 = rpe.nextSetBit(e2 + 1)) {
+//						if (label1.equals(pes2.getLabel(e2)) && isOrderPreserving(s, e1, e2)) {
+//							pruned1.set(e1);
+//							pruned2.set(e2);
+//
+//							// if (prev != null &&
+//							// pes1.getBRelation(e1, prevPair.getFirst()) ==
+//							// BehaviorRelation.CONCURRENCY &&
+//							// pes2.getBRelation(e2, prevPair.getSecond()) ==
+//							// BehaviorRelation.CONCURRENCY &&
+//							// label1.compareTo(prev.label) > 0)
+//							// continue;
+//
+//							BitSet c2p = (BitSet) s.c2.clone();
+//							c2p.set(e2);
+//							Multiset<String> labels = HashMultiset.create(s.labels);
+//							labels.add(label1);
+//
+//							State nstate = getState(c1p, labels, c2p);
+//							nstate.cost = s.cost; // A matching operation does
+//													// not change the current
+//													// cost
+//
+//							Operation operation = Operation.match(nstate, new Pair<>(e1, e2), label1);
+//
+//							candidates.add(operation);
+//
+//							// switch (pair.getFirst()) {
+//							// case CREATED:
+//							// open.offer(nstate);
+//							// ancestors.put(nstate, s);
+//							// case MERGED:
+//							// Operation operation;
+//							// if (extPair.getSecond())
+//							// operation = Operation.matchnshift(nstate, new
+//							// Pair<>(e1, e2), label1);
+//							// else
+//							// operation = Operation.match(nstate, new
+//							// Pair<>(e1, e2), label1);
+//							//
+//							// descendants.put(s, operation);
+//							// default:
+//							// }
+//
+//							// IOUtils.toFile("psp.dot", toDot());
+//						}
+//					}
+//				}
+				generateCandidates(candidates, pruned1, pruned2, lpe, rpe, s);
 
 				Collections.sort(candidates, comparator);
 
@@ -283,11 +317,13 @@ public class LogBasedPartialSynchronizedProduct<T> {
 
 					computeCost(nstate);
 
-                    if(nstate.action == StateHint.CREATED) {
+					switch (nstate.action) {
+                    case CREATED:
                         open.offer(nstate);
                         ancestors.put(nstate, s);
-                    } else if(nstate.action == StateHint.MERGED) {
+                    case MERGED:
                         descendants.put(s, Operation.rhide(nstate, e2, pes2.getLabel(e2)));
+                    default:
 					}
 
 					// IOUtils.toFile("psp.dot", toDot());
@@ -303,11 +339,13 @@ public class LogBasedPartialSynchronizedProduct<T> {
 					State nstate = getState(c1p, s.labels, s.c2);
 					computeCost(nstate);
 
-                    if(nstate.action == StateHint.CREATED) {
+					switch (nstate.action) {
+                    case CREATED:
                         open.offer(nstate);
                         ancestors.put(nstate, s);
-                    } else if(nstate.action == StateHint.MERGED) {
+                    case MERGED:
                         descendants.put(s, Operation.lhide(nstate, e1, pes1.getLabel(e1)));
+                    default:
 					}
 
 					// IOUtils.toFile("psp.dot", toDot());
@@ -315,6 +353,62 @@ public class LogBasedPartialSynchronizedProduct<T> {
 			}
 		}
 		return this;
+	}
+
+	private void generateCandidates(List<Operation> candidates, BitSet pruned1, BitSet pruned2, BitSet lpe, BitSet rpe, State s) {
+		for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1 + 1)) {
+			String label1 = pes1.getLabel(e1);
+			BitSet c1p = (BitSet) s.c1.clone();
+			c1p.set(e1);
+
+			for (int e2 = rpe.nextSetBit(0); e2 >= 0; e2 = rpe.nextSetBit(e2 + 1)) {
+				if (label1.equals(pes2.getLabel(e2)) && isOrderPreserving(s, e1, e2)) {
+					pruned1.set(e1);
+					pruned2.set(e2);
+
+					// if (prev != null &&
+					// pes1.getBRelation(e1, prevPair.getFirst()) ==
+					// BehaviorRelation.CONCURRENCY &&
+					// pes2.getBRelation(e2, prevPair.getSecond()) ==
+					// BehaviorRelation.CONCURRENCY &&
+					// label1.compareTo(prev.label) > 0)
+					// continue;
+
+					BitSet c2p = (BitSet) s.c2.clone();
+					c2p.set(e2);
+					Multiset<String> labels = HashMultiset.create(s.labels);
+					labels.add(label1);
+
+					State nstate = getState(c1p, labels, c2p);
+					nstate.cost = s.cost; // A matching operation does
+					// not change the current
+					// cost
+
+					Operation operation = Operation.match(nstate, new Pair<>(e1, e2), label1);
+
+					candidates.add(operation);
+
+					// switch (pair.getFirst()) {
+					// case CREATED:
+					// open.offer(nstate);
+					// ancestors.put(nstate, s);
+					// case MERGED:
+					// Operation operation;
+					// if (extPair.getSecond())
+					// operation = Operation.matchnshift(nstate, new
+					// Pair<>(e1, e2), label1);
+					// else
+					// operation = Operation.match(nstate, new
+					// Pair<>(e1, e2), label1);
+					//
+					// descendants.put(s, operation);
+					// default:
+					// }
+
+					// IOUtils.toFile("psp.dot", toDot());
+				}
+			}
+		}
 	}
 
 	public List<State> getStates() {
@@ -412,12 +506,12 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		State newState = new State(c1, labels, c2);
 		states.add(newState);
 
-		newState.action = StateHint.CREATED;
+		newState.action = CREATED;
 
 		if (stateSpaceTable.contains(c1, c2)) {
 			Map<Multiset<String>, State> map = stateSpaceTable.get(c1, c2);
 			if (map.containsKey(labels))
-				newState.action = StateHint.MERGED;
+				newState.action = MERGED;
 			else
 				map.put(labels, newState);
 		} else {
