@@ -49,9 +49,12 @@ import ee.ut.eventstr.BehaviorRelation;
 import ee.ut.eventstr.SinglePORunPESSemantics;
 import ee.ut.org.processmining.framework.util.Pair;
 import org.eclipse.collections.impl.bag.mutable.primitive.IntHashBag;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.eclipse.collections.impl.multimap.set.UnifiedSetMultimap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.stack.mutable.ArrayStack;
 
 import static ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.StateHint.CREATED;
 import static ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.StateHint.MERGED;
@@ -424,11 +427,11 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		BitSet e1dpred = (BitSet) pes1.getDirectPredecessors(e1).clone();
 		BitSet e2dpred = (BitSet) pes2.getDirectPredecessors(e2).clone();
 
-		Stack<State> open = new Stack<>();
-		Set<State> visited = new HashSet<>();
-        Set<State> openSet = new HashSet<>();
+        ArrayStack<State> open = new ArrayStack<>();
+		Set<State> visited = new UnifiedSet<>();
+        Set<State> openSet = new UnifiedSet<>();
 		open.push(s);
-		open.add(s);
+		openSet.add(s);
 
 		BitSet e1causes = pes1.getLocalConfiguration(e1);
 		BitSet e2causes = pes2.getLocalConfiguration(e2);
@@ -534,7 +537,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		} else {
 //			Map<Multiset<String>, State> map = new HashMap<>();
 //          Map<Multiset<Integer>, State> map = new HashMap<>();
-            map = new HashMap<>();
+            map = new UnifiedMap<>();
 			map.put(labels, newState);
 			stateSpaceTable.put(c1, c2, map);
 		}
