@@ -88,7 +88,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
         public boolean equals(Object o) {
 		    if(o instanceof State) {
 		        State s = (State) o;
-		        return (c1.equals(s.c1) && c2.equals(s.c2) && labels.equals(s.labels));
+		        return (labels.equals(s.labels) && c1.equals(s.c1) && c2.equals(s.c2));
             }
             return false;
         }
@@ -166,7 +166,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		    if(o instanceof Operation) {
                 Operation ope = (Operation) o;
 //                return nextState.equals(ope.nextState) && target.equals(ope.target) && op.equals(ope.op) && label.equals(ope.label);
-                return nextState.equals(ope.nextState) && target.equals(ope.target) && op.equals(ope.op) && label == ope.label;
+                return op.equals(ope.op) && label == ope.label && nextState.equals(ope.nextState) && target.equals(ope.target);
             }
             return false;
         }
@@ -310,18 +310,18 @@ public class LogBasedPartialSynchronizedProduct<T> {
 
 					BitSet c1p = (BitSet) s.c1.clone();
 					c1p.set(e1);
-
 					State nstate = getState(c1p, s.labels, s.c2);
+
 					computeCost(nstate);
 
 					switch (nstate.action) {
-                    case CREATED:
-                        open.offer(nstate);
-                        ancestors.put(nstate, s);
-                    case MERGED:
-//                        descendants.put(s, Operation.lhide(nstate, e1, pes1.getLabel(e1)));
-                        descendants.put(s, Operation.lhide(nstate, e1, getLabel(pes1.getLabel(e1)), getReverseLabel(getLabel(pes1.getLabel(e1)))));
-                    default:
+                        case CREATED:
+                            open.offer(nstate);
+                            ancestors.put(nstate, s);
+                        case MERGED:
+    //                        descendants.put(s, Operation.lhide(nstate, e1, pes1.getLabel(e1)));
+                            descendants.put(s, Operation.lhide(nstate, e1, getLabel(pes1.getLabel(e1)), getReverseLabel(getLabel(pes1.getLabel(e1)))));
+                        default:
 					}
 
 					// IOUtils.toFile("psp.dot", toDot());
@@ -341,7 +341,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 
 			for (int e2 = rpe.nextSetBit(0); e2 >= 0; e2 = rpe.nextSetBit(e2 + 1)) {
 //				if (label1.equals(pes2.getLabel(e2)) && isOrderPreserving(s, e1, e2)) {
-                if (label1 == labelMap.get(pes2.getLabel(e2)) && isOrderPreserving(s, e1, e2)) {
+                if (label1 == getLabel(pes2.getLabel(e2)) && isOrderPreserving(s, e1, e2)) {
 					pruned1.set(e1);
 					pruned2.set(e2);
 
@@ -394,8 +394,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
     private int getLabel(String label) {
         int label1 = labelMap.get(label);
         if(label1 == 0) {
-            label1 = labelMap.size();
-            label1++;
+            label1 = labelMap.size() + 1;
             labelMap.put(label, label1);
             reverseLabelMap.put(label1, label);
         }
@@ -533,9 +532,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	}
 
 	private boolean isCandidate(State s) {
-		if (matchings == null)
-			return true;
-		return false;
+		return matchings == null;
 	}
 
 	public void computeCost(State s) {
