@@ -48,8 +48,10 @@ import com.google.common.collect.Table;
 import ee.ut.eventstr.BehaviorRelation;
 import ee.ut.eventstr.SinglePORunPESSemantics;
 import ee.ut.org.processmining.framework.util.Pair;
+import org.eclipse.collections.impl.bag.mutable.primitive.IntHashBag;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
+import org.eclipse.collections.impl.multimap.set.UnifiedSetMultimap;
 
 import static ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.StateHint.CREATED;
 import static ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.StateHint.MERGED;
@@ -63,18 +65,16 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		BitSet c1;
 		BitSet c2;
 //		Multiset<String> labels;
-		Multiset<Integer> labels;
+//		Multiset<Integer> labels;
+        IntHashBag labels;
 		StateHint action;
 		public short cost = 0;
 
 		int hashcode = -1;
 
 //		State(BitSet c1, Multiset<String> labels, BitSet c2) {
-//			this.c1 = c1;
-//			this.c2 = c2;
-//			this.labels = labels;
-//		}
-		State(BitSet c1, Multiset<Integer> labels, BitSet c2) {
+//		State(BitSet c1, Multiset<Integer> labels, BitSet c2) {
+        State(BitSet c1, IntHashBag labels, BitSet c2) {
 			this.c1 = c1;
 			this.c2 = c2;
 			this.labels = labels;
@@ -182,11 +182,14 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	private BitSet maxConf1;
 	public State matchings;
 
-	private Multimap<State, Operation> descendants;
-	private Multimap<State, State> ancestors;
+//	private Multimap<State, Operation> descendants;
+//	private Multimap<State, State> ancestors;
+    private UnifiedSetMultimap<State, Operation> descendants;
+    private UnifiedSetMultimap<State, State> ancestors;
 	private State root;
 //	private Table<BitSet, BitSet, Map<Multiset<String>, State>> stateSpaceTable;
-    private Table<BitSet, BitSet, Map<Multiset<Integer>, State>> stateSpaceTable;
+//  private Table<BitSet, BitSet, Map<Multiset<Integer>, State>> stateSpaceTable;
+    private Table<BitSet, BitSet, Map<IntHashBag, State>> stateSpaceTable;
 
 	private List<State> states = new ArrayList<>();
 	private Set<State> relevantStates;
@@ -195,9 +198,11 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	public LogBasedPartialSynchronizedProduct(SinglePORunPESSemantics<T> pes1, SinglePORunPESSemantics<T> pes2) {
 		this.pes1 = pes1;
 		this.pes2 = pes2;
-		this.descendants = HashMultimap.create();
-		this.ancestors = HashMultimap.create();
-		this.stateSpaceTable = HashBasedTable.create();
+//        this.descendants = HashMultimap.create();
+//        this.ancestors = HashMultimap.create();
+        this.descendants = UnifiedSetMultimap.newMultimap();
+        this.ancestors = UnifiedSetMultimap.newMultimap();
+        this.stateSpaceTable = HashBasedTable.create();
 
 		this.numberOfTargets = pes1.getMaxConf().size();
 		this.maxConf1 = pes1.getMaxConf().iterator().next();
@@ -207,7 +212,8 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	public LogBasedPartialSynchronizedProduct<T> perform() {
 		Queue<State> open = new PriorityQueue<>();
 
-		root = getState(new BitSet(), HashMultiset.create(), new BitSet());
+//		root = getState(new BitSet(), HashMultiset.create(), new BitSet());
+		root = getState(new BitSet(), new IntHashBag(), new BitSet());
 
 		open.offer(root);
 
@@ -356,7 +362,8 @@ public class LogBasedPartialSynchronizedProduct<T> {
 					BitSet c2p = (BitSet) s.c2.clone();
 					c2p.set(e2);
 //					Multiset<String> labels = HashMultiset.create(s.labels);
-                    Multiset<Integer> labels = HashMultiset.create(s.labels);
+//                  Multiset<Integer> labels = HashMultiset.create(s.labels);
+                    IntHashBag labels = IntHashBag.newBag(s.labels);
 					labels.add(label1);
 
 					State nstate = getState(c1p, labels, c2p);
@@ -428,10 +435,11 @@ public class LogBasedPartialSynchronizedProduct<T> {
 
         Pair<Integer, Integer> matchedEvents;
         Integer hiddenEvent;
+        State curr;
 		while (!open.isEmpty()) {
 			if (e1dpred.isEmpty() && e2dpred.isEmpty())
 				break;
-			State curr = open.pop();
+			curr = open.pop();
 			openSet.remove(curr);
 			visited.add(curr);
 
@@ -506,13 +514,15 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	}
 
 //	private State getState(BitSet c1, Multiset<String> labels, BitSet c2) {
-    private State getState(BitSet c1, Multiset<Integer> labels, BitSet c2) {
+//  private State getState(BitSet c1, Multiset<Integer> labels, BitSet c2) {
+    private State getState(BitSet c1, IntHashBag labels, BitSet c2) {
 		State newState = new State(c1, labels, c2);
 		states.add(newState);
 
 		newState.action = CREATED;
 
-        Map<Multiset<Integer>, State> map;
+//      Map<Multiset<Integer>, State> map;
+        Map<IntHashBag, State> map;
 //		if (stateSpaceTable.contains(c1, c2)) {
         if ((map = stateSpaceTable.get(c1, c2)) != null) {
 //			Map<Multiset<String>, State> map = stateSpaceTable.get(c1, c2);
@@ -540,7 +550,8 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	}
 
 //	public int g(BitSet c1, BitSet c2, Multiset<String> labels) {
-    public int g(BitSet c1, BitSet c2, Multiset<Integer> labels) {
+//  public int g(BitSet c1, BitSet c2, Multiset<Integer> labels) {
+    public int g(BitSet c1, BitSet c2, IntHashBag labels) {
 		return (c1.cardinality() + c2.cardinality() - labels.size() * 2);
 	}
 

@@ -135,5 +135,5 @@
 			<groupId>org.eclipse.collections</groupId>
 			<artifactId>eclipse-collections</artifactId>
 		</dependency>
-	</dependencies>
+    </dependencies>
 </project>

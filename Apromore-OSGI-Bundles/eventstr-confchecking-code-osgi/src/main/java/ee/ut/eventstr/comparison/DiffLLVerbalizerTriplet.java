@@ -29,6 +29,7 @@ import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.State;
 import ee.ut.org.processmining.framework.util.Pair;
 import ee.ut.utilities.Triplet;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.bag.mutable.primitive.IntHashBag;
 
 import java.util.*;
 
@@ -47,7 +48,8 @@ public class DiffLLVerbalizerTriplet<T> {
 	private List<List<Operation>> opSeqs;
 
 //	private Table<BitSet, BitSet, Map<Multiset<String>, State>> stateSpace;
-	private Table<BitSet, BitSet, Map<Multiset<Integer>, State>> stateSpace;
+//	private Table<BitSet, BitSet, Map<Multiset<Integer>, State>> stateSpace;
+	private Table<BitSet, BitSet, Map<IntHashBag, State>> stateSpace;
 	private Multimap<State, Operation> descendants;
 	private State root;
 
@@ -66,7 +68,8 @@ public class DiffLLVerbalizerTriplet<T> {
 		this.opSeqs = new ArrayList<>();
 		this.stateSpace = HashBasedTable.create();
 		this.descendants = HashMultimap.create();
-		this.root = new State(new BitSet(), HashMultiset.create(), new BitSet());
+//		this.root = new State(new BitSet(), HashMultiset.create(), new BitSet());
+		this.root = new State(new BitSet(), new IntHashBag(), new BitSet());
 		this.globalDiffs = HashBasedTable.create();
 		
 //		this.statements = new HashSet<String>();
@@ -114,6 +117,7 @@ public class DiffLLVerbalizerTriplet<T> {
 			context2.clear(secondMatchingEventPair.getSecond());
 			
 			String firstHidingLabel = firstHiding.getLabel();
+            int firstHidingInt = firstHiding.label;
 
             if(firstMatching.getLabel().equals("_0_") || firstHidingLabel.equals("_0_") ||
                     firstMatching.getLabel().equals("_1_") || firstHidingLabel.equals("_1_"))
@@ -151,7 +155,8 @@ public class DiffLLVerbalizerTriplet<T> {
 				} 
 				else {
 					// No RHIDE found within difference context
-					if (firstMatching.nextState.labels.contains(firstHidingLabel)) {
+//					if (firstMatching.nextState.labels.contains(firstHidingLabel)) {
+					if (firstMatching.nextState.labels.contains(firstHidingInt)) {
 						if (!globalDiffs.contains(context1, context2)) {
 							int c = 1;
 							
@@ -160,7 +165,7 @@ public class DiffLLVerbalizerTriplet<T> {
 							past.set(diffIndexes[0], diffIndexes[1]);
 							
 							if ((diffIndexes[2] - diffIndexes[1]) > 1) {
-								while ((pes2.getLabels().contains(opSeq.get(diffIndexes[1]).label) == pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).label)) &&
+								while ((pes2.getLabels().contains(opSeq.get(diffIndexes[1]).getLabel()) == pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) &&
 										(diffIndexes[1] + c < diffIndexes[2])) {
 									c++;
 								}
@@ -169,12 +174,12 @@ public class DiffLLVerbalizerTriplet<T> {
 								
 								if (diffIndexes[1] + c == diffIndexes[2]) {
 									if ((opSeq.get(diffIndexes[2]).op == Op.MATCH) && 
-											(pes1.getLabel(context1.previousSetBit(context1.length())).equals(opSeq.get(diffIndexes[2]).label))) {
+											(pes1.getLabel(context1.previousSetBit(context1.length())).equals(opSeq.get(diffIndexes[2]).getLabel()))) {
 										interval.set(diffIndexes[2]);
 									}
 									c--;
 								}
-								if (!pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).label)) {
+								if (!pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) {
 									int[] ndiffInd = {diffIndexes[0], diffIndexes[1] + c, diffIndexes[2]};
 									diffIndexesList.add(ndiffInd);
 								}
@@ -389,7 +394,7 @@ public class DiffLLVerbalizerTriplet<T> {
 												past.set(diffIndexes[0], diffIndexes[1]);
 												
 												if ((diffIndexes[2] - diffIndexes[1]) > 1) {
-													while ((pes2.getLabels().contains(opSeq.get(diffIndexes[1]).label) == pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).label)) &&
+													while ((pes2.getLabels().contains(opSeq.get(diffIndexes[1]).getLabel()) == pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) &&
 															(diffIndexes[1] + c < diffIndexes[2])) {
 														c++;
 													}
@@ -399,7 +404,7 @@ public class DiffLLVerbalizerTriplet<T> {
 													if (diffIndexes[1] + c == diffIndexes[2]) {
 														c--;
 													}
-													if (pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).label)) {
+													if (pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) {
 														int[] ndiffInd = {diffIndexes[0], diffIndexes[1] + c, diffIndexes[2]};
 														diffIndexesList.add(ndiffInd);
 													}
@@ -469,7 +474,8 @@ public class DiffLLVerbalizerTriplet<T> {
 				} 
 				else {
 					// No LHIDE found within this Difference Context
-					if (firstMatching.nextState.labels.contains(firstHidingLabel)) {
+//					if (firstMatching.nextState.labels.contains(firstHidingLabel)) {
+					if (firstMatching.nextState.labels.contains(firstHidingInt)) {
 						if (!globalDiffs.contains(context1, context2)) {
 							
 							// first, check the entire context to see if there are to identify intervals of consecutive repeated events 
@@ -482,7 +488,7 @@ public class DiffLLVerbalizerTriplet<T> {
 							
 							if ((diffIndexes[2] - diffIndexes[1]) > 1) {
 								
-								while ((pes1.getLabels().contains(opSeq.get(diffIndexes[1]).label) == pes1.getLabels().contains(opSeq.get(diffIndexes[1] + c).label)) &&
+								while ((pes1.getLabels().contains(opSeq.get(diffIndexes[1]).getLabel()) == pes1.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) &&
 										(diffIndexes[1] + c < diffIndexes[2])) {
 									c++;
 								}
@@ -491,12 +497,12 @@ public class DiffLLVerbalizerTriplet<T> {
 								
 								if (diffIndexes[1] + c == diffIndexes[2]) {
 									if ((opSeq.get(diffIndexes[2]).op == Op.MATCH) && 
-											(pes2.getLabel(context2.previousSetBit(context2.length())).equals(opSeq.get(diffIndexes[2]).label))) {
+											(pes2.getLabel(context2.previousSetBit(context2.length())).equals(opSeq.get(diffIndexes[2]).getLabel()))) {
 										interval.set(diffIndexes[2]);
 									}
 									c--;
 								}
-								if (!pes1.getLabels().contains(opSeq.get(diffIndexes[1] + c).label)) {
+								if (!pes1.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) {
 									int[] ndiffInd = {diffIndexes[0], diffIndexes[1] + c, diffIndexes[2]};									
 									diffIndexesList.add(ndiffInd);
 								}
@@ -684,7 +690,7 @@ public class DiffLLVerbalizerTriplet<T> {
 											past.set(diffIndexes[0], diffIndexes[1]);
 
 											if ((diffIndexes[2] - diffIndexes[1]) > 1) {
-												while ((pes1.getLabels().contains(opSeq.get(diffIndexes[1]).label) == pes1.getLabels().contains(opSeq.get(diffIndexes[1] + c).label)) &&
+												while ((pes1.getLabels().contains(opSeq.get(diffIndexes[1]).getLabel()) == pes1.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) &&
 														(diffIndexes[1] + c < diffIndexes[2])) {
 													c++;
 												}
@@ -694,7 +700,7 @@ public class DiffLLVerbalizerTriplet<T> {
 												if (diffIndexes[1] + c == diffIndexes[2]) {
 													c--;
 												}
-												if (pes1.getLabels().contains(opSeq.get(diffIndexes[1] + c).label)) {
+												if (pes1.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) {
 													int[] ndiffInd = {diffIndexes[0], diffIndexes[1] + c, diffIndexes[2]};
 													diffIndexesList.add(ndiffInd);
 												}
@@ -908,7 +914,7 @@ public class DiffLLVerbalizerTriplet<T> {
 		for (int i = diffIndexes[1] + 1; i < diffIndexes[2]; i++) {
 			Operation secondHidingOperation = opSeq.get(i);
 			if (secondHidingOperation.op == Op.LHIDE) {
-				if (firstHidingLabel.equals(secondHidingOperation.label)) {
+				if (firstHidingLabel.equals(secondHidingOperation.getLabel())) {
 //					System.out.println("Found a matching for hidden event: " + secondHidingOperation.target);
 					return new Pair<>(secondHidingOperation, true);
 				} 
@@ -925,7 +931,7 @@ public class DiffLLVerbalizerTriplet<T> {
 		for (int i = diffIndexes[1] + 1; i < diffIndexes[2]; i++) {
 			Operation secondHidingOperation = opSeq.get(i);
 			if (secondHidingOperation.op == Op.RHIDE || secondHidingOperation.op == Op.RHIDENSHIFT) {
-				if (firstHidingLabel.equals(secondHidingOperation.label)) {
+				if (firstHidingLabel.equals(secondHidingOperation.getLabel())) {
 //					System.out.println("Found a matching for hidden event: " + secondHidingOperation.target);
 					return new Pair<>(secondHidingOperation, true);
 				} 
@@ -949,7 +955,8 @@ public class DiffLLVerbalizerTriplet<T> {
 						
 			State state = curr.nextState;
 //			Map<Multiset<String>, State> map = stateSpace.get(state.c1, state.c2);
-			Map<Multiset<Integer>, State> map = stateSpace.get(state.c1, state.c2);
+//			Map<Multiset<Integer>, State> map = stateSpace.get(state.c1, state.c2);
+			Map<IntHashBag, State> map = stateSpace.get(state.c1, state.c2);
 			if (map == null) {
 				stateSpace.put(state.c1, state.c2, map = new HashMap<>());
 			}
