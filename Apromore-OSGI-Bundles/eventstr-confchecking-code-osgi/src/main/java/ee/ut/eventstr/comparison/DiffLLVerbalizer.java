@@ -55,7 +55,8 @@ public class DiffLLVerbalizer <T> {
 	private Set<Integer> eventsConsideredByConflictRelation;
 	private List<List<Operation>> opSeqs;
 	
-	private Table<BitSet, BitSet, Map<Multiset<String>, State>> stateSpace;
+//	private Table<BitSet, BitSet, Map<Multiset<String>, State>> stateSpace;
+	private Table<BitSet, BitSet, Map<Multiset<Integer>, State>> stateSpace;
 	private Multimap<State, Operation> descendants;
 	private State root;
 	
@@ -71,7 +72,7 @@ public class DiffLLVerbalizer <T> {
 		this.opSeqs = new ArrayList<>();
 		this.stateSpace = HashBasedTable.create();
 		this.descendants = HashMultimap.create();
-		this.root = new State(new BitSet(), HashMultiset.<String>create(), new BitSet());
+		this.root = new State(new BitSet(), HashMultiset.create(), new BitSet());
 		this.globalDiffs = HashBasedTable.create();
 		
 		this.statements = new HashSet<String>();
@@ -117,10 +118,10 @@ public class DiffLLVerbalizer <T> {
 			context2.andNot(firstMatching.nextState.c2);
 			context2.clear(secondMatchingEventPair.getSecond());
 			
-			String firstHidingLabel = firstHiding.label;
+			String firstHidingLabel = firstHiding.getLabel();
 
-            if(firstMatching.label.equals("_0_") || firstHidingLabel.equals("_0_") ||
-                    firstMatching.label.equals("_1_") || firstHidingLabel.equals("_1_"))
+            if(firstMatching.getLabel().equals("_0_") || firstHidingLabel.equals("_0_") ||
+                    firstMatching.getLabel().equals("_1_") || firstHidingLabel.equals("_1_"))
                 continue;
 
 			if (firstHiding.op == Op.LHIDE) {
@@ -133,22 +134,22 @@ public class DiffLLVerbalizer <T> {
 					context2.set(firstMatchingEventPair.getSecond());
 
 					if (!globalDiffs.contains(context1, context2)) {
-						verbalizeBehDiffFromModelPerspective(firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)firstHiding.target, firstHidingLabel,
-								firstMatchingEventPair.getSecond(), firstMatching.label, (Integer)secondHiding.target, secondHiding.label);
+						verbalizeBehDiffFromModelPerspective(firstMatchingEventPair.getFirst(), firstMatching.getLabel(), (Integer)firstHiding.target, firstHidingLabel,
+								firstMatchingEventPair.getSecond(), firstMatching.getLabel(), (Integer)secondHiding.target, secondHiding.getLabel());
 					}
 				} 
 				else if (secondHiding != null) {
 					// ========= Symmetric  <<==
 					if (!globalDiffs.contains(context1, context2)) {
 //						System.out.printf("In log 2, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
-//								firstMatching.label, firstMatchingEventPair.getFirst(),
-//								firstHiding.label, (Integer)firstHiding.target,
-//								secondHiding.label, (Integer)secondHiding.target);
+//								firstMatching.getLabel(), firstMatchingEventPair.getFirst(),
+//								firstHiding.getLabel(), (Integer)firstHiding.target,
+//								secondHiding.getLabel(), (Integer)secondHiding.target);
 						statements.add(
 								String.format("In log 2, after the occurrence of %s, %s is substituted by %s",
-										getCorrectContext(firstMatching.label),
-										firstHiding.label,
-										secondHiding.label)
+										getCorrectContext(firstMatching.getLabel()),
+										firstHiding.getLabel(),
+										secondHiding.getLabel())
 						);
 					}
 				} 
@@ -215,8 +216,8 @@ public class DiffLLVerbalizer <T> {
 						}
 
 
-                        if(firstMatching.label.equals("_0_") || firstHiding.label.equals("_0_") ||
-                                firstMatching.label.equals("_1_") || firstHiding.label.equals("_1_"))
+                        if(firstMatching.getLabel().equals("_0_") || firstHiding.getLabel().equals("_0_") ||
+                                firstMatching.getLabel().equals("_1_") || firstHiding.getLabel().equals("_1_"))
                             continue;
 
 
@@ -228,15 +229,15 @@ public class DiffLLVerbalizer <T> {
 							context2.set(e2);
 							context1.set(firstMatchingEventPair.getFirst());
 
-                            if(firstMatching.label.equals("_0_") || firstHiding.label.equals("_0_") ||
-                                    firstMatching.label.equals("_1_") || firstHiding.label.equals("_1_"))
+                            if(firstMatching.getLabel().equals("_0_") || firstHiding.getLabel().equals("_0_") ||
+                                    firstMatching.getLabel().equals("_1_") || firstHiding.getLabel().equals("_1_"))
                                 continue;
 
 							if (!globalDiffs.contains(context1, context2)) {
 
                                 verbalizeBehDiffFromModelPerspective(
-										firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)firstHiding.target, firstHiding.label, 
-										firstMatchingEventPair.getSecond(), firstMatching.label, e2p, pes2.getLabel(e2p));
+										firstMatchingEventPair.getFirst(), firstMatching.getLabel(), (Integer)firstHiding.target, firstHiding.getLabel(), 
+										firstMatchingEventPair.getSecond(), firstMatching.getLabel(), e2p, pes2.getLabel(e2p));
 							}							
 						} 
 						else {
@@ -286,8 +287,8 @@ public class DiffLLVerbalizer <T> {
 
 //									if (!globalDiffs.contains(context1, context2)) {
 //										verbalizeBehDiffFromModelPerspective(
-//											firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)firstHiding.target, firstHiding.label, 
-//											firstMatchingEventPair.getSecond(), firstMatching.label, e2p, pes2.getLabel(e2p));
+//											firstMatchingEventPair.getFirst(), firstMatching.getLabel(), (Integer)firstHiding.target, firstHiding.getLabel(), 
+//											firstMatchingEventPair.getSecond(), firstMatching.getLabel(), e2p, pes2.getLabel(e2p));
 //									}	
 								}
 							}
@@ -308,8 +309,8 @@ public class DiffLLVerbalizer <T> {
 									}
 								}
 
-                                if(secondMatching.label.equals("_0_") || firstHiding.label.equals("_0_") ||
-                                        secondMatching.label.equals("_1_") || firstHiding.label.equals("_1_"))
+                                if(secondMatching.getLabel().equals("_0_") || firstHiding.getLabel().equals("_0_") ||
+                                        secondMatching.getLabel().equals("_1_") || firstHiding.getLabel().equals("_1_"))
                                     continue;
 								
 								if (found) {
@@ -320,8 +321,8 @@ public class DiffLLVerbalizer <T> {
 									if (!globalDiffs.contains(context1, context2)) {
 
 										verbalizeBehDiffFromModelPerspective(
-												secondMatchingEventPair.getFirst(), secondMatching.label, (Integer)firstHiding.target, firstHiding.label, 
-												secondMatchingEventPair.getSecond(), secondMatching.label, e2p, pes2.getLabel(e2p));
+												secondMatchingEventPair.getFirst(), secondMatching.getLabel(), (Integer)firstHiding.target, firstHiding.getLabel(), 
+												secondMatchingEventPair.getSecond(), secondMatching.getLabel(), e2p, pes2.getLabel(e2p));
 									}
 								} 
 								else {
@@ -345,8 +346,8 @@ public class DiffLLVerbalizer <T> {
 										if (!globalDiffs.contains(context1, context2)) {
 											// task relocation: this is the statement
 											verbalizeBehDiffFromModelPerspective(
-													secondMatchingEventPair.getFirst(), secondMatching.label, (Integer)firstHiding.target, firstHiding.label, 
-													secondMatchingEventPair.getSecond(), secondMatching.label, e2p, pes2.getLabel(e2p));
+													secondMatchingEventPair.getFirst(), secondMatching.getLabel(), (Integer)firstHiding.target, firstHiding.getLabel(), 
+													secondMatchingEventPair.getSecond(), secondMatching.getLabel(), e2p, pes2.getLabel(e2p));
 										}
 									} 
 									else {
@@ -367,15 +368,15 @@ public class DiffLLVerbalizer <T> {
 											context2.set(firstMatchingEventPair.getSecond());
 											context2.set(e2p);
 
-                                            if(firstMatching.label.equals("_0_") || firstHiding.label.equals("_0_") ||
-                                                    firstMatching.label.equals("_1_") || firstHiding.label.equals("_1_"))
+                                            if(firstMatching.getLabel().equals("_0_") || firstHiding.getLabel().equals("_0_") ||
+                                                    firstMatching.getLabel().equals("_1_") || firstHiding.getLabel().equals("_1_"))
                                                 continue;
 
 											if (!globalDiffs.contains(context1, context2)) {
 												
 												verbalizeBehDiffFromModelPerspective(
-														firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)firstHiding.target, firstHiding.label, 
-														firstMatchingEventPair.getSecond(), firstMatching.label, e2p, pes2.getLabel(e2p));
+														firstMatchingEventPair.getFirst(), firstMatching.getLabel(), (Integer)firstHiding.target, firstHiding.getLabel(), 
+														firstMatchingEventPair.getSecond(), firstMatching.getLabel(), e2p, pes2.getLabel(e2p));
 											}
 										} 
 										else {
@@ -439,29 +440,29 @@ public class DiffLLVerbalizer <T> {
 					context1.set(firstMatchingEventPair.getFirst());
 					context2.set(firstMatchingEventPair.getSecond());
 
-                    if(firstMatching.label.equals("_0_") || secondHiding.label.equals("_0_") ||
-                            firstMatching.label.equals("_1_") || secondHiding.label.equals("_1_"))
+                    if(firstMatching.getLabel().equals("_0_") || secondHiding.getLabel().equals("_0_") ||
+                            firstMatching.getLabel().equals("_1_") || secondHiding.getLabel().equals("_1_"))
                         continue;
 
 					if (!globalDiffs.contains(context1, context2)) {
 						
 						verbalizeBehDiffFromModelPerspective(
-								firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)secondHiding.target, secondHiding.label,
-								firstMatchingEventPair.getSecond(), firstMatching.label, (Integer)firstHiding.target, firstHiding.label);
+								firstMatchingEventPair.getFirst(), firstMatching.getLabel(), (Integer)secondHiding.target, secondHiding.getLabel(),
+								firstMatchingEventPair.getSecond(), firstMatching.getLabel(), (Integer)firstHiding.target, firstHiding.getLabel());
 					}					
 				} 
 				else if (secondHiding != null) {
 					// ========= Symmetric <<==
 					if (!globalDiffs.contains(context1, context2)) {
 //						System.out.printf("In log 2, after the occurrence of %s(%d), %s(%d) is substituted by %s(%d)\n",
-//								firstMatching.label, firstMatchingEventPair.getFirst(),
-//								firstHiding.label, (Integer)firstHiding.target,
-//								secondHiding.label, (Integer)secondHiding.target);
+//								firstMatching.getLabel(), firstMatchingEventPair.getFirst(),
+//								firstHiding.getLabel(), (Integer)firstHiding.target,
+//								secondHiding.getLabel(), (Integer)secondHiding.target);
 						statements.add(
 								String.format("In log 2, after the occurrence of %s, %s is substituted by %s",
-										firstMatching.label, 
-										firstHiding.label, 
-										secondHiding.label
+										firstMatching.getLabel(), 
+										firstHiding.getLabel(), 
+										secondHiding.getLabel()
 								)
 						);
 					}
@@ -537,15 +538,15 @@ public class DiffLLVerbalizer <T> {
 							context1.set(e1);
 							context2.set(firstMatchingEventPair.getSecond());
 
-							if(firstMatching.label.equals("_0_") || pes1.getLabel(e1p).equals("_0_") ||
-                                    firstMatching.label.equals("_1_") || pes1.getLabel(e1p).equals("_1_"))
+							if(firstMatching.getLabel().equals("_0_") || pes1.getLabel(e1p).equals("_0_") ||
+                                    firstMatching.getLabel().equals("_1_") || pes1.getLabel(e1p).equals("_1_"))
                                 continue;
 
 							if (!globalDiffs.contains(context1, context2)) {
 								
 								verbalizeBehDiffFromModelPerspective(
-										firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)e1p, pes1.getLabel(e1p), 
-										firstMatchingEventPair.getSecond(), firstMatching.label, (Integer)firstHiding.target, firstHiding.label);
+										firstMatchingEventPair.getFirst(), firstMatching.getLabel(), (Integer)e1p, pes1.getLabel(e1p), 
+										firstMatchingEventPair.getSecond(), firstMatching.getLabel(), (Integer)firstHiding.target, firstHiding.getLabel());
 
 							}
 						} 
@@ -594,15 +595,15 @@ public class DiffLLVerbalizer <T> {
 									context1.set(secondMatchingEventPair.getFirst());									
 									context2.set(secondMatchingEventPair.getSecond());
 
-                                    if(pes1.getLabel(e1p).equals("_0_") || secondMatching.label.equals("_0_") ||
-                                            pes1.getLabel(e1p).equals("_1_") || secondMatching.label.equals("_1_"))
+                                    if(pes1.getLabel(e1p).equals("_0_") || secondMatching.getLabel().equals("_0_") ||
+                                            pes1.getLabel(e1p).equals("_1_") || secondMatching.getLabel().equals("_1_"))
                                         continue;
 
 									if (!globalDiffs.contains(context1, context2)) {
 
 										verbalizeBehDiffFromModelPerspective(
-												(Integer)e1p, pes1.getLabel(e1p), secondMatchingEventPair.getFirst(), secondMatching.label, 
-												(Integer)firstHiding.target, firstHiding.label, secondMatchingEventPair.getSecond(), secondMatching.label);
+												(Integer)e1p, pes1.getLabel(e1p), secondMatchingEventPair.getFirst(), secondMatching.getLabel(), 
+												(Integer)firstHiding.target, firstHiding.getLabel(), secondMatchingEventPair.getSecond(), secondMatching.getLabel());
 									}
 								}
 							} 
@@ -627,15 +628,15 @@ public class DiffLLVerbalizer <T> {
 									context1.set(firstMatchingEventPair.getFirst());									
 									context2.set(firstMatchingEventPair.getSecond());
 
-                                    if(firstMatching.label.equals("_0_") || pes1.getLabel(e1p).equals("_0_") ||
-                                            firstMatching.label.equals("_1_") || pes1.getLabel(e1p).equals("_1_"))
+                                    if(firstMatching.getLabel().equals("_0_") || pes1.getLabel(e1p).equals("_0_") ||
+                                            firstMatching.getLabel().equals("_1_") || pes1.getLabel(e1p).equals("_1_"))
                                         continue;
 
 									if (!globalDiffs.contains(context1, context2)) {
 
 										verbalizeBehDiffFromModelPerspective(
-												firstMatchingEventPair.getFirst(), firstMatching.label, (Integer)e1p, pes1.getLabel(e1p), 
-												firstMatchingEventPair.getSecond(), firstMatching.label, (Integer)firstHiding.target, firstHiding.label);
+												firstMatchingEventPair.getFirst(), firstMatching.getLabel(), (Integer)e1p, pes1.getLabel(e1p), 
+												firstMatchingEventPair.getSecond(), firstMatching.getLabel(), (Integer)firstHiding.target, firstHiding.getLabel());
 									}									
 								} 
 								else {
@@ -656,15 +657,15 @@ public class DiffLLVerbalizer <T> {
 										context1.set(secondMatchingEventPair.getFirst());									
 										context2.set(secondMatchingEventPair.getSecond());
 
-                                        if(pes1.getLabel(e1p).equals("_0_") || secondMatching.label.equals("_0_") ||
-                                                pes1.getLabel(e1p).equals("_1_") || secondMatching.label.equals("_1_"))
+                                        if(pes1.getLabel(e1p).equals("_0_") || secondMatching.getLabel().equals("_0_") ||
+                                                pes1.getLabel(e1p).equals("_1_") || secondMatching.getLabel().equals("_1_"))
                                             continue;
 
 										if (!globalDiffs.contains(context1, context2)) {
 
 											verbalizeBehDiffFromModelPerspective(
-													(Integer)e1p, pes1.getLabel(e1p), secondMatchingEventPair.getFirst(), secondMatching.label,
-													(Integer)firstHiding.target, firstHiding.label, secondMatchingEventPair.getSecond(), secondMatching.label);
+													(Integer)e1p, pes1.getLabel(e1p), secondMatchingEventPair.getFirst(), secondMatching.getLabel(),
+													(Integer)firstHiding.target, firstHiding.getLabel(), secondMatchingEventPair.getSecond(), secondMatching.getLabel());
 										}									
 
 									} 
@@ -893,7 +894,8 @@ public class DiffLLVerbalizer <T> {
 			Operation curr = opSeq.get(i);
 						
 			State state = curr.nextState;
-			Map<Multiset<String>, State> map = stateSpace.get(state.c1, state.c2);
+//			Map<Multiset<String>, State> map = stateSpace.get(state.c1, state.c2);
+			Map<Multiset<Integer>, State> map = stateSpace.get(state.c1, state.c2);
 			if (map == null) {
 				stateSpace.put(state.c1, state.c2, map = new HashMap<>());
 			}
@@ -1015,7 +1017,7 @@ public class DiffLLVerbalizer <T> {
 		List<String> set = new ArrayList<String>();
 		
 		for (int ev = multiset.nextSetBit(0); ev >= 0; ev = multiset.nextSetBit(ev + 1)) {
-			set.add(getCorrectContext(opSeq.get(ev).label));
+			set.add(getCorrectContext(opSeq.get(ev).getLabel()));
 		}
 		return set;
 	}
