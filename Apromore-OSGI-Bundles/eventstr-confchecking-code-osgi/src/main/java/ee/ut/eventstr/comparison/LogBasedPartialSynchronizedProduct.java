@@ -245,12 +245,16 @@ public class LogBasedPartialSynchronizedProduct<T> {
 					Pair<Integer, Integer> pair = (Pair) operation.target;
 					int e1 = pair.getFirst();
 					int e2 = pair.getSecond();
-					for (int e1p = kept1.nextSetBit(0); e1p >= 0; e1p = kept1.nextSetBit(e1p + 1))
-						if (pes1.getBRelation(e1, e1p) == BehaviorRelation.CONCURRENCY)
-							continue nextCandidate;
-					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1))
-						if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY)
-							continue nextCandidate;
+					for (int e1p = kept1.nextSetBit(0); e1p >= 0; e1p = kept1.nextSetBit(e1p + 1)) {
+                        if (pes1.getBRelation(e1, e1p) == BehaviorRelation.CONCURRENCY) {
+                            continue nextCandidate;
+                        }
+                    }
+					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1)) {
+                        if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY) {
+                            continue nextCandidate;
+                        }
+                    }
 					kept1.set(e1);
 					kept2.set(e2);
 
@@ -264,12 +268,15 @@ public class LogBasedPartialSynchronizedProduct<T> {
 				nextCandidate2:
                 for (int j = 0; j < rpea.length; j++) {
                     int e2 = rpea[j];
-					if (pruned2.get(e2) || kept2.get(e2))
-						continue;
+					if (pruned2.get(e2) || kept2.get(e2)) {
+                        continue;
+                    }
 
-					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1))
-						if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY)
-							continue nextCandidate2;
+					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1)) {
+                        if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY) {
+                            continue nextCandidate2;
+                        }
+                    }
 
 					BitSet c2p = (BitSet) s.c2.clone();
 					c2p.set(e2);
@@ -282,8 +289,9 @@ public class LogBasedPartialSynchronizedProduct<T> {
 
                 for (int i = 0; i < lpea.length; i++) {
                     int e1 = lpea[i];
-					if (pruned1.get(e1) || kept1.get(e1))
-						continue;
+					if (pruned1.get(e1) || kept1.get(e1)) {
+                        continue;
+                    }
 
 					BitSet c1p = (BitSet) s.c1.clone();
 					c1p.set(e1);
