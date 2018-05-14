@@ -173,6 +173,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	public State matchings;
 
     private UnifiedSetMultimap<State, Operation> descendants;
+    private UnifiedSetMultimap<State, Operation> operations;
     private UnifiedSetMultimap<State, State> ancestors;
 	private State root;
     private Table<BitSet, BitSet, Map<IntHashBag, State>> stateSpaceTable;
@@ -185,6 +186,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		this.pes1 = pes1;
 		this.pes2 = pes2;
         this.descendants = UnifiedSetMultimap.newMultimap();
+        this.operations = UnifiedSetMultimap.newMultimap();
         this.ancestors = UnifiedSetMultimap.newMultimap();
         this.stateSpaceTable = HashBasedTable.create();
 
@@ -301,6 +303,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
             case CREATED:
                 open.offer(next_state);
                 ancestors.put(next_state, state);
+                operations.put(operation.nextState, operation);
             case MERGED:
                 descendants.put(state, operation);
             default:
@@ -349,9 +352,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
                     labels.add(label1);
 
                     State nstate = getState(c1p, labels, c2p);
-                    nstate.cost = s.cost; // A matching operation does
-                    // not change the current
-                    // cost
+                    nstate.cost = s.cost; // A matching operation does not change the current cost
 
                     Operation operation = Operation.match(nstate, new Pair<>(e1, e2), label1, getReverseLabel(label1));
 
@@ -394,105 +395,125 @@ public class LogBasedPartialSynchronizedProduct<T> {
         return reverseLabelMap.get(label);
     }
 
-//    private String getReverseLabels(Multiset label) {
-//        return reverseLabelMap.get(label);
-//    }
-
     public List<State> getStates() {
 		return states;
 	}
 
-	private boolean isOrderPreserving(State s, int e1, Integer e2) {
-		BitSet e1dpred = (BitSet) pes1.getDirectPredecessors(e1).clone();
-		BitSet e2dpred = (BitSet) pes2.getDirectPredecessors(e2).clone();
+    private boolean isOrderPreserving(State s, int e1, Integer e2) {
+        BitSet e1dpred = (BitSet) pes1.getDirectPredecessors(e1).clone();
+        BitSet e2dpred = (BitSet) pes2.getDirectPredecessors(e2).clone();
 
         ArrayStack<State> open = new ArrayStack<>();
-		Set<State> visited = new UnifiedSet<>();
+        Set<State> visited = new UnifiedSet<>();
         Set<State> openSet = new UnifiedSet<>();
-		open.push(s);
-		openSet.add(s);
+        open.push(s);
+        openSet.add(s);
 
-		BitSet e1causes = pes1.getLocalConfiguration(e1);
-		BitSet e2causes = pes2.getLocalConfiguration(e2);
+        BitSet e1causes = pes1.getLocalConfiguration(e1);
+        BitSet e2causes = pes2.getLocalConfiguration(e2);
 
         Pair<Integer, Integer> matchedEvents;
         Integer hiddenEvent;
         State curr;
-		while (!open.isEmpty()) {
-			if (e1dpred.isEmpty() && e2dpred.isEmpty())
-				break;
-			curr = open.pop();
-			openSet.remove(curr);
-			visited.add(curr);
+        while (!open.isEmpty()) {
+            if (e1dpred.isEmpty() && e2dpred.isEmpty())
+                break;
+            curr = open.pop();
+            openSet.remove(curr);
+            visited.add(curr);
 
-			for (State ancestor : ancestors.get(curr)) {
-                if (visited.contains(ancestor) || openSet.contains(ancestor))
-					continue;
-				for (Operation op : descendants.get(ancestor)) {
-                    if (op.nextState.equals(curr)) {
-                        // System.out.println(">> " + op);
-                        if (op.op == Op.MATCH) {
-                            matchedEvents = (Pair<Integer, Integer>) op.target;
-                            e1dpred.clear(matchedEvents.getFirst());
-                            e2dpred.clear(matchedEvents.getSecond());
+            for (Operation op : operations.get(curr)) {
+                if (op.nextState.equals(curr)) {
+                    // System.out.println(">> " + op);
+                    if (op.op == Op.MATCH) {
+                        matchedEvents = (Pair<Integer, Integer>) op.target;
+                        e1dpred.clear(matchedEvents.getFirst());
+                        e2dpred.clear(matchedEvents.getSecond());
 
-                            if (e1causes.get(matchedEvents.getFirst()) != e2causes.get(matchedEvents.getSecond())) {
-                                // System.out.println("====== It is not order
-                                // preserving!");
-                                return false;
-                            }
-
-                        } else if (op.op == Op.MATCHNSHIFT) {
-                            matchedEvents = (Pair<Integer, Integer>) op.target;
-                            e1dpred.clear(matchedEvents.getFirst());
-                            e2dpred.clear(matchedEvents.getSecond());
-
-                            // System.out.println("Performed inverse shift
-                            // (+match): " + matchedEvents.getSecond());
-                            if (pes2.getBRelation(e2, matchedEvents.getSecond()) != BehaviorRelation.CONCURRENCY) {
-
-                                // e2causes = pes2.unshift(e2causes,
-                                // matchedEvents.getSecond());
-                                //
-                                e2causes = pes2.getLocalConfiguration(matchedEvents.getSecond());
-                            }
-
-                            if (e1causes.get(matchedEvents.getFirst()) != e2causes.get(matchedEvents.getSecond())) {
-                                // System.out.println("====== It is not order
-                                // preserving! (after inverse shift)");
-                                return false;
-                            }
-                        } else if (op.op == Op.RHIDENSHIFT || op.op == Op.RHIDE) {
-                            hiddenEvent = (Integer) op.target;
-                            // if (e2dpred.contains(hiddenEvent)) {
-                            e2dpred.clear(hiddenEvent);
-                            e2dpred.or(pes2.getDirectPredecessors(hiddenEvent));
-                            if (op.op == Op.RHIDENSHIFT
-                                    && pes2.getBRelation(e2, hiddenEvent) != BehaviorRelation.CONCURRENCY) {
-                                // System.out.println("Performed inverse shift:
-                                // " + hiddenEvent);
-
-                                // e2causes = pes2.unshift(e2causes,
-                                // hiddenEvent);
-                                //
-                                e2causes.clear(hiddenEvent);
-                                // e2causes =
-                                // pes2.getLocalConfiguration(hiddenEvent);
-                            }
-                            // }
-                        } else {
-                            hiddenEvent = (Integer) op.target;
-                            e1dpred.clear(hiddenEvent);
-                            e1dpred.or(pes1.getDirectPredecessors(hiddenEvent));
+                        if (e1causes.get(matchedEvents.getFirst()) != e2causes.get(matchedEvents.getSecond())) {
+                            // System.out.println("====== It is not order preserving!");
+                            return false;
                         }
+                    } else if (op.op == Op.RHIDE) {
+                        hiddenEvent = (Integer) op.target;
+                        // if (e2dpred.contains(hiddenEvent)) {
+                        e2dpred.clear(hiddenEvent);
+                        e2dpred.or(pes2.getDirectPredecessors(hiddenEvent));
+                        // }
+                    } else {
+                        hiddenEvent = (Integer) op.target;
+                        e1dpred.clear(hiddenEvent);
+                        e1dpred.or(pes1.getDirectPredecessors(hiddenEvent));
                     }
                 }
-				open.push(ancestor);
-				openSet.add(ancestor);
-			}
-		}
-		return true;
-	}
+            }
+            for (State ancestor : ancestors.get(curr)) {
+                if (visited.contains(ancestor) || openSet.contains(ancestor))
+                    continue;
+                open.push(ancestor);
+                openSet.add(ancestor);
+            }
+        }
+        return true;
+    }
+
+//	private boolean isOrderPreserving(State s, int e1, Integer e2) {
+//		BitSet e1dpred = (BitSet) pes1.getDirectPredecessors(e1).clone();
+//		BitSet e2dpred = (BitSet) pes2.getDirectPredecessors(e2).clone();
+//
+//        ArrayStack<State> open = new ArrayStack<>();
+//		Set<State> visited = new UnifiedSet<>();
+//        Set<State> openSet = new UnifiedSet<>();
+//		open.push(s);
+//		openSet.add(s);
+//
+//		BitSet e1causes = pes1.getLocalConfiguration(e1);
+//		BitSet e2causes = pes2.getLocalConfiguration(e2);
+//
+//        Pair<Integer, Integer> matchedEvents;
+//        Integer hiddenEvent;
+//        State curr;
+//		while (!open.isEmpty()) {
+//			if (e1dpred.isEmpty() && e2dpred.isEmpty())
+//				break;
+//			curr = open.pop();
+//			openSet.remove(curr);
+//			visited.add(curr);
+//
+//			for (State ancestor : ancestors.get(curr)) {
+//                if (visited.contains(ancestor) || openSet.contains(ancestor))
+//                    continue;
+//                for (Operation op : descendants.get(ancestor)) {
+//                    if (op.nextState.equals(curr)) {
+//                        // System.out.println(">> " + op);
+//                        if (op.op == Op.MATCH) {
+//                            matchedEvents = (Pair<Integer, Integer>) op.target;
+//                            e1dpred.clear(matchedEvents.getFirst());
+//                            e2dpred.clear(matchedEvents.getSecond());
+//
+//                            if (e1causes.get(matchedEvents.getFirst()) != e2causes.get(matchedEvents.getSecond())) {
+//                                // System.out.println("====== It is not order preserving!");
+//                                return false;
+//                            }
+//                        } else if (op.op == Op.RHIDE) {
+//                            hiddenEvent = (Integer) op.target;
+//                            // if (e2dpred.contains(hiddenEvent)) {
+//                            e2dpred.clear(hiddenEvent);
+//                            e2dpred.or(pes2.getDirectPredecessors(hiddenEvent));
+//                            // }
+//                        } else {
+//                            hiddenEvent = (Integer) op.target;
+//                            e1dpred.clear(hiddenEvent);
+//                            e1dpred.or(pes1.getDirectPredecessors(hiddenEvent));
+//                        }
+//                    }
+//                }
+//				open.push(ancestor);
+//				openSet.add(ancestor);
+//			}
+//		}
+//		return true;
+//	}
 
     private State getState(BitSet c1, IntHashBag labels, BitSet c2) {
 		State newState = new State(c1, labels, c2);
