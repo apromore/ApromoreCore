@@ -41,6 +41,7 @@ import ee.ut.mining.log.AlphaRelations;
 import ee.ut.mining.log.poruns.PORun;
 import ee.ut.mining.log.poruns.PORuns;
 import ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.Operation;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
  * @author Nick van Beest
@@ -94,10 +95,10 @@ public class ApromoreCompareLL {
 		int cursink = -1;
 		List<Operation> bestOp;
 		Set<Integer> unusedsinks = new HashSet<Integer>(logpes2.getSinks());
-        Map<Integer, Map<Integer, LogBasedPartialSynchronizedProduct<Integer>>> map = new HashMap<>();
+        IntObjectHashMap<IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>>> map = new IntObjectHashMap<>();
 
         for (int sink1: logpes1.getSinks()) {
-            Map<Integer, LogBasedPartialSynchronizedProduct<Integer>> map1 = new HashMap<>();
+            IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>> map1 = new IntObjectHashMap<>();
             map.put(sink1, map1);
 
 			logpessem1 = new SinglePORunPESSemantics<Integer>(logpes1, sink1); 
@@ -135,7 +136,7 @@ public class ApromoreCompareLL {
 			bestOp = new ArrayList<Operation>();
 			
 			for (int sink1: logpes1.getSinks()) {
-                Map<Integer, LogBasedPartialSynchronizedProduct<Integer>> map1 = map.get(sink1);
+                IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>> map1 = map.get(sink1);
                 psp = map1.get(sink2);
                 if(psp == null) {
                     logpessem1 = new SinglePORunPESSemantics<Integer>(logpes1, sink1);
@@ -175,27 +176,44 @@ public class ApromoreCompareLL {
 		int curcost;
 		int cursink = -1;
 		List<Operation> bestOp = null;
-		Set<Integer> unusedsinks = new HashSet<Integer>(logpes2.getSinks());
-		Map<Integer, Map<Integer, LogBasedPartialSynchronizedProduct<Integer>>> map = new HashMap<>();
+		Set<Integer> unusedsinks = new HashSet<>(logpes2.getSinks());
+		IntObjectHashMap<IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>>> map = new IntObjectHashMap<>();
+        IntObjectHashMap<SinglePORunPESSemantics> pes1 = new IntObjectHashMap<>();
+        IntObjectHashMap<SinglePORunPESSemantics> pes2 = new IntObjectHashMap<>();
 
-		int a = logpes1.getSinks().size();
-		for (int sink1: logpes1.getSinks()) {
-            int b = logpes2.getSinks().size();
-            Map<Integer, LogBasedPartialSynchronizedProduct<Integer>> map1 = new HashMap<>();
+        List<Integer> sinks1 = logpes1.getSinks();
+		Collections.sort(sinks1, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                Integer i1 = fullLogPesSem1.getLocalConfiguration(o1).cardinality();
+                Integer i2 = fullLogPesSem1.getLocalConfiguration(o2).cardinality();
+                return i1.compareTo(i2);
+            }
+        });
+
+        List<Integer> sinks2 = logpes2.getSinks();
+        Collections.sort(sinks2, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                Integer i1 = fullLogPesSem2.getLocalConfiguration(o1).cardinality();
+                Integer i2 = fullLogPesSem2.getLocalConfiguration(o2).cardinality();
+                return i1.compareTo(i2);
+            }
+        });
+
+        for (int sink1: sinks1) {
+            IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>> map1 = new IntObjectHashMap<>();
 		    map.put(sink1, map1);
 
-			logpessem1 = new SinglePORunPESSemantics<Integer>(logpes1, sink1);
+            logpessem1 = getLogPESSem(pes1, logpes1, sink1);
 
 			mincost = Integer.MAX_VALUE;
 
-			for (int sink2: logpes2.getSinks()) {
-                System.out.println(a + " " + b);
-
-				logpessem2 = new SinglePORunPESSemantics<Integer>(logpes2, sink2);
-				psp = new LogBasedPartialSynchronizedProduct<Integer>(logpessem1, logpessem2, mincost);
+            for (int sink2: sinks2) {
+                logpessem2 = getLogPESSem(pes2, logpes2, sink2);
+				psp = new LogBasedPartialSynchronizedProduct<>(logpessem1, logpessem2, mincost);
                 psp = psp.perform();
 				if(psp == null) {
-                    b--;
 				    continue;
                 }
 				psp = psp.prune();
@@ -208,31 +226,25 @@ public class ApromoreCompareLL {
 					bestOp = psp.getOperationSequence();
 					cursink = sink2;
 				}
-				b--;
 			}
 			verbalizer.addPSP(bestOp);
 			unusedsinks.remove(cursink);
-			a--;
 		}
 
-        a = unusedsinks.size();
 		for (int sink2: unusedsinks) {
             int b = logpes1.getSinks().size();
 
-			logpessem2 = new SinglePORunPESSemantics<Integer>(logpes2, sink2);
+            logpessem2 = getLogPESSem(pes2, logpes2, sink2);
 			mincost = Integer.MAX_VALUE;
 
-			for (int sink1: logpes1.getSinks()) {
-                System.out.println(a + " " + b);
-
-                Map<Integer, LogBasedPartialSynchronizedProduct<Integer>> map1 = map.get(sink1);
+            for (int sink1: sinks1) {
+                IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>> map1 = map.get(sink1);
                 psp = map1.get(sink2);
                 if(psp == null) {
-                    logpessem1 = new SinglePORunPESSemantics<Integer>(logpes1, sink1);
-                    psp = new LogBasedPartialSynchronizedProduct<Integer>(logpessem1, logpessem2, mincost);
+                    logpessem1 = getLogPESSem(pes1, logpes1, sink1);
+                    psp = new LogBasedPartialSynchronizedProduct<>(logpessem1, logpessem2, mincost);
                     psp = psp.perform();
                     if(psp == null) {
-                        b--;
                         continue;
                     }
                     psp = psp.prune();
@@ -244,16 +256,23 @@ public class ApromoreCompareLL {
 					mincost = curcost;
 					bestOp = psp.getOperationSequence();
 				}
-				b--;
 			}
 			verbalizer.addPSP(bestOp);
-			a--;
 		}
 
 		return verbalizer.verbalize();
 	}
 
-	private PrimeEventStructure<Integer> getLogPES(XLog log, String name) {				
+    private SinglePORunPESSemantics<Integer> getLogPESSem(IntObjectHashMap<SinglePORunPESSemantics> pes, PrimeEventStructure<Integer> logpes, int sink) {
+        SinglePORunPESSemantics<Integer> logpessem = pes.get(sink);
+        if(logpessem == null) {
+            logpessem = new SinglePORunPESSemantics<>(logpes, sink);
+            pes.put(sink, logpessem);
+        }
+        return logpessem;
+    }
+
+    private PrimeEventStructure<Integer> getLogPES(XLog log, String name) {
 		AlphaRelations alphaRelations = new AlphaRelations(log);
 
 		BiMap<String, XTrace> mapTraces = HashBiMap.create();

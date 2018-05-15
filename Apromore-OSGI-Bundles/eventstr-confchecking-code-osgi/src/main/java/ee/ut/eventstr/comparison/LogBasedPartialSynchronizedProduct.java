@@ -64,7 +64,6 @@ public class LogBasedPartialSynchronizedProduct<T> {
         IntHashBag labels;
 		StateHint action;
 		public short cost = 0;
-        public short currentcost = 0;
 
 		int hashcode = -1;
 
@@ -220,7 +219,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
         State s;
         while (!open.isEmpty()) {
 			s = open.poll();
-            if(s.currentcost > optimalCost) {
+            if(s.cost > optimalCost) {
                 return null;
             }
 
@@ -463,8 +462,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	}
 
 	public void computeCost(State s) {
-	    s.currentcost = (short) (g(s.c1, s.c2, s.labels));
-		s.cost = (short) (s.currentcost + h(s));
+		s.cost = (short) (g(s.c1, s.c2, s.labels) + h(s));
 	}
 
     public int g(BitSet c1, BitSet c2, IntHashBag labels) {
