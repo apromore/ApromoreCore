@@ -59,7 +59,7 @@ public class CreatePredictorController {
 
     private Media pklMedia;
 
-    public CreatePredictorController(PortalContext portalContext, ListModelList<Predictor> predictorsListModel, PredictiveMonitorService predictiveMonitorService) throws IOException {
+    public CreatePredictorController(PortalContext portalContext, PredictorsListModel predictorsListModel) throws IOException {
 
         window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/createPredictor.zul", null, null);
 
@@ -87,8 +87,7 @@ public class CreatePredictorController {
                 }
 
                 LOGGER.info("Creating predictor");
-                Predictor predictor = predictiveMonitorService.createPredictor(nameTextbox.getValue(), typeCombobox.getValue(), pklMedia.getStreamData());
-                predictorsListModel.add(predictor);
+                Predictor predictor = predictorsListModel.createPredictor(nameTextbox.getValue(), typeCombobox.getValue(), pklMedia.getStreamData());
                 LOGGER.info("Created predictor " + predictor.getName());
 
                 window.detach();

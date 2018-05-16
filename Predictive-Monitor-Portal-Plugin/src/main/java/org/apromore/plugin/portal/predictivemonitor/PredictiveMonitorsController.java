@@ -72,7 +72,6 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
-import static org.zkoss.zul.event.ListDataEvent.INTERVAL_REMOVED;
 
 // Local packages
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -108,7 +107,8 @@ public class PredictiveMonitorsController {
 
         window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/predictiveMonitors.zul", null, null);
 
-        final ListModelList<PredictiveMonitor> predictiveMonitorsListModel = Persistent.getPredictiveMonitorsListModel(predictiveMonitorService);
+        final PredictiveMonitorsListModel predictiveMonitorsListModel = new PredictiveMonitorsListModel(predictiveMonitorService);
+        final PredictorsListModel         predictorsListModel         = new PredictorsListModel(predictiveMonitorService);
 
         predictiveMonitorsListbox = (Listbox) window.getFellow("predictiveMonitors");
         predictiveMonitorsListbox.setModel(predictiveMonitorsListModel);
@@ -126,13 +126,12 @@ public class PredictiveMonitorsController {
 
         ((Button) window.getFellow("create")).addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                new CreatePredictiveMonitorController(portalContext, predictiveMonitorService);
+                new CreatePredictiveMonitorController(portalContext, predictiveMonitorsListModel, predictorsListModel);
             }
         });
 
         ((Button) window.getFellow("delete")).addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                predictiveMonitorService.deletePredictiveMonitors(predictiveMonitorsListModel.getSelection());
                 predictiveMonitorsListModel.removeAll(predictiveMonitorsListModel.getSelection());
             }
         });

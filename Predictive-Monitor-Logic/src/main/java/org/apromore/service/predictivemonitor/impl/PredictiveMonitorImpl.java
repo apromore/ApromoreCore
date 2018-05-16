@@ -95,7 +95,7 @@ public class PredictiveMonitorImpl implements PredictiveMonitor {
         this.name = newName;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name               = "predictive_monitor_predictor",
                joinColumns        = @JoinColumn(name = "predictive_monitor_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "predictor_id",          referencedColumnName = "id"))

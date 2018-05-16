@@ -78,7 +78,7 @@ import org.apromore.service.predictivemonitor.PredictiveMonitorService;
 import org.apromore.service.predictivemonitor.Predictor;
 
 /**
- * In MVC terms, this is a controller whose corresponding model is a set of {@link PredictiveMonitor}s and corresponding view is <code>predictiveMonitors.zul</code>.
+ * In MVC terms, this is a controller whose corresponding model is a {@link PredictiveMonitor} and corresponding view is <code>predictiveMonitor.zul</code>.
  */
 public class PredictiveMonitorController implements Observer {
 
@@ -123,8 +123,8 @@ public class PredictiveMonitorController implements Observer {
         this.predictiveMonitor = predictiveMonitor;
         this.predictiveMonitorService = predictiveMonitorService;
         this.window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/predictiveMonitor.zul", null, null);
-        this.eventsModel = new PredictiveMonitorListModel(predictiveMonitorService, predictiveMonitor, window.getDesktop(), events);
-        this.casesModel = new PredictiveMonitorListModel(predictiveMonitorService, predictiveMonitor, window.getDesktop(), caseEvents);
+        this.eventsModel = new PredictiveMonitorListModel(predictiveMonitorService, predictiveMonitor, events);
+        this.casesModel = new PredictiveMonitorListModel(predictiveMonitorService, predictiveMonitor, caseEvents);
 
         /*Listbox*/ eventsListbox    = (Listbox) window.getFellow("events");
         Listbox casesListbox     = (Listbox) window.getFellow("cases");
@@ -487,13 +487,11 @@ public class PredictiveMonitorController implements Observer {
         private final Set<ListDataListener> listeners = new HashSet<>();
         private final PredictiveMonitorService predictiveMonitorService;
         private final PredictiveMonitor predictiveMonitor;
-        private final Desktop desktop;
         private final List<PredictiveMonitorEvent> events;
 
-        PredictiveMonitorListModel(PredictiveMonitorService predictiveMonitorService, PredictiveMonitor predictiveMonitor, Desktop desktop, List<PredictiveMonitorEvent> events) {
+        PredictiveMonitorListModel(PredictiveMonitorService predictiveMonitorService, PredictiveMonitor predictiveMonitor, List<PredictiveMonitorEvent> events) {
             this.predictiveMonitorService = predictiveMonitorService;
             this.predictiveMonitor = predictiveMonitor;
-            this.desktop = desktop;
             this.events = events;
         }
 
