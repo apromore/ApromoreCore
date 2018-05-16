@@ -162,7 +162,7 @@ public class DiffLLVerbalizerTriplet<T> {
 							
 							BitSet interval = new BitSet();
 							BitSet past = new BitSet();
-							past.set(diffIndexes[0], diffIndexes[1]);
+							past.set(diffIndexes[0]);
 							
 							if ((diffIndexes[2] - diffIndexes[1]) > 1) {
 								while ((pes2.getLabels().contains(opSeq.get(diffIndexes[1]).getLabel()) == pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) &&
@@ -391,7 +391,7 @@ public class DiffLLVerbalizerTriplet<T> {
 
 												BitSet interval = new BitSet();
 												BitSet past = new BitSet();
-												past.set(diffIndexes[0], diffIndexes[1]);
+												past.set(diffIndexes[0]);
 												
 												if ((diffIndexes[2] - diffIndexes[1]) > 1) {
 													while ((pes2.getLabels().contains(opSeq.get(diffIndexes[1]).getLabel()) == pes2.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) &&
@@ -484,7 +484,7 @@ public class DiffLLVerbalizerTriplet<T> {
 							
 							BitSet interval = new BitSet();
 							BitSet past = new BitSet();
-							past.set(diffIndexes[0], diffIndexes[1]);
+							past.set(diffIndexes[0]);
 							
 							if ((diffIndexes[2] - diffIndexes[1]) > 1) {
 								
@@ -687,7 +687,7 @@ public class DiffLLVerbalizerTriplet<T> {
 											
 											BitSet interval = new BitSet();
 											BitSet past = new BitSet();
-											past.set(diffIndexes[0], diffIndexes[1]);
+											past.set(diffIndexes[0]);
 
 											if ((diffIndexes[2] - diffIndexes[1]) > 1) {
 												while ((pes1.getLabels().contains(opSeq.get(diffIndexes[1]).getLabel()) == pes1.getLabels().contains(opSeq.get(diffIndexes[1] + c).getLabel())) &&
