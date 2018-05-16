@@ -39,10 +39,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multiset;
 import com.google.common.collect.Table;
 
 import ee.ut.eventstr.BehaviorRelation;
@@ -61,22 +57,16 @@ import static ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.State
 
 public class LogBasedPartialSynchronizedProduct<T> {
 
-	private ObjectIntHashMap<String> labelMap = new ObjectIntHashMap();
-	private IntObjectHashMap<String> reverseLabelMap = new IntObjectHashMap();
-
 	public static class State implements Comparable<State> {
 		BitSet c1;
 		BitSet c2;
-//		Multiset<String> labels;
-//		Multiset<Integer> labels;
+
         IntHashBag labels;
 		StateHint action;
 		public short cost = 0;
 
 		int hashcode = -1;
 
-//		State(BitSet c1, Multiset<String> labels, BitSet c2) {
-//		State(BitSet c1, Multiset<Integer> labels, BitSet c2) {
         State(BitSet c1, IntHashBag labels, BitSet c2) {
 			this.c1 = c1;
 			this.c2 = c2;
@@ -107,11 +97,11 @@ public class LogBasedPartialSynchronizedProduct<T> {
 
 	enum StateHint {
 		CREATED, MERGED, DISCARDED
-	};
+	}
 
 	public enum Op {
 		MATCH, LHIDE, RHIDE, MATCHNSHIFT, RHIDENSHIFT
-	};
+	}
 
 	public static class Operation {
 		Op op;
@@ -122,7 +112,6 @@ public class LogBasedPartialSynchronizedProduct<T> {
 
 		int hashcode = -1;
 
-//		private Operation(State state, Op op, Object target, String label) {
         private Operation(State state, Op op, Object target, int label, String labelString) {
 			this.nextState = state;
 			this.target = target;
@@ -131,27 +120,22 @@ public class LogBasedPartialSynchronizedProduct<T> {
 			this.labelString = labelString;
 		}
 
-//		static Operation match(State state, Pair<Integer, Integer> target, String label) {
-        static Operation match(State state, Pair<Integer, Integer> target, int label, String labelString) {
+		static Operation match(State state, Pair<Integer, Integer> target, int label, String labelString) {
 			return new Operation(state, Op.MATCH, target, label, labelString);
 		}
 
-//		static Operation lhide(State state, Integer target, String label) {
         static Operation lhide(State state, Integer target, int label, String labelString) {
 			return new Operation(state, Op.LHIDE, target, label, labelString);
 		}
 
-//		static Operation rhide(State state, Integer target, String label) {
         static Operation rhide(State state, Integer target, int label, String labelString) {
 			return new Operation(state, Op.RHIDE, target, label, labelString);
 		}
 
-//		static Operation rhidenshift(State state, Integer target, String label) {
         static Operation rhidenshift(State state, Integer target, int label, String labelString) {
 			return new Operation(state, Op.RHIDENSHIFT, target, label, labelString);
 		}
 
-//		static Operation matchnshift(State state, Pair<Integer, Integer> target, String label) {
         static Operation matchnshift(State state, Pair<Integer, Integer> target, int label, String labelString) {
 			return new Operation(state, Op.MATCHNSHIFT, target, label, labelString);
 		}
@@ -168,7 +152,6 @@ public class LogBasedPartialSynchronizedProduct<T> {
         public boolean equals(Object o) {
 		    if(o instanceof Operation) {
                 Operation ope = (Operation) o;
-//                return nextState.equals(ope.nextState) && target.equals(ope.target) && op.equals(ope.op) && label.equals(ope.label);
                 return op.equals(ope.op) && label == ope.label && nextState.equals(ope.nextState) && target.equals(ope.target);
             }
             return false;
@@ -185,37 +168,38 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	private BitSet maxConf1;
 	public State matchings;
 
-//	private Multimap<State, Operation> descendants;
-//	private Multimap<State, State> ancestors;
     private UnifiedSetMultimap<State, Operation> descendants;
     private UnifiedSetMultimap<State, State> ancestors;
 	private State root;
-//	private Table<BitSet, BitSet, Map<Multiset<String>, State>> stateSpaceTable;
-//  private Table<BitSet, BitSet, Map<Multiset<Integer>, State>> stateSpaceTable;
     private Table<BitSet, BitSet, Map<IntHashBag, State>> stateSpaceTable;
 
 	private List<State> states = new ArrayList<>();
 	private Set<State> relevantStates;
 	private LinkedList<Operation> opSeq;
+	private int optimalCost;
 
-	public LogBasedPartialSynchronizedProduct(SinglePORunPESSemantics<T> pes1, SinglePORunPESSemantics<T> pes2) {
+    private UnifiedSetMultimap<State, Operation> operations;
+    private ObjectIntHashMap<String> labelMap = new ObjectIntHashMap();
+    private IntObjectHashMap<String> reverseLabelMap = new IntObjectHashMap();
+    private UnifiedMap<BitSet, int[]> bitSetToArrayMap = new UnifiedMap<>();
+
+	public LogBasedPartialSynchronizedProduct(SinglePORunPESSemantics<T> pes1, SinglePORunPESSemantics<T> pes2, int optimalCost) {
 		this.pes1 = pes1;
 		this.pes2 = pes2;
-//        this.descendants = HashMultimap.create();
-//        this.ancestors = HashMultimap.create();
         this.descendants = UnifiedSetMultimap.newMultimap();
+        this.operations = UnifiedSetMultimap.newMultimap();
         this.ancestors = UnifiedSetMultimap.newMultimap();
         this.stateSpaceTable = HashBasedTable.create();
 
 		this.numberOfTargets = pes1.getMaxConf().size();
 		this.maxConf1 = pes1.getMaxConf().iterator().next();
 		this.matchings = null;
+		this.optimalCost = optimalCost;
 	}
 
 	public LogBasedPartialSynchronizedProduct<T> perform() {
 		Queue<State> open = new PriorityQueue<>();
 
-//		root = getState(new BitSet(), HashMultiset.create(), new BitSet());
 		root = getState(new BitSet(), new IntHashBag(), new BitSet());
 
 		open.offer(root);
@@ -227,179 +211,162 @@ public class LogBasedPartialSynchronizedProduct<T> {
 				if (costCValue != 0)
 					return costCValue;
 				else
-//					return o1.label.compareTo(o2.label);
                     return Integer.compare(o1.label, o2.label);
 			}
 		};
 
-		while (!open.isEmpty()) {
-			State s = open.poll();
+        BitSet lpe, rpe, pruned1, pruned2, kept1, kept2;
+        State s;
+        while (!open.isEmpty()) {
+			s = open.poll();
+            if(s.cost > optimalCost) {
+                return null;
+            }
 
-			if (isCandidate(s)) {
-				BitSet lpe = pes1.getPossibleExtensions(s.c1);
-				BitSet rpe = pes2.getPossibleExtensions(s.c2);
+            lpe = pes1.getPossibleExtensions(s.c1);
+            rpe = pes2.getPossibleExtensions(s.c2);
 
-				if (lpe.isEmpty() && rpe.isEmpty()) {
-					matchings = s;
-					continue;
-				}
+            if (lpe.isEmpty() && rpe.isEmpty()) {
+                matchings = s;
+                return this;
+            }
 
-				// System.out.println("State: " +s);
-				List<Operation> candidates = new ArrayList<>();
-				BitSet pruned1 = new BitSet();
-				BitSet pruned2 = new BitSet();
+            int[] lpea = getArray(lpe);
+            int[] rpea = getArray(rpe);
 
-				generateCandidates(candidates, pruned1, pruned2, lpe, rpe, s);
+            // System.out.println("State: " +s);
+            pruned1 = new BitSet();
+            pruned2 = new BitSet();
+            kept1 = new BitSet();
+            kept2 = new BitSet();
 
-				Collections.sort(candidates, comparator);
+            List<Operation> matchCandidates = generateMatchCandidates(pruned1, pruned2, lpea, rpea, s);
 
-				BitSet kept1 = new BitSet();
-				BitSet kept2 = new BitSet();
+            Collections.sort(matchCandidates, comparator);
 
-				nextCandidate:
-                for (Operation operation : candidates) {
-					Pair<Integer, Integer> pair = (Pair) operation.target;
-					int e1 = pair.getFirst();
-					int e2 = pair.getSecond();
-					for (int e1p = kept1.nextSetBit(0); e1p >= 0; e1p = kept1.nextSetBit(e1p + 1))
-						if (pes1.getBRelation(e1, e1p) == BehaviorRelation.CONCURRENCY)
-							continue nextCandidate;
-					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1))
-						if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY)
-							continue nextCandidate;
-					kept1.set(e1);
-					kept2.set(e2);
+            nextCandidate:
+            for (Operation operation : matchCandidates) {
+                Pair<Integer, Integer> pair = (Pair) operation.target;
+                int e1 = pair.getFirst();
+                int e2 = pair.getSecond();
+                for (int e1p = kept1.nextSetBit(0); e1p >= 0; e1p = kept1.nextSetBit(e1p + 1)) {
+                    if (pes1.getBRelation(e1, e1p) == BehaviorRelation.CONCURRENCY) {
+                        continue nextCandidate;
+                    }
+                }
+                for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1)) {
+                    if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY) {
+                        continue nextCandidate;
+                    }
+                }
+                kept1.set(e1);
+                kept2.set(e2);
 
-					switch (operation.nextState.action) {
-                        case CREATED:
-                            open.offer(operation.nextState);
-                            ancestors.put(operation.nextState, s);
-                        case MERGED:
-                            descendants.put(s, operation);
-                        default:
-					}
+                updateQueueAncestorsAndDescendants(open, s, operation.nextState, operation);
+                // IOUtils.toFile("psp.dot", toDot());
+            }
 
-					// IOUtils.toFile("psp.dot", toDot());
-				}
+            pruned1.andNot(kept1);
+            pruned2.andNot(kept2);
 
-				pruned1.andNot(kept1);
-				pruned2.andNot(kept2);
+            nextCandidate2:
+            for (int j = 0; j < rpea.length; j++) {
+                int e2 = rpea[j];
+                if (pruned2.get(e2) || kept2.get(e2)) {
+                    continue;
+                }
 
-				nextCandidate2:
-                for (int e2 = rpe.nextSetBit(0); e2 >= 0; e2 = rpe.nextSetBit(e2 + 1)) {
-					if (pruned2.get(e2) || kept2.get(e2))
-						continue;
+                for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1)) {
+                    if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY) {
+                        continue nextCandidate2;
+                    }
+                }
 
-					for (int e2p = kept2.nextSetBit(0); e2p >= 0; e2p = kept2.nextSetBit(e2p + 1))
-						if (pes2.getBRelation(e2, e2p) == BehaviorRelation.CONCURRENCY)
-							continue nextCandidate2;
+                BitSet c2p = (BitSet) s.c2.clone();
+                c2p.set(e2);
+                State nstate = getState(s.c1, s.labels, c2p);
+                computeCost(nstate);
 
-					BitSet c2p = (BitSet) s.c2.clone();
-					c2p.set(e2);
-					State nstate = getState(s.c1, s.labels, c2p);
+                updateQueueAncestorsAndDescendants(open, s, nstate, Operation.rhide(nstate, e2, getLabel(pes2.getLabel(e2)), getReverseLabel(getLabel(pes2.getLabel(e2)))));
+                // IOUtils.toFile("psp.dot", toDot());
+            }
 
-					computeCost(nstate);
+            for (int i = 0; i < lpea.length; i++) {
+                int e1 = lpea[i];
+                if (pruned1.get(e1) || kept1.get(e1)) {
+                    continue;
+                }
 
-					switch (nstate.action) {
-                        case CREATED:
-                            open.offer(nstate);
-                            ancestors.put(nstate, s);
-                        case MERGED:
-    //                        descendants.put(s, Operation.rhide(nstate, e2, pes2.getLabel(e2)));
-                            descendants.put(s, Operation.rhide(nstate, e2, getLabel(pes2.getLabel(e2)), getReverseLabel(getLabel(pes2.getLabel(e2)))));
-                        default:
-					}
+                BitSet c1p = (BitSet) s.c1.clone();
+                c1p.set(e1);
+                State nstate = getState(c1p, s.labels, s.c2);
+                computeCost(nstate);
 
-					// IOUtils.toFile("psp.dot", toDot());
-				}
-
-				for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1 + 1)) {
-					if (pruned1.get(e1) || kept1.get(e1))
-						continue;
-
-					BitSet c1p = (BitSet) s.c1.clone();
-					c1p.set(e1);
-					State nstate = getState(c1p, s.labels, s.c2);
-
-					computeCost(nstate);
-
-					switch (nstate.action) {
-                        case CREATED:
-                            open.offer(nstate);
-                            ancestors.put(nstate, s);
-                        case MERGED:
-    //                        descendants.put(s, Operation.lhide(nstate, e1, pes1.getLabel(e1)));
-                            descendants.put(s, Operation.lhide(nstate, e1, getLabel(pes1.getLabel(e1)), getReverseLabel(getLabel(pes1.getLabel(e1)))));
-                        default:
-					}
-
-					// IOUtils.toFile("psp.dot", toDot());
-				}
-			}
-		}
+                updateQueueAncestorsAndDescendants(open, s, nstate, Operation.lhide(nstate, e1, getLabel(pes1.getLabel(e1)), getReverseLabel(getLabel(pes1.getLabel(e1)))));
+                // IOUtils.toFile("psp.dot", toDot());
+            }
+        }
 		return this;
 	}
 
-	private void generateCandidates(List<Operation> candidates, BitSet pruned1, BitSet pruned2, BitSet lpe, BitSet rpe, State s) {
-		for (int e1 = lpe.nextSetBit(0); e1 >= 0; e1 = lpe.nextSetBit(e1 + 1)) {
-//			String label1 = pes1.getLabel(e1);
+	private void updateQueueAncestorsAndDescendants(Queue<State> open, State state, State next_state, Operation operation) {
+        switch (next_state.action) {
+            case CREATED:
+                open.offer(next_state);
+                ancestors.put(next_state, state);
+                operations.put(operation.nextState, operation);
+            case MERGED:
+                descendants.put(state, operation);
+            default:
+        }
+    }
+
+    private int[] getArray(BitSet bitSet) {
+        int[] array = bitSetToArrayMap.get(bitSet);
+        if(array == null) {
+            array = new int[bitSet.cardinality()];
+            int bit = bitSet.nextSetBit(0);
+            for (int i = 0; i < array.length; i++) {
+                array[i] = bit;
+                bit = bitSet.nextSetBit(bit + 1);
+            }
+            bitSetToArrayMap.put(bitSet, array);
+        }
+        return array;
+    }
+
+    private List<Operation> generateMatchCandidates(BitSet pruned1, BitSet pruned2, int[] lpea, int[] rpea, State s) {
+        List<Operation> candidates = new ArrayList<>();
+        for (int i = 0; i < lpea.length; i++) {
+            int e1 = lpea[i];
             int label1 = getLabel(pes1.getLabel(e1));
 
-			BitSet c1p = (BitSet) s.c1.clone();
-			c1p.set(e1);
+            BitSet c1p = (BitSet) s.c1.clone();
+            c1p.set(e1);
 
-			for (int e2 = rpe.nextSetBit(0); e2 >= 0; e2 = rpe.nextSetBit(e2 + 1)) {
-//				if (label1.equals(pes2.getLabel(e2)) && isOrderPreserving(s, e1, e2)) {
+            for (int j = 0; j < rpea.length; j++) {
+                int e2 = rpea[j];
                 if (label1 == getLabel(pes2.getLabel(e2)) && isOrderPreserving(s, e1, e2)) {
-					pruned1.set(e1);
-					pruned2.set(e2);
+                    pruned1.set(e1);
+                    pruned2.set(e2);
 
-					// if (prev != null &&
-					// pes1.getBRelation(e1, prevPair.getFirst()) ==
-					// BehaviorRelation.CONCURRENCY &&
-					// pes2.getBRelation(e2, prevPair.getSecond()) ==
-					// BehaviorRelation.CONCURRENCY &&
-					// label1.compareTo(prev.label) > 0)
-					// continue;
-
-					BitSet c2p = (BitSet) s.c2.clone();
-					c2p.set(e2);
-//					Multiset<String> labels = HashMultiset.create(s.labels);
-//                  Multiset<Integer> labels = HashMultiset.create(s.labels);
+                    BitSet c2p = (BitSet) s.c2.clone();
+                    c2p.set(e2);
                     IntHashBag labels = IntHashBag.newBag(s.labels);
-					labels.add(label1);
+                    labels.add(label1);
 
-					State nstate = getState(c1p, labels, c2p);
-					nstate.cost = s.cost; // A matching operation does
-					// not change the current
-					// cost
+                    State nstate = getState(c1p, labels, c2p);
+                    nstate.cost = s.cost; // A matching operation does not change the current cost
 
-					Operation operation = Operation.match(nstate, new Pair<>(e1, e2), label1, getReverseLabel(label1));
+                    Operation operation = Operation.match(nstate, new Pair<>(e1, e2), label1, getReverseLabel(label1));
 
-					candidates.add(operation);
-
-					// switch (pair.getFirst()) {
-					// case CREATED:
-					// open.offer(nstate);
-					// ancestors.put(nstate, s);
-					// case MERGED:
-					// Operation operation;
-					// if (extPair.getSecond())
-					// operation = Operation.matchnshift(nstate, new
-					// Pair<>(e1, e2), label1);
-					// else
-					// operation = Operation.match(nstate, new
-					// Pair<>(e1, e2), label1);
-					//
-					// descendants.put(s, operation);
-					// default:
-					// }
-
-					// IOUtils.toFile("psp.dot", toDot());
-				}
-			}
-		}
-	}
+                    candidates.add(operation);
+                    // IOUtils.toFile("psp.dot", toDot());
+                }
+            }
+        }
+        return candidates;
+    }
 
     private int getLabel(String label) {
         int label1 = labelMap.get(label);
@@ -415,128 +382,78 @@ public class LogBasedPartialSynchronizedProduct<T> {
         return reverseLabelMap.get(label);
     }
 
-//    private String getReverseLabels(Multiset label) {
-//        return reverseLabelMap.get(label);
-//    }
-
     public List<State> getStates() {
 		return states;
 	}
 
-	private boolean isOrderPreserving(State s, int e1, Integer e2) {
-		BitSet e1dpred = (BitSet) pes1.getDirectPredecessors(e1).clone();
-		BitSet e2dpred = (BitSet) pes2.getDirectPredecessors(e2).clone();
+    private boolean isOrderPreserving(State s, int e1, Integer e2) {
+        BitSet e1dpred = (BitSet) pes1.getDirectPredecessors(e1).clone();
+        BitSet e2dpred = (BitSet) pes2.getDirectPredecessors(e2).clone();
 
         ArrayStack<State> open = new ArrayStack<>();
-		Set<State> visited = new UnifiedSet<>();
+        Set<State> visited = new UnifiedSet<>();
         Set<State> openSet = new UnifiedSet<>();
-		open.push(s);
-		openSet.add(s);
+        open.push(s);
+        openSet.add(s);
 
-		BitSet e1causes = pes1.getLocalConfiguration(e1);
-		BitSet e2causes = pes2.getLocalConfiguration(e2);
+        BitSet e1causes = pes1.getLocalConfiguration(e1);
+        BitSet e2causes = pes2.getLocalConfiguration(e2);
 
         Pair<Integer, Integer> matchedEvents;
         Integer hiddenEvent;
         State curr;
-		while (!open.isEmpty()) {
-			if (e1dpred.isEmpty() && e2dpred.isEmpty())
-				break;
-			curr = open.pop();
-			openSet.remove(curr);
-			visited.add(curr);
+        while (!open.isEmpty()) {
+            if (e1dpred.isEmpty() && e2dpred.isEmpty())
+                break;
+            curr = open.pop();
+            openSet.remove(curr);
+            visited.add(curr);
 
-			for (State ancestor : ancestors.get(curr)) {
-//				if (visited.contains(ancestor) || open.contains(ancestor))
-                if (visited.contains(ancestor) || openSet.contains(ancestor))
-					continue;
-				for (Operation op : descendants.get(ancestor)) {
-                    if (op.nextState.equals(curr)) {
-                        // System.out.println(">> " + op);
-                        if (op.op == Op.MATCH) {
-                            matchedEvents = (Pair<Integer, Integer>) op.target;
-                            e1dpred.clear(matchedEvents.getFirst());
-                            e2dpred.clear(matchedEvents.getSecond());
+            for (Operation op : operations.get(curr)) {
+                // System.out.println(">> " + op);
+                if (op.op == Op.MATCH) {
+                    matchedEvents = (Pair<Integer, Integer>) op.target;
+                    e1dpred.clear(matchedEvents.getFirst());
+                    e2dpred.clear(matchedEvents.getSecond());
 
-                            if (e1causes.get(matchedEvents.getFirst()) != e2causes.get(matchedEvents.getSecond())) {
-                                // System.out.println("====== It is not order
-                                // preserving!");
-                                return false;
-                            }
-
-                        } else if (op.op == Op.MATCHNSHIFT) {
-                            matchedEvents = (Pair<Integer, Integer>) op.target;
-                            e1dpred.clear(matchedEvents.getFirst());
-                            e2dpred.clear(matchedEvents.getSecond());
-
-                            // System.out.println("Performed inverse shift
-                            // (+match): " + matchedEvents.getSecond());
-                            if (pes2.getBRelation(e2, matchedEvents.getSecond()) != BehaviorRelation.CONCURRENCY) {
-
-                                // e2causes = pes2.unshift(e2causes,
-                                // matchedEvents.getSecond());
-                                //
-                                e2causes = pes2.getLocalConfiguration(matchedEvents.getSecond());
-                            }
-
-                            if (e1causes.get(matchedEvents.getFirst()) != e2causes.get(matchedEvents.getSecond())) {
-                                // System.out.println("====== It is not order
-                                // preserving! (after inverse shift)");
-                                return false;
-                            }
-                        } else if (op.op == Op.RHIDENSHIFT || op.op == Op.RHIDE) {
-                            hiddenEvent = (Integer) op.target;
-                            // if (e2dpred.contains(hiddenEvent)) {
-                            e2dpred.clear(hiddenEvent);
-                            e2dpred.or(pes2.getDirectPredecessors(hiddenEvent));
-                            if (op.op == Op.RHIDENSHIFT
-                                    && pes2.getBRelation(e2, hiddenEvent) != BehaviorRelation.CONCURRENCY) {
-                                // System.out.println("Performed inverse shift:
-                                // " + hiddenEvent);
-
-                                // e2causes = pes2.unshift(e2causes,
-                                // hiddenEvent);
-                                //
-                                e2causes.clear(hiddenEvent);
-                                // e2causes =
-                                // pes2.getLocalConfiguration(hiddenEvent);
-                            }
-                            // }
-                        } else {
-                            hiddenEvent = (Integer) op.target;
-                            e1dpred.clear(hiddenEvent);
-                            e1dpred.or(pes1.getDirectPredecessors(hiddenEvent));
-                        }
+                    if (e1causes.get(matchedEvents.getFirst()) != e2causes.get(matchedEvents.getSecond())) {
+                        return false;
                     }
+                } else if (op.op == Op.RHIDE) {
+                    hiddenEvent = (Integer) op.target;
+                    e2dpred.clear(hiddenEvent);
+                    e2dpred.or(pes2.getDirectPredecessors(hiddenEvent));
+                } else {
+                    hiddenEvent = (Integer) op.target;
+                    e1dpred.clear(hiddenEvent);
+                    e1dpred.or(pes1.getDirectPredecessors(hiddenEvent));
                 }
-				open.push(ancestor);
-				openSet.add(ancestor);
-			}
-		}
-		return true;
-	}
+            }
+            for (State ancestor : ancestors.get(curr)) {
+                if (visited.contains(ancestor) || openSet.contains(ancestor)) {
+                    continue;
+                }
+                open.push(ancestor);
+                openSet.add(ancestor);
+            }
+        }
+        return true;
+    }
 
-//	private State getState(BitSet c1, Multiset<String> labels, BitSet c2) {
-//  private State getState(BitSet c1, Multiset<Integer> labels, BitSet c2) {
     private State getState(BitSet c1, IntHashBag labels, BitSet c2) {
 		State newState = new State(c1, labels, c2);
 		states.add(newState);
 
 		newState.action = CREATED;
 
-//      Map<Multiset<Integer>, State> map;
         Map<IntHashBag, State> map;
-//		if (stateSpaceTable.contains(c1, c2)) {
         if ((map = stateSpaceTable.get(c1, c2)) != null) {
-//			Map<Multiset<String>, State> map = stateSpaceTable.get(c1, c2);
-//          Map<Multiset<Integer>, State> map = stateSpaceTable.get(c1, c2);
-			if (map.containsKey(labels))
-				newState.action = MERGED;
-			else
-				map.put(labels, newState);
+			if (map.containsKey(labels)) {
+                newState.action = MERGED;
+            }else {
+                map.put(labels, newState);
+            }
 		} else {
-//			Map<Multiset<String>, State> map = new HashMap<>();
-//          Map<Multiset<Integer>, State> map = new HashMap<>();
             map = new UnifiedMap<>();
 			map.put(labels, newState);
 			stateSpaceTable.put(c1, c2, map);
@@ -544,16 +461,10 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		return newState;
 	}
 
-	private boolean isCandidate(State s) {
-		return matchings == null;
-	}
-
 	public void computeCost(State s) {
 		s.cost = (short) (g(s.c1, s.c2, s.labels) + h(s));
 	}
 
-//	public int g(BitSet c1, BitSet c2, Multiset<String> labels) {
-//  public int g(BitSet c1, BitSet c2, Multiset<Integer> labels) {
     public int g(BitSet c1, BitSet c2, IntHashBag labels) {
 		return (c1.cardinality() + c2.cardinality() - labels.size() * 2);
 	}
@@ -584,8 +495,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 
 		for (int i = 0; i < numberOfTargets; i++) {
 			State s = matchings;
-			if (s == null)
-				continue;
+			if (s == null) continue;
 			open.push(s);
 			Set<State> visited = new HashSet<>();
 			while (!open.isEmpty()) {
@@ -609,12 +519,16 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		}
 
 		this.relevantStates = gvisited;
-
-		// System.out.println("Number of relevant states: " +
-		// relevantStates.size());
+		cleanDataTables();
 
 		return this;
 	}
+
+	private void cleanDataTables() {
+        labelMap.clear();
+        reverseLabelMap.clear();
+        bitSetToArrayMap.clear();
+    }
 
 	public String toDot() {
 		StringWriter str = new StringWriter();
