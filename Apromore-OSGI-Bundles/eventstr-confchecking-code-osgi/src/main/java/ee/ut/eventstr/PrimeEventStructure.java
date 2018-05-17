@@ -87,7 +87,7 @@ public class PrimeEventStructure <T> {
 		if (matrix == null) {
 			int size = labels.size();
 
-			System.out.println("\nSize: " + size);
+//			System.out.println("\nSize: " + size);
 			matrix = new BehaviorRelation[size][size];
 			
 			for (int i = 0; i < size; i++) {

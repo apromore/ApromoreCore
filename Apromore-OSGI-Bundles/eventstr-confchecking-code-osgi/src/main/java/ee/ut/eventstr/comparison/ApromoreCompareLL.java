@@ -24,6 +24,8 @@ import java.util.*;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import ee.ut.eventstr.PESSemantics;
 import ee.ut.eventstr.PrimeEventStructure;
 import ee.ut.eventstr.SinglePORunPESSemantics;
@@ -182,12 +184,12 @@ public class ApromoreCompareLL {
         IntObjectHashMap<SinglePORunPESSemantics> pes2 = new IntObjectHashMap<>();
 
         List<Integer> sinks1 = logpes1.getSinks();
-		Collections.sort(sinks1, new Comparator<Integer>() {
+        Collections.sort(sinks1, new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
-                Integer i1 = fullLogPesSem1.getLocalConfiguration(o1).cardinality();
-                Integer i2 = fullLogPesSem1.getLocalConfiguration(o2).cardinality();
-                return i1.compareTo(i2);
+                BitSet s2a = fullLogPesSem1.getLocalConfiguration(o1);
+                BitSet s2b = fullLogPesSem1.getLocalConfiguration(o2);
+                return Integer.compare(s2a.cardinality(), s2b.cardinality());
             }
         });
 
@@ -195,58 +197,88 @@ public class ApromoreCompareLL {
         Collections.sort(sinks2, new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
-                Integer i1 = fullLogPesSem2.getLocalConfiguration(o1).cardinality();
-                Integer i2 = fullLogPesSem2.getLocalConfiguration(o2).cardinality();
-                return i1.compareTo(i2);
+                BitSet s2a = fullLogPesSem2.getLocalConfiguration(o1);
+                BitSet s2b = fullLogPesSem2.getLocalConfiguration(o2);
+                return Integer.compare(s2a.cardinality(), s2b.cardinality());
             }
         });
 
+        int a = sinks1.size();
+        int minCardinalitySink1 = fullLogPesSem1.getLocalConfiguration(sinks1.get(0)).cardinality();
+        int minCardinalitySink2 = fullLogPesSem2.getLocalConfiguration(sinks2.get(0)).cardinality();
         for (int sink1: sinks1) {
+            int cardinalitySink1 = fullLogPesSem1.getLocalConfiguration(sink1).cardinality();
+            System.out.println(a * sinks2.size() + " " + cardinalitySink1);
+            Collections.sort(sinks2, new Comparator<Integer>() {
+                @Override
+                public int compare(Integer o1, Integer o2) {
+                    return compareSinks(
+                            fullLogPesSem1.getLocalConfiguration(sink1),
+                            fullLogPesSem1,
+                            fullLogPesSem2.getLocalConfiguration(o1),
+                            fullLogPesSem2.getLocalConfiguration(o2),
+                            fullLogPesSem2
+                    );
+                }
+            });
+
             IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>> map1 = new IntObjectHashMap<>();
 		    map.put(sink1, map1);
-
             logpessem1 = getLogPESSem(pes1, logpes1, sink1);
-
-			mincost = Integer.MAX_VALUE;
-
+            mincost = cardinalitySink1 + minCardinalitySink2;
             for (int sink2: sinks2) {
+                int cardinalitySink2 = fullLogPesSem2.getLocalConfiguration(sink2).cardinality();
+                if(Math.abs(cardinalitySink1 - cardinalitySink2) > mincost) continue;
+
                 logpessem2 = getLogPESSem(pes2, logpes2, sink2);
 				psp = new LogBasedPartialSynchronizedProduct<>(logpessem1, logpessem2, mincost);
-                psp = psp.perform();
-				if(psp == null) {
-				    continue;
-                }
+				if(psp.perform() == null) continue;
+
 				psp = psp.prune();
 				map1.put(sink2, psp);
-
 				curcost = psp.getStates().get(psp.getStates().size() - 1).cost;
 
 				if (curcost < mincost) {
 					mincost = curcost;
 					bestOp = psp.getOperationSequence();
 					cursink = sink2;
-				}
-			}
-			verbalizer.addPSP(bestOp);
-			unusedsinks.remove(cursink);
+                    if(curcost == 0) break;
+                }
+            }
+            verbalizer.addPSP(bestOp);
+            unusedsinks.remove(cursink);
+            a--;
 		}
 
-		for (int sink2: unusedsinks) {
-            int b = logpes1.getSinks().size();
+		a = unusedsinks.size();
+        for (int sink2: unusedsinks) {
+            int cardinalitySink2 = fullLogPesSem2.getLocalConfiguration(sink2).cardinality();
+            System.out.println(a * sinks1.size() + " " + cardinalitySink2);
+            Collections.sort(sinks1, new Comparator<Integer>() {
+                @Override
+                public int compare(Integer o1, Integer o2) {
+                    return compareSinks(
+                            fullLogPesSem2.getLocalConfiguration(sink2),
+                            fullLogPesSem2,
+                            fullLogPesSem1.getLocalConfiguration(o1),
+                            fullLogPesSem1.getLocalConfiguration(o2),
+                            fullLogPesSem1
+                    );
+                }
+            });
 
             logpessem2 = getLogPESSem(pes2, logpes2, sink2);
-			mincost = Integer.MAX_VALUE;
+            mincost = cardinalitySink2 + minCardinalitySink1;
 
             for (int sink1: sinks1) {
+                int cardinalitySink1 = fullLogPesSem1.getLocalConfiguration(sink1).cardinality();
+                if(Math.abs(cardinalitySink1 - cardinalitySink2) > mincost) continue;
+
                 IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>> map1 = map.get(sink1);
-                psp = map1.get(sink2);
-                if(psp == null) {
+                if((psp = map1.get(sink2)) == null) {
                     logpessem1 = getLogPESSem(pes1, logpes1, sink1);
                     psp = new LogBasedPartialSynchronizedProduct<>(logpessem1, logpessem2, mincost);
-                    psp = psp.perform();
-                    if(psp == null) {
-                        continue;
-                    }
+                    if(psp.perform() == null) continue;
                     psp = psp.prune();
                 }
 
@@ -255,13 +287,47 @@ public class ApromoreCompareLL {
 				if (curcost < mincost) {
 					mincost = curcost;
 					bestOp = psp.getOperationSequence();
+                    if(curcost == 0) break;
 				}
 			}
 			verbalizer.addPSP(bestOp);
+            a--;
 		}
 
 		return verbalizer.verbalize();
 	}
+
+	private int compareSinks(BitSet bitSet1, PESSemantics<Integer> fullLogPesSem1, BitSet bitSet2a, BitSet bitSet2b, PESSemantics<Integer> fullLogPesSem2) {
+        Multiset<String> set1 = getMultiset(bitSet1, fullLogPesSem1, bitSet2a, fullLogPesSem2);
+        Multiset<String> set2 = getMultiset(bitSet1, fullLogPesSem1, bitSet2b, fullLogPesSem2);
+
+        Integer i1 = set1.size();
+        Integer i2 = set2.size();
+        if(i1 == i2) return Integer.compare(Math.abs(bitSet1.cardinality() - bitSet2a.cardinality()), Math.abs(bitSet1.cardinality() - bitSet2b.cardinality()));
+        return i1.compareTo(i2);
+    }
+
+    private Multiset<String> getMultiset(BitSet bitSet1, PESSemantics<Integer> fullLogPesSem1, BitSet bitSet2, PESSemantics<Integer> fullLogPesSem2) {
+        Multiset<String> e1 = getEventList(bitSet1, fullLogPesSem1);
+        Multiset<String> e1a = getEventList(bitSet1, fullLogPesSem1);
+        Multiset<String> e2a = getEventList(bitSet2, fullLogPesSem2);
+
+        Multiset<String> set1 = HashMultiset.create();
+        e1a.removeAll(e2a);
+        e2a.removeAll(e1);
+        set1.addAll(e1a);
+        set1.addAll(e2a);
+
+        return set1;
+    }
+
+    private Multiset<String> getEventList(BitSet bitSet, PESSemantics<Integer> fullLogPesSem) {
+        Multiset<String> set = HashMultiset.create();
+        for (int ev = bitSet.nextSetBit(0); ev >= 0; ev = bitSet.nextSetBit(ev + 1)) {
+            set.add(fullLogPesSem.getLabel(ev));
+        }
+        return set;
+    }
 
     private SinglePORunPESSemantics<Integer> getLogPESSem(IntObjectHashMap<SinglePORunPESSemantics> pes, PrimeEventStructure<Integer> logpes, int sink) {
         SinglePORunPESSemantics<Integer> logpessem = pes.get(sink);
