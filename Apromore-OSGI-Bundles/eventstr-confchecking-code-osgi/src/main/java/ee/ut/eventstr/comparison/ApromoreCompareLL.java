@@ -21,11 +21,9 @@
 package ee.ut.eventstr.comparison;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
+import com.google.common.collect.*;
 import ee.ut.eventstr.PESSemantics;
 import ee.ut.eventstr.PrimeEventStructure;
 import ee.ut.eventstr.SinglePORunPESSemantics;
@@ -59,10 +57,10 @@ public class ApromoreCompareLL {
 
 //        String log1Name = "/Users/abelarmas/Dropbox/BPM2015-VarianceAnalysis/tool/ProDelta/Logs/base.MXML";
 //        String log2Name = "/Users/abelarmas/Dropbox/BPM2015-VarianceAnalysis/tool/ProDelta/Logs/par_seq.mxml";
-        String log1Name = "/Users/raffaele/Downloads/Deviance Mining - SEPSIS Correct.xes.gz";
-        String log2Name = "/Users/raffaele/Downloads/Deviance Mining - SEPSIS Deviant.xes.gz";
-//		String log1Name = "/Users/raffaele/Downloads/Deviance Mining - Correct.xes.gz";
-//        String log2Name = "/Users/raffaele/Downloads/Deviance Mining - Deviant.xes.gz";
+//        String log1Name = "/Users/raffaele/Downloads/Deviance Mining - SEPSIS Correct.xes.gz";
+//        String log2Name = "/Users/raffaele/Downloads/Deviance Mining - SEPSIS Deviant.xes.gz";
+		String log1Name = "/Users/raffaele/Downloads/Deviance Mining - Correct.xes.gz";
+        String log2Name = "/Users/raffaele/Downloads/Deviance Mining - Deviant.xes.gz";
 
 		ApromoreCompareLL compare = new ApromoreCompareLL();
 		try {
@@ -91,7 +89,7 @@ public class ApromoreCompareLL {
 		PESSemantics<Integer> fullLogPesSem1 = new PESSemantics<Integer>(logpes1);
 		PESSemantics<Integer> fullLogPesSem2 = new PESSemantics<Integer>(logpes2);
 		DiffLLVerbalizer<Integer> verbalizer = new DiffLLVerbalizer<Integer>(fullLogPesSem1, fullLogPesSem2);
-				
+
 		int mincost;
 		int curcost;
 		int cursink = -1;
@@ -110,8 +108,8 @@ public class ApromoreCompareLL {
 			
 			for (int sink2: logpes2.getSinks()) {
 				logpessem2 = new SinglePORunPESSemantics<Integer>(logpes2, sink2);
-		       	psp = new LogBasedPartialSynchronizedProduct<Integer>(logpessem1, logpessem2, mincost);
-                psp = psp.perform();
+		       	psp = new LogBasedPartialSynchronizedProduct<Integer>(logpessem1, logpessem2);
+                psp = psp.perform(mincost);
                 if(psp == null) {
                     continue;
                 }
@@ -142,8 +140,8 @@ public class ApromoreCompareLL {
                 psp = map1.get(sink2);
                 if(psp == null) {
                     logpessem1 = new SinglePORunPESSemantics<Integer>(logpes1, sink1);
-                    psp = new LogBasedPartialSynchronizedProduct<Integer>(logpessem1, logpessem2, mincost);
-                    psp = psp.perform();
+                    psp = new LogBasedPartialSynchronizedProduct<Integer>(logpessem1, logpessem2);
+                    psp = psp.perform(mincost);
                     if(psp == null) {
                         continue;
                     }
@@ -163,23 +161,24 @@ public class ApromoreCompareLL {
 	}
 
 	public Set<Triplet<String, Set<XTrace>, Set<XTrace>>> getDifferencesTriplets(XLog log1, String logName1, XLog log2, String logName2) {
+        PrimeEventStructure<Integer> logpes1 = getLogPES(log1, "log 1");
+        PrimeEventStructure<Integer> logpes2 = getLogPES(log2, "log 2");
+
+        PESSemantics<Integer> fullLogPesSem1 = new PESSemantics<>(logpes1);
+        PESSemantics<Integer> fullLogPesSem2 = new PESSemantics<>(logpes2);
+
+        DiffLLVerbalizerTriplet<Integer> verbalizer = new DiffLLVerbalizerTriplet<>(fullLogPesSem1, logName1, fullLogPesSem2, logName2);
+
         SinglePORunPESSemantics<Integer> logpessem1;
         SinglePORunPESSemantics<Integer> logpessem2;
         LogBasedPartialSynchronizedProduct<Integer> psp;
 
-        PrimeEventStructure<Integer> logpes1 = getLogPES(log1, "log 1");
-        PrimeEventStructure<Integer> logpes2 = getLogPES(log2, "log 2");
-
-        PESSemantics<Integer> fullLogPesSem1 = new PESSemantics<Integer>(logpes1);
-        PESSemantics<Integer> fullLogPesSem2 = new PESSemantics<Integer>(logpes2);
-        DiffLLVerbalizerTriplet<Integer> verbalizer = new DiffLLVerbalizerTriplet<>(fullLogPesSem1, logName1, fullLogPesSem2, logName2);
-
         int mincost;
-		int curcost;
-		int cursink = -1;
-		List<Operation> bestOp = null;
-		Set<Integer> unusedsinks = new HashSet<>(logpes2.getSinks());
-		IntObjectHashMap<IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>>> map = new IntObjectHashMap<>();
+        int curcost;
+        int cursink = -1;
+        List<Operation> bestOp = null;
+        Set<Integer> unusedsinks = new HashSet<>(logpes2.getSinks());
+        IntObjectHashMap<IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>>> map = new IntObjectHashMap<>();
         IntObjectHashMap<SinglePORunPESSemantics> pes1 = new IntObjectHashMap<>();
         IntObjectHashMap<SinglePORunPESSemantics> pes2 = new IntObjectHashMap<>();
 
@@ -187,9 +186,9 @@ public class ApromoreCompareLL {
         Collections.sort(sinks1, new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
-                BitSet s2a = fullLogPesSem1.getLocalConfiguration(o1);
-                BitSet s2b = fullLogPesSem1.getLocalConfiguration(o2);
-                return Integer.compare(s2a.cardinality(), s2b.cardinality());
+                BitSet s1a = fullLogPesSem1.getLocalConfiguration(o1);
+                BitSet s1b = fullLogPesSem1.getLocalConfiguration(o2);
+                return Integer.compare(s1b.cardinality(), s1a.cardinality());
             }
         });
 
@@ -199,16 +198,21 @@ public class ApromoreCompareLL {
             public int compare(Integer o1, Integer o2) {
                 BitSet s2a = fullLogPesSem2.getLocalConfiguration(o1);
                 BitSet s2b = fullLogPesSem2.getLocalConfiguration(o2);
-                return Integer.compare(s2a.cardinality(), s2b.cardinality());
+                return Integer.compare(s2b.cardinality(), s2a.cardinality());
             }
         });
 
         int a = sinks1.size();
-        int minCardinalitySink1 = fullLogPesSem1.getLocalConfiguration(sinks1.get(0)).cardinality();
-        int minCardinalitySink2 = fullLogPesSem2.getLocalConfiguration(sinks2.get(0)).cardinality();
+        BitSet bitSetSink1 = fullLogPesSem1.getLocalConfiguration(sinks1.get(sinks1.size() - 1));
+        int minCardinalitySink1 = bitSetSink1.cardinality();
+        BitSet bitSetSink2 = fullLogPesSem2.getLocalConfiguration(sinks2.get(sinks2.size() - 1));
+        int minCardinalitySink2 = bitSetSink2.cardinality();
         for (int sink1: sinks1) {
+            bestOp = null;
             int cardinalitySink1 = fullLogPesSem1.getLocalConfiguration(sink1).cardinality();
-            System.out.println(a * sinks2.size() + " " + cardinalitySink1);
+            System.out.print(a * (sinks2.size()) + " " + cardinalitySink1);
+
+            int cardinalityBestSink2 = 0;
             Collections.sort(sinks2, new Comparator<Integer>() {
                 @Override
                 public int compare(Integer o1, Integer o2) {
@@ -225,35 +229,64 @@ public class ApromoreCompareLL {
             IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>> map1 = new IntObjectHashMap<>();
 		    map.put(sink1, map1);
             logpessem1 = getLogPESSem(pes1, logpes1, sink1);
+            Multiset<String> set1 = getMultiset(fullLogPesSem1.getLocalConfiguration(sink1), fullLogPesSem1, bitSetSink2, fullLogPesSem2);
             mincost = cardinalitySink1 + minCardinalitySink2;
+//            mincost = set1.size();
+//            mincost -= ((cardinalitySink1 + minCardinalitySink2) - mincost);
+//            if(mincost == 0) mincost = cardinalitySink1 + minCardinalitySink2;
+            System.out.print(" " + mincost);
+
             for (int sink2: sinks2) {
                 int cardinalitySink2 = fullLogPesSem2.getLocalConfiguration(sink2).cardinality();
+
                 if(Math.abs(cardinalitySink1 - cardinalitySink2) > mincost) continue;
+				if((psp = computePSP(logpessem1, getLogPESSem(pes2, logpes2, sink2), mincost)) == null) continue;
 
-                logpessem2 = getLogPESSem(pes2, logpes2, sink2);
-				psp = new LogBasedPartialSynchronizedProduct<>(logpessem1, logpessem2, mincost);
-				if(psp.perform() == null) continue;
-
-				psp = psp.prune();
 				map1.put(sink2, psp);
 				curcost = psp.getStates().get(psp.getStates().size() - 1).cost;
 
-				if (curcost < mincost) {
+				if (curcost <= mincost) {
 					mincost = curcost;
 					bestOp = psp.getOperationSequence();
 					cursink = sink2;
+                    cardinalityBestSink2 = cardinalitySink2;
                     if(curcost == 0) break;
+                }
+            }
+            if(bestOp == null) {
+                System.out.println("error");
+                mincost = cardinalitySink1 + minCardinalitySink2;
+                System.out.print(" " + mincost);
+                for (int sink2: sinks2) {
+                    int cardinalitySink2 = fullLogPesSem2.getLocalConfiguration(sink2).cardinality();
+
+                    if(Math.abs(cardinalitySink1 - cardinalitySink2) > mincost) continue;
+                    if((psp = computePSP(logpessem1, getLogPESSem(pes2, logpes2, sink2), mincost)) == null) continue;
+
+                    map1.put(sink2, psp);
+                    curcost = psp.getStates().get(psp.getStates().size() - 1).cost;
+
+                    if (curcost < mincost) {
+                        mincost = curcost;
+                        bestOp = psp.getOperationSequence();
+                        cursink = sink2;
+                        cardinalityBestSink2 = cardinalitySink2;
+                        if(curcost == 0) break;
+                    }
                 }
             }
             verbalizer.addPSP(bestOp);
             unusedsinks.remove(cursink);
+            map1.remove(cursink);
             a--;
-		}
+            System.out.println(" " + cardinalityBestSink2 + " " + mincost);
+        }
 
 		a = unusedsinks.size();
         for (int sink2: unusedsinks) {
+            bestOp = null;
             int cardinalitySink2 = fullLogPesSem2.getLocalConfiguration(sink2).cardinality();
-            System.out.println(a * sinks1.size() + " " + cardinalitySink2);
+            int cardinalityBestSink1 = 0;
             Collections.sort(sinks1, new Comparator<Integer>() {
                 @Override
                 public int compare(Integer o1, Integer o2) {
@@ -269,17 +302,12 @@ public class ApromoreCompareLL {
 
             logpessem2 = getLogPESSem(pes2, logpes2, sink2);
             mincost = cardinalitySink2 + minCardinalitySink1;
-
             for (int sink1: sinks1) {
                 int cardinalitySink1 = fullLogPesSem1.getLocalConfiguration(sink1).cardinality();
                 if(Math.abs(cardinalitySink1 - cardinalitySink2) > mincost) continue;
 
-                IntObjectHashMap<LogBasedPartialSynchronizedProduct<Integer>> map1 = map.get(sink1);
-                if((psp = map1.get(sink2)) == null) {
-                    logpessem1 = getLogPESSem(pes1, logpes1, sink1);
-                    psp = new LogBasedPartialSynchronizedProduct<>(logpessem1, logpessem2, mincost);
-                    if(psp.perform() == null) continue;
-                    psp = psp.prune();
+                if((psp = map.get(sink1).get(sink2)) == null) {
+                    if((psp = computePSP(getLogPESSem(pes1, logpes1, sink1), logpessem2, mincost)) == null) continue;
                 }
 
 				curcost = psp.getStates().get(psp.getStates().size() - 1).cost;
@@ -287,15 +315,28 @@ public class ApromoreCompareLL {
 				if (curcost < mincost) {
 					mincost = curcost;
 					bestOp = psp.getOperationSequence();
+                    cardinalityBestSink1 = cardinalitySink1;
                     if(curcost == 0) break;
 				}
 			}
+            if(bestOp == null) System.out.println("error");
 			verbalizer.addPSP(bestOp);
             a--;
-		}
+            System.out.println(a * sinks1.size() + " " + cardinalitySink2 + " " + cardinalityBestSink1 + " " + mincost);
+        }
 
 		return verbalizer.verbalize();
 	}
+
+	private LogBasedPartialSynchronizedProduct<Integer> computePSP(
+	        SinglePORunPESSemantics<Integer> logpessem1,
+            SinglePORunPESSemantics<Integer> logpessem2,
+            int minCost
+    ) {
+        LogBasedPartialSynchronizedProduct<Integer> psp = new LogBasedPartialSynchronizedProduct<>(logpessem1, logpessem2);
+        if(psp.perform2(minCost) == null) return null;
+        return psp.prune();
+    }
 
 	private int compareSinks(BitSet bitSet1, PESSemantics<Integer> fullLogPesSem1, BitSet bitSet2a, BitSet bitSet2b, PESSemantics<Integer> fullLogPesSem2) {
         Multiset<String> set1 = getMultiset(bitSet1, fullLogPesSem1, bitSet2a, fullLogPesSem2);
@@ -309,16 +350,8 @@ public class ApromoreCompareLL {
 
     private Multiset<String> getMultiset(BitSet bitSet1, PESSemantics<Integer> fullLogPesSem1, BitSet bitSet2, PESSemantics<Integer> fullLogPesSem2) {
         Multiset<String> e1 = getEventList(bitSet1, fullLogPesSem1);
-        Multiset<String> e1a = getEventList(bitSet1, fullLogPesSem1);
-        Multiset<String> e2a = getEventList(bitSet2, fullLogPesSem2);
-
-        Multiset<String> set1 = HashMultiset.create();
-        e1a.removeAll(e2a);
-        e2a.removeAll(e1);
-        set1.addAll(e1a);
-        set1.addAll(e2a);
-
-        return set1;
+        Multiset<String> e2 = getEventList(bitSet2, fullLogPesSem2);
+        return Multisets.union(Multisets.difference(e1, e2), Multisets.difference(e2, e1));
     }
 
     private Multiset<String> getEventList(BitSet bitSet, PESSemantics<Integer> fullLogPesSem) {
