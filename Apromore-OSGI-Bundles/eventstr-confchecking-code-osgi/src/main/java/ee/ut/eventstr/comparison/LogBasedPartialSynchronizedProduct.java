@@ -39,13 +39,14 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 
 import ee.ut.eventstr.BehaviorRelation;
 import ee.ut.eventstr.SinglePORunPESSemantics;
 import ee.ut.org.processmining.framework.util.Pair;
 import org.eclipse.collections.impl.bag.mutable.primitive.IntHashBag;
+import org.eclipse.collections.impl.block.comparator.primitive.IntFunctionComparator;
+import org.eclipse.collections.impl.block.factory.Functions;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
@@ -56,7 +57,7 @@ import org.eclipse.collections.impl.stack.mutable.ArrayStack;
 import static ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.StateHint.CREATED;
 import static ee.ut.eventstr.comparison.LogBasedPartialSynchronizedProduct.StateHint.MERGED;
 
-public class LogBasedPartialSynchronizedProduct<T> {
+public class LogBasedPartialSynchronizedProduct<T> implements Comparable<LogBasedPartialSynchronizedProduct<T>>{
 
 	public static class State implements Comparable<State> {
 		BitSet c1;
@@ -92,8 +93,22 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		}
 
 		public int compareTo(State o) {
-			return Short.compare(this.cost, o.cost);
+			int compare = Short.compare(this.cost, o.cost);
+			if(compare == 0) compare = bitsetCompare(this.c1, o.c1);
+            if(compare == 0) compare = bitsetCompare(this.c2, o.c2);
+            return compare;
 		}
+
+		private int bitsetCompare(BitSet lhs, BitSet rhs) {
+            if (lhs.equals(rhs)) return 0;
+            BitSet xor = (BitSet)lhs.clone();
+            xor.xor(rhs);
+            int firstDifferent = xor.length()-1;
+            if(firstDifferent==-1)
+                return 0;
+
+            return rhs.get(firstDifferent) ? 1 : -1;
+        }
 	}
 
 	enum StateHint {
@@ -177,7 +192,6 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	private List<State> states = new ArrayList<>();
 	private Set<State> relevantStates;
 	private LinkedList<Operation> opSeq;
-	private int optimalCost;
 
     private UnifiedSetMultimap<State, Operation> operations;
     private ObjectIntHashMap<String> labelMap = new ObjectIntHashMap();
@@ -190,8 +204,12 @@ public class LogBasedPartialSynchronizedProduct<T> {
     private BitSet lpe, rpe, pruned1, pruned2, kept1, kept2;
     int[] lpea, rpea;
     private State s;
+    int sink, guess;
 
-	public LogBasedPartialSynchronizedProduct(SinglePORunPESSemantics<T> pes1, SinglePORunPESSemantics<T> pes2) {
+	public LogBasedPartialSynchronizedProduct(SinglePORunPESSemantics<T> pes1, SinglePORunPESSemantics<T> pes2, int sink, int guess) {
+	    this.sink = sink;
+	    this.guess = guess;
+
 		this.pes1 = pes1;
 		this.pes2 = pes2;
         this.descendants = UnifiedSetMultimap.newMultimap();
@@ -315,6 +333,20 @@ public class LogBasedPartialSynchronizedProduct<T> {
         return this;
     }
 
+    public int compareTo(LogBasedPartialSynchronizedProduct<T> o) {
+	    State s1;
+	    if(this.matchings != null) s1 = this.matchings;
+        else s1 = this.open.element();
+
+        State s2;
+        if(o.matchings != null) s2 = o.matchings;
+        else s2 = o.open.element();
+
+        int c = Short.compare(s1.cost, s2.cost);
+        if(c == 0) return Integer.compare(this.guess, o.guess);
+        return c;
+    }
+
 	public LogBasedPartialSynchronizedProduct<T> perform2(int optimalCost) {
 		initializeAStar();
         while (!open.isEmpty()) {
@@ -323,7 +355,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 		return this;
 	}
 
-    private void initializeAStar() {
+    public void initializeAStar() {
         root = getState(new BitSet(), new IntHashBag(), new BitSet());
 
         open.offer(root);
@@ -332,10 +364,8 @@ public class LogBasedPartialSynchronizedProduct<T> {
             @Override
             public int compare(Operation o1, Operation o2) {
                 int costCValue = Short.compare(o1.nextState.cost, o2.nextState.cost);
-                if (costCValue != 0)
-                    return costCValue;
-                else
-                    return Integer.compare(o1.label, o2.label);
+                if (costCValue != 0) return costCValue;
+                else return Integer.compare(o1.label, o2.label);
             }
         };
     }
@@ -584,7 +614,7 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	}
 
 	public void computeCost(State s) {
-		s.cost = (short) (g(s.c1, s.c2, s.labels) + h(s));
+	    s.cost = (short) (g(s.c1, s.c2, s.labels) + h(s));
 	}
 
     public int g(BitSet c1, BitSet c2, IntHashBag labels) {
@@ -592,6 +622,13 @@ public class LogBasedPartialSynchronizedProduct<T> {
 	}
 
 	public int h(State s) {
+        Multiset<String> pf1 = pes1.getPossibleFutureAsMultisetLabels(s.c1);
+        Multiset<String> pf2 = pes2.getPossibleFutureAsMultisetLabels(s.c2);
+        int size = Multisets.union(Multisets.difference(pf1, pf2), Multisets.difference(pf2, pf1)).size();
+        return size;
+    }
+
+	public int h1(State s) {
 		Set<String> pf2 = pes2.getPossibleFutureAsLabels(s.c2);
 
 		BitSet future = (BitSet) maxConf1.clone();

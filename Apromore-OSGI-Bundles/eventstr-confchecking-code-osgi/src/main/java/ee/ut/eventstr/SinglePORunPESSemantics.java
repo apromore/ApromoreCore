@@ -20,6 +20,9 @@
 
 package ee.ut.eventstr;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.BitSet;
@@ -117,6 +120,16 @@ public class SinglePORunPESSemantics <T>{
 		
 		return flabels;
 	}
+
+    public Multiset<String> getPossibleFutureAsMultisetLabels(BitSet conf) {
+        BitSet future = getPossibleFuture(conf);
+
+        Multiset<String> flabels = HashMultiset.create();
+        for (int e = future.nextSetBit(0); e >= 0; e = future.nextSetBit(e+1))
+            flabels.add(pes.labels.get(e));
+
+        return flabels;
+    }
 
 	public BehaviorRelation getBRelation(int e1, int e2) {
 		return pes.getBRelMatrix()[e1][e2];
