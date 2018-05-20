@@ -219,7 +219,7 @@ public class ApromoreCompareLL {
                 psp = computePSP(logpessem1, getLogPESSem(pes2, logpes2, sink2), sink2, guess);
                 queue.offer(psp);
             }
-            psp = runAstart(queue, mincost);
+            psp = runAStar(queue, mincost);
             verbalizer.addPSP(psp.getOperationSequence());
             matches.put(sink1, psp.sink);
         }
@@ -237,13 +237,13 @@ public class ApromoreCompareLL {
                 psp = computePSP(getLogPESSem(pes1, logpes1, sink1), logpessem2, sink1, guess);
                 queue.offer(psp);
             }
-            psp = runAstart(queue, mincost);
+            psp = runAStar(queue, mincost);
             if(matches.get(psp.sink) != sink2) verbalizer.addPSP(psp.getOperationSequence());
         }
         return verbalizer.verbalize();
     }
 
-    private LogBasedPartialSynchronizedProduct<Integer> runAstart(Queue<LogBasedPartialSynchronizedProduct<Integer>> queue, int mincost) {
+    private LogBasedPartialSynchronizedProduct<Integer> runAStar(Queue<LogBasedPartialSynchronizedProduct<Integer>> queue, int mincost) {
 	    LogBasedPartialSynchronizedProduct<Integer> psp = null;
         while (!queue.isEmpty()) {
             psp = queue.poll();
