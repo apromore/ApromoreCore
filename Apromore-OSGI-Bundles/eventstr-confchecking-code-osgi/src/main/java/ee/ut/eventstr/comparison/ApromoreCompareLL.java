@@ -206,6 +206,7 @@ public class ApromoreCompareLL {
         int minCardinalitySink2 = bitSetSink2.cardinality();
 
         IntIntHashMap matches = new IntIntHashMap();
+        IntObjectHashMap<Integer> minCosts = new IntObjectHashMap();
         for (int sink1: sinks1) {
             int cardinalitySink1 = fullLogPesSem1.getLocalConfiguration(sink1).cardinality();
             logpessem1 = getLogPESSem(pes1, logpes1, sink1);
@@ -222,12 +223,16 @@ public class ApromoreCompareLL {
             psp = runAStar(queue, mincost);
             verbalizer.addPSP(psp.getOperationSequence());
             matches.put(sink1, psp.sink);
+            Integer cost = minCosts.get(psp.sink);
+            if(cost == null || cost > mincost) minCosts.put(psp.sink, mincost);
         }
 
         for (int sink2: sinks2) {
             int cardinalitySink2 = fullLogPesSem2.getLocalConfiguration(sink2).cardinality();
             logpessem2 = getLogPESSem(pes2, logpes2, sink2);
+            Integer cost = minCosts.get(sink2);
             mincost = cardinalitySink2 + minCardinalitySink1;
+            if(cost != null || cost < mincost) mincost = cost;
 
             Queue<LogBasedPartialSynchronizedProduct<Integer>> queue = new PriorityQueue<>();
             for (int sink1: sinks1) {
