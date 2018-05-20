@@ -232,7 +232,7 @@ public class ApromoreCompareLL {
             logpessem2 = getLogPESSem(pes2, logpes2, sink2);
             Integer cost = minCosts.get(sink2);
             mincost = cardinalitySink2 + minCardinalitySink1;
-            if(cost != null || cost < mincost) mincost = cost;
+            if(cost != null && cost < mincost) mincost = cost;
 
             Queue<LogBasedPartialSynchronizedProduct<Integer>> queue = new PriorityQueue<>();
             for (int sink1: sinks1) {
