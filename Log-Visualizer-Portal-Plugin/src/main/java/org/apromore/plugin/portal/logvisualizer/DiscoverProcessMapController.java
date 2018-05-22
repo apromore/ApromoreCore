@@ -276,11 +276,30 @@ public class DiscoverProcessMapController {
                     Map<String, ElementLayout> layoutMap = LayoutGenerator.generateLayout(layout);
                     Set<Activity> setActivities = new HashSet<>(diagram.getActivities());
                     for(Activity activity : setActivities) {
+                        if(activity.getLabel().contains("|>")) continue;
+                        if(activity.getLabel().contains("[]")) continue;
                         if(!layoutMap.containsKey(activity.getLabel())) {
                             diagram.removeActivity(activity);
                             manually_removed_activities.add(activity.getLabel());
                         }
                     }
+                    for(Activity a : diagram.getActivities()) {
+                        for(Activity b : diagram.getActivities()) {
+                            String n = a.getLabel() + " (~) " + b.getLabel();
+                            if(layoutMap.containsKey(n)) {
+                                Set<Flow> flows = new HashSet<>(diagram.getFlows());
+                                boolean found = false;
+                                for(Flow flow : flows) {
+                                    if(flow.getSource().equals(a) && flow.getTarget().equals(b)) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if(!found) diagram.addFlow(a, b, "");
+                            }
+                        }
+                    }
+                    diagram = logVisualizerService.insertBPMNGateways(diagram);
 
                     UIContext context = new UIContext();
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -302,8 +321,10 @@ public class DiscoverProcessMapController {
                     sb.append("</definitions>");
                     String model = sb.toString();
 
+                    System.out.println(model.replaceAll("\n",""));
+                    System.out.println(layout);
+
                     XLog filtered = logVisualizerService.generateFilteredLog(log, manually_removed_activities, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100);
-                    System.out.println(event.getData().toString());
                     logAnimationPlugin.execute(portalContext, model, layout, filtered);
                 }
             });
@@ -316,11 +337,15 @@ public class DiscoverProcessMapController {
 
                     BPMNDiagram diagram = logVisualizerService.generateBPMNFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, frequency_VS_duration, total_VS_median_VS_mean_VS_max_VS_min);
                     Set<String> manually_removed_activities = new HashSet<>();
-                    Set<String> manually_removed_arcs = new HashSet<>();
                     String layout = event.getData().toString();
                     Map<String, ElementLayout> layoutMap = LayoutGenerator.generateLayout(layout);
-                    for(Activity activity : diagram.getActivities()) {
+                    Set<Activity> setActivities = new HashSet<>(diagram.getActivities());
+                    Set<String> manually_removed_arcs = new HashSet<>();
+                    for(Activity activity : setActivities) {
+                        if(activity.getLabel().contains("|>")) continue;
+                        if(activity.getLabel().contains("[]")) continue;
                         if(!layoutMap.containsKey(activity.getLabel())) {
+                            diagram.removeActivity(activity);
                             manually_removed_activities.add(activity.getLabel());
                         }
                     }

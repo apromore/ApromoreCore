@@ -243,7 +243,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     public BPMNDiagram generateBPMNFromLog(XLog log, double activities, double arcs, boolean frequency_vs_duration, int avg_vs_min_vs_max) {
         try {
             BPMNDiagram bpmnDiagram = generateDiagramFromLog(log, activities, arcs, frequency_vs_duration, avg_vs_min_vs_max);
-            return insertBPMNGateways(bpmnDiagram);
+            return bpmnDiagram;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -958,7 +958,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return graph;
     }
 
-    private BPMNDiagram insertBPMNGateways(BPMNDiagram bpmnDiagram) {
+    public BPMNDiagram insertBPMNGateways(BPMNDiagram bpmnDiagram) {
         BPMNDiagram gatewayDiagram = new BPMNDiagramImpl(bpmnDiagram.getLabel());
 
         Map<BPMNNode, BPMNNode> incoming = new HashMap<>();

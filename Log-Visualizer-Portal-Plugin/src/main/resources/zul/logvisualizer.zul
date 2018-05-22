@@ -118,7 +118,9 @@
         <n:div id="myDiagramDiv" xmlns:n="native" style="height:80vh; width:100vh" />
         <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
         <script type="text/javascript">
+            <![CDATA[
             var diagram;
+            var removed_activities = [];
 
             function init() {
 
@@ -197,16 +199,51 @@
                 console.log("json");
                 console.log(json);
                 diagram.add($.parseJSON(json));
-                //layout_cola();
-                layout();
 
                 cy.on('cxttap', 'edge', function(evt){
-                    diagram.remove(evt.cyTarget);
+                    var source = this.source();
+                    var target = this.target();
+                    if(source.outgoers('node').length > 1 && target.incomers('node').length > 1) {
+                        diagram.remove(this);
+                    }
                 });
                 cy.on('cxttap', 'node', function(evt){
-                    diagram.remove(evt.cyTarget.connectedEdges());
-                    diagram.remove(evt.cyTarget);
+                    if(this.data("name") != "") {
+                        removed_activities.push(this.data("name"));
+                        console.log(removed_activities);
+                        var n = this.connectedEdges();
+                        var nLength = n.length;
+                        var s = [];
+                        var t = [];
+                        for (var i = 0; i < nLength; i++) {
+                            if(n[i].source().id() != this.id()) s.push(n[i].source().id());
+                            if(n[i].target().id() != this.id()) t.push(n[i].target().id());
+                        }
+                        var sLength = s.length;
+                        var tLength = t.length;
+                        for (var i = 0; i < sLength; i++) {
+                            for (var j = 0; j < tLength; j++) {
+                                var idi = s[i];
+                                var idj = t[j];
+                                diagram.add(
+                                    { group: "edges",
+                                        data:
+                                        { strength: 50,
+                                            color: "#424242",
+                                            style: "solid",
+                                            source: idi,
+                                            label: 100,
+                                            target: idj,
+                                            id: idi + "x" + idj
+                                        }
+                                    }
+                                );
+                            }
+                        }
+                        diagram.remove(this);
+                    }
                 });
+                layout();
             }
 
             function layout() {
@@ -228,6 +265,11 @@
                 pdf.save("download.pdf");
             }
 
+            function rediscover() {
+                var json = cy.json();
+                zAu.send(new zk.Event(zk.Widget.$('$animate'), 'onRemoved', json));
+            }
+
             function animate() {
                 var json = cy.json();
                 zAu.send(new zk.Event(zk.Widget.$('$animate'), 'onAnimate', json));
@@ -247,6 +289,8 @@
                 init();
                 zAu.send(new zk.Event(zk.Widget.$('$win'), 'onLoaded'));
             });
+
+        ]]>
         </script>
     </vbox>
 </window>

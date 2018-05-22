@@ -34,6 +34,7 @@ public interface LogVisualizerService {
     String visualizeLog(XLog log, double activities, double arcs);
     JSONArray generateJSONArrayFromLog(XLog log, double activities, double arcs, boolean frequency_vs_duration, int avg_vs_min_vs_max);
     BPMNDiagram generateBPMNFromLog(XLog log, double activities, double arcs, boolean frequency_vs_duration, int avg_vs_min_vs_max);
+    BPMNDiagram insertBPMNGateways(BPMNDiagram bpmnDiagram);
     XLog generateFilteredLog(XLog log, Set<String> manually_removed_activities, double activities, double arcs);
     XLog generateFilteredFittedLog(XLog log, Set<String> manually_removed_activities, Set<String> manually_removed_arcs, double activities, double arcs);
 }
