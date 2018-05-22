@@ -21,6 +21,7 @@
 package org.apromore.service.logvisualizer.impl;
 
 import com.raffaeleconforti.log.util.LogImporter;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apromore.plugin.DefaultParameterAwarePlugin;
 import org.apromore.service.logvisualizer.LogVisualizerService;
 import org.deckfour.xes.classification.XEventAndClassifier;
@@ -34,7 +35,6 @@ import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.deckfour.xes.model.impl.XLogImpl;
 import org.eclipse.collections.api.iterator.MutableIntIterator;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.list.primitive.IntList;
@@ -104,16 +104,16 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private IntIntHashMap activity_max_frequency;
     private IntIntHashMap activity_min_frequency;
 
-    private ObjectIntHashMap<Pair<Integer, Integer>> arcs_frequency;
-    private ObjectIntHashMap<Pair<Integer, Integer>> arcs_max_frequency;
-    private ObjectIntHashMap<Pair<Integer, Integer>> arcs_min_frequency;
+    private ObjectIntHashMap<Arc> arcs_frequency;
+    private ObjectIntHashMap<Arc> arcs_max_frequency;
+    private ObjectIntHashMap<Arc> arcs_min_frequency;
 
-    private Map<Pair<Integer, Integer>, LongArrayList> arcs_duration_set;
+    private Map<Arc, LongArrayList> arcs_duration_set;
 
-    private MutableList<ObjectIntPair<Pair<Integer, Integer>>> sorted_arcs_frequency;
+    private MutableList<ObjectIntPair<Arc>> sorted_arcs_frequency;
 
     private IntHashSet retained_activities;
-    private Set<Pair<Integer, Integer>> retained_arcs;
+    private Set<Arc> retained_arcs;
 
     private String start_name = "|>";
     private String end_name = "[]";
@@ -132,22 +132,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     private final String START = "#C1C9B0";
     private final String END = "#C0A3A1";
 
-    private final String BLUE_1 = "#F1EEF6";
-    private final String BLUE_2 = "#BDC9E1";
-    private final String BLUE_3 = "#74A9CF";
-    private final String BLUE_4 = "#2B8CBE";
-    private final String BLUE_5 = "#045A8D";
-
-    private final String RED_1 = "#FEF0D9";
-    private final String RED_2 = "#FDCC8A";
-    private final String RED_3 = "#FC8D59";
-    private final String RED_4 = "#E34A33";
-    private final String RED_5 = "#B30000";
-
     private final String EDGE_START_COLOR_FREQUENCY = "#646464";
-    private final String EDGE_END_COLOR_FREQUENCY  = "#292929";
-    private final String EDGE_START_COLOR_DURATION  = "#646464";
-    private final String EDGE_END_COLOR_DURATION  = "#8B0000";
 
     private final ColorGradient activity_frequency_gradient = new ColorGradient(new Color(241, 238, 246), new Color(4, 90, 141));
     private final ColorGradient activity_duration_gradient = new ColorGradient(new Color(254,240,217), new Color(179, 0, 0));
@@ -166,12 +151,13 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         } catch (Exception e) {
             e.printStackTrace();
         }
-        XLog flog = l.generateFilteredLog(log, 0, 100);
+        XLog flog = l.generateFilteredFittedLog(log, new HashSet<>(), new HashSet<>(), 0.75, 1);
+        System.out.println();
 //        JSONArray s = l.generateJSONArrayFromLog(log, 0, 100, FREQUENCY, MEAN);
 //        JSONArray s1 = l.generateJSONArrayFromLog(log, 0.4, 0, true);
 //        System.out.println(s);
 //        System.out.println(s1);
-//        System.out.println(l.visualizeLog(log, 0.34, 0));
+//        System.out.println(l.visualizeLog(log, 0.30, 1));
 //        l.generateDOTFromLog(log, 0.0, 0.36);
     }
 
@@ -265,12 +251,14 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
     }
 
     @Override
-    public XLog generateFilteredLog(XLog log, double activities, double arcs) {
+    public XLog generateFilteredLog(XLog log, Set<String> manually_removed_activities, double activities, double arcs) {
         initializeDatastructures();
         log = removeUnrequiredEvents(log);
         List<IntList> simplified_log = simplifyLog(log);
         List<LongList> simplified_times_log = simplifyTimesLog(log);
-        List<IntList> filtered_log = filterLog(simplified_log, simplified_times_log, activities);
+
+        IntHashSet manually_removed_activities_int = getActivitiesCode(manually_removed_activities);
+        List<IntList> filtered_log = filterLog(simplified_log, simplified_times_log, activities, manually_removed_activities_int);
 
         XFactoryNaiveImpl factory = new XFactoryNaiveImpl();
         XLog filtered_xlog = factory.createLog(log.getAttributes());
@@ -282,10 +270,127 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 while(!full_classifier.getClassIdentity(log.get(trace).get(unfiltered_event)).equals(getEventFullName(filtered_trace.get(event)))) {
                     unfiltered_event++;
                 }
+
+                if(manually_removed_activities.contains(name_classifier.getClassIdentity(log.get(trace).get(unfiltered_event)))) continue;
+
                 filtered_xtrace.add(log.get(trace).get(unfiltered_event));
                 unfiltered_event++;
+
             }
             if(filtered_xtrace.size() > 0) {
+                filtered_xlog.add(filtered_xtrace);
+            }
+        }
+
+        return filtered_xlog;
+    }
+
+    private IntHashSet getActivitiesCode(Set<String> manually_removed_activities) {
+        IntHashSet manually_removed_activities_int = new IntHashSet();
+        for(String activity : manually_removed_activities) {
+            String activity_start = activity + "+start";
+            String activity_complete = activity + "+complete";
+
+            if(getEventNumber(activity_start) != null) manually_removed_activities_int.add(getEventNumber(activity_start));
+            if(getEventNumber(activity_complete) != null) manually_removed_activities_int.add(getEventNumber(activity_complete));
+        }
+        return manually_removed_activities_int;
+    }
+
+//    @Override
+//    public XLog generateFilteredFittedLog(XLog log, double activities, double arcs) {
+//        initializeDatastructures();
+//        log = removeUnrequiredEvents(log);
+//        List<IntList> simplified_log = simplifyLog(log);
+//        List<LongList> simplified_times_log = simplifyTimesLog(log);
+//        List<IntList> filtered_log = filterLog(simplified_log, simplified_times_log, activities);
+//        HashSet<Arc> maintained_arcs = selectArcs(arcs);
+//
+//        XFactoryNaiveImpl factory = new XFactoryNaiveImpl();
+//        XLog filtered_xlog = factory.createLog(log.getAttributes());
+//        for(int trace = 0; trace < filtered_log.size(); trace++) {
+//            XTrace filtered_xtrace = factory.createTrace(log.get(trace).getAttributes());
+//            IntList filtered_trace = filtered_log.get(trace);
+//            int unfiltered_event = 0;
+//            Arc lastArc = null;
+//            boolean completed = false;
+//            for(int event = 1; event < filtered_trace.size() - 1; event++) {
+//                while(!full_classifier.getClassIdentity(log.get(trace).get(unfiltered_event)).equals(getEventFullName(filtered_trace.get(event)))) {
+//                    unfiltered_event++;
+//                }
+//
+//                if(lastArc != null) {
+//                    Arc arc = new Arc(lastArc.getTarget(), filtered_trace.get(event));
+//                    if(maintained_arcs.contains(arc)) {
+//                        filtered_xtrace.add(log.get(trace).get(unfiltered_event));
+//                        unfiltered_event++;
+//                        lastArc = arc;
+//                        if(event == filtered_trace.size() - 2) {
+//                            if(maintained_arcs.contains(new Arc(lastArc.getTarget(), 2))) {
+//                                completed = true;
+//                            }
+//                        }
+//                    }
+//                }else {
+//                    Arc arc = new Arc(1, filtered_trace.get(event));
+//                    if(maintained_arcs.contains(arc)) {
+//                        filtered_xtrace.add(log.get(trace).get(unfiltered_event));
+//                        lastArc = arc;
+//                        unfiltered_event++;
+//                    }
+//                }
+//
+//            }
+//            if(filtered_xtrace.size() > 0 && completed) {
+//                filtered_xlog.add(filtered_xtrace);
+//            }
+//        }
+//
+//        return filtered_xlog;
+//    }
+
+    @Override
+    public XLog generateFilteredFittedLog(XLog log, Set<String> manually_removed_activities, Set<String> manually_removed_arcs, double activities, double arcs) {
+        initializeDatastructures();
+        log = removeUnrequiredEvents(log);
+        List<IntList> simplified_log = simplifyLog(log);
+        List<LongList> simplified_times_log = simplifyTimesLog(log);
+        IntHashSet manually_removed_activities_int = getActivitiesCode(manually_removed_activities);
+        List<IntList> filtered_log = filterLog(simplified_log, simplified_times_log, activities, manually_removed_activities_int);
+        HashSet<Arc> maintained_arcs = selectArcs(arcs);
+
+        for(String string_arc : manually_removed_arcs) {
+            String source = string_arc.substring(0, string_arc.indexOf(" (~) "));
+            String target = string_arc.substring(string_arc.indexOf(" (~) ") + 5);
+
+            String source_start = source + "+start";
+            String source_complete = source + "+complete";
+            Set<Integer> sources = new HashSet<>();
+            if(getEventNumber(source_start) != null) sources.add(getEventNumber(source_start));
+            if(getEventNumber(source_complete) != null) sources.add(getEventNumber(source_complete));
+
+            String target_start = target + "+start";
+            String target_complete = target + "+complete";
+            Set<Integer> targets = new HashSet<>();
+            if(getEventNumber(target_start) != null) targets.add(getEventNumber(target_start));
+            if(getEventNumber(target_complete) != null) targets.add(getEventNumber(target_complete));
+
+            for(int s : sources) {
+                for(int t : targets) {
+                    maintained_arcs.remove(new Arc(s, t));
+                }
+            }
+        }
+
+        XLog original_log = generateFilteredLog(log, manually_removed_activities, activities, arcs);
+
+        XFactoryNaiveImpl factory = new XFactoryNaiveImpl();
+        XLog filtered_xlog = factory.createLog(log.getAttributes());
+
+        LogFitter logFitter = new LogFitter(simplified_names, factory);
+        for(int trace = 0; trace < filtered_log.size(); trace++) {
+            XTrace filtered_xtrace = logFitter.fitTrace(original_log.get(trace), filtered_log.get(trace), maintained_arcs);
+            if(filtered_xtrace != null) {
                 filtered_xlog.add(filtered_xtrace);
             }
         }
@@ -298,7 +403,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         log = removeUnrequiredEvents(log);
         List<IntList> simplified_log = simplifyLog(log);
         List<LongList> simplified_times_log = simplifyTimesLog(log);
-        filterLog(simplified_log, simplified_times_log, activities);
+        filterLog(simplified_log, simplified_times_log, activities, new IntHashSet());
         retained_arcs = selectArcs(arcs);
 
         BPMNDiagram bpmnDiagram = new BPMNDiagramImpl("");
@@ -308,9 +413,9 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             map.put(i, node);
         }
 
-        for(Pair<Integer, Integer> arc : retained_arcs) {
-            BPMNNode source = map.get(arc.getOne());
-            BPMNNode target = map.get(arc.getTwo());
+        for(Arc arc : retained_arcs) {
+            BPMNNode source = map.get(arc.getSource());
+            BPMNNode target = map.get(arc.getTarget());
             if(frequency_vs_duration == FREQUENCY) {
                 if(avg_vs_min_vs_max == TOTAL) {
                     bpmnDiagram.addFlow(source, target, "[" + arcs_frequency.get(arc) + "]");
@@ -457,7 +562,6 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 real_activity_frequency.addToValue(simplified_event, 1);
 
                 eventsCount.addToValue(simplified_event, 1);
-//                activity_frequency.addToValue(simplified_event, 1);
                 simplified_trace.add(simplified_event);
             }
 
@@ -517,8 +621,9 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return simplified_times_log;
     }
 
-    private List<IntList> filterLog(List<IntList> log, List<LongList> times_log, double activities) {
+    private List<IntList> filterLog(List<IntList> log, List<LongList> times_log, double activities, IntHashSet manually_removed_activities) {
         retained_activities = selectActivities(activities);
+        retained_activities.removeAll(manually_removed_activities);
         List<IntList> filtered_log = new ArrayList<>(log.size());
 
         for(int t = 0; t < log.size(); t++) {
@@ -542,17 +647,11 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 if(i != filtered_trace.size() - 1) not_reaching.add(filtered_trace.get(i));
             }
 
-            ObjectIntHashMap<Pair<Integer, Integer>> arcsCount = new ObjectIntHashMap<>();
+            ObjectIntHashMap<Arc> arcsCount = new ObjectIntHashMap<>();
             for(int i = 0; i < filtered_trace.size() - 1; i++) {
                 for(int j = i + 1; j < filtered_trace.size(); j++) {
                     if (isAcceptableTarget(filtered_trace, filtered_trace.get(i), filtered_trace.get(j))) {
-                        Pair<Integer, Integer> arc = Tuples.pair(filtered_trace.get(i), filtered_trace.get(j));
-                        arcsCount.addToValue(arc, 1);
-//                        arcs_frequency.addToValue(arc, 1);
-                        updateArcDuration(arc, (filtered_time_trace.get(j) - filtered_time_trace.get(i)));
-//                        arcs_duration.addToValue(arc, (filtered_time_trace.get(j) - filtered_time_trace.get(i)));
-                        not_reaching.remove(filtered_trace.get(i));
-                        not_reached.remove(filtered_trace.get(j));
+                        createArc(arcsCount, not_reached, not_reaching, filtered_trace.get(i), filtered_trace.get(j), filtered_time_trace.get(j) - filtered_time_trace.get(i));
                         break;
                     }
                 }
@@ -563,13 +662,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                     if(not_reached.contains(filtered_trace.get(j))) {
                         for (int i = j - 1; i >= 0; i--) {
                             if (isAcceptableTarget(filtered_trace, filtered_trace.get(i), filtered_trace.get(j))) {
-                                Pair<Integer, Integer> arc = Tuples.pair(filtered_trace.get(i), filtered_trace.get(j));
-                                arcsCount.addToValue(arc, 1);
-//                                arcs_frequency.addToValue(arc, 1);
-                                updateArcDuration(arc, (filtered_time_trace.get(j) - filtered_time_trace.get(i)));
-//                                arcs_duration.addToValue(arc, (filtered_time_trace.get(j) - filtered_time_trace.get(i)));
-                                not_reaching.remove(filtered_trace.get(i));
-                                not_reached.remove(filtered_trace.get(j));
+                                createArc(arcsCount, not_reached, not_reaching, filtered_trace.get(i), filtered_trace.get(j), filtered_time_trace.get(j) - filtered_time_trace.get(i));
                                 break;
                             }
                         }
@@ -578,28 +671,22 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
                 for (int j = filtered_trace.size() - 1; j > 0; j--) {
                     for (int i = j - 1; i >= 0; i--) {
                         if (not_reaching.contains(filtered_trace.get(i)) && isAcceptableTarget(filtered_trace, filtered_trace.get(i), filtered_trace.get(j))) {
-                            Pair<Integer, Integer> arc = Tuples.pair(filtered_trace.get(i), filtered_trace.get(j));
-                            arcsCount.addToValue(arc, 1);
-//                            arcs_frequency.addToValue(arc, 1);
-                            updateArcDuration(arc, (filtered_time_trace.get(j) - filtered_time_trace.get(i)));
-//                            arcs_duration.addToValue(arc, (filtered_time_trace.get(j) - filtered_time_trace.get(i)));
-                            not_reaching.remove(filtered_trace.get(i));
-                            not_reached.remove(filtered_trace.get(j));
+                            createArc(arcsCount, not_reached, not_reaching, filtered_trace.get(i), filtered_trace.get(j), filtered_time_trace.get(j) - filtered_time_trace.get(i));
                             break;
                         }
                     }
                 }
             }
 
-            for(Pair<Integer, Integer> arc : arcsCount.keySet().toArray(new Pair[arcsCount.size()])) {
+            for(Arc arc : arcsCount.keySet().toArray(new Arc[arcsCount.size()])) {
                 updateArcFrequency(arc, arcsCount.get(arc));
             }
         }
 
         sorted_arcs_frequency = arcs_frequency.keyValuesView().toList();
-        sorted_arcs_frequency.sort(new Comparator<ObjectIntPair<Pair<Integer, Integer>>>() {
+        sorted_arcs_frequency.sort(new Comparator<ObjectIntPair<Arc>>() {
             @Override
-            public int compare(ObjectIntPair<Pair<Integer, Integer>> o1, ObjectIntPair<Pair<Integer, Integer>> o2) {
+            public int compare(ObjectIntPair<Arc> o1, ObjectIntPair<Arc> o2) {
                 return Integer.compare(o2.getTwo(), o1.getTwo());
             }
         });
@@ -607,7 +694,15 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return filtered_log;
     }
 
-    private void updateArcFrequency(Pair<Integer, Integer> arc, int frequency) {
+    private void createArc(ObjectIntHashMap<Arc> arcsCount, IntHashSet not_reached, IntHashSet not_reaching, int source, int target, long duration) {
+        Arc arc = new Arc(source, target);
+        arcsCount.addToValue(arc, 1);
+        updateArcDuration(arc, duration);
+        not_reaching.remove(source);
+        not_reached.remove(target);
+    }
+
+    private void updateArcFrequency(Arc arc, int frequency) {
         arcs_frequency.addToValue(arc, frequency);
 
         Integer value = Math.max(frequency, arcs_max_frequency.get(arc));
@@ -618,22 +713,13 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         arcs_min_frequency.put(arc, value);
     }
 
-    private void updateArcDuration(Pair<Integer, Integer> arc, long duration) {
+    private void updateArcDuration(Arc arc, long duration) {
         LongArrayList durations = arcs_duration_set.get(arc);
         if(durations == null) {
             durations = new LongArrayList();
             arcs_duration_set.put(arc, durations);
         }
         durations.add(duration);
-
-//        arcs_duration.addToValue(arc, duration);
-//
-//        Long value = Math.max(duration, arcs_max_duration.get(arc));
-//        arcs_max_duration.put(arc, value);
-//
-//        value = Math.min(duration, arcs_min_duration.get(arc));
-//        value = (value == 0 ? duration: value);
-//        arcs_min_duration.put(arc, value);
     }
 
     private boolean isAcceptableTarget(IntArrayList trace, int source_event, int target_event) {
@@ -663,17 +749,13 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         retained_activities.add(start);
         retained_activities.add(end);
 
-//        double threshold = real_activity_frequency.max() * activities;
         double threshold = 0.0;
         if(real_activity_frequency.size() > 0) threshold = Math.log10(real_activity_frequency.max()) * activities;
 
         for(int i = 0; i < sorted_activity_frequency.size(); i++) {
-//            double current = sorted_activity_frequency.get(i).getTwo();
             double current = Math.log10(sorted_activity_frequency.get(i).getTwo());
             if(current >= threshold) {
                 retained_activities.add(sorted_activity_frequency.get(i).getOne());
-//            }else {
-//                return retained_activities;
             }
         }
 
@@ -695,23 +777,21 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return retained_activities;
     }
 
-    private HashSet<Pair<Integer, Integer>> selectArcs(double arcs) {
-        HashSet<Pair<Integer, Integer>> retained_arcs = new HashSet();
+    private HashSet<Arc> selectArcs(double arcs) {
+        HashSet<Arc> retained_arcs = new HashSet();
 
-//        double threshold = arcs_frequency.max() * arcs;
         double threshold = 0.0;
         if(arcs_frequency.size() > 0) threshold = Math.log10(arcs_frequency.max()) * arcs;
 
         retained_arcs.addAll(arcs_frequency.keySet());
 
         for(int i = sorted_arcs_frequency.size() - 1; i >= 0; i--) {
-//            double current = sorted_arcs_frequency.get(i).getTwo();
             double current = Math.log10(sorted_arcs_frequency.get(i).getTwo());
-            Pair<Integer, Integer> arc = sorted_arcs_frequency.get(i).getOne();
+            Arc arc = sorted_arcs_frequency.get(i).getOne();
             if(current < threshold) {
                 if(retained_arcs.contains(arc)) {
                     retained_arcs.remove(arc);
-                    if (!reachable(arc.getTwo(), retained_arcs) || !reaching(arc.getOne(), retained_arcs)) {
+                    if (!reachable(arc.getTarget(), retained_arcs) || !reaching(arc.getSource(), retained_arcs)) {
                         retained_arcs.add(arc);
                     }
                 }
@@ -723,7 +803,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return retained_arcs;
     }
 
-    private boolean reachable(int node, HashSet<Pair<Integer, Integer>> retained_arcs) {
+    private boolean reachable(int node, HashSet<Arc> retained_arcs) {
         if(node == 1) return true;
 
         IntHashSet visited = new IntHashSet();
@@ -732,13 +812,13 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
 
         while (reached.size() > 0) {
             int current = reached.removeAtIndex(0);
-            for (Pair<Integer, Integer> arc : retained_arcs) {
-                if(arc.getOne() == current) {
-                    if(arc.getTwo() == node) {
+            for (Arc arc : retained_arcs) {
+                if(arc.getSource() == current) {
+                    if(arc.getTarget() == node) {
                         return true;
-                    }else if(!visited.contains(arc.getTwo())) {
-                        visited.add(arc.getTwo());
-                        reached.add(arc.getTwo());
+                    }else if(!visited.contains(arc.getTarget())) {
+                        visited.add(arc.getTarget());
+                        reached.add(arc.getTarget());
                     }
                 }
             }
@@ -747,7 +827,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         return false;
     }
 
-    private boolean reaching(int node, HashSet<Pair<Integer, Integer>> retained_arcs) {
+    private boolean reaching(int node, HashSet<Arc> retained_arcs) {
         if(node == 2) return true;
 
         IntHashSet visited = new IntHashSet();
@@ -756,13 +836,13 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
 
         while (reached.size() > 0) {
             int current = reached.removeAtIndex(0);
-            for (Pair<Integer, Integer> arc : retained_arcs) {
-                if(arc.getTwo() == current) {
-                    if(arc.getOne() == node) {
+            for (Arc arc : retained_arcs) {
+                if(arc.getTarget() == current) {
+                    if(arc.getSource() == node) {
                         return true;
-                    }else if(!visited.contains(arc.getOne())) {
-                        visited.add(arc.getOne());
-                        reached.add(arc.getOne());
+                    }else if(!visited.contains(arc.getSource())) {
+                        visited.add(arc.getSource());
+                        reached.add(arc.getSource());
                     }
                 }
             }
@@ -1005,24 +1085,24 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             Integer start_event_number = getEventNumber(start_event);
             Integer complete_event_number = getEventNumber(complete_event);
             if(start_event_number != null && complete_event_number != null) {
-                if(avg_vs_max_vs_min == MEAN) return getArcMeanDuration(Tuples.pair(start_event_number, complete_event_number));
-                else if(avg_vs_max_vs_min == MAX) return getArcMaxDuration(Tuples.pair(start_event_number, complete_event_number));
-                else return getArcMinDuration(Tuples.pair(start_event_number, complete_event_number));
+                if(avg_vs_max_vs_min == MEAN) return getArcMeanDuration(new Arc(start_event_number, complete_event_number));
+                else if(avg_vs_max_vs_min == MAX) return getArcMaxDuration(new Arc(start_event_number, complete_event_number));
+                else return getArcMinDuration(new Arc(start_event_number, complete_event_number));
             }else return 0;
         }else return 0;
     }
 
-    private long getArcTotalDuration(Pair<Integer, Integer> arc) {
+    private long getArcTotalDuration(Arc arc) {
         LongArrayList durations = arcs_duration_set.get(arc);
         return durations.sum();
     }
 
-    private long getArcMeanDuration(Pair<Integer, Integer> arc) {
+    private long getArcMeanDuration(Arc arc) {
         LongArrayList durations = arcs_duration_set.get(arc);
         return durations.sum() / durations.size();
     }
 
-    private long getArcMedianDuration(Pair<Integer, Integer> arc) {
+    private long getArcMedianDuration(Arc arc) {
         LongArrayList durations = arcs_duration_set.get(arc);
         durations = durations.sortThis();
         if(durations.size() % 2 == 0) {
@@ -1032,12 +1112,12 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         }
     }
 
-    private long getArcMaxDuration(Pair<Integer, Integer> arc) {
+    private long getArcMaxDuration(Arc arc) {
         LongArrayList durations = arcs_duration_set.get(arc);
         return durations.max();
     }
 
-    private long getArcMinDuration(Pair<Integer, Integer> arc) {
+    private long getArcMinDuration(Arc arc) {
         LongArrayList durations = arcs_duration_set.get(arc);
         return durations.min();
     }
@@ -1047,13 +1127,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
         for(BPMNNode n : nodes) {
             max = Math.max(max, getEventFrequency(true, avg_vs_max_vs_min, n.getLabel()));
         }
-        int step = max / 5;
         double node_frequency = getEventFrequency(true, avg_vs_max_vs_min, node.getLabel());
-//        if(node_frequency >= (max - (1 * step))) return BLUE_5;
-//        if(node_frequency >= (max - (2 * step))) return BLUE_4;
-//        if(node_frequency >= (max - (3 * step))) return BLUE_3;
-//        if(node_frequency >= (max - (4 * step))) return BLUE_2;
-//        return BLUE_1;
         return "#" + Integer.toHexString(activity_frequency_gradient.generateColor(node_frequency / max).getRGB()).substring(2);
     }
 
@@ -1063,14 +1137,7 @@ public class LogVisualizerServiceImpl extends DefaultParameterAwarePlugin implem
             max = Math.max(max, getEventDuration(avg_vs_max_vs_min, n.getLabel()));
         }
         if(max == 0) return "#FEF0D9";
-        long step = max / 5;
         double node_duration = getEventDuration(avg_vs_max_vs_min, node.getLabel());
-//        if(node_duration == 0) return RED_1;
-//        if(node_duration >= (max - (1 * step))) return RED_5;
-//        if(node_duration >= (max - (2 * step))) return RED_4;
-//        if(node_duration >= (max - (3 * step))) return RED_3;
-//        if(node_duration >= (max - (4 * step))) return RED_2;
-//        return RED_1;
         return "#" + Integer.toHexString(activity_duration_gradient.generateColor(node_duration / max).getRGB()).substring(2);
     }
 

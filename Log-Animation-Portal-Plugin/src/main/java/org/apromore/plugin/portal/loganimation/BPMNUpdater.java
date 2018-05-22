@@ -23,6 +23,9 @@ public class BPMNUpdater {
         Map<String, Set<String>> mapTarget = new HashMap<>();
 
         Map<String, ElementLayout> layoutMap = LayoutGenerator.generateLayout(layout);
+
+//        System.out.println(layoutMap.keySet());
+
         bpmn = bpmn.substring(0, bpmn.indexOf("<bpmndi:BPMNShape"));
         String jsonEnding = "</bpmndi:BPMNPlane></bpmndi:BPMNDiagram></definitions>";
 
@@ -96,8 +99,10 @@ public class BPMNUpdater {
 
             ElementLayout elementLayout = layoutMap.get(taskName);
 
-            String shape = createBPMNShape(elementID, elementLayout.getWidth(), elementLayout.getHeight(), elementLayout.getX(), elementLayout.getY());
-            bpmn += shape;
+            if(elementLayout != null) {
+                String shape = createBPMNShape(elementID, elementLayout.getWidth(), elementLayout.getHeight(), elementLayout.getX(), elementLayout.getY());
+                bpmn += shape;
+            }
         }
 
         for(String flowID : getFlowIDs(bpmn)) {
@@ -106,6 +111,8 @@ public class BPMNUpdater {
 
             String sourceName = getBPMNElementName(bpmn, sourceID);
             String targetName = getBPMNElementName(bpmn, targetID);
+
+            if(!layoutMap.containsKey(sourceName + " (~) " + targetName)) continue;
 
             ElementLayout sourceLayout = layoutMap.get(sourceName);
             ElementLayout targetLayout = layoutMap.get(targetName);
@@ -136,12 +143,14 @@ public class BPMNUpdater {
                 String element = getBPMNElement(bpmn, elementID);
                 String taskName = getBPMNElementName(bpmn, elementID);
 
-                String extensionElements = "<extensionElements>" +
-                        "<signavio:signavioMetaData metaKey=\"bgcolor\" metaValue=\"" + layoutMap.get(taskName).getElementColor() + "\"/>" +
-                        "</extensionElements></task>";
-                String element2 = element.replace("/>", ">");
-                element2 += extensionElements;
-                bpmn = bpmn.replace(element, element2);
+                if(layoutMap.containsKey(taskName)) {
+                    String extensionElements = "<extensionElements>" +
+                            "<signavio:signavioMetaData metaKey=\"bgcolor\" metaValue=\"" + layoutMap.get(taskName).getElementColor() + "\"/>" +
+                            "</extensionElements></task>";
+                    String element2 = element.replace("/>", ">");
+                    element2 += extensionElements;
+                    bpmn = bpmn.replace(element, element2);
+                }
             }
         }
 

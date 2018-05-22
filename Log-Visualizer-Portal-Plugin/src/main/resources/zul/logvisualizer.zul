@@ -20,17 +20,35 @@
 
 <?component name="menuitem" extends="menuitem" autocheck="true" checkmark="true" ?>
 <window id="win" width="100%" height="100%" sizable="true" maximizable="true" closable="true" position="center" title="Log Visualizer" contentStyle="overflow:auto">
-    <caption>
-        <a href="http://apromore.org/platform/features/discover-process-map" target="_blank">
-        <button label="Help" image="img/Help.png" style="float: right;"></button>
+    <caption sclass="mainCaption">
+        <a href="http://apromore.org/platform/features/discover-process-map" target="_blank" sclass="captionButtons">
+            <button label="Help" image="img/Help-16x16.png" style="float: right;" height="25px"></button>
         </a>
     </caption>
 
 
     <style>
-        .z-caption-content
-        {
-          width: 100%;
+        .mainCaption {
+        display: flex;
+        }
+
+        .mainCaption .z-caption-content {
+        display: flex; flex-grow: 1;
+        }
+
+        .mainCaption .z-caption-content > .captionButtons {
+        display: inline-block;
+        flex-grow: 1;
+        text-align: right;
+        margin-right: 1px;
+        }
+
+        .captionButton {
+        font-size: 18px;
+        margin: 0px 0px 0px -1px;
+        padding: 2px 6px;
+        border: 1px solid #cfcfcf;
+        color: #636363;
         }
     </style>
     <vbox>
@@ -60,6 +78,7 @@
                 <column width="20%"/>
                 <column width="20%"/>
                 <column width="20%"/>
+                <column width="20%"/>
             </columns>
             <rows>
                 <row align="center">
@@ -83,6 +102,12 @@
                         <menupopup>
                             <menuitem id="logvisualizer_layout_dagre" onClick='Clients.evalJavaScript("layout()")' label="Dagre" checked="true" onCheck='logvisualizer_layout_cola.setChecked(false)' />
                             <menuitem id="logvisualizer_layout_cola" onClick='Clients.evalJavaScript("layout_cola()")' label="Cola" onCheck='logvisualizer_layout_dagre.setChecked(false)' />
+                        </menupopup>
+                    </combobutton>
+                    <combobutton id="export" label="Export">
+                        <menupopup>
+                            <menuitem id="exportFitted" onClick='Clients.evalJavaScript("exportFitted()")' label="Export Log Fitted" />
+                            <menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Export Log Unfitted" />
                         </menupopup>
                     </combobutton>
                     <button id="download_pdf" onClick='Clients.evalJavaScript("downloadPDF()")' label="Download" />
@@ -174,6 +199,14 @@
                 diagram.add($.parseJSON(json));
                 //layout_cola();
                 layout();
+
+                cy.on('cxttap', 'edge', function(evt){
+                    diagram.remove(evt.cyTarget);
+                });
+                cy.on('cxttap', 'node', function(evt){
+                    diagram.remove(evt.cyTarget.connectedEdges());
+                    diagram.remove(evt.cyTarget);
+                });
             }
 
             function layout() {
@@ -198,6 +231,16 @@
             function animate() {
                 var json = cy.json();
                 zAu.send(new zk.Event(zk.Widget.$('$animate'), 'onAnimate', json));
+            }
+
+            function exportFitted() {
+                var json = cy.json();
+                zAu.send(new zk.Event(zk.Widget.$('$exportFitted'), 'onExport', json));
+            }
+
+            function exportUnfitted() {
+                var json = cy.json();
+                zAu.send(new zk.Event(zk.Widget.$('$exportUnfitted'), 'onExport', json));
             }
 
             zk.afterMount(function() {
