@@ -104,10 +104,10 @@
                             <menuitem id="logvisualizer_layout_cola" onClick='Clients.evalJavaScript("layout_cola()")' label="Cola" onCheck='logvisualizer_layout_dagre.setChecked(false)' />
                         </menupopup>
                     </combobutton>
-                    <combobutton id="export" label="Export">
+                    <combobutton id="export" label="Export Log">
                         <menupopup>
-                            <menuitem id="exportFitted" onClick='Clients.evalJavaScript("exportFitted()")' label="Export Log Fitted" />
-                            <menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Export Log Unfitted" />
+                            <menuitem id="exportFitted" onClick='Clients.evalJavaScript("exportFitted()")' label="filter on Activities and Arcs" />
+                            <menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="filter on Activity Only" />
                         </menupopup>
                     </combobutton>
                     <button id="download_pdf" onClick='Clients.evalJavaScript("downloadPDF()")' label="Download" />
@@ -216,28 +216,30 @@
                         var s = [];
                         var t = [];
                         for (var i = 0; i < nLength; i++) {
-                            if(n[i].source().id() != this.id()) s.push(n[i].source().id());
-                            if(n[i].target().id() != this.id()) t.push(n[i].target().id());
+                            if(n[i].source().id() != this.id()) s.push(n[i].source());
+                            if(n[i].target().id() != this.id()) t.push(n[i].target());
                         }
                         var sLength = s.length;
                         var tLength = t.length;
                         for (var i = 0; i < sLength; i++) {
                             for (var j = 0; j < tLength; j++) {
-                                var idi = s[i];
-                                var idj = t[j];
-                                diagram.add(
-                                    { group: "edges",
-                                        data:
-                                        { strength: 50,
-                                            color: "#424242",
-                                            style: "solid",
-                                            source: idi,
-                                            label: 100,
-                                            target: idj,
-                                            id: idi + "x" + idj
+                                if(s[i].edgesTo(t[j]).length == 0) {
+                                    var idi = s[i].id();
+                                    var idj = t[j].id();
+                                    diagram.add(
+                                        { group: "edges",
+                                            data:
+                                            { strength: 50,
+                                                color: "#424242",
+                                                style: "solid",
+                                                source: idi,
+                                                label: "",
+                                                target: idj,
+                                                id: idi + "x" + idj
+                                            }
                                         }
-                                    }
-                                );
+                                    );
+                                }
                             }
                         }
                         diagram.remove(this);
