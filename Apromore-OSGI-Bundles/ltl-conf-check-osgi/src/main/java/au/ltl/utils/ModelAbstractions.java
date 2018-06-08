@@ -26,7 +26,7 @@ import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.google.gwt.thirdparty.guava.common.collect.BiMap;
+import com.google.common.collect.BiMap;
 import hub.top.petrinet.*;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.bpmn.Bpmn;

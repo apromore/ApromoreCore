@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import com.google.gwt.thirdparty.guava.common.collect.Multimap;
+import com.google.common.collect.Multimap;
 
 public class StronglyConnectedComponents<T> {
 	private Map<T, Integer> indices;

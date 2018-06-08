@@ -15,7 +15,7 @@ import au.ConfigBean;
 import au.ltl.extendedReader.XMLBrokerFactory2;
 import au.ltl.utils.*;
 import au.qut.org.processmining.framework.util.Pair;
-import com.google.gwt.thirdparty.guava.common.collect.HashMultimap;
+import com.google.common.collect.HashMultimap;
 import org.apache.commons.io.FileUtils;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.ControlFlow;

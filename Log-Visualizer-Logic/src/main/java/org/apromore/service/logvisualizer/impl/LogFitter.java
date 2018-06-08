@@ -1,10 +1,8 @@
 package org.apromore.service.logvisualizer.impl;
 
-import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.list.primitive.IntList;
-import org.eclipse.collections.impl.bag.mutable.primitive.IntHashBag;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
@@ -49,7 +47,7 @@ public class LogFitter {
         return state.getLastArc().getTarget() == 2;
     }
 
-    public XTrace fitTrace(XTrace original_trace, IntList filtered_trace, HashSet<Arc> maintained_arcs) {
+    public XTrace fitTrace(XTrace original_trace, IntList filtered_trace, Set<Arc> maintained_arcs) {
         boolean[] retained_events = runAStar(filtered_trace, maintained_arcs);
         if (retained_events == null) return null;
 
