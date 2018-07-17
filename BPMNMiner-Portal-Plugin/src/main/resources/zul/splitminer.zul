@@ -35,6 +35,16 @@
                     <slider id="epsilonSM" mold="scale" maxpos="100" curpos="10" width="250px"/>
                 </row>
                 <row>
+                    <label value="Parallelisms Priority"/>
+                    <radiogroup id="parallelismsFirst">
+                        <hlayout>
+                            <radio id="parallelismsFirst" label="Max" radiogroup="parallelismsFirst" />
+                            <space /><space />
+                            <radio id="parallelismsLater" label="Min" selected="true" radiogroup="parallelismsFirst" />
+                        </hlayout>
+                    </radiogroup>
+                </row>
+                <row>
                     <label value="Remove Self-loops"/>
                     <radiogroup id="removeSelfLoops">
                         <hlayout>

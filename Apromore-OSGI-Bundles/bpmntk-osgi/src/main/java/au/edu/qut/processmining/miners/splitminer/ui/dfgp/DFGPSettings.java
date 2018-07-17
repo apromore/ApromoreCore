@@ -3,7 +3,6 @@ package au.edu.qut.processmining.miners.splitminer.ui.dfgp;
 import com.fluxicon.slickerbox.components.NiceDoubleSlider;
 import com.fluxicon.slickerbox.components.NiceSlider;
 import com.fluxicon.slickerbox.factory.SlickerFactory;
-import org.processmining.framework.util.ui.widgets.ProMComboBox;
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
 
 import javax.swing.*;
@@ -29,7 +28,7 @@ public class DFGPSettings extends ProMPropertiesPanel {
     NiceDoubleSlider percentileFrequencyThreshold;
     NiceDoubleSlider parallelismsThreshold;
 //    ProMComboBox filtering;
-    JCheckBox percentileOnBest;
+    JCheckBox parallelismsFirst;
 
     public DFGPSettings() {
         super(DIALOG_NAME);
@@ -45,8 +44,8 @@ public class DFGPSettings extends ProMPropertiesPanel {
 //        filtering = this.addComboBox("Filter Type", filterType);
 //        filtering.addActionListener(dfgpil);
 
-        percentileOnBest = this.addCheckBox("Percentile On Best", true);
-        percentileOnBest.addChangeListener(dfgpil);
+        parallelismsFirst = this.addCheckBox("Parallelisms First", false);
+        parallelismsFirst.addChangeListener(dfgpil);
 
         percentileFrequencyThreshold = SlickerFactory.instance().createNiceDoubleSlider("Percentile Frequency Threshold", 0.00, 1.00, DFGPUIResult.FREQUENCY_THRESHOLD, NiceSlider.Orientation.HORIZONTAL);
         percentileFrequencyThreshold.addChangeListener(dfgpil);
@@ -59,7 +58,7 @@ public class DFGPSettings extends ProMPropertiesPanel {
         parallelismsThreshold.setVisible(true);
 
         result.setFilterType(DFGPUIResult.FilterType.FWG);
-        result.setPercentileOnbest(percentileOnBest.isSelected());
+        result.setParallelismsFirst(parallelismsFirst.isSelected());
         result.setPercentileFrequencyThreshold(percentileFrequencyThreshold.getValue());
         result.setParallelismsThreshold(parallelismsThreshold.getValue());
     }
@@ -74,7 +73,7 @@ public class DFGPSettings extends ProMPropertiesPanel {
         public void stateChanged(ChangeEvent e) {
             result.setPercentileFrequencyThreshold(percentileFrequencyThreshold.getValue());
             result.setParallelismsThreshold(parallelismsThreshold.getValue());
-            result.setPercentileOnbest(percentileOnBest.isSelected());
+            result.setParallelismsFirst(parallelismsFirst.isSelected());
         }
 
         @Override

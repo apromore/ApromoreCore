@@ -74,20 +74,22 @@ public class DirectlyFollowGraphPlus {
     private double parallelismsThreshold;
     private DFGPUIResult.FilterType filterType;
     private int filterThreshold;
-    private boolean percentileOnBest;
+//    private boolean percentileOnBest;
+    private boolean parallelismsFirst;
 
     public DirectlyFollowGraphPlus(SimpleLog log) {
-        this(log, DFGPUIResult.FREQUENCY_THRESHOLD, DFGPUIResult.PARALLELISMS_THRESHOLD, DFGPUIResult.STD_FILTER, DFGPUIResult.PERCENTILE_ONBEST);
+        this(log, DFGPUIResult.FREQUENCY_THRESHOLD, DFGPUIResult.PARALLELISMS_THRESHOLD, DFGPUIResult.STD_FILTER, DFGPUIResult.PARALLELISMS_FIRST);
     }
 
-    public DirectlyFollowGraphPlus(SimpleLog log, double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType, boolean percentileOnBest) {
+    public DirectlyFollowGraphPlus(SimpleLog log, double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType, boolean parallelismsFirst) {
         this.log = log;
         this.startcode = log.getStartcode();
         this.endcode = log.getEndcode();
         this.percentileFrequencyThreshold = percentileFrequencyThreshold;
         this.parallelismsThreshold = parallelismsThreshold;
         this.filterType = percentileFrequencyThreshold == 0 ? DFGPUIResult.FilterType.NOF : filterType;
-        this.percentileOnBest = percentileOnBest;
+//        this.percentileOnBest = percentileOnBest;
+        this.parallelismsFirst = parallelismsFirst;
     }
 
     public BPMNDiagram getDFG() {
@@ -150,7 +152,7 @@ public class DirectlyFollowGraphPlus {
     }
 
     public void buildDFGP() {
-//        System.out.println("DFGP - starting ... ");
+        System.out.println("DFGP - settings > " + parallelismsThreshold + " : " + percentileFrequencyThreshold + " : " + filterType.toString());
 //        System.out.println("DFGP - [Settings] parallelisms threshold: " + parallelismsThreshold);
 //        System.out.println("DFGP - [Settings] percentile on best: " + percentileOnBest);
 //        System.out.println("DFGP - [Settings] parcentile threshold: " + percentileFrequencyThreshold);
@@ -320,6 +322,8 @@ public class DirectlyFollowGraphPlus {
 
     private void detectParallelisms() {
         int totalParallelisms = 0;
+        int confirmedParallelisms = 0;
+        boolean priorityCheck;
 
         DFGEdge e2;
         int src;
@@ -337,29 +341,32 @@ public class DirectlyFollowGraphPlus {
             src = e1.getSourceCode();
             tgt = e1.getTargetCode();
 
-            if( !loopsL1.contains(src) && !loopsL1.contains(tgt) /*&& !loopsL2.contains(e1)*/ && !removableEdges.contains(e1) && dfgp.get(tgt).containsKey(src) ) {
+            if( parallelismsFirst ) priorityCheck = !loopsL2.contains(e1);
+            else priorityCheck = !loopsL1.contains(src) && !loopsL1.contains(tgt);
+
+            if( dfgp.get(tgt).containsKey(src) && priorityCheck && !removableEdges.contains(e1)) {
 //                this means: src || tgt is candidate parallelism
-                e2 = dfgp.get(tgt).get(src);
+                    e2 = dfgp.get(tgt).get(src);
 
-                src2tgt_frequency = e1.getFrequency();
-                tgt2src_frequency = e2.getFrequency();
-                parallelismScore = (double) (src2tgt_frequency - tgt2src_frequency) / (src2tgt_frequency + tgt2src_frequency);
+                    src2tgt_frequency = e1.getFrequency();
+                    tgt2src_frequency = e2.getFrequency();
+                    parallelismScore = (double) (src2tgt_frequency - tgt2src_frequency) / (src2tgt_frequency + tgt2src_frequency);
 
-                if( Math.abs(parallelismScore) < parallelismsThreshold ) {
+                    if (Math.abs(parallelismScore) < parallelismsThreshold) {
 //                    if parallelismScore is less than the threshold epslon,
 //                    we set src || tgt and vice-versa, and we remove e1 and e2
-                    if (!parallelisms.containsKey(src)) parallelisms.put(src, new HashSet<Integer>());
-                    parallelisms.get(src).add(tgt);
-                    if (!parallelisms.containsKey(tgt)) parallelisms.put(tgt, new HashSet<Integer>());
-                    parallelisms.get(tgt).add(src);
-                    removableEdges.add(e1);
-                    removableEdges.add(e2);
-                    totalParallelisms++;
-                } else {
+                        if (!parallelisms.containsKey(src)) parallelisms.put(src, new HashSet<Integer>());
+                        parallelisms.get(src).add(tgt);
+                        if (!parallelisms.containsKey(tgt)) parallelisms.put(tgt, new HashSet<Integer>());
+                        parallelisms.get(tgt).add(src);
+                        removableEdges.add(e1);
+                        removableEdges.add(e2);
+                        totalParallelisms++;
+                    } else {
 //                    otherwise we remove the least frequent edge, e1 or e2
-                    if( parallelismScore > 0 ) removableEdges.add(e2);
-                    else removableEdges.add(e1);
-                }
+                        if (parallelismScore > 0) removableEdges.add(e2);
+                        else removableEdges.add(e1);
+                    }
             }
         }
 
@@ -374,10 +381,10 @@ public class DirectlyFollowGraphPlus {
                 if( parallelisms.containsKey(src) ) parallelisms.get(src).remove(tgt);
                 if( parallelisms.containsKey(tgt) ) parallelisms.get(tgt).remove(src);
                 if( (re = dfgp.get(tgt).get(src)) != null ) this.removeEdge(re, true);
-            }
+            } else { confirmedParallelisms++; }
         }
 
-//        System.out.println("DFGP - parallelisms found: " + totalParallelisms);
+        System.out.println("DFGP - parallelisms found (total, confirmed): (" + totalParallelisms + " , " + confirmedParallelisms + ")");
     }
 
     private void standardFilter() {
@@ -441,8 +448,9 @@ public class DirectlyFollowGraphPlus {
         ArrayList<DFGEdge> frequencyOrderedEdges = new ArrayList<>();
         int i;
 
-        if( percentileOnBest ) frequencyOrderedEdges.addAll(bestEdges);
-        else frequencyOrderedEdges.addAll(edges);
+        frequencyOrderedEdges.addAll(bestEdges);
+//        if( percentileOnBest )
+//        else frequencyOrderedEdges.addAll(edges);
 
         Collections.sort(frequencyOrderedEdges);
         i = (int)Math.round(frequencyOrderedEdges.size()*percentileFrequencyThreshold);

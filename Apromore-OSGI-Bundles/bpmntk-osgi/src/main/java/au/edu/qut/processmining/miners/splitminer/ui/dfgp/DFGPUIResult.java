@@ -11,22 +11,22 @@ public class DFGPUIResult {
     public static final double FREQUENCY_THRESHOLD = 0.40;
     public static final double PARALLELISMS_THRESHOLD = 0.10;
     public static final FilterType STD_FILTER = WTH;
-    public static final boolean PERCENTILE_ONBEST = true;
+    public static final boolean PARALLELISMS_FIRST = false;
 
     private double percentileFrequencyThreshold;
     private double parallelismsThreshold;
     private FilterType filterType;
-    private boolean percentileOnbest;
+    private boolean parallelismsFirst;
 
     public DFGPUIResult() {
         percentileFrequencyThreshold = FREQUENCY_THRESHOLD;
         parallelismsThreshold = PARALLELISMS_THRESHOLD;
         filterType = STD_FILTER;
-        percentileOnbest = PERCENTILE_ONBEST;
+        parallelismsFirst = PARALLELISMS_FIRST;
     }
 
-    public boolean isPercentileOnbest() { return percentileOnbest; }
-    public void setPercentileOnbest(boolean percentileOnbest) { this.percentileOnbest = percentileOnbest; }
+    public boolean isParallelismsFirst() { return parallelismsFirst; }
+    public void setParallelismsFirst(boolean parallelismsFirst) { this.parallelismsFirst = parallelismsFirst; }
 
     public FilterType getFilterType() { return filterType; }
     public void setFilterType(FilterType filterType) { this.filterType = filterType; }
