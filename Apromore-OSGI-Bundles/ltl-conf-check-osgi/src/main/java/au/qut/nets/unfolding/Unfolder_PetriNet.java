@@ -16,8 +16,8 @@
  */
 package au.qut.nets.unfolding;
 
-import com.google.gwt.thirdparty.guava.common.collect.BiMap;
-import com.google.gwt.thirdparty.guava.common.collect.HashBiMap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import hub.top.petrinet.Node;
 import hub.top.petrinet.PetriNet;
 import hub.top.petrinet.Place;

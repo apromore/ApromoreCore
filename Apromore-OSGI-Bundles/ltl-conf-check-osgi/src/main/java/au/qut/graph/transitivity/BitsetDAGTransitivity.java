@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import au.qut.org.processmining.framework.util.Pair;
-import com.google.gwt.thirdparty.guava.common.collect.Multimap;
+import com.google.common.collect.Multimap;
 
 public class BitsetDAGTransitivity {
 	

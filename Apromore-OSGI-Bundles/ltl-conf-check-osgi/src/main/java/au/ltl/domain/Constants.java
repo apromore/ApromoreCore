@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import com.google.gwt.thirdparty.guava.common.collect.HashMultimap;
-import com.google.gwt.thirdparty.guava.common.collect.Multimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.processmining.ltl2automaton.plugins.automaton.Automaton;
 
 public class Constants {

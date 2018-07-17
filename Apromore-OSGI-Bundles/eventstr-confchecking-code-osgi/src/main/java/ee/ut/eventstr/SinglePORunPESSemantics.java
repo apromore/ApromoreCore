@@ -20,6 +20,9 @@
 
 package ee.ut.eventstr;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.BitSet;
@@ -36,6 +39,8 @@ public class SinglePORunPESSemantics <T>{
 	protected BitSet maxConf;
 	protected Map<BitSet, BitSet> possibleExtensions;
 	protected static BitSet EMPTY = new BitSet();
+
+	private Map<Integer, BitSet> cache = new HashMap<>();
 	
 	public SinglePORunPESSemantics(PrimeEventStructure<T> pes, Integer sink) {
 		this.pes = pes;
@@ -116,15 +121,31 @@ public class SinglePORunPESSemantics <T>{
 		return flabels;
 	}
 
+    public Multiset<String> getPossibleFutureAsMultisetLabels(BitSet conf) {
+        BitSet future = getPossibleFuture(conf);
+
+        Multiset<String> flabels = HashMultiset.create();
+        for (int e = future.nextSetBit(0); e >= 0; e = future.nextSetBit(e+1))
+            flabels.add(pes.labels.get(e));
+
+        return flabels;
+    }
+
 	public BehaviorRelation getBRelation(int e1, int e2) {
 		return pes.getBRelMatrix()[e1][e2];
 	}
 
 	public BitSet getDirectPredecessors(int e) {
-		BitSet pred = new BitSet();
-		for (int i = 0; i < pes.labels.size(); i++)
-			if (pes.dcausality[i].get(e))
-				pred.set(i);
+	    BitSet pred = cache.get(e);
+	    if(pred == null) {
+			pred = new BitSet();
+            for (int i = 0; i < pes.labels.size(); i++) {
+                if (pes.dcausality[i].get(e)) {
+                    pred.set(i);
+                }
+            }
+            cache.put(e, pred);
+        }
 		return pred;
 	}	
 	

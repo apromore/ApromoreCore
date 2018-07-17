@@ -20,14 +20,14 @@
 
 package ee.ut.eventstr;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashMultimap;
+import org.deckfour.xes.model.XTrace;
+
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PrimeEventStructure <T> {
 	BitSet[] causality;
@@ -39,6 +39,9 @@ public class PrimeEventStructure <T> {
 	List<Integer> sources;
 	List<Integer> sinks;
 	int tracecount;
+
+	BiMap<String,XTrace> idTracesMap;
+	HashMultimap<Integer, String> evtsTracesMerged;
 	
 	protected Map<Integer, Integer> occurrences;
 	protected double[][] fmatrix;
@@ -84,7 +87,7 @@ public class PrimeEventStructure <T> {
 		if (matrix == null) {
 			int size = labels.size();
 
-			System.out.println("\nSize: " + size);
+//			System.out.println("\nSize: " + size);
 			matrix = new BehaviorRelation[size][size];
 			
 			for (int i = 0; i < size; i++) {
@@ -225,4 +228,20 @@ public class PrimeEventStructure <T> {
 	public HashSet<String> getCyclicTasks(){
 		return cyclicTasks;
 	}
+
+    public void setTraceInfo(HashMultimap<Integer, String> evtsTracesMerged) {
+		this.evtsTracesMerged =  evtsTracesMerged;
+    }
+
+    public Set<String> getTracesOf(Integer target) {
+	    return this.evtsTracesMerged.get(target);
+    }
+
+    public void setIdTracesMap(BiMap<String,XTrace> idTracesMap) {
+        this.idTracesMap = idTracesMap;
+    }
+
+    public XTrace getXTrace(String idTrace) {
+	    return this.idTracesMap.get(idTrace);
+    }
 }

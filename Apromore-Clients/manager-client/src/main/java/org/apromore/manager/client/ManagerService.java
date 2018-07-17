@@ -90,6 +90,8 @@ public interface ManagerService {
 
     ImportLogResultType importLog(String username, Integer folderId, String logName, InputStream log, String extension, String domain, String created, boolean makePublic) throws Exception;
 
+    void editLogData(Integer logId, String logName, String username, boolean isPublic) throws Exception;
+
     void createFolder(String userId, String folderName, int parentFolderId, Boolean isGEDMatrixReady);
 
     void addProcessToFolder(int processId, int folderId);

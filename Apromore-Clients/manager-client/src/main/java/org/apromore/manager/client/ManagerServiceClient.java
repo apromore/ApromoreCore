@@ -816,6 +816,24 @@ public class ManagerServiceClient implements ManagerService {
         }
     }
 
+    @Override
+    public void editLogData(Integer logId, String logName, String username, boolean isPublic) throws Exception {
+        LOGGER.debug("Preparing EditLogDataRequest.....");
+
+        EditLogDataInputMsgType msg = new EditLogDataInputMsgType();
+        msg.setId(logId);
+        msg.setLogName(logName);
+        msg.setMakePublic(isPublic);
+
+        JAXBElement<EditLogDataInputMsgType> request = WS_CLIENT_FACTORY.createEditLogDataRequest(msg);
+
+        JAXBElement<EditLogDataOutputMsgType> response = (JAXBElement<EditLogDataOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        }
+
+    }
+
 
     /**
      * @see ManagerService#importProcess(String, java.lang.Integer, String, String, String, java.io.InputStream, String, String, String, String, boolean, java.util.Set)

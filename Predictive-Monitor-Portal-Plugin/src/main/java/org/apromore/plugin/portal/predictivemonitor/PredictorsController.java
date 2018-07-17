@@ -63,7 +63,7 @@ public class PredictorsController {
 
         window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/predictors.zul", null, null);
 
-        ListModelList<Predictor> predictorsListModel = Persistent.getPredictorsListModel(predictiveMonitorService);
+        PredictorsListModel predictorsListModel = new PredictorsListModel(predictiveMonitorService);
         predictorsListbox = (Listbox) window.getFellow("predictors");
         predictorsListbox.setModel(predictorsListModel);
 
@@ -73,13 +73,12 @@ public class PredictorsController {
         // Bind window components
         createPredictorButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                new CreatePredictorController(portalContext, predictorsListModel, predictiveMonitorService);
+                new CreatePredictorController(portalContext, predictorsListModel);
             }
         });
 
         deletePredictorButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                predictiveMonitorService.deletePredictors(predictorsListModel.getSelection());
                 predictorsListModel.removeAll(predictorsListModel.getSelection());
             }
         });

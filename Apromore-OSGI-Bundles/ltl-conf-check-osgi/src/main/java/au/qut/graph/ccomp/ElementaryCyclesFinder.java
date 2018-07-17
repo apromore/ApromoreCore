@@ -26,8 +26,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.google.gwt.dev.util.collect.HashSet;
-import com.google.gwt.thirdparty.guava.common.collect.HashMultimap;
-import com.google.gwt.thirdparty.guava.common.collect.Multimap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 public class ElementaryCyclesFinder<T> {
 	private Set<T> mark;

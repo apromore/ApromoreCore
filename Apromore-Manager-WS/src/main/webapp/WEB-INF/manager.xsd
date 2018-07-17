@@ -44,6 +44,8 @@
     <xs:element name="ResetUserPasswordResponse" type="tns:ResetUserPasswordOutputMsgType"/>
     <xs:element name="UpdateSearchHistoryRequest" type="tns:UpdateSearchHistoryInputMsgType"/>
     <xs:element name="UpdateSearchHistoryResponse" type="tns:UpdateSearchHistoryOutputMsgType"/>
+    <xs:element name="EditLogDataRequest" type="tns:EditLogDataInputMsgType"/>
+    <xs:element name="EditLogDataResponse" type="tns:EditLogDataOutputMsgType"/>
     <xs:element name="EditProcessDataRequest" type="tns:EditProcessDataInputMsgType"/>
     <xs:element name="EditProcessDataResponse" type="tns:EditProcessDataOutputMsgType"/>
     <xs:element name="DeleteProcessVersionsRequest" type="tns:DeleteProcessVersionsInputMsgType"/>
@@ -869,6 +871,18 @@
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="NativeTypes" type="tns:NativeTypesType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="EditLogDataInputMsgType">
+        <xs:attribute name="logName" type="xs:string"/>
+        <xs:attribute name="id" type="xs:int"/>
+        <xs:attribute name="makePublic" type="xs:boolean" />
+    </xs:complexType>
+
+    <xs:complexType name="EditLogDataOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 

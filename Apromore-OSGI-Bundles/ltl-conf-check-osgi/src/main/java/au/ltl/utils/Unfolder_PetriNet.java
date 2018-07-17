@@ -16,8 +16,8 @@ package au.ltl.utils;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.google.gwt.thirdparty.guava.common.collect.BiMap;
-import com.google.gwt.thirdparty.guava.common.collect.HashBiMap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import hub.top.petrinet.Node;
 import hub.top.petrinet.PetriNet;
 import hub.top.petrinet.Place;

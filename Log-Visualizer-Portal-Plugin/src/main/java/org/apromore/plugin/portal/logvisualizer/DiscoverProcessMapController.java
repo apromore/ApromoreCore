@@ -21,6 +21,8 @@
 package org.apromore.plugin.portal.logvisualizer;
 
 // Java 2 Standard Edition
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -28,6 +30,8 @@ import java.util.List;
 // Third party packages
 import org.apromore.model.*;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.loganimation.ElementLayout;
+import org.apromore.plugin.portal.loganimation.LayoutGenerator;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.EventLogService;
@@ -40,6 +44,8 @@ import org.json.JSONArray;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
+import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.processmining.models.graphbased.directed.bpmn.elements.Flow;
 import org.processmining.plugins.bpmn.BpmnDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +56,8 @@ import org.zkoss.zul.*;
 import org.zkoss.zul.Window;
 
 import javax.swing.*;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 // Local packages
 
@@ -59,6 +67,7 @@ public class DiscoverProcessMapController {
 
     private PortalContext portalContext;
     private LogVisualizerService logVisualizerService;
+    private EventLogService eventLogService;
 
     private ProcessService processService;
     private CanoniserService canoniserService;
@@ -86,6 +95,8 @@ public class DiscoverProcessMapController {
     private Menuitem min_duration;
 
     private Button animate;
+    private Menuitem exportFitted;
+    private Menuitem exportUnfitted;
 
     private int arcs_value = 0;
     private int activities_value = 100;
@@ -95,6 +106,7 @@ public class DiscoverProcessMapController {
 
     private boolean visualized = false;
     private XLog log;
+    private LogSummaryType logSummary;
 
     public DiscoverProcessMapController(PortalContext context, EventLogService eventLogService, LogVisualizerService logVisualizerService, ProcessService processService, CanoniserService canoniserService, UserInterfaceHelper userInterfaceHelper, LogAnimationPluginInterface logAnimationPlugin, boolean frequency_VS_duration) {
 
@@ -104,7 +116,8 @@ public class DiscoverProcessMapController {
         this.canoniserService       = canoniserService;
         this.userInterfaceHelper    = userInterfaceHelper;
         this.logAnimationPlugin     = logAnimationPlugin;
-        this.frequency_VS_duration = frequency_VS_duration;
+        this.frequency_VS_duration  = frequency_VS_duration;
+        this.eventLogService        = eventLogService;
 
         Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
         if (elements.size() != 1) {
@@ -116,7 +129,7 @@ public class DiscoverProcessMapController {
             Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
             return;
         }
-        LogSummaryType logSummary = (LogSummaryType) summary;
+        logSummary = (LogSummaryType) summary;
         log = eventLogService.getXLog(logSummary.getId());
 
         try {
@@ -140,6 +153,8 @@ public class DiscoverProcessMapController {
             this.min_duration = (Menuitem) slidersWindow.getFellow("min_duration");
 
             this.animate = (Button) slidersWindow.getFellow("animate");
+            this.exportFitted = (Menuitem) slidersWindow.getFellow("exportFitted");
+            this.exportUnfitted = (Menuitem) slidersWindow.getFellow("exportUnfitted");
 
             this.activities.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -256,6 +271,36 @@ public class DiscoverProcessMapController {
                     arcs_value = arcs.getCurpos();
                     BPMNDiagram diagram = logVisualizerService.generateBPMNFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, frequency_VS_duration, total_VS_median_VS_mean_VS_max_VS_min);
 
+                    Set<String> manually_removed_activities = new HashSet<>();
+                    String layout = event.getData().toString();
+                    Map<String, ElementLayout> layoutMap = LayoutGenerator.generateLayout(layout);
+                    Set<Activity> setActivities = new HashSet<>(diagram.getActivities());
+                    for(Activity activity : setActivities) {
+                        if(activity.getLabel().contains("|>")) continue;
+                        if(activity.getLabel().contains("[]")) continue;
+                        if(!layoutMap.containsKey(activity.getLabel())) {
+                            diagram.removeActivity(activity);
+                            manually_removed_activities.add(activity.getLabel());
+                        }
+                    }
+                    for(Activity a : diagram.getActivities()) {
+                        for(Activity b : diagram.getActivities()) {
+                            String n = a.getLabel() + " (~) " + b.getLabel();
+                            if(layoutMap.containsKey(n)) {
+                                Set<Flow> flows = new HashSet<>(diagram.getFlows());
+                                boolean found = false;
+                                for(Flow flow : flows) {
+                                    if(flow.getSource().equals(a) && flow.getTarget().equals(b)) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if(!found) diagram.addFlow(a, b, "");
+                            }
+                        }
+                    }
+                    diagram = logVisualizerService.insertBPMNGateways(diagram);
+
                     UIContext context = new UIContext();
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                     UIPluginContext uiPluginContext = context.getMainPluginContext();
@@ -276,8 +321,63 @@ public class DiscoverProcessMapController {
                     sb.append("</definitions>");
                     String model = sb.toString();
 
-                    XLog filtered = logVisualizerService.generateFilteredLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100);
-                    logAnimationPlugin.execute(portalContext, model, event.getData().toString(), filtered);
+                    System.out.println(model.replaceAll("\n",""));
+                    System.out.println(layout);
+
+                    XLog filtered = logVisualizerService.generateFilteredLog(log, manually_removed_activities, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100);
+                    logAnimationPlugin.execute(portalContext, model, layout, filtered);
+                }
+            });
+
+            this.exportFitted.addEventListener("onExport", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    activities_value = activities.getCurpos();
+                    arcs_value = arcs.getCurpos();
+
+                    BPMNDiagram diagram = logVisualizerService.generateBPMNFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, frequency_VS_duration, total_VS_median_VS_mean_VS_max_VS_min);
+                    Set<String> manually_removed_activities = new HashSet<>();
+                    String layout = event.getData().toString();
+                    Map<String, ElementLayout> layoutMap = LayoutGenerator.generateLayout(layout);
+                    Set<Activity> setActivities = new HashSet<>(diagram.getActivities());
+                    Set<String> manually_removed_arcs = new HashSet<>();
+                    for(Activity activity : setActivities) {
+                        if(activity.getLabel().contains("|>")) continue;
+                        if(activity.getLabel().contains("[]")) continue;
+                        if(!layoutMap.containsKey(activity.getLabel())) {
+                            diagram.removeActivity(activity);
+                            manually_removed_activities.add(activity.getLabel());
+                        }
+                    }
+                    for(Flow flow : diagram.getFlows()) {
+                        if(!layoutMap.containsKey(flow.getSource().getLabel() + " (~) " + flow.getTarget().getLabel())) {
+                            manually_removed_arcs.add(flow.getSource().getLabel() + " (~) " + flow.getTarget().getLabel());
+                        }
+                    }
+
+                    XLog filtered_log = logVisualizerService.generateFilteredFittedLog(log, manually_removed_activities, manually_removed_arcs, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100);
+                    saveLog(filtered_log);
+                }
+            });
+
+            this.exportUnfitted.addEventListener("onExport", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    activities_value = activities.getCurpos();
+                    arcs_value = arcs.getCurpos();
+
+                    BPMNDiagram diagram = logVisualizerService.generateBPMNFromLog(log, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, frequency_VS_duration, total_VS_median_VS_mean_VS_max_VS_min);
+                    Set<String> manually_removed_activities = new HashSet<>();
+                    String layout = event.getData().toString();
+                    Map<String, ElementLayout> layoutMap = LayoutGenerator.generateLayout(layout);
+                    for(Activity activity : diagram.getActivities()) {
+                        if(!layoutMap.containsKey(activity.getLabel())) {
+                            manually_removed_activities.add(activity.getLabel());
+                        }
+                    }
+
+                    XLog filtered_log = logVisualizerService.generateFilteredLog(log, manually_removed_activities, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100);
+                    saveLog(filtered_log);
                 }
             });
 
@@ -345,6 +445,26 @@ public class DiscoverProcessMapController {
                 Clients.evalJavaScript("reset()");
                 Clients.evalJavaScript(javascript);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveLog(XLog filtered_log) {
+        try {
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            eventLogService.exportToStream(outputStream, filtered_log);
+
+            int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+
+            eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
+                    logSummary.getName() + "_filtered", new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
+                    logSummary.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
+                    logSummary.isMakePublic());
+
+            portalContext.refreshContent();
+        } catch (DatatypeConfigurationException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

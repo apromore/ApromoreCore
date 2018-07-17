@@ -99,6 +99,15 @@ public class EventLogServiceImpl implements EventLogService {
         return log;
     }
 
+
+    @Override
+    public void updateLogMetaData(Integer logId, String logName, boolean isPublic) {
+        Log log = logRepo.findUniqueByID(logId);
+        log.setName(logName);
+        log.setPublicLog(isPublic);
+        logRepo.saveAndFlush(log);
+    }
+
     @Override
     public ExportLogResultType exportLog(Integer logId) throws Exception {
         Log log = logRepo.findUniqueByID(logId);

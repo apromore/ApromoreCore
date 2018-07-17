@@ -98,6 +98,7 @@ org.osgi.framework.system.packages = \
  javax.swing.plaf.basic,\
  javax.swing.plaf.metal,\
  javax.swing.plaf.multi,\
+ javax.swing.plaf.nimbus,\
  javax.swing.plaf.synth,\
  javax.swing.table,\
  javax.swing.text,\
@@ -145,8 +146,11 @@ org.osgi.framework.system.packages = \
  javax.xml.crypto.dsig.keyinfo;version="1.0",\
  javax.xml.crypto.dsig.spec,\
  javax.xml.crypto.dsig.spec;version="1.0",\
+ javax.xml.datatype,\
  javax.xml.datatype;version="1.3",\
+ javax.xml.namespace,\
  javax.xml.namespace;version="1.3",\
+ javax.xml.parsers,\
  javax.xml.parsers;version="1.3",\
  javax.xml.soap,\
  javax.xml.soap;version="1.3.0",\
@@ -156,11 +160,17 @@ org.osgi.framework.system.packages = \
  javax.xml.stream.events;version="1.0.1",\
  javax.xml.stream.util,\
  javax.xml.stream.util;version="1.0.1",\
+ javax.xml.transform,\
  javax.xml.transform;version="1.3",\
+ javax.xml.transform.dom,\
  javax.xml.transform.dom;version="1.3",\
+ javax.xml.transform.sax,\
  javax.xml.transform.sax;version="1.3",\
+ javax.xml.transform.stax,\
  javax.xml.transform.stax;version="1.3",\
+ javax.xml.transform.stream,\
  javax.xml.transform.stream;version="1.3",\
+ javax.xml.validation,\
  javax.xml.validation;version="1.3",\
  javax.xml.ws,\
  javax.xml.ws;version="2.1.1",\
@@ -174,13 +184,18 @@ org.osgi.framework.system.packages = \
  javax.xml.ws.soap;version="2.1.1",\
  javax.xml.ws.spi,\
  javax.xml.ws.spi;version="2.1.1",\
+ javax.xml.ws.spi.http,\
+ javax.xml.ws.spi.http;version="2.1.1",\
+ javax.xml.ws.wsaddressing,\
  javax.xml.ws.wsaddressing;version="2.1.1",\
  javax.xml.xpath,\
  javax.vecmath,\
  org.eclipse.virgo.kernel.equinox.extensions,\
  org.eclipse.virgo.kernel.equinox.extensions;version="3.6.4",\
+ org.eclipse.virgo.kernel.equinox.extensions;version="3.7.0",\
  org.eclipse.virgo.kernel.equinox.extensions.hooks,\
  org.eclipse.virgo.kernel.equinox.extensions.hooks;version="3.6.4",\
+ org.eclipse.virgo.kernel.equinox.extensions.hooks;version="3.7.0",\
  org.ietf.jgss,\
  org.omg.CORBA,\
  org.omg.CORBA_2_3,\
@@ -219,7 +234,7 @@ org.osgi.framework.system.packages = \
  org.w3c.dom.ranges,\
  org.w3c.dom.stylesheets,\
  org.w3c.dom.traversal,\
- org.w3c.dom.views ,\
+ org.w3c.dom.views,\
  org.w3c.dom.xpath,\
  org.xml.sax,\
  org.xml.sax.ext,\
@@ -232,8 +247,11 @@ org.osgi.framework.system.packages = \
 org.osgi.framework.bootdelegation = \
  org.eclipse.virgo.nano.authentication,\
  com.sun.*,\
+ javax.*,\
  javax.xml.*,\
  org.apache.xerces.jaxp.*,\
+ org.ietf.jgss,\
+ org.omg.*,\
  org.w3c.*,\
  org.xml.*,\
  sun.reflect.*,\
@@ -241,6 +259,8 @@ org.osgi.framework.bootdelegation = \
 org.osgi.framework.executionenvironment = \
  OSGi/Minimum-1.0,\
  OSGi/Minimum-1.1,\
+ OSGi/Minimum-1.2,\
+ JRE-1.1,\
  J2SE-1.2,\
  J2SE-1.3,\
  J2SE-1.4,\
@@ -249,4 +269,8 @@ org.osgi.framework.executionenvironment = \
  JavaSE-1.6,\
  JavaSE-1.7,\
  JavaSE-1.8
-osgi.java.profile.name = Virgo-Java6
+org.osgi.framework.system.capabilities = \
+ osgi.ee; osgi.ee="OSGi/Minimum"; version:List<Version>="1.0, 1.1, 1.2",\
+ osgi.ee; osgi.ee="JRE"; version:List<Version>="1.0, 1.1",\
+ osgi.ee; osgi.ee="JavaSE"; version:List<Version>="1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8"
+osgi.java.profile.name = JavaSE-1.8
