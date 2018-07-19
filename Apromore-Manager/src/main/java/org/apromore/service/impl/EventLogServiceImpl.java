@@ -20,12 +20,14 @@
 package org.apromore.service.impl;
 
 import org.apromore.common.Constants;
-import org.apromore.dao.*;
-import org.apromore.dao.model.*;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.model.Log;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.SummariesType;
-import org.apromore.service.*;
+import org.apromore.service.EventLogService;
+import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
@@ -44,8 +46,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.List;
 
 //import javax.annotation.Resource;
 

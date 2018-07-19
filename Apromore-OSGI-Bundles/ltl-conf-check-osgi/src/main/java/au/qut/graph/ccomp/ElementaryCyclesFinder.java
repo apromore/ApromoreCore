@@ -20,12 +20,8 @@
 
 package au.qut.graph.ccomp;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
-import com.google.gwt.dev.util.collect.HashSet;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 

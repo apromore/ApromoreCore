@@ -20,31 +20,14 @@
 
 package org.apromore.plugin.portal.bebop;
 
-import org.apromore.helper.Version;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.property.RequestParameterType;
-//import org.apromore.portal.common.UserSessionManager;
-//import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.bebop.BebopService;
-import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.factory.XFactory;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.in.*;
-import org.deckfour.xes.model.XLog;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Fabrizio Fornari on 18/05/2017.

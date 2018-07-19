@@ -61,7 +61,8 @@
                         <Import-Bundle>
                             org.apromore.manager-client;version="[1.1,1.1]",
                             org.apromore.manager-ws-model;version="[1.1,1.1]",
-                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]"
+                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
+                            org.apromore.raffaeleconforti-osgi;bundle-version="[1.0,2.0]"
                         </Import-Bundle>
                         <Import-Package>
                             !hub.top.*,
@@ -77,7 +78,6 @@
                             org.processmining.framework.*;version="[1.0,2.0)",
                             org.processmining.models.*;version="[1.0,2.0)",
                             org.processmining.plugins.*;version="[1.0,2.0)",
-                            <!--plugin.bpmn.to.maude.handlers,-->
                             *
                         </Import-Package>
                         <!-- Context path, please use a unique path -->

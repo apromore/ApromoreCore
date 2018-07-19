@@ -44,7 +44,7 @@ public class iBPStructSettings extends ProMPropertiesPanel {
 
     final iBPStructUIResult result;
 
-    ProMComboBox structPolicy;
+    JComboBox structPolicy;
     NiceIntegerSlider maxSol;
     NiceIntegerSlider maxDepth;
     NiceIntegerSlider maxChildren;
@@ -63,7 +63,7 @@ public class iBPStructSettings extends ProMPropertiesPanel {
 
         BPSItemListener bpsil = new BPSItemListener();
 
-        LinkedList<String> policies = new LinkedList<>();
+        LinkedList<Object> policies = new LinkedList<>();
         policies.addLast("A* Search");
         policies.addLast("Limited A* Search");
         policies.addLast("Depth-First Search");

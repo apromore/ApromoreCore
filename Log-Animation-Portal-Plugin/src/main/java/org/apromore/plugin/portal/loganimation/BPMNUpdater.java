@@ -18,7 +18,7 @@ public class BPMNUpdater {
         return removedFlowIDs;
     }
 
-    public String getUpdatedBPMN(String bpmn, String layout) {
+    public String getUpdatedBPMN(String bpmn, String layout, boolean remove_gateways) {
         Map<String, Set<String>> mapSource = new HashMap<>();
         Map<String, Set<String>> mapTarget = new HashMap<>();
 
@@ -29,61 +29,63 @@ public class BPMNUpdater {
         bpmn = bpmn.substring(0, bpmn.indexOf("<bpmndi:BPMNShape"));
         String jsonEnding = "</bpmndi:BPMNPlane></bpmndi:BPMNDiagram></definitions>";
 
-        while (bpmn.contains("<exclusiveGateway id=")) {
-            String pre = bpmn.substring(0, bpmn.indexOf("<exclusiveGateway id="));
-            String mid = bpmn.substring(bpmn.indexOf("<exclusiveGateway id=") + 22, bpmn.indexOf("</exclusiveGateway>") + 19);
-            String id = mid.substring(0, mid.indexOf("\""));
-            if(mid.contains("Diverging")) splitGatewayIDs.add(id);
-            else joinGatewayIDs.add(id);
-            String post = bpmn.substring(bpmn.indexOf("</exclusiveGateway>") + 19);
-            bpmn = pre + post;
-        }
-
-        for(String split : splitGatewayIDs) {
-            String target = "targetRef=\"" + split + "\"/>";
-            String pre = bpmn.substring(0, bpmn.indexOf(target) + target.length());
-            String flow = pre.substring(pre.lastIndexOf("<sequenceFlow"));
-            String source_node = flow.substring(flow.indexOf("sourceRef=\"") + 11, flow.indexOf("targetRef") - 2);
-
-            String flowId = getFlowID(flow);
-            removedFlowIDs.add(flowId);
-            bpmn = bpmn.replace(flow, "");
-
-            String ref = "sourceRef=\"" + split;
-            String tmp = bpmn;
-            Set<String> sources = new HashSet<>();
-            while(tmp.contains(ref)) {
-                tmp = tmp.substring(tmp.indexOf(ref) - 69);
-                sources.add(getFlowID(tmp));
-                tmp = tmp.substring(tmp.indexOf("/>"));
+        if(remove_gateways) {
+            while (bpmn.contains("<exclusiveGateway id=")) {
+                String pre = bpmn.substring(0, bpmn.indexOf("<exclusiveGateway id="));
+                String mid = bpmn.substring(bpmn.indexOf("<exclusiveGateway id=") + 22, bpmn.indexOf("</exclusiveGateway>") + 19);
+                String id = mid.substring(0, mid.indexOf("\""));
+                if (mid.contains("Diverging")) splitGatewayIDs.add(id);
+                else joinGatewayIDs.add(id);
+                String post = bpmn.substring(bpmn.indexOf("</exclusiveGateway>") + 19);
+                bpmn = pre + post;
             }
-            mapSource.put(flowId, sources);
-            bpmn = bpmn.replaceAll(ref, "sourceRef=\"" + source_node);
-        }
 
-        for(String join : joinGatewayIDs) {
-            String source = "sourceRef=\"" + join + "\"";
-            String pre = bpmn.substring(0, bpmn.indexOf(source));
-            pre = pre.substring(pre.lastIndexOf("<sequenceFlow"));
-            String post = bpmn.substring(bpmn.indexOf(source));
-            post = post.substring(0, post.indexOf("/>") + 2);
-            String flow = pre + post;
-            String target_node = flow.substring(flow.indexOf("targetRef=\"") + 11, flow.indexOf("/>") - 1);
+            for (String split : splitGatewayIDs) {
+                String target = "targetRef=\"" + split + "\"/>";
+                String pre = bpmn.substring(0, bpmn.indexOf(target) + target.length());
+                String flow = pre.substring(pre.lastIndexOf("<sequenceFlow"));
+                String source_node = flow.substring(flow.indexOf("sourceRef=\"") + 11, flow.indexOf("targetRef") - 2);
 
-            String flowId = getFlowID(flow);
-            removedFlowIDs.add(flowId);
-            bpmn = bpmn.replace(flow, "");
+                String flowId = getFlowID(flow);
+                removedFlowIDs.add(flowId);
+                bpmn = bpmn.replace(flow, "");
 
-            String ref = "targetRef=\"" + join;
-            String tmp = bpmn;
-            Set<String> targets = new HashSet<>();
-            while(tmp.contains(ref)) {
-                tmp = tmp.substring(tmp.indexOf(ref) - 123);
-                targets.add(getFlowID(tmp));
-                tmp = tmp.substring(tmp.indexOf("/>"));
+                String ref = "sourceRef=\"" + split;
+                String tmp = bpmn;
+                Set<String> sources = new HashSet<>();
+                while (tmp.contains(ref)) {
+                    tmp = tmp.substring(tmp.indexOf(ref) - 69);
+                    sources.add(getFlowID(tmp));
+                    tmp = tmp.substring(tmp.indexOf("/>"));
+                }
+                mapSource.put(flowId, sources);
+                bpmn = bpmn.replaceAll(ref, "sourceRef=\"" + source_node);
             }
-            mapTarget.put(flowId, targets);
-            bpmn = bpmn.replaceAll("targetRef=\"" + join, "targetRef=\"" + target_node);
+
+            for (String join : joinGatewayIDs) {
+                String source = "sourceRef=\"" + join + "\"";
+                String pre = bpmn.substring(0, bpmn.indexOf(source));
+                pre = pre.substring(pre.lastIndexOf("<sequenceFlow"));
+                String post = bpmn.substring(bpmn.indexOf(source));
+                post = post.substring(0, post.indexOf("/>") + 2);
+                String flow = pre + post;
+                String target_node = flow.substring(flow.indexOf("targetRef=\"") + 11, flow.indexOf("/>") - 1);
+
+                String flowId = getFlowID(flow);
+                removedFlowIDs.add(flowId);
+                bpmn = bpmn.replace(flow, "");
+
+                String ref = "targetRef=\"" + join;
+                String tmp = bpmn;
+                Set<String> targets = new HashSet<>();
+                while (tmp.contains(ref)) {
+                    tmp = tmp.substring(tmp.indexOf(ref) - 123);
+                    targets.add(getFlowID(tmp));
+                    tmp = tmp.substring(tmp.indexOf("/>"));
+                }
+                mapTarget.put(flowId, targets);
+                bpmn = bpmn.replaceAll("targetRef=\"" + join, "targetRef=\"" + target_node);
+            }
         }
 
         String startId = null;
