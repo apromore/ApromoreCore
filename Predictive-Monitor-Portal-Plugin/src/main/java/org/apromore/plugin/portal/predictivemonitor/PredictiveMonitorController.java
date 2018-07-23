@@ -156,17 +156,17 @@ public class PredictiveMonitorController implements Observer {
         Set<Predictor> predictors = predictiveMonitor.getPredictors();
         for (Predictor predictor: predictors) {
             switch (predictor.getType()) {
-            case "case outcome":
+            case "-1":
                 eventsListbox.getListhead().appendChild(new Listheader("Case outcome"));
                 casesListbox.getListhead().appendChild(new Listheader("Case outcome"));
                 break;
 
-            case "next activity":
+            case "next":
                 eventsListbox.getListhead().appendChild(new Listheader("Next activity"));
                 casesListbox.getListhead().appendChild(new Listheader("Next activity"));
                 break;
 
-            case "remaining time":
+            case "remtime":
                 eventsListbox.getListhead().appendChild(new Listheader("Predicted case end"));
                 eventsListbox.getListhead().appendChild(new Listheader("Remaining time"));
                 casesListbox.getListhead().appendChild(new Listheader("Predicted case end"));
@@ -235,35 +235,39 @@ public class PredictiveMonitorController implements Observer {
                 JSONObject jsonPredictions = json.optJSONObject("predictions");
                 for (Predictor predictor: predictors) {
                     switch (predictor.getType()) {
-                    case "case outcome":
+                    case "-1":
                         value = "-";
                         style = null;
                         try {
                             double currentHighestProbability = -1;
-                            JSONObject histogram = jsonPredictions.getJSONObject("-1");
-                            Iterator i = histogram.keys();
-                            while (i.hasNext()) {
-                                String key = (String) i.next();
-                                double probability = histogram.getDouble(key);
-                                if (probability > currentHighestProbability) {
-                                    currentHighestProbability = probability;
-                                    int brightness = 155 + Math.min(100, (new Double((2.0 - 2.0 * probability) * 100)).intValue());
-                                    switch (key) {
-                                    case "true":
-                                        value = NumberFormat.getPercentInstance().format(probability) + " slow";
-                                        style = "background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")";
-                                        if (isLast) {
-                                            item.setStyle("background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")");
+                            JSONObject histogram = jsonPredictions.optJSONObject("-1");
+                            if (histogram == null) {
+                                value = "...";
+                            } else {
+                                Iterator i = histogram.keys();
+                                while (i.hasNext()) {
+                                    String key = (String) i.next();
+                                    double probability = histogram.getDouble(key);
+                                    if (probability > currentHighestProbability) {
+                                        currentHighestProbability = probability;
+                                        int brightness = 155 + Math.min(100, (new Double((2.0 - 2.0 * probability) * 100)).intValue());
+                                        switch (key) {
+                                        case "true":
+                                            value = NumberFormat.getPercentInstance().format(probability) + " slow";
+                                            style = "background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")";
+                                            if (isLast) {
+                                                item.setStyle("background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")");
+                                            }
+                                            break;
+                                        case "false":
+                                            value = NumberFormat.getPercentInstance().format(probability) + " quick";
+                                            if (isLast) {
+                                                item.setStyle("background-color: rgb(" + brightness + ", " + 255 + ", " + brightness +")");
+                                            }
+                                            break;
+                                        default:
+                                            value = NumberFormat.getPercentInstance().format(probability) + " " + key;
                                         }
-                                        break;
-                                    case "false":
-                                        value = NumberFormat.getPercentInstance().format(probability) + " quick";
-                                        if (isLast) {
-                                            item.setStyle("background-color: rgb(" + brightness + ", " + 255 + ", " + brightness +")");
-                                        }
-                                        break;
-                                    default:
-                                        value = NumberFormat.getPercentInstance().format(probability) + " " + key;
                                     }
                                 }
                             }
@@ -278,19 +282,23 @@ public class PredictiveMonitorController implements Observer {
                         }
                         break;
 
-                    case "next activity":
+                    case "next":
                         value = "-";
                         try {
                             if (!isLast) {
                                 double currentHighestProbability = -1;
-                                JSONObject histogram = jsonPredictions.getJSONObject("next");
-                                Iterator i = histogram.keys();
-                                while (i.hasNext()) {
-                                    String key = (String) i.next();
-                                    double probability = histogram.getDouble(key);
-                                    if (probability > currentHighestProbability) {
-                                        value = NumberFormat.getPercentInstance().format(probability) + " " + key;
-                                        currentHighestProbability = probability;
+                                JSONObject histogram = jsonPredictions.optJSONObject("next");
+                                if (histogram == null) {
+                                    value = "...";
+                                } else {
+                                    Iterator i = histogram.keys();
+                                    while (i.hasNext()) {
+                                        String key = (String) i.next();
+                                        double probability = histogram.getDouble(key);
+                                        if (probability > currentHighestProbability) {
+                                            value = NumberFormat.getPercentInstance().format(probability) + " " + key;
+                                            currentHighestProbability = probability;
+                                        }
                                     }
                                 }
                             }
@@ -303,7 +311,7 @@ public class PredictiveMonitorController implements Observer {
                         }
                         break;
 
-                    case "remaining time":
+                    case "remtime":
                         // Predicted case end column
                         value = "-";
                         try {
@@ -314,10 +322,15 @@ public class PredictiveMonitorController implements Observer {
                                 //final DatatypeFactory f = DatatypeFactory.newInstance();
                                 Calendar calendar = f.newXMLGregorianCalendar(json.getString("time:timestamp")).toGregorianCalendar();
 
-                                int remainingSeconds = jsonPredictions.getJSONObject("remtime").getInt("remtime");
-                                calendar.add(Calendar.SECOND, remainingSeconds);
+                                JSONObject remtime = jsonPredictions.optJSONObject("remtime");
+                                if (remtime == null) {
+                                    value = "...";
+                                } else {
+                                    int remainingSeconds = remtime.getInt("remtime");
+                                    calendar.add(Calendar.SECOND, remainingSeconds);
 
-                                value = formatTime(calendar.getTime());
+                                    value = formatTime(calendar.getTime());
+                                }
                             }
 
                         } catch (Exception e) {
@@ -330,8 +343,17 @@ public class PredictiveMonitorController implements Observer {
                         // Remaining time column
                         value = "-";
                         try {
-                            value = "true".equals(json.optString("last")) ? "-" : format(Duration.ofSeconds(jsonPredictions.getJSONObject("remtime").getLong("remtime")));
+                            if ("true".equals(json.optString("last"))) {
+                                value = "-";
 
+                            } else {
+                                JSONObject remtime = jsonPredictions.optJSONObject("remtime");
+                                if (remtime == null) {
+                                    value = "...";
+                                } else {
+                                    value = format(Duration.ofSeconds(remtime.getLong("remtime")));
+                                }
+                            }
                         } catch (Exception e) {
                             value = e.getMessage();
 
@@ -341,7 +363,7 @@ public class PredictiveMonitorController implements Observer {
                         break;
 
                     default:
-                         item.appendChild(new Listcell("?"));
+                         item.appendChild(new Listcell("Unknown type: " + predictor.getType()));
                     }
                 }
             }
