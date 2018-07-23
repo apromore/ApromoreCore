@@ -96,7 +96,8 @@
 
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
-        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
+        <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
+        <include name="Supplements/process-discoverer-service-1.0.20180719.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
@@ -168,7 +169,8 @@
 
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
-        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
+        <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
+        <include name="Supplements/process-discoverer-service-1.0.20180719.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
@@ -256,7 +258,8 @@
 
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
-        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
+        <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
+        <include name="Supplements/process-discoverer-service-1.0.20180719.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
@@ -599,8 +602,7 @@
                 <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
                 <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
-                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
-                <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
+                <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
                 <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
             </fileset>
 
@@ -677,8 +679,7 @@
                 <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
                 <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
-                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
-                <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
+                <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
                 <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
                 <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
                 <include name="**/target/json-osgi-20090211.jar"/>

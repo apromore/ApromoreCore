@@ -155,15 +155,8 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
     }
 
     @Override
-    public void execute(PortalContext portalContext, String bpmn, String layout, XLog eventlog) {
+    public void execute(PortalContext portalContext, String bpmn, String layout, XLog eventlog, boolean maintain_gateways) {
         try {
-            // Fetch the BPMN serialization of the model
-//            int procID = processSummaryType.getId();
-//            String procName = processSummaryType.getName();
-//            String branch = versionSummaryType.getName();
-//            Version version = new Version(versionSummaryType.getVersionNumber());
-
-            // Fetch the XLog representations of the logs
             List<LogAnimationService.Log> logs = new ArrayList<>();
             Iterator<String> colors = Arrays.asList("#0088FF", "#FF8800", "#88FF00").iterator();
             LogAnimationService.Log log = new LogAnimationService.Log();
@@ -188,37 +181,10 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
             Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
             SignavioSession session = new SignavioSession(editSession, null, null, processSummaryType, versionSummaryType, null, null, requestParameterTypes);
 
-//            SignavioSession session = new SignavioSession(null, null, null, null, null, null, null, requestParameterTypes);
-
-//            String username = portalContext.getCurrentUser().getUsername();
-////            EditSessionType editSession = createEditSession(username, processSummaryType, versionSummaryType, processSummaryType.getOriginalNativeType(), null /*annotation*/);
-//            Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
-////            SignavioSession session = new SignavioSession(editSession, null, null, processSummaryType, versionSummaryType, null, null, requestParameterTypes);
-//            SignavioSession session = new SignavioSession(null, null, null, null, null, null, null, requestParameterTypes);
-
-//            ExportFormatResultType exportResult1 = managerService.exportFormat(
-//                                                    editSession.getProcessId(),
-//                                                    editSession.getProcessName(),
-//                                                    editSession.getOriginalBranchName(),
-//                                                    editSession.getCurrentVersionNumber(),
-//                                                    editSession.getNativeType(),
-//                                                    editSession.getAnnotation(),
-//                                                    editSession.isWithAnnotation(),
-//                                                    editSession.getUsername(),
-//                                                    session.getParams());
-
-//            String jsonData = StreamUtil.convertStreamToString(exportResult1.getNative().getInputStream());
-
             String jsonDataEscape = escapeQuotedJavascript(bpmn);
 
-            System.out.println("Initial BPMN");
-//            System.out.println(jsonDataEscape);
-
-            System.out.println("Cytoscape Layout");
-//            System.out.println(layout);
-
             BPMNUpdater bpmnUpdater = new BPMNUpdater();
-            jsonDataEscape = bpmnUpdater.getUpdatedBPMN(jsonDataEscape, layout, true);
+            jsonDataEscape = bpmnUpdater.getUpdatedBPMN(jsonDataEscape, layout, !maintain_gateways);
 
             System.out.println("Final BPMN");
 //            System.out.println(jsonDataEscape);

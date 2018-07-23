@@ -8,18 +8,6 @@ import java.util.StringTokenizer;
  */
 public class AnimationUpdater {
 
-//    public String updateAnimationData(String animationData, Set<String> removedFlowIDs) {
-//        for(String flowID : removedFlowIDs) {
-//            while (animationData.contains(flowID)) {
-//                String flowData = animationData.substring(animationData.indexOf(flowID) - 23);
-//                flowData = flowData.substring(0, flowData.indexOf("}") + 1);
-//                animationData = animationData.replace(flowData, "");
-//                animationData = animationData.replace(",,", ",");
-//            }
-//        }
-//        return animationData;
-//    }
-
     public String updateAnimationData(String animationData, Set<String> removedFlowIDs) {
         StringTokenizer st = new StringTokenizer(animationData, "}", true);
         StringBuilder sb = new StringBuilder();

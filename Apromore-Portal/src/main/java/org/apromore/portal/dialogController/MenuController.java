@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;

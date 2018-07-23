@@ -36,7 +36,7 @@
     <reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
 
     <!-- Exposes the component as OSGi service -->
-    <context:component-scan base-package="org.apromore.plugin.portal" />
+    <context:component-scan base-package="org.apromore.plugin.portal.bebop" />
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
 
 </beans:beans>

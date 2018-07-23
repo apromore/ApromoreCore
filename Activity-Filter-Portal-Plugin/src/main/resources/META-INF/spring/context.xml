@@ -35,7 +35,7 @@
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
 
     <!-- Exposes the component as OSGi service -->
-    <context:component-scan base-package="org.apromore.plugin.portal" />
+    <context:component-scan base-package="org.apromore.plugin.portal.logfilter.activity" />
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
        
 </beans:beans>
