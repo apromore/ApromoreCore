@@ -200,7 +200,7 @@ public class PredictiveMonitorsController {
                     JSONObject json = new JSONObject();
                     json.put("log", predictiveMonitor.getId());
                     json.put("case_id", trace.getAttributes().get("concept:name").toString());
-                    addAttributes(log, json);
+                    //addAttributes(log, json);
                     addAttributes(trace, json);
                     addAttributes(event, json);
                     jsons.add(json);
@@ -245,53 +245,12 @@ public class PredictiveMonitorsController {
         for (Map.Entry<String, XAttribute> entry: attributable.getAttributes().entrySet()) {
             switch (entry.getKey()) {
             case "concept:name":
-            case "creator":
-            case "library":
-            case "lifecycle:model":
-            case "lifecycle:transition":
-            case "org:resource":
-            case "variant":
-            case "variant-index":
                 break;
-/*
-            case "time:timestamp":
-                json.put("time", entry.getValue().toString());
-                break;
-*/
+
             default:
                 json.put(entry.getKey(), entry.getValue().toString());
                 break;
             }
         }
-    }
-
-    private static void export(XLog log, File file) throws FileNotFoundException {
-        LOGGER.info("Exporting log to " + file);
-        try (PrintWriter writer = new PrintWriter(file)) {
-            writer.println("case_id,Resource,AMOUNT_REQ,proctime,time,elapsed,activity_name,label,event_nr,last,remtime");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            for (XTrace trace: log) {
-                XEvent lastEvent = trace.get(trace.size() - 1);
-                Date lastTime = ((XAttributeTimestamp) lastEvent.getAttributes().get("time:timestamp")).getValue();
-                for (XEvent event: trace) {
-                    Date time = ((XAttributeTimestamp) event.getAttributes().get("time:timestamp")).getValue();
-                    writer.println(
-                        trace.getAttributes().get("concept:name") + "," +
-                        event.getAttributes().get("Resource") + "," +
-                        event.getAttributes().get("AMOUNT_REQ") + "," +
-                        event.getAttributes().get("proctime") + "," +
-                        dateFormat.format(time) + "," +
-                        event.getAttributes().get("elapsed") + "," +
-                        event.getAttributes().get("activity_name") + "," +
-                        event.getAttributes().get("label") + "," +
-                        event.getAttributes().get("event_nr") + "," +
-                        event.getAttributes().get("last") + "," +
-                        Long.toString((lastTime.getTime() - time.getTime()) / 1000)
-                    );
-                }
-            }
-        }
-        LOGGER.info("Exported log to " + file);
     }
 }
