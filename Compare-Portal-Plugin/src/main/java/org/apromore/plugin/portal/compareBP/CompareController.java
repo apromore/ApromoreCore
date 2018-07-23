@@ -20,12 +20,9 @@
 
 package org.apromore.plugin.portal.compareBP;
 
-import java.io.*;
-import java.util.*;
-
-import ee.ut.eventstr.comparison.differences.*;
-import hub.top.petrinet.PetriNet;
-import org.apache.tools.ant.types.resources.selectors.Compare;
+import ee.ut.eventstr.comparison.differences.Differences;
+import ee.ut.eventstr.comparison.differences.DifferencesML;
+import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import org.apromore.helper.Version;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ProcessSummaryType;
@@ -33,7 +30,6 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.compare.CompareService;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -41,24 +37,17 @@ import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Window;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Rows;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Selectbox;
-import org.zkoss.zul.Radiogroup;
-import org.zkoss.zul.Slider;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Created by conforti on 10/04/15.

@@ -48,6 +48,7 @@
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>Log OSGI</Bundle-Name>
                         <Import-Package>
+                            org.eclipse.collections.*,
                             com.google.common.collect,
                             com.thoughtworks.xstream,
                             com.thoughtworks.xstream.converters,
@@ -77,6 +78,7 @@
                             org.deckfour.xes.out,
                             org.deckfour.xes.util,
                             org.deckfour.xes.xstream,
+                            org.apromore.xlog.singletonlog
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -104,6 +106,10 @@
         <dependency>
             <groupId>org.deckfour.xes</groupId>
             <artifactId>spex</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
         </dependency>
     </dependencies>
 </project>

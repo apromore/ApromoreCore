@@ -20,40 +20,42 @@
 
 package org.apromore.plugin.portal.bpmnminer;
 
-import java.io.*;
-import java.util.*;
-import javax.xml.datatype.DatatypeFactory;
-
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel;
+import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
 import com.raffaeleconforti.bpmnminer.subprocessminer.selection.SelectMinerResult;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.Data;
 import com.raffaeleconforti.foreignkeydiscovery.functionaldependencies.NoEntityException;
 import com.raffaeleconforti.wrappers.settings.MiningSettings;
+import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.helper.Version;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.service.CanoniserService;
+import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
+import org.apromore.service.ProcessService;
+import org.apromore.service.bpmnminer.BPMNMinerService;
+import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
-import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel;
-import com.raffaeleconforti.bpmnminer.preprocessing.functionaldependencies.DiscoverERmodel.PrimaryKeyData;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.*;
 
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.helper.Version;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.bpmnminer.BPMNMinerService;
-import org.apromore.service.CanoniserService;
-import org.apromore.service.DomainService;
-import org.apromore.service.ProcessService;
-import org.apromore.service.helper.UserInterfaceHelper;
+import javax.xml.datatype.DatatypeFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 
 /**

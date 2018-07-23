@@ -131,18 +131,18 @@ public class Backtracking {
             this.clean(); //clean before next chunk replay starting from bestNode
             
             if (params.isBacktrackingDebug()) {
-                LOGGER.info("TRACE_ID:" + LogUtility.getConceptName(trace));
-                LOGGER.info("MAX_COST:" + params.getMaxCost() + " " +
-                            "MAX_DEPTH:" + params.getMaxDepth() + " " +
-                            "MIN_MATCH:" + params.getMinMatchPercent() + " " +
-                            "MAX_MATCH:" + params.getMaxMatchPercent() + " " +
-                            "MAX_ACTIVITY_SKIP:" + params.getMaxActivitySkipPercent() + " " +                         
-                            "MAX_CONSECUTIVE_UNMATCH:" + params.getMaxConsecutiveUnmatch()+ " " +
-                            "MAX_NODE_DISTANCE:" + params.getMaxNodeDistance() + " " + 
-                            "MAX_NO_OF_NODES_VISITED:" + params.getMaxNumberOfNodesVisited() + " " +
-                            "ACTIVITY_SKIPPED_COST:" + params.getActivitySkipCost() + " " +
-                            "EVENT_SKIPPED_COST:" + params.getEventSkipCost() + " " +
-                            "TRACE_CHUNK_SIZE:" + params.getTraceChunkSize());                        
+//                LOGGER.info("TRACE_ID:" + LogUtility.getConceptName(trace));
+//                LOGGER.info("MAX_COST:" + params.getMaxCost() + " " +
+//                            "MAX_DEPTH:" + params.getMaxDepth() + " " +
+//                            "MIN_MATCH:" + params.getMinMatchPercent() + " " +
+//                            "MAX_MATCH:" + params.getMaxMatchPercent() + " " +
+//                            "MAX_ACTIVITY_SKIP:" + params.getMaxActivitySkipPercent() + " " +
+//                            "MAX_CONSECUTIVE_UNMATCH:" + params.getMaxConsecutiveUnmatch()+ " " +
+//                            "MAX_NODE_DISTANCE:" + params.getMaxNodeDistance() + " " +
+//                            "MAX_NO_OF_NODES_VISITED:" + params.getMaxNumberOfNodesVisited() + " " +
+//                            "ACTIVITY_SKIPPED_COST:" + params.getActivitySkipCost() + " " +
+//                            "EVENT_SKIPPED_COST:" + params.getEventSkipCost() + " " +
+//                            "TRACE_CHUNK_SIZE:" + params.getTraceChunkSize());
             }
             
             this.explore(selectedNode);
@@ -200,24 +200,24 @@ public class Backtracking {
      */
     public void explore(Node node) {
         if (params.isBacktrackingDebug()) {
-            LOGGER.info(indent + "Entering explore(" + 
-                        node.getState().getName()+ 
-                        " markings:" + node.getState().getMarkingsText()+ 
-                        " trace:" +  node.getState().getTraceWithIndex()+ 
-                        " cost:" + node.getCost() + 
-                        " depth:" + node.getDepth() + 
-                        " matches:" + node.getMatchCount() + 
-                        " activityskips:" + node.getActivitySkipCount() + 
-                        " consecutiveUnmatch:" + node.getConsecutiveUnmatch() + 
-                        " totalUnmatch:" + (node.getState().getTraceIndex() - node.getMatchCount()) + 
-                        " totalMissPercent:" + ((1.0*node.getState().getTraceIndex() - node.getMatchCount())/progressSize) +
-                        " nodesVisited:" + totalNodesVisited + 
-                        " maxAllowedUnmatch:" + maxAllowedUnmatch +
-                        " maxAllowedCost:" + maxAllowedCost +
-                        " maxAllowedDepth:" + maxAllowedDepth + 
-                        " fullTraceMatched:" + fullTraceMatched + 
-                        " optimalNodeFound:" + optimalNodeFound + 
-                        ")");
+//            LOGGER.info(indent + "Entering explore(" +
+//                        node.getState().getName()+
+//                        " markings:" + node.getState().getMarkingsText()+
+//                        " trace:" +  node.getState().getTraceWithIndex()+
+//                        " cost:" + node.getCost() +
+//                        " depth:" + node.getDepth() +
+//                        " matches:" + node.getMatchCount() +
+//                        " activityskips:" + node.getActivitySkipCount() +
+//                        " consecutiveUnmatch:" + node.getConsecutiveUnmatch() +
+//                        " totalUnmatch:" + (node.getState().getTraceIndex() - node.getMatchCount()) +
+//                        " totalMissPercent:" + ((1.0*node.getState().getTraceIndex() - node.getMatchCount())/progressSize) +
+//                        " nodesVisited:" + totalNodesVisited +
+//                        " maxAllowedUnmatch:" + maxAllowedUnmatch +
+//                        " maxAllowedCost:" + maxAllowedCost +
+//                        " maxAllowedDepth:" + maxAllowedDepth +
+//                        " fullTraceMatched:" + fullTraceMatched +
+//                        " optimalNodeFound:" + optimalNodeFound +
+//                        ")");
             indent = indent + "|  ";
         }
         
@@ -228,9 +228,9 @@ public class Backtracking {
             select(node); //update the current best node. select(node) updates pruning conditions, so must put it here, not before.
             if (params.isBacktrackingDebug()) {
                 indent = indent.substring(3);
-                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is pruned" + " maxAllowedCost:" + maxAllowedCost +
-                            " maxAllowedDepth:" + maxAllowedDepth + " maxAllowedUnmatch:" + maxAllowedUnmatch + 
-                            " fullTracePlayed:" + fullTraceMatched + " optimalNodeFound:" + optimalNodeFound);
+//                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is pruned" + " maxAllowedCost:" + maxAllowedCost +
+//                            " maxAllowedDepth:" + maxAllowedDepth + " maxAllowedUnmatch:" + maxAllowedUnmatch +
+//                            " fullTracePlayed:" + fullTraceMatched + " optimalNodeFound:" + optimalNodeFound);
             }
             totalNodesVisited--;
             return;
@@ -240,9 +240,9 @@ public class Backtracking {
             select(node); //update the current best node
             if (params.isBacktrackingDebug()) {
                 indent = indent.substring(3);
-                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is complete" + " maxAllowedCost:" + maxAllowedCost +
-                            " maxAllowedDepth:" + maxAllowedDepth + " maxAllowedUnmatch:" + maxAllowedUnmatch + 
-                            " fullTracePlayed:" + fullTraceMatched + " optimalNodeFound:" + optimalNodeFound);
+//                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is complete" + " maxAllowedCost:" + maxAllowedCost +
+//                            " maxAllowedDepth:" + maxAllowedDepth + " maxAllowedUnmatch:" + maxAllowedUnmatch +
+//                            " fullTracePlayed:" + fullTraceMatched + " optimalNodeFound:" + optimalNodeFound);
             }
             totalNodesVisited--;
             return;
@@ -257,7 +257,7 @@ public class Backtracking {
         
         if (params.isBacktrackingDebug()) {
             indent = indent.substring(3);
-            LOGGER.info(indent + "End of explore(" + node.getState().getName()+ ")");
+//            LOGGER.info(indent + "End of explore(" + node.getState().getName()+ ")");
         }
         totalNodesVisited--;        
     }
@@ -296,11 +296,11 @@ public class Backtracking {
         if ((minMMSearch && params.isExploreShortestPathDebug()) ||
                 (!minMMSearch && params.isBacktrackingDebug())) {
             String prefix = minMMSearch ? "exploreShortestPath" : "exploreToEndEvent";
-            LOGGER.info(indent + "Entering " + prefix + "(" + 
-                        node.getState().getName()+ 
-                        " markings:" + node.getState().getMarkingsText()+ 
-                        " nodesVisited:" + totalNodesVisited + 
-                        ")");
+//            LOGGER.info(indent + "Entering " + prefix + "(" +
+//                        node.getState().getName()+
+//                        " markings:" + node.getState().getMarkingsText()+
+//                        " nodesVisited:" + totalNodesVisited +
+//                        ")");
             indent = indent + "|  ";
         }
         
@@ -313,7 +313,7 @@ public class Backtracking {
             if ((minMMSearch && params.isExploreShortestPathDebug()) ||
                 (!minMMSearch && params.isBacktrackingDebug())) {
                 indent = indent.substring(3);
-                LOGGER.info(indent + "node(" + node.getState().getName()+ "): stops here due to timeover");
+//                LOGGER.info(indent + "node(" + node.getState().getName()+ "): stops here due to timeover");
             }
             totalNodesVisited--;
             return;
@@ -322,7 +322,7 @@ public class Backtracking {
             if ((minMMSearch && params.isExploreShortestPathDebug()) ||
                 (!minMMSearch && params.isBacktrackingDebug())) {
                 indent = indent.substring(3);
-                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is longer than current shortest node!");
+//                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is longer than current shortest node!");
             }    
             totalNodesVisited--;
             return;
@@ -337,7 +337,7 @@ public class Backtracking {
             if ((minMMSearch && params.isExploreShortestPathDebug()) ||
                 (!minMMSearch && params.isBacktrackingDebug())) {
                 indent = indent.substring(3);
-                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is a completion!");
+//                LOGGER.info(indent + "node(" + node.getState().getName()+ ") is a completion!");
             }
             totalNodesVisited--;
             return;
@@ -352,7 +352,7 @@ public class Backtracking {
             else {
                 if ((minMMSearch && params.isExploreShortestPathDebug()) ||
                     (!minMMSearch && params.isBacktrackingDebug())) {
-                    LOGGER.info(indent + "node(" + node.getState().getName()+ ") leads to a loop or deadlock");
+//                    LOGGER.info(indent + "node(" + node.getState().getName()+ ") leads to a loop or deadlock");
                 }
             }
         }
@@ -360,7 +360,7 @@ public class Backtracking {
         if ((minMMSearch && params.isExploreShortestPathDebug()) ||
             (!minMMSearch && params.isBacktrackingDebug())) {
             indent = indent.substring(3);
-            LOGGER.info(indent + "End of explore(" + node.getState().getName()+ ")");
+//            LOGGER.info(indent + "End of explore(" + node.getState().getName()+ ")");
         }
         totalNodesVisited--;
     }
@@ -394,9 +394,9 @@ public class Backtracking {
         }
         if (!toRemove.isEmpty() && params.isBacktrackingDebug()) {
             for (Node removedNode : toRemove) {
-                LOGGER.info(indent + "Removed node: " + removedNode.getState().getName()+ 
-                        " markings:" + removedNode.getState().getMarkingsText()+ 
-                        " trace:" +  removedNode.getState().getTraceWithIndex());
+//                LOGGER.info(indent + "Removed node: " + removedNode.getState().getName()+
+//                        " markings:" + removedNode.getState().getMarkingsText()+
+//                        " trace:" +  removedNode.getState().getTraceWithIndex());
             }
         }
         nextNodes.removeAll(toRemove);
@@ -417,8 +417,8 @@ public class Backtracking {
         }   
         if (!toRemove.isEmpty() && params.isExploreShortestPathDebug()) {
             for (Node removedNode : toRemove) {
-                LOGGER.info(indent + "Removed node: " + removedNode.getState().getName()+ 
-                        " markings:" + removedNode.getState().getMarkingsText());
+//                LOGGER.info(indent + "Removed node: " + removedNode.getState().getName()+
+//                        " markings:" + removedNode.getState().getMarkingsText());
             }
         }        
         nextNodes.removeAll(toRemove);
@@ -533,7 +533,7 @@ public class Backtracking {
         }
         
         if (selectedNode != null && params.isBacktrackingDebug()) {
-            LOGGER.info("Replayed Path: " + selectedNode.getPathString());
+//            LOGGER.info("Replayed Path: " + selectedNode.getPathString());
         }
         
         return selectedNode;

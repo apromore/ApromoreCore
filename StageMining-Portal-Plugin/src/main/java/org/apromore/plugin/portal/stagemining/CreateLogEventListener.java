@@ -5,21 +5,12 @@
  */
 package org.apromore.plugin.portal.stagemining;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.info.XLogInfoFactory;
-import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.processmining.stagemining.models.DecompositionTree;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Window;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
-import org.deckfour.xes.model.impl.XAttributeImpl;
-import org.processmining.stagemining.models.DecompositionTree;import org.zkoss.zul.ext.Selectable;
+
 ;
 
 /**
@@ -43,5 +34,4 @@ public class CreateLogEventListener implements EventListener<Event> {
         
     }
     
-
 }

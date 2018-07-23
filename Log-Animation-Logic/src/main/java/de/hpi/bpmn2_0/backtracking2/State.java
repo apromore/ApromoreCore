@@ -151,9 +151,9 @@ public class State {
                             states.add(new State(newMarkings, node, StateElementStatus.ACTIVITY_MATCHED, this.trace, this.traceIndex+1, newVisitedStates, visitedMarkings, helper, params));
                         }
                         else if (params.isBacktrackingDebug()) {
-                            LOGGER.info(node.getName() + ".ACTIVITY_MATCHED: this state is pruned!" + 
-                                        " marking:" + getMarkingsText(newMarkings) + 
-                                        " trace:" + getTraceWithIndex(traceIndex+1));
+//                            LOGGER.info(node.getName() + ".ACTIVITY_MATCHED: this state is pruned!" +
+//                                        " marking:" + getMarkingsText(newMarkings) +
+//                                        " trace:" + getTraceWithIndex(traceIndex+1));
                         }
                     }
                     else {
@@ -171,9 +171,9 @@ public class State {
                                     states.add(new State(newMarkings, node, StateElementStatus.ACTIVITY_SKIPPED, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper,params));
                                 }
                                 else if (params.isBacktrackingDebug()) {
-                                    LOGGER.info(node.getName() + ".ACTIVITY_SKIP: this state is pruned!" +
-                                                " marking:" + getMarkingsText(newMarkings) + 
-                                                " trace:" + getTraceWithIndex(traceIndex));                                            
+//                                    LOGGER.info(node.getName() + ".ACTIVITY_SKIP: this state is pruned!" +
+//                                                " marking:" + getMarkingsText(newMarkings) +
+//                                                " trace:" + getTraceWithIndex(traceIndex));
                                 }
                             }
                         }
@@ -193,9 +193,9 @@ public class State {
                                 states.add(new State(newMarkings, node, StateElementStatus.XORSPLIT, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
                             }
                             else if (params.isBacktrackingDebug()) {
-                                LOGGER.info(node.getName() + ".XORSPLIT: this state is pruned!" + 
-                                            " marking:" + getMarkingsText(newMarkings) + 
-                                            " trace:" + getTraceWithIndex(traceIndex));  
+//                                LOGGER.info(node.getName() + ".XORSPLIT: this state is pruned!" +
+//                                            " marking:" + getMarkingsText(newMarkings) +
+//                                            " trace:" + getTraceWithIndex(traceIndex));
                             }
                             
                         }
@@ -213,9 +213,9 @@ public class State {
                             states.add(new State(newMarkings, node, StateElementStatus.ANDSPLIT, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
                         }
                         else if (params.isBacktrackingDebug()) {
-                            LOGGER.info(node.getName() + ".ANDSPLIT: this state is pruned!" + 
-                                        " marking:" + getMarkingsText(newMarkings) + 
-                                        " trace:" + getTraceWithIndex(traceIndex));  
+//                            LOGGER.info(node.getName() + ".ANDSPLIT: this state is pruned!" +
+//                                        " marking:" + getMarkingsText(newMarkings) +
+//                                        " trace:" + getTraceWithIndex(traceIndex));
                         }
                     }
                 }
@@ -234,9 +234,9 @@ public class State {
                                 states.add(new State(newMarkings, node, StateElementStatus.ORSPLIT, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
                             }
                             else if (params.isBacktrackingDebug()) {
-                                LOGGER.info(node.getName() + ".ORSPLIT: this state is pruned!" + 
-                                            " marking:" + getMarkingsText(newMarkings) + 
-                                            " trace:" + getTraceWithIndex(traceIndex));  
+//                                LOGGER.info(node.getName() + ".ORSPLIT: this state is pruned!" +
+//                                            " marking:" + getMarkingsText(newMarkings) +
+//                                            " trace:" + getTraceWithIndex(traceIndex));
                             }
                         }
                     }
@@ -252,9 +252,9 @@ public class State {
                             states.add(new State(newMarkings, node, StateElementStatus.ANDJOIN, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
                         }
                         else if (params.isBacktrackingDebug()) {
-                            LOGGER.info(node.getName() + ".ANDJOIN: this state is pruned!" + 
-                                        " marking:" + getMarkingsText(newMarkings) + 
-                                        " trace:" + getTraceWithIndex(traceIndex));  
+//                            LOGGER.info(node.getName() + ".ANDJOIN: this state is pruned!" +
+//                                        " marking:" + getMarkingsText(newMarkings) +
+//                                        " trace:" + getTraceWithIndex(traceIndex));
                         }
                     }
                 } 
@@ -269,9 +269,9 @@ public class State {
                         states.add(new State(newMarkings, node, StateElementStatus.XORJOIN, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
                     }
                     else if (params.isBacktrackingDebug()) {
-                        LOGGER.info(node.getName() + ".XORJOIN: this state is pruned!" + 
-                                    " marking:" + getMarkingsText(newMarkings) + 
-                                    " trace:" + getTraceWithIndex(traceIndex));  
+//                        LOGGER.info(node.getName() + ".XORJOIN: this state is pruned!" +
+//                                    " marking:" + getMarkingsText(newMarkings) +
+//                                    " trace:" + getTraceWithIndex(traceIndex));
                     }
                 }
                 else if (helper.getAllORJoins().contains(node)) {
@@ -286,13 +286,13 @@ public class State {
                             states.add(new State(newMarkings, node, StateElementStatus.ORJOIN, this.trace, this.traceIndex, newVisitedStates, visitedMarkings, helper, params));
                         }
                         else if (params.isBacktrackingDebug()) {
-                            LOGGER.info(node.getName() + ".ORJOIN: this state is pruned!" + 
-                                        " marking:" + getMarkingsText(newMarkings) + 
-                                        " trace:" + getTraceWithIndex(traceIndex));  
+//                            LOGGER.info(node.getName() + ".ORJOIN: this state is pruned!" +
+//                                        " marking:" + getMarkingsText(newMarkings) +
+//                                        " trace:" + getTraceWithIndex(traceIndex));
                         }
                     }
                     else if (params.isBacktrackingDebug()) {
-                        LOGGER.info(node.getName() + ".ORJOIN: not enabled");
+//                        LOGGER.info(node.getName() + ".ORJOIN: not enabled");
                     }
                 }
                 else if (node == helper.getStartEvent() || node == helper.getEndEvent()) {
@@ -353,7 +353,7 @@ public class State {
                         nextMoveDone = true;
                     }
                     else if (params.isExploreShortestPathDebug()) {
-                        LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
+//                        LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
                     }
                 }
                 //XOR gateway generates one state for every branch
@@ -373,7 +373,7 @@ public class State {
                             nextMoveDone = true;
                         }
                         else if (params.isExploreShortestPathDebug()) {
-                            LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
+//                            LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
                         }
                     }
                 }
@@ -392,7 +392,7 @@ public class State {
                         nextMoveDone = true;
                     }
                     else if (params.isExploreShortestPathDebug()) {
-                        LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
+//                        LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
                     }
                 }
                 else if (helper.getAllORSplits().contains(node)) {
@@ -413,7 +413,7 @@ public class State {
                                 nextMoveDone = true;
                             }
                             else if (params.isExploreShortestPathDebug()) {
-                                LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
+//                                LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
                             }
                         }
                     }
@@ -434,7 +434,7 @@ public class State {
                             nextMoveDone = true;
                         }
                         else if (params.isExploreShortestPathDebug()) {
-                            LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
+//                            LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
                         }
                     }
                 } 
@@ -453,7 +453,7 @@ public class State {
                         nextMoveDone = true;
                     }
                     else if (params.isExploreShortestPathDebug()) {
-                        LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
+//                        LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
                     }
                 }
                 else if (helper.getAllORJoins().contains(node)) {
@@ -474,7 +474,7 @@ public class State {
                             nextMoveDone = true;
                         }
                         else if (params.isExploreShortestPathDebug()) {
-                            LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
+//                            LOGGER.info(node.getName() + ": this state is pruned!" + " marking:" + getMarkingsText(newMarking));
                         }
                     }
                 }

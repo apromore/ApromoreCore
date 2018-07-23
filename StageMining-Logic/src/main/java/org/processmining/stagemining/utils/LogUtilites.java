@@ -1,32 +1,22 @@
-package org.processmining.stagemining.utils;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 /*
- * Copyright © 2009-2014 The Apromore Initiative.
- * 
+ * Copyright © 2009-2018 The Apromore Initiative.
+ *
  * This file is part of "Apromore".
- * 
+ *
  * "Apromore" is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
+ *
  * "Apromore" is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+package org.processmining.stagemining.utils;
 
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
@@ -34,18 +24,13 @@ import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.model.XAttributable;
-import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XAttributeBoolean;
-import org.deckfour.xes.model.XAttributeContinuous;
-import org.deckfour.xes.model.XAttributeDiscrete;
-import org.deckfour.xes.model.XAttributeLiteral;
-import org.deckfour.xes.model.XAttributeMap;
-import org.deckfour.xes.model.XAttributeTimestamp;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.*;
 import org.joda.time.DateTime;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class LogUtilites {
 

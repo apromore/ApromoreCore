@@ -51,6 +51,7 @@ public class LayoutGenerator {
     }
 
     private static String analyseNodes(Map<String, ElementLayout> elementLayoutMap, Map<String, String> nodeIDs, String tmp) {
+        int diamonds = 1;
         while (tmp.contains("\"group\":\"nodes\"")) {
             String element = tmp.substring(tmp.indexOf("{\"data\":"), tmp.indexOf("\"classes\":\"\"}") + 13);
 
@@ -61,6 +62,8 @@ public class LayoutGenerator {
                 }else {
                     elementName = "[]";
                 }
+            } else if (element.contains("diamond")) {
+                elementName = "" + diamonds++;
             } else {
                 elementName = element.substring(element.indexOf("\"name\":\"") + 8, element.indexOf("\",\"width"));
                 elementName = elementName.substring(0, elementName.indexOf("\\n"));

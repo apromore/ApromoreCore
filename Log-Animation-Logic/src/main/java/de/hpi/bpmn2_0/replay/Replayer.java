@@ -103,13 +103,13 @@ public class Replayer {
         for (XTrace trace : log) {
             replayTrace = this.replay(trace);
             if (!replayTrace.isEmpty()) {
-                LOGGER.info("Trace " + replayTrace.getId() + ": " + replayTrace.getBacktrackingNode().getPathString());
+//                LOGGER.info("Trace " + replayTrace.getId() + ": " + replayTrace.getBacktrackingNode().getPathString());
                 replayTrace.calcTiming();
                 animationLog.add(trace, replayTrace);
             }
             else {
                 animationLog.addUnreplayTrace(trace);
-                LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
+//                LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
             }                    
         }
         long algoRuntime = animationLog.getAlgoRuntime();
@@ -137,30 +137,30 @@ public class Replayer {
         animationLog.setApproxTraceFitnessFormulaTime(endApproxMinMMTime - startApproxMinMMTime + algoRuntime);
         
         if (!animationLog.isEmpty()) {       
-            LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
-            LOGGER.info("TraceID, ExactFitness, ApproxFitness, Reliable, AlgoTime(ms), Replay Path");
+//            LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
+//            LOGGER.info("TraceID, ExactFitness, ApproxFitness, Reliable, AlgoTime(ms), Replay Path");
             double approxMMCost = animationLog.getApproxMinMoveModelCost();
             for (ReplayTrace trace : animationLog.getTraces()) {
-                LOGGER.info(trace.getId() + "," + 
-                            trace.getTraceFitness(minBoundMoveCostOnModel) + "," + 
-                            trace.getTraceFitness(approxMMCost) + "," + 
-                            trace.isReliable() + "," +
-                            trace.getAlgoRuntime() + "," +
-                            trace.getBacktrackingNode().getPathString());
+//                LOGGER.info(trace.getId() + "," +
+//                            trace.getTraceFitness(minBoundMoveCostOnModel) + "," +
+//                            trace.getTraceFitness(approxMMCost) + "," +
+//                            trace.isReliable() + "," +
+//                            trace.getAlgoRuntime() + "," +
+//                            trace.getBacktrackingNode().getPathString());
             }
-            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() + 
-                        ". Exact Trace Fitness:" + traceFitness +
-                        ". Approx. Trace Fitness:" + approxTraceFitness +
-                        ". minBoundMoveCostOnModel:" + animationLog.getMinBoundMoveOnModel() +
-                        ". approxMMCost:" + animationLog.getApproxMinMoveModelCost() +
-                        ". totalAlgoTime:" + animationLog.getAlgoRuntime() +
-                        ". exactTraceFitnessFormulaTime:" + animationLog.getExactTraceFitnessFormulaTime() +
-                        ". approxTraceFitnessFormulaTime:" + animationLog.getApproxTraceFitnessFormulaTime() +
-                        ". StartDate:" + animationLog.getStartDate().toString() +
-                        ". EndDate:" + animationLog.getEndDate() +
-                        ". Color:" + animationLog.getColor());             
+//            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() +
+//                        ". Exact Trace Fitness:" + traceFitness +
+//                        ". Approx. Trace Fitness:" + approxTraceFitness +
+//                        ". minBoundMoveCostOnModel:" + animationLog.getMinBoundMoveOnModel() +
+//                        ". approxMMCost:" + animationLog.getApproxMinMoveModelCost() +
+//                        ". totalAlgoTime:" + animationLog.getAlgoRuntime() +
+//                        ". exactTraceFitnessFormulaTime:" + animationLog.getExactTraceFitnessFormulaTime() +
+//                        ". approxTraceFitnessFormulaTime:" + animationLog.getApproxTraceFitnessFormulaTime() +
+//                        ". StartDate:" + animationLog.getStartDate().toString() +
+//                        ". EndDate:" + animationLog.getEndDate() +
+//                        ". Color:" + animationLog.getColor());
         } else {
-            LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
+//            LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
         }
 
         return animationLog;
@@ -186,13 +186,13 @@ public class Replayer {
                 public void run() {
                     ReplayTrace replayTrace = replay(trace);
                     if (!replayTrace.isEmpty()) {
-                        LOGGER.info("Trace " + replayTrace.getId() + ": " + replayTrace.getBacktrackingNode().getPathString());
+//                        LOGGER.info("Trace " + replayTrace.getId() + ": " + replayTrace.getBacktrackingNode().getPathString());
                         replayTrace.calcTiming();
                         animationLog.add(trace, replayTrace);
                     }
                     else {
                         animationLog.addUnreplayTrace(trace);
-                        LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
+//                        LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
                     } 
                 }
             });                  
@@ -213,25 +213,25 @@ public class Replayer {
         long endTime = DateTimeUtils.currentTimeMillis();
 
         if (!animationLog.isEmpty()) {
-            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() + 
-                        ". Trace Fitness:" + traceFitness +
-                        ". minBoundMoveCostOnModel:" + minBoundMoveCostOnModel +
-                        ". totalAlgoTime:" + algoRuntime +
-                        ". StartDate:" + animationLog.getStartDate().toString() +
-                        ". StartDate:" + animationLog.getStartDate().toString() +
-                        ". EndDate:" + animationLog.getEndDate() +
-                        ". Color:" + animationLog.getColor());   
-            LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
-            LOGGER.info("TraceID, TraceFitness, ApproxFitness, Path");
+//            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() +
+//                        ". Trace Fitness:" + traceFitness +
+//                        ". minBoundMoveCostOnModel:" + minBoundMoveCostOnModel +
+//                        ". totalAlgoTime:" + algoRuntime +
+//                        ". StartDate:" + animationLog.getStartDate().toString() +
+//                        ". StartDate:" + animationLog.getStartDate().toString() +
+//                        ". EndDate:" + animationLog.getEndDate() +
+//                        ". Color:" + animationLog.getColor());
+//            LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
+//            LOGGER.info("TraceID, TraceFitness, ApproxFitness, Path");
             double minMMCost = animationLog.getApproxMinMoveModelCost();
             for (ReplayTrace trace : animationLog.getTraces()) {
-                LOGGER.info(trace.getId() + "," + 
-                            trace.getTraceFitness(minBoundMoveCostOnModel) + "," + 
-                            trace.getTraceFitness(minMMCost) + "," + 
-                            trace.getBacktrackingNode().getPathString());
+//                LOGGER.info(trace.getId() + "," +
+//                            trace.getTraceFitness(minBoundMoveCostOnModel) + "," +
+//                            trace.getTraceFitness(minMMCost) + "," +
+//                            trace.getBacktrackingNode().getPathString());
             }
         } else {
-            LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
+//            LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
         }
 
         return animationLog;
