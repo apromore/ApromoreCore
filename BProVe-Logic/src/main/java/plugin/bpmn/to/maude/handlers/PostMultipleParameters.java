@@ -1,7 +1,5 @@
 package plugin.bpmn.to.maude.handlers;
 
-
-
 @SuppressWarnings("serial")
 public class PostMultipleParameters implements java.io.Serializable {
 	
@@ -30,8 +28,6 @@ public class PostMultipleParameters implements java.io.Serializable {
 	int numberOfGatewayOrSplit;
 	int numberOfGatewayEventBased;
 
-	
-	
 	//For property specification
 	String property;
 	String poolName;
@@ -49,9 +45,11 @@ public class PostMultipleParameters implements java.io.Serializable {
 	byte[] violatingTrace;
 
 	String result;
+	String state;
+//	String[] states;
 	
-
-
+	String command;
+	
 	public PostMultipleParameters(){
 		this.originalModel=null;
 		this.parsedModel=null;
@@ -84,6 +82,9 @@ public class PostMultipleParameters implements java.io.Serializable {
 		this.counterexample=null;
 		this.violatingTrace=null;
 		this.result=null;
+		this.state=null;
+//		this.states=null;
+		this.command=null;
 	}
 	
 	public PostMultipleParameters(
@@ -117,7 +118,11 @@ public class PostMultipleParameters implements java.io.Serializable {
 			String parsingTime,
 			String counterexample,
 			byte[] violatingTrace,
-			String result
+			String result,
+			String state,
+//			String[] states
+			String command
+			
 	){
 		this.originalModel=originalModel;
 		this.parsedModel=parsedModel;
@@ -150,46 +155,52 @@ public class PostMultipleParameters implements java.io.Serializable {
 		this.counterexample=counterexample;
 		this.result=result;
 		this.violatingTrace=violatingTrace;
+		this.state=state;
+//		this.states=states;
+		this.command=command;
 	}
 	
 	public void printPostMultipleParameters(){
-		//System.out.println("\n originalModel: "+originalModel);
-		//System.out.println("\n parsedModel: "+parsedModel);
-		//System.out.println("\n property: "+property);
-		//System.out.println("\n poolName: "+poolName);
-		//System.out.println("\n taskName1: "+taskName1);
-		//System.out.println("\n taskName2: "+taskName2);
-		//System.out.println("\n sndMsgName: "+sndMsgName);
-		//System.out.println("\n rcvMsgName: "+rcvMsgName);
-		//System.out.println("\n numberOfElement: "+numberOfElement);
-		//System.out.println("\n numberOfPool: "+numberOfPool);
-		//System.out.println("\n numberOfStart: "+numberOfStart);
-		//System.out.println("\n numberOfStart: "+numberOfStart);
-		//System.out.println("\n numberOfStartMsg: "+numberOfStartMsg);
-		//System.out.println("\n numberOfEnd: "+numberOfEnd);
-		//System.out.println("\n numberOfEndMsg: "+numberOfEndMsg);
-		//System.out.println("\n numberOfTerminate: "+numberOfTerminate);
-		//System.out.println("\n numberOfTask: "+numberOfTask);
-		//System.out.println("\n numberOfTaskSnd: "+numberOfTaskSnd);
-		//System.out.println("\n numberOfTaskRcv: "+numberOfTaskRcv);
-		//System.out.println("\n numberOfIntermidiateThrowEvent: "+numberOfIntermidiateThrowEvent);
-		//System.out.println("\n numberOfIntermidiateCatchEvent: "+numberOfIntermidiateCatchEvent);
-		//System.out.println("\n numberOfGatewayXorSplit: "+numberOfGatewayXorSplit);
-		//System.out.println("\n numberOfGatewayXorJoin: "+numberOfGatewayXorJoin);
-		//System.out.println("\n numberOfGatewayAndSplit: "+numberOfGatewayAndSplit);
-		//System.out.println("\n numberOfGatewayAndJoin: "+numberOfGatewayAndJoin);
-		//System.out.println("\n numberOfGatewayOrSplit: "+numberOfGatewayOrSplit);
-		//System.out.println("\n numberOfGatewayEventBased: "+numberOfGatewayEventBased);
-		//System.out.println("\n propertyVerificationTime: "+propertyVerificationTime);
-		//System.out.println("\n parsingTime: "+parsingTime);
-		//System.out.println("\n counterexample: "+counterexample);
-		//System.out.println("\n result: "+result);
-		//System.out.println("\n violatingTrace: "+violatingTrace);	
+		System.out.println("\n originalModel: "+originalModel);
+		System.out.println("\n parsedModel: "+parsedModel);
+		System.out.println("\n property: "+property);
+		System.out.println("\n poolName: "+poolName);
+		System.out.println("\n taskName1: "+taskName1);
+		System.out.println("\n taskName2: "+taskName2);
+		System.out.println("\n sndMsgName: "+sndMsgName);
+		System.out.println("\n rcvMsgName: "+rcvMsgName);
+		System.out.println("\n numberOfElement: "+numberOfElement);
+		System.out.println("\n numberOfPool: "+numberOfPool);
+		System.out.println("\n numberOfStart: "+numberOfStart);
+		System.out.println("\n numberOfStart: "+numberOfStart);
+		System.out.println("\n numberOfStartMsg: "+numberOfStartMsg);
+		System.out.println("\n numberOfEnd: "+numberOfEnd);
+		System.out.println("\n numberOfEndMsg: "+numberOfEndMsg);
+		System.out.println("\n numberOfTerminate: "+numberOfTerminate);
+		System.out.println("\n numberOfTask: "+numberOfTask);
+		System.out.println("\n numberOfTaskSnd: "+numberOfTaskSnd);
+		System.out.println("\n numberOfTaskRcv: "+numberOfTaskRcv);
+		System.out.println("\n numberOfIntermidiateThrowEvent: "+numberOfIntermidiateThrowEvent);
+		System.out.println("\n numberOfIntermidiateCatchEvent: "+numberOfIntermidiateCatchEvent);
+		System.out.println("\n numberOfGatewayXorSplit: "+numberOfGatewayXorSplit);
+		System.out.println("\n numberOfGatewayXorJoin: "+numberOfGatewayXorJoin);
+		System.out.println("\n numberOfGatewayAndSplit: "+numberOfGatewayAndSplit);
+		System.out.println("\n numberOfGatewayAndJoin: "+numberOfGatewayAndJoin);
+		System.out.println("\n numberOfGatewayOrSplit: "+numberOfGatewayOrSplit);
+		System.out.println("\n numberOfGatewayEventBased: "+numberOfGatewayEventBased);
+		System.out.println("\n propertyVerificationTime: "+propertyVerificationTime);
+		System.out.println("\n parsingTime: "+parsingTime);
+		System.out.println("\n counterexample: "+counterexample);
+		System.out.println("\n violatingTrace: "+violatingTrace);
+		System.out.println("\n result: "+result);
+		System.out.println("\n state: "+state);
+//		System.out.println("\n states: "+states.toString());
+		System.out.println("\n command: "+command);
 
 	}
 	
 	public String toStringPostMultipleParameters(){
-		return this.originalModel + this.parsedModel + this.property + this.poolName + this.taskName1 + this.taskName2 + this.sndMsgName + this.rcvMsgName +this.propertyVerificationTime + this.parsingTime + this.counterexample + this.result;
+		return this.originalModel + this.parsedModel + this.property + this.poolName + this.taskName1 + this.taskName2 + this.sndMsgName + this.rcvMsgName +this.propertyVerificationTime + this.parsingTime + this.counterexample + this.violatingTrace + this.result + this.state + this.command;
 	}
 	
 	//Get
@@ -284,15 +295,25 @@ public class PostMultipleParameters implements java.io.Serializable {
 		return counterexample;
 	}
 	
+	public byte[] getViolatingTrace() {
+		return violatingTrace;
+	}
 
 	public String getResult() {
 		return result;
 	}
 	
-	public byte[] getViolatingTrace() {
-		return violatingTrace;
+	public String getState() {
+		return state;
 	}
-
+	
+//	public String[] getStates() {
+//		return states;
+//	}
+	
+	public String getCommand() {
+		return command;
+	}
 	
 	
 	//Set
@@ -411,19 +432,30 @@ public class PostMultipleParameters implements java.io.Serializable {
 		return;
 	}
 	
-
 	public void setCounterexample(String counterexample) {
 		this.counterexample = counterexample;
-	}
-
-
-	public void setResult(String result) {
-		this.result = result;
 	}
 
 	public void setViolatingTrace(byte[] violatingTrace) {
 		this.violatingTrace = violatingTrace;
 	}
+	
+	public void setResult(String result) {
+		this.result = result;
+	}
+	
+	public void setState(String state) {
+		this.state = state;
+	}
+	
+	public void setCommand(String command) {
+		this.command = command;
+	}
+		
+	
+//	public void setStates(String[] states) {
+//		this.states = states;
+//	}
 
 }
 
