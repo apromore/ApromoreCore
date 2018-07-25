@@ -80,7 +80,7 @@ public class ActivityFilterPlugin extends PluginCustomGui {
     public void execute(final PortalContext portalContext) {
 
         Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();
-        Set<LogSummaryType> selectedLogSummaryType = new HashSet<>();
+        final Set<LogSummaryType> selectedLogSummaryType = new HashSet<>();
         for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
             if(entry.getKey() instanceof LogSummaryType) {
                 selectedLogSummaryType.add((LogSummaryType) entry.getKey());
