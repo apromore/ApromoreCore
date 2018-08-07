@@ -18,6 +18,11 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
+<?xel-method prefix="f"
+             name="formatPredictorType"
+             class="org.apromore.plugin.portal.predictivemonitor.ELFormat"
+             signature="java.lang.String formatPredictorType(java.lang.String)"?>
+
 <window xmlns:n="http://www.zkoss.org/2005/zk/native"
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:z="http://www.zkoss.org/2005/zul"
@@ -46,12 +51,14 @@
             <template name="model">
                 <listitem>
                     <listcell label="${each.name}"/>
-                    <listcell label="${each.type}"/>
+                    <listcell label="${f:formatPredictorType(each.type)}"/>
                 </listitem>
             </template>
         </listbox>
         <div align="center">
-            <button id="create" label="Create" image="img/ok.png"/>
+            <button id="create" label="Create Monitor" image="img/ok.png"/>
+            <button id="loadPredictorFile" label="Load predictor file"/>
+            <button id="deletePredictors" label="Delete predictors"/>
             <button id="cancel" label="Cancel" image="img/cancel2.png"/>
         </div>
     </vbox>
