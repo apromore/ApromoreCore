@@ -97,6 +97,8 @@ public class PredictiveMonitorController implements Observer {
     private final PredictiveMonitorService predictiveMonitorService;
     private final Window window;
 
+    private final List<Column> columnList = new ArrayList<Column>();
+
     private final Label runningCasesLabel;
     private final Label completedCasesLabel;
     private final Label completedEventsLabel;
@@ -126,6 +128,8 @@ public class PredictiveMonitorController implements Observer {
         this.eventsModel = new PredictiveMonitorListModel(predictiveMonitorService, predictiveMonitor, events);
         this.casesModel = new PredictiveMonitorListModel(predictiveMonitorService, predictiveMonitor, caseEvents);
 
+        addColumns(columnList, predictiveMonitor.getPredictors(), caseFirstEventMap);
+
         /*Listbox*/ eventsListbox    = (Listbox) window.getFellow("events");
         Listbox casesListbox     = (Listbox) window.getFellow("cases");
 
@@ -144,227 +148,17 @@ public class PredictiveMonitorController implements Observer {
         });
         
         // Add header columns
-        eventsListbox.getListhead().appendChild(new Listheader("Activity"));
-        casesListbox.getListhead().appendChild(new Listheader("Activity"));
-
-        eventsListbox.getListhead().appendChild(new Listheader("Event time"));
-        casesListbox.getListhead().appendChild(new Listheader("Event time"));
-
-        eventsListbox.getListhead().appendChild(new Listheader("Elapsed"));
-        casesListbox.getListhead().appendChild(new Listheader("Elapsed"));
-
-        Set<Predictor> predictors = predictiveMonitor.getPredictors();
-        for (Predictor predictor: predictors) {
-            switch (predictor.getType()) {
-            case "-1":
-                eventsListbox.getListhead().appendChild(new Listheader("Case outcome"));
-                casesListbox.getListhead().appendChild(new Listheader("Case outcome"));
-                break;
-
-            case "next":
-                eventsListbox.getListhead().appendChild(new Listheader("Next activity"));
-                casesListbox.getListhead().appendChild(new Listheader("Next activity"));
-                break;
-
-            case "remtime":
-                eventsListbox.getListhead().appendChild(new Listheader("Predicted case end"));
-                eventsListbox.getListhead().appendChild(new Listheader("Remaining time"));
-                casesListbox.getListhead().appendChild(new Listheader("Predicted case end"));
-                casesListbox.getListhead().appendChild(new Listheader("Remaining time"));
-                break;
-
-            default:
-                eventsListbox.getListhead().appendChild(new Listheader(predictor.getType()));
-                casesListbox.getListhead().appendChild(new Listheader(predictor.getType()));
-            }
+        for (Column column: columnList) {
+            eventsListbox.getListhead().appendChild(column.getListheader());
+            casesListbox.getListhead().appendChild(column.getListheader());
         }
 
         eventsListbox.setRows(15);  // TODO: figure out how to make vflex work with this
         casesListbox.setRows(15);
         ListitemRenderer<PredictiveMonitorEvent> renderer = new ListitemRenderer<PredictiveMonitorEvent> () {
-
-            final DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd h:mm:ss a");
-
-            private String formatTime(Date date) { return date == null ? "" : dateFormat.format(date); }
-
             public void render(Listitem item, PredictiveMonitorEvent event, int index) {
-                JSONObject json;
-                try {
-                    json = new JSONObject(event.getJson());
-
-                } catch (JSONException e) {
-                    LOGGER.error("Unable to parse JSON from predictive monitor event", e);
-                    return;
-                }
-
-                boolean isLast = "true".equals(json.optString("last"));
-
-                // Hardcoded columns
-                item.appendChild(new Listcell(event.getCaseId()));
-                item.appendChild(new Listcell(event.getEventNr().toString()));
-
-                // Activity
-                String value = "-";
-                String style = null;
-                try {
-                    value = json.getString("activity_name");
-                } catch (Exception e) { value = e.getMessage(); }
-                item.appendChild(new Listcell(value));
-
-                // Timestamp
-                value = "-";
-                Date timestamp = null;
-                try {
-                    /*Date*/ timestamp = f.newXMLGregorianCalendar(json.getString("time:timestamp")).toGregorianCalendar().getTime();
-                    value = formatTime(timestamp);
-                } catch (Exception e) { value = e.getMessage(); }
-                item.appendChild(new Listcell(value));
-
-                // Elapsed
-                value = "-";
-                try {
-                    PredictiveMonitorEvent firstEvent = caseFirstEventMap.get(event.getCaseId());
-                    JSONObject startJson = new JSONObject(firstEvent.getJson());
-                    Date start = f.newXMLGregorianCalendar(startJson.getString("time:timestamp")).toGregorianCalendar().getTime();
-                    Duration elapsed = Duration.between(Instant.ofEpochMilli(start.getTime()), Instant.ofEpochMilli(timestamp.getTime()));
-                    value = format(elapsed);
-                } catch (Exception e) { value = e.getMessage(); }
-                item.appendChild(new Listcell(value));
-
-                // Populate the columns added by predictors
-                JSONObject jsonPredictions = json.optJSONObject("predictions");
-                for (Predictor predictor: predictors) {
-                    switch (predictor.getType()) {
-                    case "-1":
-                        value = "-";
-                        style = null;
-                        try {
-                            double currentHighestProbability = -1;
-                            JSONObject histogram = jsonPredictions.optJSONObject("-1");
-                            if (histogram == null) {
-                                value = "...";
-                            } else {
-                                Iterator i = histogram.keys();
-                                while (i.hasNext()) {
-                                    String key = (String) i.next();
-                                    double probability = histogram.getDouble(key);
-                                    if (probability > currentHighestProbability) {
-                                        currentHighestProbability = probability;
-                                        int brightness = 155 + Math.min(100, (new Double((2.0 - 2.0 * probability) * 100)).intValue());
-                                        switch (key) {
-                                        case "true":
-                                            value = NumberFormat.getPercentInstance().format(probability) + " slow";
-                                            style = "background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")";
-                                            if (isLast) {
-                                                item.setStyle("background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")");
-                                            }
-                                            break;
-                                        case "false":
-                                            value = NumberFormat.getPercentInstance().format(probability) + " quick";
-                                            if (isLast) {
-                                                item.setStyle("background-color: rgb(" + brightness + ", " + 255 + ", " + brightness +")");
-                                            }
-                                            break;
-                                        default:
-                                            value = NumberFormat.getPercentInstance().format(probability) + " " + key;
-                                        }
-                                    }
-                                }
-                            }
-
-                        } catch (Exception e) {
-                            value = e.getMessage();
-
-                        } finally {
-                            Listcell listcell = new Listcell(value);
-                            listcell.setStyle(style);
-                            item.appendChild(listcell);
-                        }
-                        break;
-
-                    case "next":
-                        value = "-";
-                        try {
-                            if (!isLast) {
-                                double currentHighestProbability = -1;
-                                JSONObject histogram = jsonPredictions.optJSONObject("next");
-                                if (histogram == null) {
-                                    value = "...";
-                                } else {
-                                    Iterator i = histogram.keys();
-                                    while (i.hasNext()) {
-                                        String key = (String) i.next();
-                                        double probability = histogram.getDouble(key);
-                                        if (probability > currentHighestProbability) {
-                                            value = NumberFormat.getPercentInstance().format(probability) + " " + key;
-                                            currentHighestProbability = probability;
-                                        }
-                                    }
-                                }
-                            }
-
-                        } catch (Exception e) {
-                            value = e.getMessage();
-
-                        } finally {
-                            item.appendChild(new Listcell(value));
-                        }
-                        break;
-
-                    case "remtime":
-                        // Predicted case end column
-                        value = "-";
-                        try {
-                            if ("true".equals(json.optString("last"))) {
-                                value = "Complete";
-
-                            } else {
-                                //final DatatypeFactory f = DatatypeFactory.newInstance();
-                                Calendar calendar = f.newXMLGregorianCalendar(json.getString("time:timestamp")).toGregorianCalendar();
-
-                                JSONObject remtime = jsonPredictions.optJSONObject("remtime");
-                                if (remtime == null) {
-                                    value = "...";
-                                } else {
-                                    int remainingSeconds = remtime.getInt("remtime");
-                                    calendar.add(Calendar.SECOND, remainingSeconds);
-
-                                    value = formatTime(calendar.getTime());
-                                }
-                            }
-
-                        } catch (Exception e) {
-                            value = e.getMessage();
-
-                        } finally {
-                            item.appendChild(new Listcell(value));
-                        }
-
-                        // Remaining time column
-                        value = "-";
-                        try {
-                            if ("true".equals(json.optString("last"))) {
-                                value = "-";
-
-                            } else {
-                                JSONObject remtime = jsonPredictions.optJSONObject("remtime");
-                                if (remtime == null) {
-                                    value = "...";
-                                } else {
-                                    value = format(Duration.ofSeconds(remtime.getLong("remtime")));
-                                }
-                            }
-                        } catch (Exception e) {
-                            value = e.getMessage();
-
-                        } finally {
-                            item.appendChild(new Listcell(value));
-                        }
-                        break;
-
-                    default:
-                         item.appendChild(new Listcell("Unknown type: " + predictor.getType()));
-                    }
+                for (Column column: columnList) {
+                    item.appendChild(column.getListcell(event));
                 }
             }
         };
@@ -376,6 +170,197 @@ public class PredictiveMonitorController implements Observer {
         reload();
 
         window.doModal();
+    }
+
+    private static void addColumns(List<Column> columnList, Set<Predictor> predictors, Map<String, PredictiveMonitorEvent> caseFirstEventMap) {
+        columnList.add(new ColumnImpl("Case", new ColumnImpl.EventFormatter() {
+            public String format(PredictiveMonitorEvent event) {
+                return event.getCaseId();
+            }
+        }));
+
+        columnList.add(new ColumnImpl("Event #", new ColumnImpl.EventFormatter() {
+            public String format(PredictiveMonitorEvent event) {
+                return event.getEventNr().toString();
+            }
+        }));
+
+        columnList.add(new ColumnImpl("Activity", new ColumnImpl.EventFormatter() {
+            public String format(PredictiveMonitorEvent event) {
+                try {
+                    JSONObject json = new JSONObject(event.getJson());
+                    return json.getString("activity_name");
+                } catch (Exception e) {
+                    return e.getMessage();
+                }
+            }
+        }));
+
+        columnList.add(new ColumnImpl("Event time", new ColumnImpl.EventFormatter() {
+            private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd h:mm:ss a");
+
+            private String formatTime(Date date) { return date == null ? "" : dateFormat.format(date); }
+
+            public String format(PredictiveMonitorEvent event) {
+                try {
+                    JSONObject json = new JSONObject(event.getJson());
+                    return formatTime(f.newXMLGregorianCalendar(json.getString("time:timestamp")).toGregorianCalendar().getTime());
+                } catch (Exception e) {
+                    return e.getMessage();
+                }
+            }
+        }));
+
+        columnList.add(new ColumnImpl("Elapsed", new ColumnImpl.EventFormatter() {
+            public String format(PredictiveMonitorEvent event) {
+                try {
+                    PredictiveMonitorEvent firstEvent = caseFirstEventMap.get(event.getCaseId());
+                    JSONObject startJson = new JSONObject(firstEvent.getJson());
+                    Date start = f.newXMLGregorianCalendar(startJson.getString("time:timestamp")).toGregorianCalendar().getTime();
+
+                    JSONObject json = new JSONObject(event.getJson());
+                    Date timestamp = f.newXMLGregorianCalendar(json.getString("time:timestamp")).toGregorianCalendar().getTime();
+
+                    return PredictiveMonitorController.format(Duration.between(Instant.ofEpochMilli(start.getTime()), Instant.ofEpochMilli(timestamp.getTime())));
+                } catch (Exception e) {
+                    return e.getMessage();
+                }
+            }
+        }));
+
+        for (Predictor predictor: predictors) {
+            switch (predictor.getType()) {
+            case "next":
+                columnList.add(new ColumnImpl("Next activity", new ColumnImpl.EventFormatter() {
+                    public String format(PredictiveMonitorEvent event) {
+                        try {
+                            JSONObject json = new JSONObject(event.getJson());
+                            if ("true".equals(json.optString("last"))) { return "-"; }
+                            JSONObject jsonPredictions = json.optJSONObject("predictions");
+                            JSONObject histogram = jsonPredictions.optJSONObject("next");
+                            if (histogram == null) { return "..."; }
+                            
+                            String value = "-";
+                            double currentHighestProbability = -1;
+                            Iterator i = histogram.keys();
+                            while (i.hasNext()) {
+                                String key = (String) i.next();
+                                double probability = histogram.getDouble(key);
+                                if (probability > currentHighestProbability) {
+                                    value = NumberFormat.getPercentInstance().format(probability) + " " + key;
+                                    currentHighestProbability = probability;
+                                }
+                            }
+                            return value;
+                            
+                        } catch (Exception e) {
+                            return e.getMessage();
+                        }
+                    }
+                }));
+                break;
+                    
+            case "remtime":
+                columnList.add(new ColumnImpl("Predicted case end", new ColumnImpl.EventFormatter() {
+                    final DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd h:mm:ss a");
+                    private String formatTime(Date date) { return date == null ? "" : dateFormat.format(date); }
+                    public String format(PredictiveMonitorEvent event) {
+                        try {
+                            JSONObject json = new JSONObject(event.getJson());
+                            if ("true".equals(json.optString("last"))) { return "Complete"; }
+                            JSONObject jsonPredictions = json.optJSONObject("predictions");
+                            JSONObject remtime = jsonPredictions.optJSONObject("remtime");
+                            if (remtime == null) { return "..."; }
+                            
+                            int remainingSeconds = remtime.getInt("remtime");
+                            //final DatatypeFactory f = DatatypeFactory.newInstance();
+                            Calendar calendar = f.newXMLGregorianCalendar(json.getString("time:timestamp")).toGregorianCalendar();
+                            calendar.add(Calendar.SECOND, remainingSeconds);
+                            return formatTime(calendar.getTime());
+                            
+                        } catch (Exception e) {
+                            return e.getMessage();
+                        }
+                    }
+                }));
+                columnList.add(new ColumnImpl("Remaining time", new ColumnImpl.EventFormatter() {
+                    public String format(PredictiveMonitorEvent event) {
+                        try {
+                            JSONObject json = new JSONObject(event.getJson());
+                            if ("true".equals(json.optString("last"))) { return "-"; }
+                            JSONObject jsonPredictions = json.optJSONObject("predictions");
+                            JSONObject remtime = jsonPredictions.optJSONObject("remtime");
+                            if (remtime == null) { return "..."; }
+                            return PredictiveMonitorController.format(Duration.ofSeconds(remtime.getLong("remtime")));
+
+                        } catch (Exception e) {
+                            return e.getMessage();
+                        }
+                    }
+                }));
+                break;
+
+            default:
+                try {
+                    Double threshold = Double.valueOf(predictor.getType());
+                    String header = "Case outcome > " + (threshold < 0 ? "median" : predictor.getType());
+
+
+                    columnList.add(new AbstractColumn(header) {
+                        public Listcell getListcell(PredictiveMonitorEvent event) {
+                            String value = "-";
+                            String style = null;
+                            try {
+                                Double threshold = Double.valueOf(predictor.getType());
+                                try {
+                                    double currentHighestProbability = -1;
+                                    JSONObject json = new JSONObject(event.getJson());
+                                    JSONObject jsonPredictions = json.optJSONObject("predictions");
+                                    JSONObject histogram = jsonPredictions.optJSONObject(predictor.getType());
+                                    if (histogram == null) { value = "..."; }
+                                        
+                                    Iterator i = histogram.keys();
+                                    while (i.hasNext()) {
+                                        String key = (String) i.next();
+                                        double probability = histogram.getDouble(key);
+                                        if (probability > currentHighestProbability) {
+                                            currentHighestProbability = probability;
+                                            int brightness = 155 + Math.min(100, (new Double((2.0 - 2.0 * probability) * 100)).intValue());
+                                            switch (key) {
+                                                case "true":
+                                                    value = NumberFormat.getPercentInstance().format(probability) + " slow";
+                                                    style = "background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")";
+                                                    break;
+                                                case "false":
+                                                    value = NumberFormat.getPercentInstance().format(probability) + " quick";
+                                                    style = "background-color: rgb(" + brightness + ", " + 255 + ", " + brightness +")";
+                                                    break;
+                                                default:
+                                                    value = NumberFormat.getPercentInstance().format(probability) + " " + key;
+                                            }
+                                        }
+                                    }
+                                        
+                                } catch (Exception e) {
+                                    value = e.getMessage();
+                                }
+                                    
+                            } catch (NumberFormatException e) {
+                                value = "Unknown type: " + predictor.getType();
+
+                            } finally {
+                                Listcell listcell = new Listcell(value);
+                                listcell.setStyle(style);
+                                return listcell;   
+                            }
+                        }
+                    });
+                                                              
+                } catch (NumberFormatException e) {
+                    // no predictor column will be added
+                }
+            }
+        }
     }
 
     /**
@@ -424,7 +409,7 @@ public class PredictiveMonitorController implements Observer {
         int runningCaseCount = 0;
 
         List<PredictiveMonitorEvent> pmEvents = predictiveMonitorService.findPredictiveMonitorEvents(predictiveMonitor);
-        LOGGER.info("PMLM got " + pmEvents.size() + " event(s)");
+        //LOGGER.info("PMLM got " + pmEvents.size() + " event(s)");
         Collections.reverse(pmEvents);
 
         // Reload events
@@ -499,6 +484,44 @@ public class PredictiveMonitorController implements Observer {
         }
 
         needsReload = false;
+    }
+
+    private interface Column {
+        Listheader getListheader();
+        Listcell getListcell(PredictiveMonitorEvent event);
+    }
+
+    private static abstract class AbstractColumn implements Column {
+        private String header;
+
+        AbstractColumn(String header) {
+            this.header = header;
+        }
+
+        public Listheader getListheader() {
+            return new Listheader(header);
+        }
+
+        public abstract Listcell getListcell(PredictiveMonitorEvent event);
+    }
+
+    private static class ColumnImpl extends AbstractColumn {
+
+        interface EventFormatter {
+            String format(final PredictiveMonitorEvent event);
+        }
+
+        private EventFormatter eventFormatter;
+
+        ColumnImpl(String header, EventFormatter eventFormatter) {
+            super(header);
+
+            this.eventFormatter = eventFormatter;
+        }
+
+        public Listcell getListcell(PredictiveMonitorEvent event) {
+            return new Listcell(eventFormatter.format(event));
+        }
     }
 
     /**

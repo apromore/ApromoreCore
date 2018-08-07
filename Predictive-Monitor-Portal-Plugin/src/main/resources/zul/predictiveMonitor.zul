@@ -61,16 +61,12 @@
                 <tabpanel>
                     <listbox id="events" mold="paging">
                         <listhead>
-                            <listheader label="Case"/>
-                            <listheader label="Event #"/>
                         </listhead>
                     </listbox>
                 </tabpanel>
                 <tabpanel>
                     <listbox id="cases" mold="paging">
                         <listhead>
-                            <listheader label="Case"/>
-                            <listheader label="Event #"/>
                         </listhead>
                     </listbox>
                 </tabpanel>
