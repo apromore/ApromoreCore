@@ -157,8 +157,17 @@ public class PredictiveMonitorController implements Observer {
         casesListbox.setRows(15);
         ListitemRenderer<PredictiveMonitorEvent> renderer = new ListitemRenderer<PredictiveMonitorEvent> () {
             public void render(Listitem item, PredictiveMonitorEvent event, int index) {
-                for (Column column: columnList) {
-                    item.appendChild(column.getListcell(event));
+                try {
+                    JSONObject json = new JSONObject(event.getJson());
+
+                    // Highlight rows in green if the magical "last" column says they're the final event in a case
+                    item.setStyle("true".equals(json.optString("last")) ? "background-color: #EEFFEE" : "");
+
+                    for (Column column: columnList) {
+                        item.appendChild(column.getListcell(event));
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("Unable to render event", e);
                 }
             }
         };
