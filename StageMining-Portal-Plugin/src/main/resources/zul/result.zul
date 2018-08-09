@@ -100,11 +100,11 @@
 		}
 		
 		function layout() {
-			diagram.elements().layout({"name": 'dagre', avoidOverlap:true, edgeSep: 5, nodeSep:100, rankSep: 100, rankDir:'LR', edgeWeight: function( edge ){ return 100; }});
+			diagram.elements().layout({"name": 'dagre', avoidOverlap:true, edgeSep: 5, nodeSep:100, rankSep: 100, rankDir:'LR', edgeWeight: function( edge ){ return 100; }}).run();
 		}
 		
 		function layout_cola() {
-			diagram.elements().layout({"name": 'cola', randomize:false, avoidOverlap:true, flow:{ axis: 'x', minSeparation: 150 }});
+			diagram.elements().layout({"name": 'cola', randomize:false, avoidOverlap:true, flow:{ axis: 'x', minSeparation: 150 }}).run();
 		}		
 
         zk.afterMount(function() {

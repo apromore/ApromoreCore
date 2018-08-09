@@ -75,7 +75,7 @@ public class LayoutGenerator {
             height = height.substring(0, height.indexOf("px"));
 
             if(elementName.equals("[]")) {
-                scaling = 30 / Integer.parseInt(height);
+                scaling = 30 / Double.parseDouble(height);
             }
 
             tmp = tmp.substring(tmp.indexOf(element) + element.length());

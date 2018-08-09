@@ -97,7 +97,8 @@
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
         <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
-        <include name="Supplements/process-discoverer-service-1.0.20180719.jar"/>
+        <include name="Supplements/apromore-process-discoverer-1.0.20180719.jar"/>
+        <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
@@ -170,7 +171,8 @@
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
         <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
-        <include name="Supplements/process-discoverer-service-1.0.20180719.jar"/>
+        <include name="Supplements/apromore-process-discoverer-1.0.20180719.jar"/>
+        <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
@@ -259,7 +261,8 @@
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
         <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
-        <include name="Supplements/process-discoverer-service-1.0.20180719.jar"/>
+        <include name="Supplements/apromore-process-discoverer-1.0.20180719.jar"/>
+        <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
