@@ -198,11 +198,20 @@ public class PredictiveMonitorsController {
             for (XTrace trace: log) {
                 for (XEvent event: trace) {
                     JSONObject json = new JSONObject();
-                    json.put("log", predictiveMonitor.getId());
-                    json.put("case_id", trace.getAttributes().get("concept:name").toString());
-                    //addAttributes(log, json);
-                    addAttributes(trace, json);
-                    addAttributes(event, json);
+                    json.put("log_id", predictiveMonitor.getId());
+
+                    JSONObject logProperties = new JSONObject();
+                    addAttributes(log, logProperties);
+                    json.put("log_attributes", logProperties);
+
+                    JSONObject traceProperties = new JSONObject();
+                    addAttributes(trace, traceProperties);
+                    json.put("case_attributes", traceProperties);
+
+                    JSONObject eventProperties = new JSONObject();
+                    addAttributes(event, eventProperties);
+                    json.put("event_attributes", eventProperties);
+
                     jsons.add(json);
                 }
             }
@@ -211,30 +220,25 @@ public class PredictiveMonitorsController {
             final DatatypeFactory f = DatatypeFactory.newInstance();
             Collections.sort(jsons, new Comparator<JSONObject>() {
                 public int compare(JSONObject a, JSONObject b) {
-                    return f.newXMLGregorianCalendar(a.optString("time:timestamp")).compare(f.newXMLGregorianCalendar(b.optString("time:timestamp")));
+                    return f.newXMLGregorianCalendar(a.optJSONObject("event_attributes").optString("time:timestamp"))
+                  .compare(f.newXMLGregorianCalendar(b.optJSONObject("event_attributes").optString("time:timestamp")));
                 }
             });
 
             // Export to the Kafka topic
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             JSONArray columns = new JSONArray();
             for (Predictor predictor: predictiveMonitor.getPredictors()) {
                 columns.put(predictor.getId());
             }
             for (JSONObject json: jsons) {
-                //json.put("time:timestamp", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
-                json.put("Activity_Start_Time", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
-                json.put("Activity_End_Time", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
-                json.put("Key", "1");
-                json.put("columns", columns);
+                json.put("predictors", columns);
                 producer.send(new ProducerRecord<String,String>(eventsTopic, json.toString()));
             }
             LOGGER.info("Exported " + jsons.size() + " log events");
             Messagebox.show("Exported " + jsons.size() + " log events", "Attention", Messagebox.OK, Messagebox.INFORMATION);
 
         } catch (DatatypeConfigurationException | JSONException e) {
-            //Messagebox.show("Unable to export log", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Unable to export log", "Attention", Messagebox.OK, Messagebox.ERROR);
             LOGGER.error("Unable to export log events", e);
             return;
         }
@@ -243,14 +247,7 @@ public class PredictiveMonitorsController {
 
     private static void addAttributes(XAttributable attributable, JSONObject json) throws JSONException {
         for (Map.Entry<String, XAttribute> entry: attributable.getAttributes().entrySet()) {
-            switch (entry.getKey()) {
-            case "concept:name":
-                break;
-
-            default:
-                json.put(entry.getKey(), entry.getValue().toString());
-                break;
-            }
+            json.put(entry.getKey(), entry.getValue().toString());
         }
     }
 }
