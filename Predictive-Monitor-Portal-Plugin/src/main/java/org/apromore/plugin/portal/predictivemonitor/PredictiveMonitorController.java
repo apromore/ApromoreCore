@@ -21,8 +21,15 @@
 package org.apromore.plugin.portal.predictivemonitor;
 
 // Java 2 Standard Edition
+import java.io.BufferedWriter;
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -55,6 +62,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -120,7 +128,7 @@ public class PredictiveMonitorController implements Observer {
     /**
      * @param predictiveMonitor  never <code>null</code>
      */
-    public PredictiveMonitorController(PortalContext portalContext, PredictiveMonitor predictiveMonitor, PredictiveMonitorService predictiveMonitorService) throws IOException {
+    public PredictiveMonitorController(final PortalContext portalContext, PredictiveMonitor predictiveMonitor, PredictiveMonitorService predictiveMonitorService) throws IOException {
 
         this.predictiveMonitor = predictiveMonitor;
         this.predictiveMonitorService = predictiveMonitorService;
@@ -143,7 +151,42 @@ public class PredictiveMonitorController implements Observer {
         // Button callback
         ((Button) window.getFellow("csv")).addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                Messagebox.show("Not yet implemented", "Attention", Messagebox.OK, Messagebox.ERROR);
+                try {
+                    File file = File.createTempFile("log-", ".csv");
+                    exportCSV(new FileOutputStream(file));
+                    Filedownload.save(new FileInputStream(file), "text/csv", "log.csv");  // MIME specified by RFC 7111 (https://tools.ietf.org/html/rfc7111)
+                    file.delete();
+                }
+                catch (Exception e) {
+                    Messagebox.show("Export to CSV failed", "Attention", Messagebox.OK, Messagebox.ERROR);
+                    LOGGER.error("Export to CSV failed", e);
+                }
+/*
+                Window saveWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/saveAsCSV.zul", null, null);
+
+                ((Button) saveWindow.getFellow("ok")).addEventListener("onClick", new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        try {
+                            exportCSV(new FileOutputStream("/tmp/test.csv"));
+                        }
+                        catch (Exception e) {
+                            Messagebox.show("Export to CSV failed", "Attention", Messagebox.OK, Messagebox.ERROR);
+                            LOGGER.error("Export to CSV failed", e);
+                        }
+                        finally {
+                            saveWindow.detach();
+                        }
+                    }
+                });
+
+                ((Button) saveWindow.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        saveWindow.detach();
+                    }
+                });
+
+                saveWindow.doModal();
+*/
             }
         });
         
@@ -240,8 +283,10 @@ public class PredictiveMonitorController implements Observer {
         for (Predictor predictor: predictors) {
             switch (predictor.getType()) {
             case "next":
-                columnList.add(new ColumnImpl("Next activity", new ColumnImpl.EventFormatter() {
-                    public String format(PredictiveMonitorEvent event) {
+                columnList.add(new AbstractColumn("Next activity") {
+                    private List<String> histogramKeyList = null;
+
+                    private String format(PredictiveMonitorEvent event) {
                         try {
                             JSONObject json = new JSONObject(event.getJson());
                             if ("true".equals(json.optString("last"))) { return "-"; }
@@ -249,9 +294,20 @@ public class PredictiveMonitorController implements Observer {
                             JSONObject histogram = jsonPredictions.optJSONObject("next");
                             if (histogram == null) { return "..."; }
                             
+                            Iterator i;
+
+                            // Populate the histogram key list so that we know what CSV header columns should exist
+                            if (histogramKeyList == null) {
+                                histogramKeyList = new ArrayList<String>();
+                                i = histogram.keys();
+                                while (i.hasNext()) {
+                                    histogramKeyList.add((String) i.next());
+                                }
+                            }
+
                             String value = "-";
                             double currentHighestProbability = -1;
-                            Iterator i = histogram.keys();
+                            i = histogram.keys();
                             while (i.hasNext()) {
                                 String key = (String) i.next();
                                 double probability = histogram.getDouble(key);
@@ -266,7 +322,43 @@ public class PredictiveMonitorController implements Observer {
                             return e.getMessage();
                         }
                     }
-                }));
+
+                    public Listcell getListcell(PredictiveMonitorEvent event) {
+                        return new Listcell(format(event));
+                    }
+
+                    @Override public String getCSVHeader() {
+                        if (histogramKeyList == null) {
+                            throw new IllegalStateException("At least one event with a next activity prediction must be present");
+                        }
+
+                        String header = "";
+                        Iterator<String> i = histogramKeyList.iterator();
+                        while (i.hasNext()) {
+                            header += "next activity: " + i.next();
+                            if (i.hasNext()) { header += ","; }
+                        }
+                        return header;
+                    }
+
+                    public String getCSVItem(PredictiveMonitorEvent event, JSONObject json) {
+                        JSONObject histogram = null;
+                        try {
+                            histogram = json.getJSONObject("predictions").optJSONObject("next");
+                        } catch (JSONException e) {}
+
+                        String item = "";
+                        Iterator<String> i = histogramKeyList.iterator();
+                        while (i.hasNext()) {
+                            String key = i.next();
+                            if (histogram != null) {
+                                try { item += NumberFormat.getPercentInstance().format(histogram.getDouble(key)); } catch (JSONException e) {}
+                            }
+                            if (i.hasNext()) { item += ","; }
+                        }
+                        return item;
+                    }
+                });
                 break;
                     
             case "remtime":
@@ -314,8 +406,22 @@ public class PredictiveMonitorController implements Observer {
                     Double threshold = Double.valueOf(predictor.getType());
                     String header = "Case outcome > " + (threshold < 0 ? "median" : predictor.getType());
 
-
                     columnList.add(new AbstractColumn(header) {
+                        private String mostProbableHistogramKey(JSONObject histogram) throws JSONException {
+                            String mostProbableKey = null;
+                            double currentHighestProbability = -1;
+                            Iterator<String> i = histogram.keys();
+                            while (i.hasNext()) {
+                                String key = i.next();
+                                double probability = histogram.getDouble(key);
+                                if (probability > currentHighestProbability) {
+                                    mostProbableKey = key;
+                                    currentHighestProbability = probability;
+                                }
+                            }
+                            return mostProbableKey;
+                        }
+
                         public Listcell getListcell(PredictiveMonitorEvent event) {
                             String value = "-";
                             String style = null;
@@ -327,27 +433,21 @@ public class PredictiveMonitorController implements Observer {
                                     JSONObject jsonPredictions = json.optJSONObject("predictions");
                                     JSONObject histogram = jsonPredictions.optJSONObject(predictor.getType());
                                     if (histogram == null) { value = "..."; }
-                                        
-                                    Iterator i = histogram.keys();
-                                    while (i.hasNext()) {
-                                        String key = (String) i.next();
-                                        double probability = histogram.getDouble(key);
-                                        if (probability > currentHighestProbability) {
-                                            currentHighestProbability = probability;
-                                            int brightness = 155 + Math.min(100, (new Double((2.0 - 2.0 * probability) * 100)).intValue());
-                                            switch (key) {
-                                                case "true":
-                                                    value = NumberFormat.getPercentInstance().format(probability) + " slow";
-                                                    style = "background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")";
-                                                    break;
-                                                case "false":
-                                                    value = NumberFormat.getPercentInstance().format(probability) + " quick";
-                                                    style = "background-color: rgb(" + brightness + ", " + 255 + ", " + brightness +")";
-                                                    break;
-                                                default:
-                                                    value = NumberFormat.getPercentInstance().format(probability) + " " + key;
-                                            }
-                                        }
+
+                                    String key = mostProbableHistogramKey(histogram);
+                                    double probability = histogram.getDouble(key);
+                                    int brightness = 155 + Math.min(100, (new Double((2.0 - 2.0 * probability) * 100)).intValue());
+                                    switch (key) {
+                                        case "true":
+                                            value = NumberFormat.getPercentInstance().format(probability) + " slow";
+                                            style = "background-color: rgb(" + 255 + ", " + brightness + ", " + brightness +")";
+                                            break;
+                                        case "false":
+                                            value = NumberFormat.getPercentInstance().format(probability) + " quick";
+                                            style = "background-color: rgb(" + brightness + ", " + 255 + ", " + brightness +")";
+                                            break;
+                                        default:
+                                            value = NumberFormat.getPercentInstance().format(probability) + " " + key;
                                     }
                                         
                                 } catch (Exception e) {
@@ -361,6 +461,22 @@ public class PredictiveMonitorController implements Observer {
                                 Listcell listcell = new Listcell(value);
                                 listcell.setStyle(style);
                                 return listcell;   
+                            }
+                        }
+
+                        @Override public String getCSVHeader() {
+                            return header + " (quick)," + header + " (slow)";
+                        }
+
+                        public String getCSVItem(PredictiveMonitorEvent event, JSONObject json) {
+                            try {
+                                JSONObject histogram = json.getJSONObject("predictions").getJSONObject(predictor.getType());
+
+                                return NumberFormat.getPercentInstance().format(histogram.getDouble("true")) + "," +
+                                       NumberFormat.getPercentInstance().format(histogram.getDouble("false"));
+
+                            } catch (Exception e) {
+                                return ",";
                             }
                         }
                     });
@@ -495,9 +611,37 @@ public class PredictiveMonitorController implements Observer {
         needsReload = false;
     }
 
+    private void exportCSV(OutputStream out) throws IOException, JSONException {
+        try (Writer w = new BufferedWriter(new OutputStreamWriter(out))) {
+
+            // Write the header
+            Iterator<Column> i = columnList.iterator();
+            while (i.hasNext()) {
+                Column column = i.next();
+                w.write(column.getCSVHeader());
+                w.write(i.hasNext() ? "," : "\n");
+            }
+
+            // Write the content
+            for (PredictiveMonitorEvent event: predictiveMonitorService.findPredictiveMonitorEvents(predictiveMonitor)) {
+                JSONObject json = new JSONObject(event.getJson());
+
+                i = columnList.iterator();
+                while (i.hasNext()) {
+                    Column column = i.next();
+                    try { w.write(column.getCSVItem(event, json)); } catch (Exception e) {}
+                    w.write(i.hasNext() ? "," : "\n");
+                }
+            }
+        }
+    }
+
     private interface Column {
         Listheader getListheader();
         Listcell getListcell(PredictiveMonitorEvent event);
+
+        String getCSVHeader();
+        String getCSVItem(PredictiveMonitorEvent event, JSONObject json);
     }
 
     private static abstract class AbstractColumn implements Column {
@@ -512,6 +656,15 @@ public class PredictiveMonitorController implements Observer {
         }
 
         public abstract Listcell getListcell(PredictiveMonitorEvent event);
+
+        public String getCSVHeader() {
+            if (header.contains(",")) {
+                throw new RuntimeException("Header " + header + " contains a comma; escaping commas isn't implemented");
+            }
+            return header;
+        }
+
+        public abstract String getCSVItem(PredictiveMonitorEvent event, JSONObject json);
     }
 
     private static class ColumnImpl extends AbstractColumn {
@@ -530,6 +683,10 @@ public class PredictiveMonitorController implements Observer {
 
         public Listcell getListcell(PredictiveMonitorEvent event) {
             return new Listcell(eventFormatter.format(event));
+        }
+
+        public String getCSVItem(PredictiveMonitorEvent event, JSONObject json) {
+            return eventFormatter.format(event);
         }
     }
 
