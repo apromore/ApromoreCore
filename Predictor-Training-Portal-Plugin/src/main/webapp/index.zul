@@ -1,0 +1,23 @@
+<?link rel="stylesheet" type="text/css" href="css/main.css" ?>
+<?link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"?>
+<?meta name="viewport" content="width=device-width, initial-scale=1.0"?>
+<?page title="${labels.header.landing} - Nirdizati" ?>
+<?script src="webjars/chartjs/2.7.0/Chart.js" ?>
+<?script src="https://code.highcharts.com/maps/highmaps.src.js"?>
+<?script src="https://code.highcharts.com/maps/modules/heatmap.js"?>
+<?script src="/js/ChartDrawer.js"?>
+<?script src="/js/Util.js" ?>
+
+<zk>
+    <borderlayout id="mainLayout" vflex="1" hflex="1" apply="cs.ut.ui.controllers.MainPageController">
+        <north vflex="1" border="none">
+            <include src="/views/components/header.zul"/>
+        </north>
+        <center id="center" hflex="1" vflex="1" border="none">
+            <include id="contentInclude" src="/views/landing.zul"/>
+        </center>
+        <east id="trackerEast" vflex="1" border="none" open="false" size="400px" sclass="job-tracker">
+            <include src="/views/components/tracker.zul"/>
+        </east>
+    </borderlayout>
+</zk>

@@ -157,27 +157,28 @@ public class PredictiveMonitorServiceImpl implements PredictiveMonitorService {
                         for (ConsumerRecord<String, String> record: records) {
                             try {
                                 if (record.topic().equals(prefixesTopic)) {
-                                    JSONArray prefix = new JSONArray(record.value());
+                                    JSONObject event = new JSONObject(record.value());
+                                    JSONArray prefix = event.getJSONArray("prefix");
                                     JSONObject lastEvent = prefix.getJSONObject(prefix.length() - 1);
                                     LOGGER.info("Prefix: " + lastEvent);
-                                    PredictiveMonitor predictiveMonitor = findPredictiveMonitorById(lastEvent.getInt("log"));
+                                    PredictiveMonitor predictiveMonitor = findPredictiveMonitorById(event.getInt("log_id"));
                                     if (predictiveMonitor != null) {
-                                        upsertEvent(predictiveMonitor, lastEvent.getString("case_id"), prefix.length(), lastEvent);
+                                        upsertEvent(predictiveMonitor, event.getString("case_id"), prefix.length(), lastEvent);
                                     } else {
-                                        LOGGER.warn("Discarding prediction for nonexistent log " + lastEvent.optInt("log"));
+                                        LOGGER.warn("Discarding prediction for nonexistent log " + event.optInt("log_id"));
                                     }
                                     
                                 } else if (record.topic().equals(predictionsTopic)) {
                                     JSONObject json = new JSONObject(record.value());
                                     LOGGER.info("Prediction: " + json);
-                                    PredictiveMonitor predictiveMonitor = findPredictiveMonitorById(json.getInt("log"));
+                                    PredictiveMonitor predictiveMonitor = findPredictiveMonitorById(json.getInt("log_id"));
                                     if (predictiveMonitor != null) {
                                         JSONObject jsonPredictions = new JSONObject();
                                         jsonPredictions.put("predictions", json.getJSONObject("predictions"));
                                         upsertEvent((PredictiveMonitorImpl) predictiveMonitor, json.getString("case_id"), json.getInt("event_nr"), jsonPredictions);
 
                                     } else {
-                                        LOGGER.warn("Discarding prediction for nonexistent log " + json.getInt("log"));
+                                        LOGGER.warn("Discarding prediction for nonexistent log " + json.getInt("log_id"));
                                     }
 
                                 } else {

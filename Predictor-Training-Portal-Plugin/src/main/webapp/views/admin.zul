@@ -1,0 +1,38 @@
+<vlayout hflex="1" vflex="1" apply="cs.ut.ui.controllers.AdminViewController">
+    <hlayout hflex="1" vflex="1">
+        <grid hflex="min" vflex="min">
+            <rows>
+                <row align="center">
+                    <label>Key</label>
+                    <textbox id="passwordField" type="password" width="160px"/>
+                </row>
+                <row align="center">
+                    <label>Flush configuration file</label>
+                    <vlayout hflex="min" vflex="min">
+                        <button sclass="transparent-btn" id="flushConfig">Execute</button>
+                    </vlayout>
+                </row>
+                <row align="center">
+                    <label>Flush messages file</label>
+                    <vlayout hflex="min" vflex="min">
+                        <button sclass="transparent-btn" id="flushMessages">Execute</button>
+                    </vlayout>
+                </row>
+                <row align="center">
+                    <label>Show log</label>
+                    <vbox align="center" hflex="min" vflex="min">
+                        <button sclass="transparent-btn" id="showLogs">Execute</button>
+                    </vbox>
+                </row>
+                <row align="center">
+                    <label>Flush cache</label>
+                    <vbox align="center" hflex="min" vflex="min">
+                        <button sclass="transparent-btn" id="flushCache">Execute</button>
+                    </vbox>
+                </row>
+            </rows>
+        </grid>
+
+        <textbox id="logData" sclass="selectable" visible="false" vflex="1" hflex="1" multiline="true" readonly="true"/>
+    </hlayout>
+</vlayout>

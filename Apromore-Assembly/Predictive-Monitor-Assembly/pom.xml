@@ -49,14 +49,6 @@
             <artifactId>kotlin-osgi-bundle</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>kafka-portal-plugin</artifactId>
-            <version>1.0</version>
-            <type>war</type>
-        </dependency>
--->
 
         <!-- Contains the RemoveNonOSGIJars Maven plugin -->
         <dependency>

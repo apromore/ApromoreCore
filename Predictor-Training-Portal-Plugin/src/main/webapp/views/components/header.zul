@@ -1,0 +1,7 @@
+<hbox sclass="header-box" hflex="1" vflex="1" apply="cs.ut.ui.controllers.HeaderController" align="start">
+    <!-- <image id="headerLogo" sclass="logo" src="/images/logo.png"/> -->
+    <hlayout sclass="navbar-container">
+        <hbox hflex="mín" id="navbar" style="margin-left:20px; margin-top: 24px"/>
+        <!-- <navbar hflex="mín" id="navbar" orient="horizontal" style="margin-left:20px"/> -->
+    </hlayout>
+</hbox>

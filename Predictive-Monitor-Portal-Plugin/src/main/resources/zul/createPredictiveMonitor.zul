@@ -57,8 +57,8 @@
         </listbox>
         <div align="center">
             <button id="create" label="Create Monitor" image="img/ok.png"/>
-            <button id="loadPredictorFile" label="Load predictor file"/>
-            <button id="deletePredictors" label="Delete predictors"/>
+            <button id="loadPredictorFile" label="Load predictor file" height="32px"/>
+            <button id="deletePredictors" label="Delete predictors" height="32px"/>
             <button id="cancel" label="Cancel" image="img/cancel2.png"/>
         </div>
     </vbox>

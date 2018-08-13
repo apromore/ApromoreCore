@@ -161,6 +161,7 @@
 
         <module>Predictive-Monitor-Logic</module>
         <module>Predictive-Monitor-Portal-Plugin</module>
+        <module>Predictor-Training-Portal-Plugin</module>
         <module>PQL-Indexer-Portal-Plugin</module>
         <module>PQL-Logic</module>
         <module>PQL-Logic-WS</module>
