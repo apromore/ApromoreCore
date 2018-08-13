@@ -89,6 +89,7 @@
         <!--
         <include name="Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
         <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+        <include name="Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
         -->
 
         <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
@@ -164,6 +165,7 @@
         <!--
         <include name="Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
         <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+        <include name="Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
         -->
 
         <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
@@ -255,6 +257,7 @@
         <!--
         <include name="Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
         <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+        <include name="Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
         -->
 
         <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
