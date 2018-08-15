@@ -42,10 +42,30 @@
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="predictiveMonitorService" interface="org.apromore.service.predictivemonitor.PredictiveMonitorService"/>
 
+    <beans:bean id="python" class="java.lang.String">
+        <beans:qualifier value="python"/>
+        <beans:constructor-arg type="String" value="${training.python}"/>
+    </beans:bean>
+
+    <beans:bean id="backend" class="java.lang.String">
+        <beans:qualifier value="backend"/>
+        <beans:constructor-arg type="String" value="${training.backend}"/>
+    </beans:bean>
+
+    <beans:bean id="tmpDir" class="java.lang.String">
+        <beans:qualifier value="tmpDir"/>
+        <beans:constructor-arg type="String" value="${training.tmpDir}"/>
+    </beans:bean>
+
+    <beans:bean id="logFile" class="java.lang.String">
+        <beans:qualifier value="logFile"/>
+        <beans:constructor-arg type="String" value="${training.logFile}"/>
+    </beans:bean>
+
     <!-- Exposes the components as OSGi services -->
     <beans:bean id="plugin" class="org.apromore.plugin.portal.predictortraining.PortalPlugin">
-        <beans:property name="groupLabel" value="Monitor" />
-        <beans:property name="label" value="Train Predictor with Log" />
+        <beans:property name="groupLabel" value="Monitor"/>
+        <beans:property name="label"      value="Train Predictor with Log"/>
     </beans:bean>
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
 

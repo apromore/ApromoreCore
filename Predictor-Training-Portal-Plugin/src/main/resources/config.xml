@@ -1,5 +1,5 @@
 <!DOCTYPE Configuration [
-  <!ENTITY backend "/Users/raboczi/Work/nirdizati-training-backend">
+  <!ENTITY backend "">
 ]>
 <Configuration>
     <Node Identifier="demo">
@@ -77,19 +77,19 @@
     <Node Identifier="directories">
         <!-- Directory cs.ut.configuration -->
         <Node Identifier="itemList">
-            <Value Identifier="python">/opt/local/bin/python3</Value>
-            <Value Identifier="userLogDirectory">&backend;/logdata/</Value>
-            <Value Identifier="scriptDirectory">&backend;/</Value>
-            <Value Identifier="coreDir">&backend;/core/</Value>
-            <Value Identifier="trainDirectory">&backend;/core/training_params/</Value>
-            <Value Identifier="datasetDirectory">&backend;/core/dataset_params/</Value>
-            <Value Identifier="pklDirectory">&backend;/pkl/</Value>
-            <Value Identifier="ohpdir">/&backend;/core/optimal_params/</Value>
-            <Value Identifier="detailedDir">&backend;/results/detailed/</Value>
-            <Value Identifier="validationDir">&backend;/results/validation/</Value>
-            <Value Identifier="featureDir">&backend;/results/feature_importance/</Value>
-            <Value Identifier="tmpDir">/Users/raboczi/Work/nirdizati-training-ui/tmp/</Value>
-            <Value Identifier="logFile">/Users/raboczi/Work/ApromoreCode/Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/serviceability/logs/log.log</Value>
+            <Value Identifier="python">/usr/bin/python3</Value>
+            <Value Identifier="userLogDirectory">&backend;logdata/</Value>
+            <Value Identifier="scriptDirectory">&backend;</Value>
+            <Value Identifier="coreDir">&backend;core/</Value>
+            <Value Identifier="trainDirectory">&backend;core/training_params/</Value>
+            <Value Identifier="datasetDirectory">&backend;core/dataset_params/</Value>
+            <Value Identifier="pklDirectory">&backend;pkl/</Value>
+            <Value Identifier="ohpdir">/&backend;core/optimal_params/</Value>
+            <Value Identifier="detailedDir">&backend;results/detailed/</Value>
+            <Value Identifier="validationDir">&backend;results/validation/</Value>
+            <Value Identifier="featureDir">&backend;results/feature_importance/</Value>
+            <Value Identifier="tmpDir">/tmp/</Value>
+            <Value Identifier="logFile">/tmp/predictor-training.log</Value>
         </Node>
     </Node>
     <Node Identifier="header">
