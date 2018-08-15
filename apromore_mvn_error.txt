@@ -1,0 +1,1570 @@
+Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-11T03:41:47+11:00)
+Maven home: C:\Program Files\apache-maven-3.3.9-bin\apache-maven-3.3.9
+Java version: 1.8.0_92, vendor: Oracle Corporation
+Java home: D:\Programs\Java\jdk1.8.0_92\jre
+Default locale: en_AU, platform encoding: Cp1252
+OS name: "windows 7", version: "6.1", arch: "amd64", family: "dos"
+[DEBUG] Created new class realm maven.api
+[DEBUG] Importing foreign packages into class realm maven.api
+[DEBUG]   Imported: javax.enterprise.inject.* < plexus.core
+[DEBUG]   Imported: javax.enterprise.util.* < plexus.core
+[DEBUG]   Imported: javax.inject.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.artifact < plexus.core
+[DEBUG]   Imported: org.apache.maven.classrealm < plexus.core
+[DEBUG]   Imported: org.apache.maven.cli < plexus.core
+[DEBUG]   Imported: org.apache.maven.configuration < plexus.core
+[DEBUG]   Imported: org.apache.maven.exception < plexus.core
+[DEBUG]   Imported: org.apache.maven.execution < plexus.core
+[DEBUG]   Imported: org.apache.maven.execution.scope < plexus.core
+[DEBUG]   Imported: org.apache.maven.lifecycle < plexus.core
+[DEBUG]   Imported: org.apache.maven.model < plexus.core
+[DEBUG]   Imported: org.apache.maven.monitor < plexus.core
+[DEBUG]   Imported: org.apache.maven.plugin < plexus.core
+[DEBUG]   Imported: org.apache.maven.profiles < plexus.core
+[DEBUG]   Imported: org.apache.maven.project < plexus.core
+[DEBUG]   Imported: org.apache.maven.reporting < plexus.core
+[DEBUG]   Imported: org.apache.maven.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.rtinfo < plexus.core
+[DEBUG]   Imported: org.apache.maven.settings < plexus.core
+[DEBUG]   Imported: org.apache.maven.toolchain < plexus.core
+[DEBUG]   Imported: org.apache.maven.usability < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.* < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.authentication < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.authorization < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.events < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.observers < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.proxy < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.repository < plexus.core
+[DEBUG]   Imported: org.apache.maven.wagon.resource < plexus.core
+[DEBUG]   Imported: org.codehaus.classworlds < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.* < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.classworlds < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.component < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.configuration < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.container < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.context < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.lifecycle < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.logging < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.personality < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.Xpp3Dom < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlPullParser < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlPullParserException < plexus.core
+[DEBUG]   Imported: org.codehaus.plexus.util.xml.pull.XmlSerializer < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.* < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.artifact < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.collection < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.deployment < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.graph < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.impl < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.installation < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.internal.impl < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.metadata < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.repository < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.resolution < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.spi < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.transfer < plexus.core
+[DEBUG]   Imported: org.eclipse.aether.version < plexus.core
+[DEBUG]   Imported: org.slf4j.* < plexus.core
+[DEBUG]   Imported: org.slf4j.helpers.* < plexus.core
+[DEBUG]   Imported: org.slf4j.spi.* < plexus.core
+[DEBUG] Populating class realm maven.api
+[INFO] Error stacktraces are turned on.
+[DEBUG] Reading global settings from C:\Program Files\apache-maven-3.3.9-bin\apache-maven-3.3.9\conf\settings.xml
+[DEBUG] Reading user settings from C:\Users\n9348531\.m2\settings.xml
+[DEBUG] Reading global toolchains from C:\Program Files\apache-maven-3.3.9-bin\apache-maven-3.3.9\conf\toolchains.xml
+[DEBUG] Reading user toolchains from C:\Users\n9348531\.m2\toolchains.xml
+[DEBUG] Using local repository at D:\.m2\repository
+[DEBUG] Using manager EnhancedLocalRepositoryManager with priority 10.0 for D:\.m2\repository
+[INFO] Scanning for projects...
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=0, ConflictMarker.markTime=0, ConflictMarker.nodeCount=195, ConflictIdSorter.graphTime=10, ConflictIdSorter.topsortTime=0, ConflictIdSorter.conflictIdCount=60, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=10, ConflictResolver.conflictItemCount=130, DefaultDependencyCollector.collectTime=323, DefaultDependencyCollector.transformTime=20}
+[DEBUG] org.apache.felix:maven-bundle-plugin:jar:3.0.1:
+[DEBUG]    org.osgi:org.osgi.core:jar:4.3.1:compile
+[DEBUG]    biz.aQute.bnd:biz.aQute.bndlib:jar:3.0.0:compile
+[DEBUG]    org.apache.felix:org.apache.felix.bundlerepository:jar:1.6.6:compile
+[DEBUG]       org.easymock:easymock:jar:2.5.2:compile
+[DEBUG]    org.apache.felix:org.apache.felix.utils:jar:1.6.0:compile
+[DEBUG]       org.osgi:org.osgi.compendium:jar:4.2.0:compile
+[DEBUG]    org.apache.maven:maven-core:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-settings:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-plugin-parameter-documenter:jar:2.2.0:compile
+[DEBUG]       org.slf4j:slf4j-jdk14:jar:1.5.6:runtime
+[DEBUG]          org.slf4j:slf4j-api:jar:1.5.6:runtime
+[DEBUG]       org.slf4j:jcl-over-slf4j:jar:1.5.6:runtime
+[DEBUG]       org.apache.maven.reporting:maven-reporting-api:jar:2.2.0:compile
+[DEBUG]          org.apache.maven.doxia:doxia-logging-api:jar:1.1:compile
+[DEBUG]       org.apache.maven:maven-profile:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-model:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-artifact:jar:2.2.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:compile
+[DEBUG]          junit:junit:jar:4.11:compile
+[DEBUG]             org.hamcrest:hamcrest-core:jar:1.3:compile
+[DEBUG]       org.apache.maven:maven-repository-metadata:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-error-diagnostics:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-project:jar:2.2.0:compile
+[DEBUG]          org.apache.maven:maven-plugin-registry:jar:2.2.0:compile
+[DEBUG]       commons-cli:commons-cli:jar:1.2:compile
+[DEBUG]       org.apache.maven:maven-plugin-api:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-plugin-descriptor:jar:2.2.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-interactivity-api:jar:1.0-alpha-4:compile
+[DEBUG]       org.apache.maven:maven-artifact-manager:jar:2.2.0:compile
+[DEBUG]          backport-util-concurrent:backport-util-concurrent:jar:3.1:compile
+[DEBUG]       org.apache.maven:maven-monitor:jar:2.2.0:compile
+[DEBUG]       classworlds:classworlds:jar:1.1:compile
+[DEBUG]       org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[DEBUG]          org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[DEBUG]    org.apache.maven:maven-archiver:jar:2.5:compile
+[DEBUG]       org.codehaus.plexus:plexus-archiver:jar:2.1:compile
+[DEBUG]          org.codehaus.plexus:plexus-io:jar:2.0.2:compile
+[DEBUG]       org.codehaus.plexus:plexus-interpolation:jar:1.15:compile
+[DEBUG]    org.apache.maven.shared:maven-dependency-tree:jar:2.1:compile
+[DEBUG]       org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:compile
+[DEBUG]       org.eclipse.aether:aether-util:jar:0.9.0.M2:compile
+[DEBUG]    org.codehaus.plexus:plexus-utils:jar:3.0.10:compile
+[DEBUG]    org.sonatype.plexus:plexus-build-api:jar:0.0.7:compile
+[DEBUG]    org.apache.maven.doxia:doxia-sink-api:jar:1.0:compile
+[DEBUG]    org.apache.maven.doxia:doxia-site-renderer:jar:1.0:compile
+[DEBUG]       org.apache.maven.doxia:doxia-core:jar:1.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-i18n:jar:1.0-beta-7:compile
+[DEBUG]       org.codehaus.plexus:plexus-velocity:jar:1.1.7:compile
+[DEBUG]       org.apache.velocity:velocity:jar:1.5:compile
+[DEBUG]          commons-lang:commons-lang:jar:2.1:compile
+[DEBUG]          oro:oro:jar:2.0.8:compile
+[DEBUG]       org.apache.maven.doxia:doxia-decoration-model:jar:1.0:compile
+[DEBUG]       commons-collections:commons-collections:jar:3.2:compile
+[DEBUG]       org.apache.maven.doxia:doxia-module-apt:jar:1.0:compile
+[DEBUG]       org.apache.maven.doxia:doxia-module-fml:jar:1.0:compile
+[DEBUG]       org.apache.maven.doxia:doxia-module-xdoc:jar:1.0:compile
+[DEBUG]       org.apache.maven.doxia:doxia-module-xhtml:jar:1.0:compile
+[DEBUG]    org.jdom:jdom:jar:1.1:compile
+[DEBUG] Created new class realm extension>org.apache.felix:maven-bundle-plugin:3.0.1
+[DEBUG] Importing foreign packages into class realm extension>org.apache.felix:maven-bundle-plugin:3.0.1
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm extension>org.apache.felix:maven-bundle-plugin:3.0.1
+[DEBUG]   Included: org.apache.felix:maven-bundle-plugin:jar:3.0.1
+[DEBUG]   Included: org.osgi:org.osgi.core:jar:4.3.1
+[DEBUG]   Included: biz.aQute.bnd:biz.aQute.bndlib:jar:3.0.0
+[DEBUG]   Included: org.apache.felix:org.apache.felix.bundlerepository:jar:1.6.6
+[DEBUG]   Included: org.easymock:easymock:jar:2.5.2
+[DEBUG]   Included: org.apache.felix:org.apache.felix.utils:jar:1.6.0
+[DEBUG]   Included: org.osgi:org.osgi.compendium:jar:4.2.0
+[DEBUG]   Included: org.slf4j:slf4j-jdk14:jar:1.5.6
+[DEBUG]   Included: org.slf4j:jcl-over-slf4j:jar:1.5.6
+[DEBUG]   Included: org.apache.maven.reporting:maven-reporting-api:jar:2.2.0
+[DEBUG]   Included: org.apache.maven.doxia:doxia-logging-api:jar:1.1
+[DEBUG]   Included: junit:junit:jar:4.11
+[DEBUG]   Included: org.hamcrest:hamcrest-core:jar:1.3
+[DEBUG]   Included: commons-cli:commons-cli:jar:1.2
+[DEBUG]   Included: org.codehaus.plexus:plexus-interactivity-api:jar:1.0-alpha-4
+[DEBUG]   Included: backport-util-concurrent:backport-util-concurrent:jar:3.1
+[DEBUG]   Included: org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3
+[DEBUG]   Included: org.sonatype.plexus:plexus-cipher:jar:1.4
+[DEBUG]   Included: org.apache.maven:maven-archiver:jar:2.5
+[DEBUG]   Included: org.codehaus.plexus:plexus-archiver:jar:2.1
+[DEBUG]   Included: org.codehaus.plexus:plexus-io:jar:2.0.2
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.15
+[DEBUG]   Included: org.apache.maven.shared:maven-dependency-tree:jar:2.1
+[DEBUG]   Included: org.codehaus.plexus:plexus-component-annotations:jar:1.5.5
+[DEBUG]   Included: org.eclipse.aether:aether-util:jar:0.9.0.M2
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:3.0.10
+[DEBUG]   Included: org.sonatype.plexus:plexus-build-api:jar:0.0.7
+[DEBUG]   Included: org.apache.maven.doxia:doxia-sink-api:jar:1.0
+[DEBUG]   Included: org.apache.maven.doxia:doxia-site-renderer:jar:1.0
+[DEBUG]   Included: org.apache.maven.doxia:doxia-core:jar:1.0
+[DEBUG]   Included: org.codehaus.plexus:plexus-i18n:jar:1.0-beta-7
+[DEBUG]   Included: org.codehaus.plexus:plexus-velocity:jar:1.1.7
+[DEBUG]   Included: org.apache.velocity:velocity:jar:1.5
+[DEBUG]   Included: commons-lang:commons-lang:jar:2.1
+[DEBUG]   Included: oro:oro:jar:2.0.8
+[DEBUG]   Included: org.apache.maven.doxia:doxia-decoration-model:jar:1.0
+[DEBUG]   Included: commons-collections:commons-collections:jar:3.2
+[DEBUG]   Included: org.apache.maven.doxia:doxia-module-apt:jar:1.0
+[DEBUG]   Included: org.apache.maven.doxia:doxia-module-fml:jar:1.0
+[DEBUG]   Included: org.apache.maven.doxia:doxia-module-xdoc:jar:1.0
+[DEBUG]   Included: org.apache.maven.doxia:doxia-module-xhtml:jar:1.0
+[DEBUG]   Included: org.jdom:jdom:jar:1.1
+[DEBUG] Extension realms for project org.apromore:apromore:pom:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Created new class realm project>org.apromore:apromore:1.1
+[DEBUG] Populating class realm project>org.apromore:apromore:1.1
+[DEBUG] Looking up lifecyle mappings for packaging pom from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:build-tools:jar:1.1: (none)
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project org.apromore:test-tools:jar:1.1: (none)
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[plexus.core, parent: null]
+[DEBUG] Extension realms for project org.apromore:anf-schema:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:aris-schema:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:bpmn-schema:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:cmap-schema:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:cpf-schema:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:dcl-schema:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:epml-schema:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:pnml-schema:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:rlf-schema:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:xpdl-schema:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:yawl-schema:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:jdom2-osgi:bundle:2.0.6: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:log-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:lpsolve-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=0, ConflictMarker.markTime=0, ConflictMarker.nodeCount=195, ConflictIdSorter.graphTime=0, ConflictIdSorter.topsortTime=0, ConflictIdSorter.conflictIdCount=60, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=0, ConflictResolver.conflictItemCount=130, DefaultDependencyCollector.collectTime=20, DefaultDependencyCollector.transformTime=0}
+[DEBUG] org.apache.felix:maven-bundle-plugin:jar:3.0.1:
+[DEBUG]    org.osgi:org.osgi.core:jar:4.3.1:compile
+[DEBUG]    biz.aQute.bnd:biz.aQute.bndlib:jar:3.0.0:compile
+[DEBUG]    org.apache.felix:org.apache.felix.bundlerepository:jar:1.6.6:compile
+[DEBUG]       org.easymock:easymock:jar:2.5.2:compile
+[DEBUG]    org.apache.felix:org.apache.felix.utils:jar:1.6.0:compile
+[DEBUG]       org.osgi:org.osgi.compendium:jar:4.2.0:compile
+[DEBUG]    org.apache.maven:maven-core:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-settings:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-plugin-parameter-documenter:jar:2.2.0:compile
+[DEBUG]       org.slf4j:slf4j-jdk14:jar:1.5.6:runtime
+[DEBUG]          org.slf4j:slf4j-api:jar:1.5.6:runtime
+[DEBUG]       org.slf4j:jcl-over-slf4j:jar:1.5.6:runtime
+[DEBUG]       org.apache.maven.reporting:maven-reporting-api:jar:2.2.0:compile
+[DEBUG]          org.apache.maven.doxia:doxia-logging-api:jar:1.1:compile
+[DEBUG]       org.apache.maven:maven-profile:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-model:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-artifact:jar:2.2.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:compile
+[DEBUG]          junit:junit:jar:4.11:compile
+[DEBUG]             org.hamcrest:hamcrest-core:jar:1.3:compile
+[DEBUG]       org.apache.maven:maven-repository-metadata:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-error-diagnostics:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-project:jar:2.2.0:compile
+[DEBUG]          org.apache.maven:maven-plugin-registry:jar:2.2.0:compile
+[DEBUG]       commons-cli:commons-cli:jar:1.2:compile
+[DEBUG]       org.apache.maven:maven-plugin-api:jar:2.2.0:compile
+[DEBUG]       org.apache.maven:maven-plugin-descriptor:jar:2.2.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-interactivity-api:jar:1.0-alpha-4:compile
+[DEBUG]       org.apache.maven:maven-artifact-manager:jar:2.2.0:compile
+[DEBUG]          backport-util-concurrent:backport-util-concurrent:jar:3.1:compile
+[DEBUG]       org.apache.maven:maven-monitor:jar:2.2.0:compile
+[DEBUG]       classworlds:classworlds:jar:1.1:compile
+[DEBUG]       org.sonatype.plexus:plexus-sec-dispatcher:jar:1.3:compile
+[DEBUG]          org.sonatype.plexus:plexus-cipher:jar:1.4:compile
+[DEBUG]    org.apache.maven:maven-archiver:jar:2.5:compile
+[DEBUG]       org.codehaus.plexus:plexus-archiver:jar:2.1:compile
+[DEBUG]          org.codehaus.plexus:plexus-io:jar:2.0.2:compile
+[DEBUG]       org.codehaus.plexus:plexus-interpolation:jar:1.15:compile
+[DEBUG]    org.apache.maven.shared:maven-dependency-tree:jar:2.1:compile
+[DEBUG]       org.codehaus.plexus:plexus-component-annotations:jar:1.5.5:compile
+[DEBUG]       org.eclipse.aether:aether-util:jar:0.9.0.M2:compile
+[DEBUG]    org.codehaus.plexus:plexus-utils:jar:3.0.10:compile
+[DEBUG]    org.sonatype.plexus:plexus-build-api:jar:0.0.7:compile
+[DEBUG]    org.apache.maven.doxia:doxia-sink-api:jar:1.0:compile
+[DEBUG]    org.apache.maven.doxia:doxia-site-renderer:jar:1.0:compile
+[DEBUG]       org.apache.maven.doxia:doxia-core:jar:1.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-i18n:jar:1.0-beta-7:compile
+[DEBUG]       org.codehaus.plexus:plexus-velocity:jar:1.1.7:compile
+[DEBUG]       org.apache.velocity:velocity:jar:1.5:compile
+[DEBUG]          commons-lang:commons-lang:jar:2.1:compile
+[DEBUG]          oro:oro:jar:2.0.8:compile
+[DEBUG]       org.apache.maven.doxia:doxia-decoration-model:jar:1.0:compile
+[DEBUG]       commons-collections:commons-collections:jar:3.2:compile
+[DEBUG]       org.apache.maven.doxia:doxia-module-apt:jar:1.0:compile
+[DEBUG]       org.apache.maven.doxia:doxia-module-fml:jar:1.0:compile
+[DEBUG]       org.apache.maven.doxia:doxia-module-xdoc:jar:1.0:compile
+[DEBUG]       org.apache.maven.doxia:doxia-module-xhtml:jar:1.0:compile
+[DEBUG]    org.jdom:jdom:jar:1.1:compile
+[DEBUG] Extension realms for project org.apromore:prom6-osgi:bundle:6.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:prodrift-osgi:bundle:2.4: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:eclipse-collections-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.antlr:antlr4-runtime-osgi:bundle:4.3: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Dependency collection stats: {ConflictMarker.analyzeTime=0, ConflictMarker.markTime=0, ConflictMarker.nodeCount=96, ConflictIdSorter.graphTime=0, ConflictIdSorter.topsortTime=0, ConflictIdSorter.conflictIdCount=32, ConflictIdSorter.conflictIdCycleCount=0, ConflictResolver.totalTime=0, ConflictResolver.conflictItemCount=71, DefaultDependencyCollector.collectTime=102, DefaultDependencyCollector.transformTime=0}
+[DEBUG] org.apache.felix:maven-bundle-plugin:jar:2.3.7:
+[DEBUG]    biz.aQute:bndlib:jar:1.50.0:compile
+[DEBUG]    org.apache.felix:org.apache.felix.bundlerepository:jar:1.6.6:compile
+[DEBUG]       org.osgi:org.osgi.core:jar:4.1.0:compile
+[DEBUG]       org.easymock:easymock:jar:2.4:compile
+[DEBUG]    org.apache.maven:maven-core:jar:2.0.7:compile
+[DEBUG]       org.apache.maven:maven-settings:jar:2.0.7:compile
+[DEBUG]       org.apache.maven:maven-plugin-parameter-documenter:jar:2.0.7:compile
+[DEBUG]       org.apache.maven.reporting:maven-reporting-api:jar:2.0.7:compile
+[DEBUG]          org.apache.maven.doxia:doxia-sink-api:jar:1.0-alpha-7:compile
+[DEBUG]       org.apache.maven:maven-profile:jar:2.0.7:compile
+[DEBUG]       org.apache.maven:maven-model:jar:2.0.7:compile
+[DEBUG]       org.apache.maven:maven-artifact:jar:2.0.7:compile
+[DEBUG]       org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-9-stable-1:compile
+[DEBUG]          junit:junit:jar:3.8.1:compile
+[DEBUG]       org.apache.maven:maven-repository-metadata:jar:2.0.7:compile
+[DEBUG]       org.apache.maven:maven-error-diagnostics:jar:2.0.7:compile
+[DEBUG]       org.apache.maven:maven-project:jar:2.0.7:compile
+[DEBUG]          org.apache.maven:maven-plugin-registry:jar:2.0.7:compile
+[DEBUG]       commons-cli:commons-cli:jar:1.0:compile
+[DEBUG]       org.apache.maven:maven-plugin-api:jar:2.0.7:compile
+[DEBUG]       org.apache.maven:maven-plugin-descriptor:jar:2.0.7:compile
+[DEBUG]       org.codehaus.plexus:plexus-interactivity-api:jar:1.0-alpha-4:compile
+[DEBUG]       org.apache.maven:maven-artifact-manager:jar:2.0.7:compile
+[DEBUG]       org.apache.maven:maven-monitor:jar:2.0.7:compile
+[DEBUG]       classworlds:classworlds:jar:1.1:compile
+[DEBUG]    org.apache.maven:maven-archiver:jar:2.4.1:compile
+[DEBUG]       org.codehaus.plexus:plexus-archiver:jar:1.0:compile
+[DEBUG]          org.codehaus.plexus:plexus-io:jar:1.0:compile
+[DEBUG]       org.codehaus.plexus:plexus-interpolation:jar:1.13:compile
+[DEBUG]    org.apache.maven.shared:maven-dependency-tree:jar:1.2:compile
+[DEBUG]    org.codehaus.plexus:plexus-utils:jar:2.1:compile
+[DEBUG] Created new class realm extension>org.apache.felix:maven-bundle-plugin:2.3.7
+[DEBUG] Importing foreign packages into class realm extension>org.apache.felix:maven-bundle-plugin:2.3.7
+[DEBUG]   Imported:  < maven.api
+[DEBUG] Populating class realm extension>org.apache.felix:maven-bundle-plugin:2.3.7
+[DEBUG]   Included: org.apache.felix:maven-bundle-plugin:jar:2.3.7
+[DEBUG]   Included: biz.aQute:bndlib:jar:1.50.0
+[DEBUG]   Included: org.apache.felix:org.apache.felix.bundlerepository:jar:1.6.6
+[DEBUG]   Included: org.osgi:org.osgi.core:jar:4.1.0
+[DEBUG]   Included: org.easymock:easymock:jar:2.4
+[DEBUG]   Included: org.apache.maven.reporting:maven-reporting-api:jar:2.0.7
+[DEBUG]   Included: org.apache.maven.doxia:doxia-sink-api:jar:1.0-alpha-7
+[DEBUG]   Included: junit:junit:jar:3.8.1
+[DEBUG]   Included: commons-cli:commons-cli:jar:1.0
+[DEBUG]   Included: org.codehaus.plexus:plexus-interactivity-api:jar:1.0-alpha-4
+[DEBUG]   Included: org.apache.maven:maven-archiver:jar:2.4.1
+[DEBUG]   Included: org.codehaus.plexus:plexus-archiver:jar:1.0
+[DEBUG]   Included: org.codehaus.plexus:plexus-io:jar:1.0
+[DEBUG]   Included: org.codehaus.plexus:plexus-interpolation:jar:1.13
+[DEBUG]   Included: org.apache.maven.shared:maven-dependency-tree:jar:1.2
+[DEBUG]   Included: org.codehaus.plexus:plexus-utils:jar:2.1
+[DEBUG] Extension realms for project org.apromore:bpmntk-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Created new class realm project>org.apromore:bpmntk-osgi:1.1
+[DEBUG] Populating class realm project>org.apromore:bpmntk-osgi:1.1
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:bpstruct-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:ltl-conf-check-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apm-verification-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.ini4j:ini4j-osgi:bundle:0.5.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.themis:themis-osgi:bundle:1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.json:json-osgi:bundle:20090211: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.jbpt:jbpt-petri-osgi:bundle:0.2.433: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:lucene-osgi:bundle:5.3.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:pnapi-bpdiff-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.postgresql:postgresql-osgi:bundle:9.3-1101-jdbc41: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.pql:pql-osgi:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:uma-bpdiff-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:prom-pnml-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:pn-automata-conv-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:ltl-to-automaton-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:declare-visualizer-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:raffaeleconforti-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:eventstr-confchecking-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:zk-osgi:bundle:8.0.2.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:similaritysearch-osgi:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:plugin:pom:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging pom from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:database-h2:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:database-mysql:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:database-oracle:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:database-postgresql:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:plugin-api:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:plugin-api-provider:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:portal-plugin-api:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:editor-plugin-api:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:canoniser-api:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:canoniser-api-provider:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:annotation-api:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:annotation-api-provider:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:deployment-api:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:deployment-api-provider:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:plugin-graph:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:canoniser-aris:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:canoniser-bpmn:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:canoniser-epml:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:canoniser-pnml:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:canoniser-xpdl:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:canoniser-yawl:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:annotation-bpmn:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:annotation-xpdl:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:annotation-epml:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:annotation-yawl:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:annotation-pnml:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:deployment-yawl:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:similaritysearch-logic:bundle:1.1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:merge-logic:bundle:1.1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:sample-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:similaritysearch-portal:bundle:1.1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:merge-portal:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:portal-custom-gui:bundle:1.1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:gbebop-editor-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:gbprove-editor-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:sample-editor-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:ibpstruct-editor-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:metrics-editor-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:process-plugin-api:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:apql-portal-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:gbebop-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:gbebop-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:gbprove-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:bimp-editor-plugin:war:1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:bimp-portal-plugin:bundle:1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:bpmndiagramimporter-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:bpmnminer-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:bpmnminer-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:cmapper-portal-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:compare-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:compareBP-portal-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:ltl-conf-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:ltl-conf-portal-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apm-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:apm-portal-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apm-compliance-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:apm-compliance-portal-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apm-comp-guards-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:apm-comp-guards-portal-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:ibpstruct-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:ibpstruct-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:activity-filter-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:activity-filter-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:infrequent-behaviour-filter-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:infrequent-behaviour-filter-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:log-animation-logic:bundle:1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:log-animation-portal-plugin:war:1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:log-visualizer-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:log-visualizer-logic-ws:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:log-visualizer-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:metrics-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:metrics-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:perfmining-logic:bundle:1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:perfmining-portal-plugin:bundle:1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:predictive-monitor-logic:bundle:1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:predictive-monitor-portal-plugin:war:1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:pql-indexer-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:pql-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:pql-logic-ws:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:pql-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:prodrift-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:prodrift-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:quaestio-portal-plugin:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:similarity-clusters-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:stagemining-logic:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore.plugin:stagemining-portal-plugin:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project com.processconfiguration:cmapper:jar:2.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project com.processconfiguration:quaestio:jar:1.0: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project com.apql:apql:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:pql-bot:jar:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:manager-ws-model:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:manager-client:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:manager-security:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:filestore-client:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:portal-client:jar:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging jar from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apromore-editor-parent:pom:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging pom from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:sscompressor-maven-plugin:maven-plugin:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging maven-plugin from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apromore-editor:war:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-platform-extension-bpmn2_0:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-platform-extension-diagram:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-platform-extension-downloader:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-platform-extension-epc:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-platform-extension-jpdl:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-platform-extension-pdf:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-platform-extension-petrinet:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-platform-extension-syntaxchecker:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-platform-extension-xpdl:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-platform-extension-yawl:bundle:1.2: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apromore-filestore:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apromore-portal:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apromore-manager:bundle:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging bundle from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apromore-manager-ws:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:2.3.7, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:bpmntk-osgi:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:apromore-pql-indexer:war:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging war from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:editor-assembly:pom:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging pom from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:filestore-assembly:pom:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging pom from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:manager-assembly:pom:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging pom from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:portal-assembly:pom:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging pom from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:pql-indexer-assembly:pom:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging pom from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[DEBUG] Extension realms for project org.apromore:predictive-monitor-assembly:pom:1.1: [ClassRealm[extension>org.apache.felix:maven-bundle-plugin:3.0.1, parent: sun.misc.Launcher$AppClassLoader@5c647e05]]
+[DEBUG] Looking up lifecyle mappings for packaging pom from ClassRealm[project>org.apromore:apromore:1.1, parent: ClassRealm[maven.api, parent: null]]
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:pnapi-bpdiff-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:pnapi:jar should not point at files within the project directory, ${basedir}/lib/pnapi-1.0.jar will be unresolvable by dependent projects @ line 75, column 16
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:uma-bpdiff-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:umabpdiff:jar should not point at files within the project directory, ${basedir}/lib/umaBPDiff-1.0.jar will be unresolvable by dependent projects @ line 76, column 25
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:prom-pnml-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:prompnml:jar should not point at files within the project directory, ${basedir}/lib/PetriNets.jar will be unresolvable by dependent projects @ line 71, column 16
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:pn-automata-conv-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:pnautomataconverter:jar should not point at files within the project directory, ${basedir}/lib/PNAutomataConverter.jar will be unresolvable by dependent projects @ line 76, column 25
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:ltl-to-automaton-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:ltltoautomaton:jar should not point at files within the project directory, ${basedir}/lib/LTL2Automaton.jar will be unresolvable by dependent projects @ line 74, column 25
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:declare-visualizer-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:declarevisualizer:jar should not point at files within the project directory, ${basedir}/lib/DeclareVisualizer.jar will be unresolvable by dependent projects @ line 71, column 25
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:zk-osgi:bundle:8.0.2.2
+[WARNING] 'version' contains an expression but should be a constant. @ org.apromore:zk-osgi:${zk.version}, D:\NewApromore2\ApromoreCode\Apromore-OSGI-Bundles\zk-osgi\pom.xml, line 35, column 14
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore.plugin:compareBP-portal-plugin:war:1.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apromore.plugin:portal-plugin-api:jar -> duplicate declaration of version (?) @ org.apromore.plugin:compareBP-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\Compare-Portal-Plugin\pom.xml, line 141, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore.plugin:ltl-conf-portal-plugin:war:1.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apromore.plugin:portal-plugin-api:jar -> duplicate declaration of version (?) @ org.apromore.plugin:ltl-conf-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\LTL-Conf-Portal-Plugin\pom.xml, line 145, column 21
+[WARNING] 'dependencies.dependency.exclusions.exclusion.artifactId' for org.apromore:apromore-manager:jar is missing. @ org.apromore.plugin:ltl-conf-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\LTL-Conf-Portal-Plugin\pom.xml, line 136, column 28
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore.plugin:apm-portal-plugin:war:1.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apromore.plugin:portal-plugin-api:jar -> duplicate declaration of version (?) @ org.apromore.plugin:apm-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\APM-Portal-Plugin\pom.xml, line 133, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore.plugin:apm-compliance-portal-plugin:war:1.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apromore.plugin:portal-plugin-api:jar -> duplicate declaration of version (?) @ org.apromore.plugin:apm-compliance-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\APM-Compliance-Portal-Plugin\pom.xml, line 133, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore.plugin:apm-comp-guards-portal-plugin:war:1.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apromore.plugin:portal-plugin-api:jar -> duplicate declaration of version (?) @ org.apromore.plugin:apm-comp-guards-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\APM-Comp-Guards-Portal-Plugin\pom.xml, line 133, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] raffaeleconforti-osgi
+[INFO] bpstruct-osgi
+[INFO] bpmntk-osgi
+[INFO] uma-bpdiff-osgi
+[INFO] pn-automata-conv-osgi
+[INFO] ltl-to-automaton-osgi
+[INFO] declare-visualizer-osgi
+[INFO] pnapi-bpdiff-osgi
+[INFO] json-osgi
+[INFO] jbpt-petri-osgi
+[INFO] prom-pnml-osgi
+[INFO] ltl-conf-check-osgi
+[INFO] eventstr-confchecking-osgi
+[INFO] apm-verification-osgi
+[INFO] ini4j-osgi
+[INFO] postgresql-osgi
+[INFO] themis-osgi
+[INFO] lucene-osgi
+[INFO] pql-osgi
+[INFO] zk-osgi
+[INFO] Apromore Plugins
+[INFO] Apromore Canonical Graph Plugin
+[INFO] similaritysearch-osgi
+[INFO] Apromore H2 Plugin
+[INFO] Apromore MySQL Plugin
+[INFO] Apromore Oracle Plugin
+[INFO] Apromore PostgreSQL Plugin
+[INFO] Apromore Plugin API
+[INFO] Apromore Plugin API Provider
+[INFO] Apromore Canoniser API
+[INFO] Apromore Manager WS Models
+[INFO] Apromore Portal Plugin API
+[INFO] Apromore Manager Client
+[INFO] Apromore Editor Plugin API
+[INFO] Apromore Canoniser API Provider
+[INFO] Apromore Annotation Pre Processor API
+[INFO] Apromore Annotation Pre Processor API Provider
+[INFO] Apromore Deployment Plugin API
+[INFO] Apromore Deployment Plugin API Provider
+[INFO] Apromore ARIS Canoniser
+[INFO] Apromore BPMN Canoniser
+[INFO] Apromore EPML Canoniser
+[INFO] Apromore PNML Canoniser
+[INFO] Apromore XPDL Canoniser
+[INFO] Apromore YAWL Canoniser
+[INFO] Apromore BPMN Annotation Pre Processor
+[INFO] Apromore XPDL Annotation Pre Processor
+[INFO] Apromore EPML Annotation Pre Processor
+[INFO] Apromore YAWL Annotation Pre Processor
+[INFO] Apromore PNML Annotation Pre Processor
+[INFO] portal-custom-gui
+[INFO] Apromore File Store Client
+[INFO] Apromore Manager Security Handler
+[INFO] Apromore Portal
+[INFO] YAWL Deployment Plugin
+[INFO] Process store service plugin API
+[INFO] Apromore Manager
+[INFO] similaritysearch-logic
+[INFO] merge-logic
+[INFO] Example portal plugin
+[INFO] similaritysearch-portal
+[INFO] Merge portal plugin
+[INFO] Apromore Editor parent
+[INFO] Apromore Editor Extension: Diagram Core
+[INFO] Apromore Editor Extension: BPMN 2.0
+[INFO] BPMN diagram parser service (prom6)
+[INFO] BEBoP service
+[INFO] Apromore Editor bebop plugin
+[INFO] BProVe service
+[INFO] Apromore Editor bprove plugin
+[INFO] Apromore Editor sample plugin
+[INFO] iBPSruct service
+[INFO] Apromore Editor iBPStruct plugin
+[INFO] Metrics service
+[INFO] Apromore Editor metrics plugin
+[INFO] Apromore Portal Client
+[INFO] PQL query service
+[INFO] PQL Logic Web Services
+[INFO] apql
+[INFO] APQL portal plugin
+[INFO] BEBoP portal plugin
+[INFO] BIMP simulator editor plugin
+[INFO] BIMP simulator portal plugin
+[INFO] BPMNMiner-logic
+[INFO] Infrequent Behaviour Filter service
+[INFO] BPMNMiner portal plugin
+[INFO] Cmapper
+[INFO] Cmapper portal plugin
+[INFO] Compare service
+[INFO] Compare portal plugin
+[INFO] LTL conformance checking logic
+[INFO] LTL Conformance portal plugin
+[INFO] APM service
+[INFO] APM portal plugin
+[INFO] APM compliance service
+[INFO] APM compliance portal plugin
+[INFO] APM compliance with guards logic
+[INFO] APM compliance with transition guards portal plugin
+[INFO] iBPStruct portal plugin
+[INFO] Activity Filter Logic
+[INFO] Activity Filter portal plugin
+[INFO] Infrequent Behaviour Filter portal plugin
+[INFO] Log Animation service
+[INFO] Log Animation portal plugin
+[INFO] Log Visualizer Service
+[INFO] Log Visualizer Logic Web Services
+[INFO] Stage Mining Service
+[INFO] Stage Mining Portal plugin
+[INFO] Log Visualizer Portal Plugin
+[INFO] Metrics portal plugin
+[INFO] Performance Mining Service
+[INFO] Performance Mining portal plugin
+[INFO] Predictive monitor logic
+[INFO] Predictive monitor portal plugin
+[INFO] PQL Indexer portal plugin
+[INFO] PQL portal plugin
+[INFO] Process drift detection service
+[INFO] Process drift detection portal plugin
+[INFO] Quaestio
+[INFO] Quaestio portal plugin
+[INFO] Similarity Clusters portal plugin
+[INFO] pql-bot
+[INFO] Stencilset Compressor
+[INFO] Apromore Editor Extension: Downloader
+[INFO] Apromore Editor Extension: EPC
+[INFO] Apromore Editor Extension: JPDL
+[INFO] Apromore Editor Extension: PDF
+[INFO] Apromore Editor Extension: Petri Net
+[INFO] Apromore Editor Extension: Syntax Checker
+[INFO] Apromore Editor Extension: XPDL
+[INFO] Apromore Editor Extension: YAWL
+[INFO] Apromore Editor
+[INFO] Apromore File Store
+[INFO] Apromore Manager Web Services
+[INFO] Apromore PQL Indexer
+[INFO] Apromore Editor Bundle Assembly
+[INFO] Apromore File Store Bundle Assembly
+[INFO] Apromore Manager Bundle Assembly
+[INFO] Apromore Portal Bundle Assembly
+[INFO] Apromore PQL Indexer Bundle Assembly
+[INFO] Predictive Monitor Bundle Assembly
+[DEBUG] === REACTOR BUILD PLAN ================================================
+[DEBUG] Project: org.apromore:raffaeleconforti-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:bpstruct-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:bpmntk-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:uma-bpdiff-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:pn-automata-conv-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:ltl-to-automaton-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:declare-visualizer-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:pnapi-bpdiff-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.json:json-osgi:bundle:20090211
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.jbpt:jbpt-petri-osgi:bundle:0.2.433
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:prom-pnml-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:ltl-conf-check-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:eventstr-confchecking-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apm-verification-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.ini4j:ini4j-osgi:bundle:0.5.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.postgresql:postgresql-osgi:bundle:9.3-1101-jdbc41
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.themis:themis-osgi:bundle:1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:lucene-osgi:bundle:5.3.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.pql:pql-osgi:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:zk-osgi:bundle:8.0.2.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:plugin:pom:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:plugin-graph:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:similaritysearch-osgi:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:database-h2:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:database-mysql:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:database-oracle:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:database-postgresql:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:plugin-api:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:plugin-api-provider:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:canoniser-api:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:manager-ws-model:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:portal-plugin-api:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:manager-client:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:editor-plugin-api:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:canoniser-api-provider:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:annotation-api:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:annotation-api-provider:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:deployment-api:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:deployment-api-provider:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:canoniser-aris:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:canoniser-bpmn:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:canoniser-epml:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:canoniser-pnml:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:canoniser-xpdl:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:canoniser-yawl:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:annotation-bpmn:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:annotation-xpdl:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:annotation-epml:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:annotation-yawl:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:annotation-pnml:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:portal-custom-gui:bundle:1.1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:filestore-client:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:manager-security:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apromore-portal:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:deployment-yawl:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:process-plugin-api:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apromore-manager:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:similaritysearch-logic:bundle:1.1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:merge-logic:bundle:1.1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:sample-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:similaritysearch-portal:bundle:1.1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:merge-portal:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apromore-editor-parent:pom:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-platform-extension-diagram:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-platform-extension-bpmn2_0:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:bpmndiagramimporter-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:gbebop-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:gbebop-editor-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:gbprove-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:gbprove-editor-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:sample-editor-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:ibpstruct-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:ibpstruct-editor-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:metrics-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:metrics-editor-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:portal-client:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:pql-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:pql-logic-ws:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: com.apql:apql:jar:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:apql-portal-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:gbebop-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:bimp-editor-plugin:war:1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:bimp-portal-plugin:bundle:1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:bpmnminer-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:infrequent-behaviour-filter-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:bpmnminer-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: com.processconfiguration:cmapper:jar:2.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:cmapper-portal-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:compare-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:compareBP-portal-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:ltl-conf-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:ltl-conf-portal-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apm-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:apm-portal-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apm-compliance-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:apm-compliance-portal-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apm-comp-guards-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:apm-comp-guards-portal-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:ibpstruct-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:activity-filter-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:activity-filter-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:infrequent-behaviour-filter-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:log-animation-logic:bundle:1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:log-animation-portal-plugin:war:1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:log-visualizer-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:log-visualizer-logic-ws:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:stagemining-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:stagemining-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:log-visualizer-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:metrics-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:perfmining-logic:bundle:1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:perfmining-portal-plugin:bundle:1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:predictive-monitor-logic:bundle:1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:predictive-monitor-portal-plugin:war:1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:pql-indexer-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:pql-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:prodrift-logic:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:prodrift-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: com.processconfiguration:quaestio:jar:1.0
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:quaestio-portal-plugin:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore.plugin:similarity-clusters-portal-plugin:bundle:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:pql-bot:jar:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:sscompressor-maven-plugin:maven-plugin:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-platform-extension-downloader:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-platform-extension-epc:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-platform-extension-jpdl:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-platform-extension-pdf:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-platform-extension-petrinet:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-platform-extension-syntaxchecker:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-platform-extension-xpdl:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-platform-extension-yawl:bundle:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apromore-editor:war:1.2
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apromore-filestore:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apromore-manager-ws:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:apromore-pql-indexer:war:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:editor-assembly:pom:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:filestore-assembly:pom:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:manager-assembly:pom:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:portal-assembly:pom:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:pql-indexer-assembly:pom:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] -----------------------------------------------------------------------
+[DEBUG] Project: org.apromore:predictive-monitor-assembly:pom:1.1
+[DEBUG] Tasks:   [clean, install, /all]
+[DEBUG] Style:   Regular
+[DEBUG] =======================================================================
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building raffaeleconforti-osgi 1.1
+[INFO] ------------------------------------------------------------------------
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[DEBUG] Lifecycle default -> [validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy]
+[DEBUG] Lifecycle clean -> [pre-clean, clean, post-clean]
+[DEBUG] Lifecycle site -> [pre-site, site, post-site, site-deploy]
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] raffaeleconforti-osgi .............................. FAILURE [  0.022 s]
+[INFO] bpstruct-osgi ...................................... SKIPPED
+[INFO] bpmntk-osgi ........................................ SKIPPED
+[INFO] uma-bpdiff-osgi .................................... SKIPPED
+[INFO] pn-automata-conv-osgi .............................. SKIPPED
+[INFO] ltl-to-automaton-osgi .............................. SKIPPED
+[INFO] declare-visualizer-osgi ............................ SKIPPED
+[INFO] pnapi-bpdiff-osgi .................................. SKIPPED
+[INFO] json-osgi .......................................... SKIPPED
+[INFO] jbpt-petri-osgi .................................... SKIPPED
+[INFO] prom-pnml-osgi ..................................... SKIPPED
+[INFO] ltl-conf-check-osgi ................................ SKIPPED
+[INFO] eventstr-confchecking-osgi ......................... SKIPPED
+[INFO] apm-verification-osgi .............................. SKIPPED
+[INFO] ini4j-osgi ......................................... SKIPPED
+[INFO] postgresql-osgi .................................... SKIPPED
+[INFO] themis-osgi ........................................ SKIPPED
+[INFO] lucene-osgi ........................................ SKIPPED
+[INFO] pql-osgi ........................................... SKIPPED
+[INFO] zk-osgi ............................................ SKIPPED
+[INFO] Apromore Plugins ................................... SKIPPED
+[INFO] Apromore Canonical Graph Plugin .................... SKIPPED
+[INFO] similaritysearch-osgi .............................. SKIPPED
+[INFO] Apromore H2 Plugin ................................. SKIPPED
+[INFO] Apromore MySQL Plugin .............................. SKIPPED
+[INFO] Apromore Oracle Plugin ............................. SKIPPED
+[INFO] Apromore PostgreSQL Plugin ......................... SKIPPED
+[INFO] Apromore Plugin API ................................ SKIPPED
+[INFO] Apromore Plugin API Provider ....................... SKIPPED
+[INFO] Apromore Canoniser API ............................. SKIPPED
+[INFO] Apromore Manager WS Models ......................... SKIPPED
+[INFO] Apromore Portal Plugin API ......................... SKIPPED
+[INFO] Apromore Manager Client ............................ SKIPPED
+[INFO] Apromore Editor Plugin API ......................... SKIPPED
+[INFO] Apromore Canoniser API Provider .................... SKIPPED
+[INFO] Apromore Annotation Pre Processor API .............. SKIPPED
+[INFO] Apromore Annotation Pre Processor API Provider ..... SKIPPED
+[INFO] Apromore Deployment Plugin API ..................... SKIPPED
+[INFO] Apromore Deployment Plugin API Provider ............ SKIPPED
+[INFO] Apromore ARIS Canoniser ............................ SKIPPED
+[INFO] Apromore BPMN Canoniser ............................ SKIPPED
+[INFO] Apromore EPML Canoniser ............................ SKIPPED
+[INFO] Apromore PNML Canoniser ............................ SKIPPED
+[INFO] Apromore XPDL Canoniser ............................ SKIPPED
+[INFO] Apromore YAWL Canoniser ............................ SKIPPED
+[INFO] Apromore BPMN Annotation Pre Processor ............. SKIPPED
+[INFO] Apromore XPDL Annotation Pre Processor ............. SKIPPED
+[INFO] Apromore EPML Annotation Pre Processor ............. SKIPPED
+[INFO] Apromore YAWL Annotation Pre Processor ............. SKIPPED
+[INFO] Apromore PNML Annotation Pre Processor ............. SKIPPED
+[INFO] portal-custom-gui .................................. SKIPPED
+[INFO] Apromore File Store Client ......................... SKIPPED
+[INFO] Apromore Manager Security Handler .................. SKIPPED
+[INFO] Apromore Portal .................................... SKIPPED
+[INFO] YAWL Deployment Plugin ............................. SKIPPED
+[INFO] Process store service plugin API ................... SKIPPED
+[INFO] Apromore Manager ................................... SKIPPED
+[INFO] similaritysearch-logic ............................. SKIPPED
+[INFO] merge-logic ........................................ SKIPPED
+[INFO] Example portal plugin .............................. SKIPPED
+[INFO] similaritysearch-portal ............................ SKIPPED
+[INFO] Merge portal plugin ................................ SKIPPED
+[INFO] Apromore Editor parent ............................. SKIPPED
+[INFO] Apromore Editor Extension: Diagram Core ............ SKIPPED
+[INFO] Apromore Editor Extension: BPMN 2.0 ................ SKIPPED
+[INFO] BPMN diagram parser service (prom6) ................ SKIPPED
+[INFO] BEBoP service ...................................... SKIPPED
+[INFO] Apromore Editor bebop plugin ....................... SKIPPED
+[INFO] BProVe service ..................................... SKIPPED
+[INFO] Apromore Editor bprove plugin ...................... SKIPPED
+[INFO] Apromore Editor sample plugin ...................... SKIPPED
+[INFO] iBPSruct service ................................... SKIPPED
+[INFO] Apromore Editor iBPStruct plugin ................... SKIPPED
+[INFO] Metrics service .................................... SKIPPED
+[INFO] Apromore Editor metrics plugin ..................... SKIPPED
+[INFO] Apromore Portal Client ............................. SKIPPED
+[INFO] PQL query service .................................. SKIPPED
+[INFO] PQL Logic Web Services ............................. SKIPPED
+[INFO] apql ............................................... SKIPPED
+[INFO] APQL portal plugin ................................. SKIPPED
+[INFO] BEBoP portal plugin ................................ SKIPPED
+[INFO] BIMP simulator editor plugin ....................... SKIPPED
+[INFO] BIMP simulator portal plugin ....................... SKIPPED
+[INFO] BPMNMiner-logic .................................... SKIPPED
+[INFO] Infrequent Behaviour Filter service ................ SKIPPED
+[INFO] BPMNMiner portal plugin ............................ SKIPPED
+[INFO] Cmapper ............................................ SKIPPED
+[INFO] Cmapper portal plugin .............................. SKIPPED
+[INFO] Compare service .................................... SKIPPED
+[INFO] Compare portal plugin .............................. SKIPPED
+[INFO] LTL conformance checking logic ..................... SKIPPED
+[INFO] LTL Conformance portal plugin ...................... SKIPPED
+[INFO] APM service ........................................ SKIPPED
+[INFO] APM portal plugin .................................. SKIPPED
+[INFO] APM compliance service ............................. SKIPPED
+[INFO] APM compliance portal plugin ....................... SKIPPED
+[INFO] APM compliance with guards logic ................... SKIPPED
+[INFO] APM compliance with transition guards portal plugin  SKIPPED
+[INFO] iBPStruct portal plugin ............................ SKIPPED
+[INFO] Activity Filter Logic .............................. SKIPPED
+[INFO] Activity Filter portal plugin ...................... SKIPPED
+[INFO] Infrequent Behaviour Filter portal plugin .......... SKIPPED
+[INFO] Log Animation service .............................. SKIPPED
+[INFO] Log Animation portal plugin ........................ SKIPPED
+[INFO] Log Visualizer Service ............................. SKIPPED
+[INFO] Log Visualizer Logic Web Services .................. SKIPPED
+[INFO] Stage Mining Service ............................... SKIPPED
+[INFO] Stage Mining Portal plugin ......................... SKIPPED
+[INFO] Log Visualizer Portal Plugin ....................... SKIPPED
+[INFO] Metrics portal plugin .............................. SKIPPED
+[INFO] Performance Mining Service ......................... SKIPPED
+[INFO] Performance Mining portal plugin ................... SKIPPED
+[INFO] Predictive monitor logic ........................... SKIPPED
+[INFO] Predictive monitor portal plugin ................... SKIPPED
+[INFO] PQL Indexer portal plugin .......................... SKIPPED
+[INFO] PQL portal plugin .................................. SKIPPED
+[INFO] Process drift detection service .................... SKIPPED
+[INFO] Process drift detection portal plugin .............. SKIPPED
+[INFO] Quaestio ........................................... SKIPPED
+[INFO] Quaestio portal plugin ............................. SKIPPED
+[INFO] Similarity Clusters portal plugin .................. SKIPPED
+[INFO] pql-bot ............................................ SKIPPED
+[INFO] Stencilset Compressor .............................. SKIPPED
+[INFO] Apromore Editor Extension: Downloader .............. SKIPPED
+[INFO] Apromore Editor Extension: EPC ..................... SKIPPED
+[INFO] Apromore Editor Extension: JPDL .................... SKIPPED
+[INFO] Apromore Editor Extension: PDF ..................... SKIPPED
+[INFO] Apromore Editor Extension: Petri Net ............... SKIPPED
+[INFO] Apromore Editor Extension: Syntax Checker .......... SKIPPED
+[INFO] Apromore Editor Extension: XPDL .................... SKIPPED
+[INFO] Apromore Editor Extension: YAWL .................... SKIPPED
+[INFO] Apromore Editor .................................... SKIPPED
+[INFO] Apromore File Store ................................ SKIPPED
+[INFO] Apromore Manager Web Services ...................... SKIPPED
+[INFO] Apromore PQL Indexer ............................... SKIPPED
+[INFO] Apromore Editor Bundle Assembly .................... SKIPPED
+[INFO] Apromore File Store Bundle Assembly ................ SKIPPED
+[INFO] Apromore Manager Bundle Assembly ................... SKIPPED
+[INFO] Apromore Portal Bundle Assembly .................... SKIPPED
+[INFO] Apromore PQL Indexer Bundle Assembly ............... SKIPPED
+[INFO] Predictive Monitor Bundle Assembly ................. SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3.570 s
+[INFO] Finished at: 2018-07-25T18:09:41+10:00
+[INFO] Final Memory: 101M/1237M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Unknown lifecycle phase "/all". You must specify a valid lifecycle phase or a goal in the format <plugin-prefix>:<goal> or <plugin-group-id>:<plugin-artifact-id>[:<plugin-version>]:<goal>. Available lifecycle phases are: validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy, pre-clean, clean, post-clean, pre-site, site, post-site, site-deploy. -> [Help 1]
+org.apache.maven.lifecycle.LifecyclePhaseNotFoundException: Unknown lifecycle phase "/all". You must specify a valid lifecycle phase or a goal in the format <plugin-prefix>:<goal> or <plugin-group-id>:<plugin-artifact-id>[:<plugin-version>]:<goal>. Available lifecycle phases are: validate, initialize, generate-sources, process-sources, generate-resources, process-resources, compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy, pre-clean, clean, post-clean, pre-site, site, post-site, site-deploy.
+	at org.apache.maven.lifecycle.internal.DefaultLifecycleExecutionPlanCalculator.calculateLifecycleMappings(DefaultLifecycleExecutionPlanCalculator.java:246)
+	at org.apache.maven.lifecycle.internal.DefaultLifecycleExecutionPlanCalculator.calculateMojoExecutions(DefaultLifecycleExecutionPlanCalculator.java:217)
+	at org.apache.maven.lifecycle.internal.DefaultLifecycleExecutionPlanCalculator.calculateExecutionPlan(DefaultLifecycleExecutionPlanCalculator.java:127)
+	at org.apache.maven.lifecycle.internal.DefaultLifecycleExecutionPlanCalculator.calculateExecutionPlan(DefaultLifecycleExecutionPlanCalculator.java:145)
+	at org.apache.maven.lifecycle.internal.builder.BuilderCommon.resolveBuildPlan(BuilderCommon.java:96)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:109)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:80)
+	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:51)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:128)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:307)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:193)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:106)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:863)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:288)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:199)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:289)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:229)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:415)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:356)
+[ERROR] 
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/LifecyclePhaseNotFoundException

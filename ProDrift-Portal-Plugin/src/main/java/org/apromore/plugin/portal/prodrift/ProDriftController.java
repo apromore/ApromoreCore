@@ -20,11 +20,15 @@
 
 package org.apromore.plugin.portal.prodrift;
 
+import org.apromore.model.LogSummaryType;
+import org.apromore.model.SummaryType;
+import org.apromore.model.VersionSummaryType;
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
 import org.apromore.prodrift.util.LogStreamer;
 import org.apromore.prodrift.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.EventLogService;
 import org.apromore.service.prodrift.ProDriftDetectionService;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.Session;
@@ -37,7 +41,10 @@ import org.zkoss.zul.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class ProDriftController {
@@ -72,12 +79,16 @@ public class ProDriftController {
     int defaultWinSizeEvents = -1;
     int winSizeDividedBy = 10;
 
+    EventLogService eventLogService = null;
+    LogSummaryType logSummaryType = null;
+
 
 
     /**
      * @throws IOException if the <code>prodrift.zul</code> template can't be read from the classpath
      */
-    public ProDriftController(PortalContext portalContext, ProDriftDetectionService proDriftDetectionService, Map<XLog, String> logs) throws IOException {
+    public ProDriftController(PortalContext portalContext, ProDriftDetectionService proDriftDetectionService,
+                              EventLogService eventLogService, Set<LogSummaryType> selectedLogSummaryType) throws IOException {
         this.portalContext = portalContext;
         this.proDriftDetectionService = proDriftDetectionService;
 
@@ -94,6 +105,16 @@ public class ProDriftController {
         winSizeCoefficientIntBoX.setValue(ControlFlowDriftDetector_EventStream.winSizeCoefficient);
 
         this.logFileUpload = (Button) this.proDriftW.getFellow("logFileUpload");
+
+
+        this.eventLogService = eventLogService;
+        Map<XLog, String> logs = new HashMap<>();
+
+        for(LogSummaryType logType : selectedLogSummaryType)
+        {
+            logs.put(eventLogService.getXLog(logType.getId()), logType.getName());
+            logSummaryType = logType;
+        }
 
         showError("");
         if(logs.size() > 0)
@@ -423,7 +444,8 @@ public class ProDriftController {
                                         boolean withCharacterization, int cummulativeChange) {
         try {
 
-            new ProDriftShowResult(portalContext, result, isEventBased, xlog, logFileName, withCharacterization, cummulativeChange);
+            new ProDriftShowResult(portalContext, result, isEventBased, xlog, logFileName, withCharacterization, cummulativeChange,
+                    eventLogService, logSummaryType);
 
         } catch (IOException | SuspendNotAllowedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);

@@ -90,18 +90,12 @@ public class ProDriftDetectionPlugin extends DefaultPortalPlugin {
             }
         }
 
-        Map<XLog, String> logs = new HashMap<>();
-        for(LogSummaryType logType : selectedLogSummaryType)
-        {
-            logs.put(eventLogService.getXLog(logType.getId()), logType.getName());
-        }
-
 
         portalContext.getMessageHandler().displayInfo("Executed process drift detection plug-in!");
 
         try {
 
-            new ProDriftController(portalContext, this.proDriftDetectionService, logs);
+            new ProDriftController(portalContext, this.proDriftDetectionService, eventLogService, selectedLogSummaryType);
         } catch (IOException | SuspendNotAllowedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }

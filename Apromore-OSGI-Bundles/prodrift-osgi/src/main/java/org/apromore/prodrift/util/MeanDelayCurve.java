@@ -203,8 +203,8 @@ public class MeanDelayCurve {
 				int FirstUnderCurve = i - underCurveLength;
 				int driftPoint = FirstUnderCurve;
 				int statisticalTestPosition = FirstUnderCurve - winSizeVector.get(driftPoint);
-				driftPoints.add(BigInteger.valueOf( FirstUnderCurve ));
-				startOfTransitionPoints.add(BigInteger.valueOf( FirstUnderCurve ));
+				driftPoints.add(BigInteger.valueOf( driftPoint ));
+				startOfTransitionPoints.add(BigInteger.valueOf( statisticalTestPosition ));
 				endOfTransitionPoints.add(BigInteger.valueOf(i));
 				lastReadTrace.add(BigInteger.valueOf(driftPoint));
 				pValuesAtDrifts.add(pValVector.get(FirstUnderCurve));
@@ -260,8 +260,8 @@ public class MeanDelayCurve {
 				int FirstUnderCurve = i - underCurveLength;
 				int driftPoint = FirstUnderCurve;
 				int statisticalTestPosition = FirstUnderCurve - winSizeVector.get(driftPoint);
-				driftPoints.add(BigInteger.valueOf( FirstUnderCurve ));
-				startOfTransitionPoints.add(BigInteger.valueOf( FirstUnderCurve ));
+				driftPoints.add(BigInteger.valueOf( driftPoint ));
+				startOfTransitionPoints.add(BigInteger.valueOf( statisticalTestPosition ));
 				endOfTransitionPoints.add(BigInteger.valueOf(i));
 				lastReadTrace.add(BigInteger.valueOf(driftPoint + underCurveDriftThreshhold));
 				pValuesAtDrifts.add(pValVector.get(FirstUnderCurve));
@@ -424,7 +424,7 @@ public class MeanDelayCurve {
 				int driftPoint = FirstUnderCurve;
 				int statisticalTestPosition = FirstUnderCurve - winSizeVector.get(driftPoint);
 				driftPoints.add(BigInteger.valueOf( driftPoint ));
-				startOfTransitionPoints.add(BigInteger.valueOf( FirstUnderCurve ));
+				startOfTransitionPoints.add(BigInteger.valueOf( statisticalTestPosition ));
 				endOfTransitionPoints.add(BigInteger.valueOf(i));
 				lastReadTrace.add(BigInteger.valueOf(driftPoint + underCurveDriftThreshhold));
 				pValuesAtDrifts.add(pValVector.get(FirstUnderCurve));

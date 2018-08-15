@@ -1,0 +1,360 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:pnapi-bpdiff-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:pnapi:jar should not point at files within the project directory, ${basedir}/lib/pnapi-1.0.jar will be unresolvable by dependent projects @ line 75, column 16
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:uma-bpdiff-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:umabpdiff:jar should not point at files within the project directory, ${basedir}/lib/umaBPDiff-1.0.jar will be unresolvable by dependent projects @ line 76, column 25
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:prom-pnml-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:prompnml:jar should not point at files within the project directory, ${basedir}/lib/PetriNets.jar will be unresolvable by dependent projects @ line 71, column 16
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:pn-automata-conv-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:pnautomataconverter:jar should not point at files within the project directory, ${basedir}/lib/PNAutomataConverter.jar will be unresolvable by dependent projects @ line 76, column 25
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:ltl-to-automaton-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:ltltoautomaton:jar should not point at files within the project directory, ${basedir}/lib/LTL2Automaton.jar will be unresolvable by dependent projects @ line 74, column 25
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:declare-visualizer-osgi:bundle:1.1
+[WARNING] 'dependencies.dependency.systemPath' for ut.ee:declarevisualizer:jar should not point at files within the project directory, ${basedir}/lib/DeclareVisualizer.jar will be unresolvable by dependent projects @ line 71, column 25
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore:zk-osgi:bundle:8.0.2.2
+[WARNING] 'version' contains an expression but should be a constant. @ org.apromore:zk-osgi:${zk.version}, D:\NewApromore2\ApromoreCode\Apromore-OSGI-Bundles\zk-osgi\pom.xml, line 35, column 14
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore.plugin:compareBP-portal-plugin:war:1.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apromore.plugin:portal-plugin-api:jar -> duplicate declaration of version (?) @ org.apromore.plugin:compareBP-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\Compare-Portal-Plugin\pom.xml, line 141, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore.plugin:ltl-conf-portal-plugin:war:1.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apromore.plugin:portal-plugin-api:jar -> duplicate declaration of version (?) @ org.apromore.plugin:ltl-conf-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\LTL-Conf-Portal-Plugin\pom.xml, line 145, column 21
+[WARNING] 'dependencies.dependency.exclusions.exclusion.artifactId' for org.apromore:apromore-manager:jar is missing. @ org.apromore.plugin:ltl-conf-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\LTL-Conf-Portal-Plugin\pom.xml, line 136, column 28
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore.plugin:apm-portal-plugin:war:1.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apromore.plugin:portal-plugin-api:jar -> duplicate declaration of version (?) @ org.apromore.plugin:apm-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\APM-Portal-Plugin\pom.xml, line 133, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore.plugin:apm-compliance-portal-plugin:war:1.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apromore.plugin:portal-plugin-api:jar -> duplicate declaration of version (?) @ org.apromore.plugin:apm-compliance-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\APM-Compliance-Portal-Plugin\pom.xml, line 133, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apromore.plugin:apm-comp-guards-portal-plugin:war:1.1
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apromore.plugin:portal-plugin-api:jar -> duplicate declaration of version (?) @ org.apromore.plugin:apm-comp-guards-portal-plugin:[unknown-version], D:\NewApromore2\ApromoreCode\APM-Comp-Guards-Portal-Plugin\pom.xml, line 133, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] raffaeleconforti-osgi
+[INFO] bpstruct-osgi
+[INFO] bpmntk-osgi
+[INFO] uma-bpdiff-osgi
+[INFO] pn-automata-conv-osgi
+[INFO] ltl-to-automaton-osgi
+[INFO] declare-visualizer-osgi
+[INFO] pnapi-bpdiff-osgi
+[INFO] json-osgi
+[INFO] jbpt-petri-osgi
+[INFO] prom-pnml-osgi
+[INFO] ltl-conf-check-osgi
+[INFO] eventstr-confchecking-osgi
+[INFO] apm-verification-osgi
+[INFO] ini4j-osgi
+[INFO] postgresql-osgi
+[INFO] themis-osgi
+[INFO] lucene-osgi
+[INFO] pql-osgi
+[INFO] zk-osgi
+[INFO] Apromore Plugins
+[INFO] Apromore Canonical Graph Plugin
+[INFO] similaritysearch-osgi
+[INFO] Apromore H2 Plugin
+[INFO] Apromore MySQL Plugin
+[INFO] Apromore Oracle Plugin
+[INFO] Apromore PostgreSQL Plugin
+[INFO] Apromore Plugin API
+[INFO] Apromore Plugin API Provider
+[INFO] Apromore Canoniser API
+[INFO] Apromore Manager WS Models
+[INFO] Apromore Portal Plugin API
+[INFO] Apromore Manager Client
+[INFO] Apromore Editor Plugin API
+[INFO] Apromore Canoniser API Provider
+[INFO] Apromore Annotation Pre Processor API
+[INFO] Apromore Annotation Pre Processor API Provider
+[INFO] Apromore Deployment Plugin API
+[INFO] Apromore Deployment Plugin API Provider
+[INFO] Apromore ARIS Canoniser
+[INFO] Apromore BPMN Canoniser
+[INFO] Apromore EPML Canoniser
+[INFO] Apromore PNML Canoniser
+[INFO] Apromore XPDL Canoniser
+[INFO] Apromore YAWL Canoniser
+[INFO] Apromore BPMN Annotation Pre Processor
+[INFO] Apromore XPDL Annotation Pre Processor
+[INFO] Apromore EPML Annotation Pre Processor
+[INFO] Apromore YAWL Annotation Pre Processor
+[INFO] Apromore PNML Annotation Pre Processor
+[INFO] portal-custom-gui
+[INFO] Apromore File Store Client
+[INFO] Apromore Manager Security Handler
+[INFO] Apromore Portal
+[INFO] YAWL Deployment Plugin
+[INFO] Process store service plugin API
+[INFO] Apromore Manager
+[INFO] similaritysearch-logic
+[INFO] merge-logic
+[INFO] Example portal plugin
+[INFO] similaritysearch-portal
+[INFO] Merge portal plugin
+[INFO] Apromore Editor parent
+[INFO] Apromore Editor Extension: Diagram Core
+[INFO] Apromore Editor Extension: BPMN 2.0
+[INFO] BPMN diagram parser service (prom6)
+[INFO] BEBoP service
+[INFO] Apromore Editor bebop plugin
+[INFO] BProVe service
+[INFO] Apromore Editor bprove plugin
+[INFO] Apromore Editor sample plugin
+[INFO] iBPSruct service
+[INFO] Apromore Editor iBPStruct plugin
+[INFO] Metrics service
+[INFO] Apromore Editor metrics plugin
+[INFO] Apromore Portal Client
+[INFO] PQL query service
+[INFO] PQL Logic Web Services
+[INFO] apql
+[INFO] APQL portal plugin
+[INFO] BEBoP portal plugin
+[INFO] BIMP simulator editor plugin
+[INFO] BIMP simulator portal plugin
+[INFO] BPMNMiner-logic
+[INFO] Infrequent Behaviour Filter service
+[INFO] BPMNMiner portal plugin
+[INFO] Cmapper
+[INFO] Cmapper portal plugin
+[INFO] Compare service
+[INFO] Compare portal plugin
+[INFO] LTL conformance checking logic
+[INFO] LTL Conformance portal plugin
+[INFO] APM service
+[INFO] APM portal plugin
+[INFO] APM compliance service
+[INFO] APM compliance portal plugin
+[INFO] APM compliance with guards logic
+[INFO] APM compliance with transition guards portal plugin
+[INFO] iBPStruct portal plugin
+[INFO] Activity Filter Logic
+[INFO] Activity Filter portal plugin
+[INFO] Infrequent Behaviour Filter portal plugin
+[INFO] Log Animation service
+[INFO] Log Animation portal plugin
+[INFO] Log Visualizer Service
+[INFO] Log Visualizer Logic Web Services
+[INFO] Stage Mining Service
+[INFO] Stage Mining Portal plugin
+[INFO] Log Visualizer Portal Plugin
+[INFO] Metrics portal plugin
+[INFO] Performance Mining Service
+[INFO] Performance Mining portal plugin
+[INFO] Predictive monitor logic
+[INFO] Predictive monitor portal plugin
+[INFO] PQL Indexer portal plugin
+[INFO] PQL portal plugin
+[INFO] Process drift detection service
+[INFO] Process drift detection portal plugin
+[INFO] Quaestio
+[INFO] Quaestio portal plugin
+[INFO] Similarity Clusters portal plugin
+[INFO] pql-bot
+[INFO] Stencilset Compressor
+[INFO] Apromore Editor Extension: Downloader
+[INFO] Apromore Editor Extension: EPC
+[INFO] Apromore Editor Extension: JPDL
+[INFO] Apromore Editor Extension: PDF
+[INFO] Apromore Editor Extension: Petri Net
+[INFO] Apromore Editor Extension: Syntax Checker
+[INFO] Apromore Editor Extension: XPDL
+[INFO] Apromore Editor Extension: YAWL
+[INFO] Apromore Editor
+[INFO] Apromore File Store
+[INFO] Apromore Manager Web Services
+[INFO] Apromore PQL Indexer
+[INFO] Apromore Editor Bundle Assembly
+[INFO] Apromore File Store Bundle Assembly
+[INFO] Apromore Manager Bundle Assembly
+[INFO] Apromore Portal Bundle Assembly
+[INFO] Apromore PQL Indexer Bundle Assembly
+[INFO] Predictive Monitor Bundle Assembly
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building raffaeleconforti-osgi 1.1
+[INFO] ------------------------------------------------------------------------
+[WARNING] The POM for org.processmining:fodina:jar:6.5.20180622 is missing, no dependency information available
+[WARNING] The POM for org.apromore:mprec:jar:20180718 is missing, no dependency information available
+[WARNING] The POM for org.apromore:bpstruct:jar:0.1.117 is missing, no dependency information available
+[WARNING] The POM for org.apromore:jbpt:jar:0.2.77 is missing, no dependency information available
+[WARNING] The POM for org.sourceforge:liblpsolvej:jnilib:55j is missing, no dependency information available
+[WARNING] The POM for org.sourceforge:liblpsolve:jnilib:55 is missing, no dependency information available
+[WARNING] The POM for org.sourceforge:liblpsolve55:lib:55 is missing, no dependency information available
+[WARNING] The POM for org.sourceforge:liblpsolve55d:lib:55d is missing, no dependency information available
+[WARNING] The POM for org.sourceforge:lpsolve55:lib:55 is missing, no dependency information available
+[WARNING] The POM for org.sourceforge:lpsolve55:dll:55 is missing, no dependency information available
+[WARNING] The POM for org.sourceforge:lpsolve55j:dll:55j is missing, no dependency information available
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] raffaeleconforti-osgi .............................. FAILURE [  0.223 s]
+[INFO] bpstruct-osgi ...................................... SKIPPED
+[INFO] bpmntk-osgi ........................................ SKIPPED
+[INFO] uma-bpdiff-osgi .................................... SKIPPED
+[INFO] pn-automata-conv-osgi .............................. SKIPPED
+[INFO] ltl-to-automaton-osgi .............................. SKIPPED
+[INFO] declare-visualizer-osgi ............................ SKIPPED
+[INFO] pnapi-bpdiff-osgi .................................. SKIPPED
+[INFO] json-osgi .......................................... SKIPPED
+[INFO] jbpt-petri-osgi .................................... SKIPPED
+[INFO] prom-pnml-osgi ..................................... SKIPPED
+[INFO] ltl-conf-check-osgi ................................ SKIPPED
+[INFO] eventstr-confchecking-osgi ......................... SKIPPED
+[INFO] apm-verification-osgi .............................. SKIPPED
+[INFO] ini4j-osgi ......................................... SKIPPED
+[INFO] postgresql-osgi .................................... SKIPPED
+[INFO] themis-osgi ........................................ SKIPPED
+[INFO] lucene-osgi ........................................ SKIPPED
+[INFO] pql-osgi ........................................... SKIPPED
+[INFO] zk-osgi ............................................ SKIPPED
+[INFO] Apromore Plugins ................................... SKIPPED
+[INFO] Apromore Canonical Graph Plugin .................... SKIPPED
+[INFO] similaritysearch-osgi .............................. SKIPPED
+[INFO] Apromore H2 Plugin ................................. SKIPPED
+[INFO] Apromore MySQL Plugin .............................. SKIPPED
+[INFO] Apromore Oracle Plugin ............................. SKIPPED
+[INFO] Apromore PostgreSQL Plugin ......................... SKIPPED
+[INFO] Apromore Plugin API ................................ SKIPPED
+[INFO] Apromore Plugin API Provider ....................... SKIPPED
+[INFO] Apromore Canoniser API ............................. SKIPPED
+[INFO] Apromore Manager WS Models ......................... SKIPPED
+[INFO] Apromore Portal Plugin API ......................... SKIPPED
+[INFO] Apromore Manager Client ............................ SKIPPED
+[INFO] Apromore Editor Plugin API ......................... SKIPPED
+[INFO] Apromore Canoniser API Provider .................... SKIPPED
+[INFO] Apromore Annotation Pre Processor API .............. SKIPPED
+[INFO] Apromore Annotation Pre Processor API Provider ..... SKIPPED
+[INFO] Apromore Deployment Plugin API ..................... SKIPPED
+[INFO] Apromore Deployment Plugin API Provider ............ SKIPPED
+[INFO] Apromore ARIS Canoniser ............................ SKIPPED
+[INFO] Apromore BPMN Canoniser ............................ SKIPPED
+[INFO] Apromore EPML Canoniser ............................ SKIPPED
+[INFO] Apromore PNML Canoniser ............................ SKIPPED
+[INFO] Apromore XPDL Canoniser ............................ SKIPPED
+[INFO] Apromore YAWL Canoniser ............................ SKIPPED
+[INFO] Apromore BPMN Annotation Pre Processor ............. SKIPPED
+[INFO] Apromore XPDL Annotation Pre Processor ............. SKIPPED
+[INFO] Apromore EPML Annotation Pre Processor ............. SKIPPED
+[INFO] Apromore YAWL Annotation Pre Processor ............. SKIPPED
+[INFO] Apromore PNML Annotation Pre Processor ............. SKIPPED
+[INFO] portal-custom-gui .................................. SKIPPED
+[INFO] Apromore File Store Client ......................... SKIPPED
+[INFO] Apromore Manager Security Handler .................. SKIPPED
+[INFO] Apromore Portal .................................... SKIPPED
+[INFO] YAWL Deployment Plugin ............................. SKIPPED
+[INFO] Process store service plugin API ................... SKIPPED
+[INFO] Apromore Manager ................................... SKIPPED
+[INFO] similaritysearch-logic ............................. SKIPPED
+[INFO] merge-logic ........................................ SKIPPED
+[INFO] Example portal plugin .............................. SKIPPED
+[INFO] similaritysearch-portal ............................ SKIPPED
+[INFO] Merge portal plugin ................................ SKIPPED
+[INFO] Apromore Editor parent ............................. SKIPPED
+[INFO] Apromore Editor Extension: Diagram Core ............ SKIPPED
+[INFO] Apromore Editor Extension: BPMN 2.0 ................ SKIPPED
+[INFO] BPMN diagram parser service (prom6) ................ SKIPPED
+[INFO] BEBoP service ...................................... SKIPPED
+[INFO] Apromore Editor bebop plugin ....................... SKIPPED
+[INFO] BProVe service ..................................... SKIPPED
+[INFO] Apromore Editor bprove plugin ...................... SKIPPED
+[INFO] Apromore Editor sample plugin ...................... SKIPPED
+[INFO] iBPSruct service ................................... SKIPPED
+[INFO] Apromore Editor iBPStruct plugin ................... SKIPPED
+[INFO] Metrics service .................................... SKIPPED
+[INFO] Apromore Editor metrics plugin ..................... SKIPPED
+[INFO] Apromore Portal Client ............................. SKIPPED
+[INFO] PQL query service .................................. SKIPPED
+[INFO] PQL Logic Web Services ............................. SKIPPED
+[INFO] apql ............................................... SKIPPED
+[INFO] APQL portal plugin ................................. SKIPPED
+[INFO] BEBoP portal plugin ................................ SKIPPED
+[INFO] BIMP simulator editor plugin ....................... SKIPPED
+[INFO] BIMP simulator portal plugin ....................... SKIPPED
+[INFO] BPMNMiner-logic .................................... SKIPPED
+[INFO] Infrequent Behaviour Filter service ................ SKIPPED
+[INFO] BPMNMiner portal plugin ............................ SKIPPED
+[INFO] Cmapper ............................................ SKIPPED
+[INFO] Cmapper portal plugin .............................. SKIPPED
+[INFO] Compare service .................................... SKIPPED
+[INFO] Compare portal plugin .............................. SKIPPED
+[INFO] LTL conformance checking logic ..................... SKIPPED
+[INFO] LTL Conformance portal plugin ...................... SKIPPED
+[INFO] APM service ........................................ SKIPPED
+[INFO] APM portal plugin .................................. SKIPPED
+[INFO] APM compliance service ............................. SKIPPED
+[INFO] APM compliance portal plugin ....................... SKIPPED
+[INFO] APM compliance with guards logic ................... SKIPPED
+[INFO] APM compliance with transition guards portal plugin  SKIPPED
+[INFO] iBPStruct portal plugin ............................ SKIPPED
+[INFO] Activity Filter Logic .............................. SKIPPED
+[INFO] Activity Filter portal plugin ...................... SKIPPED
+[INFO] Infrequent Behaviour Filter portal plugin .......... SKIPPED
+[INFO] Log Animation service .............................. SKIPPED
+[INFO] Log Animation portal plugin ........................ SKIPPED
+[INFO] Log Visualizer Service ............................. SKIPPED
+[INFO] Log Visualizer Logic Web Services .................. SKIPPED
+[INFO] Stage Mining Service ............................... SKIPPED
+[INFO] Stage Mining Portal plugin ......................... SKIPPED
+[INFO] Log Visualizer Portal Plugin ....................... SKIPPED
+[INFO] Metrics portal plugin .............................. SKIPPED
+[INFO] Performance Mining Service ......................... SKIPPED
+[INFO] Performance Mining portal plugin ................... SKIPPED
+[INFO] Predictive monitor logic ........................... SKIPPED
+[INFO] Predictive monitor portal plugin ................... SKIPPED
+[INFO] PQL Indexer portal plugin .......................... SKIPPED
+[INFO] PQL portal plugin .................................. SKIPPED
+[INFO] Process drift detection service .................... SKIPPED
+[INFO] Process drift detection portal plugin .............. SKIPPED
+[INFO] Quaestio ........................................... SKIPPED
+[INFO] Quaestio portal plugin ............................. SKIPPED
+[INFO] Similarity Clusters portal plugin .................. SKIPPED
+[INFO] pql-bot ............................................ SKIPPED
+[INFO] Stencilset Compressor .............................. SKIPPED
+[INFO] Apromore Editor Extension: Downloader .............. SKIPPED
+[INFO] Apromore Editor Extension: EPC ..................... SKIPPED
+[INFO] Apromore Editor Extension: JPDL .................... SKIPPED
+[INFO] Apromore Editor Extension: PDF ..................... SKIPPED
+[INFO] Apromore Editor Extension: Petri Net ............... SKIPPED
+[INFO] Apromore Editor Extension: Syntax Checker .......... SKIPPED
+[INFO] Apromore Editor Extension: XPDL .................... SKIPPED
+[INFO] Apromore Editor Extension: YAWL .................... SKIPPED
+[INFO] Apromore Editor .................................... SKIPPED
+[INFO] Apromore File Store ................................ SKIPPED
+[INFO] Apromore Manager Web Services ...................... SKIPPED
+[INFO] Apromore PQL Indexer ............................... SKIPPED
+[INFO] Apromore Editor Bundle Assembly .................... SKIPPED
+[INFO] Apromore File Store Bundle Assembly ................ SKIPPED
+[INFO] Apromore Manager Bundle Assembly ................... SKIPPED
+[INFO] Apromore Portal Bundle Assembly .................... SKIPPED
+[INFO] Apromore PQL Indexer Bundle Assembly ............... SKIPPED
+[INFO] Predictive Monitor Bundle Assembly ................. SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 3.813 s
+[INFO] Finished at: 2018-08-03T10:37:20+10:00
+[INFO] Final Memory: 103M/1237M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal on project raffaeleconforti-osgi: Could not resolve dependencies for project org.apromore:raffaeleconforti-osgi:bundle:1.1: The following artifacts could not be resolved: org.processmining:fodina:jar:6.5.20180622, org.apromore:raffaeleconforti-osgi:jar:1.1, org.apromore:mprec:jar:20180718, org.apromore:bpstruct:jar:0.1.117, org.apromore:jbpt:jar:0.2.77, org.sourceforge:liblpsolvej:jnilib:55j, org.sourceforge:liblpsolve:jnilib:55, org.sourceforge:liblpsolve55:lib:55, org.sourceforge:liblpsolve55d:lib:55d, org.sourceforge:lpsolve55:lib:55, org.sourceforge:lpsolve55:dll:55, org.sourceforge:lpsolve55j:dll:55j: Failure to find org.processmining:fodina:jar:6.5.20180622 in https://raw.github.com/apromore/ApromoreDev/master/mvn-repo/ was cached in the local repository, resolution will not be reattempted until the update interval of ApromoreDev.mvn-repo has elapsed or updates are forced -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/DependencyResolutionException
