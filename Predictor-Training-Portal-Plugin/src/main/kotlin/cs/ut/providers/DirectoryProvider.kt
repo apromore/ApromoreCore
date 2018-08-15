@@ -1,6 +1,7 @@
 package cs.ut.providers
 
 import cs.ut.configuration.ConfigFetcher
+import org.apromore.plugin.portal.predictortraining.PortalPlugin
 
 /**
  * Object that provides easy access to configured directories
@@ -25,7 +26,14 @@ object DirectoryConfiguration {
      *
      * @param dir to get path for
      */
-    fun dirPath(dir: Dir): String = dirs[dir.value()]!!
+    fun dirPath(dir: Dir): String {
+        return when(dir) {
+            Dir.PYTHON   -> PortalPlugin.python!!
+            Dir.TMP_DIR  -> PortalPlugin.tmpDir!!
+            Dir.LOG_FILE -> PortalPlugin.logFile!!
+            else         -> "${PortalPlugin.backend!!}${dirs[dir.value()]!!}"
+        }
+    }
 }
 
 enum class Dir(private val id: String) {

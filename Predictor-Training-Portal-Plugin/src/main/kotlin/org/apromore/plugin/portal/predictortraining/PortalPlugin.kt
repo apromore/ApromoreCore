@@ -21,6 +21,7 @@
 package org.apromore.plugin.portal.predictortraining
 
 // Java 2 Standard Edition
+import java.io.File;
 import java.util.Locale
 
 // Java 2 Enterprise Edition
@@ -29,6 +30,7 @@ import javax.inject.Inject
 // Third party packages
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.`annotation`.Qualifier;
 import org.springframework.stereotype.Component
 import org.zkoss.zk.ui.Executions
 
@@ -55,11 +57,21 @@ public class PortalPlugin() : DefaultPortalPlugin() {
     @Inject private val eventLogService : EventLogService? = null
     @Inject private val predictiveMonitorService : PredictiveMonitorService? = null
 
+    @Inject @Qualifier("python")  private var _python  : String? = null
+    @Inject @Qualifier("backend") private var _backend : String? = null
+    @Inject @Qualifier("tmpDir")  private var _tmpDir  : String? = null
+    @Inject @Qualifier("logFile") private var _logFile : String? = null
+
     /** This is a kludge used to propagate the service to the other instance of ZK running at /trainPredictor */
     companion object {
         @JvmStatic public var globalEventLogService: EventLogService? = null
         @JvmStatic public var globalPredictiveMonitorService: PredictiveMonitorService? = null
         @JvmStatic public var globalSelectedLogSummaryList: List<LogSummaryType> = java.util.Collections.emptyList<LogSummaryType>()
+
+        @JvmStatic public var python:  String? = null
+        @JvmStatic public var backend: String? = null
+        @JvmStatic public var tmpDir:  String? = null
+        @JvmStatic public var logFile: String? = null
     }
 
     override public fun getLabel(locale: Locale): String {
@@ -86,8 +98,12 @@ public class PortalPlugin() : DefaultPortalPlugin() {
                                                     .getSelectedProcessModelVersions()
                                                     .keys
                                                     .map { it as LogSummaryType }
+        python  = _python
+        backend = _backend
+        tmpDir  = _tmpDir
+        logFile = _logFile
 
-        LOGGER.info("Execute predictor UI with " + predictiveMonitorService!!.getPredictors().size + " predictors and ${globalSelectedLogSummaryList.count()} selected logs")
+        LOGGER.info("Execute predictor training UI with backend directory " + backend)
         Executions.sendRedirect("/trainPredictor/#training")
     }
 }
