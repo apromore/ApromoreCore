@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apromore.prodrift.config.DriftDetectionSensitivity;
 import org.apromore.prodrift.driftcharacterization.CharacterizationAccuracyResult;
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
@@ -80,7 +81,9 @@ public class Main {
 				winSize = winSize_t;
 		}
 
-		ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(xl, eventStream, winSize, activityCount, isAdwin, noiseFilterPercentage, 0.1f, withConflict, logFileName, withCharacterization, cummulativeChange);
+		DriftDetectionSensitivity ddSensitivity = DriftDetectionSensitivity.Low;
+
+		ControlFlowDriftDetector_EventStream driftDertector = new ControlFlowDriftDetector_EventStream(xl, eventStream, winSize, activityCount, isAdwin, noiseFilterPercentage, ddSensitivity, withConflict, logFileName, withCharacterization, cummulativeChange);
 
 		ProDriftDetectionResult result = driftDertector.ControlFlowDriftDetectorStart();
 

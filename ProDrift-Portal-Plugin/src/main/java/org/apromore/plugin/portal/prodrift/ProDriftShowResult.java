@@ -68,6 +68,8 @@ public class ProDriftShowResult extends Window  {
     private org.zkoss.zul.Image pValueDiagramImg;
     private Button saveSublogs;
 
+    private Label saveMessage;
+
     EventLogService eventLogService = null;
     LogSummaryType logSummaryType = null;
 
@@ -100,6 +102,8 @@ public class ProDriftShowResult extends Window  {
             this.proDriftW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/prodriftshowresultruns.zul", null, null);
 
         this.proDriftW.setTitle("ProDrift: Drift Detection Result.");
+
+        this.saveMessage = (Label) this.proDriftW.getFellow("saveMessage");
 
         this.saveSublogs = (Button) this.proDriftW.getFellow("savesublogs");
 
@@ -212,6 +216,7 @@ public class ProDriftShowResult extends Window  {
 
         String extension = XLogManager.getExtension(logFileName);
 
+        int successfulSave = 0;
         for (int i = 0; i < eventLogList.size(); i++)
         {
 
@@ -233,7 +238,8 @@ public class ProDriftShowResult extends Window  {
                         logSummaryType.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                         logSummaryType.isMakePublic());
 
-                portalContext.refreshContent();
+                successfulSave++;
+               // portalContext.refreshContent();
 
             } catch (DatatypeConfigurationException e) {
                 e.printStackTrace();
@@ -242,6 +248,11 @@ public class ProDriftShowResult extends Window  {
             }
 
         }
+
+        if(successfulSave > 0)
+            this.saveMessage.setValue(successfulSave + " sublogs are saved next to the original log in the repository.");
+        else
+            this.saveMessage.setValue("No sublogs saved!");
     }
 
     private void downloadLogs(List<ByteArrayOutputStream> eventLogList,
