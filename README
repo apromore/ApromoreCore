@@ -89,6 +89,32 @@ Edit the top-level site.properties file, replacing the H2 declarations in "Datab
 Stop and restart the server so that it picks up the changes to site.properties.
 
 
+PREDICTIVE MONITORING SETUP (OPTIONAL)
+==========================
+
+Predictive monitoring requires various servers to set up alongside the Apromore server.
+The sources and instructions for doing so can be checked out from GitHub with the following command:
+
+$ git clone https://github.com/nirdizati/nirdizati-training-backend.git
+
+Follow the instructions in nirdizati-training-backend/apromore/README.
+
+Populate the database with additional tables for Nirdizati:
+$ mysql --user=root --password=MAcri < Supplements/database/Nirdizati.MySQL-1.0.sql
+
+In site.properties, set the following properties:
+* training.python must be set to the location of a Python 3 executable
+* training.backend must be directory containing nirdizati-training-backend
+* training.tmpDir must be a writable directory for temporary files
+* training.logFile must be a writable file path for logging
+
+The following properties may usually by left at their default values:
+* kafka.host can be left at the default localhost:9092, presuming Zookeeper and Kafka are running locally
+* the various kafka.*.topic properties should already match those used in the nirdizati-training-backend scripts
+
+Stop and restart the server so that it picks up the changes to site.properties.
+
+
 PQL SETUP
 =========
 

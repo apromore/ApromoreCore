@@ -333,7 +333,8 @@ public class PredictiveMonitorServiceImpl implements PredictiveMonitorService {
         return new ArrayList<>(predictiveMonitorRepository.findAll());
     }
 
-    public void exportLogToPredictiveMonitor(XLog log, PredictiveMonitor predictiveMonitor) {
+    /** This method cannot be used due to an unsolved Virgo compatibility issue. */
+    public void exportLogToPredictiveMonitor(XLog log, PredictiveMonitor predictiveMonitor) throws Exception {
         LOGGER.info("Exporting log to " + predictiveMonitor.getName());
 
         // Configuration
@@ -358,11 +359,20 @@ public class PredictiveMonitorServiceImpl implements PredictiveMonitorService {
             for (XTrace trace: log) {
                 for (XEvent event: trace) {
                     JSONObject json = new JSONObject();
-                    json.put("log", predictiveMonitor.getId());
-                    json.put("case_id", trace.getAttributes().get("concept:name").toString());
-                    addAttributes(log, json);
-                    addAttributes(trace, json);
-                    addAttributes(event, json);
+                    json.put("log_id", predictiveMonitor.getId());
+
+                    JSONObject logProperties = new JSONObject();
+                    addAttributes(log, logProperties);
+                    json.put("log_attributes", logProperties);
+
+                    JSONObject traceProperties = new JSONObject();
+                    addAttributes(trace, traceProperties);
+                    json.put("case_attributes", traceProperties);
+
+                    JSONObject eventProperties = new JSONObject();
+                    addAttributes(event, eventProperties);
+                    json.put("event_attributes", eventProperties);
+
                     jsons.add(json);
                 }
             }
@@ -375,57 +385,33 @@ public class PredictiveMonitorServiceImpl implements PredictiveMonitorService {
 
             Collections.sort(jsons, new Comparator<JSONObject>() {
                 public int compare(JSONObject a, JSONObject b) {
-                    return f.newXMLGregorianCalendar(a.optString("time:timestamp")).compare(f.newXMLGregorianCalendar(b.optString("time:timestamp")));
+                    return f.newXMLGregorianCalendar(a.optJSONObject("event_attributes").optString("time:timestamp"))
+                  .compare(f.newXMLGregorianCalendar(b.optJSONObject("event_attributes").optString("time:timestamp")));
                 }
             });
             */
             if (true) { throw new Error("Uncomment lines 371-380 of PredictiveMonitorServiceImpl and recompile to re-enable the export method."); }
 
             // Export to the Kafka topic
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             JSONArray columns = new JSONArray();
             for (Predictor predictor: predictiveMonitor.getPredictors()) {
                 columns.put(predictor.getId());
             }
             for (JSONObject json: jsons) {
-                //json.put("time:timestamp", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
-                json.put("Activity_Start_Time", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
-                json.put("Activity_End_Time", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
-                json.put("Key", "1");
-                json.put("columns", columns);
+                json.put("predictors", columns);
                 producer.send(new ProducerRecord<String,String>(eventsTopic, json.toString()));
             }
             LOGGER.info("Exported " + jsons.size() + " log events");
 
         } catch (DatatypeConfigurationException | JSONException e) {
-            LOGGER.error("Unable to export log events", e);
-            return;
+            throw new Exception("Unable to export log", e);
         }
         LOGGER.info("Exported log to " + predictiveMonitor.getName());
     }
 
     private static void addAttributes(XAttributable attributable, JSONObject json) throws JSONException {
         for (Map.Entry<String, XAttribute> entry: attributable.getAttributes().entrySet()) {
-            switch (entry.getKey()) {
-            case "concept:name":
-            case "creator":
-            case "library":
-            case "lifecycle:model":
-            case "lifecycle:transition":
-            case "org:resource":
-            case "variant":
-            case "variant-index":
-                break;
-/*
-            case "time:timestamp":
-                json.put("time", entry.getValue().toString());
-                break;
-*/
-            default:
-                json.put(entry.getKey(), entry.getValue().toString());
-                break;
-            }
+            json.put(entry.getKey(), entry.getValue().toString());
         }
     }
 
