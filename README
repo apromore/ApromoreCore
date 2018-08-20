@@ -92,15 +92,17 @@ Stop and restart the server so that it picks up the changes to site.properties.
 PREDICTIVE MONITORING SETUP (OPTIONAL)
 ==========================
 
-Predictive monitoring requires various servers to set up alongside the Apromore server.
-The sources and instructions for doing so can be checked out from GitHub with the following command:
+Predictive monitoring requires the use of MySQL, as described in DATABASE SETUP (MySQL).
+Populate the database with additional tables as follows:
+
+$ mysql --user=root --password=MAcri < Supplements/database/Nirdizati.MySQL-1.0.sql
+
+Predictive monitoring also requires various additional servers set up alongside the Apromore server.
+The scripts and instructions for doing so can be checked out from GitHub with the following command:
 
 $ git clone https://github.com/nirdizati/nirdizati-training-backend.git
 
 Follow the instructions in nirdizati-training-backend/apromore/README.
-
-Populate the database with additional tables for Nirdizati:
-$ mysql --user=root --password=MAcri < Supplements/database/Nirdizati.MySQL-1.0.sql
 
 In site.properties, set the following properties:
 * training.python must be set to the location of a Python 3 executable
