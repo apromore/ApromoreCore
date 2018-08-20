@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apromore.prodrift.config.DriftConfig;
+import org.apromore.prodrift.config.DriftDetectionSensitivity;
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector;
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_RunStream;
@@ -57,9 +58,9 @@ public class Test {
 			boolean withCharacterization = false; // Characterize detected drifts
 
 			float noiseFilterPercentage = 0.0f; // 0-100
-			float driftDetectionSensitivity = 1f; // 0.01-1 (0.01 -> lowest sensitivity, 1 -> highest sensitivity)
+			DriftDetectionSensitivity ddSensitivity = DriftDetectionSensitivity.Low; // 0.01-1 (0.01 -> lowest sensitivity, 1 -> highest sensitivity)
 
-			cfdd = new ControlFlowDriftDetector_EventStream(xl, initialWinSize, useAdwin, noiseFilterPercentage, driftDetectionSensitivity, withCharacterization);
+			cfdd = new ControlFlowDriftDetector_EventStream(xl, initialWinSize, useAdwin, noiseFilterPercentage, ddSensitivity, withCharacterization);
 		}
 		else if(cf == DriftConfig.RUN)
 		{

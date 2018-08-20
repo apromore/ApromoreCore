@@ -136,7 +136,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.prodrift.eventstr,
+                            org.apromore.prodrift.config,
                             org.apromore.prodrift.driftcharacterization,
                             org.apromore.prodrift.driftdetector,
                             org.apromore.prodrift.model,

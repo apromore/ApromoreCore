@@ -24,8 +24,12 @@
         <image id="pValueDiagramImg"/>
 
         <div align="left">
-            <button id="savesublogs" label="Save Sublogs" image="img/save.gif" disabled="false"></button>
+            <hbox align="center">
+                <button id="savesublogs" label="Save Sublogs" image="img/save.gif" disabled="false"></button>
+                <label id="saveMessage" value="" width="100%" style="color: blue"/>
+            </hbox>
         </div>
+
         <div align="left">
             <label id="characterizationLabel" value="Please click on each detected drift below to see its characterization statements." />
         </div>
