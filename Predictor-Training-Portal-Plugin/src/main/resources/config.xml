@@ -93,12 +93,14 @@
         </Node>
     </Node>
     <Node Identifier="header">
+        <!--
         <Node Identifier="upload">
             <Value Identifier="label">header.upload</Value>
             <Value Identifier="redirect">upload</Value>
             <Value Identifier="isEnabled">true</Value>
             <Value Identifier="icon">z-icon-cloud-upload</Value>
         </Node>
+        -->
         <Node Identifier="training">
             <Value Identifier="label">header.training</Value>
             <Value Identifier="redirect">training</Value>
