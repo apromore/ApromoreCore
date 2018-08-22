@@ -6,6 +6,7 @@ import cs.ut.util.DEST
 import cs.ut.util.NirdizatiTranslator
 import cs.ut.util.Page
 import org.zkoss.zk.ui.Component
+import org.zkoss.zk.ui.Executions
 import org.zkoss.zk.ui.event.Events
 import org.zkoss.zk.ui.select.SelectorComposer
 import org.zkoss.zk.ui.select.annotation.Listen
@@ -52,7 +53,8 @@ class HeaderController : SelectorComposer<Component>(), Redirectable {
      */
     @Listen("onClick = #headerLogo")
     fun handleClick() {
-        setContent(Page.LANDING.value, page)
+        Executions.getCurrent().sendRedirect("..");
+        //setContent(Page.LANDING.value, page)
         //navbar.selectItem(null)
     }
 }
