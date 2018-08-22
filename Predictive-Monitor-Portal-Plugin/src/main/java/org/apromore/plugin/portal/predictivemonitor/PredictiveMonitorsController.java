@@ -48,6 +48,7 @@ import javax.xml.datatype.DatatypeFactory;
 // Third party packages
 import org.deckfour.xes.model.XAttributable;
 import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XAttributeLiteral;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
@@ -196,9 +197,14 @@ public class PredictiveMonitorsController {
             // Merge the XES events of all traces into a single list of JSON objects
             List<JSONObject> jsons = new ArrayList<>();
             for (XTrace trace: log) {
+                String caseId = ((XAttributeLiteral) trace.getAttributes().get("concept:name")).getValue();
+                int eventNr = 1;
                 for (XEvent event: trace) {
                     JSONObject json = new JSONObject();
                     json.put("log_id", predictiveMonitor.getId());
+                    json.put("case_id", caseId);
+                    json.put("event_nr", eventNr);
+                    eventNr++;
 
                     JSONObject logProperties = new JSONObject();
                     addAttributes(log, logProperties);
