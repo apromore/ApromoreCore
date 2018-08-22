@@ -129,8 +129,11 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
                         val items = ArrayList<String>()
                         items.add(trace.getAttributes().get("concept:name").toString());
                         for (globalEventAttribute: XAttribute in xlog.getGlobalEventAttributes()) {
-                            val attribute: XAttribute = event.getAttributes().get(globalEventAttribute.getKey())!!
-                            if (attribute is XAttributeBoolean) {
+                            val attribute: XAttribute? = event.getAttributes().get(globalEventAttribute.getKey())
+                            if (attribute == null) {
+                                items.add("")
+                        
+                            } else if (attribute is XAttributeBoolean) {
                                 items.add(java.lang.Boolean.toString(attribute.getValue()))
 
                             } else if (attribute is XAttributeContinuous) {
@@ -146,7 +149,7 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
                                 items.add(dateFormat.format(attribute.getValue()))
 
                             } else {
-                                throw UnsupportedOperationException("Attribute with unsupported type: ${attribute.getKey()}")
+                                throw UnsupportedOperationException("Attribute with unsupported type: ${attribute?.getKey()}")
                             }
                         }
 
