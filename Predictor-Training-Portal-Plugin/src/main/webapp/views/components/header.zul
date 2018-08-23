@@ -1,7 +1,11 @@
 <hbox sclass="header-box" hflex="1" vflex="1" apply="cs.ut.ui.controllers.HeaderController" align="start">
-    <!-- <image id="headerLogo" sclass="logo" src="/images/logo.png"/> -->
-    <hlayout sclass="navbar-container">
+    <hlayout sclass="navbar-container" hflex="1">
+        <hbox hflex="1" height="60px">
+          <image id="headerLogo" sclass="logo" src="/images/apromore_logo.png"/>
+        </hbox>
         <hbox hflex="mín" id="navbar" style="margin-left:20px; margin-top: 24px"/>
+        <hbox hflex="1"/>
+        <hbox width="60px"/>
         <!-- <navbar hflex="mín" id="navbar" orient="horizontal" style="margin-left:20px"/> -->
     </hlayout>
 </hbox>

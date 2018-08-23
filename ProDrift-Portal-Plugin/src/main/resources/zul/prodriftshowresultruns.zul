@@ -24,7 +24,10 @@
         <image id="pValueDiagramImg"/>
 
         <div align="left">
-            <button id="savesublogs" label="Save Sublogs" image="img/save.gif" disabled="false"></button>
+            <hbox align="center">
+                <button id="savesublogs" label="Save Sublogs" image="img/save.gif" disabled="false"></button>
+                <label id="saveMessage" value="" width="100%" style="color: blue"/>
+            </hbox>
         </div>
 
         <grid id="prodriftGrid" height="200px" width="100%">

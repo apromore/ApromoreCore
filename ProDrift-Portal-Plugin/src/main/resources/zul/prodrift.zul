@@ -62,12 +62,16 @@
                     </hbox>
 
                 </row>
+                <!--
+                    noiseFilterSpinner.value = 10.0;
+                    driftDetectionSensitivityCombo.setSelectedIndex(0);
+                -->
+
 
                 <row id="driftDetMech" visible="true">
                     <label value="Drift detection mechanism" width="100%"/>
                     <listbox id="driftDetMechLBox" width="100%" multiple="false" checkmark="true" onSelect="
                                         if(evBased.selected){
-                                            logType.visible = true;
                                             gradDriftRow.visible = false;
                                             withCharacterizationRow.visible = true;
                                             if(withCharacterizationCBox.checked){
@@ -78,18 +82,17 @@
 
                                             winSizeIntBox.value = maxWinValueEvents.value;
                                             ADWIN.selected = true;
-                                            noiseFilterSpinner.value = 10.0;
-                                            driftDetectionSensitivitySpinner.value = 0.50;
 
                                             noiseFilter.visible = true;
                                             driftDetectionSensitivity.visible = true;
                                         }else{
-                                            logType.visible = false;
                                             gradDriftRow.visible = true;
                                             withCharacterizationRow.visible = false;
                                             CummulativeChangeRow.visible = false;
+
                                             winSizeIntBox.value = maxWinValueRuns.value;
                                             ADWIN.selected = true;
+
                                             noiseFilter.visible = false;
                                             driftDetectionSensitivity.visible = false;
                                         }
@@ -157,10 +160,15 @@
                                     </row>
 
                                     <row id="driftDetectionSensitivity">
-                                        <label value="Drift detection sensitivity (0.01 - 1)" width="100%"/>
-                                        <doublespinner id="driftDetectionSensitivitySpinner" width="100%" value="0.50" step="0.1"
-                                                        mold="rounded"
-                                                       constraint="no empty, min 0.01 max 1"/>
+                                        <label value="Drift detection sensitivity" width="100%"/>
+                                        <combobox id="driftDetectionSensitivityCombo" readonly="true">
+                                            <comboitem label="Low"
+                                                       description="Suitable for processes with frequent control-flow behavior changes (most real-life logs)." />
+                                            <comboitem label="Medium"
+                                                       description="" />
+                                            <comboitem label="High"
+                                                       description="" />
+                                        </combobox>
                                     </row>
                                     <!--<row id="conflictRow">-->
                                     <!--<label width="100%"/>-->

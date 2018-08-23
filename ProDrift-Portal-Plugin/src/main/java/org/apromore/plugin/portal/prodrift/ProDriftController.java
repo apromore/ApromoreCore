@@ -23,6 +23,7 @@ package org.apromore.plugin.portal.prodrift;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.prodrift.config.DriftDetectionSensitivity;
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
 import org.apromore.prodrift.util.LogStreamer;
@@ -56,31 +57,31 @@ public class ProDriftController {
 
     private Button logFileUpload;
     private Listbox driftDetMechLBox;
-    private Listbox logTypeLBox;
     private Checkbox gradDriftCBox;
-    private Intbox winSizeVal;
+    private Intbox winSizeIntBox;
     private Listbox fWinOrAwinLBox;
     private Doublespinner noiseFilterSpinner;
-    private Listbox conflictLBox;
+    private Combobox driftDetectionSensitivityCombo;
     private Button OKbutton;
+    private Button cancelButton;
 
     //    private byte[] logByteArray = null;
     private XLog xlog = null;
-    XLog eventStream = null;
+    private XLog eventStream = null;
     private String logFileName = null;
 
     private boolean running = false;
 
-    int caseCount = 0;
-    int eventCount = 0;
-    int activityCount = 0;
+    private int caseCount = 0;
+    private int eventCount = 0;
+    private int activityCount = 0;
 
-    int defaultWinSizeRuns = 100;
-    int defaultWinSizeEvents = -1;
-    int winSizeDividedBy = 10;
+    private int defaultWinSizeRuns = 100;
+    private int defaultWinSizeEvents = -1;
+    private int winSizeDividedBy = 10;
 
-    EventLogService eventLogService = null;
-    LogSummaryType logSummaryType = null;
+    private EventLogService eventLogService = null;
+    private LogSummaryType logSummaryType = null;
 
 
 
@@ -103,6 +104,14 @@ public class ProDriftController {
 
         Intbox winSizeCoefficientIntBoX = (Intbox) proDriftW.getFellow("winSizeCoefficient");
         winSizeCoefficientIntBoX.setValue(ControlFlowDriftDetector_EventStream.winSizeCoefficient);
+
+        this.driftDetMechLBox = (Listbox) proDriftW.getFellow("driftDetMechLBox");
+        this.gradDriftCBox = (Checkbox) proDriftW.getFellow("gradDriftCBox");
+        this.winSizeIntBox = (Intbox) proDriftW.getFellow("winSizeIntBox");
+        this.fWinOrAwinLBox = (Listbox) proDriftW.getFellow("fWinOrAwinLBox");
+        this.noiseFilterSpinner = (Doublespinner) proDriftW.getFellow("noiseFilterSpinner");
+        this.driftDetectionSensitivityCombo = ((Combobox) proDriftW.getFellow("driftDetectionSensitivityCombo"));
+        this.driftDetectionSensitivityCombo.setSelectedIndex(1);
 
         this.logFileUpload = (Button) this.proDriftW.getFellow("logFileUpload");
 
@@ -167,7 +176,7 @@ public class ProDriftController {
 //        this.fWinOrAwin.appendChild(listItem);
 
         this.OKbutton = (Button) this.proDriftW.getFellow("proDriftOKButton");
-        Button cancelButton = (Button) this.proDriftW.getFellow("proDriftCancelButton");
+        this.cancelButton = (Button) this.proDriftW.getFellow("proDriftCancelButton");
 
         this.OKbutton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
@@ -179,7 +188,7 @@ public class ProDriftController {
                 proDriftDetector();
             }
         });
-        cancelButton.addEventListener("onClick", new EventListener<Event>() {
+        this.cancelButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 cancel();
             }
@@ -298,9 +307,6 @@ public class ProDriftController {
         Listbox driftDetMechLBox = (Listbox) proDriftW.getFellow("driftDetMechLBox");
         boolean isEventBased = driftDetMechLBox.getSelectedItem().getLabel().startsWith("E") ? true : false;
 
-//        Listbox logTypeLBox = (Listbox) proDriftW.getFellow("logTypeLBox");
-//        boolean isSynthetic = logTypeLBox.getSelectedItem().getLabel().startsWith("M") ? true : false;
-
 //        boolean isSynthetic = true;
 //        if(activityCount < activityLimit)
 //            isSynthetic = true;
@@ -328,7 +334,7 @@ public class ProDriftController {
 //                ((Listitem)proDriftW.getFellow("reLog")).setSelected(true);
             ((Listitem) proDriftW.getFellow("ADWIN")).setSelected(true);
             ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(10.0);
-            ((Doublespinner) proDriftW.getFellow("driftDetectionSensitivitySpinner")).setValue(0.50);
+            ((Combobox) proDriftW.getFellow("driftDetectionSensitivityCombo")).setSelectedIndex(0);
             winSizeIntBox.setValue(maxWinValueEventsIntBoX.getValue());
 //            }
         }else
@@ -354,6 +360,7 @@ public class ProDriftController {
     //    if(detach)
     //    {
             showError(""); this.proDriftW.detach();
+            portalContext.refreshContent();
     //    }
 
     }
@@ -363,10 +370,8 @@ public class ProDriftController {
         if (xlog != null)
         {
 
-            Intbox winSizeIntBox = (Intbox) proDriftW.getFellow("winSizeIntBox");
             int winSize = winSizeIntBox.getValue();
 
-            Listbox driftDetMechLBox = (Listbox) proDriftW.getFellow("driftDetMechLBox");
             boolean isEventBased = driftDetMechLBox.getSelectedItem().getLabel().startsWith("E") ? true : false;
             Session sess = Sessions.getCurrent();
             sess.setAttribute("isEventBased", isEventBased);
@@ -377,17 +382,20 @@ public class ProDriftController {
                 showError("");
                 try {
 
-                    Checkbox gradDriftCBox = (Checkbox) proDriftW.getFellow("gradDriftCBox");
                     boolean withGradual = gradDriftCBox.isChecked() ? true : false;
 
-                    Listbox fWinOrAwinLBox = (Listbox) proDriftW.getFellow("fWinOrAwinLBox");
                     boolean isAdwin = fWinOrAwinLBox.getSelectedItem().getLabel().startsWith("A") ? true : false;
 
-                    Doublespinner noiseFilterSpinner = (Doublespinner) proDriftW.getFellow("noiseFilterSpinner");
                     float noiseFilterPercentage = (float)noiseFilterSpinner.getValue().doubleValue();
 
-                    Doublespinner driftDetectionSensitivitySpinner = (Doublespinner) proDriftW.getFellow("driftDetectionSensitivitySpinner");
-                    float driftDetectionSensitivity = (float)driftDetectionSensitivitySpinner.getValue().doubleValue();
+                    int ddSensitivityIndex = driftDetectionSensitivityCombo.getSelectedIndex();
+                    DriftDetectionSensitivity ddSensitivity = DriftDetectionSensitivity.Low;
+                    switch (ddSensitivityIndex)
+                    {
+                        case 0: ddSensitivity = DriftDetectionSensitivity.Low; break;
+                        case 1: ddSensitivity = DriftDetectionSensitivity.Medium; break;
+                        case 2: ddSensitivity = DriftDetectionSensitivity.High; break;
+                    }
 
                     boolean withConflict = /*isSynthetic ? true : */false;
 
@@ -408,7 +416,7 @@ public class ProDriftController {
                     running = true;
 
                     ProDriftDetectionResult result = proDriftDetectionService.proDriftDetector(xlog, eventStream, logFileName,
-                            isEventBased, withGradual, winSize, activityCount, isAdwin, noiseFilterPercentage, driftDetectionSensitivity, withConflict,
+                            isEventBased, withGradual, winSize, activityCount, isAdwin, noiseFilterPercentage, ddSensitivity, withConflict,
                             withCharacterization, cummulativeChange/*, engineR*/);
 
                     proDriftShowResults_(result, isEventBased, xlog, logFileName, withCharacterization, cummulativeChange);

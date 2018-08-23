@@ -161,32 +161,6 @@ public class PredictiveMonitorController implements Observer {
                     Messagebox.show("Export to CSV failed", "Attention", Messagebox.OK, Messagebox.ERROR);
                     LOGGER.error("Export to CSV failed", e);
                 }
-/*
-                Window saveWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/saveAsCSV.zul", null, null);
-
-                ((Button) saveWindow.getFellow("ok")).addEventListener("onClick", new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        try {
-                            exportCSV(new FileOutputStream("/tmp/test.csv"));
-                        }
-                        catch (Exception e) {
-                            Messagebox.show("Export to CSV failed", "Attention", Messagebox.OK, Messagebox.ERROR);
-                            LOGGER.error("Export to CSV failed", e);
-                        }
-                        finally {
-                            saveWindow.detach();
-                        }
-                    }
-                });
-
-                ((Button) saveWindow.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        saveWindow.detach();
-                    }
-                });
-
-                saveWindow.doModal();
-*/
             }
         });
         
