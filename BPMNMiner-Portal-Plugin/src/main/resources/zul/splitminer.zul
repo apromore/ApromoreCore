@@ -38,9 +38,9 @@
                     <label value="Parallelisms Priority"/>
                     <radiogroup id="parallelismsFirst">
                         <hlayout>
-                            <radio id="parallelismsFirst" label="Max" radiogroup="parallelismsFirst" />
+                            <radio id="parallelismsFirstMax" label="Max" radiogroup="parallelismsFirst" />
                             <space /><space />
-                            <radio id="parallelismsLater" label="Min" selected="true" radiogroup="parallelismsFirst" />
+                            <radio id="parallelismsLaterMin" label="Min" selected="true" radiogroup="parallelismsFirst" />
                         </hlayout>
                     </radiogroup>
                 </row>
