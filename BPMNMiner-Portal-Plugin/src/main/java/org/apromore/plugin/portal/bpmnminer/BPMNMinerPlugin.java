@@ -74,7 +74,7 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Discover BPMN model";
+        return "Discover BPMN model (Advanced)";
     }
 
     @Override
