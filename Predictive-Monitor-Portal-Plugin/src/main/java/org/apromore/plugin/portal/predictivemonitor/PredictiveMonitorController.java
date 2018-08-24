@@ -557,7 +557,7 @@ public class PredictiveMonitorController implements Observer {
                             totalCompletedCaseDuration = totalCompletedCaseDuration.plus(elapsed);
 
                         } catch (Exception e) {
-                            LOGGER.error("Unable calculate elapsed duration", e);
+                            LOGGER.error("Unable to calculate elapsed duration", e);
                         }
                     } else {
                         runningCaseCount++;
