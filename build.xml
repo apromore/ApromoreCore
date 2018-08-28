@@ -419,6 +419,17 @@
         </exec>
     </target>
 
+    <target name="start-virgo-oneclick" depends="set-permissions,copy-virgo,delete-oneclick">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean"/>
+        </exec>
+    </target>
+
     <target name="debug-virgo" depends="set-permissions,copy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
@@ -526,6 +537,15 @@
 
         <delete file="${dir-virgo}/repository/usr/rfl-schema-1.1.jar"/>
         <delete file="${dir-virgo}/repository/usr/yawl-schema-1.1.jar"/>
+    </target>
+
+    <target name="delete-oneclick">
+        <delete file="${dir-virgo}/pickup/annotation-yawl-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/canoniser-yawl-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/editor-platform-extension-yawl-1.2.jar"/>
+        <!--<delete file="${dir-virgo}/repository/usr/yawl-schema-1.1.jar"/>-->
+        <delete file="${dir-virgo}/pickup/104-editor.plan"/>
+        <copy file="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan1" tofile="${dir-virgo}/pickup/104-editor.plan" overwrite="true"/>
     </target>
 
     <target name="copy-virgo-standalone" depends="clean-virgo">
