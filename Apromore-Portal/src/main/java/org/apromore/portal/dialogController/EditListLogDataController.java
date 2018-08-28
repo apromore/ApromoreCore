@@ -114,7 +114,7 @@ public class EditListLogDataController extends BaseController {
     }
 
     /**
-     * Cancel edition of remining process versions: empty the list of
+     * Cancel edition of remaining process versions: empty the list of
      * controllers associated to process versions still to be edited.
      *
      * @throws Exception

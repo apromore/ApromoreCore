@@ -32,7 +32,7 @@ public class ConfigBean {
     private String  siteManager;
     private String  sitePortal;
     private String  majorVersionNumber;
-    private String minorVersionNumber;
+    private String  minorVersionNumber;
     private String  versionBuildDate;
 
     public ConfigBean() {}
