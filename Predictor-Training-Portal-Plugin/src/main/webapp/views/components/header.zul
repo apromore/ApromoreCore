@@ -5,7 +5,9 @@
         </hbox>
         <hbox hflex="mín" id="navbar" style="margin-left:20px; margin-top: 24px"/>
         <hbox hflex="1"/>
-        <hbox width="60px"/>
+        <hbox width="60px">
+          <image id="info" sclass="logo" src="/images/info.png"/>
+        </hbox>
         <!-- <navbar hflex="mín" id="navbar" orient="horizontal" style="margin-left:20px"/> -->
     </hlayout>
 </hbox>

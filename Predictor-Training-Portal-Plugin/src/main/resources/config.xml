@@ -409,10 +409,6 @@
     <Node Identifier="messages">
        <Node Identifier="welcome">
            <Value Identifier="label">
-               <![CDATA[
-Welcome to Nirdizati! This tool is designed for <a href="http://ceur-ws.org/Vol-1603/10000053.pdf">predictive monitoring</a> of business processes. It will allow you to train predictive models for various properties of ongoing processes, such as remaining processing time, the next most likely activity to be executed and whether a case will take longer than a certain time. The models can be validated in place using a hold-out validation dataset and can be later used to make predictions "on the fly" for ongoing instances of the process using <a href="http://apromore.org">Apromore</a> platform.
-<br/>For more information, please consult our <a href="http://nirdizati.org/wp-content/uploads/paper.pdf">demo paper</a> or check out <a href="http://nirdizati.org/nirdizati-training/">our website</a>.
-               ]]>
            </Value>
        </Node>
     </Node>
