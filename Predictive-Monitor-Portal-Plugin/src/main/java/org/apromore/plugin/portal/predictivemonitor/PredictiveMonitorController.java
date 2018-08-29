@@ -215,7 +215,7 @@ public class PredictiveMonitorController implements Observer {
             public String format(PredictiveMonitorEvent event) {
                 try {
                     JSONObject json = new JSONObject(event.getJson());
-                    return json.getString("activity_name");
+                    return json.getString("concept:name");
                 } catch (Exception e) {
                     return e.getMessage();
                 }
