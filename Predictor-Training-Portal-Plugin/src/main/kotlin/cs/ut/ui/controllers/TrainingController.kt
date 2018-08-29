@@ -91,13 +91,16 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
             val isNumerical = { attribute: XAttribute -> attribute is XAttributeContinuous || attribute is XAttributeDiscrete }
             val isSpurious = { attribute: XAttribute -> hashSetOf("time", "variant", "variant-index").contains(attribute.getKey()) }
 
-            params.put("dynamic_cat_cols", xlog.getGlobalEventAttributes().filter { isCategoreal(it) && !isSpurious(it) }.map { it.getKey() })
-            params.put("dynamic_num_cols", xlog.getGlobalEventAttributes().filter { isNumerical(it) && !isSpurious(it) }.map { it.getKey() })
-            params.put("static_cat_cols", xlog.getGlobalTraceAttributes().filter { isCategoreal(it) && !isSpurious(it) }.map { it.getKey() })
-            params.put("static_num_cols", xlog.getGlobalTraceAttributes().filter { isNumerical(it) && !isSpurious(it) }.map { it.getKey() })
+            val staticAttributes = findStaticAttributes(xlog).filter { !isSpurious(it) }
+            val dynamicAttributes = findDynamicAttributes(xlog).filter { !isSpurious(it) }
+
+            params.put("dynamic_cat_cols", dynamicAttributes.filter { isCategoreal(it) }.map { it.getKey() })
+            params.put("dynamic_num_cols", dynamicAttributes.filter { isNumerical(it) }.map { it.getKey() })
+            params.put("static_cat_cols", staticAttributes.filter { isCategoreal(it) }.map { it.getKey() })
+            params.put("static_num_cols", staticAttributes.filter { isNumerical(it) }.map { it.getKey() })
 
             params.put("case_id_col", "case_id")
-            params.put("activity_col", "activity_name")
+            params.put("activity_col", "concept:name")
             params.put("timestamp_col", "time:timestamp")
             //params.put("ignore", "?")
             //params.put("future_values", "?")
@@ -112,12 +115,12 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
                 // Write header
                 val headers = ArrayList<String>()
                 headers.add("case_id")
-                for (attribute: XAttribute in xlog.getGlobalEventAttributes()) headers.add(attribute.getKey())
+                for (attribute: XAttribute in findDynamicAttributes(xlog)) headers.add(attribute.getKey())
 
                 writeCSV(headers, writer)
 
                 // Write content
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"))
 
                 for (trace: XTrace in xlog) {
@@ -128,8 +131,8 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
                     for (event: XEvent in trace) {
                         val items = ArrayList<String>()
                         items.add(trace.getAttributes().get("concept:name").toString());
-                        for (globalEventAttribute: XAttribute in xlog.getGlobalEventAttributes()) {
-                            val attribute: XAttribute? = event.getAttributes().get(globalEventAttribute.getKey())
+                        for (attributeName: String in headers.subList(1, headers.lastIndex)) {
+                            val attribute: XAttribute? = event.getAttributes().get(attributeName)
                             if (attribute == null) {
                                 items.add("")
                         
@@ -149,7 +152,7 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
                                 items.add(dateFormat.format(attribute.getValue()))
 
                             } else {
-                                throw UnsupportedOperationException("Attribute with unsupported type: ${attribute?.getKey()}")
+                                throw UnsupportedOperationException("Attribute with unsupported type: ${attribute.getKey()}")
                             }
                         }
 
@@ -164,17 +167,25 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
         /**
          * Format a series of strings into a comma separated line.
          *
+         * This attempts to conform to the de-facto standard behavior of Excel w.r.t escaping commas and quotation marks.
+         *
          * @throws IllegalArgumentException if any of the <var>values</var> contains a comma
+         * @see https://stackoverflow.com/a/21749399
          */
         fun writeCSV(values: Iterable<String>, writer: PrintWriter) {
             val i = values.iterator()
             if (i.hasNext()) {
                 do {
                     val value = i.next()
-                    if (value.indexOf(",") != -1) {
-                        throw IllegalArgumentException("Fields cannot contain commas: " + value)
+                    val needsQuotation = value.indexOf(",") != -1 || value.indexOf("\n") != -1 || value.indexOf("\"") != -1
+                    if (needsQuotation) {
+                        writer.print("\"")
+                        writer.print((value as java.lang.String).replaceAll("\"", "\"\""))
+                        writer.print("\"")
+
+                    } else {
+                        writer.print(value)
                     }
-                    writer.print(value)
                     if (i.hasNext()) {
                         writer.print(",")
                     }
@@ -182,7 +193,30 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
             }
             writer.println()
         }
+
+        /**
+         * @param xlog  any XES log
+         * @return the global trace attributes of xlog if they exist, or if those are missing, the attributes of the first trace
+         */
+        private fun findStaticAttributes(xlog: XLog): List<XAttribute> =
+            if (!xlog.getGlobalTraceAttributes().isEmpty()) {
+                xlog.getGlobalTraceAttributes()
+            } else {
+                ArrayList(xlog.get(0).getAttributes().values)
+            }
+
+        /**
+         * @param xlog  any XES log
+         * @return the global event attributes of xlog if they exist, or if those are missing, the attributes of the first event
+         */
+        private fun findDynamicAttributes(xlog: XLog): List<XAttribute> =
+            if (!xlog.getGlobalEventAttributes().isEmpty()) {
+                xlog.getGlobalEventAttributes()
+            } else {
+                ArrayList(xlog.get(0).get(0).getAttributes().values)
+            }
     }
+
 
     @Wire
     private lateinit var clientLogs: Combobox

@@ -1,0 +1,10 @@
+{
+  "dynamic_cat_cols": ["LoanGoal","Action","Resource","duration","ApplicationType","EventOrigin","lifecycle:transition","CreditScore"],
+  "static_cat_cols":  [],
+  "timestamp_col":    "time:timestamp",
+  "activity_col":     "concept:name",
+  "static_num_cols":  [],
+  "dynamic_num_cols": ["RequestedAmount","activity_duration","weekday","FirstWithdrawalAmount","NumberOfTerms","elapsed","remtime","MonthlyCost","month","hour","OfferedAmount"],
+  "case_id_col":      "case_id"
+}
+
