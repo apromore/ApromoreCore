@@ -569,7 +569,7 @@ public class PredictiveMonitorController implements Observer {
 
         }
         Collections.sort(caseEvents, new Comparator<PredictiveMonitorEvent>() {
-            public int compare(PredictiveMonitorEvent lhs, PredictiveMonitorEvent rhs) { return Integer.parseInt(lhs.getCaseId()) - Integer.parseInt(rhs.getCaseId()); }
+            public int compare(PredictiveMonitorEvent lhs, PredictiveMonitorEvent rhs) { return lhs.getCaseId().compareTo(rhs.getCaseId()); }
         });
 
         // Display aggregate statistics
