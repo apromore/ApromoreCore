@@ -215,7 +215,7 @@ public class PredictiveMonitorController implements Observer {
             public String format(PredictiveMonitorEvent event) {
                 try {
                     JSONObject json = new JSONObject(event.getJson());
-                    return json.getString("activity_name");
+                    return json.getString("concept:name");
                 } catch (Exception e) {
                     return e.getMessage();
                 }
@@ -569,7 +569,7 @@ public class PredictiveMonitorController implements Observer {
 
         }
         Collections.sort(caseEvents, new Comparator<PredictiveMonitorEvent>() {
-            public int compare(PredictiveMonitorEvent lhs, PredictiveMonitorEvent rhs) { return Integer.parseInt(lhs.getCaseId()) - Integer.parseInt(rhs.getCaseId()); }
+            public int compare(PredictiveMonitorEvent lhs, PredictiveMonitorEvent rhs) { return lhs.getCaseId().compareTo(rhs.getCaseId()); }
         });
 
         // Display aggregate statistics

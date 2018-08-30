@@ -49,7 +49,7 @@
                     <caption>Filter case</caption>
                     <textbox id="filterCase"/>
                 </groupbox>
-                <button id="csv" label="Download log.csv"/>
+                <button id="csv" label="Download CSV"/>
             </vbox>
         </hbox>
         <tabbox>
