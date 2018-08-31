@@ -25,25 +25,23 @@
     <vbox>
         <listbox id="predictiveMonitors" width="600px" checkmark="true">
             <auxhead>
-                <auxheader colspan="2">Predictive Monitors</auxheader>
+                <auxheader>Predictive Monitors</auxheader>
             </auxhead>
             <listhead>
                 <listheader label="Name"/>
-                <listheader label="Dummy"/>
             </listhead>
             <template name="model">
                 <listitem>
                     <listcell label="${each.name}"/>
-                    <listcell label="-"/>
                 </listitem>
             </template>
         </listbox>
-        <hbox>
+        <div align="center">
             <button id="create"  label="Create dataflow" />
             <button id="delete"  label="Delete dataflow" />
             <button id="load"    label="Stream log to dataflow" />
             <button id="monitor" label="Show dashboard" />
-        </hbox>
+        </div>
     </vbox>
 </window>
 
