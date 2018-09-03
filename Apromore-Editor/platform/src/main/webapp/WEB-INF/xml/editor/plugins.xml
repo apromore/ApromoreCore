@@ -34,6 +34,7 @@
 		<plugin source="selectssperspective.js" name="ORYX.Plugins.SelectStencilSetPerspective">
 			<notUsesIn namespace="http://b3mn.org/stencilset/jbpm4#"/>
 			<notUsesIn namespace="http://b3mn.org/stencilset/timjpdl3#"/>
+            <notUsesIn namespace="http://oryx-editor.org/stencilsets/perspectives/academicbpmn2#"/>
 		</plugin>
 		<plugin source="shaperepository.js" name="ORYX.Plugins.ShapeRepository" />
 		<plugin source="propertywindow.js" name="ORYX.Plugins.PropertyWindow" />

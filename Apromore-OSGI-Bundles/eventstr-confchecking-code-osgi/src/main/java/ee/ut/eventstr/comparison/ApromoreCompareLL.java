@@ -58,27 +58,34 @@ public class ApromoreCompareLL {
 
 //        String log1Name = "/Users/abelarmas/Dropbox/BPM2015-VarianceAnalysis/tool/ProDelta/Logs/base.MXML";
 //        String log2Name = "/Users/abelarmas/Dropbox/BPM2015-VarianceAnalysis/tool/ProDelta/Logs/par_seq.mxml";
-        String log1Name = "/Volumes/RaffaeleCode/Deviance Mining - SEPSIS Correct.xes.gz";
-        String log2Name = "/Volumes/RaffaeleCode/Deviance Mining - SEPSIS Deviant.xes.gz";
+//        String log1Name = "/Volumes/RaffaeleCode/Deviance Mining - SEPSIS Correct.xes.gz";
+//        String log2Name = "/Volumes/RaffaeleCode/Deviance Mining - SEPSIS Deviant.xes.gz";
 //        String log1Name = "/Volumes/RaffaeleCode/Deviance Mining - Correct.xes.gz";
 //        String log2Name = "/Volumes/RaffaeleCode/Deviance Mining - Deviant.xes.gz";
 //        String log1Name = "/Volumes/RaffaeleCode/test1.xes";
 //        String log2Name = "/Volumes/RaffaeleCode/test2.xes";
 
-		ApromoreCompareLL compare = new ApromoreCompareLL();
-		try {
-			XLog log1 = XLogReader.openLog(log1Name);
-			XLog log2 = XLogReader.openLog(log2Name);
+        String log1Name = "/Users/abelarmas/Downloads/dev.xes.gz";
+        String log2Name = "/Users/abelarmas/Downloads/dev2.xes.gz";
 
-			ApromoreCompareLL compareLL = new ApromoreCompareLL();
+        ApromoreCompareLL compare = new ApromoreCompareLL();
+        try {
+            XLog log1 = XLogReader.openLog(log1Name);
+            XLog log2 = XLogReader.openLog(log2Name);
 
-			for(Triplet<String, Set<XTrace>, Set<XTrace>> triplet : compareLL.getDifferencesTripletsAStar(log1, "normal behaviour", log2, "deviant behaviour")){
-					System.out.println(triplet.getA());
+            ApromoreCompareLL compareLL = new ApromoreCompareLL();
+
+            for(Triplet<String, Set<XTrace>, Set<XTrace>> triplet : compareLL.getDifferencesTripletsAStar(log1, "normal behaviour", log2, "deviant behaviour")){
+                System.out.println(triplet.getA());
+                System.out.println(((Set<XTrace>)triplet.getB()).size());
+                System.out.println(((Set<XTrace>)triplet.getC()).size());
+
 //                	System.out.println(compare.translateTraces((Set<XTrace>)triplet.getB()));
 //                	System.out.println(compare.translateTraces((Set<XTrace>)triplet.getC()));
             }
 
-		}catch(Exception e){ e.printStackTrace(); }
+        }catch(Exception e){ e.printStackTrace(); }
+
 	}
 
 	public Set<String> getDifferences(XLog log1, XLog log2) {
