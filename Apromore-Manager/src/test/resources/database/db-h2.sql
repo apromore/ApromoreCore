@@ -984,7 +984,9 @@ REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 ;
 CREATE UNIQUE INDEX id_primary_membership ON membership(id)
 ;
-CREATE INDEX userId ON membership(userId)
+CREATE UNIQUE INDEX un_userId ON membership(userId)
+;
+CREATE UNIQUE INDEX un_email ON membership(email)
 ;
 ALTER TABLE native
 ADD CONSTRAINT fk_native
