@@ -1,0 +1,18 @@
+<hbox sclass="header-box" hflex="1" vflex="1" apply="cs.ut.ui.controllers.HeaderController" align="start">
+    <hlayout sclass="navbar-container" hflex="1">
+        <hbox hflex="1" height="60px">
+          <a href="http://apromore.org" target="_blank">
+            <image id="headerLogo" sclass="logo" src="/images/apromore_logo.png"/>
+          </a>
+        </hbox>
+        <a href="..">
+          <button label="&#xA0;&#xA0;&#xA0;&#xA0;Portal" iconSclass="z-icon-arrow-circle-left" style="margin-left:20px; margin-top: 24px"/>
+        </a>
+        <hbox hflex="mín" id="navbar" style="margin-top: 24px"/>
+        <a href="http://apromore.org/documentation/features/train-predictive-models" target="_blank">
+          <button label="&#xA0;&#xA0;&#xA0;&#xA0;Help" iconSclass="z-icon-info" style="margin-top: 24px"/>
+        </a>
+        <hbox hflex="1"/>
+        <!-- <navbar hflex="mín" id="navbar" orient="horizontal" style="margin-left:20px"/> -->
+    </hlayout>
+</hbox>

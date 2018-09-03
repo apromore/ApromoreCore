@@ -30,7 +30,7 @@ public class SplitMinerUI {
         smUIResult.setFilterType(dfgpUIResult.getFilterType());
         smUIResult.setParallelismsThreshold(dfgpUIResult.getParallelismsThreshold());
         smUIResult.setPercentileFrequencyThreshold(dfgpUIResult.getPercentileFrequencyThreshold());
-        smUIResult.setPercentileOnbest(dfgpUIResult.isPercentileOnbest());
+        smUIResult.setParallelismsFirst(dfgpUIResult.isParallelismsFirst());
 
         return smUIResult;
     }

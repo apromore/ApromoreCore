@@ -45,7 +45,7 @@ public interface PredictiveMonitorService {
     public void deletePredictiveMonitors(Iterable<PredictiveMonitor> predictiveMonitors);
     public PredictiveMonitor findPredictiveMonitorByName(String name);
     public List<PredictiveMonitor> getPredictiveMonitors();
-    public void exportLogToPredictiveMonitor(XLog log, PredictiveMonitor predictiveMonitor);
+    public void exportLogToPredictiveMonitor(XLog log, PredictiveMonitor predictiveMonitor) throws Exception;
 
     // PredictiveMonitorEvents
     public List<PredictiveMonitorEvent> findPredictiveMonitorEvents(PredictiveMonitor predictiveMonitor);

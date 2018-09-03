@@ -20,6 +20,7 @@
 
 package org.apromore.service.prodrift;
 
+import org.apromore.prodrift.config.DriftDetectionSensitivity;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
 import org.deckfour.xes.model.XLog;
 
@@ -42,7 +43,7 @@ public interface ProDriftDetectionService {
      * @param activityCount number of activities in xlog
      * @param isAdwin Fixed window size or Adaptive window size("FWIN" or "ADWIN")
      * @param noiseFilterPercentage noise fitler percentage value
-     * @param driftDetectionSensitivity Drift detection sensitivity (sensitivity of drops of P-value curve)
+     * @param ddSensitivity Drift detection sensitivity
      * @param withConflict include conflict relation among Alpha+ relations or not
      * @param withCharacterization characterize a drift?
      * @param cummulativeChange cummulative relative relation frequency change explaining a drift
@@ -52,7 +53,7 @@ public interface ProDriftDetectionService {
      * @throws ProDriftDetectionException if the drift detection failed
      */
     ProDriftDetectionResult proDriftDetector(XLog xlog, XLog eventStream, String logFileName, boolean isEventBased,
-                                             boolean withGradual, int winSize, int activityCount, boolean isAdwin, float noiseFilterPercentage, float driftDetectionSensitivity,
+                                             boolean withGradual, int winSize, int activityCount, boolean isAdwin, float noiseFilterPercentage, DriftDetectionSensitivity ddSensitivity,
                                              boolean withConflict, boolean withCharacterization, int cummulativeChange/*,
                                              Rengine engineR*/) throws ProDriftDetectionException;
 

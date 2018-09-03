@@ -239,10 +239,10 @@ public class ProcessServiceImpl implements ProcessService {
         if (cpf == null) {
             LOGGER.error("Process " + processName + " Failed to import correctly.");
             throw new ImportException("Process " + processName + " Failed to import correctly.");
-        } else if ((folderId.equals(0) && processRepo.findUniqueByName(processName) != null) ||
-                (processRepo.findByNameAndFolderId(processName, folderId) != null)) {
-            LOGGER.error("Process " + processName + " was found to already exist in the Repository.");
-            throw new ImportException("Process " + processName + " was found to already exist in the Repository.");
+//        } else if ((folderId.equals(0) && processRepo.findUniqueByName(processName) != null) ||
+//                (processRepo.findByNameAndFolderId(processName, folderId) != null)) {
+//            LOGGER.error("Process " + processName + " was found to already exist in the Repository.");
+//            throw new ImportException("Process " + processName + " was found to already exist in the Repository.");
         }
 
         ProcessModelVersion pmv;
@@ -614,10 +614,14 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional(readOnly = false)
     public CanonicalProcessType getProcessModelVersion(final Integer processId, final String processName, final String branchName,
             final Version version, final boolean lock) throws LockFailedException {
-        ProcessModelVersion pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, version.toString());
+        ProcessModelVersion pmv = null;
+
+        if (version != null) {
+            pmv = processModelVersionRepo.getProcessModelVersion(processId, branchName, version.toString());
+        }
 
         if (pmv == null) {
-            return null;
+            pmv = processModelVersionRepo.getLatestProcessModelVersion(processId, "MAIN");
         }
         if (lock) {
             boolean locked = lService.lockFragment(pmv.getRootFragmentVersion().getId());

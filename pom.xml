@@ -87,27 +87,26 @@
 
         <!-- OSGI -->
         <module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
-        <module>Apromore-OSGI-Bundles/antlr4</module>
+        <module>Apromore-OSGI-Bundles/antlr4-runtime-osgi</module>
         <module>Apromore-OSGI-Bundles/bpmntk-osgi</module>
         <module>Apromore-OSGI-Bundles/bpstruct-osgi</module>
         <module>Apromore-OSGI-Bundles/ltl-conf-check-osgi</module>
         <module>Apromore-OSGI-Bundles/apm-verification-osgi</module>
-        <module>Apromore-OSGI-Bundles/ini4j</module>
-        <module>Apromore-OSGI-Bundles/irthemis</module>
-        <module>Apromore-OSGI-Bundles/json</module>
-        <module>Apromore-OSGI-Bundles/jbpt-petri</module>
+        <module>Apromore-OSGI-Bundles/ini4j-osgi</module>
+        <module>Apromore-OSGI-Bundles/themis-osgi</module>
+        <module>Apromore-OSGI-Bundles/json-osgi</module>
+        <module>Apromore-OSGI-Bundles/jbpt-petri-osgi</module>
         <module>Apromore-OSGI-Bundles/lucene-osgi</module>
         <module>Apromore-OSGI-Bundles/pnapi-bpdiff-osgi</module>
-        <module>Apromore-OSGI-Bundles/postgres</module>
-        <module>Apromore-OSGI-Bundles/pql</module>
+        <module>Apromore-OSGI-Bundles/postgresql-osgi</module>
+        <module>Apromore-OSGI-Bundles/pql-osgi</module>
         <module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>
         <module>Apromore-OSGI-Bundles/prom-pnml-osgi</module>
         <module>Apromore-OSGI-Bundles/pn-automata-conv-osgi</module>
         <module>Apromore-OSGI-Bundles/ltl-to-automaton-osgi</module>
         <module>Apromore-OSGI-Bundles/declare-visualizer-osgi</module>
-        <module>Apromore-OSGI-Bundles/bpmnminer-osgi</module>
-        <module>Apromore-OSGI-Bundles/infrequent-behaviour-filter-osgi</module>
-        <module>Apromore-OSGI-Bundles/eventstr-confchecking-code-osgi</module>
+        <module>Apromore-OSGI-Bundles/raffaeleconforti-osgi</module>
+        <module>Apromore-OSGI-Bundles/eventstr-confchecking-osgi</module>
 
 
         <!-- ZK Osgi -->
@@ -118,18 +117,23 @@
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
+
         <module>APQL-Portal-Plugin</module>
         <module>BEBoP-Logic</module>
         <module>BEBoP-Portal-Plugin</module>
         <module>BProVe-Logic</module>
         <module>BIMP-Editor-Plugin</module>
         <module>BIMP-Portal-Plugin</module>
+
         <module>BPMNDiagramImporter-Logic</module>
         <module>BPMNMiner-Logic</module>
         <module>BPMNMiner-Portal-Plugin</module>
+
         <module>Cmapper-Portal-Plugin</module>
+
         <module>Compare-Logic</module>
         <module>Compare-Portal-Plugin</module>
+
         <module>LTL-Conf-Logic</module>
         <module>LTL-Conf-Portal-Plugin</module>
         <module>APM-Logic</module>
@@ -138,6 +142,7 @@
         <module>APM-Compliance-Portal-Plugin</module>
         <module>APM-Comp-Guards-Logic</module>
         <module>APM-Comp-Guards-Portal-Plugin</module>
+
         <module>IBPStruct-Logic</module>
         <module>IBPStruct-Portal-Plugin</module>
         <module>Activity-Filter-Logic</module>
@@ -153,8 +158,10 @@
         <module>Metrics-Portal-Plugin</module>
         <module>PerformanceMiner-Logic</module>
         <module>PerformanceMiner-Portal-Plugin</module>
+
         <module>Predictive-Monitor-Logic</module>
         <module>Predictive-Monitor-Portal-Plugin</module>
+        <module>Predictor-Training-Portal-Plugin</module>
         <module>PQL-Indexer-Portal-Plugin</module>
         <module>PQL-Logic</module>
         <module>PQL-Logic-WS</module>
@@ -185,6 +192,7 @@
         <module>Apromore-Portal</module>
         <module>Apromore-Manager</module>
         <module>Apromore-Manager-WS</module>
+
         <module>Apromore-PQL-Indexer</module>
 
         <!-- Assembles the Bundles and repositories -->
@@ -192,18 +200,19 @@
         <module>Apromore-Assembly/Filestore-Assembly</module>
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
+
         <module>Apromore-Assembly/PQL-Indexer-Assembly</module>
         <module>Apromore-Assembly/Predictive-Monitor-Assembly</module>
 
         <!-- Command line tools -->
         <module>Apromore-Extras/bpmncmap</module>
-        <module>Supplements/cpfImporter</module>
-        <module>Supplements/bpmn2cpf</module>
-        <module>Supplements/cpf2bpmn</module>
-        <module>Supplements/cpf2epml</module>
-        <module>Supplements/cpf2pnml</module>
-        <module>Supplements/epml2cpf</module>
-        <module>Supplements/pnml2cpf</module>
+        <!--<module>Supplements/cpfImporter</module>-->
+        <!--<module>Supplements/bpmn2cpf</module>-->
+        <!--<module>Supplements/cpf2bpmn</module>-->
+        <!--<module>Supplements/cpf2epml</module>-->
+        <!--<module>Supplements/cpf2pnml</module>-->
+        <!--<module>Supplements/epml2cpf</module>-->
+        <!--<module>Supplements/pnml2cpf</module>-->
 
     </modules>
 
@@ -399,13 +408,8 @@
         <dependencies>
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
-                <artifactId>bpmnminer-commandline</artifactId>
-                <version>1.0.20180315</version>
-            </dependency>
-            <dependency>
-                <groupId>com.raffaeleconforti</groupId>
-                <artifactId>noisefiltering-event-commandline</artifactId>
-                <version>1.0.20180315</version>
+                <artifactId>assembly</artifactId>
+                <version>1.0.20180719</version>
             </dependency>
 
             <dependency>
@@ -423,7 +427,7 @@
             <dependency>
                 <groupId>org.eclipse.collections</groupId>
                 <artifactId>eclipse-collections</artifactId>
-                <version>8.0.0-M1</version>
+                <version>9.2.0</version>
             </dependency>
 
             <dependency>
@@ -459,12 +463,16 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
             <dependency>
                 <groupId>org.apromore</groupId>
-                <artifactId>bpmnminer-osgi</artifactId>
+                <artifactId>raffaeleconforti-osgi</artifactId>
                 <version>1.1</version>
             </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.apromore</groupId>-->
+                <!--<artifactId>bpmnminer-osgi</artifactId>-->
+                <!--<version>1.1</version>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>prodrift-osgi</artifactId>

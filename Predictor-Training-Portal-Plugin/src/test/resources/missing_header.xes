@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<log xes.version="1849.2016" xes.features="">
+  <extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext"/>
+  <extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
+  <extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/>
+  <classifier name="Event Name" scope="event" keys="concept:name"/>
+  <classifier name="(Event Name AND Lifecycle transition)" scope="event" keys="concept:name lifecycle:transition"/>
+  <string key="concept:name" value="XES Event Log"/>
+  <trace>
+    <string key="concept:name" value="c_617529015"/>
+    <event>
+      <string key="LoanGoal" value="Home improvement"/>
+      <string key="Action" value="Created"/>
+      <float key="RequestedAmount" value="20000.0"/>
+      <string key="Resource" value="User_1"/>
+      <float key="activity_duration" value="0.0"/>
+      <int key="weekday" value="4"/>
+      <float key="FirstWithdrawalAmount" value="0.0"/>
+      <date key="time:timestamp" value="2016-09-09T06:58:02.573Z"/>
+      <float key="NumberOfTerms" value="0.0"/>
+      <string key="duration" value="0.0"/>
+      <float key="elapsed" value="0.0"/>
+      <string key="ApplicationType" value="New credit"/>
+      <float key="remtime" value="2761324.019"/>
+      <string key="concept:name" value="A_Create Application"/>
+      <float key="MonthlyCost" value="0.0"/>
+      <int key="month" value="9"/>
+      <int key="hour" value="16"/>
+      <string key="EventOrigin" value="Application"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <string key="CreditScore" value="missing"/>
+      <float key="OfferedAmount" value="0.0"/>
+    </event>
+    <event>
+      <string key="LoanGoal" value="Home improvement"/>
+      <string key="Action" value="statechange"/>
+      <float key="RequestedAmount" value="20000.0"/>
+      <string key="Resource" value="User_1"/>
+      <float key="activity_duration" value="0.0"/>
+      <int key="weekday" value="4"/>
+      <float key="FirstWithdrawalAmount" value="0.0"/>
+      <date key="time:timestamp" value="2016-09-09T06:58:02.637Z"/>
+      <float key="NumberOfTerms" value="0.0"/>
+      <string key="duration" value="0.00106666666667"/>
+      <float key="elapsed" value="0.064"/>
+      <string key="ApplicationType" value="New credit"/>
+      <float key="remtime" value="2761323.955"/>
+      <string key="concept:name" value="A_Submitted"/>
+      <float key="MonthlyCost" value="0.0"/>
+      <int key="month" value="9"/>
+      <int key="hour" value="16"/>
+      <string key="EventOrigin" value="Application"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <string key="CreditScore" value="missing"/>
+      <float key="OfferedAmount" value="0.0"/>
+    </event>
+  </trace>
+</log>

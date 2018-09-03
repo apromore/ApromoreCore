@@ -20,17 +20,9 @@
 
 package org.apromore.plugin.portal.stagemining;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import org.apromore.plugin.portal.PortalContext;
-import org.zkoss.zul.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
-import java.util.List;
-import java.io.File;
-import java.io.FileOutputStream;
 import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
@@ -41,8 +33,17 @@ import org.processmining.stagemining.models.DecompositionTree;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Window;
+import org.zkoss.zul.*;
 import org.zkoss.zul.ext.Selectable;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 
 public class StageMiningShowResult { //extends SelectorComposer<Window> {
@@ -150,7 +151,7 @@ public class StageMiningShowResult { //extends SelectorComposer<Window> {
         final String TRACE_COMPLETE_STATUS = "complete";
         final String STAGE_NAME_PREFIX = "Stage";
         
-        XFactoryNaiveImpl factory = new XFactoryNaiveImpl();
+        XFactory factory = new XFactoryNaiveImpl();
         XLog newLog = factory.createLog(log.getAttributes());
         
         List<Set<String>> activitySets = tree.getActivityLabelSets(tree.getMaxLevelIndex());

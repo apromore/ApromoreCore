@@ -87,7 +87,8 @@ public class CreatePredictorController {
                 }
 
                 LOGGER.info("Creating predictor");
-                Predictor predictor = predictorsListModel.createPredictor(nameTextbox.getValue(), typeCombobox.getValue(), pklMedia.getStreamData());
+                final String[] typeCodes = { "-1", "next", "remtime" };
+                Predictor predictor = predictorsListModel.createPredictor(nameTextbox.getValue(), typeCodes[typeCombobox.getSelectedIndex()], pklMedia.getStreamData());
                 LOGGER.info("Created predictor " + predictor.getName());
 
                 window.detach();

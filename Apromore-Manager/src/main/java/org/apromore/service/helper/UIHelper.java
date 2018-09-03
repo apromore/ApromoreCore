@@ -73,7 +73,6 @@ public class UIHelper implements UserInterfaceHelper {
     private GroupProcessRepository gpRepository;
     private GroupLogRepository glRepository;
     private ProcessModelVersionRepository pmvRepository;
-    private FolderRepository fRepository;
     private WorkspaceService workspaceService;
 
 
@@ -102,7 +101,6 @@ public class UIHelper implements UserInterfaceHelper {
         this.gpRepository = groupProcessRepository;
         this.glRepository = groupLogRepository;
         this.pmvRepository = processModelVersionRepository;
-        this.fRepository = folderRepository;
         this.workspaceService = workspaceService;
     }
 
@@ -129,7 +127,7 @@ public class UIHelper implements UserInterfaceHelper {
         verType.setCreationDate(created);
         verType.setLastUpdate(lastUpdate);
         verType.setVersionNumber(pmv.getVersionNumber());
-        verType.setRanking("");
+        verType.setRanking(process.getRanking());
         if (pmv.getNumEdges() == 0 && pmv.getNumVertices() == 0) {
             verType.setEmpty(Boolean.TRUE);
         } else {
@@ -228,7 +226,7 @@ public class UIHelper implements UserInterfaceHelper {
         SummariesType processSummaries = new SummariesType();
         processSummaries.setTotalCount(pRepository.count());
         processSummaries.setOffset(new Long(pageIndex * pageSize));
-        processSummaries.setCount(new Long(processes.getTotalElements()));
+        processSummaries.setCount(processes.getTotalElements());
         for (Process process: processes.getContent()) {
             processSummaries.getSummary().add(buildProcessSummary(process));
         }
@@ -246,7 +244,7 @@ public class UIHelper implements UserInterfaceHelper {
         SummariesType logSummaries = new SummariesType();
         logSummaries.setTotalCount(lRepository.count());
         logSummaries.setOffset(new Long(pageIndex * pageSize));
-        logSummaries.setCount(new Long(logs.getTotalElements()));
+        logSummaries.setCount(logs.getTotalElements());
 
         for (Log log: logs.getContent()) {
             logSummaries.getSummary().add(buildLogSummary(log));
@@ -379,6 +377,7 @@ public class UIHelper implements UserInterfaceHelper {
                 versionSummary.setCreationDate(processModelVersion.getCreateDate());
                 versionSummary.setLastUpdate(processModelVersion.getLastUpdateDate());
                 versionSummary.setVersionNumber(processModelVersion.getVersionNumber());
+                versionSummary.setRanking(processSummary.getRanking());
                 if (processVersionType != null) {
                     versionSummary.setScore(processVersionType.getScore());
                 }
@@ -419,8 +418,8 @@ public class UIHelper implements UserInterfaceHelper {
 
             if (ann.getNatve() != null) {
                 annotation.setNativeType(ann.getNatve().getNativeType().getNatType());
+                buildAnnotationNames(ann.getNatve(), annotation);
             }
-            buildAnnotationNames(ann.getNatve(), annotation);
 
             versionSummary.getAnnotations().add(annotation);
         }

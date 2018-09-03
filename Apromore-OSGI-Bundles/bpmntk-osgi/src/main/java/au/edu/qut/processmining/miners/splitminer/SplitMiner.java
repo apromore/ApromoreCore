@@ -74,7 +74,7 @@ public class SplitMiner {
     public BPMNDiagram getBPMNDiagram() { return bpmnDiagram; }
 
     public BPMNDiagram mineBPMNModel(XLog log, XEventClassifier xEventClassifier, double percentileFrequencyThreshold, double parallelismsThreshold,
-                                     DFGPUIResult.FilterType filterType, boolean percentileOnBest,
+                                     DFGPUIResult.FilterType filterType, boolean parallelismsFirst,
                                      boolean replaceIORs, boolean removeSelfLoops, SplitMinerUIResult.StructuringTime structuringTime)
     {
 //        System.out.println("SplitMiner - starting ...");
@@ -88,7 +88,7 @@ public class SplitMiner {
         this.log = LogParser.getSimpleLog(log, xEventClassifier);
 //        System.out.println("SplitMiner - log parsed successfully");
 
-        generateDFGP(percentileFrequencyThreshold, parallelismsThreshold, filterType, percentileOnBest);
+        generateDFGP(percentileFrequencyThreshold, parallelismsThreshold, filterType, parallelismsFirst);
         try {
             transformDFGPintoBPMN();
             if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
@@ -101,8 +101,8 @@ public class SplitMiner {
         return bpmnDiagram;
     }
 
-    private void generateDFGP(double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType, boolean percentileOnBest) {
-        dfgp = new DirectlyFollowGraphPlus(log, percentileFrequencyThreshold, parallelismsThreshold, filterType, percentileOnBest);
+    private void generateDFGP(double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType, boolean parallelismsFirst) {
+        dfgp = new DirectlyFollowGraphPlus(log, percentileFrequencyThreshold, parallelismsThreshold, filterType, parallelismsFirst);
         dfgp.buildDFGP();
     }
 

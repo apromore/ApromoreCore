@@ -410,7 +410,8 @@ CREATE TABLE `membership` (
   `failed_password_attempts` int(11) NOT NULL DEFAULT '0',
   `failed_answer_attempts` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY (`userId`) USING BTREE,
+  UNIQUE KEY (`userId`) USING BTREE,
+  UNIQUE KEY (`email`) USING BTREE,
   CONSTRAINT `FK_users` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -229,22 +229,24 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
             if( idToNode.get(boundToFix.get(e)) instanceof Activity ) {
                 e.setExceptionFor((Activity) idToNode.get(boundToFix.get(e)));
                 ((Activity) idToNode.get(boundToFix.get(e))).incNumOfBoundaryEvents();
+                LOGGER.info("FIXING - boundaryEvent: " + e.getLabel() + " > " + idToNode.get(boundToFix.get(e)).getLabel());
             } else LOGGER.info("Unfixable boundaryEvent: " + e.getLabel() + " > " + boundToFix.get(e));
 
         for( Event e : diagram.getEvents() )
             if( (e.getEventUse() == Event.EventUse.CATCH) && (e.getEventType() == Event.EventType.INTERMEDIATE) && (diagram.getInEdges(e).size() == 0) ) {
                 if( e.getParentSubProcess() != null ) {
-                    e.setExceptionFor(e.getParentSubProcess());
-                    e.getParentSubProcess().incNumOfBoundaryEvents();
+//                    e.setExceptionFor(e.getParentSubProcess());
+//                    e.getParentSubProcess().incNumOfBoundaryEvents();
                     LOGGER.info("FIX - found ghost boundary event: " + e.getId() + " for " + e.getParentSubProcess().getId());
-                    SubProcess parentProcess = e.getParentSubProcess().getParentSubProcess();
+//                    SubProcess parentProcess = e.getParentSubProcess().getParentSubProcess();
                     Swimlane pool = e.getParentSubProcess().getParentPool();
-                    e.getParentSubProcess().getChildren().remove(e);
-                    e.setParentSubprocess(parentProcess);
+//                    e.getParentSubProcess().getChildren().remove(e);
+//                    e.setParentSubprocess(parentProcess);
+                    e.getBoundingNode().setParentSubprocess(e.getParentSubProcess());
                     if(e.getParentSwimlane() != null) e.getParentSwimlane().getChildren().remove(e);
                     e.setParentSwimlane(pool);
                     for( BPMNEdge<? extends BPMNNode, ? extends BPMNNode> oe : diagram.getOutEdges(e) )
-                        fixExceptionFlowParents(oe.getTarget(), pool, parentProcess);
+                        fixExceptionFlowParents(oe.getTarget(), pool, e.getParentSubProcess());
                 } else LOGGER.error("ERROR - impossible to fix ghost boundary event: " + e.getId());
             }
     }
@@ -377,7 +379,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
         e.setParentSwimlane(pool);
         if( toFix ) boundToFix.put(e, activityID);
         idToNode.put(event.getId(), e);
-        //LOGGER.info("Added Event(" + e.getEventType() + "," + e.getEventTrigger() + "): " + event.getId() + " = " + e.getId());
+        LOGGER.info("Added Event(" + e.getEventType() + "," + e.getEventTrigger() + "): " + e.getLabel() + " " + event.getId() + " = " + e.getId());
     }
 
     private void addTask(TTask task, SubProcess parentProcess, Swimlane pool) {

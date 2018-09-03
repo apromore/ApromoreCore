@@ -74,7 +74,7 @@
         <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
 
-	<include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
+	    <include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
         <include name="APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
 
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
@@ -89,6 +89,7 @@
         <!--
         <include name="Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
         <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+        <include name="Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
         -->
 
         <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
@@ -96,7 +97,7 @@
 
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
-        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
+        <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
@@ -118,6 +119,9 @@
 
         <include name="StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
+
+        <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
+        <include name="Supplements/process-discoverer-1.0.20180719.jar"/>
     </fileset>
 
     <fileset id="pickupRepoServer" dir=".">
@@ -146,7 +150,7 @@
         <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
 
-	<include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
+	    <include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
         <include name="APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
 
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
@@ -161,6 +165,7 @@
         <!--
         <include name="Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
         <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+        <include name="Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
         -->
 
         <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
@@ -168,7 +173,7 @@
 
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
-        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
+        <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
@@ -190,6 +195,9 @@
 
         <include name="StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
+
+        <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
+        <include name="Supplements/process-discoverer-1.0.20180719.jar"/>
 
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
         -->
@@ -231,7 +239,7 @@
         <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
 
-	<include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
+	    <include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
         <include name="APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
 
         <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
@@ -249,6 +257,7 @@
         <!--
         <include name="Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
         <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+        <include name="Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
         -->
 
         <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
@@ -256,7 +265,7 @@
 
         <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
-        <include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>
+        <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
 
         <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
         <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
@@ -282,6 +291,9 @@
 
         <include name="StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
+
+        <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
+        <include name="Supplements/process-discoverer-1.0.20180719.jar"/>
 
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
         <include name="APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
@@ -396,7 +408,18 @@
         </exec>
     </target>
 
-    <target name="start-virgo-standalone" depends="set-permissions,copy-virgo-standalone">
+    <target name="start-virgo-standalone" depends="set-permissions,copy-virgo-standalone,delete-standalone">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean"/>
+        </exec>
+    </target>
+
+    <target name="start-virgo-oneclick" depends="set-permissions,copy-virgo,delete-oneclick">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -438,6 +461,93 @@
         </exec>
     </target>
 
+    <target name="delete-standalone">
+        <delete file="${dir-virgo}/pickup/100-manager.plan"/>
+        <delete file="${dir-virgo}/pickup/101-portal.plan"/>
+        <delete file="${dir-virgo}/pickup/102-filestore.plan"/>
+        <delete file="${dir-virgo}/pickup/104-editor.plan"/>
+        <copy file="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan2" tofile="${dir-virgo}/pickup/100-manager.plan" overwrite="true"/>
+        <copy file="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan2" tofile="${dir-virgo}/pickup/101-portal.plan" overwrite="true"/>
+        <copy file="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan2" tofile="${dir-virgo}/pickup/104-editor.plan" overwrite="true"/>
+        <delete file="${dir-virgo}/pickup/annotation-epml-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/annotation-xpdl-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/annotation-yawl-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/apm-comp-guards-logic-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/apm-comp-guards-portal-plugin-1.1.war"/>
+        <delete file="${dir-virgo}/pickup/apm-compliance-logic-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/apm-compliance-portal-plugin-1.1.war"/>
+        <delete file="${dir-virgo}/pickup/apm-logic-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/apm-portal-plugin-1.1.war"/>
+        <delete file="${dir-virgo}/pickup/bimp-editor-plugin-1.0.war"/>
+        <delete file="${dir-virgo}/pickup/bimp-portal-plugin-1.0.jar"/>
+        <delete file="${dir-virgo}/pickup/ibpstruct-portal-plugin-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/canoniser-aris-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/canoniser-epml-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/canoniser-xpdl-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/canoniser-yawl-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/cmapper-portal-plugin-1.1.war"/>
+        <delete file="${dir-virgo}/pickup/gbebop-logic-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/gbebop-portal-plugin-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/gbprove-logic-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/ltl-conf-logic-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/ltl-conf-portal-plugin-1.1.war"/>
+        <delete file="${dir-virgo}/pickup/perfmining-logic-1.0.jar"/>
+        <delete file="${dir-virgo}/pickup/perfmining-portal-plugin-1.0.jar"/>
+        <delete file="${dir-virgo}/pickup/prodrift-logic-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/prodrift-portal-plugin-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/quaestio-portal-plugin-1.1.war"/>
+        <delete file="${dir-virgo}/pickup/similarity-clusters-portal-plugin-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/stagemining-logic-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/stagemining-portal-plugin-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
+        <delete file="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
+        <delete file="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
+
+        <delete file="${dir-virgo}/pickup/org.eclipse.virgo.apps.repository_3.6.4.RELEASE.par"/>
+        <delete file="${dir-virgo}/pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar"/>
+
+        <delete file="${dir-virgo}/repository/usr/antlr4-runtime-osgi-4.3.jar"/>
+        <delete file="${dir-virgo}/repository/usr/bpmnminer-commandline-1.0.20180315.jar"/>
+        <delete file="${dir-virgo}/repository/usr/bpmnminer-commandline-1.0.20180315.jar"/>
+        <delete file="${dir-virgo}/repository/usr/noisefiltering-event-commandline-1.0.20180315.jar"/>
+        <delete file="${dir-virgo}/repository/usr/pn-automata-conv-osgi-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/prom-pnml-osgi-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/prom5-lib-6.5.20170418.jar"/>
+        <delete file="${dir-virgo}/repository/usr/themis-osgi-1.0.jar"/>
+
+        <delete file="${dir-virgo}/repository/usr/log4j-1.2.17.jar"/>
+        <delete file="${dir-virgo}/repository/usr/log4j-over-slf4j-1.7.12.jar"/>
+        <delete file="${dir-virgo}/repository/usr/logback-classic-1.0.13.jar"/>
+
+        <delete file="${dir-virgo}/repository/usr/apm-verification-osgi-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/apromore-filestore-1.1.war"/>
+        <delete file="${dir-virgo}/repository/usr/apromore-pql-indexer-1.1.war"/>
+        <delete file="${dir-virgo}/repository/usr/declare-visualizer-osgi-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/editor-platform-extension-epc-1.2.jar"/>
+        <delete file="${dir-virgo}/repository/usr/editor-platform-extension-petrinet-1.2.jar"/>
+        <delete file="${dir-virgo}/repository/usr/editor-platform-extension-xpdl-1.2.jar"/>
+        <delete file="${dir-virgo}/repository/usr/editor-platform-extension-yawl-1.2.jar"/>
+        <delete file="${dir-virgo}/repository/usr/ltl-conf-check-osgi-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/ltl-to-automaton-osgi-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/pql-osgi-1.2.jar"/>
+        <delete file="${dir-virgo}/repository/usr/prodrift-osgi-2.4.jar"/>
+        <delete file="${dir-virgo}/repository/usr/aris-schema-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/cmap-schema-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/epml-schema-1.1.jar"/>
+
+        <delete file="${dir-virgo}/repository/usr/rfl-schema-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/yawl-schema-1.1.jar"/>
+    </target>
+
+    <target name="delete-oneclick">
+        <delete file="${dir-virgo}/pickup/annotation-yawl-1.1.jar"/>
+        <delete file="${dir-virgo}/pickup/canoniser-yawl-1.1.jar"/>
+        <delete file="${dir-virgo}/repository/usr/editor-platform-extension-yawl-1.2.jar"/>
+        <!--<delete file="${dir-virgo}/repository/usr/yawl-schema-1.1.jar"/>-->
+        <delete file="${dir-virgo}/pickup/104-editor.plan"/>
+        <copy file="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan1" tofile="${dir-virgo}/pickup/104-editor.plan" overwrite="true"/>
+    </target>
+
     <target name="copy-virgo-standalone" depends="clean-virgo">
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
@@ -448,12 +558,11 @@
                 <include name="**/target/apm-verification-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
                 <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
-                <include name="**/target/prom-pnml-osgi-1.1.jar"/>	
+                <include name="**/target/prom-pnml-osgi-1.1.jar"/>
 		        <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
 		        <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
-                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
-                <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
+                <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
                 <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
             </fileset>
             <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
@@ -500,11 +609,11 @@
                 <exclude name="**/core/**/*.jar"/>
                 <exclude name="sample/target/*.jar"/>
             </fileset>
-            <fileset dir="${dir-deploy}">
-                <include name="**/target/*.jar"/>
-                <exclude name="**/target/*-sources.jar"/>
-                <exclude name="**/core/**/*.jar"/>
-            </fileset>
+            <!--<fileset dir="${dir-deploy}">-->
+                <!--<include name="**/target/*.jar"/>-->
+                <!--<exclude name="**/target/*-sources.jar"/>-->
+                <!--<exclude name="**/core/**/*.jar"/>-->
+            <!--</fileset>-->
         </copy>
     </target>
 
@@ -517,13 +626,12 @@
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/apm-verification-osgi-1.1.jar"/>
                 <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
-		<include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
-		<include name="**/target/prom-pnml-osgi-1.1.jar"/>
-		<include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
-		<include name="**/target/declare-visualizer-osgi-1.1.jar"/>
+                <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
+                <include name="**/target/prom-pnml-osgi-1.1.jar"/>
+                <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+                <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
-                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
-                <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
+                <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
                 <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
             </fileset>
 
@@ -575,11 +683,11 @@
                 <exclude name="**/core/**/*.jar"/>
                 <exclude name="sample/target/*.jar"/>
             </fileset>
-            <fileset dir="${dir-deploy}">
-                <include name="**/target/*.jar"/>
-                <exclude name="**/target/*-sources.jar"/>
-                <exclude name="**/core/**/*.jar"/>
-            </fileset>
+            <!--<fileset dir="${dir-deploy}">-->
+                <!--<include name="**/target/*.jar"/>-->
+                <!--<exclude name="**/target/*-sources.jar"/>-->
+                <!--<exclude name="**/core/**/*.jar"/>-->
+            <!--</fileset>-->
         </copy>
 
         <!-- PQL indexing bot -->
@@ -587,6 +695,12 @@
     </target>
 
     <target name="copy-virgo" depends="clean-virgo">
+        <copy file="Supplements/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
+        <copy file="Supplements/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
+        <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
+        <copy file="Supplements/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
+        <copy file="Supplements/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
+
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
                 <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
@@ -600,8 +714,7 @@
                 <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
                 <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>
-                <include name="**/target/bpmnminer-osgi-1.1.jar"/>
-                <include name="**/target/infrequent-behaviour-filter-osgi-1.1.jar"/>
+                <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
                 <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
                 <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
                 <include name="**/target/json-osgi-20090211.jar"/>
@@ -668,11 +781,11 @@
                 <exclude name="**/core/**/*.jar"/>
             </fileset>
             -->
-            <fileset dir="${dir-deploy}">
-                <include name="**/target/*.jar"/>
-                <exclude name="**/target/*-sources.jar"/>
-                <exclude name="**/core/**/*.jar"/>
-            </fileset>
+            <!--<fileset dir="${dir-deploy}">-->
+                <!--<include name="**/target/*.jar"/>-->
+                <!--<exclude name="**/target/*-sources.jar"/>-->
+                <!--<exclude name="**/core/**/*.jar"/>-->
+            <!--</fileset>-->
         </copy>
 
         <!-- PQL indexing bot -->

@@ -325,7 +325,7 @@ public class DiscoverProcessMapController {
                     System.out.println(layout);
 
                     XLog filtered = logVisualizerService.generateFilteredLog(log, manually_removed_activities, 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100);
-                    logAnimationPlugin.execute(portalContext, model, layout, filtered);
+                    logAnimationPlugin.execute(portalContext, model, layout, filtered, false);
                 }
             });
 

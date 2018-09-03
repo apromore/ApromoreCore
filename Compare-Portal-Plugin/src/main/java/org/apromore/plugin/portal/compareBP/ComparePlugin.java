@@ -64,10 +64,11 @@ import org.slf4j.LoggerFactory;
 
 @Component("plugin")
 public class ComparePlugin extends DefaultPortalPlugin {
-    private final CompareService compareService;
-    private final ProcessService processService;
-    private final CanoniserService canoniserService;
-    private final EventLogService eventLogService;
+    @Inject private CompareService compareService;
+    @Inject private ProcessService processService;
+    @Inject private CanoniserService canoniserService;
+    @Inject private EventLogService eventLogService;
+
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
 
     private String label = "Compare";
@@ -77,13 +78,12 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
     @Inject private org.apromore.portal.ConfigBean portalConfig;
 
-    @Inject
-    public ComparePlugin(final CompareService compareService, final ProcessService processService, final CanoniserService canoniserService, final EventLogService eventLogService){
-        this.compareService = compareService;
-        this.processService = processService;
-        this.canoniserService = canoniserService;
-        this.eventLogService = eventLogService;
-    }
+//    public ComparePlugin(final CompareService compareService, final ProcessService processService, final CanoniserService canoniserService, final EventLogService eventLogService){
+//        this.compareService = compareService;
+//        this.processService = processService;
+//        this.canoniserService = canoniserService;
+//        this.eventLogService = eventLogService;
+//    }
 
     @Override
     public String getLabel(Locale locale) {

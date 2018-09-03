@@ -21,33 +21,25 @@
 package org.apromore.plugin.portal.prodrift;
 
 // Java 2 Standard Edition packages
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
-// Java 2 Enterprise Edition packages
-import javax.inject.Inject;
-
-// Third party packages
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.model.Log;
 import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.prodrift.ProDriftDetectionService;
-import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.factory.XFactory;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zul.Messagebox;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.*;
+
+// Java 2 Enterprise Edition packages
+// Third party packages
 
 /**
  * A user interface to the process drift detection service.
@@ -98,18 +90,12 @@ public class ProDriftDetectionPlugin extends DefaultPortalPlugin {
             }
         }
 
-        Map<XLog, String> logs = new HashMap<>();
-        for(LogSummaryType logType : selectedLogSummaryType)
-        {
-            logs.put(eventLogService.getXLog(logType.getId()), logType.getName());
-        }
-
 
         portalContext.getMessageHandler().displayInfo("Executed process drift detection plug-in!");
 
         try {
 
-            new ProDriftController(portalContext, this.proDriftDetectionService, logs);
+            new ProDriftController(portalContext, this.proDriftDetectionService, eventLogService, selectedLogSummaryType);
         } catch (IOException | SuspendNotAllowedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }

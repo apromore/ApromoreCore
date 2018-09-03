@@ -1,16 +1,7 @@
 package org.processmining.stagemining.utils;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -23,8 +14,8 @@ import org.processmining.stagemining.models.graph.Vertex2;
 import org.processmining.stagemining.models.graph.WeightedDirectedEdge;
 import org.processmining.stagemining.models.graph.WeightedDirectedGraph;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
+import java.text.ParseException;
+import java.util.*;
 
 public class GraphUtils {
     /**

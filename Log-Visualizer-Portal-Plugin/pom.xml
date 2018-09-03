@@ -53,14 +53,15 @@
 -->
                         <Embed-Transitive>false</Embed-Transitive>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
+                        <Import-Bundle>
+                            org.apromore.raffaeleconforti-osgi;bundle-version="[1.0,2.0]"
+                        </Import-Bundle>
                         <Import-Package>
-                            <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
-                            org.apromore.plugin,
                             org.springframework.beans.factory.aspectj,
-                            org.processmining.contexts.*;version="[6.0,10.0)",
-                            org.processmining.framework.*;version="[6.0,10.0)",
-                            org.processmining.models.*;version="[6.0,10.0)",
-                            org.processmining.plugins.*;version="[6.0,10.0)",
+                            org.processmining.contexts.*;version="[1.0,2.0)",
+                            org.processmining.framework.*;version="[1.0,2.0)",
+                            org.processmining.models.*;version="[1.0,2.0)",
+                            org.processmining.plugins.*;version="[1.0,2.0)",
                             *
                         </Import-Package>
                         <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGi bundle

@@ -101,8 +101,11 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 if (annotation != null) {
                     mainController.editProcess(process, version, getNativeType(annotation.getNativeType()), annotation.getAnnotationName().get(0),
                         "false", new HashSet<RequestParameterType<?>>());
+//                    mainController.visualizeLog();
                 } else {
-                    mainController.editProcess(process, version, getNativeType(process.getOriginalNativeType()), null, "false",                            new HashSet<RequestParameterType<?>>());
+                    mainController.editProcess(process, version, getNativeType(process.getOriginalNativeType()), null, "false",
+                            new HashSet<RequestParameterType<?>>());
+//                    mainController.visualizeLog();
                 }
             }
 

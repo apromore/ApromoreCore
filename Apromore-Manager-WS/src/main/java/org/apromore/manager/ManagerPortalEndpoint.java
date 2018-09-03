@@ -233,7 +233,16 @@ public class ManagerPortalEndpoint {
         try {
             List<ProcessData> processVersions = new ArrayList<>();
             for (final ProcessVersionIdentifierType p : payload.getProcessVersionIdentifier()) {
-                processVersions.add(new ProcessData(p.getProcessId(), new Version(p.getVersionNumber())));
+                String version = p.getVersionNumber();
+                if(version == null) {
+                    CanonicalProcessType cpt = procSrv.getProcessModelVersion(p.getProcessId(), p.getProcessName(), p.getBranchName(), null, false);
+                    if(cpt.getVersion() != null) {
+                        version = cpt.getVersion();
+                    }else {
+                        version = "1.0";
+                    }
+                }
+                processVersions.add(new ProcessData(p.getProcessId(), new Version(version)));
             }
             procSrv.deleteProcessModel(processVersions);
 

@@ -62,7 +62,7 @@ public class DFGPPlugin {
         SimpleLog sLog = LogParser.getSimpleLog(log, new XEventNameClassifier());
         DirectlyFollowGraphPlus net = new DirectlyFollowGraphPlus(  sLog, result.getPercentileFrequencyThreshold(),
                                                                     result.getParallelismsThreshold(),
-                                                                    result.getFilterType(), result.isPercentileOnbest());
+                                                                    result.getFilterType(), result.isParallelismsFirst());
         net.buildDFGP();
 
         if( debug ) {

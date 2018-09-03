@@ -123,7 +123,7 @@ public class LogAnimationServiceImpl extends DefaultParameterAwarePlugin impleme
         Replayer replayer = new Replayer(bpmnDefinition, params);
         ArrayList<AnimationLog> replayedLogs = new ArrayList();
         if (replayer.isValidProcess()) {
-            LOGGER.info("Process " + bpmnDefinition.getId() + " is valid");
+//            LOGGER.info("Process " + bpmnDefinition.getId() + " is valid");
             EncodeTraces.getEncodeTraces().read(xlogs); //build a mapping from traceId to charstream
             for (Log log: logs) {
 
@@ -135,7 +135,7 @@ public class LogAnimationServiceImpl extends DefaultParameterAwarePlugin impleme
             }
 
         } else {
-            LOGGER.info(replayer.getProcessCheckingMsg());
+//            LOGGER.info(replayer.getProcessCheckingMsg());
         }
 
         /*
@@ -143,7 +143,7 @@ public class LogAnimationServiceImpl extends DefaultParameterAwarePlugin impleme
         * Return Json animation
         * ------------------------------------------
         */
-        LOGGER.info("Start sending back JSON animation script to browser");
+//        LOGGER.info("Start sending back JSON animation script to browser");
         if (replayedLogs.size() > 0) {
 
             //To be replaced

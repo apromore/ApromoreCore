@@ -110,12 +110,10 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
                 }
                 erModel.updateConceptualModel(primaryKeys_entityName, fkeyData, concModel, selectedFKeys, dependencyAlgorithm);
 
-//                groupEntities = entityDiscoverer.discoverGroupEntities(concModel, null, true, true);
-                entityDiscoverer.discoverNonTopEntities(concModel);
-                groupEntities = entityDiscoverer.setGroupEntities(concModel, null, true);
+                groupEntities = entityDiscoverer.discoverNonTopEntities(concModel);
+                groupEntities = entityDiscoverer.setGroupEntities(concModel, groupEntities, false);
                 candidatesEntities = entityDiscoverer.discoverCandidatesEntities(concModel, groupEntities);
                 selectedEntities = candidatesEntities;
-//                selectedEntities = entityDiscoverer.selectEntities(groupEntities, candidatesEntities, true, true);
             } catch (NoEntityException nee) {
                 concModel = null;
                 groupEntities = new ArrayList<Entity>();

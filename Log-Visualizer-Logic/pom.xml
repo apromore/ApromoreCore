@@ -44,12 +44,15 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <Import-Bundle>
+                            org.apromore.raffaeleconforti-osgi;bundle-version="[1.0,2.0]"
+                        </Import-Bundle>
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
-                            org.processmining.contexts.*;version="[6.0,10.0)",
-                            org.processmining.framework.*;version="[6.0,10.0)",
-                            org.processmining.models.*;version="[6.0,10.0)",
-                            org.processmining.plugins.*;version="[6.0,10.0)",
+                            org.processmining.contexts.*;version="[1.0,2.0)",
+                            org.processmining.framework.*;version="[1.0,2.0)",
+                            org.processmining.models.*;version="[1.0,2.0)",
+                            org.processmining.plugins.*;version="[1.0,2.0)",
                             *
                         </Import-Package>
                         <Export-Package>

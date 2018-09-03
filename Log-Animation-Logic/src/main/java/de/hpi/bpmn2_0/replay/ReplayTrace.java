@@ -429,14 +429,14 @@ public class ReplayTrace {
        
     public void calcTiming() {
         if (this.replayer.getReplayParams().isBacktrackingDebug()) {
-            LOGGER.info("REPLAYED TRACE BEFORE TIMING CALC");
+//            LOGGER.info("REPLAYED TRACE BEFORE TIMING CALC");
             this.print();
         }
         
         calcTimingAll();
         
         if (this.replayer.getReplayParams().isBacktrackingDebug()) {
-            LOGGER.info("REPLAYED TRACE AFTER TIMING CALC");
+//            LOGGER.info("REPLAYED TRACE AFTER TIMING CALC");
             this.print();
         }
         
@@ -782,7 +782,7 @@ public class ReplayTrace {
             nodeString += (nodeType + ":" + node.getName() + ":" + dateString + ":" + branchNodes);
             nodeString = this.padLeft(nodeString, totalIndent);
             
-            LOGGER.info(nodeString);
+//            LOGGER.info(nodeString);
             totalIndent += addedIndent;
         }
 

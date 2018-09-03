@@ -1,0 +1,42 @@
+<language-addon>
+    <addon-name>nirdizati-training-ui</addon-name>
+    <language-name>xul/html</language-name>
+  
+    <component>
+        <component-name>navbar</component-name>
+        <component-class>cs.ut.ui.controllers.Navbar</component-class>
+        <widget-class>zul.box.Box</widget-class>
+        <mold>
+            <mold-name>horizontal</mold-name>
+            <mold-uri>mold/hbox.js</mold-uri>
+            <css-uri>css/box.css.dsp</css-uri>
+        </mold>
+        <mold>
+            <mold-name>vertical</mold-name>
+            <mold-uri>mold/vbox.js</mold-uri>
+            <css-uri>css/box.css.dsp</css-uri>
+        </mold>
+    </component>
+  
+    <component>
+        <component-name>navitem</component-name>
+        <component-class>cs.ut.ui.controllers.Navitem</component-class>
+        <widget-class>zul.wgt.Button</widget-class>
+        <text-as>label</text-as><!-- treat text within the element as the label property -->
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>mold/button.js</mold-uri>
+            <css-uri>css/button.css.dsp</css-uri>
+        </mold>
+        <mold>
+            <mold-name>trendy</mold-name>
+            <mold-uri>mold/button.js</mold-uri>
+            <css-uri>css/button.css.dsp</css-uri>
+        </mold>
+        <mold>
+            <mold-name>os</mold-name>
+            <mold-uri>mold/button.js</mold-uri>
+            <css-uri>css/button.css.dsp</css-uri>
+        </mold>
+    </component>
+</language-addon>

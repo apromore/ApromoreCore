@@ -45,6 +45,9 @@
                 <configuration>
                     <!-- Generally, no change should be necessary here unless your plug-in relies on a non-OSGi dependency -->
                     <instructions>
+                        <Import-Bundle>
+                            org.apromore.raffaeleconforti-osgi;bundle-version="[1.0,2.0]"
+                        </Import-Bundle>
                         <Import-Package>
                             <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             org.apromore.plugin,

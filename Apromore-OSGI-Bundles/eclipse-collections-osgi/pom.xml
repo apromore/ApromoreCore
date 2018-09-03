@@ -110,12 +110,12 @@
         <dependency>
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections</artifactId>
-            <version>8.0.0-M1</version>
+            <version>9.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections-api</artifactId>
-            <version>8.0.0-M1</version>
+            <version>9.2.0</version>
         </dependency>
     </dependencies>
 </project>

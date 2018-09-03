@@ -100,7 +100,9 @@
         <include name="Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
         <include name="PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
         <include name="PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
+        <include name="Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
         <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+        <include name="Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
         <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
         <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
         <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>

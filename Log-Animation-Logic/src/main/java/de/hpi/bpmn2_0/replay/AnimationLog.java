@@ -315,8 +315,8 @@ public class AnimationLog {
                         });
                     sequenceByIds.put(seqFlow.getId(), transfers);
                 }
-                //LOGGER.info("Node1:" + seqFlow.getSourceRef().getName() + " id:" + seqFlow.getSourceRef().getId() + 
-                //            "Node2:" + seqFlow.getTargetRef().getName() + " id:" + seqFlow.getTargetRef().getId());
+//                LOGGER.info("Node1:" + seqFlow.getSourceRef().getName() + " id:" + seqFlow.getSourceRef().getId() +
+//                            "Node2:" + seqFlow.getTargetRef().getName() + " id:" + seqFlow.getTargetRef().getId());
                 sequenceByIds.get(seqFlow.getId()).add(TimeUtilities.getInterval(seqFlow));
             }
         }

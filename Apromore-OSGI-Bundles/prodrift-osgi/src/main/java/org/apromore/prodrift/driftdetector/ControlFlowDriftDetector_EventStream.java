@@ -48,15 +48,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.apache.commons.math3.stat.inference.GTest;
-import org.apromore.prodrift.config.BehaviorRelation;
-import org.apromore.prodrift.config.CharacterizationConfig;
-import org.apromore.prodrift.config.DriftConfig;
-import org.apromore.prodrift.config.FeatureExtractionConfig;
-import org.apromore.prodrift.config.InductiveMinerConfig;
-import org.apromore.prodrift.config.NoiseFilterConfig;
-import org.apromore.prodrift.config.RelationFrequency;
-import org.apromore.prodrift.config.StatisticTestConfig;
-import org.apromore.prodrift.config.WindowConfig;
+import org.apromore.prodrift.config.*;
 import org.apromore.prodrift.driftcharacterization.ControlFlowDriftCharacterizer;
 import org.apromore.prodrift.driftcharacterization.PairRelation;
 import org.apromore.prodrift.logabstraction.extension.BasicLogRelationsExt;
@@ -175,9 +167,13 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 	private List<Integer> bigDiffCounts = new ArrayList<>();
 
+	private DriftDetectionSensitivity ddSensitivity = DriftDetectionSensitivity.Low;
+
+
+
 
 	public ControlFlowDriftDetector_EventStream(XLog logFIle, XLog eventStream, int winsize, int activityCount, boolean isAdwin,
-												float noiseFilterPercentage, float detectionSensitivity, boolean withConflict, String logFileName, boolean withCharacterization, int cummulativeChange) {
+												float noiseFilterPercentage, DriftDetectionSensitivity ddSensitivity, boolean withConflict, String logFileName, boolean withCharacterization, int cummulativeChange) {
 
 		Main.isStandAlone = true;
 //		XLog xl = XLogManager.readLog(is, logFileName);
@@ -200,12 +196,14 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 
 
-		if(detectionSensitivity == 0.01)
-			oscilationFactor = 1;
-		else if(detectionSensitivity == 1)
-			oscilationFactor = 0;
-		else
-			oscilationFactor = 	1.0f - detectionSensitivity;
+//		if(driftDetectionSensitivity == 0.01)
+//			oscilationFactor = 1;
+//		else if(driftDetectionSensitivity == 1)
+//			oscilationFactor = 0;
+//		else
+//			oscilationFactor = 	1.0f - driftDetectionSensitivity;
+
+		this.ddSensitivity = ddSensitivity;
 
 		this.driftConfig = DriftConfig.AlphaRelation;
 		this.statisticTest = StatisticTestConfig.QS;
@@ -237,18 +235,20 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 	}
 
-	public ControlFlowDriftDetector_EventStream(XLog logFile, int winsize, boolean isAdwin, float noiseFilterPercentage, float detectionSensitivity, boolean withCharacterization) {
+	public ControlFlowDriftDetector_EventStream(XLog logFile, int winsize, boolean isAdwin, float noiseFilterPercentage, DriftDetectionSensitivity ddSensitivity, boolean withCharacterization) {
 
 		Main.isStandAlone = true;
 //		XLog xl = XLogManager.readLog(is, logFileName);
 		log = logFile;
 
-		if(detectionSensitivity == 0.01)
-			oscilationFactor = 1;
-		else if(detectionSensitivity == 1)
-			oscilationFactor = 0;
-		else
-			oscilationFactor = 	1.0f - detectionSensitivity;
+//		if(driftDetectionSensitivity == 0.01)
+//			oscilationFactor = 1;
+//		else if(driftDetectionSensitivity == 1)
+//			oscilationFactor = 0;
+//		else
+//			oscilationFactor = 	1.0f - driftDetectionSensitivity;
+
+		this.ddSensitivity = ddSensitivity;
 
 		List<Set<String>> startAndEndActivities = XLogManager.getStartAndEndActivities(log);
 //		List<Set<String>> startAndEndActivities = XLogManager.addStartAndEndActivities(log);
@@ -322,6 +322,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 	public ControlFlowDriftDetector_EventStream(XLog logFIle, String logFileName, int winsize, DriftConfig Dcfg,
 												StatisticTestConfig statTest, WindowConfig winCfg, InductiveMinerConfig IMConfig, FeatureExtractionConfig FEConfig,
 												NoiseFilterConfig noiseFilterConfig, Path logPath, float relationNoiseThresh,
+												DriftDetectionSensitivity ddSensitivity,
 												boolean withConflict, boolean isCPNToolsLog, boolean withCharacterization, boolean considerChangeSignificance,
 												CharacterizationConfig charConfig, int minCharDataPoints, int topCharzedDrifts, int cutTopRelationsPercentage,
 												int charBufferSize, String logNameShort, boolean withFragment, boolean withPartialMatching) {
@@ -1181,7 +1182,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 					}else if(statisticTest == StatisticTestConfig.QS)
 					{
-						pValue = Utils.runChiSquareTest(Alpha_FreqMatrix2);
+						pValue = Utils.runChiSquareTest(Alpha_FreqMatrix2, ddSensitivity);
 //						ChiSquareTest cst = new ChiSquareTest();
 //						pValue = cst.chiSquareTest(Alpha_FreqMatrix2);
 

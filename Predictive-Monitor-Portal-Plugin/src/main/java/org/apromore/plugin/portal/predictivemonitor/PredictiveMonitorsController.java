@@ -48,6 +48,7 @@ import javax.xml.datatype.DatatypeFactory;
 // Third party packages
 import org.deckfour.xes.model.XAttributable;
 import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XAttributeLiteral;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
@@ -196,13 +197,27 @@ public class PredictiveMonitorsController {
             // Merge the XES events of all traces into a single list of JSON objects
             List<JSONObject> jsons = new ArrayList<>();
             for (XTrace trace: log) {
+                String caseId = ((XAttributeLiteral) trace.getAttributes().get("concept:name")).getValue();
+                int eventNr = 1;
                 for (XEvent event: trace) {
                     JSONObject json = new JSONObject();
-                    json.put("log", predictiveMonitor.getId());
-                    json.put("case_id", trace.getAttributes().get("concept:name").toString());
-                    addAttributes(log, json);
-                    addAttributes(trace, json);
-                    addAttributes(event, json);
+                    json.put("log_id", predictiveMonitor.getId());
+                    json.put("case_id", caseId);
+                    json.put("event_nr", eventNr);
+                    eventNr++;
+
+                    JSONObject logProperties = new JSONObject();
+                    addAttributes(log, logProperties);
+                    json.put("log_attributes", logProperties);
+
+                    JSONObject traceProperties = new JSONObject();
+                    addAttributes(trace, traceProperties);
+                    json.put("case_attributes", traceProperties);
+
+                    JSONObject eventProperties = new JSONObject();
+                    addAttributes(event, eventProperties);
+                    json.put("event_attributes", eventProperties);
+
                     jsons.add(json);
                 }
             }
@@ -211,30 +226,25 @@ public class PredictiveMonitorsController {
             final DatatypeFactory f = DatatypeFactory.newInstance();
             Collections.sort(jsons, new Comparator<JSONObject>() {
                 public int compare(JSONObject a, JSONObject b) {
-                    return f.newXMLGregorianCalendar(a.optString("time:timestamp")).compare(f.newXMLGregorianCalendar(b.optString("time:timestamp")));
+                    return f.newXMLGregorianCalendar(a.optJSONObject("event_attributes").optString("time:timestamp"))
+                  .compare(f.newXMLGregorianCalendar(b.optJSONObject("event_attributes").optString("time:timestamp")));
                 }
             });
 
             // Export to the Kafka topic
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             JSONArray columns = new JSONArray();
             for (Predictor predictor: predictiveMonitor.getPredictors()) {
                 columns.put(predictor.getId());
             }
             for (JSONObject json: jsons) {
-                //json.put("time:timestamp", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
-                json.put("Activity_Start_Time", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
-                json.put("Activity_End_Time", dateFormat.format(f.newXMLGregorianCalendar(json.optString("time:timestamp")).toGregorianCalendar().getTime()));
-                json.put("Key", "1");
-                json.put("columns", columns);
+                json.put("predictors", columns);
                 producer.send(new ProducerRecord<String,String>(eventsTopic, json.toString()));
             }
             LOGGER.info("Exported " + jsons.size() + " log events");
             Messagebox.show("Exported " + jsons.size() + " log events", "Attention", Messagebox.OK, Messagebox.INFORMATION);
 
         } catch (DatatypeConfigurationException | JSONException e) {
-            //Messagebox.show("Unable to export log", "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Unable to export log", "Attention", Messagebox.OK, Messagebox.ERROR);
             LOGGER.error("Unable to export log events", e);
             return;
         }
@@ -243,55 +253,7 @@ public class PredictiveMonitorsController {
 
     private static void addAttributes(XAttributable attributable, JSONObject json) throws JSONException {
         for (Map.Entry<String, XAttribute> entry: attributable.getAttributes().entrySet()) {
-            switch (entry.getKey()) {
-            case "concept:name":
-            case "creator":
-            case "library":
-            case "lifecycle:model":
-            case "lifecycle:transition":
-            case "org:resource":
-            case "variant":
-            case "variant-index":
-                break;
-/*
-            case "time:timestamp":
-                json.put("time", entry.getValue().toString());
-                break;
-*/
-            default:
-                json.put(entry.getKey(), entry.getValue().toString());
-                break;
-            }
+            json.put(entry.getKey(), entry.getValue().toString());
         }
-    }
-
-    private static void export(XLog log, File file) throws FileNotFoundException {
-        LOGGER.info("Exporting log to " + file);
-        try (PrintWriter writer = new PrintWriter(file)) {
-            writer.println("case_id,Resource,AMOUNT_REQ,proctime,time,elapsed,activity_name,label,event_nr,last,remtime");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            for (XTrace trace: log) {
-                XEvent lastEvent = trace.get(trace.size() - 1);
-                Date lastTime = ((XAttributeTimestamp) lastEvent.getAttributes().get("time:timestamp")).getValue();
-                for (XEvent event: trace) {
-                    Date time = ((XAttributeTimestamp) event.getAttributes().get("time:timestamp")).getValue();
-                    writer.println(
-                        trace.getAttributes().get("concept:name") + "," +
-                        event.getAttributes().get("Resource") + "," +
-                        event.getAttributes().get("AMOUNT_REQ") + "," +
-                        event.getAttributes().get("proctime") + "," +
-                        dateFormat.format(time) + "," +
-                        event.getAttributes().get("elapsed") + "," +
-                        event.getAttributes().get("activity_name") + "," +
-                        event.getAttributes().get("label") + "," +
-                        event.getAttributes().get("event_nr") + "," +
-                        event.getAttributes().get("last") + "," +
-                        Long.toString((lastTime.getTime() - time.getTime()) / 1000)
-                    );
-                }
-            }
-        }
-        LOGGER.info("Exported log to " + file);
     }
 }

@@ -69,6 +69,18 @@ public class CreatePredictiveMonitorController {
             }
         });
 
+        ((Button) window.getFellow("loadPredictorFile")).addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                new CreatePredictorController(portalContext, predictorsListModel);
+            }
+        });
+
+        ((Button) window.getFellow("deletePredictors")).addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                predictorsListModel.removeAll(predictorsListModel.getSelection());
+            }
+        });
+
         cancelButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 window.onClose();
