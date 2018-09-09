@@ -378,7 +378,7 @@ public class PredictiveMonitorController implements Observer {
             default:
                 try {
                     Double threshold = Double.valueOf(predictor.getType());
-                    String header = "Case outcome > " + (threshold < 0 ? "median" : predictor.getType());
+                    String header = "Case outcome > " + (threshold < 0 ? "median" : (predictor.getType() + "s"));
 
                     columnList.add(new AbstractColumn(header) {
                         private String mostProbableHistogramKey(JSONObject histogram) throws JSONException {

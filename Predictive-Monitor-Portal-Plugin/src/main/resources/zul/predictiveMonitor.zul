@@ -45,11 +45,16 @@
                 <label id="averageCaseDuration" style="font-size: 48pt">-</label>
             </groupbox>
             <vbox>
+                <hbox>
+                    <button id="csv" label="Download CSV" style="height: 32px"/>
+                    <a href="http://apromore.org/documentation/features/visualize-performance-predictions-via-dashboard" target="_blank">
+                        <button label="Help" image="img/Help.png" style="height: 32px"></button>
+                    </a>
+                </hbox>
                 <groupbox style="text-align: center">
                     <caption>Filter case</caption>
                     <textbox id="filterCase"/>
                 </groupbox>
-                <button id="csv" label="Download CSV"/>
             </vbox>
         </hbox>
         <tabbox>

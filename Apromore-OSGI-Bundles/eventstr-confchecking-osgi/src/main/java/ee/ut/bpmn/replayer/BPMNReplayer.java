@@ -86,7 +86,7 @@ public class BPMNReplayer {
 		while (!queue.isEmpty()) {
 			QueueEntry current = queue.remove();
 			visited.add(current);
-			
+
 			System.out.print(current.pomset.getSize()+", ");
 			//System.out.println(current.pomset.toDOT());
 
@@ -123,7 +123,8 @@ public class BPMNReplayer {
 						copy.candidates.remove(f);
 						copy.add2Candidates(s);
 
-						if(!copy.history.contains(s)){
+//						if(!copy.history.contains(s))
+						{
 							if (!queue.contains(copy) && !visited.contains(copy))
 									queue.add(copy);
 							
@@ -135,7 +136,7 @@ public class BPMNReplayer {
 					current.add2Colors(f, "green");
 				} else {
 					if (f instanceof Activity && observable.contains(f.getName())){
-						if (!es.getLabels(current.getNext()).contains(f.getName())) 
+						if (!es.getLabels(current.getNext()).contains(f.getName()))
 							continue;
 						
 						Integer v = getVertex(current, f.getName());

@@ -9,9 +9,9 @@ import java.io.File
 import java.io.FileInputStream
 import org.apromore.plugin.portal.predictortraining.PortalPlugin
 
-class SaveModelOperation(context: SimulationJob) : Operation<SimulationJob>(context) {
+class ExportToPortalOperation(context: SimulationJob) : Operation<SimulationJob>(context) {
 
-    private val log = NirdizatiLogger.getLogger(SaveModelOperation::class)
+    private val log = NirdizatiLogger.getLogger(ExportToPortalOperation::class)
 
     override fun perform() {
 
@@ -23,7 +23,7 @@ class SaveModelOperation(context: SimulationJob) : Operation<SimulationJob>(cont
     }
 
     private fun logNameExists(logName: String): Boolean {
-       return false
+        return false
     }
 
     private fun uniqueLogName(name: String): String {

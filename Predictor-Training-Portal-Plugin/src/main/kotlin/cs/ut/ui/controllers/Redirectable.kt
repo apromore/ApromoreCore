@@ -28,7 +28,7 @@ interface Redirectable {
      */
     fun setContent(dest: String, page: Page, params: String = "") {
         Executions.getCurrent().desktop.setBookmark(dest + (if (params.isNotBlank()) "?" else "") + params, false)
-        page.title = "${Labels.getLabel("header.$dest")} - Nirdizati"
+        page.title = "${Labels.getLabel("header.$dest")}"
         val include = Selectors.iterable(page, "#contentInclude").iterator().next() as Include
         include.src = null
         include.src = pages.first { it.identifier == dest }.valueWithIdentifier("page").value

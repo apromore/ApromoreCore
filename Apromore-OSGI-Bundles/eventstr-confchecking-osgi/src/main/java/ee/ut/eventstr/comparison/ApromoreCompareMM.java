@@ -24,6 +24,8 @@ import ee.ut.bpmn.BPMNProcess;
 import ee.ut.bpmn.utils.BPMN2Reader;
 import ee.ut.bpmn.utils.Petrifier;
 import ee.ut.eventstr.PESSemantics;
+import ee.ut.eventstr.comparison.differences.Difference;
+import ee.ut.eventstr.comparison.differences.Differences;
 import ee.ut.eventstr.comparison.differences.ModelAbstractions;
 import ee.ut.nets.unfolding.BPstructBP.MODE;
 import ee.ut.nets.unfolding.Unfolder_PetriNet;
@@ -42,8 +44,8 @@ public class ApromoreCompareMM {
 	public static void main(String[] args) throws Exception {
 //		String modelName1 = "bpm2014/model77.bpmn";
 //		String modelName2 = "bpm2014/model64.bpmn";
-		String modelName1 = "LoanApp/Loan_baseline.bpmn";
-		String modelName2 = "LoanApp/Loan_baseline_branch1.bpmn";
+		String modelName1 = "problematic/Tutorial Post Drift.bpmn";
+		String modelName2 = "problematic/Tutorial Pre Drift.bpmn";
 		
 		ModelAbstractions model1 = new ModelAbstractions(getFileAsArray(modelName1));
 		ModelAbstractions model2 = new ModelAbstractions(getFileAsArray(modelName2));
@@ -51,9 +53,14 @@ public class ApromoreCompareMM {
 		ApromoreCompareMM comparator = new ApromoreCompareMM();
 		DiffMMGraphicalVerbalizer verbalizer = comparator.analyzeDifferences(model1, model2, new HashSet<String>(model1.getLabels()), new HashSet<String>(model2.getLabels()));
 		verbalizer.verbalize();
-		
+
+		Differences diffs = verbalizer.getDifferences();
+		for(Difference diff : diffs.getDifferences()){
+			System.out.println(diff);
+		}
+
 //		System.out.println(Differences.toJSON(verbalizer.getDifferences()));
-		System.out.println(verbalizer.getStatements());
+//		System.out.println(verbalizer.getStatements());
 	}
 
 	public static byte[] getFileAsArray(String fileName) {

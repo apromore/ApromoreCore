@@ -1295,7 +1295,7 @@ ORYX.Core.Edge = {
 
         g.setAttributeNS(null, "id", null);
 
-        var isFirst = true;
+        //var isFirst = true;
 
         $A(g.childNodes).each((function (path, index) {
             if (ORYX.Editor.checkClassType(path, SVGPathElement)) {
@@ -1358,7 +1358,7 @@ ORYX.Core.Edge = {
                     //handler.points.each((function(point, pIndex){
                     var x = handler.points[i];
                     var y = handler.points[i + 1];
-                    if (isFirst || i > 0) {
+                    if (/*isFirst ||*/ i > 0) {
                         var docker = new ORYX.Core.Controls.Docker({
                             eventHandlerCallback: this.eventHandlerCallback
                         });
@@ -1389,7 +1389,7 @@ ORYX.Core.Edge = {
                     }
                     //}).bind(this));
                 }
-                isFirst = false;
+                //isFirst = false;
             }
         }).bind(this));
 

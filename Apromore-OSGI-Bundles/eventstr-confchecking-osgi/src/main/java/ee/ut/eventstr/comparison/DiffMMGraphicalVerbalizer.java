@@ -448,7 +448,7 @@ public class DiffMMGraphicalVerbalizer {
 		conf1Minus.set(event1, false);
 
 		HashMap<String, Integer> repetitions = new HashMap<String, Integer>();
-		HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event1), pes.getPomset(conf1), repetitions, null);
+		HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event1), pes.getPomset(conf1, loader.getTaskLabels()), repetitions, null);
 
 //		HashMap<String, Integer> repetitionsPre = new HashMap<String, Integer>();
 //		HashMap<String, String> colorsBPMNPre = replayerBPMN.execute("87668757645756454", pes.getPomset(conf1Minus), repetitionsPre, null);
@@ -459,7 +459,7 @@ public class DiffMMGraphicalVerbalizer {
 		conf1aMinus.set(event1a, false);
 
 		HashMap<String, Integer> repetitions2 = new HashMap<String, Integer>();
-		HashMap<String, String> colorsBPMN2 = replayerBPMN.execute(pes.getLabel(event1a), pes.getPomset(conf1a), repetitions2, null);
+		HashMap<String, String> colorsBPMN2 = replayerBPMN.execute(pes.getLabel(event1a), pes.getPomset(conf1a, loader.getTaskLabels()), repetitions2, null);
 //		HashMap<String, Integer> repetitions2Pre = new HashMap<String, Integer>();
 //		HashMap<String, String> colorsBPMN2Pre = replayerBPMN.execute("87668757645756454", pes.getPomset(conf1aMinus), repetitions2Pre, null);
 
@@ -471,7 +471,7 @@ public class DiffMMGraphicalVerbalizer {
 //		else
 //			printModels("m", "2", net, loader, null, newColorsBP, repetitions, repetitions2);
 		
-		runs.addRun(new Run(newColorsBP, repetitions, repetitions2, loader, sentence, pes.getPomset(conf1, conf1a)));
+		runs.addRun(new Run(newColorsBP, repetitions, repetitions2, loader, sentence, pes.getPomset(conf1, conf1a, loader.getTaskLabels())));
 
 		return runs;
 	}
@@ -485,13 +485,13 @@ public class DiffMMGraphicalVerbalizer {
 		conf1.or(conf1a);
 		
 		HashMap<String, Integer> repetitions = new HashMap<String, Integer>();
-		HashMap<String, String> colorsBPMN = replayerBPMN.executeC(pes.getLabel(event1), pes.getLabel(event1a), pes.getPomset(conf1), repetitions, null);
+		HashMap<String, String> colorsBPMN = replayerBPMN.executeC(pes.getLabel(event1), pes.getLabel(event1a), pes.getPomset(conf1, loader.getTaskLabels()), repetitions, null);
 		
 //		HashMap<String, Integer> repetitions2 = new HashMap<String, Integer>();
 //		HashMap<String, String> colorsBPMN2 = replayerBPMN.execute(pes.getLabel(event1a), pes.getPomset(conf1a), repetitions2, null);
 //		HashMap<String, String> newColorsBP = unifyColorsBPConflict(colorsBPMN, colorsBPMN2);
 		
-		runs.addRun(new Run(colorsBPMN, repetitions, repetitions, loader, sentence, pes.getPomset(conf1, conf1a)));
+		runs.addRun(new Run(colorsBPMN, repetitions, repetitions, loader, sentence, pes.getPomset(conf1, conf1a, loader.getTaskLabels())));
 
 		return runs;
 	}
@@ -750,7 +750,7 @@ public class DiffMMGraphicalVerbalizer {
 		trace.addAllStrongCauses(pes.getEvents(conf1));
 
 		HashMap<String, Integer> repetitions = new HashMap<String, Integer>();
-		HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event1), pes.getPomset(conf1),
+		HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event1), pes.getPomset(conf1, loader.getTaskLabels()),
 				repetitions, null);
 
 		BitSet conf1a = pes.getLocalConfiguration(event1a);
@@ -766,14 +766,14 @@ public class DiffMMGraphicalVerbalizer {
 
 		if (intersects.equals(conf1) && pes.arePossibleExtensions(conf1, exts)) {
 			HashMap<String, Integer> repetitions2 = new HashMap<String, Integer>();
-			HashMap<String, String> colorsBPMN2 = replayerBPMN.execute(pes.getLabel(event1a), pes.getPomset(conf1a),
+			HashMap<String, String> colorsBPMN2 = replayerBPMN.execute(pes.getLabel(event1a), pes.getPomset(conf1a, loader.getTaskLabels()),
 					repetitions2, null);
 
 			HashMap<String, String> newColorsBP = unifyColorsBP(colorsBPMN, colorsBPMN2);
 			HashMap<String, Integer> newRep1 = repetitions;
 			HashMap<String, Integer> newRep2 = repetitions2;
 
-			runs.addRun(new Run(newColorsBP, newRep1, newRep2, loader, sentence, pes.getPomset(conf1, conf1a)));
+			runs.addRun(new Run(newColorsBP, newRep1, newRep2, loader, sentence, pes.getPomset(conf1, conf1a, loader.getTaskLabels())));
 			
 //			printModels("m", "1", net, loader, null, newColorsBP, newRep1, newRep2);
 		}
@@ -791,10 +791,10 @@ public class DiffMMGraphicalVerbalizer {
 		trace.addAllStrongCauses(pes.getEvents(conf1));
 
 		HashMap<String, Integer> repetitions = new HashMap<String, Integer>();
-		HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event1), pes.getPomset(conf1),
+		HashMap<String, String> colorsBPMN = replayerBPMN.execute(pes.getLabel(event1), pes.getPomset(conf1, loader.getTaskLabels()),
 				repetitions, null);
 
-		runs.addRun(new Run(colorsBPMN, repetitions, new HashMap<String, Integer>(), loader, sentence, pes.getPomset(conf1)));
+		runs.addRun(new Run(colorsBPMN, repetitions, new HashMap<String, Integer>(), loader, sentence, pes.getPomset(conf1, loader.getTaskLabels())));
 
 		return runs;
 	}
@@ -887,6 +887,10 @@ public class DiffMMGraphicalVerbalizer {
 
 		HashSet<String> filt = new HashSet<>(pes1.getConfigurationLabels(lc1));
 		filt.retainAll(commonLabels);
+
+		if(filt.isEmpty())
+			return "start event";
+
 		return filt.toString();
 	}
 

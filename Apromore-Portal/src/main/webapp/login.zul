@@ -263,6 +263,7 @@
                                                 </h:div>
                                             </h:fieldset>
                                             <h:fieldset>
+                                                <!--
                                                 <h:legend class="two"><h:span>Password Security</h:span></h:legend>
                                                 <h:div class="input-append">
                                                     <h:select name="securityQuestion" class="span4">
@@ -278,6 +279,7 @@
                                                 <h:div class="input-append">
                                                     <h:input class="span4" type="text" name="securityAnswer" placeholder="Answer for your security question"/>
                                                 </h:div>
+                                                -->
                                                 <h:hr class="margin-xx"/>
                                                 <h:button type="submit" class="btn-block btn btn-primary btn-larg">Register</h:button>
                                                 <h:hr class="margin-xm"/>

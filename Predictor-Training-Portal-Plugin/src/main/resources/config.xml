@@ -517,9 +517,9 @@
                 <Value Identifier="operation">DeleteJobOperation</Value>
                 <Value Identifier="icon">z-icon-trash</Value>
             </Node>
-            <Node Identifier="saveModel">
-                <Value Identifier="label">context.saveModel</Value>
-                <Value Identifier="operation">SaveModelOperation</Value>
+            <Node Identifier="exportToPortal">
+                <Value Identifier="label">context.exportToPortal</Value>
+                <Value Identifier="operation">ExportToPortalOperation</Value>
                 <Value Identifier="icon">z-icon-download</Value>
             </Node>
             <Node Identifier="downloadModel">

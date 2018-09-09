@@ -51,15 +51,11 @@ class HeaderController : SelectorComposer<Component>(), Redirectable {
     /**
      * Listener - update selected item in navigation bar when clicked
      */
+    /*
     @Listen("onClick = #headerLogo")
     fun handleLogoClick() {
-        Executions.getCurrent().sendRedirect("..");
-        //setContent(Page.LANDING.value, page)
+        setContent(Page.LANDING.value, page)
         //navbar.selectItem(null)
     }
-
-    @Listen("onClick = #info")
-    fun handleInfoClick() {
-        Executions.getCurrent().sendRedirect("http://apromore.org/documentation/features/visualize-performance-predictions-via-dashboard");
-    }
+    */
 }

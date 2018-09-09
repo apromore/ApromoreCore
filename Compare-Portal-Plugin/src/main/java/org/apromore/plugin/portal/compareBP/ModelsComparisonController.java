@@ -182,17 +182,17 @@ public class ModelsComparisonController extends BaseController {
                 }
             }
 
-            if (editSession1.getAnnotation() == null) {
-                param.put("doAutoLayout", "true");
-            } else if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(editSession1.getNativeType())) {
+//            if (editSession1.getAnnotation() == null) {
+//                param.put("doAutoLayout", "true");
+//            } else if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(editSession1.getNativeType())) {
                 param.put("doAutoLayout", "false");
-            } else {
-                if (editSession1.isWithAnnotation()) {
-                    param.put("doAutoLayout", "false");
-                } else {
-                    param.put("doAutoLayout", "true");
-                }
-            }
+//            } else {
+//                if (editSession1.isWithAnnotation()) {
+//                    param.put("doAutoLayout", "false");
+//                } else {
+//                    param.put("doAutoLayout", "true");
+//                }
+//            }
 
 
             List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve();
