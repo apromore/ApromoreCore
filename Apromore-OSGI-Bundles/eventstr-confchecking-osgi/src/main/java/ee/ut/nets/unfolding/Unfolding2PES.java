@@ -52,6 +52,7 @@ import ee.ut.graph.transitivity.BitsetDAGTransitivity;
 import ee.ut.graph.transitivity.MatrixBasedTransitivity;
 import ee.ut.org.processmining.framework.util.Pair;
 import hub.top.uma.DNodeSet;
+import org.jbpt.utils.IOUtils;
 
 public class Unfolding2PES {
 	private BPstructBPSys sys;
@@ -166,11 +167,11 @@ public class Unfolding2PES {
 
 		MatrixBasedTransitivity.transitiveClosure(matrix);
 		
-		for (DNode node: bp.getBranchingProcess().allEvents) {
-			if (visibleEvents.contains(node)) continue;
-			Arrays.fill(matrix[localMap.get(node)], false);
-		}
-		MatrixBasedTransitivity.transitiveReduction(matrix, numberOfEvents);
+        for (DNode node: bp.getBranchingProcess().allEvents) {
+            if (visibleEvents.contains(node)) continue;
+            Arrays.fill(matrix[localMap.get(node)], false);
+        }
+        MatrixBasedTransitivity.transitiveReduction(matrix, numberOfEvents);
 		
 		Multimap<Integer, Integer> adj = HashMultimap.create();
 		Map<Integer, BitSet> preConcurrency = new HashMap<>();
@@ -289,7 +290,7 @@ public class Unfolding2PES {
 			if (!visibleLabels.contains(labels.get(e)))
 				invisibleEvents.add(e);				
 		
-//		IOUtils.toFile("pes.dot", pes.toDot());
+		IOUtils.toFile("pes.dot", pes.toDot());
 				
 		isomorphism = new HashMap<>();
 		Map<DNode, BiMap<DNode, DNode>> _isomorphism = computeIsomorphism();

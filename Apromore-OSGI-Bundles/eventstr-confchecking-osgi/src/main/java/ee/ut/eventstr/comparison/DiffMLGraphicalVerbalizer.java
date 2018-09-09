@@ -3442,7 +3442,7 @@ public class DiffMLGraphicalVerbalizer {
 		// All configurations
 		BitSet conf1 = pes.getLocalConfiguration(event1);
 
-		runs.addRun(new Run(colorsBPMN, repetitions, new HashMap<String, Integer>(), loader, sentence, pes.getPomset(conf1)));
+		runs.addRun(new Run(colorsBPMN, repetitions, new HashMap<String, Integer>(), loader, sentence, pes.getPomset(conf1,model.getLabels())));
 
 		return runs;
 	}

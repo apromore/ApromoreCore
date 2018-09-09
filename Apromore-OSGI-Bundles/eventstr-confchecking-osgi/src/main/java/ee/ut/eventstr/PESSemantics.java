@@ -290,13 +290,13 @@ public class PESSemantics <T> {
 		return events;
 	}
 
-	public Pomset getPomset(BitSet bs) {
+	public Pomset getPomset(BitSet bs, HashSet<String> observable) {
 		DirectedGraph confgraph = new DirectedGraph();
 		BiMap<Vertex, Integer> map = HashBiMap.<Vertex, Integer> create();
 		HashMap<Integer, String> labels = new HashMap<>();
 		
 		for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1)) 
-			if(!getLabel(i).equals("_0_") && !getLabel(i).equals("_1_")){
+			if(!getLabel(i).equals("_0_") && !getLabel(i).equals("_1_") && observable.contains(getLabel(i))){
 				Vertex v = new Vertex(getLabel(i));
 				map.put(v, i);
 				labels.put(i, getLabel(i));
@@ -313,12 +313,15 @@ public class PESSemantics <T> {
 					}
 			}
 
+		if(confgraph.getEdges().isEmpty())
+			confgraph.addVertices(map.keySet());
+
 		return new Pomset(confgraph, map, labels);
 	}
 	
-	public Pomset getPomset(BitSet conf1, BitSet conf1a) {
-		Pomset po1 = getPomset(conf1);
-		Pomset po2 = getPomset(conf1a);
+	public Pomset getPomset(BitSet conf1, BitSet conf1a, HashSet<String> observable) {
+		Pomset po1 = getPomset(conf1, observable);
+		Pomset po2 = getPomset(conf1a, observable);
 		
 		DirectedGraph confgraph = new DirectedGraph();
 		BiMap<Vertex, Integer> map = HashBiMap.<Vertex, Integer> create();
