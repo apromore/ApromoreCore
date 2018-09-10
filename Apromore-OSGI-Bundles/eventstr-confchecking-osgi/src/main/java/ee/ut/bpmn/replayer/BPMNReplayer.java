@@ -167,7 +167,8 @@ public class BPMNReplayer {
 						}
 					} else {
 						// fix bug .... when a silent task is in a cycle (it will always add it again)
-						if(!current.contains(f.getName())){
+//						if(!current.contains(f.getName()))
+						{
 							QueueEntry copy = null;
 							if(current.containsPO(f.getName())){
 								Integer v = getVertex(current, f.getName());
