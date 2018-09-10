@@ -162,11 +162,15 @@
                                     <row id="driftDetectionSensitivity">
                                         <label value="Drift detection sensitivity" width="100%"/>
                                         <combobox id="driftDetectionSensitivityCombo" readonly="true">
+                                            <comboitem label="Very low"
+                                                       description="Suitable for processes with frequent control-flow behavior changes (most real-life logs)." />
                                             <comboitem label="Low"
                                                        description="Suitable for processes with frequent control-flow behavior changes (most real-life logs)." />
                                             <comboitem label="Medium"
                                                        description="" />
                                             <comboitem label="High"
+                                                       description="" />
+                                            <comboitem label="Very high"
                                                        description="" />
                                         </combobox>
                                     </row>
@@ -177,10 +181,10 @@
 
 
                                     <row spans="2" visible="false">
-                                        <intbox id="maxWinValueRuns" width="100%" disabled="true" visible="false"/>
+                                        <intbox id="maxWinValueRuns" value="100" width="100%" disabled="true" visible="false"/>
                                     </row>
                                     <row spans="2" visible="false">
-                                        <intbox id="maxWinValueEvents" width="100%" disabled="true" visible="false"/>
+                                        <intbox id="maxWinValueEvents" value="5000" width="100%" disabled="true" visible="false"/>
                                     </row>
                                     <row spans="2" visible="false">
                                         <intbox id="activityCount" width="100%" disabled="true"

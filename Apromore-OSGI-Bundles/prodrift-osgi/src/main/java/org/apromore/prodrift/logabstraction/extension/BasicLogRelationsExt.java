@@ -55,18 +55,19 @@ public class BasicLogRelationsExt {
 	private final Map<Pair<XEventClass, XEventClass>, RelationCardinality> twoLoopRelations = new HashMap<Pair<XEventClass, XEventClass>, RelationCardinality>();
 
 	float noiseThresh = 0.05f; // minimum freq of an edge in the DF graph (compared to the maximum edge freq)
-	float loopThresh = 0.3f; // minimum ratio between the loop freq to loop back freq (# of ABA to # of BA)
+	float loopNoiseThresh = 0.3f; // minimum ratio between the loop freq to loop back freq (# of ABA to # of BA)
 
 //	public BasicLogRelationsExt(XLog log) {
 //		super(log);
 //		// TODO Auto-generated constructor stub
 //	}
 
-	public BasicLogRelationsExt(XLog log, XLogInfo summary, float noiseThresh) {
+	public BasicLogRelationsExt(XLog log, XLogInfo summary, float noiseThresh, float loopNoiseThresh) {
 		this.log = log;
 		this.logSummary = summary;
 		eventClasses = summary.getEventClasses();
 		this.noiseThresh = noiseThresh;
+		this.loopNoiseThresh = loopNoiseThresh;
 		initialize(Collections.<Pair<XEventClass, XEventClass>>emptySet());
 	}
 
@@ -193,7 +194,7 @@ public class BasicLogRelationsExt {
 				int loopFreq = rc_loop.getCardinality();
 				int loopBackFreq = rc_df_opposed.getCardinality();
 
-				if(loopFreq < loopBackFreq * loopThresh)
+				if(loopFreq < loopBackFreq * loopNoiseThresh)
 				{
 					RelationCardinality loopFreq_other = alphaRelation_other.getTwoLoopRelations().get(pair);
 					if(loopFreq_other != null)
@@ -203,7 +204,7 @@ public class BasicLogRelationsExt {
 
 						int loopBackFreq_other = alphaRelation_other.getDfRelations().get(opposed_other).getCardinality();
 
-						if(loopFreq_other.getCardinality() < loopBackFreq_other * loopThresh)
+						if(loopFreq_other.getCardinality() < loopBackFreq_other * loopNoiseThresh)
 						{
 							rc_loop.setNoise(true);
 						}
@@ -873,12 +874,12 @@ public class BasicLogRelationsExt {
 		this.noiseThresh = noiseThresh;
 	}
 
-	public float getLoopThresh() {
-		return loopThresh;
+	public float getLoopNoiseThresh() {
+		return loopNoiseThresh;
 	}
 
-	public void setLoopThresh(float loopThresh) {
-		this.loopThresh = loopThresh;
+	public void setLoopNoiseThresh(float loopNoiseThresh) {
+		this.loopNoiseThresh = loopNoiseThresh;
 	}
 
 	public XLog getLog() {

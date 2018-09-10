@@ -127,9 +127,10 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 	private int ReduceWhenDimensionsAbove = 0;
 	private int minExpectedFrequency = 5;
 
-	private float oscilationFactor = 0.1f;
+	private float oscilationFactor = 0.5f;
 
-	private float relationNoiseThresh = 0.05f;
+	private float relationNoiseThresh = 0.1f;
+	private float loopNoiseThresh = 0.1f;
 
 	private float relationStrengthThreshhold = -10f; // set it to less than -1 if you want to go with regular Alpha+
 
@@ -210,8 +211,10 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 		this.winConfig = isAdwin ? WindowConfig.ADWIN : WindowConfig.FWIN;
 		this.IMConfig = InductiveMinerConfig.IM;
 		this.FEConfig = FeatureExtractionConfig.WBANB;
-		this.noiseFilterConfig = relationNoiseThresh == 0f ? NoiseFilterConfig.NoFilter : NoiseFilterConfig.RemoveNoise;
-		this.relationNoiseThresh = this.noiseFilterConfig == NoiseFilterConfig.NoFilter ? 0f : (noiseFilterPercentage / 100.0f);
+		//this.noiseFilterConfig = relationNoiseThresh == 0f ? NoiseFilterConfig.NoFilter : NoiseFilterConfig.RemoveNoise;
+		this.relationNoiseThresh = noiseFilterPercentage / 100.0f;
+		this.loopNoiseThresh = noiseFilterPercentage / 100.0f;
+
 		this.logFileName = logFileName;
 		this.withConflict = withConflict;
 		this.isCPNToolsLog = false;
@@ -293,6 +296,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 //		{
 		this.noiseFilterConfig = NoiseFilterConfig.RemoveNoise;
 		this.relationNoiseThresh = noiseFilterPercentage / 100.0f;
+		this.loopNoiseThresh = noiseFilterPercentage / 100.0f;
 		this.withConflict = false;
 //		}
 
@@ -1029,11 +1033,11 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 		BasicLogRelationsExt alphaRelations_det = null;
 		XLogInfo summary = XLogInfoFactory.createLogInfo(detectionWindowSubLog, XLogInfoImpl.NAME_CLASSIFIER);
-		alphaRelations_det = new BasicLogRelationsExt(detectionWindowSubLog, summary, relationNoiseThresh);
+		alphaRelations_det = new BasicLogRelationsExt(detectionWindowSubLog, summary, relationNoiseThresh, loopNoiseThresh);
 
 		BasicLogRelationsExt alphaRelations_ref = null;
 		summary = XLogInfoFactory.createLogInfo(referenceWindowSubLog, XLogInfoImpl.NAME_CLASSIFIER);
-		alphaRelations_ref = new BasicLogRelationsExt(referenceWindowSubLog, summary, relationNoiseThresh);
+		alphaRelations_ref = new BasicLogRelationsExt(referenceWindowSubLog, summary, relationNoiseThresh, loopNoiseThresh);
 
 //		System.out.println(eventStream.size());
 //		for(XTrace trace : eventStream)

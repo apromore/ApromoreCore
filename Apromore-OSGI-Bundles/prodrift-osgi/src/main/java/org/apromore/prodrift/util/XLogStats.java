@@ -21,6 +21,7 @@ package org.apromore.prodrift.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -300,7 +301,7 @@ public class XLogStats {
 		LocalDateTime start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		LocalDateTime end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-		for (LocalDateTime date = start; date.isBefore(end); date = date.plus(1, (TemporalUnit) timeslot)) {//define time slot (day, week, month, ...)
+		for (LocalDateTime date = start; date.isBefore(end); date = date.plus(1, convertTimeUnit_ChronoUnit(timeslot))) {//define time slot (day, week, month, ...)
 			dates.add(date);
 		    System.out.println(date.format(formatter));
 		}
@@ -340,6 +341,31 @@ public class XLogStats {
 		
 		System.out.println(histo);
 		return histo;
+	}
+
+	public static ChronoUnit convertTimeUnit_ChronoUnit(TimeUnit tu) {
+		if (tu == null) {
+			return null;
+		}
+		switch (tu) {
+			case DAYS:
+				return ChronoUnit.DAYS;
+			case HOURS:
+				return ChronoUnit.HOURS;
+			case MINUTES:
+				return ChronoUnit.MINUTES;
+			case SECONDS:
+				return ChronoUnit.SECONDS;
+			case MICROSECONDS:
+				return ChronoUnit.MICROS;
+			case MILLISECONDS:
+				return ChronoUnit.MILLIS;
+			case NANOSECONDS:
+				return ChronoUnit.NANOS;
+			default:
+				assert false : "there are no other TimeUnit ordinal values";
+				return null;
+		}
 	}
 
 	

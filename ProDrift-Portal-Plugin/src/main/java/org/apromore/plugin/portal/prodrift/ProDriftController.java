@@ -77,7 +77,7 @@ public class ProDriftController {
     private int activityCount = 0;
 
     private int defaultWinSizeRuns = 100;
-    private int defaultWinSizeEvents = -1;
+    private int defaultWinSizeEvents = 5000;
     private int winSizeDividedBy = 10;
 
     private EventLogService eventLogService = null;
@@ -278,11 +278,11 @@ public class ProDriftController {
         else
             this.defaultWinSizeEvents = winSize_timeBased;
 
-        if(defaultWinSizeRuns > caseCount / 2)
-            defaultWinSizeRuns = caseCount / 2;
+        if(defaultWinSizeRuns > caseCount / 4)
+            defaultWinSizeRuns = caseCount / 4;
 
-        if(defaultWinSizeEvents > eventCount / 2)
-            defaultWinSizeEvents = eventCount / 2;
+        if(defaultWinSizeEvents > eventCount / 4)
+            defaultWinSizeEvents = eventCount / 4;
 
 //        if (caseCount / winSizeDividedBy < defaultWinSizeRuns) {
 //
@@ -334,7 +334,7 @@ public class ProDriftController {
 //                ((Listitem)proDriftW.getFellow("reLog")).setSelected(true);
             ((Listitem) proDriftW.getFellow("ADWIN")).setSelected(true);
             ((Doublespinner) proDriftW.getFellow("noiseFilterSpinner")).setValue(10.0);
-            ((Combobox) proDriftW.getFellow("driftDetectionSensitivityCombo")).setSelectedIndex(0);
+            ((Combobox) proDriftW.getFellow("driftDetectionSensitivityCombo")).setSelectedIndex(1);
             winSizeIntBox.setValue(maxWinValueEventsIntBoX.getValue());
 //            }
         }else
@@ -392,9 +392,11 @@ public class ProDriftController {
                     DriftDetectionSensitivity ddSensitivity = DriftDetectionSensitivity.Low;
                     switch (ddSensitivityIndex)
                     {
-                        case 0: ddSensitivity = DriftDetectionSensitivity.Low; break;
-                        case 1: ddSensitivity = DriftDetectionSensitivity.Medium; break;
-                        case 2: ddSensitivity = DriftDetectionSensitivity.High; break;
+                        case 0: ddSensitivity = DriftDetectionSensitivity.VeryLow; break;
+                        case 1: ddSensitivity = DriftDetectionSensitivity.Low; break;
+                        case 2: ddSensitivity = DriftDetectionSensitivity.Medium; break;
+                        case 3: ddSensitivity = DriftDetectionSensitivity.High; break;
+                        case 4: ddSensitivity = DriftDetectionSensitivity.VeryHigh; break;
                     }
 
                     boolean withConflict = /*isSynthetic ? true : */false;
