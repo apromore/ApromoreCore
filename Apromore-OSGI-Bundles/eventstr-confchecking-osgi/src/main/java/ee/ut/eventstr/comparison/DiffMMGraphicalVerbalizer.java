@@ -196,7 +196,7 @@ public class DiffMMGraphicalVerbalizer {
 						}
 
 					if (!found)
-						verbalizeNotFound("model2", pes2.getLabel(i), getContext(i, mappings, 2), i, pes2, replayerBPMN2, loader2);
+						verbalizeNotFound("model 2", pes2.getLabel(i), getContext(i, mappings, 2), i, pes2, replayerBPMN2, loader2);
 				}
 
 			LinkedList<Entry<Integer, Integer>> list = new LinkedList<>(extendedMap.entrySet());
