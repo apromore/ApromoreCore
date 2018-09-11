@@ -48,6 +48,11 @@
         <constructor-arg type="String" value="${git.commit.time}"/>
     </bean>
 
+    <bean id="editor.js" class="java.lang.String">
+        <qualifier value="editor.js"/>
+        <constructor-arg type="String" value="${editor.js}"/>
+    </bean>
+
     <bean id="portalMenuOrder" class="org.apromore.portal.util.ExplicitComparator">
         <constructor-arg type="String" value="${portal.menuorder}"/>
     </bean>
