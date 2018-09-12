@@ -1,5 +1,5 @@
 /*
- * Copyright  2009-2018 The Apromore Initiative.
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -17,15 +17,28 @@
  * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
-package org.apromore.prodrift.driftdetector;
 
-import java.awt.Image;
+package org.apromore.prodrift.exception;
 
-import org.apromore.prodrift.model.ProDriftDetectionResult;
-import org.jfree.chart.JFreeChart;
+public class ProDriftDetectionException extends Exception {
 
-public interface ControlFlowDriftDetector {
+    public ProDriftDetectionException() {
+        // TODO Auto-generated constructor stub
+    }
 
-	public JFreeChart findDrifts() throws InterruptedException;
-	public ProDriftDetectionResult ControlFlowDriftDetectorStart() throws InterruptedException;
+    public ProDriftDetectionException(String message) {
+        super(message);
+        // TODO Auto-generated constructor stub
+    }
+
+    public ProDriftDetectionException(Throwable cause) {
+        super(cause);
+        // TODO Auto-generated constructor stub
+    }
+
+    public ProDriftDetectionException(String message, Throwable cause) {
+        super(message, cause);
+        // TODO Auto-generated constructor stub
+    }
+
 }

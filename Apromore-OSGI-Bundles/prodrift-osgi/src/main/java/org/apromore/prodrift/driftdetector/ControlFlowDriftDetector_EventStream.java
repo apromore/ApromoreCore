@@ -46,11 +46,16 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.exception.NotPositiveException;
+import org.apache.commons.math3.exception.ZeroException;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.apache.commons.math3.stat.inference.GTest;
 import org.apromore.prodrift.config.*;
 import org.apromore.prodrift.driftcharacterization.ControlFlowDriftCharacterizer;
 import org.apromore.prodrift.driftcharacterization.PairRelation;
+import org.apromore.prodrift.exception.ProDriftDetectionException;
 import org.apromore.prodrift.logabstraction.extension.BasicLogRelationsExt;
 import org.apromore.prodrift.logabstraction.extension.BasicLogRelationsExt.RelationCardinality;
 import org.apromore.prodrift.main.Main;
@@ -383,12 +388,10 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 	}
 
 
-	public ProDriftDetectionResult ControlFlowDriftDetectorStart()
-	{
+	public ProDriftDetectionResult ControlFlowDriftDetectorStart() throws InterruptedException {
 
 //		changePatternTest();
 //		changePatternSimpleTestChangeWise();
-
 
 
 //		driftTest0.winSizeTest();
@@ -397,6 +400,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 //		System.out.println("***END MAIN***");
 
 		JFreeChart lineChart= this.findDrifts();
+
 
 		Image img = null;
 		BufferedImage objBufferedImage= lineChart.createBufferedImage(1024,600);
@@ -449,7 +453,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 	}
 
 
-	public JFreeChart findDrifts() {
+	public JFreeChart findDrifts() throws InterruptedException {
 
 		MDcurves.getDriftPoints().clear();
 		MDcurves.getLastReadTrace().clear();
@@ -972,8 +976,7 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 	}
 
-	public LinePlot findDrifts_AlphaRelations(XLog eventStream, List<DriftPoint> DriftPointsList)
-	{
+	public LinePlot findDrifts_AlphaRelations(XLog eventStream, List<DriftPoint> DriftPointsList) throws InterruptedException {
 
 		ControlFlowDriftCharacterizer characterizer = new ControlFlowDriftCharacterizer(logPath, logNameShort, minCharDataPoints, topCharzedDrifts, cutTopRelationsPercentage, considerChangeSignificance, withFragment, withPartialMatching);
 
@@ -1070,6 +1073,9 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 		List<Long> time = new ArrayList<>();
 		for (; ;) {
+
+			if(Thread.interrupted())
+				throw new InterruptedException();
 
 			long t1 = System.currentTimeMillis();
 
@@ -1192,7 +1198,8 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 					}
 
-				}catch(Exception ex)
+				}catch(DimensionMismatchException | NotPositiveException |
+						ZeroException | MaxCountExceededException ex)
 				{
 					pValue = 1;
 				}
@@ -1299,12 +1306,21 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 								subLogA = XLogManager.getCompleteTracesSubLogFromSubTraceSubLog(subLogA, new String[]{Main.startActivity1, Main.startActivity2}, new String[]{Main.endActivity1});
 
 								String mxmlLogPath = logPath.toString().substring(0, logPath.toString().lastIndexOf("\\")+1) + "_sublogB_" + numOfCharacterizedDrifts + ".mxml";
-								ByteArrayOutputStream baos = XLogManager.saveLogInMemory(subLogB, mxmlLogPath);
+								ByteArrayOutputStream baos = null;
+								try {
+									baos = XLogManager.saveLogInMemory(subLogB, mxmlLogPath);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 								mxmlLogPath += ".gz";
 								XLogManager.GzipLogAndSaveInDisk(baos, mxmlLogPath);
 
 								mxmlLogPath = logPath.toString().substring(0, logPath.toString().lastIndexOf("\\")+1) + "_sublogA_" + numOfCharacterizedDrifts + ".mxml";
-								baos = XLogManager.saveLogInMemory(subLogA, mxmlLogPath);
+								try {
+									baos = XLogManager.saveLogInMemory(subLogA, mxmlLogPath);
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 								mxmlLogPath += ".gz";
 								XLogManager.GzipLogAndSaveInDisk(baos, mxmlLogPath);
 							}
@@ -1431,12 +1447,21 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 									subLogA = XLogManager.getCompleteTracesSubLogFromSubTraceSubLog(subLogA, new String[]{Main.startActivity1, Main.startActivity2}, new String[]{Main.endActivity1});
 
 									String mxmlLogPath = logPath.toString().substring(0, logPath.toString().lastIndexOf("\\")+1) + "sublogB_" + numOfCharacterizedDrifts + ".mxml";
-									ByteArrayOutputStream baos = XLogManager.saveLogInMemory(subLogB, mxmlLogPath);
+									ByteArrayOutputStream baos = null;
+									try {
+										baos = XLogManager.saveLogInMemory(subLogB, mxmlLogPath);
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
 									mxmlLogPath += ".gz";
 									XLogManager.GzipLogAndSaveInDisk(baos, mxmlLogPath);
 
 									mxmlLogPath = logPath.toString().substring(0, logPath.toString().lastIndexOf("\\")+1) + "sublogA_" + numOfCharacterizedDrifts + ".mxml";
-									baos = XLogManager.saveLogInMemory(subLogA, mxmlLogPath);
+									try {
+										baos = XLogManager.saveLogInMemory(subLogA, mxmlLogPath);
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
 									mxmlLogPath += ".gz";
 									XLogManager.GzipLogAndSaveInDisk(baos, mxmlLogPath);
 								}
@@ -4876,12 +4901,8 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 			String relation = XLogManager.getEventName(event) + "_" + BehaviorRelation.FOLLOW + "_" + XLogManager.getEventName(t1.get(i));
 			int freq = 0;
 
-			try{
-				freq = Relation_Freq.get(relation);
-			}catch(Exception ex)
-			{
-				System.out.println();
-			}
+			freq = Relation_Freq.get(relation);
+
 
 			if(freq == 1)
 				Relation_Freq.remove(relation);

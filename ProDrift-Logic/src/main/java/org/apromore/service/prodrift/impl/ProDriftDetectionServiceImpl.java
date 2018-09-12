@@ -61,7 +61,7 @@ public class ProDriftDetectionServiceImpl implements ProDriftDetectionService {
     @Transactional(readOnly = false)
     public ProDriftDetectionResult proDriftDetector(XLog xlog, XLog eventStream, String logFileName, boolean isEventBased,
                                                     boolean withGradual, int winSize, int activityCount, boolean isAdwin, float noiseFilterPercentage, DriftDetectionSensitivity ddSensitivity,
-                                                    boolean withConflict, boolean withCharacterization, int cummulativeChange /*, Rengine engineR*/) throws ProDriftDetectionException {
+                                                    boolean withConflict, boolean withCharacterization, int cummulativeChange /*, Rengine engineR*/) throws ProDriftDetectionException, InterruptedException {
 
         ProDriftDetectionResult pddRes = null;
 

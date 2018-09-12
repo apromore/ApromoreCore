@@ -240,7 +240,7 @@ public class LogStreamer {
 	}
 
 
-	public static void main(String args[]) throws IOException
+	public static void main(String args[]) throws Exception
 	{
 
 		Path path = Paths.get("./Detail_Incident_Activity_BPI2014.mxml");

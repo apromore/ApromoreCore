@@ -127,7 +127,7 @@
                                         "/>
                                     </row>
                                     <row id="CummulativeChangeRow" visible="true">
-                                        <label value="Cummulative change (%)" width="100%"/>
+                                        <label value="Cumulative change (%)" width="100%"/>
                                         <spinner id="cummulativeChangeSpinner" width="100%" value="98" step="1"
                                                  mold="rounded" constraint="no empty, min 80 max 100"/>
                                     </row>

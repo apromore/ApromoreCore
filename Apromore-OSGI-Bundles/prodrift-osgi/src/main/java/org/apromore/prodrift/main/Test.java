@@ -32,6 +32,7 @@ import org.apromore.prodrift.config.DriftDetectionSensitivity;
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector;
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_EventStream;
 import org.apromore.prodrift.driftdetector.ControlFlowDriftDetector_RunStream;
+import org.apromore.prodrift.exception.ProDriftDetectionException;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
 import org.apromore.prodrift.util.XLogManager;
 import org.deckfour.xes.model.XLog;
@@ -43,11 +44,15 @@ import org.jfree.ui.RefineryUtilities;
 public class Test {
 
 
-	public static void main(String args[]) throws FileNotFoundException
-	{
+	public static void main(String args[]) throws FileNotFoundException, InterruptedException {
 
 		Path path = Paths.get("./Frequency_40_60_short_normal.mxml");
-		XLog xl = XLogManager.readLog(new FileInputStream(path.toString()), path.getFileName().toString());
+		XLog xl = null;
+		try {
+			xl = XLogManager.readLog(new FileInputStream(path.toString()), path.getFileName().toString());
+		} catch (ProDriftDetectionException e) {
+			e.printStackTrace();
+		}
 
 		DriftConfig cf = DriftConfig.AlphaRelation;
 		ControlFlowDriftDetector cfdd = null;
