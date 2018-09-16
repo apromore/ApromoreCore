@@ -30,6 +30,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.math3.exception.DimensionMismatchException;
+import org.apache.commons.math3.exception.MaxCountExceededException;
+import org.apache.commons.math3.exception.NotPositiveException;
+import org.apache.commons.math3.exception.ZeroException;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.apache.commons.math3.stat.inference.GTest;
 import org.apromore.prodrift.config.DriftConfig;
@@ -184,8 +188,7 @@ public class ControlFlowDriftDetector_RunStream implements ControlFlowDriftDetec
 	}
 	
 	
-	public ProDriftDetectionResult ControlFlowDriftDetectorStart()
-	{
+	public ProDriftDetectionResult ControlFlowDriftDetectorStart() throws InterruptedException {
 		
 //		changePatternTest();
 //		changePatternSimpleTestChangeWise();
@@ -248,7 +251,7 @@ public class ControlFlowDriftDetector_RunStream implements ControlFlowDriftDetec
 	}
 	
 	
-	public JFreeChart findDrifts() {
+	public JFreeChart findDrifts() throws InterruptedException {
 		
 		MDcurves.getDriftPoints().clear();
 		MDcurves.getLastReadTrace().clear();
@@ -313,7 +316,10 @@ public class ControlFlowDriftDetector_RunStream implements ControlFlowDriftDetec
 				
 				
 				for (; logIdex < log.size(); logIdex++) {
-					
+
+					if(Thread.interrupted())
+						throw new InterruptedException();
+
 					switch (statisticTest) {
 						case KS:
 							double [] spl1 = PartiallyOrderedRun.copyFromIntArray(strHandler.getPastRunsSampleValuesInt(logIdex,winSize));
@@ -377,7 +383,8 @@ public class ControlFlowDriftDetector_RunStream implements ControlFlowDriftDetec
 									
 									pValue = cst.chiSquareTestDataSetsComparison(runsFreqMatrix[1], runsFreqMatrix[0]);
 									
-								}catch(Exception ex)
+								}catch(DimensionMismatchException | NotPositiveException |
+										ZeroException | MaxCountExceededException ex)
 								{
 									pValue = 1;
 								}
@@ -914,7 +921,7 @@ public class ControlFlowDriftDetector_RunStream implements ControlFlowDriftDetec
 		
 	}
 	
-	public void winSizeTest() {
+	public void winSizeTest() throws InterruptedException {
 		int logsize = log.size();
 		System.out.println("log size "+logsize);
 		int step_winsize = logsize / 200;

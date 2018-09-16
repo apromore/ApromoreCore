@@ -22,17 +22,7 @@ package org.apromore.prodrift.util;
 
 
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,6 +46,7 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
 
+import org.apromore.prodrift.exception.ProDriftDetectionException;
 import org.apromore.prodrift.im.BlockStructure;
 import org.apromore.prodrift.model.DriftPoint;
 import org.deckfour.xes.extension.XExtension;
@@ -91,11 +82,11 @@ import org.deckfour.xes.out.XesXmlSerializer;
 public class XLogManager {
 	
 	
-	public static XLog openLog(InputStream inputLogFile, String name) throws Exception {
+	public static XLog openLog(InputStream inputLogFile, String name) throws ProDriftDetectionException {
 		XLog log = null;
 
 		
-//		try{
+		try{
 			
 			if(name.toLowerCase().endsWith("mxml.gz")){
 				XMxmlGZIPParser parser = new XMxmlGZIPParser();
@@ -140,34 +131,29 @@ public class XLogManager {
 			
 			
 
-//		}catch(Exception e)
-//		{
-//			throw new Exception("File invalid");
-//		}
+		}catch(Exception e)
+		{
+			throw new ProDriftDetectionException("Oops could not open the log file!");
+		}
 
 		if(log == null)
-			throw new Exception("Oops could not open the log file!");
+			throw new ProDriftDetectionException("Oops could not open the log file!");
 		
 		return log;
 	}
 	
-	public static ByteArrayOutputStream saveLogInMemory(XLog log, String logFilePath) {
+	public static ByteArrayOutputStream saveLogInMemory(XLog log, String logFilePath) throws IOException{
 		
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		try {
-			XSerializer serializer = getSerializer(logFilePath);
-			serializer.serialize(log, os);
+		XSerializer serializer = getSerializer(logFilePath);
+		serializer.serialize(log, os);
 			
-		} catch (Exception e) {
-			System.out.println("Exception when writing sublog in stream "+e.toString());
-		}
-
 		return os;
 
 }
-	
+
 	public static void saveLogInDisk(XLog log, String logFilePath) {
-		
+
 		try {
 			XSerializer serializer = getSerializer(logFilePath);
 			OutputStream os = new FileOutputStream(new File(logFilePath));
@@ -260,29 +246,19 @@ public class XLogManager {
 		
 	}
 	
-	public static XLog readLog(InputStream logFile, String name)
+	public static XLog readLog(InputStream logFile, String name) throws ProDriftDetectionException
 	{
 		XLog lg = null;
-		try {
-			lg = XLogManager.openLog(logFile, name);
-		} catch (Exception e) {
-			return null;
-		}
-		
+		lg = XLogManager.openLog(logFile, name);
+
 		return lg;
 		
 	}
 	
-	public static XLog validateLog(InputStream logFile, String name)
-	{
+	public static XLog validateLog(InputStream logFile, String name) throws ProDriftDetectionException {
 		
 		XLog xlog = null;
-		try {
-			xlog = XLogManager.openLog(logFile, name);
-		} catch (Exception e) {
-			return null;	
-		}
-		
+		xlog = XLogManager.openLog(logFile, name);
 		
 		return xlog;
 		
@@ -296,36 +272,28 @@ public class XLogManager {
 		List<XLog> eventLogList = null;
 		XLog eventStream = LogStreamer.logStreamer(lg, null, null);
 		removeEventFromEventStream(eventStream, "DRIFT_PO");
-		try{
-			
-			eventLogList = new ArrayList<XLog>();		
-			for(int i = 0; i < endOfTransitionPoints.size(); i++)
-			{
-				
-				int start = endOfTransitionPoints.get(i).intValue();
-				int end  = startOfTransitionPoints.get(i).intValue();
-				if(start < end)
-				{
-					
-					XLog sublog = null;
-					if(isEventBased)
-						sublog = getSubLog_eventBased(eventStream, start, end);
-					else
-						sublog = getSubLog(lg, start, end);
 
-					eventLogList.add(sublog);
+		eventLogList = new ArrayList<XLog>();
+		for (int i = 0; i < endOfTransitionPoints.size(); i++) {
+
+			int start = endOfTransitionPoints.get(i).intValue();
+			int end = startOfTransitionPoints.get(i).intValue();
+			if (start < end) {
+
+				XLog sublog = null;
+				if (isEventBased)
+					sublog = getSubLog_eventBased(eventStream, start, end);
+				else
+					sublog = getSubLog(lg, start, end);
+
+				eventLogList.add(sublog);
 //					System.out.println(baos.toByteArray().length);
-				
-				}
-				
+
 			}
-			
-		}catch(Exception e)
-		{
-			
-			throw e;
-			
+
 		}
+			
+
 		
 		return eventLogList;
 		
@@ -333,46 +301,37 @@ public class XLogManager {
 	}
 	
 	public static List<ByteArrayOutputStream> getSubLogs(XLog xlog, String logName, List<BigInteger> startOfTransitionPoints,	
-			List<BigInteger> endOfTransitionPoints, boolean isEventBased) throws Exception
+			List<BigInteger> endOfTransitionPoints, boolean isEventBased) throws IOException
 	{
 		
 		XLog lg = xlog;
 	
 		List<ByteArrayOutputStream> eventLogList = null;
 		XLog eventStream = LogStreamer.logStreamer(lg, null, null);
-		try{
-			
-			eventLogList = new ArrayList<ByteArrayOutputStream>();		
-			for(int i = 0; i < endOfTransitionPoints.size(); i++)
-			{
-				
-				int start = endOfTransitionPoints.get(i).intValue();
-				int end  = startOfTransitionPoints.get(i).intValue();
-				if(start < end)
-				{
-					
-					XLog sublog = null;
-					if(isEventBased)
-						sublog = getSubLog_eventBased(eventStream, start, end);
-					else
-						sublog = getSubLog(lg, start, end);
-					ByteArrayOutputStream baos = XLogManager.saveLogInMemory(sublog, 
-							logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogManager.getExtension(logName));
+
+		eventLogList = new ArrayList<ByteArrayOutputStream>();
+		for (int i = 0; i < endOfTransitionPoints.size(); i++) {
+
+			int start = endOfTransitionPoints.get(i).intValue();
+			int end = startOfTransitionPoints.get(i).intValue();
+			if (start < end) {
+
+				XLog sublog = null;
+				if (isEventBased)
+					sublog = getSubLog_eventBased(eventStream, start, end);
+				else
+					sublog = getSubLog(lg, start, end);
+				ByteArrayOutputStream baos = XLogManager.saveLogInMemory(sublog,
+						logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start + "_" + end + "." + XLogManager.getExtension(logName));
 //					System.out.println(logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogReader.getExtension(logName));
-					eventLogList.add(baos);
+				eventLogList.add(baos);
 //					System.out.println(baos.toByteArray().length);
-				
-				}
-				
+
 			}
-			
-		}catch(Exception e)
-		{
-			
-			throw e;
-			
+
 		}
-		
+			
+
 		return eventLogList;
 		
 		
@@ -1385,7 +1344,12 @@ public static XLog orderByTraceCompletionTimeStamp(XLog log) {
 		}
 
 		String mxmlLogPath = logFile_path.substring(0, logFile_path.lastIndexOf(".")) + ".mxml";
-		ByteArrayOutputStream baos = saveLogInMemory(log, mxmlLogPath);
+		ByteArrayOutputStream baos = null;
+		try {
+			baos = saveLogInMemory(log, mxmlLogPath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		mxmlLogPath += ".gz";
 		GzipLogAndSaveInDisk(baos, mxmlLogPath);
 		
@@ -1549,7 +1513,7 @@ public static XLog orderByTraceCompletionTimeStamp(XLog log) {
 //                        XLog xl_ordered = orderByTraceTimeStamp(xl);
 //                        
 //                        saveLogInDisk(xl_ordered, "BPIC15_1_ordered.xes", logfile);
-        } catch (IOException e) {
+        } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
         }

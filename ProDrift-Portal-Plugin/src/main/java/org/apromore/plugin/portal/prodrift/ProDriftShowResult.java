@@ -24,13 +24,12 @@ import org.apromore.model.LogSummaryType;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
 import org.apromore.prodrift.util.XLogManager;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.prodrift.model.prodrift.Drift;
+import org.apromore.plugin.portal.prodrift.model.Drift;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
-import org.zkoss.zk.ui.Session;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
@@ -44,7 +43,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +71,8 @@ public class ProDriftShowResult extends Window  {
     EventLogService eventLogService = null;
     LogSummaryType logSummaryType = null;
 
+    StringBuilder subLogsSaved = null;
+
 //    private ListModel<Drift> driftsModel = new ListModelList<Drift>();
 
     /**
@@ -81,7 +81,8 @@ public class ProDriftShowResult extends Window  {
     public ProDriftShowResult(PortalContext portalContext, ProDriftDetectionResult result,
                               boolean isEventBased, XLog xlog, String logFileName, boolean withCharacterization,
                               int cummulativeChange,
-                              EventLogService eventLogService, LogSummaryType logSummaryType) throws IOException {
+                              EventLogService eventLogService, LogSummaryType logSummaryType,
+                              StringBuilder subLogsSaved) throws IOException {
         this.portalContext = portalContext;
         this.result = result;
         this.xlog = xlog;
@@ -170,6 +171,8 @@ public class ProDriftShowResult extends Window  {
         Grid grid = (Grid) this.proDriftW.getFellow("prodriftGrid");
         grid.setModel(driftsModel);
 
+        this.subLogsSaved = subLogsSaved;
+
 
         this.proDriftW.doModal();
 
@@ -188,7 +191,7 @@ public class ProDriftShowResult extends Window  {
 
             eventLogList = XLogManager.getSubLogs(xlog, logFileName, startOfTransitionPoints, endOfTransitionPoints, isEventBased);
 
-        }catch (Exception ex)
+        }catch (IOException ex)
         {
             showError(ex.getMessage());
             return;
@@ -250,8 +253,10 @@ public class ProDriftShowResult extends Window  {
         }
 
         if(successfulSave > 0)
-            this.saveMessage.setValue(successfulSave + " sublogs are saved next to the original log in the repository.");
-        else
+        {
+            this.saveMessage.setValue(successfulSave + " sublogs were saved next to the original log in the repository.");
+            subLogsSaved.append("true");
+        }else
             this.saveMessage.setValue("No sublogs saved!");
     }
 
@@ -301,7 +306,7 @@ public class ProDriftShowResult extends Window  {
     }
 
     public void showError(String error) {
-        Messagebox.show(error, "", Messagebox.OK, Messagebox.ERROR);
+        Clients.showNotification(error, "error", null, "top_left", 3000, true);
     }
 
     protected void close() {

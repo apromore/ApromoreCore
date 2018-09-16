@@ -1,5 +1,5 @@
 /*
- * Copyright  2009-2018 The Apromore Initiative.
+ * Copyright © 2009-2018 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -17,15 +17,28 @@
  * License along with this program.
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
-package org.apromore.prodrift.driftdetector;
 
-import java.awt.Image;
+package org.apromore.plugin.portal.prodrift.model;
 
-import org.apromore.prodrift.model.ProDriftDetectionResult;
-import org.jfree.chart.JFreeChart;
+/**
+ * Created by n9348531 on 19/01/2017.
+ */
+public class CharStatement {
 
-public interface ControlFlowDriftDetector {
+    private String characterizationStatement;
 
-	public JFreeChart findDrifts() throws InterruptedException;
-	public ProDriftDetectionResult ControlFlowDriftDetectorStart() throws InterruptedException;
+    public CharStatement() {
+    }
+
+    public String getCharacterizationStatement() {
+        return characterizationStatement;
+    }
+
+    public void setCharacterizationStatement(String characterizationStatement) {
+        this.characterizationStatement = characterizationStatement;
+    }
+
+    public String toString() {
+        return characterizationStatement;
+    }
 }

@@ -23,6 +23,7 @@ import org.apromore.prodrift.config.BehaviorRelation;
 import org.apromore.prodrift.config.FrequencyChange;
 import org.apromore.prodrift.config.FrequencyChangeType;
 import org.apromore.prodrift.config.InductiveMinerConfig;
+import org.apromore.prodrift.exception.ProDriftDetectionException;
 import org.apromore.prodrift.main.Main;
 import org.apromore.prodrift.util.Utils;
 import org.apromore.prodrift.util.XLogManager;
@@ -370,8 +371,7 @@ public class ControlFlowDriftCharacterizer {
 			XLog subLogA,
 			Set<String> startActivities,
 			Set<String> endActivities,
-			InductiveMinerConfig miningParameters)
-	{
+			InductiveMinerConfig miningParameters) throws InterruptedException {
 
 		driftCounter++;
 		List<String> charStatements = new ArrayList<>();
@@ -388,6 +388,9 @@ public class ControlFlowDriftCharacterizer {
 
 		for(Map<PairRelation, Integer> relationFreqMap : RelationFreqMap_Queue)
 		{
+
+			if(Thread.interrupted())
+				throw new InterruptedException();
 
 			int output = outputIter.hasNext() ? outputIter.next().intValue() : 1;
 			OUTPUTS[inputIndex] = output;
@@ -509,6 +512,9 @@ public class ControlFlowDriftCharacterizer {
 		float sumOfTestStats = 0f;
 		for(PairRelation relation : relationKeySet)
 		{
+
+			if(Thread.interrupted())
+				throw new InterruptedException();
 
 			RelationImpact ri = relationImpact_Map.get(relation);
 			if(ri == null)
@@ -774,8 +780,7 @@ public class ControlFlowDriftCharacterizer {
 	private void discoverChangePatterns(
 			Multimap<PairRelation, RelationImpact> relationImpactMap_sorted,
 			List<String> charStatements,
-			String charactrizationMethod)
-	{
+			String charactrizationMethod) throws InterruptedException {
 
 		long t1 = System.currentTimeMillis();
 
@@ -787,6 +792,9 @@ public class ControlFlowDriftCharacterizer {
 
 		while(it.hasNext())
 		{
+			if(Thread.interrupted())
+				throw new InterruptedException();
+
 			Entry<String, ChangePattern> entry = it.next();
 			String changePatternName = entry.getKey();
 			ChangePattern cp = entry.getValue();
@@ -823,6 +831,9 @@ public class ControlFlowDriftCharacterizer {
 		boolean charPrint = false;
 		while(numOfCharzedDrifts < topCharzedDrifts && perms_it.hasNext())
 		{
+			if(Thread.interrupted())
+				throw new InterruptedException();
+
 			nextChangePattern = perms_it.next();
 			if(!haveSharedRelations(usedRelations, nextChangePattern.getValue().getKey()))
 			{
@@ -985,8 +996,7 @@ public class ControlFlowDriftCharacterizer {
 	}
 
 	private List<Entry<PairRelation, RelationImpact>> groupRelatinsByType(Multimap<PairRelation, RelationImpact> relationImpactMap, Map<Entry<FrequencyChangeType, FrequencyChange>,
-			List<Entry<PairRelation, RelationImpact>>> relationsGrpdByType)
-	{
+			List<Entry<PairRelation, RelationImpact>>> relationsGrpdByType) throws InterruptedException {
 
 		List<Entry<PairRelation, RelationImpact>> ABSdec = new ArrayList<Entry<PairRelation, RelationImpact>>();
 		List<Entry<PairRelation, RelationImpact>> ABSinc = new ArrayList<Entry<PairRelation, RelationImpact>>();
@@ -999,6 +1009,9 @@ public class ControlFlowDriftCharacterizer {
 		Iterator<Entry<PairRelation, RelationImpact>> it = relationImpactMap.entries().iterator();
 		while(it.hasNext())
 		{
+
+			if(Thread.interrupted())
+				throw new InterruptedException();
 
 			Entry<PairRelation, RelationImpact> entry = it.next();
 			PairRelation pr = entry.getKey();
@@ -1067,8 +1080,7 @@ public class ControlFlowDriftCharacterizer {
 
 	private Map<List<Entry<PairRelation, RelationImpact>>, InformationGain> getChangePatternMatchingPerms(Multimap<PairRelation, RelationImpact> relationImpactMap_sorted,
 																										  Map<Entry<FrequencyChangeType, FrequencyChange>, List<Entry<PairRelation, RelationImpact>>> relationsGrpdByType,
-																										  ChangePattern cp)
-	{
+																										  ChangePattern cp) throws InterruptedException {
 
 		Map<List<Entry<PairRelation, RelationImpact>>, InformationGain> CPMP = getChangePatternMatchingPermutations(relationImpactMap_sorted, relationsGrpdByType, cp);
 
@@ -1568,8 +1580,7 @@ public class ControlFlowDriftCharacterizer {
 	private Map<List<Entry<PairRelation, RelationImpact>>, InformationGain> getChangePatternMatchingPermutations(Multimap<PairRelation,
 			RelationImpact> relationImpactMap_sorted,
 																												 Map<Entry<FrequencyChangeType, FrequencyChange>, List<Entry<PairRelation, RelationImpact>>> relationsGrpdByType,
-																												 ChangePattern cp)
-	{
+																												 ChangePattern cp) throws InterruptedException {
 
 		List<List<Entry<PairRelation, RelationImpact>>> listOfRelationsLists = new ArrayList<>();
 
@@ -1614,13 +1625,15 @@ public class ControlFlowDriftCharacterizer {
 
 	private List<Entry<PairRelation, RelationImpact>> retrieveRelationsWithAttributes(Multimap<PairRelation, RelationImpact> relationImpactMap,
 																					  Map<Entry<FrequencyChangeType, FrequencyChange>, List<Entry<PairRelation, RelationImpact>>> relationsGrpdByType,
-																					  FrequencyChange freqChange, FrequencyChangeType freqChangeType, BehaviorRelation br)
-	{
+																					  FrequencyChange freqChange, FrequencyChangeType freqChangeType, BehaviorRelation br) throws InterruptedException {
 
 		List<Entry<PairRelation, RelationImpact>> filteredRelationImpactList = new ArrayList<>();
 		Iterator<Entry<PairRelation, RelationImpact>> it = relationsGrpdByType.get(new AbstractMap.SimpleEntry(freqChangeType, freqChange)).iterator();
 		while(it.hasNext())
 		{
+
+			if(Thread.interrupted())
+				throw new InterruptedException();
 
 			Entry<PairRelation, RelationImpact> entry = it.next();
 			PairRelation pr = entry.getKey();
@@ -1645,8 +1658,7 @@ public class ControlFlowDriftCharacterizer {
 
 	private List<List<Entry<PairRelation, RelationImpact>>> getListOfPermutations(
 			List<List<Entry<PairRelation, RelationImpact>>> listOfRelationsLists,
-			ChangePattern cp)
-	{
+			ChangePattern cp) throws InterruptedException {
 
 		List<List<Entry<PairRelation, RelationImpact>>> listOfPermutations = new ArrayList<>();
 		int numOfRelationsLists = listOfRelationsLists.size();
@@ -1671,6 +1683,10 @@ public class ControlFlowDriftCharacterizer {
 		boolean isPermutationValid = true;
 		for (int j = 0; j < numOfRelationsLists && isThereNewPerm; j++)
 		{
+
+			if(Thread.interrupted())
+				throw new InterruptedException();
+
 			Entry<PairRelation, RelationImpact> relationEntry = listOfRelationsLists.get(j).get(indices[j]);
 			RelationChange relationPattern = cp.getRelationChanges().get(j);
 			isPermutationValid = true;
@@ -1696,6 +1712,10 @@ public class ControlFlowDriftCharacterizer {
 				if(isPermutationValid) shortenPermBy++;
 				for (int k = numOfRelationsLists - 1; k >= 0; k--)
 				{
+
+					if(Thread.interrupted())
+						throw new InterruptedException();
+
 					if(k > j)
 						indices[k] = 0;
 					else
@@ -2319,8 +2339,7 @@ public class ControlFlowDriftCharacterizer {
 
 
 	private void testGoodnessOfKSPT(Multimap<PairRelation, RelationImpact> relationImpactMap_sorted,
-									String goodnessFile)
-	{
+									String goodnessFile) throws InterruptedException {
 
 		long t1 = System.currentTimeMillis();
 
@@ -3775,7 +3794,7 @@ public class ControlFlowDriftCharacterizer {
 			XLog subLogA,
 			Set<String> startActivities,
 			Set<String> endActivities,
-			InductiveMinerConfig IMConfig) throws Exception
+			InductiveMinerConfig IMConfig) throws ProDriftDetectionException
 	{
 
 

@@ -1,12 +1,7 @@
 package org.apromore.prodrift.logmodifier;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +23,7 @@ import java.util.TreeMap;
 import java.util.AbstractMap.SimpleEntry;
 
 
+import org.apromore.prodrift.exception.ProDriftDetectionException;
 import org.apromore.prodrift.util.Utils;
 import org.deckfour.xes.extension.XExtension;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -57,7 +53,7 @@ import org.deckfour.xes.out.XesXmlSerializer;
 public class XLogManager {
 
 
-	public static XLog openLog(InputStream inputLogFile, String name) throws Exception {
+	public static XLog openLog(InputStream inputLogFile, String name) throws ProDriftDetectionException {
 		XLog log = null;
 
 
@@ -106,38 +102,33 @@ public class XLogManager {
 
 		}catch(Exception e)
 		{
-			throw new Exception("File invalid");
+			throw new ProDriftDetectionException("Log file invalid");
 		}
 
 		if(log == null)
-			throw new Exception("Oops ...");
+			throw new ProDriftDetectionException("Oops; log file parsing failed...");
 
 		return log;
 	}
 
-	public static ByteArrayOutputStream saveLogInMemory(XLog log, String logFilePath) {
+	public static ByteArrayOutputStream saveLogInMemory(XLog log, String logFilePath) throws IOException {
 
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		try {
-			XSerializer serializer = getSerializer(logFilePath);
-			serializer.serialize(log, os);
-
-		} catch (Exception e) {
-			System.out.println("Exception when writing sublog in stream "+e.toString());
-		}
+		XSerializer serializer = getSerializer(logFilePath);
+		serializer.serialize(log, os);
 
 		return os;
 
 	}
 
-	public static void saveLogInDisk(XLog log, String logFilePath) {
+	public static void saveLogInDisk(XLog log, String logFilePath) throws ProDriftDetectionException {
 
 		try {
 			XSerializer serializer = getSerializer(logFilePath);
 			OutputStream os = new FileOutputStream(new File(logFilePath));
 			serializer.serialize(log, os);
-		} catch (Exception e) {
-			System.out.println("Exception when writing file "+e.toString());
+		} catch (IOException e) {
+			throw new ProDriftDetectionException("Exception when writing sublog in stream " + e.toString());
 		}
 
 	}
@@ -206,70 +197,51 @@ public class XLogManager {
 
 
 
-	public static XLog readLog(InputStream logFile, String name)
+	public static XLog readLog(InputStream logFile, String name) throws ProDriftDetectionException
+
 	{
 		XLog lg = null;
-		try {
-			lg = XLogManager.openLog(logFile, name);
-		} catch (Exception e) {
-			return null;
-		}
+		lg = XLogManager.openLog(logFile, name);
 
 		return lg;
 
 	}
 
-	public static boolean validateLog(InputStream logFile, String name)
+	public static boolean validateLog(InputStream logFile, String name) throws ProDriftDetectionException
 	{
 		XLog lg = null;
-		try {
-			lg = XLogManager.openLog(logFile, name);
-		} catch (Exception e) {
-			return false;
-		}
+		lg = XLogManager.openLog(logFile, name);
 
 		return true;
 
 	}
 
 	public static List<ByteArrayOutputStream> getSubLogs(byte[] log, String logName, List<BigInteger> startOfTransitionPoints,
-														 List<BigInteger> endOfTransitionPoints) throws Exception
+														 List<BigInteger> endOfTransitionPoints) throws ProDriftDetectionException, IOException
 	{
 
 		XLog lg = null;
-		try {
-			lg = XLogManager.openLog(new ByteArrayInputStream(log), logName);
-		} catch (Exception e) {
-			throw e;
-		}
+		lg = XLogManager.openLog(new ByteArrayInputStream(log), logName);
+
 
 		List<ByteArrayOutputStream> eventLogList = null;
-		try{
+		eventLogList = new ArrayList<ByteArrayOutputStream>();
+		for (int i = 0; i < endOfTransitionPoints.size(); i++) {
 
-			eventLogList = new ArrayList<ByteArrayOutputStream>();
-			for(int i = 0; i < endOfTransitionPoints.size(); i++)
-			{
-
-				int start = endOfTransitionPoints.get(i).intValue();
-				int end  = startOfTransitionPoints.get(i).intValue();
-				if(start < end)
-				{
-					ByteArrayOutputStream baos = XLogManager.saveLogInMemory(getSubLog(lg, start, end),
-							logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogManager.getExtension(logName));
+			int start = endOfTransitionPoints.get(i).intValue();
+			int end = startOfTransitionPoints.get(i).intValue();
+			if (start < end) {
+				ByteArrayOutputStream baos = XLogManager.saveLogInMemory(getSubLog(lg, start, end),
+						logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start + "_" + end + "." + XLogManager.getExtension(logName));
 //					System.out.println(logName.substring(0, logName.indexOf(".")) + "_sublog" + "_" + start+"_" + end + "." + XLogReader.getExtension(logName));
-					eventLogList.add(baos);
+				eventLogList.add(baos);
 //					System.out.println(baos.toByteArray().length);
-
-				}
 
 			}
 
-		}catch(Exception e)
-		{
-
-			throw e;
-
 		}
+
+
 
 		return eventLogList;
 

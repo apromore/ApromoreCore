@@ -139,6 +139,7 @@
                             org.apromore.prodrift.config,
                             org.apromore.prodrift.driftcharacterization,
                             org.apromore.prodrift.driftdetector,
+                            org.apromore.prodrift.exception,
                             org.apromore.prodrift.model,
                             org.apromore.prodrift.util
                         </Export-Package>

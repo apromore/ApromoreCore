@@ -999,22 +999,34 @@ public class Utils {
 
 		double borderCellVal = combination[twentyPercentOfColumns];
 
-		double scalingFactor = 0.0;
-		switch(ddSensitivity)
+		double scalingFactor = borderCellVal;
+		if(scalingFactor > 5.0)
 		{
-			case Low:
-				scalingFactor = 5.0;
-				break;
+			switch(ddSensitivity)
+			{
+				case VeryLow:
+					scalingFactor = 5.0;
+					break;
 
-			case Medium:
-				scalingFactor = (borderCellVal - 5.0) / 2;
-				break;
+				case Low:
+					scalingFactor = 5.0 + ((borderCellVal - 5.0) / 4.0);
+					break;
 
-			case High:
-				scalingFactor = borderCellVal;
-				break;
+				case Medium:
+					scalingFactor = 5.0 + ((borderCellVal - 5.0) / 2.0);
+					break;
 
+				case High:
+					scalingFactor = 5.0 + (3.0 * (borderCellVal - 5.0) / 4.0);
+					break;
+
+				case VeryHigh:
+					scalingFactor = borderCellVal;
+					break;
+
+			}
 		}
+
 		double divideBy = borderCellVal / scalingFactor;
 
 		if(divideBy <= 1) divideBy = 1.0;

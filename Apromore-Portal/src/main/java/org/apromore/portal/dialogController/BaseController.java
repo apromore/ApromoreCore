@@ -21,6 +21,7 @@
 package org.apromore.portal.dialogController;
 
 // Third party packages
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Sessions;
@@ -40,12 +41,12 @@ public class BaseController extends Window {
     public static final String MANAGER_SERVICE = "managerClient";
     private ManagerService managerService;
 
+    protected AutowireCapableBeanFactory beanFactory;
     protected ConfigBean config;
 
     protected BaseController() {
-        config = (ConfigBean) WebApplicationContextUtils.getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext())
-                                                        .getAutowireCapableBeanFactory()
-                                                        .getBean("portalConfig");
+        beanFactory = WebApplicationContextUtils.getWebApplicationContext(Sessions.getCurrent().getWebApp().getServletContext()).getAutowireCapableBeanFactory();
+        config = (ConfigBean) beanFactory.getBean("portalConfig");
     }
 
     public ManagerService getService() {

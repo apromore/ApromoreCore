@@ -128,6 +128,7 @@ public class SignavioController extends BaseController {
             param.put("importPath", getImportPath(editSession1.getNativeType()));
             param.put("exportPath", getExportPath(editSession1.getNativeType()));
             param.put("editor", config.getSiteEditor());
+            param.put("editorJavascript", beanFactory.getBean("editor.js"));
 
             if (editSession2 != null) {
                 ExportFormatResultType exportResult2 =

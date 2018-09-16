@@ -83,7 +83,6 @@
         <module>Apromore-OSGI-Bundles/log-osgi</module>
         <module>Apromore-OSGI-Bundles/lpsolve-osgi</module>
         <module>Apromore-OSGI-Bundles/prom6-osgi</module>
-        <module>Apromore-OSGI-Bundles/prodrift-osgi</module>
 
         <!-- OSGI -->
         <module>Apromore-OSGI-Bundles/eclipse-collections-osgi</module>
@@ -107,6 +106,7 @@
         <module>Apromore-OSGI-Bundles/declare-visualizer-osgi</module>
         <module>Apromore-OSGI-Bundles/raffaeleconforti-osgi</module>
         <module>Apromore-OSGI-Bundles/eventstr-confchecking-osgi</module>
+        <module>Apromore-OSGI-Bundles/prodrift-osgi</module>
 
 
         <!-- ZK Osgi -->
@@ -478,6 +478,7 @@
                 <artifactId>prodrift-osgi</artifactId>
                 <version>2.4</version>
             </dependency>
+
 
             <!-- Editor -->
             <dependency>

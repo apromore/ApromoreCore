@@ -51,11 +51,12 @@ public interface ProDriftDetectionService {
 
      * @return the ProDriftDetectionResult
      * @throws ProDriftDetectionException if the drift detection failed
+     * @throws InterruptedException if the drift detection operation thread is interrupted (canceled)
      */
     ProDriftDetectionResult proDriftDetector(XLog xlog, XLog eventStream, String logFileName, boolean isEventBased,
                                              boolean withGradual, int winSize, int activityCount, boolean isAdwin, float noiseFilterPercentage, DriftDetectionSensitivity ddSensitivity,
                                              boolean withConflict, boolean withCharacterization, int cummulativeChange/*,
-                                             Rengine engineR*/) throws ProDriftDetectionException;
+                                             Rengine engineR*/) throws ProDriftDetectionException, InterruptedException;
 
 
 }
