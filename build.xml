@@ -816,7 +816,19 @@
         </java>
     </target>
 
-    <target name="install-sample-data">
+    <target name="cpf-importer-uptodate">
+        <uptodate property="cpf-importer.uptodate" targetfile="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar">
+            <srcfiles dir="Supplements/cpfImporter/src/main"/>
+        </uptodate>
+    </target>
+
+    <target name="cpf-importer" depends="cpf-importer-uptodate" unless="cpf-importer.uptodate">
+        <exec dir="Supplements/cpfImporter" executable="mvn">
+            <arg value="package"/>
+        </exec>
+    </target>
+
+    <target name="install-sample-data" depends="cpf-importer">
         <java jar="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
             <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
 
@@ -879,7 +891,7 @@
         </copy>
     </target>
 
-    <target name="install-comparison-data">
+    <target name="install-comparison-data" depends="cpf-importer">
         <java jar="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
             <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
 
