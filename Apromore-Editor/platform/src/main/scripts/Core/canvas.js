@@ -75,7 +75,7 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
         this.rootNode.setAttribute("xmlns:svg", "http://www.w3.org/2000/svg");
 
         this._htmlContainer = ORYX.Editor.graft("http://www.w3.org/1999/xhtml", options.parentNode,
-            ['div', {style: "position:absolute; top:5px"}]);
+            ['div', {id: ORYX.Editor.provideId(), style: "position:absolute; top:5px"}]);
 
         this.node = ORYX.Editor.graft("http://www.w3.org/2000/svg", this.rootNode,
             ['g', {},
