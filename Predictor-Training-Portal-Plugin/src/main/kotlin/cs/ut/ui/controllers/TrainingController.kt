@@ -453,26 +453,26 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
         val logSummary = clientLogs.selectedItem.getValue() as LogSummaryType
         val xlog = PortalPlugin.globalEventLogService!!.getXLog(logSummary.getId())
 
-        log.info("Converting log to CSV")
         val logDirectory = File(DirectoryConfiguration.dirPath(Dir.USER_LOGS))
         val logFile = File(logDirectory, "${logSummary.getId()}.csv")
-        if (true /*!logFile.isFile()*/) {
+        log.info("Converting log to CSV: ${logFile}")
+        if (!logFile.isFile()) {
             convertXLogToCSV(xlog, FileOutputStream(logFile))
-            log.info("Converted log to CSV: ${logFile}")
+            log.info("Converted log to CSV")
         } else {
-            log.info("Didn't need to convert log to CSV; already in cache: ${logFile}")
+            log.info("Didn't need to convert log to CSV; already in cache")
         }
 
-        log.info("Extracting dataset parameters")
         val datasetParamsDirectory = File(DirectoryConfiguration.dirPath(Dir.DATA_DIR))
         val datasetParamsFile = File(datasetParamsDirectory, "${logSummary.getId()}.json")
-        if (true /*!datasetParamsFile.isFile()*/) {
+        log.info("Extracting dataset parameters: ${datasetParamsFile}")
+        if (!datasetParamsFile.isFile()) {
             val printWriter = PrintWriter(FileOutputStream(datasetParamsFile))
             printWriter.write(convertXLogToDatasetParams(xlog).toString())
             printWriter.close()
-            log.info("Extracted dataset parameters: ${datasetParamsFile}")
+            log.info("Extracted dataset parameters")
         } else {
-            log.info("Didn't need to extract dataset parameters; already in cache: ${datasetParamsFile}")
+            log.info("Didn't need to extract dataset parameters; already in cache")
         }
 
         log.debug("Parameters are valid, calling script to train the model")
