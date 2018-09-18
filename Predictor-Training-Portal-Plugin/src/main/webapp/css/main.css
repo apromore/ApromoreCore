@@ -270,7 +270,6 @@
 
 .job-remove {
   background: red;
-  font-size: 20pt !important;
   color: lightgrey;
   border: solid 0.2vh lightgrey;
   transition: all 0.14s ease-in-out; }

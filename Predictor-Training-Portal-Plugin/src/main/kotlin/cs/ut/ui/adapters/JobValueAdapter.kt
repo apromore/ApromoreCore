@@ -195,7 +195,7 @@ object JobValueAdapter : GridValueProvider<Job, Row>, Redirectable {
      */
     @Suppress("UNCHECKED_CAST")
     private fun SimulationJob.generateRemoveBtn(row: Row): Button {
-        val btn = Button("x")
+        val btn = Button("Abort Job")
         btn.vflex = "1"
         btn.hflex = "min"
         btn.sclass = "job-remove"
