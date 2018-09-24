@@ -27,6 +27,11 @@
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:z="http://www.zkoss.org/2005/zul"
         closable="true" position="center" title="Predictive Monitoring: Create Predictive Monitor">
+    <caption style="width: 100%">
+        <a href="http://apromore.org/documentation/features/visualize-performance-predictions-via-dashboard" target="_blank">
+            <button label="Help" image="img/Help.png" style="margin-left: 230px"></button>
+        </a>
+    </caption>
     <vbox width="500px">
         <grid>
             <columns>
