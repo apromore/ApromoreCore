@@ -11,6 +11,7 @@ import cs.ut.ui.FieldComponent
 import cs.ut.ui.GridValueProvider
 import cs.ut.ui.Navigator
 import cs.ut.ui.adapters.JobValueAdapter.jobArg
+import cs.ut.ui.context.operations.ExportToPortalOperation
 import cs.ut.ui.controllers.validation.ValidationController
 import cs.ut.util.GridColumns
 import cs.ut.util.NirdizatiDownloader
@@ -65,7 +66,7 @@ class ValidationViewAdapter(private val parentController: ValidationController?,
             appendChild(A().apply {
                 iconSclass = icons.valueWithIdentifier("download").value
                 sclass = "n-download"
-                addEventListener(Events.ON_CLICK, { _ -> NirdizatiDownloader(Dir.PKL_DIR, data.id).execute() })
+                addEventListener(Events.ON_CLICK, { _ -> ExportToPortalOperation(data).perform() })
             })
 
             if (addRedirectListener) {
