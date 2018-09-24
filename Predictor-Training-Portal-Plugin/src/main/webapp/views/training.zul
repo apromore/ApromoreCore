@@ -15,6 +15,7 @@
                     <hbox align="center">
                         <radiogroup id="radioGroup">
                             <radio id="avgRadio" label="${labels.threshold.avg}" selected="true" radiogroup="radioGroup"/>
+                            <separator orient="vertical"/>
                             <radio id="customRadio" label="${labels.threshold.custom}" radiogroup="radioGroup"/>
                         </radiogroup>
                         <doublebox id="customBox" width="60px" disabled="true"/>
