@@ -42,7 +42,7 @@
         </grid>
         <listbox id="predictors" width="600px" checkmark="true">
             <auxhead>
-                <auxheader colspan="2">Predictors</auxheader>
+                <auxheader colspan="2">Imported Predictors</auxheader>
             </auxhead>
             <listhead>
                 <listheader label="Name"/>
