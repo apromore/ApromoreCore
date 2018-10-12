@@ -32,9 +32,9 @@ public class BPstructBPSys extends DNodeSys_PetriNet {
 	}
 	
 	protected void finalize_setProperNames() {
-		properNames = new String[nameToID.size()];
+		uniqueNames = new String[nameToID.size()];
 		for (Entry<String,Short> line : nameToID.entrySet()) {
-			properNames[line.getValue()] = line.getKey();
+			uniqueNames[line.getValue()] = line.getKey();
 		}
 	}
 	public void packageProperNames() {

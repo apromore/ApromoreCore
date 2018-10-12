@@ -101,7 +101,7 @@ public class Unfolding2PES {
 		
 		int localId = 0;
 		for (DNode node: bp.getBranchingProcess().allEvents) {
-			String originalName = unfolder.getOriginalLabel(originalNames.get(sys.properNames[node.id]));
+			String originalName = unfolder.getOriginalLabel(originalNames.get(sys.uniqueNames[node.id]));
 			
 			localMap.put(node, localId++);
 
@@ -129,7 +129,7 @@ public class Unfolding2PES {
                 if(originalVisibleLabels.contains(originalName))
                     this.mapEventsPES2Unf.put(labels.size(), node);
 
-                labels.add(originalNames.get(sys.properNames[node.id]));
+                labels.add(originalNames.get(sys.uniqueNames[node.id]));
 			}
 			
 			if (sinkEvent && node.isCutOff)
@@ -142,7 +142,7 @@ public class Unfolding2PES {
 		for (DNode cutoff: cutoffDNodes) {
 			DNode corresponding = bp.getCutOffEquivalentEvent().get(cutoff);
 			if (!visibleEvents.contains(corresponding)) {
-				String originalName = unfolder.getOriginalLabel(sys.properNames[corresponding.id]);
+				String originalName = unfolder.getOriginalLabel(sys.uniqueNames[corresponding.id]);
 				visibleEvents.add(corresponding);
 				orderedVisibleEvents.add(corresponding);
 				orderedVisibleEventMap.put(corresponding, orderedVisibleEventMap.size());
@@ -150,7 +150,7 @@ public class Unfolding2PES {
 			}
 			if (!visibleSinks.contains(cutoff)) {
 				cutoffCorrespondingMap.put(orderedVisibleEventMap.get(cutoff), orderedVisibleEventMap.get(corresponding));
-				//System.out.printf("Cutoff: %s, Corresponding: %s\n", unfolder.getOriginalLabel(sys.properNames[cutoff.id]), unfolder.getOriginalLabel(sys.properNames[corresponding.id]));
+				//System.out.printf("Cutoff: %s, Corresponding: %s\n", unfolder.getOriginalLabel(sys.uniqueNames[cutoff.id]), unfolder.getOriginalLabel(sys.uniqueNames[corresponding.id]));
 			}
 		}
 		
@@ -393,7 +393,7 @@ public class Unfolding2PES {
 	
 	public boolean isVisible(int event) {
 		DNode dnode = orderedVisibleEvents.get(event);
-		return visibleLabels.contains(sys.properNames[dnode.id]);
+		return visibleLabels.contains(sys.uniqueNames[dnode.id]);
 	}
 
 	public Integer getCorrespondingEvent(int ev) {

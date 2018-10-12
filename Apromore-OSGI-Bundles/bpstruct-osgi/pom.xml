@@ -47,7 +47,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=bpstruct|de-jbpt|stixar-graph|hub-pn
+                            artifactId=bpstruct|de-jbpt|stixar-graph|pnapi-java
                             |antlr-rt|uma|stixar-util|rpst|jdom|json|kohsuke
                             |log4j|commons-lang3|jgraph
                         </Embed-Dependency>
@@ -74,6 +74,7 @@
                             !javax.mail.*,
                             !javax.management,
                             !ee.ut.bpstruct.epml.old,
+                            !lpsolve;version="[1.1.0,2.0.0)",
                             !org.jgraph.*,
                             !com.touchgraph.graphlayout.interaction,
                             !com.touchgraph.graphlayout,
@@ -125,19 +126,34 @@
         </dependency>
         <dependency>
             <groupId>hub.top.petrinet</groupId>
-            <artifactId>hub-pn</artifactId>
-            <version>1.0</version>
+            <artifactId>pnapi-java</artifactId>
+            <version>1.0.5</version>
         </dependency>
+<!--        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>pnapi-bpdiff-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>-->
         <dependency>
             <groupId>org.antlr.runtime</groupId>
             <artifactId>antlr-rt</artifactId>
             <version>3.2.0</version>
         </dependency>
+<!--        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>lpsolve-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>-->
         <dependency>
-            <groupId>hub.top.uma</groupId>
+            <groupId>hub.top</groupId>
             <artifactId>uma</artifactId>
-            <version>1.2.4</version>
+            <version>1.3.1</version>
         </dependency>
+<!--        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>uma-bpdiff-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>-->
         <dependency>
             <groupId>de.bpt.hpi</groupId>
             <artifactId>rpst</artifactId>
@@ -174,6 +190,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
         </dependency>
+
 
     </dependencies>
 </project>

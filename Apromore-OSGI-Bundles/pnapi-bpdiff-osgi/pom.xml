@@ -43,10 +43,10 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=pnapi|antlr-rt
+                            artifactId=pnapi-java|antlr-rt
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
-                        <Bundle-ClassPath>.,/lib/pnapi-1.0.jar</Bundle-ClassPath>
+                        <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>PNAPI BPDiff OSGI</Bundle-Name>
                         <Import-Package>
                             !org.antlr.stringtemplate,
@@ -67,17 +67,27 @@
             <!--<groupId>com.google.guava</groupId>-->
             <!--<artifactId>guava</artifactId>-->
         <!--</dependency>-->
-		<dependency>
+<!--		<dependency>
 			<groupId>ut.ee</groupId>
 			<artifactId>pnapi</artifactId>
 			<scope>system</scope>
 			<version>1.0</version>
 			<systemPath>${basedir}/lib/pnapi-1.0.jar</systemPath>
-		</dependency>
+		</dependency>-->
+        <dependency>
+            <groupId>hub.top.petrinet</groupId>
+            <artifactId>pnapi-java</artifactId>
+            <version>1.0.5</version>
+        </dependency>
         <dependency>
             <groupId>org.antlr.runtime</groupId>
             <artifactId>antlr-rt</artifactId>
             <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>lpsolve-osgi</artifactId>
+            <version>1.1</version>
         </dependency>
     </dependencies>
 </project>

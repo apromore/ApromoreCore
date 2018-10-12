@@ -85,11 +85,11 @@ public class Unfolding2ReducedPES {
 		int localId = 0;
 		for (DNode node: bp.getBranchingProcess().allEvents) {
 			localMap.put(node, localId++);
-			if (visibleLabels.contains(sys.properNames[node.id]) || node.isCutOff) {
+			if (visibleLabels.contains(sys.uniqueNames[node.id]) || node.isCutOff) {
 				visibleEvents.add(node);
 				orderedVisibleEvents.add(node);
 				orderedVisibleEventMap.put(node, orderedVisibleEventMap.size());
-				labels.add(sys.properNames[node.id]);
+				labels.add(sys.uniqueNames[node.id]);
 			}
 			if (node.isCutOff)
 				cutoffDNodes.add(node);
@@ -101,10 +101,10 @@ public class Unfolding2ReducedPES {
 				visibleEvents.add(corresponding);
 				orderedVisibleEvents.add(corresponding);
 				orderedVisibleEventMap.put(corresponding, orderedVisibleEventMap.size());
-				labels.add(sys.properNames[corresponding.id]);				
+				labels.add(sys.uniqueNames[corresponding.id]);
 			}
 			cutoffCorrespondingMap.put(orderedVisibleEventMap.get(cutoff), orderedVisibleEventMap.get(corresponding));
-			//System.out.printf("Cutoff: %s, Corresponding: %s\n", sys.properNames[cutoff.id], sys.properNames[corresponding.id]);
+			//System.out.printf("Cutoff: %s, Corresponding: %s\n", sys.uniqueNames[cutoff.id], sys.uniqueNames[corresponding.id]);
 		}
 		
 		localId = numberOfEvents;
@@ -247,7 +247,7 @@ public class Unfolding2ReducedPES {
 	
 	public boolean isVisible(int event) {
 		DNode dnode = orderedVisibleEvents.get(event);
-		return visibleLabels.contains(sys.properNames[dnode.id]);
+		return visibleLabels.contains(sys.uniqueNames[dnode.id]);
 	}
 
 

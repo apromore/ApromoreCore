@@ -186,7 +186,7 @@ public class Unfolder_PetriNet {
 
 			// if (!option_printAnti && n.isAnti) continue;
 
-			String name = sys.properNames[n.id];
+			String name = sys.uniqueNames[n.id];
 			if (n.isAnti)
 				name = "NOT " + name;
 			else if (n.isCutOff){
@@ -286,7 +286,7 @@ public class Unfolder_PetriNet {
 		
 		for(DNode p : precs)
 			if(p.isEvent && p != n){
-				if(visibleLabels.contains(sys.properNames[p.id]))
+				if(visibleLabels.contains(sys.uniqueNames[p.id]))
 						dPred = false;
 			}else if(!p.getAllPredecessors().contains(r))
 				dPred = false;
@@ -340,7 +340,7 @@ public class Unfolder_PetriNet {
 		
 		HashSet<DNode> toRemove = new HashSet<>();
 		for(DNode n : steady)
-			if(!n.isEvent || !visibleLabels.contains(sys.properNames[n.id]))
+			if(!n.isEvent || !visibleLabels.contains(sys.uniqueNames[n.id]))
 				toRemove.add(n);
 		
 		steady.removeAll(toRemove);
@@ -396,7 +396,7 @@ public class Unfolder_PetriNet {
 
 			// if (!option_printAnti && n.isAnti) continue;
 
-			String name = sys.properNames[n.id];
+			String name = sys.uniqueNames[n.id];
 			if (n.isAnti)
 				name = "NOT " + name;
 			else if (n.isCutOff)
@@ -426,7 +426,7 @@ public class Unfolder_PetriNet {
 	 * @return the unfolding in GraphViz dot format
 	 */
 	public String getUnfoldingAsDot() {
-		return bp.getBranchingProcess().toDot(sys.properNames);
+		return bp.getBranchingProcess().toDot(sys.uniqueNames);
 	}
 
 	/**
