@@ -114,7 +114,6 @@
 		</dependency>
 		-->
 		
-		<!--
 		<dependency>
 			<groupId>org.jfree</groupId>
 			<artifactId>jfreechart</artifactId>
@@ -126,14 +125,14 @@
 			<artifactId>jcommon</artifactId>
 			<version>1.0.23</version>
 		</dependency>
-		-->
 		
+		<!--
 		<dependency>
 			<groupId>org.apache.servicemix.bundles</groupId>
 			<artifactId>org.apache.servicemix.bundles.jfreechart</artifactId>
 			<version>1.0.12_1</version>
 		</dependency>
-
+		-->
 		
         <dependency>
             <groupId>org.apromore</groupId>
