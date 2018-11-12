@@ -31,6 +31,19 @@ class TrainingControllerUnitTest {
   }
 
   @Test
+    fun testConvertXLogToDatasetParams_sepsis(): Unit {
+        val inputStream = TrainingControllerUnitTest::class.java.getClassLoader().getResourceAsStream("sepsis.xes")
+        val log = XesXmlParser().parse(inputStream).`get`(0)
+        val result = TrainingController.convertXLogToDatasetParams(log)
+
+        val inputStream2 = TrainingControllerUnitTest::class.java.getClassLoader().getResourceAsStream("sepsis.json")
+        val expected = JSONObject(String(inputStream2.readBytes()))
+
+        assertEquals(expected.toString(), result.toString())
+
+  }
+
+  @Test
   fun testConvertXLogToDatasetParams_missingHeader(): Unit {
       val inputStream = TrainingControllerUnitTest::class.java.getClassLoader().getResourceAsStream("missing_header.xes")
       val log = XesXmlParser().parse(inputStream).`get`(0)
@@ -43,14 +56,16 @@ class TrainingControllerUnitTest {
   }
 
   @Test
-  fun testConvertXLogToCSV_bpi12() : Unit {
-      val inputStream = TrainingControllerUnitTest::class.java.getClassLoader().getResourceAsStream("test_bpi12.xes")
+  fun testConvertXLogToCSV_sepsis() : Unit {
+      val inputStream = TrainingControllerUnitTest::class.java.getClassLoader().getResourceAsStream("sepsis.xes")
       val log = XesXmlParser().parse(inputStream).`get`(0)
 
       val outputStream = ByteArrayOutputStream()
       TrainingController.convertXLogToCSV(log, outputStream)
-
-      // TODO: actually confirm the contents of the conversion, rather than just that it ran without exception
+      val reader = BufferedReader(StringReader(outputStream.toString()))
+      assertEquals("case_id,InfectionSuspected,org:group,DiagnosticBlood,DisfuncOrg,SIRSCritTachypnea,Hypotensie,SIRSCritHeartRate,Infusion,DiagnosticArtAstrup,concept:name,Age,DiagnosticIC,DiagnosticSputum,DiagnosticLiquor,DiagnosticOther,SIRSCriteria2OrMore,DiagnosticXthorax,SIRSCritTemperature,time:timestamp,DiagnosticUrinaryCulture,SIRSCritLeucos,Oligurie,DiagnosticLacticAcid,lifecycle:transition,Diagnose,Hypoxie,DiagnosticUrinarySediment,DiagnosticECG,Leucocytes,CRP,LacticAcid", reader.readLine())
+      assertEquals("A,true,A,true,true,true,true,true,true,true,ER Registration,85,true,false,false,false,true,true,true,2014-10-22T09:15:41,true,false,false,true,complete,A,false,true,true,,", reader.readLine())
+      assertEquals("A,,B,,,,,,,,Leucocytes,,,,,,,,,2014-10-22T09:27:00,,,,,complete,,,,,9.6,", reader.readLine())
   }
 
   @Test
