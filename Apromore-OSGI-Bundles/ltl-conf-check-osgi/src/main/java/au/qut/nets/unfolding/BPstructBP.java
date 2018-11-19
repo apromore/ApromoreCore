@@ -438,7 +438,7 @@ public class BPstructBP extends DNodeBP {
 	}
 
 	public String properName(DNode n) {
-		return dNodeAS.properNames[n.id];
+		return dNodeAS.uniqueNames[n.id];
 	}
 
 	/**

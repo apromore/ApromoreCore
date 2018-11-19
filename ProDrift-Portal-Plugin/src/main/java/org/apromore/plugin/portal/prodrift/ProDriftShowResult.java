@@ -20,6 +20,7 @@
 
 package org.apromore.plugin.portal.prodrift;
 
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apromore.model.LogSummaryType;
 import org.apromore.prodrift.model.ProDriftDetectionResult;
 import org.apromore.prodrift.util.XLogManager;
@@ -42,6 +43,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.ReflectPermission;
 import java.math.BigInteger;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -71,7 +74,7 @@ public class ProDriftShowResult extends Window  {
     EventLogService eventLogService = null;
     LogSummaryType logSummaryType = null;
 
-    StringBuilder subLogsSaved = null;
+    MutableBoolean subLogsSaved = null;
 
 //    private ListModel<Drift> driftsModel = new ListModelList<Drift>();
 
@@ -82,7 +85,7 @@ public class ProDriftShowResult extends Window  {
                               boolean isEventBased, XLog xlog, String logFileName, boolean withCharacterization,
                               int cummulativeChange,
                               EventLogService eventLogService, LogSummaryType logSummaryType,
-                              StringBuilder subLogsSaved) throws IOException {
+                              MutableBoolean subLogsSaved) throws IOException {
         this.portalContext = portalContext;
         this.result = result;
         this.xlog = xlog;
@@ -255,7 +258,8 @@ public class ProDriftShowResult extends Window  {
         if(successfulSave > 0)
         {
             this.saveMessage.setValue(successfulSave + " sublogs were saved next to the original log in the repository.");
-            subLogsSaved.append("true");
+            subLogsSaved.setValue(true);
+            
         }else
             this.saveMessage.setValue("No sublogs saved!");
     }

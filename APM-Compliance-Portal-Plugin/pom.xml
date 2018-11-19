@@ -126,7 +126,7 @@
             <exclusions>
                 <exclusion>
                     <groupId>hub.top.pnapi</groupId>
-                    <artifactId>hub-pn</artifactId>
+                    <artifactId>pnapi-java</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

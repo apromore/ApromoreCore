@@ -20,6 +20,7 @@
 
 package org.apromore.plugin.portal.prodrift;
 
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apromore.model.LogSummaryType;
 import org.apromore.plugin.portal.prodrift.Util.LongOperation;
 import org.apromore.prodrift.config.DriftDetectionSensitivity;
@@ -86,7 +87,7 @@ public class ProDriftController {
     private LongOperation currentOperation = null;
     private boolean isRunning = false;
 
-    private StringBuilder subLogsSaved = new StringBuilder("");
+    private MutableBoolean subLogsSaved = new MutableBoolean(false);
 
 
     /**
@@ -374,7 +375,7 @@ public class ProDriftController {
         }else
         {
             this.proDriftW.detach();
-            if(subLogsSaved.toString().contains("true"))
+            if(subLogsSaved.isTrue())
                 portalContext.refreshContent();
         }
 

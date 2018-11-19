@@ -52,6 +52,7 @@
                             !junit.framework.*,
                             !org.junit.*,
                             !org.omg.spec.bpmn._20100524.model.*,
+                            !de.hpi.bpt.graph.*;version="[1.1.0,2.0.0)",
                             org.processmining.contexts.*;version="[1.0,2.0)",
                             org.processmining.framework.*;version="[1.0,2.0)",
                             org.processmining.models.*;version="[1.0,2.0)",
