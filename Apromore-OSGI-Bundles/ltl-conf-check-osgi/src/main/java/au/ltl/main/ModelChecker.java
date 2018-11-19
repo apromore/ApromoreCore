@@ -234,9 +234,9 @@ public class ModelChecker {
 
 					//br = new BufferedReader(new FileReader(FILENAME));
 					if(os.equals("mac"))
-						fr = new FileReader(RESULTS_DIR+File.separator+trace.getTraceID()+"_"+constraint_name);
-					else
 						fr = new FileReader(RESULTS_DIR+"/"+trace.getTraceID()+"_"+constraint_name);
+					else
+						fr = new FileReader(RESULTS_DIR+File.separator+trace.getTraceID()+"_"+constraint_name);
 
 					br = new BufferedReader(fr);
 
@@ -320,9 +320,9 @@ public class ModelChecker {
 			Trace trace= it_traces.next();
 			try {
 				if(os.equals("mac"))
-				fr = new FileReader(RESULTS_DIR+File.separator+trace.getTraceID()+"_all constraints");
+				fr = new FileReader(RESULTS_DIR+"/"+trace.getTraceID()+"_all constraints");
 				else
-					fr = new FileReader(RESULTS_DIR+"/"+trace.getTraceID()+"_all constraints");
+					fr = new FileReader(RESULTS_DIR+File.separator+trace.getTraceID()+"_all constraints");
 				br = new BufferedReader(fr);
 
 				String sCurrentLine;
