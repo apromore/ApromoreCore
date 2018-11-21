@@ -1,0 +1,180 @@
+<!--
+  ~ Copyright © 2009-2018 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native"
+        xmlns:z="http://www.zkoss.org/2005/zul"
+        use="org.apromore.plugin.portal.bpmneditor.BPMNEditorController">
+		
+    <n:style media="screen" type="text/css">
+        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
+        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/file-upload.css");
+        @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/xtheme-gray.css");
+    </n:style>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/xtheme-smoky.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/custom-style.css" type="text/css"/>
+
+    <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/diagram-js.css" type="text/css"/>
+    <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/bpmn-font/css/bpmn.css" type="text/css"/>
+    <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
+    <!-- <n:script src="https://unpkg.com/jquery@3.3.1/dist/jquery.js" type="text/javascript" /> -->
+
+	
+	<n:div id="editorcanvas"></n:div>
+	
+	<n:div id="editorwrapper" style="display: none">
+        <n:script>
+            <![CDATA[
+                if (!ORYX) {
+                    var ORYX = {};
+                }
+                if (!ORYX.CONFIG) {
+                    ORYX.CONFIG = {};
+                }
+                //ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '../../' + '${arg.editor}';
+				ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
+            ]]>
+        </n:script>
+		
+	    <n:script src="/${arg.editor}/libs/prototype-1.7.3.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/utils.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+		
+        <!-- Include all Editor plug-ins -->
+        <z:zk forEach="${arg.plugins}">
+            <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
+        </z:zk>
+
+        <n:span id="oryxstartupcode">
+            <n:script>
+                <![CDATA[
+					//$.noConflict();
+					var editorWrapper;
+					window.onOryxResourcesLoaded = function() {
+                        editorWrapper = new ORYX.Editor ({
+							xml: '${arg.bpmnXML}',
+                            model : {
+                                id : 'editorcanvas',
+                                stencilset : {
+                                    url : '${arg.url}',
+                                    namespace : '${arg.url}'
+                                },
+                            },
+                            fullscreen : true
+                        });
+                        Ext.select('svg').setVisible(false);
+                    };
+					
+					 window.console.log("start script");
+					 
+					 ORYX.load();
+					 
+					 /*
+					 var bpmnXML = '${arg.bpmnXML}';
+					 console.log(bpmnXML);
+					 editorWrapper.importXML(bpmnXML);
+					 */
+					
+					/*
+					 var diagramUrl = 'https://cdn.rawgit.com/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn';
+
+					  // modeler instance
+					  var bpmnModeler = new BpmnJS({
+						container: '#editorcanvas',
+						keyboard: {
+						  bindTo: window
+						}
+					  });
+					*/
+
+					  /**
+					   * Save diagram contents and print them to the console.
+					   */
+					  function exportDiagram() {
+
+						bpmnModeler.saveXML({ format: true }, function(err, xml) {
+
+						  if (err) {
+							return console.error('could not save BPMN 2.0 diagram', err);
+						  }
+
+						  alert('Diagram exported. Check the developer tools!');
+
+						  console.log('DIAGRAM', xml);
+						});
+					  }
+
+					  /**
+					   * Open diagram in our modeler instance.
+					   *
+					   * @param {String} bpmnXML diagram to display
+					   */
+					   
+					   /*
+					  function openDiagram(bpmnXML) {
+
+						// import diagram
+						bpmnModeler.importXML(bpmnXML, function(err) {
+
+						  if (err) {
+							return console.error('could not import BPMN 2.0 diagram', err);
+						  }
+
+						  // access modeler components
+						  var canvas = bpmnModeler.get('canvas');
+						  var overlays = bpmnModeler.get('overlays');
+
+
+						  // zoom to fit full viewport
+						  canvas.zoom('fit-viewport');
+						});
+					  }
+					  */
+					  
+					  /*
+					  
+					  var bpmnXML = '${arg.bpmnXML}';
+					  console.log(bpmnXML);
+					  openDiagram(bpmnXML);
+
+
+					  // load external diagram file via AJAX and open it
+					  //jQuery.get(diagramUrl, openDiagram, 'text');
+
+					  // wire save button
+					  jQuery('#save-button').click(exportDiagram);
+					  
+					*/
+                ]]>
+            </n:script>
+        </n:span>
+    </n:div>
+
+    
+</window>
+
