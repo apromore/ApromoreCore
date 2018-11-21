@@ -1,9 +1,9 @@
 {
-  "dynamic_cat_cols": ["lifecycle:transition","org:resource","Resource","AMOUNT_REQ","proctime","elapsed","activity_name","label","event_nr","last"],
-  "static_cat_cols":  [],
-  "timestamp_col":    "time:timestamp",
-  "activity_col":     "concept:name",
-  "static_num_cols":  [],
-  "dynamic_num_cols": [],
-  "case_id_col":      "case_id"
+	"dynamic_cat_cols":	["activity_name","last","Resource","label","elapsed","org:resource","AMOUNT_REQ","event_nr","lifecycle:transition","proctime"],
+	"static_cat_cols":	["creator"],
+	"timestamp_col":		"time:timestamp",
+	"activity_col":			"concept:name",
+	"static_num_cols":	[],
+	"dynamic_num_cols":	[],
+	"case_id_col":			"case_id"
 }
