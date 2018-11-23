@@ -35,7 +35,7 @@
 	<entry key="TraceChunkSize">20</entry>
 	<entry key="MaxNumberOfNodesVisited">100</entry>
 	<entry key="TimelineSlots">120</entry>
-	<entry key="TotalEngineSeconds">120</entry>
+	<entry key="TotalEngineSeconds">3600</entry>
 	<entry key="ProgressCircleBarRadius">20</entry>
 	<entry key="SequenceTokenDiffThreshold">2</entry>
 	<entry key="StartEventToFirstEventDuration">60</entry>

@@ -126,7 +126,7 @@
 
                                         var doAutoLayout = false; //'${arg.doAutoLayout}' === 'true';
                                         if (layouter && doAutoLayout) {
-                                            layouter.functionality();                                            
+                                            layouter.functionality();
                                         }
 
                                         Ext.select('svg').setVisible(true);
@@ -196,13 +196,13 @@
                         $j("#nextTrace").get(0).disabled = true;
                         $j("#previousTrace").get(0).disabled = true;
                         $j("#end").get(0).disabled = true;
-                        $j("#slider2").get(0).disabled = true;          
+                        $j("#slider2").get(0).disabled = true;
 
                         if (!window.animationData) {  // animationData will be null is invoked from the portal menu
                             window.animationData = '${arg.animationData}';
                         }
                         controller.reset(window.animationData);
-  
+
                         $j("#start").get(0).disabled = false;
                         $j("#pause").get(0).disabled = false;
                         $j("#forward").get(0).disabled = false;
@@ -217,16 +217,23 @@
         </span>
     </div>
 
+    <!-- static positioning according to the normal flow of the page -->
+    <!-- this is the editor at the top of the page -->
     <div id="oryx-canvas"></div>
-    
-    <div id="controls" style="position: absolute; top: 100%; left: 0; width: 100%">
-        <!-- Modify div attributes to adjust the control panel, e.g. size, position, and color -->
-        <div id="playback_controls" style="background: #EEEEEE; border: 1px solid black; padding: 10px; position: relative; left: 0; top: -180px; height: 170px; width: 100%; overflow: hidden">
 
+    <!-- static positioning according to the normal flow of the page -->
+    <!-- the control panel is positioned right below the editor -->
+    <div id="controls">
+
+        <!-- Relative positioning: relative to its normal position using top, left, right,...-->
+        <!-- Its normal position is the top left corner of the containing div -->
+        <!-- Relative positioning is used so that the speed control can overlay on top of the others -->
+        <div id="playback_controls" style="position: relative; background: #EEEEEE; border: 1px solid black; padding: 0px; padding-top: 10px; left: 0; top: 0px; height: 170px; width: 100%; overflow: hidden">
+            <!-- The following controls use float layout: a kind of flow layout, they are placed one after the other-->
             <!-- SVG for the timeline -->
             <n:svg id="timeline_svg" xmlns="http://www.w3.org/2000/svg" width="2000px" height="60px" viewBox="0 0 2000 60" style="padding-left:20px"></n:svg>
 
-            <div id="buttons_and_rate" style="float:left; text-align: center; margin-top: 5px; padding: 0px; width: 250px; top: -40px; height: 100px; overflow: hidden; background-color:#EEEEEE;">
+            <div id="buttons_and_rate" style="float:left; text-align: center; margin-top: 5px; padding: 0px; width: 250px; top: 0px; height: 100px; overflow: hidden; background-color:#EEEEFF;">
                 <button id='start' onclick="start(event);" style="border: 1px solid gray; padding: 0">
                     <img src="images/control_start.png" alt="Start" width="24" height="24" style="border: 0; padding: 0"/>
                 </button>
@@ -250,8 +257,7 @@
                 </button>
             </div>
 
-            <div id="progress_display" style="float:left; margin-top: 5px; padding: 0px; padding-left: 0px; left: 250px; top: -40px; height: 100px; overflow: hidden; background-color: #EEEEEE;">
-
+            <div id="progress_display" style="float:left; margin-top: 5px; padding-left: 5px; padding-left: 0px; width: 350px; top: 0px; height: 100px; overflow: hidden; background-color: #EEEEFF;">
                 <!-- Running Clock -->
                 <table style="display: inline-table; vertical-align: top">
                     <tr><td id="date" style="text-align: center; font: 10pt monospace">&#xA0;</td></tr>
@@ -260,21 +266,23 @@
                 </table>
 
                 <!-- SVG for the circular progress bars -->
-                <n:svg id="progressbars_svg" xmlns="http://www.w3.org/2000/svg" width="400px" height="70px" viewBox="0 0 400 70" style="display: inline; background-color: none;" ></n:svg>
+                <n:svg id="progressbars_svg" xmlns="http://www.w3.org/2000/svg" width="20%" height="70px" viewBox="0 0 80 80" style="display: inline; background-color: none;" ></n:svg>
             </div>
 
-            <div id="log_list" style="margin-top: 5px; padding: 0px; padding-left: 0px; left: 250px; top: -40px; height: 100px; overflow-y: scroll; background-color: #EEEEFF;">
-                <table id="metrics_table" style="display: inline-table; border-style: solid; border: 1px solid black; border-collapse: collapse; vertical-align: top; background-color: none;" border="1">
+            <div id="log_list" style="float:left; margin-top: 5px; padding: 0px; padding-left: 0px; top: 0px; height: 100px; width:600px; overflow-y: scroll; background-color: #EEEEFF;">
+                <table id="metrics_table" style="display: inline-table; border-style: solid; border: 1px solid black; border-collapse: collapse; vertical-align: top; background-color: none;" width="100%" border="1">
                     <tr id="header">
-                        <td style="text-align: center; font: 10pt monospace">Log</td>
+                        <td style="text-align: center; font: 10pt monospace; width: 100%">Log</td>
                         <td style="text-align: center; font: 10pt monospace">Total</td>
                         <td style="text-align: center; font: 10pt monospace">Play</td>
                         <td style="text-align: center; font: 10pt monospace">Reliable</td>
                         <td style="text-align: center; font: 10pt monospace">Fitness</td>
                         <td style="text-align: center; font: 10pt monospace">Time(s)</td>
                         <td style="text-align: center; font: 10pt monospace">A. Fitness</td>
+                        <!--
                         <td style="text-align: center; font: 10pt monospace">A. Time(s)</td>
                         <td style="text-align: center; font: 10pt monospace">Algo Runtime(s)</td>
+                        -->
                     </tr>
                     <tr>
                         <td colspan="9"><input id="toggleCaseLabelVisibility" type="checkbox" onchange="toggleCaseLabelVisibility()">Show case labels</input></td>
@@ -283,8 +291,9 @@
             </div>
         </div>
 
-        <!-- Modify div attributes to adjust the speed panel, e.g. size, position, and color -->
-        <div id="speed_controls" style="background: #EEE; border: 1px solid black; position: absolute; left: 30px; top: -400px; width: 100px; height: 220px; overflow: hidden">
+        <!-- Use jQuery-ui-Slider-Pips at github.com/simeydotme/jQuery-ui-Slider-Pips -->
+        <!-- Use absolute position to place this control on top of the editor -->
+        <div id="speed_controls" style="position: absolute; background: #EEE; border: 1px solid black; left: 30px; top: 400px; width: 100px; height: 220px; overflow: hidden">
             <div id="slider2" disabled="disabled" style="left: 10px; top: 10px; height:200px;"></div>
         </div>
     </div>

@@ -45,12 +45,10 @@
                 <configuration>
                     <!-- Generally, no change should be necessary here unless your plug-in relies on a non-OSGi dependency -->
                     <instructions>
-
 						<Embed-Dependency>
                             artifactId=jcommon|jfreechart
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
-
 						
 						<!--
 						<Embed-Dependency>
@@ -77,8 +75,6 @@
 							!org.jfree.data.time,
 							!org.jfree.data.xy,
 							
-							!org.deckfour.slickerbox.util,
-							
                             org.apromore.plugin,
                             org.springframework.beans.factory.aspectj,
                             org.joda.convert;resolution:=optional,
@@ -100,20 +96,6 @@
     </build>
 
     <dependencies>
-		<!--
-		<dependency>
-			<groupId>jfree</groupId>
-			<artifactId>jfreechart</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>jfree</groupId>
-			<artifactId>jcommon</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		-->
-		
 		<dependency>
 			<groupId>org.jfree</groupId>
 			<artifactId>jfreechart</artifactId>
@@ -125,14 +107,6 @@
 			<artifactId>jcommon</artifactId>
 			<version>1.0.23</version>
 		</dependency>
-		
-		<!--
-		<dependency>
-			<groupId>org.apache.servicemix.bundles</groupId>
-			<artifactId>org.apache.servicemix.bundles.jfreechart</artifactId>
-			<version>1.0.12_1</version>
-		</dependency>
-		-->
 		
         <dependency>
             <groupId>org.apromore</groupId>
@@ -148,29 +122,9 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
-		
 
-		
-
-
-		<!--
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
-            <version>6.0</version>
-        </dependency>
-		-->
 
     </dependencies>
-    <!--
-	<repositories>
-        <repository>
-            <id>EclipseLink Repo</id>
-            <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
-            <name>EclipseLink Repo</name>
-        </repository>
-    </repositories>
-    -->
     <version>1.0</version>
     
 </project>

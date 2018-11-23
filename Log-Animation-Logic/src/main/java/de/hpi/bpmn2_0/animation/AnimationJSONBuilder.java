@@ -117,6 +117,7 @@ public class AnimationJSONBuilder {
         DecimalFormat df = new DecimalFormat("#.###"); 
         
         json.put("name", animationLog.getName());
+        json.put("filename", animationLog.getFileName());
         json.put("color", animationLog.getColor());
         json.put("total", animationLog.getTraces().size() + animationLog.getUnplayTraces().size());        
         json.put("play", animationLog.getTraces().size());

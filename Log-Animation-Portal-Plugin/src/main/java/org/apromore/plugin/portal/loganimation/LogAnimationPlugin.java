@@ -131,7 +131,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
             Iterator<String> colors = Arrays.asList("#0088FF", "#FF8800", "#88FF00").iterator();
             for (LogSummaryType logSummary: logSummaries) {
                 LogAnimationService.Log log = new LogAnimationService.Log();
-                log.fileName = "Dummy";
+                log.fileName = logSummary.getName();
                 log.xlog     = eventLogService.getXLog(logSummary.getId());
                 log.color    = colors.hasNext() ? colors.next() : "red";
                 logs.add(log);
