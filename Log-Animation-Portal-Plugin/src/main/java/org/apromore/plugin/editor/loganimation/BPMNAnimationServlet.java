@@ -46,7 +46,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.deckfour.xes.model.XLog;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.processmining.plugins.signaturediscovery.encoding.EncodeTraces;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 // Local
