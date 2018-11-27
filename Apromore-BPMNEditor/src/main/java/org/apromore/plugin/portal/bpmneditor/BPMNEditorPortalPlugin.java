@@ -97,9 +97,13 @@ public class BPMNEditorPortalPlugin extends DefaultPortalPlugin {
 //        String branch = vst.getName();
 //        Version version = new Version(vst.getVersionNumber());
         
-        String username = portalContext.getCurrentUser().getUsername();
-        EditSessionType editSession1 = createEditSession(username, process, vst, process.getOriginalNativeType(), null /*annotation*/);
+        //String username = portalContext.getCurrentUser().getUsername();
+        EditSessionType editSession1 = createEditSession(UserSessionManager.getCurrentUser().getUsername(), 
+        												process, vst, 
+        												process.getOriginalNativeType(), 
+        												null /*annotation*/);
         Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
+        
         SignavioSession session = new SignavioSession(editSession1, null, null, process, vst, null, null, requestParameterTypes);
         String id = UUID.randomUUID().toString();
         UserSessionManager.setEditSession(id, session);
@@ -108,7 +112,10 @@ public class BPMNEditorPortalPlugin extends DefaultPortalPlugin {
 
     }
 
-    private static EditSessionType createEditSession(final String username, final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
+    private static EditSessionType createEditSession(final String username, final ProcessSummaryType process, 
+    												final VersionSummaryType version, 
+    												final String nativeType, 
+    												final String annotation) {
 
         EditSessionType editSession = new EditSessionType();
 

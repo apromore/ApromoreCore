@@ -144,22 +144,19 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
         }
 
         this.saving = true;
-        this.facade.raiseEvent({
-            type:ORYX.CONFIG.EVENT_ABOUT_TO_SAVE
-        });
 
-        var json = Ext.encode(this.facade.getJSON());
-        var svg = this.getSVG();
+        var xml = this.facade.getXML();
+        var svg = this.facade.getSVG();
 
         if (forceNew) {
             if (ORYX.Plugins.ApromoreSave.apromoreSaveAs) {
-                ORYX.Plugins.ApromoreSave.apromoreSaveAs(json, svg);
+                ORYX.Plugins.ApromoreSave.apromoreSaveAs(xml, svg);
             } else {
                 alert("Apromore Save As method is missing!");
             }
         } else {
             if (ORYX.Plugins.ApromoreSave.apromoreSave) {
-                ORYX.Plugins.ApromoreSave.apromoreSave(json, svg);
+                ORYX.Plugins.ApromoreSave.apromoreSave(xml, svg);
             } else {
                 alert("Apromore Save method is missing!");
             }

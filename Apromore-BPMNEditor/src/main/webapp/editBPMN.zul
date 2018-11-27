@@ -93,83 +93,16 @@
 					 window.console.log("start script");
 					 
 					 ORYX.load();
-					 
-					 /*
-					 var bpmnXML = '${arg.bpmnXML}';
-					 console.log(bpmnXML);
-					 editorWrapper.importXML(bpmnXML);
-					 */
-					
-					/*
-					 var diagramUrl = 'https://cdn.rawgit.com/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn';
 
-					  // modeler instance
-					  var bpmnModeler = new BpmnJS({
-						container: '#editorcanvas',
-						keyboard: {
-						  bindTo: window
-						}
-					  });
-					*/
-
-					  /**
-					   * Save diagram contents and print them to the console.
-					   */
-					  function exportDiagram() {
-
-						bpmnModeler.saveXML({ format: true }, function(err, xml) {
-
-						  if (err) {
-							return console.error('could not save BPMN 2.0 diagram', err);
-						  }
-
-						  alert('Diagram exported. Check the developer tools!');
-
-						  console.log('DIAGRAM', xml);
-						});
-					  }
-
-					  /**
-					   * Open diagram in our modeler instance.
-					   *
-					   * @param {String} bpmnXML diagram to display
-					   */
-					   
-					   /*
-					  function openDiagram(bpmnXML) {
-
-						// import diagram
-						bpmnModeler.importXML(bpmnXML, function(err) {
-
-						  if (err) {
-							return console.error('could not import BPMN 2.0 diagram', err);
-						  }
-
-						  // access modeler components
-						  var canvas = bpmnModeler.get('canvas');
-						  var overlays = bpmnModeler.get('overlays');
-
-
-						  // zoom to fit full viewport
-						  canvas.zoom('fit-viewport');
-						});
-					  }
-					  */
-					  
-					  /*
-					  
-					  var bpmnXML = '${arg.bpmnXML}';
-					  console.log(bpmnXML);
-					  openDiagram(bpmnXML);
-
-
-					  // load external diagram file via AJAX and open it
-					  //jQuery.get(diagramUrl, openDiagram, 'text');
-
-					  // wire save button
-					  jQuery('#save-button').click(exportDiagram);
-					  
-					*/
+                     ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
+                    	 console.log(xml);
+                    	 zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
+                     };
+                     
+                     ORYX.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
+                    	 console.log(xml);
+                         zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
+                     };
                 ]]>
             </n:script>
         </n:span>

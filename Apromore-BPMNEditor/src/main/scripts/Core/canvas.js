@@ -360,6 +360,22 @@ ORYX.Core.Canvas = {
         }.bind(this));
     },
 
+    getXML: function() {
+        var bpmnXML;
+        this._editor.saveXML({ format: true }, function(err, xml) {
+            bpmnXML = xml;
+        });
+        return bpmnXML;
+    },
+
+    getSVG: function() {
+        var bpmnSVG;
+        this._editor.saveSVG(function(err, svg) {
+            bpmnSVG = svg;
+        });
+        return bpmnSVG;
+    },
+
     zoomFitToModel: function() {
 
     }

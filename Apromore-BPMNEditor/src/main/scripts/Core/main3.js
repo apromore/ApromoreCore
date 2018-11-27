@@ -842,6 +842,8 @@ ORYX.Editor = {
                     importERDF: this.importERDF.bind(this),
                     getERDF: this.getERDF.bind(this),
                     getJSON: this.getJSON.bind(this),
+                    getXML: this.getXML.bind(this),
+                    getSVG: this.getSVG.bind(this),
                     getSerializedJSON: this.getSerializedJSON.bind(this),
                     executeCommands: this.executeCommands.bind(this),
                     isExecutingCommands: this.isExecutingCommands.bind(this),
@@ -937,6 +939,14 @@ ORYX.Editor = {
         // });
         // return canvas;
         return {};
+    },
+
+    getXML: function() {
+        return this.getCanvas().getXML();
+    },
+
+    getSVG: function() {
+        return this.getCanvas().getSVG();
     },
 
     /**

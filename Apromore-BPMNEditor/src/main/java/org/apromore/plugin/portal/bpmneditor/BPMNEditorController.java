@@ -25,7 +25,6 @@ import java.util.*;
 
 // Java 2 Enterprise packages
 import javax.inject.Inject;
-import javax.xml.XMLConstants;
 
 // Third party packages
 import org.apromore.plugin.editor.EditorPlugin;
@@ -34,21 +33,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.apromore.helper.Version;
 // Local packages
 import org.apromore.model.EditSessionType;
-import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
-import org.apromore.portal.util.StreamUtil;
+import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.service.ProcessService;
 
 public class BPMNEditorController extends BaseController {
@@ -94,8 +92,6 @@ public class BPMNEditorController extends BaseController {
         vst = session.getVersion();
         params =  session.getParams();
 
-//        LogAnimationService logAnimationService = (LogAnimationService) session.get("logAnimationService");
-
         Map<String, Object> param = new HashMap<>();
         try {
         	int procID = process.getId();
@@ -112,23 +108,6 @@ public class BPMNEditorController extends BaseController {
                 title = editSession.getProcessName() + " (" + editSession.getNativeType() + ")";
                 this.setTitle(title);
 
-//                ExportFormatResultType exportResult1 =
-//                        getService().exportFormat(editSession.getProcessId(),
-//                                editSession.getProcessName(),
-//                                editSession.getOriginalBranchName(),
-//                                editSession.getCurrentVersionNumber(),
-//                                editSession.getNativeType(),
-//                                editSession.getAnnotation(),
-//                                editSession.isWithAnnotation(),
-//                                editSession.getUsername(),
-//                                params);
-
-//                title = editSession.getProcessName();
-//                pluginMessages = exportResult1.getMessage();
-
-                //jsonData = StreamUtil.convertStreamToString(exportResult1.getNative().getInputStream());
-
-//                param.put("jsonData",      escapeQuotedJavascript(jsonData));
                 param.put("bpmnXML",          escapeXML(bpmnXML));
                 param.put("url",           getURL(editSession.getNativeType()));
                 param.put("importPath",    getImportPath(editSession.getNativeType()));
@@ -156,17 +135,6 @@ public class BPMNEditorController extends BaseController {
                 param.put("doAutoLayout", "true");
             }
 
-//            String animationData = (String) session.get("animationData");
-//            if(animationData == null) {
-//                if (logAnimationService != null) {  // logAnimationService is null if invoked from the editor toobar
-//                    List<LogAnimationService.Log> logs = (List<LogAnimationService.Log>) session.get("logs");
-//                    animationData = logAnimationService.createAnimation(jsonData, logs);
-//                    param.put("animationData", escapeQuotedJavascript(animationData));
-//                }
-//            }else {
-//                param.put("animationData", escapeQuotedJavascript(animationData));
-//            }
-
             this.setTitle(title);
             if (mainC != null) {
                 mainC.showPluginMessages(pluginMessages);
@@ -189,32 +157,42 @@ public class BPMNEditorController extends BaseController {
             LOGGER.error("",e);
             e.printStackTrace();
         }
+        
+        this.addEventListener("onSave", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws InterruptedException {
+                try {
+                    new SaveAsDialogController(process, vst, editSession, true, eventToString(event));
+                } catch (ExceptionFormats exceptionFormats) {
+                    LOGGER.error("Error saving model.", exceptionFormats);
+                }
+            }
+        });
+        this.addEventListener("onSaveAs", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws InterruptedException {
+                try {
+                    new SaveAsDialogController(process, vst, editSession, false, eventToString(event));
+                } catch (ExceptionFormats exceptionFormats) {
+                    LOGGER.error("Error saving model.", exceptionFormats);
+                }
+            }
+        });
     }
 
-    /*
-    public void onCreate() throws InterruptedException {
-
-        //Window window = (Window) this.getFellowIfAny("win");  // If we needed a dynamic ZK UI, we'd be able to mutate it here
-
-        //Clients.evalJavaScript("initialize()");
-    }
-    */
 
     /**
      * @param json
      * @return the <var>json</var> escaped so that it can be quoted in Javascript.
      *     Specifically, it replaces apostrophes with \\u0027 and removes embedded newlines and leading and trailing whitespace.
      */
-//    private String escapeQuotedJavascript(String json) {
-//        return json.replace("\n", " ").replace("'", "\\u0027").trim();
-//    }
     
     private String escapeXML(String xml) {
 //    	String newline = System.getProperty("line.separator");
 //        return xml.replace(newline, " ").replace("\n", " ").trim();
     	return xml.replaceAll("(\\r|\\n|\\r\\n)+", " ").replace("'", "");
     }
-
+    
     /**
      * YAWL models package their event data as an array of {@link String}s, EPML packages it as a {@link String}; this function
      * hides the difference.
