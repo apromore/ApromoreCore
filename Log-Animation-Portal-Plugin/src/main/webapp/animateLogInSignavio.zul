@@ -87,7 +87,7 @@
 
                     // This function is called upon load of all Oryx dependencies
                     window.onOryxResourcesLoaded = function() {
-                        function createEditor(id, jsonData) {
+                        function createEditor(id, bpmnXML) {
                             var editor = new ORYX.Editor ({
                                 model : {
                                     id: id,
@@ -102,7 +102,7 @@
                             // Import new process model
                             new Ajax.Request('${arg.importPath}', {
                                 parameters: {
-                                    'data': jsonData
+                                    'data': bpmnXML
                                 },
                                 method: 'POST',
 
@@ -183,7 +183,7 @@
                             });
                         };
 
-                        oryxEditor = createEditor('oryx-canvas', '${arg.jsonData}');
+                        oryxEditor = createEditor('oryx-canvas', '${arg.bpmnXML}');
 
                         Ext.select('svg').setVisible(false);
                     };

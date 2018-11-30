@@ -11,7 +11,6 @@ jQuery.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
 jQuery.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
 jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 
-
 var svgNS = "http://www.w3.org/2000/svg";
 var xlinkNS = "http://www.w3.org/1999/xlink";
 var jsonModel; //contains parsed objects of the process model
@@ -58,8 +57,8 @@ function getViewportPoints(rect){
  */
 function toViewportCoords(groupE) {
     var svg = svgDocument;
-    var pt  = svg.createSVGPoint();
-    var matrix  = groupE.getScreenCTM();
+    var pt = svg.createSVGPoint();
+    var matrix = groupE.getScreenCTM();
     rect = groupE.getBBox();
     pt.x = rect.x;
     pt.y = rect.y;
@@ -202,16 +201,36 @@ function updateClock_global() {
 }
 
 /*
-* Animation timing is shown via the timeline bar which has two timing aspects:
-* the real time in event log file and the internal clock of the animation engine (SVG).
-* The timeline has a number of even slots configured in the configuration file, e.g. TimelineSlots = 120.
+* The animation page has four animation components:
+* 1. The process model with tokens moving along the nodes and edges.
+* 2. The timeline bar with a tick moving along
+* 3. The circular progress bar showing the completion percentage for the log
+* 4. The digital clock running and showing the passing time
+* These four components belong to four separate SVG document (<svg> tags).
+* Each SVG document has an internal SVG engine time
+*
+* The process model has nodes and edges which are SVG shapes. The animation shows tokens moving along these shapes.
+* Each token (or marker) belongs to a case in the log. A case is kept track in a LogCase object.
+* Each LogCase has multiple markers created and animated along certain nodes and edges
+* on the model in a continuous manner. Each marker is an SVG animateMotion element with a path attribute pointing
+* to the node or edge it has to move along. Two key attributes for animations are begin and dur (duration),
+* respectively when it begins and for how long. These attribute values are based on the time of the containing SVG document.
+*
+* The timeline bar has a number of equal slots configured in the configuration file, e.g. TimelineSlots = 120.
 * Each slot represents a duration of time in the event log, called SlotDataUnit, i.e. how many seconds per slot
 * Each slot also represents a duration of time in the animation engine, called SlotEngineUnit
 * For example, if the log spans a long period of time, SlotDataUnit will have a large value.
 * SlotEngineUnit is used to calculate the speed of the tick movement on the timeline bar
 * SlotDataUnit is used to calculate the location of a specific event date on the timeline bar
-* timeCoefficient: the ratio of SlotDataUnit to SlotEngineUnit
-* The digital clock on the panel is governed by a clock timer which update its display at intervals (e.g. every 100ms)
+* timeCoefficient: the ratio of SlotDataUnit to SlotEngineUnit, i.e. 1 second in the engine = how many seconds in the data.
+* The starting point of time in all logs is set in json data sent from the server: startDateMillis.
+*
+* The digital clock must keep running to show the clock jumping. It is governed by a timer property of
+* the controller. This timer is set to execute a function every interval of 100ms.
+* Starting from 0, it counts 100, 200, 300,...ms.
+* Call getCurrentTime() to the SVG document returns the current clock intervals = 100x (x = count)
+* The actual current time is: getCurrentTime()*timeCoefficient + startDateMillis.
+*
 */
 //
 // Animation controller
@@ -419,13 +438,13 @@ Controller.prototype = {
      */
     updateMarkersOnce: function() {
         var t = this.getCurrentTime();
-        var dt = this.timeCoefficient * 1000 / this.slotDataUnit;
-        t *= dt;
+        var dt = this.timeCoefficient * 1000 / this.slotDataUnit; // 1/this.SlotEngineUnit
+        t *= dt; //number of engine slots: t = t/this.SlotEngineUnit
 
         // Display all the log trace markers
         for (var log_index = 0; log_index < jsonServer.logs.length; log_index++) {
             for (var tokenAnimation_index = 0; tokenAnimation_index < jsonServer.logs[log_index].tokenAnimations.length; tokenAnimation_index++) {
-            this.logCases[log_index][tokenAnimation_index].updateMarker(t, dt);
+                this.logCases[log_index][tokenAnimation_index].updateMarker(t, dt);
             }
         }
     },
@@ -434,6 +453,7 @@ Controller.prototype = {
      * This method is used to call to update the digital clock display.
      * This update is one-off only.
      * It is safer to call this method than calling updateClock() method which is for timer.
+     * param - time: is the
      */
     updateClockOnce: function(time) {
         var date = new Date();
@@ -876,8 +896,15 @@ function LogCase(tokenAnimation, color, label, offset) {
 
 LogCase.prototype = {
 
+    /*
+    /* Create a marker (i.e. a token, which is an SVG animation element) and insert
+     * it into the existing SVG document. SVG engine will start animating
+     * them automatically.
+     * Params
+     * t: number of engine slots
+     * dt:
+     */
     updateMarker: function(t, dt) {
-
         // Delete any path markers which have moved beyond their interval
         var newMarkers = []
         var alreadyMarkedIndices = [];
