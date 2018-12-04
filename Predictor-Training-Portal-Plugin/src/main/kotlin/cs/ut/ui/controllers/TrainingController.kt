@@ -94,10 +94,10 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
             val staticAttributes = findStaticAttributes(xlog).filter { !isSpurious(it) }
             val dynamicAttributes = findDynamicAttributes(xlog).filter { !isSpurious(it) }
 
-            params.put("dynamic_cat_cols", dynamicAttributes.filter { isCategoreal(it) }.map { it.getKey() })
-            params.put("dynamic_num_cols", dynamicAttributes.filter { isNumerical(it) }.map { it.getKey() })
-            params.put("static_cat_cols", staticAttributes.filter { isCategoreal(it) }.map { it.getKey() })
-            params.put("static_num_cols", staticAttributes.filter { isNumerical(it) }.map { it.getKey() })
+            params.put("dynamic_cat_cols", dynamicAttributes.filter { isCategoreal(it) }.map { it.getKey() }.toSet())
+            params.put("dynamic_num_cols", dynamicAttributes.filter { isNumerical(it) }.map { it.getKey() }.toSet())
+            params.put("static_cat_cols", staticAttributes.filter { isCategoreal(it) }.map { it.getKey() }.toSet())
+            params.put("static_num_cols", staticAttributes.filter { isNumerical(it) }.map { it.getKey() }.toSet())
 
             params.put("case_id_col", "case_id")
             params.put("activity_col", "concept:name")
@@ -115,7 +115,9 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
                 // Write header
                 val headers = ArrayList<String>()
                 headers.add("case_id")
-                for (attribute: XAttribute in findDynamicAttributes(xlog)) headers.add(attribute.getKey())
+                val dynamicAttributes = findDynamicAttributes(xlog)
+
+                for (attribute: String in dynamicAttributes.map { it.getKey() }.toSet()) headers.add(attribute)
 
                 writeCSV(headers, writer)
 
@@ -199,22 +201,20 @@ class TrainingController : SelectorComposer<Component>(), Redirectable, UICompon
          * @return the global trace attributes of xlog if they exist, or if those are missing, the attributes of the first trace
          */
         private fun findStaticAttributes(xlog: XLog): List<XAttribute> =
-            if (!xlog.getGlobalTraceAttributes().isEmpty()) {
+                ArrayList(xlog.get(0).getAttributes().values)
+/*            if (!xlog.getGlobalTraceAttributes().isEmpty()) {
                 xlog.getGlobalTraceAttributes()
             } else {
                 ArrayList(xlog.get(0).getAttributes().values)
-            }
+            }*/
 
         /**
          * @param xlog  any XES log
          * @return the global event attributes of xlog if they exist, or if those are missing, the attributes of the first event
          */
         private fun findDynamicAttributes(xlog: XLog): List<XAttribute> =
-            if (!xlog.getGlobalEventAttributes().isEmpty()) {
-                xlog.getGlobalEventAttributes()
-            } else {
-                ArrayList(xlog.get(0).get(0).getAttributes().values)
-            }
+                xlog[0].flatMap { event -> event.attributes.values }
+
     }
 
 

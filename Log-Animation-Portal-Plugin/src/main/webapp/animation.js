@@ -11,7 +11,6 @@ jQuery.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
 jQuery.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
 jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 
-
 var svgNS = "http://www.w3.org/2000/svg";
 var xlinkNS = "http://www.w3.org/1999/xlink";
 var jsonModel; //contains parsed objects of the process model
@@ -58,8 +57,8 @@ function getViewportPoints(rect){
  */
 function toViewportCoords(groupE) {
     var svg = svgDocument;
-    var pt  = svg.createSVGPoint();
-    var matrix  = groupE.getScreenCTM();
+    var pt = svg.createSVGPoint();
+    var matrix = groupE.getScreenCTM();
     rect = groupE.getBBox();
     pt.x = rect.x;
     pt.y = rect.y;
@@ -73,27 +72,27 @@ function drawCoordinateOrigin() {
         //var rect = groupE.getBBox();
         pt.x = svg.x.animVal.value;
         pt.y = svg.y.animVal.value;
-        //console.log("SVG Document Origin: x="+ pt.x + " y=" + pt.y); 
-        //pt = pt.matrixTransform(matrix);         
+        //console.log("SVG Document Origin: x="+ pt.x + " y=" + pt.y);
+        //pt = pt.matrixTransform(matrix);
 
         var lineX = document.createElementNS(svgNS,"line");
-        lineX.setAttributeNS(null,"x1",pt.x); 
+        lineX.setAttributeNS(null,"x1",pt.x);
         lineX.setAttributeNS(null,"y1",pt.y);
         lineX.setAttributeNS(null,"x2",pt.x+50);
         lineX.setAttributeNS(null,"y2",pt.y);
         lineX.setAttributeNS(null,"stroke","red");
         lineX.setAttributeNS(null,"stroke-width","5");
-        
+
         var lineY = document.createElementNS(svgNS,"line");
-        lineY.setAttributeNS(null,"x1",pt.x); 
+        lineY.setAttributeNS(null,"x1",pt.x);
         lineY.setAttributeNS(null,"y1",pt.y);
         lineY.setAttributeNS(null,"x2",pt.x);
         lineY.setAttributeNS(null,"y2",pt.y+50);
         lineY.setAttributeNS(null,"stroke","red");
-        lineY.setAttributeNS(null,"stroke-width","5");  
-        
-        //alert(rect.x + " " + rect.y);      
-        
+        lineY.setAttributeNS(null,"stroke-width","5");
+
+        //alert(rect.x + " " + rect.y);
+
         svg.appendChild(lineX);
         svg.appendChild(lineY);
 }
@@ -106,27 +105,27 @@ function drawCoordinateOrigin() {
         pt.x = rect.x;
         pt.y = rect.y;
         //alert(pt.x + " " + pt.y);
-        pt = pt.matrixTransform(matrix);       
-        //console.log("Process Model Origin: x="+ pt.x + " y=" + pt.y);  
+        pt = pt.matrixTransform(matrix);
+        //console.log("Process Model Origin: x="+ pt.x + " y=" + pt.y);
 
         var lineX = document.createElementNS(svgNS,"line");
-        lineX.setAttributeNS(null,"x1",pt.x); 
+        lineX.setAttributeNS(null,"x1",pt.x);
         lineX.setAttributeNS(null,"y1",pt.y);
         lineX.setAttributeNS(null,"x2",pt.x+50);
         lineX.setAttributeNS(null,"y2",pt.y);
         lineX.setAttributeNS(null,"stroke","blue");
         lineX.setAttributeNS(null,"stroke-width","5");
-        
+
         var lineY = document.createElementNS(svgNS,"line");
-        lineY.setAttributeNS(null,"x1",pt.x); 
+        lineY.setAttributeNS(null,"x1",pt.x);
         lineY.setAttributeNS(null,"y1",pt.y);
         lineY.setAttributeNS(null,"x2",pt.x);
         lineY.setAttributeNS(null,"y2",pt.y+50);
         lineY.setAttributeNS(null,"stroke","blue");
-        lineY.setAttributeNS(null,"stroke-width","5");  
-        
-        //alert(rect.x + " " + rect.y);      
-        
+        lineY.setAttributeNS(null,"stroke-width","5");
+
+        //alert(rect.x + " " + rect.y);
+
         groupE.appendChild(lineX);
         groupE.appendChild(lineY);
 }
@@ -146,7 +145,7 @@ function drawCoordinateOrigin() {
  * ********************************************************************/
 function findModelNode(id) {
     var nodes = jsonModel.childShapes;
-    
+
     //Find the node (with outgoing already)
     var node = null;
     for(var i = 0; i < nodes.length; ++i) {
@@ -155,7 +154,7 @@ function findModelNode(id) {
             break;
         }
     }
-    
+
     //Check and select the sequence flow (task can have association flow as outgoing)
     if (node != null) {
         if (node.outgoing.length > 2) {
@@ -167,12 +166,12 @@ function findModelNode(id) {
                     }
                 }
             }
-        } 
+        }
         else {
-            node.outgoingFlow = node.outgoing[0].resourceId;    
+            node.outgoingFlow = node.outgoing[0].resourceId;
         }
     }
-    
+
     //Find and assign the incoming flow
     for(var i = 0; i < nodes.length; ++i) {
         if (nodes[i].stencil.id == "SequenceFlow") {
@@ -182,7 +181,7 @@ function findModelNode(id) {
             }
         }
     }
-    
+
     return node;
 }
 
@@ -201,6 +200,38 @@ function updateClock_global() {
         controller.updateClock();
 }
 
+/*
+* The animation page has four animation components:
+* 1. The process model with tokens moving along the nodes and edges.
+* 2. The timeline bar with a tick moving along
+* 3. The circular progress bar showing the completion percentage for the log
+* 4. The digital clock running and showing the passing time
+* These four components belong to four separate SVG document (<svg> tags).
+* Each SVG document has an internal SVG engine time
+*
+* The process model has nodes and edges which are SVG shapes. The animation shows tokens moving along these shapes.
+* Each token (or marker) belongs to a case in the log. A case is kept track in a LogCase object.
+* Each LogCase has multiple markers created and animated along certain nodes and edges
+* on the model in a continuous manner. Each marker is an SVG animateMotion element with a path attribute pointing
+* to the node or edge it has to move along. Two key attributes for animations are begin and dur (duration),
+* respectively when it begins and for how long. These attribute values are based on the time of the containing SVG document.
+*
+* The timeline bar has a number of equal slots configured in the configuration file, e.g. TimelineSlots = 120.
+* Each slot represents a duration of time in the event log, called SlotDataUnit, i.e. how many seconds per slot
+* Each slot also represents a duration of time in the animation engine, called SlotEngineUnit
+* For example, if the log spans a long period of time, SlotDataUnit will have a large value.
+* SlotEngineUnit is used to calculate the speed of the tick movement on the timeline bar
+* SlotDataUnit is used to calculate the location of a specific event date on the timeline bar
+* timeCoefficient: the ratio of SlotDataUnit to SlotEngineUnit, i.e. 1 second in the engine = how many seconds in the data.
+* The starting point of time in all logs is set in json data sent from the server: startDateMillis.
+*
+* The digital clock must keep running to show the clock jumping. It is governed by a timer property of
+* the controller. This timer is set to execute a function every interval of 100ms.
+* Starting from 0, it counts 100, 200, 300,...ms.
+* Call getCurrentTime() to the SVG document returns the current clock intervals = 100x (x = count)
+* The actual current time is: getCurrentTime()*timeCoefficient + startDateMillis.
+*
+*/
 //
 // Animation controller
 //
@@ -209,8 +240,8 @@ Controller = function(){
     // The timer is set whenever the replay is started or restarted, and cleared whenevenr it is paused.
     // The synchronization between the digital clock and internal timer of SVG documents is done vie this timer
     // because the timer will read the internal time of every SVG documents at every internal instant
-    this.clockTimer = null; 
-};         
+    this.clockTimer = null;
+};
 
 Controller.prototype = {
 
@@ -233,7 +264,7 @@ Controller.prototype = {
     /*
      * Only this method creates a timer.
      * This timer is used to update the digital clock.
-     * The mechanism is the digital clock reads SVG document current time every 100ms via updateClock() method. 
+     * The mechanism is the digital clock reads SVG document current time every 100ms via updateClock() method.
      * This is pulling way.
      * In case of updating the clock once, it is safer to call updateClockOnce() method than updateClock(), to avoid endless loop.
      */
@@ -262,17 +293,17 @@ Controller.prototype = {
         var tokenE = svgDocument.getElementById("progressAnimation");
         if (tokenE != null) {
             svgDocument.removeChild(tokenE);
-            //tokenE.outerHTML = "";  
+            //tokenE.outerHTML = "";
         }
-    
+
         jsonServer = JSON.parse(jsonRaw);
         var logs = jsonServer.logs;
-            
+
         // Reconstruct this.logCases to correspond to the changed jsonServer value
         this.logCases = [];
-        
+
         var offsets = [3,-3,9,-9,12,-12,15,-15];
-    
+
         for (var log_index = 0; log_index < jsonServer.logs.length; log_index++) {
             var log = jsonServer.logs[log_index];
             this.logCases[log_index] = [];
@@ -282,7 +313,7 @@ Controller.prototype = {
             }
         }
 
-        this.startPos = jsonServer.timeline.startDateSlot; //start slot 
+        this.startPos = jsonServer.timeline.startDateSlot; //start slot, starting from 0
         this.endPos = jsonServer.timeline.endDateSlot; // end slot
         this.timelineSlots = jsonServer.timeline.timelineSlots;
         this.timelineEngineSeconds = jsonServer.timeline.totalEngineSeconds; //total engine seconds
@@ -290,8 +321,8 @@ Controller.prototype = {
         this.startDateMillis = (new Date(jsonServer.timeline.startDateLabel)).getTime(); // start date in milliseconds
         // slotDataUnit: number of data milliseconds per slot
         this.slotDataUnit = ((new Date(jsonServer.timeline.endDateLabel)).getTime() - (new Date(jsonServer.timeline.startDateLabel)).getTime()) / (jsonServer.timeline.endDateSlot - jsonServer.timeline.startDateSlot);
-        // timeCoefficient: number of data seconds (millis) per one engine second (millis) 
-        this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit;        
+        // timeCoefficient: number of data seconds (millis) per one engine second (millis)
+        this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit;
 
         //Recreate progress indicators
         var progressIndicatorE = controller.createProgressIndicators(logs, jsonServer.timeline);
@@ -301,7 +332,7 @@ Controller.prototype = {
         $j("#timeline").remove();
         var timelineE = controller.createTimeline();
         $j("div#playback_controls > svg")[0].appendChild(timelineE);
-        
+
         // Add log intervals to timeline: must be after the timeline creation
         var timelineElement = $j("#timeline")[0];
         var startTopX = 20;
@@ -315,7 +346,7 @@ Controller.prototype = {
             logInterval.setAttributeNS(null,"y2",startTopY + 8 + 7 * j);
             logInterval.setAttributeNS(null,"style","stroke: "+log.color +"; stroke-width: 5");
             timelineElement.insertBefore(logInterval, timelineElement.lastChild);
-            
+
             //display date label at the two ends
             if (log.startDatePos % 10 != 0) {
                 var logDateTextE = document.createElementNS(svgNS,"text");
@@ -323,52 +354,52 @@ Controller.prototype = {
                 logDateTextE.setAttributeNS(null,"y", startTopY + 8 + 7 * j + 5);
                 logDateTextE.setAttributeNS(null,"text-anchor", "middle");
                 logDateTextE.setAttributeNS(null,"font-size", "11");
-                logDateTextE.innerHTML = log.startDateLabel.substr(0,19);  
-                timelineElement.insertBefore(logDateTextE, timelineElement.lastChild);              
+                logDateTextE.innerHTML = log.startDateLabel.substr(0,19);
+                timelineElement.insertBefore(logDateTextE, timelineElement.lastChild);
             }
-       }    
-       
+       }
+
        // Show metrics for every log
        var metricsTable = $j("#metrics_table")[0];
        for (var i=0; i<logs.length; i++) {
            var row = metricsTable.insertRow(i+1);
-           var cellLogName = row.insertCell(0); 
-           var cellTotalCount = row.insertCell(1);           
+           var cellLogName = row.insertCell(0);
+           var cellTotalCount = row.insertCell(1);
            var cellPlayCount = row.insertCell(2);
-           var cellReliableCount = row.insertCell(3); 
-           var cellExactFitness = row.insertCell(4); 
-           var cellExactFitnessFormulaTime = row.insertCell(5); 
-           var cellApproxFitness = row.insertCell(6); 
-           var cellApproxFitnessFormulaTime = row.insertCell(7);
-           var cellAlgoTime = row.insertCell(8); 
-           
-           if (logs[i].name.length > 15) {
-                   cellLogName.innerHTML = logs[i].name.substr(0,15) + "...";
+           var cellReliableCount = row.insertCell(3);
+           var cellExactFitness = row.insertCell(4);
+           var cellExactFitnessFormulaTime = row.insertCell(5);
+           var cellApproxFitness = row.insertCell(6);
+           //var cellApproxFitnessFormulaTime = row.insertCell(7);
+           //var cellAlgoTime = row.insertCell(8);
+
+           if (logs[i].filename.length > 50) {
+                   cellLogName.innerHTML = logs[i].filename.substr(0,50) + "...";
            }
            else {
-                   cellLogName.innerHTML = logs[i].name;
+                   cellLogName.innerHTML = logs[i].filename;
            }
-           cellLogName.title = logs[i].name;
+           cellLogName.title = logs[i].filename;
            cellLogName.style.backgroundColor = logs[i].color;
-           
+
            cellTotalCount.innerHTML = logs[i].total;
-           
+
            cellPlayCount.innerHTML = logs[i].play;
            cellPlayCount.title = logs[i].unplayTraces;
-           
+
            cellReliableCount.innerHTML = logs[i].reliable;
            cellReliableCount.title = logs[i].unreliableTraces;
-           
+
            cellExactFitness.innerHTML = logs[i].exactTraceFitness;
-           
+
            cellExactFitnessFormulaTime.innerHTML = logs[i].exactFitnessFormulaTime;
-           
+
            cellApproxFitness.innerHTML = logs[i].approxTraceFitness;
-           
-           cellApproxFitnessFormulaTime.innerHTML = logs[i].approxFitnessFormulaTime;
-           
-           cellAlgoTime.innerHTML = logs[i].algoTime;
-       }    
+
+           //cellApproxFitnessFormulaTime.innerHTML = logs[i].approxFitnessFormulaTime;
+
+           //cellAlgoTime.innerHTML = logs[i].algoTime;
+       }
 
        this.start();
     },
@@ -403,25 +434,26 @@ Controller.prototype = {
     },
 
     /*
-     * Update all tokens (LogCase objects) with the new current time 
+     * Update all tokens (LogCase objects) with the new current time
      */
     updateMarkersOnce: function() {
         var t = this.getCurrentTime();
-        var dt = this.timeCoefficient * 1000 / this.slotDataUnit;
-        t *= dt;
+        var dt = this.timeCoefficient * 1000 / this.slotDataUnit; // 1/this.SlotEngineUnit
+        t *= dt; //number of engine slots: t = t/this.SlotEngineUnit
 
         // Display all the log trace markers
         for (var log_index = 0; log_index < jsonServer.logs.length; log_index++) {
             for (var tokenAnimation_index = 0; tokenAnimation_index < jsonServer.logs[log_index].tokenAnimations.length; tokenAnimation_index++) {
-            this.logCases[log_index][tokenAnimation_index].updateMarker(t, dt);
+                this.logCases[log_index][tokenAnimation_index].updateMarker(t, dt);
             }
         }
     },
-    
+
     /*
      * This method is used to call to update the digital clock display.
-     * This update is one-off only. 
+     * This update is one-off only.
      * It is safer to call this method than calling updateClock() method which is for timer.
+     * param - time: is the
      */
     updateClockOnce: function(time) {
         var date = new Date();
@@ -439,13 +471,13 @@ Controller.prototype = {
         } else {  // Fallback for browsers that don't support Intl (e.g. Safari 8.0)
             document.getElementById("date").innerHTML = date.toDateString();
             document.getElementById("time").innerHTML = date.toTimeString();
-        }    
+        }
     },
-    
+
     start: function() {
         this.pause();
         this.setCurrentTime(this.startPos); // The startPos timing could be a little less than the first event timing in the log to accomodate the start event of BPMN
-        
+
         var date = new Date();
         date.setTime(this.startPos);
         var dayString = new Intl.DateTimeFormat([], {
@@ -453,56 +485,73 @@ Controller.prototype = {
             }).format(date);
         var timeString = new Intl.DateTimeFormat([], {
                     hour12: false, hour: "numeric", minute: "numeric", second: "numeric"
-            }).format(date);        
+            }).format(date);
         console.log(dayString + " " + timeString);
     },
-   
+
     /*
      * This method is used to process tasks when replay reaches the end of the timeline
      */
     end: function() {
         this.pause();
         this.setCurrentTime(this.endPos*this.slotEngineUnit/1000);
-        this.updateClockOnce(this.endPos*this.slotEngineUnit*this.timeCoefficient + this.startDateMillis);        
+        this.updateClockOnce(this.endPos*this.slotEngineUnit*this.timeCoefficient + this.startDateMillis);
         if (this.clockTimer) {
             clearInterval(this.clockTimer);
         }
     },
-    
+
+    /**
+     * Let L be the total length of an element where tokens are moved along (e.g. a sequence flow)
+     * Let X be the current time duration set for the token to finish the length L (X is the value of dur attribute)
+     * Let D be the distance that the token has done right before the speed is changed
+     * Let Cx be the current engine time right before the speed is changed, e.g. Cx = svgDoc.getCurrentTime().
+     * Let Y be the NEW time duration set for the element to travel through the length L.
+     * Thus, the token can move faster or lower if Y < X or Y > X, respectively (Y is the new value of the dur attribute)
+     * A requirement when changing the animation speed is all tokens must keep running from
+     * the last position they were right before the speed changes.
+     * Let Cy be the current engine time assuming that Y has been set and the token has finished the D distance.
+     * We have: D = Cy*L/Y = Cx*L/X => Cy = (Y/X)*Cx
+     * Thus, for the token to start from the same position it was before the speed changes (i.e. dur changes from X to Y),
+     * the engine time must be set to (Y/X)*Cx, where Cx = svgDoc.getCurrentTime().
+     * Y/X is called the DistanceRatio.
+     * Instead of making changes to the distances, the user sets the speed on through a speed slider control.
+     * Each level represents a speed rate of the tokens
+     * The SpeedRatio Sy/Sx is the inverse of the DistanceRatio Y/X.
+     * So, in the formula above: Cy = Cx/SpeedRatio, i.e. if the speed is increased, the distance and time is shorter
+     * @param speedRatio
+     */
     changeSpeed: function (speedRatio){
-      
-        var currentTime = this.getCurrentTime();
-        var newTime = currentTime/speedRatio;  
-        
+
         //------------------------------------------
         // Update the speed of circle progress bar
         //------------------------------------------
         var animations = $j(".progressAnimation");
         for (var i=0; i<animations.length; i++) {
             animateE = animations[i];
-            
+
             curDur = animateE.getAttribute("dur");
             curDur = curDur.substr(0,curDur.length - 1);
-            
+
             curBegin = animateE.getAttribute("begin");
             curBegin = curBegin.substr(0,curBegin.length - 1);
-   
+
             animateE.setAttributeNS(null,"dur", curDur/speedRatio + "s");
-            animateE.setAttributeNS(null,"begin", curBegin/speedRatio + "s");              
-        }            
-        
+            animateE.setAttributeNS(null,"begin", curBegin/speedRatio + "s");
+        }
+
         //-----------------------------------------
         // Update timeline tick with the new speed
         //-----------------------------------------
         var timelineTickE = $j("#timelineTick").get(0);
         curDur = timelineTickE.getAttribute("dur");
-        curDur = curDur.substr(0,curDur.length - 1);  
+        curDur = curDur.substr(0,curDur.length - 1);
         curBegin = timelineTickE.getAttribute("begin");
         curBegin = curBegin.substr(0,curBegin.length - 1);
-        
+
         timelineTickE.setAttributeNS(null,"dur", curDur/speedRatio + "s");
-        timelineTickE.setAttributeNS(null,"begin", curBegin/speedRatio + "s");         
-        
+        timelineTickE.setAttributeNS(null,"begin", curBegin/speedRatio + "s");
+
         //----------------------------------------
         // Update Coefficients and units to ensure consistency
         // between the clock, timeline and SVG documents
@@ -511,12 +560,14 @@ Controller.prototype = {
             this.slotEngineUnit = this.slotEngineUnit/speedRatio;
             if (this.timeCoefficient) {
                 this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit;
-            }             
+            }
         }
-       
+
+        var currentTime = this.getCurrentTime();
+        var newTime = currentTime/speedRatio;
         this.setCurrentTime(newTime);
     },
-    
+
     fastforward: function () {
        if (this.getCurrentTime() >= this.endPos*this.slotEngineUnit/1000) {
            return;
@@ -524,20 +575,20 @@ Controller.prototype = {
            this.setCurrentTime(this.getCurrentTime() + 1*this.slotEngineUnit/1000); //move forward 5 slots
        }
     },
-    
+
     fastBackward: function () {
        if (this.getCurrentTime() <= this.startPos*this.slotEngineUnit/1000) {
            return;
        } else {
            this.setCurrentTime(this.getCurrentTime() - 1*this.slotEngineUnit/1000); //move backward 5 slots
        }
-    },  
-    
+    },
+
     nextTrace: function () {
         if (this.getCurrentTime() >= this.endPos*this.slotEngineUnit/1000) {
             return;
         } else {
-            var tracedates = jsonServer.tracedates; //assume that jsonServer.tracedates has been sorted in ascending order 
+            var tracedates = jsonServer.tracedates; //assume that jsonServer.tracedates has been sorted in ascending order
             var currentTimeMillis = this.getCurrentTime()*this.timeCoefficient*1000 + this.startDateMillis;
             //search for the next trace date/time immediately after the current time
             for (var i=0; i<tracedates.length; i++) {
@@ -547,8 +598,8 @@ Controller.prototype = {
                 }
             }
         }
-    },   
-    
+    },
+
     previousTrace: function () {
         if (this.getCurrentTime() <= this.startPos*this.slotEngineUnit/1000) {
             return;
@@ -563,7 +614,7 @@ Controller.prototype = {
                 }
             }
         }
-    },        
+    },
 
     pause: function() {
         var img = document.getElementById("pause").getElementsByTagName("img")[0];
@@ -578,7 +629,7 @@ Controller.prototype = {
         img.alt = "Pause";
         img.src = "images/control_pause.png";
     },
-    
+
     switchPlayPause: function () {
     var img = document.getElementById("pause").getElementsByTagName("img")[0];
         if (img.alt == "Pause") {
@@ -587,16 +638,16 @@ Controller.prototype = {
             this.play();
         }
     },
-    
+
     /*
      * <g id="progressAnimation"><g class='progress'><path><animate class='progressanimation'>
      * logs: array of log object
      * timeline: object containing timeline information
-     */        
+     */
     createProgressIndicators: function(logs, timeline) {
         var progressE = document.createElementNS(svgNS,"g");
         progressE.setAttributeNS(null,"id","progressAnimation");
-        
+
         var x = 30;
         var y = 20;
         for(var i=0;i<logs.length;i++) {
@@ -605,14 +656,14 @@ Controller.prototype = {
         }
         return progressE;
     },
-    
+
     //Create cirle progress bar shapes in initial screen only
     createProgressIndicatorsInitial: function() {
         var progressE = document.createElementNS(svgNS,"g");
         progressE.setAttributeNS(null,"id","progressAnimation");
 
         //Log 1
-        var log = { 
+        var log = {
                 name : "Log 1",
                 color : "orange",
                 progress : {
@@ -620,10 +671,10 @@ Controller.prototype = {
                         keyTimes : "0"}};
         var timeline = {timelineSlots : 120};
         progressE.appendChild(controller.createProgressIndicatorsForLog(log, timeline, 30, 90));
-        
+
         //Log 2
         //Log 1
-        var log = { 
+        var log = {
                 name : "Log 2",
                 color : "blue",
                 progress : {
@@ -631,10 +682,10 @@ Controller.prototype = {
                         keyTimes : "0"}};
         var timeline = {timelineSlots : 120};
         progressE.appendChild(controller.createProgressIndicatorsForLog(log, timeline, 90, 90));
-        
+
         return progressE;
     },
-    
+
     /*
      * Create progress indicator for one log
      * log: the log object (name, color, traceCount, progress, tokenAnimations)
@@ -643,15 +694,15 @@ Controller.prototype = {
     createProgressIndicatorsForLog: function(log, timeline, x, y) {
         var pieE = document.createElementNS(svgNS,"g");
         pieE.setAttributeNS(null,"class","progress");
-        
-        var pathE = document.createElementNS(svgNS,"path");               
+
+        var pathE = document.createElementNS(svgNS,"path");
         pathE.setAttributeNS(null,"d","M " + x + "," + y + " m 0, 0 a 20,20 0 1,0 0.00001,0");
         pathE.setAttributeNS(null,"fill","#CCCCCC");
         pathE.setAttributeNS(null,"stroke",log.color);
         pathE.setAttributeNS(null,"stroke-width","5");
         pathE.setAttributeNS(null,"stroke-dasharray","0 126 126 0");
         pathE.setAttributeNS(null,"stroke-dashoffset","1");
-        
+
         var animateE = document.createElementNS(svgNS,"animate");
         animateE.setAttributeNS(null,"class","progressAnimation");
         animateE.setAttributeNS(null,"attributeName","stroke-dashoffset");
@@ -664,29 +715,29 @@ Controller.prototype = {
         animateE.setAttributeNS(null,"dur", log.progress.dur + "s");
         animateE.setAttributeNS(null,"fill","freeze");
         animateE.setAttributeNS(null,"repeatCount", "1");
-        
+
         pathE.appendChild(animateE);
-        
+
         var textE = document.createElementNS(svgNS,"text");
         textE.setAttributeNS(null,"x", x);
         textE.setAttributeNS(null,"y", y - 10);
         textE.setAttributeNS(null,"text-anchor","middle");
         var textNode = document.createTextNode(log.name.substr(0,5) + "...");
         textE.appendChild(textNode);
-        
+
         var tooltip = document.createElementNS(svgNS,"title");
         tooltip.appendChild(document.createTextNode(log.name));
         textE.appendChild(tooltip);
-        
+
         pieE.appendChild(pathE);
-        pieE.appendChild(textE); 
-        
-        //alert(pieE.innerHTML); 
-        
-        return pieE;     
+        pieE.appendChild(textE);
+
+        //alert(pieE.innerHTML);
+
+        return pieE;
     },
-    
-    /* 
+
+    /*
      * <g id="timeline">
      *      ---- timeline bar
      *      <line>
@@ -698,9 +749,9 @@ Controller.prototype = {
      *      <rect>
      *          <animationMotion>
      * Use: this.timelineSlots, this.slotEngineUnit.
-     */ 
+     */
     createTimeline: function() {
-        
+
         function addTimelineBar(lineX, lineY, lineLen, lineColor, textX, textY, text1, text2, parent) {
             var lineElement = document.createElementNS(svgNS,"line");
             lineElement.setAttributeNS(null,"x1", lineX);
@@ -709,50 +760,50 @@ Controller.prototype = {
             lineElement.setAttributeNS(null,"y2", lineY+lineLen);
             lineElement.setAttributeNS(null,"stroke", lineColor);
             if (lineColor == "red") {
-                lineElement.setAttributeNS(null,"stroke-width","1");    
+                lineElement.setAttributeNS(null,"stroke-width","1");
             } else {
                 lineElement.setAttributeNS(null,"stroke-width",".5");
             }
-            
-            
+
+
             var textElement1 = document.createElementNS(svgNS,"text");
             textElement1.setAttributeNS(null,"x", textX);
             textElement1.setAttributeNS(null,"y", textY);
             textElement1.setAttributeNS(null,"text-anchor", "middle");
             textElement1.setAttributeNS(null,"font-size", "11");
             textElement1.innerHTML = text1;
-            
+
             var textElement2 = document.createElementNS(svgNS,"text");
             textElement2.setAttributeNS(null,"x", textX);
             textElement2.setAttributeNS(null,"y", textY + 10);
             textElement2.setAttributeNS(null,"text-anchor", "middle");
             textElement2.setAttributeNS(null,"font-size", "11");
-            textElement2.innerHTML = text2;            
-            
-            parent.appendChild(lineElement);  
+            textElement2.innerHTML = text2;
+
+            parent.appendChild(lineElement);
             parent.appendChild(textElement1);
             parent.appendChild(textElement2);
         }
-        
+
         var timelineElement = document.createElementNS(svgNS,"g");
         timelineElement.setAttributeNS(null,"id","timeline");
         timelineElement.setAttributeNS(null,"style","-webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none");
-        
+
         var startTopX = 20;
         var startTopY = 15;
-        var gapWidth = 9;       
+        var gapWidth = 9;
         var gapValue = this.slotEngineUnit/1000;
         var lineLen = 30;
-        var textToLineGap = 5; 
+        var textToLineGap = 5;
         var startValue = 0;
         var textValue = -gapValue;
         var lineTopX = -gapWidth + startTopX;
         var gapNum = this.timelineSlots;
-       
+
         /*---------------------------
         Add text and line for the bar
-        ---------------------------*/       
-       
+        ---------------------------*/
+
         for (var i=0;i<=gapNum;i++) {
             lineTopX += gapWidth;
             //textValue += gapValue;
@@ -760,7 +811,7 @@ Controller.prototype = {
                 var date = new Date();
                 date.setTime(this.startDateMillis + i*this.slotDataUnit);
                 textValue1 = date.getDate() + "/" + (date.getMonth()+1) + "/" + (date.getFullYear()+"").substr(2,2);
-                textValue2 = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(); 
+                textValue2 = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
                 var lineColor = "red";
             } else {
                 textValue1 = "";
@@ -786,18 +837,18 @@ Controller.prototype = {
         indicatorAnimation.setAttributeNS(null,"from", startTopX + "," + (startTopY+5));
         indicatorAnimation.setAttributeNS(null,"to",lineTopX + "," + (startTopY+5));
         indicatorAnimation.setAttributeNS(null,"fill","freeze");
-        indicatorE.appendChild(indicatorAnimation);       
-       
-        timelineElement.appendChild(indicatorE); 
-       
+        indicatorE.appendChild(indicatorAnimation);
+
+        timelineElement.appendChild(indicatorE);
+
         // allow indicator to be dragged horizontally
         timelineElement.setAttributeNS(null,"pointer-events","visible");
         timelineElement.setAttributeNS(null,"onmousedown","controller.startIndicatorDrag(evt)");
         timelineElement.setAttributeNS(null,"onmousemove","controller.doIndicatorDrag(evt, " + startTopX + ", " + lineTopX + ")");
         timelineElement.setAttributeNS(null,"onmouseup","controller.endIndicatorDrag(evt)");
-        
+
         return timelineElement;
-       
+
     },
 
     startIndicatorDrag: function(evt) {
@@ -845,8 +896,15 @@ function LogCase(tokenAnimation, color, label, offset) {
 
 LogCase.prototype = {
 
+    /*
+    /* Create a marker (i.e. a token, which is an SVG animation element) and insert
+     * it into the existing SVG document. SVG engine will start animating
+     * them automatically.
+     * Params
+     * t: number of engine slots
+     * dt:
+     */
     updateMarker: function(t, dt) {
-
         // Delete any path markers which have moved beyond their interval
         var newMarkers = []
         var alreadyMarkedIndices = [];
@@ -934,17 +992,17 @@ LogCase.prototype = {
 
         var outgoingPathE = $j("#svg-"+modelNode.outgoingFlow).find("g").find("g").find("g").find("path").get(0);
         var outgoingStartPoint = outgoingPathE.getPointAtLength(0);
-    
+
         var startPoint = incomingEndPoint;
         var endPoint = outgoingStartPoint;
-    
+
         var nodeRectE = $j("#svg-" + node.id).find("g").get(0);
         var taskRectPoints = getViewportPoints(nodeRectE);
-    
+
         //---------------------------------------------------------
         // Create path element
         //---------------------------------------------------------
-    
+
         if (node.isVirtual == "false") { //go through center
             var path =  "m" + startPoint.x + "," + startPoint.y + " L" + taskRectPoints.cc.x + "," + taskRectPoints.cc.y +
                         " L" + endPoint.x + "," + endPoint.y;
@@ -1036,7 +1094,7 @@ LogCase.prototype = {
     createMarker: function(t, dt, d, begin, dur, offset) {
         var marker = document.createElementNS(svgNS,"g");
         marker.setAttributeNS(null,"stroke","none");
-    
+
         var animateMotion = document.createElementNS(svgNS,"animateMotion");
         animateMotion.setAttributeNS(null,"begin",begin/dt);
         animateMotion.setAttributeNS(null,"dur",dur/dt);
@@ -1044,9 +1102,9 @@ LogCase.prototype = {
         animateMotion.setAttributeNS(null,"path",d);
         animateMotion.setAttributeNS(null,"rotate","auto");
         marker.appendChild(animateMotion);
-    
+
         var circle = document.createElementNS(svgNS,"circle");
-        
+
         //Bruce 15/6/2015: add offset as a parameter, add 'rotate' attribute, put markers of different logs on separate lines.
         //var offset = 2;
         //circle.setAttributeNS(null,"cx",offset * Math.sin(this.offsetAngle));
@@ -1056,17 +1114,17 @@ LogCase.prototype = {
         circle.setAttributeNS(null,"r",5);
         circle.setAttributeNS(null,"fill",this.color);
         marker.appendChild(circle);
-    
-        
+
+
         var text = document.createElementNS(svgNS,"text");
         //text.setAttributeNS(null,"x",offset * Math.sin(this.offsetAngle));
         //text.setAttributeNS(null,"y",offset * Math.cos(this.offsetAngle) - 10);
         text.setAttributeNS(null,"x",0);
-        text.setAttributeNS(null,"y",offset - 10);        
+        text.setAttributeNS(null,"y",offset - 10);
         text.setAttributeNS(null,"style","fill: black; text-anchor: middle" + (caseLabelsVisible ? "" : "; visibility: hidden"));
         text.appendChild(document.createTextNode(this.label));
         marker.appendChild(text);
-        
+
 
         return marker;
     }
@@ -1100,14 +1158,16 @@ LogCase.prototype = {
         }
 
         function start(e) {
-            lastSliderValue = 11;
-            $j("#slider2").slider({ value: 11 });
+            //lastSliderValue = 11;
+            //$j("#slider2").slider({ value: 11 });
+            //lastSliderValue = $j("#slider2").slider("value");
             controller.start();
         }
 
         function end(e) {
-            lastSliderValue = 1;
-            $j("#rate_slider").slider({ value: 1 });
+            //lastSliderValue = 1;
+            //$j("#rate_slider").slider({ value: 1 });
+            //lastSliderValue = j("#rate_slider").slider("value");
             controller.end();
         }
 
@@ -1133,7 +1193,8 @@ LogCase.prototype = {
 
                 //$jslider2.slider("pips").slider("float");
 
-                var lastSliderValue = 11;
+                lastSliderValue = $jslider2.slider("value");
+                console.log("first slider value:" + lastSliderValue);
                 //alert(lastSliderValue);
 
                 $j("#slider2").on( "slidechange", function(event,ui) {

@@ -123,35 +123,35 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
         String procName = process.getName();
         String branch = vst.getName();
         Version version = new Version(vst.getVersionNumber());
-        try {
-            String bpmn = processService.getBPMNRepresentation(procName, procID, branch, version);
+//        try {
+            //String bpmn = processService.getBPMNRepresentation(procName, procID, branch, version);
 
-            // Fetch the XLog representations of the logs
-            List<LogAnimationService.Log> logs = new ArrayList<>();
-            Iterator<String> colors = Arrays.asList("#0088FF", "#FF8800", "#88FF00").iterator();
-            for (LogSummaryType logSummary: logSummaries) {
-                LogAnimationService.Log log = new LogAnimationService.Log();
-                log.fileName = "Dummy";
-                log.xlog     = eventLogService.getXLog(logSummary.getId());
-                log.color    = colors.hasNext() ? colors.next() : "red";
-                logs.add(log);
-            }
-            
-            String username = portalContext.getCurrentUser().getUsername();
-            EditSessionType editSession1 = createEditSession(username, process, vst, process.getOriginalNativeType(), null /*annotation*/);
-            Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
-            SignavioSession session = new SignavioSession(editSession1, null, null, process, vst, null, null, requestParameterTypes);
-            session.put("logAnimationService", logAnimationService);
-            session.put("logs", logs);
-
-            String id = UUID.randomUUID().toString();
-            UserSessionManager.setEditSession(id, session);
-            Clients.evalJavaScript("window.open('../loganimation/animateLogInSignavio.zul?id=" + id + "')");
-
-        } catch (RepositoryException e) {
-            Messagebox.show("Unable to read " + procName, "Attention", Messagebox.OK, Messagebox.ERROR);
-            e.printStackTrace();
+        // Fetch the XLog representations of the logs
+        List<LogAnimationService.Log> logs = new ArrayList<>();
+        Iterator<String> colors = Arrays.asList("#0088FF", "#FF8800", "#88FF00").iterator();
+        for (LogSummaryType logSummary: logSummaries) {
+            LogAnimationService.Log log = new LogAnimationService.Log();
+            log.fileName = logSummary.getName();
+            log.xlog     = eventLogService.getXLog(logSummary.getId());
+            log.color    = colors.hasNext() ? colors.next() : "red";
+            logs.add(log);
         }
+        
+        String username = portalContext.getCurrentUser().getUsername();
+        EditSessionType editSession1 = createEditSession(username, process, vst, process.getOriginalNativeType(), null /*annotation*/);
+        Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
+        SignavioSession session = new SignavioSession(editSession1, null, null, process, vst, null, null, requestParameterTypes);
+        session.put("logAnimationService", logAnimationService);
+        session.put("logs", logs);
+
+        String id = UUID.randomUUID().toString();
+        UserSessionManager.setEditSession(id, session);
+        Clients.evalJavaScript("window.open('../loganimation/animateLogInSignavio.zul?id=" + id + "')");
+
+//        } catch (RepositoryException e) {
+//            Messagebox.show("Unable to read " + procName, "Attention", Messagebox.OK, Messagebox.ERROR);
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -181,14 +181,14 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
             Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
             SignavioSession session = new SignavioSession(editSession, null, null, processSummaryType, versionSummaryType, null, null, requestParameterTypes);
 
-            String jsonDataEscape = escapeQuotedJavascript(bpmn);
+            String updatedBPMN = escapeQuotedJavascript(bpmn);
 
             BPMNUpdater bpmnUpdater = new BPMNUpdater();
-            jsonDataEscape = bpmnUpdater.getUpdatedBPMN(jsonDataEscape, layout, !maintain_gateways);
+            updatedBPMN = bpmnUpdater.getUpdatedBPMN(updatedBPMN, layout, !maintain_gateways);
 
             System.out.println("Final BPMN");
 //            System.out.println(jsonDataEscape);
-            session.put("JSONData", jsonDataEscape);
+            session.put("bpmnXML", updatedBPMN);
 
             if (logAnimationService != null) {  // logAnimationService is null if invoked from the editor toobar
                 String animationData = logAnimationService.createAnimation(bpmn, logs);

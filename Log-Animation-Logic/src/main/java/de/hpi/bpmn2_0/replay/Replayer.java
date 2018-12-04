@@ -47,8 +47,6 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
-import org.processmining.plugins.signaturediscovery.encoding.EncodeTraces;
-
 /**
  *
  * @author Administrator
@@ -59,8 +57,20 @@ public class Replayer {
     private boolean isValidProcess = true;
     private String processCheckMessage = "";
     private String[] colors = {"blue","orange","red","green","margenta"};
-    private Map<String, Node> traceBacktrackingNodeMap = new HashMap(); // mapping from traceId to trace encoded char string
+    private Map<String, ReplayResult> replayResultMap = new HashMap(); // mapping from trace key to replay result
+    private Map<String,Integer> eventNameKeyMap = new HashMap();
+    private Map<XTrace,String> traceKeyMap = new HashMap();
     private static final Logger LOGGER = Logger.getLogger(Replayer.class.getCanonicalName());
+    
+    class ReplayResult {
+    	Node leafNode;
+    	long runtime;
+    	
+    	public ReplayResult(Node node, long runtime) {
+    		this.leafNode = node;
+    		this.runtime = runtime;
+    	}
+    }
     
     public Replayer(Definitions bpmnDefinition, ReplayParams params) {
         this.params = params;
@@ -90,18 +100,55 @@ public class Replayer {
     }
     
     public AnimationLog replay(XLog log, String color) {
-
         AnimationLog animationLog = new AnimationLog(log);
         animationLog.setColor(color /*this.getLogColor()*/);
         animationLog.setName(log.getAttributes().get("concept:name").toString());
+        
+        int eventCount = 0;
+        eventNameKeyMap.clear();
+        traceKeyMap.clear();
+        
+        //-------------------------------------------
+        // Create trace keys to avoid replaying the same
+        // trace which has been already replayed
+        // A trace key is a shortened form of the full trace
+        //-------------------------------------------
+        for (XTrace trace : log) {
+        	String traceKey = "";
+        	for (XEvent event : trace) {
+        		int eventKey = 0; 
+        		String eventName = event.getAttributes().get("concept:name").toString();
+        		if (!eventNameKeyMap.containsKey(eventName)) {
+        			eventNameKeyMap.put(eventName, eventCount);
+        			eventKey = eventCount;
+        			eventCount++;
+        		}
+        		else {
+        			eventKey = eventNameKeyMap.get(eventName);
+        		}
+        		traceKey += eventKey + ".";
+        	}
+        	traceKeyMap.put(trace, traceKey);
+        }
         
         //-------------------------------------------
         // Replay every trace in the log
         // Note that the replay includes timing computation for the replayed trace
         //-------------------------------------------
-        ReplayTrace replayTrace;
+        replayResultMap.clear();
+        
         for (XTrace trace : log) {
-            replayTrace = this.replay(trace);
+        	ReplayResult repResult;
+        	String traceKey = traceKeyMap.get(trace);
+			if (replayResultMap.containsKey(traceKey)) {
+			    repResult = replayResultMap.get(traceKey);
+			}
+			else {
+				repResult = this.replayTrace(trace);
+				replayResultMap.put(traceKey, repResult);
+			}
+        	 
+			ReplayTrace replayTrace = this.createReplayTrace(trace, repResult);
             if (!replayTrace.isEmpty()) {
 //                LOGGER.info("Trace " + replayTrace.getId() + ": " + replayTrace.getBacktrackingNode().getPathString());
                 replayTrace.calcTiming();
@@ -136,18 +183,18 @@ public class Replayer {
         long endApproxMinMMTime = System.currentTimeMillis();
         animationLog.setApproxTraceFitnessFormulaTime(endApproxMinMMTime - startApproxMinMMTime + algoRuntime);
         
-        if (!animationLog.isEmpty()) {       
+//        if (!animationLog.isEmpty()) {       
 //            LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
 //            LOGGER.info("TraceID, ExactFitness, ApproxFitness, Reliable, AlgoTime(ms), Replay Path");
-            double approxMMCost = animationLog.getApproxMinMoveModelCost();
-            for (ReplayTrace trace : animationLog.getTraces()) {
+//            double approxMMCost = animationLog.getApproxMinMoveModelCost();
+//            for (ReplayTrace trace : animationLog.getTraces()) {
 //                LOGGER.info(trace.getId() + "," +
 //                            trace.getTraceFitness(minBoundMoveCostOnModel) + "," +
 //                            trace.getTraceFitness(approxMMCost) + "," +
 //                            trace.isReliable() + "," +
 //                            trace.getAlgoRuntime() + "," +
 //                            trace.getBacktrackingNode().getPathString());
-            }
+//            }
 //            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() +
 //                        ". Exact Trace Fitness:" + traceFitness +
 //                        ". Approx. Trace Fitness:" + approxTraceFitness +
@@ -159,84 +206,12 @@ public class Replayer {
 //                        ". StartDate:" + animationLog.getStartDate().toString() +
 //                        ". EndDate:" + animationLog.getEndDate() +
 //                        ". Color:" + animationLog.getColor());
-        } else {
+//        } else {
 //            LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
-        }
+//        }
 
         return animationLog;
     }
-    
-    public AnimationLog replayWithMultiThreading(XLog log, String color) {
-        long startTime = DateTimeUtils.currentTimeMillis();
-        
-        final AnimationLog animationLog = new AnimationLog(log);
-        animationLog.setColor(color /*this.getLogColor()*/);
-        animationLog.setName(log.getAttributes().get("concept:name").toString());
-        
-        //-------------------------------------------
-        // Replay every trace in the log with multithreading
-        //-------------------------------------------
-        //int threads = Runtime.getRuntime().availableProcessors();
-        int threads = 1;
-        ExecutorService pool = Executors.newFixedThreadPool(threads);
-        
-        for (final XTrace trace : log) {
-            pool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    ReplayTrace replayTrace = replay(trace);
-                    if (!replayTrace.isEmpty()) {
-//                        LOGGER.info("Trace " + replayTrace.getId() + ": " + replayTrace.getBacktrackingNode().getPathString());
-                        replayTrace.calcTiming();
-                        animationLog.add(trace, replayTrace);
-                    }
-                    else {
-                        animationLog.addUnreplayTrace(trace);
-//                        LOGGER.info("Trace " + replayTrace.getId() + ": No path found!");
-                    } 
-                }
-            });                  
-        }
-        
-        pool.shutdown();
-        while (!pool.isTerminated()) {
-            try {
-                pool.awaitTermination(10, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                //do nothing
-            }
-        }
-        
-        double minBoundMoveCostOnModel = this.getMinBoundMoveCostOnModel();
-        double traceFitness = animationLog.getTraceFitness(minBoundMoveCostOnModel);
-        long algoRuntime = animationLog.getAlgoRuntime();
-        long endTime = DateTimeUtils.currentTimeMillis();
-
-        if (!animationLog.isEmpty()) {
-//            LOGGER.info("LOG " + animationLog.getName() + ". Traces replayed:" + animationLog.getTraces().size() +
-//                        ". Trace Fitness:" + traceFitness +
-//                        ". minBoundMoveCostOnModel:" + minBoundMoveCostOnModel +
-//                        ". totalAlgoTime:" + algoRuntime +
-//                        ". StartDate:" + animationLog.getStartDate().toString() +
-//                        ". StartDate:" + animationLog.getStartDate().toString() +
-//                        ". EndDate:" + animationLog.getEndDate() +
-//                        ". Color:" + animationLog.getColor());
-//            LOGGER.info("REPLAY TRACES WITH FITNESS AND REPLAY PATH");
-//            LOGGER.info("TraceID, TraceFitness, ApproxFitness, Path");
-            double minMMCost = animationLog.getApproxMinMoveModelCost();
-            for (ReplayTrace trace : animationLog.getTraces()) {
-//                LOGGER.info(trace.getId() + "," +
-//                            trace.getTraceFitness(minBoundMoveCostOnModel) + "," +
-//                            trace.getTraceFitness(minMMCost) + "," +
-//                            trace.getBacktrackingNode().getPathString());
-            }
-        } else {
-//            LOGGER.info("LOG " + animationLog.getName() + ": no traces have been replayed");
-        }
-
-        return animationLog;
-    }
-    
     
     /*
     * Replay using backtracking algorithm
@@ -246,48 +221,44 @@ public class Replayer {
     * The Start event will be assigned a timestamp 20 seconds before the first trace event
     * The End event will be assigned a timestamp 60 seconds after the last trace event
     */
-    public ReplayTrace replay(XTrace trace) {
+    public ReplayResult replayTrace(XTrace trace) {
         Node leafNode; //contains the found backtracking leaf node
         long start = 0;
         long end = 0;
-        
-        //---------------------------------------------------
-        // Use clustering. If the same trace has been replayed
-        // before, then no need another replay but just reuse the 
-        // replay result done for previous trace.
-        //---------------------------------------------------
-        String traceString = EncodeTraces.getEncodeTraces().getCharStream(LogUtility.getConceptName(trace));
-        if (traceBacktrackingNodeMap.containsKey(traceString)) {
-            leafNode = traceBacktrackingNodeMap.get(traceString);
+    
+        //--------------------------------------------
+        //Remove event names not found in process model or 
+        //events with lifecycle:transition = "start" (not yet processed this case)
+        //--------------------------------------------
+        Iterator<XEvent> iterator = trace.iterator();
+        while (iterator.hasNext()) {
+            XEvent event = iterator.next();
+            if (!helper.getActivityNames().contains(LogUtility.getConceptName(event)) ||
+                 LogUtility.getLifecycleTransition(event).toLowerCase().equals("start")) {
+                iterator.remove();
+            }
         }
-        else { // has to replay a new trace
-            //--------------------------------------------
-            //Remove event names not found in process model or 
-            //events with lifecycle:transition = "start" (not yet processed this case)
-            //--------------------------------------------
-            Iterator<XEvent> iterator = trace.iterator();
-            while (iterator.hasNext()) {
-                XEvent event = iterator.next();
-                if (!helper.getActivityNames().contains(LogUtility.getConceptName(event)) ||
-                     LogUtility.getLifecycleTransition(event).toLowerCase().equals("start")) {
-                    iterator.remove();
-                }
-            }
 
-            //--------------------------------------------
-            // Replay trace with backtracking algorithm and measure time
-            //--------------------------------------------
-            Backtracking backtrack = new Backtracking(this.params, trace, helper);
-            start = System.currentTimeMillis();
-            leafNode = backtrack.explore();    
-            end = System.currentTimeMillis();
-            if (leafNode != null && !traceBacktrackingNodeMap.containsKey(traceString)) {
-                traceBacktrackingNodeMap.put(traceString, leafNode); //traceString: the original trace string.
-            }
-            backtrack.clear();
-            backtrack = null;
-        }      
-        
+        //--------------------------------------------
+        // Replay trace with backtracking algorithm and measure time
+        //--------------------------------------------
+        Backtracking backtrack = new Backtracking(this.params, trace, helper);
+        start = System.currentTimeMillis();
+        leafNode = backtrack.explore();    
+        end = System.currentTimeMillis();
+        backtrack.clear();
+        backtrack = null;
+
+        return new ReplayResult(leafNode, end-start);
+    }
+    
+    /*
+     * Create the sequence of nodes, each node representing a replay step
+     */
+    public ReplayTrace createReplayTrace(XTrace trace, ReplayResult repResult) {
+    	Node leafNode = repResult.leafNode;
+    	long runtime = repResult.runtime;
+    	
         //---------------------------------
         // Reverse the path to start from the root node
         //---------------------------------
@@ -307,7 +278,7 @@ public class Replayer {
         // the activity or gateway taken and the markings contains
         // all tokens (process state) after the element is taken.
         //---------------------------------------------
-        ReplayTrace replayTrace = new ReplayTrace(new XTrace2(trace), this, leafNode, end-start);
+        ReplayTrace replayTrace = new ReplayTrace(new XTrace2(trace), this, leafNode, runtime);
         
         if (!stack.isEmpty()) {
             FlowNode modelNode=null;
@@ -384,6 +355,7 @@ public class Replayer {
         
         return replayTrace;
     }
+    
     
     /**
      * Select the least cost move on model from start to end

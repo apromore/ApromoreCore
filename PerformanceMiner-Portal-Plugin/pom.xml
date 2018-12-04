@@ -49,10 +49,32 @@
                             artifactId=jcommon|jfreechart
                         </Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
+						
+						<!--
+						<Embed-Dependency>
+                            artifactId=assembly
+                        </Embed-Dependency>
+                        <Embed-Transitive>false</Embed-Transitive>
+						-->
+						
 						<Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
 						<Bundle-Name>Performance Mining Portal</Bundle-Name>
+						
                         <Import-Package>
                             <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
+							!org.jfree,
+							!org.jfree.base,
+							!org.jfree.date,
+							!org.jfree.io,
+							!org.jfree.layout,
+							!org.jfree.text,
+							!org.jfree.ui,
+							!org.jfree.ui.about,
+							!org.jfree.util,
+							!org.jfree.chart,
+							!org.jfree.data.time,
+							!org.jfree.data.xy,
+							
                             org.apromore.plugin,
                             org.springframework.beans.factory.aspectj,
                             org.joda.convert;resolution:=optional,
@@ -62,7 +84,6 @@
                             org.joda.time.chrono;version="2.3",
                             org.joda.time.convert;version="2.3",
                             org.joda.time.tz;version="2.3",
-                            org.joda.time.base;version="2.3",
                             *
                         </Import-Package>
 						<Export-Package>
@@ -75,6 +96,18 @@
     </build>
 
     <dependencies>
+		<dependency>
+			<groupId>org.jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.19</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jfree</groupId>
+			<artifactId>jcommon</artifactId>
+			<version>1.0.23</version>
+		</dependency>
+		
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-manager</artifactId>
@@ -89,33 +122,9 @@
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.jfree</groupId>
-			<artifactId>jfreechart</artifactId>
-			<version>1.0.19</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jfree</groupId>
-			<artifactId>jcommon</artifactId>
-			<version>1.0.23</version>
-		</dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>prom6-osgi</artifactId>
-            <version>6.0</version>
-        </dependency>
-		
+
 
     </dependencies>
-    <!--
-	<repositories>
-        <repository>
-            <id>EclipseLink Repo</id>
-            <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
-            <name>EclipseLink Repo</name>
-        </repository>
-    </repositories>
-    -->
     <version>1.0</version>
     
 </project>

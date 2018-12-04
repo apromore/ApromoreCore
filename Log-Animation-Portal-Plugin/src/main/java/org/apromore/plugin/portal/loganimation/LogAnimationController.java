@@ -100,10 +100,10 @@ public class LogAnimationController extends BaseController {
 
         Map<String, Object> param = new HashMap<>();
         try {
-            String jsonData = (String) session.get("JSONData");
+            String bpmnXML = (String) session.get("bpmnXML");
             String title = null;
             PluginMessages pluginMessages = null;
-            if(jsonData == null) {
+            if(bpmnXML == null) {
                 title = editSession.getProcessName() + " (" + editSession.getNativeType() + ")";
                 this.setTitle(title);
 
@@ -121,9 +121,9 @@ public class LogAnimationController extends BaseController {
                 title = editSession.getProcessName();
                 pluginMessages = exportResult1.getMessage();
 
-                jsonData = StreamUtil.convertStreamToString(exportResult1.getNative().getInputStream());
+                bpmnXML = StreamUtil.convertStreamToString(exportResult1.getNative().getInputStream());
 
-                param.put("jsonData",      escapeQuotedJavascript(jsonData));
+                param.put("bpmnXML",      escapeQuotedJavascript(bpmnXML));
                 param.put("url",           getURL(editSession.getNativeType()));
                 param.put("importPath",    getImportPath(editSession.getNativeType()));
                 param.put("exportPath",    getExportPath(editSession.getNativeType()));
@@ -140,8 +140,8 @@ public class LogAnimationController extends BaseController {
                         param.put("doAutoLayout", "true");
                     }
                 }
-            }else {
-                param.put("jsonData",      escapeQuotedJavascript(jsonData));
+            } else {
+                param.put("bpmnXML",      escapeQuotedJavascript(bpmnXML));
                 param.put("url",           getURL("BPMN 2.0"));
                 param.put("importPath",    getImportPath("BPMN 2.0"));
                 param.put("exportPath",    getExportPath("BPMN 2.0"));
@@ -153,10 +153,10 @@ public class LogAnimationController extends BaseController {
             if(animationData == null) {
                 if (logAnimationService != null) {  // logAnimationService is null if invoked from the editor toobar
                     List<LogAnimationService.Log> logs = (List<LogAnimationService.Log>) session.get("logs");
-                    animationData = logAnimationService.createAnimation(jsonData, logs);
+                    animationData = logAnimationService.createAnimation(bpmnXML, logs);
                     param.put("animationData", escapeQuotedJavascript(animationData));
                 }
-            }else {
+            } else {
                 param.put("animationData", escapeQuotedJavascript(animationData));
             }
 
