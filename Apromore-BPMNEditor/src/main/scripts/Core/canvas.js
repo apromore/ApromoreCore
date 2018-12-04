@@ -76,6 +76,8 @@ ORYX.Core.Canvas = {
             return;
         }
 
+        this.className = "ORYX_Editor";
+
         this.resourceId = options.id;
         this.nodes = [];
         this.edges = [];
@@ -91,7 +93,7 @@ ORYX.Core.Canvas = {
         this.rootNode = ORYX.Editor.graft("http://www.w3.org/1999/xhtml", options.parentNode,
             ['div', {id: options.id, width: options.width, height: options.height}
             ]);
-        this.rootNode.addClassName("ORYX_Editor");
+        this.rootNode.addClassName(this.className);
 
         // this._htmlContainer = ORYX.Editor.graft("http://www.w3.org/1999/xhtml", this.rootNode,
         //     ['div', {id: ORYX.Editor.provideId(), style: "position:absolute; top:5px; visibility:hidden"}]);
@@ -169,6 +171,58 @@ ORYX.Core.Canvas = {
 
     attachEditor: function (editor) {
         this._editor = editor;
+    },
+
+    getSVGContainer: function() {
+        return $$("div.ORYX_Editor div.bjs-container div.djs-container svg")[0];
+    },
+
+    getSVGViewport: function() {
+        return $$("div.ORYX_Editor div.bjs-container div.djs-container svg g.viewport")[0];
+    },
+
+    getSourceNodeId: function (sequenceFlowId) {
+        var foundId;
+        var elements = this._editor.getDefinitions().rootElements[0].flowElements;
+        elements.forEach(function(element) {
+            if (!foundId && element.$type == "bpmn:SequenceFlow" && element.id == sequenceFlowId) {
+                foundId = element.sourceRef.id;
+            }
+        });
+        return foundId;
+    },
+
+    getTargetNodeId: function (sequenceFlowId) {
+        var foundId;
+        var flowElements = this._editor.getDefinitions().rootElements[0].flowElements;
+        flowElements.forEach(function(element) {
+            if (!foundId && element.$type == "bpmn:SequenceFlow" && element.id == sequenceFlowId) {
+                foundId = element.targetRef.id;
+            }
+        });
+        return foundId;
+    },
+
+    getIncomingFlowId: function (nodeId) {
+        var foundId;
+        var flowElements = this._editor.getDefinitions().rootElements[0].flowElements;
+        flowElements.forEach(function(element) {
+            if (!foundId && element.$type == "bpmn:SequenceFlow" && element.targetRef.id == nodeId) {
+                foundId = element.id;
+            }
+        });
+        return foundId;
+    },
+
+    getOutgoingFlowId: function (nodeId) {
+        var foundId;
+        var elements = this._editor.getDefinitions().rootElements[0].flowElements;
+        elements.forEach(function(element) {
+            if (!foundId && element.$type == "bpmn:SequenceFlow" && element.sourceRef.id == nodeId) {
+                foundId = element.id;
+            }
+        });
+        return foundId;
     },
 
     /**

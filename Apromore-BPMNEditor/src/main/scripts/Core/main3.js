@@ -203,6 +203,8 @@ ORYX.Editor = {
                 this.importXML(config.xml);
             }
         }.bind(this), 200);
+
+
     },
 
     _finishedLoading: function () {
