@@ -168,11 +168,13 @@
 
                                     <h:div class="span7">
                                         <h:h4 class="welcome">
-                                            <h:small>Advanced Process Analytics Platform</h:small>
+                                            <h:small>Welcome to Apromore!</h:small>
                                         </h:h4>
-                                        <h:p>
-                                            Apromore is an online business process analytics platform. Originally conceived as an advanced process model repository, today Apromore offers a wide range of features which go beyond those for managing large process model collections, and include state-of-the-art process mining analytics for the automated discovery of block-structured, hierarchical BPMN models, for the behavior-based comparison of process models and event logs for conformance checking, for the detection of process drifts from event logs, the replaying of event logs on top of BPMN models, the visual analysis of process performance, and for much more. It relies on a highly-extensible plugin architecture based on OSGi. Visit <a href="http://www.apromore.org">www.apromore.org</a> for more information and development resources.
-                                        </h:p>
+                                        <h:p>Apromore is an open-source, online business process analytics platform, supporting the full stack of process mining functionality, from automated process discovery through to predictive process monitoring. These features are complemented by functionality for managing process model collections. Visit <a href="http://apromore.org">http://apromore.org</a> for more information and development resources.</h:p>
+                                        <h:p>Headquartered at The University of Melbourne, Apromore is the result of over ten years of research and development, with contributions from various universities and individuals and funding from the government and private sectors.</h:p>
+                                        <h:p>Project leader: Marcello La Rosa</h:p>
+                                        <h:p>Core contributors: Abel Armas-Cervantes, Adriano Augusto, Raffaele Conforti, Marlon Dumas, Hoang Nguyen, Alireza Ostovar, Artem Polyvyanyy, Simon Raboczi, Ilya Verenich</h:p>
+                                        <h:p>For a full list of contributors, visit <a href="http://apromore.org/about">http://apromore.org/about</a>.</h:p>
                                         <h:p align="center">
                                             <h:img src="img/apromore_logo.png"/>
                                         </h:p>
@@ -207,12 +209,13 @@
 
                                     <h:div class="span7">
                                         <h:h4 class="welcome">
-                                            <h:small>Advanced Process Analytics Platform</h:small>
+                                            <h:small>Welcome to Apromore!</h:small>
                                         </h:h4>
-                                        <h:hr class="margin-mm "/>
-                                        <h:p>
-                                            Apromore is an online business process analytics platform. Originally conceived as an advanced process model repository, today Apromore offers a wide range of features which go beyond those for managing large process model collections, and include state-of-the-art process mining analytics for the automated discovery of block-structured, hierarchical BPMN models, for the behavior-based comparison of process models and event logs for conformance checking, for the detection of process drifts from event logs, the replaying of event logs on top of BPMN models, the visual analysis of process performance, and for much more. It relies on a highly-extensible plugin architecture based on OSGi. Visit <a href="http://www.apromore.org">www.apromore.org</a> for more information and development resources.
-                                        </h:p>
+                                        <h:p>Apromore is an open-source, online business process analytics platform, supporting the full stack of process mining functionality, from automated process discovery through to predictive process monitoring. These features are complemented by functionality for managing process model collections. Visit <a href="http://apromore.org">http://apromore.org</a> for more information and development resources.</h:p>
+                                        <h:p>Headquartered at The University of Melbourne, Apromore is the result of over ten years of research and development, with contributions from various universities and individuals and funding from the government and private sectors.</h:p>
+                                        <h:p>Project leader: Marcello La Rosa</h:p>
+                                        <h:p>Core contributors: Abel Armas-Cervantes, Adriano Augusto, Raffaele Conforti, Marlon Dumas, Hoang Nguyen, Alireza Ostovar, Artem Polyvyanyy, Simon Raboczi, Ilya Verenich</h:p>
+                                        <h:p>For a full list of contributors, visit <a href="http://apromore.org/about">http://apromore.org/about</a>.</h:p>
                                         <h:p align="center">
                                             <h:img src="img/apromore_logo.png"/>
                                         </h:p>
@@ -298,15 +301,11 @@
 
             <h:footer class="footer">
                 <h:div class="web-description span12">
-                    <h:h5><![CDATA[ &copy; ]]> 2009-2018, The Apromore Initiative.</h:h5>
+                    <h:h5><![CDATA[ &copy; ]]> 2018, The Apromore Initiative.  Contact us at <a href="mailto:apromore@lists.unimelb.edu.au.">apromore@lists.unimelb.edu.au</a>.</h:h5>
                     <h:p>Except where otherwise noted, content on this site is licensed under a <h:a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Licence</h:a></h:p>
                     <h:p class="cc-logo"/>
-                    <h:p>
-                        All models and other information stored in the repository available at the above nodes, are third-party materials that have been uploaded by other users, unless expressly indicated otherwise by the Hosting University (University of Melbourne, University of Tartu, Queensland University of Technology or University of Camerino). The Hosting University makes the repository material available ‘as is’ and does not check the currency, accuracy, reliability, performance, completeness, suitability or workability of the repository material or whether repository materials uploaded by other users infringe anyone’s intellectual property rights. You use the repository material at your own risk.
-                    </h:p>
-                    <h:p>
-                        To the fullest extent permitted by law, the Hosting University excludes all liability whether in contract, tort (including negligence), statute or otherwise for any direct or indirect losses, damages, expenses, claims and liability that you may incur as a result or arising from any use of the repository material. To the extent legislation does not allow particular liability to be excluded, it is limited to the fullest extent permitted by such legislation.
-                    </h:p>
+                    <h:p>All models, logs and other information stored in the repository are third-party materials that have been uploaded by other users, unless expressly indicated otherwise by the Hosting University. The Hosting University makes the repository material available ‘as is’ and does not check the currency, accuracy, reliability, performance, completeness, suitability or workability of the repository material or whether repository materials uploaded by other users infringe anyone’s intellectual property rights. You use the repository material at your own risk.</h:p>
+                    <h:p>To the fullest extent permitted by law, the Hosting University excludes all liability whether in contract, tort (including negligence), statute or otherwise for any direct or indirect losses, damages, expenses, claims and liability that you may incur as a result or arising from any use of the repository material. To the extent legislation does not allow particular liability to be excluded, it is limited to the fullest extent permitted by such legislation.</h:p>
                 </h:div>
             </h:footer>
 
