@@ -12,7 +12,6 @@ $j.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
 $j.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
 $j.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 
-
 var svgNS = "http://www.w3.org/2000/svg";
 var xlinkNS = "http://www.w3.org/1999/xlink";
 var jsonModel; //contains parsed objects of the process model
@@ -63,38 +62,6 @@ function toggleCaseLabelVisibility() {
     var input = $j("input#toggleCaseLabelVisibility")[0];
     controller.setCaseLabelsVisible(input.checked);
 }
-
-//////////////////////////////Load animation workspace after document has been fully loaded
-$j(window).load(function(){
-    var resStepValues = [.00001, .0001, .0005, .001, .005, .01, .05, .1, .2, .5, 1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 10000];
-    var $jslider2 = $j( "#slider2" ).slider({
-        orientation: "horizontal",
-        step: 1,
-        min: 1,
-        max: 20,
-        value: 11
-    });
-    $jslider2.slider("pips", {
-        labels:resStepValues,
-        rest:"label"
-    });
-
-    //$jslider2.slider("pips").slider("float");
-
-    lastSliderValue = $jslider2.slider("value");
-    //console.log("first slider value:" + lastSliderValue);
-    //alert(lastSliderValue);
-
-    $j("#slider2").on( "slidechange", function(event,ui) {
-        //speedRatio = (ui.value/lastSliderValue)*$j("#speedfactor").val();
-        //alert("speedRatio: " + speedRatio + " uiValue: " + ui.value + " speedfactor:" + $j("#speedfactor").val());
-        speedRatio = (resStepValues[ui.value-1]/resStepValues[lastSliderValue-1]);
-        //alert("ui.value=" + ui.value + " last value=" + lastSliderValue + " speed ratio=" + speedRatio);
-        controller.changeSpeed(speedRatio);
-        lastSliderValue = ui.value;
-    });
-});
-//////////////////////////End of window load
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

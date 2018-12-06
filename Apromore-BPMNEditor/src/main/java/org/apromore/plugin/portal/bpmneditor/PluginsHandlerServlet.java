@@ -80,7 +80,11 @@ public class PluginsHandlerServlet extends HttpServlet {
 				String pluginDef = IOUtils.toString(new FileReader(pluginConf));
 				// Insert the Editor plug-ins replacing the placeholder
 				//TODO switch to a real XML reader/writer based implementation
-				pluginDef = pluginDef.replace("<?EDITOR-PLUGINS?>", additionalPlugins.toString());
+				
+				//--------- TEMPORARILY NOT TAKING ANY PLUGINS VIA SPRING -----------------
+				//pluginDef = pluginDef.replace("<?EDITOR-PLUGINS?>", additionalPlugins.toString());
+				//------------------------------------------------------------
+				
 				res.getWriter().append(pluginDef);
 			} catch (Exception e) {
 				try {

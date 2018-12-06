@@ -33,8 +33,6 @@
     <!-- STYLESHEET FOR THE WRAPPER EDITOR -->
     <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
     <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/xtheme-smoky.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/custom-style.css" type="text/css"/>
 
     <!-- STYLESHEET FOR BPMN.IO -->
     <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/diagram-js.css" type="text/css"/>
@@ -70,7 +68,6 @@
         <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/utils.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
         
         <script src="/loganimation2/jquery-1.10.2.min.js" type="text/javascript"/>
@@ -79,28 +76,27 @@
         <script src="/loganimation2/animation.js" type="text/javascript"/>
 		
         <!-- Include all Editor plug-ins -->
+		<!--
         <z:zk forEach="${arg.plugins}">
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
+		-->
 
         <n:span id="oryxstartupcode">
 	        <n:script>
 	            <![CDATA[
 					//$.noConflict();
-					var editorWrapper;
-					window.onOryxResourcesLoaded = function() {
-	                    editorWrapper = new ORYX.Editor ({
+                    var editorWrapper = new ORYX.Editor ({
 							xml: '${arg.bpmnXML}',
-	                        model : {
-	                            id : 'editorcanvas',
-	                            stencilset : {
-	                                url : '${arg.url}',
-	                                namespace : '${arg.url}'
-	                            },
-	                        },
-	                        fullscreen : false
-	                    });
-	                };
+                            model : {
+                                id : 'editorcanvas',
+                                stencilset : {
+                                    url : '${arg.url}',
+                                    namespace : '${arg.url}'
+                                },
+                            },
+                            fullscreen : false
+                        });
 	
 	                ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
 	                	 console.log(xml);
@@ -141,7 +137,6 @@
 						$j("#slider2").get(0).disabled = false;
 					}
 					 
-					ORYX.load(); //this will call to window.onOryxResourcesLoaded
 					var controller = new AnimationController(editorWrapper.getCanvas());		
 
 					// Use time out to wait for the editor to finish loading
@@ -149,6 +144,30 @@
 					window.setTimeout(function() {
 						initialize(controller);
 					}, 1000);
+					
+					
+					//////////////////////////////Load animation workspace after document has been fully loaded
+					$j(window).load(function(){
+						var resStepValues = [.00001, .0001, .0005, .001, .005, .01, .05, .1, .2, .5, 1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 10000];
+						var $jslider2 = $j( "#slider2" ).slider({
+							orientation: "horizontal",
+							step: 1,
+							min: 1,
+							max: 20,
+							value: 11
+						});
+						$jslider2.slider("pips", {
+							labels:resStepValues,
+							rest:"label"
+						});
+
+						var lastSliderValue = $jslider2.slider("value");
+						$j("#slider2").on( "slidechange", function(event,ui) {
+							speedRatio = (resStepValues[ui.value-1]/resStepValues[lastSliderValue-1]);
+							controller.changeSpeed(speedRatio);
+							lastSliderValue = ui.value;
+						});
+					});
 					
 	            ]]>
 	        </n:script>

@@ -30,8 +30,6 @@
     </n:style>
     <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm.css" type="text/css"/>
     <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/xtheme-smoky.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/explorer/src/css/custom-style.css" type="text/css"/>
 
     <!-- STYLESHEET FOR BPMN.IO -->
     <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/diagram-js.css" type="text/css"/>
@@ -53,7 +51,6 @@
             ]]>
         </n:script>
 		
-		<!-- <n:script src="https://unpkg.com/jquery@3.3.1/dist/jquery.js" type="text/javascript" /> -->
 	    <n:script src="/${arg.editor}/libs/prototype-1.7.3.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
@@ -62,21 +59,22 @@
         <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
+		<!--
         <n:script src="/${arg.editor}/libs/utils.js" type="text/javascript"/>
+		-->
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 		
-        <!-- Include all Editor plug-ins -->
+		<!-- 
         <z:zk forEach="${arg.plugins}">
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
+		-->
 
         <n:span id="oryxstartupcode">
             <n:script>
                 <![CDATA[
 					//$.noConflict();
-					var editorWrapper;
-					window.onOryxResourcesLoaded = function() {
-                        editorWrapper = new ORYX.Editor ({
+                    var editorWrapper = new ORYX.Editor ({
 							xml: '${arg.bpmnXML}',
                             model : {
                                 id : 'editorcanvas',
@@ -87,9 +85,6 @@
                             },
                             fullscreen : true
                         });
-                    };
-					 
-					 ORYX.load();
 
                      ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
                     	 console.log(xml);
@@ -102,10 +97,10 @@
                          zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
                      };
 
-					window.setTimeout(function() {
-					  console.log($$("div.ORYX_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
-					  console.log(editorWrapper.getCanvas()._editor.getDefinitions());
-					}, 1000);
+					//window.setTimeout(function() {
+					  //console.log($$("div.ORYX_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
+					  //console.log(editorWrapper.getCanvas()._editor.getDefinitions());
+					//}, 1000);
                 ]]>
             </n:script>
         </n:span>

@@ -14,7 +14,7 @@ table-layout:fixed;
 /* Hide tiny small blue dot on the lower top of a menu */
 
 .x-form-add-trigger {
-	background-image:url(../../explorer/src/img/signavio/trigger-add.png) !important;
+	background-image:url(../../editor/src/img/signavio/trigger-add.png) !important;
 }
 
 .x-menu {
@@ -25,7 +25,7 @@ table-layout:fixed;
 	table-layout: fixed;
 }
 .ext_specialize_gridPanel_aml {
-	
+
 }
 
 .x-grid3-scroller {
@@ -99,13 +99,13 @@ table-layout:fixed;
 
 .LoadingIndicator, .StatusIndicator {
 	font-family:Verdana;
-	font-size:11px; 
-	display:block; 
-	background: white no-repeat 8px; 
-	padding:5px; 
-	padding-left:30px; 
-	position:fixed; 
-	top:0px; 
+	font-size:11px;
+	display:block;
+	background: white no-repeat 8px;
+	padding:5px;
+	padding-left:30px;
+	position:fixed;
+	top:0px;
 	left:0px;
 	border:1px solid silver;
 	white-space:nowrap;
@@ -117,7 +117,7 @@ table-layout:fixed;
 }
 
 .StatusIndicator {
-	padding-left:10px; 
+	padding-left:10px;
 }
 
 #oryxcanvas {
@@ -137,7 +137,7 @@ table-layout:fixed;
 
 .x-form-field-wrap .x-form-color-trigger {
 	background:transparent url("../../libs/ext-2.0.2/resources/images/default/form/color-trigger.png") no-repeat 0 0;
-    cursor:pointer; 
+    cursor:pointer;
 }
 
 .ie6 .x-form-field-wrap .x-form-color-trigger {
@@ -147,7 +147,7 @@ table-layout:fixed;
 /* extended by Kerstin (start)*/
 .x-form-field-wrap .x-form-complex-trigger {
 	background:transparent url("../images/complex-trigger.gif") no-repeat 0 0;
-    cursor:pointer; 
+    cursor:pointer;
 }
 /* extended by Kerstin (end)*/
 
@@ -187,7 +187,7 @@ table-layout:fixed;
 .shaperepository .x-tree-node-indent *{
 	width:0px;
 	position:relative;
-	
+
 }
 
 .x-tree-node img.headerShapeRepImg {
@@ -233,7 +233,7 @@ table-layout:fixed;
 
 /** Resizer for the Canvas **/
 .canvas_resize_indicator_area {
-	
+
 	margin		:auto;
 	display		:block;
 	height		:30px;
@@ -242,13 +242,13 @@ table-layout:fixed;
 	text-align	:center;
 	top			:0;
 	width		:60%;
-	
+
 }
 
 .canvas_resize_indicator {
-	
+
 	width		: 15px;
-	height		: 15px;	
+	height		: 15px;
 	position	: absolute;
 	display		: block;
 	margin		: auto;
@@ -256,54 +256,54 @@ table-layout:fixed;
 }
 
 .canvas_resize_indicator:hover {
-	
+
 	opacity		: 1.0;
 }
 
 .canvas_resize_indicator_grow.S{
-	left		: 50%;	
+	left		: 50%;
 	bottom		: 30px;
 	margin-right: 15px;
 	background 	: url(../images/arrow-bottom.png) no-repeat center center;
 }
 .canvas_resize_indicator_shrink.S{
-	left		: 50%;	
+	left		: 50%;
 	margin-left : 15px;
 	bottom		: 30px;
 	background 	: url(../images/arrow-top.png) no-repeat center center;
 }
 .canvas_resize_indicator_grow.W{
-	left		: 10px;	
+	left		: 10px;
 	top			: 50%;
 	margin-bottom: 15px;
 	background 	: url(../images/arrow-left.png) no-repeat center center;
 }
 .canvas_resize_indicator_shrink.W{
-	left		: 10px;	
+	left		: 10px;
 	top			: 50%;
 	margin-top: 15px;
 	background 	: url(../images/arrow-right.png) no-repeat center center;
 }
 .canvas_resize_indicator_grow.E{
-	right		: 30px;	
+	right		: 30px;
 	top			: 50%;
 	margin-bottom: 15px;
 	background 	: url(../images/arrow-right.png) no-repeat center center;
 }
 .canvas_resize_indicator_shrink.E{
-	right		: 30px;	
+	right		: 30px;
 	top			: 50%;
 	margin-top: 15px;
 	background 	: url(../images/arrow-left.png) no-repeat center center;
 }
 .canvas_resize_indicator_grow.N{
-	left		: 50%;	
+	left		: 50%;
 	top			: 10px;
 	margin-right: 15px;
 	background 	: url(../images/arrow-top.png) no-repeat center center;
 }
 .canvas_resize_indicator_shrink.N{
-	left		: 50%;	
+	left		: 50%;
 	top			: 10px;
 	margin-left : 15px;
 	background 	: url(../images/arrow-bottom.png) no-repeat center center;
@@ -326,7 +326,7 @@ table-layout:fixed;
 }
 
 .Oryx_down {
-	
+
 }
 
 .Oryx_button img {
@@ -341,7 +341,7 @@ table-layout:fixed;
 	margin-top:2px;
 	margin-left:2px;
 	padding-left:0px;
-	padding-right:0px;	
+	padding-right:0px;
 }
 
 .Oryx_ShapeMenu > .Oryx_Left {
@@ -349,7 +349,7 @@ table-layout:fixed;
 	margin-top:2px;
 	margin-left:13px;
 	padding-left:0px;
-	padding-right:0px;		
+	padding-right:0px;
 }
 
 .Oryx_ShapeMenu > .Oryx_Top {
@@ -429,8 +429,8 @@ table-layout:fixed;
 
 .resizer_southeast,
 .resizer_northwest {
-	width:12px; 
-	height:12px; 
+	width:12px;
+	height:12px;
 	position:relative;
 	background-color: transparent;
 	background-repeat:no-repeat;
@@ -499,7 +499,7 @@ table-layout:fixed;
 	font-family:tahoma, verdana, helvetica;
 	font-size:8pt;
 	border:none;
-	
+
 }
 
 .propertywindow th, td {
@@ -586,8 +586,8 @@ fieldset p {
 	margin: 2px;
 }
 
-fieldset input, 
-fieldset select, 
+fieldset input,
+fieldset select,
 fieldset textarea,
 fieldset .field_with_error_msg,
 fieldset span.input {
@@ -595,8 +595,8 @@ fieldset span.input {
 	margin-left: 90px;
 }
 
-fieldset input.text, 
-fieldset select, 
+fieldset input.text,
+fieldset select,
 fieldset textarea,
 fieldset .field_with_error_msg,
 fieldset span.input {
@@ -685,7 +685,7 @@ input.text.disabled:hover, input.disabled:hover, select.disabled:hover, textarea
 .transform-epc-bpmn-window .transform-epc-bpmn-group-button button {
 	font-size:11px;
 	font-weight:bold;
-}			
+}
 
 
 .transform-epc-bpmn-window .transform-epc-bpmn-group-button .x-btn-center {
@@ -709,31 +709,31 @@ input.text.disabled:hover, input.disabled:hover, select.disabled:hover, textarea
 	display:block;
 	font-weight:bold;
 }
-			
+
 /*** DEBUG **/
 
 
 .NewToolbar {
-	display:inline; 
+	display:inline;
 	z-index:10;
-	position:absolute; 
-	top:50px; 
-	left:800px; 
-	background:#CCCCCC; 
-	border:1px solid gray;	
+	position:absolute;
+	top:50px;
+	left:800px;
+	background:#CCCCCC;
+	border:1px solid gray;
 }
 
 .NewToolbarButton {
-	display:block; 
+	display:block;
 	z-index:10;
-	position:relative; 
-	top:0px; 
-	left:0px; 
-	background:#99BBBB; 
+	position:relative;
+	top:0px;
+	left:0px;
+	background:#99BBBB;
 	margin:5px;
 	padding:5px;
 	font-size:9px;
 	border:1px solid gray;
-	
+
 }
 
