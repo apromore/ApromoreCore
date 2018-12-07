@@ -53,7 +53,8 @@
                         <Export-Package>
                             nl.rug.ds.bpm.variability,
                             nl.rug.ds.bpm.pnml.verifier,
-                            nl.rug.ds.bpm.pnml.verifier.apm
+                            nl.rug.ds.bpm.pnml.verifier.apm,
+                            hub.top.petrinet
                         </Export-Package>
                     </instructions>
                 </configuration>

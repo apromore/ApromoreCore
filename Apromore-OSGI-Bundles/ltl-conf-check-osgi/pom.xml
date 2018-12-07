@@ -68,6 +68,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+		<dependency>
+			<groupId>org.apromore</groupId>
+			<artifactId>eventstr-confchecking-osgi</artifactId>
+			<version>1.1</version>
+		</dependency>
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
@@ -87,11 +92,6 @@
 			<artifactId>jdom</artifactId>
 			<version>1.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apromore</groupId>
-			<artifactId>uma-bpdiff-osgi</artifactId>
-			<version>1.1</version>
-		</dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>pn-automata-conv-osgi</artifactId>
@@ -107,21 +107,11 @@
             <artifactId>declare-visualizer-osgi</artifactId>
             <version>1.1</version>
         </dependency>
-		<dependency>
-			<groupId>org.apromore</groupId>
-			<artifactId>pnapi-bpdiff-osgi</artifactId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.antlr.runtime</groupId>
-			<artifactId>antlr-rt</artifactId>
-			<version>3.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.4</version>
-		</dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apromore</groupId>-->
+<!--            <artifactId>pnapi-bpdiff-osgi</artifactId>-->
+<!--            <version>1.1</version>-->
+<!--        </dependency>-->
 		<dependency>
 			<groupId>org.jbpt</groupId>
 			<artifactId>jbpt-petri-osgi</artifactId>

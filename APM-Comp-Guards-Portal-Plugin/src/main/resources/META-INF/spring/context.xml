@@ -35,7 +35,7 @@
     <!-- Other OSGi services this component consumes -->
     <reference id="canoniserService" interface="org.apromore.service.CanoniserService"/>
     <reference id="domainService" interface="org.apromore.service.DomainService"/>
-    <reference id="apmComplianceService" interface="org.apromore.service.apm.compliance.guards.APMService"/>
+    <reference id="apmComplianceGuardService" interface="org.apromore.service.apm.compliance.guards.APMServiceGuard"/>
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
     <reference id="userService" interface="org.apromore.service.UserService"/>
     <reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
@@ -45,9 +45,12 @@
     <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" availability="optional"/>
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
 
-    <beans:bean id="plugin2" class="org.apromore.plugin.portal.APM.compliance.APMCompliancePlugin"/>
+    <beans:bean id="plugin2" class="org.apromore.plugin.portal.APM.compliance.guards.APMCompliancePlugin">
+        <beans:property name="groupLabel" value="Analyze" />
+        <beans:property name="label" value="Check compliance against CTL rules and guards" />
+    </beans:bean>
 
     <!-- Exposes the component as OSGi service -->
-    <context:component-scan base-package="org.apromore.plugin.portal.APM.compliance" />
+    <context:component-scan base-package="org.apromore.plugin.portal.APM.compliance.guards" />
     <service ref="plugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
 </beans:beans>

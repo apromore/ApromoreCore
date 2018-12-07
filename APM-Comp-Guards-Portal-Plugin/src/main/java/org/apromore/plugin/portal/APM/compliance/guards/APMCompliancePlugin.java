@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.APM.compliance;
+package org.apromore.plugin.portal.APM.compliance.guards;
 
 // Java 2 Standard Edition packages
 import java.util.*;
@@ -39,7 +39,7 @@ import org.apromore.model.SummaryType;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.service.apm.compliance.guards.APMService;
+import org.apromore.service.apm.compliance.guards.APMServiceGuard;
 import org.jbpt.petri.Flow;
 import org.jbpt.petri.NetSystem;
 import org.jbpt.hypergraph.abs.Vertex;
@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 @Component("plugin")
 public class APMCompliancePlugin extends DefaultPortalPlugin {
-    private final APMService apmService;
+    private final APMServiceGuard apmService;
     private final ProcessService processService;
     private final CanoniserService canoniserService;
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
@@ -69,8 +69,14 @@ public class APMCompliancePlugin extends DefaultPortalPlugin {
 
     @Inject private org.apromore.portal.ConfigBean portalConfig;
 
+    public APMCompliancePlugin(){
+        apmService = null;
+        processService = null;
+        canoniserService = null;
+    }
+
     @Inject
-    public APMCompliancePlugin(final APMService apmService, final ProcessService processService, final CanoniserService canoniserService){
+    public APMCompliancePlugin(final APMServiceGuard apmService, final ProcessService processService, final CanoniserService canoniserService){
         this.apmService = apmService;
         this.processService = processService;
         this.canoniserService = canoniserService;

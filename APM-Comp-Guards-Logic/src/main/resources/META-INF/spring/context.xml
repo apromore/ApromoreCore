@@ -46,7 +46,7 @@
     <context:component-scan base-package="org.apromore.service.apm.compliance.guards.impl"/>
 
     <!-- Make the example service Spring bean visible from outside this OSGi bundle -->
-    <osgi:service ref="apmServiceImpl" interface="org.apromore.service.apm.compliance.guards.APMService" auto-export="interfaces"/>
+    <osgi:service ref="apmServiceGuardImpl" interface="org.apromore.service.apm.compliance.guards.APMServiceGuard" auto-export="interfaces"/>
 
 </beans>
 

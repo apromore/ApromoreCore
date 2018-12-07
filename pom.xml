@@ -96,10 +96,10 @@
         <module>Apromore-OSGI-Bundles/json-osgi</module>
         <module>Apromore-OSGI-Bundles/jbpt-petri-osgi</module>
         <module>Apromore-OSGI-Bundles/lucene-osgi</module>
-        <module>Apromore-OSGI-Bundles/pnapi-bpdiff-osgi</module>
+        <!--<module>Apromore-OSGI-Bundles/pnapi-bpdiff-osgi</module>-->
         <module>Apromore-OSGI-Bundles/postgresql-osgi</module>
         <module>Apromore-OSGI-Bundles/pql-osgi</module>
-        <module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>
+        <!--<module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>-->
         <module>Apromore-OSGI-Bundles/prom-pnml-osgi</module>
         <module>Apromore-OSGI-Bundles/pn-automata-conv-osgi</module>
         <module>Apromore-OSGI-Bundles/ltl-to-automaton-osgi</module>

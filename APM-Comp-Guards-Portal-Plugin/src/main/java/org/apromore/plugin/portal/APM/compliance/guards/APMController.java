@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.APM.compliance;
+package org.apromore.plugin.portal.APM.compliance.guards;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -30,7 +30,7 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.dialogController.SelectDynamicListController;
-import org.apromore.service.apm.compliance.guards.APMService;
+import org.apromore.service.apm.compliance.guards.APMServiceGuard;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -50,7 +50,7 @@ public class APMController {
 
     private PetriNet net;
 
-    private APMService apmService;
+    private APMServiceGuard apmService;
 
     private PortalContext portalContext;
     private Window enterLogWin;
@@ -77,7 +77,7 @@ public class APMController {
 
     private org.zkoss.util.media.Media specificationFile = null;
 
-    public APMController(PortalContext portalContext, APMService apmService) {
+    public APMController(PortalContext portalContext, APMServiceGuard apmService) {
         this.apmService = apmService;
         this.portalContext = portalContext;
     }

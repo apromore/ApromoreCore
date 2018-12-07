@@ -179,7 +179,11 @@ public class ComparePlugin extends DefaultPortalPlugin {
                 controller.compareLL(logs.get(0), logs.get(1));
                 return;
             }else if(logs.size() == 1 && selectedProcessVersions.size() == 1){
+                context.getMessageHandler().displayInfo("Performing comparison.");
+                System.out.println("Start comparison model-log");
+
                 ModelAbstractions model = toModelAbstractions(procS.get(0), verS.get(0));
+                System.out.println("Getting model");
 
                 controller.compareML(model, new HashSet<String>(), logs.get(0), procS.get(0), verS.get(0));
                 return;

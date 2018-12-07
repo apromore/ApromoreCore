@@ -45,7 +45,10 @@
     <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" availability="optional"/>
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
 
-    <beans:bean id="plugin2" class="org.apromore.plugin.portal.APM.compliance.APMCompliancePlugin"/>
+    <beans:bean id="plugin2" class="org.apromore.plugin.portal.APM.compliance.APMCompliancePlugin">
+        <beans:property name="groupLabel" value="Analyze" />
+        <beans:property name="label" value="Check compliance against CTL rules" />
+    </beans:bean>
 
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.APM.compliance" />

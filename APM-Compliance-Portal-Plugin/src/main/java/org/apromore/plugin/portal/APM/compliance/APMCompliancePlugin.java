@@ -69,6 +69,12 @@ public class APMCompliancePlugin extends DefaultPortalPlugin {
 
     @Inject private org.apromore.portal.ConfigBean portalConfig;
 
+    public APMCompliancePlugin(){
+        this.apmService = null;
+        this.processService = null;
+        this.canoniserService = null;
+    }
+
     @Inject
     public APMCompliancePlugin(final APMService apmService, final ProcessService processService, final CanoniserService canoniserService){
         this.apmService = apmService;

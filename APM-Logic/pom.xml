@@ -76,7 +76,7 @@
             <groupId>org.apromore</groupId>
             <artifactId>prom6-osgi</artifactId>
             <version>6.0</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.antlr.runtime</groupId>
             <artifactId>antlr-rt</artifactId>
@@ -85,7 +85,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.context</artifactId>

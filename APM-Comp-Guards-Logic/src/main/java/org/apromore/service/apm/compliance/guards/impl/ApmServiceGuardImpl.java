@@ -22,13 +22,13 @@ package org.apromore.service.apm.compliance.guards.impl;
 
 import hub.top.petrinet.PetriNet;
 import nl.rug.ds.bpm.pnml.verifier.apm.PnmlVerifierAPM;
-import org.apromore.service.apm.compliance.guards.APMService;
+import org.apromore.service.apm.compliance.guards.APMServiceGuard;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 @Service
-public class ApmServiceImpl implements APMService {
+public class ApmServiceGuardImpl implements APMServiceGuard {
     @Override
     public String[] getVerification(PetriNet net, String xmlSpecification, Set<String> conditions, String txtGuards, Set<String> guards) {
         System.out.println("enter compliance logic");

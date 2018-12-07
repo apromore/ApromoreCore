@@ -101,7 +101,7 @@ public class Unfolding2PES {
 		
 		int localId = 0;
 		for (DNode node: bp.getBranchingProcess().allEvents) {
-			String originalName = unfolder.getOriginalLabel(originalNames.get(sys.uniqueNames[node.id]));
+			String originalName = unfolder.getOriginalLabel(originalNames.get(sys.properLabels[node.id]));
 			
 			localMap.put(node, localId++);
 
@@ -129,7 +129,7 @@ public class Unfolding2PES {
                 if(originalVisibleLabels.contains(originalName))
                     this.mapEventsPES2Unf.put(labels.size(), node);
 
-                labels.add(originalNames.get(sys.uniqueNames[node.id]));
+                labels.add(originalNames.get(sys.properLabels[node.id]));
 			}
 			
 			if (sinkEvent && node.isCutOff)
@@ -142,7 +142,7 @@ public class Unfolding2PES {
 		for (DNode cutoff: cutoffDNodes) {
 			DNode corresponding = bp.getCutOffEquivalentEvent().get(cutoff);
 			if (!visibleEvents.contains(corresponding)) {
-				String originalName = unfolder.getOriginalLabel(sys.uniqueNames[corresponding.id]);
+				String originalName = unfolder.getOriginalLabel(sys.properLabels[corresponding.id]);
 				visibleEvents.add(corresponding);
 				orderedVisibleEvents.add(corresponding);
 				orderedVisibleEventMap.put(corresponding, orderedVisibleEventMap.size());

@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Created on 04/26/2016.
  */
-public interface APMService {
+public interface APMServiceGuard {
 
     String[] getVerification(PetriNet net, String xmlSpecification, Set<String> conditions, String txtGuards, Set<String> guards);
     String[] getVerification(PetriNet net, String[] specification, Set<String> conditions, Set<String> guards);

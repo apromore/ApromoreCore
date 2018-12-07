@@ -30,12 +30,14 @@ public class BPstructBPSys extends DNodeSys_PetriNet {
 	public BPstructBPSys(PetriNet net) throws InvalidModelException {
 		super(net);
 	}
-	
+
 	protected void finalize_setProperNames() {
 		uniqueNames = new String[nameToID.size()];
 		for (Entry<String,Short> line : nameToID.entrySet()) {
 			uniqueNames[line.getValue()] = line.getKey();
 		}
+
+		super.finalize_setProperNames();
 	}
 	public void packageProperNames() {
 		finalize_setProperNames();

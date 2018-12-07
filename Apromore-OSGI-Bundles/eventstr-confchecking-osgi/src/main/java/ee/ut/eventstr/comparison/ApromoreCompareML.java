@@ -79,10 +79,12 @@ public class ApromoreCompareML {
         String folder1 = "models/";
 		String folder2 = "models/";
 
-		String folder = "models/";
+		String folder = "/Users/abelarmas/Research/Experiment/ApromoreCode/Apromore-OSGI-Bundles/eventstr-confchecking-code-osgi/bpm2014/";
 
-        String logString = folder + "Purchasing_SubProcess_NoAnalysis_All_Log.xes";
-        String modelString = folder + "Purchasing_SubProcess_NoAnalysis_BaseModel_test4.bpmn";
+		String logString = folder + "Medium_Scenario_log.xes";
+        String modelString = folder + "Normative_Medium.bpmn";
+//        String logString = folder + "Purchasing_SubProcess_NoAnalysis_All_Log.xes";
+//        String modelString = folder + "Purchasing_SubProcess_NoAnalysis_BaseModel_test4.bpmn";
 //		String logString = folder + "bpLog11.xes";Purchasing_SubProcess_NoAnalysis_BaseModel_test.bpmn
 //		String modelString = folder + "bp2.bpmn";
 //		String logString = folder + "bpLog4.xes";

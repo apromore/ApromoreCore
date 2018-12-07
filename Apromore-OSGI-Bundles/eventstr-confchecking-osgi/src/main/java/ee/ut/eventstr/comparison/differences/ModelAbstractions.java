@@ -240,8 +240,7 @@ public class ModelAbstractions {
             if(t.getName().trim().equals(label.trim()))
                 return t;
 
-        System.out.println("No transition with the given label");
-        System.exit(0);
+        System.out.println("No transition with the given label: " +label);
 
         return null;
     }
