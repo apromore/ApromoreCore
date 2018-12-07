@@ -88,51 +88,11 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
     },
 
     updateTitle:function () {
-        var value = window.document.title;
-        var docElement = document.getElementsByTagName("title")[0];
-        if (docElement) {
-            var child = docElement.childNodes[0];
-            if (child) {
-                value = docElement.nodeValue;
-            }
-        }
-        if (value) {
-            if (this.changeDifference === 0 && value.startsWith(this.changeSymbol)) {
-                window.document.title = value.slice(1);
-            } else if (this.changeDifference !== 0 && !value.startsWith(this.changeSymbol)) {
-                window.document.title = this.changeSymbol + "" + value;
-            }
-        }
+
     },
 
     onUnLoad:function () {
-        // if (this.changeDifference !== 0 || (this.facade.getModelMetaData()['new'] && this.facade.getCanvas().getChildShapes().size() > 0)) {
-        //     return ORYX.I18N.Save.unsavedData;
-        // }
-    },
 
-    getSVG:function () {
-        var selection = this.facade.getSelection();
-        this.facade.setSelection([]);
-
-        // Get the serialized svg image source
-        var svgClone = this.facade.getCanvas().getSVGRepresentation(true);
-        this.facade.setSelection(selection);
-        if (this.facade.getCanvas().properties["oryx-showstripableelements"] === false) {
-            var stripOutArray = svgClone.getElementsByClassName("stripable-element");
-            for (var i = stripOutArray.length - 1; i >= 0; i--) {
-                stripOutArray[i].parentNode.removeChild(stripOutArray[i]);
-            }
-        }
-
-        // Remove all forced stripable elements
-        var stripOutArray = svgClone.getElementsByClassName("stripable-element-force");
-        for (var i = stripOutArray.length - 1; i >= 0; i--) {
-            stripOutArray[i].parentNode.removeChild(stripOutArray[i]);
-        }
-
-        // Parse dom to string
-        return DataManager.serialize(svgClone);
     },
 
     /**
@@ -168,15 +128,4 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
 
 });
 
-function getObjectClass(obj) {
-    if (obj && obj.constructor && obj.constructor.toString) {
-        var arr = obj.constructor.toString().match(/function\s*(\w+)/);
-
-        if (arr && arr.length == 2) {
-            return arr[1];
-        }
-    }
-
-    return undefined;
-}
 

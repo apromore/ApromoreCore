@@ -4,19 +4,19 @@ body, html {
 }
 
 .x-window-dlg .ext-mb-question {
-	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/help.png) no-repeat scroll left top;
+	background:transparent url(../../editor/src/img/nuvola/32x32/actions/help.png) no-repeat scroll left top;
 }
 
 .x-window-dlg .ext-mb-warning {
-	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/messagebox_warning.png) no-repeat scroll left top;
+	background:transparent url(../../editor/src/img/nuvola/32x32/actions/messagebox_warning.png) no-repeat scroll left top;
 }
 
 .x-window-dlg .ext-mb-info {
-	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/messagebox_info.png) no-repeat scroll left top;
+	background:transparent url(../../editor/src/img/nuvola/32x32/actions/messagebox_info.png) no-repeat scroll left top;
 }
 
 .x-window-dlg .ext-mb-error {
-	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/no.png) no-repeat scroll left top;
+	background:transparent url(../../editor/src/img/nuvola/32x32/actions/no.png) no-repeat scroll left top;
 }
 
 .x-collapse-text {
@@ -37,7 +37,7 @@ body, html {
 	-moz-transform-origin:left center;
 	-o-transform: rotate(90deg);
 	-o-transform-origin:left center;
-	-webkit-transform: rotate(90deg); 
+	-webkit-transform: rotate(90deg);
 	-webkit-transform-origin:left center;
 	left:11px;
 }
@@ -45,7 +45,7 @@ body, html {
 .x-layout-collapsed-west .x-collapse-text {
 	-moz-transform:rotate(-90deg);
 	-moz-transform-origin:right center;
-	-webkit-transform: rotate(-90deg); 
+	-webkit-transform: rotate(-90deg);
 	-webkit-transform-origin:right center;
 	-o-transform: rotate(-90deg);
 	-o-transform-origin:right center;
@@ -55,7 +55,7 @@ body, html {
 .x-layout-collapsed svg,
 .x-layout-collapsed svg text {
 	cursor: pointer;
-} 
+}
 
 
 /*********
@@ -68,7 +68,7 @@ body, html {
 .ext-mac.ext-gecko .x-form-radio, .ext-mac.ext-gecko .x-form-checkbox {
 	position:relative;
 	top:3px;
-} 
+}
 
 .ext-opera .Oryx_button .x-menu {
 	width: 246px;
@@ -97,7 +97,7 @@ text * {
  *
  */
 #oryx_editor_header {
-	background:transparent url(../../explorer/src/img/signavio/header_background2.png) repeat-x scroll center 0;
+	background:transparent url(../../editor/src/img/signavio/header_background2.png) repeat-x scroll center 0;
 	height:35px;
 	position:absolute;
 	width:100%;
@@ -106,7 +106,7 @@ text * {
 #oryx_editor_header a {
 	background-attachment:scroll;
 	background-color:transparent;
-	background-image:url(../../explorer/src/img/signavio/logo2.png);
+	background-image:url(../../editor/src/img/signavio/logo2.png);
 	background-position:0 0;
 	background-repeat:no-repeat;
 	display:block;
@@ -132,7 +132,7 @@ text * {
 }
 
 #oryx_editor_header div {
-	background-image:url(../../explorer/src/img/signavio/header_background2.png) repeat-x center bottom;
+	background-image:url(../../editor/src/img/signavio/header_background2.png) repeat-x center bottom;
 	height:10px;
 	position:absolute;
 	top:28px;
@@ -149,15 +149,29 @@ text * {
 	font-style:italic;
 }
 
-
+/*
 .x-panel-editor-north .x-toolbar {
-	background:transparent url(../../explorer/src/img/signavio/header_background2.png) repeat-x scroll left -40px;
+	background:transparent url(../../editor/src/img/signavio/header_background2.png) repeat-x scroll left -40px;
 	border:none;
 	overflow:hidden;
 }
+*/
+
+.x-panel-editor-north .x-toolbar {
+	/*background-image:url(../img/signavio/smoky/header_background2.png) !important;*/
+	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIzMSUiIHN0b3AtY29sb3I9IiNhYmM4ZGIiIHN0b3Atb3BhY2l0eT0iMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjODViMmQzIiBzdG9wLW9wYWNpdHk9IjEiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
+	background: -moz-linear-gradient(top, #abc8db 31%, #85b2d3 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(31%,#abc8db), color-stop(100%,#85b2d3)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #abc8db 31%,#85b2d3 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #abc8db 31%,#85b2d3 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #abc8db 31%,#85b2d3 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #abc8db 31%,#85b2d3 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#abc8db', endColorstr='#85b2d3',GradientType=0 ); /* IE6-8 */
+}
 
 .x-panel-editor-north .x-toolbar .ytb-sep {
-	background-image: url(../../explorer/src/img/signavio/vLine.png);
+	background-image: url(../../editor/src/img/signavio/vLine-alpha.png);
 	margin:0 6px;
 }
 
@@ -166,7 +180,7 @@ text * {
 }
 
 .x-panel-editor-north #oryx_editor_header div {
-	background:transparent url(../../explorer/src/img/signavio/header_background2.png) repeat-x center bottom;
+	background:transparent url(../../editor/src/img/signavio/header_background2.png) repeat-x center bottom;
 	height:10px;
 	left:0;
 	top:28px;
@@ -217,11 +231,11 @@ text * {
 
 
 .x-panel-editor-west .x-panel-body {
-	background:#F1F1F1 url(../../explorer/src/img/signavio/bgr_left.png) repeat-y right center;
+	background:#F1F1F1 url(../../editor/src/img/signavio/bgr_left.png) repeat-y right center;
 }
 
 .x-panel-editor-east .x-panel-body {
-	background:#F1F1F1 url(../../explorer/src/img/signavio/bgr_right.png) repeat-y -1px center;
+	background:#F1F1F1 url(../../editor/src/img/signavio/bgr_right.png) repeat-y -1px center;
 }
 
 .LoadingIndicator {
@@ -229,7 +243,7 @@ text * {
 }
 
 #oryx_canvas_htmlContainer {
-	
+
 }
 
 .x-plugin-rename-field {
@@ -248,8 +262,8 @@ text * {
 	margin-top:0px;
 	width:100%;
 	height:100%;
-	
-		
+
+
 }
 
 
@@ -259,15 +273,15 @@ text * {
 
 .x-form-field-wrap .x-form-color-trigger {
 	background:transparent url("/libs/ext-2.0.2/resources/images/default/form/color-trigger.png") no-repeat 0 0;
-    cursor:pointer; 
+    cursor:pointer;
 }
 
 .x-form-field-wrap .x-form-trigger.x-trigger-other {
-	background-image:url(../../explorer/src/img/signavio/trigger-other.png);
+	background-image:url(../../editor/src/img/signavio/trigger-other.png);
 }
 
 .x-form-field-wrap .x-form-complex-trigger {
-	background-image:url(../../explorer/src/img/signavio/trigger-other.png);
+	background-image:url(../../editor/src/img/signavio/trigger-other.png);
 }
 
 .ie6 .x-form-field-wrap .x-form-color-trigger {
@@ -275,7 +289,7 @@ text * {
 }
 
 .headerShapeRep, .headerShapeRepChild{
-    background:transparent url(../../explorer/src/img/signavio/bgr_left.png) repeat-y scroll right center;
+    background:transparent url(../../editor/src/img/signavio/bgr_left.png) repeat-y scroll right center;
     padding:1px 0px;
 	margin:0px;
 	border:none;
@@ -317,12 +331,12 @@ text * {
 
 .x-panel-editor-west .x-tree-node .x-tree-elbow-plus,
 .x-panel-editor-west .x-tree-node .x-tree-elbow-end-plus {
-	background: transparent url(../../explorer/src/img/signavio/arrows.png) no-repeat scroll 0 -2px;
+	background: transparent url(../../editor/src/img/signavio/arrows.png) no-repeat scroll 0 -2px;
 }
 
 .x-panel-editor-west .x-tree-node .x-tree-elbow-minus,
 .x-panel-editor-west .x-tree-node .x-tree-elbow-end-minus {
-	background: transparent url(../../explorer/src/img/signavio/arrows.png) no-repeat scroll -19px -2px;
+	background: transparent url(../../editor/src/img/signavio/arrows.png) no-repeat scroll -19px -2px;
 }
 
 .x-panel-editor-west .x-tree-node .x-tree-selected a span {
@@ -345,7 +359,7 @@ text * {
 .ShapeRepEntree {
 	border:none;
 	margin:0px;
-    background:#F1F1F1 url(../../explorer/src/img/signavio/bgr_left.png) repeat-y scroll right center;
+    background:#F1F1F1 url(../../editor/src/img/signavio/bgr_left.png) repeat-y scroll right center;
 	padding:5px 0px;
 }
 
@@ -363,7 +377,7 @@ text * {
 	border:none;
 	background-color:#E1E1E1 !important;
 }
- 
+
 .x-tree-node .headerShapeRepChild.x-tree-node-over,
 .x-tree-node .headerShapeRepChild.x-tree-selected,
 .x-tree-node .headerShapeRep.x-tree-node-over,
@@ -371,17 +385,17 @@ text * {
 	background-color:transparent !important;
 }
 
-.x-tree-node a span, .x-dd-drag-ghost a span { 
-	color:black;	
+.x-tree-node a span, .x-dd-drag-ghost a span {
+	color:black;
 }
 
 /*****************
  * EAST-Panel
  *
  */
- 
+
 .x-panel-editor-east .x-grid3-row {
-	background:#E1E1E1 url(../../explorer/src/img/signavio/bgr_right.png) repeat-y scroll -1px center;
+	background:#E1E1E1 url(../../editor/src/img/signavio/bgr_right.png) repeat-y scroll -1px center;
 	border:none;
 	cursor:default;
 	width:100%;
@@ -407,7 +421,7 @@ text * {
 	border-bottom:2px solid #AF356F;
 }
 
-.x-grid-group-hd div {	
+.x-grid-group-hd div {
 	color:#AF356F;
 }
 
@@ -448,8 +462,8 @@ text * {
 .resizer {
 	position:relative;
 	background:url(../../libs/ext-2.0.2/resources/images/default/sizer/se-handle-dark.gif);
-	width:10px; 
-	height:10px; 
+	width:10px;
+	height:10px;
 }
 
 .transform-epc-bpmn-window .transform-epc-bpmn-group-button .x-btn-center {
@@ -541,21 +555,21 @@ text * {
 }
 
 .x-window-linking-establish .folder.x-tree-node-collapsed .x-tree-node-icon {
-	background:transparent url(../../explorer/src/img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
+	background:transparent url(../../editor/src/img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
 }
 
 .x-window-linking-establish .folder .x-tree-node-icon {
-	background:transparent url(../../explorer/src/img/nuvola/16x16/filesystems/folder_grey_open.png) no-repeat scroll 0 0;
+	background:transparent url(../../editor/src/img/nuvola/16x16/filesystems/folder_grey_open.png) no-repeat scroll 0 0;
 }
 
 .x-window-linking-establish .folder.x-tree-node-leaf.x-disabled .x-tree-node-icon {
-	background:transparent url(../../explorer/src/img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
+	background:transparent url(../../editor/src/img/nuvola/16x16/filesystems/folder_grey.png) no-repeat scroll 0 0;
 	opacity:0.6;
 	color:silver;
 }
 
 .x-window-linking-establish .model.x-tree-node-leaf  .x-tree-node-icon {
-	background:transparent url(../../explorer/src/img/nuvola/16x16/mimetypes/kpovmodeler_doc.png) no-repeat scroll center center;
+	background:transparent url(../../editor/src/img/nuvola/16x16/mimetypes/kpovmodeler_doc.png) no-repeat scroll center center;
 }
 
 
@@ -641,28 +655,28 @@ text * {
 
 
 img.x-org_unit, .x-org_unit .x-tree-node-icon, .x-org_unit.x-image {
-	background: transparent url(../../explorer/src/img/famfamfam/building.png) no-repeat center center;
+	background: transparent url(../../editor/src/img/famfamfam/building.png) no-repeat center center;
 }
 
 img.x-document, .x-document .x-tree-node-icon, .x-document.x-image {
-	background: transparent url(../../explorer/src/img/famfamfam/page.png) no-repeat center center;
+	background: transparent url(../../editor/src/img/famfamfam/page.png) no-repeat center center;
 }
 
 img.x-it_system, .x-it_system .x-tree-node-icon, .x-it_system.x-image {
-	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/mycomputer.png) no-repeat center center;
+	background: transparent url(../../editor/src/img/nuvola/16x16/apps/mycomputer.png) no-repeat center center;
 }
 
 img.x-activity, .x-activity .x-tree-node-icon, .x-activity.x-image {
-	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/kcmdf.png) no-repeat center center;
+	background: transparent url(../../editor/src/img/nuvola/16x16/apps/kcmdf.png) no-repeat center center;
 }
 
 img.x-state, .x-state .x-tree-node-icon, .x-state.x-image {
-	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/ksysv.png) no-repeat center center;
+	background: transparent url(../../editor/src/img/nuvola/16x16/apps/ksysv.png) no-repeat center center;
 }
 
 
 img.x-search, .x-search .x-tree-node-icon, .x-search.x-image {
-	background: transparent url(../../explorer/src/img/nuvola/16x16/actions/viewmag.png) no-repeat center center;
+	background: transparent url(../../editor/src/img/nuvola/16x16/actions/viewmag.png) no-repeat center center;
 }
 
 .x-glossary-title.x-image {
@@ -702,16 +716,16 @@ img.x-search, .x-search .x-tree-node-icon, .x-search.x-image {
 }
 
 .x-glossary-support .x-toolbar .x-btn-over .x-btn-left,
-.x-glossary-support .x-toolbar .x-btn-click .x-btn-left, 
-.x-glossary-support .x-toolbar .x-btn-pressed .x-btn-left, 
+.x-glossary-support .x-toolbar .x-btn-click .x-btn-left,
+.x-glossary-support .x-toolbar .x-btn-pressed .x-btn-left,
 .x-glossary-support .x-toolbar .x-btn-over .x-btn-center,
 .x-glossary-support .x-toolbar .x-btn-menu-active .x-btn-center,
-.x-glossary-support .x-toolbar .x-btn-click .x-btn-center, 
-.x-glossary-support .x-toolbar .x-btn-pressed .x-btn-center, 
+.x-glossary-support .x-toolbar .x-btn-click .x-btn-center,
+.x-glossary-support .x-toolbar .x-btn-pressed .x-btn-center,
 .x-glossary-support .x-toolbar .x-btn-menu-active .x-btn-center,
 .x-glossary-support .x-toolbar .x-btn-over .x-btn-right,
-.x-glossary-support .x-toolbar .x-btn-click .x-btn-right, 
-.x-glossary-support .x-toolbar .x-btn-pressed .x-btn-right, 
+.x-glossary-support .x-toolbar .x-btn-click .x-btn-right,
+.x-glossary-support .x-toolbar .x-btn-pressed .x-btn-right,
 .x-glossary-support .x-toolbar .x-btn-menu-active .x-btn-right  {
 	background-image:url("../../libs/ext-2.0.2/resources/images/default/toolbar/tb-btn-sprite.gif");
 }
@@ -742,7 +756,7 @@ img.x-search, .x-search .x-tree-node-icon, .x-search.x-image {
 }
 
 .x-glossary-preview .x-glossary-title,
-.x-glossary-preview .x-glossary-attachments-title, 
+.x-glossary-preview .x-glossary-attachments-title,
 .x-glossary-preview .x-glossary-links-title {
 	font-weight:bold;
 }
@@ -769,7 +783,7 @@ img.x-search, .x-search .x-tree-node-icon, .x-search.x-image {
 }
 
 .x-glossary-preview .x-glossary-attachments-entry img{
-	background:transparent url(../../explorer/src/img/nuvola/16x16/filesystems/www_small.png) no-repeat scroll center center;
+	background:transparent url(../../editor/src/img/nuvola/16x16/filesystems/www_small.png) no-repeat scroll center center;
 	height:16px;
 	margin-bottom:-2px;
 	margin-right:10px;
@@ -790,7 +804,7 @@ img.x-search, .x-search .x-tree-node-icon, .x-search.x-image {
 }
 
 .x-glossary-preview .x-window-body table {
-	border-spacing:5px;	
+	border-spacing:5px;
 }
 
 .x-glossary-preview .x-window-body table .x-no-data {
@@ -809,31 +823,31 @@ img.x-search, .x-search .x-tree-node-icon, .x-search.x-image {
 }
 
 .x-glossary-preview .x-org_unit.x-image {
-	background: transparent url(../../explorer/src/img/famfamfam/building.png) no-repeat center center !important;
+	background: transparent url(../../editor/src/img/famfamfam/building.png) no-repeat center center !important;
 }
 
 .x-glossary-preview .x-document.x-image {
-	background: transparent url(../../explorer/src/img/famfamfam/page.png) no-repeat center center !important;
+	background: transparent url(../../editor/src/img/famfamfam/page.png) no-repeat center center !important;
 }
 
 .x-glossary-preview .x-it_system.x-image {
-	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/mycomputer.png) no-repeat center center !important;
+	background: transparent url(../../editor/src/img/nuvola/16x16/apps/mycomputer.png) no-repeat center center !important;
 }
 
 .x-glossary-preview .x-activity.x-image {
-	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/kcmdf.png) no-repeat center center !important;
+	background: transparent url(../../editor/src/img/nuvola/16x16/apps/kcmdf.png) no-repeat center center !important;
 }
 
 .x-glossary-preview .x-state.x-image {
-	background: transparent url(../../explorer/src/img/nuvola/16x16/apps/ksysv.png) no-repeat center center !important;
+	background: transparent url(../../editor/src/img/nuvola/16x16/apps/ksysv.png) no-repeat center center !important;
 }
 
 .x-glossary-preview .x-attachment.x-image {
-	background: transparent url(../../explorer/src/img/famfamfam/attach.png) no-repeat center center;
+	background: transparent url(../../editor/src/img/famfamfam/attach.png) no-repeat center center;
 }
 
 .x-glossary-preview .x-model-link.x-image  {
-	background: transparent url(../../explorer/src/img/famfamfam/page_white_link.png) no-repeat center center;
+	background: transparent url(../../editor/src/img/famfamfam/page_white_link.png) no-repeat center center;
 }
 
 div.x-inline {
@@ -865,11 +879,11 @@ div.x-inline {
 
 
 .x-window-dlg .ext-mb-question {
-	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/help.png) no-repeat scroll left top;
+	background:transparent url(../../editor/src/img/nuvola/32x32/actions/help.png) no-repeat scroll left top;
 }
 
 .x-window-dlg .ext-mb-info {
-	background:transparent url(../../explorer/src/img/nuvola/32x32/actions/messagebox_info.png) no-repeat scroll left top;
+	background:transparent url(../../editor/src/img/nuvola/32x32/actions/messagebox_info.png) no-repeat scroll left top;
 }
 
 
@@ -1037,8 +1051,8 @@ div.x-inline {
 	color:#ad0f5b;
 }
 
-.x-manage-list ol li.x-hover span a:hover, 
-.x-manage-list ol li.x-hover span a:focus, 
+.x-manage-list ol li.x-hover span a:hover,
+.x-manage-list ol li.x-hover span a:focus,
 .x-manage-list ol li.x-hover span a:active {
 	color:#82566B;
 }
@@ -1052,7 +1066,7 @@ div.x-inline {
 
 
 .x-view-window .x-form-item.x-hide-label .x-form-element {
-	overflow:hidden;	
+	overflow:hidden;
 }
 
 
@@ -1060,7 +1074,7 @@ div.x-inline {
 
 /*** Glossary Support ***/
 .x-smaller {
-	font-size:10px;	
+	font-size:10px;
 }
 
 .x-no-margin {
@@ -1068,7 +1082,7 @@ div.x-inline {
 }
 
 .x-url-link-field-list ol li {
-	background:url(../../explorer/src/img/famfamfam/attach.png) no-repeat scroll left center;
+	background:url(../../editor/src/img/famfamfam/attach.png) no-repeat scroll left center;
 	list-style-image:none;
 	list-style-type:none;
 	margin-left:-27px;
