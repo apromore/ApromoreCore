@@ -213,7 +213,10 @@
         <!--<module>Supplements/cpf2pnml</module>-->
         <!--<module>Supplements/epml2cpf</module>-->
         <!--<module>Supplements/pnml2cpf</module>-->
-
+		
+		
+		<module>Apromore-BPMNEditor</module>
+		<module>Log-Animation-Portal-Plugin2</module>
     </modules>
 
     <properties>
