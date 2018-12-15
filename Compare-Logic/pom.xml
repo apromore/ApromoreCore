@@ -51,10 +51,12 @@
                     <instructions>
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
+                            hub.top.petrinet,
                             *
                         </Import-Package>
                         <Export-Package>
                             org.apromore.service.compare
+                            <!--hub.top.petrinet-->
                         </Export-Package>
                     </instructions>
                 </configuration>

@@ -54,7 +54,8 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.apm
+                            org.apromore.service.apm,
+                            hub.top.petrinet
                         </Export-Package>
                     </instructions>
                 </configuration>

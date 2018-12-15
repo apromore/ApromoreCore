@@ -24,9 +24,9 @@ package org.apromore.plugin.portal.compareBP;
 import java.util.*;
 
 import ee.ut.eventstr.comparison.differences.ModelAbstractions;
-import hub.top.petrinet.PetriNet;
-import hub.top.petrinet.Place;
-import hub.top.petrinet.Transition;
+//import hub.top.petrinet.PetriNet;
+//import hub.top.petrinet.Place;
+//import hub.top.petrinet.Transition;
 import org.apache.commons.io.IOUtils;
 
 // Java 2 Enterprise Edition packages
@@ -103,30 +103,30 @@ public class ComparePlugin extends DefaultPortalPlugin {
         this.groupLabel = groupLabel;
     }
 
-    public PetriNet getNet(ProcessSummaryType process, VersionSummaryType vst, PortalContext context, HashSet<String> labels) throws Exception{
-        int procID = process.getId();
-        String procName = process.getName();
-        String branch = vst.getName();
-        Version version = new Version(vst.getVersionNumber());
-        String username = context.getCurrentUser().getUsername();
-        int folderId = context.getCurrentFolder() == null ? 0 : context.getCurrentFolder().getId();
-
-        Set<RequestParameterType<?>> requestProperties = new HashSet<>();
-        requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTransition",true));
-        requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTrans",false));
-
-        ExportFormatResultType data = processService.exportProcess(procName, procID, branch, version, "PNML 1.3.2", "MN", false, requestProperties);
-        byte[] bytes = IOUtils.toByteArray(data.getNative().getInputStream());
-        PNMLSerializer pnmlSerializer = new PNMLSerializer();
-
-        NetSystem net = pnmlSerializer.parse(bytes);
-
-        for(org.jbpt.petri.Transition t : net.getObservableTransitions())
-            if (t.getLabel().trim().length() > 0)
-                labels.add(t.getLabel().trim());
-
-        return jbptToUma(net);
-    }
+//    public PetriNet getNet(ProcessSummaryType process, VersionSummaryType vst, PortalContext context, HashSet<String> labels) throws Exception{
+//        int procID = process.getId();
+//        String procName = process.getName();
+//        String branch = vst.getName();
+//        Version version = new Version(vst.getVersionNumber());
+//        String username = context.getCurrentUser().getUsername();
+//        int folderId = context.getCurrentFolder() == null ? 0 : context.getCurrentFolder().getId();
+//
+//        Set<RequestParameterType<?>> requestProperties = new HashSet<>();
+//        requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTransition",true));
+//        requestProperties.add(new RequestParameterType<>("isCpfTaskPnmlTrans",false));
+//
+//        ExportFormatResultType data = processService.exportProcess(procName, procID, branch, version, "PNML 1.3.2", "MN", false, requestProperties);
+//        byte[] bytes = IOUtils.toByteArray(data.getNative().getInputStream());
+//        PNMLSerializer pnmlSerializer = new PNMLSerializer();
+//
+//        NetSystem net = pnmlSerializer.parse(bytes);
+//
+//        for(org.jbpt.petri.Transition t : net.getObservableTransitions())
+//            if (t.getLabel().trim().length() > 0)
+//                labels.add(t.getLabel().trim());
+//
+//        return jbptToUma(net);
+//    }
 
     @Override
     public void execute(PortalContext context) {
@@ -149,7 +149,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
         // Populate "details" with the process:version selections
         List<ProcessSummaryType> procS = new ArrayList<>();
         List<VersionSummaryType> verS = new ArrayList<>();
-        List<PetriNet> nets = new ArrayList<>();
+//        List<PetriNet> nets = new ArrayList<>();
         List<HashSet<String>> observable = new ArrayList<>();
 
         try {
@@ -163,7 +163,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
                     procS.add(processSummary);
                     verS.add(versionSummary);
                     HashSet<String> obs = new HashSet<>();
-                    nets.add(getNet(processSummary, versionSummary, context, obs));
+//                    nets.add(getNet(processSummary, versionSummary, context, obs));
                     observable.add(new HashSet<String>(obs));
                 }
             }
@@ -332,35 +332,35 @@ public class ComparePlugin extends DefaultPortalPlugin {
 ////        return null;
 //    }
 
-    public PetriNet jbptToUma(NetSystem net) {
-        PetriNet copy = new PetriNet();
-        Map<Vertex, Place> places = new HashMap<>();
-        Map<Vertex, Transition> transitions = new HashMap<>();
-
-        int index = 0;
-
-        for (org.jbpt.petri.Place place: net.getPlaces()) {
-            Place newPlace = copy.addPlace("p" + index++);
-            places.put(place, newPlace);
-        }
-
-        for (org.jbpt.petri.Transition trans: net.getTransitions()) {
-            String name = trans.getLabel()== null  || trans.getLabel().isEmpty() ? "t" + index++ : trans.getLabel();
-            Transition newTrans = copy.addTransition(name);
-            transitions.put(trans, newTrans);
-        }
-
-        for (Flow flow: net.getFlow()) {
-            if (flow.getSource() instanceof org.jbpt.petri.Place)
-                copy.addArc(places.get(flow.getSource()), transitions.get(flow.getTarget()));
-            else
-                copy.addArc(transitions.get(flow.getSource()), places.get(flow.getTarget()));
-        }
-
-        for (org.jbpt.petri.Place place: net.getSourcePlaces())
-            places.get(place).setTokens(1);
-
-        return copy;
-    }
+//    public PetriNet jbptToUma(NetSystem net) {
+//        PetriNet copy = new PetriNet();
+//        Map<Vertex, Place> places = new HashMap<>();
+//        Map<Vertex, Transition> transitions = new HashMap<>();
+//
+//        int index = 0;
+//
+//        for (org.jbpt.petri.Place place: net.getPlaces()) {
+//            Place newPlace = copy.addPlace("p" + index++);
+//            places.put(place, newPlace);
+//        }
+//
+//        for (org.jbpt.petri.Transition trans: net.getTransitions()) {
+//            String name = trans.getLabel()== null  || trans.getLabel().isEmpty() ? "t" + index++ : trans.getLabel();
+//            Transition newTrans = copy.addTransition(name);
+//            transitions.put(trans, newTrans);
+//        }
+//
+//        for (Flow flow: net.getFlow()) {
+//            if (flow.getSource() instanceof org.jbpt.petri.Place)
+//                copy.addArc(places.get(flow.getSource()), transitions.get(flow.getTarget()));
+//            else
+//                copy.addArc(transitions.get(flow.getSource()), places.get(flow.getTarget()));
+//        }
+//
+//        for (org.jbpt.petri.Place place: net.getSourcePlaces())
+//            places.get(place).setTokens(1);
+//
+//        return copy;
+//    }
 
 }

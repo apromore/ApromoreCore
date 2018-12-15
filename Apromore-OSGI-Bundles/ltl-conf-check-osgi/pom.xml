@@ -56,6 +56,8 @@
 							au.ltl.domain,
 							au.ltl.utils,
 							au.ltl.main,
+							org.jbpt.pm,
+                            hub.top.uma
 						</Export-Package>
 					</instructions>
 				</configuration>
@@ -149,6 +151,12 @@
 		<dependency>
 			<groupId>org.apromore</groupId>
 			<artifactId>prom6-osgi</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.raffaeleconforti</groupId>
+					<artifactId>assembly</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!--<dependency>-->
 			<!--<groupId>com.raffaeleconforti</groupId>-->

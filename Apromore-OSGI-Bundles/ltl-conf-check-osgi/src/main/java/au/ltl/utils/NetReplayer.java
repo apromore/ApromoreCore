@@ -66,6 +66,10 @@ public class NetReplayer {
                 		Node unfolded_node= mapSub2Unf.get(transition);
                 		Node petrinet_node= model.getMapBP2Net().get(unfolded_node);
                 		FlowNode bpmn_original_task= model.getMapTasks2TransReverse().get(petrinet_node);
+
+                		if(bpmn_original_task == null)
+                		    continue;
+
                 		if(!trace_alphabet_vector.contains(task_string))
     						trace_alphabet_vector.add(task_string);
     					original_trace_content_vector.add(task_string);

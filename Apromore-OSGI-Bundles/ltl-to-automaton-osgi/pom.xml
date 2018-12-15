@@ -51,7 +51,7 @@
                         <Export-Package>
                            org.processmining.ltl2automaton.plugins.automaton,
                            org.processmining.ltl2automaton.plugins.formula,
-			org.processmining.ltl2automaton.plugins.formula.conjunction,
+                           org.processmining.ltl2automaton.plugins.formula.conjunction,
                            org.processmining.ltl2automaton.plugins.ltl,
                            org.processmining.ltl2automaton.plugins
                         </Export-Package>

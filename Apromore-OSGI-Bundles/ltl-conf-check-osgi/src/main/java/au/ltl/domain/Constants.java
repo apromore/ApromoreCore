@@ -234,7 +234,6 @@ public class Constants {
 	}
 	public  void setTask_numberOfTraces_map(HashMap<String, Integer> task_numberOfTraces_map) {
 		this.task_numberOfTraces_map = task_numberOfTraces_map;
-		this.task_numberOfTraces_map = task_numberOfTraces_map;
 	}
 	public  HashSet<Trace> getTraces() {
 		return traces;

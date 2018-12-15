@@ -54,6 +54,7 @@
                         <Import-Package>
                             <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             ee.ut.*,
+                            hub.top.petrinet,
                             org.apromore.plugin,
                             org.apromore.portal.dialogController.dto,
                             org.apromore.portal.util,

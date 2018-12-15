@@ -145,7 +145,7 @@ public class Unfolder_PetriNet {
 		// extend unfolding until no more events can be added
 		while ((current_steps = bp.step()) > 0) {
 			total_steps += current_steps;
-			System.out.print(total_steps + "... ");
+//			System.out.print(total_steps + "... ");
 		}
 	}
 

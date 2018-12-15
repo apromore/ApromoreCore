@@ -55,6 +55,7 @@
                             <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
                             ee.ut.*,
                             hub.top.petrinet,
+                            org.apromore.service.conf.ltl,
                             org.apromore.plugin,
                             org.apromore.portal.dialogController.dto,
                             org.apromore.portal.util,
@@ -110,6 +111,12 @@
             <groupId>org.apromore</groupId>
             <artifactId>bpmndiagramimporter-logic</artifactId>
             <version>1.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apromore</groupId>
+                    <artifactId>raffaeleconforti-osgi</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
@@ -134,7 +141,12 @@
                     <artifactId>pnapi-java</artifactId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.apromore</groupId>
+                    <artifactId>raffaeleconforti-osgi</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>com.raffaeleconforti</groupId>
+                    <artifactId>assembly</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.processmining</groupId>
@@ -151,6 +163,16 @@
             <artifactId>apromore-portal</artifactId>
             <version>1.1</version>
             <classifier>classes</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>hub.top</groupId>
+                    <artifactId>uma</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>hub.top.petrinet</groupId>
+                    <artifactId>pnapi-java</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jbpt</groupId>

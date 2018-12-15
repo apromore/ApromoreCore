@@ -48,13 +48,13 @@
                         <Bundle-Name>APMVerification OSGI</Bundle-Name>
                         <Import-Package>
                             com.google.common.collect,
+                            hub.top.petrinet,
                             org.springframework.beans.factory.aspectj,
                             *</Import-Package>
                         <Export-Package>
                             nl.rug.ds.bpm.variability,
                             nl.rug.ds.bpm.pnml.verifier,
-                            nl.rug.ds.bpm.pnml.verifier.apm,
-                            hub.top.petrinet
+                            nl.rug.ds.bpm.pnml.verifier.apm
                         </Export-Package>
                     </instructions>
                 </configuration>

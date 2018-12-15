@@ -51,6 +51,7 @@
                     <instructions>
                         <Import-Package>
                             org.antlr.runtime,
+                            hub.top.petrinet,
                             org.springframework.beans.factory.aspectj,
                             *
                         </Import-Package>

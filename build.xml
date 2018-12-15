@@ -566,7 +566,7 @@
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/apm-verification-osgi-1.1.jar"/>
-                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
+<!--                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>-->
                 <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
                 <include name="**/target/prom-pnml-osgi-1.1.jar"/>
 		        <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
@@ -635,7 +635,7 @@
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/apm-verification-osgi-1.1.jar"/>
-                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
+<!--                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>-->
                 <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
                 <include name="**/target/prom-pnml-osgi-1.1.jar"/>
                 <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
@@ -718,7 +718,7 @@
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/apm-verification-osgi-1.1.jar"/>
-                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>
+<!--                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>-->
                 <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
                 <include name="**/target/prom-pnml-osgi-1.1.jar"/>
                 <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
