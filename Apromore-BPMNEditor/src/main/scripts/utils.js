@@ -305,6 +305,25 @@ ORYX.Utils = {
         res[8] = res[13] = res[18] = res[23] = '-';
 
         return "oryx_" + res.join('');
+    },
+
+    distance: function (a, b) {
+        return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
+    },
+
+    // Find a point at least minSpacing away from points a and b, forming at least a right angle.  Sign +1 or -1 selects the two solutions.
+    lagrangePoint: function (a, b, minSpacing, sign) {
+        var dx = (b.y - a.y);
+        var dy = (a.x - b.x);
+        var scale = sign * Math.max(minSpacing / Math.sqrt(dx * dx + dy * dy), 0.5);
+        return {x: (a.x + b.x)/2 + (b.y - a.y)*scale, y: (a.y + b.y)/2 + (a.x - b.x)*scale};
+    },
+
+    shapeCenter: function (shape) {
+        return {
+            x: (shape.bounds.lowerRight.x + shape.bounds.upperLeft.x) / 2,
+            y: (shape.bounds.lowerRight.y + shape.bounds.upperLeft.y) / 2
+        };
     }
 };
 

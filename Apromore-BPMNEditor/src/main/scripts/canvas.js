@@ -165,6 +165,135 @@ ORYX.Canvas = {
     zoomFitToModel: function() {
 
     },
+
+    createShape: function(type, x, y, w, h) {
+        var modelling = this._editor.get('modeling');
+        var parent = this._editor.get('canvas').getRootElement();
+        //console.log('parent', parent);
+        var shape = modelling.createShape({type:type, width:w, height:h}, {x:x, y:y}, parent);
+        return shape.id;
+    },
+
+    updateProperties: function(elementId, properties) {
+        var modelling = this._editor.get('modeling');
+        var registry = this._editor.get('elementRegistry');
+        modelling.updateProperties(registry.get(elementId), properties);
+    },
+
+
+    createSequenceFlow: function (source, target, attrs) {
+        var attrs2 = {};
+        Object.assign(attrs2,{type:'bpmn:SequenceFlow'});
+        if (attrs.waypoints) {
+            Object.assign(attrs2,{waypoints: attrs.waypoints});
+        }
+        var modelling = this._editor.get('modeling');
+        var registry = this._editor.get('elementRegistry');
+        var flow = modelling.connect(registry.get(source), registry.get(target), attrs2);
+        //console.log(flow);
+        return flow.id;
+    },
+
+    createAssociation: function (source, target, attrs) {
+        var attrs2 = {};
+        Object.assign(attrs2,{type:'bpmn:Association'});
+        if (attrs.waypoints) {
+            Object.assign(attrs2,{waypoints: attrs.waypoints});
+        }
+        var modelling = this._editor.get('modeling');
+        var registry = this._editor.get('elementRegistry');
+        var assoc = Object.assign(assoc, modelling.connect(registry.get(source), registry.get(target), attrs2));
+        return assoc.id;
+    },
+
+    highlight: function (elementId) {
+        //console.log("Highlighting elementId: " + elementId);
+        var self = this;
+        var element = self._editor.get('elementRegistry').get(elementId);
+        var modelling = self._editor.get('modeling');
+        //console.log(element);
+        modelling.setColor([element],{stroke:'red'});
+    },
+
+    highlightColor: function (elementId, color) {
+        var modelling = this._editor.get('modeling');
+        var element = this._editor.get('elementRegistry').get(elementId);
+        modelling.setColor([element],{stroke:color});
+    },
+
+    greyOut: function(elementIds) {
+        var elementRegistry = this._editor.get('elementRegistry');
+        var self = this;
+        elementIds.forEach(function(id) {
+            console.log('_elements', elementRegistry._elements);
+            var gfx = elementRegistry.getGraphics(id);
+            var visual = gfx.children[0];
+            visual.setAttributeNS(null, "style", "opacity: 0.25");
+        });
+
+
+    },
+
+    removeShapes: function(shapeIds) {
+        var registry = this._editor.get('elementRegistry');
+        var modelling = this._editor.get('modeling');
+        console.log(shapeIds);
+        var shapes = [];
+        shapeIds.forEach(function(shapeId) {
+            shapes.push(registry.get(shapeId));
+        });
+        modelling.removeElements(shapes);
+    },
+
+    getAllElementIds: function() {
+        var ids = [];
+        var elementRegistry = this._editor.get('elementRegistry');
+        elementRegistry.getAll().forEach(function(element) {
+            ids.push(element.id);
+        });
+        return ids;
+    },
+
+    normalizeAll: function() {
+        var registry = this._editor.get('elementRegistry');
+        var modelling = this._editor.get('modeling');
+        modelling.setColor(registry.getAll(), {stroke:'black'});
+    },
+
+    shapeCenter: function (shapeId) {
+        var position = {};
+        var registry = this._editor.get('elementRegistry');
+        var shape = registry.get(shapeId);
+        //console.log('Shape of ' + shapeId);
+        //console.log(shape);
+        //console.log(shape.x);
+        position.x = (shape.x + shape.width/2);
+        position.y = (shape.y + shape.height/2);
+        return position;
+    },
+
+    clear: function() {
+        this._editor.clear();
+    },
+
+    registerHandler: function(handlerName, handler) {
+        var commandStack = this._editor.get('commandStack');
+        commandStack.registerHandler(handlerName, handler);
+    },
+
+    executeHandler: function(handlerName, context) {
+        var commandStack = this._editor.get('commandStack');
+        commandStack.execute(handlerName, context);
+    },
+
+    getCenter: function (shapeId) {
+        var shape = this._editor.get('elementRegistry').get(shapeId);
+        return {
+            x: shape.x + (shape.width || 0) / 2,
+            y: shape.y + (shape.height || 0) / 2
+        }
+    }
+
 };
 
 ORYX.Canvas = Clazz.extend(ORYX.Canvas);
