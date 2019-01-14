@@ -81,9 +81,10 @@ public class Unfolder_PetriNet {
 			for (Node trans : net.getTransitions())
 				mapDNodeTrans.put(sys.getResultNode(trans).id, trans);
 			
-		} catch (InvalidModelException e) {
+		} catch (Exception e) {
 			System.err.println("Error! Invalid model.");
 			System.err.println(e);
+			e.printStackTrace();
 			sys = null;
 			bp = null;
 		}
@@ -186,7 +187,7 @@ public class Unfolder_PetriNet {
 
 			// if (!option_printAnti && n.isAnti) continue;
 
-			String name = sys.uniqueNames[n.id];
+			String name = sys.properLabels[n.id];
 			if (n.isAnti)
 				name = "NOT " + name;
 			else if (n.isCutOff){

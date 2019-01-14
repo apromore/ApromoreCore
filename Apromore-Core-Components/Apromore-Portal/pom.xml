@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright © 2009-2018 The Apromore Initiative.
+  ~
+  ~ This file is part of "Apromore".
+  ~
+  ~ "Apromore" is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ "Apromore" is distributed in the hope that it will be useful, but
+  ~ WITHOUT ANY WARRANTY; without even the implied warranty
+  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this program.
+  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
+        <version>1.1</version>
+        <relativePath>../../</relativePath>
+    </parent>
+
+    <artifactId>apromore-portal</artifactId>
+    <packaging>war</packaging>
+    <url>http://code.google.com/p/apromore/</url>
+    <name>Apromore Portal</name>
+
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Portal</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Portal</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Portal</developerConnection>
+    </scm>
+
+    <build>
+        <finalName>portal</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${project.parent.basedir}/site.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <unpackBundle>false</unpackBundle>
+                    <instructions>
+                        <Embed-Dependency>
+                            <!-- Embedded non-OSGI libraries.
+                                 Remember to always keep the maven-war-plugin in sync.
+                                 These dependencies should be in scope provided!
+                            -->
+                            artifactId=
+                            diffbp|hibernate-core|jbpt|jdom|json|jaxb2-basics-runtime
+                            |spring-social-core|spring-social-facebook|spring-social-twitter
+                        </Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Embed-Directory>WEB-INF/lib</Embed-Directory>
+                        <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
+                        <Import-Bundle>
+                            com.springsource.javassist;version="[3.15.0.GA,3.15.0.GA]",
+                            com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
+                            com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]",
+                            com.springsource.org.apache.xmlbeans;version="[2.4.0,2.4.0]",
+                            com.springsource.com.sun.xml.bind;version="[2.2.0,2.2.0]",
+                            jackson-core-lgpl;version="[1.9.12,2.0.0]",
+                            jackson-mapper-lgpl;version="[1.9.12,2.0.0]",
+                            org.apromore.manager-ws-model;version="[1.1,1.1]",
+                            org.apromore.manager-client;version="[1.1,1.1]",
+                            org.apromore.manager-security;version="[1.1,1.1]",
+                            org.eclipse.gemini.blueprint.core;bundle-version="[1.0.0,2.0)",
+                            org.springframework.aop;bundle-version="[3.1.0,4.0)",
+                            org.springframework.web;bundle-version="[3.1.0,4.0)",
+                            org.springframework.beans;bundle-version="[3.1.0,4.0)",
+                            org.springframework.context;bundle-version="[3.1.0,4.0)",
+                            org.springframework.oxm;bundle-version="[3.1.0,4.0)",
+                            org.springframework.ws;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
+                            org.springframework.ws.support;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
+                            org.springframework.ws.xml;version="[2.1.0.RELEASE,2.1.0.RELEASE]",
+                            org.springframework.security.core;version="[3.1.0,4.0)",
+                            org.springframework.security.config;version="[3.1.0,4.0)",
+                            org.springframework.security.web;version="[3.1.0,4.0)",
+                            org.springframework.security.remoting;version="[3.1.0,4.0)",
+                            org.apromore.zk-osgi;bundle-version="[6.5,9.0)",
+                            org.apromore.plugin.portal-custom-gui;version="[1.1,2.0)"
+                        </Import-Bundle>
+                        <Import-Package>
+                            org.eclipse.virgo.web.dm,
+                            org.aopalliance.aop,
+                            net.sf.cglib.proxy,
+                            net.sf.cglib.core,
+                            net.sf.cglib.reflect,
+                            com.google.common.base,
+                            org.deckfour.xes.classification,
+                            org.deckfour.xes.extension,
+                            org.deckfour.xes.extension.std,
+                            org.deckfour.xes.extension.std.cost,
+                            org.deckfour.xes.factory,
+                            org.deckfour.xes.id,
+                            org.deckfour.xes.in,
+                            org.deckfour.xes.info,
+                            org.deckfour.xes.info.impl,
+                            org.deckfour.xes.logging,
+                            org.deckfour.xes.model,
+                            org.deckfour.xes.model.buffered,
+                            org.deckfour.xes.model.impl,
+                            org.deckfour.xes.nikefs2,
+                            org.deckfour.xes.out,
+                            org.deckfour.xes.util,
+                            org.deckfour.xes.xstream,
+                            *;resolution:=optional
+                        </Import-Package>
+                        <Export-Package>
+                            org.apromore.portal,
+                            org.apromore.portal.common,
+                            org.apromore.portal.context,
+                            org.apromore.portal.dialogController,
+                            org.apromore.portal.dialogController.dto,
+                            org.apromore.portal.exception,
+                            org.apromore.portal.util
+                        </Export-Package>
+                        <Web-ContextPath>${site.portal}</Web-ContextPath>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                    <packagingExcludes> <!-- Regex to only include the same embedded dependencies as specified inmaven-bundle-plugin -->
+                        %regex[WEB-INF/lib/(?!diffbp|hibernate-core|jbpt|jdom|json|jaxb2|spring-social).*jar]
+                    </packagingExcludes>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <!--
+            Dependencies that were defined only in the assembly
+            TODO: check if these are really neded!
+        -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-lgpl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-lgpl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>com.springsource.org.apache.xmlbeans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml</groupId>
+            <artifactId>com.springsource.com.sun.tools.xjc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml</groupId>
+            <artifactId>com.springsource.com.sun.xml.bind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>com.springsource.javax.xml.bind</artifactId>
+        </dependency>
+
+        <!-- Custom GUI -->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-custom-gui</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+        <!-- BPMNMiner -->
+        <!--
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prom6-osgi</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.ibm.icu</groupId>
+                    <artifactId>icu4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>log-osgi</artifactId>
+            <version>1.0</version>
+        </dependency>
+        -->
+
+        <!-- ProDrift -->
+        <!--
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prodrift-osgi</artifactId>
+        </dependency>
+        -->
+
+        <!-- Client -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>filestore-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-ws-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-security</artifactId>
+        </dependency>
+
+        <!-- BP-diff and its dependencies
+             TODO: are those embedded or OSGI?
+        -->
+        <dependency>
+            <groupId>diffbp</groupId>
+            <artifactId>diffbp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.2.2.Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+         <!--Replacement for the org.javassist from the hibernate package-->
+        <dependency>
+            <groupId>org.jboss.javassist</groupId>
+            <artifactId>com.springsource.javassist</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>ut.ee</groupId>
+            <artifactId>jbpt</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>hub.top</groupId>
+            <artifactId>uma</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>hub.top.petrinet</groupId>
+            <artifactId>pnapi-java</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+        <!--<dependency>
+            <groupId>ut.ee</groupId>
+            <artifactId>umaBPDiff</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ut.ee</groupId>
+            <artifactId>pnapi</artifactId>
+            <version>1.0</version>
+        </dependency>-->
+        <dependency>
+            <groupId>ut.ee</groupId>
+            <artifactId>jackson</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- Schemas -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>cmap-schema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>epml-schema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>xpdl-schema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpmn-schema</artifactId>
+        </dependency>
+
+        <!-- APIs -->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-plugin-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>editor-plugin-api</artifactId>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>org.apromore</groupId>-->
+            <!--<artifactId>eventstr-confchecking-osgi</artifactId>-->
+            <!--<version>1.0</version>-->
+        <!--</dependency>-->
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+        </dependency>
+
+        <!-- Spring dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.context.support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.expression</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.web.servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.oxm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.aspects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.transaction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.orm</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>org.springframework.security.remoting</artifactId>
+        </dependency>
+
+        <!-- JEE dependencies -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>com.springsource.javax.mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>com.springsource.javax.validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>com.springsource.javax.inject</artifactId>
+        </dependency>
+
+        <!-- Commons Libraries -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>com.springsource.org.apache.httpcomponents.httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+
+        <!-- ZK Dependencies -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>zk-osgi</artifactId>
+        </dependency>
+        <!-- Dependencies that aren't OSGI, included in war -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
+        <!-- Spring Social Dependencies -->
+        <dependency>
+            <groupId>org.springframework.social</groupId>
+            <artifactId>spring-social-facebook</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.social</groupId>
+            <artifactId>spring-social-twitter</artifactId>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jvnet.mock-javamail</groupId>
+            <artifactId>mock-javamail</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

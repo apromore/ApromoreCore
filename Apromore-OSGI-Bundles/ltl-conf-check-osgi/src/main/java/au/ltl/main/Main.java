@@ -13,10 +13,10 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 
-		String modelName="data"+File.separator+"model1.bpmn";
+		String modelName="Apromore-OSGI-Bundles/ltl-conf-check-osgi/data"+File.separator+"model1.bpmn";
 		byte[] modelArray=getFileAsArray(modelName);
 		ModelAbstractions model = new ModelAbstractions(modelArray);
-		File XmlFileDeclareRules=new File("data"+File.separator+"declare.xml");;
+		File XmlFileDeclareRules=new File("Apromore-OSGI-Bundles/ltl-conf-check-osgi/data"+File.separator+"declare10.xml");;
 		LinkedList<Constraint> LTLConstraintList=null;
 		int addActionCost=1;
 		int deleteActionCost=1;

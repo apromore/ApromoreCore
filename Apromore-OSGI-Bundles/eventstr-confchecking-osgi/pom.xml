@@ -59,7 +59,9 @@
 							com.google.common.collect,
 							ee.ut.nets.unfolding,
 							ee.ut.eventstr.comparison.differences,
-							org.antlr.runtime
+							org.antlr.runtime,
+							hub.top.uma,
+							hub.top.petrinet.*
 						</Export-Package>
 					</instructions>
 				</configuration>
