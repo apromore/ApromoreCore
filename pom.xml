@@ -187,13 +187,13 @@
         <module>Apromore-Clients/portal-client</module>
 
         <!-- Web application bundles -->
-        <module>Apromore-Editor</module>
-        <module>Apromore-FileStore</module>
-        <module>Apromore-Portal</module>
-        <module>Apromore-Manager</module>
-        <module>Apromore-Manager-WS</module>
+        <module>Apromore-Core-Components/Apromore-Editor</module>
+        <module>Apromore-Core-Components/Apromore-FileStore</module>
+        <module>Apromore-Core-Components/Apromore-Portal</module>
+        <module>Apromore-Core-Components/Apromore-Manager</module>
+        <module>Apromore-Core-Components/Apromore-Manager-WS</module>
 
-        <module>Apromore-PQL-Indexer</module>
+        <module>Apromore-Core-Components/Apromore-PQL-Indexer</module>
 
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly/Editor-Assembly</module>
