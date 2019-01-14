@@ -28,12 +28,12 @@
         <groupId>org.apromore</groupId>
         <artifactId>apromore</artifactId>
         <version>1.1</version>
-        <relativePath>../</relativePath>
+        <relativePath>../../</relativePath>
     </parent>
 
-    <artifactId>ltl-conf-logic</artifactId>
+    <artifactId>bpmnminer-logic</artifactId>
     <packaging>bundle</packaging>
-    <name>LTL conformance checking logic</name>
+    <name>BPMNMiner-logic</name>
 
     <build>
         <plugins>
@@ -49,13 +49,31 @@
                 <configuration>
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
+                        <Import-Bundle>
+                            org.apromore.raffaeleconforti-osgi;bundle-version="[1.0,2.0]",
+                            org.apromore.eclipse-collections-osgi;bundle-version="[1.1,2.0]"
+                        </Import-Bundle>
                         <Import-Package>
+                            com.raffaeleconforti.bpmnminer.*,
+                            com.raffaeleconforti.context,
+                            com.raffaeleconforti.foreignkeydiscovery.*,
+                            com.raffaeleconforti.log.*,
+                            com.raffaeleconforti.wrappers.settings.*,
+                            org.apromore.service.ibpstruct.*,
+                            org.deckfour.xes.*,
+                            org.eclipse.collections.*,
+                            org.processmining.contexts.*;version="[1.0,2.0)",
+                            org.processmining.framework.*;version="[1.0,2.0)",
+                            org.processmining.models.*;version="[1.0,2.0)",
+                            org.processmining.plugins.*;version="[1.0,2.0)",
                             org.springframework.beans.factory.aspectj,
-                            au.ltl.domain,
-                            *
+                            javax.inject,
+                            javax.swing,
+                            org.slf4j,
+                            org.springframework.stereotype
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.service.conf.ltl
+                            org.apromore.service.bpmnminer
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -65,18 +83,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-           <groupId>org.apromore</groupId>
-	   <artifactId>ltl-conf-check-osgi</artifactId>
+            <groupId>org.apromore</groupId>
+            <artifactId>ibpstruct-logic</artifactId>
             <version>1.1</version>
         </dependency>
         <dependency>
-            <groupId>org.antlr.runtime</groupId>
-            <artifactId>antlr-rt</artifactId>
-            <version>3.2.0</version>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-manager</artifactId>
+            <version>${manager-client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -86,18 +100,19 @@
             <groupId>org.springframework</groupId>
             <artifactId>org.springframework.context</artifactId>
         </dependency>
-
-        <!-- Testing -->
-         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>raffaeleconforti-osgi</artifactId>
+            <version>1.1</version>
         </dependency>
-         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <scope>test</scope>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>eclipse-collections-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
         </dependency>
     </dependencies>
 </project>
-

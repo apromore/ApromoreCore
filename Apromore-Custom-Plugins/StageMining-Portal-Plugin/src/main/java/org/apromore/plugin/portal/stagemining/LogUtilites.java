@@ -16,7 +16,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
  
- package org.processmining.stagemining.utils;
+ package org.apromore.plugin.portal.stagemining;
 
 import java.text.DateFormat;
 import java.text.ParseException;

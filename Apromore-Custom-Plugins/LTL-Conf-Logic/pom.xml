@@ -25,40 +25,38 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.apromore.plugin</groupId>
-        <artifactId>plugin</artifactId>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore</artifactId>
         <version>1.1</version>
-        <relativePath>../Apromore-Plugins/</relativePath>
+        <relativePath>../../</relativePath>
     </parent>
 
+    <artifactId>ltl-conf-logic</artifactId>
     <packaging>bundle</packaging>
-    <!-- Unique name of the plug-in -->
-    <artifactId>pql-indexer-portal-plugin</artifactId>
-    <name>PQL Indexer portal plugin</name>
-    <description>Some description</description>
+    <name>LTL conformance checking logic</name>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <!--
+                    There is some problem in the bpstruct JAR that causes the newer version to throw an error!
+                    So we use the older version as workaround
+                -->
+                <version>2.3.7</version>
+                <extensions>true</extensions>
                 <configuration>
-                    <!-- Generally, no change should be necessary here unless your plug-in relies on a non-OSGi dependency -->
+                    <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
                         <Import-Package>
-                            <!-- Needs to be declared because no class from org.apromore.plugin is directly used in this example! -->
-                            org.apromore.plugin,
-                            org.apromore.service.pql,
                             org.springframework.beans.factory.aspectj,
+                            au.ltl.domain,
                             *
                         </Import-Package>
-                        <!-- Uncomment to embed a 3rd party dependency that is not provided as OSGi bundle
-                        <Embed-Dependency>
-                            artifactId=fooBar
-                        </Embed-Dependency>
-                        <Embed-Transitive>true</Embed-Transitive>
-                        <Embed-Directory>lib</Embed-Directory>
-                        -->
+                        <Export-Package>
+                            org.apromore.service.conf.ltl
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -67,26 +65,39 @@
 
     <dependencies>
         <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>com.springsource.javax.inject</artifactId>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>portal-plugin-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore.plugin</groupId>
-            <artifactId>portal-custom-gui</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>pql-logic</artifactId>
+           <groupId>org.apromore</groupId>
+	   <artifactId>ltl-conf-check-osgi</artifactId>
             <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr.runtime</groupId>
+            <artifactId>antlr-rt</artifactId>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.context</artifactId>
+        </dependency>
 
+        <!-- Testing -->
+         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+         <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
+
