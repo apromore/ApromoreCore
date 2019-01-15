@@ -133,6 +133,7 @@
 
         <module>Apromore-Custom-Plugins/Compare-Logic</module>
         <module>Apromore-Custom-Plugins/Compare-Portal-Plugin</module>
+		<module>Apromore-Custom-Plugins/Compare-Portal-Plugin2</module>
 
         <module>Apromore-Custom-Plugins/LTL-Conf-Logic</module>
         <module>Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin</module>
@@ -151,6 +152,7 @@
         <module>Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
+		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2</module>
         <module>Apromore-Custom-Plugins/Log-Visualizer-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Visualizer-Logic-WS</module>
         <module>Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin</module>
@@ -192,8 +194,8 @@
         <module>Apromore-Core-Components/Apromore-Portal</module>
         <module>Apromore-Core-Components/Apromore-Manager</module>
         <module>Apromore-Core-Components/Apromore-Manager-WS</module>
-
         <module>Apromore-Core-Components/Apromore-PQL-Indexer</module>
+		<module>Apromore-Core-Components/Apromore-BPMNEditor</module>
 
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly/Editor-Assembly</module>
@@ -214,9 +216,6 @@
         <!--<module>Supplements/epml2cpf</module>-->
         <!--<module>Supplements/pnml2cpf</module>-->
 		
-		
-		<module>Apromore-BPMNEditor</module>
-		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2</module>
     </modules>
 
     <properties>

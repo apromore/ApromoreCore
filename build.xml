@@ -310,8 +310,9 @@
         <include name="Apromore-Custom-Plugins/PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
         -->
 		
-		<include name="Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
+		<include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
 		<include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
+		<include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
     </fileset>
 
     <fileset id="usrRepo" dir=".">
