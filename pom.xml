@@ -215,7 +215,7 @@
         <!--<module>Supplements/pnml2cpf</module>-->
 		
 		
-		<module>Apromore-BPMNEditor</module>
+		<module>Apromore-Core-Components/Apromore-BPMNEditor</module>
 		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2</module>
     </modules>
 
