@@ -24,3 +24,9 @@ Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE
 **/.settings/*
 *.project
 *.classpath
+
+*.gitignore
+*.project
+**/.metadata/*
+Apromore-Core-Components/Apromore-BPMNEditor/pom.xml~HEAD
+Apromore-Extras/apql/.project
