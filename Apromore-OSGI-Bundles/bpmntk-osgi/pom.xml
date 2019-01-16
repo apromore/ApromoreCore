@@ -52,7 +52,6 @@
                             !junit.framework.*,
                             !org.junit.*,
                             !org.omg.spec.bpmn._20100524.model.*,
-                            !de.hpi.bpt.graph.*;version="[1.1.0,2.0.0)",
                             org.processmining.contexts.*;version="[1.0,2.0)",
                             org.processmining.framework.*;version="[1.0,2.0)",
                             org.processmining.models.*;version="[1.0,2.0)",
@@ -82,6 +81,11 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
+            <artifactId>bpstruct-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>    
+        <dependency>
+            <groupId>org.apromore</groupId>
             <artifactId>raffaeleconforti-osgi</artifactId>
             <version>1.1</version>
         </dependency>
@@ -90,11 +94,6 @@
             <artifactId>assembly</artifactId>
             <version>1.0.20180719</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpstruct-osgi</artifactId>
-            <version>1.1</version>
         </dependency>
     </dependencies>
 
