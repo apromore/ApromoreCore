@@ -438,6 +438,26 @@ public class MainController extends BaseController implements MainControllerInte
             Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
+    
+    public void editProcess2(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
+            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
+        String instruction = "";
+
+        EditSessionType editSession = createEditSession(process, version, nativeType, annotation);
+
+        try {
+            String id = UUID.randomUUID().toString();
+            SignavioSession session = new SignavioSession(editSession, null, this, process, version, null, null, requestParameterTypes);
+            UserSessionManager.setEditSession(id, session);
+
+            String url = "macros/openModelInBPMNio.zul?id=" + id;
+            instruction += "window.open('" + url + "');";
+
+            Clients.evalJavaScript(instruction);
+        } catch (Exception e) {
+            Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
 
     public void visualizeLog() {
         if(logVisualizerPlugin == null) {

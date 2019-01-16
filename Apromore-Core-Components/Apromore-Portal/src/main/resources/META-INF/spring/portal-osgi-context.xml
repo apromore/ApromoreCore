@@ -32,6 +32,7 @@
 
     <reference id="fileStoreClient" interface="org.apromore.filestore.client.FileStoreService"/>
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
+    <reference id="processService" interface="org.apromore.service.ProcessService"/>
 
     <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" availability="optional"/>
     <list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" availability="optional"/>

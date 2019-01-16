@@ -63,6 +63,7 @@ public class MenuController extends Menubar {
         Menuitem importMI = (Menuitem) this.menuB.getFellow("fileImport");
         Menuitem exportMI = (Menuitem) this.menuB.getFellow("fileExport");
         Menuitem editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
+        Menuitem editModelMI2 = (Menuitem) this.menuB.getFellow("processEdit2");
         Menuitem editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
         Menuitem deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
         /*
@@ -90,6 +91,12 @@ public class MenuController extends Menubar {
             @Override
             public void onEvent(final Event event) throws Exception {
                 editNative();
+            }
+        });
+        editModelMI2.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                editNative2();
             }
         });
         editDataMI.addEventListener("onClick", new EventListener<Event>() {
@@ -225,6 +232,36 @@ public class MenuController extends Menubar {
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedElementsAndVersions();
         if (selectedProcessVersions.size() != 0) {
             new EditListProcessesController(this.mainC, this, selectedProcessVersions);
+        } else {
+            this.mainC.displayMessage("No process version selected.");
+        }
+    }
+    
+    protected void editNative2() throws InterruptedException, SuspendNotAllowedException, ExceptionFormats, ParseException {
+        this.mainC.eraseMessage();
+
+        List<Tab> tabs = SessionTab.getSessionTab(portalContext).getTabsSession(UserSessionManager.getCurrentUser().getId());
+
+        for(Tab tab : tabs){
+            if(tab.isSelected() && tab instanceof TabQuery){
+
+                TabQuery tabQuery=(TabQuery)tab;
+                List<Listitem> items=tabQuery.getListBox().getItems();
+
+                for(Listitem item : items){
+                    if(item.isSelected() && item instanceof TabListitem){
+                        TabListitem tabItem=(TabListitem)item;
+                        HashMap<SummaryType, List<VersionSummaryType>> processVersion = new HashMap<>();
+                        processVersion.put(tabItem.getProcessSummaryType(),tabItem.getVersionSummaryType());
+                        new EditListProcessesController(this.mainC, this,processVersion);
+                        return;
+                    }
+                }
+            }
+        }
+        Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = mainC.getSelectedElementsAndVersions();
+        if (selectedProcessVersions.size() != 0) {
+            new EditListProcessesController2(this.mainC, this, selectedProcessVersions);
         } else {
             this.mainC.displayMessage("No process version selected.");
         }
