@@ -45,8 +45,8 @@ import org.apromore.service.ProcessService;
 @Component("plugin")
 public class BPMNEditorPortalPlugin extends DefaultPortalPlugin {
 
-    private String label = "Edit model in BPMN.io";
-    private String groupLabel = "File";
+    private String label = "Edit BPMN Model";
+    private String groupLabel = "Redesign";
 
 //    @Inject private ProcessService processService;
 

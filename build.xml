@@ -123,7 +123,7 @@
         <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
         <include name="Supplements/process-discoverer-1.0.20181204.jar"/>
 		
-		<include name="Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
+		<include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
 		<include name="Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
     </fileset>
 
@@ -211,7 +211,7 @@
         <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
 		
 		
-		<include name="Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
+		<include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
 		<include name="Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
     </fileset>
 

@@ -40,8 +40,8 @@
 
     <!-- Exposes the components as OSGi services -->
     <beans:bean id="plugin" class="org.apromore.plugin.portal.bpmneditor.BPMNEditorPortalPlugin">
-        <beans:property name="groupLabel" value="File" />
-        <beans:property name="label" value="Edit model in BPMN.io" />
+        <beans:property name="groupLabel" value="Redesign" />
+        <beans:property name="label" value="Edit BPMN Model" />
     </beans:bean>
 	
 	<context:component-scan base-package="org.apromore.plugin.portal.bpmneditor" />
