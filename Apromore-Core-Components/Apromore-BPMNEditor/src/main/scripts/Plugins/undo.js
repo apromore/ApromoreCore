@@ -63,7 +63,7 @@ ORYX.Plugins.Undo = Clazz.extend({
 		 	],
 			functionality	: this.doUndo.bind(this),
 			group			: ORYX.I18N.Undo.group,
-			isEnabled		: function(){ return this.undoStack.length > 0 }.bind(this),
+			isEnabled		: function(){ return true }.bind(this),
 			index			: 0
 		});
 
@@ -80,12 +80,12 @@ ORYX.Plugins.Undo = Clazz.extend({
 		 	],
 			functionality	: this.doRedo.bind(this),
 			group			: ORYX.I18N.Undo.group,
-			isEnabled		: function(){ return this.redoStack.length > 0 }.bind(this),
+			isEnabled		: function(){ return true}.bind(this),
 			index			: 1
 		});
 
 		// Register on event for executing commands --> store all commands in a stack
-		this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXECUTE_COMMANDS, this.handleExecuteCommands.bind(this) );
+		//this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXECUTE_COMMANDS, this.handleExecuteCommands.bind(this) );
 
 	},
 
@@ -103,7 +103,7 @@ ORYX.Plugins.Undo = Clazz.extend({
 	 *
 	 */
 	doUndo: function(){
-
+        this.facade.getCanvas().undo();
 	},
 
 	/**
@@ -111,7 +111,7 @@ ORYX.Plugins.Undo = Clazz.extend({
 	 *
 	 */
 	doRedo: function(){
-
+        this.facade.getCanvas().redo();
 	}
 
 });

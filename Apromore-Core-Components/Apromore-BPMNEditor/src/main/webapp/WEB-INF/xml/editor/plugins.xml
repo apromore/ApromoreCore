@@ -27,16 +27,11 @@
 		<plugin source="propertywindow.js" name="ORYX.Plugins.PropertyWindow" />
 		<plugin source="undo.js" name="ORYX.Plugins.Undo" />
 		<plugin source="apromoreSave.js" name="ORYX.Plugins.ApromoreSave"/>
-		<plugin source="edit.js" name="ORYX.Plugins.Edit" />	
-        <plugin source="configurationExtension.js" name="ORYX.Plugins.ConfigurationExtension"/>
 	
         <!-- Added for Test purposes -->
         <plugin source="file.js" name="ORYX.Plugins.Save"/>
         <plugin source="pdf.js" name="ORYX.Plugins.File"/>
-        <plugin source="jsonSupport.js" name="ORYX.Plugins.JSONSupport">
-            <property name="color" value="red"/>
-        </plugin>
-
+        
 		<!-- Added to dynamically include Apromore plug-ins -->
 		<?EDITOR-PLUGINS?>
 

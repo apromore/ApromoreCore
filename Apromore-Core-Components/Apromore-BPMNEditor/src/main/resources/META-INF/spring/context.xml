@@ -39,6 +39,7 @@
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
 
     <!-- Exposes the components as OSGi services -->
+    
     <beans:bean id="plugin" class="org.apromore.plugin.portal.bpmneditor.BPMNEditorPortalPlugin">
         <beans:property name="groupLabel" value="Redesign" />
         <beans:property name="label" value="Edit BPMN Model" />

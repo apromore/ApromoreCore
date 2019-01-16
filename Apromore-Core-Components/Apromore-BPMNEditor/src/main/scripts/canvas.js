@@ -292,6 +292,32 @@ ORYX.Canvas = {
             x: shape.x + (shape.width || 0) / 2,
             y: shape.y + (shape.height || 0) / 2
         }
+    },
+
+    undo: function() {
+        this._editor.get('commandStack').undo();
+    },
+
+    canUndo: function() {
+        if (!this._editor) {
+            return false;
+        }
+        else {
+            return this._editor.get('commandStack').canUndo();
+        }
+    },
+
+    redo: function() {
+        this._editor.get('commandStack').redo();
+    },
+
+    canRedo: function() {
+        if (!this._editor) {
+            return false;
+        }
+        else {
+            return this._editor.get('commandStack').canRedo();
+        }
     }
 
 };
