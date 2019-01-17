@@ -214,7 +214,7 @@ ORYX.Editor = {
             center: new Ext.Panel({
                 region: 'center',
                 cls: 'x-panel-editor-center',
-                autoScroll: true,
+                autoScroll: false,
                 items: {
                     layout: "fit",
                     autoHeight: true,
@@ -276,6 +276,8 @@ ORYX.Editor = {
             this.layout = new Ext.Panel(layout_config)
         }
 
+        this.layout_regions.east.hide();
+        this.layout_regions.west.hide();
         this.layout_regions.info.hide();
         if (Ext.isIPad && "undefined" != typeof iScroll) {
             this.getCanvas().iscroll = new iScroll(this.layout_regions.center.body.dom.firstChild, {
