@@ -183,7 +183,7 @@ public class CompareController {
         compareProcesses(process1, version1, process2, version2, "BPMN 2.0", null, null, requestParameters);
     }
 
-    public void compareML(ModelAbstractions model, HashSet<String> obs1, XLog log, ProcessSummaryType process, VersionSummaryType version) {
+    public void compareML(ModelAbstractions model, ProcessSummaryType process, VersionSummaryType version, XLog log, String logName, HashSet<String> obs1) {
         this.model = model;
         this.process = process;
         this.version = version;
@@ -195,6 +195,7 @@ public class CompareController {
 
             Set<RequestParameterType<?>> requestParameters = new HashSet<>();
             requestParameters.add(new RequestParameterType<String>("m1_differences_json", DifferencesML.toJSON(differences)));
+            requestParameters.add(new RequestParameterType<String>("log_name", logName));
 
             compareProcessLog(process, version, "BPMN 2.0", null, null, requestParameters, log);
 
@@ -277,7 +278,7 @@ public class CompareController {
             SignavioSession session = new SignavioSession(editSession1, editSession2, null, process1, version1, process2, version2, requestParameterTypes);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "../compare2/compareModelsInSignavio.zul?id=" + id;
+            String url = "../compare2/compareModels.zul?id=" + id;
             instruction += "window.open('" + url + "');";
 
             Clients.evalJavaScript(instruction);
@@ -301,7 +302,7 @@ public class CompareController {
             session.setLog(log);
             UserSessionManager.setEditSession(id, session);
 
-            String url = "../compare2/compareModelToLogInSignavio.zul?id=" + id;
+            String url = "../compare2/compareModelToLog.zul?id=" + id;
             instruction += "window.open('" + url + "');";
 
             Clients.evalJavaScript(instruction);
@@ -476,7 +477,7 @@ public class CompareController {
             Messagebox.show("Please select a log.");
         }else {
             try {
-                compareML(model, obs, log, process, version);
+                compareML(model, process, version, log, logFileName, obs);
             } catch (Exception e) {
                 Messagebox.show("Exception in the call", "Attention", Messagebox.OK, Messagebox.ERROR);
             }

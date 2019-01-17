@@ -18,6 +18,13 @@
  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
+// This global object is used to store some current common attributes
+// currentCompare: is the serialized XML of the current model being compared
+// selected_greys: is the array of elements to be greyed out for the selected diff. This is stored here as
+// the serialized XML from the editor does not support some visual attributes, e.g. opacity
+var ORYX_Editor_Compare_Store = {current_compare:'', selected_greys:[]};
+var ORYX_Editor_Compare_Repair_History = [];
+
 ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys, annotations) {
     console.log('buttonIndex: ' + buttonIndex);
     console.log('type: ' + type);
@@ -44,7 +51,8 @@ ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a
 
     // Reload the original diagarm
     editor.getCanvas().clear();
-    editor.importXML(currentBpmnXML);
+    editor.importXML(ORYX_Editor_Compare_Store.current_compare);
+    ORYX_Editor_Compare_Store.selected_greys = greys;
 
     // function uuid() {
     //     return "uuid-" + Math.floor((Math.random() * 1000000) + 1).toString();
@@ -390,61 +398,89 @@ ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a
             editor.getCanvas().greyOut([greys[i]]);
         }
     },0);
+}
 
-    ORYX.Editor.prototype.applyMLDifference = function() {
-        window.setTimeout(function() {
+// Press the Apply button
+ORYX.Editor.prototype.applyMLDifference = function() {
+    var buttonIndex = -1;
+    var buttons = zk.Widget.$(jq("$buttons"));
+    for (var i=0;i<buttons.nChildren;i++) {
+        if (buttons.getChildAt(i).isChecked()) {
+            buttonIndex = i;
+            break;
+        }
+    }
+    if (buttonIndex < 0) {
+        alert("You must select a difference to repair.");
+        return;
+    }
+    else {
+        window.setTimeout(function () {
+            // Store the highlighted model into history
             var highlightDiffXML = editor.getCanvas().getXML();
-            compare_changes.push({compare: currentBpmnXML, highlight: highlightDiffXML, greys: greys, buttonIndex: buttonIndex});
+            ORYX_Editor_Compare_Repair_History.push({
+                compare: ORYX_Editor_Compare_Store.current_compare,
+                highlight: highlightDiffXML,
+                greys: ORYX_Editor_Compare_Store.selected_greys.slice(),
+                diffIndex: buttonIndex
+            });
 
-            editor.getCanvas().removeShapes(greys);
+            // Apply repair
+            editor.getCanvas().removeShapes(ORYX_Editor_Compare_Store.selected_greys);
             editor.getCanvas().normalizeAll();
 
+            // Update the repaired model and greys as the current one
             var afterApplyXML = editor.getCanvas().getXML();
-            currentBpmnXML = afterApplyXML;
-            zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRepair', afterApplyXML));
+            ORYX_Editor_Compare_Store.current_compare = afterApplyXML;
+            ORYX_Editor_Compare_Store.selected_greys = [];
+
+            // Compare the repaired model with the log: update the difference list
+            zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRepair', {bpmnXML: afterApplyXML, diffIndex: -1}));
         }, 0);
-    };
+    }
+};
 
-    ORYX.Editor.prototype.beforeApplyMLDifference = function() {
-        var context = (compare_changes && compare_changes.length == 1) ? compare_changes[0] : compare_changes.pop();
-        if (context) {
-            currentBpmnXML = context.compare;
-            zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRepair', currentBpmnXML));
-            editor.getCanvas().clear();
-            editor.importXML(context.highlight);
+// Press the Back button
+ORYX.Editor.prototype.beforeApplyMLDifference = function() {
+    var context = (ORYX_Editor_Compare_Repair_History.length == 1) ? ORYX_Editor_Compare_Repair_History[0] : ORYX_Editor_Compare_Repair_History.pop();
 
-            window.setTimeout(function() {
-                //console.log('context.highlight', context.highlight);
-                console.log('greys', context.greys);
-
-                // Grey out elements: these attributes not stored in the XML
-                var greys = context.greys;
-                if (greys) {
-                    for (var i = greys.length; i--;) {
-                        //shapes[greys[i]].getShape().node.setAttributeNS(null, "style", "opacity: 0.25");
-                        editor.getCanvas().greyOut([greys[i]]);
-                    }
+    if (context) {
+        // Highlight the differences
+        editor.getCanvas().clear();
+        editor.importXML(context.highlight);
+        // the below code complements the editor to grey out some elements
+        // this is needed as some grey attributes are not contained in the serialized model XML
+        window.setTimeout(function() {
+            //console.log('context.highlight', context.highlight);
+            //console.log('greys', context.selected_greys);
+            var greys = context.greys;
+            if (greys) {
+                for (var i = greys.length; i--;) {
+                    //shapes[greys[i]].getShape().node.setAttributeNS(null, "style", "opacity: 0.25");
+                    editor.getCanvas().greyOut([greys[i]]);
                 }
-                //jq("$button"+context.buttonIndex).setDisabled(true);
-            }, 0);
-        }
+            }
+        }, 0);
+
+        // Update the old model and greys as the current one
+        ORYX_Editor_Compare_Store.current_compare = context.compare;
+        ORYX_Editor_Compare_Store.selected_greys = context.greys;
+
+        // Compare the old model with the log: update the difference list
+        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRepair', { bpmnXML:context.compare, diffIndex:context.diffIndex }));
     }
 }
 
-ORYX.Editor.prototype.applyMLDifference = function() {
-    alert("You must select a difference to repair.");
-}
-
-function ApplyDiffHandler() {
-    //
-}
-
-ApplyDiffHandler.prototype.execute = function(context) {
-    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRepair', context.newXML));
-};
-
-ApplyDiffHandler.prototype.revert = function(context) {
-    bpmnXML = context.oldXML;
-    editor.importXML(bpmnXML);
-    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRepair', bpmnXML));
-};
+// function ApplyDiffHandler() {
+//     //
+// }
+//
+// ApplyDiffHandler.prototype.execute = function(context) {
+//     zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRepair', context.newXML));
+// };
+//
+// ApplyDiffHandler.prototype.revert = function(context) {
+//     bpmnXML = context.oldXML;
+//     editor.importXML(bpmnXML);
+//     zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRepair', bpmnXML));
+// };

@@ -102,7 +102,7 @@ public class ModelsComparisonController extends BaseController {
         try {
             String title = editSession1.getProcessName() + " (" + editSession1.getNativeType() + ")";
             if (editSession2 != null) {
-                title += " vs " + editSession2.getProcessName() + " (" + editSession2.getNativeType() + ")";
+                title += " vs. " + editSession2.getProcessName() + " (" + editSession2.getNativeType() + ")";
             }
             this.setTitle(title);
 
