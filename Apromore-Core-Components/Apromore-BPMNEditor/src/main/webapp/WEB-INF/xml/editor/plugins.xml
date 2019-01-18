@@ -24,7 +24,7 @@
 	<plugins>
 		<!-- following plugins require Ext -->		
 		<plugin source="toolbar.js" name="ORYX.Plugins.Toolbar" />
-		<plugin source="propertywindow.js" name="ORYX.Plugins.PropertyWindow" />
+		<!-- <plugin source="propertywindow.js" name="ORYX.Plugins.PropertyWindow" /> -->
 		<plugin source="undo.js" name="ORYX.Plugins.Undo" />
 		<plugin source="apromoreSave.js" name="ORYX.Plugins.ApromoreSave"/>
 	

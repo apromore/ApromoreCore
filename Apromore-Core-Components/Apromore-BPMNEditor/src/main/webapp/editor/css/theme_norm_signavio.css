@@ -167,7 +167,8 @@ text * {
 	background: -o-linear-gradient(top, #abc8db 31%,#85b2d3 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top, #abc8db 31%,#85b2d3 100%); /* IE10+ */
 	background: linear-gradient(to bottom, #abc8db 31%,#85b2d3 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#abc8db', endColorstr='#85b2d3',GradientType=0 ); /* IE6-8 */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#abc8db', endColorstr='#85b2d3',GradientType=0 ); /* IE6-8 */;
+	border:none;
 }
 
 .x-panel-editor-north .x-toolbar .ytb-sep {
@@ -257,13 +258,11 @@ text * {
 	/*background: #EEF1FE;
 	border:5px double #99BBE8;*/
 	background:white;
-	border:4px double #E1E1E1;
+	/* border:4px double #E1E1E1; */
 	margin:0px; /*margin:-5px;*/
 	margin-top:0px;
 	width:100%;
 	height:100%;
-
-
 }
 
 
