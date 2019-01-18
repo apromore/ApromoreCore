@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="win" contentStyle="overflow:hidden;" xmlns:n="http://www.zkoss.org/2005/zk/native" xmlns:z="http://www.zkoss.org/2005/zul" use="org.apromore.plugin.portal.compareBP2.ModelToLogComparisonController">
+<window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native" xmlns:z="http://www.zkoss.org/2005/zul" use="org.apromore.plugin.portal.compareBP2.ModelToLogComparisonController">
 
         <!-- STYLESHEET FOR THE WRAPPER EDITOR -->
         <n:style media="screen" type="text/css">
@@ -119,7 +119,7 @@
   <n:table width="100%" border="0">
     <n:tr>
       <n:td style="vertical-align: top">
-        <n:div id="alignments" style="overflow:scroll;">
+        <n:div id="alignments" style="overflow:scroll;height:90vh;width:45vh">
           <vbox hflex="1">
             <toolbar id="differences" hflex="1">
                 <label hflex="1">Differences</label>

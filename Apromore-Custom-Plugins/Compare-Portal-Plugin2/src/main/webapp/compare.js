@@ -59,10 +59,11 @@ ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a
     // };
 
     function addFlowNode(id, type, x, y, w, h) {
-      var shapeId = editor.getCanvas().createShape(type, x, y, w, h);
-      editor.getCanvas().highlight(shapeId);
-      //shapes[shape.id] = shape;
-      return shapeId;
+        console.log ('Element position: ' + 'x=' + x + ',' + 'y=' + y + '. isFinite(x)=' + isFinite(x) + '. isFinite(x)=' + isFinite(y));
+        var shapeId = editor.getCanvas().createShape(type, x, y, w, h);
+        editor.getCanvas().highlight(shapeId);
+        //shapes[shape.id] = shape;
+        return shapeId;
     };
 
     function addAssociation(id, source, target, waypoints) {
@@ -92,14 +93,19 @@ ORYX.Editor.prototype.displayMLDifference = function(buttonIndex, type, start, a
     function distance(a, b) { return Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y)); };
 
     // Find a point at least minSpacing away from points a and b, forming at least a right angle.  Sign +1 or -1 selects the two solutions.
+    // Bruce: fix Infinity error when a and b are the same element
     function lagrangePoint(a, b, minSpacing, sign) {
-        // console.log('lagrangePoint');
-        // console.log(a, b);
-        // console.log(b.y);
+        console.log('lagrangePoint');
+        console.log(a, b);
         var dx = (b.y - a.y);
         var dy = (a.x - b.x);
-        var scale = sign * Math.max(minSpacing / Math.sqrt(dx * dx + dy * dy), 0.5);
-        // console.log(dx, dy, scale);
+        if (dx == 0 && dy == 0) {
+            dx = a.y/2;
+            dy = a.x/2;
+        }
+        var scale = sign*Math.max(minSpacing / Math.sqrt(dx * dx + dy * dy), 0.5);
+        console.log(dx, dy, scale);
+
         return {x: (a.x + b.x)/2 + (b.y - a.y)*scale, y: (a.y + b.y)/2 + (a.x - b.x)*scale};
     };
 
