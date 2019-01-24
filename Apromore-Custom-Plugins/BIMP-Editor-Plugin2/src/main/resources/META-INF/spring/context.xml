@@ -44,7 +44,7 @@
     <context:component-scan base-package="org.apromore.plugin.editor.bimp" />
     <service ref="bimpEditorPlugin" interface="org.apromore.plugin.editor.EditorPlugin" auto-export="interfaces">
     	<service-properties>
-    		<beans:entry key="org.apromore.plugin.editor" value="signavio" />
+    		<beans:entry key="org.apromore.plugin.editor" value="bpmn.io" />
     	</service-properties>
     </service>	
 </beans:beans>
