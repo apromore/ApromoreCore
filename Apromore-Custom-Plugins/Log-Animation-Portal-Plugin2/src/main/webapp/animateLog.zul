@@ -76,11 +76,11 @@
         <script src="/loganimation2/animation.js" type="text/javascript"/>
 		
         <!-- Include all Editor plug-ins -->
-		<!--
+		
         <z:zk forEach="${arg.plugins}">
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
-		-->
+		
 
         <n:span id="oryxstartupcode">
 	        <n:script>

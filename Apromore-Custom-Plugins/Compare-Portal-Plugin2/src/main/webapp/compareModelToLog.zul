@@ -62,11 +62,11 @@
 		-->
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 
-		<!--
+		
         <z:zk forEach="${arg.plugins}">
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
-		-->
+		
 		<n:script src="/compare2/compare.js" type="text/javascript" />
 
         <n:span id="oryxstartupcode">

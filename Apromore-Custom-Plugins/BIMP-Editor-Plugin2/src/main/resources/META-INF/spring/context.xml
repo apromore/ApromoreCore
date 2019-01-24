@@ -39,17 +39,12 @@
     <reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
 -->
-	<!-- 
-    <beans:bean id="plugin" class="org.apromore.plugin.editor.bimp2.BIMPEditorPlugin">
-        <beans:property name="editorCode" value="bpmn.io" />
-    </beans:bean>
-    -->
 
     <!-- Exposes the component as OSGi service -->
-    <context:component-scan base-package="org.apromore.plugin.editor.bimp2" />
-    <service ref="plugin" interface="org.apromore.plugin.editor.EditorPlugin" auto-export="interfaces">
+    <context:component-scan base-package="org.apromore.plugin.editor.bimp" />
+    <service ref="bimpEditorPlugin" interface="org.apromore.plugin.editor.EditorPlugin" auto-export="interfaces">
     	<service-properties>
-    		<beans:entry key="org.apromore.plugin.editor" value="bpmn.io" />
+    		<beans:entry key="org.apromore.plugin.editor" value="signavio" />
     	</service-properties>
-    </service>
+    </service>	
 </beans:beans>
