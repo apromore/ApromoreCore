@@ -62,7 +62,7 @@ import org.apromore.service.EventLogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component("plugin")
+//@Component("plugin")
 public class ComparePlugin extends DefaultPortalPlugin {
     @Inject private CompareService compareService;
     @Inject private ProcessService processService;
@@ -71,8 +71,8 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
 
-    private String label = "Compare (bpmn.io)";
-    private String groupLabel = "Analyze";
+    private String label = "";
+    private String groupLabel = "";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComparePlugin.class.getCanonicalName());
 
