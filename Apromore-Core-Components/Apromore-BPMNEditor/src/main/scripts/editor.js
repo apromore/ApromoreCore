@@ -272,7 +272,8 @@ ORYX.Editor = {
             // IF NOT, use a panel and render it to the given id
         } else {
             layout_config.renderTo = this.id;
-            layout_config.height = layoutHeight;
+            //layout_config.height = layoutHeight;
+            layout_config.height = this.getEditorNode().clientHeight; // the panel and the containing div should be of the same height
             this.layout = new Ext.Panel(layout_config)
         }
 

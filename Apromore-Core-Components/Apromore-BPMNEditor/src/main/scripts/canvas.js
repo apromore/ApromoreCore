@@ -221,6 +221,12 @@ ORYX.Canvas = {
         modelling.setColor([element],{stroke:color});
     },
 
+    fillColor: function (elementId, color) {
+        var modelling = this._editor.get('modeling');
+        var element = this._editor.get('elementRegistry').get(elementId);
+        modelling.setColor([element],{fill:color});
+    },
+
     greyOut: function(elementIds) {
         var elementRegistry = this._editor.get('elementRegistry');
         var self = this;
