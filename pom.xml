@@ -123,7 +123,9 @@
         <module>Apromore-Custom-Plugins/BEBoP-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/BProVe-Logic</module>
         <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin</module>
+		<module>Apromore-Custom-Plugins/BIMP-Editor-Plugin2</module>
         <module>Apromore-Custom-Plugins/BIMP-Portal-Plugin</module>
+		
 
         <module>Apromore-Custom-Plugins/BPMNDiagramImporter-Logic</module>
         <module>Apromore-Custom-Plugins/BPMNMiner-Logic</module>
