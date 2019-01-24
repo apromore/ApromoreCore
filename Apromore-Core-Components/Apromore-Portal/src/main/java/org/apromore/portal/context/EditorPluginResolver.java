@@ -30,13 +30,17 @@ import java.util.List;
  */
 public class EditorPluginResolver {
 
-    public static List<EditorPlugin> resolve() {
-        Object editorPlugins = SpringUtil.getBean("editorPlugins");
+    public static List<EditorPlugin> resolve(String beanId) {
+        Object editorPlugins = SpringUtil.getBean(beanId);
         if (editorPlugins != null) {
             return (List<EditorPlugin>) editorPlugins;
         } else {
-            throw new RuntimeException("Could not get list of editor plug-ins!");
+            throw new RuntimeException("Could not get list of editor plug-ins for beanId='" + beanId + "'");
         }
+    }
+    
+    public static List<EditorPlugin> resolve() {
+    	return EditorPluginResolver.resolve("editorPlugins");
     }
 
 }

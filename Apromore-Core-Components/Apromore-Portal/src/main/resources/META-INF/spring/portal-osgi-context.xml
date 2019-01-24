@@ -35,6 +35,7 @@
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
 
     <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" availability="optional"/>
+    <list id="bpmnEditorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" availability="optional"/>
     <list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" availability="optional"/>
     <list id="portalProcessAttributePlugins" interface="org.apromore.plugin.portal.PortalProcessAttributePlugin" availability="optional"/>
 

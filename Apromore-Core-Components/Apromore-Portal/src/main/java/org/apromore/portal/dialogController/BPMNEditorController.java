@@ -148,7 +148,7 @@ public class BPMNEditorController extends BaseController {
                 }
             }
 
-            List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve();
+            List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("bpmnEditorPlugins");
             param.put("plugins", editorPlugins);
 
             Executions.getCurrent().pushArg(param);
