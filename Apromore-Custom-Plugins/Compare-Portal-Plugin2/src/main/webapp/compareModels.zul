@@ -85,11 +85,11 @@
                             console.log("Element " + shapeId + " color " + color);
                             if (color) {
                                 //shape.setProperty("selected", true);
-                                this.getCanvas().highlightColor(shapeId, color);
+                                this.getCanvas().fillColor(shapeId, color);
                             } else {
                                 //shape.setProperty("selected", false);
                                 //shape.setProperty("selectioncolor", null);
-                                this.getCanvas().highlightColor(shapeId, null);
+                                this.getCanvas().fillColor(shapeId, null);
                             }
                         }.bind(this));
 
@@ -106,7 +106,7 @@
                         // Set selection properties for highlighted elements
                         this.getCanvas().getAllElementIds().each(function (shapeId) {
                             //shape.setProperty("selected", false);
-                            this.getCanvas().highlightColor(shapeId, null);
+                            this.getCanvas().fillColor(shapeId, null);
                         }.bind(this));
 
                         //this._canvas.update();
@@ -181,11 +181,11 @@
                         </n:td>
                     </vbox>
             </n:td>
-            <n:td valign="top" height="300"  width="70%"><n:div id="oryx-canvas1"></n:div></n:td>
+            <n:td valign="top" width="70%"><n:div id="oryx-canvas1" style="height:300px;"></n:div></n:td>
         </n:tr>
         <n:tr>
             <n:td valign="top" width="70%">
-              <n:div id="oryx-canvas2"></n:div>
+              <n:div id="oryx-canvas2" style="height:300px;"></n:div>
             </n:td>
         </n:tr>
     </n:table>

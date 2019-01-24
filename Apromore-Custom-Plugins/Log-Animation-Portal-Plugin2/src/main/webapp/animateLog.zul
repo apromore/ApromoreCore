@@ -176,7 +176,7 @@
 
     <!-- static positioning according to the normal flow of the page -->
     <!-- this is the editor at the top of the page -->
-    <div id="editorcanvas"></div>
+    <div id="editorcanvas" style="height:400px;"></div>
 
     <!-- static positioning according to the normal flow of the page -->
     <!-- the control panel is positioned right below the editor -->
