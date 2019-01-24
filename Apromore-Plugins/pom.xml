@@ -122,6 +122,7 @@
         <module>plugin-editor/sample</module>
         <module>plugin-editor/ibpstruct</module>
         <module>plugin-editor/metrics</module>
+		<module>plugin-editor/metrics2</module>
 
         <module>../Process-Plugin-API</module>
 
