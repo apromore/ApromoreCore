@@ -42,7 +42,7 @@
 
     <reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
 
-    <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="editorCode='bpmn.io'" availability="optional"/>
+    <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" availability="optional"/>
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
     
     <beans:bean id="plugin" class="org.apromore.plugin.portal.compareBP2.ComparePlugin">
@@ -53,7 +53,6 @@
     <beans:bean id="plugin2" class="org.apromore.plugin.portal.compareBP2.ComparePlugin">
         <beans:property name="groupLabel" value="Monitor" />
         <beans:property name="label" value="Compare (bpmn.io)" />
-        <beans:property name="editorCode" value="bpmn.io" />
     </beans:bean>
 
     <!-- Exposes the component as OSGi service -->

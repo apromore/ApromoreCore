@@ -32,6 +32,6 @@
     <!-- enable classpath scanning -->
     <context:component-scan base-package="com.signavio.editor.handler" />
 
-    <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" availability="optional" />
+    <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=signavio)" availability="optional" />
 
 </beans:beans>

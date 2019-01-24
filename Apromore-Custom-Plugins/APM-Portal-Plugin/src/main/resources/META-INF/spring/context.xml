@@ -42,7 +42,7 @@
 
     <reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
 
-    <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" availability="optional"/>
+    <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=signavio)" availability="optional"/>
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
 
     <beans:bean id="plugin2" class="org.apromore.plugin.portal.APM.APMPlugin"/>
