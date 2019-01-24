@@ -64,11 +64,12 @@
 		-->
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 		
-		<!-- 
+		<n:script>console.log('${arg.plugins}')</n:script>
+
         <z:zk forEach="${arg.plugins}">
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
-		-->
+
 
         <n:span id="oryxstartupcode">
             <n:script>

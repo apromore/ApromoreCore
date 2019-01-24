@@ -643,6 +643,7 @@ ORYX.Editor = {
 
                 // get plugins.xml content
                 var resultXml = result.responseXML;
+                console.log('Plugin list:', resultXml);
 
                 // TODO: Describe how properties are handled.
                 // Get the globale Properties

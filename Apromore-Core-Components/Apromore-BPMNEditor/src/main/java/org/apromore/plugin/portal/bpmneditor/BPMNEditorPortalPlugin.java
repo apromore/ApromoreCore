@@ -42,7 +42,7 @@ import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.ProcessService;
 
-@Component("plugin")
+//@Component("plugin")
 public class BPMNEditorPortalPlugin extends DefaultPortalPlugin {
 
     private String label = "Edit BPMN Model";

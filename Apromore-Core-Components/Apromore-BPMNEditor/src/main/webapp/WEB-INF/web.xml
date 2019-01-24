@@ -104,7 +104,7 @@
 
     <servlet-mapping>
         <servlet-name>pluginHandlerServlet</servlet-name>
-        <url-pattern>/editor_plugins</url-pattern>
+        <url-pattern>/bpmneditor_plugins</url-pattern>
     </servlet-mapping>
 
     <session-config>

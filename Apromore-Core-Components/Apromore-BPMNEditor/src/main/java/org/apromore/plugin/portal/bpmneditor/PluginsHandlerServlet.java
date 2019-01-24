@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apromore.plugin.editor.EditorPlugin;
+import org.apromore.portal.context.EditorPluginResolver;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -66,7 +67,7 @@ public class PluginsHandlerServlet extends HttpServlet {
   		File pluginConf = new File(this.servletContext.getRealPath("") + "/WEB-INF/xml/editor/plugins.xml");
 
 		@SuppressWarnings("unchecked")
-		List<EditorPlugin> editorPlugins = (List<EditorPlugin>) appContext.getBean("editorPlugins");
+		List<EditorPlugin> editorPlugins = (List<EditorPlugin>) appContext.getBean("bpmnEditorPlugins");
 		StringBuilder additionalPlugins = new StringBuilder();
 		for (EditorPlugin plugin: editorPlugins) {
 			additionalPlugins.append("<plugin source=\""+plugin.getJavaScriptURI()+"\" name=\""+plugin.getJavaScriptPackage()+"\"/>");
@@ -80,11 +81,7 @@ public class PluginsHandlerServlet extends HttpServlet {
 				String pluginDef = IOUtils.toString(new FileReader(pluginConf));
 				// Insert the Editor plug-ins replacing the placeholder
 				//TODO switch to a real XML reader/writer based implementation
-				
-				//--------- TEMPORARILY NOT TAKING ANY PLUGINS VIA SPRING -----------------
-				//pluginDef = pluginDef.replace("<?EDITOR-PLUGINS?>", additionalPlugins.toString());
-				//------------------------------------------------------------
-				
+				pluginDef = pluginDef.replace("<?EDITOR-PLUGINS?>", additionalPlugins.toString());
 				res.getWriter().append(pluginDef);
 			} catch (Exception e) {
 				try {
