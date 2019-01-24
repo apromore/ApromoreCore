@@ -38,6 +38,7 @@ public interface EditorPlugin extends Plugin {
      * @return
      */
     String getLabel(Locale locale);
+    
 
     /**
      * Provides the relative path from the application server root (e.g., "myplugin/js/source.js") to the JavaScript code

@@ -31,6 +31,7 @@ import java.util.Locale;
  * Override all methods that you want to customize. At least you should provide the URI to the JS file of the editor plug-in.
  */
 public class DefaultEditorPlugin extends DefaultPlugin implements EditorPlugin {
+	protected String editorCode = "signavio"; //no changes are needed for existing Signavio plugins
 
     @Override
     public String getLabel(Locale locale) {
