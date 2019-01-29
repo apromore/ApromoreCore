@@ -1,6 +1,6 @@
 /**
  * @author nicolas.peters
- * 
+ *
  * Contains all strings for the default language (en-us).
  * Version 1 - 08/29/08
  */
@@ -12,7 +12,7 @@ ORYX.I18N.Language = "en_us"; //Pattern <ISO language code>_<ISO country code> i
 
 if(!ORYX.I18N.Oryx) ORYX.I18N.Oryx = {};
 
-ORYX.I18N.Oryx.title		= "Oryx";
+ORYX.I18N.Oryx.title		= "Apromore";
 ORYX.I18N.Oryx.noBackendDefined	= "Caution! \nNo Backend defined.\n The requested model cannot be loaded. Try to load a configuration with a save plugin.";
 ORYX.I18N.Oryx.pleaseWait 	= "Please wait while loading...";
 ORYX.I18N.Oryx.notLoggedOn = "Not logged on";
@@ -112,7 +112,7 @@ ORYX.I18N.jPDLSupport.impDesc = "Import jPDL File";
 ORYX.I18N.jPDLSupport.impFailedReq = "Request for import of jPDL failed.";
 ORYX.I18N.jPDLSupport.impFailedJson = "Transformation of jPDL failed.";
 ORYX.I18N.jPDLSupport.impFailedJsonAbort = "Import aborted.";
-ORYX.I18N.jPDLSupport.loadSseQuestionTitle = "jBPM stencil set extension needs to be loaded"; 
+ORYX.I18N.jPDLSupport.loadSseQuestionTitle = "jBPM stencil set extension needs to be loaded";
 ORYX.I18N.jPDLSupport.loadSseQuestionBody = "In order to import jPDL, the stencil set extension has to be loaded. Do you want to proceed?";
 ORYX.I18N.jPDLSupport.expFailedReq = "Request for export of model failed.";
 ORYX.I18N.jPDLSupport.expFailedXml = "Export to jPDL failed. Exporter reported: ";
@@ -162,6 +162,11 @@ ORYX.I18N.File.genPDF = "Generating PDF";
 ORYX.I18N.File.genPDFFailed = "Generating PDF failed.";
 ORYX.I18N.File.printTitle = "Print";
 ORYX.I18N.File.printMsg = "We are currently experiencing problems with the printing function. We recommend using the PDF Export to print the diagram. Do you really want to continue printing?";
+
+ORYX.I18N.File.svg = "Export as .SVG";
+ORYX.I18N.File.svgDesc = "Export as .SVG";
+ORYX.I18N.File.bpmn = "Export as .BPMN";
+ORYX.I18N.File.bpmnDesc = "Export as .BPMN";
 
 if(!ORYX.I18N.Grouping) ORYX.I18N.Grouping = {};
 
@@ -445,7 +450,7 @@ ORYX.I18N.YAWL.messageGetIDofNet = "Getting ID of Net ";
 ORYX.I18N.YAWL.messageInsertSubnetUrls = "Inserting URLs of Subnets to Decomposite Tasks";
 ORYX.I18N.YAWL.messageSavingNet = "Saving net ";
 ORYX.I18N.YAWL.messageConversionFailed = "Conversion Failed! \n";
-ORYX.I18N.YAWL.messageConversionWarnings = "Conversion completed with Warnings: \n";	
+ORYX.I18N.YAWL.messageConversionWarnings = "Conversion completed with Warnings: \n";
 ORYX.I18N.YAWL.unfoldMenuNewSubnet = "new subnet";
 ORYX.I18N.YAWL.unfoldMenuExistingSubnet = ".. existing subnet";
 ORYX.I18N.YAWL.unfoldMenuChooseSubnet = "Choose a Subnet below:";

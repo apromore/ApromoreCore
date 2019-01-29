@@ -31,35 +31,48 @@ ORYX.Plugins.File = Clazz.extend({
         this.facade = facade;
 
         this.facade.offer({
-            'name': ORYX.I18N.File.print,
-            'functionality': this.print.bind(this),
-            'group': ORYX.I18N.File.group,
-            'icon': ORYX.PATH + "images/printer.png",
-            'description': ORYX.I18N.File.printDesc,
-            'index': 3,
-            'minShape': 0,
-            'maxShape': 0
-        });
-
-        this.facade.offer({
             'name': ORYX.I18N.File.pdf,
             'functionality': this.exportPDF.bind(this),
             'group': ORYX.I18N.File.group,
             'icon': ORYX.PATH + "images/page_white_acrobat.png",
             'description': ORYX.I18N.File.pdfDesc,
-            'index': 3,
+            'index': 5,
             'minShape': 0,
             'maxShape': 0
         });
-
     },
 
     exportPDF: function() {
+        var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
+        myMask.show();
 
-    },
+        var resource = location.href;
 
-    print: function(){
+        // Get the serialized svg image source
+        var svgClone = this.facade.getCanvas().getSVG();
+        //var svgDOM = DataManager.serialize(svgClone);
 
+        // Send the svg to the server.
+        new Ajax.Request(ORYX.CONFIG.PDF_EXPORT_URL, {
+            method: 'POST',
+            parameters: {
+                resource: resource,
+                data: svgClone,
+                format: "pdf"
+            },
+            onSuccess: (function(request){
+                myMask.hide();
+                // Because the pdf may be opened in the same window as the
+                // process, yet the process may not have been saved, we're
+                // opening every other representation in a new window.
+                // location.href = request.responseText
+                window.open(request.responseText);
+            }).bind(this),
+            onFailure: (function(){
+                myMask.hide();
+                Ext.Msg.alert(ORYX.I18N.Oryx.title, ORYX.I18N.File.genPDFFailed);
+            }).bind(this)
+        });
     }
 
 });

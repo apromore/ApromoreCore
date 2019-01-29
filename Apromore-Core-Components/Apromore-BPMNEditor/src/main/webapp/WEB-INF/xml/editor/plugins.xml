@@ -24,13 +24,11 @@
 	<plugins>
 		<!-- following plugins require Ext -->		
 		<plugin source="toolbar.js" name="ORYX.Plugins.Toolbar" />
-		<!-- <plugin source="propertywindow.js" name="ORYX.Plugins.PropertyWindow" /> -->
 		<plugin source="undo.js" name="ORYX.Plugins.Undo" />
 		<plugin source="apromoreSave.js" name="ORYX.Plugins.ApromoreSave"/>
-	
-        <!-- Added for Test purposes -->
-        <plugin source="file.js" name="ORYX.Plugins.Save"/>
-        <plugin source="pdf.js" name="ORYX.Plugins.File"/>
+        <plugin source="export.js" name="ORYX.Plugins.Export"/>
+		<plugin source="pdf.js" name="ORYX.Plugins.File"/>
+		<plugin source="view.js" name="ORYX.Plugins.View"/>
         
 		<!-- Added to dynamically include Apromore plug-ins -->
 		<?EDITOR-PLUGINS?>
@@ -39,12 +37,12 @@
 	
 	<properties>
 		<property group="File" index="1" />
-		<property group="Edit" index="2" />	
+		<property group="View" index="2" />	
 		<property group="Undo" index="3" />
-		<property group="Alignment" index="4" />
-		<property group="Group" index="5" />
-		<property group="Z-Order" index="6" />
-		<property group="Docker" index="7" />
-		<property group="Zoom" index="8" />	
+		<property group="Zoom" index="4" />	
+		<property group="Alignment" index="5" />
+		<property group="Group" index="6" />
+		<property group="Z-Order" index="7" />
+		<property group="Docker" index="8" />
 	</properties>
 </config>

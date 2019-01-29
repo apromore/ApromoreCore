@@ -775,6 +775,16 @@ ORYX.Editor = {
 
     _loadPluginsOnFails: function(result) {
         ORYX.Log.error("Plugin configuration file not available.");
+    },
+
+    toggleFullScreen: function () {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
     }
 };
 

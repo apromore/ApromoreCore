@@ -128,21 +128,10 @@ ORYX.Canvas = {
 
     importXML: function(xml) {
         this._editor.importXML(xml, function(err) {
-
             if (err) {
                 return console.error('could not import BPMN 2.0 diagram', err);
             }
-            // access modeler components
-            var canvas = this._editor.get('canvas');
-            // zoom to fit full viewport
-            canvas.zoom('fit-viewport');
-            var viewbox = canvas.viewbox();
-            canvas.viewbox({
-                x: viewbox.x - 200,
-                y: viewbox.y,
-                width: viewbox.outer.width*1.5,
-                height: viewbox.outer.height*1.5
-            });
+            this.zoomFitToModel();
         }.bind(this));
     },
 
@@ -163,7 +152,31 @@ ORYX.Canvas = {
     },
 
     zoomFitToModel: function() {
+        if (this._editor) {
+            var canvas = this._editor.get('canvas');
+            // zoom to fit full viewport
+            canvas.zoom('fit-viewport');
+            var viewbox = canvas.viewbox();
+            canvas.viewbox({
+                x: viewbox.x - 200,
+                y: viewbox.y,
+                width: viewbox.outer.width * 1.5,
+                height: viewbox.outer.height * 1.5
+            });
+        }
+    },
 
+    zoomIn: function() {
+        this._editor.get('editorActions').trigger('stepZoom', { value: 1 });
+    },
+
+
+    zoomOut: function() {
+        this._editor.get('editorActions').trigger('stepZoom', { value: -1 });
+    },
+
+    zoomDefault: function() {
+        editorActions.trigger('zoom', { value: 1 });
     },
 
     createShape: function(type, x, y, w, h) {
@@ -324,6 +337,29 @@ ORYX.Canvas = {
         else {
             return this._editor.get('commandStack').canRedo();
         }
+    },
+
+    // Center viewbox to an element
+    // From https://forum.bpmn.io/t/centering-zooming-view-to-a-specific-element/1536/6
+    centerElement: function(elementId) {
+        // assuming we center on a shape.
+        // for connections we must compute the bounding box
+        // based on the connection's waypoints
+        var bbox = elementRegistry.get(elementId);
+
+        var currentViewbox = canvas.viewbox();
+
+        var elementMid = {
+            x: bbox.x + bbox.width / 2,
+            y: bbox.y + bbox.height / 2
+        };
+
+        canvas.viewbox({
+            x: elementMid.x - currentViewbox.width / 2,
+            y: elementMid.y - currentViewbox.height / 2,
+            width: currentViewbox.width,
+            height: currentViewbox.height
+        });
     }
 
 };
