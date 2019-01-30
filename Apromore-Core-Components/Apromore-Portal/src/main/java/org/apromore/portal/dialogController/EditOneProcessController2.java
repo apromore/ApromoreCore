@@ -264,7 +264,7 @@ public class EditOneProcessController2 extends BaseController {
             }
 
             mainC.editProcess2(process, version, nativeType, annotation, readOnly,
-                    pluginPropertiesHelper.readPluginProperties(Canoniser.DECANONISE_PARAMETER));
+                    pluginPropertiesHelper.readPluginProperties(Canoniser.DECANONISE_PARAMETER), false);
             editListProcessesC.deleteFromToBeEdited(this);
             closePopup();
         }

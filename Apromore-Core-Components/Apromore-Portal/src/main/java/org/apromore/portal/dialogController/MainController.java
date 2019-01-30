@@ -440,7 +440,7 @@ public class MainController extends BaseController implements MainControllerInte
     }
     
     public void editProcess2(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
-            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException {
+            final String readOnly, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess) throws InterruptedException {
         String instruction = "";
 
         EditSessionType editSession = createEditSession(process, version, nativeType, annotation);
@@ -451,6 +451,7 @@ public class MainController extends BaseController implements MainControllerInte
             UserSessionManager.setEditSession(id, session);
 
             String url = "macros/openModelInBPMNio.zul?id=" + id;
+            if (newProcess) url += "&newProcess=true";
             instruction += "window.open('" + url + "');";
 
             Clients.evalJavaScript(instruction);

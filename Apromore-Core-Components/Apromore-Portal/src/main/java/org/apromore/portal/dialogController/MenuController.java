@@ -60,6 +60,7 @@ public class MenuController extends Menubar {
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
 
         Menuitem createMI = (Menuitem) this.menuB.getFellow("createProcess");
+        Menuitem createMI2 = (Menuitem) this.menuB.getFellow("createProcess2");
         Menuitem importMI = (Menuitem) this.menuB.getFellow("fileImport");
         Menuitem exportMI = (Menuitem) this.menuB.getFellow("fileExport");
         Menuitem editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
@@ -79,6 +80,12 @@ public class MenuController extends Menubar {
             @Override
             public void onEvent(final Event event) throws Exception {
                 createModel();
+            }
+        });
+        createMI2.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                createModel2();
             }
         });
         importMI.addEventListener("onClick", new EventListener<Event>() {
@@ -200,6 +207,40 @@ public class MenuController extends Menubar {
         }
 
     }
+    
+    protected void createModel2() throws InterruptedException {
+        this.mainC.eraseMessage();
+        try {
+            new CreateProcessController2(this.mainC, this.mainC.getNativeTypes());
+        } catch (SuspendNotAllowedException | InterruptedException e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        } catch (ExceptionDomains e) {
+            String message;
+            if (e.getMessage() == null) {
+                message = "Couldn't retrieve domains reference list.";
+            } else {
+                message = e.getMessage();
+            }
+            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
+        } catch (ExceptionFormats e) {
+            String message;
+            if (e.getMessage() == null) {
+                message = "Couldn't retrieve formats reference list.";
+            } else {
+                message = e.getMessage();
+            }
+            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
+        } catch (ExceptionAllUsers e) {
+            String message;
+            if (e.getMessage() == null) {
+                message = "Couldn't retrieve users reference list.";
+            } else {
+                message = e.getMessage();
+            }
+            Messagebox.show(message, "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+
+    }    
 
     /**
      * Edit all selected process versions.
