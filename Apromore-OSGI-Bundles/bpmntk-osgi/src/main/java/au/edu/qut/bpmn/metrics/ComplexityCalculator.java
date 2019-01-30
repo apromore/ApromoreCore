@@ -410,6 +410,7 @@ public class ComplexityCalculator {
 
         for( Activity a : diagram.getActivities() ) {
             label = a.getLabel();
+            if (label==null) label = ""; //Bruce fixed 30.1.2019 to compute metrics when empty labels
             if( nodes.contains(label) && !label.isEmpty() ) duplicates++;
             else nodes.add(label);
         }

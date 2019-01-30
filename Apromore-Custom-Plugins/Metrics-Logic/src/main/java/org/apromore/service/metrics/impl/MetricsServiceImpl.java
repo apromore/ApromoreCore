@@ -453,6 +453,7 @@ public class MetricsServiceImpl extends DefaultParameterAwarePlugin implements M
 
         for( CPFNode node : diagram.getNodes() ) {
             label = node.getLabel();
+            if (label == null) label = ""; // Bruce fixed 30.1.2019 to compute metrics in case of empty labels
             if( nodes.contains(label) && !label.isEmpty() && !isGateway(node) ) duplicates++;
             else nodes.add(label);
         }

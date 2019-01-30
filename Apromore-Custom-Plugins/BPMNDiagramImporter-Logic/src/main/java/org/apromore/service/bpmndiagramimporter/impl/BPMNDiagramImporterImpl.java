@@ -184,7 +184,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
             src = flow.getSourceRef().getId();
             tgt = flow.getTargetRef().getId();
             if( idToNode.containsKey(src) && idToNode.containsKey(tgt) ) {
-                diagram.addFlow(idToNode.get(src), idToNode.get(tgt), flow.getName());
+                diagram.addFlow(idToNode.get(src), idToNode.get(tgt), flow.getName()==null ? "" : flow.getName());
                 //if( (idToNode.get(src) instanceof Event) || (idToNode.get(tgt) instanceof Event) )
                         //LOGGER.info("Adding Event Flow: " + src + " > " + tgt);
             } else LOGGER.info("[" + idToNode.containsKey(src) + ":" + idToNode.containsKey(tgt)  + "] Unfixable Flow: " + src + " > " + tgt);
@@ -290,7 +290,10 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
 
     /**** adding methods for BPMNNode objects ****/
     private void addDataObject(TDataObject dataObject, SubProcess parentProcess, Swimlane pool) {
-        DataObject d = diagram.addDataObject(dataObject.getName());
+    	String label = dataObject.getName();
+        if (label==null) label = ""; // Bruce fixed 30.1.2019 for computing model metrics when there are no labels
+        
+        DataObject d = diagram.addDataObject(label);
         //TODO try adding parent process and swimlane
         d.setParentSwimlane(pool);
         d.setParentSubprocess(parentProcess);
@@ -312,7 +315,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     private void addEvent(TEvent event, SubProcess parentProcess, Swimlane pool) {
         Event e;
         String label = event.getName();
-
+        if (label==null) label = ""; // Bruce fixed 30.1.2019 for computing model metrics when there are no labels
+        
         Event.EventUse use = Event.EventUse.CATCH;
         Event.EventType type = Event.EventType.INTERMEDIATE;
         Event.EventTrigger trigger = Event.EventTrigger.NONE;
@@ -385,7 +389,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     private void addTask(TTask task, SubProcess parentProcess, Swimlane pool) {
         Activity a;
         String label = task.getName();
-
+        if (label==null) label = ""; // Bruce fixed 30.1.2019 for computing model metrics when there are no labels
+        
         boolean isBCompensation = task.isIsForCompensation();
         boolean isBMultiinstance = false;
         boolean isBLooped = false;
@@ -414,6 +419,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     private void addGateway(TGateway gateway, SubProcess parentProcess, Swimlane pool) {
         Gateway g;
         String label = gateway.getName();
+        if (label==null) label = ""; // Bruce fixed 30.1.2019 for computing model metrics when there are no labels
+        
         Gateway.GatewayType type = Gateway.GatewayType.DATABASED;
 
         if(gateway instanceof TComplexGateway) type = Gateway.GatewayType.COMPLEX;
@@ -431,7 +438,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     private void addCallActivity(TCallActivity callActivity, SubProcess parentProcess, Swimlane pool) {
         CallActivity ca;
         String label = callActivity.getName();
-
+        if (label==null) label = ""; // Bruce fixed 30.1.2019 for computing model metrics when there are no labels
+        
         boolean isBCompensation = callActivity.isIsForCompensation();
         boolean isBMultiinstance = false;
         boolean isBLooped = false;
@@ -460,7 +468,8 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
     private void addSubProcess(TSubProcess subProcess, SubProcess parentProcess, Swimlane pool) {
         SubProcess sp;
         String label = subProcess.getName();
-
+        if (label==null) label = ""; // Bruce fixed 30.1.2019 for computing model metrics when there are no labels
+        
         boolean isBCompensation = subProcess.isIsForCompensation();
         boolean isTriggeredByEvent = subProcess.isTriggeredByEvent();
         boolean isBMultiinstance = false;
@@ -581,7 +590,7 @@ public class BPMNDiagramImporterImpl implements BPMNDiagramImporter {
         String id;
 
         for( TLane lane : laneSet.getLane() ) {
-            s = diagram.addSwimlane(lane.getName(), parent, SwimlaneType.LANE);
+            s = diagram.addSwimlane(lane.getName()==null ? "" : lane.getName(), parent, SwimlaneType.LANE);
 
             for( JAXBElement node : lane.getFlowNodeRef() ) {
                 id = null;
