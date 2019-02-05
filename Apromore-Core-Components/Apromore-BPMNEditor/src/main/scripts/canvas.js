@@ -228,7 +228,17 @@ ORYX.Canvas = {
         modelling.setColor([element],{stroke:'red'});
     },
 
-    highlightColor: function (elementId, color) {
+    colorElements: function (elementIds, color) {
+        var elements = [];
+        var registry = this._editor.get('elementRegistry');
+        elementIds.forEach(function(elementId) {
+            elements.push(this._editor.get('elementRegistry').get(elementId));
+        });
+        var modelling = this._editor.get('modeling');
+        modelling.setColor(elements, {stroke:color});
+    },
+
+    colorElement: function (elementId, color) {
         var modelling = this._editor.get('modeling');
         var element = this._editor.get('elementRegistry').get(elementId);
         modelling.setColor([element],{stroke:color});
@@ -250,7 +260,12 @@ ORYX.Canvas = {
             visual.setAttributeNS(null, "style", "opacity: 0.25");
         });
 
+    },
 
+    normalizeAll: function() {
+        var registry = this._editor.get('elementRegistry');
+        var modelling = this._editor.get('modeling');
+        modelling.setColor(registry.getAll(), {stroke:'black'});
     },
 
     removeShapes: function(shapeIds) {
@@ -273,12 +288,6 @@ ORYX.Canvas = {
         return ids;
     },
 
-    normalizeAll: function() {
-        var registry = this._editor.get('elementRegistry');
-        var modelling = this._editor.get('modeling');
-        modelling.setColor(registry.getAll(), {stroke:'black'});
-    },
-
     shapeCenter: function (shapeId) {
         var position = {};
         var registry = this._editor.get('elementRegistry');
@@ -295,12 +304,12 @@ ORYX.Canvas = {
         this._editor.clear();
     },
 
-    registerHandler: function(handlerName, handler) {
+    registerActionHandler: function(handlerName, handler) {
         var commandStack = this._editor.get('commandStack');
         commandStack.registerHandler(handlerName, handler);
     },
 
-    executeHandler: function(handlerName, context) {
+    executeActionHandler: function(handlerName, context) {
         var commandStack = this._editor.get('commandStack');
         commandStack.execute(handlerName, context);
     },
@@ -360,6 +369,19 @@ ORYX.Canvas = {
             width: currentViewbox.width,
             height: currentViewbox.height
         });
+    },
+
+    // NOTE: this is a hack on bpmn.io by calling to private methods/variables
+    checkLatestAction: function(checkActionName) {
+        var actions = this._editor.get('commandStack')._stack;
+        var stackIndex = this._editor.get('commandStack')._stackIdx;
+        var latestID = (stackIndex >= 0) ? actions[stackIndex].id: -1;
+        for (var i=stackIndex; i>=0; i--) {
+          if (actions[i].id == latestID && actions[i].command == checkActionName) {
+            return true;
+          }
+        }
+        return false;
     }
 
 };

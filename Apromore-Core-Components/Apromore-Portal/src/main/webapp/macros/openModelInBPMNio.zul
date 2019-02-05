@@ -32,8 +32,8 @@
     <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
 
     <!-- STYLESHEET FOR BPMN.IO -->
-    <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/diagram-js.css" type="text/css"/>
-    <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/bpmn-font/css/bpmn.css" type="text/css"/>
+    <n:link rel="stylesheet" href="/${arg.editor}/editor/bpmnio/diagram-js.css" type="text/css"/>
+    <n:link rel="stylesheet" href="/${arg.editor}/editor/bpmnio/bpmn.css" type="text/css"/>
     <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
 
 	
@@ -69,9 +69,8 @@
             <n:script>
                 <![CDATA[
 					//$.noConflict();
-					var bpmnXML = '${arg.bpmnXML}';
                     var editorWrapper = new ORYX.Editor ({
-							xml: '"' + bpmnXML.replace("'", "\'").replace('"', '\"') + '"',
+							xml: '${arg.bpmnXML}',
                             model : {
                                 id : 'editorcanvas',
                                 stencilset : {

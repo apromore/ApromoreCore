@@ -287,7 +287,7 @@ ORYX.Editor = {
         }
 
         // Set the editor to the center, and refresh the size
-        this.getEditorNode().setAttributeNS(null, 'align', 'center');
+        this.getEditorNode().setAttributeNS(null, 'align', 'left');
         this.getCanvas().rootNode.setAttributeNS(null, 'align', 'left');
         // this.getCanvas().setSize({
         //     width: ORYX.CONFIG.CANVAS_WIDTH,

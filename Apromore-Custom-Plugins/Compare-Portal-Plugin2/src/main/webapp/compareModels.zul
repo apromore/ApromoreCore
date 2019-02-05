@@ -32,8 +32,8 @@
     <n:link rel="Stylesheet" media="screen" href="/${arg.editor}/editor/css/theme_norm_signavio.css" type="text/css"/>
 
     <!-- STYLESHEET FOR BPMN.IO -->
-    <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/diagram-js.css" type="text/css"/>
-    <n:link rel="stylesheet" href="https://unpkg.com/bpmn-js@3.0.1/dist/assets/bpmn-font/css/bpmn.css" type="text/css"/>
+    <n:link rel="stylesheet" href="/${arg.editor}/editor/bpmnio/diagram-js.css" type="text/css"/>
+    <n:link rel="stylesheet" href="/${arg.editor}/editor/bpmnio/bpmn.css" type="text/css"/>
     <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
 
     <n:div id="editorwrapper" style="display: none">
@@ -63,11 +63,11 @@
         -->
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 
-        
+
         <z:zk forEach="${arg.plugins}">
           <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
-        
+
 
         <n:span id="oryxstartupcode">
             <n:script>
@@ -78,18 +78,21 @@
 
                     ORYX.Editor.prototype.highlightDifferences = function(run, colorsBPMN) {
                         console.log('Highlighting differences for ' + run + ' on ' + this.id);
+                        console.log('colorsBPMN', colorsBPMN);
 
                         // Set selection properties for highlighted elements
                         this.getCanvas().getAllElementIds().each(function (shapeId) {
                             var color = colorsBPMN[shapeId];
-                            console.log("Element " + shapeId + " color " + color);
+                            if (color === 'yellow') color = 'orange';
+
+                            //console.log("Element " + shapeId + " color " + color);
                             if (color) {
                                 //shape.setProperty("selected", true);
-                                this.getCanvas().fillColor(shapeId, color);
+                                this.getCanvas().colorElement(shapeId, color);
                             } else {
                                 //shape.setProperty("selected", false);
                                 //shape.setProperty("selectioncolor", null);
-                                this.getCanvas().fillColor(shapeId, null);
+                                this.getCanvas().colorElement(shapeId, null);
                             }
                         }.bind(this));
 
@@ -106,7 +109,7 @@
                         // Set selection properties for highlighted elements
                         this.getCanvas().getAllElementIds().each(function (shapeId) {
                             //shape.setProperty("selected", false);
-                            this.getCanvas().fillColor(shapeId, null);
+                            this.getCanvas().colorElement(shapeId, null);
                         }.bind(this));
 
                         //this._canvas.update();

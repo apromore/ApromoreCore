@@ -50,11 +50,11 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
             ]
         });
 
-        document.addEventListener("keydown", function (e) {
-            if (e.ctrlKey && e.keyCode === 83) {
-                Event.stop(e);
-            }
-        }, false);
+        // document.addEventListener("keydown", function (e) {
+        //     if (e.ctrlKey && e.keyCode === 83) {
+        //         Event.stop(e);
+        //     }
+        // }, false);
 
 
         this.facade.offer({
@@ -68,22 +68,22 @@ ORYX.Plugins.ApromoreSave = Clazz.extend({
             'maxShape':0
         });
 
-        window.onbeforeunload = this.onUnLoad.bind(this);
-        this.changeDifference = 0;
-
-        // Register on event for executing commands --> store all commands in a stack
-        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_EXECUTE, function () {
-            this.changeDifference++;
-            this.updateTitle();
-        }.bind(this));
-        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXECUTE_COMMANDS, function () {
-            this.changeDifference++;
-            this.updateTitle();
-        }.bind(this));
-        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_ROLLBACK, function () {
-            this.changeDifference--;
-            this.updateTitle();
-        }.bind(this));
+        // window.onbeforeunload = this.onUnLoad.bind(this);
+        // this.changeDifference = 0;
+        //
+        // // Register on event for executing commands --> store all commands in a stack
+        // this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_EXECUTE, function () {
+        //     this.changeDifference++;
+        //     this.updateTitle();
+        // }.bind(this));
+        // this.facade.registerOnEvent(ORYX.CONFIG.EVENT_EXECUTE_COMMANDS, function () {
+        //     this.changeDifference++;
+        //     this.updateTitle();
+        // }.bind(this));
+        // this.facade.registerOnEvent(ORYX.CONFIG.EVENT_UNDO_ROLLBACK, function () {
+        //     this.changeDifference--;
+        //     this.updateTitle();
+        // }.bind(this));
 
     },
 

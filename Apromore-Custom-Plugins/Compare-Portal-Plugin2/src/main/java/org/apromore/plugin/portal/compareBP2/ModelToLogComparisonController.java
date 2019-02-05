@@ -181,24 +181,42 @@ public class ModelToLogComparisonController extends BaseController {
 			e.printStackTrace();
 		}
 
-		this.addEventListener("onRepair", new EventListener<Event>() {
+		this.addEventListener("onRecompare", new EventListener<Event>() {
+			@Override
+			public void onEvent(final Event event) throws InterruptedException {
+				ModelToLogComparisonController.this.reCompare(event);
+			}
+		});
+		
+		this.addEventListener("onDiffSelection", new EventListener<Event>() {
 			@Override
 			public void onEvent(final Event event) throws InterruptedException {
 				org.zkoss.json.JSONObject jsonObject = (org.zkoss.json.JSONObject)event.getData();
-				String bpmnString = (String)jsonObject.get("bpmnXML");
 				currentDiffIndex = (Integer)jsonObject.get("diffIndex");
-				try {
-					ModelAbstractions model = new ModelAbstractions(bpmnString.getBytes(Charset.forName("UTF-8")));
-					DifferencesML differencesML = compareService.discoverBPMNModel(model, log, new HashSet<String>());
-					differences = new JSONObject(DifferencesML.toJSON(differencesML));
-					LOGGER.info("Obtained differences: " + differences);
-					onCreate();
-
-				} catch (Exception e) {
-					LOGGER.error("Unable to obtain differences", e);
+				Component buttonContainer = (Component) getFellowIfAny("buttons");
+				int buttonNums = buttonContainer.getChildren().size();
+				for (int i=0;i<buttonNums;i++) {
+					Toolbarbutton button = (Toolbarbutton)buttonContainer.getChildren().get(i);
+					if (currentDiffIndex >= 0 && i == currentDiffIndex) {
+						button.setStyle(buttonCSSStyle(true));
+						button.setChecked(true);
+					}
+					else {
+						button.setStyle(buttonCSSStyle(false));
+						button.setChecked(false);
+					}
 				}
 			}
 		});
+		
+//		this.addEventListener("onClearDifferences", new EventListener<Event>() {
+//			@Override
+//			public void onEvent(final Event event) throws InterruptedException {
+//				Component buttonContainer = (Component) getFellowIfAny("buttons");
+//				buttonContainer.getChildren().clear();
+//			}
+//		});
+		
 		this.addEventListener("onSave", new EventListener<Event>() {
 			@Override
 			public void onEvent(final Event event) throws InterruptedException {
@@ -209,6 +227,7 @@ public class ModelToLogComparisonController extends BaseController {
 				}
 			}
 		});
+		
 		this.addEventListener("onSaveAs", new EventListener<Event>() {
 			@Override
 			public void onEvent(final Event event) throws InterruptedException {
@@ -292,26 +311,42 @@ public class ModelToLogComparisonController extends BaseController {
 		if (applyButton != null) {
 			// The repairMLDifference function will send an onRepair event to
 			// the ZK asynchronous updater when it completes
-			applyButton.setWidgetListener("onClick", "editor.applyMLDifference()");
+			applyButton.setWidgetListener("onClick", "comparePlugin.applyDifference()");
 		}
 
-		Button beforeButton = (Button) this.getFellowIfAny("before");
-		if (beforeButton != null) {
+		Button recompareButton = (Button) this.getFellowIfAny("recompare");
+		if (recompareButton != null) {
 			// The repairMLDifference function will send an onRepair event to
 			// the ZK asynchronous updater when it completes
-			beforeButton.setWidgetListener("onClick", "editor.beforeApplyMLDifference()");
+			recompareButton.setWidgetListener("onClick", "comparePlugin.reCompare()");
 		}
 	}
 
 	private String differenceToJavascript(int buttonIndex, JSONObject difference) throws JSONException {
 		LOGGER.info("differenceToJavascript: " + difference);
 
-		return "editor.displayMLDifference(" + buttonIndex + "," + "\"" + difference.optString("type") + "\","
+		return "comparePlugin.highlightDifference" + "(" + buttonIndex + "," + "\"" + difference.optString("type") + "\","
 				+ difference.optJSONArray("start") + "," + difference.optJSONArray("a") + ","
 				+ difference.optJSONArray("b") + "," + difference.optJSONArray("newTasks") + ","
 				+ difference.optJSONArray("end") + "," + difference.optJSONArray("start2") + ","
 				+ difference.optJSONArray("end2") + "," + difference.optJSONArray("greys") + ","
 				+ difference.optJSONArray("annotations") + ")";
+	}
+	
+	private void reCompare(final Event event) throws InterruptedException {
+		org.zkoss.json.JSONObject jsonObject = (org.zkoss.json.JSONObject)event.getData();
+		String bpmnString = (String)jsonObject.get("bpmnXML");
+		currentDiffIndex = (Integer)jsonObject.get("diffIndex");
+		try {
+			ModelAbstractions model = new ModelAbstractions(bpmnString.getBytes(Charset.forName("UTF-8")));
+			DifferencesML differencesML = compareService.discoverBPMNModel(model, log, new HashSet<String>());
+			differences = new JSONObject(DifferencesML.toJSON(differencesML));
+			LOGGER.info("Obtained differences: " + differences);
+			onCreate();
+
+		} catch (Exception e) {
+			LOGGER.error("Unable to obtain differences", e);
+		}
 	}
 
 	/**
