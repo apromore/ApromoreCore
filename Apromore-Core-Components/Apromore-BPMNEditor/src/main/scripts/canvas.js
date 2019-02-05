@@ -232,7 +232,7 @@ ORYX.Canvas = {
         var elements = [];
         var registry = this._editor.get('elementRegistry');
         elementIds.forEach(function(elementId) {
-            elements.push(this._editor.get('elementRegistry').get(elementId));
+            elements.push(registry.get(elementId));
         });
         var modelling = this._editor.get('modeling');
         modelling.setColor(elements, {stroke:color});
@@ -382,6 +382,10 @@ ORYX.Canvas = {
           }
         }
         return false;
+    },
+
+    addCommandStackChangeListener: function(callback) {
+      this._editor.on('commandStack.changed', callback);
     }
 
 };
