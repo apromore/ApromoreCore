@@ -122,8 +122,8 @@
           <vbox hflex="1">
             <toolbar id="differences" hflex="1">
                 <label hflex="1">Differences</label>
-                <button id="recompare" label="Re-compare" style="float: right" />
-                <button id="apply" label="Apply" style="float: right" />
+                <button id="recompare" label="Re-compare" style="float: right" disabled="true"/>
+                <button id="apply" label="Apply" style="float: right" disabled="true"/>
             </toolbar>
             <vbox id="buttons" hflex="1">
             </vbox>

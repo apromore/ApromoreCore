@@ -322,6 +322,29 @@ ORYX.Canvas = {
         }
     },
 
+    // Center viewbox to an element
+    // From https://forum.bpmn.io/t/centering-zooming-view-to-a-specific-element/1536/6
+    centerElement: function(elementId) {
+        // assuming we center on a shape.
+        // for connections we must compute the bounding box
+        // based on the connection's waypoints
+        var bbox = elementRegistry.get(elementId);
+
+        var currentViewbox = canvas.viewbox();
+
+        var elementMid = {
+          x: bbox.x + bbox.width / 2,
+          y: bbox.y + bbox.height / 2
+        };
+
+        canvas.viewbox({
+          x: elementMid.x - currentViewbox.width / 2,
+          y: elementMid.y - currentViewbox.height / 2,
+          width: currentViewbox.width,
+          height: currentViewbox.height
+        });
+    },
+
     undo: function() {
         this._editor.get('commandStack').undo();
     },
@@ -346,29 +369,6 @@ ORYX.Canvas = {
         else {
             return this._editor.get('commandStack').canRedo();
         }
-    },
-
-    // Center viewbox to an element
-    // From https://forum.bpmn.io/t/centering-zooming-view-to-a-specific-element/1536/6
-    centerElement: function(elementId) {
-        // assuming we center on a shape.
-        // for connections we must compute the bounding box
-        // based on the connection's waypoints
-        var bbox = elementRegistry.get(elementId);
-
-        var currentViewbox = canvas.viewbox();
-
-        var elementMid = {
-            x: bbox.x + bbox.width / 2,
-            y: bbox.y + bbox.height / 2
-        };
-
-        canvas.viewbox({
-            x: elementMid.x - currentViewbox.width / 2,
-            y: elementMid.y - currentViewbox.height / 2,
-            width: currentViewbox.width,
-            height: currentViewbox.height
-        });
     },
 
     // NOTE: this is a hack on bpmn.io by calling to private methods/variables

@@ -61,11 +61,8 @@ ORYX.ComparePlugin = Clazz.extend({
 
   _highlightedDifferences: {},
 
-  construct: function() {    // this._currentContext = {
-    //     diffXML: editor.getCanvas().getXML()
-    // };
-
-    // this._currentXML = editor.getCanvas().getXML();
+  construct: function() {
+    editor.getCanvas().addCommandStackChangeListener(this.onCommandStackChanged);
   },
 
   _getDifference: function(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys, annotations) {
@@ -136,6 +133,61 @@ ORYX.ComparePlugin = Clazz.extend({
     editor.getCanvas().executeActionHandler('ORYX.Compare.reCompare', context);
     this._highlightedDifferences.length = 0; //clear the current difference list
     //this._currentContext = context;
+  },
+
+  /**
+   * If this event listener is used, some individual actions used to set/reset
+   * the status of buttons are no longer needed as this listener's handling is
+   * similar to the command stack and actions. However, in case no event listners are used,
+   * status of interface elements should be controlled via the command stack and actions
+   * to ensure Undo/Redo capabilities.
+   */
+  onCommandStackChanged: function() {
+    var isAutoEdit, isHighlightAction, isApplyAction, isRecompareAction, isEmpty;
+    var canvas = editor.getCanvas();
+    if (canvas.checkLatestAction('ORYX.Compare.highlightDifference')) {
+      isHighlightAction = true;
+    }
+    else if (canvas.checkLatestAction('ORYX.Compare.applyDifference')) {
+      isApplyAction = true;
+    }
+    else if (canvas.checkLatestAction('ORYX.Compare.reCompare')) {
+      isRecompareAction = true;
+    }
+
+    isEmpty = !canvas.canUndo();
+    isAutoEdit = (isHighlightAction || isApplyAction || isRecompareAction);
+
+    if (!isAutoEdit) {
+      console.log('!isAutoEdit');
+      console.log('isEmpty = ', isEmpty);
+      zk.Widget.$(jq("$recompare")).setDisabled(isEmpty);
+      zk.Widget.$(jq("$apply")).setDisabled(true);
+      // zk.Widget.$(jq("$buttons")).clear();
+      var buttons = zk.Widget.$(jq("$buttons"));
+      for (var i=0;i<buttons.nChildren;i++) {
+        buttons.getChildAt(i).setDisabled(!isEmpty);
+      }
+    }
+    else {
+      console.log('isAutoEdit');
+      zk.Widget.$(jq("$recompare")).setDisabled(true);
+      if (isHighlightAction) {
+        zk.Widget.$(jq("$apply")).setDisabled(false);
+      }
+      else {
+        zk.Widget.$(jq("$apply")).setDisabled(true);
+      }
+      var buttons = zk.Widget.$(jq("$buttons"));
+      for (var i=0;i<buttons.nChildren;i++) {
+        buttons.getChildAt(i).setDisabled(false);
+      }
+    }
+
+    console.log('commandStack', editor.getCanvas()._editor.get('commandStack')._stack);
+    console.log('commandStack index', editor.getCanvas()._editor.get('commandStack')._stackIdx);
+
+
   }
 });
 
@@ -151,13 +203,9 @@ ORYX_Compare_HighlightActionHandler.prototype.postExecute = function(context) {
 
   editor.getCanvas().executeActionHandler('ORYX.Compare.selectDifference', {diffIndex: context.diffIndex, oldDiffIndex:-1});
 
-  editor.getCanvas().executeActionHandler('ORYX.Compare.enableApply', {});
+  //editor.getCanvas().executeActionHandler('ORYX.Compare.enableApply', {});
   //console.log('commandStack.stack', editor.getCanvas()._editor.get('commandStack')._stack.slice());
 }
-
-//ORYX_Compare_HighlightActionHandler.prototype.revert = function(context) {
-  //zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRecompare', {bpmnXML: context.xml, diffIndex: context.oldDiffIndex}));
-//}
 
 /**
  * This command represents the apply action
@@ -175,7 +223,7 @@ ORYX_Compare_ApplyActionHandler.prototype.postExecute = function(context) {
     context.diffIndex = -1; //reset the difference list
     editor.getCanvas().executeActionHandler('ORYX.Compare.compare', context);
 
-    editor.getCanvas().executeActionHandler('ORYX.Compare.disableApply', {});
+    //editor.getCanvas().executeActionHandler('ORYX.Compare.disableApply', {});
 }
 
 
@@ -204,11 +252,11 @@ ORYX_Compare_NoUndoCompareActionHandler.prototype.execute = function(context) {
 function ORYX_Compare_ReCompareActionHandler() {}
 ORYX_Compare_ReCompareActionHandler.prototype.postExecute = function(context) {
   editor.getCanvas().executeActionHandler('ORYX.Compare.compareNoUndo', context);
-  editor.getCanvas().executeActionHandler('ORYX.Compare.disableApply', {});
+  //editor.getCanvas().executeActionHandler('ORYX.Compare.disableApply', {});
 }
 ORYX_Compare_ReCompareActionHandler.prototype.revert = function(context) {
-  zk.Widget.$(jq("$buttons")).clear(); //clear the difference list
-  zk.Widget.$(jq("$apply")).setDisabled(true);
+  //zk.Widget.$(jq("$buttons")).clear(); //clear the difference list
+  //zk.Widget.$(jq("$apply")).setDisabled(true);
 }
 
 /**
