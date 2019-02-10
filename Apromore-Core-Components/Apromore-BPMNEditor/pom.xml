@@ -70,7 +70,7 @@
                                 <include>scripts/config.js</include>
                                 <include>scripts/editor.js</include>
                                 <include>scripts/canvas.js</include>
-                                <include>scripts/plugins/**/*.js</include>
+                                <include>scripts/Plugins/**/*.js</include>
                             </includes>
                         </aggregation>
                     </aggregations>
