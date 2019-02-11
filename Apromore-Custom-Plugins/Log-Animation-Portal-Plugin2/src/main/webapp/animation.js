@@ -854,9 +854,14 @@ AnimationController = {
         Add timeline tick
         ---------------------------*/
         var indicatorE = document.createElementNS(svgNS,"rect");
-        indicatorE.setAttributeNS(null,"fill","red");
+        indicatorE.setAttributeNS(null,"fill","#FAF0E6");
         indicatorE.setAttributeNS(null,"height",lineLen-10);
         indicatorE.setAttributeNS(null,"width","8");
+        indicatorE.setAttributeNS(null,"stroke","grey");
+        indicatorE.setAttributeNS(null,"rx","2");
+        indicatorE.setAttributeNS(null,"ry","2");
+        //indicatorE.setAttributeNS(null,"stroke-opacity","0.4");
+
 
         var indicatorAnimation = document.createElementNS(svgNS,"animateMotion");
         indicatorAnimation.setAttributeNS(null,"id","timelineTick");
