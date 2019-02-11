@@ -408,15 +408,21 @@ AnimationController = {
        var metricsTable = $j("#metrics_table")[0];
        for (var i=0; i<logs.length; i++) {
            var row = metricsTable.insertRow(i+1);
-           var cellLogName = row.insertCell(0);
-           var cellTotalCount = row.insertCell(1);
-           var cellPlayCount = row.insertCell(2);
-           var cellReliableCount = row.insertCell(3);
-           var cellExactFitness = row.insertCell(4);
-           var cellExactFitnessFormulaTime = row.insertCell(5);
-           var cellApproxFitness = row.insertCell(6);
+           var cellLogNo = row.insertCell(0);;
+           var cellLogName = row.insertCell(1);
+           var cellTotalCount = row.insertCell(2);
+           var cellPlayCount = row.insertCell(3);
+           var cellReliableCount = row.insertCell(4);
+           var cellExactFitness = row.insertCell(5);
+           //var cellExactFitnessFormulaTime = row.insertCell(5);
+           //var cellApproxFitness = row.insertCell(6);
            //var cellApproxFitnessFormulaTime = row.insertCell(7);
            //var cellAlgoTime = row.insertCell(8);
+
+
+            cellLogNo.innerHTML = i+1;
+            cellLogNo.style.backgroundColor = logs[i].color;
+            cellLogNo.style.textAlign = 'center';
 
            if (logs[i].filename.length > 50) {
                    cellLogName.innerHTML = logs[i].filename.substr(0,50) + "...";
@@ -425,21 +431,30 @@ AnimationController = {
                    cellLogName.innerHTML = logs[i].filename;
            }
            cellLogName.title = logs[i].filename;
-           cellLogName.style.backgroundColor = logs[i].color;
+           cellLogName.style.font = '1em monospace';
+           //cellLogName.style.backgroundColor = logs[i].color;
 
            cellTotalCount.innerHTML = logs[i].total;
+           cellTotalCount.style.textAlign = 'center';
+           cellTotalCount.style.font = '1em monospace';
 
            cellPlayCount.innerHTML = logs[i].play;
            cellPlayCount.title = logs[i].unplayTraces;
+           cellPlayCount.style.textAlign = 'center';
+           cellPlayCount.style.font = '1em monospace';
 
            cellReliableCount.innerHTML = logs[i].reliable;
            cellReliableCount.title = logs[i].unreliableTraces;
+           cellReliableCount.style.textAlign = 'center';
+           cellReliableCount.style.font = '1em monospace';
 
            cellExactFitness.innerHTML = logs[i].exactTraceFitness;
+           cellExactFitness.style.textAlign = 'center';
+           cellExactFitness.style.font = '1em monospace';
 
-           cellExactFitnessFormulaTime.innerHTML = logs[i].exactFitnessFormulaTime;
+           //cellExactFitnessFormulaTime.innerHTML = logs[i].exactFitnessFormulaTime;
 
-           cellApproxFitness.innerHTML = logs[i].approxTraceFitness;
+           //cellApproxFitness.innerHTML = logs[i].approxTraceFitness;
 
            //cellApproxFitnessFormulaTime.innerHTML = logs[i].approxFitnessFormulaTime;
 
@@ -696,7 +711,7 @@ AnimationController = {
         var x = 30;
         var y = 20;
         for(var i=0;i<logs.length;i++) {
-            progressE.appendChild(this.createProgressIndicatorsForLog(logs[i], timeline, x, y));
+            progressE.appendChild(this.createProgressIndicatorsForLog(i+1, logs[i], timeline, x, y));
             x += 60;
         }
         return progressE;
@@ -707,7 +722,7 @@ AnimationController = {
      * log: the log object (name, color, traceCount, progress, tokenAnimations)
      * x,y: the coordinates to draw the progress bar
      */
-    createProgressIndicatorsForLog: function(log, timeline, x, y) {
+    createProgressIndicatorsForLog: function(logNo, log, timeline, x, y) {
         var pieE = document.createElementNS(svgNS,"g");
         pieE.setAttributeNS(null,"class","progress");
 
@@ -738,7 +753,7 @@ AnimationController = {
         textE.setAttributeNS(null,"x", x);
         textE.setAttributeNS(null,"y", y - 10);
         textE.setAttributeNS(null,"text-anchor","middle");
-        var textNode = document.createTextNode(log.name.substr(0,5) + "...");
+        var textNode = document.createTextNode('Log#' + logNo);
         textE.appendChild(textNode);
 
         var tooltip = document.createElementNS(svgNS,"title");
@@ -841,7 +856,7 @@ AnimationController = {
         var indicatorE = document.createElementNS(svgNS,"rect");
         indicatorE.setAttributeNS(null,"fill","red");
         indicatorE.setAttributeNS(null,"height",lineLen-10);
-        indicatorE.setAttributeNS(null,"width","4");
+        indicatorE.setAttributeNS(null,"width","8");
 
         var indicatorAnimation = document.createElementNS(svgNS,"animateMotion");
         indicatorAnimation.setAttributeNS(null,"id","timelineTick");

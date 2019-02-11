@@ -118,7 +118,7 @@
 
   <n:table width="100%" height="100%" border="0">
     <n:tr>
-      <n:td valign="top" height="100%">
+      <n:td valign="top" height="100%" style="height:92vh;width:25vw">
         <n:div id="alignments" style="overflow:scroll;height:100%;width:100%">
           <vbox hflex="1">
             <toolbar id="differences" hflex="1">
@@ -133,7 +133,7 @@
         </n:div>
       </n:td>
       <n:td valign="top" height="100%">
-        <n:div id="oryx-canvas1" style="height:92vh; width:75vw"></n:div>
+        <n:div id="oryx-canvas1" style="height:100%; width:100%"></n:div>
       </n:td>
     </n:tr>
   </n:table>
