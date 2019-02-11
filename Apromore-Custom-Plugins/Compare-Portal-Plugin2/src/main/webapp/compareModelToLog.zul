@@ -89,8 +89,9 @@
                     };
 
                     ORYX.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
-                      console.log(xml);
-                      console.log(svg);
+                      //console.log(xml);
+                      //console.log(svg);
+					  console.log('test save in compare');
                       zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
                     };
 
@@ -115,10 +116,10 @@
   </n:div>
 
 
-  <n:table width="100%" border="0">
+  <n:table width="100%" height="100%" border="0">
     <n:tr>
-      <n:td style="vertical-align: top">
-        <n:div id="alignments" style="overflow:scroll;height:90vh;width:45vh">
+      <n:td valign="top" height="100%">
+        <n:div id="alignments" style="overflow:scroll;height:100%;width:100%">
           <vbox hflex="1">
             <toolbar id="differences" hflex="1">
                 <label hflex="1">Differences</label>
@@ -131,8 +132,8 @@
           </vbox>
         </n:div>
       </n:td>
-      <n:td valign="top">
-        <n:div id="oryx-canvas1" style="height:90vh; width:160vh"></n:div>
+      <n:td valign="top" height="100%">
+        <n:div id="oryx-canvas1" style="height:92vh; width:75vw"></n:div>
       </n:td>
     </n:tr>
   </n:table>
