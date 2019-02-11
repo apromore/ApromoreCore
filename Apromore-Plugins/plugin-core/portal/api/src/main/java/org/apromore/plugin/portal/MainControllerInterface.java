@@ -20,15 +20,28 @@
 
 package org.apromore.plugin.portal;
 
+import org.apromore.model.EditSessionType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
+
 import java.util.*;
 
 public interface MainControllerInterface {
 
+	// Edit process model in Signavio
     void editProcess(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation,
                      final String readOnly, Set<RequestParameterType<?>> requestParameterTypes) throws InterruptedException;
+    
+    // Edit process model in BPMN.io
+    void editProcess2(ProcessSummaryType process, VersionSummaryType version, String nativeType, String annotation,
+			String readOnly, Set<RequestParameterType<?>> requestParameterTypes, boolean newProcess)
+			throws InterruptedException;
 
+    void saveModel(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
+            boolean isNormalSave, String data) throws  InterruptedException;
+
+	
 }
 

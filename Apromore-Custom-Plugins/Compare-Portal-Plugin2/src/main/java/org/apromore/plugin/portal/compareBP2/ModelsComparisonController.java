@@ -59,6 +59,7 @@ import org.apromore.portal.util.StreamUtil;
 
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
+import org.apromore.portal.dialogController.SaveAsDialogController;
 
 /**
  * Controller for a pair of signavio editor windows.
@@ -204,7 +205,7 @@ public class ModelsComparisonController extends BaseController {
             e.printStackTrace();
         }
 
-/*
+
         this.addEventListener("onSave", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
@@ -225,7 +226,7 @@ public class ModelsComparisonController extends BaseController {
                 }
             }
         });
-*/
+
     }
 
     public void onCreate() throws InterruptedException {

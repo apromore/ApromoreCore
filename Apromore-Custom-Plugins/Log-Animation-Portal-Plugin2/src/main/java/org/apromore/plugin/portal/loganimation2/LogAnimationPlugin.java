@@ -35,9 +35,11 @@ import org.zkoss.zul.Messagebox;
 // Local packages
 import org.apromore.helper.Version;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
+import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.EventLogService;
 import org.apromore.service.loganimation.LogAnimationService;
@@ -108,9 +110,10 @@ public class LogAnimationPlugin extends DefaultPortalPlugin {
         }
         
         String username = portalContext.getCurrentUser().getUsername();
+        MainController mainC = (MainController)portalContext.getMainController();
         EditSessionType editSession1 = createEditSession(username, process, vst, process.getOriginalNativeType(), null /*annotation*/);
         Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
-        SignavioSession session = new SignavioSession(editSession1, null, null, process, vst, null, null, requestParameterTypes);
+        SignavioSession session = new SignavioSession(editSession1, null, mainC, process, vst, null, null, requestParameterTypes);
         session.put("logAnimationService", logAnimationService);
         session.put("logs", logs);
 

@@ -44,6 +44,7 @@ import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
@@ -79,6 +80,7 @@ public class MainController extends BaseController implements MainControllerInte
     private ShortMessageController shortmessageC;
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
+    private SaveAsDialogController saveAsDialogController;
 
     private NavigationController navigation;
 
@@ -458,6 +460,17 @@ public class MainController extends BaseController implements MainControllerInte
         } catch (Exception e) {
             Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
+    }
+    
+    public void saveModel(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
+            boolean isNormalSave, String data) throws  InterruptedException {
+    	try {
+    		Window window = (Window) portalContext.getUI().createComponent(this.getClass().getClassLoader(), "macros/saveAsDialog.zul", null, null);
+    		SaveAsDialogController saveDiaglog = new SaveAsDialogController(process, version, editSession, isNormalSave, data, window);
+    	}
+    	catch (Exception e) {
+    		Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+    	}
     }
 
     public void visualizeLog() {

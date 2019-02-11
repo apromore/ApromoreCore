@@ -68,12 +68,12 @@ public class SaveAsDialogController extends BaseController {
     private String originalVersionNumber;
 
     public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
-            boolean isNormalSave, String data) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
+            boolean isNormalSave, String data, Window window) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
         this.process = process;
         this.version = version;
         this.editSession = editSession;
         this.save = isNormalSave;
-        this.saveAsW = (Window) Executions.createComponents("saveAsDialog.zul", null, null);
+        this.saveAsW = window;
         this.modelData = data;
         this.originalVersionNumber = this.editSession.getCurrentVersionNumber();
         if (isNormalSave) {
@@ -142,6 +142,12 @@ public class SaveAsDialogController extends BaseController {
         }
 
         this.saveAsW.doModal();
+    }
+    
+    public SaveAsDialogController(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
+            boolean isNormalSave, String data) throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
+    	this(process, version, editSession, isNormalSave, data, 
+    			(Window) Executions.createComponents("saveAsDialog.zul", null, null));
     }
 
 
