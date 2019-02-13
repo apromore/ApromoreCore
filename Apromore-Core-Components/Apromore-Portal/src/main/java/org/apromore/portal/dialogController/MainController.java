@@ -80,7 +80,6 @@ public class MainController extends BaseController implements MainControllerInte
     private ShortMessageController shortmessageC;
     private BaseListboxController baseListboxController;
     private BaseDetailController baseDetailController;
-    private SaveAsDialogController saveAsDialogController;
 
     private NavigationController navigation;
 
