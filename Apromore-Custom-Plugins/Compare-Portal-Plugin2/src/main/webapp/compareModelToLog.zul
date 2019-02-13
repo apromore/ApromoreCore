@@ -97,14 +97,13 @@
 
                     window.setTimeout(function() {
                       comparePlugin = new ORYX.ComparePlugin();
-                      editor.getCanvas().registerActionHandler('ORYX.Compare.highlightDifference', ORYX_Compare_HighlightActionHandler);
-                      editor.getCanvas().registerActionHandler('ORYX.Compare.applyDifference', ORYX_Compare_ApplyActionHandler);
+                      editor.getCanvas().registerActionHandler('ORYX.Compare.showDiff', ORYX_Compare_ShowDiffHandler);
+                      editor.getCanvas().registerActionHandler('ORYX.Compare.applyDiff', ORYX_Compare_ApplyDiffHandler);
                       editor.getCanvas().registerActionHandler('ORYX.Compare.reCompare', ORYX_Compare_ReCompareActionHandler);
-                      editor.getCanvas().registerActionHandler('ORYX.Compare.compare', ORYX_Compare_CompareActionHandler);
-                      editor.getCanvas().registerActionHandler('ORYX.Compare.compareNoUndo', ORYX_Compare_NoUndoCompareActionHandler);
-                      editor.getCanvas().registerActionHandler('ORYX.Compare.selectDifference', ORYX_Compare_DiffSelectionActionHandler);
-                      editor.getCanvas().registerActionHandler('ORYX.Compare.disableApply', ORYX_Compare_DisableApplyButtonActionHandler);
-                      editor.getCanvas().registerActionHandler('ORYX.Compare.enableApply', ORYX_Compare_EnableApplyButtonActionHandler);
+                      editor.getCanvas().registerActionHandler('ORYX.Compare.updateDiffList', ORYX_Compare_UpdateDiffListHandler);
+                      editor.getCanvas().registerActionHandler('ORYX.Compare.selectDiff', ORYX_Compare_SelectDiffHandler);
+                      //editor.getCanvas().registerActionHandler('ORYX.Compare.disableApply', ORYX_Compare_DisableApplyButtonActionHandler);
+                      //editor.getCanvas().registerActionHandler('ORYX.Compare.enableApply', ORYX_Compare_EnableApplyButtonActionHandler);
                       //editor.getCanvas().registerActionHandler('ORYX.Compare.updateDifferences', ORYX_Compare_UpdateDifferencesActionHandler);
                         // console.log(editor.getCanvas()._editor.getDefinitions());
                         // console.log(editor.getCanvas()._editor.get('canvas').getRootElement());
