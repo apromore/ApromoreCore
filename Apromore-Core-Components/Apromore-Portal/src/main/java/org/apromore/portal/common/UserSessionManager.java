@@ -25,12 +25,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.model.FolderType;
+import org.apromore.model.MembershipType;
 import org.apromore.model.UserType;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
+import org.apromore.security.ApromoreWebAuthenticationDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -86,13 +90,68 @@ public class UserSessionManager {
     }
 
     public static UserType getCurrentUser() {
+        return (UserType) getAttribute(USER);
+    }
+
+    public static void initializeUser(ManagerService manager) {
+
+        // No initialization required if the user is already set
         if (getAttribute(USER) != null) {
-            return (UserType) getAttribute(USER);
-        } else if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            setCurrentUser((UserType) SecurityContextHolder.getContext().getAuthentication().getDetails());
-            return (UserType) getAttribute(USER);
+            return;
         }
-        return null;
+
+        LOGGER.debug("Initializing user");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            Object details = authentication.getDetails();
+            if (details instanceof ApromoreWebAuthenticationDetails) {  // LDAP login
+                String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                LOGGER.debug("LDAP login, user=" + username);
+                UserType user = manager.readUserByUsername(username);
+                if (user == null) {
+                    user = constructUserType(username);
+                    try {
+                        manager.writeUser(user);
+
+                    } catch (Exception e) {
+                        LOGGER.error("Unable to initialize user " + username + " for LDAP login", e);
+                        return;
+                    }
+                }
+                setCurrentUser(user);
+
+            } else if (details instanceof UserType) {  // Locally created user
+                LOGGER.debug("Local login, user=" + details);
+                setCurrentUser((UserType) details);
+
+            } else if (details != null) {
+                LOGGER.warn("Unsupported details class " + details.getClass());
+            } else {
+                LOGGER.warn("User's authentication has null details");
+            }
+
+        } else {
+            LOGGER.debug("Current user neither set on the security context, nor authenticated");
+        }
+    }
+
+    // Lifted from NewUserRegistrationHttpServletRequestHandler.java
+    private static UserType constructUserType(String username) {
+        UserType user = new UserType();
+        user.setFirstName("First");
+        user.setLastName("Last");
+        user.setUsername(username);
+
+        MembershipType membership = new MembershipType();
+        membership.setEmail("first.last@example.com");
+        membership.setPassword("password");
+        membership.setPasswordQuestion("question");
+        membership.setPasswordAnswer("answer");
+        membership.setFailedLogins(0);
+        membership.setFailedAnswers(0);
+        user.setMembership(membership);
+
+        return user;
     }
 
     // TODO: fix the memory leak by reclaiming stale sessions
