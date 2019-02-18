@@ -106,6 +106,7 @@ public class MainController extends BaseController implements MainControllerInte
     public void onCreate() throws InterruptedException {
         try {
             loadProperties();
+            UserSessionManager.initializeUser(getService());
 
             Window mainW = (Window) this.getFellow("mainW");
             Hbox pagingandbuttons = (Hbox) mainW.getFellow("pagingandbuttons");
