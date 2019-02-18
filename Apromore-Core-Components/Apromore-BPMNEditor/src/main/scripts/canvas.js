@@ -127,12 +127,34 @@ ORYX.Canvas = {
     },
 
     importXML: function(xml) {
-        this._editor.importXML(xml, function(err) {
-            if (err) {
-                return console.error('could not import BPMN 2.0 diagram', err);
-            }
-            this.zoomFitToModel();
-        }.bind(this));
+      // this._editor.importXML(xml, function(err) {
+      //   if (err) {
+      //     return console.error('could not import BPMN 2.0 diagram', err);
+      //   }
+      //   this.zoomFitToModel();
+      // }.bind(this));
+
+      //EXPERIMENTING WITH THE BELOW TO FIX ARROWS NOT SNAP TO EDGES WHEN OPENING MODELS
+      //Some BPMN files are not compatible with bpmn.io
+      var editor = this._editor;
+      this._editor.importXML(xml, function(err) {
+        if (err) {
+          return console.error('could not import BPMN 2.0 diagram', err);
+        }
+
+        var eventBus = editor.get('eventBus');
+        var connectionDocking = editor.get('connectionDocking');
+        var elementRegistry = editor.get('elementRegistry');
+        var connections = elementRegistry.filter(function(e) {
+          return e.waypoints;
+        });
+        connections.forEach(function(connection) {
+          connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
+        });
+        eventBus.fire('elements.changed', { elements: connections });
+
+        this.zoomFitToModel();
+      }.bind(this));
     },
 
     getXML: function() {
@@ -345,48 +367,105 @@ ORYX.Canvas = {
         });
     },
 
-    undo: function() {
-        this._editor.get('commandStack').undo();
-    },
+  _getActionStack: function() {
+    return this._editor.get('commandStack')._stack;
+  },
 
-    canUndo: function() {
-        if (!this._editor) {
-            return false;
-        }
-        else {
-            return this._editor.get('commandStack').canUndo();
-        }
-    },
+  _getCurrentStackIndex: function() {
+    return this._editor.get('commandStack')._stackIdx;
+  },
 
-    redo: function() {
-        this._editor.get('commandStack').redo();
-    },
-
-    canRedo: function() {
-        if (!this._editor) {
-            return false;
-        }
-        else {
-            return this._editor.get('commandStack').canRedo();
-        }
-    },
-
-    // NOTE: this is a hack on bpmn.io by calling to private methods/variables
-    checkLatestAction: function(checkActionName) {
-        var actions = this._editor.get('commandStack')._stack;
-        var stackIndex = this._editor.get('commandStack')._stackIdx;
-        var latestID = (stackIndex >= 0) ? actions[stackIndex].id: -1;
-        for (var i=stackIndex; i>=0; i--) {
-          if (actions[i].id == latestID && actions[i].command == checkActionName) {
-            return true;
-          }
-        }
-        return false;
-    },
-
-    addCommandStackChangeListener: function(callback) {
-      this._editor.on('commandStack.changed', callback);
+  // Get all base action indexes backward from the current command stack index
+  // The first element in the result is the earliest base action and so on
+  _getBaseActions: function() {
+    var actions = this._getActionStack();
+    var stackIndex = this._getCurrentStackIndex();
+    var baseActionIndexes = [];
+    for (var i=0; i<=stackIndex; i++) {
+      if (i==0 || (actions[i].id != actions[i-1].id)) {
+        baseActionIndexes.push(i);
+      }
     }
+    return baseActionIndexes;
+  },
+
+  undo: function() {
+    this._editor.get('commandStack').undo();
+  },
+
+  // Undo to the point before an action (actionName is the input)
+  // Nothing happens if the action is not found
+  // The number of undo times is the number of base actions from the current stack index
+  undoSeriesUntil: function(actionName) {
+    var actions = this._getActionStack();
+    var baseActions = this._getBaseActions();
+    var baseActionNum = 0;
+    for (var i=baseActions.length-1; i>=0; i--) {
+      if (actions[baseActions[i]].command == actionName) {
+        baseActionNum = baseActions.length - i;
+        break;
+      }
+    }
+
+    console.log('baseActionNum', baseActionNum);
+
+    while (baseActionNum > 0) {
+      this.undo();
+      baseActionNum--;
+    }
+  },
+
+  canUndo: function() {
+    if (!this._editor) {
+      return false;
+    }
+    else {
+      return this._editor.get('commandStack').canUndo();
+    }
+  },
+
+  redo: function() {
+    this._editor.get('commandStack').redo();
+  },
+
+  canRedo: function() {
+    if (!this._editor) {
+      return false;
+    }
+    else {
+      return this._editor.get('commandStack').canRedo();
+    }
+  },
+
+  getLastBaseAction: function() {
+    var actions = this._getActionStack();
+    var baseActions = this._getBaseActions();
+    if (baseActions.length > 0) {
+      return actions[baseActions[baseActions.length-1]].command;
+    }
+    else {
+      return '';
+    }
+  },
+
+  // Get the next latest base action in the command stack
+  // that is not in the excluding list
+  getNextBaseActionExcluding: function(excludingActions) {
+    var actions = this._getActionStack();
+    var baseActionIndexes = this._getBaseActions();
+    if (baseActionIndexes.length >= 2) {
+      for (var i = baseActionIndexes.length-2; i>=0; i--) {
+        if (excludingActions.indexOf(actions[baseActionIndexes[i]].command) < 0) {
+          return actions[baseActionIndexes[i]].command;
+        }
+      }
+    }
+    return '';
+  },
+
+  addCommandStackChangeListener: function(callback) {
+    this._editor.on('commandStack.changed', callback);
+  }
 
 };
 

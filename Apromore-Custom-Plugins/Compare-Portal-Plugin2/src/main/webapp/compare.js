@@ -19,14 +19,14 @@
  */
 
 /**
+ * CUSTOM EDITOR ACTIONS
  * The main feature of this plugin is using the Undo/Redo buttons on the editor toolbar
- * to control the execution of actions relating to not only the editor but also the difference list outside the editor.
+ * to control the execution of actions relating to not only the editor but also the difference list,
+ * the Apply and Recompare buttons which are outside the editor (non-editor UI elements).
  *
- * Therefore, a number of actions are designed to synchronize the editor and the difference list
- * The synchronization is done via Ajax calls from these actions to ZK that manages the whole plugin interface
- *
- * These actions must adhere to the rules defined in the Command Stack of bpmn.io to make Undo/Redo viable
- * Some key rules include:
+ * A number of custom editor actions are created to make changes to the editor and non-editor UI elements
+ * The changes to non-ediotor UI elements are made via Aja calls via ZK. These actions must observe the mechanism
+ * defined in the Command Stack of bpmn.io to make Undo/Redo viable. Some important rules:
  *  - The Undo of a group of actions is performed via composite actions playing the role of base action. All actions
  *  performed within a composite action will be undoed together
  *  - The execute method does not allow nested actions (must be atomic execution), thus composite actions must implement
@@ -42,10 +42,24 @@
  *  - ORYX_Compare_UpdateDiffList
  *  - ORYX_Compare_Recompare: click the Re-compare button
  *
+ * EDITOR ACTION LISTENER
+ * Another challenging requirement is to detect manual edits by the user on the editor in order to set appropriate status
+ * for the non-editor UI elements. For example, when the user detete a shape or sequence flow, the Re-compare button
+ * will be enabled, the Apply button and the difference list are disabled. As manual edit actions are built-in editor
+ * actions, it's not simple to add custom code to those actions with Ajax calls via ZK like the custom actions.
+ * Instead of doing that, this plugin uses event listener to listen to the changes in the command stack of the editor.
+ * Whenever there is new action performed programmtically or via user interaction, the editor will emit
+ * a "commandStack.changed" event to all registered listeners. Based on the unique name of each action and by
+ * inspecting the stack of performed actions stored in the editor, this plugin can make appropriate changes to non-editor
+ * UI elements. This is seen as a workaround for the custom actions because it's not simple to replace many built-in
+ * actions such as DeleteShape, MoveShape, DeleteElements, etc. in the editor. This workaround depends much on the
+ * internal knowledge of the editor's command stack which might be changed in the next version of bpmn.io
+ *
+ * GLOBAL OBJECT
  * A global ORYX.ComparePlugin object is used to manage actions for the whole plugin,
  * including changes to the editor and the difference list. Changes to the model are made via the global editor object
  * Changes to the difference list are made via ZK Ajax and ZK javascript.
- * The current context of the Compare plugin is updated after every individual action. This is to ensure when the
+ * The current context of the Compare plugin is kept track after every individual action. This is to ensure when the
  * Apply button is used, the current selected difference will be applied.
  */
 
@@ -55,10 +69,29 @@ if (!ORYX) {
 
 ORYX.ComparePlugin = Clazz.extend({
 
-  currentDiffContext: {},
+  _currentDiffContext: {},
+
+  _eventListening: true,
 
   construct: function() {
-    editor.getCanvas().addCommandStackChangeListener(this.onCommandStackChanged);
+    this._currentDiffContext = {};
+    this._eventListening = true;
+  },
+
+  getCurrentContext: function() {
+    return this._currentDiffContext;
+  },
+
+  setCurrentContext: function(newContext) {
+    this._currentDiffContext = newContext;
+  },
+
+  getEventListening: function() {
+    return this._eventListening;
+  },
+
+  setEventListening: function(eventListening) {
+    this._eventListening = eventListening;
   },
 
   _getDifference: function(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys, annotations) {
@@ -78,64 +111,113 @@ ORYX.ComparePlugin = Clazz.extend({
   },
 
   /**
-   * Set status for the difference list and buttons via the commandstack.changed event
-   *
-   * If this event listener is used, some individual actions used to set/reset
-   * the status of buttons are no longer needed as this processing here is
-   * similar to using the commandStack and actions.
+   * Ideally all actions must be controlled via command stack actions.
+   * However, as this plugin allows manual edit on the model, it is impossible to
+   * manage the manual edit operations within this plugin.
+   * This plugin applies a approach to manage manual edit operations by listening to
+   * the command stack. Whenever there are any changes on the command stack, this
+   * plugin will be notified of those changes. Based on that, it analyzes the current
+   * content of the command stack to update changes on UI elements accordingly.
+   * In effect, this is similar to managing via individual actions executed
    */
   onCommandStackChanged: function() {
-    var isAutoEdit, isHighlightAction, isApplyAction, isRecompareAction, isEmpty;
+    //var isAutoEdit, isHighlightAction, isApplyAction, isRecompareAction, isDecorationAction, isEmptyStack;
+    var decorationActions = ['elements.move', 'connection.updateWaypoints'];
     var canvas = editor.getCanvas();
-    if (canvas.checkLatestAction('ORYX.Compare.showDiff')) {
-      isHighlightAction = true;
-    }
-    else if (canvas.checkLatestAction('ORYX.Compare.applyDiff')) {
-      isApplyAction = true;
-    }
-    else if (canvas.checkLatestAction('ORYX.Compare.reCompare')) {
-      isRecompareAction = true;
+    var baseAction = canvas.getLastBaseAction();
+
+    // Decoration actions (e.g. move shape, change way points) do not change the model,
+    // thus the status of the plugin UI elements should be the same as the status
+    // set by the preceding base action in the command stack that is not a decoration action (if any)
+    var isDecorationAction;
+    if (decorationActions.indexOf(baseAction) >= 0) {
+      isDecorationAction = true;
+      baseAction = canvas.getNextBaseActionExcluding(decorationActions);
     }
 
-    isEmpty = !canvas.canUndo();
-    isAutoEdit = (isHighlightAction || isApplyAction || isRecompareAction);
+    console.log('commandStack', editor.getCanvas()._editor.get('commandStack')._stack);
+    console.log('commandStack index', editor.getCanvas()._editor.get('commandStack')._stackIdx);
+    console.log('baseAction', baseAction);
 
-    if (!isAutoEdit) {
-      console.log('!isAutoEdit');
-      console.log('isEmpty = ', isEmpty);
-      zk.Widget.$(jq("$recompare")).setDisabled(isEmpty);
-      zk.Widget.$(jq("$apply")).setDisabled(true);
-      // zk.Widget.$(jq("$buttons")).clear();
-      var buttons = zk.Widget.$(jq("$buttons"));
-      for (var i=0;i<buttons.nChildren;i++) {
-        buttons.getChildAt(i).setDisabled(!isEmpty);
-      }
-    }
-    else {
-      console.log('isAutoEdit');
+    if (baseAction == 'ORYX.Compare.showDiff') {
+      zk.Widget.$(jq("$apply")).setDisabled(false);
+      this._setDiffListDisabled(false);
       zk.Widget.$(jq("$recompare")).setDisabled(true);
-      if (isHighlightAction) {
-        zk.Widget.$(jq("$apply")).setDisabled(false);
-      }
-      else {
-        zk.Widget.$(jq("$apply")).setDisabled(true);
-      }
-      var buttons = zk.Widget.$(jq("$buttons"));
-      for (var i=0;i<buttons.nChildren;i++) {
-        buttons.getChildAt(i).setDisabled(false);
-      }
     }
-
-    //console.log('commandStack', editor.getCanvas()._editor.get('commandStack')._stack);
-    //console.log('commandStack index', editor.getCanvas()._editor.get('commandStack')._stackIdx);
-
+    else if (baseAction == 'ORYX.Compare.applyDiff') {
+      zk.Widget.$(jq("$apply")).setDisabled(true);
+      this._setDiffListDisabled(false);
+      zk.Widget.$(jq("$recompare")).setDisabled(true);
+      if (editor.getCanvas().canRedo()) this._updateDiffList(); //when reach here from an undo action
+    }
+    else if (baseAction == 'ORYX.Compare.reCompare') { // similar to applyDiff
+      zk.Widget.$(jq("$apply")).setDisabled(true);
+      this._setDiffListDisabled(false);
+      zk.Widget.$(jq("$recompare")).setDisabled(true);
+      if (editor.getCanvas().canRedo()) this._updateDiffList(); //when reach here from an undo action
+    }
+    else if (baseAction == '') { // All the remaining base actions are only decorations or the command stack is empty
+      zk.Widget.$(jq("$apply")).setDisabled(true);
+      this._setDiffListDisabled(false);
+      zk.Widget.$(jq("$recompare")).setDisabled(true);
+      if (editor.getCanvas().canRedo()) this._updateDiffList(); //when reach here from an undo action
+    }
+    else { // manual edit action
+      zk.Widget.$(jq("$apply")).setDisabled(true);
+      this._setDiffListDisabled(true);
+      zk.Widget.$(jq("$recompare")).setDisabled(false);
+    }
 
   },
 
+  _updateDiffList: function() {
+    var editorXML = editor.getCanvas().getXML();
+    zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRecompare', {bpmnXML: editorXML, diffIndex: -1}));
+    this.setCurrentContext({});
+  },
+
+  _setDiffListDisabled: function(status) {
+    var buttons = zk.Widget.$(jq("$buttons"));
+    for (var i=0;i<buttons.nChildren;i++) {
+      buttons.getChildAt(i).setDisabled(status);
+    }
+  },
+
   highlightDifference: function(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys, annotations) {
-    // Undo highlights of the previous difference
-    if (editor.getCanvas().checkLatestAction('ORYX.Compare.showDiff')) {
-      editor.getCanvas().undo();
+    // console.log('buttonIndex: ' + buttonIndex);
+    // console.log('type: ' + type);
+    // console.log('start: ' + start);
+    // console.log('end: ' + end);
+    // console.log('a: ' + a);
+    // console.log('b: ' + b);
+    // console.log('newTasks: ' + newTasks);
+    // console.log('start2: ' + start2);
+    // console.log('end2: ' + end2);
+    // console.log('greys: ' + greys);
+    // console.log('annotations: ' + annotations);
+
+
+    //console.log('currentContext', this.getCurrentContext());
+
+    // Undo till the most recent show difference. The model before that difference show
+    // is the right model to add highlights for this difference
+    // All highlights and manual edits since that difference show will be ignored
+    if (Object.keys(this.getCurrentContext()).length > 0) {
+
+      // console.log('commandStack', editor.getCanvas()._editor.get('commandStack')._stack);
+      // console.log('commandStack index', editor.getCanvas()._editor.get('commandStack')._stackIdx);
+      // console.log('baseActions', editor.getCanvas()._getBaseActions());
+      // console.log('Call undoSeriesUntil');
+
+      editor.getCanvas().undoSeriesUntil('ORYX.Compare.showDiff');
+
+      //debugger;
+
+      // console.log('commandStack AFTER undoSeries', editor.getCanvas()._editor.get('commandStack')._stack);
+      // console.log('commandStack index', editor.getCanvas()._editor.get('commandStack')._stackIdx);
+      // console.log('baseActions', editor.getCanvas()._getBaseActions());
+
+      //debugger;
     }
 
     var diff = this._getDifference(buttonIndex, type, start, a, b, newTasks, end, start2, end2, greys, annotations);
@@ -146,28 +228,33 @@ ORYX.ComparePlugin = Clazz.extend({
 
   // Press the Apply button
   applyDifference: function() {
-      //console.log('currentDiffContext:', this.currentDiffContext);
-      //console.log('comparePlugin.currentDiffContext:', comparePlugin.currentDiffContext);
-      if (Object.keys(this.currentDiffContext).length == 0) {
-        window.alert('Tracking error: the current context of the Compare plugin shows no item selected');
-        return;
-      }
-      else {
-        // Must copy to a separate object, otherwise the new and old context are actually the same object
-        var context = Object.assign({}, this.currentDiffContext);
-        editor.getCanvas().executeActionHandler('ORYX.Compare.applyDiff', context);
-        this.currentDiffContext = {}; //clear the current difference list
-        //context.xml = editor.getCanvas().getXML();
-      }
+    //this.setEventListening(false);
+    //console.log('currentDiffContext:', this.currentDiffContext);
+    //console.log('comparePlugin.currentDiffContext:', comparePlugin.currentDiffContext);
+    if (Object.keys(this.getCurrentContext()).length == 0) {
+      window.alert('Tracking error: the current context of the Compare plugin shows no item selected');
+      return;
+    }
+    else {
+      // Must copy to a separate object, otherwise the new and old context are actually the same object
+      var context = Object.assign({}, this.getCurrentContext());
+      editor.getCanvas().executeActionHandler('ORYX.Compare.applyDiff', context);
+      this.setCurrentContext({}); //clear the current difference list
+      //context.xml = editor.getCanvas().getXML();
+    }
+    // this.setEventListening(true);
+    // this.onCommandStackChanged(); // explicit call to update status
   },
 
   reCompare: function() {
+    // this.setEventListening(false);
     var context = {
         xml: editor.getCanvas().getXML(),
-        diffIndex: -1,
-        recompared: true
+        diffIndex: -1
     };
     editor.getCanvas().executeActionHandler('ORYX.Compare.reCompare', context);
+    // this.setEventListening(true);
+    // this.onCommandStackChanged(); // explicit call to update status
   }
 });
 
@@ -195,7 +282,7 @@ ORYX_Compare_ShowDiffHandler.prototype.postExecute = function(context) {
 function ORYX_Compare_SelectDiffHandler() {}
 ORYX_Compare_SelectDiffHandler.prototype.execute = function(context) {
   zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onDiffSelection', {diffIndex: context.diffIndex}));
-  comparePlugin.currentDiffContext = context;
+  comparePlugin.setCurrentContext(context);
 }
 ORYX_Compare_SelectDiffHandler.prototype.revert = function(context) {
   zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onDiffSelection', {diffIndex: context.oldDiffIndex}));
@@ -205,10 +292,10 @@ ORYX_Compare_SelectDiffHandler.prototype.revert = function(context) {
     newContext.oldDiffIndex = -1;
     newContext.xml = context.oldXML;
     newContext.oldXML = '';
-    comparePlugin.currentDiffContext = newContext;
+    comparePlugin.setCurrentContext(newContext);
   }
   else {
-    comparePlugin.currentDiffContext = {};
+    comparePlugin.setCurrentContext({});
   }
 }
 
@@ -239,7 +326,7 @@ ORYX_Compare_ApplyDiffHandler.prototype.postExecute = function(context) {
 function ORYX_Compare_UpdateDiffListHandler() {}
 ORYX_Compare_UpdateDiffListHandler.prototype.execute = function(context) {
   zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRecompare', {bpmnXML: context.xml, diffIndex: -1}));
-  comparePlugin.currentDiffContext = {};
+  comparePlugin.setCurrentContext({});
 }
 ORYX_Compare_UpdateDiffListHandler.prototype.revert = function(context) {
   zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRecompare', {bpmnXML: context.oldXML, diffIndex: context.oldDiffIndex}));
@@ -249,33 +336,33 @@ ORYX_Compare_UpdateDiffListHandler.prototype.revert = function(context) {
     newContext.oldDiffIndex = -1;
     newContext.xml = context.oldXML;
     newContext.oldXML = '';
-    comparePlugin.currentDiffContext = newContext;
+    comparePlugin.setCurrentContext(newContext);
   }
   else {
-    comparePlugin.currentDiffContext = {};
+    comparePlugin.setCurrentContext({});
   }
 }
 
 /**
  * This command represents the Re-compare action
- * Note that this command has no undo: nothing happens when click Undo button after this command
  * The manual editing actions before this command can be undoed/redoed
  * Click more Undo times will undo the prior composite action
  */
-function ORYX_Compare_ReCompareActionHandler() {}
-ORYX_Compare_ReCompareActionHandler.prototype.postExecute = function(context) {
-  zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRecompare', {bpmnXML: context.xml, diffIndex: -1}));
-  comparePlugin.currentDiffContext = {};
+function ORYX_Compare_ReCompareHandler() {}
+ORYX_Compare_ReCompareHandler.prototype.postExecute = function(context) {
+  //zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRecompare', {bpmnXML: context.xml, diffIndex: -1}));
+  editor.getCanvas().executeActionHandler('ORYX.Compare.compare', context);
+  editor.getCanvas().normalizeAll();
 }
 
 /**
- * This command represents the Compare action that is not undo-able
+ * This command represents the Compare action
  */
-// function ORYX_Compare_CompareNoUndoActionHandler() {}
-// ORYX_Compare_CompareNoUndoActionHandler.prototype.execute = function(context) {
-//   zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRecompare', {bpmnXML: context.xml, diffIndex: -1}));
-//   comparePlugin.currentDiffContext = {};
-// }
+function ORYX_Compare_CompareHandler() {}
+ORYX_Compare_CompareHandler.prototype.execute = function(context) {
+  zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onRecompare', {bpmnXML: context.xml, diffIndex: -1}));
+  comparePlugin.setCurrentContext({});
+}
 
 /**
  * This command is to disable the Apply button
@@ -352,8 +439,8 @@ ORYX.CanvasUtilForCompare = {
 // Find a point at least minSpacing away from points a and b, forming at least a right angle.  Sign +1 or -1 selects the two solutions.
 // Bruce: fix Infinity error when a and b are the same element
   lagrangePoint: function (a, b, minSpacing, sign) {
-    console.log('this.lagrangePoint');
-    console.log(a, b);
+    //console.log('this.lagrangePoint');
+    //console.log(a, b);
     var dx = (b.y - a.y);
     var dy = (a.x - b.x);
     if (dx == 0 && dy == 0) {
@@ -361,7 +448,7 @@ ORYX.CanvasUtilForCompare = {
       dy = a.x/2;
     }
     var scale = sign*Math.max(minSpacing / Math.sqrt(dx * dx + dy * dy), 0.5);
-    console.log(dx, dy, scale);
+    //console.log(dx, dy, scale);
 
     return {x: (a.x + b.x)/2 + (b.y - a.y)*scale, y: (a.y + b.y)/2 + (a.x - b.x)*scale};
   },
@@ -455,18 +542,6 @@ ORYX.CanvasUtilForCompare = {
       greys = context.greys,
       annotations = context.annotations;
 
-    console.log('buttonIndex: ' + buttonIndex);
-    console.log('type: ' + type);
-    console.log('start: ' + start);
-    console.log('end: ' + end);
-    console.log('a: ' + a);
-    console.log('b: ' + b);
-    console.log('newTasks: ' + newTasks);
-    console.log('start2: ' + start2);
-    console.log('end2: ' + end2);
-    console.log('greys: ' + greys);
-    console.log('annotations: ' + annotations);
-
     //window.setTimeout((function() {
       switch (type) {
         case "CAUSCONC1":  // In the log Task A occurs before Task B, while in the model they are concurrent
@@ -511,7 +586,7 @@ ORYX.CanvasUtilForCompare = {
           var ce = this.shapeCenter(end[0]);
           var cm = this.lagrangePoint(cs, ce, 130, +1);
 
-          console.log('lagrangePoint', cm);
+          //console.log('lagrangePoint', cm);
           var factor = (cm.y > 0) ? 1.2 : 1/5;
 
           var newTasksBPMN = {};

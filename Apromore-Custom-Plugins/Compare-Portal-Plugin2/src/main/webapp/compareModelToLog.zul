@@ -97,16 +97,19 @@
 
                     window.setTimeout(function() {
                       comparePlugin = new ORYX.ComparePlugin();
+                      editor.getCanvas().addCommandStackChangeListener(comparePlugin.onCommandStackChanged.bind(comparePlugin));
                       editor.getCanvas().registerActionHandler('ORYX.Compare.showDiff', ORYX_Compare_ShowDiffHandler);
                       editor.getCanvas().registerActionHandler('ORYX.Compare.applyDiff', ORYX_Compare_ApplyDiffHandler);
-                      editor.getCanvas().registerActionHandler('ORYX.Compare.reCompare', ORYX_Compare_ReCompareActionHandler);
+                      editor.getCanvas().registerActionHandler('ORYX.Compare.reCompare', ORYX_Compare_ReCompareHandler);
                       editor.getCanvas().registerActionHandler('ORYX.Compare.updateDiffList', ORYX_Compare_UpdateDiffListHandler);
                       editor.getCanvas().registerActionHandler('ORYX.Compare.selectDiff', ORYX_Compare_SelectDiffHandler);
+                      editor.getCanvas().registerActionHandler('ORYX.Compare.compare', ORYX_Compare_CompareHandler);
+
                       //editor.getCanvas().registerActionHandler('ORYX.Compare.disableApply', ORYX_Compare_DisableApplyButtonActionHandler);
                       //editor.getCanvas().registerActionHandler('ORYX.Compare.enableApply', ORYX_Compare_EnableApplyButtonActionHandler);
                       //editor.getCanvas().registerActionHandler('ORYX.Compare.updateDifferences', ORYX_Compare_UpdateDifferencesActionHandler);
-                        // console.log(editor.getCanvas()._editor.getDefinitions());
-                        // console.log(editor.getCanvas()._editor.get('canvas').getRootElement());
+                      //   console.log(editor.getCanvas()._editor.getDefinitions());
+                      //   console.log(editor.getCanvas()._editor.get('canvas').getRootElement());
                         // console.log(editor.getCanvas()._editor.get('elementRegistry')._elements);
                     }, 1000);
                 ]]>
@@ -125,7 +128,7 @@
                 <button id="recompare" label="Re-compare" style="float: right" disabled="true"/>
                 <button id="apply" label="Apply" style="float: right" disabled="true"/>
             </toolbar>
-            <vbox id="buttons" hflex="1">
+            <vbox id="buttons" hflex="1" style="margin-left:1vw">
             </vbox>
             <!--<label>Baz</label>-->
           </vbox>
