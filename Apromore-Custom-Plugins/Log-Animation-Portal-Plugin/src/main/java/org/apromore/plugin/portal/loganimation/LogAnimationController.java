@@ -127,7 +127,7 @@ public class LogAnimationController extends BaseController {
                 param.put("url",           getURL(editSession.getNativeType()));
                 param.put("importPath",    getImportPath(editSession.getNativeType()));
                 param.put("exportPath",    getExportPath(editSession.getNativeType()));
-                param.put("editor",        config.getSiteEditor());
+                param.put("editor",        "bpmneditor");
 
                 if (editSession.getAnnotation() == null) {
                     param.put("doAutoLayout", "true");
@@ -145,7 +145,7 @@ public class LogAnimationController extends BaseController {
                 param.put("url",           getURL("BPMN 2.0"));
                 param.put("importPath",    getImportPath("BPMN 2.0"));
                 param.put("exportPath",    getExportPath("BPMN 2.0"));
-                param.put("editor",        config.getSiteEditor());
+                param.put("editor",        "bpmneditor");
                 param.put("doAutoLayout", "true");
             }
 
@@ -156,7 +156,7 @@ public class LogAnimationController extends BaseController {
                     animationData = logAnimationService.createAnimation(bpmnXML, logs);
                     param.put("animationData", escapeQuotedJavascript(animationData));
                 }
-            } else {
+            }else {
                 param.put("animationData", escapeQuotedJavascript(animationData));
             }
 
@@ -173,7 +173,7 @@ public class LogAnimationController extends BaseController {
                 }
             }
 
-            List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve();
+            List<EditorPlugin> editorPlugins = EditorPluginResolver.resolve("editorPluginsBPMN");
             param.put("plugins", editorPlugins);
 
             Executions.getCurrent().pushArg(param);
@@ -187,9 +187,10 @@ public class LogAnimationController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    new SaveAsDialogController(process, version, editSession, true, eventToString(event));
-                } catch (ExceptionFormats exceptionFormats) {
-                    LOGGER.error("Error saving model.", exceptionFormats);
+                    //new SaveAsDialogController(process, version, editSession, true, eventToString(event));
+                	mainC.saveModel(process, version, editSession, true, eventToString(event));
+                } catch (Exception e) {
+                    LOGGER.error("Error saving model.", e);
                 }
             }
         });
@@ -197,9 +198,10 @@ public class LogAnimationController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    new SaveAsDialogController(process, version, editSession, false, eventToString(event));
-                } catch (ExceptionFormats exceptionFormats) {
-                    LOGGER.error("Error saving model.", exceptionFormats);
+                    //new SaveAsDialogController(process, version, editSession, false, eventToString(event));
+                	mainC.saveModel(process, version, editSession, false, eventToString(event));
+                } catch (Exception e) {
+                    LOGGER.error("Error saving model.", e);
                 }
             }
         });

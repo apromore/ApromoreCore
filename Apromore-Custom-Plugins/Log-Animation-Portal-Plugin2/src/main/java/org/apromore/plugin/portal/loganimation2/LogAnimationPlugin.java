@@ -35,7 +35,6 @@ import org.zkoss.zul.Messagebox;
 // Local packages
 import org.apromore.helper.Version;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
-import org.apromore.plugin.portal.MainControllerInterface;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
@@ -43,9 +42,10 @@ import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.EventLogService;
 import org.apromore.service.loganimation.LogAnimationService;
+import org.deckfour.xes.model.XLog;
 
 @Component("plugin")
-public class LogAnimationPlugin extends DefaultPortalPlugin {
+public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimationPluginInterface {
 
     private String label = "Animate Logs (bpmn.io)";
     private String groupLabel = "Analyze";
@@ -160,5 +160,71 @@ public class LogAnimationPlugin extends DefaultPortalPlugin {
             }
         }
         return max.toString();
+    }
+    
+    /**
+     * @param json
+     * @return the <var>json</var> escaped so that it can be quoted in Javascript.
+     *     Specifically, it replaces apostrophes with \\u0027 and removes embedded newlines and leading and trailing whitespace.
+     */
+    private static String escapeQuotedJavascript(String json) {
+        return json.replace("\n", " ").replace("'", "\\u0027").trim();
+    }
+    
+    @Override
+    public void execute(PortalContext portalContext, String bpmn, String layout, XLog eventlog, boolean maintain_gateways) {
+        try {
+            List<LogAnimationService.Log> logs = new ArrayList<>();
+            Iterator<String> colors = Arrays.asList("#0088FF", "#FF8800", "#88FF00").iterator();
+            LogAnimationService.Log log = new LogAnimationService.Log();
+            log.fileName = "Dummy";
+            log.xlog     = eventlog;
+            log.color    = colors.hasNext() ? colors.next() : "red";
+            logs.add(log);
+
+            String username = portalContext.getCurrentUser().getUsername();
+
+            ProcessSummaryType processSummaryType = new ProcessSummaryType();
+            processSummaryType.setDomain("Log-Visualizer");
+            processSummaryType.setName("Log-Visualizer-Model");
+            processSummaryType.setId(1);
+            processSummaryType.setMakePublic(true);
+
+            VersionSummaryType versionSummaryType = new VersionSummaryType();
+            versionSummaryType.setName("Log-Visualizer-Model");
+            versionSummaryType.setVersionNumber("1.0");
+
+            EditSessionType editSession = createEditSession(username, processSummaryType, versionSummaryType, "BPMN 2.0", null);
+            Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
+            SignavioSession session = new SignavioSession(editSession, null, null, processSummaryType, versionSummaryType, null, null, requestParameterTypes);
+
+            String updatedBPMN = escapeQuotedJavascript(bpmn);
+
+            BPMNUpdater bpmnUpdater = new BPMNUpdater();
+            updatedBPMN = bpmnUpdater.getUpdatedBPMN(updatedBPMN, layout, !maintain_gateways);
+
+            System.out.println("Final BPMN");
+//            System.out.println(jsonDataEscape);
+            session.put("bpmnXML", updatedBPMN);
+
+            if (logAnimationService != null) {  // logAnimationService is null if invoked from the editor toobar
+                String animationData = logAnimationService.createAnimation(bpmn, logs);
+
+                AnimationUpdater animationUpdater = new AnimationUpdater();
+                animationData = animationUpdater.updateAnimationData(animationData, bpmnUpdater.getRemovedFlowIDs());
+
+                session.put("animationData", escapeQuotedJavascript(animationData));
+                System.out.println("ANIMATIONDATA");
+//                System.out.println(escapeQuotedJavascript(animationData));
+            }
+
+            session.put("logs", logs);
+
+            String id = UUID.randomUUID().toString();
+            UserSessionManager.setEditSession(id, session);
+            Clients.evalJavaScript("window.open('../loganimation2/animateLog.zul?id=" + id + "')");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
