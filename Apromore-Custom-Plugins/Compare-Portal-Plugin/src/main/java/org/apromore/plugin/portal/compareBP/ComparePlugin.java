@@ -71,7 +71,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
 
     private Map<ProcessSummaryType, List<VersionSummaryType>> processVersions;
 
-    private String label = "Compare";
+    private String label = "Compare in Signavio";
     private String groupLabel = "Analyze";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComparePlugin.class.getCanonicalName());

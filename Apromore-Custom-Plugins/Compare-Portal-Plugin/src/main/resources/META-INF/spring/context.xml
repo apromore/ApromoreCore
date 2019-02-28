@@ -47,7 +47,7 @@
 
     <beans:bean id="plugin2" class="org.apromore.plugin.portal.compareBP.ComparePlugin">
         <beans:property name="groupLabel" value="Monitor" />
-        <beans:property name="label" value="Compare" />
+        <beans:property name="label" value="Compare in Signavio" />
     </beans:bean>
 
     <!-- Exposes the component as OSGi service -->
