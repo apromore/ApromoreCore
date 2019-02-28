@@ -154,6 +154,8 @@ public class UserMapper {
             membership.setEmail(userType.getMembership().getEmail());
             if (userType.getMembership().getPassword() != null) {
                 membership.setPassword(SecurityUtil.hashPassword(userType.getMembership().getPassword()));
+            } else {
+                membership.setPassword("");
             }
             membership.setQuestion(userType.getMembership().getPasswordQuestion());
             membership.setAnswer(userType.getMembership().getPasswordAnswer());

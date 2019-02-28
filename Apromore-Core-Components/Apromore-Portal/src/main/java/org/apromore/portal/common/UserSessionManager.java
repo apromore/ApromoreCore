@@ -22,8 +22,18 @@ package org.apromore.portal.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import javax.naming.Context;
+import javax.naming.Name;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.FolderType;
@@ -109,8 +119,8 @@ public class UserSessionManager {
                 LOGGER.debug("LDAP login, user=" + username);
                 UserType user = manager.readUserByUsername(username);
                 if (user == null) {
-                    user = constructUserType(username);
                     try {
+                        user = constructUserType(username);
                         manager.writeUser(user);
 
                     } catch (Exception e) {
@@ -136,22 +146,48 @@ public class UserSessionManager {
     }
 
     // Lifted from NewUserRegistrationHttpServletRequestHandler.java
-    private static UserType constructUserType(String username) {
-        UserType user = new UserType();
-        user.setFirstName("First");
-        user.setLastName("Last");
-        user.setUsername(username);
+    private static UserType constructUserType(String username) throws NamingException {
 
+        // Obtain a JNDI context
+        Hashtable<String, String> env = new Hashtable<>();
+        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        env.put(Context.PROVIDER_URL, "ldaps://centaur.unimelb.edu.au");
+        InitialDirContext context = new InitialDirContext(env);
+
+        // Query the LDAP directory
+        SearchControls constraints = new SearchControls();
+        constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        String[] attributes = { "givenName", "sn", "mail" };
+        constraints.setReturningAttributes(attributes);
+        NamingEnumeration results = context.search("ou=people,o=unimelb", String.format("uid=%s", username), constraints);
+        SearchResult      result  = (SearchResult) results.next();
+        Attributes        attrs   = result.getAttributes();
+
+        // Create the user record
         MembershipType membership = new MembershipType();
-        membership.setEmail("first.last@example.com");
-        membership.setPassword("password");
-        membership.setPasswordQuestion("question");
-        membership.setPasswordAnswer("answer");
-        membership.setFailedLogins(0);
-        membership.setFailedAnswers(0);
+        membership.setEmail(findAttributeFieldByName(attrs, attributes[2]));
+        //membership.setPassword("password");  // Beware that if you specify a value here, it (in addition to the LDAP password) can be used to authenticate
+        //membership.setPasswordQuestion("question");
+        //membership.setPasswordAnswer("answer");
+        //membership.setFailedLogins(0);
+        //membership.setFailedAnswers(0);
+
+        UserType user = new UserType();
+        user.setFirstName(findAttributeFieldByName(attrs, attributes[0]));
+        user.setLastName(findAttributeFieldByName(attrs, attributes[1]));
+        user.setUsername(username);
         user.setMembership(membership);
 
         return user;
+    }
+
+    private static String findAttributeFieldByName(Attributes attributes, String fieldName) throws NamingException {
+        Attribute attr = attributes.get(fieldName);
+        NamingEnumeration e = attr.getAll();
+        while (e.hasMore()) {
+            return (String) e.next();
+        }
+        return null;
     }
 
     // TODO: fix the memory leak by reclaiming stale sessions
