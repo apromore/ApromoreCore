@@ -22,13 +22,16 @@
 <menubar id="operationMenu" width="100%">
     <menu id="process" label="File">
         <menupopup>
-            <menuitem id="createProcess" label="Create Model" disabled="true" image="/img/new.png"/>
-            <menuitem id="createProcess2" label="Create Model in BPMN.io" disabled="true" image="/img/new.png"/>
+            <menuitem id="createProcess" visible="false" label="Create Model in Signavio" disabled="true" image="/img/new.png" />
+            <menuitem id="createProcess2" label="Create Model" disabled="true" image="/img/new.png"/>
+			
             <menuitem id="fileImport" label="Import" disabled="true" image="/img/import.png"/>
             <menuitem id="fileExport" label="Export" disabled="true" image="/img/export.png"/>
-            <menuitem id="processEdit" label="Edit Model" disabled="true" image="/img/edit.png"/>
-            <menuitem id="processEdit2" label="Edit Model in BPMN.io" disabled="true" image="/img/edit.png"/>
-            <menuitem id="dataEdit" label="Edit Metadata" disabled="true" image="/img/edit_metadata.png"/>
+            
+			<menuitem id="processEdit" visible="false" label="Edit Model in Signavio" disabled="true" image="/img/edit.png"/>
+            <menuitem id="processEdit2" label="Edit Model" disabled="true" image="/img/edit.png"/>
+            
+			<menuitem id="dataEdit" label="Edit Metadata" disabled="true" image="/img/edit_metadata.png"/>
             <menuitem id="processDelete" label="Delete" disabled="true" image="/img/delete.png"/>
             <!--
             <menuseparator/>
