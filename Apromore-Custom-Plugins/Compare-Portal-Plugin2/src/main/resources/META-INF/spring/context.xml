@@ -47,12 +47,12 @@
     
     <beans:bean id="plugin" class="org.apromore.plugin.portal.compareBP2.ComparePlugin">
         <beans:property name="groupLabel" value="Analyze" />
-        <beans:property name="label" value="Compare (bpmn.io)" />
+        <beans:property name="label" value="Compare" />
     </beans:bean>
 
     <beans:bean id="plugin2" class="org.apromore.plugin.portal.compareBP2.ComparePlugin">
         <beans:property name="groupLabel" value="Monitor" />
-        <beans:property name="label" value="Compare (bpmn.io)" />
+        <beans:property name="label" value="Compare" />
     </beans:bean>
 
     <!-- Exposes the component as OSGi service -->

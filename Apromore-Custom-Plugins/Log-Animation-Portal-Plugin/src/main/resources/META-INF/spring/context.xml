@@ -33,7 +33,8 @@
     <context:spring-configured />
 
     <!-- Other OSGi services this component consumes -->
-    <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=signavio)" availability="optional"/>
+    <list id="editorPluginsSignavio" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=signavio)" availability="optional"/>
+	<list id="editorPluginsBPMN" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" availability="optional"/>
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="logAnimationService" interface="org.apromore.service.loganimation.LogAnimationService"/>
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>

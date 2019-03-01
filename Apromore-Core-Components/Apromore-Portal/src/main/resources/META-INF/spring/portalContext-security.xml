@@ -74,8 +74,17 @@
         </beans:property>
         <beans:property name="authorityGranters">
             <beans:list>
-                <beans:bean class="org.apromore.security.AuthorityGranterImpl"/>
+                <beans:ref bean="authorityGranter"/>
             </beans:list>
+        </beans:property>
+    </beans:bean>
+
+    <beans:bean id="authorityGranter" class="org.apromore.security.AuthorityGranterImpl">
+        <beans:property name="principalClassName" value="com.sun.security.auth.UserPrincipal"/>
+        <beans:property name="grants">
+            <beans:set>
+                <beans:value>ROLE_USER</beans:value>
+            </beans:set>
         </beans:property>
     </beans:bean>
     -->

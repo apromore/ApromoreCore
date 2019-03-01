@@ -35,7 +35,7 @@ ORYX.CONFIG.PANEL_RIGHT_WIDTH	= 		200;
 ORYX.CONFIG.APPNAME = 					'Signavio';
 ORYX.CONFIG.WEB_URL = 					"explorer";
 
-ORYX.CONFIG.PDF_EXPORT_URL = '/editor' + '/editor/pdf';
+ORYX.CONFIG.PDF_EXPORT_URL = '/bpmneditor' + '/editor/pdf';
 ORYX.CONFIG.BIMP_URL = "http://bimp.cs.ut.ee/uploadsignavio";
 ORYX.CONFIG.DIAGRAM_PRINTER_URL = "/printsvg";
 ORYX.CONFIG.LICENSE_URL = "/LICENSE";
