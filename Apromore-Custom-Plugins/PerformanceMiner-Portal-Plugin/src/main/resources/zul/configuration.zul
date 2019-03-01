@@ -78,4 +78,11 @@
         </grid>
     </vbox>
     <textbox visible="false" id="data" />
+
+    <div width="100%" height="100%">
+        <hlayout valign="bottom" >
+            <image src="img/prom_logo.png" sclass="image" />
+            <label value="Part of this plugin uses " /> <a href="http://www.promtools.org" target="_blank" label="ProM" /> <label value=" core libraries."/>
+        </hlayout>
+    </div>
 </window>

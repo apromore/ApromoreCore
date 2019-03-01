@@ -62,6 +62,8 @@
                             !hub.top.*,
                             !junit.framework,
                             !org.junit,
+                            !au.edu.qut.bpmn.exporter.impl.*;version="[1.1.0,2.0.0)",
+                            !org.apromore.service.ibpstruct.*;version="[1.1.0,2.0.0)",
                             com.sun.xml.bind.v2,
                             org.eclipse.virgo.web.dm,
                             org.springframework.web.context,

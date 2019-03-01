@@ -45,7 +45,7 @@
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Bundle-Name>BPMNTK OSGI</Bundle-Name>
                         <Import-Bundle>
-							org.apromore.raffaeleconforti-osgi;bundle-version="[1.0,2.0]"
+                            org.apromore.raffaeleconforti-osgi;bundle-version="[1.0,2.0]"
                         </Import-Bundle>
                         <Import-Package>
                             !ee.ut.comptech,
@@ -68,12 +68,12 @@
                 </configuration>
             </plugin>
             <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-surefire-plugin</artifactId>-->
-                <!--<version>2.19.1</version>-->
-                <!--<configuration>-->
-                    <!--<useSystemClassLoader>false</useSystemClassLoader>-->
-                <!--</configuration>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-surefire-plugin</artifactId>-->
+            <!--<version>2.19.1</version>-->
+            <!--<configuration>-->
+            <!--<useSystemClassLoader>false</useSystemClassLoader>-->
+            <!--</configuration>-->
             <!--</plugin>-->
         </plugins>
     </build>
@@ -83,7 +83,7 @@
             <groupId>org.apromore</groupId>
             <artifactId>bpstruct-osgi</artifactId>
             <version>1.1</version>
-        </dependency>    
+        </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>raffaeleconforti-osgi</artifactId>
@@ -98,4 +98,3 @@
     </dependencies>
 
 </project>
- 

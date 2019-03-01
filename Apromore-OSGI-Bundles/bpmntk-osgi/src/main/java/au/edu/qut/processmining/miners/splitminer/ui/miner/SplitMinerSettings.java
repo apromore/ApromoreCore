@@ -1,9 +1,5 @@
 package au.edu.qut.processmining.miners.splitminer.ui.miner;
 
-import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
-import com.fluxicon.slickerbox.components.NiceDoubleSlider;
-import com.fluxicon.slickerbox.components.NiceSlider;
-import com.fluxicon.slickerbox.factory.SlickerFactory;
 import org.processmining.framework.util.ui.widgets.ProMPropertiesPanel;
 
 import javax.swing.*;
