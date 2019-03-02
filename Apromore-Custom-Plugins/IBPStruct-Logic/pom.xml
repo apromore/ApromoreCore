@@ -51,6 +51,7 @@
                         <Import-Package>
                             org.springframework.beans.factory.aspectj,
                             au.edu.qut.bpmn.structuring,
+                            <!--!au.edu.qut.bpmn.structuring; version="[1.1.0,2.0.0)",-->
                             au.edu.qut.bpmn.exporter.*,
                             au.edu.qut.bpmn.exporter.impl.*,
                             org.processmining.contexts.*;version="[1.0,2.0)",

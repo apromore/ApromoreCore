@@ -117,7 +117,7 @@
                                 </columns>
                                 <rows>
                                     <row id="withCharacterizationRow" visible="true">
-                                        <label width="100%"/>
+                                        <label width="100%" />
                                         <checkbox id="withCharacterizationCBox" width="100%" label="Drift characterization"
                                                   checked="true" onCheck="if(withCharacterizationCBox.checked){
                                             CummulativeChangeRow.visible = true;
@@ -159,21 +159,6 @@
                                         <!--<slider id="noiseFilterSlider" mold="scale" maxpos="10" width="100%"/>-->
                                     </row>
 
-                                    <row id="driftDetectionSensitivity">
-                                        <label value="Drift detection sensitivity" width="100%"/>
-                                        <combobox id="driftDetectionSensitivityCombo" readonly="true">
-                                            <comboitem label="Very low"
-                                                       description="Suitable for processes with frequent control-flow behavior changes (most real-life logs)." />
-                                            <comboitem label="Low"
-                                                       description="Suitable for processes with frequent control-flow behavior changes (most real-life logs)." />
-                                            <comboitem label="Medium"
-                                                       description="" />
-                                            <comboitem label="High"
-                                                       description="" />
-                                            <comboitem label="Very high"
-                                                       description="" />
-                                        </combobox>
-                                    </row>
                                     <!--<row id="conflictRow">-->
                                     <!--<label width="100%"/>-->
                                     <!--<checkbox id="conflictCBox" width="100%" label="Include conflict relation" checked="true"/>-->
@@ -215,4 +200,12 @@
             </rows>
         </grid>
     </vbox>
+
+    <div width="100%" height="100%">
+        <hlayout valign="bottom" >
+            <image src="img/prom_logo.png" sclass="image" />
+            <label value="Part of this plugin uses " /> <a href="http://www.promtools.org" target="_blank" label="ProM" /> <label value=" core libraries."/>
+        </hlayout>
+    </div>
 </window>
+

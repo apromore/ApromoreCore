@@ -1192,9 +1192,8 @@ public class ControlFlowDriftDetector_EventStream implements ControlFlowDriftDet
 
 					}else if(statisticTest == StatisticTestConfig.QS)
 					{
-						pValue = Utils.runChiSquareTest(Alpha_FreqMatrix2, ddSensitivity);
-//						ChiSquareTest cst = new ChiSquareTest();
-//						pValue = cst.chiSquareTest(Alpha_FreqMatrix2);
+						ChiSquareTest cst = new ChiSquareTest();
+						pValue = cst.chiSquareTest(Alpha_FreqMatrix2);
 
 					}
 

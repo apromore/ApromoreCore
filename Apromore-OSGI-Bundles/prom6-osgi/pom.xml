@@ -31,7 +31,7 @@
     -->
 
     <groupId>org.apromore</groupId>
-        <artifactId>prom6-osgi</artifactId>
+    <artifactId>prom6-osgi</artifactId>
     <version>6.0</version>
     <packaging>bundle</packaging>
 
@@ -774,9 +774,9 @@
 
 
         <!--<dependency>-->
-            <!--<groupId>com.raffaeleconforti</groupId>-->
-            <!--<artifactId>bpmnminer-logic</artifactId>-->
-            <!--<version>1.0.20170628</version>-->
+        <!--<groupId>com.raffaeleconforti</groupId>-->
+        <!--<artifactId>bpmnminer-logic</artifactId>-->
+        <!--<version>1.0.20170628</version>-->
         <!--</dependency>-->
 
         <dependency>
