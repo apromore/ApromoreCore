@@ -184,7 +184,7 @@
         <!-- Relative positioning is used so that the speed control can overlay on top of the others -->
         <n:div id="playback_controls" style="float:left; background: #EEEEFF; border: 0px solid black; padding: 0px; padding-top: 0px; left: 0; top: 0px; overflow: hidden">
             <!-- SVG for the timeline -->
-            <n:svg id="timeline_svg" xmlns="http://www.w3.org/2000/svg" width="90vw" height="8vh" style="margin-left:5vw; margin-top:2px; background: yellow;"></n:svg>
+            <n:svg id="timeline_svg" xmlns="http://www.w3.org/2000/svg" width="90vw" height="8vh" style="margin-left:5vw; margin-top:2px; background: none;"></n:svg>
 
             <div style="float:left;width: 25vw; top: 0px; background-color:none;">
               <div id="buttons_and_rate" style="float:left; margin-left: 5vw; margin-top: 2px; padding: 0px; top: 0px; width:20vw; overflow: hidden; background-color:none;">
