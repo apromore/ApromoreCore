@@ -291,11 +291,13 @@ AnimationController = {
         "use strict";
         this.clockTimer = null;
         this.svgDocuments =  [];
+        this.timelineSVG = undefined;
         this.slotDataUnit = 1000;
         this.timelineSlots = 120;
         this.timelineEngineSeconds = 120;
         this.startDateMillis = 0;
         this.canvas = editorCanvas; // the editor canvas
+        this.timelineTick = undefined; //keep track of the timeline tick for dragging action
     },
 
     pauseAnimations: function() {
@@ -329,10 +331,10 @@ AnimationController = {
     reset: function(jsonRaw) {
         svgDocument = this.canvas.getSVGContainer();
         svgDocumentG = this.canvas.getSVGViewport();
-
+        this.timelineSVG = $j("div#playback_controls > svg")[0];
         this.svgDocuments.clear();
         this.svgDocuments.push(svgDocument);
-        this.svgDocuments.push($j("div#playback_controls > svg")[0]);
+        this.svgDocuments.push(this.timelineSVG);
         this.svgDocuments.push($j("div#progress_display > svg")[0]);
 
         var tokenE = svgDocument.getElementById("progressAnimation");
@@ -370,13 +372,13 @@ AnimationController = {
         this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit;
 
         //Recreate progress indicators
-        var progressIndicatorE = controller.createProgressIndicators(logs, jsonServer.timeline);
+        var progressIndicatorE = this.createProgressIndicators(logs, jsonServer.timeline);
         $j("div#progress_display > svg")[0].append(progressIndicatorE);
 
         //Recreate timeline to update date labels
         //$j("#timeline").remove();
-        var timelineE = controller.createTimeline();
-        $j("div#playback_controls > svg")[0].append(timelineE);
+        var timelineE = this.createTimeline();
+        this.timelineSVG.append(timelineE);
 
         // Add log intervals to timeline: must be after the timeline creation
         //var timelineElement = $j("#timeline")[0];
@@ -385,7 +387,7 @@ AnimationController = {
         for (var j=0; j<jsonServer.timeline.logs.length; j++) {
             var log = jsonServer.timeline.logs[j];
             var logInterval = document.createElementNS(svgNS,"line");
-            logInterval.setAttributeNS(null,"x1",startTopX + 9 * log.startDatePos);  // magic number 10 is gapWidth / gapValue
+            logInterval.setAttributeNS(null,"x1",startTopX + 9 * log.startDatePos);  // magic number 10 is slotWidth / slotEngineDur
             logInterval.setAttributeNS(null,"y1",startTopY + 8 + 7 * j);
             logInterval.setAttributeNS(null,"x2",startTopX + 9 * log.endDatePos);
             logInterval.setAttributeNS(null,"y2",startTopY + 8 + 7 * j);
@@ -575,7 +577,7 @@ AnimationController = {
      * Thus, for the token to start from the same position it was before the speed changes (i.e. dur changes from X to Y),
      * the engine time must be set to (Y/X)*Cx, where Cx = svgDoc.getCurrentTime().
      * Y/X is called the DistanceRatio.
-     * Instead of making changes to the distances, the user sets the speed on through a speed slider control.
+     * Instead of making changes to the distances, the user sets the speed through a speed slider control.
      * Each level represents a speed rate of the tokens
      * The SpeedRatio Sy/Sx is the inverse of the DistanceRatio Y/X.
      * So, in the formula above: Cy = Cx/SpeedRatio, i.e. if the speed is increased, the distance and time is shorter
@@ -632,7 +634,7 @@ AnimationController = {
        if (this.getCurrentTime() >= this.endPos*this.slotEngineUnit/1000) {
            return;
        } else {
-           this.setCurrentTime(this.getCurrentTime() + 1*this.slotEngineUnit/1000); //move forward 5 slots
+           this.setCurrentTime(this.getCurrentTime() + 1*this.slotEngineUnit/1000); //move forward 1 slots
        }
     },
 
@@ -640,7 +642,7 @@ AnimationController = {
        if (this.getCurrentTime() <= this.startPos*this.slotEngineUnit/1000) {
            return;
        } else {
-           this.setCurrentTime(this.getCurrentTime() - 1*this.slotEngineUnit/1000); //move backward 5 slots
+           this.setCurrentTime(this.getCurrentTime() - 1*this.slotEngineUnit/1000); //move backward 1 slots
        }
     },
 
@@ -820,22 +822,24 @@ AnimationController = {
 
         var startTopX = 20;
         var startTopY = 15;
-        var gapWidth = 9;
-        var gapValue = this.slotEngineUnit/1000;
+        var slotWidth = 9;
+        var slotEngineDur = this.slotEngineUnit/1000; //number of SVG engine seconds for one slot
         var lineLen = 30;
         var textToLineGap = 5;
         var startValue = 0;
-        var textValue = -gapValue;
-        var lineTopX = -gapWidth + startTopX;
-        var gapNum = this.timelineSlots;
+        var textValue = -slotEngineDur;
+        var lineTopX = -slotWidth + startTopX;
+        var slotNum = this.timelineSlots; // the number of timeline vertical bars
+
+
 
         /*---------------------------
         Add text and line for the bar
         ---------------------------*/
 
-        for (var i=0;i<=gapNum;i++) {
-            lineTopX += gapWidth;
-            //textValue += gapValue;
+        for (var i=0;i<=slotNum;i++) {
+            lineTopX += slotWidth;
+            //textValue += slotEngineDur;
             if (i%10 == 0) {
                 var date = new Date();
                 date.setTime(this.startDateMillis + i*this.slotDataUnit);
@@ -860,52 +864,93 @@ AnimationController = {
         indicatorE.setAttributeNS(null,"stroke","grey");
         indicatorE.setAttributeNS(null,"rx","2");
         indicatorE.setAttributeNS(null,"ry","2");
-        //indicatorE.setAttributeNS(null,"stroke-opacity","0.4");
-
+        indicatorE.setAttributeNS(null,"x", -3); // note: the Y-axis of the tick is controlled by the animateMotion path it attaches to
+        indicatorE.setAttributeNS(null, "style", "cursor: move");
 
         var indicatorAnimation = document.createElementNS(svgNS,"animateMotion");
         indicatorAnimation.setAttributeNS(null,"id","timelineTick");
         indicatorAnimation.setAttributeNS(null,"begin","0s");
-        indicatorAnimation.setAttributeNS(null,"dur",gapNum*gapValue + "s");
-        indicatorAnimation.setAttributeNS(null,"by",gapValue);
+        indicatorAnimation.setAttributeNS(null,"dur",slotNum*slotEngineDur + "s");
+        indicatorAnimation.setAttributeNS(null,"by",slotEngineDur);
         indicatorAnimation.setAttributeNS(null,"from", startTopX + "," + (startTopY+5));
         indicatorAnimation.setAttributeNS(null,"to",lineTopX + "," + (startTopY+5));
         indicatorAnimation.setAttributeNS(null,"fill","freeze");
         indicatorE.appendChild(indicatorAnimation);
-
         timelineElement.appendChild(indicatorE);
 
-        // allow indicator to be dragged horizontally
-        timelineElement.setAttributeNS(null,"pointer-events","visible");
-        timelineElement.setAttributeNS(null,"onmousedown","controller.startIndicatorDrag(evt)");
-        timelineElement.setAttributeNS(null,"onmousemove","controller.doIndicatorDrag(evt, " + startTopX + ", " + lineTopX + ")");
-        timelineElement.setAttributeNS(null,"onmouseup","controller.endIndicatorDrag(evt)");
+        /*---------------------------
+        Control dragging of the timeline stick
+        ---------------------------*/
+        indicatorE.addEventListener('mousedown', startDragging.bind(this));
+        indicatorE.addEventListener('mousemove', dragging.bind(this));
+        indicatorE.addEventListener('mouseup', stopDragging.bind(this));
+        indicatorE.addEventListener('mouseleave', stopDragging.bind(this));
+
+        var dragging= false;
+        var offset;
+        var lastPos=-3;
+        var svg = this.timelineSVG;
+
+        function startDragging(evt) {
+          dragging = true;
+          offset = getMousePosition(evt);
+          offset.x -= parseFloat(indicatorE.getAttributeNS(null, "x"));
+          this.pause();
+        }
+
+        function dragging(evt) {
+          if (dragging) {
+            evt.preventDefault();
+            var coord = getMousePosition(evt);
+            lastPos = coord.x - offset.x;
+            indicatorE.setAttributeNS(null, "x",  lastPos);
+          }
+        }
+
+        // Only update SVG current time when the dragging finishes to avoid heavy on-the-fly updates
+        // After every call setCurrentTime, the SVG coordinate is moved to the new position of the tick
+        // As calling setCurrentTime will also update the tick's position, we have to move the tick
+        // back to its original position before the call to setCurrentTime, otherwise it is moved two times
+        // The dragging flag is checked to avoid doing two times for mouseup and mouseleave events
+        function stopDragging(evt) {
+          if (!dragging) return; //avoid doing the below two times
+          dragging = false;
+          var slotCount = (lastPos) / slotWidth;
+          //alert("lastPos: " + lastPos);
+          //alert("slotCount: " + slotCount);
+          if (slotCount != 0) {
+            indicatorE.setAttributeNS(null,"x", 0);
+            this.setCurrentTime(this.getCurrentTime() + 1.0*slotCount*this.slotEngineUnit / 1000.0);
+          }
+
+        }
+
+        //Convert from screen coordinates to SVG document coordinates
+        function getMousePosition(evt) {
+          var matrix = svg.getScreenCTM();
+          var pt = svg.createSVGPoint();
+          pt.x = evt.clientX;
+          pt.y = evt.clientY;
+          pt.matrixTransform(matrix);
+          return {x: pt.x, y: pt.y};
+          // return {
+          //   x: (evt.clientX - CTM.e) / CTM.a,
+          //   y: (evt.clientY - CTM.f) / CTM.d
+          // };
+        }
 
         return timelineElement;
 
     },
 
-    startIndicatorDrag: function(evt) {
-        this.dragging = true;
-    },
-
-    doIndicatorDrag: function(evt, from, to) {
-        if (this.dragging) {
-            var time = (this.slotEngineUnit / 1000.0) * 120 * (evt.clientX - 50) / (to - from);
-            this.setCurrentTime(time);
-        }
-    },
-
-    endIndicatorDrag: function(evt) {
-        this.dragging = false;
-    },
-
     setCaseLabelsVisible: function(visible) {
-        if (caseLabelsVisible != visible) {
-            caseLabelsVisible = visible;
-            this.updateMarkersOnce();
-        }
+      if (caseLabelsVisible != visible) {
+        caseLabelsVisible = visible;
+        this.updateMarkersOnce();
+      }
     }
+
+
 };
 
 AnimationController = Clazz.extend(AnimationController);
