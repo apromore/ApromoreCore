@@ -1,4 +1,4 @@
-/*! jQuery-ui-Slider-Pips - v1.11.4 - 2016-09-04
+/*! jQuery-ui-Slider-Pips - v1.11.3 - 2016-03-15
 * Copyright (c) 2016 Simon Goellner <simey.me@gmail.com>; Licensed MIT */
 
 /* HORIZONTAL */
@@ -308,9 +308,9 @@
 }
 
 .ui-slider-pips [class*=ui-slider-pip-selected] {
-   font-weight: bold;
-   color: #FF7A00;
- }
+  font-weight: bold;
+  color: #FF7A00;
+}
 
 .ui-slider-pips .ui-slider-pip-inrange {
   color: black;

@@ -18,6 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
+<?link rel="shortcut icon" href="favicon.ico" ?>
 <z:window id="win"
         xmlns="http://www.zkoss.org/2005/zk/native"
         xmlns:n="http://www.zkoss.org/2005/zk/native"
@@ -41,7 +42,7 @@
 
     <!-- STYLESHEET FOR LOG ANIMATION -->
     <link rel="stylesheet" href="/loganimation/jquery-ui.css" type="text/css" />
-    <link rel="stylesheet" href="/loganimation/jquery-ui.theme.css" type="text/css"/>
+    <!-- <link rel="stylesheet" href="/loganimation/jquery-ui.theme.css" type="text/css"/> -->
 
     <link rel="stylesheet" href="/loganimation/jquery-ui-slider-pips.css" type="text/css"/>
     <link rel="stylesheet" href="/loganimation/styles.css" type="text/css"/>
@@ -152,15 +153,13 @@
 						var resStepValues = [.00001, .0001, .0005, .001, .005, .01, .05, .1, .2, .5, 1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 10000];
 						var $jslider2 = $j( "#slider2" ).slider({
 							orientation: "horizontal",
-							step: 2,
+							step: 1,
 							min: 1,
 							max: 20,
-							value: 11
+							value: 10
 						});
-						$jslider2.slider('pips',{
-              first: 'pip', last: 'pip'
-            });
 
+						$jslider2.slider('pips',{first: 'pip', last: 'pip'}).slider("float");
 						var lastSliderValue = $jslider2.slider("value");
 						$j("#slider2").on( "slidechange", function(event,ui) {
 							speedRatio = (resStepValues[ui.value-1]/resStepValues[lastSliderValue-1]);
@@ -215,8 +214,8 @@
               <!-- Use absolute position to place this control on top of the editor -->
               <!-- <div id="speed_controls" style="position: absolute; background: #EEE; border: 1px solid black; left: 200px; top: 360px; width: 800px; height: 70px; overflow: hidden"> -->
               <div id="speed_controls" style="float:left; margin-left: 3vw; margin-top: 0px; top: 0px; width:20vw; height: 7vh; overflow: hidden; background-color:#EEEEFF;">
-                <center style="font: 1em monospace">Replay Speed</center>
-                <div id="slider2" disabled="disabled" style="margin-top: 4px; margin-left:1vw; margin-right:1vw;"></div>
+                <!-- <center style="font: 1em monospace">Replay Speed</center> -->
+                <div id="slider2" disabled="disabled" style="margin-top: 8px; margin-left:1vw; margin-right:1vw;"></div>
               </div>
             </div>
 
