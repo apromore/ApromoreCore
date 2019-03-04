@@ -44,11 +44,10 @@ import org.apromore.service.EventLogService;
 import org.apromore.service.loganimation.LogAnimationService;
 import org.deckfour.xes.model.XLog;
 
-@Component("plugin")
 public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimationPluginInterface {
 
-    private String label = "Animate Logs";
-    private String groupLabel = "Analyze";
+    private String label = ""; //initialized in Spring beans
+    private String groupLabel = ""; //initialized in Spring beans
 
     @Inject private EventLogService eventLogService;
     @Inject private LogAnimationService logAnimationService;

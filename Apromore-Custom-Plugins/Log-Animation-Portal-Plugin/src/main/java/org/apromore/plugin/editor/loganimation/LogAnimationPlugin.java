@@ -26,16 +26,25 @@ import org.springframework.stereotype.Component;
 // Local packages
 import org.apromore.plugin.editor.DefaultEditorPlugin;
 
-@Component("editorPlugin")
 public class LogAnimationPlugin extends DefaultEditorPlugin {
-
+    private String javaScriptURI = ""; //initialized in Spring beans
+    private String javaScriptPackage = ""; //initialized in Spring beans
+	
     @Override
     public String getJavaScriptURI() {
-        return "/loganimation/FileUploadField.js+editor_plugin.js";
+        return javaScriptURI;
+    }
+   
+    public void setJavaScriptURI(String newValue) {
+    	javaScriptURI = newValue;
     }
 
     @Override
     public String getJavaScriptPackage() {
-        return "ORYX.Plugins.LogAnimation";
+        return javaScriptPackage;
+    }
+    
+    public void setJavaScriptPackage(String newValue) {
+    	javaScriptPackage = newValue;
     }
 }
