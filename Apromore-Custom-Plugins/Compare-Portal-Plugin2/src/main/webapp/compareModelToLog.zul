@@ -18,6 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
+<?link rel="shortcut icon" href="favicon.ico" ?>
 <window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native" xmlns:z="http://www.zkoss.org/2005/zul" use="org.apromore.plugin.portal.compareBP2.ModelToLogComparisonController">
 
         <!-- STYLESHEET FOR THE WRAPPER EDITOR -->
