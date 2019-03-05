@@ -116,6 +116,12 @@ The following properties may usually by left at their default values:
 
 Stop and restart the server so that it picks up the changes to site.properties.
 
+Ensure that the following bundles are present in the Virgo pickup directory.
+You can manually copy them there, but the easiest option is to edit pickupRepo in build.xml so that "ant start-virgo" copies them there on startup.
+* Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar
+* Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war
+* Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war
+
 
 PQL SETUP
 =========
