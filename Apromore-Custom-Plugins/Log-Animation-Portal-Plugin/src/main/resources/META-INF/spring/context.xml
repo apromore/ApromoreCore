@@ -72,5 +72,5 @@
     <!-- <context:component-scan base-package="org.apromore.plugin.portal.loganimation" /> -->
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
 	<service ref="plugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
-	<service ref="plugin3" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" auto-export="interfaces" />
+	<service ref="plugin3" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
 </beans:beans>
