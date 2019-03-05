@@ -55,76 +55,76 @@
 
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
-        <include name="BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
-		<include name="BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
-        <include name="BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
 
-        <include name="BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
 
-        <include name="Cmapper-Portal-Plugin/target/cmapper-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Cmapper-Portal-Plugin/target/cmapper-portal-plugin-1.1.war"/>
 
-        <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
-        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
-		<include name="Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Compare-Logic/target/compare-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
 
-        <include name="LTL-Conf-Logic/target/ltl-conf-logic-1.1.jar"/>
-        <include name="LTL-Conf-Portal-Plugin/target/ltl-conf-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/LTL-Conf-Logic/target/ltl-conf-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin/target/ltl-conf-portal-plugin-1.1.war"/>
 
-        <include name="APM-Logic/target/apm-logic-1.1.jar"/>
-        <include name="APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/APM-Logic/target/apm-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
 
-        <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
-        <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
 
-	    <include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
-        <include name="APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
 
-        <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
-        <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
 
-        <include name="Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
-        <include name="Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
 
-        <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
-        <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
 
-        <include name="Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
-        <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
-        <include name="Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
 
-        <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
-        <include name="Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
-		<include name="Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
 
-        <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
-        <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
-        <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
+        <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
+        <!--<include name="Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
 
-        <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
-        <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Metrics-Logic/target/metrics-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
 
-        <include name="BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
-        <include name="BEBoP-Portal-Plugin/target/gbebop-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/BEBoP-Portal-Plugin/target/gbebop-portal-plugin-1.1.jar"/>
 
-        <include name="BProVe-Logic/target/gbprove-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/BProVe-Logic/target/gbprove-logic-1.1.jar"/>
 
-        <include name="PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
-        <include name="PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
 
-        <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
-        <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
 
-        <include name="Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
 
-        <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
 
-        <include name="StageMining-Logic/target/stagemining-logic-1.1.jar"/>
-        <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/StageMining-Logic/target/stagemining-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 
         <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
         <include name="Supplements/process-discoverer-1.0.20181204.jar"/>
-		
-		<include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
+
+        <include name="Apromore-Core-Co^mponents/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
     </fileset>
 
     <fileset id="pickupRepoServer" dir=".">
@@ -134,85 +134,84 @@
 
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
-        <include name="BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
-		<include name="BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
-        <include name="BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
 
-        <include name="BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
 
-        <include name="Cmapper-Portal-Plugin/target/cmapper-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Cmapper-Portal-Plugin/target/cmapper-portal-plugin-1.1.war"/>
 
-        <include name="Compare-Logic/target/compare-logic-1.1.jar"/>
-        <include name="Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
-		<include name="Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Compare-Logic/target/compare-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
 
-        <include name="LTL-Conf-Logic/target/ltl-conf-logic-1.1.jar"/>
-        <include name="LTL-Conf-Portal-Plugin/target/ltl-conf-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/LTL-Conf-Logic/target/ltl-conf-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin/target/ltl-conf-portal-plugin-1.1.war"/>
         
-        <include name="APM-Logic/target/apm-logic-1.1.jar"/>
-        <include name="APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/APM-Logic/target/apm-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/APM-Portal-Plugin/target/apm-portal-plugin-1.1.war"/>
 
-        <include name="APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
-        <include name="APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
 
-	    <include name="APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
-        <include name="APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
 
-        <include name="IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
-        <include name="IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/IBPStruct-Portal-Plugin/target/ibpstruct-portal-plugin-1.1.jar"/>
 
-        <include name="Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
-        <include name="Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Activity-Filter-Logic/target/activity-filter-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Activity-Filter-Portal-Plugin/target/activity-filter-portal-plugin-1.1.jar"/>
 
-        <include name="Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
-        <include name="Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
 
-        <include name="Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
-        <include name="Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
-        <include name="Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
 
-        <include name="Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
-        <include name="Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
-		<include name="Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
 
-        <include name="Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
-        <include name="Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
-        <!--<include name="Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
+        <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
+        <!--<include name="Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
 
-        <include name="Metrics-Logic/target/metrics-logic-1.1.jar"/>
-        <include name="Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Metrics-Logic/target/metrics-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Metrics-Portal-Plugin/target/metrics-portal-plugin-1.1.jar"/>
 
-        <include name="BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
-        <include name="BEBoP-Portal-Plugin/target/gbebop-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/BEBoP-Logic/target/gbebop-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/BEBoP-Portal-Plugin/target/gbebop-portal-plugin-1.1.jar"/>
 
-        <include name="BProVe-Logic/target/gbprove-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/BProVe-Logic/target/gbprove-logic-1.1.jar"/>
 
-        <include name="PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
-        <include name="PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
 
-        <include name="ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
-        <include name="ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
 
-        <include name="Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
 
-        <include name="Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
 
-        <include name="StageMining-Logic/target/stagemining-logic-1.1.jar"/>
-        <include name="StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/StageMining-Logic/target/stagemining-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 
         <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
         <include name="Supplements/process-discoverer-1.0.20181204.jar"/>
 
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
         -->
-        <include name="APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
         <include name="Apromore-Assembly/PQL-Indexer-Assembly/src/main/resources/103-pql-indexer.plan"/>
-        <include name="PQL-Logic/target/pql-logic-1.1.jar"/>
-        <include name="PQL-Logic-WS/target/pql-logic-ws-1.1.war"/>
-        <include name="PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
-		
-		
-		<include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/PQL-Logic/target/pql-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/PQL-Logic-WS/target/pql-logic-ws-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
+
+        <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
     </fileset>
 
     <fileset id="pickupRepo" dir=".">
@@ -246,7 +245,7 @@
         <include name="Apromore-Custom-Plugins/APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
 
-	    <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
 
         <include name="Apromore-Custom-Plugins/IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
@@ -261,9 +260,11 @@
         <include name="Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
 
+        <!-- Predictive monitoring requires additional servers to be set up, so default to not installing it
         <include name="Apromore-Custom-Plugins/Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
+        -->
 
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
@@ -307,14 +308,14 @@
         <include name="Apromore-Custom-Plugins/PQL-Logic-WS/target/pql-logic-ws-1.1.war"/>
         <include name="Apromore-Custom-Plugins/PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
         -->
-		
-		<include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
-		<include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
-		<include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
-		<!-- <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/> -->
+
+        <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
+        <!-- <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/> -->
     </fileset>
-	
-	<fileset id="pickupRepo-student" dir=".">
+
+    <fileset id="pickupRepo-student" dir=".">
         <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
         <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
@@ -344,7 +345,7 @@
         <include name="Apromore-Custom-Plugins/APM-Compliance-Logic/target/apm-compliance-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/APM-Compliance-Portal-Plugin/target/apm-compliance-portal-plugin-1.1.war"/>
 
-	    <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Logic/target/apm-comp-guards-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/APM-Comp-Guards-Portal-Plugin/target/apm-comp-guards-portal-plugin-1.1.war"/>
 
         <include name="Apromore-Custom-Plugins/IBPStruct-Logic/target/ibpstruct-logic-1.1.jar"/>
@@ -364,13 +365,13 @@
         <include name="Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
 
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
-		
-		<!-- Do not switch off this Signavio-based plugin because /Supplements/process-discoverer-1.0.20181204.jar depends on it -->
+
+        <!-- Do not switch off this Signavio-based plugin because /Supplements/process-discoverer-1.0.20181204.jar depends on it -->
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
 
         <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
-		<!-- This plugin is the same as the plugin provided in /Supplements/process-discoverer-1.0.20181204.jar which depends on Signavio-based plugin log animation-->
+        <!-- This plugin is the same as the plugin provided in /Supplements/process-discoverer-1.0.20181204.jar which depends on Signavio-based plugin log animation-->
         <!-- <include name="Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/> -->
 
         <include name="Apromore-Custom-Plugins/Metrics-Logic/target/metrics-logic-1.1.jar"/>
@@ -408,11 +409,11 @@
         <include name="Apromore-Custom-Plugins/PQL-Logic-WS/target/pql-logic-ws-1.1.war"/>
         <include name="Apromore-Custom-Plugins/PQL-Portal-Plugin/target/pql-portal-plugin-1.1.jar"/>
         -->
-		
-		<include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
-		<include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
-		<include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
-		<!-- <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/> -->
+
+        <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
+        <!-- <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/> -->
     </fileset>
 
     <fileset id="usrRepo" dir=".">
@@ -518,8 +519,8 @@
             <arg line="-clean"/>
         </exec>
     </target>
-	
-	<target name="start-virgo-student" depends="set-permissions,copy-virgo-student">
+
+    <target name="start-virgo-student" depends="set-permissions,copy-virgo-student">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -528,7 +529,7 @@
         <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
             <arg line="-clean"/>
         </exec>
-    </target>	
+    </target>
 
     <target name="start-virgo-standalone" depends="set-permissions,copy-virgo-standalone,delete-standalone">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
@@ -601,7 +602,7 @@
         <delete file="${dir-virgo}/pickup/apm-logic-1.1.jar"/>
         <delete file="${dir-virgo}/pickup/apm-portal-plugin-1.1.war"/>
         <delete file="${dir-virgo}/pickup/bimp-editor-plugin-1.0.war"/>
-		<delete file="${dir-virgo}/pickup/bimp-editor-plugin2-1.0.war"/>
+        <delete file="${dir-virgo}/pickup/bimp-editor-plugin2-1.0.war"/>
         <delete file="${dir-virgo}/pickup/bimp-portal-plugin-1.0.jar"/>
         <delete file="${dir-virgo}/pickup/ibpstruct-portal-plugin-1.1.jar"/>
         <delete file="${dir-virgo}/pickup/canoniser-aris-1.1.jar"/>
@@ -625,9 +626,9 @@
         <delete file="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
         <delete file="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
         <delete file="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
-		<delete file="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
-		<delete file="${dir-virgo}/pickup/apromore-bpmneditor-1.1.war"/>
-		
+        <delete file="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
+        <delete file="${dir-virgo}/pickup/apromore-bpmneditor-1.1.war"/>
+
 
         <delete file="${dir-virgo}/pickup/org.eclipse.virgo.apps.repository_3.6.4.RELEASE.par"/>
         <delete file="${dir-virgo}/pickup/org.eclipse.virgo.management.console_3.6.4.RELEASE.jar"/>
@@ -682,11 +683,11 @@
                 <include name="**/target/similaritysearch-osgi-1.1.jar"/>
                 <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
                 <include name="**/target/apm-verification-osgi-1.1.jar"/>
-<!--                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>-->
+                <!--<include name="**/target/uma-bpdiff-osgi-1.1.jar"/>-->
                 <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
                 <include name="**/target/prom-pnml-osgi-1.1.jar"/>
-		        <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
-		        <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
+                <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+                <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
                 <!--<include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>-->
                 <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
                 <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
@@ -710,7 +711,7 @@
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
-		<copy file="Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
+        <copy file="Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
 
@@ -775,13 +776,13 @@
         </copy>
 
         <!-- Force the BPMN Miner plugin to be alphabetically after the iBPStruct plugin it depends upon -->
-        <copy file="BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
-        <copy file="BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
+        <copy file="Apromore-Custom-Plugins/BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
+        <copy file="Apromore-Custom-Plugins/BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
 
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
-		<copy file="Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
+        <copy file="Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
 
@@ -868,7 +869,7 @@
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
-		<copy file="Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin2-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
+        <copy file="Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin2-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
 
@@ -920,7 +921,7 @@
         <!-- PQL indexing bot -->
         <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
     </target>
-	
+
     <target name="copy-virgo-student" depends="clean-virgo">
         <copy file="Supplements/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
         <copy file="Supplements/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
@@ -965,13 +966,13 @@
         <copy file="Apromore-Custom-Plugins/BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
 
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
-		<copy file="Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin2-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
-		<!-- Switch off Signavio-based plugins
+        <copy file="Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin2-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
+        <!-- Switch off Signavio-based plugins
         <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
         <copy file="Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
-		-->
+        -->
 
         <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing
         <copy file="Apromore-Custom-Plugins/PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
@@ -1020,7 +1021,7 @@
 
         <!-- PQL indexing bot -->
         <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
-    </target>	
+    </target>
 
     <target name="create-h2">
         <delete>
@@ -1132,71 +1133,71 @@
             <arg value="Model2.bpmn"/>
 
             <!-- Model to log -->
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CAUSCONC-1"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CAUSCONC-1"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/CAUSCONC-1"/>
             <arg value="bp3.bpmn"/>
             <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CAUSCONC-2"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CAUSCONC-2"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/CAUSCONC-2"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog4.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CONFLICT-1"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-1"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-1"/>
             <arg value="bp5.bpmn"/>
             <arg value="bpLog4.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CONFLICT-2"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-2"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-2"/>
             <arg value="bp3.bpmn"/>
             <arg value="bpLog5.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CONFLICT-3"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-3"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-3"/>
             <arg value="bp5.bpmn"/>
             <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/CONFLICT-4"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-4"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-4"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog5.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKABS-1"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-1"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-1"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog12.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKABS-2"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-2"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-2"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog2.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKABS-3"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-3"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-3"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog3B.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKABS-4"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-4"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-4"/>
             <arg value="bp4.bpmn"/>
             <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKRELOC-1"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKRELOC-1"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/TASKRELOC-1"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog10.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKSKIP-1"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKSKIP-1"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSKIP-1"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog11.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKSKIP-2"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKSKIP-2"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSKIP-2"/>
             <arg value="bp6.bpmn"/>
             <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/TASKSUB"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKSUB"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSUB"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog9.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/UNMREPETITION"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/UNMREPETITION"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/UNMREPETITION"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog8.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/UNOBSACYCLICINTER"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/UNOBSACYCLICINTER"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/UNOBSACYCLICINTER"/>
             <arg value="bp2.bpmn"/>
             <arg value="bpLog2.xes"/>
-            <arg value="-from"/>    <arg value="Compare-Logic/src/test/resources/UNOBSCYCLICINTER"/>
+            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/UNOBSCYCLICINTER"/>
             <arg value="-to"/>      <arg value="Compare/Model to Log/UNOBSCYCLICINTER"/>
             <arg value="bp.bpmn"/>
             <arg value="bpLog.xes"/>
