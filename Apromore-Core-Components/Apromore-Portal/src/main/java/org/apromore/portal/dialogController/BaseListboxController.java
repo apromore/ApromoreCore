@@ -63,7 +63,7 @@ public abstract class BaseListboxController extends BaseController {
     private final Button refreshB;
     private final Button btnAddFolder;
     private final Button btnAddProcess;
-    private final Button btnGEDFolder;
+    //private final Button btnGEDFolder;
     private final Button btnRenameFolder;
     private final Button btnRemoveFolder;
     private final Button btnSecurity;
@@ -82,7 +82,7 @@ public abstract class BaseListboxController extends BaseController {
         refreshB = (Button) mainController.getFellow("refreshB");
         btnAddFolder = (Button) mainController.getFellow("btnAddFolder");
         btnAddProcess = (Button) mainController.getFellow("btnAddProcess");
-        btnGEDFolder = (Button) mainController.getFellow("btnGEDFolder");
+        //btnGEDFolder = (Button) mainController.getFellow("btnGEDFolder");
         btnRenameFolder = (Button) mainController.getFellow("btnRenameFolder");
         btnRemoveFolder = (Button) mainController.getFellow("btnRemoveFolder");
         btnSecurity = (Button) mainController.getFellow("btnSecurity");
@@ -125,11 +125,13 @@ public abstract class BaseListboxController extends BaseController {
             }
         });
 
+        /*
         this.btnGEDFolder.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 changeGED();
             }
         });
+        */
 
         this.btnRenameFolder.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
@@ -217,6 +219,7 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
+    /*
     protected void changeGED() throws InterruptedException {
         getMainController().eraseMessage();
         try {
@@ -232,6 +235,7 @@ public abstract class BaseListboxController extends BaseController {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
+    */
 
     protected void renameFolder() throws InterruptedException {
         getMainController().eraseMessage();
