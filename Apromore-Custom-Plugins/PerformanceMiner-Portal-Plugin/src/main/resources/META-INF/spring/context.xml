@@ -36,14 +36,16 @@
     <reference id="perfMningService" interface="org.apromore.service.perfmining.PerfMiningService"/>
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
 
+	<!--
     <beans:bean id="plugin2" class="org.apromore.plugin.portal.perfmining.PerfMiningPlugin">
         <beans:property name="groupLabel" value="Monitor" />
         <beans:property name="label" value="Mine Process Performance" />
     </beans:bean>
+	-->
 
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.perfmining" />
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
-    <service ref="plugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+    <!-- <service ref="plugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" /> -->
        
 </beans:beans>

@@ -46,12 +46,7 @@
         <beans:property name="label" value="Animate Logs" />
     </beans:bean>		
 	
-    <beans:bean id="plugin2" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
-        <beans:property name="groupLabel" value="Monitor" />
-        <beans:property name="label" value="Animate Logs" />
-    </beans:bean>	
-	
-	<beans:bean id="plugin3" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
+	<beans:bean id="plugin2" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
         <beans:property name="groupLabel" value="" />
         <beans:property name="label" value="" />
     </beans:bean>	
@@ -71,6 +66,5 @@
 
     <!-- <context:component-scan base-package="org.apromore.plugin.portal.loganimation" /> -->
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
-	<service ref="plugin2" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
-	<service ref="plugin3" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
+	<service ref="plugin2" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
 </beans:beans>
