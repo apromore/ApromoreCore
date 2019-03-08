@@ -86,8 +86,8 @@
 
     <div width="100%" height="100%">
         <hlayout valign="bottom" >
-            <image src="img/prom_logo.png" sclass="image" />
-            <label value="Part of this plugin uses " /> <a href="http://www.promtools.org" target="_blank" label="ProM" /> <label value=" core libraries."/>
+            <a href="http://www.promtools.org" target="_blank"><image src="img/prom_logo.png" sclass="image" /></a>
+            <label value="Part of this plugin uses ProM core libraries."/>
         </hlayout>
     </div>
 </window>
