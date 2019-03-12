@@ -636,10 +636,12 @@ AnimationController = {
             }
         }
 
-        // Update markers
+        // Update markers: this is needed the moment before
+        // changing the engine time to update existing and new markers?
         this.updateMarkersOnce();
 
         // Now, change the engine time to auto ajust the tokens faster/slower
+        // Note: update engine time without updating markers and the clock
         var currentTime = this.getCurrentTime();
         var newTime = currentTime/speedRatio;
         this.setCurrentTime(newTime, true);
