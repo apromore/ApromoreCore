@@ -829,6 +829,8 @@
         <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
         <copy file="Supplements/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
         <copy file="Supplements/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
+		<copy file="Supplements/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
+		<copy file="Supplements/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
 
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
@@ -928,6 +930,8 @@
         <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
         <copy file="Supplements/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
         <copy file="Supplements/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
+		<copy file="Supplements/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
+		<copy file="Supplements/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
 
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
