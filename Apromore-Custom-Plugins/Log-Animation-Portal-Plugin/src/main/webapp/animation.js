@@ -467,10 +467,11 @@ AnimationController = {
     },
 
     setCurrentTime: function(time) {
-        this.updateMarkersOnce();
+        //this.updateMarkersOnce();
         this.svgDocuments.forEach(function(s) {
                 s.setCurrentTime(time);
         });
+        this.updateMarkersOnce();
         this.updateClockOnce(time*this.timeCoefficient*1000 + this.startDateMillis);
     },
 
@@ -882,28 +883,38 @@ AnimationController = {
         Control dragging of the timeline stick
         ---------------------------*/
         indicatorE.addEventListener('mousedown', startDragging.bind(this));
-        indicatorE.addEventListener('mousemove', dragging.bind(this));
-        indicatorE.addEventListener('mouseup', stopDragging.bind(this));
-        indicatorE.addEventListener('mouseleave', stopDragging.bind(this));
+        this.timelineSVG.addEventListener('mousemove', dragging.bind(this));
+        this.timelineSVG.addEventListener('mouseup', stopDragging.bind(this));
+        this.timelineSVG.addEventListener('mouseleave', stopDragging.bind(this));
 
         var dragging= false;
         var offset;
         var lastPos=-3;
         var svg = this.timelineSVG;
 
+        var elementWithFocus = null;
+        var clickX, clickY;
+        var lastMoveX=0, lastMoveY=0;
+
         function startDragging(evt) {
+          evt.preventDefault();
           dragging = true;
+          elementWithFocus = evt.target;
+          // clickX = evt.clientX;
           offset = getMousePosition(evt);
           offset.x -= parseFloat(indicatorE.getAttributeNS(null, "x"));
+          clickX = offset.x;
           this.pause();
         }
 
         function dragging(evt) {
+          evt.preventDefault();
           if (dragging) {
-            evt.preventDefault();
-            var coord = getMousePosition(evt);
-            lastPos = coord.x - offset.x;
-            indicatorE.setAttributeNS(null, "x",  lastPos);
+            moveX = lastMoveX + ( evt.clientX - clickX );
+            //var coord = getMousePosition(evt);
+            //lastPos = coord.x - offset.x;
+            //elementWithFocus.setAttributeNS(null, "x",  lastPos);
+            elementWithFocus.setAttributeNS(null, "x",  moveX);
           }
         }
 
@@ -914,15 +925,31 @@ AnimationController = {
         // The dragging flag is checked to avoid doing two times for mouseup and mouseleave events
         function stopDragging(evt) {
           if (!dragging) return; //avoid doing the below two times
+          if(evt.type == 'mouseleave' && dragging) {
+            return;
+          }
           dragging = false;
-          var slotCount = (lastPos) / slotWidth;
-          //alert("lastPos: " + lastPos);
+          elementWithFocus = null;
+          var slotCount = (moveX) / slotWidth;
+          lastMoveX = 0;
+          lastMoveY = 0;
+          //alert("moveX: " + moveX);
           //alert("slotCount: " + slotCount);
           if (slotCount != 0) {
             indicatorE.setAttributeNS(null,"x", 0);
             this.setCurrentTime(this.getCurrentTime() + 1.0*slotCount*this.slotEngineUnit / 1000.0);
+            //this.play();
           }
 
+        }
+
+        function updateTimeline() {
+          var slotCount = moveX / slotWidth;
+          //alert("moveX: " + moveX);
+          //alert("slotCount: " + slotCount);
+          if (slotCount != 0) {
+            this.setCurrentTime(this.getCurrentTime() + 1.0*slotCount*this.slotEngineUnit / 1000.0);
+          }
         }
 
         //Convert from screen coordinates to SVG document coordinates
