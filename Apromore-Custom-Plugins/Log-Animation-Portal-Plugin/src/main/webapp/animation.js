@@ -466,13 +466,21 @@ AnimationController = {
        this.start();
     },
 
-    setCurrentTime: function(time) {
-        //this.updateMarkersOnce();
+    // Note: the engine time is changed in two situations:
+    // 1. Change the token speed: go slower/faster
+    // 2. Change the engine time to move the token forward/backward
+    // In changing speed situation: the tokens (or markers) and clock are not updated. Their settings must be the same
+    // after the engine time is changed, e.g. tokens must stay in the same position, clock must show the same datetime
+    setCurrentTime: function(time, changeSpeed) {
         this.svgDocuments.forEach(function(s) {
-                s.setCurrentTime(time);
+            s.setCurrentTime(time);
         });
-        this.updateMarkersOnce();
-        this.updateClockOnce(time*this.timeCoefficient*1000 + this.startDateMillis);
+
+        if (!changeSpeed) {
+          this.updateMarkersOnce();
+          this.updateClockOnce(time * this.timeCoefficient * 1000 + this.startDateMillis);
+        }
+
     },
 
     getCurrentTime: function() {
@@ -569,19 +577,21 @@ AnimationController = {
      * Let X be the current time duration set for the token to finish the length L (X is the value of dur attribute)
      * Let D be the distance that the token has done right before the speed is changed
      * Let Cx be the current engine time right before the speed is changed, e.g. Cx = svgDoc.getCurrentTime().
-     * Let Y be the NEW time duration set for the element to travel through the length L.
+     * Let Y be the NEW time duration set for the token to travel through the length L.
+     * Let Cy be the current engine time assuming that Y has been set and the token has finished the D distance.
      * Thus, the token can move faster or lower if Y < X or Y > X, respectively (Y is the new value of the dur attribute)
      * A requirement when changing the animation speed is all tokens must keep running from
-     * the last position they were right before the speed changes.
-     * Let Cy be the current engine time assuming that Y has been set and the token has finished the D distance.
+     * the last position they were right before the speed change.
      * We have: D = Cy*L/Y = Cx*L/X => Cy = (Y/X)*Cx
      * Thus, for the token to start from the same position it was before the speed changes (i.e. dur changes from X to Y),
      * the engine time must be set to (Y/X)*Cx, where Cx = svgDoc.getCurrentTime().
-     * Y/X is called the DistanceRatio.
+     * Y/X is called the TimeRatio.
      * Instead of making changes to the distances, the user sets the speed through a speed slider control.
      * Each level represents a speed rate of the tokens
-     * The SpeedRatio Sy/Sx is the inverse of the DistanceRatio Y/X.
-     * So, in the formula above: Cy = Cx/SpeedRatio, i.e. if the speed is increased, the distance and time is shorter
+     * The SpeedRatio Sy/Sx is the inverse of the TimeRatio Y/X.
+     * In the formula above: Cy = Cx/SpeedRatio, i.e. if the more the speed increases, the shorter the time
+     * In summary, by setting the engine current time (svgDoc.setCurrentTime) and keeping the begin and dur
+     * attributes of tokens unchangeed, the engine will automatically adjust the tokens to go faster or slower
      * @param speedRatio
      */
     changeSpeed: function (speedRatio){
@@ -626,9 +636,13 @@ AnimationController = {
             }
         }
 
+        // Update markers
+        this.updateMarkersOnce();
+
+        // Now, change the engine time to auto ajust the tokens faster/slower
         var currentTime = this.getCurrentTime();
         var newTime = currentTime/speedRatio;
-        this.setCurrentTime(newTime);
+        this.setCurrentTime(newTime, true);
     },
 
     fastforward: function () {
