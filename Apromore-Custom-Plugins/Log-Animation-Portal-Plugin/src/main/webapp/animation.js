@@ -860,7 +860,7 @@ AnimationController = {
         var indicatorE = document.createElementNS(svgNS,"rect");
         indicatorE.setAttributeNS(null,"fill","#FAF0E6");
         indicatorE.setAttributeNS(null,"height",lineLen-10);
-        indicatorE.setAttributeNS(null,"width","8");
+        indicatorE.setAttributeNS(null,"width","12");
         indicatorE.setAttributeNS(null,"stroke","grey");
         indicatorE.setAttributeNS(null,"rx","2");
         indicatorE.setAttributeNS(null,"ry","2");

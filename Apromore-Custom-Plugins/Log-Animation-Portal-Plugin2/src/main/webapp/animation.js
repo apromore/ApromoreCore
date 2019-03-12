@@ -5,12 +5,11 @@
  * Chome: svg.setCurrentTime is not processed properly, must call svg to reload via innerHTML
  */
 
-var $j = jQuery.noConflict();
-$j.browser = {};
-$j.browser.mozilla = /mozilla/.test(navigator.userAgent.toLowerCase()) && !/webkit/.test(navigator.userAgent.toLowerCase());
-$j.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
-$j.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
-$j.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
+jQuery.browser = {};
+jQuery.browser.mozilla = /mozilla/.test(navigator.userAgent.toLowerCase()) && !/webkit/.test(navigator.userAgent.toLowerCase());
+jQuery.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
+jQuery.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
+jQuery.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 
 var svgNS = "http://www.w3.org/2000/svg";
 var xlinkNS = "http://www.w3.org/1999/xlink";
@@ -21,48 +20,6 @@ var caseLabelsVisible = false;
 var svgDocument;  // initialized in Controller.reset
 var svgDocumentG;  // initialized in Controller.reset
 
-var lastSliderValue = 11;
-var speedRatio;
-
-function switchPlayPause(e) {
-    controller.switchPlayPause(e);
-}
-
-function fastForward() {
-    controller.fastforward();
-}
-
-function fastBackward() {
-    controller.fastBackward();
-}
-
-function nextTrace() {
-    controller.nextTrace();
-}
-
-function previousTrace() {
-    controller.previousTrace();
-}
-
-function start(e) {
-    //lastSliderValue = 11;
-    //$j("#slider2").slider({ value: 11 });
-    //lastSliderValue = $j("#slider2").slider("value");
-    controller.start();
-}
-
-function end(e) {
-    //lastSliderValue = 1;
-    //$j("#rate_slider").slider({ value: 1 });
-    //lastSliderValue = j("#rate_slider").slider("value");
-    controller.end();
-}
-
-function toggleCaseLabelVisibility() {
-    var input = $j("input#toggleCaseLabelVisibility")[0];
-    controller.setCaseLabelsVisible(input.checked);
-}
-
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -70,14 +27,12 @@ function getRandomInt(min, max) {
 /* ******************************************************************
  * Return an object with four points corresponding to four corners of the input rect element
  * These are coordinates within the SVG document viewport
- * Input:
- * rect: the rectangle element
- * container: the containing SVGElement that contains the transformation affecting the rectangle
  * Return object has four points: nw, ne, se, sw, cc (center) (each with x,y attribute)
  * ******************************************************************/
-function getViewportPoints(rect, container){
+function getViewportPoints(rect){
     var svg = svgDocument;
-    var matrix = container.transform.baseVal.getItem(0).matrix;
+
+    var matrix = rect.transform.baseVal.getItem(0).matrix;
     var corners = {
         nw: svg.createSVGPoint().matrixTransform(matrix),
         ne: svg.createSVGPoint().matrixTransform(matrix),
@@ -102,8 +57,8 @@ function getViewportPoints(rect, container){
  */
 function toViewportCoords(groupE) {
     var svg = svgDocument;
-    var pt  = svg.createSVGPoint();
-    var matrix  = groupE.getScreenCTM();
+    var pt = svg.createSVGPoint();
+    var matrix = groupE.getScreenCTM();
     rect = groupE.getBBox();
     pt.x = rect.x;
     pt.y = rect.y;
@@ -276,27 +231,25 @@ function updateClock_global() {
 * Call getCurrentTime() to the SVG document returns the current clock intervals = 100x (x = count)
 * The actual current time is: getCurrentTime()*timeCoefficient + startDateMillis.
 *
-
 */
 //
 // Animation controller
 //
-AnimationController = {
+Controller = function(){
     // ID of the timer used by the digital clock on the replay control panel
     // The timer is set whenever the replay is started or restarted, and cleared whenevenr it is paused.
     // The synchronization between the digital clock and internal timer of SVG documents is done vie this timer
     // because the timer will read the internal time of every SVG documents at every internal instant
+    this.clockTimer = null;
+};
 
-    construct: function (editorCanvas) {
-        "use strict";
-        this.clockTimer = null;
-        this.svgDocuments =  [];
-        this.slotDataUnit = 1000;
-        this.timelineSlots = 120;
-        this.timelineEngineSeconds = 120;
-        this.startDateMillis = 0;
-        this.canvas = editorCanvas; // the editor canvas
-    },
+Controller.prototype = {
+
+    svgDocuments: [],
+    slotDataUnit: 1000,
+    timelineSlots: 120,
+    timelineEngineSeconds: 120,
+    startDateMillis: 0,
 
     pauseAnimations: function() {
         this.svgDocuments.forEach(function(s) {
@@ -327,13 +280,15 @@ AnimationController = {
     },
 
     reset: function(jsonRaw) {
-        svgDocument = this.canvas.getSVGContainer();
-        svgDocumentG = this.canvas.getSVGViewport();
+
+        svgDocument = $j("div.ORYX_Editor > svg")[0];
+        svgDocumentG = $j("div.ORYX_Editor > svg > g")[0];
 
         this.svgDocuments.clear();
         this.svgDocuments.push(svgDocument);
         this.svgDocuments.push($j("div#playback_controls > svg")[0]);
-        this.svgDocuments.push($j("div#progress_display > svg")[0]);
+        var svg3 = $j("div#progress_display > svg")[0];
+        this.svgDocuments.push(svg3);
 
         var tokenE = svgDocument.getElementById("progressAnimation");
         if (tokenE != null) {
@@ -371,15 +326,15 @@ AnimationController = {
 
         //Recreate progress indicators
         var progressIndicatorE = controller.createProgressIndicators(logs, jsonServer.timeline);
-        $j("div#progress_display > svg")[0].append(progressIndicatorE);
+        svg3.appendChild(progressIndicatorE);
 
         //Recreate timeline to update date labels
-        //$j("#timeline").remove();
+        $j("#timeline").remove();
         var timelineE = controller.createTimeline();
-        $j("div#playback_controls > svg")[0].append(timelineE);
+        $j("div#playback_controls > svg")[0].appendChild(timelineE);
 
         // Add log intervals to timeline: must be after the timeline creation
-        //var timelineElement = $j("#timeline")[0];
+        var timelineElement = $j("#timeline")[0];
         var startTopX = 20;
         var startTopY = 18;
         for (var j=0; j<jsonServer.timeline.logs.length; j++) {
@@ -390,7 +345,7 @@ AnimationController = {
             logInterval.setAttributeNS(null,"x2",startTopX + 9 * log.endDatePos);
             logInterval.setAttributeNS(null,"y2",startTopY + 8 + 7 * j);
             logInterval.setAttributeNS(null,"style","stroke: "+log.color +"; stroke-width: 5");
-            timelineE.insertBefore(logInterval, timelineE.lastChild);
+            timelineElement.insertBefore(logInterval, timelineElement.lastChild);
 
             //display date label at the two ends
             if (log.startDatePos % 10 != 0) {
@@ -400,7 +355,7 @@ AnimationController = {
                 logDateTextE.setAttributeNS(null,"text-anchor", "middle");
                 logDateTextE.setAttributeNS(null,"font-size", "11");
                 logDateTextE.innerHTML = log.startDateLabel.substr(0,19);
-                timelineE.insertBefore(logDateTextE, timelineE.lastChild);
+                timelineElement.insertBefore(logDateTextE, timelineElement.lastChild);
             }
        }
 
@@ -408,21 +363,15 @@ AnimationController = {
        var metricsTable = $j("#metrics_table")[0];
        for (var i=0; i<logs.length; i++) {
            var row = metricsTable.insertRow(i+1);
-           var cellLogNo = row.insertCell(0);;
-           var cellLogName = row.insertCell(1);
-           var cellTotalCount = row.insertCell(2);
-           var cellPlayCount = row.insertCell(3);
-           var cellReliableCount = row.insertCell(4);
-           var cellExactFitness = row.insertCell(5);
-           //var cellExactFitnessFormulaTime = row.insertCell(5);
-           //var cellApproxFitness = row.insertCell(6);
+           var cellLogName = row.insertCell(0);
+           var cellTotalCount = row.insertCell(1);
+           var cellPlayCount = row.insertCell(2);
+           var cellReliableCount = row.insertCell(3);
+           var cellExactFitness = row.insertCell(4);
+           var cellExactFitnessFormulaTime = row.insertCell(5);
+           var cellApproxFitness = row.insertCell(6);
            //var cellApproxFitnessFormulaTime = row.insertCell(7);
            //var cellAlgoTime = row.insertCell(8);
-
-
-            cellLogNo.innerHTML = i+1;
-            cellLogNo.style.backgroundColor = logs[i].color;
-            cellLogNo.style.textAlign = 'center';
 
            if (logs[i].filename.length > 50) {
                    cellLogName.innerHTML = logs[i].filename.substr(0,50) + "...";
@@ -431,30 +380,21 @@ AnimationController = {
                    cellLogName.innerHTML = logs[i].filename;
            }
            cellLogName.title = logs[i].filename;
-           cellLogName.style.font = '1em monospace';
-           //cellLogName.style.backgroundColor = logs[i].color;
+           cellLogName.style.backgroundColor = logs[i].color;
 
            cellTotalCount.innerHTML = logs[i].total;
-           cellTotalCount.style.textAlign = 'center';
-           cellTotalCount.style.font = '1em monospace';
 
            cellPlayCount.innerHTML = logs[i].play;
            cellPlayCount.title = logs[i].unplayTraces;
-           cellPlayCount.style.textAlign = 'center';
-           cellPlayCount.style.font = '1em monospace';
 
            cellReliableCount.innerHTML = logs[i].reliable;
            cellReliableCount.title = logs[i].unreliableTraces;
-           cellReliableCount.style.textAlign = 'center';
-           cellReliableCount.style.font = '1em monospace';
 
            cellExactFitness.innerHTML = logs[i].exactTraceFitness;
-           cellExactFitness.style.textAlign = 'center';
-           cellExactFitness.style.font = '1em monospace';
 
-           //cellExactFitnessFormulaTime.innerHTML = logs[i].exactFitnessFormulaTime;
+           cellExactFitnessFormulaTime.innerHTML = logs[i].exactFitnessFormulaTime;
 
-           //cellApproxFitness.innerHTML = logs[i].approxTraceFitness;
+           cellApproxFitness.innerHTML = logs[i].approxTraceFitness;
 
            //cellApproxFitnessFormulaTime.innerHTML = logs[i].approxFitnessFormulaTime;
 
@@ -546,7 +486,7 @@ AnimationController = {
         var timeString = new Intl.DateTimeFormat([], {
                     hour12: false, hour: "numeric", minute: "numeric", second: "numeric"
             }).format(date);
-        //console.log(dayString + " " + timeString);
+        console.log(dayString + " " + timeString);
     },
 
     /*
@@ -711,9 +651,38 @@ AnimationController = {
         var x = 30;
         var y = 20;
         for(var i=0;i<logs.length;i++) {
-            progressE.appendChild(this.createProgressIndicatorsForLog(i+1, logs[i], timeline, x, y));
+            progressE.appendChild(controller.createProgressIndicatorsForLog(logs[i], timeline, x, y));
             x += 60;
         }
+        return progressE;
+    },
+
+    //Create cirle progress bar shapes in initial screen only
+    createProgressIndicatorsInitial: function() {
+        var progressE = document.createElementNS(svgNS,"g");
+        progressE.setAttributeNS(null,"id","progressAnimation");
+
+        //Log 1
+        var log = {
+                name : "Log 1",
+                color : "orange",
+                progress : {
+                        values : "0",
+                        keyTimes : "0"}};
+        var timeline = {timelineSlots : 120};
+        progressE.appendChild(controller.createProgressIndicatorsForLog(log, timeline, 30, 90));
+
+        //Log 2
+        //Log 1
+        var log = {
+                name : "Log 2",
+                color : "blue",
+                progress : {
+                        values : "0",
+                        keyTimes : "0"}};
+        var timeline = {timelineSlots : 120};
+        progressE.appendChild(controller.createProgressIndicatorsForLog(log, timeline, 90, 90));
+
         return progressE;
     },
 
@@ -722,7 +691,7 @@ AnimationController = {
      * log: the log object (name, color, traceCount, progress, tokenAnimations)
      * x,y: the coordinates to draw the progress bar
      */
-    createProgressIndicatorsForLog: function(logNo, log, timeline, x, y) {
+    createProgressIndicatorsForLog: function(log, timeline, x, y) {
         var pieE = document.createElementNS(svgNS,"g");
         pieE.setAttributeNS(null,"class","progress");
 
@@ -753,7 +722,7 @@ AnimationController = {
         textE.setAttributeNS(null,"x", x);
         textE.setAttributeNS(null,"y", y - 10);
         textE.setAttributeNS(null,"text-anchor","middle");
-        var textNode = document.createTextNode('Log#' + logNo);
+        var textNode = document.createTextNode(log.name.substr(0,5) + "...");
         textE.appendChild(textNode);
 
         var tooltip = document.createElementNS(svgNS,"title");
@@ -762,6 +731,8 @@ AnimationController = {
 
         pieE.appendChild(pathE);
         pieE.appendChild(textE);
+
+        //alert(pieE.innerHTML);
 
         return pieE;
     },
@@ -854,14 +825,9 @@ AnimationController = {
         Add timeline tick
         ---------------------------*/
         var indicatorE = document.createElementNS(svgNS,"rect");
-        indicatorE.setAttributeNS(null,"fill","#FAF0E6");
+        indicatorE.setAttributeNS(null,"fill","red");
         indicatorE.setAttributeNS(null,"height",lineLen-10);
-        indicatorE.setAttributeNS(null,"width","8");
-        indicatorE.setAttributeNS(null,"stroke","grey");
-        indicatorE.setAttributeNS(null,"rx","2");
-        indicatorE.setAttributeNS(null,"ry","2");
-        //indicatorE.setAttributeNS(null,"stroke-opacity","0.4");
-
+        indicatorE.setAttributeNS(null,"width","4");
 
         var indicatorAnimation = document.createElementNS(svgNS,"animateMotion");
         indicatorAnimation.setAttributeNS(null,"id","timelineTick");
@@ -908,7 +874,6 @@ AnimationController = {
     }
 };
 
-AnimationController = Clazz.extend(AnimationController);
 
 //
 // A log trace
@@ -917,21 +882,19 @@ AnimationController = Clazz.extend(AnimationController);
 // tokenAnimation is expected to one of the elements of jsonServer.logs[].tokenAnimations
 // color is the desired color the log trace marker
 // label is the desired text annotation of the log trace marker
+function LogCase(tokenAnimation, color, label, offset) {
+    this.tokenAnimation = tokenAnimation;
+    this.color          = color;
+    this.label          = label;
 
-LogCase = {
+    this.offsetAngle      = 2 * Math.PI * Math.random();  // a random angle to offset the marker; prevents markers from occluding one another totally
+    this.pathElementCache = {};
+    this.nodeMarkers      = [];
+    this.pathMarkers      = [];
+    this.offset = offset;
+};
 
-    construct: function (tokenAnimation, color, label, offset) {
-        "use strict";
-        this.tokenAnimation = tokenAnimation;
-        this.color          = color;
-        this.label          = label;
-
-        this.offsetAngle      = 2 * Math.PI * Math.random();  // a random angle to offset the marker; prevents markers from occluding one another totally
-        this.pathElementCache = {};
-        this.nodeMarkers      = [];
-        this.pathMarkers      = [];
-        this.offset = offset;
-    },
+LogCase.prototype = {
 
     /*
     /* Create a marker (i.e. a token, which is an SVG animation element) and insert
@@ -942,7 +905,6 @@ LogCase = {
      * dt:
      */
     updateMarker: function(t, dt) {
-
         // Delete any path markers which have moved beyond their interval
         var newMarkers = []
         var alreadyMarkedIndices = [];
@@ -964,11 +926,10 @@ LogCase = {
             var dur   = parseFloat(path.dur);
             var end   = begin + dur;
 
-
             if (begin <= t && t <= end && !alreadyMarkedIndices[i]) {
                 var pathElement = this.getPathElement(path);
                 if (!pathElement) {
-                    console.log("Unable to create marker for path.id=" + path.id);
+                    console.log("Unable to create marker");
                 } else {
                     var marker = {
                         begin:   begin,
@@ -1019,34 +980,24 @@ LogCase = {
     getPathElement: function(path) {
         var pathElement = this.pathElementCache[path.id];
         if (!pathElement) {
-            //pathElement = this.pathElementCache[path.id] = $j("#svg-"+path.id).find("g").find("g").find("g").find("path").get(0);
-            pathElement = this.pathElementCache[path.id] = $j("[data-element-id="+path.id+"]").find("g").find("path").get(0);
+            pathElement = this.pathElementCache[path.id] = $j("#svg-"+path.id).find("g").find("g").find("g").find("path").get(0);
         }
         return pathElement;
     },
 
     createNodeMarker: function(t, dt, node, begin, dur, offset) {
-        //var modelNode = findModelNode(node.id);
-        //var incomingPathE = $j("#svg-"+modelNode.incomingFlow).find("g").find("g").find("g").find("path").get(0);
-        //var incomingEndPoint = incomingPathE.getPointAtLength(incomingPathE.getTotalLength());
-        var incomingEndPoint = $j("[data-element-id="+controller.canvas.getIncomingFlowId(node.id)+"]");
-        //console.log(incomingEndPoint);
-        var incomingPathE = incomingEndPoint.find("g").find("path").get(0);
+        var modelNode = findModelNode(node.id);
+        var incomingPathE = $j("#svg-"+modelNode.incomingFlow).find("g").find("g").find("g").find("path").get(0);
         var incomingEndPoint = incomingPathE.getPointAtLength(incomingPathE.getTotalLength());
 
-        // var outgoingPathE = $j("#svg-"+modelNode.outgoingFlow).find("g").find("g").find("g").find("path").get(0);
-        // var outgoingStartPoint = outgoingPathE.getPointAtLength(0);
-        var outgoingStartPoint = $j("[data-element-id="+controller.canvas.getOutgoingFlowId(node.id)+"]");
-        var outgoingPathE = outgoingStartPoint.find("g").find("path").get(0);
+        var outgoingPathE = $j("#svg-"+modelNode.outgoingFlow).find("g").find("g").find("g").find("path").get(0);
         var outgoingStartPoint = outgoingPathE.getPointAtLength(0);
 
         var startPoint = incomingEndPoint;
         var endPoint = outgoingStartPoint;
 
-        //var nodeRectE = $j("#svg-" + node.id).find("g").get(0); //this <g> element contains the translate function
-        var nodeTransformE = $j("[data-element-id="+node.id+"]").get(0); //this <g> element contains the translate function
-        var nodeRectE = $j("[data-element-id="+node.id+"]").find("g").find("rect").get(0);
-        var taskRectPoints = getViewportPoints(nodeRectE, nodeTransformE);
+        var nodeRectE = $j("#svg-" + node.id).find("g").get(0);
+        var taskRectPoints = getViewportPoints(nodeRectE);
 
         //---------------------------------------------------------
         // Create path element
@@ -1055,9 +1006,9 @@ LogCase = {
         if (node.isVirtual == "false") { //go through center
             var path =  "m" + startPoint.x + "," + startPoint.y + " L" + taskRectPoints.cc.x + "," + taskRectPoints.cc.y +
                         " L" + endPoint.x + "," + endPoint.y;
-            //var pathId = node.id +"_path";
+            var pathId = node.id +"_path";
         } else {
-            //var pathId = node.id +"_virtualpath";
+            var pathId = node.id +"_virtualpath";
 
             // Both points are on a same edge
             if ((Math.abs(startPoint.x - endPoint.x) < 10 && Math.abs(endPoint.x - taskRectPoints.se.x) < 10) ||
@@ -1140,13 +1091,6 @@ LogCase = {
         return this.createMarker(t, dt, pathElement.getAttribute("d"), begin, dur, offset);
     },
 
-    /* A marker is an SVG g element:
-     * <g>
-     *      <animateMotion begin dur fill="freeze" path rotate="auto" />: the path to animate the token
-     *      <circle cx cy r fill></circle>: the shape of the token
-     *      <text x y style fill text-anchor visibility></text>: the label on top of the token
-     * </g>
-     */
     createMarker: function(t, dt, d, begin, dur, offset) {
         var marker = document.createElementNS(svgNS,"g");
         marker.setAttributeNS(null,"stroke","none");
@@ -1186,87 +1130,89 @@ LogCase = {
     }
 };
 
-LogCase = Clazz.extend(LogCase);
+        var lastSliderValue = 11;
+        var speedRatio;
 
+        var $j = jQuery.noConflict();
 
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+        var controller = new Controller();
 
-/**
- * The super class for all classes in ORYX. Adds some OOP feeling to javascript.
- * See article "Object Oriented Super Class Method Calling with JavaScript" on
- * http://truecode.blogspot.com/2006/08/object-oriented-super-class-method.html
- * for a documentation on this. Fairly good article that points out errors in
- * Douglas Crockford's inheritance and super method calling approach.
- * Worth reading.
- * @class Clazz
- */
-var Clazz = function() {};
+        function switchPlayPause(e) {
+            controller.switchPlayPause(e);
+        }
 
-/**
- * Empty constructor.
- * @methodOf Clazz.prototype
- */
-Clazz.prototype.construct = function() {};
+        function fastForward() {
+            controller.fastforward();
+        }
 
-/**
- * Can be used to build up inheritances of classes.
- * @example
- * var MyClass = Clazz.extend({
- *   construct: function(myParam){
- *     // Do sth.
- *   }
- * });
- * var MySubClass = MyClass.extend({
- *   construct: function(myParam){
- *     // Use this to call constructor of super class
- *     arguments.callee.$.construct.apply(this, arguments);
- *     // Do sth.
- *   }
- * });
- * @param {Object} def The definition of the new class.
- */
-Clazz.extend = function(def) {
-    var classDef = function() {
-        if (arguments[0] !== Clazz) { this.construct.apply(this, arguments); }
-    };
+        function fastBackward() {
+            controller.fastBackward();
+        }
 
-    var proto = new this(Clazz);
-    var superClass = this.prototype;
+        function nextTrace() {
+            controller.nextTrace();
+        }
 
-    for (var n in def) {
-        var item = def[n];
-        if (item instanceof Function) item.$ = superClass;
-        proto[n] = item;
-    }
+        function previousTrace() {
+            controller.previousTrace();
+        }
 
-    classDef.prototype = proto;
+        function start(e) {
+            //lastSliderValue = 11;
+            //$j("#slider2").slider({ value: 11 });
+            //lastSliderValue = $j("#slider2").slider("value");
+            controller.start();
+        }
 
-    //Give this new class the same static extend method
-    classDef.extend = this.extend;
-    return classDef;
-};
+        function end(e) {
+            //lastSliderValue = 1;
+            //$j("#rate_slider").slider({ value: 1 });
+            //lastSliderValue = j("#rate_slider").slider("value");
+            controller.end();
+        }
 
+        function toggleCaseLabelVisibility() {
+            var input = $j("input#toggleCaseLabelVisibility")[0];
+            controller.setCaseLabelsVisible(input.checked);
+        }
 
+        //////////////////////////////Load animation workspace after document has been fully loaded
+        $j(window).load(function(){
+                var resStepValues = [.00001, .0001, .0005, .001, .005, .01, .05, .1, .2, .5, 1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 10000];
+                var $jslider2 = $j( "#slider2" ).slider({
+                        orientation: "vertical",
+                        step: 1,
+                        min: 1,
+                        max: 20,
+                        value: 11
+                });
+                $jslider2.slider("pips", {
+                        labels:resStepValues,
+                        rest:"label"
+                });
 
+                //$jslider2.slider("pips").slider("float");
 
+                lastSliderValue = $jslider2.slider("value");
+                console.log("first slider value:" + lastSliderValue);
+                //alert(lastSliderValue);
+
+                $j("#slider2").on( "slidechange", function(event,ui) {
+                        //speedRatio = (ui.value/lastSliderValue)*$j("#speedfactor").val();
+                        //alert("speedRatio: " + speedRatio + " uiValue: " + ui.value + " speedfactor:" + $j("#speedfactor").val());
+                        speedRatio = (resStepValues[ui.value-1]/resStepValues[lastSliderValue-1]);
+                        //alert("ui.value=" + ui.value + " last value=" + lastSliderValue + " speed ratio=" + speedRatio);
+                        controller.changeSpeed(speedRatio);
+                        lastSliderValue = ui.value;
+                });
+
+                /*
+                 * Set up svg document
+                 *      - Prepare enough space on the top for timeline and progress indicators
+                 *      - Then, attach initial timeline
+                 *  - Attach progress indicators
+                 */
+
+                var timelineE = controller.createTimeline();
+        });
+        //////////////////////////End of window load

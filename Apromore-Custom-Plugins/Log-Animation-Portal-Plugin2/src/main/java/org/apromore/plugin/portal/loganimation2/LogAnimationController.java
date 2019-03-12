@@ -127,7 +127,7 @@ public class LogAnimationController extends BaseController {
                 param.put("url",           getURL(editSession.getNativeType()));
                 param.put("importPath",    getImportPath(editSession.getNativeType()));
                 param.put("exportPath",    getExportPath(editSession.getNativeType()));
-                param.put("editor",        "bpmneditor");
+                param.put("editor",        "editor");
 
                 if (editSession.getAnnotation() == null) {
                     param.put("doAutoLayout", "true");
@@ -145,7 +145,7 @@ public class LogAnimationController extends BaseController {
                 param.put("url",           getURL("BPMN 2.0"));
                 param.put("importPath",    getImportPath("BPMN 2.0"));
                 param.put("exportPath",    getExportPath("BPMN 2.0"));
-                param.put("editor",        "bpmneditor");
+                param.put("editor",        "editor");
                 param.put("doAutoLayout", "true");
             }
 

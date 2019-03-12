@@ -40,19 +40,20 @@
     <reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
 
-	<!--
-    <beans:bean id="plugin2" class="org.apromore.plugin.portal.loganimation2.LogAnimationPlugin">
-        <beans:property name="groupLabel" value="Monitor" />
-        <beans:property name="label" value="Animate Logs (bpmn.io)" />
+    <beans:bean id="portalPlugin" class="org.apromore.plugin.portal.loganimation2.LogAnimationPlugin">
+        <beans:property name="groupLabel" value="Analyze" />
+        <beans:property name="label" value="Animate Logs in Signavio" />
     </beans:bean>
-	-->
-
-    <!-- Exposes the component as OSGi service -->
-	<!--
-    <context:component-scan base-package="org.apromore.plugin.editor.loganimation2" />
-    <service ref="editorPlugin" interface="org.apromore.plugin.editor.EditorPlugin" auto-export="interfaces" />
-	-->
-
-    <context:component-scan base-package="org.apromore.plugin.portal.loganimation2" />
-    <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+    
+    <beans:bean id="editorPlugin" class="org.apromore.plugin.editor.loganimation2.LogAnimationPlugin">
+        <beans:property name="javaScriptURI" value="/loganimation2/FileUploadField.js+editor_plugin.js" />
+        <beans:property name="javaScriptPackage" value="ORYX.Plugins.LogAnimation" />
+    </beans:bean>
+	
+	<service ref="editorPlugin" interface="org.apromore.plugin.editor.EditorPlugin">
+    	<service-properties>
+    		<beans:entry key="org.apromore.plugin.editor" value="signavio" />
+    	</service-properties>
+    </service>
+    <service ref="portalPlugin" interface="org.apromore.plugin.portal.PortalPlugin" />
 </beans:beans>

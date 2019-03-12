@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.editor.loganimation;
+package org.apromore.plugin.editor.loganimation2;
 
 // Third party packages
 import org.springframework.stereotype.Component;

@@ -89,13 +89,11 @@
         <servlet-name>resetPassword</servlet-name>
         <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
     </servlet>
-	<!--
     <servlet>
         <display-name>BPMN Animation</display-name>
         <servlet-name>BPMNAnimation</servlet-name>
-        <servlet-class>org.apromore.plugin.editor.loganimation.BPMNAnimationServlet</servlet-class>
+        <servlet-class>org.apromore.plugin.editor.loganimation2.BPMNAnimationServlet</servlet-class>
     </servlet>
-	-->
 
     <servlet-mapping>
         <servlet-name>zkLoader</servlet-name>
@@ -121,13 +119,10 @@
         <servlet-name>resetPassword</servlet-name>
         <url-pattern>/register/resetPassword/*</url-pattern>
     </servlet-mapping>
-	
-	<!--
     <servlet-mapping>
         <servlet-name>BPMNAnimation</servlet-name>
         <url-pattern>/bpmnanimation</url-pattern>
     </servlet-mapping>
-	-->
 
     <session-config>
         <session-timeout>60</session-timeout>

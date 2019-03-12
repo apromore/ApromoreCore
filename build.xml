@@ -268,6 +268,7 @@
 
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
+		<include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
 
         <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
@@ -312,7 +313,6 @@
         <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
         <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
-        <!-- <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/> -->
     </fileset>
 
     <fileset id="pickupRepo-student" dir=".">

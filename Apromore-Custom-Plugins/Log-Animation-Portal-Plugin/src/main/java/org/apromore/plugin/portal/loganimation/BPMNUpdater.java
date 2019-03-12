@@ -153,6 +153,9 @@ public class BPMNUpdater {
             bpmn += edge;
         }
 
+        //-----------------------------------------------------
+        // The colors are set via extension elements of the editor
+        //-----------------------------------------------------
         for(String elementID : getBPMNElementIDs(bpmn)) {
             if(!elementID.equals(startId) && !elementID.equals(endId)) {
                 String element = getBPMNElement(bpmn, elementID);

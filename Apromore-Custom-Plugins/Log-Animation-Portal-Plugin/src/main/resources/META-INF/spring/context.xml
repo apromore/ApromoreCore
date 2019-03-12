@@ -49,22 +49,12 @@
 	<beans:bean id="plugin2" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
         <beans:property name="groupLabel" value="" />
         <beans:property name="label" value="" />
-    </beans:bean>	
-	
-    <beans:bean id="editorPlugin" class="org.apromore.plugin.editor.loganimation.LogAnimationPlugin">
-        <beans:property name="javaScriptURI" value="/loganimation/FileUploadField.js+editor_plugin.js" />
-        <beans:property name="javaScriptPackage" value="ORYX.Plugins.LogAnimation" />
-    </beans:bean>		
+    </beans:bean>			
 
     <!-- Exposes the component as OSGi service -->
     <!-- <context:component-scan base-package="org.apromore.plugin.editor.loganimation" /> -->
-    <service ref="editorPlugin" interface="org.apromore.plugin.editor.EditorPlugin" auto-export="interfaces">
-    	<service-properties>
-    		<beans:entry key="org.apromore.plugin.editor" value="signavio" />
-    	</service-properties>
-    </service>
 
     <!-- <context:component-scan base-package="org.apromore.plugin.portal.loganimation" /> -->
-    <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+    <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" />
 	<service ref="plugin2" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
 </beans:beans>
