@@ -8363,6 +8363,8 @@ AutoLayout.prototype.layoutProcess = function(xmlStr, callback) {
     var root = moddleWithoutDi.get('rootElements')[0];
     var rootDi = moddleWithoutDi.get('diagrams')[0].get('plane');
 
+    console.log('moddleWithoutDi: ', Object.assign({}, moddleWithoutDi));
+
     // create di
     self._breadFirstSearch(root, rootDi);
 
@@ -8687,7 +8689,7 @@ DiFactory.prototype.createBpmnElementDi = function(elementType, attrs, pos) {
 };
 
 DiFactory.prototype._getDefaultSize = function(element) {
-
+  //console.log('prototype._getDefaultSize for element: ' + element);
   if (is(element, 'bpmn:SubProcess')) {
 
     if (isExpanded(element)) {
@@ -8703,6 +8705,10 @@ DiFactory.prototype._getDefaultSize = function(element) {
 
   if (is(element, 'bpmn:Gateway')) {
     return { width: 50, height: 50 };
+  }
+
+  if (is(element, 'bpmn:ExclusiveGateway')) {
+      return { width: 50, height: 50 };
   }
 
   if (is(element, 'bpmn:StartEvent') || is(element, 'bpmn:EndEvent')) {
