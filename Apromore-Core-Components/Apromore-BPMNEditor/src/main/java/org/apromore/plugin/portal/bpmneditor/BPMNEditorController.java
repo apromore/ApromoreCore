@@ -18,8 +18,9 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.portal.dialogController;
+package org.apromore.plugin.portal.bpmneditor;
 
+import java.io.OutputStream;
 // Java 2 Standard packages
 import java.util.*;
 
@@ -38,7 +39,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.apromore.helper.Version;
 // Local packages
 import org.apromore.model.EditSessionType;
-import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;
@@ -49,7 +49,6 @@ import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.portal.util.StreamUtil;
 import org.apromore.service.ProcessService;
 import org.json.JSONException;
 
@@ -130,21 +129,7 @@ public class BPMNEditorController extends BaseController {
             				  "</bpmn:definitions>";
             	}
             	else {
-            		// Note: process models created by merging are not BPMN, cannot use processService.getBPMNRepresentation 
-            		//bpmnXML = processService.getBPMNRepresentation(procName, procID, branch, version);
-            		String annotation = (editSession.getAnnotation() == null) ? editSession.getNativeType() : editSession.getAnnotation();
-            		
-                    ExportFormatResultType exportResult =
-                            getService().exportFormat(editSession.getProcessId(),
-                            		editSession.getProcessName(),
-                            		editSession.getOriginalBranchName(),
-                            		editSession.getCurrentVersionNumber(),
-                            		editSession.getNativeType(),
-                            		annotation,
-                            		editSession.isWithAnnotation(),
-                            		editSession.getUsername(),
-                                    params);
-                    bpmnXML = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+            		bpmnXML = processService.getBPMNRepresentation(procName, procID, branch, version);
             	}
             	
                 title = editSession.getProcessName() + " (" + editSession.getNativeType() + ")";
@@ -156,22 +141,24 @@ public class BPMNEditorController extends BaseController {
                 param.put("exportPath",    getExportPath(editSession.getNativeType()));
 //                param.put("editor",        config.getSiteEditor());
                 param.put("editor",        "bpmneditor");
+
+                if (editSession.getAnnotation() == null) {
+                    param.put("doAutoLayout", "true");
+                } else if (process.getOriginalNativeType() != null && process.getOriginalNativeType().equals(editSession.getNativeType())) {
+                    param.put("doAutoLayout", "false");
+                } else {
+                    if (editSession.isWithAnnotation()) {
+                        param.put("doAutoLayout", "false");
+                    } else {
+                        param.put("doAutoLayout", "true");
+                    }
+                }
             } else {
                 param.put("bpmnXML",       bpmnXML);
                 param.put("url",           getURL("BPMN 2.0"));
                 param.put("importPath",    getImportPath("BPMN 2.0"));
                 param.put("exportPath",    getExportPath("BPMN 2.0"));
-                param.put("editor",        "bpmneditor");
-                param.put("doAutoLayout", "false");
-            }
-            
-            if (newProcess) {
-            	param.put("doAutoLayout", "false");
-            }
-            else if (editSession.isWithAnnotation()) {
-                param.put("doAutoLayout", "false");
-            } 
-            else {
+                param.put("editor",        config.getSiteEditor());
                 param.put("doAutoLayout", "true");
             }
 
@@ -202,9 +189,9 @@ public class BPMNEditorController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    new SaveAsDialogController(process, vst, editSession, true, eventToString(event));
-                } catch (ExceptionFormats exceptionFormats) {
-                    LOGGER.error("Error saving model.", exceptionFormats);
+                	mainC.saveModel(process, vst, editSession, true, eventToString(event));
+                } catch (InterruptedException ex) {
+                    LOGGER.error("Error saving model.", ex);
                 }
             }
         });
@@ -212,9 +199,9 @@ public class BPMNEditorController extends BaseController {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
                 try {
-                    new SaveAsDialogController(process, vst, editSession, false, eventToString(event));
-                } catch (ExceptionFormats exceptionFormats) {
-                    LOGGER.error("Error saving model.", exceptionFormats);
+                	mainC.saveModel(process, vst, editSession, true, eventToString(event));
+                } catch (InterruptedException ex) {
+                    LOGGER.error("Error saving model.", ex);
                 }
             }
         });

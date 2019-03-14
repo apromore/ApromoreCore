@@ -22,7 +22,7 @@
 <window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native"
         xmlns:z="http://www.zkoss.org/2005/zul"
         use="org.apromore.portal.dialogController.BPMNEditorController">
-	
+
 	<!-- STYLESHEET FOR THE WRAPPER EDITOR -->
     <n:style media="screen" type="text/css">
         @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
@@ -37,7 +37,7 @@
     <n:link rel="stylesheet" href="/${arg.editor}/editor/bpmnio/bpmn.css" type="text/css"/>
     <n:script src="/${arg.editor}/editor/bpmnio/bpmn-modeler.development.js" type="text/javascript"/>
 
-	
+
 	<n:div id="editorwrapper" style="display: none">
         <n:script>
             <![CDATA[
@@ -51,17 +51,19 @@
 				ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = '/' + '${arg.editor}';
             ]]>
         </n:script>
-		
+
 	    <n:script src="/${arg.editor}/libs/prototype-1.7.3.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
-        <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
-		
+      <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/>
+      <n:script src="/${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
+      <n:script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
+      <n:script src="/${arg.editor}/libs/ext-2.0.2/color-field.js" type="text/javascript"/>
+      <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
+      <n:script src="/${arg.editor}/libs/autolayout.js" type="text/javascript"/>
+
+      <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
+      <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
+      <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
+
         <z:zk forEach="${arg.plugins}">
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
@@ -69,29 +71,38 @@
         <n:span id="oryxstartupcode">
             <n:script>
                 <![CDATA[
-					//$.noConflict();
-                    var editorWrapper = new ORYX.Editor ({
-							xml: '${arg.bpmnXML}',
-                            model : {
-                                id : 'editorcanvas',
-                                stencilset : {
-                                    url : '${arg.url}',
-                                    namespace : '${arg.url}'
-                                },
-                            },
-                            fullscreen : true
-                        });
+                    var editorWrapper;
+                    createEditor = function (bpmnXML) {
+                      editorWrapper = new ORYX.Editor ({
+                        xml: bpmnXML,
+                        model : {id : 'editorcanvas'},
+                        fullscreen : true
+                      });
+                    }
 
-                     ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
-                    	 console.log(xml);
-                    	 zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
-                     };
-                     
-                     ORYX.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
-                    	 console.log(xml);
-						 console.log(svg);
-                         zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
-                     };
+                    var autoLayout = '${arg.doAutoLayout}';
+                    //console.log('autoLayout: ' + autoLayout);
+					//console.log('BPMN before auto-layout');
+					//console.log('${arg.bpmnXML}');
+                    if (autoLayout=='true') {
+					  alert('start layouting');	
+                      var layouter = new BPMNAutoLayout();
+                      layouter.layoutProcess('${arg.bpmnXML}', createEditor);
+                    }
+                    else {
+                      createEditor('${arg.bpmnXML}');
+                    }
+
+                    ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
+                      console.log(xml);
+                      zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', xml));
+                    };
+
+                    ORYX.Plugins.ApromoreSave.apromoreSave = function(xml, svg) {
+                      console.log(xml);
+                      console.log(svg);
+                      zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', xml));
+                    };
 
 					//window.setTimeout(function() {
 					  //console.log($$("div.ORYX_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
@@ -103,6 +114,6 @@
     </n:div>
 
     <n:div id="editorcanvas"></n:div>
-    
+
 </window>
 

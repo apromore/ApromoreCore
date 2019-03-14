@@ -59,9 +59,6 @@
         <n:script src="/${arg.editor}/libs/iscroll.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/i18n/translation_en_us.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/editor/i18n/translation_signavio_en_us.js" type="text/javascript"/>
-		<!--
-        <n:script src="/${arg.editor}/libs/utils.js" type="text/javascript"/>
-		-->
         <n:script src="/${arg.editor}/editor/apromore-editor.js" type="text/javascript"/>
 		
 		<n:script>console.log('${arg.plugins}')</n:script>

@@ -98,13 +98,13 @@ public class SummaryItemRenderer implements ListitemRenderer {
             public void onEvent(Event event) throws Exception {
                 VersionSummaryType version = getLatestVersion(process.getVersionSummaries());
                 AnnotationsType annotation = getLastestAnnotation(version.getAnnotations());
-                String nativeType = "";
-                nativeType = (annotation != null) ? annotation.getNativeType() : process.getOriginalNativeType();
+                String nativeType = (annotation != null) ? getNativeType(annotation.getNativeType()) : getNativeType(process.getOriginalNativeType());
+                String annotationName = (annotation != null) ? annotation.getAnnotationName().get(0) : null;
                 if (nativeType.equals("BPMN 2.0")) {
-                    mainController.editProcess2(process, version, getNativeType(annotation.getNativeType()), annotation.getAnnotationName().get(0),
+                    mainController.editProcess2(process, version, nativeType, annotationName,
                         "false", new HashSet<RequestParameterType<?>>(), false);
                 } else {
-                    mainController.editProcess(process, version, getNativeType(process.getOriginalNativeType()), null, "false",
+                    mainController.editProcess(process, version, nativeType, null, "false",
                             new HashSet<RequestParameterType<?>>());
                 }
             }

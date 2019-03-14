@@ -398,6 +398,7 @@ public class MainController extends BaseController implements MainControllerInte
         editSession.setLastUpdate(version.getLastUpdate());
         if (annotation == null) {
             editSession.setWithAnnotation(false);
+            editSession.setAnnotation(null);
         } else {
             editSession.setWithAnnotation(true);
             editSession.setAnnotation(annotation);

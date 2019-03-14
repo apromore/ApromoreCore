@@ -257,6 +257,7 @@ public class EditOneProcessController2 extends BaseController {
             if (annotationsLB.getSelectedItem() != null && Constants.NO_ANNOTATIONS.compareTo(annotationsLB.getSelectedItem().getLabel()) != 0) {
                 annotation = annotationsLB.getSelectedItem().getValue();
             }
+            
             if (annotationOnlyCB.isChecked()) {
                 readOnly = TRUE;
             } else {
