@@ -8350,7 +8350,6 @@ function AutoLayout() {
 // module.exports = AutoLayout;
 
 AutoLayout.prototype.layoutProcess = function(xmlStr, callback) {
-
   var self = this;
   var moddle = this.moddle;
 
@@ -8363,7 +8362,7 @@ AutoLayout.prototype.layoutProcess = function(xmlStr, callback) {
     var root = moddleWithoutDi.get('rootElements')[0];
     var rootDi = moddleWithoutDi.get('diagrams')[0].get('plane');
 
-    console.log('moddleWithoutDi: ', Object.assign({}, moddleWithoutDi));
+    //console.log('moddleWithoutDi: ', Object.assign({}, moddleWithoutDi));
 
     // create di
     self._breadFirstSearch(root, rootDi);
@@ -8708,6 +8707,14 @@ DiFactory.prototype._getDefaultSize = function(element) {
   }
 
   if (is(element, 'bpmn:ExclusiveGateway')) {
+      return { width: 50, height: 50 };
+  }
+
+  if (is(element, 'bpmn:ParallelGateway')) {
+      return { width: 50, height: 50 };
+  }
+
+  if (is(element, 'bpmn:InclusiveGateway')) {
       return { width: 50, height: 50 };
   }
 
