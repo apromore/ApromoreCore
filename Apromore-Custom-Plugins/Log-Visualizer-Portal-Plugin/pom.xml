@@ -113,7 +113,7 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>log-animation-portal-plugin2</artifactId>
+            <artifactId>log-animation-portal-plugin</artifactId>
             <version>1.0</version>
             <classifier>classes</classifier>
         </dependency>

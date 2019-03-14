@@ -30,9 +30,9 @@ import java.util.List;
 // Third party packages
 import org.apromore.model.*;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.loganimation2.ElementLayout;
-import org.apromore.plugin.portal.loganimation2.LayoutGenerator;
-import org.apromore.plugin.portal.loganimation2.LogAnimationPluginInterface;
+import org.apromore.plugin.portal.loganimation.ElementLayout;
+import org.apromore.plugin.portal.loganimation.LayoutGenerator;
+import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;

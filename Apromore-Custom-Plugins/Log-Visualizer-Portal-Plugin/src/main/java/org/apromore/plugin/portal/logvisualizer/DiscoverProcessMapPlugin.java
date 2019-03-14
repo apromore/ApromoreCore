@@ -27,7 +27,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 // Third party packages
-import org.apromore.plugin.portal.loganimation2.LogAnimationPluginInterface;
+import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
