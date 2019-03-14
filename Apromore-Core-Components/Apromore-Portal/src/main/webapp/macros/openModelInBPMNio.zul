@@ -85,7 +85,7 @@
 					//console.log('BPMN before auto-layout');
 					//console.log('${arg.bpmnXML}');
                     if (autoLayout=='true') {
-					  alert('start layouting');	
+					  //alert('start layouting');	
                       var layouter = new BPMNAutoLayout();
                       layouter.layoutProcess('${arg.bpmnXML}', createEditor);
                     }
