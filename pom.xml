@@ -155,9 +155,11 @@
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
 		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2</module>
+		<!--
         <module>Apromore-Custom-Plugins/Log-Visualizer-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Visualizer-Logic-WS</module>
         <module>Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin</module>
+		-->
         <module>Apromore-Custom-Plugins/Metrics-Logic</module>
         <module>Apromore-Custom-Plugins/Metrics-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/PerformanceMiner-Logic</module>
