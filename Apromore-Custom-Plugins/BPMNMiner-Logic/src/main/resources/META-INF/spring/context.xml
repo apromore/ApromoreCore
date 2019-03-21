@@ -32,15 +32,29 @@
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
-    <!-- Access the site.properties configuration artifact
+    <!-- Access the site.properties configuration artifact -->
     <osgi-compendium:cm-properties id="properties" persistent-id="site" init-timeout="60"/>
     <context:property-placeholder properties-ref="properties"/>
-    -->
 
     <context:annotation-config />
     <context:spring-configured />
 
     <aop:aspectj-autoproxy />
+
+    <bean id="python" class="java.lang.String">
+        <qualifier value="python"/>
+        <constructor-arg type="String" value="${simo.python}"/>
+    </bean>
+
+    <bean id="simo" class="java.io.File">
+        <qualifier value="simo"/>
+        <constructor-arg type="String" value="${simo.backend}"/>
+    </bean>
+
+    <bean id="tmp" class="java.io.File">
+        <qualifier value="tmp"/>
+        <constructor-arg type="String" value="${simo.tmpDir}"/>
+    </bean>
 
     <!-- Other OSGi services this component consumes -->
     <osgi:reference id="ibpstructService" interface="org.apromore.service.ibpstruct.IBPStructService"/>

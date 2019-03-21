@@ -20,7 +20,17 @@
 
 package org.apromore.service.bpmnminer.impl;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeoutException;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import java.util.stream.Collectors;
 import javax.swing.UIManager;
 
 import javax.inject.Inject;
@@ -40,6 +50,7 @@ import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.out.XesXmlSerializer;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -48,6 +59,7 @@ import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.plugins.bpmn.BpmnDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import org.apromore.service.bpmnminer.BPMNMinerService;
@@ -61,10 +73,19 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BPMNMinerServiceImpl.class);
 
     private final IBPStructService ibpstructService;
+    private final String pythonExecutable;
+    private final File simoDirectory;
+    private final File tempDirectory;
 
     @Inject
-    public BPMNMinerServiceImpl(final IBPStructService ibpstructService) {
+    public BPMNMinerServiceImpl(final IBPStructService ibpstructService,
+            @Qualifier("python") final String pythonExecutable,
+            @Qualifier("simo") final File simoDirectory,
+            @Qualifier("tmp") final File tempDirectory) {
         this.ibpstructService = ibpstructService;
+        this.pythonExecutable = pythonExecutable;
+        this.simoDirectory = simoDirectory;
+        this.tempDirectory = tempDirectory;
     }
 
     @Override
@@ -186,4 +207,57 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
         return primaryKeys_entityName;
     }
 
+    @Override
+    public String annotateBPMNModelForBIMP(String model, XLog log) throws IOException, InterruptedException, TimeoutException {
+        LOGGER.info("Annotating BPMN model for BIMP, python = " + pythonExecutable);
+
+        // Data is passed to Python via scratch files
+        File inputLog = File.createTempFile("inputLog_", ".xes", tempDirectory);
+        File inputModel = File.createTempFile("inputModel_", ".bpmn", tempDirectory);
+        File outputModel = File.createTempFile("outputModel_", ".bpmn", tempDirectory);
+
+        // Write the log to its scratch file
+        try (FileOutputStream out = new FileOutputStream(inputLog)) {
+            LOGGER.info("Serializing log to " + inputLog);
+            (new XesXmlSerializer()).serialize(log, out);
+        }
+
+        // Write the process model to its scratch file
+        try (FileWriter writer = new FileWriter(inputModel)) {
+            LOGGER.info("Serializing model to " + inputModel);
+             writer.write(model);
+        }
+
+        // Execute the Python script
+        ProcessBuilder pb = new ProcessBuilder(pythonExecutable, "simo2.py", inputLog.toString(), inputModel.toString(), outputModel.toString());
+        pb.directory(simoDirectory);
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));  // gather any error messages
+
+        // Block and await Python execution
+        if (!p.waitFor(300, SECONDS)) {
+            p.destroy();
+            throw new TimeoutException("Timed out waiting for BIMP annotation");
+        }
+
+        // See if the Python script executed successfully
+        assert !p.isAlive();
+        if (p.exitValue() == 0) {
+            // Read the annotated process model back from the scratch file
+            LOGGER.info("Obtaining annotated model from " + outputModel);
+            model = new BufferedReader(new FileReader(outputModel)).lines().collect(Collectors.joining("\n"));
+
+            // Delete all the scratch files
+            outputModel.delete();
+            inputModel.delete();
+            inputLog.delete();
+            return model;
+
+        } else {
+            // Fail, hopefully with a useful diagnostic message
+            String message = reader.lines().collect(Collectors.joining("\n"));
+            throw new RuntimeException("Exited with error code " + p.exitValue() + "\n" + message);
+        }
+    }
 }

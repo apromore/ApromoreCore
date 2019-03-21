@@ -71,6 +71,7 @@
                             javax.swing,
                             org.slf4j,
                             org.springframework.stereotype,
+                            *
                         </Import-Package>
                         <Export-Package>
                             org.apromore.service.bpmnminer
