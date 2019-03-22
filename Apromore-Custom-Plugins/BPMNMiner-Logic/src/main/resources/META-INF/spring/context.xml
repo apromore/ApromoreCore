@@ -51,11 +51,6 @@
         <constructor-arg type="String" value="${simo.backend}"/>
     </bean>
 
-    <bean id="tmp" class="java.io.File">
-        <qualifier value="tmp"/>
-        <constructor-arg type="String" value="${simo.tmpDir}"/>
-    </bean>
-
     <!-- Other OSGi services this component consumes -->
     <osgi:reference id="ibpstructService" interface="org.apromore.service.ibpstruct.IBPStructService"/>
 

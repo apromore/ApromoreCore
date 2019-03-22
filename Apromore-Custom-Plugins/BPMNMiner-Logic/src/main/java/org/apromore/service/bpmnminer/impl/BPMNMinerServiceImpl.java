@@ -74,18 +74,15 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
 
     private final IBPStructService ibpstructService;
     private final String pythonExecutable;
-    private final File simoDirectory;
-    private final File tempDirectory;
+    private final File simoScript;
 
     @Inject
     public BPMNMinerServiceImpl(final IBPStructService ibpstructService,
             @Qualifier("python") final String pythonExecutable,
-            @Qualifier("simo") final File simoDirectory,
-            @Qualifier("tmp") final File tempDirectory) {
+            @Qualifier("simo") final File simoScript) {
         this.ibpstructService = ibpstructService;
         this.pythonExecutable = pythonExecutable;
-        this.simoDirectory = simoDirectory;
-        this.tempDirectory = tempDirectory;
+        this.simoScript = simoScript;
     }
 
     @Override
@@ -212,9 +209,9 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
         LOGGER.info("Annotating BPMN model for BIMP, python = " + pythonExecutable);
 
         // Data is passed to Python via scratch files
-        File inputLog = File.createTempFile("inputLog_", ".xes", tempDirectory);
-        File inputModel = File.createTempFile("inputModel_", ".bpmn", tempDirectory);
-        File outputModel = File.createTempFile("outputModel_", ".bpmn", tempDirectory);
+        File inputLog = File.createTempFile("inputLog_", ".xes", null);
+        File inputModel = File.createTempFile("inputModel_", ".bpmn", null);
+        File outputModel = File.createTempFile("outputModel_", ".bpmn", null);
 
         // Write the log to its scratch file
         try (FileOutputStream out = new FileOutputStream(inputLog)) {
@@ -229,8 +226,8 @@ public class BPMNMinerServiceImpl implements BPMNMinerService {
         }
 
         // Execute the Python script
-        ProcessBuilder pb = new ProcessBuilder(pythonExecutable, "simo2.py", inputLog.toString(), inputModel.toString(), outputModel.toString());
-        pb.directory(simoDirectory);
+        ProcessBuilder pb = new ProcessBuilder(pythonExecutable, simoScript.getName(), inputLog.toString(), inputModel.toString(), outputModel.toString());
+        pb.directory(simoScript.getParentFile());
         pb.redirectErrorStream(true);
         Process p = pb.start();
         BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));  // gather any error messages
