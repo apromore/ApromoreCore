@@ -390,10 +390,16 @@ public class BPMNMinerController {
                     ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
                     listCandidates, group);
 
+            Exception bimpAnnotationException = null;
             if (bimpAnnotated.getSelectedIndex() == 0) {
-                LOGGER.info("Annotating for BPMN");
-                model = bpmnMinerService.annotateBPMNModelForBIMP(model, log);
-                LOGGER.info("Annotated for BPMN");
+                try {
+                    model = bpmnMinerService.annotateBPMNModelForBIMP(model, log);
+
+                } catch (Exception e) {
+                    LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);
+                    Messagebox.show("Unable to annotate BPMN model for BIMP simulation (" + e.getMessage() + ")\n\nModel will be created without annotations.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
+                    bimpAnnotationException = e;
+                }
             }
 
             String defaultProcessName = null;
@@ -432,7 +438,10 @@ public class BPMNMinerController {
                 user,
                 publicModel));
 
-            this.portalContext.refreshContent();
+            // Calling the refresh if the exception messagebox is present makes it vanish
+            if (bimpAnnotationException == null) {
+                this.portalContext.refreshContent();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
