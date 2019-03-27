@@ -45,6 +45,8 @@ import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -62,6 +64,8 @@ import java.util.*;
  * Created by conforti on 10/04/15.
  */
 public class BPMNMinerController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BPMNMinerController.class.getCanonicalName());
 
     PortalContext portalContext;
     private Window bpmnMinerW;
@@ -93,6 +97,7 @@ public class BPMNMinerController {
     private Radiogroup filterLog;
     private Radiogroup sortLog;
     private Radiogroup structProcess;
+    private Radiogroup bimpAnnotated;
     private Slider interruptingEventTolerance;
     private Slider multiInstancePercentage;
     private Slider multiInstanceTolerance;
@@ -205,6 +210,7 @@ public class BPMNMinerController {
 //            this.structProcess.appendChild(this.bpmnMinerW.getFellow("structured"));
 //            this.structProcess.appendChild(this.bpmnMinerW.getFellow("notStructured"));
 
+            this.bimpAnnotated = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerBimpAnnotated");
 
             this.interruptingEventTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerInterruptingEventTolerance");
             this.multiInstancePercentage = (Slider) this.bpmnMinerW.getFellow("bpmnMinerMultiInstancePercentage");
@@ -384,6 +390,18 @@ public class BPMNMinerController {
                     ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
                     listCandidates, group);
 
+            Exception bimpAnnotationException = null;
+            if (bimpAnnotated.getSelectedIndex() == 0) {
+                try {
+                    model = bpmnMinerService.annotateBPMNModelForBIMP(model, log);
+
+                } catch (Exception e) {
+                    LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);
+                    Messagebox.show("Unable to annotate BPMN model for BIMP simulation (" + e.getMessage() + ")\n\nModel will be created without annotations.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
+                    bimpAnnotationException = e;
+                }
+            }
+
             String defaultProcessName = null;
             if(this.logFileName != null) {
                 defaultProcessName = this.logFileName.split("\\.")[0];
@@ -420,10 +438,14 @@ public class BPMNMinerController {
                 user,
                 publicModel));
 
-            this.portalContext.refreshContent();
+            // Calling the refresh if the exception messagebox is present makes it vanish
+            if (bimpAnnotationException == null) {
+                this.portalContext.refreshContent();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
+            Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 

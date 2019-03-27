@@ -23,9 +23,11 @@ package org.apromore.service.bpmnminer;
 import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.model.XLog;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by corno on 2/07/2014.
@@ -36,4 +38,5 @@ public interface BPMNMinerService {
                              double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
                              double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception;
 
+    String annotateBPMNModelForBIMP(String model, XLog log) throws InterruptedException, IOException, TimeoutException;;
 }

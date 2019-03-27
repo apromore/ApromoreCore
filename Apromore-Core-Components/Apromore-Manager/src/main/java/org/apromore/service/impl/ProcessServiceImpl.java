@@ -280,7 +280,7 @@ public class ProcessServiceImpl implements ProcessService {
      * @param pmv  the changed process model version
      */
     private void notifyProcessPlugins(ProcessModelVersion pmv) {
-        LOGGER.info("Notifying " + processPlugins.size() + " process plugins of change in " + pmv);
+        LOGGER.debug("Notifying " + processPlugins.size() + " process plugins of change in " + pmv);
         for (ProcessPlugin processPlugin: processPlugins) {
             LOGGER.info("Notifying process plugin " + processPlugin);
             try {
