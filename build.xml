@@ -260,11 +260,9 @@
         <include name="Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Logic/target/infrequent-behaviour-filter-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Portal-Plugin/target/infrequent-behaviour-filter-portal-plugin-1.1.jar"/>
 
-        <!-- Predictive monitoring requires additional servers to be set up, so default to not installing it
         <include name="Apromore-Custom-Plugins/Predictive-Monitor-Logic/target/predictive-monitor-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin/target/predictive-monitor-portal-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war"/>
-        -->
 
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
