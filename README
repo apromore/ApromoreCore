@@ -174,6 +174,62 @@ Also, uncomment the following component in the "copy-virgo" target:
 * PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar
 
 
+LDAP SETUP (ADVANCED)
+==========
+
+As distributed, Apromore maintains its own catalogue of users and passwords.
+It can be modified to instead allow login based on an external LDAP directory.
+This requires recompiling server components rather than just changing to site.properties; you will need to be comfortable hacking Spring, LDAP, Java and ZUL.
+
+Edit the portal Spring configuration in Apromore-Core-Components/Apromore-Portal/src/main/resources/META-INF/spring/portalContext-security.xml, uncommenting the jaasAuthenticationProvider as so:
+
+    <!-- The remote authentication details -->
+    <authentication-manager id="authenticationManager">
+        <authentication-provider ref="jaasAuthenticationProvider"/>
+        <authentication-provider ref="remoteAuthenticationProvider"/>
+        <authentication-provider ref="rememberMeAuthenticationProvider"/>
+    </authentication-manager>
+
+    <!-- Uncommenting this bean and adding it to #authenticationManager (above) will enable LDAP logins.
+         See https://docs.spring.io/spring-security/site/docs/3.1.x/reference/jaas.html -->
+    <beans:bean id="jaasAuthenticationProvider" class="org.springframework.security.authentication.jaas.JaasAuthenticationProvider">
+        <beans:property name="loginConfig" value="/WEB-INF/login.conf"/>
+        <beans:property name="loginContextName" value="apromore"/>
+        <beans:property name="callbackHandlers">
+            <beans:list>
+                <beans:bean class="org.springframework.security.authentication.jaas.JaasNameCallbackHandler"/>
+                <beans:bean class="org.springframework.security.authentication.jaas.JaasPasswordCallbackHandler"/>
+            </beans:list>
+        </beans:property>
+        <beans:property name="authorityGranters">
+            <beans:list>
+                <beans:ref bean="authorityGranter"/>
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+
+    <beans:bean id="authorityGranter" class="org.apromore.security.AuthorityGranterImpl">
+        <beans:property name="principalClassName" value="com.sun.security.auth.UserPrincipal"/>
+        <beans:property name="grants">
+            <beans:set>
+                <beans:value>ROLE_USER</beans:value>
+            </beans:set>
+        </beans:property>
+    </beans:bean>
+
+Unless you're using the University of Melbourne's central authentication, you will need to additionally edit the following files to match your local LDAP installation:
+* Apromore-Core-Components/Apromore-Portal/src/main/webapp/WEB-INF/login.conf
+* Apromore-Core-Components/Apromore-Portal/src/main/java/org/apromore/portal/common/UserSessionManager.java (constructUserType method)
+
+Since accounts will now be created automatically, you should also remove the "Forgot password?" and "No account yet? Register for free!" buttons on the login screen:
+* Apromore-Core-Components/Apromore-Portal/src/main/webapp/login.zul
+
+Recompile the Portal bundle and its dependencies:
+$ mvn clean install -pl :apromore-portal -amd
+
+When the server starts with the modified portal, it will automatically create new accounts for valid LDAP logins.
+
+
 ACCESSING THE PORTAL
 ====================
 * go to [apromore_domain]:9000/portal/login.zul
