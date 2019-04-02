@@ -89,10 +89,10 @@ Edit the top-level site.properties file, replacing the H2 declarations in "Datab
 Stop and restart the server so that it picks up the changes to site.properties.
 
 
-PROCESS DISCOVERY ADVANCED SETUP (OPTIONAL)
-================================
+PROCESS MINING WITH AUTOMATIC SIMULATION PARAMETERS (OPTIONAL)
+===================================================
 
-The "Discover BPMN model" tool has an advanced option to "Annotate for BIMP Simulation".  When this is selected, the process discoverer will include information within the created BPMN model which preconfigures it for subsequent use by the "Simulate with BIMP" tool.  This feature requires external Python scripts to be installed.
+The "Discover BPMN model" tool has an advanced option to "Annotate for BIMP Simulation".  Similarly, the "Discover process map" tool has an export option "Export BPMN annotated for BIMP".  When these are selected, the tool will include information within the created BPMN model which preconfigures it for subsequent use by the "Simulate with BIMP" tool.  This feature requires external Python scripts to be installed.
 
 Check out the required Python scripts:
 $ git clone https://github.com/AdaptiveBProcess/SiMo-Discoverer.git
@@ -104,17 +104,18 @@ matplotlib==2.2.3
 networkx==2.2
 numpy==1.15.4
 seaborn==0.9.0
+statsmodels==0.9.0
 
-If you place the preceding 5 lines into a file named requirement.txt, you can install the libraries with the following command:
+If you place the preceding 6 lines into a file named requirement.txt, you can install the libraries with the following command:
 $ pip install -r requirements.txt
 
 Copy Supplements/apromore-simo.py from the Apromore checkout into simo/apromore-simo.py in the SiMo checkout.
 In Apromore's site.properties, set the property simo.backend to the full path of the simo/apromore-simo.py script you just copied.
 In Apromore's site.properties, set the property simo.python to your Python 3 executable.
 
-Optionally, remove or comment out the @Ignore annotation from Apromore-Custom-Plugins/BPMNMiner-Logic/src/test/java/org/apromore/service/bpmnminer/impl/BPMNMinerServiceUnitTest.java.
+Optionally, remove or comment out the @Ignore annotation from Apromore-Custom-Plugins/BIMP-Annotation-Logic/src/test/java/org/apromore/service/bimp_annotation/impl/BIMPAnnotationServiceUnitTest.java.
 If you do this, the unit test passing with 0 skipped tests confirms that all configuration is correct.
-$ mvn test -pl :bpmnminer-logic
+$ mvn test -pl :bimp-annotation-logic
 
 
 PREDICTIVE MONITORING SETUP (OPTIONAL)
