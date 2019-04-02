@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.service.bpmnminer.impl;
+package org.apromore.service.bimp_annotation.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,7 +35,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import org.apromore.service.bpmnminer.BPMNMinerService;
+import org.apromore.service.bimp_annotation.BIMPAnnotationService;
 import org.deckfour.xes.in.XesXmlGZIPParser;
 import org.deckfour.xes.model.XLog;
 import org.junit.Assert;
@@ -44,9 +44,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore("You must set the simo.* properties in site.properties before enabling this test suite.")
-public class BPMNMinerServiceUnitTest {
+public class BIMPAnnotationServiceUnitTest {
 
-    private BPMNMinerService service = null;
+    private BIMPAnnotationService service = null;
     private Transformer transformer;
 
     @Before
@@ -54,10 +54,10 @@ public class BPMNMinerServiceUnitTest {
         Properties site = new Properties();
         site.load(new FileInputStream("../../site.properties"));
 
-        service = new BPMNMinerServiceImpl(
-            null,  // ibpstructService not required
+        service = new BIMPAnnotationServiceImpl(
             site.getProperty("simo.python"),
-            new File(site.getProperty("simo.backend"))
+            new File(site.getProperty("simo.backend")),
+            Integer.parseInt(site.getProperty("simo.timeout"))
         );
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -66,7 +66,7 @@ public class BPMNMinerServiceUnitTest {
 
     @Test
     public void testAnnotateBPMNModelForBIMP() throws Exception {
-        ClassLoader cl = BPMNMinerServiceUnitTest.class.getClassLoader();
+        ClassLoader cl = BIMPAnnotationServiceUnitTest.class.getClassLoader();
         String model = new BufferedReader(new InputStreamReader(cl.getResourceAsStream("Production.bpmn")))
             .lines()
             .collect(Collectors.joining("\n"));
@@ -87,7 +87,7 @@ public class BPMNMinerServiceUnitTest {
     /**
      * Remove all UUID ids from the QBP elements of an annotated BPMN document.
      *
-     * Every execution of {@link BPMNMinerServiceImpl#annotateBPMNModelForBIMP}
+     * Every execution of {@link BIMPAnnotationServiceImpl#annotateBPMNModelForBIMP}
      * produces a unique result due to the UUIDs.
      * Removing the UUIDs allows simple file comparison with the expected result.
      * 

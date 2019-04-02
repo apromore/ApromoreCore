@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009-2018 The Apromore Initiative.
+ * Copyright © 2009-2019 The Apromore Initiative.
  *
  * This file is part of "Apromore".
  *
@@ -18,21 +18,16 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.service.bpmnminer;
+package org.apromore.service.bimp_annotation;
 
-import com.raffaeleconforti.wrappers.settings.MiningSettings;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 import org.deckfour.xes.model.XLog;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
- * Created by corno on 2/07/2014.
+ * @author <a href="mailto:simon.raboczi@uqconnect.edu.au"/>Simon Raboczi</a>
  */
-public interface BPMNMinerService {
+public interface BIMPAnnotationService {
 
-    String discoverBPMNModel(XLog log, boolean sortLog, boolean structProcess, int miningAlgorithm, MiningSettings params, int dependencyAlgorithm, double interruptingEventTolerance, double timerEventPercentage,
-                             double timerEventTolerance, double multiInstancePercentage, double multiInstanceTolerance,
-                             double noiseThreshold, List<String> listCandidates, Map<Set<String>, Set<String>> primaryKeySelections) throws Exception;
+    String annotateBPMNModelForBIMP(String model, XLog log) throws InterruptedException, IOException, TimeoutException;
 }

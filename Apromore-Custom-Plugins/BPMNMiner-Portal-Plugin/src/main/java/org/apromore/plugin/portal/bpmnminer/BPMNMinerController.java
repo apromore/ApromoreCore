@@ -37,6 +37,7 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.bimp_annotation.BIMPAnnotationService;
 import org.apromore.service.bpmnminer.BPMNMinerService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService;
@@ -118,6 +119,7 @@ public class BPMNMinerController {
     private byte[] logByteArray = null;
     String logFileName = null;
 
+    private final BIMPAnnotationService bimpAnnotationService;
     private final BPMNMinerService bpmnMinerService;
     private final CanoniserService canoniserService;
     private final DomainService domainService;
@@ -127,6 +129,7 @@ public class BPMNMinerController {
     private final UserInterfaceHelper userInterfaceHelper;
 
     public BPMNMinerController(PortalContext portalContext,
+                               BIMPAnnotationService bimpAnnotationService,
                                BPMNMinerService bpmnMinerService,
                                CanoniserService canoniserService,
                                DomainService domainService,
@@ -136,6 +139,7 @@ public class BPMNMinerController {
                                UserInterfaceHelper userInterfaceHelper) {
 
         this.portalContext       = portalContext;
+        this.bimpAnnotationService = bimpAnnotationService;
         this.bpmnMinerService    = bpmnMinerService;
         this.canoniserService    = canoniserService;
         this.domainService       = domainService;
@@ -393,7 +397,7 @@ public class BPMNMinerController {
             Exception bimpAnnotationException = null;
             if (bimpAnnotated.getSelectedIndex() == 0) {
                 try {
-                    model = bpmnMinerService.annotateBPMNModelForBIMP(model, log);
+                    model = bimpAnnotationService.annotateBPMNModelForBIMP(model, log);
 
                 } catch (Exception e) {
                     LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);

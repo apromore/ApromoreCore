@@ -55,6 +55,7 @@
 
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
@@ -122,7 +123,7 @@
         <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 
         <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
-        <include name="Supplements/process-discoverer-1.0.20181204.jar"/>
+        <include name="Supplements/process-discoverer-1.1.20190402.jar"/>
 
         <include name="Apromore-Core-Co^mponents/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
     </fileset>
@@ -134,6 +135,7 @@
 
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
@@ -201,7 +203,7 @@
         <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 
         <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
-        <include name="Supplements/process-discoverer-1.0.20181204.jar"/>
+        <include name="Supplements/process-discoverer-1.1.20190402.jar"/>
 
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
         -->
@@ -221,6 +223,7 @@
 
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
 
@@ -298,7 +301,7 @@
         <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 
         <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
-        <include name="Supplements/process-discoverer-1.0.20181204.jar"/>
+        <include name="Supplements/process-discoverer-1.1.20190402.jar"/>
 
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
         <include name="Apromore-Custom-Plugins/APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
@@ -319,6 +322,7 @@
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor-student.plan"/>
 
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
 
@@ -364,12 +368,12 @@
 
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
 
-        <!-- Do not switch off this Signavio-based plugin because /Supplements/process-discoverer-1.0.20181204.jar depends on it -->
+        <!-- Do not switch off this Signavio-based plugin because /Supplements/process-discoverer-1.1.20190402.jar depends on it -->
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
 
         <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
-        <!-- This plugin is the same as the plugin provided in /Supplements/process-discoverer-1.0.20181204.jar which depends on Signavio-based plugin log animation-->
+        <!-- This plugin is the same as the plugin provided in /Supplements/process-discoverer-1.1.20190402.jar which depends on Signavio-based plugin log animation-->
         <!-- <include name="Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/> -->
 
         <include name="Apromore-Custom-Plugins/Metrics-Logic/target/metrics-logic-1.1.jar"/>
@@ -398,7 +402,7 @@
         <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 
         <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
-        <include name="Supplements/process-discoverer-1.0.20181204.jar"/>
+        <include name="Supplements/process-discoverer-1.1.20190402.jar"/>
 
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
         <include name="Apromore-Custom-Plugins/APQL-Portal-Plugin/target/apql-portal-plugin-1.1.war"/>
