@@ -905,7 +905,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
 </bpmndi:BPMNEdge>
 </bpmndi:BPMNPlane>
 </bpmndi:BPMNDiagram>
-<qbp:processSimulationInfo xmlns:qbp="http://www.qbp-simulator.com/Schema201212" id="qbp_50c73b3b-dbfc-4ab2-ac46-f18454b24e7e" processInstances="7" startDateTime="2017-08-14T08:00:00.000Z" currency="EUR">
+<qbp:processSimulationInfo xmlns:qbp="http://www.qbp-simulator.com/Schema201212" id="qbp_5e40bf25-3203-4617-81b8-62381d574271" processInstances="7" startDateTime="2017-08-14T08:00:00.000Z" currency="EUR">
   <qbp:arrivalRateDistribution type="FIXED" mean="0" arg1="0" arg2="0">
     <qbp:timeUnit>seconds</qbp:timeUnit>
   </qbp:arrivalRateDistribution>
@@ -918,20 +918,20 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
   </qbp:timetables>
   <qbp:resources>
     <qbp:resource id="QBP_DEFAULT_RESOURCE" name="Role 1" totalAmount="23" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
-    <qbp:resource id="qbp_54d7ee35-ef3e-4525-8ab5-68b011c8c6cd" name="Role 10" totalAmount="1" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
-    <qbp:resource id="qbp_c47b690a-b0d8-4c72-93dc-4bdc9bdc52bc" name="Role 11" totalAmount="1" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
-    <qbp:resource id="qbp_bd55bc62-3d50-4d90-8411-df7c7bae8541" name="Role 2" totalAmount="5" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
-    <qbp:resource id="qbp_2d59838c-ea48-4da8-a759-aa58897d6348" name="Role 3" totalAmount="4" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
-    <qbp:resource id="qbp_8ce7822e-cbd9-4283-89b4-b181da6dca84" name="Role 4" totalAmount="3" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
-    <qbp:resource id="qbp_5e327ea7-00f8-4616-b938-94049e5594c0" name="Role 5" totalAmount="3" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
-    <qbp:resource id="qbp_61260ad4-2a80-4a1d-b07b-819842902769" name="Role 6" totalAmount="2" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
-    <qbp:resource id="qbp_057e05a9-7d76-4190-a34e-d2d210ecebc8" name="Role 7" totalAmount="2" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
-    <qbp:resource id="qbp_b434e0d5-7bd1-4177-9469-b5a3287ea9ce" name="Role 8" totalAmount="1" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
-    <qbp:resource id="qbp_b5b55ee8-7673-4a05-8577-fb0b65bd4a23" name="Role 9" totalAmount="1" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
+    <qbp:resource id="qbp_76b02fdf-4572-4ebe-a07d-933298a86c49" name="Role 10" totalAmount="1" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
+    <qbp:resource id="qbp_6e09d31c-8dee-4b46-94cc-073eda6d444d" name="Role 11" totalAmount="1" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
+    <qbp:resource id="qbp_f184e710-3214-4844-bc0a-9680123c1d1b" name="Role 2" totalAmount="5" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
+    <qbp:resource id="qbp_4412437b-ea16-4c5a-853d-bb5bf1be2689" name="Role 3" totalAmount="4" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
+    <qbp:resource id="qbp_3c2b912b-6b86-4c11-ba49-a2bbbfe8d2f6" name="Role 4" totalAmount="3" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
+    <qbp:resource id="qbp_0e8f237d-4c45-4426-84e8-81c238f6abd7" name="Role 5" totalAmount="3" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
+    <qbp:resource id="qbp_743c6b31-aa4f-4794-b729-7dc1e5203672" name="Role 6" totalAmount="2" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
+    <qbp:resource id="qbp_d7bea3b6-6c6c-487f-be13-46e57a88f128" name="Role 7" totalAmount="2" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
+    <qbp:resource id="qbp_87e36e08-9c50-407a-ba1e-d5ae7f509116" name="Role 8" totalAmount="1" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
+    <qbp:resource id="qbp_ce190e01-b422-44c9-8ea5-754cb5c77242" name="Role 9" totalAmount="1" costPerHour="20" timetableId="QBP_DEFAULT_TIMETABLE"/>
     <qbp:resource id="0" name="Role 0" totalAmount="1" costPerHour="0" timetableId="QBP_DEFAULT_TIMETABLE"/>
   </qbp:resources>
   <qbp:elements>
-    <qbp:element id="qbp_dd67c259-e747-438c-87fc-b9952b395ccb" elementId="node_42cce368-0888-413a-bd84-f7e90d96a19b">
+    <qbp:element id="qbp_fbe44126-b187-4e69-b2cc-5177e942c1fa" elementId="node_42cce368-0888-413a-bd84-f7e90d96a19b">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -939,7 +939,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_f570ba41-21b3-4d51-a5f9-4d0829cc618d" elementId="node_19e9c915-60f5-4f4c-b5d8-140fbaeaddca">
+    <qbp:element id="qbp_04a6c835-5436-4bf7-bf0e-92f79e1a8207" elementId="node_19e9c915-60f5-4f4c-b5d8-140fbaeaddca">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -947,7 +947,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_5ebf6a39-71be-40fd-b65f-1f0483485c89" elementId="node_c7331eb4-dbd3-416e-b779-c2094c1366fe">
+    <qbp:element id="qbp_8b15e1cc-592a-4bf8-ae08-1e599f028993" elementId="node_c7331eb4-dbd3-416e-b779-c2094c1366fe">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -955,7 +955,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_757ccf49-d6e9-4caf-a9ed-1dc6b2f349ad" elementId="node_fc61f04c-49bc-47c8-a79b-fd88be86c65c">
+    <qbp:element id="qbp_b5a197da-1e1b-4475-966c-80107f024c82" elementId="node_fc61f04c-49bc-47c8-a79b-fd88be86c65c">
       <qbp:durationDistribution type="TRIANGULAR" mean="60.0" arg1="60.0" arg2="21240.0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -963,15 +963,15 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>QBP_DEFAULT_RESOURCE</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_e0e62897-da63-49c9-8e71-3fe29577032d" elementId="node_d96f9cef-02de-4d2c-8195-d011947a52fc">
+    <qbp:element id="qbp_2e0d916e-722f-4436-9ad0-453ee8fe50b0" elementId="node_d96f9cef-02de-4d2c-8195-d011947a52fc">
       <qbp:durationDistribution type="FIXED" mean="3600" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
       <qbp:resourceIds>
-        <qbp:resourceId>qbp_5e327ea7-00f8-4616-b938-94049e5594c0</qbp:resourceId>
+        <qbp:resourceId>qbp_0e8f237d-4c45-4426-84e8-81c238f6abd7</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_e06185f1-d6c9-4c9a-9a6f-92cb62c61ae8" elementId="node_90cff030-d813-4beb-9d6a-796fbe17a2d1">
+    <qbp:element id="qbp_68535ceb-a295-40ac-bd74-7c945df90cec" elementId="node_90cff030-d813-4beb-9d6a-796fbe17a2d1">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -979,7 +979,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_a613d70f-77e6-4bbe-92a7-d574802599e3" elementId="node_78888d12-5cc6-45c8-9abd-912a018f6730">
+    <qbp:element id="qbp_79679624-8cdf-480c-92e6-46c418ba1c6a" elementId="node_78888d12-5cc6-45c8-9abd-912a018f6730">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -987,7 +987,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_b348d7fa-6cdc-4539-b908-f938956a2047" elementId="node_2dd300ba-5fc3-468f-bcf2-95710d806004">
+    <qbp:element id="qbp_930cc82d-828b-4dc0-9751-1246777a9b28" elementId="node_2dd300ba-5fc3-468f-bcf2-95710d806004">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -995,7 +995,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_ed372cd4-2d0e-4724-8cee-33d45b644328" elementId="node_5c597e3b-0f4d-406c-bcfc-a781a658d2b3">
+    <qbp:element id="qbp_1d7e563c-bba0-4aa4-9feb-8239e05dd775" elementId="node_5c597e3b-0f4d-406c-bcfc-a781a658d2b3">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -1003,7 +1003,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_e2b25b2f-3756-4bb5-ac08-e3d05046eba6" elementId="node_d7c86f12-17dc-4695-a4f5-3add60cc65b4">
+    <qbp:element id="qbp_d81f8db6-159a-4de8-922f-91799ad41b71" elementId="node_d7c86f12-17dc-4695-a4f5-3add60cc65b4">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -1011,15 +1011,15 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_d9c027fc-3af2-4001-bec2-ce8619c93db4" elementId="node_7af1ca67-adb7-4d68-b7fd-02c15dfc834e">
+    <qbp:element id="qbp_5bc869b7-9216-4dbb-a295-7d52c1b869ba" elementId="node_7af1ca67-adb7-4d68-b7fd-02c15dfc834e">
       <qbp:durationDistribution type="FIXED" mean="2760" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
       <qbp:resourceIds>
-        <qbp:resourceId>qbp_61260ad4-2a80-4a1d-b07b-819842902769</qbp:resourceId>
+        <qbp:resourceId>qbp_743c6b31-aa4f-4794-b729-7dc1e5203672</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_55f2720f-26e2-4d64-a99f-09d4c465b2a9" elementId="node_0036f412-a810-4478-9d2e-d7012c817dcc">
+    <qbp:element id="qbp_44025d1a-b407-4a4a-9315-fbf73b8b5898" elementId="node_0036f412-a810-4478-9d2e-d7012c817dcc">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -1027,7 +1027,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_c4d458b2-34ef-46db-9111-1cf0a42a7d82" elementId="node_8d3719a9-1d91-4b57-a9a9-f6653d34b172">
+    <qbp:element id="qbp_4995d1a7-9d55-4b1b-b9aa-515fe81abb8e" elementId="node_8d3719a9-1d91-4b57-a9a9-f6653d34b172">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -1035,7 +1035,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_f92c1e64-5bc4-4db6-a569-c844414f99c9" elementId="node_d46ef1f0-a55e-4d38-a9c4-b56e7c9c3898">
+    <qbp:element id="qbp_111bdc75-82b5-4584-bb07-a88e724d6957" elementId="node_d46ef1f0-a55e-4d38-a9c4-b56e7c9c3898">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -1043,15 +1043,15 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_3c2b9b2e-58bf-4a71-bf71-3de8b5416c0b" elementId="node_fbddf1f6-79a2-43d9-85f2-e2635c502599">
+    <qbp:element id="qbp_cf11cfd5-f3d9-43cc-9f5b-46d235d230f2" elementId="node_fbddf1f6-79a2-43d9-85f2-e2635c502599">
       <qbp:durationDistribution type="TRIANGULAR" mean="4500.0" arg1="1140.0" arg2="5160.0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
       <qbp:resourceIds>
-        <qbp:resourceId>qbp_61260ad4-2a80-4a1d-b07b-819842902769</qbp:resourceId>
+        <qbp:resourceId>qbp_743c6b31-aa4f-4794-b729-7dc1e5203672</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_2c107765-587e-48d2-a1df-26e28484a5c1" elementId="node_7bc7b1d7-5d7d-48f4-97ee-8454e1aa20df">
+    <qbp:element id="qbp_5028b522-269d-4b83-a579-1692260e71f3" elementId="node_7bc7b1d7-5d7d-48f4-97ee-8454e1aa20df">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -1059,7 +1059,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_7deebe18-a33f-42a0-b19b-44e00e37f4f7" elementId="node_40bceca5-ced8-4cda-b4c3-1d1a5cefe2a8">
+    <qbp:element id="qbp_57b7213f-223b-4be9-ac0c-9ef0fe887c93" elementId="node_40bceca5-ced8-4cda-b4c3-1d1a5cefe2a8">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -1067,7 +1067,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_26c7652e-b793-4b65-81eb-eb6e2713123a" elementId="node_dcc7381f-1157-47ca-b98c-b6aa5a831d94">
+    <qbp:element id="qbp_970572b2-9b12-4e66-9bfb-17e63a3f1431" elementId="node_dcc7381f-1157-47ca-b98c-b6aa5a831d94">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -1075,7 +1075,7 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_407c61f6-9860-48d2-9585-7e81daf50ac4" elementId="node_55982d7a-bf7f-4084-bfc5-1463b916aa1f">
+    <qbp:element id="qbp_fc647d2d-c0ff-4009-89a8-2124d6a45f06" elementId="node_55982d7a-bf7f-4084-bfc5-1463b916aa1f">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -1083,31 +1083,31 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_65d4bf8a-6fed-4adb-86d2-8e02d0107039" elementId="node_3e455281-df90-48b9-9757-3849911bd3db">
+    <qbp:element id="qbp_4ef9d9f6-0487-49e4-8808-a2b957efa9fe" elementId="node_3e455281-df90-48b9-9757-3849911bd3db">
       <qbp:durationDistribution type="LOGNORMAL" mean="1645.7" arg1="2667967.3" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
       <qbp:resourceIds>
-        <qbp:resourceId>qbp_61260ad4-2a80-4a1d-b07b-819842902769</qbp:resourceId>
+        <qbp:resourceId>qbp_743c6b31-aa4f-4794-b729-7dc1e5203672</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_18930110-f187-480a-a65a-1b760875402d" elementId="node_a9baed2f-a575-4f9d-a2f6-fa2bf3327318">
+    <qbp:element id="qbp_fd382c9a-5f2b-458b-b394-d3de7de2cec3" elementId="node_a9baed2f-a575-4f9d-a2f6-fa2bf3327318">
       <qbp:durationDistribution type="LOGNORMAL" mean="7716.0" arg1="33277104.0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
       <qbp:resourceIds>
-        <qbp:resourceId>qbp_bd55bc62-3d50-4d90-8411-df7c7bae8541</qbp:resourceId>
+        <qbp:resourceId>qbp_f184e710-3214-4844-bc0a-9680123c1d1b</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_2f85dd7f-2ae1-4fa0-bc18-b1d2417a7e30" elementId="node_1d5618e4-9e22-4a6d-9967-8da02c4f70a9">
-      <qbp:durationDistribution type="EXPONENTIAL" mean="0" arg1="12626.2" arg2="0">
+    <qbp:element id="qbp_7447f03c-f295-4af0-ab0a-15d05e0271f1" elementId="node_1d5618e4-9e22-4a6d-9967-8da02c4f70a9">
+      <qbp:durationDistribution type="GAMMA" mean="12796.9" arg1="89088802.7" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
       <qbp:resourceIds>
         <qbp:resourceId>QBP_DEFAULT_RESOURCE</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_5f5aaf68-f377-4bda-bd02-b304da7b543c" elementId="node_1f9e1e8e-f243-4ece-9f19-161960669a83">
+    <qbp:element id="qbp_73f78b5f-c092-42ba-bcc9-aa2e51053e2b" elementId="node_1f9e1e8e-f243-4ece-9f19-161960669a83">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
@@ -1115,15 +1115,15 @@ node_45bc4f2d-d243-477d-a4a5-7badc17b9ae3</outgoing>
         <qbp:resourceId>0</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_a75c4012-db4c-4eaa-8f38-bf30d43bb49d" elementId="node_412149ad-81b1-4ac5-8ae3-61444e526571">
-      <qbp:durationDistribution type="GAMMA" mean="3154.3" arg1="4934938.8" arg2="0">
+    <qbp:element id="qbp_8e0318b7-6e42-4f24-a672-bf4db6732f27" elementId="node_412149ad-81b1-4ac5-8ae3-61444e526571">
+      <qbp:durationDistribution type="LOGNORMAL" mean="2978.6" arg1="4865455.1" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
       <qbp:resourceIds>
-        <qbp:resourceId>qbp_bd55bc62-3d50-4d90-8411-df7c7bae8541</qbp:resourceId>
+        <qbp:resourceId>qbp_f184e710-3214-4844-bc0a-9680123c1d1b</qbp:resourceId>
       </qbp:resourceIds>
     </qbp:element>
-    <qbp:element id="qbp_d6b7e953-3b39-422f-ab62-ae0558449fbb" elementId="node_3496b01b-3933-4f0e-ba62-20e06496bfac">
+    <qbp:element id="qbp_896f7005-6c12-4c21-9e87-af8be2e5d5fa" elementId="node_3496b01b-3933-4f0e-ba62-20e06496bfac">
       <qbp:durationDistribution type="FIXED" mean="0" arg1="0" arg2="0">
         <qbp:timeUnit>seconds</qbp:timeUnit>
       </qbp:durationDistribution>
