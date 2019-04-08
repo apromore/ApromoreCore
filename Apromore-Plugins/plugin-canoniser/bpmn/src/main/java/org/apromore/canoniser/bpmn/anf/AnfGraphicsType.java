@@ -45,7 +45,10 @@ public class AnfGraphicsType extends GraphicsType {
      */
     public AnfGraphicsType(final BPMNEdge edge, final IdFactory anfIdFactory) {
         setId(anfIdFactory.newId(edge.getId()));
-        setCpfId(edge.getBpmnElement().getLocalPart());  // TODO - process through cpfIdFactory instead
+        //Bruce: check null due to some orphaned BPMNdi does not have elements
+        if (edge.getBpmnElement() != null) {
+            setCpfId(edge.getBpmnElement().getLocalPart());  // TODO - process through cpfIdFactory instead
+        }
 
         // Each waypoint becomes a position
         for (Point waypoint : edge.getWaypoint()) {
@@ -61,7 +64,10 @@ public class AnfGraphicsType extends GraphicsType {
      */
     public AnfGraphicsType(final BPMNShape shape, final IdFactory anfIdFactory) {
         setId(anfIdFactory.newId(shape.getId()));
-        setCpfId(shape.getBpmnElement().getLocalPart());  // TODO - process through cpfIdFactory instead
+        //Bruce: check null due to some orphaned BPMNdi does not have elements
+        if (shape.getBpmnElement() != null) {
+            setCpfId(shape.getBpmnElement().getLocalPart());  // TODO - process through cpfIdFactory instead
+        }
 
         // The bounds become a position and size
         getPosition().add(new AnfPositionType(shape.getBounds()));
