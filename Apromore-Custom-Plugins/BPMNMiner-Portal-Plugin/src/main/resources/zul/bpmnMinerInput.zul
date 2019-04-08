@@ -36,7 +36,6 @@
     <radiogroup id="bpmnMinerStructProcess" />
     <radiogroup id="bpmnMinerSort" />
     <radiogroup id="bpmnMinerFlat" />
-    <radiogroup id="bpmnMinerBimpAnnotated" />
     <radiogroup id="bpmnMinerDependencyAlgorithm" />
     <vbox>
         <grid>
@@ -94,11 +93,6 @@
                             <label value="Select Type of Model"/>
                             <radio id="flat" label="Flat" selected="true" radiogroup="bpmnMinerFlat" onCheck="closeExtra()"/>
                             <radio id="hierarchical" label="Hierarchical" radiogroup="bpmnMinerFlat" onCheck="openExtra()"/>
-                        </row>
-                        <row>
-                            <label value="Annotate for BIMP Simulation"/>
-                            <radio id="bimpAnnotated" label="Yes" radiogroup="bpmnMinerBimpAnnotated"/>
-                            <radio id="notBimpAnnotated" label="No" selected="true" radiogroup="bpmnMinerBimpAnnotated"/>
                         </row>
                     </rows>
                 </grid>

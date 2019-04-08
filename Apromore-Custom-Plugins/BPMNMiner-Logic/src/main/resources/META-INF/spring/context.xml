@@ -41,16 +41,6 @@
 
     <aop:aspectj-autoproxy />
 
-    <bean id="python" class="java.lang.String">
-        <qualifier value="python"/>
-        <constructor-arg type="String" value="${simo.python}"/>
-    </bean>
-
-    <bean id="simo" class="java.io.File">
-        <qualifier value="simo"/>
-        <constructor-arg type="String" value="${simo.backend}"/>
-    </bean>
-
     <!-- Other OSGi services this component consumes -->
     <osgi:reference id="ibpstructService" interface="org.apromore.service.ibpstruct.IBPStructService"/>
 

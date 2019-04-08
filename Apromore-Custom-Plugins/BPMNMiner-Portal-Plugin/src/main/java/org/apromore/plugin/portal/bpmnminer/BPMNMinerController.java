@@ -97,7 +97,6 @@ public class BPMNMinerController {
     private Radiogroup filterLog;
     private Radiogroup sortLog;
     private Radiogroup structProcess;
-    private Radiogroup bimpAnnotated;
     private Slider interruptingEventTolerance;
     private Slider multiInstancePercentage;
     private Slider multiInstanceTolerance;
@@ -209,8 +208,6 @@ public class BPMNMinerController {
 //            this.structProcess = new Radiogroup();
 //            this.structProcess.appendChild(this.bpmnMinerW.getFellow("structured"));
 //            this.structProcess.appendChild(this.bpmnMinerW.getFellow("notStructured"));
-
-            this.bimpAnnotated = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerBimpAnnotated");
 
             this.interruptingEventTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerInterruptingEventTolerance");
             this.multiInstancePercentage = (Slider) this.bpmnMinerW.getFellow("bpmnMinerMultiInstancePercentage");
@@ -390,18 +387,6 @@ public class BPMNMinerController {
                     ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
                     listCandidates, group);
 
-            Exception bimpAnnotationException = null;
-            if (bimpAnnotated.getSelectedIndex() == 0) {
-                try {
-                    model = bpmnMinerService.annotateBPMNModelForBIMP(model, log);
-
-                } catch (Exception e) {
-                    LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);
-                    Messagebox.show("Unable to annotate BPMN model for BIMP simulation (" + e.getMessage() + ")\n\nModel will be created without annotations.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
-                    bimpAnnotationException = e;
-                }
-            }
-
             String defaultProcessName = null;
             if(this.logFileName != null) {
                 defaultProcessName = this.logFileName.split("\\.")[0];
@@ -438,10 +423,7 @@ public class BPMNMinerController {
                 user,
                 publicModel));
 
-            // Calling the refresh if the exception messagebox is present makes it vanish
-            if (bimpAnnotationException == null) {
-                this.portalContext.refreshContent();
-            }
+            this.portalContext.refreshContent();
 
         } catch (Exception e) {
             e.printStackTrace();
