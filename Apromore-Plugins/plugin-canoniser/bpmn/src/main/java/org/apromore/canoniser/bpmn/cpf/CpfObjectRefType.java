@@ -190,7 +190,9 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
 
                 // Handle objectId
                 CpfObjectType object = (CpfObjectType) initializer.findElement((TDataObject) dataObjectReference.getDataObjectRef());
-                CpfObjectRefType.this.setObjectId(object.getId());
+                if (object != null) {
+                    CpfObjectRefType.this.setObjectId(object.getId());
+                }
             }
         });
     }
