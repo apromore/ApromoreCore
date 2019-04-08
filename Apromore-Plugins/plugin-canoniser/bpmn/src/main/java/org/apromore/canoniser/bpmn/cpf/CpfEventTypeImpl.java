@@ -363,18 +363,18 @@ public class CpfEventTypeImpl extends EventType implements CpfEventType {
                 return initializer.getFactory().createEndEvent(new BpmnEndEvent(event, initializer));
             }
         } else {
-            if (event.getOutgoingEdges().size() > 0) {
+            //if (event.getOutgoingEdges().size() > 0) {
                 // outgoing edges only
 
                 String attachedTaskId = initializer.findAttachedTaskId(event);
                 return attachedTaskId == null
                        ? initializer.getFactory().createStartEvent(new BpmnStartEvent(event, initializer))
                        : initializer.getFactory().createBoundaryEvent(new BpmnBoundaryEvent(event, attachedTaskId, initializer));
-            } else {
-                // neither incoming nor outgoing edges
+            //} else {
+            //    // neither incoming nor outgoing edges
 
-                throw new CanoniserException("Event \"" + event.getId() + "\" has no edges");
-            }
+            //    throw new CanoniserException("Event \"" + event.getId() + "\" has no edges");
+            //}
         }
     }
 }
