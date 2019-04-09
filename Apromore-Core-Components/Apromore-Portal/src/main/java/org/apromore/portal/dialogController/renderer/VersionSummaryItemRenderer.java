@@ -67,6 +67,16 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
             @Override
             public void onEvent(Event event) throws Exception {
                 AnnotationsType annotation = getLastestAnnotation(data.getVersion().getAnnotations());
+                String nativeType = (annotation != null) ? getNativeType(annotation.getNativeType()) : getNativeType(data.getProcess().getOriginalNativeType());
+                String annotationName = (annotation != null) ? annotation.getAnnotationName().get(0) : null;
+                if (nativeType.equals("BPMN 2.0")) {
+                    mainController.editProcess2(data.getProcess(), data.getVersion(), nativeType, annotationName,
+                        "false", new HashSet<RequestParameterType<?>>(), false);
+                } else {
+                    mainController.editProcess(data.getProcess(), data.getVersion(), nativeType, null, "false",
+                            new HashSet<RequestParameterType<?>>());
+                }
+                /*
                 if (annotation != null) {
                     mainController.editProcess(data.getProcess(), data.getVersion(), getNativeType(annotation.getNativeType()),
                         annotation.getAnnotationName().get(0), "false", new HashSet<RequestParameterType<?>>());
@@ -74,6 +84,7 @@ public class VersionSummaryItemRenderer implements ListitemRenderer {
                     mainController.editProcess(data.getProcess(), data.getVersion(), getNativeType(data.getProcess().getOriginalNativeType()),
                             null, "false", new HashSet<RequestParameterType<?>>());
                 }
+                */
             }
 
             /* Sometimes we have merged models with no native type, we should give them a default so they can be edited. */

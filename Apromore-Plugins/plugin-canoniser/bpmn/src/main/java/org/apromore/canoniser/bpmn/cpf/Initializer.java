@@ -432,6 +432,7 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
         // An oddity of CPF is that no two Objects belonging to the same Net may have the same name
         String name = flowElement.getName();
+        if (name == null) { name = ""; }  // Also, names are mandatory
         while (((CpfObjectType) object).getNet().getObjectNames().contains(name)) {
             name = name + "'";
         }

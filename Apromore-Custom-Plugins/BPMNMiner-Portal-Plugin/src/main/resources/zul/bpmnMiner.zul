@@ -102,16 +102,6 @@
                                 </hlayout>
                             </radiogroup>
                         </row>
-                        <row>
-                            <label value="Annotate for BIMP Simulation"/>
-                            <radiogroup id="bpmnMinerBimpAnnotated">
-                                <hlayout>
-                                    <radio id="bimpAnnotated" label="Yes" radiogroup="bpmnMinerBimpAnnotated"/>
-                                    <space /><space />
-                                    <radio id="notBimpAnnotated" label="No" selected="true" radiogroup="bpmnMinerBimpAnnotated"/>
-                                </hlayout>
-                            </radiogroup>
-                        </row>
                     </rows>
                 </grid>
                 <panel id="hierarchicalSettings" title="Hierarchical Settings" width="100%" open="false"

@@ -136,8 +136,8 @@ public class CpfNetType extends NetType implements Attributed, ExtensionConstant
                 }
 
                 @Override public void visit(final TComplexGateway complexGateway) {
-                    unimplemented(complexGateway);
-                    /* TODO - figure out how ComplexGateway and EventBasedGateway are to be distinguished in CPF
+                    //unimplemented(complexGateway);
+                    /* TODO - figure out how ComplexGateway and EventBasedGateway are to be distinguished in CPF */
 
                     try {
                         RoutingType routing = new CpfStateType();
@@ -149,7 +149,6 @@ public class CpfNetType extends NetType implements Attributed, ExtensionConstant
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
-                    */
                 }
 
                 @Override public void visit(final TDataObject dataObject) {
