@@ -397,7 +397,10 @@ public class BPMNMinerController {
             Exception bimpAnnotationException = null;
             if (bimpAnnotated.getSelectedIndex() == 0) {
                 try {
-                    model = bimpAnnotationService.annotateBPMNModelForBIMP(model, log);
+                    model = bimpAnnotationService.annotateBPMNModelForBIMP(model, log, new BIMPAnnotationService.Context() {
+                        public void setDescription(String description) {}
+                        public void setFractionComplete(Double fractionComplete) {}
+                    });
 
                 } catch (Exception e) {
                     LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);

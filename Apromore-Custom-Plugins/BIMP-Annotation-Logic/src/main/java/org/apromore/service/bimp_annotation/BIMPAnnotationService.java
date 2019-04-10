@@ -29,5 +29,21 @@ import org.deckfour.xes.model.XLog;
  */
 public interface BIMPAnnotationService {
 
-    String annotateBPMNModelForBIMP(String model, XLog log) throws InterruptedException, IOException, TimeoutException;
+    String annotateBPMNModelForBIMP(String model, XLog log, Context context) throws InterruptedException, IOException, TimeoutException;
+
+    /**
+     * Callback hooks offered by the BIMP annotation logic.
+     */
+    public interface Context {
+
+        /**
+         * @param description  possibly <code>null</code>, otherwise a short (one-line) text describing the Python script's current activity
+         */
+        void setDescription(String description);
+
+        /**
+         * @param fractionComplete  A value in the 0...1 range representing the Python script's estimated completion; <code>null</code> indicates indefinite progress
+         */
+        void setFractionComplete(Double fractionComplete);
+    }
 }

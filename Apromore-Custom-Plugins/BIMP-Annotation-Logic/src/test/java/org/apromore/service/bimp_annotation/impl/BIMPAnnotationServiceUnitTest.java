@@ -78,7 +78,10 @@ public class BIMPAnnotationServiceUnitTest {
             .lines()
             .collect(Collectors.joining("\n"));
 
-        String result = service.annotateBPMNModelForBIMP(model, log);
+        String result = service.annotateBPMNModelForBIMP(model, log, new BIMPAnnotationService.Context() {
+            public void setDescription(String description) {}
+            public void setFractionComplete(Double fractionComplete) {}
+        });
 
         Assert.assertNotNull(result);
         Assert.assertEquals(stripQBPids(expected), stripQBPids(result));
