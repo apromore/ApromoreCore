@@ -1,25 +1,5 @@
-Apromore Installation instructions
-
-There are two distributions of Apromore: a *one-click* distribution, which you can simply copy/paste somewhere and run, and a *full-fledged* distribution, which requires you to manually install and configure Apromore.
-The one-click distribution runs on the H2 database by default and does not support the PQL query language.
-The full-fledged distribution is for developers and advanced users.  It can work on H2 or MySQL and allows greater flexibility (e.g. you can decide whether to have PQL, configure the DB root...).
-
-
-ONE-CLICK INSTALLATION
-=======================
-
-REQUIREMENTS
-- Windows 7 or Mac OSX 10.8 to 10.11
-- Java "Server JRE" or "JDK" Edition 1.8 (available at http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-
-* Download Apromore from http://http://apromore.org/platform/download
-* Unzip the file and open the folder Apromore-Server.
-* Start Apromore by executing the apromore.sh file in a Terminal if using Mac, or double-click on apromore.bat if using Windows.
-* Open Apromore by clicking on the apromore.html file.
-
-
-FULL-FLEDGED INSTALLATION
-=========================
+APROMORE INSTALLATION INSTRUCTIONS
+==================================
 
 REQUIREMENTS
 - Windows 7 or Mac OSX 10.8 to 10.11
@@ -90,7 +70,7 @@ Stop and restart the server so that it picks up the changes to site.properties.
 
 
 PROCESS DISCOVERY ADVANCED SETUP (OPTIONAL)
-================================
+===========================================
 
 The "Discover BPMN model" tool has an advanced option to "Annotate for BIMP Simulation".  When this is selected, the process discoverer will include information within the created BPMN model which preconfigures it for subsequent use by the "Simulate with BIMP" tool.  This feature requires external Python scripts to be installed.
 
@@ -118,7 +98,7 @@ $ mvn test -pl :bpmnminer-logic
 
 
 PREDICTIVE MONITORING SETUP (OPTIONAL)
-===========================
+======================================
 
 Predictive monitoring requires the use of MySQL, as described in DATABASE SETUP (MySQL).
 Populate the database with additional tables as follows:
@@ -175,7 +155,7 @@ Also, uncomment the following component in the "copy-virgo" target:
 
 
 LDAP SETUP (ADVANCED)
-==========
+=====================
 
 As distributed, Apromore maintains its own catalogue of users and passwords.
 It can be modified to instead allow login based on an external LDAP directory.
