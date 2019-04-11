@@ -2,6 +2,7 @@ package org.apromore.fxes;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.file.Path;
@@ -147,7 +148,7 @@ public class FXLogTest {
 		
 	public void testSerializeToXES() throws Exception
 	{
-		String outpFle = lgPath.getParent() + "./log_ser.xes.gz";
+		File outpFle = File.createTempFile("log_ser", ".xes.gz", null);
 		fxlg.serializeToGZXES(new FileOutputStream(outpFle));
 		
 		XesXmlGZIPParser parser = new XesXmlGZIPParser();
