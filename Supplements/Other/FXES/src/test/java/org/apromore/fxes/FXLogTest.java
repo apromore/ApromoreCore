@@ -20,6 +20,7 @@ import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.junit.Before;
 import org.junit.Test;
 
 
@@ -27,52 +28,42 @@ public class FXLogTest {
 
 	private FXLog fxlg = new FXLog(); 
 	private XLog xlg = null;
-	
+
 	private Path lgPath = Paths.get("./TestLogs/SepsisCases.xes.gz");
-	
-	public FXLogTest() throws Exception
-	{	
-		
+
+	@Before
+	public void setup() throws Exception
+	{
+
 		XesXmlGZIPParser parser = new XesXmlGZIPParser();
 		FileInputStream fleIS = new FileInputStream(lgPath.toFile());
-		xlg = parser.parse(fleIS).get(0);		
+		xlg = parser.parse(fleIS).get(0);
 		fleIS.close();
-		
-		fleIS = new FileInputStream(lgPath.toFile());		
+
+		fleIS = new FileInputStream(lgPath.toFile());
 		fxlg.readGZip(fleIS);
 		fleIS.close();
-		
+
 	}
-	
+
+
 	@Test
-	public void runAllTests() throws Exception
-	{
-		
-		testLogContent();
-		
-		testClone();
-		
-		testSerializeToXES();
-		
-	}
-	
-	
 	public void testLogContent() throws Exception
 	{
 		TraceIterator tIt = fxlg.traceIterator();
 		EventIterator eIt = fxlg.eventIterator(0);
 		Set<String> tAtsKs = fxlg.getTraceAttributes();
-		Set<String> eAtsKs = fxlg.getEventAttributes();		
-		
+		Set<String> eAtsKs = fxlg.getEventAttributes();
+
 		assertTrue(fxlg.traceCount() == xlg.size());
-		
+
 		int tInd = 0;
 		while(tIt.hasNext())
 		{
 			int tid = tIt.next();
 			XTrace xT = xlg.get(tInd);
 			assertTraceAttributesAreEqual(tid, xT, tAtsKs);
-			
+
 			eIt.goToTrace(tid);
 			int eInd = 0;
 			while(eIt.hasNext())
@@ -80,12 +71,12 @@ public class FXLogTest {
 				int eid = eIt.next();
 				XEvent xE = xT.get(eInd);
 				assertEventAttributesAreEqual(eid, xE, eAtsKs);
-				
+
 				eInd++;
 			}
 			tInd++;
 		}
-			
+
 	}
 
 	private void assertTraceAttributesAreEqual(int trId, XTrace xT,
@@ -101,7 +92,7 @@ public class FXLogTest {
 			{
 				System.out.println();
 			}
-			
+
 			if(val != null)
 			{
 				if(fxlg.getTraceAttributesTypesMap().get(atK) == FXAttributeType.TIMESTAMP)
@@ -114,7 +105,7 @@ public class FXLogTest {
 			}
 		}
 	}
-	
+
 	private void assertEventAttributesAreEqual(int evId, XEvent event,
 			Set<String> eAtsKs) 
 	{
@@ -135,34 +126,35 @@ public class FXLogTest {
 			}
 		}
 	}
-	
+
+	@Test
 	public void testClone() throws Exception
 	{
-		
+
 		fxlg = fxlg.clone();
-		
+
 		testLogContent();
-			
+
 	}
-		
-		
+
+	@Test
 	public void testSerializeToXES() throws Exception
 	{
 		File outpFle = File.createTempFile("log_ser", ".xes.gz", null);
 		fxlg.serializeToGZXES(new FileOutputStream(outpFle));
-		
+
 		XesXmlGZIPParser parser = new XesXmlGZIPParser();
 		FileInputStream fleIS = new FileInputStream(outpFle);
 		xlg = parser.parse(fleIS).get(0);
 		fleIS.close();
-				
+
 		fleIS = new FileInputStream(outpFle);
 		fxlg = new FXLog();
 		fxlg.readGZip(fleIS);
 		fleIS.close();
-		
+
 		testLogContent();
-			
+
 	}
-	
+
 }
