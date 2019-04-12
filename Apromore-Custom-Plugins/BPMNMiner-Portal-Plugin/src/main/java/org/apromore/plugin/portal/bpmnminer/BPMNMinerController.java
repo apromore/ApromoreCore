@@ -50,6 +50,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.*;
 
@@ -380,16 +382,74 @@ public class BPMNMinerController {
         mineAndSave(new ArrayList<String>(), new HashMap<Set<String>, Set<String>>());
     }
 
+    private static final String EVENT_QUEUE = "EVENT_QUEUE";
+    private static final String CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
+    private static final String CHANGE_FRACTION_COMPLETE = "CHANGE_FRACTION_COMPLETE";
+    private static final String MINING_COMPLETE = "MINING_COMPLETE";
+    private Window window;
+    private Label descriptionLabel;
+    private Progressmeter fractionCompleteProgressmeter;
+    private EventQueue<Event> eventQueue = EventQueues.lookup(EVENT_QUEUE, EventQueues.SESSION, true);
+
     private void mineAndSave(List<String> listCandidates, Map<Set<String>, Set<String>> group) {
+
         try {
+            window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/mineAndSave.zul", null, null);
+        } catch (IOException e) {
+            throw new Error("Unable to create embedded ZUL", e);
+        }
 
-            this.bpmnMinerW.detach();
+        ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                window.detach();
+            }
+        });
 
+        descriptionLabel = (Label) window.getFellow("description");
+
+        fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
+
+        window.doModal();
+
+        eventQueue.subscribe(new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                LOGGER.info("Received event: " + event.getName());
+                switch (event.getName()) {
+                case CHANGE_DESCRIPTION:
+                    descriptionLabel.setValue((String) event.getData());
+                    break;
+
+                case CHANGE_FRACTION_COMPLETE:
+                    fractionCompleteProgressmeter.setValue((int) Math.round((Double) event.getData()));
+                    break;
+
+                case MINING_COMPLETE:
+                    window.detach();
+                    save();
+                    break;
+                }
+            }
+        });
+
+        Runnable runnable = new Runnable() {
+            public void run() {
+                mine(listCandidates, group);
+                eventQueue.publish(new Event(MINING_COMPLETE, null, null));
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+
+    private String model;
+
+    private void mine(List<String> listCandidates, Map<Set<String>, Set<String>> group) {
+        try {
             if(filterLog.getSelectedIndex() == 0) {
                 log = infrequentBehaviourFilterService.filterLog(log);
             }
 
-            String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, getSelectedAlgorithm(), params, dependencyAlgorithms.getSelectedIndex()+1,
+            model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, getSelectedAlgorithm(), params, dependencyAlgorithms.getSelectedIndex()+1,
                     ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
                     ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
                     listCandidates, group);
@@ -398,8 +458,13 @@ public class BPMNMinerController {
             if (bimpAnnotated.getSelectedIndex() == 0) {
                 try {
                     model = bimpAnnotationService.annotateBPMNModelForBIMP(model, log, new BIMPAnnotationService.Context() {
-                        public void setDescription(String description) {}
-                        public void setFractionComplete(Double fractionComplete) {}
+                        public void setDescription(String description) {
+                            eventQueue.publish(new Event(CHANGE_DESCRIPTION, null, description));
+                        }
+
+                        public void setFractionComplete(Double fractionComplete) {
+                            eventQueue.publish(new Event(CHANGE_FRACTION_COMPLETE, null, fractionComplete));
+                        }
                     });
 
                 } catch (Exception e) {
@@ -408,7 +473,14 @@ public class BPMNMinerController {
                     bimpAnnotationException = e;
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
 
+    private void save() {
+        try {
             String defaultProcessName = null;
             if(this.logFileName != null) {
                 defaultProcessName = this.logFileName.split("\\.")[0];
@@ -446,9 +518,9 @@ public class BPMNMinerController {
                 publicModel));
 
             // Calling the refresh if the exception messagebox is present makes it vanish
-            if (bimpAnnotationException == null) {
-                this.portalContext.refreshContent();
-            }
+            //if (bimpAnnotationException == null) {
+            //    this.portalContext.refreshContent();
+            //}
 
         } catch (Exception e) {
             e.printStackTrace();
