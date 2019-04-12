@@ -29,6 +29,9 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.regex.Matcher;
@@ -63,6 +66,58 @@ public class BIMPAnnotationServiceImpl implements BIMPAnnotationService {
         this.pythonExecutable = pythonExecutable;
         this.simoScript = simoScript;
         this.timeout = timeout;
+    }
+
+    /** Calculates the overall progress of a task broken into subtask intervals. */
+    private static class ProgressLogic {
+
+        /** A subtask interval. */
+        private static class Interval {
+            double start;
+            double duration;
+            Interval(double start, double duration) { this.start = start;  this.duration = duration; }
+        };
+
+        private Map<String, Interval> intervalForDescription = new HashMap<>();
+        double totalDuration = 0;
+
+        /**
+         * Add a new subtask interval.
+         *
+         * You must call this at least once before {@link #fractionComplete}.
+         *
+         * @param description a name that hasn't previously been added
+         * @param duration a value greater than zero
+         * @return this object
+         * @throws IllegalArgumentException if <i>description</i> has already been added or <i>duration</i> isn't positive
+         */
+        ProgressLogic add(String description, double duration) {
+
+            // Validation
+            if (intervalForDescription.containsKey(description)) {
+                throw new IllegalArgumentException(description + " subtask already exists");
+            }
+            if (duration <= 0) {
+                throw new IllegalArgumentException("Duration must be positive, was " + duration);
+            }
+
+            // Add the new subtask interval
+            intervalForDescription.put(description, new Interval(totalDuration, duration));
+            totalDuration += duration;
+
+            return this;
+        }
+
+        /**
+         * @param description  a subtask description, previously registered by the {@link #add} method
+         * @param fractionComplete  how complete the subtask is, a value in the range 0..1
+         * @return how complete the total task is, a value in the range 0..1
+         */
+        Double fractionComplete(String description, double fractionComplete) {
+            Interval interval = intervalForDescription.get(description);
+            if (interval == null) { return null; }
+            return (interval.start + interval.duration * fractionComplete) / totalDuration;
+        }
     }
 
     @Override
@@ -102,6 +157,15 @@ public class BIMPAnnotationServiceImpl implements BIMPAnnotationService {
                 PrintWriter print = new PrintWriter(messages);
                 Matcher matcher = Pattern.compile("(?<description>.*)\\s(?<fractionComplete>\\d+\\.\\d+)%\\.\\.\\.\\s*(\\[DONE\\])?")
                                          .matcher("");;
+                ProgressLogic logic = new ProgressLogic()
+                    .add("Loading of bpmn structure from file", 70)
+                    .add("Analysing resource pool", 130)
+                    .add("Replaying process traces", 380)
+                    .add("Defining inter-arrival rate", 14)
+                    .add("Analysing gateways probabilities", 1)
+                    .add("Analysing tasks data", 1100);
+                
+                String currentDescription = null;
                 do {
                     try {
                         String line = reader.readLine();
@@ -117,8 +181,16 @@ public class BIMPAnnotationServiceImpl implements BIMPAnnotationService {
                         matcher.reset(line);
                         if (matcher.matches()) {
                             if (context != null) {
-                                context.setFractionComplete(Double.valueOf(matcher.group("fractionComplete")));
-                                context.setDescription(matcher.group("description"));
+                                String description = matcher.group("description");
+
+                                context.setFractionComplete(logic.fractionComplete(description, 0.01 * Double.valueOf(matcher.group("fractionComplete"))));
+
+                                if (!Objects.equals(description, currentDescription)) {
+                                    context.setDescription(description);
+                                    print.println(description);
+                                    currentDescription = description;
+                                }
+                                assert Objects.equals(description, currentDescription);
                             }
                         } else {
                             print.println(line);
