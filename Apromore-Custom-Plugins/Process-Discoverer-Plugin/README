@@ -1,0 +1,8 @@
+This is the source code for the Process Discoverer, available as a Plugin within the Apromore Platform.
+The code here distributed has dependencies coming from two repositories:
+    1) My main repository "ReseachCode" available at https://github.com/raffaeleconforti/ResearchCode
+    2) and the Apromore repository "ApromoreCode" available at https://github.com/apromore/ApromoreCode
+
+This project here distributed is dual licensed under GNU Affero General Public License and Raffaele Conforti License.
+You can choose between one of them if you use this work. THe project here distributed is WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
