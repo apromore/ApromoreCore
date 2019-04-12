@@ -482,14 +482,14 @@ public class MainController extends BaseController implements MainControllerInte
                     break;
                 }
             }
-            if(logVisualizerPlugin == null) {
-                for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
-                    if (plugin.getName().equals("Log Visualizer")) {
-                        logVisualizerPlugin = plugin;
-                        break;
-                    }
-                }
-            }
+//            if(logVisualizerPlugin == null) {
+//                for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
+//                    if (plugin.getName().equals("Log Visualizer")) {
+//                        logVisualizerPlugin = plugin;
+//                        break;
+//                    }
+//                }
+//            }
         }
         if(logVisualizerPlugin != null) {
             logVisualizerPlugin.execute(new PluginPortalContext(this));
