@@ -136,6 +136,7 @@
                             com.raffaeleconforti.log.util,
                             com.raffaeleconforti.noisefiltering.event.*,
                             com.raffaeleconforti.wrappers.settings.*,
+							com.raffaeleconforti.statistics.*,
 
                             org.processmining,
                             org.processmining.analysis,
@@ -479,6 +480,7 @@
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>assembly</artifactId>
             <version>1.0.20190327</version>
+			<!--<version>1.0.20180719</version>-->
         </dependency>
     </dependencies>
 </project>

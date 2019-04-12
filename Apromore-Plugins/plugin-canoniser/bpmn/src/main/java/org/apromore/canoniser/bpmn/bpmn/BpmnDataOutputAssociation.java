@@ -67,7 +67,7 @@ public class BpmnDataOutputAssociation extends TDataOutputAssociation {
 
         initializer.defer(new Initialization() {
             public void initialize() {
-                assert initializer.findElement(objectRef.getObjectId()) != null;
+                //assert initializer.findElement(objectRef.getObjectId()) != null;
                 setTargetRef(initializer.findElement(objectRef.getObjectId()));
 
                 boolean sourceRefSet = false;

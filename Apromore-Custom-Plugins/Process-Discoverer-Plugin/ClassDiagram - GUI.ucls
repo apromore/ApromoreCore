@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.2.3" icons="true" always-add-relationships="true" generalizations="true" realizations="true" 
+  associations="true" dependencies="true" nesting-relationships="true" router="FAN">  
+  <class id="1" language="java" name="com.raffaeleconforti.service.ProcessDiscovererServiceImpl" 
+    project="ProcessDiscoverer" 
+    file="/ProcessDiscoverer/src/main/java/com/raffaeleconforti/service/ProcessDiscovererServiceImpl.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="702" y="1003"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="false" 
+      sort-features="true" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="com.raffaeleconforti.processdiscoverer.impl.ProcessDiscovererImpl" 
+    project="ProcessDiscoverer" 
+    file="/ProcessDiscoverer/src/main/java/com/raffaeleconforti/processdiscoverer/impl/ProcessDiscovererImpl.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1162" y="713"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="false" 
+      sort-features="true" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="false"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="com.raffaeleconforti.service.ProcessDiscovererFrequencyVisualizer" 
+    project="ProcessDiscoverer" 
+    file="/ProcessDiscoverer/src/main/java/com/raffaeleconforti/service/ProcessDiscovererFrequencyVisualizer.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="446" y="118"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="true" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="false"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="com.raffaeleconforti.service.ProcessDiscovererPerformanceVisualizer" 
+    project="ProcessDiscoverer" 
+    file="/ProcessDiscoverer/src/main/java/com/raffaeleconforti/service/ProcessDiscovererPerformanceVisualizer.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="895" y="120"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="true" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="false"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="5" language="java" name="com.raffaeleconforti.service.ProcessDiscovererService" 
+    project="ProcessDiscoverer" 
+    file="/ProcessDiscoverer/src/main/java/com/raffaeleconforti/service/ProcessDiscovererService.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="707" y="689"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="false" 
+      sort-features="true" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="false"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="6" language="java" name="com.raffaeleconforti.processdiscoverer.FilterCriterionSelector" 
+    project="ProcessDiscoverer" 
+    file="/ProcessDiscoverer/src/main/java/com/raffaeleconforti/processdiscoverer/FilterCriterionSelector.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="176" width="255" x="48" y="569"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="false" 
+      sort-features="true" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="false"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="com.raffaeleconforti.processdiscoverer.ProcessDiscovererController" 
+    project="ProcessDiscoverer" 
+    file="/ProcessDiscoverer/src/main/java/com/raffaeleconforti/processdiscoverer/ProcessDiscovererController.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="176" width="278" x="284" y="273"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="false" 
+      sort-features="true" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="false"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <association id="8">    
+    <bendpoint x="592" y="273"/>    
+    <end type="SOURCE" refId="3" navigable="false" variant="ASSOCIATION">      
+      <attribute id="9" name="processDiscovererService">        
+        <position height="22" width="194" x="537" y="459"/>      
+      </attribute>      
+      <multiplicity id="10" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-536" y="-66"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true" variant="ASSOCIATION"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="11">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <realization id="12">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </realization>  
+  <association id="13">    
+    <end type="SOURCE" refId="7" navigable="false" variant="ASSOCIATION">      
+      <attribute id="14" name="processDiscovererService">        
+        <position height="22" width="194" x="377" y="486"/>      
+      </attribute>      
+      <multiplicity id="15" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-536" y="-66"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true" variant="ASSOCIATION"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="16">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <association id="17">    
+    <bendpoint x="675" y="273"/>    
+    <end type="SOURCE" refId="4" navigable="false" variant="ASSOCIATION">      
+      <attribute id="18" name="processDiscovererService">        
+        <position height="22" width="194" x="291" y="530"/>      
+      </attribute>      
+      <multiplicity id="19" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-536" y="-66"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true" variant="ASSOCIATION"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="20">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="21">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <association id="22">    
+    <end type="SOURCE" refId="6" navigable="false" variant="ASSOCIATION">      
+      <attribute id="23" name="processDiscovererController">        
+        <position height="0" width="0" x="-341" y="-28"/>      
+      </attribute>      
+      <multiplicity id="24" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-341" y="-28"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true" variant="ASSOCIATION"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="false" 
+    sort-features="true" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="false" static="false"/>    
+    <operations public="true" package="true" protected="true" private="false" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

@@ -125,17 +125,23 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
             @Override
             public void initialize() throws CanoniserException {
 
-                // A single source is the only thing that makes sense, surely?
-                if (association.getSourceRef().size() != 1) {
-                    throw new CanoniserException("BPMN data output association " + association.getId() + " has " +
-                                                 association.getSourceRef().size() + " sources");
-                } else {
+                switch (association.getSourceRef().size()) {
+                case 0:
+                    // This is weird, but we'll let the incomplete model slide
+                    break;
+
+                case 1:
                     TBaseElement source = (TBaseElement) association.getSourceRef().get(0).getValue();
 
                     org.apromore.cpf.TypeAttribute attribute = new org.apromore.cpf.TypeAttribute();
                     attribute.setName("bpmn:dataOutputAssociation.sourceRef");
                     attribute.setValue(source.getId());
                     getAttribute().add(attribute);
+                    break;
+
+                default:
+                    throw new CanoniserException("BPMN data output association " + association.getId() + " has " +
+                                                 association.getSourceRef().size() + " sources");
                 }
 
                 // Handle targetRef
@@ -184,7 +190,9 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
 
                 // Handle objectId
                 CpfObjectType object = (CpfObjectType) initializer.findElement((TDataObject) dataObjectReference.getDataObjectRef());
-                CpfObjectRefType.this.setObjectId(object.getId());
+                if (object != null) {
+                    CpfObjectRefType.this.setObjectId(object.getId());
+                }
             }
         });
     }

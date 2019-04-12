@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ~ Copyright © 2019 The University of Melbourne.
+ ~
+ ~ This file is part of "Apromore".
+ ~
+ ~ "Apromore" is free software; you can redistribute it and/or modify
+ ~ it under the terms of the GNU Lesser General Public License as
+ ~ published by the Free Software Foundation; either version 3 of the
+ ~ License, or (at your option) any later version.
+ ~
+ ~ "Apromore" is distributed in the hope that it will be useful, but
+ ~ WITHOUT ANY WARRANTY; without even the implied warranty
+ ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ ~ See the GNU Lesser General Public License for more details.
+ ~
+ ~ You should have received a copy of the GNU Lesser General Public
+ ~ License along with this program.
+ ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+        <groupId>org.apromore.plugin</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.1</version>
+        <relativePath>../../Apromore-Plugins/</relativePath>
+    </parent>
+	
+    <artifactId>process-discoverer</artifactId>
+    <version>1.0.0</version>
+    <packaging>bundle</packaging>
+    <name>Process Discoverer</name>
+
+    <build>
+        <plugins>
+        	<plugin>
+            	<groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Import-Bundle>
+                            org.apromore.raffaeleconforti-osgi;bundle-version="[1.0,2.0]"
+                        </Import-Bundle>
+                        <Import-Package>
+                            org.springframework.beans.factory.aspectj,
+                            org.processmining.contexts.*;version="[1.0,2.0)",
+                            org.processmining.framework.*;version="[1.0,2.0)",
+                            org.processmining.models.*;version="[1.0,2.0)",
+                            org.processmining.plugins.*;version="[1.0,2.0)",
+                            org.deckfour.xes.model.*;version="[1.0,2.0)",
+                            org.deckfour.xes.factory.*;version="[1.0,2.0)",
+                            !com.raffaeleconforti.processdiscoverer.*,
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            org.apromore.plugin.processdiscoverer, org.apromore.plugin.processdiscoverer.service
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>		
+        </plugins>
+    </build>
+
+    <dependencies>
+		
+		<dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>raffaeleconforti-osgi</artifactId>
+        </dependency>
+		
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-manager</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-portal</artifactId>
+            <version>1.1</version>
+            <classifier>classes</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>portal-plugin-api</artifactId>
+        </dependency>
+		
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>bpmndiagramimporter-logic</artifactId>
+            <version>1.1</version>
+        </dependency>
+		
+		<!-- Note: this dependency is only for -->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>log-animation-portal-plugin</artifactId>
+            <version>1.0</version>
+            <classifier>classes</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ow2.bundles</groupId>
+            <artifactId>ow2-bundles-externals-opencsv</artifactId>
+            <version>1.0.36</version>
+        </dependency>
+		
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>eclipse-collections-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>		
+    </dependencies>
+</project>
+

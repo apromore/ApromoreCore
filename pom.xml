@@ -179,6 +179,7 @@
         <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/StageMining-Logic</module>
         <module>Apromore-Custom-Plugins/StageMining-Portal-Plugin</module>
+		<module>Apromore-Custom-Plugins/Process-Discoverer-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
@@ -210,6 +211,7 @@
 
         <module>Apromore-Assembly/PQL-Indexer-Assembly</module>
         <module>Apromore-Assembly/Predictive-Monitor-Assembly</module>
+		<module>Apromore-Assembly/Custom-Plugins</module>
 
         <!-- Command line tools -->
         <module>Apromore-Extras/bpmncmap</module>
