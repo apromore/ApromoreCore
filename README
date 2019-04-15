@@ -112,6 +112,7 @@ $ pip install -r requirements.txt
 Copy Supplements/apromore-simo.py from the Apromore checkout into the top-level directory of the SiMo checkout.
 In Apromore's site.properties, set the property simo.backend to the full path of the apromore-simo.py script you just copied.
 In Apromore's site.properties, set the property simo.python to your Python 3 executable.
+Note that backslashes are escape characters in site.properties, so in Windows it will resemble C:\\Users\\Ali Baba\\AppData\\Local\\Programs\\Python\\Python37\\python.exe.
 
 Optionally, remove or comment out the @Ignore annotation from Apromore-Custom-Plugins/BIMP-Annotation-Logic/src/test/java/org/apromore/service/bimp_annotation/impl/BIMPAnnotationServiceUnitTest.java.
 If you do this, the unit test passing with 0 skipped tests confirms that all configuration is correct.
