@@ -51,6 +51,7 @@
     <osgi:reference id="processService" interface="org.apromore.service.ProcessService"/>
     <osgi:reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
     <osgi:reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
+    <osgi:reference id="bimpAnnotationService" interface="org.apromore.service.bimp_annotation.BIMPAnnotationService"/>
 
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.processdiscoverer" />

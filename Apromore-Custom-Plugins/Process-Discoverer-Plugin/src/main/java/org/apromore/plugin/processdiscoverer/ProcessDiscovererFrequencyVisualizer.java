@@ -28,6 +28,7 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.bimp_annotation.BIMPAnnotationService;
 import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.springframework.stereotype.Component;
@@ -55,6 +56,7 @@ public class ProcessDiscovererFrequencyVisualizer extends DefaultPortalPlugin {
     @Inject private EventLogService eventLogService;
     @Inject private ProcessDiscovererService processDiscovererService;
     @Inject private LogAnimationPluginInterface logAnimationPluginInterface;
+    @Inject private BIMPAnnotationService bimpAnnotationService;
 
     @Override
     public String getLabel(Locale locale) {
@@ -79,7 +81,7 @@ public class ProcessDiscovererFrequencyVisualizer extends DefaultPortalPlugin {
         try {
             new ProcessDiscovererController(context, eventLogService, processDiscovererService,
                     canoniserService, domainService, processService, importerService,
-                    userInterfaceHelper, logAnimationPluginInterface, FREQUENCY);
+                    userInterfaceHelper, logAnimationPluginInterface, FREQUENCY, bimpAnnotationService);
         } catch (Exception e) {
             e.printStackTrace();
         }
