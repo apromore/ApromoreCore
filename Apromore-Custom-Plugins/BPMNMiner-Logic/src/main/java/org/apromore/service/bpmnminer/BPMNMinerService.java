@@ -23,11 +23,9 @@ package org.apromore.service.bpmnminer;
 import com.raffaeleconforti.wrappers.settings.MiningSettings;
 import org.deckfour.xes.model.XLog;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by corno on 2/07/2014.

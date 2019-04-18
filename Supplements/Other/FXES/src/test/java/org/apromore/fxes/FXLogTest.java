@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class FXLogTest {
 
-	private FXLog fxlg = new FXLog(); 
+	private FXLog fxlg = null; 
 	private XLog xlg = null;
 
 	private Path lgPath = Paths.get("./TestLogs/SepsisCases.xes.gz");
@@ -41,6 +41,7 @@ public class FXLogTest {
 		fleIS.close();
 
 		fleIS = new FileInputStream(lgPath.toFile());
+                fxlg = new FXLog();
 		fxlg.readGZip(fleIS);
 		fleIS.close();
 

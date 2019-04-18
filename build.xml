@@ -55,6 +55,7 @@
 
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
@@ -121,9 +122,8 @@
         <include name="Apromore-Custom-Plugins/StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 
-        <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
+        <!-- <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/> -->
         <!-- <include name="Supplements/process-discoverer-1.0.20181204.jar"/> -->
-
         <include name="Apromore-Core-Co^mponents/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
     </fileset>
 
@@ -134,6 +134,7 @@
 
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
@@ -200,7 +201,7 @@
         <include name="Apromore-Custom-Plugins/StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 
-        <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
+        <!-- <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/> -->
         <!-- <include name="Supplements/process-discoverer-1.0.20181204.jar"/> -->
 
         <!-- After creating the PQL tables in MySQL, uncomment these components to enable PQL indexing and querying
@@ -221,6 +222,7 @@
 
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
 
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
 
@@ -321,6 +323,7 @@
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor-student.plan"/>
 
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Portal-Plugin/target/bimp-portal-plugin-1.0.jar"/>
 
@@ -366,9 +369,10 @@
 
         <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
 
+
         <!-- Do not switch off this Signavio-based plugin because Process Discoverer depends on it -->
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
-
+		
         <!-- <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/> -->
         <!-- <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/> -->
         <!-- <include name="Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/> -->

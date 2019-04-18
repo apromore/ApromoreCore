@@ -48,6 +48,7 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.bimp_annotation.BIMPAnnotationService;
 import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.deckfour.xes.classification.XEventClass;
@@ -83,6 +84,8 @@ import org.processmining.plugins.replayer.replayresult.SyncReplayResult;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
@@ -193,10 +196,12 @@ public class ProcessDiscovererController {
     private CanoniserService canoniserService;
     private LogAnimationPluginInterface logAnimationPlugin;
     private UserInterfaceHelper userInterfaceHelper;
+    private BIMPAnnotationService bimpAnnotationService;
 
     public ProcessDiscovererController(PortalContext context, EventLogService eventLogService, ProcessDiscovererService processDiscovererService,
                                        CanoniserService canoniserService, DomainService domainService, ProcessService processService, BPMNDiagramImporter importerService,
-                                       UserInterfaceHelper userInterfaceHelper, LogAnimationPluginInterface logAnimationPlugin, VisualizationType fixedType) throws Exception {
+                                       UserInterfaceHelper userInterfaceHelper, LogAnimationPluginInterface logAnimationPlugin, VisualizationType fixedType,
+                                       BIMPAnnotationService bimpAnnotationService) throws Exception {
 
         this.domainService = domainService;
         this.processService = processService;
@@ -207,6 +212,7 @@ public class ProcessDiscovererController {
         this.processDiscovererService = processDiscovererService;
         this.eventLogService = eventLogService;
         this.primaryType = fixedType;
+        this.bimpAnnotationService = bimpAnnotationService;
         if (primaryType != FREQUENCY) primaryAggregation = MEAN;
 
         Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
@@ -311,6 +317,7 @@ public class ProcessDiscovererController {
             Menuitem downloadPDF = (Menuitem) slidersWindow.getFellow(StringValues.b[71]);
             Menuitem downloadPNG = (Menuitem) slidersWindow.getFellow(StringValues.b[72]);
             Menuitem exportBPMN = (Menuitem) slidersWindow.getFellow(StringValues.b[73]);
+            Menuitem exportBPMNAnnotatedForBIMP = (Menuitem) slidersWindow.getFellow("exportBPMNAnnotatedForBIMP");
 
             if(log != null) {
                 populateMetrics(log);
@@ -879,8 +886,103 @@ public class ProcessDiscovererController {
                 slidersWindow.addEventListener(StringValues.b[97], windowListener);
             }
 
-            exportBPMN.addEventListener(StringValues.b[74], new EventListener<Event>() {
+            class ExportBPMNHandler implements EventListener<Event> {
+
+                private static final String EVENT_QUEUE = "EVENT_QUEUE";
+                private static final String CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
+                private static final String CHANGE_FRACTION_COMPLETE = "CHANGE_FRACTION_COMPLETE";
+                private static final String MINING_COMPLETE = "MINING_COMPLETE";
+                private static final String MINING_EXCEPTION = "MINING_EXCEPTION";
+                private static final String ANNOTATION_EXCEPTION = "ANNOTATION_EXCEPTION";
+                private EventQueue<Event> eventQueue = EventQueues.lookup(EVENT_QUEUE, EventQueues.SESSION, true);
+
+                private boolean annotateForBIMP;
+
+                ExportBPMNHandler(boolean annotateForBIMP) {
+                    this.annotateForBIMP = annotateForBIMP;
+                }
+
                 public void onEvent(Event event) throws Exception {
+                    Window window;
+                    Label descriptionLabel;
+                    Progressmeter fractionCompleteProgressmeter;
+
+                    try {
+                        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/mineAndSave.zul", null, null);
+                    } catch (IOException e) {
+                        throw new Error("Unable to create embedded ZUL", e);
+                    }
+
+                    ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                            window.detach();
+                        }
+                    });
+
+                    descriptionLabel = (Label) window.getFellow("description");
+
+                    fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
+
+                    window.doModal();
+
+                    eventQueue.subscribe(new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                            switch (event.getName()) {
+                            case CHANGE_DESCRIPTION:
+                                descriptionLabel.setValue((String) event.getData());
+                                break;
+                
+                            case CHANGE_FRACTION_COMPLETE:
+                                fractionCompleteProgressmeter.setValue((int) Math.round(100.0 * (Double) event.getData()));
+                                break;
+                
+                            case MINING_COMPLETE:
+                                fractionCompleteProgressmeter.setValue(100);
+                                descriptionLabel.setValue("Saving BPMN model");
+                                try {
+                                    save();
+                    
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+                                }
+                                window.detach();
+                                //this.portalContext.refreshContent();
+
+                                break;
+
+                            case MINING_EXCEPTION:
+                                Exception e = (Exception) event.getData();
+                                window.detach();
+                                Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+                                break;
+
+                            case ANNOTATION_EXCEPTION:
+                                Exception e2 = (Exception) event.getData();
+                                Messagebox.show("Unable to annotate BPMN model for BIMP simulation (" + e2.getMessage() + ")\n\nModel will be created without annotations.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
+                                break;
+                            }
+                        }
+                    });
+
+                    new Thread() {
+                        public void run() {
+                            try {
+                                mine();
+                                eventQueue.publish(new Event(MINING_COMPLETE, null, null));
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                eventQueue.publish(new Event(MINING_EXCEPTION, null, e));
+                            }
+                        }
+                    }.start();
+                }
+
+                private String model;
+
+                private void mine() throws Exception {
+
                     activities_value = activities.getCurpos();
                     arcs_value = arcs.getCurpos();
                     parallelism_value = parallelism.getCurpos();
@@ -905,7 +1007,7 @@ public class ProcessDiscovererController {
                     BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
                     BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
-                    String model = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    model = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                             "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
                             "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
                             "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
@@ -916,6 +1018,28 @@ public class ProcessDiscovererController {
                             definitions.exportElements() +
                             "</definitions>";
 
+                    Exception bimpAnnotationException = null;
+                    if (annotateForBIMP) {
+                        try {
+                            model = bimpAnnotationService.annotateBPMNModelForBIMP(model, log, new BIMPAnnotationService.Context() {
+                                public void setDescription(String description) {
+                                    eventQueue.publish(new Event(CHANGE_DESCRIPTION, null, description));
+                                }
+
+                                public void setFractionComplete(Double fractionComplete) {
+                                    eventQueue.publish(new Event(CHANGE_FRACTION_COMPLETE, null, fractionComplete));
+                                }
+                            });
+
+                        } catch (Exception e) {
+                            //LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);
+                            Messagebox.show("Unable to annotate BPMN model for BIMP simulation (" + e.getMessage() + ")\n\nModel will be created without annotations.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
+                            bimpAnnotationException = e;
+                        }
+                    }
+                }
+
+                private void save() throws Exception {
                     String defaultProcessName = null;
                     if (log_name != null) {
                         defaultProcessName = log_name.split("\\.")[0];
@@ -957,9 +1081,15 @@ public class ProcessDiscovererController {
                             user,
                             publicModel));
 
-                    portalContext.refreshContent();
+                    // Calling the refresh if the exception messagebox is present makes it vanish
+                    //if (bimpAnnotationException == null) {
+                    //    portalContext.refreshContent();
+                    //}
                 }
-            });
+            };
+
+            exportBPMN.addEventListener(StringValues.b[74], new ExportBPMNHandler(false));
+            exportBPMNAnnotatedForBIMP.addEventListener(StringValues.b[74], new ExportBPMNHandler(true));
 
             EventListener<Event> exportPDF = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {

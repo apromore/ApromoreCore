@@ -37,6 +37,7 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.bimp_annotation.BIMPAnnotationService;
 import org.apromore.service.bpmnminer.BPMNMinerService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.logfilter.behaviour.InfrequentBehaviourFilterService;
@@ -49,6 +50,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.*;
 
@@ -97,6 +100,7 @@ public class BPMNMinerController {
     private Radiogroup filterLog;
     private Radiogroup sortLog;
     private Radiogroup structProcess;
+    private Radiogroup bimpAnnotated;
     private Slider interruptingEventTolerance;
     private Slider multiInstancePercentage;
     private Slider multiInstanceTolerance;
@@ -117,6 +121,7 @@ public class BPMNMinerController {
     private byte[] logByteArray = null;
     String logFileName = null;
 
+    private final BIMPAnnotationService bimpAnnotationService;
     private final BPMNMinerService bpmnMinerService;
     private final CanoniserService canoniserService;
     private final DomainService domainService;
@@ -126,6 +131,7 @@ public class BPMNMinerController {
     private final UserInterfaceHelper userInterfaceHelper;
 
     public BPMNMinerController(PortalContext portalContext,
+                               BIMPAnnotationService bimpAnnotationService,
                                BPMNMinerService bpmnMinerService,
                                CanoniserService canoniserService,
                                DomainService domainService,
@@ -135,6 +141,7 @@ public class BPMNMinerController {
                                UserInterfaceHelper userInterfaceHelper) {
 
         this.portalContext       = portalContext;
+        this.bimpAnnotationService = bimpAnnotationService;
         this.bpmnMinerService    = bpmnMinerService;
         this.canoniserService    = canoniserService;
         this.domainService       = domainService;
@@ -208,6 +215,8 @@ public class BPMNMinerController {
 //            this.structProcess = new Radiogroup();
 //            this.structProcess.appendChild(this.bpmnMinerW.getFellow("structured"));
 //            this.structProcess.appendChild(this.bpmnMinerW.getFellow("notStructured"));
+
+            this.bimpAnnotated = (Radiogroup) this.bpmnMinerW.getFellow("bpmnMinerBimpAnnotated");
 
             this.interruptingEventTolerance = (Slider) this.bpmnMinerW.getFellow("bpmnMinerInterruptingEventTolerance");
             this.multiInstancePercentage = (Slider) this.bpmnMinerW.getFellow("bpmnMinerMultiInstancePercentage");
@@ -373,62 +382,158 @@ public class BPMNMinerController {
         mineAndSave(new ArrayList<String>(), new HashMap<Set<String>, Set<String>>());
     }
 
+    private static final String EVENT_QUEUE = "EVENT_QUEUE";
+    private static final String CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
+    private static final String CHANGE_FRACTION_COMPLETE = "CHANGE_FRACTION_COMPLETE";
+    private static final String MINING_COMPLETE = "MINING_COMPLETE";
+    private static final String MINING_EXCEPTION = "MINING_EXCEPTION";
+    private static final String ANNOTATION_EXCEPTION = "ANNOTATION_EXCEPTION";
+    private EventQueue<Event> eventQueue = EventQueues.lookup(EVENT_QUEUE, EventQueues.SESSION, true);
+
     private void mineAndSave(List<String> listCandidates, Map<Set<String>, Set<String>> group) {
+
+        Window window;
+        Label descriptionLabel;
+        Progressmeter fractionCompleteProgressmeter;
+
         try {
-
-            this.bpmnMinerW.detach();
-
-            if(filterLog.getSelectedIndex() == 0) {
-                log = infrequentBehaviourFilterService.filterLog(log);
-            }
-
-            String model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, getSelectedAlgorithm(), params, dependencyAlgorithms.getSelectedIndex()+1,
-                    ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
-                    ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
-                    listCandidates, group);
-
-            String defaultProcessName = null;
-            if(this.logFileName != null) {
-                defaultProcessName = this.logFileName.split("\\.")[0];
-            }
-            if (!modelName.getValue().isEmpty()) {
-                defaultProcessName = modelName.getValue();
-            }
-
-            String user = portalContext.getCurrentUser().getUsername();
-            Version version = new Version(1, 0);
-            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
-            String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-            boolean publicModel = true;
-            
-            ProcessModelVersion pmv = processService.importProcess(user,
-                portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                defaultProcessName,
-                version,
-                this.nativeType,
-                canoniserService.canonise(this.nativeType, new ByteArrayInputStream(model.getBytes()), canoniserProperties),
-                domainCB.getValue(),
-                "Model generated by the Apromore BPMN process mining service.",
-                now,  // creation timestamp
-                now,  // last update timestamp
-                publicModel);
-
-            this.portalContext.displayNewProcess(userInterfaceHelper.createProcessSummary(pmv.getProcessBranch().getProcess(),
-                pmv.getProcessBranch(),
-                pmv,
-                this.nativeType,
-                domainCB.getValue(),
-                now,  // creation timestamp
-                now,  // last update timestamp
-                user,
-                publicModel));
-
-            this.portalContext.refreshContent();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/mineAndSave.zul", null, null);
+        } catch (IOException e) {
+            throw new Error("Unable to create embedded ZUL", e);
         }
+
+        ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                window.detach();
+            }
+        });
+
+        descriptionLabel = (Label) window.getFellow("description");
+
+        fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
+
+        window.doModal();
+
+        eventQueue.subscribe(new EventListener<Event>() {
+            public void onEvent(Event event) throws Exception {
+                switch (event.getName()) {
+                case CHANGE_DESCRIPTION:
+                    descriptionLabel.setValue((String) event.getData());
+                    break;
+
+                case CHANGE_FRACTION_COMPLETE:
+                    fractionCompleteProgressmeter.setValue((int) Math.round(100.0 * (Double) event.getData()));
+                    break;
+
+                case MINING_COMPLETE:
+                    fractionCompleteProgressmeter.setValue(100);
+                    descriptionLabel.setValue("Saving BPMN model");
+                    try {
+                        save();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+                    }
+                    //window.detach();
+                    //this.portalContext.refreshContent();
+
+                    break;
+
+                case MINING_EXCEPTION:
+                    Exception e = (Exception) event.getData();
+                    Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+                    break;
+
+                case ANNOTATION_EXCEPTION:
+                    Exception e2 = (Exception) event.getData();
+                    Messagebox.show("Unable to annotate BPMN model for BIMP simulation (" + e2.getMessage() + ")\n\nModel will be created without annotations.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
+                    break;
+                }
+            }
+        });
+
+        new Thread() {
+            public void run() {
+                try {
+                    mine(listCandidates, group);
+                    eventQueue.publish(new Event(MINING_COMPLETE, null, null));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    eventQueue.publish(new Event(MINING_EXCEPTION, null, e));
+                }
+            }
+        }.start();
+    }
+
+    private String model;
+
+    private void mine(List<String> listCandidates, Map<Set<String>, Set<String>> group) throws Exception {
+        if(filterLog.getSelectedIndex() == 0) {
+            log = infrequentBehaviourFilterService.filterLog(log);
+        }
+
+        model = bpmnMinerService.discoverBPMNModel(log, sortLog.getSelectedIndex()==0?true:false, structProcess.getSelectedIndex()==0?true:false, getSelectedAlgorithm(), params, dependencyAlgorithms.getSelectedIndex()+1,
+                ((double) interruptingEventTolerance.getCurpos())/100.0, ((double) timerEventPercentage.getCurpos())/100.0, ((double) timerEventTolerance.getCurpos())/100.0,
+                ((double) multiInstancePercentage.getCurpos())/100.0, ((double) multiInstanceTolerance.getCurpos())/100.0, ((double) noiseThreshold.getCurpos())/100.0,
+                listCandidates, group);
+
+        if (bimpAnnotated.getSelectedIndex() == 0) {
+            try {
+                model = bimpAnnotationService.annotateBPMNModelForBIMP(model, log, new BIMPAnnotationService.Context() {
+                    public void setDescription(String description) {
+                        eventQueue.publish(new Event(CHANGE_DESCRIPTION, null, description));
+                    }
+
+                    public void setFractionComplete(Double fractionComplete) {
+                        eventQueue.publish(new Event(CHANGE_FRACTION_COMPLETE, null, fractionComplete));
+                    }
+                });
+
+            } catch (Exception e) {
+                LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);
+                eventQueue.publish(new Event(ANNOTATION_EXCEPTION, null, e));
+            }
+        }
+    }
+
+    private void save() throws Exception {
+        String defaultProcessName = null;
+        if(this.logFileName != null) {
+            defaultProcessName = this.logFileName.split("\\.")[0];
+        }
+        if (!modelName.getValue().isEmpty()) {
+            defaultProcessName = modelName.getValue();
+        }
+
+        String user = portalContext.getCurrentUser().getUsername();
+        Version version = new Version(1, 0);
+        Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
+        String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
+        boolean publicModel = true;
+            
+        ProcessModelVersion pmv = processService.importProcess(user,
+            portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+            defaultProcessName,
+            version,
+            this.nativeType,
+            canoniserService.canonise(this.nativeType, new ByteArrayInputStream(model.getBytes()), canoniserProperties),
+            domainCB.getValue(),
+            "Model generated by the Apromore BPMN process mining service.",
+            now,  // creation timestamp
+            now,  // last update timestamp
+            publicModel);
+
+        this.portalContext.displayNewProcess(userInterfaceHelper.createProcessSummary(pmv.getProcessBranch().getProcess(),
+            pmv.getProcessBranch(),
+            pmv,
+            this.nativeType,
+            domainCB.getValue(),
+            now,  // creation timestamp
+            now,  // last update timestamp
+            user,
+            publicModel));
     }
 
     public int getSelectedAlgorithm() {

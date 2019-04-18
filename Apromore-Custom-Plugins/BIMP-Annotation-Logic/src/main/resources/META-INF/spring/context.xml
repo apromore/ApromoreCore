@@ -32,18 +32,34 @@
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
+    <!-- Access the site.properties configuration artifact -->
+    <osgi-compendium:cm-properties id="properties" persistent-id="site" init-timeout="60"/>
+    <context:property-placeholder properties-ref="properties"/>
+
     <context:annotation-config />
     <context:spring-configured />
 
     <aop:aspectj-autoproxy />
 
-    <!-- Other OSGi services this component consumes -->
-    <osgi:reference id="ibpstructService" interface="org.apromore.service.ibpstruct.IBPStructService"/>
+    <bean id="python" class="java.lang.String">
+        <qualifier value="python"/>
+        <constructor-arg type="String" value="${simo.python}"/>
+    </bean>
+
+    <bean id="simo" class="java.io.File">
+        <qualifier value="simo"/>
+        <constructor-arg type="String" value="${simo.backend}"/>
+    </bean>
+
+    <bean id="timeout" class="java.lang.Integer">
+        <qualifier value="timeout"/>
+        <constructor-arg type="int" value="${simo.timeout}"/>
+    </bean>
 
     <!-- Dynamically instantiate a Spring bean for classes within the given package with the @Service annotation -->
-    <context:component-scan base-package="org.apromore.service.bpmnminer.impl"/>
+    <context:component-scan base-package="org.apromore.service.bimp_annotation.impl"/>
 
     <!-- Make the example service Spring bean visible from outside this OSGi bundle -->
-    <osgi:service ref="BPMNMinerServiceImpl" interface="org.apromore.service.bpmnminer.BPMNMinerService" auto-export="interfaces"/>
+    <osgi:service ref="BIMPAnnotationServiceImpl" interface="org.apromore.service.bimp_annotation.BIMPAnnotationService" auto-export="interfaces"/>
 
 </beans>
