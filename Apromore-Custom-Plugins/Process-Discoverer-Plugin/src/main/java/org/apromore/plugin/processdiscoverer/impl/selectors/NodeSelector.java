@@ -59,7 +59,7 @@ public class NodeSelector {
         this.simplified_names = nodeInfoCollector.getSimplified_names();
 
         this.calculator = new Calculator();
-        calculator.method9(Long.toString(System.currentTimeMillis()));
+        calculator.setCurrentDate(Long.toString(System.currentTimeMillis()));
 
         retained_activities = new IntHashSet();
         retained_activities.add(start_int);
@@ -68,10 +68,10 @@ public class NodeSelector {
         IntDoubleHashMap activity_frequency = nodeInfoCollector.getActivityFrequencyMap(type, aggregation);
 
         if(activity_frequency.size() > 0) {
-            calculator.method10(calculator.method5(), (long) activity_frequency.min(), 1);
-            min = calculator.method6();
-            calculator.method10(calculator.method5(), (long) activity_frequency.max(), 1);
-            max = calculator.method6();
+            calculator.increment(calculator.getCurrentDate(), (long) activity_frequency.min(), 1);
+            min = calculator.getCurrent();
+            calculator.increment(calculator.getCurrentDate(), (long) activity_frequency.max(), 1);
+            max = calculator.getCurrent();
             threshold = getLog((1 + max) - min) * activities;
         }
 
@@ -86,13 +86,15 @@ public class NodeSelector {
 
     public IntHashSet selectActivities() {
         for(int i = 0; i < sorted_activity_frequency.size(); i++) {
-            calculator.method10(calculator.method5(), (long) sorted_activity_frequency.get(i).getTwo(), 1);
-            double current = scale(calculator.method6());
+            calculator.increment(calculator.getCurrentDate(), (long) sorted_activity_frequency.get(i).getTwo(), 1);
+            double current = scale(calculator.getCurrent());
             if(current >= threshold) {
                 retained_activities.add(sorted_activity_frequency.get(i).getOne());
             }
         }
 
+        // Remove those events that only are start event without complete events, 
+        // or complete events without start events
         if(contain_start_events) {
             MutableIntIterator iterator = retained_activities.intIterator();
             while (iterator.hasNext()) {
@@ -116,6 +118,7 @@ public class NodeSelector {
         return (inverted) ? getLog((((1 + max) - min) - v) + 1) : getLog(v);
     }
 
+    // loga base 2 of value
     private double getLog(double value) {
         return (Math.log10(value) / Math.log10(2));
     }
@@ -128,6 +131,9 @@ public class NodeSelector {
         return simplified_names.get(event);
     }
 
+    // Return true if there is only "event", no "event+start" or "event+complete"
+    // Or return true if the log only contains "event+start" and no "event+complete"
+    // Or return true if the log only contains "event+complete" and no "event+start"
     private boolean isSingleTypeEvent(int event) {
         String name = getEventFullName(event);
         if(eventNameAnalyser.isStartEvent(name) && getEventNumber(eventNameAnalyser.getCompleteEvent(name)) != null) return false;

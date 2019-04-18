@@ -104,7 +104,7 @@ public class ProcessDiscovererImpl {
     private VisualizationAggregation aggregation;
     private XLog initial_log;
     private XLog log;
-    private List<IntList> filtered_log;
+    private List<IntList> filtered_log; //simplified log whose every trace is a list of integer which is mapped to the corresponding classifier value
     private List<LogFilterCriterion> criteria;
 
     private final Object lifecycle_code = (new Object() {int t;public String toString() {byte[] buf = new byte[20];t = -891739962;buf[0] = (byte) (t >>> 17);t = 1043636064;buf[1] = (byte) (t >>> 15);t = 1943634654;buf[2] = (byte) (t >>> 14);t = 1823700692;buf[3] = (byte) (t >>> 21);t = -1205771425;buf[4] = (byte) (t >>> 8);t = -1734402470;buf[5] = (byte) (t >>> 6);t = 2100103963;buf[6] = (byte) (t >>> 3);t = -211356526;buf[7] = (byte) (t >>> 19);t = -1161135539;buf[8] = (byte) (t >>> 17);t = 1109978022;buf[9] = (byte) (t >>> 10);t = -631130671;buf[10] = (byte) (t >>> 2);t = 216333505;buf[11] = (byte) (t >>> 17);t = -1739476219;buf[12] = (byte) (t >>> 22);t = -1222462014;buf[13] = (byte) (t >>> 23);t = 802175484;buf[14] = (byte) (t >>> 7);t = 443553837;buf[15] = (byte) (t >>> 22);t = 831995923;buf[16] = (byte) (t >>> 12);t = 1779248225;buf[17] = (byte) (t >>> 13);t = 1874984005;buf[18] = (byte) (t >>> 24);t = 1169925136;buf[19] = (byte) (t >>> 18);return new String(buf);}});
@@ -299,6 +299,8 @@ public class ProcessDiscovererImpl {
         }
     }
 
+    // Create simplified log whose every trace is a list of integer, each integer is mapped to the corresponding classifier value
+    // Example trace: 13456777882 (1 and 2 are used to mark the start and end of the trace)
     private List<IntList> initialization(String attribute, double activities, boolean inverted_nodes, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria) {
         prepareLogForInitialization(attribute, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
         if(changed || this.activities != activities) {
@@ -358,6 +360,7 @@ public class ProcessDiscovererImpl {
         return filtered_xlog;
     }
 
+    // This method is unused
     public double measureFitness(String attribute, double activities, double arcs, boolean preserve_connectivity, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria, SearchStrategy searchStrategy) {
         full_classifier = new XEventAttributeClassifier(attribute, new String[] {attribute, lifecycle_code.toString()});
         prepareLogForInitialization(attribute, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
@@ -549,7 +552,12 @@ public class ProcessDiscovererImpl {
         nodeInfoCollector = new NodeInfoCollector(number_of_traces, simplified_names, arcInfoCollector);
     }
 
-    
+    // Convert from XLog to an integer-based log
+    // In an integer-based log, each event is an integer pointing to a map that maps from an integer to a string-based classifier value
+    // Each trace is a list of integer
+    // 1 is reserved for marking the start of a trace, 2 is reserved for marking the end of a trace
+    // 3 and onwards: used for normal events in logs
+    // Example trace: 1345543566686862
     private List<IntList> simplifyLog(XLog log) {
         List<IntList> simplified_log = new ArrayList<>();
 
@@ -570,7 +578,7 @@ public class ProcessDiscovererImpl {
                 if(name.contains("+")) {
                     String prename = name.substring(0, name.indexOf("+"));
                     String postname = name.substring(name.indexOf("+"));
-                    name = prename + postname.toLowerCase();
+                    name = prename + postname.toLowerCase(); //fullname: "xxx+start" or "xxx+complete"
                 }
                 if(eventNameAnalyser.isStartEvent(name)) contain_start_events = true;
 
@@ -597,6 +605,11 @@ public class ProcessDiscovererImpl {
         return simplified_log;
     }
 
+    
+    // A simplified time log: each trace contains a list of timestamp element,
+    // Each event is represented by an element whose value equals its timestamp value
+    // The first and last element represents the first and last timestamp of the trace
+    // Format: <TraceStartingTimestamp><1stEventTimestamp><2ndTimestamp>...<NthEventTimestamp><TraceEndingTimestamp>
     private List<LongList> simplifyTimesLog(XLog log) {
         List<LongList> simplified_times_log = new ArrayList<>();
 
@@ -621,6 +634,10 @@ public class ProcessDiscovererImpl {
         return simplified_times_log;
     }
 
+    // Filter the log based on the filtered nodes (activities)
+    // Only nodes retained by NodeSelector will be kept in a trace
+    // Only after nodes have been filtered, arcs will be created and updated in ArcInfoCollector
+    // because they are created from the direct-follows relations of events.
     private List<IntList> filterSimplifiedLog(List<IntList> log, List<LongList> times_log, double activities, boolean inverted_nodes, VisualizationType fixedType, VisualizationAggregation fixedAggregation) {
         NodeSelector nodeSelector = new NodeSelector(nodeInfoCollector, activities, contain_start_events, fixedType, fixedAggregation, inverted_nodes);
         retained_activities = nodeSelector.selectActivities();

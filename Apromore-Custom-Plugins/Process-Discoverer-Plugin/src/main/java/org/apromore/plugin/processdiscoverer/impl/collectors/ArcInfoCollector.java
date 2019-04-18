@@ -41,8 +41,8 @@ public class ArcInfoCollector {
 
     private final int number_of_traces;
 
-    private final Map<Arc, LongArrayList> arcs_frequency_set; //map from Acr to a list of frequencies, each frequency for one trace
-    private final Map<Arc, LongArrayList> arcs_duration_set;
+    private final Map<Arc, LongArrayList> arcs_frequency_set; //map from an Arc to a list of frequencies, each frequency for one trace
+    private final Map<Arc, LongArrayList> arcs_duration_set; //map from an Arc to a list of duration, each duration is an occurrence of arc (could be multiple times in a trace).
     private final Map<Arc, DoubleArrayList> arcs_impact_set;
     private final Map<Arc, LongArrayList> tmp_arcs_impact_set;
 
@@ -59,7 +59,7 @@ public class ArcInfoCollector {
         this.tmp_arcs_impact_set = new UnifiedMap<>();
 
         this.calculator = new Calculator();
-        calculator.method9(Long.toString(System.currentTimeMillis()));
+        calculator.setCurrentDate(Long.toString(System.currentTimeMillis()));
     }
 
     public ObjectDoubleHashMap<Arc> getArcsFrequencyMap(VisualizationType type, VisualizationAggregation aggregation) {
@@ -73,10 +73,12 @@ public class ArcInfoCollector {
     // add up frequency to the current frequency value of Arc
     public void updateArcFrequency(Arc arc, int frequency) {
         LongArrayList list = FrequencySetPopulator.retreiveEntryLong(arcs_frequency_set, arc, number_of_traces);
-        calculator.method10(calculator.method5(), list.get(trace), frequency);
-        list.set(trace, calculator.method6());  // var4 = list.get(trace) + frequency
+        calculator.increment(calculator.getCurrentDate(), list.get(trace), frequency);
+        list.set(trace, calculator.getCurrent());  // var4 = list.get(trace) + frequency
     }
 
+    // add duration to an arc. 
+    // Unlike arc frequency, a duration is for one occurrence of an arc, not for a trace
     public void updateArcDuration(Arc arc, long duration) {
         LongArrayList durations = arcs_duration_set.get(arc);
         if(durations == null) {
@@ -117,7 +119,7 @@ public class ArcInfoCollector {
 
     public void nextTrace() {
         tmp_arcs_impact_set.clear();
-        calculator.method10(calculator.method5(), trace, 1); 
-        trace = (int) calculator.method6(); //method6 returns var4 = trace + 1
+        calculator.increment(calculator.getCurrentDate(), trace, 1); 
+        trace = (int) calculator.getCurrent(); //method6 returns var4 = trace + 1
     }
 }

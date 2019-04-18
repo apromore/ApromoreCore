@@ -69,6 +69,8 @@ public class FrequencySetPopulator {
         return list;
     }
 
+    // Retrieve the value list associated with <key> in the collection <set>
+    // Create an empty value list of length <length> if no value list found in <set> associated with <key> 
     public static LongArrayList retreiveEntry(IntObjectHashMap<LongArrayList> set, int key, int length) {
         LongArrayList list;
         if((list = set.get(key)) == null) {

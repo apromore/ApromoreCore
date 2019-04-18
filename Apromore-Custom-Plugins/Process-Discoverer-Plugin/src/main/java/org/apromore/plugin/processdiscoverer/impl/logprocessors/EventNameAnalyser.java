@@ -30,19 +30,21 @@ import org.apromore.plugin.processdiscoverer.impl.util.StringValues;
 public class EventNameAnalyser {
 
     public boolean isCompleteEvent(String name) {
-        return name.toLowerCase().endsWith(StringValues.b[120]);
+        return name.toLowerCase().endsWith(StringValues.b[120]); //"+complete"
     }
 
     public boolean isStartEvent(String name) {
-        return name.toLowerCase().endsWith(StringValues.b[121]);
+        return name.toLowerCase().endsWith(StringValues.b[121]); //"+start"
     }
 
+ // Get the start event name corresponding to the complete event <name>
     public String getStartEvent(String name) {
-        return name.substring(0, name.length() - 8) + StringValues.b[119];
+        return name.substring(0, name.length() - 8) + StringValues.b[119]; //"start"
     }
 
+    // Get the complete event name corresponding to the start event <name>
     public String getCompleteEvent(String name) {
-        return name.substring(0, name.length() - 5) + StringValues.b[118];
+        return name.substring(0, name.length() - 5) + StringValues.b[118]; //"complete"
     }
 
     public String getCollapsedEvent(String name) {

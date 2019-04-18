@@ -37,8 +37,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class NodeInfoCollector {
 
-    private final String plus_complete_code = StringValues.b[120];
-    private final String plus_start_code = StringValues.b[121];
+    private final String plus_complete_code = StringValues.b[120]; //"+complete"
+    private final String plus_start_code = StringValues.b[121]; //"+start"
 
     private final int number_of_traces;
 
@@ -51,7 +51,7 @@ public class NodeInfoCollector {
 
     private final Calculator calculator;
 
-    int trace = -1;
+    int trace = -1; // current trace number
 
     public NodeInfoCollector(int number_of_traces,
                              HashBiMap<String, Integer> simplified_names,
@@ -64,13 +64,15 @@ public class NodeInfoCollector {
         this.arcInfoCollector = arcInfoCollector;
 
         this.calculator = new Calculator();
-        calculator.method9(Long.toString(System.currentTimeMillis()));
+        calculator.setCurrentDate(Long.toString(System.currentTimeMillis()));
     }
 
     public HashBiMap<String, Integer> getSimplified_names() {
         return simplified_names;
     }
 
+    // compute aggregate meausure for each activity
+    // return a map where key: activity, value: aggregate measure 
     public IntDoubleHashMap getActivityFrequencyMap(VisualizationType type, VisualizationAggregation aggregation) {
         IntDoubleHashMap map = new IntDoubleHashMap();
         for(int act : activity_frequency_set.keySet().toArray()) {
@@ -83,8 +85,8 @@ public class NodeInfoCollector {
     public void updateActivityFrequency(int activity, int frequency) {
         LongArrayList list = FrequencySetPopulator.retreiveEntry(activity_frequency_set, activity, number_of_traces);
 
-        calculator.method10(calculator.method5(), list.get(trace), frequency);
-        list.set(trace, calculator.method6());
+        calculator.increment(calculator.getCurrentDate(), list.get(trace), frequency);
+        list.set(trace, calculator.getCurrent());
     }
 
     private double getEventInfo(int event, VisualizationType type, VisualizationAggregation aggregation) {
@@ -92,10 +94,12 @@ public class NodeInfoCollector {
         else return 0;
     }
 
+    // compute aggregate frequency for node with number <event>
     private double getNodeFrequency(int event, VisualizationAggregation aggregation) {
         return FrequencySetPopulator.getAggregateInformation(activity_frequency_set.get(event), aggregation);
     }
 
+    // compute aggregate frequency for node with number <event> given that the event may have start and complete lifecycle
     public double getNodeFrequency(boolean min, String event, VisualizationAggregation aggregation) {
         if(event.isEmpty()) return 0;
         if(getEventNumber(event) == null) {
@@ -117,6 +121,8 @@ public class NodeInfoCollector {
         }
     }
 
+    // compute aggregate time duration for a node with name <event>
+    // Assume to have start and complete lifecycle for the same event
     public double getNodeDuration(String event, VisualizationAggregation aggregation) {
         if(event.isEmpty()) return 0;
         if(getEventNumber(event) == null) {
@@ -135,7 +141,7 @@ public class NodeInfoCollector {
     }
 
     public void nextTrace() {
-        calculator.method10(calculator.method5(), trace, 1);
-        trace = (int) calculator.method6();
+        calculator.increment(calculator.getCurrentDate(), trace, 1);
+        trace = (int) calculator.getCurrent();
     }
 }

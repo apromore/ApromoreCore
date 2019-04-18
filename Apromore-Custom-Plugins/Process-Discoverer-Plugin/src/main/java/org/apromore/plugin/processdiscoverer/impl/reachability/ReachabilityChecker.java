@@ -31,11 +31,12 @@ import java.util.Set;
  */
 public class ReachabilityChecker {
 
+	//Check reachability on a directed graph from the source (node=1) to a node by breadth-first search
     public boolean reachable(int node, Set<Arc> retained_arcs) {
         if(node == 1) return true;
 
         IntHashSet visited = new IntHashSet();
-        IntArrayList reached = new IntArrayList();
+        IntArrayList reached = new IntArrayList(); // FIFO queue
         reached.add(1);
 
         while (reached.size() > 0) {
@@ -55,6 +56,7 @@ public class ReachabilityChecker {
         return false;
     }
 
+    // Check reachability on a directed graph from a node to the sink (node=2) by breadth-first search
     public boolean reaching(int node, Set<Arc> retained_arcs) {
         if(node == 2) return true;
 

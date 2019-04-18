@@ -58,19 +58,19 @@ public class ArcSelector {
         ObjectDoubleHashMap<Arc> arcs_frequency = arcInfoCollector.getArcsFrequencyMap(type, aggregation);
 
         this.calculator = new Calculator();
-        calculator.method9(Long.toString(System.currentTimeMillis()));
+        calculator.setCurrentDate(Long.toString(System.currentTimeMillis()));
 
         // min = arcs_frequency.min() + 1
-        calculator.method10(calculator.method5(), (long) arcs_frequency.min(),1);
-        min = calculator.method6();
+        calculator.increment(calculator.getCurrentDate(), (long) arcs_frequency.min(),1);
+        min = calculator.getCurrent();
         
         // max = arcs_frequency.max() + 1
-        calculator.method10(calculator.method5(), (long) arcs_frequency.max(),1);
-        max = calculator.method6();
+        calculator.increment(calculator.getCurrentDate(), (long) arcs_frequency.max(),1);
+        max = calculator.getCurrent();
         
         if(arcs_frequency.size() > 0) threshold = getLog((1 + max) - min)  * arcs;
 
-        retained_arcs = new HashSet<>(arcs_frequency.keySet());
+        retained_arcs = new HashSet<>(arcs_frequency.keySet()); //get all arcs first
         this.preserve_connectivity = preserve_connectivity;
 
         sorted_arcs_frequency = arcs_frequency.keyValuesView().toList();
@@ -85,9 +85,11 @@ public class ArcSelector {
 
     public Set<Arc> selectArcs() {
         Set<Arc> source_sink_arcs = new UnifiedSet<>();
+        
+        // Select arcs whose frequency exceeds the threshold or arcs that meet some special conditions
         for(int i = sorted_arcs_frequency.size() - 1; i >= 0; i--) {
-            calculator.method10(calculator.method5(), (long) sorted_arcs_frequency.get(i).getTwo(),1);
-            double current = scale(calculator.method6());
+            calculator.increment(calculator.getCurrentDate(), (long) sorted_arcs_frequency.get(i).getTwo(),1);
+            double current = scale(calculator.getCurrent());
             Arc arc = sorted_arcs_frequency.get(i).getOne();
             if(current < threshold) {
                 if(retained_arcs.contains(arc)) {
@@ -96,6 +98,7 @@ public class ArcSelector {
                         continue;
                     }
                     retained_arcs.remove(arc);
+                    // Re-add the arc if its source or target is non-reachable after it is removed
                     if (preserve_connectivity && (!reachabilityChecker.reachable(arc.getTarget(), retained_arcs) || !reachabilityChecker.reaching(arc.getSource(), retained_arcs))) {
                         retained_arcs.add(arc);
                     }
@@ -113,6 +116,8 @@ public class ArcSelector {
             }
             int size = 0;
             retained_arcs.addAll(source_sink_arcs);
+            
+            // Include local arcs that are adjacent to selected nodes. 
             while (size != nodes.size()) {
                 size = nodes.size();
                 for (int i = 0; i < sorted_arcs_frequency.size(); i++) {
@@ -138,6 +143,7 @@ public class ArcSelector {
                     } else if ((arc.getSource() == 1 && getIncomingArcs(retained_arcs, arc.getTarget()).size() > 1) ||
                             (arc.getTarget() == 2 && getOutgoingArcs(retained_arcs, arc.getSource()).size() > 1)) {
                         retained_arcs.remove(arc);
+                        // The code within if...else will never be exexuted because of preserve_connectivity in the high upper if
                         if (preserve_connectivity && (!reachabilityChecker.reachable(arc.getTarget(), retained_arcs) || !reachabilityChecker.reaching(arc.getSource(), retained_arcs))) {
                             retained_arcs.add(arc);
                         }else {
