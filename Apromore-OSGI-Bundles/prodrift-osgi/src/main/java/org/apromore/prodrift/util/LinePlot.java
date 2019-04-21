@@ -44,7 +44,10 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
-public class LinePlot extends ApplicationFrame{
+//Bruce 21.04.2019: comment out ApplicationFrame and other panel components to fix HeadlessException 
+//This ApplicationFrame is unused in this plugin as the LinePlot is only used to generate an Image
+//This image is then displayed in the drift detection result.
+public class LinePlot { // extends ApplicationFrame{
 	
 	private XYSeriesCollection dataset = new XYSeriesCollection();
 	private ArrayList<XYSeries> curves = new ArrayList<XYSeries>();
@@ -56,7 +59,7 @@ public class LinePlot extends ApplicationFrame{
 	private XYSeries thrsLine = new XYSeries("Threshhold");
 	
 	public LinePlot(String windowTitle, String tle,String Xlabel, String Ylabel) {
-		super(windowTitle);
+		//super(windowTitle);
 		title = tle;
 		XLb = Xlabel;
 		YLb = Ylabel;
@@ -105,15 +108,15 @@ public class LinePlot extends ApplicationFrame{
 		         true , true , false);
 			
 
-		if(!Main.isStandAlone)
-		{
-			ChartPanel chartPanel = new ChartPanel(lineChart);
-			chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
-			setContentPane(chartPanel);
-			this.pack();
-			RefineryUtilities.centerFrameOnScreen(this);
-			this.setVisible(true);
-		}
+//		if(!Main.isStandAlone)
+//		{
+//			ChartPanel chartPanel = new ChartPanel(lineChart);
+//			chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
+//			setContentPane(chartPanel);
+//			this.pack();
+//			RefineryUtilities.centerFrameOnScreen(this);
+//			this.setVisible(true);
+//		}
 		
 		return lineChart;
 		
@@ -133,15 +136,15 @@ public class LinePlot extends ApplicationFrame{
 		}
 		
 
-		if(!Main.isStandAlone)
-		{
-			ChartPanel chartPanel = new ChartPanel(lineChart);
-			chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
-			setContentPane(chartPanel);
-			this.pack();
-			RefineryUtilities.centerFrameOnScreen(this);
-			this.setVisible(true);
-		}
+//		if(!Main.isStandAlone)
+//		{
+//			ChartPanel chartPanel = new ChartPanel(lineChart);
+//			chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
+//			setContentPane(chartPanel);
+//			this.pack();
+//			RefineryUtilities.centerFrameOnScreen(this);
+//			this.setVisible(true);
+//		}
 		
 		return lineChart;
 		
@@ -190,15 +193,15 @@ public class LinePlot extends ApplicationFrame{
 		}
 		
 
-		if(!Main.isStandAlone)
-		{
-			ChartPanel chartPanel = new ChartPanel(lineChart);
-			chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
-			setContentPane(chartPanel);
-			this.pack();
-			RefineryUtilities.centerFrameOnScreen(this);
-			this.setVisible(true);
-		}
+//		if(!Main.isStandAlone)
+//		{
+//			ChartPanel chartPanel = new ChartPanel(lineChart);
+//			chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
+//			setContentPane(chartPanel);
+//			this.pack();
+//			RefineryUtilities.centerFrameOnScreen(this);
+//			this.setVisible(true);
+//		}
 		
 		return lineChart;
 		
