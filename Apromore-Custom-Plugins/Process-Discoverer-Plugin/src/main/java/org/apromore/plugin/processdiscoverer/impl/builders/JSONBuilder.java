@@ -432,7 +432,7 @@ public class JSONBuilder {
         double min = Double.MAX_VALUE;
         for (BPMNNode n : nodes) {
             if (!(n instanceof Gateway) && !(n instanceof Event)) {
-                if(skip && node.getLabel().contains("\\n")) {
+                if(skip && n.getLabel().contains("\\n")) {
                     String value = n.getLabel().substring(n.getLabel().indexOf("[") + 1, n.getLabel().length() - 1);
                     max = Math.max(max, Double.parseDouble(value));
                     min = Math.min(min, Double.parseDouble(value));
