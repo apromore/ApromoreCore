@@ -612,7 +612,7 @@ public class ProcessDiscovererController {
                                 Filedownload.save(amedia);
                             }
                         });
-                        cases_window.doOverlapped();
+                        cases_window.doModal();
                     }
                 });
 
