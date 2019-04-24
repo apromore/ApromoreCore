@@ -432,6 +432,12 @@ public class ProcessDiscovererImpl {
         return collapseStartCompleteActivities(bpmnDiagramBuilder.getBpmnDiagram());
     }
 
+    // The diagram generated from a trace contains duration weight, not frequency weight, on arcs and nodes 
+    // This is because a trace usually contains frequency of 1 for arcs and nodes
+    // So, it is more informative to display a trace model with duration other than frequency weight
+    // The duration is determined based on two consecutive events with the same concept:name and
+    // one ending with "start" while the other one ending with "complete"
+    // The node label will be 
     private BPMNDiagram generateDiagramFromTrace(String traceID, String attribute, double activities, double arcs, boolean preserve_connectivity, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria) {
         full_classifier = new XEventAttributeClassifier(attribute, new String[] {attribute, lifecycle_code.toString()});
         log = filterUsingCriteria(initial_log, criteria);
