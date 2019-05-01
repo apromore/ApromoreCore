@@ -96,6 +96,8 @@ The "Discover BPMN model" tool has an advanced option to "Annotate for BIMP Simu
 
 Check out the required Python scripts:
 $ git clone https://github.com/AdaptiveBProcess/SiMo-Discoverer.git
+$ cd SiMo-Discoverer
+$ git checkout 0527d1f25ae5079520deca6a61bcaf022ed8ecfd
 
 See README.md in the SiMo-Discoverer checkout.  You will need Python 3.6 installed, and the following Python libraries:
 

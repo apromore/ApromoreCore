@@ -81,6 +81,8 @@ import org.processmining.plugins.connectionfactories.logpetrinet.TransEvClassMap
 import org.processmining.plugins.petrinet.replayer.algorithms.costbasedcomplete.CostBasedCompleteParam;
 import org.processmining.plugins.petrinet.replayresult.PNRepResult;
 import org.processmining.plugins.replayer.replayresult.SyncReplayResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -110,6 +112,8 @@ import static org.apromore.plugin.processdiscoverer.impl.filter.Level.TRACE;
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  */
 public class ProcessDiscovererController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiscovererController.class);
 
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
     private final String nativeType = "BPMN 2.0";
@@ -1018,7 +1022,6 @@ public class ProcessDiscovererController {
                             definitions.exportElements() +
                             "</definitions>";
 
-                    Exception bimpAnnotationException = null;
                     if (annotateForBIMP) {
                         try {
                             model = bimpAnnotationService.annotateBPMNModelForBIMP(model, log, new BIMPAnnotationService.Context() {
@@ -1032,9 +1035,8 @@ public class ProcessDiscovererController {
                             });
 
                         } catch (Exception e) {
-                            //LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);
-                            Messagebox.show("Unable to annotate BPMN model for BIMP simulation (" + e.getMessage() + ")\n\nModel will be created without annotations.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
-                            bimpAnnotationException = e;
+                            LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);
+                            eventQueue.publish(new Event(ANNOTATION_EXCEPTION, null, e));
                         }
                     }
                 }
@@ -1080,11 +1082,6 @@ public class ProcessDiscovererController {
                             now,  // last update timestamp
                             user,
                             publicModel));
-
-                    // Calling the refresh if the exception messagebox is present makes it vanish
-                    //if (bimpAnnotationException == null) {
-                    //    portalContext.refreshContent();
-                    //}
                 }
             };
 
