@@ -20,7 +20,7 @@
 
 <window id="win" width="550px" closable="false" position="center,top" title="BPMN Miner">
     <caption>
-        <a href="http://apromore.org/platform/features/bpmn-miner" target="_blank">
+        <a href="https://apromore.org/documentation/features/bpmn-miner" target="_blank">
         <button label="Help" image="img/Help.png" style="float: right;"></button>
         </a>
     </caption>

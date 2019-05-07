@@ -21,7 +21,7 @@
 <window width="1000px" closable="false" position="center,top" title="Process Drift Detection">
 
    	<caption>
-        <a href="http://apromore.org/platform/features/prodrift" target="_blank">
+        <a href="https://apromore.org/documentation/features/prodrift" target="_blank">
         <button label="Help" image="img/Help.png" style="float: right;"></button>
         </a>
     </caption>
