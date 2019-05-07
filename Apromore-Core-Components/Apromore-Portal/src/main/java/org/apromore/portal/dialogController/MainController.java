@@ -121,6 +121,7 @@ public class MainController extends BaseController implements MainControllerInte
             this.navigation = new NavigationController(this);
             Toolbarbutton moreButton = (Toolbarbutton) this.getFellow("moreButton");
             Toolbarbutton releaseNotes = (Toolbarbutton) this.getFellow("releaseNotes");
+            Toolbarbutton featuresButton = (Toolbarbutton) this.getFellow("featuresButton");
             Toolbarbutton signoutButton = (Toolbarbutton) this.getFellow("signoutButton");
             Toolbarbutton installedPluginsButton = (Toolbarbutton) this.getFellow("installedPlugins");
             Toolbarbutton webDavButton = (Toolbarbutton) this.getFellow("webDav");
@@ -142,6 +143,12 @@ public class MainController extends BaseController implements MainControllerInte
                     new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {
                             signout();
+                        }
+                    });
+            featuresButton.addEventListener("onClick",
+                    new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                        	featuresInfo();
                         }
                     });
             releaseNotes.addEventListener("onClick",
@@ -482,14 +489,14 @@ public class MainController extends BaseController implements MainControllerInte
                     break;
                 }
             }
-            if(logVisualizerPlugin == null) {
-                for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
-                    if (plugin.getName().equals("Log Visualizer")) {
-                        logVisualizerPlugin = plugin;
-                        break;
-                    }
-                }
-            }
+//            if(logVisualizerPlugin == null) {
+//                for (final PortalPlugin plugin : PortalPluginResolver.resolve()) {
+//                    if (plugin.getName().equals("Log Visualizer")) {
+//                        logVisualizerPlugin = plugin;
+//                        break;
+//                    }
+//                }
+//            }
         }
         if(logVisualizerPlugin != null) {
             logVisualizerPlugin.execute(new PluginPortalContext(this));
@@ -690,6 +697,16 @@ public class MainController extends BaseController implements MainControllerInte
         instruction = "window.open('" + Constants.RELEASE_NOTES + "','','top=" + offsetH + ",left=" + offsetV
                 + ",height=600,width=800,scrollbars=1,resizable=1'); ";
         Clients.evalJavaScript(instruction);
+    }
+    
+    @Command
+    protected void featuresInfo() {
+        String instruction;
+        int offsetH = 100, offsetV = 200;
+        instruction = "window.open('" + Constants.FEATURES_INFO + "','','top=" + offsetH + ",left=" + offsetV
+                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
+        Clients.evalJavaScript(instruction);
+
     }
 
 

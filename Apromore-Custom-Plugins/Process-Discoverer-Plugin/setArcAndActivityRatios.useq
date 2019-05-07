@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence-diagram version="1.2.3" icons="true" generate-combined-fragments="false">  
+  <object id="1" language="java" name="com.raffaeleconforti.service.Test" project="ProcessDiscoverer" 
+    file="/ProcessDiscoverer/src/main/java/com/raffaeleconforti/service/Test.java" binary="false" label="test" 
+    type="class" autoSize="true">    
+    <position height="-1" width="-1" x="43" y="0"/>    
+    <execution id="2">      
+      <position height="369" width="181" x="5" y="164"/>    
+    </execution>  
+  </object>  
+  <object id="5" language="java" name="com.raffaeleconforti.processdiscoverer.ProcessDiscovererController" 
+    project="ProcessDiscoverer" 
+    file="/ProcessDiscoverer/src/main/java/com/raffaeleconforti/processdiscoverer/ProcessDiscovererController.java" 
+    binary="false" label="processDiscovererController" type="class" autoSize="true">    
+    <position height="-1" width="-1" x="357" y="0"/>    
+    <execution id="4">      
+      <position height="315" width="277" x="190" y="191"/>    
+    </execution>  
+  </object>  
+  <object id="14" language="java" name="com.raffaeleconforti.service.ProcessDiscovererService" 
+    project="ProcessDiscoverer" 
+    file="/ProcessDiscoverer/src/main/java/com/raffaeleconforti/service/ProcessDiscovererService.java" binary="false" 
+    label="processDiscovererService" type="interface" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="7">      
+      <position height="27" width="0" x="0" y="263"/>    
+    </execution>    
+    <execution id="9">      
+      <position height="27" width="0" x="0" y="330"/>    
+    </execution>    
+    <execution id="11">      
+      <position height="27" width="0" x="0" y="395"/>    
+    </execution>  
+  </object>  
+  <object id="15" language="java" name="org.zkoss.zk.ui.util.Clients" project="ProcessDiscoverer" 
+    file="C:/Apromore/ApromoreCore/repository/org/zkoss/zk/zk/8.0.2.2/zk-8.0.2.2.jar" binary="true" 
+    label="&lt;static&gt;" type="class" autoSize="true">    
+    <position height="0" width="0" x="0" y="0"/>    
+    <execution id="13">      
+      <position height="27" width="0" x="0" y="452"/>    
+    </execution>  
+  </object>  
+  <message id="3" operation="setArcAndActivityRatios():void" asynchronous="false">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="4"/>  
+  </message>  
+  <message id="6" 
+    operation="generateDFGFromLog(org.deckfour.xes.model.XLog,java.lang.String,double,double,boolean,boolean,boolean,com.raffaeleconforti.processdiscoverer.impl.VisualizationType,com.raffaeleconforti.processdiscoverer.impl.VisualizationAggregation,com.raffaeleconforti.processdiscoverer.impl.VisualizationType,com.raffaeleconforti.processdiscoverer.impl.VisualizationAggregation,com.raffaeleconforti.processdiscoverer.impl.VisualizationType,com.raffaeleconforti.processdiscoverer.impl.VisualizationAggregation,java.util.List&lt;com.raffaeleconforti.processdiscoverer.LogFilterCriterion&gt;):org.processmining.models.graphbased.directed.bpmn.BPMNDiagram" 
+    asynchronous="false">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="7"/>  
+  </message>  
+  <message id="8" 
+    operation="generateJSONWithGatewaysFromLog(org.deckfour.xes.model.XLog,java.lang.String,double,double,double,boolean,boolean,boolean,boolean,boolean,com.raffaeleconforti.processdiscoverer.impl.VisualizationType,com.raffaeleconforti.processdiscoverer.impl.VisualizationAggregation,com.raffaeleconforti.processdiscoverer.impl.VisualizationType,com.raffaeleconforti.processdiscoverer.impl.VisualizationAggregation,com.raffaeleconforti.processdiscoverer.impl.VisualizationType,com.raffaeleconforti.processdiscoverer.impl.VisualizationAggregation,java.util.List&lt;com.raffaeleconforti.processdiscoverer.LogFilterCriterion&gt;):java.lang.Object[]" 
+    asynchronous="false">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="9"/>  
+  </message>  
+  <message id="10" 
+    operation="generateJSONFromLog(org.deckfour.xes.model.XLog,java.lang.String,double,double,boolean,boolean,boolean,boolean,com.raffaeleconforti.processdiscoverer.impl.VisualizationType,com.raffaeleconforti.processdiscoverer.impl.VisualizationAggregation,com.raffaeleconforti.processdiscoverer.impl.VisualizationType,com.raffaeleconforti.processdiscoverer.impl.VisualizationAggregation,com.raffaeleconforti.processdiscoverer.impl.VisualizationType,com.raffaeleconforti.processdiscoverer.impl.VisualizationAggregation,java.util.List&lt;com.raffaeleconforti.processdiscoverer.LogFilterCriterion&gt;):java.lang.Object[]" 
+    asynchronous="false">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="11"/>  
+  </message>  
+  <message id="12" operation="evalJavaScript(java.lang.String):void" asynchronous="false">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="13"/>  
+  </message>
+</sequence-diagram>

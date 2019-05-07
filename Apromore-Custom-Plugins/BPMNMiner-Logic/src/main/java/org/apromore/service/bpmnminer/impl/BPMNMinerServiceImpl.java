@@ -21,6 +21,7 @@
 package org.apromore.service.bpmnminer.impl;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.*;
 import javax.swing.UIManager;
 

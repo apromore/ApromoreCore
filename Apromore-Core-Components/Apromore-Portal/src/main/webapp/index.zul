@@ -131,6 +131,7 @@
                 <!--<toolbarbutton id="developerResources" label="Developer Resources"/>-->
             </div>
             <div style="float:right; margin-top: 5px;">
+				<toolbarbutton id="featuresButton" label="Help" visible="true"/>
                 <toolbarbutton id="signoutButton" label="Sign out" visible="true"/>
             </div>
         </div>

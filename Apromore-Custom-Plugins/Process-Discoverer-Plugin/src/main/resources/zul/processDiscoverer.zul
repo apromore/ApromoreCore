@@ -1,0 +1,614 @@
+<?component name="menuitem" extends="menuitem" autocheck="true" checkmark="true" ?>
+<!--
+ ~ Copyright © 2019 The University of Melbourne.
+ ~
+ ~ This file is part of "Apromore".
+ ~
+ ~ "Apromore" is free software; you can redistribute it and/or modify
+ ~ it under the terms of the GNU Lesser General Public License as
+ ~ published by the Free Software Foundation; either version 3 of the
+ ~ License, or (at your option) any later version.
+ ~
+ ~ "Apromore" is distributed in the hope that it will be useful, but
+ ~ WITHOUT ANY WARRANTY; without even the implied warranty
+ ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ ~ See the GNU Lesser General Public License for more details.
+ ~
+ ~ You should have received a copy of the GNU Lesser General Public
+ ~ License along with this program.
+ ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ -->
+
+<window id="win" width="100%" height="100%" sizable="true" maximizable="true" closable="true" position="center" contentStyle="overflow:auto">
+    <caption sclass="mainCaption">
+        <a href="http://apromore.org/platform/features/discover-process-map" target="_blank" sclass="captionButtons">
+            <button label="Help" image="img/Help-16x16.png" style="float: right;" height="25px"></button>
+        </a>
+    </caption>
+    <style>
+        .z-caption.customIcon .z-caption-content {
+            width: 100%;
+        }
+
+        .z-caption.customIcon .open-false,
+
+        .z-caption.customIcon .open-true {
+            background: url("https://www.zkoss.org/zkdemo/widgets/layout/group_box/img/arrow.png") no-repeat right 0;
+            height: 16px;
+            padding-right: 20px;
+            font-weight: bold;
+            float: right;
+        }
+
+        .z-caption.customIcon .open-false {
+            background-position: right -16px;
+        }
+
+        .mainCaption {
+            display: flex;
+        }
+
+        .mainCaption .z-caption-content {
+            display: flex; flex-grow: 1;
+        }
+
+        .mainCaption .z-caption-content > .captionButtons {
+            display: inline-block;
+            flex-grow: 1;
+            text-align: right;
+            margin-right: 1px;
+        }
+
+        .captionButton {
+            font-size: 18px;
+            margin: 0px 0px 0px -1px;
+            padding: 2px 6px;
+            border: 1px solid #cfcfcf;
+            color: #636363;
+        }
+    </style>
+    <vbox>
+        <radiogroup id="sv1" onCheck="choice1.value = self.selectedItem.label" />
+        <groupbox closable="true" mold="3d" open="true">
+            <attribute name="onOpen">
+                <![CDATA[arrow.setSclass("open-" + self.isOpen());]]>
+            </attribute>
+            <caption label="Options" width="100%" sclass="customIcon">
+                <span id="arrow" class="open-true" />
+            </caption>
+            <hbox align="center">
+                <vbox align="left" pack="center" width="80px">
+                    <hbox align="center">
+                        <vbox align="left" pack="center" width="90px">
+                            <groupbox closable="false"><caption height="20px">Slider</caption>
+                                <vbox align="left" pack="top">
+                                    <radio id="use_fixed" label="Locked" selected="true" radiogroup="sv1" width="100px"/>
+                                    <radio id="use_dynamic" label="Unlocked" radiogroup="sv1" width="100px"/>
+                                </vbox>
+                            </groupbox>
+                        </vbox>
+                        <vbox align="left" pack="center" width="80px" height="85px">
+                            <checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px"/>
+                            <checkbox id="secondary" checked="false" label="Dual Info" height="30px" width="100px"/>
+                        </vbox>
+                    </hbox>
+                    <vbox align="left" pack="top">
+                        <checkbox id="inverted_nodes" checked="false" label="Invert Priority Nodes" height="30px" width="100px"/>
+                        <checkbox id="inverted_arcs" checked="false" label="Invert Priority Arcs" height="30px" width="100px"/>
+                    </vbox>
+                </vbox>
+                <grid>
+                    <columns>
+                        <column width="55px"/>
+                        <column width="50%"/>
+                        <column width="40px"/>
+                    </columns>
+                    <rows>
+                        <row height="21px">
+                            <label>Activities</label>
+                            <slider id="slider1" mold="scale" maxpos="100" width="100%" curpos="100"/>
+                            <intbox id="activityText" value="100" width="35px" />
+                        </row>
+                        <row height="21px">
+                            <label>Arcs</label>
+                            <slider id="slider2" mold="scale" maxpos="100" width="100%" curpos="10"/>
+                            <intbox id="arcText" value="10" width="35px" />
+                        </row>
+                        <row height="21px">
+                            <label>Parallelism</label>
+                            <slider id="slider3" mold="scale" maxpos="100" width="100%" curpos="40"/>
+                            <intbox id="parallelismText" value="40" width="35px" />
+                        </row>
+                    </rows>
+                </grid>
+                <grid>
+                    <columns>
+                        <column width="12.5%"/>
+                        <column width="12.5%"/>
+                        <column width="12.5%"/>
+                        <column width="12.5%"/>
+                        <column width="12.5%"/>
+                        <column width="12.5%"/>
+                        <column width="12.5%"/>
+                        <column width="12.5%"/>
+                    </columns>
+                    <rows>
+                        <row height="58px">
+                            <label>Cases</label>
+                            <label>Unique Cases</label>
+                            <label>Events</label>
+                            <label>Activities</label>
+                            <label>Mean Duration</label>
+                            <label>Median Duration</label>
+                            <label>Max Duration</label>
+                            <label>Min Duration</label>
+                        </row>
+                        <row height="58px">
+                            <label id="caseNumber">Cases</label>
+                            <label id="uniquecaseNumber">Unique Cases</label>
+                            <label id="eventNumber">Events</label>
+                            <label id="activityNumber">Activities</label>
+                            <label id="meanDuration">Activities</label>
+                            <label id="medianDuration">Activities</label>
+                            <label id="maxDuration">Activities</label>
+                            <label id="minDuration">Activities</label>
+                        </row>
+                    </rows>
+                </grid>
+            </hbox>
+        </groupbox>
+        <grid>
+            <columns>
+                <column width="10%"/>
+                <column width="10%"/>
+                <column width="10%"/>
+                <column width="10%"/>
+                <column width="10%"/>
+                <column width="7.5%"/>
+                <column width="7.5%"/>
+                <column width="7.5%"/>
+                <column width="7.5%"/>
+                <column width="10%"/>
+            </columns>
+            <rows>
+                <row align="center">
+                    <combobutton id="selector" label="Selector">
+                        <menupopup id="selectormenu" />
+                    </combobutton>
+                    <combobutton id="frequency" label="Frequency">
+                        <menupopup>
+                            <menuitem id="absolute_frequency" label="Cumulative" onCheck='case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+                            <menuitem id="case_frequency" label="Case" checked="true" onCheck='absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+                            <menuitem id="mean_frequency" label="Mean" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+                            <menuitem id="median_frequency" label="Median" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+                            <menuitem id="mode_frequency" label="Mode" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+                            <menuitem id="max_frequency" label="Max" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);min_frequency.setChecked(false)' />
+                            <menuitem id="min_frequency" label="Min" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false)' />
+                        </menupopup>
+                    </combobutton>
+                    <combobutton id="duration" label="Performance">
+                        <menupopup>
+                            <menuitem id="total_duration" label="Cumulative" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+                            <menuitem id="mean_duration" label="Mean" checked="true" onCheck='median_duration.setChecked(false);total_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+                            <menuitem id="median_duration" label="Median" onCheck='total_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+                            <menuitem id="max_duration" label="Max" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);total_duration.setChecked(false);min_duration.setChecked(false)' />
+                            <menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
+                        </menupopup>
+                    </combobutton>
+                    <combobutton id="layout" label="Layout" onClick='Clients.evalJavaScript("layout()")'>
+                        <menupopup>
+                            <menuitem id="layout_breadthfirst" onClick='Clients.evalJavaScript("layout_breadthfirst(false)")' label="Breadth-First" onCheck='layout_breadthfirst.setChecked(false)'/>
+                            <menuitem id="layout_cola" onClick='Clients.evalJavaScript("layout_cola(false)")' label="Cola" onCheck='layout_cola.setChecked(false)'/>
+                            <menuitem id="layout_cose" onClick='Clients.evalJavaScript("layout_cose(false)")' label="Cose" onCheck='layout_cose.setChecked(false)'/>
+                            <menuitem id="layout_dagre_lr" onClick='Clients.evalJavaScript("layout_dagre_LR(false)")' label="Dagre Left-Right" onCheck='layout_dagre_lr.setChecked(false)'/>
+                            <menuitem id="layout_dagre_tb" onClick='Clients.evalJavaScript("layout_dagre_TB(false)")' label="Dagre Top-Bottom" onCheck='layout_dagre_tb.setChecked(false)'/>
+                            <menuitem id="layout_klay_lr" onClick='Clients.evalJavaScript("layout_klay_LR(false)")' label="Klay Left-Right" onCheck='layout_klay_lr.setChecked(false)'/>
+                            <menuitem id="layout_klay_tb" onClick='Clients.evalJavaScript("layout_klay_TB(false)")' label="Klay Top-Bottom" onCheck='layout_klay_tb.setChecked(false)'/>
+                        </menupopup>
+                    </combobutton>
+                    <combobutton id="export" label="Export">
+                        <menupopup>
+                            <menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Export filtered log" onCheck='exportUnfitted.setChecked(false)'/>
+                            <menuitem id="exportBPMN" label="Export BPMN" onCheck='exportBPMN.setChecked(false)'/>
+                            <menuitem id="exportBPMNAnnotatedForBIMP" label="Export BPMN annotated for BIMP" onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>
+                            <menuitem id="downloadPDF" label="Export map as PDF" onCheck='downloadPDF.setChecked(false)'/>
+                            <menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
+                        </menupopup>
+                    </combobutton>
+                    <button id="details" label="Details" />
+                    <button id="cases" label="Cases" />
+                    <button id="fitness" label="Fitness" />
+                    <button id="filter" label="Filter" />
+                    <button id="animate" onClick='Clients.evalJavaScript("animate()")' label="Animate" />
+                </row>
+            </rows>
+        </grid>
+        <n:div id="cy" xmlns:n="native" style="height:80vh; width:100vh" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.5/svg.min.js"></script>
+        <script type="text/javascript">
+            <![CDATA[
+var layout_model = 4, ctrlIsPressed = !1, altIsPressed = !1;
+$(document).keydown(function(a) {
+  if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0, console.log(ctrlIsPressed);
+  if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0, console.log(altIsPressed)
+}).keyup(function() {
+  altIsPressed = ctrlIsPressed = !1;
+  console.log(ctrlIsPressed);
+  console.log(altIsPressed)
+});
+
+function init() {
+  var a = window.cy = cytoscape({
+    container: document.getElementById("cy"),
+    layout: {
+      name: "dagre",
+      padding: 10
+    },
+    zoom: 1,
+    minZoom: 1E-50,
+    maxZoom: 1E50,
+    zoomingEnabled: !0,
+    userZoomingEnabled: !0,
+    panningEnabled: !0,
+    userPanningEnabled: !0,
+    wheelSensitivity: .1,
+    style: [{
+      selector: "node",
+      style: {
+        "background-color": "data(color)",
+        "border-color": "black",
+        "border-width": "data(borderwidth)",
+        color: "data(textcolor)",
+        content: "data(name)",
+        "font-size": "data(textsize)",
+        height: "data(height)",
+        padding: 5,
+        shape: "data(shape)",
+        "text-border-width": 10,
+        "text-max-width": "data(textwidth)",
+        "text-valign": "center",
+        "text-wrap": "wrap",
+        width: "data(width)"
+      }
+    }, {
+      selector: ":selected",
+      style: {
+        "border-width": 4,
+        "border-color": "#333"
+      }
+    }, {
+      selector: "edge",
+      style: {
+        color: "data(color)",
+        "curve-style": "bezier",
+        "edge-text-rotation": 0,
+        "font-size": 11,
+        label: "data(label)",
+        "line-color": "data(color)",
+        "line-style": "data(style)",
+        "loop-sweep": 181,
+        "loop-direction": -41,
+        opacity: 1,
+        "source-arrow-color": "data(color)",
+        "target-arrow-color": "data(color)",
+        "target-arrow-shape": "triangle",
+        "text-background-color": "#ffffff",
+        "text-background-opacity": 1,
+        "text-background-padding": 5,
+        "text-background-shape": "roundrectangle",
+        "text-wrap": "wrap",
+        width: "mapData(strength, 0, 100, 1, 6)"
+      }
+    }, {
+      selector: "edge.questionable",
+      style: {
+        "line-style": "dotted",
+        "target-arrow-shape": "diamond"
+      }
+    }, {
+      selector: ".faded",
+      style: {
+        opacity: .25,
+        "text-opacity": 0
+      }
+    }],
+    elements: {
+      nodes: [],
+      edges: []
+    }
+  });
+  a.on("cxttap", "edge", function(a) {
+    removeEdge(a)
+  });
+  a.on("cxttap", "node", function(a) {
+    removeNode(a)
+  })
+}
+
+function reset() {
+  cy.elements().remove()
+}
+
+function load(a) {
+  cy.add($.parseJSON(a));
+  layout()
+}
+
+function horizontal() {
+  cy.style().selector("edge").style({
+    "curve-style": "bezier",
+    opacity: 1,
+    width: "mapData(strength, 0, 100, 1, 6)",
+    "target-arrow-shape": "triangle",
+    color: "data(color)",
+    "line-color": "data(color)",
+    "source-arrow-color": "data(color)",
+    "target-arrow-color": "data(color)",
+    label: "data(label)",
+    "line-style": "data(style)",
+    "font-size": 11,
+    "text-background-color": "#ffffff",
+    "text-background-opacity": 1,
+    "text-background-padding": 5,
+    "text-background-shape": "roundrectangle",
+    "edge-text-rotation": 0
+  }).update()
+}
+
+function vertical() {
+  cy.style().selector("edge").style({
+    "curve-style": "bezier",
+    opacity: 1,
+    width: "mapData(strength, 0, 100, 1, 6)",
+    "target-arrow-shape": "triangle",
+    color: "data(color)",
+    "line-color": "data(color)",
+    "source-arrow-color": "data(color)",
+    "target-arrow-color": "data(color)",
+    label: "data(label)",
+    "line-style": "data(style)",
+    "font-size": 11,
+    "text-background-color": "#ffffff",
+    "text-background-opacity": 1,
+    "text-background-padding": 5,
+    "text-background-shape": "roundrectangle",
+    "edge-text-rotation": 0
+  }).update()
+}
+
+function layout() {
+  1 == layout_model ? layout_breadthfirst(!0) : 2 == layout_model ? layout_cola(!0) : 3 == layout_model ? layout_cose(!0) : 4 == layout_model ? layout_dagre_LR(!0) : 5 == layout_model ? layout_dagre_TB(!0) : 6 == layout_model ? layout_klay_LR(!0) : 7 == layout_model && layout_klay_TB(!0)
+}
+
+function layout_breadthfirst(a) {
+  layout_model = 1;
+  cy.elements().layout({
+    name: "breadthfirst",
+    directed: !0,
+    spacingFactor: 1
+  }).run()
+}
+
+function layout_cola(a) {
+  layout_model = 2;
+  cy.elements().layout({
+    name: "cola",
+    animate: !1,
+    nodeSpacing: function(a) {
+      return 25
+    },
+    flow: {
+      axis: "x",
+      minSeparation: 150
+    }
+  }).run()
+}
+
+function pos(a, b) {
+  var c = 0,
+    e = 0,
+    d;
+  for (d in a.incomers().sources().outgoers().targets()) c += d.position()[0], e += 1;
+  return 0 == e ? 0 : c / e
+}
+
+function layout_cose(a) {
+  layout_model = 3;
+  cy.elements().layout({
+    name: "cose-bilkent",
+    avoidOverlap: !0,
+    nodeRepulsion: 1E4,
+    nestingFactor: 1,
+    idealEdgeLength: 75,
+    edgeElasticity: 1,
+    animate: !1,
+    randomize: a
+  }).run()
+}
+
+function layout_dagre_LR(a) {
+  layout_model = 4;
+  cy.elements().layout({
+    name: "dagre",
+    avoidOverlap: !0,
+    edgeSep: 50,
+    nodeSep: 110,
+    randomize: a,
+    rankDir: "LR",
+    ranker: "tight-tree"
+  }).run()
+}
+
+function layout_dagre_TB(a) {
+  layout_model = 5;
+  cy.elements().layout({
+    name: "dagre",
+    avoidOverlap: !0,
+    edgeSep: 50,
+    nodeSep: 110,
+    randomize: a,
+    rankDir: "TB",
+    ranker: "tight-tree"
+  }).run()
+}
+
+function layout_klay_LR(a) {
+  layout_model = 6;
+  cy.elements().layout({
+    name: "klay",
+    klay: {
+      spacing: 50,
+      addUnnecessaryBendpoints: !0,
+      direction: "RIGHT",
+      edgeSpacingFactor: .1,
+      edgeRouting: "POLYLINE",
+      fixedAlignment: "BALANCED",
+      inLayerSpacingFactor: 2,
+      layoutHierarchy: !0,
+      linearSegmentsDeflectionDampening: 1,
+      nodeLayering: "LONGEST_PATH",
+      nodePlacement: "LINEAR_SEGMENTS",
+      routeSelfLoopInside: !0,
+      thoroughness: 10
+    }
+  }).run()
+}
+
+function layout_klay_TB(a) {
+  layout_model = 7;
+  cy.elements().layout({
+    name: "klay",
+    klay: {
+      spacing: 50,
+      addUnnecessaryBendpoints: !0,
+      direction: "DOWN",
+      edgeSpacingFactor: .1,
+      edgeRouting: "POLYLINE",
+      fixedAlignment: "BALANCED",
+      inLayerSpacingFactor: 2,
+      layoutHierarchy: !0,
+      linearSegmentsDeflectionDampening: 1,
+      nodeLayering: "LONGEST_PATH",
+      nodePlacement: "LINEAR_SEGMENTS",
+      routeSelfLoopInside: !0,
+      thoroughness: 10
+    }
+  }).run()
+}
+
+function removeEdge(a) {
+  var b = a.target;
+  a = b.source();
+  b = b.target();
+  a = a.data("name");
+  a = a.substring(0, a.indexOf("\n"));
+  "" == a && (a = "|>");
+  b = b.data("name");
+  b = b.substring(0, b.indexOf("\n"));
+  "" == b && (b = "[]");
+  a = a.concat(" => ", b);
+  ctrlIsPressed ? zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRetained", a)) : zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRemoved", a))
+}
+
+function removeNode(a, b) {
+  var c = a.target;
+  "" != c.data("name") && (c = c.data("name"), c = c.substring(0, c.indexOf("\n")), console.log("CTRL " + ctrlIsPressed), console.log("ALT " + altIsPressed), ctrlIsPressed || altIsPressed ? ctrlIsPressed && !altIsPressed ? zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRetainedTrace", c)) : !ctrlIsPressed && altIsPressed ? zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRemovedEvent", c)) : zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRetainedEvent", c)) : zAu.send(new zk.Event(zk.Widget.$("$animate"),
+    "onNodeRemovedTrace", c)))
+}
+
+function rediscover() {
+  var a = cy.json();
+  zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeFiltered", a))
+}
+
+function animate() {
+  var a = cy.json();
+  zAu.send(new zk.Event(zk.Widget.$("$animate"), "onAnimate", a))
+}
+
+function exportFitted() {
+  var a = cy.json();
+  zAu.send(new zk.Event(zk.Widget.$("$exportFitted"), "onExport", a))
+}
+
+function exportUnfitted() {
+  var a = cy.json();
+  zAu.send(new zk.Event(zk.Widget.$("$exportUnfitted"), "onExport", a))
+}
+
+function downloadPDF(a) {
+  var b = new Image;
+  b.src = "img/apromore_logo.png";
+  b.style.height = "395px";
+  b.style.width = "390px";
+  b.onload = function() {
+    var c = new Image;
+    c.src = "data:image/png;base64," + cy.png({
+      full: !0,
+      output: "base64"
+    });
+    c.onload = function() {
+      var e = document.createElement("canvas"),
+        d = e.getContext("2d");
+      e.width = c.width + b.width + 40;
+      e.height = c.height + b.height + 40;
+      d.fillStyle = "white";
+      d.fillRect(0, 0, e.width, e.height);
+      d.drawImage(c, 20, b.height + 20);
+      d.drawImage(b, c.width + 20, 20);
+      d.font = "900 50px Arial";
+      d.fillStyle =
+        "black";
+      d.fillText("Apromore", c.width + 100, 450);
+      var g = new jsPDF("l", "pt", "a1"),
+        f = new Image;
+      f.src = e.toDataURL();
+      f.onload = function() {
+        for (var b = f.width, c = f.height, d = 1; 2300 < d * b || 1600 < d * c;) 2300 < d * b && (d = 2300 / b), 1600 < d * c && (d = 1600 / c);
+        g.addImage(f, "PNG", 40, 40, d * b, d * c);
+        g.save(a + ".pdf")
+      }
+    }
+  }
+}
+
+function downloadPNG(a) {
+  var b = new Image;
+  b.src = "img/apromore_logo.png";
+  b.style.height = "395px";
+  b.style.width = "390px";
+  b.onload = function() {
+    var c = new Image;
+    c.src = "data:image/png;base64," + cy.png({
+      full: !0,
+      output: "base64"
+    });
+    c.onload = function() {
+      var e = document.createElement("canvas"),
+        d = e.getContext("2d");
+      e.width = c.width + b.width + 40;
+      e.height = c.height + b.height + 40;
+      d.fillStyle = "white";
+      d.fillRect(0, 0, e.width, e.height);
+      d.drawImage(c, 20, b.height + 20);
+      d.drawImage(b, c.width + 20, 20);
+      d.font = "900 50px Arial";
+      d.fillStyle =
+        "black";
+      d.fillText("Apromore", c.width + 100, 450);
+      d = document.createElement("a");
+      d.href = e.toDataURL();
+      d.download = a + ".png";
+      d.click()
+    }
+  }
+}
+zk.afterMount(function() {
+  init();
+  zAu.send(new zk.Event(zk.Widget.$("$win"), "onLoaded"))
+});
+        ]]>
+        </script>
+    </vbox>
+</window>
+

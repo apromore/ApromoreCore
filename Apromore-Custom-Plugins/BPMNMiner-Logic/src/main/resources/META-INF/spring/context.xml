@@ -32,10 +32,6 @@
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
-    <!-- Access the site.properties configuration artifact -->
-    <osgi-compendium:cm-properties id="properties" persistent-id="site" init-timeout="60"/>
-    <context:property-placeholder properties-ref="properties"/>
-
     <context:annotation-config />
     <context:spring-configured />
 

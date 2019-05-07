@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 // Local packages
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.service.bimp_annotation.BIMPAnnotationService;
 import org.apromore.service.bpmnminer.BPMNMinerService;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
@@ -46,6 +47,7 @@ import org.apromore.service.helper.UserInterfaceHelper;
 @Component("plugin")
 public class BPMNMinerPlugin extends DefaultPortalPlugin {
 
+    private final BIMPAnnotationService bimpAnnotationService;
     private final BPMNMinerService    bpmnMinerService;
     private final CanoniserService    canoniserService;
     private final DomainService       domainService;
@@ -55,7 +57,8 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
     private final UserInterfaceHelper userInterfaceHelper;
 
     @Inject
-    public BPMNMinerPlugin(final BPMNMinerService bpmnMinerService,
+    public BPMNMinerPlugin(final BIMPAnnotationService bimpAnnotationService,
+                           final BPMNMinerService bpmnMinerService,
                            final CanoniserService canoniserService,
                            final DomainService domainService,
                            final ProcessService processService,
@@ -63,6 +66,7 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
                            final InfrequentBehaviourFilterService infrequentBehaviourFilterService,
                            final UserInterfaceHelper userInterfaceHelper) {
 
+        this.bimpAnnotationService              = bimpAnnotationService;
         this.bpmnMinerService                   = bpmnMinerService;
         this.canoniserService                   = canoniserService;
         this.domainService                      = domainService;
@@ -87,7 +91,7 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
 
         context.getMessageHandler().displayInfo("Executed BPMN miner plug-in!");
 
-        new BPMNMinerController(context, bpmnMinerService, canoniserService, domainService, processService, eventLogService, infrequentBehaviourFilterService, userInterfaceHelper);
+        new BPMNMinerController(context, bimpAnnotationService, bpmnMinerService, canoniserService, domainService, processService, eventLogService, infrequentBehaviourFilterService, userInterfaceHelper);
     }
 
 }

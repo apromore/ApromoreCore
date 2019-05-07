@@ -122,10 +122,11 @@
         <module>Apromore-Custom-Plugins/BEBoP-Logic</module>
         <module>Apromore-Custom-Plugins/BEBoP-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/BProVe-Logic</module>
+        <module>Apromore-Custom-Plugins/BIMP-Annotation-Logic</module>
         <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin</module>
-		<module>Apromore-Custom-Plugins/BIMP-Editor-Plugin2</module>
+        <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin2</module>
         <module>Apromore-Custom-Plugins/BIMP-Portal-Plugin</module>
-		
+
 
         <module>Apromore-Custom-Plugins/BPMNDiagramImporter-Logic</module>
         <module>Apromore-Custom-Plugins/BPMNMiner-Logic</module>
@@ -135,7 +136,7 @@
 
         <module>Apromore-Custom-Plugins/Compare-Logic</module>
         <module>Apromore-Custom-Plugins/Compare-Portal-Plugin</module>
-		<module>Apromore-Custom-Plugins/Compare-Portal-Plugin2</module>
+        <module>Apromore-Custom-Plugins/Compare-Portal-Plugin2</module>
 
         <module>Apromore-Custom-Plugins/LTL-Conf-Logic</module>
         <module>Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin</module>
@@ -154,12 +155,12 @@
         <module>Apromore-Custom-Plugins/Infrequent-Behaviour-Filter-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
-		<module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2</module>
-		<!--
+        <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2</module>
+        <!--
         <module>Apromore-Custom-Plugins/Log-Visualizer-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Visualizer-Logic-WS</module>
         <module>Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin</module>
-		-->
+        -->
         <module>Apromore-Custom-Plugins/Metrics-Logic</module>
         <module>Apromore-Custom-Plugins/Metrics-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/PerformanceMiner-Logic</module>
@@ -178,6 +179,7 @@
         <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/StageMining-Logic</module>
         <module>Apromore-Custom-Plugins/StageMining-Portal-Plugin</module>
+		<module>Apromore-Custom-Plugins/Process-Discoverer-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
@@ -199,7 +201,7 @@
         <module>Apromore-Core-Components/Apromore-Manager</module>
         <module>Apromore-Core-Components/Apromore-Manager-WS</module>
         <module>Apromore-Core-Components/Apromore-PQL-Indexer</module>
-		<module>Apromore-Core-Components/Apromore-BPMNEditor</module>
+        <module>Apromore-Core-Components/Apromore-BPMNEditor</module>
 
         <!-- Assembles the Bundles and repositories -->
         <module>Apromore-Assembly/Editor-Assembly</module>
@@ -209,6 +211,7 @@
 
         <module>Apromore-Assembly/PQL-Indexer-Assembly</module>
         <module>Apromore-Assembly/Predictive-Monitor-Assembly</module>
+		<module>Apromore-Assembly/Custom-Plugins</module>
 
         <!-- Command line tools -->
         <module>Apromore-Extras/bpmncmap</module>
@@ -219,7 +222,7 @@
         <!--<module>Supplements/cpf2pnml</module>-->
         <!--<module>Supplements/epml2cpf</module>-->
         <!--<module>Supplements/pnml2cpf</module>-->
-		
+
     </modules>
 
     <properties>
@@ -482,7 +485,7 @@
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>prodrift-osgi</artifactId>
-                <version>2.4</version>
+                <version>2.5</version>
             </dependency>
 
 

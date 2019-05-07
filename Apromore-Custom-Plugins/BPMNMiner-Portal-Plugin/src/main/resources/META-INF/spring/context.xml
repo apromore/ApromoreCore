@@ -33,6 +33,7 @@
     <context:spring-configured />
 
     <!-- Other OSGi services this component consumes -->
+    <reference id="bimpAnnotationService" interface="org.apromore.service.bimp_annotation.BIMPAnnotationService"/>
     <reference id="bpmnMinerService" interface="org.apromore.service.bpmnminer.BPMNMinerService"/>
     <reference id="canoniserService" interface="org.apromore.service.CanoniserService"/>
     <reference id="domainService" interface="org.apromore.service.DomainService"/>
