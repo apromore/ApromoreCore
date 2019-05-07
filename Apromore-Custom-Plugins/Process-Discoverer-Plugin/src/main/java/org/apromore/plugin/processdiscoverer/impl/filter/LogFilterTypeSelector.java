@@ -22,15 +22,23 @@ package org.apromore.plugin.processdiscoverer.impl.filter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apromore.plugin.processdiscoverer.impl.util.StringValues;
+import org.eclipse.persistence.internal.codegen.NonreflectiveMethodDefinition;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
+ * Modified: Bruce: add checkLevelValidity()
+ * Note that this class only contains standard filter types
+ * There are non-standard types which are other attributes available in logs
  */
 public class LogFilterTypeSelector {
 
-    public static String[] type = new String[] {
+    private static String[] type = new String[] {
             "concept:name",
             "direct:follow",
             "eventually:follow",
@@ -53,27 +61,60 @@ public class LogFilterTypeSelector {
             "Role",
             "Time-frame"
     };
+    
+    public static List<String> getTypes() {
+    	List<String> types = Arrays.asList(type);
+    	return Collections.unmodifiableList(types);
+    }
+    
+    
+    public static List<String> getNames() {
+    	List<String> names = Arrays.asList(name);
+    	return Collections.unmodifiableList(names);
+    }
+    
+    private static Map<String,Type> typeMap = new HashMap<>();
+    
+    static {
+    	typeMap.put("concept:name", Type.CONCEPT_NAME);
+    	typeMap.put("direct:follow", Type.DIRECT_FOLLOW);
+    	typeMap.put("eventually:follow", Type.EVENTUAL_FOLLOW);
+    	typeMap.put("lifecycle:transition", Type.LIFECYCLE_TRANSITION);
+    	typeMap.put("org:group", Type.ORG_GROUP);
+    	typeMap.put("org:resource", Type.ORG_RESOURCE);
+    	typeMap.put("org:role", Type.ORG_ROLE);
+    	typeMap.put("time:duration", Type.TIME_DURATION);
+    	typeMap.put("time:timestamp", Type.TIME_TIMESTAMP);
+    }
+    
 
-    public static int getType(String attribute) {
+    //index of the attribute in the list
+    public static Type getType(String attribute) {
         int t = Arrays.binarySearch(type, attribute);
-        if(t < 0) return -1;
-        return t;
+        if(t < 0) {
+        	return Type.UNKNOWN;
+        }
+        return typeMap.get(attribute);
     }
 
+    //index of the name in the list
     public static int getName(String attribute) {
         int t = Arrays.binarySearch(name, attribute);
         if(t < 0) return -1;
         return t;
     }
 
+    // search attribute in type and return the corresponding name
     public static String getMatch(String attribute) {
         return search1(attribute, type, name);
     }
 
+ // search attribute in name and return the corresponding type
     public static String getReverseMatch(String attribute) {
         return search2(attribute, name, type);
     }
 
+    // The index is not 1-1 between the two arrays as the array values must be ordered
     private static String search1(String attribute, String[] origin, String[] translation) {
         int t = Arrays.binarySearch(origin, attribute);
         switch (t) {
@@ -90,6 +131,7 @@ public class LogFilterTypeSelector {
         }
     }
 
+    // The index is not 1-1 between the two arrays as the array values must be ordered
     private static String search2(String attribute, String[] origin, String[] translation) {
         int t = Arrays.binarySearch(origin, attribute);
         switch (t) {
@@ -104,6 +146,38 @@ public class LogFilterTypeSelector {
             case 8 : return translation[8];
             default : return null;
         }
+    }
+    
+    public static boolean checkLevelValidity(String attribute, Level level) {
+    	int t = Arrays.binarySearch(type, attribute);
+    	if (level == Level.EVENT) {
+	        switch (t) {
+	            case 0 : return true;
+	            case 1 : return false;
+	            case 2 : return false;
+	            case 3 : return true;
+	            case 4 : return true;
+	            case 5 : return true;
+	            case 6 : return true;
+	            case 7 : return true;
+	            case 8 : return true;
+	            default : return true;
+	        }
+    	}
+    	else {
+	        switch (t) {
+	            case 0 : return true;
+	            case 1 : return true;
+	            case 2 : return true;
+	            case 3 : return true;
+	            case 4 : return true;
+	            case 5 : return true;
+	            case 6 : return true;
+	            case 7 : return true;
+	            case 8 : return true;
+	            default : return true;
+	        }    		
+    	}
     }
 
 }

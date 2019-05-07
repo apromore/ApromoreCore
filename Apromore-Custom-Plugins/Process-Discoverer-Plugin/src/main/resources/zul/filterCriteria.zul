@@ -18,7 +18,7 @@
  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  -->
 
-<window id="filterCriteria" width="600px" sizable="false" maximizable="false" closable="false" position="center" contentStyle="overflow:auto">
+<window id="filterCriteria" width="600px" sizable="false" maximizable="false" closable="true" position="center" contentStyle="overflow:auto">
     <vbox>
         <listbox id="criteria" rows="5" width="100%">
             <listhead>
@@ -27,6 +27,7 @@
         </listbox>
         <div align="center">
             <button id="filterOkButton" label="Ok"></button>
+			<button id="filterCancelButton" label="Cancel"></button>
             <button id="filterCreateButton" label="Create"></button>
             <button id="filterEditButton" label="Edit"></button>
             <button id="filterMoveUpButton" label="Move Up"></button>

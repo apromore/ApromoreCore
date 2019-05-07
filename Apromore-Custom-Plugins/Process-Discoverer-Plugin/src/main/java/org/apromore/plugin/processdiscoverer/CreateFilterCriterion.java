@@ -20,8 +20,10 @@
 
 package org.apromore.plugin.processdiscoverer;
 
+import org.apromore.plugin.processdiscoverer.impl.filter.Level;
 import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterCriterionFactory;
 import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterTypeSelector;
+import org.apromore.plugin.processdiscoverer.impl.filter.Type;
 import org.apromore.plugin.processdiscoverer.impl.util.StringValues;
 import org.apromore.plugin.processdiscoverer.impl.util.TimeConverter;
 import org.zkoss.zk.ui.event.Event;
@@ -43,6 +45,7 @@ import java.util.Calendar;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
+ * Modified by Bruce Nguyen
  */
 class CreateFilterCriterion {
 
@@ -56,19 +59,27 @@ class CreateFilterCriterion {
 
     private FilterCriterionSelector filterCriterionSelector;
     private List<LogFilterCriterion> criteria;
-    private Map<String, Map<String, Integer>> options_frequency;
-    private long min;
-    private long max;
-    private int pos;
+    private Map<String, Map<String, Integer>> options_frequency; // key: filter type code, value: map{key:code value, value: count}
+    private long min; // the earliest timstamp in the log
+    private long max; // the latest timstamp in the log
+    private int pos; // the index of the Filter Criterion in the list
 
-    private List<String> attributes;
-    private ListModelList<String> modelAttribute;
-    private Listbox attribute;
+    private List<String> allFilterTypeCodes; // list of all filter type codes (standard + non-standard)
+    private List<String> allFilterTypeNames; // list of all corresponding filter type names (standard + non-standard)
+    										 // This list is needed because the values displayed on UI could be different, e.g. with quotes
+    
+    // The indexes of filter type labels displayed on UI and these lists are the same
+    // The values could be different: one is code, name and label (displayed in the list box)
+    // Some non-standard types in the list are displayed in quotes 
+    private List<String> filterTypeCodes; // valid filter type codes according to the selected level
+    private List<String> filterTypeNames; // valid filter type names according to the selected level
+    
+    private Listbox filterType;
     private Listbox value;
     private Datebox startDate;
     private Datebox endDate;
-    private Decimalbox decimalbox;
-    private Listbox timespan;
+    private Decimalbox duration;
+    private Listbox durationUnits;
 
     private Button okButton;
     private Button cancelButton;
@@ -76,10 +87,11 @@ class CreateFilterCriterion {
     public CreateFilterCriterion(String label, FilterCriterionSelector filterCriterionSelector, List<LogFilterCriterion> criteria, Map<String, Map<String, Integer>> options_frequency, long min, long max, int pos) throws IOException {
         this.label = label;
         setInputs(filterCriterionSelector, criteria, options_frequency, min, max, pos);
-        initComponents();
-        importValues();
-        addEventListeners();
-
+        initComponents(); 		// Initialize values
+        readValues(); 			// Set values based on attributes of the Filter Criterion
+        addEventListeners(); 	// Set event listeners for UI elements
+        setStatus(); 	// Set initial values for UI elements
+        
         createFilterCriterionW.doModal();
     }
 
@@ -98,12 +110,13 @@ class CreateFilterCriterion {
         this.pos = pos;
     }
 
+    // Initialize the initial values for form fields
     private void initComponents() {
         level = (Radiogroup) createFilterCriterionW.getFellow("level");
         containment = (Radiogroup) createFilterCriterionW.getFellow("containment");
         action = (Radiogroup) createFilterCriterionW.getFellow("action");
 
-        attribute = (Listbox) createFilterCriterionW.getFellow("attribute");
+        filterType = (Listbox) createFilterCriterionW.getFellow("filterType");
 
         Calendar c = Calendar.getInstance();
         c.setTime(new Date(min));
@@ -124,10 +137,10 @@ class CreateFilterCriterion {
         endDate.setValue(new Date(max));
         endDate.setDisabled(true);
 
-        decimalbox = (Decimalbox) createFilterCriterionW.getFellow("duration");
-        decimalbox.setDisabled(true);
-        timespan = (Listbox) createFilterCriterionW.getFellow("timespan");
-        timespan.setDisabled(true);
+        duration = (Decimalbox) createFilterCriterionW.getFellow("duration");
+        duration.setDisabled(true);
+        durationUnits = (Listbox) createFilterCriterionW.getFellow("durationUnits");
+        durationUnits.setDisabled(true);
 
         value = (Listbox) createFilterCriterionW.getFellow("value");
         Listheader frequency_header = (Listheader) createFilterCriterionW.getFellow("frequency_header");
@@ -140,66 +153,61 @@ class CreateFilterCriterion {
         okButton = (Button) createFilterCriterionW.getFellow("criterionOkButton");
         cancelButton = (Button) createFilterCriterionW.getFellow("criterionCancelButton");
 
-        modelAttribute = new ListModelList<>();
-
-        attributes = new ArrayList<>(options_frequency.keySet());
-        Collections.sort(attributes, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                if(LogFilterTypeSelector.getType(o1) == 0) return -1;
-                if(LogFilterTypeSelector.getType(o2) == 0) return 1;
-                if(LogFilterTypeSelector.getType(o1) == 8) return -1;
-                if(LogFilterTypeSelector.getType(o2) == 8) return 1;
-                if(LogFilterTypeSelector.getType(o1) == 7) return -1;
-                if(LogFilterTypeSelector.getType(o2) == 7) return 1;
-                if(LogFilterTypeSelector.getType(o1) == 1) return -1;
-                if(LogFilterTypeSelector.getType(o2) == 1) return 1;
-                if(LogFilterTypeSelector.getType(o1) == 2) return -1;
-                if(LogFilterTypeSelector.getType(o2) == 2) return 1;
-                if(LogFilterTypeSelector.getType(o1) == 5) return -1;
-                if(LogFilterTypeSelector.getType(o2) == 5) return 1;
-                if(LogFilterTypeSelector.getType(o1) == 4) return -1;
-                if(LogFilterTypeSelector.getType(o2) == 4) return 1;
-                if(LogFilterTypeSelector.getType(o1) == 6) return -1;
-                if(LogFilterTypeSelector.getType(o2) == 6) return 1;
-                if(LogFilterTypeSelector.getType(o1) == 3) return -1;
-                if(LogFilterTypeSelector.getType(o2) == 3) return 1;
-                return o1.compareTo(o2);
-            }
-        });
-
-        for(String option : attributes) {
-            if(LogFilterTypeSelector.getType(option) > -1) modelAttribute.add(LogFilterTypeSelector.getMatch(option));
-            else modelAttribute.add(option);
+        // Update all codes and names to be used
+        allFilterTypeCodes = new ArrayList<>(options_frequency.keySet()); // list of filterType types
+        this.sortFilterTypeCodes(allFilterTypeCodes);
+        allFilterTypeNames = new ArrayList<>();
+        for(String option : allFilterTypeCodes) {
+        	allFilterTypeNames.add(this.getFilterTypeName(option));
         }
+        
+        // Update codes and names according to the level
+        filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
+        filterTypeNames = getValidFilterTypeNames(level);
 
-        for(String option : attributes) {
-            if(LogFilterTypeSelector.getType(option) > -1) attribute.appendItem(LogFilterTypeSelector.getMatch(option), LogFilterTypeSelector.getMatch(option));
-            else attribute.appendItem("\"" + option + "\"", "\"" + option + "\"");
-        }
+        this.populateFilterTypes();
 
     }
+    
+    /*
+     * Standard filter types have labels = "filtername"
+     * Non-standard filter types have label = "filtername" (in quotes) 
+     */
+    private void populateFilterTypes() {
+    	filterType.getItems().clear();
+        for(String option : filterTypeCodes) {
+        	filterType.appendItem(getFilterTypeLabel(option), getFilterTypeLabel(option));
+        }
+    }
+    
 
-    private void importValues() {
+    // Set values on the form based on the corresponding attributes of the Filter Criterion 
+    private void readValues() {
+    	// If an existing Filter Criterion is provided, set form field values to those in the Filter Criterion 
         if(pos != -1) {
             LogFilterCriterion criterion = criteria.get(pos);
             level.setSelectedIndex(criterion.getLevel()== EVENT ? 0 : 1);
             containment.setSelectedIndex(criterion.getContainment() == CONTAIN_ANY ? 0 : 1);
             action.setSelectedIndex(criterion.getAction() == RETAIN ? 0 : 1);
+            
+            // Update codes, names and displayed labels according to the level of the current Filter Criterion
+            filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
+            filterTypeNames = getValidFilterTypeNames(level);
+            this.populateFilterTypes();
 
             String a = null;
             int attribute_index = -1;
-            for (int i = 0; i < attributes.size(); i++) {
-                if (attributes.get(i).equals(criterion.getAttribute())) {
-                    a = attributes.get(i);
+            for (int i = 0; i < filterTypeCodes.size(); i++) {
+                if (filterTypeCodes.get(i).equals(criterion.getAttribute())) {
+                    a = filterTypeCodes.get(i);
                     attribute_index = i;
                     break;
                 }
             }
             setValues(attribute_index);
-            attribute.setSelectedIndex(attribute_index);
+            filterType.setSelectedIndex(attribute_index);
 
-            if (LogFilterTypeSelector.getType(a) == 8) {
+            if (LogFilterTypeSelector.getType(a) == Type.TIME_TIMESTAMP) {
                 Long start = null;
                 Long end = null;
                 for (String v : criterion.getValue()) {
@@ -212,16 +220,16 @@ class CreateFilterCriterion {
 
                 endDate.setValue(new Date(end));
                 endDate.setDisabled(false);
-            }else if (LogFilterTypeSelector.getType(a) == 7) {
+            }else if (LogFilterTypeSelector.getType(a) == Type.TIME_DURATION) {
                 Double d = null;
                 for (String v : criterion.getValue()) {
                     if (v.startsWith(">")) d = Double.parseDouble(v.substring(1));
                 }
                 String[] p = TimeConverter.parseDuration(d);
-                decimalbox.setValue(p[0]);
-                decimalbox.setDisabled(false);
-                timespan.setSelectedIndex(Integer.parseInt(p[1]));
-                timespan.setDisabled(false);
+                duration.setValue(p[0]);
+                duration.setDisabled(false);
+                durationUnits.setSelectedIndex(Integer.parseInt(p[1]));
+                durationUnits.setDisabled(false);
             }else {
                 for(Listitem listitem : value.getItems()) {
                     if(criterion.getValue().contains(listitem.getLabel())) listitem.setSelected(true);
@@ -230,63 +238,103 @@ class CreateFilterCriterion {
         }
     }
 
-    private void setFunctionalities() {
-        if(level.getSelectedIndex() == 0) {
-            if(attribute.getSelectedIndex() > 0) {
-                if(LogFilterTypeSelector.getType(attributes.get(attribute.getSelectedIndex())) > -1) {
-                    okButton.setDisabled(true);
-                } else {
-                    okButton.setDisabled(false);
-                }
+    private void setStatus() {
+        if(level.getSelectedIndex() == 0) { // Event Level
+            if(filterType.getSelectedIndex() >= 0) {
+//                if(LogFilterTypeSelector.getType(filterTypeCodes.get(filterType.getSelectedIndex())) > -1) { // predefined type
+//                    okButton.setDisabled(true);
+//                } else { // not predefined type
+//                    okButton.setDisabled(false);
+//                }
+            	okButton.setDisabled(value.getItems().size() == 0);
             }
+            else {
+            	okButton.setDisabled(true);
+            }
+            
             for(Radio radio : containment.getItems()) {
                 radio.setDisabled(true);
             }
-        }else {
-            okButton.setDisabled(false);
-
-            if(attribute.getSelectedIndex() > 0) {
-                if(LogFilterTypeSelector.getType(attributes.get(attribute.getSelectedIndex())) > -1) {
-                    for (Radio radio : containment.getItems()) {
-                        radio.setDisabled(true);
-                    }
-                }
-            }else {
+        }else { //Trace Level
+            //okButton.setDisabled(false);
+        	
+            if(filterType.getSelectedIndex() >= 0) {                
+            	boolean eventInvalid = !LogFilterTypeSelector.checkLevelValidity(filterTypeCodes.get(filterType.getSelectedIndex()), Level.EVENT);
                 for (Radio radio : containment.getItems()) {
-                    radio.setDisabled(false);
+                    radio.setDisabled(eventInvalid);
                 }
+                okButton.setDisabled(value.getItems().size() == 0);
+            }else {
+//                for (Radio radio : containment.getItems()) {
+//                    radio.setDisabled(false);
+//                }
+            	okButton.setDisabled(true);
             }
         }
+        
     }
 
     private void addEventListeners() {
         level.addEventListener("onCheck", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) {
-                setFunctionalities();
+            	if (filterType.getSelectedIndex() >= 0) {
+            		String currentLabel = filterType.getSelectedItem().getLabel();
+                	String currentFilterType = filterTypeCodes.get(filterType.getSelectedIndex());
+                	
+                	filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
+                	filterTypeNames = getValidFilterTypeNames(level);
+            		populateFilterTypes(); // filterType is updated
+            		
+	            	if (isLevelValid(currentFilterType, level)) {
+	            		int selectedIndex = -1;
+	            		for (Listitem item : filterType.getItems()) {
+	            			if (item.getLabel().equals(currentLabel)) {
+	            				selectedIndex = item.getIndex();
+	            				break;
+	            			}
+	            		}
+	            		if (selectedIndex >= 0) {
+	            			filterType.setSelectedIndex(selectedIndex);
+	            		}
+	            		else {
+	            			value.getItems().clear();
+	            		}
+	            	}
+	            	else {
+	            		value.getItems().clear();
+	            	}
+            	}
+            	else {
+            		filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
+                	filterTypeNames = getValidFilterTypeNames(level);
+            		populateFilterTypes();
+            	}
+                setStatus();
             }
         });
 
-        attribute.addEventListener("onSelect", new EventListener<Event>() {
+        filterType.addEventListener("onSelect", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) {
-                setFunctionalities();
-                CreateFilterCriterion.this.setValues(attribute.getSelectedIndex());
+            	CreateFilterCriterion.this.setValues(filterType.getSelectedIndex());
+                setStatus();
             }
         });
 
         okButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 Set<String> set = new HashSet<>();
-                String option = modelAttribute.get(attribute.getSelectedIndex());
-                if(LogFilterTypeSelector.getName(option) > -1) option = LogFilterTypeSelector.getReverseMatch(option);
+                String option = filterTypeCodes.get(filterType.getSelectedIndex());
+                //String option = filterTypeNames.get(filterType.getSelectedIndex());
+                //if(LogFilterTypeSelector.getName(option) > -1) option = LogFilterTypeSelector.getReverseMatch(option);
 
-                if(LogFilterTypeSelector.getType(option) == 8) {
+                if(LogFilterTypeSelector.getType(option) == Type.TIME_TIMESTAMP) {
                     set.add(">" + startDate.getValue().getTime());
                     set.add("<" + endDate.getValue().getTime());
-                }else if(LogFilterTypeSelector.getType(option) == 7) {
-                    String span = timespan.getSelectedItem().getLabel();
-                    Double d = decimalbox.getValue().doubleValue();
+                }else if(LogFilterTypeSelector.getType(option) == Type.TIME_DURATION) {
+                    String span = durationUnits.getSelectedItem().getLabel();
+                    Double d = duration.getValue().doubleValue();
 
                     double seconds = 1000.0;
                     double minutes = seconds * 60.0;
@@ -310,6 +358,7 @@ class CreateFilterCriterion {
                         set.add(((Listcell) listItem.getFirstChild()).getLabel());
                     }
                 }
+                
                 if (set.size() > 0) {
                     LogFilterCriterion criterion = LogFilterCriterionFactory.getLogFilterCriterion(
                             action.getSelectedIndex() == 0 ? RETAIN : REMOVE,
@@ -336,39 +385,44 @@ class CreateFilterCriterion {
         });
     }
 
+    /**
+     * Set value or populate values to fields/list on the form 
+     * @param index: the index of the selected filter type in filterTypeCodes 
+     */
     private void setValues(int index) {
-        ListModelList<String> modelValue = new ListModelList<>();
-        String option = modelAttribute.get(index);
+        String option = filterTypeNames.get(index); //option is the label of the selected filter type code 
 
         if(option.equals("Time-frame")) {
-            value.setModel(modelValue);
+            //value.setModel(modelValue);
+        	value.getItems().clear();
             startDate.setDisabled(false);
             endDate.setDisabled(false);
-            decimalbox.setDisabled(true);
-            timespan.setDisabled(true);
+            duration.setDisabled(true);
+            durationUnits.setDisabled(true);
         }else if(option.equals("Duration")) {
-            value.setModel(modelValue);
+            // value.setModel(modelValue);
+        	value.getItems().clear();
             startDate.setDisabled(true);
             endDate.setDisabled(true);
-            decimalbox.setDisabled(false);
-            timespan.setDisabled(false);
-        }else {
+            duration.setDisabled(false);
+            durationUnits.setDisabled(false);
+        }else {       	
             startDate.setDisabled(true);
             endDate.setDisabled(true);
-            decimalbox.setDisabled(true);
-            timespan.setDisabled(true);
+            duration.setDisabled(true);
+            durationUnits.setDisabled(true);
 
             Collection<String> set;
-            String coded_option;
+            String coded_option; // the filter type corresponding to option 
             if(LogFilterTypeSelector.getName(option) > -1) coded_option = LogFilterTypeSelector.getReverseMatch(option);
             else coded_option = option;
 
-            set = options_frequency.get(coded_option).keySet();
+            set = options_frequency.get(coded_option).keySet(); // list of values
 
             value.getItems().clear();
             double total = 0;
             for (String option_value : set) {
-                total += options_frequency.get(coded_option).get(option_value);
+                total += options_frequency.get(coded_option).get(option_value); // calculate total frequency
             }
 
             for (String option_value : set) {
@@ -381,11 +435,96 @@ class CreateFilterCriterion {
                 listitem.appendChild(listcell2);
                 listitem.appendChild(listcell3);
                 value.appendChild(listitem);
+                //modelValue.add(listitem);
             }
             value.setCheckmark(true);
             value.setMultiple(true);
+            //value.selectAll();
+            //modelValue.setMultiple(true);
 
         }
     }
-
+    
+    private Level getLevel(Radiogroup level) {
+    	return level.getSelectedIndex() == 0 ? Level.EVENT : Level.TRACE;
+    }
+    
+    private boolean isStandard(String filterType) {
+    	return (LogFilterTypeSelector.getType(filterType) != Type.UNKNOWN);
+    }
+    
+    private boolean isLevelValid(String filterType, Radiogroup level) {
+    	return LogFilterTypeSelector.checkLevelValidity(filterType, getLevel(level));
+    }
+    
+    private List<String> getValidFilterTypeCodes(List<String> types, Radiogroup level) {
+    	List<String> selection = new ArrayList<>();
+    	for (String code : types) {
+    		if (isLevelValid(code, level)) selection.add(code);
+    	}
+    	return selection;
+    }
+    
+    private String getFilterTypeName(String type) {
+    	if(isStandard(type)) {
+        	return LogFilterTypeSelector.getMatch(type);
+        }
+        else {
+        	return type;
+        }
+    }
+   
+    private List<String> getValidFilterTypeNames(Radiogroup level) {
+    	List<String> labels = new ArrayList<>();
+        for(String option : this.getValidFilterTypeCodes(allFilterTypeCodes, level)) {
+            labels.add(this.getFilterTypeName(option));
+        }
+        return labels;
+    }
+    
+    private void sortFilterTypeCodes(List<String> codes) {
+        Collections.sort(codes, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                if(LogFilterTypeSelector.getType(o1) == Type.CONCEPT_NAME) return -1;
+                if(LogFilterTypeSelector.getType(o2) == Type.CONCEPT_NAME) return 1;
+                
+                if(LogFilterTypeSelector.getType(o1) == Type.TIME_TIMESTAMP) return -1;
+                if(LogFilterTypeSelector.getType(o2) == Type.TIME_TIMESTAMP) return 1;
+                
+                if(LogFilterTypeSelector.getType(o1) == Type.TIME_DURATION) return -1;
+                if(LogFilterTypeSelector.getType(o2) == Type.TIME_DURATION) return 1;
+                
+                if(LogFilterTypeSelector.getType(o1) == Type.DIRECT_FOLLOW) return -1;
+                if(LogFilterTypeSelector.getType(o2) == Type.DIRECT_FOLLOW) return 1;
+                
+                if(LogFilterTypeSelector.getType(o1) == Type.EVENTUAL_FOLLOW) return -1;
+                if(LogFilterTypeSelector.getType(o2) == Type.EVENTUAL_FOLLOW) return 1;
+                
+                if(LogFilterTypeSelector.getType(o1) == Type.ORG_RESOURCE) return -1;
+                if(LogFilterTypeSelector.getType(o2) == Type.ORG_RESOURCE) return 1;
+                
+                if(LogFilterTypeSelector.getType(o1) == Type.ORG_GROUP) return -1;
+                if(LogFilterTypeSelector.getType(o2) == Type.ORG_GROUP) return 1;
+                
+                if(LogFilterTypeSelector.getType(o1) == Type.ORG_ROLE) return -1;
+                if(LogFilterTypeSelector.getType(o2) == Type.ORG_ROLE) return 1;
+                
+                if(LogFilterTypeSelector.getType(o1) == Type.LIFECYCLE_TRANSITION) return -1;
+                if(LogFilterTypeSelector.getType(o2) == Type.LIFECYCLE_TRANSITION) return 1;
+                return o1.compareTo(o2);
+            }
+        });
+    }
+    
+    //Note: non-standard type has its label displayed in quotes ("").
+    private String getFilterTypeLabel(String type) {
+        if(isStandard(type)) { 
+        	return LogFilterTypeSelector.getMatch(type);
+        }
+        else { 
+        	return "\"" + type + "\"";
+        }
+    }
+   
 }

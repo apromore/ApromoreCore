@@ -30,17 +30,19 @@ import java.util.Set;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
+ * Modified by Bruce Nguyen
  */
 public interface LogFilterCriterion {
 
-    Level getLevel();
-    Containment getContainment();
-    Action getAction();
-
-    String getAttribute();
-
+	Action getAction(); // retain or remove events or traces
+    Level getLevel(); //traces or events
+    Containment getContainment(); // only applicable to trace level, meaning contain any/all events that
+    String getAttribute(); // event attribute whose values fall within values
+    Set<String> getValue(); // values of event attributes
+    String getLabel(); // the label used for each task node on the process map
+    
     boolean isToRemove(XTrace trace);
     boolean isToRemove(XEvent event);
 
-    Set<String> getValue();
+    
 }

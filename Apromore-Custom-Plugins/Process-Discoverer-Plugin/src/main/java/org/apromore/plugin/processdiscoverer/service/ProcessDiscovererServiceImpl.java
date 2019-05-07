@@ -86,5 +86,11 @@ public class ProcessDiscovererServiceImpl extends DefaultParameterAwarePlugin im
         ProcessDiscovererImpl processDiscoverer = new ProcessDiscovererImpl(log);
         return processDiscoverer.generateFilteredFittedLog(attribute, activities, arcs, preserve_connectivity, inverted_nodes, inverted_arcs, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, filter_criteria, searchStrategy);
     }
+    
+    @Override
+    public XLog filterUsingCriteria(XLog log, List<LogFilterCriterion> criteria) {
+    	ProcessDiscovererImpl processDiscoverer = new ProcessDiscovererImpl(log);
+    	return processDiscoverer.filterUsingCriteria(log, criteria);
+    }
 
 }
