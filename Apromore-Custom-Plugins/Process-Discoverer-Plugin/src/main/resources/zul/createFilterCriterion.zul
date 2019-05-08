@@ -53,7 +53,7 @@
         <grid>
             <rows>
                 <row>
-                    Type of filter <listbox id="attribute" rows="1" mold="select"></listbox>
+                    Type of filter <listbox id="filterType" rows="1" mold="select"></listbox>
                 </row>
             </rows>
         </grid>
@@ -75,7 +75,7 @@
                 <row>
                     Duration greater than:
                     <decimalbox id="duration" format="###.##" value="0.00" width="100px" />
-                    <listbox id="timespan" rows="1" mold="select">
+                    <listbox id="durationUnits" rows="1" mold="select">
                         <listitem label="Years" />
                         <listitem label="Months" />
                         <listitem label="Weeks" />

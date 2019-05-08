@@ -21,13 +21,16 @@
 package org.apromore.plugin.processdiscoverer;
 
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterCriterionFactory;
 import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterTypeSelector;
 import org.apromore.plugin.processdiscoverer.impl.util.StringValues;
+import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import java.io.IOException;
@@ -39,6 +42,7 @@ import java.util.Map;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
+ * Modified by Bruce Nguyen
  */
 class FilterCriterionSelector {
 
@@ -51,9 +55,9 @@ class FilterCriterionSelector {
     private Window filterSelectorW;
     private Listbox criteriaList;
 
-    public FilterCriterionSelector(String label, ProcessDiscovererController processDiscovererController, List<LogFilterCriterion> criteria, Map<String, Map<String, Integer>> options_frequency, long min, long max) throws IOException {
+    public FilterCriterionSelector(String label, ProcessDiscovererController processDiscovererController, List<LogFilterCriterion> originalCriteria, Map<String, Map<String, Integer>> options_frequency, long min, long max) throws IOException {
         this.processDiscovererController = processDiscovererController;
-        this.criteria = criteria;
+        this.criteria = LogFilterCriterionFactory.copyFilterCriterionList(originalCriteria);
 
         portalContext = processDiscovererController.portalContext;
 
@@ -64,6 +68,7 @@ class FilterCriterionSelector {
         updateList();
 
         Button okButton = (Button) filterSelectorW.getFellow("filterOkButton");
+        Button cancelButton = (Button) filterSelectorW.getFellow("filterCancelButton");
         Button createButton = (Button) filterSelectorW.getFellow("filterCreateButton");
         Button editButton = (Button) filterSelectorW.getFellow("filterEditButton");
         Button moveUpButton = (Button) filterSelectorW.getFellow("filterMoveUpButton");
@@ -76,6 +81,11 @@ class FilterCriterionSelector {
                 save();
             }
         });
+        cancelButton.addEventListener("onClick", new EventListener<Event>() {
+            public void onEvent(Event event) throws InterruptedException {
+            	filterSelectorW.detach();
+            }
+        });        
         createButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 new CreateFilterCriterion(label, FilterCriterionSelector.this, criteria, options_frequency, min, max);
@@ -129,16 +139,23 @@ class FilterCriterionSelector {
     }
 
     private void save() throws InterruptedException {
-        filterSelectorW.detach();
-        processDiscovererController.refreshCriteria();
+    	XLog filteredLog = processDiscovererController.getService().filterUsingCriteria(processDiscovererController.getOriginalLog(), criteria);
+    	if (filteredLog.isEmpty()) {
+    		Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.");
+    	}
+    	else {
+	        filterSelectorW.detach();
+	        processDiscovererController.setCriteria(criteria);
+	        processDiscovererController.refreshCriteria();
+    	}
     }
 
     public void updateList() {
         ListModelList<String> model = new ListModelList<>();
         for(LogFilterCriterion criterion : criteria) {
             String label = criterion.toString();
-            for(int i = 0; i < LogFilterTypeSelector.type.length; i++) {
-                label = label.replaceAll(LogFilterTypeSelector.type[i], LogFilterTypeSelector.getMatch(LogFilterTypeSelector.type[i]));
+            for(String type: LogFilterTypeSelector.getTypes()) {
+                label = label.replaceAll(type, LogFilterTypeSelector.getMatch(type));
             }
 
             if(label.contains("Time-frame")) {

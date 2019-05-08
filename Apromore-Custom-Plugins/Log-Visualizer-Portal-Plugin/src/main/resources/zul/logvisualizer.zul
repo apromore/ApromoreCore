@@ -21,7 +21,7 @@
 <?component name="menuitem" extends="menuitem" autocheck="true" checkmark="true" ?>
 <window id="win" width="100%" height="100%" sizable="true" maximizable="true" closable="true" position="center" title="Log Visualizer" contentStyle="overflow:auto">
     <caption sclass="mainCaption">
-        <a href="http://apromore.org/platform/features/discover-process-map" target="_blank" sclass="captionButtons">
+        <a href="https://apromore.org/documentation/features/discover-process-map" target="_blank" sclass="captionButtons">
             <button label="Help" image="img/Help-16x16.png" style="float: right;" height="25px"></button>
         </a>
     </caption>

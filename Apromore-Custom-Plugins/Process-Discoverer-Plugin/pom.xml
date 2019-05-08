@@ -60,7 +60,10 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.plugin.processdiscoverer, org.apromore.plugin.processdiscoverer.service
+                            org.apromore.plugin.processdiscoverer, 
+							org.apromore.plugin.processdiscoverer.service,
+							org.apromore.plugin.processdiscoverer.impl.filter, 
+							org.apromore.plugin.processdiscoverer.impl
                         </Export-Package>
                     </instructions>
                 </configuration>

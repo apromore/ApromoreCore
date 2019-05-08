@@ -20,6 +20,9 @@
 
 package org.apromore.plugin.processdiscoverer.impl.filter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apromore.plugin.processdiscoverer.LogFilterCriterion;
@@ -32,15 +35,32 @@ public class LogFilterCriterionFactory {
 
     public static LogFilterCriterion getLogFilterCriterion(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
         switch (LogFilterTypeSelector.getType(attribute)) {
-            case 1:
+            case DIRECT_FOLLOW:
                 return new LogFilterCriterionDirectFollow(action, containment, level, label, attribute, value);
-            case 2:
+            case EVENTUAL_FOLLOW:
                 return new LogFilterCriterionEventuallyFollow(action, containment, level, label, attribute, value);
-            case 7:
+            case TIME_DURATION:
                 return new LogFilterCriterionDuration(action, containment, level, label, attribute, value);
             default:
                 return new LogFilterCriterionAttribute(action, containment, level, label, attribute, value);
         }
+    }
+    
+    public static LogFilterCriterion copyFilterCriterion(LogFilterCriterion criterion) {
+    	return LogFilterCriterionFactory.getLogFilterCriterion(criterion.getAction(), 
+    															criterion.getContainment(), 
+    															criterion.getLevel(), 
+    															criterion.getLabel(), 
+    															criterion.getAttribute(), 
+    															new HashSet<>(criterion.getValue()));
+    }
+    
+    public static List<LogFilterCriterion> copyFilterCriterionList(List<LogFilterCriterion> list) {
+    	List<LogFilterCriterion> newList = new ArrayList<>();
+    	for (LogFilterCriterion c : list) {
+    		newList.add(LogFilterCriterionFactory.copyFilterCriterion(c));
+    	}
+    	return newList;
     }
 
 }

@@ -36,9 +36,9 @@ public abstract class LogFilterCriterionImpl implements LogFilterCriterion {
 
     protected final String timestamp_code = StringValues.b[122];
 
-    protected final String label;
-    protected final String attribute;
-    protected final Set<String> value;
+    protected final String label; // the current event attribute key used to label task nodes in the process map, NOT USED at the moment
+    protected final String attribute; //attribute name of trace or event
+    protected final Set<String> value; // set of attribute values
     private final Action action;
     protected final Containment containment;
     protected final Level level;
@@ -77,6 +77,11 @@ public abstract class LogFilterCriterionImpl implements LogFilterCriterion {
     @Override
     public Set<String> getValue() {
         return value;
+    }
+    
+    @Override
+    public String getLabel() {
+        return label;
     }
 
     @Override
