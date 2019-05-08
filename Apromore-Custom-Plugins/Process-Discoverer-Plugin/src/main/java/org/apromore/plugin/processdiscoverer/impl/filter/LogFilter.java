@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Bruce: add comments
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  */
 public class LogFilter {
@@ -40,30 +41,33 @@ public class LogFilter {
     public static XLog filter(XLog log, List<LogFilterCriterion> criteria) {
         log = cloneLog(log);
         Iterator<XTrace> traceIterator = log.iterator();
-        while (traceIterator.hasNext()) {
+        while (traceIterator.hasNext()) { // Object order OO
             XTrace trace = traceIterator.next();
             if(criteria != null) {
-                for (int i = 0; i < criteria.size(); i++) {
+                for (int i = 0; i < criteria.size(); i++) { // Criterion order OC
                     LogFilterCriterion criterion = criteria.get(i);
                     if (criterion.getLevel() == Level.TRACE) {
-                        if(criterion.isToRemove(trace)) {
+                        if(criterion.isToRemove(trace)) { //matching & action
                             traceIterator.remove();
                             break;
                         }
-                    } else {
-                        Iterator<XEvent> eventIterator = trace.iterator();
+                    } else { //down-level shift
+                        Iterator<XEvent> eventIterator = trace.iterator(); //Object order OO
                         while (eventIterator.hasNext()) {
                             XEvent event = eventIterator.next();
-                            for (int j = i; j < criteria.size(); j++) {
+                            for (int j = i; j < criteria.size(); j++) {  // Criterion order OC
                                 LogFilterCriterion criterion1 = criteria.get(j);
-                                if (criterion1.getLevel() == Level.TRACE) break;
-                                if (criterion1.isToRemove(event)) {
+                                if (criterion1.getLevel() == Level.TRACE) break; // up-level shift
+                                if (criterion1.isToRemove(event)) { //matching & action
                                     eventIterator.remove();
                                     break;
                                 }
                             }
                         }
-                        if(trace.size() == 0) traceIterator.remove();
+                        if(trace.size() == 0) {
+                        	traceIterator.remove();
+                        	break; //Bruce added 
+                        }
                     }
                 }
             }

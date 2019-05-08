@@ -83,7 +83,7 @@ public class ProcessDiscovererImpl {
     private XEventAttributeClassifier full_classifier;
     private boolean contain_start_events = false;
 
-    private HashBiMap<String, Integer> simplified_names;
+    private HashBiMap<String, Integer> simplified_names; // key: event classifier value, value: assigned number of that value
 
     private int number_of_traces;
 
@@ -107,11 +107,16 @@ public class ProcessDiscovererImpl {
     private List<IntList> filtered_log; //simplified log whose every trace is a list of integer which is mapped to the corresponding classifier value
     private List<LogFilterCriterion> criteria;
 
-    private final Object lifecycle_code = (new Object() {int t;public String toString() {byte[] buf = new byte[20];t = -891739962;buf[0] = (byte) (t >>> 17);t = 1043636064;buf[1] = (byte) (t >>> 15);t = 1943634654;buf[2] = (byte) (t >>> 14);t = 1823700692;buf[3] = (byte) (t >>> 21);t = -1205771425;buf[4] = (byte) (t >>> 8);t = -1734402470;buf[5] = (byte) (t >>> 6);t = 2100103963;buf[6] = (byte) (t >>> 3);t = -211356526;buf[7] = (byte) (t >>> 19);t = -1161135539;buf[8] = (byte) (t >>> 17);t = 1109978022;buf[9] = (byte) (t >>> 10);t = -631130671;buf[10] = (byte) (t >>> 2);t = 216333505;buf[11] = (byte) (t >>> 17);t = -1739476219;buf[12] = (byte) (t >>> 22);t = -1222462014;buf[13] = (byte) (t >>> 23);t = 802175484;buf[14] = (byte) (t >>> 7);t = 443553837;buf[15] = (byte) (t >>> 22);t = 831995923;buf[16] = (byte) (t >>> 12);t = 1779248225;buf[17] = (byte) (t >>> 13);t = 1874984005;buf[18] = (byte) (t >>> 24);t = 1169925136;buf[19] = (byte) (t >>> 18);return new String(buf);}});
-    private final Object complete_code = (new Object() {int t;public String toString() {byte[] buf = new byte[8];t = -864574777;buf[0] = (byte) (t >>> 1);t = -1679356029;buf[1] = (byte) (t >>> 22);t = 225259829;buf[2] = (byte) (t >>> 16);t = 1524684545;buf[3] = (byte) (t >>> 17);t = -1151070110;buf[4] = (byte) (t >>> 19);t = 1837853879;buf[5] = (byte) (t >>> 5);t = -555099091;buf[6] = (byte) (t >>> 17);t = 686214019;buf[7] = (byte) (t >>> 9);return new String(buf);}});
-    private final Object start_code = (new Object() {int t;public String toString() {byte[] buf = new byte[5];t = -865016106;buf[0] = (byte) (t >>> 9);t = -712084360;buf[1] = (byte) (t >>> 8);t = -1612237285;buf[2] = (byte) (t >>> 4);t = 576207150;buf[3] = (byte) (t >>> 7);t = 402814201;buf[4] = (byte) (t >>> 8);return new String(buf);}});
-    private final Object plus_complete_code = (new Object() {int t;public String toString() {byte[] buf = new byte[9];t = -865052970;buf[0] = (byte) (t >>> 9);t = -712088712;buf[1] = (byte) (t >>> 8);t = -1612237061;buf[2] = (byte) (t >>> 4);t = 576206510;buf[3] = (byte) (t >>> 7);t = 402813177;buf[4] = (byte) (t >>> 8);t = 432969432;buf[5] = (byte) (t >>> 1);t = 1922143684;buf[6] = (byte) (t >>> 10);t = 979594504;buf[7] = (byte) (t >>> 23);t = -647776980;buf[8] = (byte) (t >>> 22);return new String(buf);}});
-    private final Object plus_start_code = (new Object() {int t;public String toString() {byte[] buf = new byte[6];t = -866688612;buf[0] = (byte) (t >>> 17);t = 1398311833;buf[1] = (byte) (t >>> 3);t = -370552023;buf[2] = (byte) (t >>> 10);t = -1332882267;buf[3] = (byte) (t >>> 23);t = -85601998;buf[4] = (byte) (t >>> 17);t = 354225481;buf[5] = (byte) (t >>> 14);return new String(buf);}});
+    //private final Object lifecycle_code = (new Object() {int t;public String toString() {byte[] buf = new byte[20];t = -891739962;buf[0] = (byte) (t >>> 17);t = 1043636064;buf[1] = (byte) (t >>> 15);t = 1943634654;buf[2] = (byte) (t >>> 14);t = 1823700692;buf[3] = (byte) (t >>> 21);t = -1205771425;buf[4] = (byte) (t >>> 8);t = -1734402470;buf[5] = (byte) (t >>> 6);t = 2100103963;buf[6] = (byte) (t >>> 3);t = -211356526;buf[7] = (byte) (t >>> 19);t = -1161135539;buf[8] = (byte) (t >>> 17);t = 1109978022;buf[9] = (byte) (t >>> 10);t = -631130671;buf[10] = (byte) (t >>> 2);t = 216333505;buf[11] = (byte) (t >>> 17);t = -1739476219;buf[12] = (byte) (t >>> 22);t = -1222462014;buf[13] = (byte) (t >>> 23);t = 802175484;buf[14] = (byte) (t >>> 7);t = 443553837;buf[15] = (byte) (t >>> 22);t = 831995923;buf[16] = (byte) (t >>> 12);t = 1779248225;buf[17] = (byte) (t >>> 13);t = 1874984005;buf[18] = (byte) (t >>> 24);t = 1169925136;buf[19] = (byte) (t >>> 18);return new String(buf);}});
+    private final Object lifecycle_code = "lifecycle:transition";
+    //private final Object complete_code = (new Object() {int t;public String toString() {byte[] buf = new byte[8];t = -864574777;buf[0] = (byte) (t >>> 1);t = -1679356029;buf[1] = (byte) (t >>> 22);t = 225259829;buf[2] = (byte) (t >>> 16);t = 1524684545;buf[3] = (byte) (t >>> 17);t = -1151070110;buf[4] = (byte) (t >>> 19);t = 1837853879;buf[5] = (byte) (t >>> 5);t = -555099091;buf[6] = (byte) (t >>> 17);t = 686214019;buf[7] = (byte) (t >>> 9);return new String(buf);}});
+    private final Object complete_code = "complete";
+    //private final Object start_code = (new Object() {int t;public String toString() {byte[] buf = new byte[5];t = -865016106;buf[0] = (byte) (t >>> 9);t = -712084360;buf[1] = (byte) (t >>> 8);t = -1612237285;buf[2] = (byte) (t >>> 4);t = 576207150;buf[3] = (byte) (t >>> 7);t = 402814201;buf[4] = (byte) (t >>> 8);return new String(buf);}});
+    private final Object start_code = "start";
+    //private final Object plus_complete_code = (new Object() {int t;public String toString() {byte[] buf = new byte[9];t = -865052970;buf[0] = (byte) (t >>> 9);t = -712088712;buf[1] = (byte) (t >>> 8);t = -1612237061;buf[2] = (byte) (t >>> 4);t = 576206510;buf[3] = (byte) (t >>> 7);t = 402813177;buf[4] = (byte) (t >>> 8);t = 432969432;buf[5] = (byte) (t >>> 1);t = 1922143684;buf[6] = (byte) (t >>> 10);t = 979594504;buf[7] = (byte) (t >>> 23);t = -647776980;buf[8] = (byte) (t >>> 22);return new String(buf);}});
+    private final Object plus_complete_code = "+complete";
+    //private final Object plus_start_code = (new Object() {int t;public String toString() {byte[] buf = new byte[6];t = -866688612;buf[0] = (byte) (t >>> 17);t = 1398311833;buf[1] = (byte) (t >>> 3);t = -370552023;buf[2] = (byte) (t >>> 10);t = -1332882267;buf[3] = (byte) (t >>> 23);t = -85601998;buf[4] = (byte) (t >>> 17);t = 354225481;buf[5] = (byte) (t >>> 14);return new String(buf);}});
+    private final Object plus_start_code = "+start";
 
     public ProcessDiscovererImpl(XLog initial_log) {
         this.initial_log = initial_log;
@@ -166,9 +171,16 @@ public class ProcessDiscovererImpl {
         try {
             reinitialize = true;
             XLog filtered = generateFilteredLog(attribute, activities, inverted_nodes, inverted_arcs, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, filter_criteria);
-            generateFilteredLog(attribute, activities, inverted_nodes, inverted_arcs, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, filter_criteria);
+            //generateFilteredLog(attribute, activities, inverted_nodes, inverted_arcs, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, filter_criteria);
             reinitialize = false;
-            Set<String> transitions = new UnifiedSet<>();
+            
+            //--------------------------------------------------
+            // Detect if both start and complete events exist in the log
+            // If so, filter the log to select only complete events
+            // This is necessary because process model discovery algorithms usually only
+            // work on one type of events for the same activity.
+            //--------------------------------------------------
+            Set<String> transitions = new UnifiedSet<>(); // size > 1 if the log contains both start and end events
             String complete = null;
             String start = null;
             for (XTrace trace : filtered) {
@@ -198,6 +210,13 @@ public class ProcessDiscovererImpl {
             SplitMiner splitMiner = new SplitMiner();
             SimpleLog simpleLog = LogParser.getSimpleLog(filtered, new XEventAttributeClassifier(attribute, attribute));
             BPMNDiagram bpmnDiagram = splitMiner.mineBPMNModel(simpleLog, new DFGPWithLogThreshold(simpleLog, arcs, parallelism, prioritize_parallelism, preserve_connectivity, inverted_arcs), SplitMinerUIResult.StructuringTime.NONE);
+            
+            //----------------------------------------------------
+            // The arcs on the BPMN diagram created by a process discovery algorithm
+            // must be checked against the arcs collected in ArcInfoCollector
+            // Only arcs that exist in ArcInfoCollector are kept
+            // NOTE: this may turn the BPMN diagram UNSOUND
+            //----------------------------------------------------
             BPMNDiagramBuilder diagramBuilder = new BPMNDiagramBuilder(arcInfoCollector);
             Map<BPMNNode, BPMNNode> map = new UnifiedMap<>();
             for (BPMNNode node : bpmnDiagram.getNodes()) {
@@ -206,6 +225,13 @@ public class ProcessDiscovererImpl {
             for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
                 BPMNNode source = map.get(edge.getSource());
                 BPMNNode target = map.get(edge.getTarget());
+                //--------------------------------------
+                // Search for all directly-follows relations between source and target
+                // Each directly-follows relation is called a "connecting arc" which
+                // are stored in ArcInfoCollector. Given that source and target can be gateways,
+                // connecting arcs are used to compute the total directly-follows count 
+                // between source and target.
+                //--------------------------------------
                 Set<BPMNNode> sources = getSources(bpmnDiagram, edge.getSource(), new UnifiedSet<>());
                 Set<BPMNNode> targets = getTargets(bpmnDiagram, edge.getTarget(), new UnifiedSet<>());
                 Set<Arc> connecting_arcs = new UnifiedSet<>();
@@ -218,7 +244,7 @@ public class ProcessDiscovererImpl {
                         Arc arc = new Arc(source_int, target_int);
                         if (source_int != null && target_int != null && arcInfoCollector.exists(arc))
                             connecting_arcs.add(arc);
-                        if (transitions.size() > 1) {
+                        if (transitions.size() > 1) { //if both start and complete events exist in the log
                             source_int = simplified_names.get(s_m.getLabel() + ((s_m instanceof Activity) ? plus_complete_code.toString() : ""));
                             target_int = simplified_names.get(t_m.getLabel() + ((t_m instanceof Activity) ? plus_start_code.toString() : ""));
                             if (source_int != null && target_int != null) {
@@ -240,6 +266,15 @@ public class ProcessDiscovererImpl {
         return null;
     }
 
+    /**
+     * Return all activity/end event nodes that a given node connects to
+     * The path from the given node to these target nodes can contain gateways
+     * If the given node is an activity node, return itself 
+     * @param diagram
+     * @param node
+     * @param visited
+     * @return
+     */
     private Set<BPMNNode> getTargets(BPMNDiagram diagram, BPMNNode node, Set<BPMNNode> visited) {
         Set<BPMNNode> nodes = new UnifiedSet<>();
         if(node instanceof Activity || node instanceof Event) {
@@ -260,6 +295,15 @@ public class ProcessDiscovererImpl {
         return nodes;
     }
 
+    /**
+     * Return all activity/start event nodes that connect to a given node.
+     * The path from these source nodes to the given node can contain gateways
+     * If the given node is an activity node, return itself 
+     * @param diagram
+     * @param node: the given node 
+     * @param visited
+     * @return
+     */
     private Set<BPMNNode> getSources(BPMNDiagram diagram, BPMNNode node, Set<BPMNNode> visited) {
         Set<BPMNNode> nodes = new UnifiedSet<>();
         if(node instanceof Activity || node instanceof Event) {
@@ -290,6 +334,7 @@ public class ProcessDiscovererImpl {
         return null;
     }
 
+    // Note: the original log is filtered by user-defined log filter criteria
     private void prepareLogForInitialization(String attribute, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria) {
         if(reinitialize || this.type != primaryType || this.aggregation != primaryAggregation || !this.criteria.equals(criteria)) {
             XLog log = filterUsingCriteria(initial_log, criteria);
@@ -299,6 +344,7 @@ public class ProcessDiscovererImpl {
         }
     }
 
+    // First, the original log is filtered by user-defined log filter criteria
     // Create simplified log whose every trace is a list of integer, each integer is mapped to the corresponding classifier value
     // Example trace: 13456777882 (1 and 2 are used to mark the start and end of the trace)
     private List<IntList> initialization(String attribute, double activities, boolean inverted_nodes, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria) {
@@ -313,16 +359,30 @@ public class ProcessDiscovererImpl {
         return this.filtered_log;
     }
 
+    // Step 1: filter the original XLog by log filter criteria
+    // Step 2: convert from the original XLog to index-based log (simplified log)
+    // Step 3: collect nodes and arcs data into NodeInfoCollector and ArcInfoCollector
+    // Step 4: filter the simplified log by the node and arc levers, update NodeInfoCollector and ArcInfoCollector
+    // Step 5: convert from the simplified log to XLog
     public XLog generateFilteredLog(String attribute, double activities, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria) {
         full_classifier = new XEventAttributeClassifier(attribute, new String[] {attribute, lifecycle_code.toString()});
         List<IntList> filtered_log = initialization(attribute, activities, inverted_nodes, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
+        
+        //--------------------------------------------
+        // As the activity nodes and arcs are filtered by simplified log based on the UI levers 
+        // Each trace in the simplified log has some events filtered out
+        // This step is used to create an XLog from the original log based on the filtered simplified log
+        //--------------------------------------------
         XFactory factory = new XFactoryNaiveImpl();
         XLog filtered_xlog = factory.createLog(log.getAttributes());
         for(int trace = 0; trace < filtered_log.size(); trace++) {
             XTrace filtered_xtrace = factory.createTrace(log.get(trace).getAttributes());
-            IntList filtered_trace = filtered_log.get(trace);
+            // filtered_trace is a list of event numbers that are mapped to full event names in simplified_names map.
+            // Note that the first and last elements are "1" and "2" which are used to mark the two ends of the trace
+            IntList filtered_trace = filtered_log.get(trace); 
             int unfiltered_event = 0;
             for(int event = 1; event < filtered_trace.size() - 1; event++) {
+            	//Jump over events that are not in the filtered trace 
                 while(!full_classifier.getClassIdentity(log.get(trace).get(unfiltered_event)).equalsIgnoreCase(getEventFullName(filtered_trace.get(event)))) {
                     unfiltered_event++;
                 }
@@ -508,7 +568,7 @@ public class ProcessDiscovererImpl {
         return -1;
     }
 
-    private XLog filterUsingCriteria(XLog initial_log, List<LogFilterCriterion> criteria) {
+    public XLog filterUsingCriteria(XLog initial_log, List<LogFilterCriterion> criteria) {
         this.criteria = new ArrayList<>(criteria);
         this.simplified_names = null;
         this.log = LogFilter.filter(initial_log, criteria);
@@ -584,7 +644,7 @@ public class ProcessDiscovererImpl {
                 if(name.contains("+")) {
                     String prename = name.substring(0, name.indexOf("+"));
                     String postname = name.substring(name.indexOf("+"));
-                    name = prename + postname.toLowerCase(); //fullname: "xxx+start" or "xxx+complete"
+                    name = prename + postname.toLowerCase(); //name = "xxx+start" or "xxx+complete"
                 }
                 if(eventNameAnalyser.isStartEvent(name)) contain_start_events = true;
 
@@ -644,6 +704,8 @@ public class ProcessDiscovererImpl {
     // Only nodes retained by NodeSelector will be kept in a trace
     // Only after nodes have been filtered, arcs will be created and updated in ArcInfoCollector
     // because they are created from the direct-follows relations of events.
+    // NOTE: This method also collects data of all nodes and arcs from the filtered log
+    // The arcs here are created based on directly-follows relation between events
     private List<IntList> filterSimplifiedLog(List<IntList> log, List<LongList> times_log, double activities, boolean inverted_nodes, VisualizationType fixedType, VisualizationAggregation fixedAggregation) {
         NodeSelector nodeSelector = new NodeSelector(nodeInfoCollector, activities, contain_start_events, fixedType, fixedAggregation, inverted_nodes);
         retained_activities = nodeSelector.selectActivities();

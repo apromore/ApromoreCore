@@ -43,5 +43,5 @@ public interface ProcessDiscovererService {
     BPMNDiagram insertBPMNGateways(BPMNDiagram bpmnDiagram);
     XLog generateFilteredLog(XLog log, String attribute, double activities, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> filter_criteria);
     XLog generateFilteredFittedLog(XLog log, String attribute, double activities, double arcs, boolean preserve_connectivity, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> filter_criteria, SearchStrategy searchStrategy);
-
+    XLog filterUsingCriteria(XLog log, List<LogFilterCriterion> criteria);
 }

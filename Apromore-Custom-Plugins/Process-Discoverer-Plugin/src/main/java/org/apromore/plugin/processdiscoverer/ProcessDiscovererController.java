@@ -35,7 +35,6 @@ import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
-import org.apromore.plugin.processdiscoverer.impl.SearchStrategy;
 import org.apromore.plugin.processdiscoverer.impl.VisualizationAggregation;
 import org.apromore.plugin.processdiscoverer.impl.VisualizationType;
 import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterCriterionFactory;
@@ -62,6 +61,7 @@ import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
+import org.hibernate.internal.FilterConfiguration;
 import org.json.JSONArray;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -110,16 +110,17 @@ import static org.apromore.plugin.processdiscoverer.impl.filter.Level.TRACE;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
+ * Modified by Simon Rabozi for SiMo
+ * Modified by Bruce Nguyen
  */
 public class ProcessDiscovererController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiscovererController.class);
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiscovererController.class);
+	
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
     private final String nativeType = "BPMN 2.0";
 
     PortalContext portalContext;
-    private org.apromore.plugin.processdiscoverer.service.ProcessDiscovererService processDiscovererService;
+    private ProcessDiscovererService processDiscovererService;
     private EventLogService eventLogService;
 
     private Radio use_fixed;
@@ -159,8 +160,9 @@ public class ProcessDiscovererController {
     private Button cases;
     private Button fitness;
     private Button animate;
+    
     private Menuitem exportUnfitted;
-
+    
     private Label caseNumber;
     private Label uniquecaseNumber;
     private Label activityNumber;
@@ -189,11 +191,13 @@ public class ProcessDiscovererController {
     private LogSummaryType logSummary;
 
     private List<LogFilterCriterion> criteria;
+    
+    //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
     private Map<String, Map<String, Integer>> options_frequency = new HashMap<>();
-    private long min = Long.MAX_VALUE;
-    private long max = 0;
+    private long min = Long.MAX_VALUE; //the earliest timestamp of the log
+    private long max = 0; //the latest timestamp of the log
 
-    private String label = StringValues.b[161];
+    private String label = StringValues.b[161]; // the event attribute key used to label each task node, default "concept:name"
 
     private DomainService domainService;
     private ProcessService processService;
@@ -1035,8 +1039,8 @@ public class ProcessDiscovererController {
                             });
 
                         } catch (Exception e) {
-                            LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);
-                            eventQueue.publish(new Event(ANNOTATION_EXCEPTION, null, e));
+                        	LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);
+                        	eventQueue.publish(new Event(ANNOTATION_EXCEPTION, null, e));
                         }
                     }
                 }
@@ -1273,7 +1277,19 @@ public class ProcessDiscovererController {
             refreshCriteria();
         }
     }
+    
+    public ProcessDiscovererService getService() {
+    	return this.processDiscovererService;
+    }
+    
+    public XLog getOriginalLog() {
+    	return this.log;
+    }
 
+    /*
+     * Note that the filtered log may be empty
+     * In that case the UI must be also properly empty, no errors thrown  
+     */
     public void refreshCriteria() throws InterruptedException {
         XLog reduced_log = processDiscovererService.generateFilteredLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, inverted_nodes.isChecked(), inverted_arcs.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
         populateMetrics(reduced_log);
@@ -1318,7 +1334,7 @@ public class ProcessDiscovererController {
 
         double shortest = Double.MAX_VALUE;
         double longhest = 0;
-        double median = dur[dur.length / 2];
+        double median = (dur.length > 0) ? dur[dur.length / 2] : 0;
         double mean = 0;
         for (Long l : dur) {
             mean += l;
@@ -1486,7 +1502,14 @@ public class ProcessDiscovererController {
         visualized = false;
         setArcAndActivityRatios();
     }
+    
+    public void setCriteria(List<LogFilterCriterion> newCriteria) {
+    	this.criteria = newCriteria;
+    }
 
+    /*
+     * This is the main processing method called by most of user events
+     */
     public void setArcAndActivityRatios() {
         if(activities_value != activities.getCurpos() ||
                 arcs_value != arcs.getCurpos() ||
@@ -1554,6 +1577,9 @@ public class ProcessDiscovererController {
         }
     }
 
+    // Collect all attribute keys that are common to all events 
+    // in the log, excluding "time:timestamp".
+    // Attribute keys that are not present in all events are not used.
     private List<String> generateLabels(XLog log) {
         Set<String> set = new HashSet<>();
         for(XTrace trace : log) {
