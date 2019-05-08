@@ -221,7 +221,12 @@ public class ProcessDiscovererController {
         this.eventLogService = eventLogService;
         this.primaryType = fixedType;
         this.bimpAnnotationService = bimpAnnotationService;
-        if (primaryType != FREQUENCY) primaryAggregation = MEAN;
+        if (primaryType == FREQUENCY) {
+        	primaryAggregation = TOTAL; // must match the default value in the zul file.
+        }
+        else {
+        	primaryAggregation = MEAN; //// must match the default value in the zul file.
+        }
 
         Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
         if (elements.size() != 1) {
@@ -1353,6 +1358,10 @@ public class ProcessDiscovererController {
         minDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(shortest)));
     }
 
+    // Collect different types of filter from the log
+    // options_frequency contains these filter types
+    // Key: filter type code
+    // Value: map (key: filter type name, value: frequency count of the value)
     private void generateOptions(XLog log) {
         boolean firstTime = (options_frequency.keySet().size() == 0);
         Multimap<String, String> tmp_options = HashMultimap.create();

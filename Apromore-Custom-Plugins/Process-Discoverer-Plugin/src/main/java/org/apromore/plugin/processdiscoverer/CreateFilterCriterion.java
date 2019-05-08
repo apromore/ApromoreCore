@@ -38,7 +38,6 @@ import static org.apromore.plugin.processdiscoverer.impl.filter.Level.EVENT;
 import static org.apromore.plugin.processdiscoverer.impl.filter.Level.TRACE;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Calendar;
@@ -140,6 +139,7 @@ class CreateFilterCriterion {
         duration = (Decimalbox) createFilterCriterionW.getFellow("duration");
         duration.setDisabled(true);
         durationUnits = (Listbox) createFilterCriterionW.getFellow("durationUnits");
+        durationUnits.setSelectedIndex(0);
         durationUnits.setDisabled(true);
 
         value = (Listbox) createFilterCriterionW.getFellow("value");
@@ -221,14 +221,25 @@ class CreateFilterCriterion {
                 endDate.setValue(new Date(end));
                 endDate.setDisabled(false);
             }else if (LogFilterTypeSelector.getType(a) == Type.TIME_DURATION) {
-                Double d = null;
+                String d = null;
                 for (String v : criterion.getValue()) {
-                    if (v.startsWith(">")) d = Double.parseDouble(v.substring(1));
+                    if (v.startsWith(">")) d = v.substring(1);
                 }
-                String[] p = TimeConverter.parseDuration(d);
-                duration.setValue(p[0]);
+                String[] values = TimeConverter.parseDuration2(d);
+                duration.setValue(values[0]);
                 duration.setDisabled(false);
-                durationUnits.setSelectedIndex(Integer.parseInt(p[1]));
+//                Listitem found = durationUnits.getItems().stream()
+//                	.filter(item -> item.getLabel().equals(values[1]))
+//                	.findAny()
+//                	.orElse(null);
+                Listitem found = null;
+                for (Listitem item : durationUnits.getItems()) {
+                	if (item.getLabel().equals(values[1])) {
+                		found = item;
+                		break;
+                	}
+                }
+                if (found != null) durationUnits.setSelectedItem(found);
                 durationUnits.setDisabled(false);
             }else {
                 for(Listitem listitem : value.getItems()) {
@@ -241,29 +252,48 @@ class CreateFilterCriterion {
     private void setStatus() {
         if(level.getSelectedIndex() == 0) { // Event Level
             if(filterType.getSelectedIndex() >= 0) {
-//                if(LogFilterTypeSelector.getType(filterTypeCodes.get(filterType.getSelectedIndex())) > -1) { // predefined type
-//                    okButton.setDisabled(true);
-//                } else { // not predefined type
-//                    okButton.setDisabled(false);
-//                }
-            	okButton.setDisabled(value.getItems().size() == 0);
+            	Type type = LogFilterTypeSelector.getType(filterTypeCodes.get(filterType.getSelectedIndex()));
+                switch (type) {
+	            	case TIME_TIMESTAMP:
+	            		okButton.setDisabled(false);
+	            		break;
+	            	default:
+	            		okButton.setDisabled(value.getItems().size() == 0);
+                }
             }
             else {
             	okButton.setDisabled(true);
             }
             
+            duration.setDisabled(true);
+            durationUnits.setDisabled(true);
             for(Radio radio : containment.getItems()) {
                 radio.setDisabled(true);
             }
+            containment.setStyle("background-color: #D3D3D3;");
         }else { //Trace Level
             //okButton.setDisabled(false);
         	
-            if(filterType.getSelectedIndex() >= 0) {                
+            if(filterType.getSelectedIndex() >= 0) {  
             	boolean eventInvalid = !LogFilterTypeSelector.checkLevelValidity(filterTypeCodes.get(filterType.getSelectedIndex()), Level.EVENT);
                 for (Radio radio : containment.getItems()) {
                     radio.setDisabled(eventInvalid);
                 }
-                okButton.setDisabled(value.getItems().size() == 0);
+                containment.setStyle(eventInvalid ? "background-color: #D3D3D3;" : "transparent;");
+                
+                Type type = LogFilterTypeSelector.getType(filterTypeCodes.get(filterType.getSelectedIndex()));
+                switch (type) {
+                	case TIME_TIMESTAMP:
+                		okButton.setDisabled(false);
+                		break;
+                	case TIME_DURATION: 
+                		duration.setDisabled(false);
+                        durationUnits.setDisabled(false);
+                		okButton.setDisabled(false);
+                		break;
+                	default:
+                		okButton.setDisabled(value.getItems().size() == 0);
+                }
             }else {
 //                for (Radio radio : containment.getItems()) {
 //                    radio.setDisabled(false);
@@ -334,25 +364,8 @@ class CreateFilterCriterion {
                     set.add("<" + endDate.getValue().getTime());
                 }else if(LogFilterTypeSelector.getType(option) == Type.TIME_DURATION) {
                     String span = durationUnits.getSelectedItem().getLabel();
-                    Double d = duration.getValue().doubleValue();
-
-                    double seconds = 1000.0;
-                    double minutes = seconds * 60.0;
-                    double hours = minutes * 60.0;
-                    double days = hours * 24.0;
-                    double weeks = days * 7.0;
-                    double months = days * 30.0;
-                    double years = days * 365.0;
-
-                    if(span.equals("Years")) d *= years;
-                    else if(span.equals("Months")) d *= months;
-                    else if(span.equals("Weeks")) d *= weeks;
-                    else if(span.equals("Days")) d *= days;
-                    else if(span.equals("Hours")) d *= hours;
-                    else if(span.equals("Minutes")) d *= minutes;
-                    else if(span.equals("Seconds")) d *= seconds;
-
-                    set.add(">" + d);
+                    //BigDecimal d = TimeConverter.convertMilliseconds(duration.getValue(), span);
+                    set.add(">" + duration.getValue().doubleValue() + TimeConverter.DURATION_UNIT_MARKER + span);
                 }else {
                     for (Listitem listItem : value.getSelectedItems()) {
                         set.add(((Listcell) listItem.getFirstChild()).getLabel());
