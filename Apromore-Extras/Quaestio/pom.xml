@@ -212,8 +212,8 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
+            <groupId>org.deckfour</groupId>
+            <artifactId>openxes</artifactId>
             <scope>runtime</scope>
         </dependency>
 

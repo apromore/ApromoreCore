@@ -54,8 +54,8 @@
                             org.processmining.framework.*;version="[1.0,2.0)",
                             org.processmining.models.*;version="[1.0,2.0)",
                             org.processmining.plugins.*;version="[1.0,2.0)",
-                            org.deckfour.xes.model.*;version="[1.0,2.0)",
-                            org.deckfour.xes.factory.*;version="[1.0,2.0)",
+                            org.deckfour.xes.model.*;version="[2.0,3.0)",
+                            org.deckfour.xes.factory.*;version="[2.0,3.0)",
                             !com.raffaeleconforti.processdiscoverer.*,
                             *
                         </Import-Package>

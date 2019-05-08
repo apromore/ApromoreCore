@@ -13,7 +13,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
-    <local.repository.folder>${pom.basedir}/libs/</local.repository.folder>
+    <local.repository.folder>${pom.basedir}/../../../repository</local.repository.folder>
   </properties>
 
   <repositories>
@@ -44,7 +44,7 @@
 	</dependency>
 	
     <dependency>
- 		<groupId>org.deckfour.xes</groupId>
+ 		<groupId>org.deckfour</groupId>
   		<artifactId>spex</artifactId>
   		<version>1.0</version>
 	</dependency>
@@ -68,9 +68,9 @@
 	</dependency>
 	
 	<dependency>
-		<groupId>org.deckfour.xes</groupId>
-		<artifactId>OpenXES</artifactId>
-		<version>2.0</version>
+		<groupId>org.deckfour</groupId>
+		<artifactId>openxes</artifactId>
+		<version>2.16</version>
       	<scope>test</scope>
     </dependency>
   </dependencies>
