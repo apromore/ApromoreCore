@@ -109,6 +109,7 @@
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,
+                            org.xeslite.external,
                             *
                         </Import-Package>
                         <Export-Package>
@@ -626,6 +627,12 @@
         <dependency>
             <groupId>org.deckfour</groupId>
             <artifactId>openxes</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.xeslite</groupId>
+            <artifactId>xeslite</artifactId>
+            <version>0.0.1</version>
         </dependency>
 		
 		<!-- GUI related dependencies -->
