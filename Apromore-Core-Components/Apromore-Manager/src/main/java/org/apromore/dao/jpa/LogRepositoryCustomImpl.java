@@ -33,6 +33,7 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xeslite.external.XFactoryExternalStore;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -155,11 +156,16 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         }
     }
 
+    /**
+     * Load XES log file from Event Logs Repository
+     * @param log
+     * @return
+     */
     public XLog getProcessLog(Log log) {
         if (log != null) {
             try {
                 String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
-                return importFromFile(new XFactoryNaiveImpl(), name);
+                return importFromFile(new XFactoryExternalStore.InMemoryStoreImpl(), name);
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
             }

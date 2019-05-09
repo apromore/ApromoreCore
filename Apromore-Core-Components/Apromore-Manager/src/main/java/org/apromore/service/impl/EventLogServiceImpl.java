@@ -42,6 +42,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.xeslite.external.XFactoryExternalStore;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
@@ -89,9 +90,22 @@ public class EventLogServiceImpl implements EventLogService {
         return null;
     }
 
+    /**
+     * Import serialisations into Apromore application.
+     * @param username       The user doing the importing.
+     * @param folderId       The folder we are saving the process in.
+     * @param logName        the name of the process being imported.
+     * @param inputStreamLog
+     * @param extension
+     * @param domain         the domain of the model
+     * @param created        the time created
+     * @param publicModel    is this a public model?
+     * @return
+     * @throws Exception
+     */
     @Override
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog, String extension, String domain, String created, boolean publicModel) throws Exception {
-        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(new XFactoryNaiveImpl(), inputStreamLog, extension), userSrv.findUserByLogin(username).getId(), domain, created, publicModel);
+        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(new XFactoryExternalStore.InMemoryStoreImpl(), inputStreamLog, extension), userSrv.findUserByLogin(username).getId(), domain, created, publicModel);
         Log log = new Log();
         log.setFolder(folderRepo.findUniqueByID(folderId));
         log.setDomain(domain);
