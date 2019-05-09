@@ -681,7 +681,7 @@ public class ProcessDiscovererController {
                     }
                 });
                 
-                this.animate.addEventListener(StringValues.b[80], new EventListener<Event>() {
+                this.animate.addEventListener("onAnimate", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         String layout = event.getData().toString();
@@ -719,7 +719,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[89], new EventListener<Event>() {
+                this.animate.addEventListener("onNodeRemovedTrace", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -748,7 +748,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[90], new EventListener<Event>() {
+                this.animate.addEventListener("onNodeRetainedTrace", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -777,7 +777,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[91], new EventListener<Event>() {
+                this.animate.addEventListener("onNodeRemovedEvent", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -806,7 +806,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[92], new EventListener<Event>() {
+                this.animate.addEventListener("onNodeRetainedEvent", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -835,7 +835,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[93], new EventListener<Event>() {
+                this.animate.addEventListener("onEdgeRemoved", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -865,7 +865,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[95], new EventListener<Event>() {
+                this.animate.addEventListener("onEdgeRetained", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -1279,7 +1279,14 @@ public class ProcessDiscovererController {
     private void addCriterion(LogFilterCriterion logFilterCriterion) throws InterruptedException {
         if (!criteria.contains(logFilterCriterion)) {
             criteria.add(logFilterCriterion);
-            refreshCriteria();
+            XLog filteredLog = this.getService().filterUsingCriteria(this.getOriginalLog(), criteria);
+        	if (filteredLog.isEmpty()) {
+        		Messagebox.show("The log is empty after applying filter criteria! Please use different criteria.");
+        		criteria.remove(logFilterCriterion);
+        	}
+        	else {
+        		refreshCriteria();
+        	}
         }
     }
     
