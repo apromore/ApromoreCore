@@ -159,7 +159,7 @@ public class LogFilterTypeSelector {
 	            case 4 : return true;
 	            case 5 : return true;
 	            case 6 : return true;
-	            case 7 : return true;
+	            case 7 : return false;
 	            case 8 : return true;
 	            default : return true;
 	        }
