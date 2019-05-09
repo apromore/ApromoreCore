@@ -502,18 +502,45 @@ function removeEdge(a) {
   b = b.target();
   a = a.data("name");
   a = a.substring(0, a.indexOf("\n"));
-  "" == a && (a = "|>");
+  if (a == "") {
+	  a = "|>";
+  }
   b = b.data("name");
   b = b.substring(0, b.indexOf("\n"));
-  "" == b && (b = "[]");
+  if (b == "") {
+	  b = "[]";
+  }
   a = a.concat(" => ", b);
-  ctrlIsPressed ? zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRetained", a)) : zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRemoved", a))
+  if (ctrlIsPressed) {
+		zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRetained", a));
+	}
+	else {
+		zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRemoved", a));
+	}
 }
 
 function removeNode(a, b) {
   var c = a.target;
-  "" != c.data("name") && (c = c.data("name"), c = c.substring(0, c.indexOf("\n")), console.log("CTRL " + ctrlIsPressed), console.log("ALT " + altIsPressed), ctrlIsPressed || altIsPressed ? ctrlIsPressed && !altIsPressed ? zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRetainedTrace", c)) : !ctrlIsPressed && altIsPressed ? zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRemovedEvent", c)) : zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRetainedEvent", c)) : zAu.send(new zk.Event(zk.Widget.$("$animate"),
-    "onNodeRemovedTrace", c)))
+  if (c.data("name") != "") {
+	  c = c.data("name");
+	  c = c.substring(0, c.indexOf("\n"));
+	  console.log("CTRL " + ctrlIsPressed);
+	  console.log("ALT " + altIsPressed);
+		if (ctrlIsPressed || altIsPressed) {
+			if (ctrlIsPressed && !altIsPressed) {
+				zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRetainedTrace", c));
+			}
+			else if (!ctrlIsPressed && altIsPressed) {
+				zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRemovedEvent", c));
+			}
+			else {
+				zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRetainedEvent", c));
+			}
+		}
+		else {
+			zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRemovedTrace", c));
+		}
+  }
 }
 
 function rediscover() {
