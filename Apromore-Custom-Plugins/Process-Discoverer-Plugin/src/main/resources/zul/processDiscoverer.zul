@@ -215,7 +215,7 @@
                             <menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
                         </menupopup>
                     </combobutton>
-                    <button id="details" label="Details" />
+                    <button id="details" label="Activities" />
                     <button id="cases" label="Cases" />
                     <button id="fitness" label="Fitness" />
                     <button id="filter" label="Filter" />
@@ -377,7 +377,31 @@ function vertical() {
 }
 
 function layout() {
-  1 == layout_model ? layout_breadthfirst(!0) : 2 == layout_model ? layout_cola(!0) : 3 == layout_model ? layout_cose(!0) : 4 == layout_model ? layout_dagre_LR(!0) : 5 == layout_model ? layout_dagre_TB(!0) : 6 == layout_model ? layout_klay_LR(!0) : 7 == layout_model && layout_klay_TB(!0)
+	switch(layout_model) {
+		case 1:
+			layout_breadthfirst(!0);
+			break;
+		case 2:
+			layout_cola(!0);
+			break;
+		case 3:
+			layout_cose(!0);
+			break;
+		case 4:
+			layout_dagre_LR(!0);
+			break;
+		case 5:
+			layout_dagre_TB(!0);		
+			break;			
+		case 6:
+			layout_klay_LR(!0);	
+			break;		
+		case 7:
+			layout_klay_TB(!0);	
+			break;				
+		default:
+			// code block
+	}
 }
 
 function layout_breadthfirst(a) {

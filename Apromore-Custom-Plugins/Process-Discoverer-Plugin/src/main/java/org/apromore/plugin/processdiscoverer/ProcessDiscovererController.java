@@ -171,6 +171,8 @@ public class ProcessDiscovererController {
     private Label medianDuration;
     private Label maxDuration;
     private Label minDuration;
+    
+    private Window cases_window = null;
 
     private int arcs_value = 10;
     private int parallelism_value = 40;
@@ -275,6 +277,14 @@ public class ProcessDiscovererController {
             }else {
                 slidersWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[16], null, null);
                 slidersWindow.setTitle("Process Discoverer");
+                
+                slidersWindow.addEventListener("onZIndex", new EventListener<Event>() {
+                	public void onEvent(Event event) throws Exception {
+                        if (cases_window != null && cases_window.inOverlapped()) {
+                        	cases_window.setZindex(slidersWindow.getZIndex() + 1);
+                        }
+                    }
+                });
 
                 this.use_fixed = (Radio) slidersWindow.getFellow(StringValues.b[20]);
                 this.use_dynamic = (Radio) slidersWindow.getFellow(StringValues.b[21]);
@@ -555,8 +565,15 @@ public class ProcessDiscovererController {
 
                 this.cases.addEventListener(StringValues.b[74], new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
-                        Window cases_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[18], null, null);
+                        cases_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[18], null, null);
                         cases_window.setTitle("Process Instances");
+                        
+                        cases_window.addEventListener("onClose", new EventListener<Event>() {
+                        	public void onEvent(Event event) throws Exception {
+                        		cases_window = null;
+                            }
+                        });
+                        
                         Listbox listbox = (Listbox) cases_window.getFellow(StringValues.b[85]);
                         Listheader pos = (Listheader) cases_window.getFellow(StringValues.b[82]);
                         pos.setSortAscending(new NumberComparator(true, 0));
@@ -598,7 +615,7 @@ public class ProcessDiscovererController {
                                     String javascript = "load('" + jsonString + "');";
                                     Clients.evalJavaScript("reset()");
                                     Clients.evalJavaScript(javascript);
-                                    Clients.evalJavaScript("layout_dagre_TB(false)");
+                                    Clients.evalJavaScript("layout_dagre_LR(false)");
                                 } catch(Exception e) {
                                     e.printStackTrace();
                                 }
@@ -625,9 +642,11 @@ public class ProcessDiscovererController {
                                 Filedownload.save(amedia);
                             }
                         });
-                        cases_window.doModal();
+                        cases_window.doOverlapped();
                     }
                 });
+                
+
 
                 this.fitness.addEventListener(StringValues.b[74], new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
