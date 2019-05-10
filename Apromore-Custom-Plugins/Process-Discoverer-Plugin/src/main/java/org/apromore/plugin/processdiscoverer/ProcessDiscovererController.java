@@ -571,6 +571,7 @@ public class ProcessDiscovererController {
                         cases_window.addEventListener("onClose", new EventListener<Event>() {
                         	public void onEvent(Event event) throws Exception {
                         		cases_window = null;
+                        		setArcAndActivityRatios();
                             }
                         });
                         
