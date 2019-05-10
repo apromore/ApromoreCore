@@ -190,6 +190,7 @@ public class ProcessDiscovererController {
     private String log_name = "";
     private XLog log;
     private BPMNDiagram diagram;
+    private JSONArray jsonDiagram; // the corresponding JSON format of the diagram
     private LogSummaryType logSummary;
 
     private List<LogFilterCriterion> criteria;
@@ -571,7 +572,7 @@ public class ProcessDiscovererController {
                         cases_window.addEventListener("onClose", new EventListener<Event>() {
                         	public void onEvent(Event event) throws Exception {
                         		cases_window = null;
-                        		setArcAndActivityRatios();
+                        		display(jsonDiagram);
                             }
                         });
                         
@@ -704,18 +705,20 @@ public class ProcessDiscovererController {
                 this.animate.addEventListener("onAnimate", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
+                    	BPMNDiagram validDiagram = diagram;
                         String layout = event.getData().toString();
+                        //Insert gateways to to make it a valid BPMN diagram, not a graph
                         if(!gateways.isChecked()) {
-                            diagram = processDiscovererService.insertBPMNGateways(diagram);
+                        	validDiagram = processDiscovererService.insertBPMNGateways(diagram);
                         }
-                        for(BPMNEdge edge : diagram.getEdges()) {
+                        for(BPMNEdge edge : validDiagram.getEdges()) {
                             edge.setLabel("");
                         }
 
                         UIContext context = new UIContext();
                         UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                         UIPluginContext uiPluginContext = context.getMainPluginContext();
-                        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
+                        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, validDiagram);
                         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
                         StringBuilder sb = new StringBuilder();
@@ -1015,29 +1018,30 @@ public class ProcessDiscovererController {
                 private String model;
 
                 private void mine() throws Exception {
-
+                	BPMNDiagram newDiagram = diagram;
                     activities_value = activities.getCurpos();
                     arcs_value = arcs.getCurpos();
                     parallelism_value = parallelism.getCurpos();
 
                     if(!gateways.isChecked()) {
-                        diagram = processDiscovererService.insertBPMNGateways(diagram);
+                    	newDiagram = processDiscovererService.insertBPMNGateways(diagram);
                     }
-                    for(BPMNEdge edge : diagram.getEdges()) {
+
+                    for(BPMNEdge edge : newDiagram.getEdges()) {
                         edge.setLabel("");
                     }
 
-                    for (Flow flow : diagram.getFlows()) {
+                    for (Flow flow : newDiagram.getFlows()) {
                         flow.setLabel("");
                     }
-                    for (org.processmining.models.graphbased.directed.bpmn.elements.Event event1 : diagram.getEvents()) {
+                    for (org.processmining.models.graphbased.directed.bpmn.elements.Event event1 : newDiagram.getEvents()) {
                         event1.getAttributeMap().put("ProM_Vis_attr_label", "");
                     }
 
                     UIContext context = new UIContext();
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                     UIPluginContext uiPluginContext = context.getMainPluginContext();
-                    BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
+                    BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, newDiagram);
                     BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
                     model = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1226,13 +1230,9 @@ public class ProcessDiscovererController {
             if(log == null) {
                 try {
                     Object[] o = processDiscovererService.generateJSONFromBPMNDiagram(diagram);
-                    JSONArray array = (JSONArray) o[0];
+                    jsonDiagram = (JSONArray) o[0];
                     diagram = (BPMNDiagram) o[1];
-
-                    String jsonString = array.toString();
-                    String javascript = "load('" + jsonString + "');";
-                    Clients.evalJavaScript("reset()");
-                    Clients.evalJavaScript(javascript);
+                    this.display(jsonDiagram);
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
@@ -1574,25 +1574,28 @@ public class ProcessDiscovererController {
             }
 
             try {
-                JSONArray array;
                 if(gateways.isChecked()) {
                     Object[] o = processDiscovererService.generateJSONWithGatewaysFromLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, parallelism.getCurposInDouble() / 100, true, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), secondary.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-                    array = (JSONArray) o[0];
+                    jsonDiagram = (JSONArray) o[0];
                     diagram = (BPMNDiagram) o[1];
                 }else {
                     Object[] o = processDiscovererService.generateJSONFromLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), secondary.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-                    array = (JSONArray) o[0];
+                    jsonDiagram = (JSONArray) o[0];
                     diagram = (BPMNDiagram) o[1];
                 }
 
-                String jsonString = array.toString();
-                String javascript = "load('" + jsonString + "');";
-                Clients.evalJavaScript("reset()");
-                Clients.evalJavaScript(javascript);
+                this.display(jsonDiagram);
             } catch(Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+    
+    private void display(JSONArray jsonDiagram) {
+    	String jsonString = jsonDiagram.toString();
+        String javascript = "load('" + jsonString + "');";
+        Clients.evalJavaScript("reset()");
+        Clients.evalJavaScript(javascript);
     }
 
     private void saveLog(XLog filtered_log) {
