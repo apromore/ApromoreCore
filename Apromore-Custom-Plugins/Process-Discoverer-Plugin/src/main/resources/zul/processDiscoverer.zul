@@ -195,15 +195,15 @@
                             <menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
                         </menupopup>
                     </combobutton>
-                    <combobutton id="layout" label="Layout" onClick='Clients.evalJavaScript("layout()")'>
+                    <combobutton id="layout" label="Layout">
                         <menupopup>
-                            <menuitem id="layout_breadthfirst" onClick='Clients.evalJavaScript("layout_breadthfirst(false)")' label="Breadth-First" onCheck='layout_breadthfirst.setChecked(false)'/>
-                            <menuitem id="layout_cola" onClick='Clients.evalJavaScript("layout_cola(false)")' label="Cola" onCheck='layout_cola.setChecked(false)'/>
-                            <menuitem id="layout_cose" onClick='Clients.evalJavaScript("layout_cose(false)")' label="Cose" onCheck='layout_cose.setChecked(false)'/>
-                            <menuitem id="layout_dagre_lr" onClick='Clients.evalJavaScript("layout_dagre_LR(false)")' label="Dagre Left-Right" onCheck='layout_dagre_lr.setChecked(false)'/>
-                            <menuitem id="layout_dagre_tb" onClick='Clients.evalJavaScript("layout_dagre_TB(false)")' label="Dagre Top-Bottom" onCheck='layout_dagre_tb.setChecked(false)'/>
-                            <menuitem id="layout_klay_lr" onClick='Clients.evalJavaScript("layout_klay_LR(false)")' label="Klay Left-Right" onCheck='layout_klay_lr.setChecked(false)'/>
-                            <menuitem id="layout_klay_tb" onClick='Clients.evalJavaScript("layout_klay_TB(false)")' label="Klay Top-Bottom" onCheck='layout_klay_tb.setChecked(false)'/>
+                            <menuitem id="layout_breadthfirst" onClick='Clients.evalJavaScript("layout_breadthfirst(false)")' label="Breadth-First" />
+                            <menuitem id="layout_cola" onClick='Clients.evalJavaScript("layout_cola(false)")' label="Cola" />
+                            <menuitem id="layout_cose" onClick='Clients.evalJavaScript("layout_cose(false)")' label="Cose" />
+                            <menuitem id="layout_dagre_lr" onClick='Clients.evalJavaScript("layout_dagre_LR(false)")' label="Dagre Left-Right" checked="true" />
+                            <menuitem id="layout_dagre_tb" onClick='Clients.evalJavaScript("layout_dagre_TB(false)")' label="Dagre Top-Bottom" />
+                            <menuitem id="layout_klay_lr" onClick='Clients.evalJavaScript("layout_klay_LR(false)")' label="Klay Left-Right" />
+                            <menuitem id="layout_klay_tb" onClick='Clients.evalJavaScript("layout_klay_TB(false)")' label="Klay Top-Bottom" />
                         </menupopup>
                     </combobutton>
                     <combobutton id="export" label="Export">
@@ -411,6 +411,14 @@ function layout_breadthfirst(a) {
     directed: !0,
     spacingFactor: 1
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function layout_cola(a) {
@@ -426,6 +434,14 @@ function layout_cola(a) {
       minSeparation: 150
     }
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function pos(a, b) {
@@ -448,6 +464,14 @@ function layout_cose(a) {
     animate: !1,
     randomize: a
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function layout_dagre_LR(a) {
@@ -461,6 +485,14 @@ function layout_dagre_LR(a) {
     rankDir: "LR",
     ranker: "tight-tree"
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function layout_dagre_TB(a) {
@@ -474,6 +506,14 @@ function layout_dagre_TB(a) {
     rankDir: "TB",
     ranker: "tight-tree"
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function layout_klay_LR(a) {
@@ -496,6 +536,14 @@ function layout_klay_LR(a) {
       thoroughness: 10
     }
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function layout_klay_TB(a) {
@@ -518,6 +566,14 @@ function layout_klay_TB(a) {
       thoroughness: 10
     }
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(true);
 }
 
 function removeEdge(a) {
