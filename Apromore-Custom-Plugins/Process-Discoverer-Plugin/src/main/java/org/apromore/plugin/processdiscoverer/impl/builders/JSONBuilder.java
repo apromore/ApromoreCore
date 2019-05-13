@@ -101,7 +101,7 @@ public class JSONBuilder {
         int string_length = 0;
         String textwidth = "90px";
         for (BPMNNode node : getNodes(bpmnDiagram)) {
-            string_length = Math.max(string_length, node.getLabel().replaceAll("'", "").length());
+            string_length = Math.max(string_length, escapeChars(node.getLabel()).length());
         }
         if(!used_bpmn_size) {
             if(string_length * 6 > 80) activity_width = (string_length * 6) + "px";
@@ -126,7 +126,7 @@ public class JSONBuilder {
             int invisible_subprocess = boundary.get(node);
             JSONObject jsonOneNode = new JSONObject();
             jsonOneNode.put("id", invisible_subprocess);
-            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", ""));
+            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
             jsonOneNode.put("shape", "roundrectangle");
             jsonOneNode.put("color", "black");
             jsonOneNode.put("width", activity_width);
@@ -145,7 +145,7 @@ public class JSONBuilder {
             mapping.put(node, i);
             jsonOneNode = new JSONObject();
             jsonOneNode.put("id", i);
-            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", ""));
+            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
             jsonOneNode.put("shape", "ellipse");
             jsonOneNode.put("color", "white");
             jsonOneNode.put("width", event_width);
@@ -166,7 +166,7 @@ public class JSONBuilder {
             mapping.put(node, j);
             JSONObject jsonOneNode = new JSONObject();
             jsonOneNode.put("id", j);
-            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", ""));
+            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
             jsonOneNode.put("shape", "roundrectangle");
             jsonOneNode.put("color", "white");
             jsonOneNode.put("width", event_width);
@@ -234,18 +234,18 @@ public class JSONBuilder {
                     jsonOneNode.put("textsize", xor_gateway_font_size);
                 }
             }else {
-                if(type == null) jsonOneNode.put("name", node.getLabel().replaceAll("'", ""));
+                if(type == null) jsonOneNode.put("name", escapeChars(node.getLabel()));
                 else if(skip) {
                     String node_name = node.getLabel();
                     if (node_name.contains("\\n")) {
                         node_name = node_name.substring(0, node_name.indexOf("\\n"));
                         String value = node.getLabel().substring(node.getLabel().indexOf("[") + 1, node.getLabel().length() - 1);
-                        jsonOneNode.put("name", node_name.replaceAll("'", "") + "\\n\\n" + TimeConverter.convertMilliseconds(value));
+                        jsonOneNode.put("name", escapeChars(node_name) + "\\n\\n" + TimeConverter.convertMilliseconds(value));
                     }else {
-                        jsonOneNode.put("name", node_name.replaceAll("'", ""));
+                        jsonOneNode.put("name", escapeChars(node_name));
                     }
-                }else if(type == VisualizationType.DURATION) jsonOneNode.put("name", node.getLabel().replaceAll("'", "") + "\\n\\n" + TimeConverter.convertMilliseconds("" + nodeInfoCollector.getNodeDuration(node.getLabel(), primaryAggregation)) + ((secondary) ? "\\n\\n" + decimalFormat.format(nodeInfoCollector.getNodeFrequency(false, node.getLabel(), secondaryAggregation)) : ""));
-                else jsonOneNode.put("name", node.getLabel().replaceAll("'", "") + "\\n\\n" + decimalFormat.format(nodeInfoCollector.getNodeFrequency(false, node.getLabel(), primaryAggregation)) + ((secondary) ? "\\n\\n" + TimeConverter.convertMilliseconds("" + nodeInfoCollector.getNodeDuration(node.getLabel(), secondaryAggregation)) : ""));
+                }else if(type == VisualizationType.DURATION) jsonOneNode.put("name", escapeChars(node.getLabel()) + "\\n\\n" + TimeConverter.convertMilliseconds("" + nodeInfoCollector.getNodeDuration(node.getLabel(), primaryAggregation)) + ((secondary) ? "\\n\\n" + decimalFormat.format(nodeInfoCollector.getNodeFrequency(false, node.getLabel(), secondaryAggregation)) : ""));
+                else jsonOneNode.put("name", escapeChars(node.getLabel()) + "\\n\\n" + decimalFormat.format(nodeInfoCollector.getNodeFrequency(false, node.getLabel(), primaryAggregation)) + ((secondary) ? "\\n\\n" + TimeConverter.convertMilliseconds("" + nodeInfoCollector.getNodeDuration(node.getLabel(), secondaryAggregation)) : ""));
 
                 jsonOneNode.put("shape", "roundrectangle");
 
@@ -337,6 +337,10 @@ public class JSONBuilder {
         }
 
         return graph;
+    }
+    
+    private String escapeChars(String value) {
+    	return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\\'").replaceAll("\"", "\\\\\"");
     }
 
     private String fixNumber(String number) {
