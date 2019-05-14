@@ -109,6 +109,7 @@ import static org.apromore.plugin.processdiscoverer.impl.filter.Level.EVENT;
 import static org.apromore.plugin.processdiscoverer.impl.filter.Level.TRACE;
 
 /**
+ * Initialization: after the window has been loaded, the ZK client engine will send onLoaded event to the main window 
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Modified by Simon Rabozi for SiMo
  * Modified by Bruce Nguyen
@@ -918,8 +919,8 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                slidersWindow.addEventListener(StringValues.b[96], windowListener);
-                slidersWindow.addEventListener(StringValues.b[97], windowListener);
+                slidersWindow.addEventListener("onLoaded", windowListener);
+                slidersWindow.addEventListener("onOpen", windowListener);
             }
 
             class ExportBPMNHandler implements EventListener<Event> {
@@ -1593,6 +1594,7 @@ public class ProcessDiscovererController {
     
     private void display(JSONArray jsonDiagram) {
     	String jsonString = jsonDiagram.toString();
+    	jsonString = jsonString.replaceAll("'", "\\\\\'"); // This is required here, see JSONBuilder.escapeChars().
         String javascript = "load('" + jsonString + "');";
         Clients.evalJavaScript("reset()");
         Clients.evalJavaScript(javascript);
