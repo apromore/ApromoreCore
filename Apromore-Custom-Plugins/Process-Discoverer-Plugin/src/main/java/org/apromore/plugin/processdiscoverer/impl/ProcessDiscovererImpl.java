@@ -47,6 +47,9 @@ import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.factory.XFactoryRegistry;
+import org.xeslite.external.XFactoryExternalStore;
+import org.xeslite.external.XFactoryExternalStore.InMemoryStoreImpl;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.list.primitive.LongList;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
@@ -373,7 +376,9 @@ public class ProcessDiscovererImpl {
         // Each trace in the simplified log has some events filtered out
         // This step is used to create an XLog from the original log based on the filtered simplified log
         //--------------------------------------------
-        XFactory factory = new XFactoryNaiveImpl();
+//        XFactory factory = new XFactoryNaiveImpl();
+        InMemoryStoreImpl factory = new XFactoryExternalStore.InMemoryStoreImpl();
+        XFactoryRegistry.instance().setCurrentDefault(factory);
         XLog filtered_xlog = factory.createLog(log.getAttributes());
         for(int trace = 0; trace < filtered_log.size(); trace++) {
             XTrace filtered_xtrace = factory.createTrace(log.get(trace).getAttributes());
@@ -406,7 +411,9 @@ public class ProcessDiscovererImpl {
 
         XLog original_log = generateFilteredLog(attribute, activities, inverted_nodes, inverted_arcs, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
 
-        XFactory factory = new XFactoryNaiveImpl();
+//        XFactory factory = new XFactoryNaiveImpl();
+        InMemoryStoreImpl factory = new XFactoryExternalStore.InMemoryStoreImpl();
+        XFactoryRegistry.instance().setCurrentDefault(factory);
         XLog filtered_xlog = factory.createLog(log.getAttributes());
 
         LogFitter logFitter = new LogFitter(factory);
@@ -430,8 +437,9 @@ public class ProcessDiscovererImpl {
         ArcSelector arcSelector = new ArcSelector(arcInfoCollector, arcs, preserve_connectivity, fixedType, fixedAggregation, inverted_arcs);
         Set<Arc> retained_arcs = arcSelector.selectArcs();
 
-        XFactory factory = new XFactoryNaiveImpl();
-
+//        XFactory factory = new XFactoryNaiveImpl();
+        InMemoryStoreImpl factory = new XFactoryExternalStore.InMemoryStoreImpl();
+        XFactoryRegistry.instance().setCurrentDefault(factory);
         LogFitter logFitter = new LogFitter(factory);
         return logFitter.measureFitness(simplified_log, retained_arcs, searchStrategy);
     }
