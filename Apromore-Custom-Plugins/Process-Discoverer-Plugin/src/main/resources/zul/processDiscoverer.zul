@@ -195,15 +195,15 @@
                             <menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
                         </menupopup>
                     </combobutton>
-                    <combobutton id="layout" label="Layout" onClick='Clients.evalJavaScript("layout()")'>
+                    <combobutton id="layout" label="Layout">
                         <menupopup>
-                            <menuitem id="layout_breadthfirst" onClick='Clients.evalJavaScript("layout_breadthfirst(false)")' label="Breadth-First" onCheck='layout_breadthfirst.setChecked(false)'/>
-                            <menuitem id="layout_cola" onClick='Clients.evalJavaScript("layout_cola(false)")' label="Cola" onCheck='layout_cola.setChecked(false)'/>
-                            <menuitem id="layout_cose" onClick='Clients.evalJavaScript("layout_cose(false)")' label="Cose" onCheck='layout_cose.setChecked(false)'/>
-                            <menuitem id="layout_dagre_lr" onClick='Clients.evalJavaScript("layout_dagre_LR(false)")' label="Dagre Left-Right" onCheck='layout_dagre_lr.setChecked(false)'/>
-                            <menuitem id="layout_dagre_tb" onClick='Clients.evalJavaScript("layout_dagre_TB(false)")' label="Dagre Top-Bottom" onCheck='layout_dagre_tb.setChecked(false)'/>
-                            <menuitem id="layout_klay_lr" onClick='Clients.evalJavaScript("layout_klay_LR(false)")' label="Klay Left-Right" onCheck='layout_klay_lr.setChecked(false)'/>
-                            <menuitem id="layout_klay_tb" onClick='Clients.evalJavaScript("layout_klay_TB(false)")' label="Klay Top-Bottom" onCheck='layout_klay_tb.setChecked(false)'/>
+                            <menuitem id="layout_breadthfirst" onClick='Clients.evalJavaScript("layout_breadthfirst(false)")' label="Breadth-First" />
+                            <menuitem id="layout_cola" onClick='Clients.evalJavaScript("layout_cola(false)")' label="Cola" />
+                            <menuitem id="layout_cose" onClick='Clients.evalJavaScript("layout_cose(false)")' label="Cose" />
+                            <menuitem id="layout_dagre_lr" onClick='Clients.evalJavaScript("layout_dagre_LR(false)")' label="Dagre Left-Right" checked="true" />
+                            <menuitem id="layout_dagre_tb" onClick='Clients.evalJavaScript("layout_dagre_TB(false)")' label="Dagre Top-Bottom" />
+                            <menuitem id="layout_klay_lr" onClick='Clients.evalJavaScript("layout_klay_LR(false)")' label="Klay Left-Right" />
+                            <menuitem id="layout_klay_tb" onClick='Clients.evalJavaScript("layout_klay_TB(false)")' label="Klay Top-Bottom" />
                         </menupopup>
                     </combobutton>
                     <combobutton id="export" label="Export">
@@ -215,7 +215,7 @@
                             <menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
                         </menupopup>
                     </combobutton>
-                    <button id="details" label="Details" />
+                    <button id="details" label="Activities" />
                     <button id="cases" label="Cases" />
                     <button id="fitness" label="Fitness" />
                     <button id="filter" label="Filter" />
@@ -377,7 +377,31 @@ function vertical() {
 }
 
 function layout() {
-  1 == layout_model ? layout_breadthfirst(!0) : 2 == layout_model ? layout_cola(!0) : 3 == layout_model ? layout_cose(!0) : 4 == layout_model ? layout_dagre_LR(!0) : 5 == layout_model ? layout_dagre_TB(!0) : 6 == layout_model ? layout_klay_LR(!0) : 7 == layout_model && layout_klay_TB(!0)
+	switch(layout_model) {
+		case 1:
+			layout_breadthfirst(!0);
+			break;
+		case 2:
+			layout_cola(!0);
+			break;
+		case 3:
+			layout_cose(!0);
+			break;
+		case 4:
+			layout_dagre_LR(!0);
+			break;
+		case 5:
+			layout_dagre_TB(!0);		
+			break;			
+		case 6:
+			layout_klay_LR(!0);	
+			break;		
+		case 7:
+			layout_klay_TB(!0);	
+			break;				
+		default:
+			// code block
+	}
 }
 
 function layout_breadthfirst(a) {
@@ -387,6 +411,14 @@ function layout_breadthfirst(a) {
     directed: !0,
     spacingFactor: 1
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function layout_cola(a) {
@@ -402,6 +434,14 @@ function layout_cola(a) {
       minSeparation: 150
     }
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function pos(a, b) {
@@ -424,6 +464,14 @@ function layout_cose(a) {
     animate: !1,
     randomize: a
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function layout_dagre_LR(a) {
@@ -437,6 +485,14 @@ function layout_dagre_LR(a) {
     rankDir: "LR",
     ranker: "tight-tree"
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function layout_dagre_TB(a) {
@@ -450,6 +506,14 @@ function layout_dagre_TB(a) {
     rankDir: "TB",
     ranker: "tight-tree"
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function layout_klay_LR(a) {
@@ -472,6 +536,14 @@ function layout_klay_LR(a) {
       thoroughness: 10
     }
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(true);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 }
 
 function layout_klay_TB(a) {
@@ -494,6 +566,14 @@ function layout_klay_TB(a) {
       thoroughness: 10
     }
   }).run()
+  
+  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(true);
 }
 
 function removeEdge(a) {
@@ -502,18 +582,45 @@ function removeEdge(a) {
   b = b.target();
   a = a.data("name");
   a = a.substring(0, a.indexOf("\n"));
-  "" == a && (a = "|>");
+  if (a == "") {
+	  a = "|>";
+  }
   b = b.data("name");
   b = b.substring(0, b.indexOf("\n"));
-  "" == b && (b = "[]");
+  if (b == "") {
+	  b = "[]";
+  }
   a = a.concat(" => ", b);
-  ctrlIsPressed ? zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRetained", a)) : zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRemoved", a))
+  if (ctrlIsPressed) {
+		zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRetained", a));
+	}
+	else {
+		zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRemoved", a));
+	}
 }
 
 function removeNode(a, b) {
   var c = a.target;
-  "" != c.data("name") && (c = c.data("name"), c = c.substring(0, c.indexOf("\n")), console.log("CTRL " + ctrlIsPressed), console.log("ALT " + altIsPressed), ctrlIsPressed || altIsPressed ? ctrlIsPressed && !altIsPressed ? zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRetainedTrace", c)) : !ctrlIsPressed && altIsPressed ? zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRemovedEvent", c)) : zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRetainedEvent", c)) : zAu.send(new zk.Event(zk.Widget.$("$animate"),
-    "onNodeRemovedTrace", c)))
+  if (c.data("name") != "") {
+	  c = c.data("name");
+	  c = c.substring(0, c.indexOf("\n"));
+	  console.log("CTRL " + ctrlIsPressed);
+	  console.log("ALT " + altIsPressed);
+		if (ctrlIsPressed || altIsPressed) {
+			if (ctrlIsPressed && !altIsPressed) {
+				zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRetainedTrace", c));
+			}
+			else if (!ctrlIsPressed && altIsPressed) {
+				zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRemovedEvent", c));
+			}
+			else {
+				zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRetainedEvent", c));
+			}
+		}
+		else {
+			zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRemovedTrace", c));
+		}
+  }
 }
 
 function rediscover() {

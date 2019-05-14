@@ -171,6 +171,8 @@ public class ProcessDiscovererController {
     private Label medianDuration;
     private Label maxDuration;
     private Label minDuration;
+    
+    private Window cases_window = null;
 
     private int arcs_value = 10;
     private int parallelism_value = 40;
@@ -188,6 +190,7 @@ public class ProcessDiscovererController {
     private String log_name = "";
     private XLog log;
     private BPMNDiagram diagram;
+    private JSONArray jsonDiagram; // the corresponding JSON format of the diagram
     private LogSummaryType logSummary;
 
     private List<LogFilterCriterion> criteria;
@@ -275,6 +278,14 @@ public class ProcessDiscovererController {
             }else {
                 slidersWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[16], null, null);
                 slidersWindow.setTitle("Process Discoverer");
+                
+                slidersWindow.addEventListener("onZIndex", new EventListener<Event>() {
+                	public void onEvent(Event event) throws Exception {
+                        if (cases_window != null && cases_window.inOverlapped()) {
+                        	cases_window.setZindex(slidersWindow.getZIndex() + 1);
+                        }
+                    }
+                });
 
                 this.use_fixed = (Radio) slidersWindow.getFellow(StringValues.b[20]);
                 this.use_dynamic = (Radio) slidersWindow.getFellow(StringValues.b[21]);
@@ -555,8 +566,16 @@ public class ProcessDiscovererController {
 
                 this.cases.addEventListener(StringValues.b[74], new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
-                        Window cases_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[18], null, null);
+                        cases_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[18], null, null);
                         cases_window.setTitle("Process Instances");
+                        
+                        cases_window.addEventListener("onClose", new EventListener<Event>() {
+                        	public void onEvent(Event event) throws Exception {
+                        		cases_window = null;
+                        		display(jsonDiagram);
+                            }
+                        });
+                        
                         Listbox listbox = (Listbox) cases_window.getFellow(StringValues.b[85]);
                         Listheader pos = (Listheader) cases_window.getFellow(StringValues.b[82]);
                         pos.setSortAscending(new NumberComparator(true, 0));
@@ -598,7 +617,7 @@ public class ProcessDiscovererController {
                                     String javascript = "load('" + jsonString + "');";
                                     Clients.evalJavaScript("reset()");
                                     Clients.evalJavaScript(javascript);
-                                    Clients.evalJavaScript("layout_dagre_TB(false)");
+                                    Clients.evalJavaScript("layout_dagre_LR(false)");
                                 } catch(Exception e) {
                                     e.printStackTrace();
                                 }
@@ -625,9 +644,11 @@ public class ProcessDiscovererController {
                                 Filedownload.save(amedia);
                             }
                         });
-                        cases_window.doModal();
+                        cases_window.doOverlapped();
                     }
                 });
+                
+
 
                 this.fitness.addEventListener(StringValues.b[74], new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
@@ -681,21 +702,23 @@ public class ProcessDiscovererController {
                     }
                 });
                 
-                this.animate.addEventListener(StringValues.b[80], new EventListener<Event>() {
+                this.animate.addEventListener("onAnimate", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
+                    	BPMNDiagram validDiagram = diagram;
                         String layout = event.getData().toString();
+                        //Insert gateways to to make it a valid BPMN diagram, not a graph
                         if(!gateways.isChecked()) {
-                            diagram = processDiscovererService.insertBPMNGateways(diagram);
+                        	validDiagram = processDiscovererService.insertBPMNGateways(diagram);
                         }
-                        for(BPMNEdge edge : diagram.getEdges()) {
+                        for(BPMNEdge edge : validDiagram.getEdges()) {
                             edge.setLabel("");
                         }
 
                         UIContext context = new UIContext();
                         UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                         UIPluginContext uiPluginContext = context.getMainPluginContext();
-                        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
+                        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, validDiagram);
                         BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
                         StringBuilder sb = new StringBuilder();
@@ -719,7 +742,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[89], new EventListener<Event>() {
+                this.animate.addEventListener("onNodeRemovedTrace", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -748,7 +771,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[90], new EventListener<Event>() {
+                this.animate.addEventListener("onNodeRetainedTrace", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -777,7 +800,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[91], new EventListener<Event>() {
+                this.animate.addEventListener("onNodeRemovedEvent", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -806,7 +829,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[92], new EventListener<Event>() {
+                this.animate.addEventListener("onNodeRetainedEvent", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -835,7 +858,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[93], new EventListener<Event>() {
+                this.animate.addEventListener("onEdgeRemoved", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -865,7 +888,7 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                this.animate.addEventListener(StringValues.b[95], new EventListener<Event>() {
+                this.animate.addEventListener("onEdgeRetained", new EventListener<Event>() {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         activities_value = activities.getCurpos();
@@ -995,29 +1018,30 @@ public class ProcessDiscovererController {
                 private String model;
 
                 private void mine() throws Exception {
-
+                	BPMNDiagram newDiagram = diagram;
                     activities_value = activities.getCurpos();
                     arcs_value = arcs.getCurpos();
                     parallelism_value = parallelism.getCurpos();
 
                     if(!gateways.isChecked()) {
-                        diagram = processDiscovererService.insertBPMNGateways(diagram);
+                    	newDiagram = processDiscovererService.insertBPMNGateways(diagram);
                     }
-                    for(BPMNEdge edge : diagram.getEdges()) {
+
+                    for(BPMNEdge edge : newDiagram.getEdges()) {
                         edge.setLabel("");
                     }
 
-                    for (Flow flow : diagram.getFlows()) {
+                    for (Flow flow : newDiagram.getFlows()) {
                         flow.setLabel("");
                     }
-                    for (org.processmining.models.graphbased.directed.bpmn.elements.Event event1 : diagram.getEvents()) {
+                    for (org.processmining.models.graphbased.directed.bpmn.elements.Event event1 : newDiagram.getEvents()) {
                         event1.getAttributeMap().put("ProM_Vis_attr_label", "");
                     }
 
                     UIContext context = new UIContext();
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                     UIPluginContext uiPluginContext = context.getMainPluginContext();
-                    BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
+                    BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, newDiagram);
                     BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
                     model = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -1206,13 +1230,9 @@ public class ProcessDiscovererController {
             if(log == null) {
                 try {
                     Object[] o = processDiscovererService.generateJSONFromBPMNDiagram(diagram);
-                    JSONArray array = (JSONArray) o[0];
+                    jsonDiagram = (JSONArray) o[0];
                     diagram = (BPMNDiagram) o[1];
-
-                    String jsonString = array.toString();
-                    String javascript = "load('" + jsonString + "');";
-                    Clients.evalJavaScript("reset()");
-                    Clients.evalJavaScript(javascript);
+                    this.display(jsonDiagram);
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
@@ -1279,7 +1299,14 @@ public class ProcessDiscovererController {
     private void addCriterion(LogFilterCriterion logFilterCriterion) throws InterruptedException {
         if (!criteria.contains(logFilterCriterion)) {
             criteria.add(logFilterCriterion);
-            refreshCriteria();
+            XLog filteredLog = this.getService().filterUsingCriteria(this.getOriginalLog(), criteria);
+        	if (filteredLog.isEmpty()) {
+        		Messagebox.show("The log is empty after applying filter criteria! Please use different criteria.");
+        		criteria.remove(logFilterCriterion);
+        	}
+        	else {
+        		refreshCriteria();
+        	}
         }
     }
     
@@ -1547,25 +1574,28 @@ public class ProcessDiscovererController {
             }
 
             try {
-                JSONArray array;
                 if(gateways.isChecked()) {
                     Object[] o = processDiscovererService.generateJSONWithGatewaysFromLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, parallelism.getCurposInDouble() / 100, true, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), secondary.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-                    array = (JSONArray) o[0];
+                    jsonDiagram = (JSONArray) o[0];
                     diagram = (BPMNDiagram) o[1];
                 }else {
                     Object[] o = processDiscovererService.generateJSONFromLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), secondary.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-                    array = (JSONArray) o[0];
+                    jsonDiagram = (JSONArray) o[0];
                     diagram = (BPMNDiagram) o[1];
                 }
 
-                String jsonString = array.toString();
-                String javascript = "load('" + jsonString + "');";
-                Clients.evalJavaScript("reset()");
-                Clients.evalJavaScript(javascript);
+                this.display(jsonDiagram);
             } catch(Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+    
+    private void display(JSONArray jsonDiagram) {
+    	String jsonString = jsonDiagram.toString();
+        String javascript = "load('" + jsonString + "');";
+        Clients.evalJavaScript("reset()");
+        Clients.evalJavaScript(javascript);
     }
 
     private void saveLog(XLog filtered_log) {
