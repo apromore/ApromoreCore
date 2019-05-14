@@ -339,10 +339,11 @@ public class JSONBuilder {
         return graph;
     }
     
-    /*
-     * Note: cannot escape single quote ' because JSONArray.toString() will add another backslash to be \\'
-     * Valid JSON string is always double quote "" and so allows single quote inside.
-     * The single quote can only be escaped (\') just before sending the string to browser.
+    /**
+     * To make string conform to JSON rules. 
+     * See ProcessDiscovererController.display()
+     * Note: escape characters are doubled since expression patterns also use the same escape characters 
+     * @param value
      */
     private String escapeChars(String value) {
     	return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
