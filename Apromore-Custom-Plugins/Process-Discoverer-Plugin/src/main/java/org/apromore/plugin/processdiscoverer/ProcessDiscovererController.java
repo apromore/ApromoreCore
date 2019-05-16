@@ -109,6 +109,7 @@ import static org.apromore.plugin.processdiscoverer.impl.filter.Level.EVENT;
 import static org.apromore.plugin.processdiscoverer.impl.filter.Level.TRACE;
 
 /**
+ * Initialization: after the window has been loaded, the ZK client engine will send onLoaded event to the main window 
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Modified by Simon Rabozi for SiMo
  * Modified by Bruce Nguyen
@@ -918,8 +919,8 @@ public class ProcessDiscovererController {
                     }
                 });
 
-                slidersWindow.addEventListener(StringValues.b[96], windowListener);
-                slidersWindow.addEventListener(StringValues.b[97], windowListener);
+                slidersWindow.addEventListener("onLoaded", windowListener);
+                slidersWindow.addEventListener("onOpen", windowListener);
             }
 
             class ExportBPMNHandler implements EventListener<Event> {
@@ -1591,8 +1592,24 @@ public class ProcessDiscovererController {
         }
     }
     
+    /**
+     * String values go from Java -> JSON -> Javascript, thus they must conform to three Java, JSON and Javascript rules 
+     * in the same order. Special characters such as ', " and \ must be escaped according to these three rules.
+     * In Java and Javascript, special characters must be escaped (i.e. adding "\")
+     * In JSON:
+     * 		- Double quotes (") and backslashes (\) must be escaped
+     * 		- Single quotes (') may not be escaped 
+     * JSONArray.toString strictly conforms to JSON syntax rules, i.e. it will escape special characters.
+     * For example, a special character "\" appears in a string. 
+     * 		- First it must be escaped in Java strings to be valid ("\\") 
+     * 		- Next, JSONArray.toString will make it valid JSON strings, so it becomes "\\\\". 
+     * 		- When it is parsed to JSON object in Javascript, the parser will remove escape chars, convert it back to "\\" 
+     * 		- When this string is used at client side, it is understood as one backslash character ("\") 
+     * @param jsonDiagram
+     */
     private void display(JSONArray jsonDiagram) {
     	String jsonString = jsonDiagram.toString();
+    	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
         String javascript = "load('" + jsonString + "');";
         Clients.evalJavaScript("reset()");
         Clients.evalJavaScript(javascript);

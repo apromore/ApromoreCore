@@ -339,8 +339,14 @@ public class JSONBuilder {
         return graph;
     }
     
+    /**
+     * To make string conform to JSON rules. 
+     * See ProcessDiscovererController.display()
+     * Note: escape characters are doubled since expression patterns also use the same escape characters 
+     * @param value
+     */
     private String escapeChars(String value) {
-    	return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\\'").replaceAll("\"", "\\\\\"");
+    	return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
     }
 
     private String fixNumber(String number) {
