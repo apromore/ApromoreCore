@@ -69,9 +69,8 @@ Edit the top-level site.properties file, replacing the H2 declarations in "Datab
 Stop and restart the server so that it picks up the changes to site.properties.
 
 
-
 PROCESS MINING WITH AUTOMATIC SIMULATION PARAMETERS (OPTIONAL)
-===================================================
+==============================================================
 
 The "Discover BPMN model" tool has an advanced option to "Annotate for BIMP Simulation".  Similarly, the "Discover process map" tool has an export option "Export BPMN annotated for BIMP".  When these are selected, the tool will include information within the created BPMN model which preconfigures it for subsequent use by the "Simulate with BIMP" tool.  This feature requires external Python scripts to be installed.
 
@@ -136,8 +135,8 @@ You can manually copy them there, but the easiest option is to edit pickupRepo i
 * Predictor-Training-Portal-Plugin/target/predictor-training-portal-plugin-1.0.war
 
 
-PQL SETUP
-=========
+PQL SETUP (OPTIONAL)
+====================
 
 PQL queries over the process store are only supported on MySQL.  Create and populate the database with additional tables for PQL:
 $ mysql --user=root --password=MAcri < Supplements/database/PQL.MySQL-1.2.sql
