@@ -222,7 +222,7 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
             String id = UUID.randomUUID().toString();
             UserSessionManager.setEditSession(id, session);
             //Clients.evalJavaScript("window.open('../loganimation/animateLog.zul?id=" + id + "')");
-            Clients.evalJavaScript("window.open('../loganimation/animateLogInSignavio.zul?id=" + id + "')");
+            Clients.evalJavaScript("window.open('/loganimation/animateLog.zul?id=" + id + "')");
         } catch (Exception e) {
             e.printStackTrace();
         }

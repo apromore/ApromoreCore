@@ -67,25 +67,15 @@ public class LogAnimationController extends BaseController {
     private VersionSummaryType version;
     private Set<RequestParameterType<?>> params;
 
-    @Inject private UserSessionManager userSessionManager;
-
     public LogAnimationController() {
         super();
-
-        if (userSessionManager.getCurrentUser() == null) {
-            LOGGER.warn("Faking user session with admin(!)");
-            UserType user = new UserType();
-            user.setId("8");
-            user.setUsername("admin");
-            userSessionManager.setCurrentUser(user);
-        }
 
         String id = Executions.getCurrent().getParameter("id");
         if (id == null) {
             throw new AssertionError("No id parameter in URL");
         }
 
-        SignavioSession session = userSessionManager.getEditSession(id);
+        SignavioSession session = UserSessionManager.getEditSession(id);
         if (session == null) {
             throw new AssertionError("No edit session associated with id " + id);
         }
