@@ -364,6 +364,8 @@
 					  style: {
 						color: "data(color)",
 						"curve-style": "bezier",
+						"control-point-distance": "200px",
+						"control-point-weight": 0.5,
 						"edge-text-rotation": 0,
 						"font-size": 11,
 						label: "data(label)",
