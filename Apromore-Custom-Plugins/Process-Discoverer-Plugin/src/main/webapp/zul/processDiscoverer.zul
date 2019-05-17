@@ -134,11 +134,11 @@
 		}
 		
 		.open-true {float:right; background:url('/img/up.png')
-		no-repeat right 0; height: 16px; padding-right: 20px;
+		no-repeat right 0; height: 20px; padding-right: 20px;
 		font-weight: bold; }
 
 		.open-false {float:right; background:url('/img/down.png')
-		no-repeat right 0; height: 16px; padding-right: 20px;
+		no-repeat right 0; height: 20px; padding-right: 20px;
 		font-weight: bold; }
 	</style>
 		
