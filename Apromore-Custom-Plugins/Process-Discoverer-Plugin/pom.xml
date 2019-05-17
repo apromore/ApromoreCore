@@ -34,7 +34,7 @@
 	
     <artifactId>process-discoverer</artifactId>
     <version>1.0.0</version>
-    <packaging>bundle</packaging>
+    <packaging>war</packaging>
     <name>Process Discoverer</name>
 
     <build>
@@ -49,7 +49,9 @@
                             org.apromore.raffaeleconforti-osgi;bundle-version="[1.0,2.0]"
                         </Import-Bundle>
                         <Import-Package>
-                            org.springframework.beans.factory.aspectj,
+							com.sun.xml.bind.v2,
+							org.apromore.manager.client.*,
+							org.apromore.portal.*,
                             org.processmining.contexts.*;version="[1.0,2.0)",
                             org.processmining.framework.*;version="[1.0,2.0)",
                             org.processmining.models.*;version="[1.0,2.0)",
@@ -57,6 +59,24 @@
                             org.deckfour.xes.model.*;version="[1.0,2.0)",
                             org.deckfour.xes.factory.*;version="[1.0,2.0)",
                             !com.raffaeleconforti.processdiscoverer.*,
+							org.eclipse.virgo.web.dm,
+                            org.springframework.beans.factory.aspectj,
+                            org.springframework.security.web.session,
+                            org.springframework.web.context,
+                            org.springframework.web.context.request,
+                            org.springframework.web.filter,
+                            org.springframework.ws.server.endpoint,
+                            org.springframework.ws.server.endpoint.adapter,
+                            org.springframework.ws.server.endpoint.mapping,
+                            org.springframework.ws.soap.saaj,
+                            org.springframework.ws.soap.server,
+                            org.springframework.ws.soap.server.endpoint,
+                            org.springframework.ws.soap.server.endpoint.mapping,
+                            org.springframework.ws.transport.http,
+                            org.zkoss.zel.impl,
+                            org.zkoss.zk.au.http,
+                            org.zkoss.zk.ui.http,
+							org.zkoss.zul.impl,
                             *
                         </Import-Package>
                         <Export-Package>
@@ -65,9 +85,23 @@
 							org.apromore.plugin.processdiscoverer.impl.filter, 
 							org.apromore.plugin.processdiscoverer.impl
                         </Export-Package>
+						<Web-ContextPath>processdiscoverer</Web-ContextPath>
                     </instructions>
                 </configuration>
             </plugin>		
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                    <packagingExcludes> <!-- Regex to only include the same embedded dependencies as specified inmaven-bundle-plugin -->
+                        %regex[WEB-INF/lib/(?!jbpt-bpm).*jar]
+                    </packagingExcludes>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -83,6 +117,11 @@
             <artifactId>apromore-manager</artifactId>
             <version>1.1</version>
         </dependency>
+		
+		<dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-client</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apromore</groupId>
@@ -96,7 +135,7 @@
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
 
-	<dependency>
+		<dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bimp-annotation-logic</artifactId>
             <version>1.0</version>

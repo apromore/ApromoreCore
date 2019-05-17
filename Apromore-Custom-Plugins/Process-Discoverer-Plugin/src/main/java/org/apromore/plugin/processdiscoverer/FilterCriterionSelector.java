@@ -26,6 +26,7 @@ import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterTypeSelector;
 import org.apromore.plugin.processdiscoverer.impl.util.StringValues;
 import org.apromore.plugin.processdiscoverer.impl.util.TimeConverter;
 import org.deckfour.xes.model.XLog;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -62,7 +63,8 @@ class FilterCriterionSelector {
 
         portalContext = processDiscovererController.portalContext;
 
-        filterSelectorW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/filterCriteria.zul", null, null);
+        //filterSelectorW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/filterCriteria.zul", null, null);
+        filterSelectorW = (Window) Executions.createComponents("/zul/filterCriteria.zul", null, null);
         filterSelectorW.setTitle("Filter Criteria");
 
         criteriaList = (Listbox) filterSelectorW.getFellow("criteria");
@@ -140,7 +142,7 @@ class FilterCriterionSelector {
     }
 
     private void save() throws InterruptedException {
-    	XLog filteredLog = processDiscovererController.getService().filterUsingCriteria(processDiscovererController.getOriginalLog(), criteria);
+    	XLog filteredLog = processDiscovererController.getProcessDiscovererService().filterUsingCriteria(processDiscovererController.getOriginalLog(), criteria);
     	if (filteredLog.isEmpty()) {
     		Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.");
     	}
