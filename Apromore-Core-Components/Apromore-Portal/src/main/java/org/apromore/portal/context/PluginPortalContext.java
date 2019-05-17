@@ -26,6 +26,7 @@ import org.apromore.plugin.portal.*;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 
 import java.io.IOException;
@@ -124,14 +125,36 @@ public class PluginPortalContext implements PortalContext {
         mainController.displayNewProcess(process);
     }
 
+    /**
+     * Bruce 17.05.2019: Do not use UserSessionManager as it does not work outside the portal ZK environment
+     * Apromore has webapp bundles with its own ZK environment
+     */
     @Override
     public FolderType getCurrentFolder() {
-        return UserSessionManager.getCurrentFolder();
+        //return UserSessionManager.getCurrentFolder();
+    	Desktop desktop = mainController.getDesktop();
+    	return (FolderType)desktop.getSession().getAttribute(UserSessionManager.CURRENT_FOLDER);
     }
 
+    /**
+     * Bruce 17.05.2019: Do not use UserSessionManager as it does not work outside the portal ZK environment
+     * Apromore has webapp bundles with its own ZK environment
+     */
     @Override
     public UserType getCurrentUser() {
-        return UserSessionManager.getCurrentUser();
+        //return UserSessionManager.getCurrentUser();
+    	Desktop desktop = mainController.getDesktop();
+    	return (UserType)desktop.getSession().getAttribute(UserSessionManager.USER);
+    }
+    
+    /**
+     * Get attributes stored in the user session
+     * Created by Bruce 17.05.2019
+     */
+    @Override
+    public Object getAttribute(String attribute) {
+    	Desktop desktop = mainController.getDesktop();
+    	return desktop.getSession().getAttribute(attribute);
     }
 
     @Override

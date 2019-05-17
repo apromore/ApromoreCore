@@ -20,43 +20,20 @@
 
 package org.apromore.plugin.processdiscoverer;
 
-import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
-import org.apromore.plugin.processdiscoverer.service.ProcessDiscovererService;
-import org.apromore.service.CanoniserService;
-import org.apromore.service.DomainService;
-import org.apromore.service.EventLogService;
-import org.apromore.service.ProcessService;
-import org.apromore.service.bimp_annotation.BIMPAnnotationService;
-import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
-import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.plugin.processdiscoverer.impl.VisualizationType;
 import org.springframework.stereotype.Component;
-
-import javax.inject.Inject;
-
-import static org.apromore.plugin.processdiscoverer.impl.VisualizationType.FREQUENCY;
-
+import org.zkoss.zk.ui.util.Clients;
 import java.util.Locale;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  */
 @Component("frequencyPlugin")
-public class ProcessDiscovererFrequencyVisualizer extends DefaultPortalPlugin {
+public class ProcessDiscovererFrequencyVisualizer extends ProcessDiscovererAbstractPlugin {
 
     private String label = "Discover process map / BPMN model";
     private String groupLabel = "Discover";
-
-    @Inject private CanoniserService canoniserService;
-    @Inject private DomainService domainService;
-    @Inject private ProcessService processService;
-    @Inject private BPMNDiagramImporter importerService;
-    @Inject private UserInterfaceHelper userInterfaceHelper;
-    @Inject private EventLogService eventLogService;
-    @Inject private ProcessDiscovererService processDiscovererService;
-    @Inject private LogAnimationPluginInterface logAnimationPluginInterface;
-    @Inject private BIMPAnnotationService bimpAnnotationService;
 
     @Override
     public String getLabel(Locale locale) {
@@ -79,9 +56,8 @@ public class ProcessDiscovererFrequencyVisualizer extends DefaultPortalPlugin {
     @Override
     public void execute(PortalContext context) {
         try {
-            new ProcessDiscovererController(context, eventLogService, processDiscovererService,
-                    canoniserService, domainService, processService, importerService,
-                    userInterfaceHelper, logAnimationPluginInterface, FREQUENCY, bimpAnnotationService);
+        	this.prepare(context, VisualizationType.FREQUENCY); //prepare session
+        	Clients.evalJavaScript("window.open('../processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
         } catch (Exception e) {
             e.printStackTrace();
         }

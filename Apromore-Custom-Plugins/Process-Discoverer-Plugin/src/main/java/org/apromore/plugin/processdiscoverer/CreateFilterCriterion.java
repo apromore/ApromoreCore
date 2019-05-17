@@ -26,6 +26,7 @@ import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterTypeSelector;
 import org.apromore.plugin.processdiscoverer.impl.filter.Type;
 import org.apromore.plugin.processdiscoverer.impl.util.StringValues;
 import org.apromore.plugin.processdiscoverer.impl.util.TimeConverter;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;
@@ -99,7 +100,8 @@ class CreateFilterCriterion {
     }
 
     private void setInputs(FilterCriterionSelector filterCriterionSelector, List<LogFilterCriterion> criteria, Map<String, Map<String, Integer>> options_frequency, long min, long max, int pos) throws IOException {
-        this.createFilterCriterionW = (Window) filterCriterionSelector.portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/createFilterCriterion.zul", null, null);
+        //this.createFilterCriterionW = (Window) filterCriterionSelector.portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/createFilterCriterion.zul", null, null);
+    	this.createFilterCriterionW = (Window) Executions.createComponents("/zul/createFilterCriterion.zul", null, null);
         this.createFilterCriterionW.setTitle("Create Filter Criterion");
         this.filterCriterionSelector = filterCriterionSelector;
         this.criteria = criteria;
