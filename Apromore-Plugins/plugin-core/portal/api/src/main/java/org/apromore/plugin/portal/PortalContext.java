@@ -64,6 +64,14 @@ public interface PortalContext {
      * @return the authenticated user
      */
     UserType getCurrentUser();
+    
+    /**
+     * Get attributes stored in the user session
+     * Created by Bruce 17.05.2019
+     * @param attribute
+     * @return
+     */
+    Object getAttribute(String attribute);
 
     void refreshContent();
 

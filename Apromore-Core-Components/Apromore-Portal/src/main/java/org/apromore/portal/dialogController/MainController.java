@@ -43,6 +43,7 @@ import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.*;
@@ -92,6 +93,8 @@ public class MainController extends BaseController implements MainControllerInte
     private String buildDate;
 
     private PortalPlugin logVisualizerPlugin = null;
+    
+    private Execution execution = null;
 	
 	public static MainController getController() {
         return controller;
@@ -185,6 +188,15 @@ public class MainController extends BaseController implements MainControllerInte
                             }
                         }
                     });
+            qe.subscribe(
+                    new EventListener<Event>() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            if (Constants.EVENT_QUEUE_REFRESH_SCREEN.equals(event.getName())) {
+                                reloadSummaries();
+                            }
+                        }
+                    });
         } catch (Exception e) {
             String message;
             if (e.getMessage() == null) {
@@ -198,9 +210,12 @@ public class MainController extends BaseController implements MainControllerInte
         controller=this;
     }
 
+    // Bruce: Do not use Executions.sendRedirect as it does not work 
+    // for webapp bundles with different ZK execution env.
     public void refresh() {
         try {
-            Executions.sendRedirect(null);
+            //Executions.sendRedirect(null);
+        	qe.publish(new Event(Constants.EVENT_QUEUE_REFRESH_SCREEN, null, Boolean.TRUE));
         } catch (NullPointerException e) {
             // The ZK documentation for sendRedirect claims that passing a null parameter is allowed
             // https://www.zkoss.org/javadoc/latest/zk/org/zkoss/zk/ui/Executions.html#sendRedirect(java.lang.String)

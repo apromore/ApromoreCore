@@ -54,16 +54,16 @@ public class UserSessionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserSessionManager.class);
 
-    private static final String USER = "USER";
-    private static final String CURRENT_FOLDER = "CURRENT_FOLDER";
-    private static final String CURRENT_SECURITY_ITEM = "CURRENT_SECURITY_ITEM";
-    private static final String CURRENT_SECURITY_TYPE = "CURRENT_SECURITY_TYPE";
-    private static final String CURRENT_SECURITY_OWNERSHIP = "CURRENT_SECURITY_OWNERSHIP";
-    private static final String PREVIOUS_FOLDER = "PREVIOUS_FOLDER";
-    private static final String TREE = "TREE";
-    private static final String MAIN_CONTROLLER = "MAIN_CONTROLLER";
-    private static final String SELECTED_FOLDER_IDS = "SELECTED_FOLDER_IDS";
-    private static final String SELECTED_PROCESS_IDS = "SELECTED_PROCESS_IDS";
+    public static final String USER = "USER";
+    public static final String CURRENT_FOLDER = "CURRENT_FOLDER";
+    public static final String CURRENT_SECURITY_ITEM = "CURRENT_SECURITY_ITEM";
+    public static final String CURRENT_SECURITY_TYPE = "CURRENT_SECURITY_TYPE";
+    public static final String CURRENT_SECURITY_OWNERSHIP = "CURRENT_SECURITY_OWNERSHIP";
+    public static final String PREVIOUS_FOLDER = "PREVIOUS_FOLDER";
+    public static final String TREE = "TREE";
+    public static final String MAIN_CONTROLLER = "MAIN_CONTROLLER";
+    public static final String SELECTED_FOLDER_IDS = "SELECTED_FOLDER_IDS";
+    public static final String SELECTED_PROCESS_IDS = "SELECTED_PROCESS_IDS";
 
     /**
      * Map from user session UUIDs passed as the query part of URLs, to Signavio session objects.
