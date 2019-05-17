@@ -179,7 +179,8 @@
         <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/StageMining-Logic</module>
         <module>Apromore-Custom-Plugins/StageMining-Portal-Plugin</module>
-		<module>Apromore-Custom-Plugins/Process-Discoverer-Plugin</module>
+        <module>Apromore-Custom-Plugins/Process-Discoverer-Plugin</module>
+        <module>Apromore-Custom-Plugins/XES-Selection-Portal-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
