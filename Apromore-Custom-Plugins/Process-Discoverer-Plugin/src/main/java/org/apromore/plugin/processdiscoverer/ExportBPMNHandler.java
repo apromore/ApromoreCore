@@ -45,8 +45,9 @@ import org.zkoss.zul.Window;
  * and then finished, then another instance is used and then finished.
  * If multiple instances concurrently exist and run, it may happen that one instance may respond
  * to events occuring in another instance. 
- *   
- * @author Bruce Nguyen
+ * 
+ * @author Simon Rabozi
+ * @modified Bruce Nguyen
  *
  */
 public class ExportBPMNHandler implements EventListener<Event> {
