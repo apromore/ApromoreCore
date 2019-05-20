@@ -44,7 +44,7 @@ public class FrequencySetPopulator {
         if(aggregation == TOTAL) result = (double) list.sum();
         else if(aggregation == CASES) result = (double) list.count(LongPredicates.greaterThan(0));
         else if(aggregation == MAX) result = (new StatisticsSelector()).evaluate(StatisticsSelector.StatisticsMeasures.MAX, null, list.toArray());
-        else if(aggregation == MIN) result = (new StatisticsSelector()).evaluate(StatisticsSelector.StatisticsMeasures.MAX, null, list.toArray());
+        else if(aggregation == MIN) result = (new StatisticsSelector()).evaluate(StatisticsSelector.StatisticsMeasures.MIN, null, list.toArray());
         else if(aggregation == MEAN) result = (new StatisticsSelector()).evaluate(StatisticsSelector.StatisticsMeasures.MEAN, null, list.toArray());
         else if(aggregation == MEDIAN) result = (new StatisticsSelector()).evaluate(StatisticsSelector.StatisticsMeasures.MEDIAN, null, list.toArray());
         else if(aggregation == MODE) result = (new StatisticsSelector()).evaluate(StatisticsSelector.StatisticsMeasures.MODE, null, list.toArray());

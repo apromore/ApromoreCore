@@ -54,7 +54,7 @@ public class LogFilterCriterionDuration extends LogFilterCriterionImpl {
 
             for(String v : value) {
             	String[] values = TimeConverter.parseDuration2(v.substring(1));
-                double x = TimeConverter.convertMilliseconds(new BigDecimal(values[0]), values[1]).doubleValue();
+                double x = TimeConverter.convertMilliseconds(Double.parseDouble(values[0]), values[1]).doubleValue();
 
 //                double seconds = 1000.0;
 //                double minutes = seconds * 60.0;

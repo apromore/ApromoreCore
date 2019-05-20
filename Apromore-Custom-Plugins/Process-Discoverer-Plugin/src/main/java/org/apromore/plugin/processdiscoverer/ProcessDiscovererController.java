@@ -28,12 +28,8 @@ import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 
 import nl.tue.astar.AStarException;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.helper.Version;
-import org.apromore.model.FolderType;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
-import org.apromore.model.UserType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
 import org.apromore.plugin.processdiscoverer.impl.VisualizationAggregation;
@@ -43,10 +39,8 @@ import org.apromore.plugin.processdiscoverer.impl.util.StringValues;
 import org.apromore.plugin.processdiscoverer.impl.util.TimeConverter;
 import org.apromore.plugin.processdiscoverer.service.ProcessDiscovererService;
 import org.apromore.plugin.processdiscoverer.service.ProcessDiscovererServiceImpl;
-import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
-import org.apromore.portal.dialogController.SelectDynamicListController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
@@ -91,8 +85,6 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
@@ -162,7 +154,7 @@ public class ProcessDiscovererController extends BaseController {
     private Button fitness;
     private Button animate;
     
-    private Menuitem exportUnfitted;
+    private Menuitem exportFilteredLog;
     
     private Label caseNumber;
     private Label uniquecaseNumber;
@@ -329,7 +321,7 @@ public class ProcessDiscovererController extends BaseController {
             this.filter = (Button) slidersWindow.getFellow(StringValues.b[66]);
             this.animate = (Button) slidersWindow.getFellow(StringValues.b[67]);
 
-            this.exportUnfitted = (Menuitem) slidersWindow.getFellow(StringValues.b[69]);
+            this.exportFilteredLog = (Menuitem) slidersWindow.getFellow(StringValues.b[69]);
 
             Combobutton export = (Combobutton) slidersWindow.getFellow(StringValues.b[70]);
             Menuitem downloadPDF = (Menuitem) slidersWindow.getFellow(StringValues.b[71]);
@@ -341,7 +333,7 @@ public class ProcessDiscovererController extends BaseController {
 
             for (String option : generateLabels(log)) {
                 Menuitem item = new Menuitem(option);
-                item.addEventListener(StringValues.b[74], new EventListener<Event>() {
+                item.addEventListener("onClick", new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
                         setLabel(item.getLabel());
                         visualized = false;
@@ -360,26 +352,26 @@ public class ProcessDiscovererController extends BaseController {
                     setArcAndActivityRatios();
                 }
             };
-            this.use_fixed.addEventListener(StringValues.b[75], radioListener);
-            this.use_dynamic.addEventListener(StringValues.b[75], radioListener);
-            this.gateways.addEventListener(StringValues.b[75], radioListener);
-            this.secondary.addEventListener(StringValues.b[75], radioListener);
-            this.inverted_nodes.addEventListener(StringValues.b[75], radioListener);
-            this.inverted_arcs.addEventListener(StringValues.b[75], radioListener);
+            this.use_fixed.addEventListener("onCheck", radioListener);
+            this.use_dynamic.addEventListener("onCheck", radioListener);
+            this.gateways.addEventListener("onCheck", radioListener);
+            this.secondary.addEventListener("onCheck", radioListener);
+            this.inverted_nodes.addEventListener("onCheck", radioListener);
+            this.inverted_arcs.addEventListener("onCheck", radioListener);
 
-            this.activities.addEventListener(StringValues.b[76], new EventListener<Event>() {
+            this.activities.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     activitiesText.setValue(activities.getCurpos());
                     setArcAndActivityRatios();
                 }
             });
-            this.arcs.addEventListener(StringValues.b[76], new EventListener<Event>() {
+            this.arcs.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     arcsText.setValue(arcs.getCurpos());
                     setArcAndActivityRatios();
                 }
             });
-            this.parallelism.addEventListener(StringValues.b[76], new EventListener<Event>() {
+            this.parallelism.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     parallelismText.setValue(parallelism.getCurpos());
                     setArcAndActivityRatios();
@@ -469,28 +461,28 @@ public class ProcessDiscovererController extends BaseController {
                     visualizeFrequency();
                 }
             };
-            this.frequency.addEventListener(StringValues.b[74], frequencyListener);
-            this.absolute_frequency.addEventListener(StringValues.b[74], frequencyListener);
-            this.case_frequency.addEventListener(StringValues.b[74], frequencyListener);
-            this.median_frequency.addEventListener(StringValues.b[74], frequencyListener);
-            this.mean_frequency.addEventListener(StringValues.b[74], frequencyListener);
-            this.mode_frequency.addEventListener(StringValues.b[74], frequencyListener);
-            this.max_frequency.addEventListener(StringValues.b[74], frequencyListener);
-            this.min_frequency.addEventListener(StringValues.b[74], frequencyListener);
+            this.frequency.addEventListener("onClick", frequencyListener);
+            this.absolute_frequency.addEventListener("onClick", frequencyListener);
+            this.case_frequency.addEventListener("onClick", frequencyListener);
+            this.median_frequency.addEventListener("onClick", frequencyListener);
+            this.mean_frequency.addEventListener("onClick", frequencyListener);
+            this.mode_frequency.addEventListener("onClick", frequencyListener);
+            this.max_frequency.addEventListener("onClick", frequencyListener);
+            this.min_frequency.addEventListener("onClick", frequencyListener);
 
             EventListener<Event> durationListener = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     visualizeDuration();
                 }
             };
-            this.duration.addEventListener(StringValues.b[74], durationListener);
-            this.total_duration.addEventListener(StringValues.b[74], durationListener);
-            this.median_duration.addEventListener(StringValues.b[74], durationListener);
-            this.mean_duration.addEventListener(StringValues.b[74], durationListener);
-            this.max_duration.addEventListener(StringValues.b[74], durationListener);
-            this.min_duration.addEventListener(StringValues.b[74], durationListener);
+            this.duration.addEventListener("onClick", durationListener);
+            this.total_duration.addEventListener("onClick", durationListener);
+            this.median_duration.addEventListener("onClick", durationListener);
+            this.mean_duration.addEventListener("onClick", durationListener);
+            this.max_duration.addEventListener("onClick", durationListener);
+            this.min_duration.addEventListener("onClick", durationListener);
 
-            this.exportUnfitted.addEventListener(StringValues.b[79], new EventListener<Event>() {
+            this.exportFilteredLog.addEventListener(StringValues.b[79], new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     activities_value = activities.getCurpos();
@@ -501,11 +493,11 @@ public class ProcessDiscovererController extends BaseController {
                 }
             });
 
-            this.details.addEventListener(StringValues.b[74], new EventListener<Event>() {
+            this.details.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     //Window details_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[17], null, null);
                 	Window details_window = (Window) Executions.createComponents("/zul/details.zul", null, null);
-                    details_window.setTitle("Details");
+                    details_window.setTitle("Activities");
                     Listbox listbox = (Listbox) details_window.getFellow(StringValues.b[81]);
                     Listheader pos = (Listheader) details_window.getFellow(StringValues.b[82]);
                     pos.setSortAscending(new NumberComparator(true, 0));
@@ -535,7 +527,7 @@ public class ProcessDiscovererController extends BaseController {
                     listbox.setRows(5);
 
                     Button save = (Button) details_window.getFellow("save");
-                    save.addEventListener(StringValues.b[74], new EventListener<Event>() {
+                    save.addEventListener("onClick", new EventListener<Event>() {
                         @Override
                         public void onEvent(Event event) throws Exception {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -558,7 +550,7 @@ public class ProcessDiscovererController extends BaseController {
                 }
             });
 
-            this.cases.addEventListener(StringValues.b[74], new EventListener<Event>() {
+            this.cases.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     //cases_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[18], null, null);
                     cases_window = (Window) Executions.createComponents("/zul/cases.zul", null, null);
@@ -608,10 +600,7 @@ public class ProcessDiscovererController extends BaseController {
                                 String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(1)).getLabel();
                                 JSONArray array = processDiscovererService.generateTraceModel(log, traceID, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), secondary.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
 
-                                String jsonString = array.toString();
-                                String javascript = "load('" + jsonString + "');";
-                                Clients.evalJavaScript("reset()");
-                                Clients.evalJavaScript(javascript);
+                                ProcessDiscovererController.this.display(array);
                                 Clients.evalJavaScript("layout_dagre_LR(false)");
                             } catch(Exception e) {
                                 e.printStackTrace();
@@ -620,7 +609,7 @@ public class ProcessDiscovererController extends BaseController {
                     });
 
                     Button save = (Button) cases_window.getFellow("save");
-                    save.addEventListener(StringValues.b[74], new EventListener<Event>() {
+                    save.addEventListener("onClick", new EventListener<Event>() {
                         @Override
                         public void onEvent(Event event) throws Exception {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -645,7 +634,7 @@ public class ProcessDiscovererController extends BaseController {
             
 
 
-            this.fitness.addEventListener(StringValues.b[74], new EventListener<Event>() {
+            this.fitness.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     //Window details_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[19], null, null);
                 	Window details_window = (Window) Executions.createComponents("/zul/fitness.zul", null, null);
@@ -671,7 +660,7 @@ public class ProcessDiscovererController extends BaseController {
                 }
             });
 
-            this.filter.addEventListener(StringValues.b[74], new EventListener<Event>() {
+            this.filter.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     new FilterCriterionSelector(getLabel(), ProcessDiscovererController.this, criteria, options_frequency, min, max);
                 }
@@ -947,9 +936,9 @@ public class ProcessDiscovererController extends BaseController {
                 }
             };
 
-            export.addEventListener(StringValues.b[74], exportPDF);
-            downloadPDF.addEventListener(StringValues.b[74], exportPDF);
-            downloadPNG.addEventListener(StringValues.b[74], new EventListener<Event>() {
+            export.addEventListener("onClick", exportPDF);
+            downloadPDF.addEventListener("onClick", exportPDF);
+            downloadPNG.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     String name = log_name;
                     int pos = 97;
@@ -1442,6 +1431,8 @@ public class ProcessDiscovererController extends BaseController {
                     logSummary.getName() + "_filtered", new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     logSummary.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     logSummary.isMakePublic());
+            
+            Messagebox.show("A new log has been saved in Apromore in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
 
             portalContext.refreshContent();
         } catch (Exception e) {
