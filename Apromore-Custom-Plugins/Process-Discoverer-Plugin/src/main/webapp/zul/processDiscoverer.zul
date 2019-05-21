@@ -316,6 +316,8 @@
 	<script type="text/javascript">
 		<![CDATA[
 		var layout_model = 4, ctrlIsPressed = !1, altIsPressed = !1;
+		var currentZoomLevel = 1;
+		var currentPanPosition;
 		$(document).keydown(function(a) {
 		  if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0;
 		  if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0;
@@ -405,21 +407,39 @@
 			  edges: []
 			}
 		  });
+		  
 		  a.on("cxttap", "edge", function(a) {
 			removeEdge(a)
 		  });
+		  
 		  a.on("cxttap", "node", function(a) {
 			removeNode(a)
-		  })
+		  });
+		  
+		  a.on("zoom", function(event) {
+			currentZoomLevel = a.zoom();
+		  });
+		  
+		  a.on("pan", function(event) {
+			currentPanPosition = a.pan();
+		  });		  
 		}
 
 		function reset() {
-		  cy.elements().remove()
+		  cy.elements().remove();
 		}
 
 		function load(a) {
-		  cy.add($.parseJSON(a));
-		  layout()
+		  // need to store the current zoom and pan level as the load function
+		  // will reset them.
+		  var zoom = currentZoomLevel; 
+		  var pan = currentPanPosition;
+		  cy.add($.parseJSON(a)); 
+		  layout();
+		  window.cy.zoom(zoom);
+		  window.cy.pan(pan);
+		  currentZoomLevel = zoom;
+		  currentPanPosition = pan;
 		}
 
 		function horizontal() {
