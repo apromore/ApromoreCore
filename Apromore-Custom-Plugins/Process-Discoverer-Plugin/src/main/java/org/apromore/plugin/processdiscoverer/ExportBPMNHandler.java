@@ -16,6 +16,7 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.dialogController.SelectDynamicListController;
 import org.apromore.service.bimp_annotation.BIMPAnnotationService;
+import org.deckfour.xes.model.XLog;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -70,11 +71,13 @@ public class ExportBPMNHandler implements EventListener<Event> {
     private Label descriptionLabel;
     private Progressmeter fractionCompleteProgressmeter;
     private ProgressEventListener progressListener = null;
+    private boolean showProgressBar = false;
 
-    public ExportBPMNHandler(PortalContext portalContext, ProcessDiscovererController controller, boolean annotateForBIMP) {
+    public ExportBPMNHandler(PortalContext portalContext, ProcessDiscovererController controller, boolean annotateForBIMP, boolean showProgressBar) {
     	this.portalContext = portalContext;
     	this.controller = controller;
         this.annotateForBIMP = annotateForBIMP;
+        this.showProgressBar = showProgressBar;
         this.progressListener = new ProgressEventListener();
         eventQueue = EventQueues.lookup(EVENT_QUEUE, EventQueues.SESSION, true);
     }
@@ -87,30 +90,30 @@ public class ExportBPMNHandler implements EventListener<Event> {
         public void onEvent(Event event) throws Exception {
             switch (event.getName()) {
                 case CHANGE_DESCRIPTION:
-                    descriptionLabel.setValue((String) event.getData());
+                    if (descriptionLabel != null) descriptionLabel.setValue((String) event.getData());
                     break;
     
                 case CHANGE_FRACTION_COMPLETE:
-                    fractionCompleteProgressmeter.setValue((int) Math.round(100.0 * (Double) event.getData()));
+                    if (fractionCompleteProgressmeter != null) fractionCompleteProgressmeter.setValue((int) Math.round(100.0 * (Double) event.getData()));
                     break;
     
                 case MINING_COMPLETE:
-                    fractionCompleteProgressmeter.setValue(100);
-                    descriptionLabel.setValue("Saving BPMN model");
+                	if (fractionCompleteProgressmeter != null) fractionCompleteProgressmeter.setValue(100);
+                    if (descriptionLabel != null) descriptionLabel.setValue("Saving BPMN model");
                     try {
                     	ExportBPMNHandler.this.save();
+                    	if (window != null) window.detach();
+                        eventQueue.unsubscribe(this); //unsubscribe after finishing work
                     } catch (Exception e) {
                         e.printStackTrace();
                         Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
                         eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     }
-                    window.detach();
-                    eventQueue.unsubscribe(this); //unsubscribe after finishing work
                     break;
 
                 case MINING_EXCEPTION:
                     Exception e = (Exception) event.getData();
-                    window.detach();
+                    if (window != null) window.detach();
                     Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
                     eventQueue.unsubscribe(this); //unsubscribe after finishing work even fails
                     break;
@@ -127,18 +130,20 @@ public class ExportBPMNHandler implements EventListener<Event> {
     @Override
     public void onEvent(Event event) throws Exception {
         //window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "/zul/mineAndSave.zul", null, null);
-    	window = (Window) Executions.createComponents("/zul/mineAndSave.zul", null, null);
-        ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
-            public void onEvent(Event event) throws Exception {
-                window.detach();
-            }
-        });
-        
-        descriptionLabel = (Label) window.getFellow("description");
-        fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
+    	if (this.showProgressBar) {
+	    	window = (Window) Executions.createComponents("/zul/mineAndSave.zul", null, null);
+	        ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
+	            public void onEvent(Event event) throws Exception {
+	                window.detach();
+	            }
+	        });
+	        
+	        descriptionLabel = (Label) window.getFellow("description");
+	        fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
+	        window.doModal();
+    	}
         
         eventQueue.subscribe(progressListener); // subscribe to start listening to events
-        window.doModal();
 
         new Thread() {
             public void run() {
@@ -210,34 +215,49 @@ public class ExportBPMNHandler implements EventListener<Event> {
         if (controller.getLogName() != null) {
             defaultProcessName = controller.getLogName().split("\\.")[0];
         }
-
-        String user = portalContext.getCurrentUser().getUsername();
-        Version version = new Version(1, 0);
-        Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
-        String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-        boolean publicModel = true;
-
-        List<String> domains = controller.getDomainService().findAllDomains();
-        SelectDynamicListController domainCB = new SelectDynamicListController(domains);
-        domainCB.setReference(domains);
-        domainCB.setAutodrop(true);
-        domainCB.setWidth("85%");
-        domainCB.setHeight("100%");
-        domainCB.setAttribute("hflex", "1");
-
-        controller.getProcessService().importProcess(user,
-        		portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                defaultProcessName,
-                version,
-                "BPMN 2.0",
-                controller.getCanoniserService().canonise("BPMN 2.0", new ByteArrayInputStream(minedModel.getBytes()), canoniserProperties),
-                domainCB.getValue(),
-                "Model generated by the Apromore BPMN process mining service.",
-                now,  // creation timestamp
-                now,  // last update timestamp
-                publicModel);
         
-        portalContext.refreshContent();
+        controller.showInputDialog(
+			"Input", 
+			"Enter a name for the BPMN model", 
+			defaultProcessName, 
+			"^[a-zA-Z0-9_\\-]+$",
+			new EventListener<Event>() {
+				@Override
+            	public void onEvent(Event event) throws Exception {
+					if (event.getName().equals("onOK")) {
+    				   String modelName = (String)event.getData();
+				       String user = portalContext.getCurrentUser().getUsername();
+				        Version version = new Version(1, 0);
+				        Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
+				        String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
+				        boolean publicModel = true;
+
+				        List<String> domains = controller.getDomainService().findAllDomains();
+				        SelectDynamicListController domainCB = new SelectDynamicListController(domains);
+				        domainCB.setReference(domains);
+				        domainCB.setAutodrop(true);
+				        domainCB.setWidth("85%");
+				        domainCB.setHeight("100%");
+				        domainCB.setAttribute("hflex", "1");
+
+				        controller.getProcessService().importProcess(user,
+				        		portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+				        		modelName,
+				                version,
+				                "BPMN 2.0",
+				                controller.getCanoniserService().canonise("BPMN 2.0", new ByteArrayInputStream(minedModel.getBytes()), canoniserProperties),
+				                domainCB.getValue(),
+				                "Model generated by the Apromore BPMN process mining service.",
+				                now,  // creation timestamp
+				                now,  // last update timestamp
+				                publicModel);
+				        Messagebox.show("A new BPMN model named '" + modelName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
+				        portalContext.refreshContent();
+					}
+            	}
+			});
+
+ 
     };
 
 }

@@ -93,6 +93,7 @@ import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.apromore.plugin.processdiscoverer.impl.VisualizationAggregation.*;
 import static org.apromore.plugin.processdiscoverer.impl.VisualizationType.DURATION;
@@ -482,16 +483,29 @@ public class ProcessDiscovererController extends BaseController {
             this.max_duration.addEventListener("onClick", durationListener);
             this.min_duration.addEventListener("onClick", durationListener);
 
-            this.exportFilteredLog.addEventListener(StringValues.b[79], new EventListener<Event>() {
+            this.exportFilteredLog.addEventListener("onExport", new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    activities_value = activities.getCurpos();
-                    arcs_value = arcs.getCurpos();
-
-                    XLog filtered_log = processDiscovererService.generateFilteredLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, inverted_nodes.isChecked(), inverted_arcs.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-                    saveLog(filtered_log);
-                }
+                	ProcessDiscovererController.this.showInputDialog(
+            			"Input", 
+						"Enter a log name", 
+						logSummary.getName() + "_filtered", 
+						"^[a-zA-Z0-9_\\-]+$",
+						new EventListener<Event>() {
+            				@Override
+                        	public void onEvent(Event event) throws Exception {
+            					if (event.getName().equals("onOK")) {
+	            					String logName = (String)event.getData();
+	            					activities_value = activities.getCurpos();
+	        	                    arcs_value = arcs.getCurpos();
+	        	                    XLog filtered_log = processDiscovererService.generateFilteredLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, inverted_nodes.isChecked(), inverted_arcs.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
+	        	                    saveLog(filtered_log, logName);
+            					}
+                        	}
+	                	});
+                	}
             });
+                	
 
             this.details.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -598,7 +612,7 @@ public class ProcessDiscovererController extends BaseController {
                         public void onEvent(Event event) throws Exception {
                             try {
                                 String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(1)).getLabel();
-                                JSONArray array = processDiscovererService.generateTraceModel(log, traceID, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), secondary.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
+                                JSONArray array = processDiscovererService.generateTraceModel(log, traceID, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), false, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
 
                                 ProcessDiscovererController.this.display(array);
                                 Clients.evalJavaScript("layout_dagre_LR(false)");
@@ -882,8 +896,8 @@ public class ProcessDiscovererController extends BaseController {
                 }
             });
             
-            exportBPMN.addEventListener("onClick", new ExportBPMNHandler(portalContext, this, false));
-            exportBPMNAnnotatedForBIMP.addEventListener("onClick", new ExportBPMNHandler(portalContext, this, true));
+            exportBPMN.addEventListener("onClick", new ExportBPMNHandler(portalContext, this, false, false));
+            exportBPMNAnnotatedForBIMP.addEventListener("onClick", new ExportBPMNHandler(portalContext, this, true, false));
 
             EventListener<Event> exportPDF = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -1041,6 +1055,53 @@ public class ProcessDiscovererController extends BaseController {
             cases.put(XConceptExtension.instance().extractName(trace), new Integer[] {i, length});
         }
         return cases;
+    }
+    
+    /**
+     * Display an input dialog
+     * @param title
+     * @param message
+     * @param initialValue
+     * @param valuePattern
+     * @returnValueHander: callback event listener, notified with onOK and onCancel event 
+     */
+    public void showInputDialog(String title, String message, String initialValue, String valuePattern, EventListener<Event> returnValueHander) {
+		Window win = (Window) Executions.createComponents("/zul/inputDialog.zul", null, null);
+        Window dialog = (Window) win.getFellow("inputDialog");
+        dialog.setTitle(title);
+        Label labelMessage = (Label)dialog.getFellow("labelMessage"); 
+        Textbox txtValue = (Textbox)dialog.getFellow("txtValue");
+        Label labelError = (Label)dialog.getFellow("labelError"); 
+        labelMessage.setValue(message);
+        txtValue.setValue(initialValue);
+        labelError.setValue("");
+        
+        dialog.doModal();
+        
+        ((Button)dialog.getFellow("btnCancel")).addEventListener("onClick", new EventListener<Event>() {
+        	 @Override
+             public void onEvent(Event event) throws Exception {
+        		 dialog.detach();
+        		 returnValueHander.onEvent( new Event("onCancel"));
+        	 }
+         });
+         
+         ((Button)dialog.getFellow("btnOK")).addEventListener("onClick", new EventListener<Event>() {
+        	 @Override
+             public void onEvent(Event event) throws Exception {
+        		 if (txtValue.getValue().trim().isEmpty()) {
+        			 labelError.setValue("Please enter a value!");
+        		 }
+        		 else if (!Pattern.matches(valuePattern, txtValue.getValue())) {
+        			 labelError.setValue("The entered value is not valid!");
+        		 }
+        		 else {
+        			 dialog.detach();
+        			 returnValueHander.onEvent( new Event("onOK", null, txtValue.getValue()));
+        		 }
+        	 }
+        });
+    	
     }
 
    
@@ -1420,7 +1481,7 @@ public class ProcessDiscovererController extends BaseController {
         Clients.evalJavaScript(javascript);
     }
 
-    private void saveLog(XLog filtered_log) {
+    private void saveLog(XLog filtered_log, String logName) {
         try {
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             eventLogService.exportToStream(outputStream, filtered_log);
@@ -1428,11 +1489,11 @@ public class ProcessDiscovererController extends BaseController {
             int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
 
             eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
-                    logSummary.getName() + "_filtered", new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
+                    logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     logSummary.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     logSummary.isMakePublic());
             
-            Messagebox.show("A new log has been saved in Apromore in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
+            Messagebox.show("A new log named '" + logName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
 
             portalContext.refreshContent();
         } catch (Exception e) {
