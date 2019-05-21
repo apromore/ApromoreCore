@@ -32,6 +32,7 @@ import org.apromore.service.helper.UserInterfaceHelper;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XSerializer;
@@ -105,7 +106,7 @@ public class EventLogServiceImpl implements EventLogService {
      */
     @Override
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog, String extension, String domain, String created, boolean publicModel) throws Exception {
-        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(new XFactoryExternalStore.InMemoryStoreImpl(), inputStreamLog, extension), userSrv.findUserByLogin(username).getId(), domain, created, publicModel);
+        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(XFactoryRegistry.instance().currentDefault(), inputStreamLog, extension), userSrv.findUserByLogin(username).getId(), domain, created, publicModel);
         Log log = new Log();
         log.setFolder(folderRepo.findUniqueByID(folderId));
         log.setDomain(domain);

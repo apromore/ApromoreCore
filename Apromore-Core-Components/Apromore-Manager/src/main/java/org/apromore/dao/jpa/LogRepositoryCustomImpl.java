@@ -28,6 +28,7 @@ import org.apromore.dao.model.Log;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.*;
@@ -165,7 +166,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         if (log != null) {
             try {
                 String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
-                return importFromFile(new XFactoryExternalStore.InMemoryStoreImpl(), name);
+                return importFromFile(XFactoryRegistry.instance().currentDefault(), name);
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
             }
