@@ -517,7 +517,7 @@ public class ProcessDiscovererImpl {
         BPMNNode lastNode = bpmnDiagramBuilder.addNode(start_name);
         for(int i = 0; i < trace.size(); i++) {
             XEvent event = trace.get(i);
-            if(full_classifier.getClassIdentity(event).endsWith("complete")) {
+            if(full_classifier.getClassIdentity(event).toLowerCase().endsWith("complete")) {
                 String name = xce.extractName(event);
                 int previous_start = getStart(trace, i);
                 if(previous_start > -1) {
@@ -551,7 +551,7 @@ public class ProcessDiscovererImpl {
         XConceptExtension xce = XConceptExtension.instance();
         for(int i = pos - 1; i >= 0; i--) {
             XEvent event1 = trace.get(i);
-            if(full_classifier.getClassIdentity(event1).endsWith("start") && xce.extractName(event).equals(xce.extractName(event1))) {
+            if(full_classifier.getClassIdentity(event1).toLowerCase().endsWith("start") && xce.extractName(event).equals(xce.extractName(event1))) {
                 return i;
             }
         }
@@ -561,7 +561,7 @@ public class ProcessDiscovererImpl {
     private int getPreviousComplete(XTrace trace, int pos) {
         for(int i = pos - 1; i >= 0; i--) {
             XEvent event1 = trace.get(i);
-            if(full_classifier.getClassIdentity(event1).endsWith("complete")) {
+            if(full_classifier.getClassIdentity(event1).toLowerCase().endsWith("complete")) {
                 return i;
             }
         }

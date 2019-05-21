@@ -218,9 +218,10 @@ public class ExportBPMNHandler implements EventListener<Event> {
         
         controller.showInputDialog(
 			"Input", 
-			"Enter a name for the BPMN model", 
+			"Enter a name for the BPMN model (no more than 60 characters)", 
 			defaultProcessName, 
-			"^[a-zA-Z0-9_\\-]+$",
+			"^[a-zA-Z0-9_\\-\\s]{1,60}$",
+			"a-z, A-Z, 0-9, hyphen, underscore, and space. No more than 60 chars.",
 			new EventListener<Event>() {
 				@Override
             	public void onEvent(Event event) throws Exception {

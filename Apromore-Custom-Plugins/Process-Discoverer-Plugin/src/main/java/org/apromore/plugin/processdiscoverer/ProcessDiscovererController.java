@@ -488,9 +488,10 @@ public class ProcessDiscovererController extends BaseController {
                 public void onEvent(Event event) throws Exception {
                 	ProcessDiscovererController.this.showInputDialog(
             			"Input", 
-						"Enter a log name", 
+						"Enter a log name (no more than 60 characters)", 
 						logSummary.getName() + "_filtered", 
-						"^[a-zA-Z0-9_\\-]+$",
+						"^[a-zA-Z0-9_\\-\\s]{1,60}$",
+						"a-z, A-Z, 0-9, hyphen, underscore, and space. No more than 60 chars.",
 						new EventListener<Event>() {
             				@Override
                         	public void onEvent(Event event) throws Exception {
@@ -1042,7 +1043,7 @@ public class ProcessDiscovererController extends BaseController {
             StringBuilder traceBuilder = new StringBuilder();
             for (XEvent event : trace) {
                 String label = event.getAttributes().get(getLabel()).toString();
-                if(event.getAttributes().get(StringValues.b[117]).toString().endsWith("complete")) length++;
+                if(event.getAttributes().get("lifecycle:transition").toString().toLowerCase().endsWith("complete")) length++;
                 traceBuilder.append(label + ",");
             }
             String s = traceBuilder.toString();
@@ -1064,9 +1065,13 @@ public class ProcessDiscovererController extends BaseController {
      * @param message: the message regarding the input to enter
      * @param initialValue: initial value for the input
      * @param valuePattern: the expression pattern to check validity of the input
+     * @param allowedValues: message about valid values allowed  
      * @returnValueHander: callback event listener, notified with onOK (containing return value as string) and onCancel event
      */
-    public void showInputDialog(String title, String message, String initialValue, String valuePattern, EventListener<Event> returnValueHander) {
+    public void showInputDialog(String title, String message, String initialValue, 
+    							String valuePattern,
+    							String allowedValues, 
+    							EventListener<Event> returnValueHander) {
 		Window win = (Window) Executions.createComponents("/zul/inputDialog.zul", null, null);
         Window dialog = (Window) win.getFellow("inputDialog");
         dialog.setTitle(title);
@@ -1094,7 +1099,7 @@ public class ProcessDiscovererController extends BaseController {
         			 labelError.setValue("Please enter a value!");
         		 }
         		 else if (!Pattern.matches(valuePattern, txtValue.getValue())) {
-        			 labelError.setValue("The entered value is not valid!");
+        			 labelError.setValue("The entered value is not valid! Allowed characters: " + allowedValues);
         		 }
         		 else {
         			 dialog.detach();
