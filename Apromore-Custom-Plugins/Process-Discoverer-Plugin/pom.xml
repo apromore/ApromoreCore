@@ -32,7 +32,7 @@
         <relativePath>../../Apromore-Plugins/</relativePath>
     </parent>
 	
-    <artifactId>process-discoverer-plugin</artifactId>
+    <artifactId>process-discoverer</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
     <name>Process Discoverer</name>
