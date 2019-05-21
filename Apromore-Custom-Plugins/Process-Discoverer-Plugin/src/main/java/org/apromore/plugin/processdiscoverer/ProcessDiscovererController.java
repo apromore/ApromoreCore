@@ -1058,12 +1058,13 @@ public class ProcessDiscovererController extends BaseController {
     }
     
     /**
+     * Bruce added 21.05.2019
      * Display an input dialog
-     * @param title
-     * @param message
-     * @param initialValue
-     * @param valuePattern
-     * @returnValueHander: callback event listener, notified with onOK and onCancel event 
+     * @param title: title of the dialog
+     * @param message: the message regarding the input to enter
+     * @param initialValue: initial value for the input
+     * @param valuePattern: the expression pattern to check validity of the input
+     * @returnValueHander: callback event listener, notified with onOK (containing return value as string) and onCancel event
      */
     public void showInputDialog(String title, String message, String initialValue, String valuePattern, EventListener<Event> returnValueHander) {
 		Window win = (Window) Executions.createComponents("/zul/inputDialog.zul", null, null);
