@@ -569,7 +569,7 @@ public class ProcessDiscovererController extends BaseController {
                         i++;
                     }
 
-                    listbox.setRows(5);
+                    //listbox.setRows(5);
 
                     Button save = (Button) details_window.getFellow("save");
                     save.addEventListener("onClick", new EventListener<Event>() {
@@ -599,7 +599,7 @@ public class ProcessDiscovererController extends BaseController {
                 public void onEvent(Event event) throws Exception {
                     //cases_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[18], null, null);
                     cases_window = (Window) Executions.createComponents("/zul/cases.zul", null, null);
-                    cases_window.setTitle("Process Instances");
+                    cases_window.setTitle("Cases");
                     
                     cases_window.addEventListener("onClose", new EventListener<Event>() {
                     	public void onEvent(Event event) throws Exception {
@@ -636,7 +636,7 @@ public class ProcessDiscovererController extends BaseController {
                         i++;
                     }
 
-                    listbox.setRows(5);
+                    //listbox.setRows(5);
 
                     listbox.addEventListener("onSelect", new EventListener<Event>() {
                         @Override
