@@ -19,7 +19,7 @@
  -->
 
 <window id="detailsWindow" width="500px" sizable="true" maximizable="true" closable="true" position="center" contentStyle="overflow:auto">
-    <listbox id="detailsList" rows="10" >
+    <listbox id="detailsList" rows="10" vflex="1">
         <listhead>
             <listheader id="pos" label="" width="15%" sort="auto"/>
             <listheader id="detail_value" label="Value" width="45%" sort="auto"/>

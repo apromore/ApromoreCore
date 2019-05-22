@@ -19,7 +19,7 @@
  -->
 
 <window id="casesWindow" width="400px" sizable="true" maximizable="true" closable="true" position="center" contentStyle="overflow:auto">
-    <listbox id="casesList" rows="10" >
+    <listbox id="casesList" vflex="1" rows="10" >
         <listhead>
             <listheader id="pos" label="" sort="auto"/>
             <listheader id="case_value" label="Case ID" sort="auto"/>
