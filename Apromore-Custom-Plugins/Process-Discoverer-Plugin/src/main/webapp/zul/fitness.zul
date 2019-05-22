@@ -22,7 +22,7 @@
     <listbox id="detailsList" rows="5" >
         <listhead>
             <listheader id="detail_value" label="Value" sort="auto"/>
-            <listheader id="detail_frequency" label="Occurrence"/>
+            <listheader id="detail_frequency" label="Value"/>
             <listheader id="detail_ratio" label="Percentage"/>
         </listhead>
     </listbox>
