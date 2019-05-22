@@ -212,10 +212,10 @@ public class ProcessDiscovererImpl {
             BPMNDiagram bpmnDiagram = splitMiner.mineBPMNModel(simpleLog, new DFGPWithLogThreshold(simpleLog, arcs, parallelism, prioritize_parallelism, preserve_connectivity, inverted_arcs), SplitMinerUIResult.StructuringTime.NONE);
             
             //----------------------------------------------------
-            // The arcs on the BPMN diagram created by a process discovery algorithm
-            // must be checked against the arcs collected in ArcInfoCollector
-            // Only arcs that exist in ArcInfoCollector are kept
-            // NOTE: this may turn the BPMN diagram UNSOUND
+            // The arcs on the discovered BPMN diagram are mapped with 
+            // the arcs in the ArcInfoCollector to compute its weight.
+            // It concludes that if there is an arc from A to B on the model,
+            // it corresponds to a set of arcs on the DFG with source=A and target=B
             //----------------------------------------------------
             BPMNDiagramBuilder diagramBuilder = new BPMNDiagramBuilder(arcInfoCollector);
             Map<BPMNNode, BPMNNode> map = new UnifiedMap<>();
@@ -345,7 +345,7 @@ public class ProcessDiscovererImpl {
     }
 
     // First, the original log is filtered by user-defined log filter criteria
-    // Create simplified log whose every trace is a list of integer, each integer is mapped to the corresponding classifier value
+    // Create simplified log: every trace is a list of integer, each integer is mapped to the corresponding classifier value
     // Example trace: 13456777882 (1 and 2 are used to mark the start and end of the trace)
     private List<IntList> initialization(String attribute, double activities, boolean inverted_nodes, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria) {
         prepareLogForInitialization(attribute, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
@@ -362,14 +362,14 @@ public class ProcessDiscovererImpl {
     // Step 1: filter the original XLog by log filter criteria
     // Step 2: convert from the original XLog to index-based log (simplified log)
     // Step 3: collect nodes and arcs data into NodeInfoCollector and ArcInfoCollector
-    // Step 4: filter the simplified log by the node and arc levers, update NodeInfoCollector and ArcInfoCollector
+    // Step 4: filter the simplified log by the node lever (HOW ABOUT ARC SELECTOR???), update NodeInfoCollector and ArcInfoCollector
     // Step 5: convert from the simplified log to XLog
     public XLog generateFilteredLog(String attribute, double activities, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria) {
         full_classifier = new XEventAttributeClassifier(attribute, new String[] {attribute, lifecycle_code.toString()});
         List<IntList> filtered_log = initialization(attribute, activities, inverted_nodes, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
         
         //--------------------------------------------
-        // As the activity nodes and arcs are filtered by simplified log based on the UI levers 
+        // As the activity nodes are filtered by simplified log based on the UI levers 
         // Each trace in the simplified log has some events filtered out
         // This step is used to create an XLog from the original log based on the filtered simplified log
         //--------------------------------------------
@@ -398,6 +398,7 @@ public class ProcessDiscovererImpl {
         return filtered_xlog;
     }
 
+    // This method is unused
     public XLog generateFilteredFittedLog(String attribute, double activities, double arcs, boolean preserve_connectivity, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria, SearchStrategy searchStrategy) {
         full_classifier = new XEventAttributeClassifier(attribute, new String[] {attribute, lifecycle_code.toString()});
         List<IntList> filtered_log = initialization(attribute, activities, inverted_nodes, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
@@ -420,22 +421,6 @@ public class ProcessDiscovererImpl {
         return filtered_xlog;
     }
 
-    // This method is unused
-    public double measureFitness(String attribute, double activities, double arcs, boolean preserve_connectivity, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria, SearchStrategy searchStrategy) {
-        full_classifier = new XEventAttributeClassifier(attribute, new String[] {attribute, lifecycle_code.toString()});
-        prepareLogForInitialization(attribute, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-        List<IntList> simplified_log = simplifyLog(log);
-        List<LongList> simplified_times_log = simplifyTimesLog(log);
-        filterSimplifiedLog(simplified_log, simplified_times_log, activities, inverted_nodes, fixedType, fixedAggregation);
-        ArcSelector arcSelector = new ArcSelector(arcInfoCollector, arcs, preserve_connectivity, fixedType, fixedAggregation, inverted_arcs);
-        Set<Arc> retained_arcs = arcSelector.selectArcs();
-
-        XFactory factory = new XFactoryNaiveImpl();
-
-        LogFitter logFitter = new LogFitter(factory);
-        return logFitter.measureFitness(simplified_log, retained_arcs, searchStrategy);
-    }
-
     private BPMNDiagram generateDiagramFromLog(String attribute, double activities, double arcs, boolean preserve_connectivity, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> criteria) {
         initialization(attribute, activities, inverted_nodes, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
         ArcSelector arcSelector = new ArcSelector(arcInfoCollector, arcs, preserve_connectivity, fixedType, fixedAggregation, inverted_arcs);
@@ -444,15 +429,22 @@ public class ProcessDiscovererImpl {
         BPMNDiagramBuilder bpmnDiagramBuilder = new BPMNDiagramBuilder(arcInfoCollector);
         IntObjectHashMap<BPMNNode> map = new IntObjectHashMap<>();
 
+        //---------------------------------------
+        // Check reachability on the retained nodes and arcs.
+        // At the end, the selected set of nodes and arcs ensure that
+        // all nodes are reachable from the source and to the sink
+        //---------------------------------------
         boolean cycle = true;
         IntHashSet candidate_nodes = retained_activities;
         Set<Arc> candidate_arcs = retained_arcs;
         IntHashSet new_candidate_nodes;
         Set<Arc> new_candidate_arcs;
         ReachabilityChecker reachabilityChecker = new ReachabilityChecker();
-        while (cycle) {
+        while (cycle) { //keep doing until all nodes can be reachable
             cycle = false;
             new_candidate_nodes = new IntHashSet();
+            // Check each node to ensure the source can reach it and 
+            // it can reach the sink
             for(int i : candidate_nodes.toArray()) {
                 boolean input = false;
                 boolean output = false;
@@ -469,6 +461,7 @@ public class ProcessDiscovererImpl {
             }
             candidate_nodes = new_candidate_nodes;
 
+            // Update the candidate arcs to contain only the connected nodes
             new_candidate_arcs = new UnifiedSet<>();
             for(Arc arc : candidate_arcs) {
                 if(candidate_nodes.contains(arc.getSource()) && candidate_nodes.contains(arc.getTarget())) {
@@ -575,6 +568,14 @@ public class ProcessDiscovererImpl {
         return this.log;
     }
 
+    /**
+     * Convert from a diagram with node labels ending with "+start" or "+complete", e.g. "A+start", "A+complete"
+     * to a diagram with node labels only containing the event without "+start" and "+complete", e.g. "A".
+     * The original arcs will be transferred to the new node, e.g. all input and output arcs of "A+start" node 
+     * will become intput/output arcs of A, similarly for "A+complete" node.
+     * @param bpmnDiagram
+     * @return new BPMN diagram
+     */
     private BPMNDiagram collapseStartCompleteActivities(BPMNDiagram bpmnDiagram) {
         BPMNDiagramBuilder bpmnDiagramBuilder = new BPMNDiagramBuilder(arcInfoCollector);
 
@@ -715,6 +716,10 @@ public class ProcessDiscovererImpl {
             IntList trace = log.get(t);
             LongList time_trace = times_log.get(t);
 
+            //--------------------------------------
+            // Filter the trace based on the retained activities
+            // after activity filtering
+            //--------------------------------------
             IntArrayList filtered_trace = new IntArrayList();
             LongArrayList filtered_time_trace = new LongArrayList();
             for(int i = 0; i < trace.size(); i++) {
@@ -725,6 +730,7 @@ public class ProcessDiscovererImpl {
             }
             filtered_log.add(filtered_trace);
 
+            
             IntHashSet not_reached = new IntHashSet();
             IntHashSet not_reaching = new IntHashSet();
             for(int i = 0; i < filtered_trace.size(); i++) {
@@ -733,6 +739,9 @@ public class ProcessDiscovererImpl {
             }
             Long trace_duration = filtered_time_trace.get(filtered_time_trace.size() - 1) - filtered_time_trace.get(0);
 
+            //--------------------------------------
+            // Create arc and update arc collection
+            //--------------------------------------
             ObjectIntHashMap<Arc> arcsCount = new ObjectIntHashMap<>();
             for(int i = 0; i < filtered_trace.size() - 1; i++) {
                 createArc(arcsCount, not_reached, not_reaching, filtered_trace.get(i), filtered_trace.get(i + 1), filtered_time_trace.get(i + 1) - filtered_time_trace.get(i));
@@ -769,6 +778,8 @@ public class ProcessDiscovererImpl {
         return simplified_names.get(event);
     }
     
+    //Return true if an event name is not associated with any start or complete lifecycle transition
+    //or if it only has either start or complete transition 
     private boolean isSingleTypeEvent(int event) {
         String name = getEventFullName(event);
         if(eventNameAnalyser.isStartEvent(name) && getEventNumber(eventNameAnalyser.getCompleteEvent(name)) != null) return false;
