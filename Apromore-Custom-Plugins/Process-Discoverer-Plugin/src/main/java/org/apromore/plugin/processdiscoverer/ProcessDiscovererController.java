@@ -615,8 +615,7 @@ public class ProcessDiscovererController extends BaseController {
                                 String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(1)).getLabel();
                                 JSONArray array = processDiscovererService.generateTraceModel(log, traceID, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), false, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
 
-                                ProcessDiscovererController.this.display(array);
-                                Clients.evalJavaScript("layout_dagre_LR(false)");
+                                ProcessDiscovererController.this.displayTrace(array);
                             } catch(Exception e) {
                                 e.printStackTrace();
                             }
@@ -1027,7 +1026,8 @@ public class ProcessDiscovererController extends BaseController {
             
             slidersWindow.addEventListener("onLoaded", windowListener);
             slidersWindow.addEventListener("onOpen", windowListener);
-            slidersWindow.doOverlapped();
+            //slidersWindow.doOverlapped();
+            slidersWindow.setMaximized(true);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1483,7 +1483,15 @@ public class ProcessDiscovererController extends BaseController {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
         String javascript = "load('" + jsonString + "');";
-        Clients.evalJavaScript("reset()");
+        //Clients.evalJavaScript("reset()");
+        Clients.evalJavaScript(javascript);
+    }
+    
+    private void displayTrace(JSONArray jsonDiagram) {
+    	String jsonString = jsonDiagram.toString();
+    	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
+        String javascript = "loadTrace('" + jsonString + "');";
+        //Clients.evalJavaScript("reset()");
         Clients.evalJavaScript(javascript);
     }
 

@@ -173,7 +173,7 @@
 								</groupbox>
 							</vbox>
 							<vbox align="left" pack="center" width="80px" height="85px">
-								<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px"/>
+								<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px" />
 								<checkbox id="secondary" checked="false" label="Dual Info" height="30px" width="100px"/>
 							</vbox>
 						</hbox>
@@ -201,7 +201,7 @@
 							</row>
 							<row height="21px">
 								<label>Parallelism</label>
-								<slider id="slider3" mold="scale" maxpos="100" width="100%" curpos="40"/>
+								<slider id="slider3" mold="scale" maxpos="100" width="100%" curpos="40" />
 								<intbox id="parallelismText" value="40" width="35px" />
 							</row>
 						</rows>
@@ -318,6 +318,9 @@
 		var layout_model = 4, ctrlIsPressed = !1, altIsPressed = !1;
 		var currentZoomLevel = 1;
 		var currentPanPosition;
+		var initialLoaded = true; // whether the graph is first open.
+		var loadTraceMode = false; // indidate that the graph is loading a trace, not a full log
+		
 		$(document).keydown(function(a) {
 		  if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0;
 		  if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0;
@@ -409,19 +412,19 @@
 		  });
 		  
 		  a.on("cxttap", "edge", function(a) {
-			removeEdge(a)
+			if (!loadTraceMode) removeEdge(a)
 		  });
 		  
 		  a.on("cxttap", "node", function(a) {
-			removeNode(a)
+			if (!loadTraceMode) removeNode(a)
 		  });
 		  
 		  a.on("zoom", function(event) {
-			currentZoomLevel = a.zoom();
+			if (!loadTraceMode) currentZoomLevel = a.zoom();
 		  });
 		  
 		  a.on("pan", function(event) {
-			currentPanPosition = a.pan();
+			if (!loadTraceMode) currentPanPosition = a.pan();
 		  });		  
 		}
 
@@ -430,16 +433,30 @@
 		}
 
 		function load(a) {
+		  loadTraceMode = false;
+		  reset();
 		  // need to store the current zoom and pan level as the load function
-		  // will reset them.
+		  // will reset them through the zoom and pan events.
 		  var zoom = currentZoomLevel; 
 		  var pan = currentPanPosition;
 		  cy.add($.parseJSON(a)); 
 		  layout();
-		  window.cy.zoom(zoom);
-		  window.cy.pan(pan);
-		  currentZoomLevel = zoom;
-		  currentPanPosition = pan;
+		  if (!initialLoaded) {
+			  window.cy.zoom(zoom);
+			  window.cy.pan(pan);
+			  currentZoomLevel = zoom;
+			  currentPanPosition = pan;
+		  }
+		  else {
+			  initialLoaded = false;
+		  }
+		}
+		
+		function loadTrace(a) {
+		  loadTraceMode = true;
+		  reset();
+		  cy.add($.parseJSON(a)); 
+		  layout_dagre_LR(false);
 		}
 
 		function horizontal() {
