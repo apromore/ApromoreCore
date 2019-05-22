@@ -93,6 +93,8 @@ public class MetricsServiceImpl extends DefaultParameterAwarePlugin implements M
         result.put("Separability", computeSeparability());
         result.put("Duplicates", computeDuplicates());
 
+        this.diagram = null;
+
         return result;
     }
 
