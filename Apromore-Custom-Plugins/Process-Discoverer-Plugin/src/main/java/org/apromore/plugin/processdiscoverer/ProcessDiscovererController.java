@@ -126,10 +126,12 @@ public class ProcessDiscovererController extends BaseController {
 
     private Intbox activitiesText;
     private Intbox arcsText;
-    private Intbox parallelismText;
     private Slider activities;
     private Slider arcs;
     private Slider parallelism;
+    private Intbox parallelismText;
+    private Label parallelismLabel;
+    private Row parallelismRow;
 
     private Menupopup selector;
 
@@ -284,10 +286,13 @@ public class ProcessDiscovererController extends BaseController {
 
             this.activities = (Slider) slidersWindow.getFellow(StringValues.b[28]);
             this.arcs = (Slider) slidersWindow.getFellow(StringValues.b[29]);
-            this.parallelism = (Slider) slidersWindow.getFellow(StringValues.b[30]);
             this.activitiesText = (Intbox) slidersWindow.getFellow(StringValues.b[31]);
             this.arcsText = (Intbox) slidersWindow.getFellow(StringValues.b[32]);
-            this.parallelismText = (Intbox) slidersWindow.getFellow(StringValues.b[33]);
+            
+            this.parallelism = (Slider) slidersWindow.getFellow("parallelismSlider");
+            this.parallelismText = (Intbox) slidersWindow.getFellow("parallelismText");
+            this.parallelismLabel = (Label) slidersWindow.getFellow("parallelismLabel");
+            this.parallelismRow = (Row) slidersWindow.getFellow("parallelismRow");
 
             this.caseNumber = (Label) slidersWindow.getFellow(StringValues.b[34]);
             this.uniquecaseNumber = (Label) slidersWindow.getFellow(StringValues.b[35]);
@@ -349,6 +354,19 @@ public class ProcessDiscovererController extends BaseController {
 
             EventListener<Event> radioListener = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
+                	if (!gateways.isChecked()) {
+                		//parallelism.setStyle("background-color:#D8D8D8; width:100%; height:25px;");
+                		parallelismRow.setSclass("z-row-disabled");
+                		parallelismText.setDisabled(true);
+                		//parallelismLabel.setStyle("text-color:#D8D8D8");
+                		parallelism_value = parallelism.getCurpos();
+                	}
+                	else {
+                		//parallelism.setStyle("background-color:transparent; width:100%; height:25px;");
+                		parallelismRow.setSclass("z-row");
+                		parallelismText.setDisabled(false);
+                	}
+                	
                     visualized = false;
                     setArcAndActivityRatios();
                 }
@@ -372,10 +390,22 @@ public class ProcessDiscovererController extends BaseController {
                     setArcAndActivityRatios();
                 }
             });
+            
+            this.parallelism.addEventListener("onScrolling", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    if (!gateways.isChecked()) parallelism.setCurpos(parallelism_value);
+                }
+            });
+            
             this.parallelism.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    parallelismText.setValue(parallelism.getCurpos());
-                    setArcAndActivityRatios();
+                	if (gateways.isChecked()) {
+                		parallelismText.setValue(parallelism.getCurpos());
+                		setArcAndActivityRatios();
+                	}
+                	else {
+                		parallelism.setCurpos(parallelism_value);
+                	}
                 }
             });
 
@@ -1024,10 +1054,13 @@ public class ProcessDiscovererController extends BaseController {
                 }
             };            
             
+            //parallelism.setStyle("background-color:#D8D8D8; width:100%; height:25px;");
+            parallelismRow.setSclass("z-row-disabled");
+    		parallelismText.setDisabled(true);
             slidersWindow.addEventListener("onLoaded", windowListener);
             slidersWindow.addEventListener("onOpen", windowListener);
             //slidersWindow.doOverlapped();
-            slidersWindow.setMaximized(true);
+            //slidersWindow.setMaximized(true);
 
         } catch (Exception e) {
             e.printStackTrace();

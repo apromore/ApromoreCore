@@ -65,9 +65,16 @@
 		tr.z-row td.z-row-inner, tr.z-row .z-cell, tr.z-row {
 			background: none repeat scroll 0% 0% white;
 		}
-		tr.z-grid-odd td.z-row-inner, tr.z-grid-odd .z-cell, tr.z-grid-odd {
+		tr.z-grid-odd td.z-row-inner, tr.z-grid-odd .z-cell, tr.z-grid-odd, td.z-listcell {
 			background: none repeat scroll 0% 0% rgb(240, 250, 255);
 		}
+		
+		tr.z-row-disabled td.z-row-inner {
+			padding: 1px 1px 1px 1px;
+			line-height: 25px;
+			background: none repeat scroll 0% 0% rgb(220,220,220);
+		}
+		
 		div.z-listcell-cnt {
 			line-height: 25px;
 			padding: 1px 0;
@@ -199,9 +206,9 @@
 								<slider id="slider2" mold="scale" maxpos="100" width="100%" curpos="10"/>
 								<intbox id="arcText" value="10" width="35px" />
 							</row>
-							<row height="21px">
-								<label>Parallelism</label>
-								<slider id="slider3" mold="scale" maxpos="100" width="100%" curpos="40" />
+							<row id="parallelismRow" height="21px">
+								<label id="parallelismLabel">Parallelism</label>
+								<slider id="parallelismSlider" mold="scale" maxpos="100" width="100%" curpos="40" />
 								<intbox id="parallelismText" value="40" width="35px" />
 							</row>
 						</rows>
