@@ -106,7 +106,9 @@ public class EventLogServiceImpl implements EventLogService {
      */
     @Override
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog, String extension, String domain, String created, boolean publicModel) throws Exception {
-        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(XFactoryRegistry.instance().currentDefault(), inputStreamLog, extension), userSrv.findUserByLogin(username).getId(), domain, created, publicModel);
+        XFactory factory = XFactoryRegistry.instance().currentDefault().getClass().getConstructor().newInstance();
+        LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
+        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(factory, inputStreamLog, extension), userSrv.findUserByLogin(username).getId(), domain, created, publicModel);
         Log log = new Log();
         log.setFolder(folderRepo.findUniqueByID(folderId));
         log.setDomain(domain);

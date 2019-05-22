@@ -166,7 +166,9 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         if (log != null) {
             try {
                 String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
-                return importFromFile(XFactoryRegistry.instance().currentDefault(), name);
+                XFactory factory = XFactoryRegistry.instance().currentDefault().getClass().getConstructor().newInstance();
+                LOGGER.info("Getting XES log " + name + " using " + factory.getClass());
+                return importFromFile(factory, name);
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
             }
