@@ -18,6 +18,7 @@
  
  package org.apromore.plugin.portal.stagemining;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +35,7 @@ import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.model.XAttributable;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeBoolean;
@@ -244,27 +246,36 @@ public class LogUtilites {
 		// Create start/end event
 		//--------------------------------
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
-		XFactory factory = new XFactoryNaiveImpl();
-		
-		XEvent startEvent = factory.createEvent();
-    	XAttributeMap startEventMap = factory.createAttributeMap();
-    	startEventMap.put("concept:name", factory.createAttributeLiteral("concept:name", "start", null));
-    	startEventMap.put("lifecycle:transition", factory.createAttributeLiteral("lifecycle:transition", "complete", null));
-    	startEventMap.put("time:timestamp", factory.createAttributeTimestamp("time:timestamp", df.parse("01/01/1970"), null));
-    	startEvent.setAttributes(startEventMap);	
-    	
-		XEvent endEvent = factory.createEvent();
-    	XAttributeMap endEventMap = factory.createAttributeMap();
-    	endEventMap.put("concept:name", factory.createAttributeLiteral("concept:name", "end", null));
-    	endEventMap.put("lifecycle:transition", factory.createAttributeLiteral("lifecycle:transition", "complete", null));
-    	endEventMap.put("time:timestamp", factory.createAttributeTimestamp("time:timestamp", df.parse("01/01/2020"), null));
-    	endEvent.setAttributes(endEventMap);	
-    	
-    	for (XTrace trace : log) {
-			XEvent preEvt = null;
-			trace.add(0, startEvent);
-			trace.add(endEvent);
-    	}
+//		XFactory factory = new XFactoryNaiveImpl();
+
+		try {
+			XFactory factory = XFactoryRegistry.instance().currentDefault().getClass().getConstructor().newInstance();
+
+			XEvent startEvent = factory.createEvent();
+			XAttributeMap startEventMap = factory.createAttributeMap();
+			startEventMap.put("concept:name", factory.createAttributeLiteral("concept:name", "start", null));
+			startEventMap.put("lifecycle:transition", factory.createAttributeLiteral("lifecycle:transition", "complete", null));
+			startEventMap.put("time:timestamp", factory.createAttributeTimestamp("time:timestamp", df.parse("01/01/1970"), null));
+			startEvent.setAttributes(startEventMap);
+
+			XEvent endEvent = factory.createEvent();
+			XAttributeMap endEventMap = factory.createAttributeMap();
+			endEventMap.put("concept:name", factory.createAttributeLiteral("concept:name", "end", null));
+			endEventMap.put("lifecycle:transition", factory.createAttributeLiteral("lifecycle:transition", "complete", null));
+			endEventMap.put("time:timestamp", factory.createAttributeTimestamp("time:timestamp", df.parse("01/01/2020"), null));
+			endEvent.setAttributes(endEventMap);
+
+			for (XTrace trace : log) {
+				XEvent preEvt = null;
+				trace.add(0, startEvent);
+				trace.add(endEvent);
+			}
+	} catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+		throw new RuntimeException("Exception while creating XES factory", e);
+	}
+
+
+
 	}
 
 }
