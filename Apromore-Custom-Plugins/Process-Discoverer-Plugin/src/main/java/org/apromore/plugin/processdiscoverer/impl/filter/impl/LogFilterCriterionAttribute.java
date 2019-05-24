@@ -24,6 +24,8 @@ import org.apromore.plugin.processdiscoverer.impl.filter.Action;
 import org.apromore.plugin.processdiscoverer.impl.filter.Containment;
 import org.apromore.plugin.processdiscoverer.impl.filter.Level;
 import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterCriterionImpl;
+import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterTypeSelector;
+import org.apromore.plugin.processdiscoverer.impl.filter.Type;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
@@ -62,7 +64,8 @@ public class LogFilterCriterionAttribute extends LogFilterCriterionImpl {
 
     private boolean isMatching(XEvent event) {
         XAttribute xAttribute = event.getAttributes().get(attribute);
-        if(attribute.equals(timestamp_code)) {
+        //if(attribute.equals(timestamp_code)) {
+        if (LogFilterTypeSelector.getType(attribute) == Type.TIME_TIMESTAMP) {
             long start = 0;
             long end = Long.MAX_VALUE;
             for(String v : value) {

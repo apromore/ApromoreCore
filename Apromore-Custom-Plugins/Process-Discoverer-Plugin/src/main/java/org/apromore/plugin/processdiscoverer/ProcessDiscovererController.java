@@ -21,18 +21,15 @@
 package org.apromore.plugin.processdiscoverer;
 
 import au.com.bytecode.opencsv.CSVWriter;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.raffaeleconforti.context.FakePluginContext;
 import com.raffaeleconforti.conversion.bpmn.BPMNToPetriNetConverter;
 
 import nl.tue.astar.AStarException;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.helper.Version;
 import org.apromore.model.LogSummaryType;
-import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SummaryType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
 import org.apromore.plugin.processdiscoverer.impl.VisualizationAggregation;
@@ -41,8 +38,10 @@ import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterCriterionFacto
 import org.apromore.plugin.processdiscoverer.impl.util.StringValues;
 import org.apromore.plugin.processdiscoverer.impl.util.TimeConverter;
 import org.apromore.plugin.processdiscoverer.service.ProcessDiscovererService;
-import org.apromore.plugin.property.RequestParameterType;
-import org.apromore.portal.dialogController.SelectDynamicListController;
+import org.apromore.plugin.processdiscoverer.service.ProcessDiscovererServiceImpl;
+import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.dialogController.BaseController;
+import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
@@ -61,7 +60,6 @@ import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
-import org.hibernate.internal.FilterConfiguration;
 import org.json.JSONArray;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -84,20 +82,18 @@ import org.processmining.plugins.replayer.replayresult.SyncReplayResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.EventQueue;
-import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
-
 import javax.swing.*;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.apromore.plugin.processdiscoverer.impl.VisualizationAggregation.*;
 import static org.apromore.plugin.processdiscoverer.impl.VisualizationType.DURATION;
@@ -109,19 +105,17 @@ import static org.apromore.plugin.processdiscoverer.impl.filter.Level.EVENT;
 import static org.apromore.plugin.processdiscoverer.impl.filter.Level.TRACE;
 
 /**
+ * Initialization: after the window has been loaded, the ZK client engine will send onLoaded event to the main window 
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Modified by Simon Rabozi for SiMo
  * Modified by Bruce Nguyen
  */
-public class ProcessDiscovererController {
+public class ProcessDiscovererController extends BaseController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiscovererController.class);
 	
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
-    private final String nativeType = "BPMN 2.0";
 
     PortalContext portalContext;
-    private ProcessDiscovererService processDiscovererService;
-    private EventLogService eventLogService;
 
     private Radio use_fixed;
     private Radio use_dynamic;
@@ -132,10 +126,12 @@ public class ProcessDiscovererController {
 
     private Intbox activitiesText;
     private Intbox arcsText;
-    private Intbox parallelismText;
     private Slider activities;
     private Slider arcs;
     private Slider parallelism;
+    private Intbox parallelismText;
+    private Label parallelismLabel;
+    private Row parallelismRow;
 
     private Menupopup selector;
 
@@ -161,7 +157,7 @@ public class ProcessDiscovererController {
     private Button fitness;
     private Button animate;
     
-    private Menuitem exportUnfitted;
+    private Menuitem exportFilteredLog;
     
     private Label caseNumber;
     private Label uniquecaseNumber;
@@ -171,6 +167,8 @@ public class ProcessDiscovererController {
     private Label medianDuration;
     private Label maxDuration;
     private Label minDuration;
+    
+    private Window cases_window = null;
 
     private int arcs_value = 10;
     private int parallelism_value = 40;
@@ -188,6 +186,7 @@ public class ProcessDiscovererController {
     private String log_name = "";
     private XLog log;
     private BPMNDiagram diagram;
+    private JSONArray jsonDiagram; // the corresponding JSON format of the diagram
     private LogSummaryType logSummary;
 
     private List<LogFilterCriterion> criteria;
@@ -198,128 +197,137 @@ public class ProcessDiscovererController {
     private long max = 0; //the latest timestamp of the log
 
     private String label = StringValues.b[161]; // the event attribute key used to label each task node, default "concept:name"
-
+    
+    private CanoniserService canoniserService;
     private DomainService domainService;
     private ProcessService processService;
-    private CanoniserService canoniserService;
-    private LogAnimationPluginInterface logAnimationPlugin;
+    private BPMNDiagramImporter importerService;
     private UserInterfaceHelper userInterfaceHelper;
+    private EventLogService eventLogService;
+    private ProcessDiscovererService processDiscovererService;
+    private LogAnimationPluginInterface logAnimationPluginInterface;
     private BIMPAnnotationService bimpAnnotationService;
-
-    public ProcessDiscovererController(PortalContext context, EventLogService eventLogService, ProcessDiscovererService processDiscovererService,
-                                       CanoniserService canoniserService, DomainService domainService, ProcessService processService, BPMNDiagramImporter importerService,
-                                       UserInterfaceHelper userInterfaceHelper, LogAnimationPluginInterface logAnimationPlugin, VisualizationType fixedType,
-                                       BIMPAnnotationService bimpAnnotationService) throws Exception {
-
-        this.domainService = domainService;
-        this.processService = processService;
-        this.canoniserService = canoniserService;
-        this.logAnimationPlugin = logAnimationPlugin;
-        this.userInterfaceHelper = userInterfaceHelper;
-        this.portalContext = context;
-        this.processDiscovererService = processDiscovererService;
-        this.eventLogService = eventLogService;
-        this.primaryType = fixedType;
-        this.bimpAnnotationService = bimpAnnotationService;
-        if (primaryType != FREQUENCY) primaryAggregation = MEAN;
-
-        Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
-        if (elements.size() != 1) {
-            Messagebox.show(StringValues.b[9], StringValues.b[10], Messagebox.OK, Messagebox.INFORMATION);
-            return;
+    
+    private SummaryType selection = null;
+    
+    public ProcessDiscovererController() throws Exception {
+    	super();
+    }
+    
+    
+    public void onCreate() throws InterruptedException {
+        String id = Executions.getCurrent().getParameter("id");
+        if (id == null) {
+            throw new AssertionError("No id parameter in URL");
         }
-        SummaryType summary = elements.keySet().iterator().next();
-        if (!(summary instanceof LogSummaryType)) {
-            ProcessSummaryType process = (ProcessSummaryType) summary;
-            VersionSummaryType vst = (VersionSummaryType) elements.get(summary).get(elements.get(summary).size() - 1);
-            int procID = process.getId();
-            String procName = process.getName();
-            String branch = vst.getName();
-            Version version = new Version(vst.getVersionNumber());
 
-            String model = processService.getBPMNRepresentation(procName, procID, branch, version);
-            String startevent = model.substring(model.indexOf(StringValues.b[11]));
-            startevent = startevent.substring(0, startevent.indexOf(StringValues.b[13]) + 2);
-            if (startevent.contains(StringValues.b[14])) {
-                String newStartEvent = startevent.replace(StringValues.b[14], "");
-                model = model.replace(startevent, newStartEvent);
-            }
-            String endevent = model.substring(model.indexOf(StringValues.b[12]));
-            endevent = endevent.substring(0, endevent.indexOf(StringValues.b[13]) + 2);
-            if (endevent.contains(StringValues.b[14])) {
-                String newEndEvent = endevent.replace(StringValues.b[14], "");
-                model = model.replace(endevent, newEndEvent);
-            }
-            diagram = importerService.importBPMNDiagram(model);
-        } else {
-            logSummary = (LogSummaryType) summary;
-            log_name = logSummary.getName();
-            log = eventLogService.getXLog(logSummary.getId());
-            generateOptions(log);
-            criteria = new ArrayList<>();
+        SignavioSession session = UserSessionManager.getEditSession(id);
+        if (session == null) {
+            throw new AssertionError("No edit session associated with id " + id);
         }
-        start();
+
+        canoniserService = (CanoniserService)beanFactory.getBean("canoniserService");
+        domainService = (DomainService)beanFactory.getBean("domainService");
+        processService = (ProcessService)beanFactory.getBean("processService");
+        importerService = (BPMNDiagramImporter)beanFactory.getBean("importerService");
+        userInterfaceHelper = (UserInterfaceHelper)beanFactory.getBean("userInterfaceHelper");
+        eventLogService = (EventLogService)beanFactory.getBean("eventLogService");
+        logAnimationPluginInterface = (LogAnimationPluginInterface)beanFactory.getBean("logAnimationPlugin");
+        bimpAnnotationService = (BIMPAnnotationService)beanFactory.getBean("bimpAnnotationService");
+        
+        portalContext = (PortalContext)session.get("context");
+        primaryType = (VisualizationType)session.get("visType");
+        selection = (SummaryType)session.get("selection");
+        processDiscovererService = new ProcessDiscovererServiceImpl();
+        
+//        if (portalContext.getCurrentUser() == null) {
+//            LOGGER.warn("Faking user session with admin(!)");
+//            UserType user = new UserType();
+//            user.setId("8");
+//            user.setUsername("admin");
+//            UserSessionManager.setCurrentUser(user);
+//        }
+        
+        primaryAggregation = (primaryType == FREQUENCY) ? VisualizationAggregation.CASES : VisualizationAggregation.MEAN;
+        logSummary = (LogSummaryType) selection;
+        log_name = logSummary.getName();
+        log = eventLogService.getXLog(logSummary.getId());
+        if (log != null) {
+	        generateOptions(log);
+	        criteria = new ArrayList<>();
+	        start();
+        }
+        else {
+        	throw new AssertionError("Cannot obtain log file for log id = " + logSummary.getId());
+        }
+    	
     }
 
     private void start() {
         try {
-            Window slidersWindow;
-            if(log == null) {
-                slidersWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[15], null, null);
-                slidersWindow.setTitle("BPMN Visualizer");
-            }else {
-                slidersWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[16], null, null);
-                slidersWindow.setTitle("Process Discoverer");
+            Window slidersWindow = (Window) this.getFellow("win");
+            //slidersWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[16], null, null);
+            slidersWindow.setTitle(logSummary != null ? logSummary.getName() : "");
+            
+            slidersWindow.addEventListener("onZIndex", new EventListener<Event>() {
+            	public void onEvent(Event event) throws Exception {
+                    if (cases_window != null && cases_window.inOverlapped()) {
+                    	cases_window.setZindex(slidersWindow.getZIndex() + 1);
+                    }
+                }
+            });
 
-                this.use_fixed = (Radio) slidersWindow.getFellow(StringValues.b[20]);
-                this.use_dynamic = (Radio) slidersWindow.getFellow(StringValues.b[21]);
-                this.gateways = (Checkbox) slidersWindow.getFellow(StringValues.b[23]);
-                this.secondary = (Checkbox) slidersWindow.getFellow(StringValues.b[25]);
-                this.inverted_nodes = (Checkbox) slidersWindow.getFellow(StringValues.b[26]);
-                this.inverted_arcs = (Checkbox) slidersWindow.getFellow(StringValues.b[27]);
+            this.use_fixed = (Radio) slidersWindow.getFellow(StringValues.b[20]);
+            this.use_dynamic = (Radio) slidersWindow.getFellow(StringValues.b[21]);
+            this.gateways = (Checkbox) slidersWindow.getFellow(StringValues.b[23]);
+            this.secondary = (Checkbox) slidersWindow.getFellow(StringValues.b[25]);
+            this.inverted_nodes = (Checkbox) slidersWindow.getFellow(StringValues.b[26]);
+            this.inverted_arcs = (Checkbox) slidersWindow.getFellow(StringValues.b[27]);
 
-                this.activities = (Slider) slidersWindow.getFellow(StringValues.b[28]);
-                this.arcs = (Slider) slidersWindow.getFellow(StringValues.b[29]);
-                this.parallelism = (Slider) slidersWindow.getFellow(StringValues.b[30]);
-                this.activitiesText = (Intbox) slidersWindow.getFellow(StringValues.b[31]);
-                this.arcsText = (Intbox) slidersWindow.getFellow(StringValues.b[32]);
-                this.parallelismText = (Intbox) slidersWindow.getFellow(StringValues.b[33]);
+            this.activities = (Slider) slidersWindow.getFellow(StringValues.b[28]);
+            this.arcs = (Slider) slidersWindow.getFellow(StringValues.b[29]);
+            this.activitiesText = (Intbox) slidersWindow.getFellow(StringValues.b[31]);
+            this.arcsText = (Intbox) slidersWindow.getFellow(StringValues.b[32]);
+            
+            this.parallelism = (Slider) slidersWindow.getFellow("parallelismSlider");
+            this.parallelismText = (Intbox) slidersWindow.getFellow("parallelismText");
+            this.parallelismLabel = (Label) slidersWindow.getFellow("parallelismLabel");
+            this.parallelismRow = (Row) slidersWindow.getFellow("parallelismRow");
 
-                this.caseNumber = (Label) slidersWindow.getFellow(StringValues.b[34]);
-                this.uniquecaseNumber = (Label) slidersWindow.getFellow(StringValues.b[35]);
-                this.activityNumber = (Label) slidersWindow.getFellow(StringValues.b[36]);
-                this.eventNumber = (Label) slidersWindow.getFellow(StringValues.b[37]);
-                this.meanDuration = (Label) slidersWindow.getFellow(StringValues.b[38]);
-                this.medianDuration = (Label) slidersWindow.getFellow(StringValues.b[39]);
-                this.maxDuration = (Label) slidersWindow.getFellow(StringValues.b[40]);
-                this.minDuration = (Label) slidersWindow.getFellow(StringValues.b[41]);
+            this.caseNumber = (Label) slidersWindow.getFellow(StringValues.b[34]);
+            this.uniquecaseNumber = (Label) slidersWindow.getFellow(StringValues.b[35]);
+            this.activityNumber = (Label) slidersWindow.getFellow(StringValues.b[36]);
+            this.eventNumber = (Label) slidersWindow.getFellow(StringValues.b[37]);
+            this.meanDuration = (Label) slidersWindow.getFellow(StringValues.b[38]);
+            this.medianDuration = (Label) slidersWindow.getFellow(StringValues.b[39]);
+            this.maxDuration = (Label) slidersWindow.getFellow(StringValues.b[40]);
+            this.minDuration = (Label) slidersWindow.getFellow(StringValues.b[41]);
 
-                this.selector = (Menupopup) slidersWindow.getFellow(StringValues.b[42]);
+            this.selector = (Menupopup) slidersWindow.getFellow(StringValues.b[42]);
 
-                this.frequency = (Combobutton) slidersWindow.getFellow(StringValues.b[43]);
-                this.absolute_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[44]);
-                this.case_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[45]);
-                this.median_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[46]);
-                this.mean_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[47]);
-                this.mode_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[48]);
-                this.max_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[49]);
-                this.min_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[50]);
+            this.frequency = (Combobutton) slidersWindow.getFellow(StringValues.b[43]);
+            this.absolute_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[44]);
+            this.case_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[45]);
+            this.median_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[46]);
+            this.mean_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[47]);
+            this.mode_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[48]);
+            this.max_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[49]);
+            this.min_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[50]);
 
-                this.duration = (Combobutton) slidersWindow.getFellow(StringValues.b[51]);
-                this.total_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[52]);
-                this.median_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[53]);
-                this.mean_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[54]);
-                this.max_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[55]);
-                this.min_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[56]);
+            this.duration = (Combobutton) slidersWindow.getFellow(StringValues.b[51]);
+            this.total_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[52]);
+            this.median_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[53]);
+            this.mean_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[54]);
+            this.max_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[55]);
+            this.min_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[56]);
 
-                this.details = (Button) slidersWindow.getFellow(StringValues.b[63]);
-                this.cases = (Button) slidersWindow.getFellow(StringValues.b[64]);
-                this.fitness = (Button) slidersWindow.getFellow(StringValues.b[65]);
-                this.filter = (Button) slidersWindow.getFellow(StringValues.b[66]);
-                this.animate = (Button) slidersWindow.getFellow(StringValues.b[67]);
+            this.details = (Button) slidersWindow.getFellow(StringValues.b[63]);
+            this.cases = (Button) slidersWindow.getFellow(StringValues.b[64]);
+            this.fitness = (Button) slidersWindow.getFellow(StringValues.b[65]);
+            this.filter = (Button) slidersWindow.getFellow(StringValues.b[66]);
+            this.animate = (Button) slidersWindow.getFellow(StringValues.b[67]);
 
-                this.exportUnfitted = (Menuitem) slidersWindow.getFellow(StringValues.b[69]);
-            }
+            this.exportFilteredLog = (Menuitem) slidersWindow.getFellow(StringValues.b[69]);
 
             Combobutton export = (Combobutton) slidersWindow.getFellow(StringValues.b[70]);
             Menuitem downloadPDF = (Menuitem) slidersWindow.getFellow(StringValues.b[71]);
@@ -327,770 +335,599 @@ public class ProcessDiscovererController {
             Menuitem exportBPMN = (Menuitem) slidersWindow.getFellow(StringValues.b[73]);
             Menuitem exportBPMNAnnotatedForBIMP = (Menuitem) slidersWindow.getFellow("exportBPMNAnnotatedForBIMP");
 
-            if(log != null) {
-                populateMetrics(log);
+            populateMetrics(log);
 
-                for (String option : generateLabels(log)) {
-                    Menuitem item = new Menuitem(option);
-                    item.addEventListener(StringValues.b[74], new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                            setLabel(item.getLabel());
-                            visualized = false;
-                            options_frequency.clear();
-                            generateOptions(log);
-                            populateMetrics(log);
-                            setArcAndActivityRatios();
-                        }
-                    });
-                    selector.appendChild(item);
-                }
-
-                EventListener<Event> radioListener = new EventListener<Event>() {
+            for (String option : generateLabels(log)) {
+                Menuitem item = new Menuitem(option);
+                item.addEventListener("onClick", new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
+                        setLabel(item.getLabel());
                         visualized = false;
+                        options_frequency.clear();
+                        generateOptions(log);
+                        populateMetrics(log);
                         setArcAndActivityRatios();
                     }
-                };
-                this.use_fixed.addEventListener(StringValues.b[75], radioListener);
-                this.use_dynamic.addEventListener(StringValues.b[75], radioListener);
-                this.gateways.addEventListener(StringValues.b[75], radioListener);
-                this.secondary.addEventListener(StringValues.b[75], radioListener);
-                this.inverted_nodes.addEventListener(StringValues.b[75], radioListener);
-                this.inverted_arcs.addEventListener(StringValues.b[75], radioListener);
+                });
+                selector.appendChild(item);
+            }
 
-                this.activities.addEventListener(StringValues.b[76], new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        activitiesText.setValue(activities.getCurpos());
-                        setArcAndActivityRatios();
-                    }
-                });
-                this.arcs.addEventListener(StringValues.b[76], new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        arcsText.setValue(arcs.getCurpos());
-                        setArcAndActivityRatios();
-                    }
-                });
-                this.parallelism.addEventListener(StringValues.b[76], new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        parallelismText.setValue(parallelism.getCurpos());
-                        setArcAndActivityRatios();
-                    }
-                });
+            EventListener<Event> radioListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                	if (!gateways.isChecked()) {
+                		//parallelism.setStyle("background-color:#D8D8D8; width:100%; height:25px;");
+                		parallelismRow.setSclass("z-row-disabled");
+                		parallelismText.setDisabled(true);
+                		//parallelismLabel.setStyle("text-color:#D8D8D8");
+                		parallelism_value = parallelism.getCurpos();
+                	}
+                	else {
+                		//parallelism.setStyle("background-color:transparent; width:100%; height:25px;");
+                		parallelismRow.setSclass("z-row");
+                		parallelismText.setDisabled(false);
+                	}
+                	
+                    visualized = false;
+                    setArcAndActivityRatios();
+                }
+            };
+            this.use_fixed.addEventListener("onCheck", radioListener);
+            this.use_dynamic.addEventListener("onCheck", radioListener);
+            this.gateways.addEventListener("onCheck", radioListener);
+            this.secondary.addEventListener("onCheck", radioListener);
+            this.inverted_nodes.addEventListener("onCheck", radioListener);
+            this.inverted_arcs.addEventListener("onCheck", radioListener);
 
-                EventListener<Event> actChangeListener = new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        int i = activitiesText.getValue();
+            this.activities.addEventListener("onScroll", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    activitiesText.setValue(activities.getCurpos());
+                    setArcAndActivityRatios();
+                }
+            });
+            this.arcs.addEventListener("onScroll", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    arcsText.setValue(arcs.getCurpos());
+                    setArcAndActivityRatios();
+                }
+            });
+            
+            this.parallelism.addEventListener("onScrolling", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    if (!gateways.isChecked()) parallelism.setCurpos(parallelism_value);
+                }
+            });
+            
+            this.parallelism.addEventListener("onScroll", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                	if (gateways.isChecked()) {
+                		parallelismText.setValue(parallelism.getCurpos());
+                		setArcAndActivityRatios();
+                	}
+                	else {
+                		parallelism.setCurpos(parallelism_value);
+                	}
+                }
+            });
+
+            EventListener<Event> actChangeListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    int i = activitiesText.getValue();
+                    if (i < 0) i = 0;
+                    else if (i > 100) i = 100;
+                    activitiesText.setValue(i);
+                    activities.setCurpos(i);
+                    setArcAndActivityRatios();
+                }
+            };
+            EventListener<Event> actChangingListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    String s = ((InputEvent) event).getValue();
+                    if (!s.isEmpty()) {
+                        int i = Integer.parseInt(s);
                         if (i < 0) i = 0;
                         else if (i > 100) i = 100;
                         activitiesText.setValue(i);
                         activities.setCurpos(i);
                         setArcAndActivityRatios();
                     }
-                };
-                EventListener<Event> actChangingListener = new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        String s = ((InputEvent) event).getValue();
-                        if (!s.isEmpty()) {
-                            int i = Integer.parseInt(s);
-                            if (i < 0) i = 0;
-                            else if (i > 100) i = 100;
-                            activitiesText.setValue(i);
-                            activities.setCurpos(i);
-                            setArcAndActivityRatios();
-                        }
-                    }
-                };
-                this.activitiesText.addEventListener(StringValues.b[77], actChangeListener);
-                this.activitiesText.addEventListener(StringValues.b[78], actChangingListener);
+                }
+            };
+            this.activitiesText.addEventListener(StringValues.b[77], actChangeListener);
+            this.activitiesText.addEventListener(StringValues.b[78], actChangingListener);
 
-                EventListener<Event> arcChangeListener = new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        int i = arcsText.getValue();
+            EventListener<Event> arcChangeListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    int i = arcsText.getValue();
+                    if (i < 0) i = 0;
+                    else if (i > 100) i = 100;
+                    arcsText.setValue(i);
+                    arcs.setCurpos(i);
+                    setArcAndActivityRatios();
+                }
+            };
+            EventListener<Event> arcChangingListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    String s = ((InputEvent) event).getValue();
+                    if (!s.isEmpty()) {
+                        int i = Integer.parseInt(s);
                         if (i < 0) i = 0;
                         else if (i > 100) i = 100;
                         arcsText.setValue(i);
                         arcs.setCurpos(i);
                         setArcAndActivityRatios();
                     }
-                };
-                EventListener<Event> arcChangingListener = new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        String s = ((InputEvent) event).getValue();
-                        if (!s.isEmpty()) {
-                            int i = Integer.parseInt(s);
-                            if (i < 0) i = 0;
-                            else if (i > 100) i = 100;
-                            arcsText.setValue(i);
-                            arcs.setCurpos(i);
-                            setArcAndActivityRatios();
-                        }
-                    }
-                };
-                this.arcsText.addEventListener(StringValues.b[77], arcChangeListener);
-                this.arcsText.addEventListener(StringValues.b[78], arcChangingListener);
+                }
+            };
+            this.arcsText.addEventListener(StringValues.b[77], arcChangeListener);
+            this.arcsText.addEventListener(StringValues.b[78], arcChangingListener);
 
-                EventListener<Event> parallelismChangeListener = new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        int i = parallelismText.getValue();
+            EventListener<Event> parallelismChangeListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    int i = parallelismText.getValue();
+                    if (i < 0) i = 0;
+                    else if (i > 100) i = 100;
+                    parallelismText.setValue(i);
+                    parallelism.setCurpos(i);
+                    setArcAndActivityRatios();
+                }
+            };
+            EventListener<Event> parallelismChangingListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    String s = ((InputEvent) event).getValue();
+                    if (!s.isEmpty()) {
+                        int i = Integer.parseInt(s);
                         if (i < 0) i = 0;
                         else if (i > 100) i = 100;
                         parallelismText.setValue(i);
                         parallelism.setCurpos(i);
                         setArcAndActivityRatios();
                     }
-                };
-                EventListener<Event> parallelismChangingListener = new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        String s = ((InputEvent) event).getValue();
-                        if (!s.isEmpty()) {
-                            int i = Integer.parseInt(s);
-                            if (i < 0) i = 0;
-                            else if (i > 100) i = 100;
-                            parallelismText.setValue(i);
-                            parallelism.setCurpos(i);
-                            setArcAndActivityRatios();
-                        }
-                    }
-                };
-                this.parallelismText.addEventListener(StringValues.b[77], parallelismChangeListener);
-                this.parallelismText.addEventListener(StringValues.b[78], parallelismChangingListener);
+                }
+            };
+            this.parallelismText.addEventListener(StringValues.b[77], parallelismChangeListener);
+            this.parallelismText.addEventListener(StringValues.b[78], parallelismChangingListener);
 
-                EventListener<Event> frequencyListener = new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        visualizeFrequency();
-                    }
-                };
-                this.frequency.addEventListener(StringValues.b[74], frequencyListener);
-                this.absolute_frequency.addEventListener(StringValues.b[74], frequencyListener);
-                this.case_frequency.addEventListener(StringValues.b[74], frequencyListener);
-                this.median_frequency.addEventListener(StringValues.b[74], frequencyListener);
-                this.mean_frequency.addEventListener(StringValues.b[74], frequencyListener);
-                this.mode_frequency.addEventListener(StringValues.b[74], frequencyListener);
-                this.max_frequency.addEventListener(StringValues.b[74], frequencyListener);
-                this.min_frequency.addEventListener(StringValues.b[74], frequencyListener);
+            EventListener<Event> frequencyListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    visualizeFrequency();
+                }
+            };
+            this.frequency.addEventListener("onClick", frequencyListener);
+            this.absolute_frequency.addEventListener("onClick", frequencyListener);
+            this.case_frequency.addEventListener("onClick", frequencyListener);
+            this.median_frequency.addEventListener("onClick", frequencyListener);
+            this.mean_frequency.addEventListener("onClick", frequencyListener);
+            this.mode_frequency.addEventListener("onClick", frequencyListener);
+            this.max_frequency.addEventListener("onClick", frequencyListener);
+            this.min_frequency.addEventListener("onClick", frequencyListener);
 
-                EventListener<Event> durationListener = new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        visualizeDuration();
-                    }
-                };
-                this.duration.addEventListener(StringValues.b[74], durationListener);
-                this.total_duration.addEventListener(StringValues.b[74], durationListener);
-                this.median_duration.addEventListener(StringValues.b[74], durationListener);
-                this.mean_duration.addEventListener(StringValues.b[74], durationListener);
-                this.max_duration.addEventListener(StringValues.b[74], durationListener);
-                this.min_duration.addEventListener(StringValues.b[74], durationListener);
+            EventListener<Event> durationListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    visualizeDuration();
+                }
+            };
+            this.duration.addEventListener("onClick", durationListener);
+            this.total_duration.addEventListener("onClick", durationListener);
+            this.median_duration.addEventListener("onClick", durationListener);
+            this.mean_duration.addEventListener("onClick", durationListener);
+            this.max_duration.addEventListener("onClick", durationListener);
+            this.min_duration.addEventListener("onClick", durationListener);
 
-                this.exportUnfitted.addEventListener(StringValues.b[79], new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        activities_value = activities.getCurpos();
-                        arcs_value = arcs.getCurpos();
+            this.exportFilteredLog.addEventListener("onExport", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                	ProcessDiscovererController.this.showInputDialog(
+            			"Input", 
+						"Enter a log name (no more than 60 characters)", 
+						logSummary.getName() + "_filtered", 
+						"^[a-zA-Z0-9_\\-\\s]{1,60}$",
+						"a-z, A-Z, 0-9, hyphen, underscore, and space. No more than 60 chars.",
+						new EventListener<Event>() {
+            				@Override
+                        	public void onEvent(Event event) throws Exception {
+            					if (event.getName().equals("onOK")) {
+	            					String logName = (String)event.getData();
+	            					activities_value = activities.getCurpos();
+	        	                    arcs_value = arcs.getCurpos();
+	        	                    XLog filtered_log = processDiscovererService.generateFilteredLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, inverted_nodes.isChecked(), inverted_arcs.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
+	        	                    saveLog(filtered_log, logName);
+            					}
+                        	}
+	                	});
+                	}
+            });
+                	
 
-                        XLog filtered_log = processDiscovererService.generateFilteredLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, inverted_nodes.isChecked(), inverted_arcs.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-                        saveLog(filtered_log);
-                    }
-                });
+            this.details.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    //Window details_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[17], null, null);
+                	Window details_window = (Window) Executions.createComponents("/zul/details.zul", null, null);
+                    details_window.setTitle("Activities");
+                    Listbox listbox = (Listbox) details_window.getFellow(StringValues.b[81]);
+                    Listheader pos = (Listheader) details_window.getFellow(StringValues.b[82]);
+                    pos.setSortAscending(new NumberComparator(true, 0));
+                    pos.setSortDescending(new NumberComparator(false, 0));
+                    Listheader detail_frequency = (Listheader) details_window.getFellow(StringValues.b[83]);
+                    detail_frequency.setSortAscending(new NumberComparator(true, 2));
+                    detail_frequency.setSortDescending(new NumberComparator(false, 2));
+                    Listheader detail_ratio = (Listheader) details_window.getFellow(StringValues.b[84]);
+                    detail_ratio.setSortAscending(new NumberComparator(true, 2));
+                    detail_ratio.setSortDescending(new NumberComparator(false, 2));
 
-                this.details.addEventListener(StringValues.b[74], new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        Window details_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[17], null, null);
-                        details_window.setTitle("Details");
-                        Listbox listbox = (Listbox) details_window.getFellow(StringValues.b[81]);
-                        Listheader pos = (Listheader) details_window.getFellow(StringValues.b[82]);
-                        pos.setSortAscending(new NumberComparator(true, 0));
-                        pos.setSortDescending(new NumberComparator(false, 0));
-                        Listheader detail_frequency = (Listheader) details_window.getFellow(StringValues.b[83]);
-                        detail_frequency.setSortAscending(new NumberComparator(true, 2));
-                        detail_frequency.setSortDescending(new NumberComparator(false, 2));
-                        Listheader detail_ratio = (Listheader) details_window.getFellow(StringValues.b[84]);
-                        detail_ratio.setSortAscending(new NumberComparator(true, 2));
-                        detail_ratio.setSortDescending(new NumberComparator(false, 2));
-
-                        int i = 1;
-                        for (String key : options_frequency.get(getLabel()).keySet()) {
-                            Listcell listcell0 = new Listcell(Integer.toString(i));
-                            Listcell listcell1 = new Listcell(key);
-                            Listcell listcell2 = new Listcell(options_frequency.get(getLabel()).get(key).toString());
-                            Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) options_frequency.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%");
-                            Listitem listitem = new Listitem();
-                            listitem.appendChild(listcell0);
-                            listitem.appendChild(listcell1);
-                            listitem.appendChild(listcell2);
-                            listitem.appendChild(listcell3);
-                            listbox.appendChild(listitem);
-                            i++;
-                        }
-
-                        listbox.setRows(5);
-
-                        Button save = (Button) details_window.getFellow("save");
-                        save.addEventListener(StringValues.b[74], new EventListener<Event>() {
-                            @Override
-                            public void onEvent(Event event) throws Exception {
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                Writer writer = new BufferedWriter(new OutputStreamWriter(baos));
-                                CSVWriter csvWriter = new CSVWriter(writer);
-                                csvWriter.writeNext(new String[] {"Activity", "Frequency", "Frequency %"});
-                                for (String key : options_frequency.get(getLabel()).keySet()) {
-                                    csvWriter.writeNext(new String[] {key, options_frequency.get(getLabel()).get(key).toString(), decimalFormat.format(100 * ((double) options_frequency.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%"});
-                                }
-                                csvWriter.flush();
-                                csvWriter.close();
-                                byte[] buffer = baos.toByteArray();
-                                ByteArrayInputStream is = new ByteArrayInputStream(buffer);
-                                AMedia amedia = new AMedia("Details.csv", "csv", "application/file", is);
-                                Filedownload.save(amedia);
-                            }
-                        });
-
-                        details_window.doModal();
-                    }
-                });
-
-                this.cases.addEventListener(StringValues.b[74], new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        Window cases_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[18], null, null);
-                        cases_window.setTitle("Process Instances");
-                        Listbox listbox = (Listbox) cases_window.getFellow(StringValues.b[85]);
-                        Listheader pos = (Listheader) cases_window.getFellow(StringValues.b[82]);
-                        pos.setSortAscending(new NumberComparator(true, 0));
-                        pos.setSortDescending(new NumberComparator(false, 0));
-                        Listheader variant_value = (Listheader) cases_window.getFellow(StringValues.b[86]);
-                        variant_value.setSortAscending(new NumberComparator(true, 2));
-                        variant_value.setSortDescending(new NumberComparator(false, 2));
-                        Listheader case_length = (Listheader) cases_window.getFellow(StringValues.b[87]);
-                        case_length.setSortAscending(new NumberComparator(true, 2));
-                        case_length.setSortDescending(new NumberComparator(false, 2));
-
-                        Map<String, Integer[]> info = getCases();
-                        int i = 1;
-                        for (String key : info.keySet()) {
-                            Listcell listcell0 = new Listcell(Integer.toString(i));
-                            Listcell listcell1 = new Listcell(key);
-                            Listcell listcell2 = new Listcell(info.get(key)[1].toString());
-                            Listcell listcell3 = new Listcell(info.get(key)[0].toString());
-                            Listitem listitem = new Listitem();
-                            listitem.appendChild(listcell0);
-                            listitem.appendChild(listcell1);
-                            listitem.appendChild(listcell2);
-                            listitem.appendChild(listcell3);
-
-                            listbox.appendChild(listitem);
-                            i++;
-                        }
-
-                        listbox.setRows(5);
-
-                        listbox.addEventListener("onSelect", new EventListener<Event>() {
-                            @Override
-                            public void onEvent(Event event) throws Exception {
-                                try {
-                                    String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(1)).getLabel();
-                                    JSONArray array = processDiscovererService.generateTraceModel(log, traceID, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), secondary.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-
-                                    String jsonString = array.toString();
-                                    String javascript = "load('" + jsonString + "');";
-                                    Clients.evalJavaScript("reset()");
-                                    Clients.evalJavaScript(javascript);
-                                    Clients.evalJavaScript("layout_dagre_TB(false)");
-                                } catch(Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-
-                        Button save = (Button) cases_window.getFellow("save");
-                        save.addEventListener(StringValues.b[74], new EventListener<Event>() {
-                            @Override
-                            public void onEvent(Event event) throws Exception {
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                Writer writer = new BufferedWriter(new OutputStreamWriter(baos));
-                                CSVWriter csvWriter = new CSVWriter(writer);
-                                Map<String, Integer[]> info = getCases();
-                                csvWriter.writeNext(new String[] {"Case ID", "Case Length", "Unique Case ID"});
-                                for (String key : info.keySet()) {
-                                    csvWriter.writeNext(new String[] {key, info.get(key)[1].toString(), info.get(key)[0].toString()});
-                                }
-                                csvWriter.flush();
-                                csvWriter.close();
-                                byte[] buffer = baos.toByteArray();
-                                ByteArrayInputStream is = new ByteArrayInputStream(buffer);
-                                AMedia amedia = new AMedia("Cases.csv", "csv", "application/file", is);
-                                Filedownload.save(amedia);
-                            }
-                        });
-                        cases_window.doModal();
-                    }
-                });
-
-                this.fitness.addEventListener(StringValues.b[74], new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        Window details_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[19], null, null);
-                        details_window.setTitle("Fitness");
-                        Listbox listbox = (Listbox) details_window.getFellow(StringValues.b[81]);
-                        Listheader detail_frequency = (Listheader) details_window.getFellow(StringValues.b[83]);
-                        detail_frequency.setSortAscending(new NumberComparator(true, 1));
-                        detail_frequency.setSortDescending(new NumberComparator(false, 1));
-                        Listheader detail_ratio = (Listheader) details_window.getFellow(StringValues.b[84]);
-                        detail_ratio.setSortAscending(new NumberComparator(true, 1));
-                        detail_ratio.setSortDescending(new NumberComparator(false, 1));
-                        Listcell listcell1 = new Listcell(StringValues.b[88]);
-                        double fitness = measureFitness();
-                        Listcell listcell2 = new Listcell(decimalFormat.format(fitness));
-                        Listcell listcell3 = new Listcell(decimalFormat.format(fitness * 100) + "%");
+                    int i = 1;
+                    for (String key : options_frequency.get(getLabel()).keySet()) {
+                        Listcell listcell0 = new Listcell(Integer.toString(i));
+                        Listcell listcell1 = new Listcell(key);
+                        Listcell listcell2 = new Listcell(options_frequency.get(getLabel()).get(key).toString());
+                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) options_frequency.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%");
                         Listitem listitem = new Listitem();
+                        listitem.appendChild(listcell0);
                         listitem.appendChild(listcell1);
                         listitem.appendChild(listcell2);
                         listitem.appendChild(listcell3);
                         listbox.appendChild(listitem);
-                        listbox.setRows(5);
-                        details_window.doModal();
+                        i++;
                     }
-                });
 
-                EventListener<Event> windowListener = new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        int i = activitiesText.getValue();
-                        if (i < 0) i = 0;
-                        else if (i > 100) i = 100;
-                        activitiesText.setValue(i);
-                        activities.setCurpos(i);
-                        i = arcsText.getValue();
-                        if (i < 0) i = 0;
-                        else if (i > 100) i = 100;
-                        arcsText.setValue(i);
-                        arcs.setCurpos(i);
-                        i = parallelismText.getValue();
-                        if (i < 0) i = 0;
-                        else if (i > 100) i = 100;
-                        parallelismText.setValue(i);
-                        parallelism.setCurpos(i);
-                        setArcAndActivityRatios();
-                    }
-                };
+                    //listbox.setRows(5);
 
-                this.filter.addEventListener(StringValues.b[74], new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        new FilterCriterionSelector(getLabel(), ProcessDiscovererController.this, criteria, options_frequency, min, max);
-                    }
-                });
-                
-                this.animate.addEventListener(StringValues.b[80], new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        String layout = event.getData().toString();
-                        if(!gateways.isChecked()) {
-                            diagram = processDiscovererService.insertBPMNGateways(diagram);
-                        }
-                        for(BPMNEdge edge : diagram.getEdges()) {
-                            edge.setLabel("");
-                        }
-
-                        UIContext context = new UIContext();
-                        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                        UIPluginContext uiPluginContext = context.getMainPluginContext();
-                        BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
-                        BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
-
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
-                                "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
-                                "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
-                                "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
-                                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
-                                "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
-                                "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">");
-
-                        sb.append(definitions.exportElements());
-                        sb.append("</definitions>");
-                        String model = sb.toString();
-
-                        model.replaceAll("\n", "");
-
-                        XLog filtered = processDiscovererService.generateFilteredLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, inverted_nodes.isChecked(), inverted_arcs.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-                        logAnimationPlugin.execute(portalContext, model, layout, filtered, gateways.isChecked());
-                    }
-                });
-
-                this.animate.addEventListener(StringValues.b[89], new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        activities_value = activities.getCurpos();
-                        arcs_value = arcs.getCurpos();
-                        parallelism_value = parallelism.getCurpos();
-
-                        Set<String> manually_removed_activities = new HashSet<>();
-                        String node = event.getData().toString();
-                        for (String name : options_frequency.get(getLabel()).keySet()) {
-                            if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
-                                manually_removed_activities.add(name);
-                                break;
+                    Button save = (Button) details_window.getFellow("save");
+                    save.addEventListener("onClick", new EventListener<Event>() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            Writer writer = new BufferedWriter(new OutputStreamWriter(baos));
+                            CSVWriter csvWriter = new CSVWriter(writer);
+                            csvWriter.writeNext(new String[] {"Activity", "Frequency", "Frequency %"});
+                            for (String key : options_frequency.get(getLabel()).keySet()) {
+                                csvWriter.writeNext(new String[] {key, options_frequency.get(getLabel()).get(key).toString(), decimalFormat.format(100 * ((double) options_frequency.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%"});
                             }
+                            csvWriter.flush();
+                            csvWriter.close();
+                            byte[] buffer = baos.toByteArray();
+                            ByteArrayInputStream is = new ByteArrayInputStream(buffer);
+                            AMedia amedia = new AMedia("Details.csv", "csv", "application/file", is);
+                            Filedownload.save(amedia);
                         }
+                    });
 
-                        if (manually_removed_activities.size() > 0) {
-                            addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                    REMOVE,
-                                    CONTAIN_ANY,
-                                    TRACE,
-                                    getLabel(),
-                                    getLabel(),
-                                    manually_removed_activities
-                            ));
-                        }
-                    }
-                });
-
-                this.animate.addEventListener(StringValues.b[90], new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        activities_value = activities.getCurpos();
-                        arcs_value = arcs.getCurpos();
-                        parallelism_value = parallelism.getCurpos();
-
-                        Set<String> manually_removed_activities = new HashSet<>();
-                        String node = event.getData().toString();
-                        for (String name : options_frequency.get(getLabel()).keySet()) {
-                            if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
-                                manually_removed_activities.add(name);
-                                break;
-                            }
-                        }
-
-                        if (manually_removed_activities.size() > 0) {
-                            addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                    RETAIN,
-                                    CONTAIN_ANY,
-                                    TRACE,
-                                    getLabel(),
-                                    getLabel(),
-                                    manually_removed_activities
-                            ));
-                        }
-                    }
-                });
-
-                this.animate.addEventListener(StringValues.b[91], new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        activities_value = activities.getCurpos();
-                        arcs_value = arcs.getCurpos();
-                        parallelism_value = parallelism.getCurpos();
-
-                        Set<String> manually_removed_activities = new HashSet<>();
-                        String node = event.getData().toString();
-                        for (String name : options_frequency.get(getLabel()).keySet()) {
-                            if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
-                                manually_removed_activities.add(name);
-                                break;
-                            }
-                        }
-
-                        if (manually_removed_activities.size() > 0) {
-                            addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                    REMOVE,
-                                    CONTAIN_ANY,
-                                    EVENT,
-                                    getLabel(),
-                                    getLabel(),
-                                    manually_removed_activities
-                            ));
-                        }
-                    }
-                });
-
-                this.animate.addEventListener(StringValues.b[92], new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        activities_value = activities.getCurpos();
-                        arcs_value = arcs.getCurpos();
-                        parallelism_value = parallelism.getCurpos();
-
-                        Set<String> manually_removed_activities = new HashSet<>();
-                        String node = event.getData().toString();
-                        for (String name : options_frequency.get(getLabel()).keySet()) {
-                            if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
-                                manually_removed_activities.add(name);
-                                break;
-                            }
-                        }
-
-                        if (manually_removed_activities.size() > 0) {
-                            addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                    RETAIN,
-                                    CONTAIN_ANY,
-                                    EVENT,
-                                    getLabel(),
-                                    getLabel(),
-                                    manually_removed_activities
-                            ));
-                        }
-                    }
-                });
-
-                this.animate.addEventListener(StringValues.b[93], new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        activities_value = activities.getCurpos();
-                        arcs_value = arcs.getCurpos();
-                        parallelism_value = parallelism.getCurpos();
-
-                        Set<String> manually_removed_arcs = new HashSet<>();
-                        String edge = event.getData().toString();
-
-                        for (String name : options_frequency.get(StringValues.b[94]).keySet()) {
-                            if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
-                                manually_removed_arcs.add(name);
-                                break;
-                            }
-                        }
-
-                        if (manually_removed_arcs.size() > 0) {
-                            addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                    REMOVE,
-                                    CONTAIN_ANY,
-                                    TRACE,
-                                    getLabel(),
-                                    StringValues.b[94],
-                                    manually_removed_arcs
-                            ));
-                        }
-                    }
-                });
-
-                this.animate.addEventListener(StringValues.b[95], new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        activities_value = activities.getCurpos();
-                        arcs_value = arcs.getCurpos();
-                        parallelism_value = parallelism.getCurpos();
-
-                        Set<String> manually_removed_arcs = new HashSet<>();
-                        String edge = event.getData().toString();
-
-                        for (String name : options_frequency.get(StringValues.b[94]).keySet()) {
-                            if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
-                                manually_removed_arcs.add(name);
-                                break;
-                            }
-                        }
-
-                        if (manually_removed_arcs.size() > 0) {
-                            addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                    RETAIN,
-                                    CONTAIN_ANY,
-                                    TRACE,
-                                    getLabel(),
-                                    StringValues.b[94],
-                                    manually_removed_arcs
-                            ));
-                        }
-                    }
-                });
-
-                slidersWindow.addEventListener(StringValues.b[96], windowListener);
-                slidersWindow.addEventListener(StringValues.b[97], windowListener);
-            }
-
-            class ExportBPMNHandler implements EventListener<Event> {
-
-                private static final String EVENT_QUEUE = "EVENT_QUEUE";
-                private static final String CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
-                private static final String CHANGE_FRACTION_COMPLETE = "CHANGE_FRACTION_COMPLETE";
-                private static final String MINING_COMPLETE = "MINING_COMPLETE";
-                private static final String MINING_EXCEPTION = "MINING_EXCEPTION";
-                private static final String ANNOTATION_EXCEPTION = "ANNOTATION_EXCEPTION";
-                private EventQueue<Event> eventQueue = EventQueues.lookup(EVENT_QUEUE, EventQueues.SESSION, true);
-
-                private boolean annotateForBIMP;
-
-                ExportBPMNHandler(boolean annotateForBIMP) {
-                    this.annotateForBIMP = annotateForBIMP;
+                    details_window.doModal();
                 }
+            });
 
+            this.cases.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    Window window;
-                    Label descriptionLabel;
-                    Progressmeter fractionCompleteProgressmeter;
-
-                    try {
-                        window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/mineAndSave.zul", null, null);
-                    } catch (IOException e) {
-                        throw new Error("Unable to create embedded ZUL", e);
-                    }
-
-                    ((Button) window.getFellow("cancel")).addEventListener("onClick", new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                            window.detach();
-                        }
-                    });
-
-                    descriptionLabel = (Label) window.getFellow("description");
-
-                    fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
-
-                    window.doModal();
-
-                    eventQueue.subscribe(new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                            switch (event.getName()) {
-                            case CHANGE_DESCRIPTION:
-                                descriptionLabel.setValue((String) event.getData());
-                                break;
-                
-                            case CHANGE_FRACTION_COMPLETE:
-                                fractionCompleteProgressmeter.setValue((int) Math.round(100.0 * (Double) event.getData()));
-                                break;
-                
-                            case MINING_COMPLETE:
-                                fractionCompleteProgressmeter.setValue(100);
-                                descriptionLabel.setValue("Saving BPMN model");
-                                try {
-                                    save();
+                    //cases_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[18], null, null);
+                    cases_window = (Window) Executions.createComponents("/zul/cases.zul", null, null);
+                    cases_window.setTitle("Cases");
                     
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-                                }
-                                window.detach();
-                                //this.portalContext.refreshContent();
+                    cases_window.addEventListener("onClose", new EventListener<Event>() {
+                    	public void onEvent(Event event) throws Exception {
+                    		cases_window = null;
+                    		display(jsonDiagram);
+                        }
+                    });
+                    
+                    Listbox listbox = (Listbox) cases_window.getFellow(StringValues.b[85]);
+                    Listheader pos = (Listheader) cases_window.getFellow(StringValues.b[82]);
+                    pos.setSortAscending(new NumberComparator(true, 0));
+                    pos.setSortDescending(new NumberComparator(false, 0));
+                    Listheader variant_value = (Listheader) cases_window.getFellow(StringValues.b[86]);
+                    variant_value.setSortAscending(new NumberComparator(true, 2));
+                    variant_value.setSortDescending(new NumberComparator(false, 2));
+                    Listheader case_length = (Listheader) cases_window.getFellow(StringValues.b[87]);
+                    case_length.setSortAscending(new NumberComparator(true, 2));
+                    case_length.setSortDescending(new NumberComparator(false, 2));
 
-                                break;
+                    Map<String, Integer[]> info = getCases();
+                    int i = 1;
+                    for (String key : info.keySet()) {
+                        Listcell listcell0 = new Listcell(Integer.toString(i));
+                        Listcell listcell1 = new Listcell(key);
+                        Listcell listcell2 = new Listcell(info.get(key)[1].toString());
+                        Listcell listcell3 = new Listcell(info.get(key)[0].toString());
+                        Listitem listitem = new Listitem();
+                        listitem.appendChild(listcell0);
+                        listitem.appendChild(listcell1);
+                        listitem.appendChild(listcell2);
+                        listitem.appendChild(listcell3);
 
-                            case MINING_EXCEPTION:
-                                Exception e = (Exception) event.getData();
-                                window.detach();
-                                Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-                                break;
+                        listbox.appendChild(listitem);
+                        i++;
+                    }
 
-                            case ANNOTATION_EXCEPTION:
-                                Exception e2 = (Exception) event.getData();
-                                Messagebox.show("Unable to annotate BPMN model for BIMP simulation (" + e2.getMessage() + ")\n\nModel will be created without annotations.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
-                                break;
+                    //listbox.setRows(5);
+
+                    listbox.addEventListener("onSelect", new EventListener<Event>() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            try {
+                                String traceID = ((Listcell) (listbox.getSelectedItem()).getChildren().get(1)).getLabel();
+                                JSONArray array = processDiscovererService.generateTraceModel(log, traceID, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), false, fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
+
+                                ProcessDiscovererController.this.displayTrace(array);
+                            } catch(Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     });
 
-                    new Thread() {
-                        public void run() {
-                            try {
-                                mine();
-                                eventQueue.publish(new Event(MINING_COMPLETE, null, null));
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                eventQueue.publish(new Event(MINING_EXCEPTION, null, e));
+                    Button save = (Button) cases_window.getFellow("save");
+                    save.addEventListener("onClick", new EventListener<Event>() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            Writer writer = new BufferedWriter(new OutputStreamWriter(baos));
+                            CSVWriter csvWriter = new CSVWriter(writer);
+                            Map<String, Integer[]> info = getCases();
+                            csvWriter.writeNext(new String[] {"Case ID", "Case Length", "Unique Case ID"});
+                            for (String key : info.keySet()) {
+                                csvWriter.writeNext(new String[] {key, info.get(key)[1].toString(), info.get(key)[0].toString()});
                             }
+                            csvWriter.flush();
+                            csvWriter.close();
+                            byte[] buffer = baos.toByteArray();
+                            ByteArrayInputStream is = new ByteArrayInputStream(buffer);
+                            AMedia amedia = new AMedia("Cases.csv", "csv", "application/file", is);
+                            Filedownload.save(amedia);
                         }
-                    }.start();
+                    });
+                    cases_window.doOverlapped();
                 }
+            });
+            
 
-                private String model;
 
-                private void mine() throws Exception {
+            this.fitness.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    //Window details_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[19], null, null);
+                	Window details_window = (Window) Executions.createComponents("/zul/fitness.zul", null, null);
+                    details_window.setTitle("Fitness");
+                    Listbox listbox = (Listbox) details_window.getFellow(StringValues.b[81]);
+                    Listheader detail_frequency = (Listheader) details_window.getFellow(StringValues.b[83]);
+                    detail_frequency.setSortAscending(new NumberComparator(true, 1));
+                    detail_frequency.setSortDescending(new NumberComparator(false, 1));
+                    Listheader detail_ratio = (Listheader) details_window.getFellow(StringValues.b[84]);
+                    detail_ratio.setSortAscending(new NumberComparator(true, 1));
+                    detail_ratio.setSortDescending(new NumberComparator(false, 1));
+                    Listcell listcell1 = new Listcell(StringValues.b[88]);
+                    double fitness = measureFitness();
+                    Listcell listcell2 = new Listcell(decimalFormat.format(fitness));
+                    Listcell listcell3 = new Listcell(decimalFormat.format(fitness * 100) + "%");
+                    Listitem listitem = new Listitem();
+                    listitem.appendChild(listcell1);
+                    listitem.appendChild(listcell2);
+                    listitem.appendChild(listcell3);
+                    listbox.appendChild(listitem);
+                    listbox.setRows(5);
+                    details_window.doModal();
+                }
+            });
 
-                    activities_value = activities.getCurpos();
-                    arcs_value = arcs.getCurpos();
-                    parallelism_value = parallelism.getCurpos();
-
+            this.filter.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    new FilterCriterionSelector(getLabel(), ProcessDiscovererController.this, criteria, options_frequency, min, max);
+                }
+            });
+            
+            this.animate.addEventListener("onAnimate", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                	BPMNDiagram validDiagram = diagram;
+                    String layout = event.getData().toString();
+                    //Insert gateways to to make it a valid BPMN diagram, not a graph
                     if(!gateways.isChecked()) {
-                        diagram = processDiscovererService.insertBPMNGateways(diagram);
+                    	validDiagram = processDiscovererService.insertBPMNGateways(diagram);
                     }
-                    for(BPMNEdge edge : diagram.getEdges()) {
+                    for(BPMNEdge edge : validDiagram.getEdges()) {
                         edge.setLabel("");
-                    }
-
-                    for (Flow flow : diagram.getFlows()) {
-                        flow.setLabel("");
-                    }
-                    for (org.processmining.models.graphbased.directed.bpmn.elements.Event event1 : diagram.getEvents()) {
-                        event1.getAttributeMap().put("ProM_Vis_attr_label", "");
                     }
 
                     UIContext context = new UIContext();
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                     UIPluginContext uiPluginContext = context.getMainPluginContext();
-                    BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, diagram);
+                    BpmnDefinitions.BpmnDefinitionsBuilder definitionsBuilder = new BpmnDefinitions.BpmnDefinitionsBuilder(uiPluginContext, validDiagram);
                     BpmnDefinitions definitions = new BpmnDefinitions("definitions", definitionsBuilder);
 
-                    model = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                             "<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"\n " +
                             "xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"\n " +
                             "xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"\n " +
                             "xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"\n " +
                             "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n " +
                             "targetNamespace=\"http://www.omg.org/bpmn20\"\n " +
-                            "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">") +
-                            definitions.exportElements() +
-                            "</definitions>";
+                            "xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">");
 
-                    if (annotateForBIMP) {
-                        try {
-                            model = bimpAnnotationService.annotateBPMNModelForBIMP(model, log, new BIMPAnnotationService.Context() {
-                                public void setDescription(String description) {
-                                    eventQueue.publish(new Event(CHANGE_DESCRIPTION, null, description));
-                                }
+                    sb.append(definitions.exportElements());
+                    sb.append("</definitions>");
+                    String model = sb.toString();
 
-                                public void setFractionComplete(Double fractionComplete) {
-                                    eventQueue.publish(new Event(CHANGE_FRACTION_COMPLETE, null, fractionComplete));
-                                }
-                            });
+                    model.replaceAll("\n", "");
 
-                        } catch (Exception e) {
-                        	LOGGER.warn("Unable to annotate BPMN model for BIMP simulation", e);
-                        	eventQueue.publish(new Event(ANNOTATION_EXCEPTION, null, e));
+                    XLog filtered = processDiscovererService.generateFilteredLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, inverted_nodes.isChecked(), inverted_arcs.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
+                    logAnimationPluginInterface.execute(portalContext, model, layout, filtered, gateways.isChecked());
+                }
+            });
+
+            this.animate.addEventListener("onNodeRemovedTrace", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    activities_value = activities.getCurpos();
+                    arcs_value = arcs.getCurpos();
+                    parallelism_value = parallelism.getCurpos();
+
+                    Set<String> manually_removed_activities = new HashSet<>();
+                    String node = event.getData().toString();
+                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
+                            manually_removed_activities.add(name);
+                            break;
                         }
                     }
-                }
 
-                private void save() throws Exception {
-                    String defaultProcessName = null;
-                    if (log_name != null) {
-                        defaultProcessName = log_name.split("\\.")[0];
+                    if (manually_removed_activities.size() > 0) {
+                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
+                                REMOVE,
+                                CONTAIN_ANY,
+                                TRACE,
+                                getLabel(),
+                                getLabel(),
+                                manually_removed_activities
+                        ));
+                    }
+                }
+            });
+
+            this.animate.addEventListener("onNodeRetainedTrace", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    activities_value = activities.getCurpos();
+                    arcs_value = arcs.getCurpos();
+                    parallelism_value = parallelism.getCurpos();
+
+                    Set<String> manually_removed_activities = new HashSet<>();
+                    String node = event.getData().toString();
+                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
+                            manually_removed_activities.add(name);
+                            break;
+                        }
                     }
 
-                    String user = portalContext.getCurrentUser().getUsername();
-                    Version version = new Version(1, 0);
-                    Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
-                    String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-                    boolean publicModel = true;
-
-                    List<String> domains = domainService.findAllDomains();
-                    SelectDynamicListController domainCB = new SelectDynamicListController(domains);
-                    domainCB.setReference(domains);
-                    domainCB.setAutodrop(true);
-                    domainCB.setWidth("85%");
-                    domainCB.setHeight("100%");
-                    domainCB.setAttribute("hflex", "1");
-
-                    ProcessModelVersion pmv = processService.importProcess(user,
-                            portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
-                            defaultProcessName,
-                            version,
-                            nativeType,
-                            canoniserService.canonise(nativeType, new ByteArrayInputStream(model.getBytes()), canoniserProperties),
-                            domainCB.getValue(),
-                            "Model generated by the Apromore BPMN process mining service.",
-                            now,  // creation timestamp
-                            now,  // last update timestamp
-                            publicModel);
-
-                    portalContext.displayNewProcess(userInterfaceHelper.createProcessSummary(pmv.getProcessBranch().getProcess(),
-                            pmv.getProcessBranch(),
-                            pmv,
-                            nativeType,
-                            domainCB.getValue(),
-                            now,  // creation timestamp
-                            now,  // last update timestamp
-                            user,
-                            publicModel));
+                    if (manually_removed_activities.size() > 0) {
+                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
+                                RETAIN,
+                                CONTAIN_ANY,
+                                TRACE,
+                                getLabel(),
+                                getLabel(),
+                                manually_removed_activities
+                        ));
+                    }
                 }
-            };
+            });
 
-            exportBPMN.addEventListener(StringValues.b[74], new ExportBPMNHandler(false));
-            exportBPMNAnnotatedForBIMP.addEventListener(StringValues.b[74], new ExportBPMNHandler(true));
+            this.animate.addEventListener("onNodeRemovedEvent", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    activities_value = activities.getCurpos();
+                    arcs_value = arcs.getCurpos();
+                    parallelism_value = parallelism.getCurpos();
+
+                    Set<String> manually_removed_activities = new HashSet<>();
+                    String node = event.getData().toString();
+                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
+                            manually_removed_activities.add(name);
+                            break;
+                        }
+                    }
+
+                    if (manually_removed_activities.size() > 0) {
+                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
+                                REMOVE,
+                                CONTAIN_ANY,
+                                EVENT,
+                                getLabel(),
+                                getLabel(),
+                                manually_removed_activities
+                        ));
+                    }
+                }
+            });
+
+            this.animate.addEventListener("onNodeRetainedEvent", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    activities_value = activities.getCurpos();
+                    arcs_value = arcs.getCurpos();
+                    parallelism_value = parallelism.getCurpos();
+
+                    Set<String> manually_removed_activities = new HashSet<>();
+                    String node = event.getData().toString();
+                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
+                            manually_removed_activities.add(name);
+                            break;
+                        }
+                    }
+
+                    if (manually_removed_activities.size() > 0) {
+                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
+                                RETAIN,
+                                CONTAIN_ANY,
+                                EVENT,
+                                getLabel(),
+                                getLabel(),
+                                manually_removed_activities
+                        ));
+                    }
+                }
+            });
+
+            this.animate.addEventListener("onEdgeRemoved", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    activities_value = activities.getCurpos();
+                    arcs_value = arcs.getCurpos();
+                    parallelism_value = parallelism.getCurpos();
+
+                    Set<String> manually_removed_arcs = new HashSet<>();
+                    String edge = event.getData().toString();
+
+                    for (String name : options_frequency.get(StringValues.b[94]).keySet()) {
+                        if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
+                            manually_removed_arcs.add(name);
+                            break;
+                        }
+                    }
+
+                    if (manually_removed_arcs.size() > 0) {
+                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
+                                REMOVE,
+                                CONTAIN_ANY,
+                                TRACE,
+                                getLabel(),
+                                StringValues.b[94],
+                                manually_removed_arcs
+                        ));
+                    }
+                }
+            });
+
+            this.animate.addEventListener("onEdgeRetained", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    activities_value = activities.getCurpos();
+                    arcs_value = arcs.getCurpos();
+                    parallelism_value = parallelism.getCurpos();
+
+                    Set<String> manually_removed_arcs = new HashSet<>();
+                    String edge = event.getData().toString();
+
+                    for (String name : options_frequency.get(StringValues.b[94]).keySet()) {
+                        if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
+                            manually_removed_arcs.add(name);
+                            break;
+                        }
+                    }
+
+                    if (manually_removed_arcs.size() > 0) {
+                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
+                                RETAIN,
+                                CONTAIN_ANY,
+                                TRACE,
+                                getLabel(),
+                                StringValues.b[94],
+                                manually_removed_arcs
+                        ));
+                    }
+                }
+            });
+            
+            exportBPMN.addEventListener("onClick", new ExportBPMNHandler(portalContext, this, false, false));
+            exportBPMNAnnotatedForBIMP.addEventListener("onClick", new ExportBPMNHandler(portalContext, this, true, false));
 
             EventListener<Event> exportPDF = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -1143,9 +980,9 @@ public class ProcessDiscovererController {
                 }
             };
 
-            export.addEventListener(StringValues.b[74], exportPDF);
-            downloadPDF.addEventListener(StringValues.b[74], exportPDF);
-            downloadPNG.addEventListener(StringValues.b[74], new EventListener<Event>() {
+            export.addEventListener("onClick", exportPDF);
+            downloadPDF.addEventListener("onClick", exportPDF);
+            downloadPNG.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     String name = log_name;
                     int pos = 97;
@@ -1195,25 +1032,36 @@ public class ProcessDiscovererController {
                     Clients.evalJavaScript(command);
                 }
             });
-
-            slidersWindow.doOverlapped();
-
-            if(log == null) {
-                try {
-                    Object[] o = processDiscovererService.generateJSONFromBPMNDiagram(diagram);
-                    JSONArray array = (JSONArray) o[0];
-                    diagram = (BPMNDiagram) o[1];
-
-                    String jsonString = array.toString();
-                    String javascript = "load('" + jsonString + "');";
-                    Clients.evalJavaScript("reset()");
-                    Clients.evalJavaScript(javascript);
-                } catch(Exception e) {
-                    e.printStackTrace();
+            
+            EventListener<Event> windowListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    int i = activitiesText.getValue();
+                    if (i < 0) i = 0;
+                    else if (i > 100) i = 100;
+                    activitiesText.setValue(i);
+                    activities.setCurpos(i);
+                    i = arcsText.getValue();
+                    if (i < 0) i = 0;
+                    else if (i > 100) i = 100;
+                    arcsText.setValue(i);
+                    arcs.setCurpos(i);
+                    i = parallelismText.getValue();
+                    if (i < 0) i = 0;
+                    else if (i > 100) i = 100;
+                    parallelismText.setValue(i);
+                    parallelism.setCurpos(i);
+                    setArcAndActivityRatios();
                 }
-            }
-        } catch (IOException e) {
-            portalContext.getMessageHandler().displayError("Could not load component ", e);
+            };            
+            
+            //parallelism.setStyle("background-color:#D8D8D8; width:100%; height:25px;");
+            parallelismRow.setSclass("z-row-disabled");
+    		parallelismText.setDisabled(true);
+            slidersWindow.addEventListener("onLoaded", windowListener);
+            slidersWindow.addEventListener("onOpen", windowListener);
+            //slidersWindow.doOverlapped();
+            //slidersWindow.setMaximized(true);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1228,7 +1076,7 @@ public class ProcessDiscovererController {
             StringBuilder traceBuilder = new StringBuilder();
             for (XEvent event : trace) {
                 String label = event.getAttributes().get(getLabel()).toString();
-                if(event.getAttributes().get(StringValues.b[117]).toString().endsWith("complete")) length++;
+                if(event.getAttributes().get("lifecycle:transition").toString().toLowerCase().endsWith("complete")) length++;
                 traceBuilder.append(label + ",");
             }
             String s = traceBuilder.toString();
@@ -1242,7 +1090,110 @@ public class ProcessDiscovererController {
         }
         return cases;
     }
+    
+    /**
+     * Bruce added 21.05.2019
+     * Display an input dialog
+     * @param title: title of the dialog
+     * @param message: the message regarding the input to enter
+     * @param initialValue: initial value for the input
+     * @param valuePattern: the expression pattern to check validity of the input
+     * @param allowedValues: message about valid values allowed  
+     * @returnValueHander: callback event listener, notified with onOK (containing return value as string) and onCancel event
+     */
+    public void showInputDialog(String title, String message, String initialValue, 
+    							String valuePattern,
+    							String allowedValues, 
+    							EventListener<Event> returnValueHander) {
+		Window win = (Window) Executions.createComponents("/zul/inputDialog.zul", null, null);
+        Window dialog = (Window) win.getFellow("inputDialog");
+        dialog.setTitle(title);
+        Label labelMessage = (Label)dialog.getFellow("labelMessage"); 
+        Textbox txtValue = (Textbox)dialog.getFellow("txtValue");
+        Label labelError = (Label)dialog.getFellow("labelError"); 
+        labelMessage.setValue(message);
+        txtValue.setValue(initialValue);
+        labelError.setValue("");
+        
+        dialog.doModal();
+        
+        ((Button)dialog.getFellow("btnCancel")).addEventListener("onClick", new EventListener<Event>() {
+        	 @Override
+             public void onEvent(Event event) throws Exception {
+        		 dialog.detach();
+        		 returnValueHander.onEvent( new Event("onCancel"));
+        	 }
+         });
+         
+         ((Button)dialog.getFellow("btnOK")).addEventListener("onClick", new EventListener<Event>() {
+        	 @Override
+             public void onEvent(Event event) throws Exception {
+        		 if (txtValue.getValue().trim().isEmpty()) {
+        			 labelError.setValue("Please enter a value!");
+        		 }
+        		 else if (!Pattern.matches(valuePattern, txtValue.getValue())) {
+        			 labelError.setValue("The entered value is not valid! Allowed characters: " + allowedValues);
+        		 }
+        		 else {
+        			 dialog.detach();
+        			 returnValueHander.onEvent( new Event("onOK", null, txtValue.getValue()));
+        		 }
+        	 }
+        });
+    	
+    }
 
+   
+    public ProcessDiscovererService getProcessDiscovererService() {
+    	return this.processDiscovererService;
+    }
+    
+    public DomainService getDomainService() {
+    	return domainService;
+    }
+    
+    public CanoniserService getCanoniserService() {
+    	return canoniserService;
+    }
+    
+    public ProcessService getProcessService() {
+    	return processService;
+    }
+    
+    public BIMPAnnotationService getBIMPAnnotationService() {
+    	return bimpAnnotationService;
+    }
+    
+    
+    public XLog getOriginalLog() {
+    	return this.log;
+    }
+    
+    public String getLogName() {
+    	return this.log_name;
+    }
+    
+    public BPMNDiagram getBPMNDiagram() {
+    	if(!gateways.isChecked()) {
+        	return processDiscovererService.insertBPMNGateways(diagram);
+        }
+    	else {
+    		return this.diagram;
+    	}
+    }
+
+    /*
+     * Note that the filtered log may be empty
+     * In that case the UI must be also properly empty, no errors thrown  
+     */
+    public void refreshCriteria() throws InterruptedException {
+        XLog reduced_log = processDiscovererService.generateFilteredLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, inverted_nodes.isChecked(), inverted_arcs.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
+        populateMetrics(reduced_log);
+        generateOptions(reduced_log);
+        visualized = false;
+        setArcAndActivityRatios();
+    }
+    
     private double measureFitness() {
         BPMNDiagram bpmnDiagram = diagram;
         if(!gateways.isChecked()) bpmnDiagram = processDiscovererService.insertBPMNGateways(diagram);
@@ -1274,28 +1225,15 @@ public class ProcessDiscovererController {
     private void addCriterion(LogFilterCriterion logFilterCriterion) throws InterruptedException {
         if (!criteria.contains(logFilterCriterion)) {
             criteria.add(logFilterCriterion);
-            refreshCriteria();
+            XLog filteredLog = this.getProcessDiscovererService().filterUsingCriteria(this.getOriginalLog(), criteria);
+        	if (filteredLog.isEmpty()) {
+        		Messagebox.show("The log is empty after applying filter criteria! Please use different criteria.");
+        		criteria.remove(logFilterCriterion);
+        	}
+        	else {
+        		refreshCriteria();
+        	}
         }
-    }
-    
-    public ProcessDiscovererService getService() {
-    	return this.processDiscovererService;
-    }
-    
-    public XLog getOriginalLog() {
-    	return this.log;
-    }
-
-    /*
-     * Note that the filtered log may be empty
-     * In that case the UI must be also properly empty, no errors thrown  
-     */
-    public void refreshCriteria() throws InterruptedException {
-        XLog reduced_log = processDiscovererService.generateFilteredLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, inverted_nodes.isChecked(), inverted_arcs.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-        populateMetrics(reduced_log);
-        generateOptions(reduced_log);
-        visualized = false;
-        setArcAndActivityRatios();
     }
 
     private void populateMetrics(XLog log) {
@@ -1353,6 +1291,10 @@ public class ProcessDiscovererController {
         minDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(shortest)));
     }
 
+    // Collect different types of filter from the log
+    // options_frequency contains these filter types
+    // Key: filter type code
+    // Value: map (key: filter type name, value: frequency count of the value)
     private void generateOptions(XLog log) {
         boolean firstTime = (options_frequency.keySet().size() == 0);
         Multimap<String, String> tmp_options = HashMultimap.create();
@@ -1538,28 +1480,55 @@ public class ProcessDiscovererController {
             }
 
             try {
-                JSONArray array;
                 if(gateways.isChecked()) {
                     Object[] o = processDiscovererService.generateJSONWithGatewaysFromLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, parallelism.getCurposInDouble() / 100, true, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), secondary.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-                    array = (JSONArray) o[0];
+                    jsonDiagram = (JSONArray) o[0];
                     diagram = (BPMNDiagram) o[1];
                 }else {
                     Object[] o = processDiscovererService.generateJSONFromLog(log, getLabel(), 1 - activities.getCurposInDouble() / 100, 1 - arcs.getCurposInDouble() / 100, true, inverted_nodes.isChecked(), inverted_arcs.isChecked(), secondary.isChecked(), fixedType, fixedAggregation, primaryType, primaryAggregation, secondaryType, secondaryAggregation, criteria);
-                    array = (JSONArray) o[0];
+                    jsonDiagram = (JSONArray) o[0];
                     diagram = (BPMNDiagram) o[1];
                 }
 
-                String jsonString = array.toString();
-                String javascript = "load('" + jsonString + "');";
-                Clients.evalJavaScript("reset()");
-                Clients.evalJavaScript(javascript);
+                this.display(jsonDiagram);
             } catch(Exception e) {
                 e.printStackTrace();
             }
         }
     }
+    
+    /**
+     * String values go from Java -> JSON -> Javascript, thus they must conform to three Java, JSON and Javascript rules 
+     * in the same order. Special characters such as ', " and \ must be escaped according to these three rules.
+     * In Java and Javascript, special characters must be escaped (i.e. adding "\")
+     * In JSON:
+     * 		- Double quotes (") and backslashes (\) must be escaped
+     * 		- Single quotes (') may not be escaped 
+     * JSONArray.toString strictly conforms to JSON syntax rules, i.e. it will escape special characters.
+     * For example, a special character "\" appears in a string. 
+     * 		- First it must be escaped in Java strings to be valid ("\\") 
+     * 		- Next, JSONArray.toString will make it valid JSON strings, so it becomes "\\\\". 
+     * 		- When it is parsed to JSON object in Javascript, the parser will remove escape chars, convert it back to "\\" 
+     * 		- When this string is used at client side, it is understood as one backslash character ("\") 
+     * @param jsonDiagram
+     */
+    private void display(JSONArray jsonDiagram) {
+    	String jsonString = jsonDiagram.toString();
+    	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
+        String javascript = "load('" + jsonString + "');";
+        //Clients.evalJavaScript("reset()");
+        Clients.evalJavaScript(javascript);
+    }
+    
+    private void displayTrace(JSONArray jsonDiagram) {
+    	String jsonString = jsonDiagram.toString();
+    	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
+        String javascript = "loadTrace('" + jsonString + "');";
+        //Clients.evalJavaScript("reset()");
+        Clients.evalJavaScript(javascript);
+    }
 
-    private void saveLog(XLog filtered_log) {
+    private void saveLog(XLog filtered_log, String logName) {
         try {
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             eventLogService.exportToStream(outputStream, filtered_log);
@@ -1567,9 +1536,11 @@ public class ProcessDiscovererController {
             int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
 
             eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
-                    logSummary.getName() + "_filtered", new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
+                    logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     logSummary.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     logSummary.isMakePublic());
+            
+            Messagebox.show("A new log named '" + logName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
 
             portalContext.refreshContent();
         } catch (Exception e) {

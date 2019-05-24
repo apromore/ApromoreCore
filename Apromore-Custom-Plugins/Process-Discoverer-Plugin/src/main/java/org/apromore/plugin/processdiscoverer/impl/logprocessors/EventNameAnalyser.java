@@ -48,8 +48,8 @@ public class EventNameAnalyser {
     }
 
     public String getCollapsedEvent(String name) {
-        if(isStartEvent(name)) return name.substring(0, name.length() - 6);
-        if(isCompleteEvent(name)) return name.substring(0, name.length() - 9);
+        if(isStartEvent(name)) return name.substring(0, name.length() - 6); // remove '+start'
+        if(isCompleteEvent(name)) return name.substring(0, name.length() - 9); //remove '+complete'
         return name;
     }
 }

@@ -30,6 +30,7 @@ import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.Set;
@@ -52,25 +53,25 @@ public class LogFilterCriterionDuration extends LogFilterCriterionImpl {
             long d = e - s;
 
             for(String v : value) {
+            	String[] values = TimeConverter.parseDuration2(v.substring(1));
+                double x = TimeConverter.convertMilliseconds(Double.parseDouble(values[0]), values[1]).doubleValue();
 
-                String[] h = TimeConverter.parseDuration(Double.parseDouble(v.substring(1)));
-
-                double seconds = 1000.0;
-                double minutes = seconds * 60.0;
-                double hours = minutes * 60.0;
-                double days = hours * 24.0;
-                double weeks = days * 7.0;
-                double months = days * 30.0;
-                double years = days * 365.0;
-
-                double x = 0;
-                if(h[1].equals("0")) x = Double.parseDouble(h[0]) * years;
-                else if(h[1].equals("1")) x = Double.parseDouble(h[0]) * months;
-                else if(h[1].equals("2")) x = Double.parseDouble(h[0]) * weeks;
-                else if(h[1].equals("3")) x = Double.parseDouble(h[0]) * days;
-                else if(h[1].equals("4")) x = Double.parseDouble(h[0]) * hours;
-                else if(h[1].equals("5")) x = Double.parseDouble(h[0]) * minutes;
-                else if(h[1].equals("6")) x = Double.parseDouble(h[0]) * seconds;
+//                double seconds = 1000.0;
+//                double minutes = seconds * 60.0;
+//                double hours = minutes * 60.0;
+//                double days = hours * 24.0;
+//                double weeks = days * 7.0;
+//                double months = days * 30.0;
+//                double years = days * 365.0;
+//
+//                double x = 0;
+//                if(h[1].equals("0")) x = Double.parseDouble(h[0]) * years;
+//                else if(h[1].equals("1")) x = Double.parseDouble(h[0]) * months;
+//                else if(h[1].equals("2")) x = Double.parseDouble(h[0]) * weeks;
+//                else if(h[1].equals("3")) x = Double.parseDouble(h[0]) * days;
+//                else if(h[1].equals("4")) x = Double.parseDouble(h[0]) * hours;
+//                else if(h[1].equals("5")) x = Double.parseDouble(h[0]) * minutes;
+//                else if(h[1].equals("6")) x = Double.parseDouble(h[0]) * seconds;
 
                 if(v.startsWith(">")) {
                     return d >= x;

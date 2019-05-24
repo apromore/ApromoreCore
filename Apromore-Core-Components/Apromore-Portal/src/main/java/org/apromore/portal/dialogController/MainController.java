@@ -43,6 +43,7 @@ import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.*;
@@ -56,6 +57,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +94,8 @@ public class MainController extends BaseController implements MainControllerInte
     private String buildDate;
 
     private PortalPlugin logVisualizerPlugin = null;
+    
+    private Execution execution = null;
 	
 	public static MainController getController() {
         return controller;
@@ -185,6 +189,15 @@ public class MainController extends BaseController implements MainControllerInte
                             }
                         }
                     });
+            qe.subscribe(
+                    new EventListener<Event>() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            if (Constants.EVENT_QUEUE_REFRESH_SCREEN.equals(event.getName())) {
+                                reloadSummaries();
+                            }
+                        }
+                    });
         } catch (Exception e) {
             String message;
             if (e.getMessage() == null) {
@@ -198,9 +211,12 @@ public class MainController extends BaseController implements MainControllerInte
         controller=this;
     }
 
+    // Bruce: Do not use Executions.sendRedirect as it does not work 
+    // for webapp bundles with different ZK execution env.
     public void refresh() {
         try {
-            Executions.sendRedirect(null);
+            //Executions.sendRedirect(null);
+        	qe.publish(new Event(Constants.EVENT_QUEUE_REFRESH_SCREEN, null, Boolean.TRUE));
         } catch (NullPointerException e) {
             // The ZK documentation for sendRedirect claims that passing a null parameter is allowed
             // https://www.zkoss.org/javadoc/latest/zk/org/zkoss/zk/ui/Executions.html#sendRedirect(java.lang.String)
@@ -480,6 +496,8 @@ public class MainController extends BaseController implements MainControllerInte
     		Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
     	}
     }
+    
+
 
     public void visualizeLog() {
         if(logVisualizerPlugin == null) {
@@ -1017,6 +1035,54 @@ public class MainController extends BaseController implements MainControllerInte
                 }
             }
         }
+    }
+    
+    /**
+     * Bruce added 21.05.2019
+     * Display an input dialog
+     * @param title: title of the dialog
+     * @param message: the message regarding the input to enter
+     * @param initialValue: initial value for the input
+     * @param valuePattern: the expression pattern to check validity of the input
+     * @returnValueHander: callback event listener, notified with onOK (containing return value as string) and onCancel event
+     */
+    public void showInputDialog(String title, String message, String initialValue, String valuePattern, EventListener<Event> returnValueHander) {
+		Window win = (Window) Executions.createComponents("macros/inputDialog.zul", null, null);
+        Window dialog = (Window) win.getFellow("inputDialog");
+        dialog.setTitle(title);
+        Label labelMessage = (Label)dialog.getFellow("labelMessage"); 
+        Textbox txtValue = (Textbox)dialog.getFellow("txtValue");
+        Label labelError = (Label)dialog.getFellow("labelError"); 
+        labelMessage.setValue(message);
+        txtValue.setValue(initialValue);
+        labelError.setValue("");
+        
+        dialog.doModal();
+        
+        ((Button)dialog.getFellow("btnCancel")).addEventListener("onClick", new EventListener<Event>() {
+        	 @Override
+             public void onEvent(Event event) throws Exception {
+        		 dialog.detach();
+        		 returnValueHander.onEvent( new Event("onCancel"));
+        	 }
+         });
+         
+         ((Button)dialog.getFellow("btnOK")).addEventListener("onClick", new EventListener<Event>() {
+        	 @Override
+             public void onEvent(Event event) throws Exception {
+        		 if (txtValue.getValue().trim().isEmpty()) {
+        			 labelError.setValue("Please enter a value!");
+        		 }
+        		 else if (!Pattern.matches(valuePattern, txtValue.getValue())) {
+        			 labelError.setValue("The entered value is not valid!");
+        		 }
+        		 else {
+        			 dialog.detach();
+        			 returnValueHander.onEvent( new Event("onOK", null, txtValue.getValue()));
+        		 }
+        	 }
+        });
+    	
     }
 
     public void setBreadcrumbs(int selectedFolderId) {

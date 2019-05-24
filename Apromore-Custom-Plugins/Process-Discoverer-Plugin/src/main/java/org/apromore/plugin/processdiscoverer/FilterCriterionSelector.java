@@ -24,7 +24,9 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterCriterionFactory;
 import org.apromore.plugin.processdiscoverer.impl.filter.LogFilterTypeSelector;
 import org.apromore.plugin.processdiscoverer.impl.util.StringValues;
+import org.apromore.plugin.processdiscoverer.impl.util.TimeConverter;
 import org.deckfour.xes.model.XLog;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -61,7 +63,8 @@ class FilterCriterionSelector {
 
         portalContext = processDiscovererController.portalContext;
 
-        filterSelectorW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/filterCriteria.zul", null, null);
+        //filterSelectorW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/filterCriteria.zul", null, null);
+        filterSelectorW = (Window) Executions.createComponents("/zul/filterCriteria.zul", null, null);
         filterSelectorW.setTitle("Filter Criteria");
 
         criteriaList = (Listbox) filterSelectorW.getFellow("criteria");
@@ -139,7 +142,7 @@ class FilterCriterionSelector {
     }
 
     private void save() throws InterruptedException {
-    	XLog filteredLog = processDiscovererController.getService().filterUsingCriteria(processDiscovererController.getOriginalLog(), criteria);
+    	XLog filteredLog = processDiscovererController.getProcessDiscovererService().filterUsingCriteria(processDiscovererController.getOriginalLog(), criteria);
     	if (filteredLog.isEmpty()) {
     		Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.");
     	}
@@ -160,8 +163,8 @@ class FilterCriterionSelector {
 
             if(label.contains("Time-frame")) {
                 String tmp_label = label.substring(0, label.indexOf("is equal"));
-                String e = label.substring(label.indexOf("<") + 1, label.indexOf(" OR >"));
-                String s = label.substring(label.indexOf(" OR >") + 5, label.indexOf("]"));
+                String e = label.substring(label.indexOf(">") + 1, label.indexOf(" OR <"));
+                String s = label.substring(label.indexOf(" OR <") + 5, label.indexOf("]"));
                 label = tmp_label
                         + " is between "
                         + (new Date(Long.parseLong(s))).toString()
@@ -171,9 +174,9 @@ class FilterCriterionSelector {
             if(label.contains("Duration")) {
                 String d = label.substring(label.indexOf(">") + 1, label.indexOf("]"));
                 if(label.contains("Remove")) {
-                    label = "Remove all traces with a Duration greater than " + convertMilliseconds(d);
+                    label = "Remove all traces with a Duration greater than " + d; //TimeConverter.stringify(d);
                 }else {
-                    label = "Retain all traces with a Duration greater than " + convertMilliseconds(d);
+                    label = "Retain all traces with a Duration greater than " + d; //TimeConverter.stringify(d);
                 }
             }
             if(label.contains("Direct Follow Relation")) {
@@ -187,24 +190,5 @@ class FilterCriterionSelector {
             model.add(label);
         }
         criteriaList.setModel(model);
-    }
-
-    private String convertMilliseconds(String number) {
-        double milliseconds = Double.parseDouble(number);
-        double seconds = milliseconds / 1000.0;
-        double minutes = seconds / 60.0;
-        double hours = minutes / 60.0;
-        double days = hours / 24.0;
-        double weeks = days / 7.0;
-        double months = days / 30.0;
-        double years = days / 365.0;
-
-        if(years > 1) return decimalFormat.format(years) + " Years";
-        else if(months > 1) return decimalFormat.format(months) + " Months";
-        else if(weeks > 1) return decimalFormat.format(weeks) + " Weeks";
-        else if(days > 1) return decimalFormat.format(days) + " Days";
-        else if(hours > 1) return decimalFormat.format(hours) + " Hours";
-        else if(minutes > 1) return decimalFormat.format(minutes) + " Minutes";
-        else return decimalFormat.format(seconds) + " Seconds";
     }
 }
