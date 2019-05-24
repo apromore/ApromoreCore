@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -134,7 +135,14 @@ public class OpenLogFilePlugin extends AbstractImportPlugin {
 	@Override
 	public Object importFromStream(InputStream input, String filename, long fileSizeInBytes) throws Exception {
 		// TODO Auto-generated method stub
-		return importFromStream(input, filename, fileSizeInBytes, XFactoryRegistry.instance().currentDefault());
+//		return importFromStream(input, filename, fileSizeInBytes, XFactoryRegistry.instance().currentDefault());
+
+		try {
+			XFactory factory = XFactoryRegistry.instance().currentDefault().getClass().getConstructor().newInstance();
+			return importFromStream(input, filename, fileSizeInBytes, factory);
+		} catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException("Exception while creating XES factory", e);
+		}
 	}
 
 }
