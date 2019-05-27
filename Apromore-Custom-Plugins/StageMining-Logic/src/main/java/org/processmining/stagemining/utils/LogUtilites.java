@@ -27,6 +27,7 @@ import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.model.*;
 import org.joda.time.DateTime;
+import org.xeslite.external.XFactoryExternalStore;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
@@ -232,8 +233,10 @@ public class LogUtilites {
 		//--------------------------------
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy"); 
 //		XFactory factory = new XFactoryNaiveImpl();
+//		XFactory factory = new XFactoryExternalStore.InMemoryStoreImpl();
 		try {
 			XFactory factory = XFactoryRegistry.instance().currentDefault().getClass().getConstructor().newInstance();
+//			XFactory factory = XFactoryRegistry.instance().currentDefault();
 
 			XEvent startEvent = factory.createEvent();
 			XAttributeMap startEventMap = factory.createAttributeMap();
