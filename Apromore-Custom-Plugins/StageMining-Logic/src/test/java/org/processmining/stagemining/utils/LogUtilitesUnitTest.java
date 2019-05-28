@@ -12,26 +12,31 @@ import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.info.XLogInfo;
 import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.XLog;
+import org.junit.After;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.xeslite.external.XFactoryExternalStore;
 import org.xeslite.parser.XesLiteXmlParser;
 
-public class LogUtilitesTest {
+public class LogUtilitesUnitTest {
 
-    @org.junit.Before
+    @Before
     public void setUp() throws Exception {
     }
 
-    @org.junit.After
+    @After
     public void tearDown() throws Exception {
     }
 
-    @org.junit.Test
+    @Ignore("Test fails because Guava's Ints.fromBytes method is missing.")
+    @Test
     public void addStartEndEvents() throws Exception {
 
         XFactoryExternalStore.InMemoryStoreImpl factory = new XFactoryExternalStore.InMemoryStoreImpl();
-        XesLiteXmlParser parser =  new XesLiteXmlParser(factory, false);
-        List<XLog> parsedLog = parser.parse(new GZIPInputStream(new FileInputStream("./BPI13.xes.gz")));
+        XesLiteXmlParser parser = new XesLiteXmlParser(factory, false);
+        List<XLog> parsedLog = parser.parse(new GZIPInputStream(LogUtilitesUnitTest.class.getClassLoader().getResourceAsStream("BPI13.xes.gz")));
 
         XLog log = parsedLog.iterator().next();
 
