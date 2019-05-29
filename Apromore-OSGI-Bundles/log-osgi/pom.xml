@@ -72,7 +72,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>14.0.1</version>
         </dependency>
 
         <!-- Log-lib -->
@@ -91,7 +90,6 @@
         <dependency>
             <groupId>org.xeslite</groupId>
             <artifactId>xeslite</artifactId>
-            <version>0.0.1</version>
         </dependency>
 
         <dependency>

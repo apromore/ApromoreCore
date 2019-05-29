@@ -34,7 +34,7 @@ public class LogUtilitesUnitTest {
     @Test
     public void addStartEndEvents() throws Exception {
 
-        XFactoryExternalStore.InMemoryStoreImpl factory = new XFactoryExternalStore.InMemoryStoreImpl();
+        XFactory factory = new XFactoryExternalStore.InMemoryStoreImpl();
         XesLiteXmlParser parser = new XesLiteXmlParser(factory, false);
         List<XLog> parsedLog = parser.parse(new GZIPInputStream(LogUtilitesUnitTest.class.getClassLoader().getResourceAsStream("BPI13.xes.gz")));
 

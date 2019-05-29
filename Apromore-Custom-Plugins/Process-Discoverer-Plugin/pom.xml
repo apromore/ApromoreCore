@@ -150,7 +150,6 @@
         <dependency>
             <groupId>org.xeslite</groupId>
             <artifactId>xeslite</artifactId>
-            <version>0.0.1</version>
         </dependency>
 		
 		<!-- Note: this dependency is only for -->
