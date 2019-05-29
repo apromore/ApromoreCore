@@ -134,7 +134,7 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public ExportLogResultType exportLog(Integer logId) throws Exception {
         Log log = logRepo.findUniqueByID(logId);
-        XLog xlog = logRepo.getProcessLog(log);
+        XLog xlog = logRepo.getProcessLog(log, null);
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         exportToStream(outputStream, xlog);
         ExportLogResultType exportLogResultType = new ExportLogResultType();
@@ -147,8 +147,13 @@ public class EventLogServiceImpl implements EventLogService {
 
     @Override
     public XLog getXLog(Integer logId) {
+        return getXLog(logId, null);
+    }
+
+    @Override
+    public XLog getXLog(Integer logId, String factoryName) {
         Log log = logRepo.findUniqueByID(logId);
-        return logRepo.getProcessLog(log);
+        return logRepo.getProcessLog(log, factoryName);
     }
 
     @Override

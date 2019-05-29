@@ -23,9 +23,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:osgi-compendium="http://www.springframework.org/schema/osgi-compendium"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.eclipse.org/gemini/blueprint/schema/blueprint    http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
-        http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+        http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.springframework.org/schema/osgi-compendium       http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+
+    <!-- Access the site.properties configuration artifact -->
+    <osgi-compendium:cm-properties id="properties" persistent-id="site" init-timeout="60"/>
+    <context:property-placeholder properties-ref="properties"/>
 
     <context:annotation-config />
     <context:spring-configured />
@@ -35,6 +41,10 @@
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
+
+    <beans:bean id="xesFactoryName" class="java.lang.String">
+        <beans:constructor-arg type="String" value="${metrics.xesfactory}"/>
+    </beans:bean>
 
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.metrics" />

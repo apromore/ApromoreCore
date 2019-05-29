@@ -47,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * implementation of the org.apromore.dao.LogRepositoryCustom interface.
@@ -162,11 +163,11 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
      * @param log
      * @return
      */
-    public XLog getProcessLog(Log log) {
+    public XLog getProcessLog(Log log, String factoryName) {
         if (log != null) {
             try {
                 String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
-                XFactory factory = XFactoryRegistry.instance().currentDefault().getClass().getConstructor().newInstance();
+                XFactory factory = getXFactory(factoryName).getClass().getConstructor().newInstance();
                 LOGGER.info("Getting XES log " + name + " using " + factory.getClass());
                 return importFromFile(factory, name);
             } catch (Exception e) {
@@ -174,6 +175,21 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
             }
         }
         return null;
+    }
+
+    private XFactory getXFactory(String factoryName) {
+
+        if (factoryName != null) {
+            // Look for a registered XFactory with the specified name
+            for (XFactory factory: XFactoryRegistry.instance().getAvailable()) {
+                if (Objects.equals(factory.getName(), factoryName)) {
+                    return factory;
+                }
+            }
+        }
+
+        // If the named factory couldn't be found, fall back to the default
+        return XFactoryRegistry.instance().currentDefault();
     }
 
     /* ************************** Util Methods ******************************* */

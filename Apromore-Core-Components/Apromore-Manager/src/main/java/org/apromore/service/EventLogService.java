@@ -69,6 +69,8 @@ public interface EventLogService {
 
     XLog getXLog(Integer logId);
 
+    XLog getXLog(Integer logId, String factoryName);
+
     void deleteLogs(List<Log> logs) throws Exception;
 
     void exportToStream(OutputStream outputStream, XLog log) throws Exception;

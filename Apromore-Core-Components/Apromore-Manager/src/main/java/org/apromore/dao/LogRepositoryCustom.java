@@ -57,6 +57,6 @@ public interface LogRepositoryCustom {
 
     void deleteProcessLog(Log log);
 
-    XLog getProcessLog(Log log);
+    XLog getProcessLog(Log log, String factoryName);
 
 }
