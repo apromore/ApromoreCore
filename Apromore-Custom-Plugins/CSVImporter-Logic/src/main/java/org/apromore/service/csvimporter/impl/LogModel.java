@@ -1,4 +1,4 @@
-package org.apromore.plugin.portal.CSVImporterPortal;
+package org.apromore.service.csvimporter.impl;
 
 import java.sql.Timestamp;
 import java.util.HashMap;

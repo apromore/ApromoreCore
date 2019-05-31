@@ -31,7 +31,7 @@
         <relativePath>../../</relativePath>
     </parent>
 
-    <artifactId>csvimporter-portal-plugin</artifactId>
+    <artifactId>csvimporter-portal</artifactId>
     <version>1.0</version>
     <packaging>bundle</packaging>
     <name>CSVImporter Portal</name>

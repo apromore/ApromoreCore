@@ -34,6 +34,9 @@ import javax.xml.datatype.DatatypeFactory;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
+import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.apromore.service.csvimporter.impl.LogModel;
+import org.apromore.service.csvimporter.impl.gridRendererController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -41,7 +44,6 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -52,11 +54,18 @@ import com.opencsv.CSVReader;
 @Component("csvImporterPortalPlugin")
 public class CSVImporterPortal extends DefaultPortalPlugin {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterPortal.class);
+
+    @Inject private CSVImporterLogic csvImporterLogic;
     @Inject private EventLogService eventLogService;
 
     private String label = "CSV Importer";
     private String groupLabel = "Discover";
     private Media media;
+
+    public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
+        this.csvImporterLogic = newCSVImporterLogic;
+    }
 
     public void setEventLogService(EventLogService newEventLogService) {
         this.eventLogService = newEventLogService;
@@ -77,7 +86,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
     private static String textboxID = "txt_";
     private static String labelID = "lbl_";
 
-    private static Integer AttribWidth = 150;
+    private static Integer AttribWidth = 180;
 
 //    /**
 //     * Upload file.
@@ -94,15 +103,15 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
             Button uploadButton = (Button) window.getFellow("uploadButton");
             Button cancelButton = (Button) window.getFellow("cancelButton");
-            Button topCancelButton = (Button) window.getFellow("topCancelButton");
+//            Button topCancelButton = (Button) window.getFellow("topCancelButton");
             Label fileNameLabel = (Label) window.getFellow("fileNameLabel");
             ListModelList<String[]> result = new ListModelList<String[]>();
             Grid myGrid  = (Grid) window.getFellow("myGrid");
             Div attrBox = (Div) window.getFellow("attrBox");
             Div popUPBox = (Div) window.getFellow("popUPBox");
             Button toXESButton = (Button) window.getFellow("toXESButton");
-//            Div gridBox = (Div) window.getFellow("gridBox");
-            
+            Div gridBox = (Div) window.getFellow("gridBox");
+
             uploadButton.addEventListener("onUpload", new EventListener<UploadEvent>() {
                 public void onEvent(UploadEvent event) throws Exception {
                     try {
@@ -111,10 +120,10 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
 
                         myGrid.setHeight("95%");
 
-                        CsvToXes.resetLine();
-                        CsvToXes.resetHead();
-                        CsvToXes.resetList();
-                        
+                        csvImporterLogic.resetLine();
+                        csvImporterLogic.resetHead();
+                        csvImporterLogic.resetList();
+
                         if(attrBox != null) {
                             attrBox.getChildren().clear();
                         }
@@ -122,6 +131,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
                         if (Arrays.asList(allowedExtensions).contains(media.getFormat())) {
 
                             displayCSVContent(media, result, myGrid, attrBox, popUPBox);
+                            gridBox.setWidth(attrBox.getWidth());
                             // set grid model
                             if(result != null) {
                                 myGrid.setModel(result);
@@ -131,17 +141,18 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
                             //set grid row renderer
                             gridRendererController rowRenderer = new gridRendererController();
                             rowRenderer.setAttribWidth(AttribWidth);
+
                             myGrid.setRowRenderer(rowRenderer);
                             toXESButton.setDisabled(false);
 
-                            fileNameLabel.setValue(media.getName());
-
+                            fileNameLabel.setValue("Current File: " + media.getName());
+                            window.setPosition("top,left");
                         } else {
                             Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
                         }
 
                     } catch (Exception e) {
-//                        LOGGER.warn("Unable to execute sample method", e);
+                        LOGGER.info("Unable to import file", e);
                         Messagebox.show("Unable to import file: " + e, "Attention", Messagebox.OK, Messagebox.ERROR);
                     }
                 }
@@ -155,13 +166,14 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
 
                     if (media != null){
                         Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData())
-                                                         : media.getReaderData();
-                        List<LogModel> xesModel = CsvToXes.prepareXesModel(reader);
+                                : media.getReaderData();
+                        List<LogModel> xesModel = csvImporterLogic.prepareXesModel(reader);
                         if (xesModel != null) {
                             // create XES file
-                            XLog xlog = CsvToXes.createXLog(xesModel);
+                            XLog xlog = csvImporterLogic.createXLog(xesModel);
                             saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
                             Messagebox.show("Your file has been created!");
+                            window.detach();
                         }
                     }else{
                         Messagebox.show("Upload file first!");
@@ -176,11 +188,11 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
                 }
             });
 
-            topCancelButton.addEventListener("onClick", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    window.detach();
-                }
-            });
+//            topCancelButton.addEventListener("onClick", new EventListener<Event>() {
+//                public void onEvent(Event event) throws Exception {
+//                    window.detach();
+//                }
+//            });
 
             window.doModal();
 
@@ -198,20 +210,20 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
         int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
 
         eventLogService.importLog(
-            portalContext.getCurrentUser().getUsername(),
-            folderId,
-            name,
-            new ByteArrayInputStream(outputStream.toByteArray()),
-            "xes.gz",
-            "",  // domain
-            DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-            false  // public?
+                portalContext.getCurrentUser().getUsername(),
+                folderId,
+                name,
+                new ByteArrayInputStream(outputStream.toByteArray()),
+                "xes.gz",
+                "",  // domain
+                DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
+                false  // public?
         );
 
         portalContext.refreshContent();
     }
 
-    private static CsvToXes CsvToXes = new CsvToXes();
+//    private static org.apromore.service.csvimporter.impl.CSVImporterLogicImpl CsvToXes = new CsvToXes();
     /**
      * Gets the Content.
      *
@@ -269,35 +281,35 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
             }
 
 //            result.add(header);
-            
+
             line = reader.readNext();
             if(line == null || header == null) {
                 Messagebox.show("Could not parse file!");
             }
 
-            CsvToXes.setLine(line);
-            CsvToXes.setHeads(header);
-            CsvToXes.setOtherTimestamps();
+            csvImporterLogic.setLine(line);
+            csvImporterLogic.setHeads(header);
+            csvImporterLogic.setOtherTimestamps();
 
             myGrid.setStyle("width:80%;height:80%;");
 //            myGrid.setWidth(line.length * AttribWidth + "px");
             attrBox.setWidth(line.length * AttribWidth + "px");
 
-            CsvToXes.setLists(line.length, CsvToXes.getHeads(), AttribWidth + "px");
+            csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth + "px");
 
-            List<Listbox> lists = CsvToXes.getLists();
+            List<Listbox> lists = csvImporterLogic.getLists();
             for (Listbox list : lists) {
                 attrBox.appendChild(list);
 //                attrBox.appendChild(new Space());
             }
-            attrBox.clone();
+//            attrBox.clone();
 
 
-            System.out.println("attrBox is done. Line length:" + line.length);
+//            System.out.println("attrBox is done. Line length:" + line.length);
             createPopUpTextBox(line.length, popUPBox);
-            CsvToXes.openPopUp();
+            csvImporterLogic.openPopUp();
 
-            System.out.println("createPopUpTxtBox is done.");
+//            System.out.println("createPopUpTxtBox is done.");
 
             // display first 1000 rows
             int numberOfrows = 1000;
@@ -308,7 +320,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
             }
             reader.close();
 
-            System.out.println("reader is closed, result is set. Ended displayContent.");
+//            System.out.println("reader is closed, result is set. Ended displayContent.");
 //            return result;
 
         } catch (IOException e) {
@@ -320,7 +332,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
 
 
     private void createPopUpTextBox(int colNum, Div popUPBox){
-        popUPBox.setWidth(colNum * (AttribWidth + 35) + "px");
+        popUPBox.setWidth(colNum * (AttribWidth + 30) + "px");
         for(int i =0; i<= colNum -1; i++){
             Window item = new Window();
             item.setId(popupID+ i);
@@ -328,10 +340,10 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) + 5)  + "px; position: absolute; z-index: 10; visibility: hidden; top:5%;");
+            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) + 5)  + "px; position: absolute; z-index: 10; visibility: hidden; top:50px;");
 
             Button sp = new Button();
-            sp.setLabel("^");
+            sp.setLabel("Hide");
 //            sp.setClass("fas fa-angle-double-up text-secondary float-right mb-1");
             A hidelink = new A();
             hidelink.appendChild(sp);
@@ -347,7 +359,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
 
             textbox.addEventListener("onBlur", (Event event) -> {
                 if(!(textbox.getValue().isEmpty() || textbox.getValue().equals(""))){
-                    CsvToXes.tryParsing(textbox.getValue(), Integer.parseInt(textbox.getId().replace(textboxID,"")));
+                    csvImporterLogic.tryParsing(textbox.getValue(), Integer.parseInt(textbox.getId().replace(textboxID,"")));
                 }
             });
             item.appendChild(textbox);
@@ -360,13 +372,11 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
         }
         popUPBox.clone();
 
-        CsvToXes.setPopUPBox(popUPBox);
-        CsvToXes.setPopupID(popupID);
-        CsvToXes.setTextboxID(textboxID);
-        CsvToXes.setLabelID(labelID);
+        csvImporterLogic.setPopUPBox(popUPBox);
+        csvImporterLogic.setPopupID(popupID);
+        csvImporterLogic.setTextboxID(textboxID);
+        csvImporterLogic.setLabelID(labelID);
     }
-    
+
 
 }
-
-

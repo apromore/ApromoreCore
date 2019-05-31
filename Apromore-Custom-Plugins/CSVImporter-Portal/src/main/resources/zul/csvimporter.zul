@@ -17,16 +17,19 @@
   ~ License along with this program.
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
-<window width="95%" height="90%" closable="false" position="center" title="CSV Importer" contentStyle="overflow: auto">
-    <vbox>
-        <groupbox width="100%">
+<zk>
+<window hflex="1" vflex="1" closable="false" position="center" title="CSV Importer" contentStyle="overflow: auto">
+    <!--<vbox>-->
+        <groupbox>
             <label value="CSV File (.csv, .xls, .xlsx)" width="100%"/>
             <hbox align="center">
                 <button id="uploadButton" label="Import File" upload="true,maxsize=-1,multiple=false,native"/>
-                <button id="toXESButton" label="Convert To XES"/>
-                <separator width="500px"/>
-                <button id="topCancelButton" label=" " image="img/cancel2.png"></button>
-                <label id="fileNameLabel" value="File Name" width="100%"/>
+                <!--<button id="toXESButton" label="Convert To XES"/>-->
+                <separator />
+                <!--<button id="topCancelButton" label=" " image="img/cancel2.png"></button>-->
+            </hbox>
+            <hbox align="right">
+                <label id="fileNameLabel" width="100%" />
             </hbox>
         </groupbox>
 
@@ -36,15 +39,13 @@
             <div id="gridBox">
                 <div id="attrBox"></div>
                 <div id="popUPBox"></div>
-                <grid id="myGrid" mold="paging" pageSize="13" height="80%" hflex="min">
-
-                    <!--<custom-attributes org.zkoss.zul.nativebar="false"/>-->
-                </grid>
+                <grid id="myGrid" mold="paging" pageSize="15" height="80%" hflex="min"  />
             </div>
         </groupbox>
-        <div align="center">
-            <button id="okButton" label="OK" image="img/ok.png"></button>
+        <div align="left">
+            <button id="toXESButton" label="Convert To XES" image="img/ok.png" disabled="true"></button>
             <button id="cancelButton" label="Cancel" image="img/cancel2.png"></button>
         </div>
-    </vbox>
+    <!--</vbox>-->
 </window>
+</zk>

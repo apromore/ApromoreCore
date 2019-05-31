@@ -28,8 +28,6 @@
         http://www.eclipse.org/gemini/blueprint/schema/blueprint    http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
         http://www.springframework.org/schema/context               http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-    
-
     <!-- Other OSGi services this component consumes -->
     <reference id="csvImporterLogic" interface="org.apromore.service.csvimporter.CSVImporterLogic"/>
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
@@ -37,6 +35,7 @@
     <!-- Create beans for each class annotated with @Component within the package -->
     <!-- <context:component-scan base-package="org.apromore.plugin.portal.CSVImporterPortal" /> -->
     <beans:bean id="csvImporterPortalPlugin" class="org.apromore.plugin.portal.CSVImporterPortal.CSVImporterPortal">
+        <beans:property name="csvImporterLogic" ref="csvImporterLogic"/>
         <beans:property name="eventLogService" ref="eventLogService"/>
     </beans:bean>
 

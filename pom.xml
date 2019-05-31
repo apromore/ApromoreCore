@@ -138,7 +138,7 @@
         <module>Apromore-Custom-Plugins/Compare-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Compare-Portal-Plugin2</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Logic</module>
-        <module>Apromore-Custom-Plugins/CSVImporter-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
 
         <module>Apromore-Custom-Plugins/LTL-Conf-Logic</module>
         <module>Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin</module>
