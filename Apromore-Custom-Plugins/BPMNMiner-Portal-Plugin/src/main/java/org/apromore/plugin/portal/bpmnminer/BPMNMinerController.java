@@ -435,8 +435,8 @@ public class BPMNMinerController {
                         e.printStackTrace();
                         Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
                     }
-                    //window.detach();
-                    //this.portalContext.refreshContent();
+                    window.detach();
+                    BPMNMinerController.this.portalContext.refreshContent();
 
                     break;
 
