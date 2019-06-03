@@ -126,8 +126,8 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
+            <groupId>org.deckfour</groupId>
+            <artifactId>openxes</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>

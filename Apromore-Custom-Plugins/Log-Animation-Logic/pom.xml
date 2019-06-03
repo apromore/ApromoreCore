@@ -86,8 +86,8 @@
             <artifactId>plugin-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
+            <groupId>org.deckfour</groupId>
+            <artifactId>openxes</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jgrapht</groupId>

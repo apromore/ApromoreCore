@@ -499,6 +499,17 @@
                 <version>${servlet-api.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.deckfour</groupId>
+                <artifactId>openxes</artifactId>
+                <version>2.16</version>
+            </dependency>
+            <dependency>
+                <groupId>org.deckfour</groupId>
+                <artifactId>spex</artifactId>
+                <version>1.0</version>
+            </dependency>
+<!--
+            <dependency>
                 <groupId>org.deckfour.xes</groupId>
                 <artifactId>OpenXES</artifactId>
                 <version>6.5.20170418</version>
@@ -508,6 +519,7 @@
                 <artifactId>spex</artifactId>
                 <version>6.5.20170418</version>
             </dependency>
+-->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
@@ -1564,6 +1576,11 @@
             <id>ZK CE</id>
             <name>ZK CE Repository</name>
             <url>http://mavensync.zkoss.org/maven2</url>
+        </repository>
+        <repository>
+            <id>source tree</id>
+            <name>Apromore source code embedded Maven repository</name>
+            <url>file://repository</url>
         </repository>
     </repositories>
     <pluginRepositories>
