@@ -170,19 +170,10 @@
                                         <h:h4 class="welcome">
                                             <h:small>Welcome to Apromore!</h:small>
                                         </h:h4>
-                                        <h:p>Apromore is an open-source, online business process analytics platform, supporting the full stack of process mining functionality, from automated process discovery through to predictive process monitoring. These features are complemented by functionality for managing process model collections. Visit <a href="https://apromore.org">https://apromore.org</a> for more information and development resources.</h:p>
-                                        <h:p>Headquartered at The University of Melbourne, Apromore is the result of over ten years of research and development, with contributions from various universities and individuals and funding from the government and private sectors.</h:p>
-                                        <h:p>Project leader: Marcello La Rosa</h:p>
-                                        <h:p>Core contributors: Abel Armas-Cervantes, Adriano Augusto, Raffaele Conforti, Marlon Dumas, Hoang Nguyen, Alireza Ostovar, Artem Polyvyanyy, Simon Raboczi, Ilya Verenich</h:p>
-                                        <h:p>For a full list of contributors, visit <a href="https://apromore.org/about">https://apromore.org/about</a>.</h:p>
                                         <h:p align="center">
                                             <h:img src="img/apromore_logo.png"/>
                                         </h:p>
-                                        <!--<h:br class="margin-mm "/>-->
-                                        <!--<h:p>-->
-                                            <!--<h:a id="btnTwitter" class="btn link"><i class="icon-twitter-sign icon-2x"/> Signin with Twitter</h:a>-->
-                                            <!--<h:a id="btnFacebook" class="btn link"><i class="icon-facebook-sign icon-2x"/> Signin with Facebook</h:a>-->
-                                        <!--</h:p>-->
+                                        <h:p>For further information, visit <a href="https://apromore.org/">http://apomore.org</a>.</h:p>
                                     </h:div>
                                 </h:div>
 
