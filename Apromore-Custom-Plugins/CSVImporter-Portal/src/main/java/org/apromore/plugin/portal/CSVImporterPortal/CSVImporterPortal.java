@@ -314,7 +314,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
 //            System.out.println("createPopUpTxtBox is done.");
 
             // display first 1000 rows
-            int numberOfrows = 1000;
+            int numberOfrows = 1000 - 1;
             while (line != null && numberOfrows >= 0) {
                 result.add(line);
                 numberOfrows--;
