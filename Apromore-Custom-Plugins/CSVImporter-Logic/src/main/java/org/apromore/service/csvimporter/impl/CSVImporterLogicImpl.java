@@ -427,7 +427,15 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 
             Textbox txt = (Textbox)myPopUp.getFellow(textboxID+ colPos);
             txt.setValue(format);
-            check_lbl.setValue(message);
+//            check_lbl.setSclass("redLabel");
+//            check_lbl.setZclass("redLabel");
+            if(message == parsedCorrectly) {
+                check_lbl.setZclass("greenLabel");
+                check_lbl.setValue(message);
+            } else {
+                check_lbl.setZclass("redLabel");
+                check_lbl.setValue(message);
+            }
             check_lbl.setClass(lblClass);
         }
 

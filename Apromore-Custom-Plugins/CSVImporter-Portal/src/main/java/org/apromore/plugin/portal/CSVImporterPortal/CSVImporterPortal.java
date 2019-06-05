@@ -43,6 +43,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
@@ -86,7 +87,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
     private static String textboxID = "txt_";
     private static String labelID = "lbl_";
 
-    private static Integer AttribWidth = 180;
+    private static Integer AttribWidth = 150;
 
 //    /**
 //     * Upload file.
@@ -119,7 +120,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
                         media = event.getMedia();
 
                         myGrid.setHeight("95%");
-
+                        
                         csvImporterLogic.resetLine();
                         csvImporterLogic.resetHead();
                         csvImporterLogic.resetList();
@@ -291,7 +292,8 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
             csvImporterLogic.setHeads(header);
             csvImporterLogic.setOtherTimestamps();
 
-            myGrid.setStyle("width:80%;height:80%;");
+//            myGrid.setStyle("width:80%;height:80%;");
+//            myGrid.setZclass("rowHeight");
 //            myGrid.setWidth(line.length * AttribWidth + "px");
             attrBox.setWidth(line.length * AttribWidth + "px");
 
@@ -312,7 +314,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
 //            System.out.println("createPopUpTxtBox is done.");
 
             // display first 1000 rows
-            int numberOfrows = 1000;
+            int numberOfrows = 1000 - 1;
             while (line != null && numberOfrows >= 0) {
                 result.add(line);
                 numberOfrows--;
@@ -340,7 +342,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) + 5)  + "px; position: absolute; z-index: 10; visibility: hidden; top:50px;");
+            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) )  + "px; position: absolute; z-index: 10; visibility: hidden; top:51px;");
 
             Button sp = new Button();
             sp.setLabel("Hide");
@@ -356,10 +358,10 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
             textbox.setId(textboxID + i);
             textbox.setWidth("100%");
             textbox.setPlaceholder("Specify timestamp format");
-
-            textbox.addEventListener("onBlur", (Event event) -> {
-                if(!(textbox.getValue().isEmpty() || textbox.getValue().equals(""))){
-                    csvImporterLogic.tryParsing(textbox.getValue(), Integer.parseInt(textbox.getId().replace(textboxID,"")));
+            textbox.addEventListener("onChanging", (InputEvent event) -> {
+//                Messagebox.show(event.getValue());
+                if(!(event.getValue().isEmpty() || event.getValue().equals(""))){
+                    csvImporterLogic.tryParsing(event.getValue(), Integer.parseInt(textbox.getId().replace(textboxID,"")));
                 }
             });
             item.appendChild(textbox);
