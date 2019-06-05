@@ -18,8 +18,47 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 <zk>
+
 <window hflex="1" vflex="1" closable="false" position="center" title="CSV Importer" contentStyle="overflow: auto">
     <!--<vbox>-->
+    <style>
+        .greenLabel {
+            font-family: sans-serif;
+            color: green;
+            font-size: 11px;
+            font-weight: normal;
+            margin-left: -3px;
+        }
+
+        .redLabel {
+            font-family: sans-serif;
+            color: red;
+            font-size: 11px;
+            font-weight: normal;
+            margin-left: -3px;
+        }
+
+        .z-row-content, .z-group-content, .z-groupfoot-content, .z-footer-content {
+            font-family: Arial,Sans-serif;
+            font-size: 12px;
+            color: #636363;
+            padding: 0px 0px;
+            line-height: 12px;
+            overflow: auto;
+        }
+
+        <!--.z-groupbox-content {-->
+            <!--display: block;-->
+            <!--height: inherit;-->
+            <!--border: 1px solid #cfcfcf;-->
+            <!--border-top: 0;-->
+            <!--padding: 2px;-->
+            <!--overflow: scroll;-->
+            <!--zoom: 1;-->
+            <!--width: 95%;-->
+        <!--}-->
+    </style>
+
         <groupbox>
             <label value="CSV File (.csv, .xls, .xlsx)" width="100%"/>
             <hbox align="center">
@@ -39,10 +78,10 @@
             <div id="gridBox">
                 <div id="attrBox"></div>
                 <div id="popUPBox"></div>
-                <grid id="myGrid" mold="paging" pageSize="15" height="80%" hflex="min"  />
+                <grid id="myGrid" mold="paging" pageSize="15" height="80%" hflex="min" sclass="z-row-content" />
             </div>
         </groupbox>
-        <div align="left">
+        <div align="center">
             <button id="toXESButton" label="Convert To XES" image="img/ok.png" disabled="true"></button>
             <button id="cancelButton" label="Cancel" image="img/cancel2.png"></button>
         </div>
