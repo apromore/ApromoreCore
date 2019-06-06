@@ -157,7 +157,7 @@ public class ProcessDiscoverer {
         TraceDFG traceDfg = new TraceDFG(trace, this.logDfg);
         TraceAbstraction traceAbs = traceDfg.getTraceAbstraction(params);
         JSONBuilder jsonBuilder = new JSONBuilder(traceAbs);
-        return jsonBuilder.generateJSONFromBPMN(DURATION, false, false);
+        return jsonBuilder.generateJSONFromBPMN(false);
     }
 
     /**

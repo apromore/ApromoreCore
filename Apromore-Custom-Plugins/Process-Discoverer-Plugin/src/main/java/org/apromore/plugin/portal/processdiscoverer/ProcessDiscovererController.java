@@ -661,10 +661,10 @@ public class ProcessDiscovererController extends BaseController {
 																	parallelism.getCurposInDouble() / 100, 
 																	false, true, 
 																	inverted_nodes.isChecked(), inverted_arcs.isChecked(),
-																	secondary.isChecked(),
+																	false,
 																	fixedType, fixedAggregation, 
-																	primaryType, primaryAggregation, 
-																	secondaryType, secondaryAggregation,
+																	VisualizationType.DURATION, VisualizationAggregation.CASES, 
+																	VisualizationType.FREQUENCY, VisualizationAggregation.CASES,
 																	new HashSet<>(Arrays.asList(arcTypes)));                                
                                 JSONArray array = processDiscoverer.generateTraceDFGJSON(traceID, params);
 
