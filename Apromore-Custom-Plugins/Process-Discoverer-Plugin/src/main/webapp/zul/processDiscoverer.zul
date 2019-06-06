@@ -149,7 +149,7 @@
 		font-weight: bold; }
 	</style>
 		
-	<window id="win" border="none" closable="false" height="100%" width="100%" use="org.apromore.plugin.processdiscoverer.ProcessDiscovererController">
+	<window id="win" border="none" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
 		<caption id="windowcaption" sclass="mainCaption">
 			<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank" sclass="captionButtons">
 				<button label="Help" image="/img/Help-16x16.png" style="float: right;" height="25px"></button>

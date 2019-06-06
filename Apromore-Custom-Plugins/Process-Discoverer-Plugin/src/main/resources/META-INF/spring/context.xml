@@ -49,17 +49,16 @@
     <osgi:reference id="canoniserService" interface="org.apromore.service.CanoniserService"/>
     <osgi:reference id="domainService" interface="org.apromore.service.DomainService"/>
     <osgi:reference id="processService" interface="org.apromore.service.ProcessService"/>
-    <osgi:reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
-    <osgi:reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
     <osgi:reference id="bimpAnnotationService" interface="org.apromore.service.bimp_annotation.BIMPAnnotationService"/>
 	<osgi:reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
     <osgi:reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
 
     <!-- Exposes the component as OSGi service -->
-    <context:component-scan base-package="org.apromore.plugin.processdiscoverer" />
-
+    <context:component-scan base-package="org.apromore.plugin.portal.processdiscoverer" />
     <osgi:service ref="frequencyPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
     <osgi:service ref="performancePlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+	
+	<context:component-scan base-package="org.apromore.plugin.processdiscoverer.service" />
     <osgi:service ref="processDiscovererServiceImpl" interface="org.apromore.plugin.processdiscoverer.service.ProcessDiscovererService" auto-export="interfaces"/>
 
 </beans:beans>

@@ -56,8 +56,8 @@
                             org.processmining.framework.*;version="[1.0,2.0)",
                             org.processmining.models.*;version="[1.0,2.0)",
                             org.processmining.plugins.*;version="[1.0,2.0)",
-                            org.deckfour.xes.model.*;version="[2.0,3.0)",
-                            org.deckfour.xes.factory.*;version="[2.0,3.0)",
+                            org.deckfour.xes.model.*;version="[1.0,2.0)",
+                            org.deckfour.xes.factory.*;version="[1.0,2.0)",
                             !com.raffaeleconforti.processdiscoverer.*,
 							org.eclipse.virgo.web.dm,
                             org.springframework.beans.factory.aspectj,
@@ -80,10 +80,10 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.plugin.processdiscoverer, 
+                            org.apromore.plugin.portal.processdiscoverer, 
 							org.apromore.plugin.processdiscoverer.service,
-							org.apromore.plugin.processdiscoverer.impl.filter, 
-							org.apromore.plugin.processdiscoverer.impl
+							org.apromore.processdiscoverer,
+							org.apromore.processdiscoverer.logfilter
                         </Export-Package>
 						<Web-ContextPath>processdiscoverer</Web-ContextPath>
                     </instructions>
