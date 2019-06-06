@@ -60,7 +60,7 @@
     </style>
 
         <groupbox>
-            <label value="CSV File (.csv, .xls, .xlsx)" width="100%"/>
+            <label value="CSV File (.csv)" width="100%"/>
             <hbox align="center">
                 <button id="uploadButton" label="Import File" upload="true,maxsize=-1,multiple=false,native"/>
                 <!--<button id="toXESButton" label="Convert To XES"/>-->
