@@ -207,6 +207,8 @@ public class ProcessDiscovererController extends BaseController {
 
     private String label = StringValues.b[161]; // the event attribute key used to label each task node, default "concept:name"
     
+    private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
+    
     private CanoniserService canoniserService;
     private DomainService domainService;
     private ProcessService processService;
@@ -286,6 +288,7 @@ public class ProcessDiscovererController extends BaseController {
             this.use_fixed = (Radio) slidersWindow.getFellow(StringValues.b[20]);
             this.use_dynamic = (Radio) slidersWindow.getFellow(StringValues.b[21]);
             this.gateways = (Checkbox) slidersWindow.getFellow(StringValues.b[23]);
+            this.isShowingBPMN = gateways.isChecked();
             this.secondary = (Checkbox) slidersWindow.getFellow(StringValues.b[25]);
             this.inverted_nodes = (Checkbox) slidersWindow.getFellow(StringValues.b[26]);
             this.inverted_arcs = (Checkbox) slidersWindow.getFellow(StringValues.b[27]);
@@ -389,7 +392,7 @@ public class ProcessDiscovererController extends BaseController {
             this.secondary.addEventListener("onCheck", radioListener);
             this.inverted_nodes.addEventListener("onCheck", radioListener);
             this.inverted_arcs.addEventListener("onCheck", radioListener);
-
+            
             this.activities.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     activitiesText.setValue(activities.getCurpos());
@@ -1566,8 +1569,11 @@ public class ProcessDiscovererController extends BaseController {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
         String javascript = "load('" + jsonString + "');";
-        //Clients.evalJavaScript("reset()");
+        if ((isShowingBPMN && !gateways.isChecked()) || (!isShowingBPMN && gateways.isChecked())) {
+        	javascript += "fitToWindow();";
+        }
         Clients.evalJavaScript(javascript);
+        isShowingBPMN = gateways.isChecked();
     }
     
     private void displayTrace(JSONArray jsonDiagram) {
