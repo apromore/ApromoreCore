@@ -50,8 +50,6 @@ import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.bimp_annotation.BIMPAnnotationService;
-import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
-import org.apromore.service.helper.UserInterfaceHelper;
 import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -72,7 +70,6 @@ import org.processmining.models.connections.petrinets.behavioral.InitialMarkingC
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.processmining.models.graphbased.directed.bpmn.elements.Flow;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
@@ -205,7 +202,8 @@ public class ProcessDiscovererController extends BaseController {
     private long min = Long.MAX_VALUE; //the earliest timestamp of the log
     private long max = 0; //the latest timestamp of the log
 
-    private String label = StringValues.b[161]; // the event attribute key used to label each task node, default "concept:name"
+    private String label = "concept:name"; // the event attribute key used to label each task node, default "concept:name"
+    private boolean selectorChanged = false;
     
     private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
     
@@ -349,6 +347,7 @@ public class ProcessDiscovererController extends BaseController {
                 Menuitem item = new Menuitem(option);
                 item.addEventListener("onClick", new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
+                    	selectorChanged = true;
                         setLabel(item.getLabel());
                         options_frequency.clear();
                         generateOptions(log);
@@ -1569,18 +1568,18 @@ public class ProcessDiscovererController extends BaseController {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
         String javascript = "load('" + jsonString + "');";
-        if ((isShowingBPMN && !gateways.isChecked()) || (!isShowingBPMN && gateways.isChecked())) {
+        if ((isShowingBPMN && !gateways.isChecked()) || (!isShowingBPMN && gateways.isChecked()) || selectorChanged) {
         	javascript += "fitToWindow();";
         }
         Clients.evalJavaScript(javascript);
         isShowingBPMN = gateways.isChecked();
+        selectorChanged = false;
     }
     
     private void displayTrace(JSONArray jsonDiagram) {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
         String javascript = "loadTrace('" + jsonString + "');";
-        //Clients.evalJavaScript("reset()");
         Clients.evalJavaScript(javascript);
     }
 

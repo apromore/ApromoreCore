@@ -20,25 +20,13 @@
 
 package org.apromore.processdiscoverer;
 
-import com.raffaeleconforti.foreignkeydiscovery.Pair;
-import com.raffaeleconforti.splitminer.log.LogParser;
-import com.raffaeleconforti.splitminer.log.SimpleLog;
-import com.raffaeleconforti.splitminer.splitminer.SplitMiner;
-import com.raffaeleconforti.splitminer.splitminer.ui.miner.SplitMinerUIResult;
 
 import org.apromore.plugin.portal.processdiscoverer.LogFilterCriterion;
-import org.apromore.processdiscoverer.dfg.Arc;
 import org.apromore.processdiscoverer.dfg.BPMNAbstraction;
 import org.apromore.processdiscoverer.dfg.DFGAbstraction;
 import org.apromore.processdiscoverer.dfg.LogDFG;
 import org.apromore.processdiscoverer.dfg.TraceAbstraction;
 import org.apromore.processdiscoverer.dfg.TraceDFG;
-import org.apromore.processdiscoverer.dfg.collectors.ArcInfoCollector;
-import org.apromore.processdiscoverer.dfg.collectors.NodeInfoCollector;
-import org.apromore.processdiscoverer.dfg.filters.ArcSelector;
-import org.apromore.processdiscoverer.dfg.filters.NodeSelector;
-import org.apromore.processdiscoverer.dfg.reachability.ReachabilityChecker;
-import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
 import org.apromore.processdiscoverer.dfg.vis.JSONBuilder;
 import org.apromore.processdiscoverer.logfilter.Action;
 import org.apromore.processdiscoverer.logfilter.Containment;
@@ -48,39 +36,14 @@ import org.apromore.processdiscoverer.logfilter.LogFilterCriterionFactory;
 import org.apromore.processdiscoverer.logprocessors.LogUtils;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.apromore.processdiscoverer.logprocessors.TimeLog;
-import org.apromore.processdiscoverer.splitminer.DFGPWithLogThreshold;
-import org.deckfour.xes.classification.XEventAttributeClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.extension.std.XTimeExtension;
-import org.deckfour.xes.factory.XFactory;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
-import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.eclipse.collections.api.list.primitive.IntList;
-import org.eclipse.collections.api.list.primitive.LongList;
-import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
-import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
-import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
-import org.processmining.models.graphbased.directed.bpmn.elements.Event;
-
 import java.util.*;
 
-import static org.apromore.processdiscoverer.VisualizationType.DURATION;
-import static org.apromore.processdiscoverer.logfilter.Containment.CONTAIN_ANY;
-import static org.apromore.processdiscoverer.logfilter.Level.EVENT;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
@@ -92,6 +55,7 @@ public class ProcessDiscoverer {
     private XLog filtered_criteria_log; //log after applying filter criteria
     private List<LogFilterCriterion> criteria; // list of log filter criteria
     private LogDFG logDfg;
+    private String attribute = "";
     
 
     public ProcessDiscoverer(XLog initial_log) {
@@ -106,7 +70,8 @@ public class ProcessDiscoverer {
             filterCriteriaChanged = true;
     	}
     	
-    	if (filterCriteriaChanged) {
+    	if (filterCriteriaChanged || !params.getAttribute().equals(this.attribute)) {
+    		attribute = params.getAttribute();
 	    	SimplifiedLog simplified_log = new SimplifiedLog(filtered_criteria_log, params.getClassifier());
 	    	TimeLog simplified_times_log = new TimeLog(filtered_criteria_log) ;
 	    	logDfg = new LogDFG(simplified_log, simplified_times_log);
@@ -125,7 +90,8 @@ public class ProcessDiscoverer {
             filterCriteriaChanged = true;
     	}
     	
-    	if (filterCriteriaChanged) {
+    	if (filterCriteriaChanged || !params.getAttribute().equals(this.attribute)) {
+    		attribute = params.getAttribute();
 	    	SimplifiedLog simplified_log = new SimplifiedLog(filtered_criteria_log, params.getClassifier());
 	    	TimeLog simplified_times_log = new TimeLog(filtered_criteria_log) ;
 	    	logDfg = new LogDFG(simplified_log, simplified_times_log);

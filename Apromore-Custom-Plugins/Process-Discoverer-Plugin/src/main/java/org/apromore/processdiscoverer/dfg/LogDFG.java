@@ -29,8 +29,6 @@ import org.deckfour.xes.classification.XEventAttributeClassifier;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
@@ -41,7 +39,6 @@ import org.eclipse.collections.api.list.primitive.LongList;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 
 import com.raffaeleconforti.foreignkeydiscovery.Pair;
 import com.raffaeleconforti.splitminer.log.LogParser;
@@ -348,7 +345,8 @@ public class LogDFG {
     	if (dfgAbstraction != null) {
     		AbstractionParams currentParams = dfgAbstraction.getAbstractionParams();
     		// The diagram is unchanged, only need to update weights
-    		if (currentParams.getActivityLevel() == params.getActivityLevel() &&
+    		if (currentParams.getAttribute() == params.getAttribute() &&
+    			currentParams.getActivityLevel() == params.getActivityLevel() &&
     			currentParams.getArcLevel() == params.getArcLevel() &&
     			currentParams.getFixedType() == params.getFixedType() &&
     			currentParams.getFixedAggregation() == params.getFixedAggregation() &&
@@ -373,7 +371,8 @@ public class LogDFG {
     	if (bpmnAbstraction != null) {
     		AbstractionParams currentParams = bpmnAbstraction.getAbstractionParams();
     		// The diagram is unchanged, only need to update weights
-    		if (currentParams.getActivityLevel() == params.getActivityLevel() &&
+    		if (currentParams.getAttribute() == params.getAttribute() &&
+    			currentParams.getActivityLevel() == params.getActivityLevel() &&
     			currentParams.getFixedType() == params.getFixedType() &&
     			currentParams.getFixedAggregation() == params.getFixedAggregation() &&
     			currentParams.invertedNodes() == params.invertedNodes() &&

@@ -21,17 +21,13 @@
 package org.apromore.processdiscoverer.dfg.vis;
 
 import org.apromore.processdiscoverer.AbstractionParams;
-import org.apromore.processdiscoverer.VisualizationAggregation;
 import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.Abstraction;
-import org.apromore.processdiscoverer.dfg.DFGAbstraction;
-import org.apromore.processdiscoverer.dfg.collectors.NodeInfoCollector;
 import org.apromore.processdiscoverer.util.ColorGradient;
 import org.apromore.processdiscoverer.util.StringValues;
 import org.apromore.processdiscoverer.util.TimeConverter;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;

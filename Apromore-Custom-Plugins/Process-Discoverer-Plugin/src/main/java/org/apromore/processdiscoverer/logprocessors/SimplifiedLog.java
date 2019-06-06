@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.deckfour.xes.classification.XEventAttributeClassifier;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
@@ -43,7 +40,7 @@ public class SimplifiedLog extends ArrayList<IntList> {
 	private HashBiMap<Integer, Integer> startCompleteEventMap = new HashBiMap<>(); //map between integer-based start and complete events
     private XLog xlog;
     
-	public SimplifiedLog(XLog xlog, XEventAttributeClassifier classifier) throws Exception {
+	public SimplifiedLog(XLog xlog, EventClassifier classifier) throws Exception {
 		super();
 		this.xlog = xlog;
 		
@@ -106,7 +103,7 @@ public class SimplifiedLog extends ArrayList<IntList> {
 
 	}
 	
-    public SimplifiedLog(SimplifiedLog log, IntHashSet retained_activities, XEventAttributeClassifier classifier) throws Exception {
+    public SimplifiedLog(SimplifiedLog log, IntHashSet retained_activities, EventClassifier classifier) throws Exception {
     	super(log.size());
     	
         for(int t = 0; t < log.size(); t++) {
@@ -250,14 +247,14 @@ public class SimplifiedLog extends ArrayList<IntList> {
 //        return !LogUtils.isCompleteEvent(name) || getEventNumber(LogUtils.getStartEvent(name)) == null;
 //    }
     
-    public SimplifiedLog filterActivities(IntHashSet retained_activities, XEventAttributeClassifier classifier) throws Exception {
+    public SimplifiedLog filterActivities(IntHashSet retained_activities, EventClassifier classifier) throws Exception {
     	return new SimplifiedLog(this, retained_activities, classifier);
     }
     
     /**
      * Converet this simplified log back to XLog
      */
-    private XLog convertToXLog(XLog parentLog, XEventAttributeClassifier full_classifier) {
+    private XLog convertToXLog(XLog parentLog, EventClassifier full_classifier) {
         //--------------------------------------------
         // The filtered_log created after initialization() is a simplified log which 
         // has filtered out activities that are not retained by the activity slider
