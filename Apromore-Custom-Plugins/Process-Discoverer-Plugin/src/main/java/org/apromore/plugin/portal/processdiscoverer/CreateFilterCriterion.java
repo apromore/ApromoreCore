@@ -277,7 +277,7 @@ class CreateFilterCriterion {
             //okButton.setDisabled(false);
         	
             if(filterType.getSelectedIndex() >= 0) {  
-            	boolean eventInvalid = !LogFilterTypeSelector.checkLevelValidity(filterTypeCodes.get(filterType.getSelectedIndex()), Level.EVENT);
+            	boolean eventInvalid = !LogFilterTypeSelector.isValidType(filterTypeCodes.get(filterType.getSelectedIndex()), Level.EVENT);
                 for (Radio radio : containment.getItems()) {
                     radio.setDisabled(eventInvalid);
                 }
@@ -429,7 +429,7 @@ class CreateFilterCriterion {
 
             Collection<String> set;
             String coded_option; // the filter type corresponding to option 
-            if(LogFilterTypeSelector.getName(option) > -1) coded_option = LogFilterTypeSelector.getReverseMatch(option);
+            if(LogFilterTypeSelector.isStandardName(option)) coded_option = LogFilterTypeSelector.getTypeFromName(option);
             else coded_option = option;
 
             set = options_frequency.get(coded_option).keySet(); // list of values
@@ -469,7 +469,7 @@ class CreateFilterCriterion {
     }
     
     private boolean isLevelValid(String filterType, Radiogroup level) {
-    	return LogFilterTypeSelector.checkLevelValidity(filterType, getLevel(level));
+    	return LogFilterTypeSelector.isValidType(filterType, getLevel(level));
     }
     
     private List<String> getValidFilterTypeCodes(List<String> types, Radiogroup level) {
@@ -482,7 +482,7 @@ class CreateFilterCriterion {
     
     private String getFilterTypeName(String type) {
     	if(isStandard(type)) {
-        	return LogFilterTypeSelector.getMatch(type);
+        	return LogFilterTypeSelector.getNameFromType(type);
         }
         else {
         	return type;
@@ -535,7 +535,7 @@ class CreateFilterCriterion {
     //Note: non-standard type has its label displayed in quotes ("").
     private String getFilterTypeLabel(String type) {
         if(isStandard(type)) { 
-        	return LogFilterTypeSelector.getMatch(type);
+        	return LogFilterTypeSelector.getNameFromType(type);
         }
         else { 
         	return "\"" + type + "\"";

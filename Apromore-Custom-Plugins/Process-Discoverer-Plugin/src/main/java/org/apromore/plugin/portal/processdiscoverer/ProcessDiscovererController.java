@@ -50,8 +50,6 @@ import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.bimp_annotation.BIMPAnnotationService;
-import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
-import org.apromore.service.helper.UserInterfaceHelper;
 import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -72,7 +70,6 @@ import org.processmining.models.connections.petrinets.behavioral.InitialMarkingC
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.processmining.models.graphbased.directed.bpmn.elements.Flow;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
@@ -205,7 +202,10 @@ public class ProcessDiscovererController extends BaseController {
     private long min = Long.MAX_VALUE; //the earliest timestamp of the log
     private long max = 0; //the latest timestamp of the log
 
-    private String label = StringValues.b[161]; // the event attribute key used to label each task node, default "concept:name"
+    private String label = "concept:name"; // the event attribute key used to label each task node, default "concept:name"
+    private boolean selectorChanged = false;
+    
+    private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
     
     private CanoniserService canoniserService;
     private DomainService domainService;
@@ -286,6 +286,7 @@ public class ProcessDiscovererController extends BaseController {
             this.use_fixed = (Radio) slidersWindow.getFellow(StringValues.b[20]);
             this.use_dynamic = (Radio) slidersWindow.getFellow(StringValues.b[21]);
             this.gateways = (Checkbox) slidersWindow.getFellow(StringValues.b[23]);
+            this.isShowingBPMN = gateways.isChecked();
             this.secondary = (Checkbox) slidersWindow.getFellow(StringValues.b[25]);
             this.inverted_nodes = (Checkbox) slidersWindow.getFellow(StringValues.b[26]);
             this.inverted_arcs = (Checkbox) slidersWindow.getFellow(StringValues.b[27]);
@@ -346,6 +347,7 @@ public class ProcessDiscovererController extends BaseController {
                 Menuitem item = new Menuitem(option);
                 item.addEventListener("onClick", new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
+                    	selectorChanged = true;
                         setLabel(item.getLabel());
                         options_frequency.clear();
                         generateOptions(log);
@@ -389,7 +391,7 @@ public class ProcessDiscovererController extends BaseController {
             this.secondary.addEventListener("onCheck", radioListener);
             this.inverted_nodes.addEventListener("onCheck", radioListener);
             this.inverted_arcs.addEventListener("onCheck", radioListener);
-
+            
             this.activities.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     activitiesText.setValue(activities.getCurpos());
@@ -661,10 +663,10 @@ public class ProcessDiscovererController extends BaseController {
 																	parallelism.getCurposInDouble() / 100, 
 																	false, true, 
 																	inverted_nodes.isChecked(), inverted_arcs.isChecked(),
-																	secondary.isChecked(),
+																	false,
 																	fixedType, fixedAggregation, 
-																	primaryType, primaryAggregation, 
-																	secondaryType, secondaryAggregation,
+																	VisualizationType.DURATION, VisualizationAggregation.CASES, 
+																	VisualizationType.FREQUENCY, VisualizationAggregation.CASES,
 																	new HashSet<>(Arrays.asList(arcTypes)));                                
                                 JSONArray array = processDiscoverer.generateTraceDFGJSON(traceID, params);
 
@@ -742,9 +744,12 @@ public class ProcessDiscovererController extends BaseController {
                     if(!gateways.isChecked()) {
                     	validDiagram = BPMNDiagramBuilder.insertBPMNGateways(diagram);
                     }
-                    for(BPMNEdge edge : validDiagram.getEdges()) {
-                        edge.setLabel("");
-                    }
+                    
+//                    for(BPMNEdge edge : validDiagram.getEdges()) {
+//                        edge.setLabel("");
+//                    }
+                    // The log animation needs to identify the start and end events by names
+                    BPMNDiagramBuilder.updateStartEndEventLabels(validDiagram);
 
                     UIContext context = new UIContext();
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -1566,15 +1571,18 @@ public class ProcessDiscovererController extends BaseController {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
         String javascript = "load('" + jsonString + "');";
-        //Clients.evalJavaScript("reset()");
+        if ((isShowingBPMN && !gateways.isChecked()) || (!isShowingBPMN && gateways.isChecked()) || selectorChanged) {
+        	javascript += "fitToWindow();";
+        }
         Clients.evalJavaScript(javascript);
+        isShowingBPMN = gateways.isChecked();
+        selectorChanged = false;
     }
     
     private void displayTrace(JSONArray jsonDiagram) {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
         String javascript = "loadTrace('" + jsonString + "');";
-        //Clients.evalJavaScript("reset()");
         Clients.evalJavaScript(javascript);
     }
 

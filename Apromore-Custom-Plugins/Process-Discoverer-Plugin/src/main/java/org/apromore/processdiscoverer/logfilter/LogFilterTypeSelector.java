@@ -24,10 +24,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apromore.processdiscoverer.util.StringValues;
+import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.persistence.internal.codegen.NonreflectiveMethodDefinition;
 
 /**
@@ -38,6 +41,7 @@ import org.eclipse.persistence.internal.codegen.NonreflectiveMethodDefinition;
  */
 public class LogFilterTypeSelector {
 
+	// Must be sorted for Arrays.binarySearch
     private static String[] type = new String[] {
             "concept:name",
             "direct:follow",
@@ -50,31 +54,33 @@ public class LogFilterTypeSelector {
             "time:timestamp"
     };
     
+    // Must be sorted for Arrays.binarySearch
     private static String[] name = new String[] {
             "Activity",
             "Direct Follow Relation",
             "Duration",
             "Eventually Follow Relation",
-            "Lifecycle",
             "Group",
+            "Lifecycle",
             "Resource",
             "Role",
             "Time-frame"
     };
     
-    public static List<String> getTypes() {
-    	List<String> types = Arrays.asList(type);
-    	return Collections.unmodifiableList(types);
+    private static HashBiMap<String,String> typeNameMap = new HashBiMap<>();
+    static {
+    	typeNameMap.put("concept:name", "Activity");
+    	typeNameMap.put("direct:follow", "Direct Follow Relation");
+    	typeNameMap.put("eventually:follow", "Eventually Follow Relation");
+    	typeNameMap.put("lifecycle:transition", "Lifecycle");
+    	typeNameMap.put("org:group", "Group");
+    	typeNameMap.put("org:resource", "Resource");
+    	typeNameMap.put("org:role", "Role");
+    	typeNameMap.put("time:duration", "Duration");
+    	typeNameMap.put("time:timestamp", "Time-frame");
     }
-    
-    
-    public static List<String> getNames() {
-    	List<String> names = Arrays.asList(name);
-    	return Collections.unmodifiableList(names);
-    }
-    
+       
     private static Map<String,Type> typeMap = new HashMap<>();
-    
     static {
     	typeMap.put("concept:name", Type.CONCEPT_NAME);
     	typeMap.put("direct:follow", Type.DIRECT_FOLLOW);
@@ -87,97 +93,118 @@ public class LogFilterTypeSelector {
     	typeMap.put("time:timestamp", Type.TIME_TIMESTAMP);
     }
     
+    private static Set<String> eventStandardTypes = new HashSet<>(Arrays.asList(
+    															"concept:name", 
+    															"lifecycle:transition",
+    															"org:group",
+    															"org:resource",
+    															"org:role",
+    															"time:timestamp"));
+    
+    private static Set<String> traceStandardTypes = new HashSet<>(Arrays.asList(
+													    		"concept:name",
+													            "direct:follow",
+													            "eventually:follow",
+													            "lifecycle:transition",
+													            "org:group",
+													            "org:resource",
+													            "org:role",
+													            "time:duration",
+													            "time:timestamp"));
+    
+    public static List<String> getStandardTypes() {
+    	List<String> types = Arrays.asList(type);
+    	return Collections.unmodifiableList(types);
+    }
+    
+    
+    public static List<String> getStandardNames() {
+    	List<String> names = Arrays.asList(name);
+    	return Collections.unmodifiableList(names);
+    }
+    
 
-    //index of the attribute in the list
-    public static Type getType(String attribute) {
-        int t = Arrays.binarySearch(type, attribute);
-        if(t < 0) {
-        	return Type.UNKNOWN;
-        }
-        return typeMap.get(attribute);
+    public static Type getType(String typeName) {
+//        int t = Arrays.binarySearch(type, attribute);
+//        if(t < 0) {
+//        	return Type.UNKNOWN;
+//        }
+    	if (!typeMap.containsKey(typeName)) {
+    		return Type.UNKNOWN;
+    	}
+    	else {
+    		return typeMap.get(typeName);
+    	}
     }
 
     //index of the name in the list
-    public static int getName(String attribute) {
-        int t = Arrays.binarySearch(name, attribute);
-        if(t < 0) return -1;
-        return t;
-    }
-
-    // search attribute in type and return the corresponding name
-    public static String getMatch(String attribute) {
-        return search1(attribute, type, name);
-    }
-
- // search attribute in name and return the corresponding type
-    public static String getReverseMatch(String attribute) {
-        return search2(attribute, name, type);
-    }
-
-    // The index is not 1-1 between the two arrays as the array values must be ordered
-    private static String search1(String attribute, String[] origin, String[] translation) {
-        int t = Arrays.binarySearch(origin, attribute);
-        switch (t) {
-            case 0 : return translation[0];
-            case 1 : return translation[1];
-            case 2 : return translation[3];
-            case 3 : return translation[4];
-            case 4 : return translation[5];
-            case 5 : return translation[6];
-            case 6 : return translation[7];
-            case 7 : return translation[2];
-            case 8 : return translation[8];
-            default : return null;
-        }
-    }
-
-    // The index is not 1-1 between the two arrays as the array values must be ordered
-    private static String search2(String attribute, String[] origin, String[] translation) {
-        int t = Arrays.binarySearch(origin, attribute);
-        switch (t) {
-            case 0 : return translation[0];
-            case 1 : return translation[1];
-            case 3 : return translation[2];
-            case 4 : return translation[3];
-            case 5 : return translation[4];
-            case 6 : return translation[5];
-            case 7 : return translation[6];
-            case 2 : return translation[7];
-            case 8 : return translation[8];
-            default : return null;
-        }
+//    public static int getName(String attribute) {
+//        int t = Arrays.binarySearch(name, attribute);
+//        if(t < 0) return -1;
+//        return t;
+//    }
+    
+    public static boolean isStandardType(String type) {
+    	return typeNameMap.containsKey(type);
     }
     
-    public static boolean checkLevelValidity(String attribute, Level level) {
-    	int t = Arrays.binarySearch(type, attribute);
+    public static boolean isStandardName(String name) {
+    	return typeNameMap.inverse().containsKey(name);
+    }
+
+    // search the corresponding name of a given type
+    public static String getNameFromType(String type) {
+//    	return search1(attribute, type, name);
+        return typeNameMap.get(type);
+    }
+
+    // search the corresponding type of a given name
+    public static String getTypeFromName(String name) {
+//        return search2(attribute, name, type);
+    	return typeNameMap.inverse().get(name);
+    }
+    
+    public static boolean isValidType(String type, Level level) {
     	if (level == Level.EVENT) {
-	        switch (t) {
-	            case 0 : return true;
-	            case 1 : return false;
-	            case 2 : return false;
-	            case 3 : return true;
-	            case 4 : return true;
-	            case 5 : return true;
-	            case 6 : return true;
-	            case 7 : return false;
-	            case 8 : return true;
-	            default : return true;
-	        }
+    		return !typeNameMap.containsKey(type) || eventStandardTypes.contains(type);
     	}
     	else {
-	        switch (t) {
-	            case 0 : return true;
-	            case 1 : return true;
-	            case 2 : return true;
-	            case 3 : return true;
-	            case 4 : return true;
-	            case 5 : return true;
-	            case 6 : return true;
-	            case 7 : return true;
-	            case 8 : return true;
-	            default : return true;
-	        }    		
+    		return !typeNameMap.containsKey(type) || traceStandardTypes.contains(type);
     	}
     }
+    
+//    // The index is not 1-1 between the two arrays as the array values must be ordered
+//    private static String search1(String attribute, String[] origin, String[] translation) {
+//        int t = Arrays.binarySearch(origin, attribute);
+//        switch (t) {
+//            case 0 : return translation[0];
+//            case 1 : return translation[1];
+//            case 2 : return translation[3];
+//            case 3 : return translation[4];
+//            case 4 : return translation[5];
+//            case 5 : return translation[6];
+//            case 6 : return translation[7];
+//            case 7 : return translation[2];
+//            case 8 : return translation[8];
+//            default : return null;
+//        }
+//    }
+//
+//    // The index is not 1-1 between the two arrays as the array values must be ordered
+//    private static String search2(String attribute, String[] origin, String[] translation) {
+//        int t = Arrays.binarySearch(origin, attribute);
+//        switch (t) {
+//            case 0 : return translation[0];
+//            case 1 : return translation[1];
+//            case 3 : return translation[2];
+//            case 4 : return translation[3];
+//            case 5 : return translation[4];
+//            case 6 : return translation[5];
+//            case 7 : return translation[6];
+//            case 2 : return translation[7];
+//            case 8 : return translation[8];
+//            default : return null;
+//        }
+//    }
 
 }

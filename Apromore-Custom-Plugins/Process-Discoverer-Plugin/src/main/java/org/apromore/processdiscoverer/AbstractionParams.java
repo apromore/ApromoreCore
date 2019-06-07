@@ -4,9 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.apromore.processdiscoverer.dfg.ArcType;
-import org.apromore.processdiscoverer.logprocessors.LogUtils;
-import org.deckfour.xes.classification.XEventAttributeClassifier;
-import org.deckfour.xes.classification.XEventClassifier;
+import org.apromore.processdiscoverer.logprocessors.EventClassifier;
 
 /**
  * 
@@ -15,7 +13,7 @@ import org.deckfour.xes.classification.XEventClassifier;
  */
 public class AbstractionParams {
 	private String attribute;
-	private XEventAttributeClassifier classifier;
+	private EventClassifier classifier;
 	private double activities;
 	private double arcs;
 	private double parallelism;
@@ -40,7 +38,7 @@ public class AbstractionParams {
 							VisualizationAggregation secondaryAggregation, 
 							Set<ArcType> arcTypes) {
 		this.attribute = attribute;
-		this.classifier = new XEventAttributeClassifier(attribute, new String[] {attribute, LogUtils.LIFECYCLE_CODE.toString()});
+		this.classifier = new EventClassifier(attribute);
 		this.activities = activities;
 		this.arcs = arcs;
 		this.parallelism = parallelism;
@@ -62,7 +60,7 @@ public class AbstractionParams {
 		return this.attribute;
 	}
 	
-	public XEventAttributeClassifier getClassifier() {
+	public EventClassifier getClassifier() {
 		return classifier;
 	}
 	

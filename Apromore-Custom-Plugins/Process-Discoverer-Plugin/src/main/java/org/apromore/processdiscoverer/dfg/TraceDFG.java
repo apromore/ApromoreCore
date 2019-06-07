@@ -7,13 +7,12 @@ import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.dfg.collectors.ArcInfoCollector;
 import org.apromore.processdiscoverer.dfg.collectors.NodeInfoCollector;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
+import org.apromore.processdiscoverer.logprocessors.EventClassifier;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
-import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
-import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 
@@ -51,7 +50,7 @@ public class TraceDFG {
     	return nodeInfoCollector;
     }
     
-    private int getStart(XTrace trace, int pos, XEventClassifier classifier) {
+    private int getStart(XTrace trace, int pos, EventClassifier classifier) {
         XEvent event = trace.get(pos);
         XConceptExtension xce = XConceptExtension.instance();
         for(int i = pos - 1; i >= 0; i--) {
@@ -63,7 +62,7 @@ public class TraceDFG {
         return -1;
     }
 
-    private int getPreviousComplete(XTrace trace, int pos, XEventClassifier classifier) {
+    private int getPreviousComplete(XTrace trace, int pos, EventClassifier classifier) {
         for(int i = pos - 1; i >= 0; i--) {
             XEvent event1 = trace.get(i);
             if(classifier.getClassIdentity(event1).toLowerCase().endsWith("complete")) {

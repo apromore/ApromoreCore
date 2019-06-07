@@ -465,6 +465,12 @@
 		  cy.add($.parseJSON(a)); 
 		  layout_dagre_LR(false);
 		}
+		
+		function fitToWindow() {
+			if (window.cy) {
+				window.cy.fit();
+			}
+		}
 
 		function horizontal() {
 		  cy.style().selector("edge").style({
