@@ -103,7 +103,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
             Button uploadButton = (Button) window.getFellow("uploadButton");
-            Button cancelButton = (Button) window.getFellow("cancelButton");
+//            Button cancelButton = (Button) window.getFellow("cancelButton");
 //            Button topCancelButton = (Button) window.getFellow("topCancelButton");
             Label fileNameLabel = (Label) window.getFellow("fileNameLabel");
             ListModelList<String[]> result = new ListModelList<String[]>();
@@ -184,11 +184,11 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
 
             });
 
-            cancelButton.addEventListener("onClick", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    window.detach();
-                }
-            });
+//            cancelButton.addEventListener("onClick", new EventListener<Event>() {
+//                public void onEvent(Event event) throws Exception {
+//                    window.detach();
+//                }
+//            });
 
 //            topCancelButton.addEventListener("onClick", new EventListener<Event>() {
 //                public void onEvent(Event event) throws Exception {
