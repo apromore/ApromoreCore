@@ -748,6 +748,7 @@ public class ProcessDiscovererController extends BaseController {
 //                    for(BPMNEdge edge : validDiagram.getEdges()) {
 //                        edge.setLabel("");
 //                    }
+                    // The log animation needs to identify the start and end events by names
                     BPMNDiagramBuilder.updateStartEndEventLabels(validDiagram);
 
                     UIContext context = new UIContext();
