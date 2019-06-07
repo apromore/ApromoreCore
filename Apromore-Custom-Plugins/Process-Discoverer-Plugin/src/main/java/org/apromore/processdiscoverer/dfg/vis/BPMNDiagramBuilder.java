@@ -30,6 +30,7 @@ import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.apromore.processdiscoverer.util.StringValues;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
@@ -319,6 +320,19 @@ public class BPMNDiagramBuilder {
             }
         }
         return nodes;
+    }
+    
+    public static void updateStartEndEventLabels(BPMNDiagram diagram) {
+    	for (BPMNNode node : diagram.getNodes()) {
+        	if (node instanceof Event) {
+        		if (((Event) node).getEventType() == Event.EventType.START) {
+        			node.getAttributeMap().put(AttributeMap.LABEL, SimplifiedLog.START_NAME);
+        		}
+        		else if (((Event) node).getEventType() == Event.EventType.END) {
+        			node.getAttributeMap().put(AttributeMap.LABEL, SimplifiedLog.END_NAME);
+        		}
+        	}
+        }
     }
     
 }

@@ -744,9 +744,11 @@ public class ProcessDiscovererController extends BaseController {
                     if(!gateways.isChecked()) {
                     	validDiagram = BPMNDiagramBuilder.insertBPMNGateways(diagram);
                     }
-                    for(BPMNEdge edge : validDiagram.getEdges()) {
-                        edge.setLabel("");
-                    }
+                    
+//                    for(BPMNEdge edge : validDiagram.getEdges()) {
+//                        edge.setLabel("");
+//                    }
+                    BPMNDiagramBuilder.updateStartEndEventLabels(validDiagram);
 
                     UIContext context = new UIContext();
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
