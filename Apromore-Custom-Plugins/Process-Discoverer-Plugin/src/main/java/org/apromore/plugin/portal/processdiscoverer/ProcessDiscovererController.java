@@ -160,6 +160,7 @@ public class ProcessDiscovererController extends BaseController {
     private Button cases;
     private Button fitness;
     private Button animate;
+    private Button fitScreen;
     
     private Menuitem exportFilteredLog;
     
@@ -332,6 +333,7 @@ public class ProcessDiscovererController extends BaseController {
             this.fitness = (Button) slidersWindow.getFellow(StringValues.b[65]);
             this.filter = (Button) slidersWindow.getFellow(StringValues.b[66]);
             this.animate = (Button) slidersWindow.getFellow(StringValues.b[67]);
+            this.fitScreen = (Button) slidersWindow.getFellow("fitScreen");
 
             this.exportFilteredLog = (Menuitem) slidersWindow.getFellow(StringValues.b[69]);
 
@@ -951,6 +953,13 @@ public class ProcessDiscovererController extends BaseController {
                                 manually_removed_arcs
                         ));
                     }
+                }
+            });
+            
+            this.fitScreen.addEventListener("onClick", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                	Clients.evalJavaScript("fitToWindow();");
                 }
             });
             

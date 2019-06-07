@@ -312,6 +312,7 @@
 						<button id="fitness" label="Fitness" />
 						<button id="filter" label="Filter" />
 						<button id="animate" onClick='Clients.evalJavaScript("animate()")' label="Animate" />
+						<button id="fitScreen" label="Fit to screen" />
 					</row>
 				</rows>
 			</grid>
