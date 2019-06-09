@@ -88,7 +88,8 @@ public class NodeInfoCollector {
         return map;
     }
 
-    // Add up frequency to activity
+    // Add up frequency to activity in the current trace
+    // This method must be used in coordination with the nextTrace() method
     public void updateActivityFrequency(int activity, int frequency) {
         LongArrayList list = FrequencySetPopulator.retreiveEntry(activity_frequency_set, activity, number_of_traces);
 
@@ -180,10 +181,6 @@ public class NodeInfoCollector {
     		return 0;
     	}
     }
-
-//    private Integer getEventNumber(String event) {
-//        return log.getEventNumber(event);
-//    }
 
     public void nextTrace() {
         calculator.increment(calculator.getCurrentDate(), trace, 1);
