@@ -351,7 +351,7 @@ public class ProcessDiscovererController extends BaseController {
                     public void onEvent(Event event) throws Exception {
                     	selectorChanged = true;
                         setLabel(item.getLabel());
-                        options_frequency.clear();
+                        //options_frequency.clear();
                         generateOptions(log);
                         populateMetrics(log);
                         visualizeMap();
@@ -1219,10 +1219,7 @@ public class ProcessDiscovererController extends BaseController {
     	}
     }
 
-    /*
-     * Note that the filtered log may be empty
-     * In that case the UI must be also properly empty, no errors thrown  
-     */
+    // Note that the filtered log has been checked to be non-empty
     public void refreshCriteria(XLog filteredLog) throws InterruptedException {
     	this.filtered_log_cases = this.getCases(filteredLog);
         populateMetrics(filteredLog);
@@ -1327,35 +1324,42 @@ public class ProcessDiscovererController extends BaseController {
         minDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(shortest)));
     }
 
-    // Collect different types of filter from the log
-    // options_frequency contains these filter types
-    // Key: filter type code
-    // Value: map (key: filter type name, value: frequency count of the value)
+
+    /**
+     * Collect frequency statistics for all event attributes except the timestamp
+     * options_frequency is updated
+     * Key: attribute key
+     * Value: map (key: attribute value, value: frequency count of the value)
+     * @param log
+     */
     private void generateOptions(XLog log) {
-        boolean firstTime = (options_frequency.keySet().size() == 0);
-        Multimap<String, String> tmp_options = HashMultimap.create();
+        //boolean firstTime = (options_frequency.keySet().size() == 0);
+    	options_frequency.clear();
+        Multimap<String, String> tmp_options = HashMultimap.create(); //map from attribute key to attribute values
+        
+        //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
         Map<String, Map<String, Integer>> tmp_options_frequency = new HashMap<>();
 
         for (XTrace trace : log) {
-            if (firstTime) {
-                for (XEvent event : trace) {
-                    for (XAttribute attribute : event.getAttributes().values()) {
-                        String key = attribute.getKey();
-                        if (!(key.equals("lifecycle:model") || key.equals("time:timestamp"))) {
-                            tmp_options.put(key, attribute.toString());
-                            if(tmp_options_frequency.get(key) == null) tmp_options_frequency.put(key, new HashMap<>());
+            //if (firstTime) {
+            for (XEvent event : trace) {
+                for (XAttribute attribute : event.getAttributes().values()) {
+                    String key = attribute.getKey();
+                    if (!(key.equals("lifecycle:model") || key.equals("time:timestamp"))) {
+                        tmp_options.put(key, attribute.toString());
+                        if(tmp_options_frequency.get(key) == null) tmp_options_frequency.put(key, new HashMap<>());
 
-                            Integer i = tmp_options_frequency.get(key).get(attribute.toString());
-                            if (i == null) tmp_options_frequency.get(key).put(attribute.toString(), 1);
-                            else tmp_options_frequency.get(key).put(attribute.toString(), i + 1);
-                        }
-                        if (key.equals("time:timestamp")) {
-                            min = Math.min(min, ((XAttributeTimestamp) attribute).getValueMillis());
-                            max = Math.max(max, ((XAttributeTimestamp) attribute).getValueMillis());
-                        }
+                        Integer i = tmp_options_frequency.get(key).get(attribute.toString());
+                        if (i == null) tmp_options_frequency.get(key).put(attribute.toString(), 1);
+                        else tmp_options_frequency.get(key).put(attribute.toString(), i + 1);
+                    }
+                    if (key.equals("time:timestamp")) {
+                        min = Math.min(min, ((XAttributeTimestamp) attribute).getValueMillis());
+                        max = Math.max(max, ((XAttributeTimestamp) attribute).getValueMillis());
                     }
                 }
             }
+            //}
 
             for (int i = -1; i < trace.size(); i++) {
                 String event1;
