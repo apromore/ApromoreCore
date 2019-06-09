@@ -19,7 +19,7 @@
   -->
 <zk>
 
-<window hflex="1" vflex="1" closable="false" position="center" title="CSV Importer" contentStyle="overflow: auto">
+<window closable="true" height="min" width="min" position="center" title="CSV Importer">
     <!--<vbox>-->
     <style>
         .greenLabel {
@@ -47,22 +47,28 @@
             overflow: auto;
         }
 
-        <!--.z-groupbox-content {-->
-            <!--display: block;-->
-            <!--height: inherit;-->
-            <!--border: 1px solid #cfcfcf;-->
-            <!--border-top: 0;-->
-            <!--padding: 2px;-->
-            <!--overflow: scroll;-->
-            <!--zoom: 1;-->
-            <!--width: 95%;-->
-        <!--}-->
+        .myGroupBox {
+            display: block;
+            height: inherit;
+            border: 1px solid #cfcfcf;
+            border-top: 0;
+            padding: 2px;
+            overflow: auto;
+            zoom: 1;
+            width: 100%;
+            height: 80%;
+        }
+        .relavePos{
+            position:relative;
+            width: 100%;
+        }
     </style>
 
         <groupbox>
-            <label value="CSV File (.csv)" width="100%"/>
+            <!--<label value="CSV File (.csv)" width="100%"/>-->
             <hbox align="center">
-                <button id="uploadButton" label="Import File" upload="true,maxsize=-1,multiple=false,native"/>
+                <button id="uploadButton" label="Import File (To be removed)" upload="true,maxsize=-1,multiple=false,native"/>
+                <button id="toXESButton" label="Convert To XES" image="img/ok.png" disabled="true"></button>
                 <!--<button id="toXESButton" label="Convert To XES"/>-->
                 <separator />
                 <!--<button id="topCancelButton" label=" " image="img/cancel2.png"></button>-->
@@ -72,19 +78,19 @@
             </hbox>
         </groupbox>
 
-        <groupbox>
+        <!--<groupbox zclass="z-groupbox-content">-->
 
             <!--<space bar="false"/>-->
-            <div id="gridBox">
+            <div id="gridBox" zclass="myGroupBox">
+                <div id="popUPBox" sclass="relavePos"></div>
                 <div id="attrBox"></div>
-                <div id="popUPBox"></div>
                 <grid id="myGrid" mold="paging" pageSize="15" height="80%" hflex="min" sclass="z-row-content" />
             </div>
-        </groupbox>
-        <div align="center">
-            <button id="toXESButton" label="Convert To XES" image="img/ok.png" disabled="true"></button>
-            <button id="cancelButton" label="Cancel" image="img/cancel2.png"></button>
-        </div>
+        <!--</groupbox>-->
+        <!--<div align="center">-->
+            <!--<button id="toXESButton" label="Convert To XES" image="img/ok.png" disabled="true"></button>-->
+            <!--<button id="cancelButton" label="Cancel" image="img/cancel2.png"></button>-->
+        <!--</div>-->
     <!--</vbox>-->
 </window>
 </zk>

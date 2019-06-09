@@ -103,7 +103,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
             Button uploadButton = (Button) window.getFellow("uploadButton");
-            Button cancelButton = (Button) window.getFellow("cancelButton");
+//            Button cancelButton = (Button) window.getFellow("cancelButton");
 //            Button topCancelButton = (Button) window.getFellow("topCancelButton");
             Label fileNameLabel = (Label) window.getFellow("fileNameLabel");
             ListModelList<String[]> result = new ListModelList<String[]>();
@@ -111,15 +111,16 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
             Div attrBox = (Div) window.getFellow("attrBox");
             Div popUPBox = (Div) window.getFellow("popUPBox");
             Button toXESButton = (Button) window.getFellow("toXESButton");
-            Div gridBox = (Div) window.getFellow("gridBox");
+//            Div gridBox = (Div) window.getFellow("gridBox");
 
             uploadButton.addEventListener("onUpload", new EventListener<UploadEvent>() {
                 public void onEvent(UploadEvent event) throws Exception {
                     try {
-
+                        window.setWidth("95%");
                         media = event.getMedia();
 
                         myGrid.setHeight("95%");
+
                         
                         csvImporterLogic.resetLine();
                         csvImporterLogic.resetHead();
@@ -132,7 +133,7 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
                         if (Arrays.asList(allowedExtensions).contains(media.getFormat())) {
 
                             displayCSVContent(media, result, myGrid, attrBox, popUPBox);
-                            gridBox.setWidth(attrBox.getWidth());
+//                            gridBox.setWidth(attrBox.getWidth());
                             // set grid model
                             if(result != null) {
                                 myGrid.setModel(result);
@@ -183,11 +184,11 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
 
             });
 
-            cancelButton.addEventListener("onClick", new EventListener<Event>() {
-                public void onEvent(Event event) throws Exception {
-                    window.detach();
-                }
-            });
+//            cancelButton.addEventListener("onClick", new EventListener<Event>() {
+//                public void onEvent(Event event) throws Exception {
+//                    window.detach();
+//                }
+//            });
 
 //            topCancelButton.addEventListener("onClick", new EventListener<Event>() {
 //                public void onEvent(Event event) throws Exception {
@@ -321,20 +322,14 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
                 line = reader.readNext();
             }
             reader.close();
-
-//            System.out.println("reader is closed, result is set. Ended displayContent.");
-//            return result;
-
         } catch (IOException e) {
             e.printStackTrace();
             Messagebox.show(e.getMessage());
-//            return null;
         }
     }
 
 
     private void createPopUpTextBox(int colNum, Div popUPBox){
-        popUPBox.setWidth(colNum * (AttribWidth + 30) + "px");
         for(int i =0; i<= colNum -1; i++){
             Window item = new Window();
             item.setId(popupID+ i);
