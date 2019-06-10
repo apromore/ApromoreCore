@@ -1,4 +1,4 @@
-package org.apromore.plugin.portal.processdiscoverer;
+package org.apromore.processdiscoverer;
 
 import java.util.ArrayList;
 import java.util.Arrays;

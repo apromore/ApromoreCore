@@ -143,14 +143,15 @@ class FilterCriterionSelector {
     }
 
     private void save() throws InterruptedException {
-    	XLog filteredLog = LogFilter.filter(processDiscovererController.getOriginalLog(), criteria);
+    	XLog filteredLog = LogFilter.filter(processDiscovererController.getInitialLog(), criteria);
     	if (filteredLog.isEmpty()) {
     		Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.");
     	}
     	else {
 	        filterSelectorW.detach();
+	        processDiscovererController.setFilteredLog(filteredLog);
 	        processDiscovererController.setCriteria(criteria);
-	        processDiscovererController.refreshCriteria(filteredLog);
+	        processDiscovererController.refreshCriteria();
     	}
     }
 

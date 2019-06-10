@@ -37,11 +37,9 @@ import java.util.List;
  * Modified by Bruce Nguyen
  */
 public interface ProcessDiscovererService {
-
-    Object[] generateDFGJSON(XLog log, AbstractionParams params, List<LogFilterCriterion> filter_criteria) throws Exception;
-    Object[] generateBPMNJSON(XLog log, AbstractionParams params, List<LogFilterCriterion> filter_criteria) throws Exception;
-    BPMNDiagram generateDFGFromLog(XLog log, AbstractionParams params, List<LogFilterCriterion> filter_criteria) throws Exception;
-    BPMNDiagram generateBPMNFromLog(XLog log, AbstractionParams params, List<LogFilterCriterion> filter_criteria) throws Exception;
+    Object[] generateDFGJSON(XLog log, AbstractionParams params) throws Exception;
+    Object[] generateBPMNJSON(XLog log, AbstractionParams params) throws Exception;
+    BPMNDiagram generateDFGFromLog(XLog log, AbstractionParams params) throws Exception;
+    BPMNDiagram generateBPMNFromLog(XLog log, AbstractionParams params) throws Exception;
     BPMNDiagram insertBPMNGateways(BPMNDiagram bpmnDiagram);
-    XLog filterUsingCriteria(XLog log, List<LogFilterCriterion> criteria);
 }

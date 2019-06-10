@@ -10,11 +10,12 @@ import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventLifeTransClassifier;
 import org.deckfour.xes.model.XEvent;
 
-public class EventClassifier {
-	private String[] attributes;
-	private XEventAttributeClassifier[] classifiers;
+public class EventClassifier extends XEventAttributeClassifier {
+	protected String[] attributes;
+	protected XEventAttributeClassifier[] classifiers;
 	
 	public EventClassifier(String... attributes) {
+		super("eventClassifier", attributes);
 		this.attributes = attributes;
 		
 		classifiers = new XEventAttributeClassifier[attributes.length];
@@ -23,6 +24,7 @@ public class EventClassifier {
 		}
 	}
 	
+	@Override
 	public String getClassIdentity(XEvent event) {
 		StringBuilder identity = new StringBuilder();
 		for (int i=0;i<classifiers.length;i++) {
@@ -37,8 +39,8 @@ public class EventClassifier {
 		return identity.toString();
 	}
 	
-	public List<String> getAttributes() {
-		return Arrays.asList(attributes);
+	public String[] getAttributes() {
+		return attributes;
 	}
 	
 	@Override
@@ -52,8 +54,8 @@ public class EventClassifier {
 	public boolean equals(Object other) {
 		if (!(other instanceof EventClassifier)) return false;
 		EventClassifier otherClassifier = (EventClassifier) other;
-		Set<String> attributes1 = new HashSet<>(this.getAttributes());
-		Set<String> attributes2 = new HashSet<>(otherClassifier.getAttributes());
+		Set<String> attributes1 = new HashSet<>(Arrays.asList(this.getAttributes()));
+		Set<String> attributes2 = new HashSet<>(Arrays.asList(otherClassifier.getAttributes()));
 		return attributes1.equals(attributes2);
 	}
 }

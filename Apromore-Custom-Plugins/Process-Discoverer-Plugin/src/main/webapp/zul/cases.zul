@@ -24,7 +24,7 @@
             <listheader id="pos" label="" sort="auto"/>
             <listheader id="case_value" label="Case ID" sort="auto"/>
             <listheader id="case_length" label="Case Length" sort="auto"/>
-            <listheader id="variant_value" label="Unique Case ID" sort="auto"/>
+            <listheader id="variant_value" label="Unique Case" sort="auto"/>
         </listhead>
     </listbox>
     <button id="save" label="Save" />

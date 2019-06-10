@@ -192,7 +192,7 @@ public class ExportBPMNHandler implements EventListener<Event> {
 
         if (annotateForBIMP) {
             try {
-            	minedModel = controller.getBIMPAnnotationService().annotateBPMNModelForBIMP(minedModel, controller.getOriginalLog(), 
+            	minedModel = controller.getBIMPAnnotationService().annotateBPMNModelForBIMP(minedModel, controller.getInitialLog(), 
                 		new BIMPAnnotationService.Context() {
 		                    public void setDescription(String description) {
 		                        eventQueue.publish(new Event(CHANGE_DESCRIPTION, null, description));

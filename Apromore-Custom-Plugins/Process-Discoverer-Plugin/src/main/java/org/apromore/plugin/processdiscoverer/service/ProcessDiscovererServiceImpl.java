@@ -46,27 +46,27 @@ import java.util.*;
 @Service
 public class ProcessDiscovererServiceImpl extends DefaultParameterAwarePlugin implements ProcessDiscovererService {
     @Override
-    public Object[] generateDFGJSON(XLog log, AbstractionParams params, List<LogFilterCriterion> filter_criteria) throws Exception {
-        ProcessDiscoverer processDiscoverer = new ProcessDiscoverer(log);
-        return processDiscoverer.generateDFGJSON(params, filter_criteria);
+    public Object[] generateDFGJSON(XLog log, AbstractionParams params) throws Exception {
+        ProcessDiscoverer processDiscoverer = new ProcessDiscoverer();
+        return processDiscoverer.generateDFGJSON(params, log);
     }
 
     @Override
-    public Object[] generateBPMNJSON(XLog log, AbstractionParams params, List<LogFilterCriterion> filter_criteria) throws Exception {
-        ProcessDiscoverer processDiscoverer = new ProcessDiscoverer(log);
-        return processDiscoverer.generateBPMNJSON(params, filter_criteria);
+    public Object[] generateBPMNJSON(XLog log, AbstractionParams params) throws Exception {
+        ProcessDiscoverer processDiscoverer = new ProcessDiscoverer();
+        return processDiscoverer.generateBPMNJSON(params, log);
     }
     
     @Override
-    public BPMNDiagram generateDFGFromLog(XLog log, AbstractionParams params, List<LogFilterCriterion> filter_criteria) throws Exception {
-        ProcessDiscoverer processDiscoverer = new ProcessDiscoverer(log);
-        return processDiscoverer.generateDiagramFromLog(params, filter_criteria);
+    public BPMNDiagram generateDFGFromLog(XLog log, AbstractionParams params) throws Exception {
+        ProcessDiscoverer processDiscoverer = new ProcessDiscoverer();
+        return processDiscoverer.generateDiagramFromLog(params, log);
     }
     
     @Override
-    public BPMNDiagram generateBPMNFromLog(XLog log, AbstractionParams params, List<LogFilterCriterion> filter_criteria) throws Exception {
-    	ProcessDiscoverer processDiscoverer = new ProcessDiscoverer(log);
-    	return processDiscoverer.generateBPMNFromLog(params, filter_criteria);
+    public BPMNDiagram generateBPMNFromLog(XLog log, AbstractionParams params) throws Exception {
+    	ProcessDiscoverer processDiscoverer = new ProcessDiscoverer();
+    	return processDiscoverer.generateBPMNFromLog(params, log);
     }
 
     @Override
@@ -74,13 +74,6 @@ public class ProcessDiscovererServiceImpl extends DefaultParameterAwarePlugin im
         //ProcessDiscoverer processDiscoverer = new ProcessDiscoverer(null);
         //return processDiscoverer.insertBPMNGateways(bpmnDiagram);
     	return BPMNDiagramBuilder.insertBPMNGateways(bpmnDiagram);
-    }
-    
-    @Override
-    public XLog filterUsingCriteria(XLog log, List<LogFilterCriterion> criteria) {
-    	//ProcessDiscoverer processDiscoverer = new ProcessDiscoverer(log);
-    	//return processDiscoverer.filterUsingCriteria(log, criteria);
-    	return LogFilter.filter(log, criteria);
     }
 
 }
