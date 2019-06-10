@@ -206,7 +206,9 @@ public class ProcessDiscovererController extends BaseController {
     private List<LogFilterCriterion> criteria;
     
     //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
-    private Map<String, Map<String, Integer>> options_frequency = new HashMap<>();
+    private Map<String, Map<String, Integer>> local_stats = new HashMap<>();
+    private Map<String, Map<String, Integer>> global_stats = new HashMap<>();
+    
     private long min = Long.MAX_VALUE; //the earliest timestamp of the log
     private long max = 0; //the latest timestamp of the log
 
@@ -269,7 +271,8 @@ public class ProcessDiscovererController extends BaseController {
         	if (!initial_log.isEmpty()) {
         		filtered_log = initial_log;
 	        	processDiscoverer = new ProcessDiscoverer();
-		        generateOptions(filtered_log);
+		        generateGlobalStatistics(initial_log, true);
+		        generateLocalStatistics(filtered_log);
 		        criteria = new ArrayList<>();
 		        start();
         	}
@@ -364,8 +367,8 @@ public class ProcessDiscovererController extends BaseController {
                     public void onEvent(Event event) throws Exception {
                     	selectorChanged = true;
                         setLabel(item.getLabel());
-                        //options_frequency.clear();
-                        generateOptions(filtered_log);
+                        generateGlobalStatistics(initial_log, false);
+                        generateLocalStatistics(filtered_log);
                         populateMetrics(filtered_log);
                         visualizeMap();
                         filtered_log_cases = getCases(filtered_log);
@@ -588,11 +591,11 @@ public class ProcessDiscovererController extends BaseController {
                     detail_ratio.setSortDescending(new NumberComparator(false, 2));
 
                     int i = 1;
-                    for (String key : options_frequency.get(getLabel()).keySet()) {
+                    for (String key : local_stats.get(getLabel()).keySet()) {
                         Listcell listcell0 = new Listcell(Integer.toString(i));
                         Listcell listcell1 = new Listcell(key);
-                        Listcell listcell2 = new Listcell(options_frequency.get(getLabel()).get(key).toString());
-                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) options_frequency.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%");
+                        Listcell listcell2 = new Listcell(local_stats.get(getLabel()).get(key).toString());
+                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) local_stats.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%");
                         Listitem listitem = new Listitem();
                         listitem.appendChild(listcell0);
                         listitem.appendChild(listcell1);
@@ -612,8 +615,8 @@ public class ProcessDiscovererController extends BaseController {
                             Writer writer = new BufferedWriter(new OutputStreamWriter(baos));
                             CSVWriter csvWriter = new CSVWriter(writer);
                             csvWriter.writeNext(new String[] {"Activity", "Frequency", "Frequency %"});
-                            for (String key : options_frequency.get(getLabel()).keySet()) {
-                                csvWriter.writeNext(new String[] {key, options_frequency.get(getLabel()).get(key).toString(), decimalFormat.format(100 * ((double) options_frequency.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%"});
+                            for (String key : local_stats.get(getLabel()).keySet()) {
+                                csvWriter.writeNext(new String[] {key, local_stats.get(getLabel()).get(key).toString(), decimalFormat.format(100 * ((double) local_stats.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%"});
                             }
                             csvWriter.flush();
                             csvWriter.close();
@@ -759,7 +762,7 @@ public class ProcessDiscovererController extends BaseController {
 
             this.filter.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    new FilterCriterionSelector(getLabel(), ProcessDiscovererController.this, criteria, options_frequency, min, max);
+                    new FilterCriterionSelector(getLabel(), ProcessDiscovererController.this, criteria, global_stats, min, max);
                 }
             });
             
@@ -815,7 +818,7 @@ public class ProcessDiscovererController extends BaseController {
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                    for (String name : local_stats.get(getLabel()).keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -844,7 +847,7 @@ public class ProcessDiscovererController extends BaseController {
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                    for (String name : local_stats.get(getLabel()).keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -873,7 +876,7 @@ public class ProcessDiscovererController extends BaseController {
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                    for (String name : local_stats.get(getLabel()).keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -902,7 +905,7 @@ public class ProcessDiscovererController extends BaseController {
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                    for (String name : local_stats.get(getLabel()).keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -932,7 +935,7 @@ public class ProcessDiscovererController extends BaseController {
                     Set<String> manually_removed_arcs = new HashSet<>();
                     String edge = event.getData().toString();
 
-                    for (String name : options_frequency.get(StringValues.b[94]).keySet()) {
+                    for (String name : local_stats.get(StringValues.b[94]).keySet()) {
                         if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
                             manually_removed_arcs.add(name);
                             break;
@@ -962,7 +965,7 @@ public class ProcessDiscovererController extends BaseController {
                     Set<String> manually_removed_arcs = new HashSet<>();
                     String edge = event.getData().toString();
 
-                    for (String name : options_frequency.get(StringValues.b[94]).keySet()) {
+                    for (String name : local_stats.get(StringValues.b[94]).keySet()) {
                         if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
                             manually_removed_arcs.add(name);
                             break;
@@ -1270,7 +1273,7 @@ public class ProcessDiscovererController extends BaseController {
     // Note that the filtered log has been checked to be non-empty
     public void refreshCriteria() throws InterruptedException {
         populateMetrics(this.filtered_log);
-        generateOptions(this.filtered_log);
+        generateLocalStatistics(this.filtered_log);
         visualizeMap();
         this.filtered_log_cases = this.getCases(this.filtered_log);
     }
@@ -1381,34 +1384,46 @@ public class ProcessDiscovererController extends BaseController {
      * Value: map (key: attribute value, value: frequency count of the value)
      * @param log
      */
-    private void generateOptions(XLog log) {
+    private void generateGlobalStatistics(XLog log, boolean attributeStat) {
+        global_stats.putAll(generateStatistics(log, attributeStat));
+        if (attributeStat) {
+        	global_stats.put("time:timestamp", new HashMap<>());
+        	global_stats.put("time:duration", new HashMap<>());
+        }
+    }
+    
+    private void generateLocalStatistics(XLog log) {
+    	local_stats.clear();
+    	local_stats.putAll(generateStatistics(log, true));
+    }
+    
+    private Map<String, Map<String, Integer>> generateStatistics(XLog log, boolean attributeStat) {
         //boolean firstTime = (options_frequency.keySet().size() == 0);
-    	options_frequency.clear();
         Multimap<String, String> tmp_options = HashMultimap.create(); //map from attribute key to attribute values
         
         //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
         Map<String, Map<String, Integer>> tmp_options_frequency = new HashMap<>();
 
         for (XTrace trace : log) {
-            //if (firstTime) {
-            for (XEvent event : trace) {
-                for (XAttribute attribute : event.getAttributes().values()) {
-                    String key = attribute.getKey();
-                    if (!(key.equals("lifecycle:model") || key.equals("time:timestamp"))) {
-                        tmp_options.put(key, attribute.toString());
-                        if(tmp_options_frequency.get(key) == null) tmp_options_frequency.put(key, new HashMap<>());
-
-                        Integer i = tmp_options_frequency.get(key).get(attribute.toString());
-                        if (i == null) tmp_options_frequency.get(key).put(attribute.toString(), 1);
-                        else tmp_options_frequency.get(key).put(attribute.toString(), i + 1);
-                    }
-                    if (key.equals("time:timestamp")) {
-                        min = Math.min(min, ((XAttributeTimestamp) attribute).getValueMillis());
-                        max = Math.max(max, ((XAttributeTimestamp) attribute).getValueMillis());
-                    }
-                }
+            if (attributeStat) {
+	            for (XEvent event : trace) {
+	                for (XAttribute attribute : event.getAttributes().values()) {
+	                    String key = attribute.getKey();
+	                    if (!(key.equals("lifecycle:model") || key.equals("time:timestamp"))) {
+	                        tmp_options.put(key, attribute.toString());
+	                        if(tmp_options_frequency.get(key) == null) tmp_options_frequency.put(key, new HashMap<>());
+	
+	                        Integer i = tmp_options_frequency.get(key).get(attribute.toString());
+	                        if (i == null) tmp_options_frequency.get(key).put(attribute.toString(), 1);
+	                        else tmp_options_frequency.get(key).put(attribute.toString(), i + 1);
+	                    }
+	                    if (key.equals("time:timestamp")) {
+	                        min = Math.min(min, ((XAttributeTimestamp) attribute).getValueMillis());
+	                        max = Math.max(max, ((XAttributeTimestamp) attribute).getValueMillis());
+	                    }
+	                }
+	            }
             }
-            //}
 
             for (int i = -1; i < trace.size(); i++) {
                 String event1;
@@ -1446,10 +1461,7 @@ public class ProcessDiscovererController extends BaseController {
             }
         }
 
-        options_frequency.putAll(tmp_options_frequency);
-
-        options_frequency.put("time:timestamp", new HashMap<>());
-        options_frequency.put("time:duration", new HashMap<>());
+        return tmp_options_frequency;
     }
 
     private void visualizeFrequency() throws InterruptedException {
