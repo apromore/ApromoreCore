@@ -574,12 +574,15 @@ public class ProcessDiscovererController extends BaseController {
                 	Window details_window = (Window) Executions.createComponents("/zul/details.zul", null, null);
                     details_window.setTitle("Activities");
                     Listbox listbox = (Listbox) details_window.getFellow(StringValues.b[81]);
+                    
                     Listheader pos = (Listheader) details_window.getFellow(StringValues.b[82]);
                     pos.setSortAscending(new NumberComparator(true, 0));
                     pos.setSortDescending(new NumberComparator(false, 0));
+                    
                     Listheader detail_frequency = (Listheader) details_window.getFellow(StringValues.b[83]);
                     detail_frequency.setSortAscending(new NumberComparator(true, 2));
                     detail_frequency.setSortDescending(new NumberComparator(false, 2));
+                    
                     Listheader detail_ratio = (Listheader) details_window.getFellow(StringValues.b[84]);
                     detail_ratio.setSortAscending(new NumberComparator(true, 2));
                     detail_ratio.setSortDescending(new NumberComparator(false, 2));
@@ -650,6 +653,10 @@ public class ProcessDiscovererController extends BaseController {
                     Listheader variant_value = (Listheader) cases_window.getFellow("variant_value");
                     variant_value.setSortAscending(new NumberComparator(true, 3));
                     variant_value.setSortDescending(new NumberComparator(false, 3));
+                    
+//                    Listheader variant_freq = (Listheader) cases_window.getFellow("variant_freq");
+//                    variant_freq.setSortAscending(new NumberComparator(true, 4));
+//                    variant_freq.setSortDescending(new NumberComparator(false, 4));
 
                     List<List<String>> info = filtered_log_cases;
                     int i = 1;
@@ -658,11 +665,14 @@ public class ProcessDiscovererController extends BaseController {
                         Listcell listcell1 = new Listcell(caseInfo.get(0));
                         Listcell listcell2 = new Listcell(caseInfo.get(1));
                         Listcell listcell3 = new Listcell(caseInfo.get(2));
+                        Listcell listcell4 = new Listcell(decimalFormat.format(Double.valueOf(caseInfo.get(3))) + "%");
+                        
                         Listitem listitem = new Listitem();
                         listitem.appendChild(listcell0);
                         listitem.appendChild(listcell1);
                         listitem.appendChild(listcell2);
                         listitem.appendChild(listcell3);
+                        listitem.appendChild(listcell4);
 
                         listbox.appendChild(listitem);
                         i++;
@@ -1123,11 +1133,12 @@ public class ProcessDiscovererController extends BaseController {
 
     // Return case list: 
     // 1st: traceID, 2nd: trace size, 3rd: index of the first unique trace having the same sequence.
-    private List<List<String>> getCases(XLog filtered_log) {
+    private List<List<String>> getCases(XLog log) {
         //XLog filtered_log = processDiscoverer.getFilteredLog();
     	List<List<String>> cases = new ArrayList<>();
         ObjectIntHashMap<String> variant = new ObjectIntHashMap<>(); //key: trace string, value: index to cases
-        for(XTrace trace : filtered_log) {
+        Map<Integer, Integer> countMap = new HashMap<>(); // key: index to unique case in cases, value: number of traces in the variant
+        for(XTrace trace : log) {
 //            int length = 0;
             StringBuilder traceBuilder = new StringBuilder();
             for (XEvent event : trace) {
@@ -1136,15 +1147,25 @@ public class ProcessDiscovererController extends BaseController {
 //                if(event.getAttributes().get("lifecycle:transition").toString().toLowerCase().endsWith("complete")) length++;
                 traceBuilder.append(label + ",");
             }
-            String s = traceBuilder.toString();
-            Integer i;
-            if(variant.containsKey(s)) i = variant.get(s);
-            else {
-                i = variant.size() + 1;
-                variant.put(s, i);
+            String sequence = traceBuilder.toString();
+            Integer variantIndex;
+            if(variant.containsKey(sequence)) {
+            	variantIndex = variant.get(sequence);
+            	countMap.put(variantIndex, countMap.get(variantIndex)+1);
             }
-            cases.add(Arrays.asList(XConceptExtension.instance().extractName(trace), trace.size()+"", i+""));
+            else {
+            	variantIndex = variant.size() + 1;
+                variant.put(sequence, variantIndex);
+                countMap.put(variantIndex, 1);
+            }
+            cases.add(Arrays.asList(XConceptExtension.instance().extractName(trace), trace.size()+"", variantIndex+"", ""));
         }
+        
+        //Update frequency percentage
+        for (List<String> oneCase : cases) {
+        	oneCase.set(3, 1.0*100*countMap.get(Integer.valueOf(oneCase.get(2)))/log.size() + "");
+        }
+        
         return cases;
     }
     
