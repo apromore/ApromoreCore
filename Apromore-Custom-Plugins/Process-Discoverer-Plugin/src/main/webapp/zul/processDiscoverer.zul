@@ -298,6 +298,7 @@
 								<menuitem id="layout_klay_tb" onClick='Clients.evalJavaScript("layout_klay_TB(false)")' label="Klay Top-Bottom" />
 							</menupopup>
 						</combobutton>
+						<button id="fitScreen" label="Fit to screen" />
 						<combobutton id="export" label="Export">
 							<menupopup>
 								<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>

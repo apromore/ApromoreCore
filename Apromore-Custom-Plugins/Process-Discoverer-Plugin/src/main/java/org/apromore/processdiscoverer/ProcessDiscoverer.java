@@ -145,7 +145,8 @@ public class ProcessDiscoverer {
             filterCriteriaChanged = true;
     	}
     	
-    	if (filterCriteriaChanged) {
+    	if (filterCriteriaChanged || !params.getAttribute().equals(this.attribute)) {
+    		attribute = params.getAttribute();
 	    	SimplifiedLog simplified_log = new SimplifiedLog(filtered_criteria_log, params.getClassifier());
 	    	TimeLog simplified_times_log = new TimeLog(filtered_criteria_log) ;
 	    	logDfg = new LogDFG(simplified_log, simplified_times_log);
@@ -207,7 +208,8 @@ public class ProcessDiscoverer {
 			filterCriteriaChanged = true;
 		}
 		
-		if (filterCriteriaChanged) {
+		if (filterCriteriaChanged || !params.getAttribute().equals(this.attribute)) {
+    		attribute = params.getAttribute();
 			SimplifiedLog simplified_log = new SimplifiedLog(filtered_criteria_log, params.getClassifier());
 			TimeLog simplified_times_log = new TimeLog(filtered_criteria_log);
 			logDfg = new LogDFG(simplified_log, simplified_times_log);
