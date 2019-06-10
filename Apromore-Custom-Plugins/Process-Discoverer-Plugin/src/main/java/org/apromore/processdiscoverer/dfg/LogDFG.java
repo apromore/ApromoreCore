@@ -4,8 +4,10 @@ import static org.apromore.processdiscoverer.logfilter.Containment.CONTAIN_ANY;
 import static org.apromore.processdiscoverer.logfilter.Level.EVENT;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +36,7 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.eclipse.collections.api.iterator.MutableIntIterator;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.list.primitive.LongList;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -185,6 +188,9 @@ public class LogDFG {
     												params.getFixedType(), 
     												params.getFixedAggregation(), 
     												params.invertedNodes());
+    	
+    	if (params.getCorrepondingDFG() != null) return params.getCorrepondingDFG();
+    	
     	IntHashSet retained_activities = nodeSelector.selectActivities();
     	
     	ArcSelector arcSelector = new ArcSelector(arcInfoCollector, params);
@@ -415,6 +421,7 @@ public class LogDFG {
      * @throws Exception
      */
     public BPMNDiagram getBPMN(AbstractionParams params) throws Exception {
+    	
     	NodeSelector nodeSelector = new NodeSelector(
     										nodeInfoCollector, 
     										params.getActivityLevel(), 
@@ -422,44 +429,68 @@ public class LogDFG {
 											params.getFixedAggregation(), 
 											params.invertedNodes());
 		IntHashSet retained_activities = nodeSelector.selectActivities(); 
-		SimplifiedLog filtered_log = this.simplifiedLog.filterActivities(retained_activities, params.getClassifier());
 		
+		//Make BPMN model contain equal or less nodes than the corresponding graph.
+		if (params.getCorrepondingDFG() != null) {
+			BPMNDiagram dfg = params.getCorrepondingDFG();
+			Set<String> nodeNames = new HashSet<>();
+			for (BPMNNode node : dfg.getNodes()) {
+				nodeNames.add(node.getLabel());
+			}
+			MutableIntIterator iterator = retained_activities.intIterator(); 
+			while (iterator.hasNext()) {
+				if (!nodeNames.contains(simplifiedLog.getEventCollapsedName(iterator.next()))) {
+					iterator.remove();
+				}
+			}
+		}
+		
+        //--------------------------------------------------
+        // Filter log and reconstruct XLog for process discovery 
+        //--------------------------------------------------
+		SimplifiedLog filtered_simplified_log = this.simplifiedLog.filterActivities(retained_activities, params.getClassifier());
+        XLog filtered_xlog = filtered_simplified_log.getXLog();
+        
         //--------------------------------------------------
         // Detect if the log contains more than one lifecycle:transition
         // If so, filter the log to select only complete events
         // This is necessary because process model discovery algorithms usually only
         // work on one type of events for the same activity.
         //--------------------------------------------------
-        XLog filtered = filtered_log.getXLog();
-        Set<String> transitions = new UnifiedSet<>(); // size > 1 if the log contains both start and end events
-        String complete = null;
-        String start = null;
-        for (XTrace trace : filtered) {
-            for (XEvent event : trace) {
-                String lifecycle = event.getAttributes().get(LogUtils.LIFECYCLE_CODE.toString()).toString();
-                if(lifecycle.toLowerCase().equals(LogUtils.COMPLETE_CODE.toString())) complete = lifecycle;
-                if(lifecycle.toLowerCase().equals(LogUtils.START_CODE.toString())) start = lifecycle;
-                transitions.add(lifecycle);
-                if (transitions.size() > 1 && complete != null && start != null) break;
-            }
-            if (transitions.size() > 1 && complete != null && start != null) break;
-        }
-        if (transitions.size() > 1) {
+//        Set<String> transitions = new UnifiedSet<>(); // size > 1 if the log contains both start and end events
+//        String complete = null;
+//        String start = null;
+//        for (XTrace trace : filtered) {
+//            for (XEvent event : trace) {
+//                String lifecycle = event.getAttributes().get(LogUtils.LIFECYCLE_CODE.toString()).toString();
+//                if(lifecycle.toLowerCase().equals(LogUtils.COMPLETE_CODE.toString())) complete = lifecycle;
+//                if(lifecycle.toLowerCase().equals(LogUtils.START_CODE.toString())) start = lifecycle;
+//                transitions.add(lifecycle);
+//                if (transitions.size() > 1 && complete != null && start != null) break;
+//            }
+//            if (transitions.size() > 1 && complete != null && start != null) break;
+//        }
+//        if (transitions.size() > 1) {
+        XLog complete_event_xlog = null;
+        if (filtered_simplified_log.containStartEvent()) {
             Set<String> lifecycle = new UnifiedSet<>();
-            lifecycle.add(complete);
+            lifecycle.add(LogUtils.COMPLETE_CODE);
             LogFilterCriterion criterion = LogFilterCriterionFactory.getLogFilterCriterion(Action.RETAIN,
                     CONTAIN_ANY,
                     EVENT,
-                    LogUtils.LIFECYCLE_CODE.toString(),
-                    LogUtils.LIFECYCLE_CODE.toString(),
+                    LogUtils.LIFECYCLE_CODE,
+                    LogUtils.LIFECYCLE_CODE,
                     lifecycle);
             List<LogFilterCriterion> criteria = new ArrayList<>(1);
             criteria.add(criterion);
-            filtered = LogFilter.filter(this.simplifiedLog.getXLog(), criteria);
+            complete_event_xlog = LogFilter.filter(filtered_xlog, criteria);
+        }
+        else {
+        	complete_event_xlog = filtered_xlog;
         }
         
         SplitMiner splitMiner = new SplitMiner();
-        SimpleLog simpleLog = LogParser.getSimpleLog(filtered, new XEventAttributeClassifier(params.getAttribute(), params.getAttribute()));
+        SimpleLog simpleLog = LogParser.getSimpleLog(complete_event_xlog, new XEventAttributeClassifier(params.getAttribute(), params.getAttribute()));
         BPMNDiagram bpmnDiagram = splitMiner.mineBPMNModel(simpleLog, 
         				new DFGPWithLogThreshold(simpleLog, 
         										params.getArcLevel(), 

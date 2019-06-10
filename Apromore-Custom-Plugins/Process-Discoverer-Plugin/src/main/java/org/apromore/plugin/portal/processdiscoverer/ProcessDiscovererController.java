@@ -685,7 +685,7 @@ public class ProcessDiscovererController extends BaseController {
 																	fixedType, fixedAggregation, 
 																	VisualizationType.DURATION, VisualizationAggregation.CASES, 
 																	VisualizationType.FREQUENCY, VisualizationAggregation.CASES,
-																	new HashSet<>(Arrays.asList(arcTypes)));                                
+																	new HashSet<>(Arrays.asList(arcTypes)), null);                                
                                 JSONArray array = processDiscoverer.generateTraceDFGJSON(traceID, params);
 
                                 ProcessDiscovererController.this.displayTrace(array);
@@ -1522,6 +1522,7 @@ public class ProcessDiscovererController extends BaseController {
         try {
         	//Search for the params that return a non-empty diagram
         	boolean found = false;
+        	BPMNDiagram foundDiagram = null;
             while (!found) {
                 activities_value = activities.getCurpos();
                 arcs_value = arcs.getCurpos();
@@ -1536,10 +1537,10 @@ public class ProcessDiscovererController extends BaseController {
     																fixedType, fixedAggregation, 
     																primaryType, primaryAggregation, 
     																secondaryType, secondaryAggregation,
-    																new HashSet<>(Arrays.asList(arcTypes)));
+    																new HashSet<>(Arrays.asList(arcTypes)), null);
                 
-                BPMNDiagram diagram = processDiscoverer.generateDiagramFromLog(params, this.filtered_log);
-                if (diagram.getNodes().isEmpty() || diagram.getEdges().isEmpty()) {
+                foundDiagram = processDiscoverer.generateDiagramFromLog(params, this.filtered_log);
+                if (foundDiagram.getNodes().isEmpty() || foundDiagram.getEdges().isEmpty()) {
                 	if (activities_value < arcs_value) {
                 		activities.setCurpos(activities_value + 1);
                 		activitiesText.setValue(activities_value + 1);
@@ -1565,7 +1566,8 @@ public class ProcessDiscovererController extends BaseController {
 																fixedType, fixedAggregation, 
 																primaryType, primaryAggregation, 
 																secondaryType, secondaryAggregation,
-																new HashSet<>(Arrays.asList(arcTypes)));
+																new HashSet<>(Arrays.asList(arcTypes)), 
+																foundDiagram);
                 Object[] o = processDiscoverer.generateBPMNJSON(params, this.filtered_log);
                 jsonDiagram = (JSONArray) o[0];
                 diagram = (BPMNDiagram) o[1];
@@ -1580,7 +1582,7 @@ public class ProcessDiscovererController extends BaseController {
 																fixedType, fixedAggregation, 
 																primaryType, primaryAggregation, 
 																secondaryType, secondaryAggregation,
-																new HashSet<>(Arrays.asList(arcTypes)));
+																new HashSet<>(Arrays.asList(arcTypes)), foundDiagram);
                 Object[] o = processDiscoverer.generateDFGJSON(params, this.filtered_log);
                 jsonDiagram = (JSONArray) o[0];
                 diagram = (BPMNDiagram) o[1];
