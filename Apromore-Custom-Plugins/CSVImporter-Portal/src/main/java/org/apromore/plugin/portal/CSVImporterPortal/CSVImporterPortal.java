@@ -27,11 +27,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
+import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
@@ -53,7 +56,7 @@ import org.zkoss.zul.*;
 import org.deckfour.xes.model.XLog;
 import com.opencsv.CSVReader;
 @Component("csvImporterPortalPlugin")
-public class CSVImporterPortal extends DefaultPortalPlugin {
+public class CSVImporterPortal extends DefaultPortalPlugin implements FileImporterPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterPortal.class);
 
@@ -376,4 +379,15 @@ public class CSVImporterPortal extends DefaultPortalPlugin {
     }
 
 
+    // FileImporterPlugin implementation
+
+    @Override
+    public Set<String> getFileExtensions() {
+        return new HashSet<>(Arrays.asList("csv", "xls", "xlsx"));
+    }
+
+    @Override
+    public void importFile(Media media, PortalContext context, boolean isPublic) {
+        LOGGER.info("Import file: " + media.getName());
+    }
 }
