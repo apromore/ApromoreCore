@@ -18,7 +18,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.raffaeleconforti.foreignkeydiscovery.Pair;
 
-public class LogStatistics {
+public class LogProfiler {
 	private XLog log;
 	private long logMinTimestamp; 
 	private long logMaxTimestamp;
@@ -31,16 +31,16 @@ public class LogStatistics {
 	
 	private List<List<String>> cases = new ArrayList<>(); 
 	
-	public LogStatistics(XLog log, String classifyingAttribute) {
+	public LogProfiler(XLog log, String classifyingAttribute) {
 		this.log = log;
 		this.classifyingAttribute = classifyingAttribute;
 		this.createAttributeStatistics();
-		this.createCaseStatistics(classifyingAttribute);
+		this.createRelationStatistics(classifyingAttribute);
 	}
 	
 	public void setClassifyingAttribute(String classifyingAttribute) {
 		this.classifyingAttribute = classifyingAttribute;
-		this.createCaseStatistics(classifyingAttribute);
+		this.createRelationStatistics(classifyingAttribute);
 	}
 	
 	public long getLogMaxTimestamp() {
@@ -113,7 +113,7 @@ public class LogStatistics {
         attributeStats.put("time:duration", new HashMap<>());
     }
     
-    private void createCaseStatistics(String classifyingAttribute) {
+    private void createRelationStatistics(String classifyingAttribute) {
     	relationStats.clear();
     	
     	List<String> tmp_variants = new ArrayList<>();

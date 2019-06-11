@@ -24,7 +24,12 @@ import java.nio.charset.StandardCharsets;
 
 import org.apromore.processdiscoverer.util.StringValues;
 import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XAttributable;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
@@ -65,6 +70,16 @@ public class LogUtils {
 	public static String getConceptName(XAttributable attrib) {
 		String name = XConceptExtension.instance().extractName(attrib);
 		return (name != null ? name : "<no name>");
+	}
+	
+	// Add complete lifecycle:transition to a log having no lifecycle:transition event attribute
+	public static void addCompleteLifecycle(XLog log) {
+		XFactory factory = new XFactoryNaiveImpl();
+		for (XTrace trace: log) {
+			for (XEvent event: trace) {
+				event.getAttributes().put(LIFECYCLE_CODE, factory.createAttributeLiteral(LIFECYCLE_CODE, COMPLETE_CODE, null));
+			}
+		}
 	}
 
 }

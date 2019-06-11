@@ -206,8 +206,8 @@ public class ProcessDiscovererController extends BaseController {
     private List<LogFilterCriterion> criteria;
     
     //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
-    private Map<String, Map<String, Integer>> local_stats = new HashMap<>();
-    private Map<String, Map<String, Integer>> global_stats = new HashMap<>();
+    private Map<String, Map<String, Integer>> local_stats = new HashMap<>(); // for filtered log
+    private Map<String, Map<String, Integer>> global_stats = new HashMap<>(); // always for the original log
     
     private long min = Long.MAX_VALUE; //the earliest timestamp of the log
     private long max = 0; //the latest timestamp of the log
@@ -267,18 +267,20 @@ public class ProcessDiscovererController extends BaseController {
         log_name = logSummary.getName();
         initial_log = eventLogService.getXLog(logSummary.getId());
         if (initial_log != null) {
-        	initial_log = filterKeepingStartCompleteEvents(initial_log);
-        	if (!initial_log.isEmpty()) {
-        		filtered_log = initial_log;
-	        	processDiscoverer = new ProcessDiscoverer();
-		        generateGlobalStatistics(initial_log, true);
-		        generateLocalStatistics(filtered_log);
-		        criteria = new ArrayList<>();
-		        start();
+        	XLog initial_log_filtered = filterKeepingStartCompleteEvents(initial_log);
+        	if (initial_log_filtered.isEmpty()) {
+        		LogUtils.addCompleteLifecycle(initial_log);
         	}
         	else {
-        		throw new AssertionError("The log with id = " + logSummary.getId() + " does not contain any start or complete events");
+        		initial_log = initial_log_filtered;
         	}
+        	
+    		filtered_log = initial_log;
+        	processDiscoverer = new ProcessDiscoverer();
+	        generateGlobalStatistics(initial_log, true);
+	        generateLocalStatistics(initial_log);
+	        criteria = new ArrayList<>();
+	        start();
         }
         else {
         	throw new AssertionError("Cannot obtain log file for log id = " + logSummary.getId());
@@ -1393,8 +1395,18 @@ public class ProcessDiscovererController extends BaseController {
     }
     
     private void generateLocalStatistics(XLog log) {
-    	local_stats.clear();
-    	local_stats.putAll(generateStatistics(log, true));
+    	if (this.criteria == null || this.criteria.isEmpty()) {
+    		local_stats = global_stats;
+    	}
+    	else {
+        	if (local_stats == global_stats) {
+        		local_stats = new HashMap<>();
+        	}
+        	else {
+        		local_stats.clear();
+        	}
+        	local_stats.putAll(generateStatistics(log, true));    		
+    	}
     }
     
     private Map<String, Map<String, Integer>> generateStatistics(XLog log, boolean attributeStat) {
