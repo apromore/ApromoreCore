@@ -266,7 +266,7 @@ public abstract class BaseListboxController extends BaseController {
 
     protected void removeFolder() throws Exception {
         // See if the user has mixed folders and process models. we handle everything differently.
-        ArrayList<FolderType> folders =  getMainController().getMenu().getSelectedFolders();
+        ArrayList<FolderType> folders = getMainController().getMenu().getSelectedFolders();
         Map<SummaryType, List<VersionSummaryType>> elements =  getMainController().getSelectedElementsAndVersions();
 
         if (doesSelectionContainFoldersAndElements(folders, elements)) {
@@ -277,10 +277,9 @@ public abstract class BaseListboxController extends BaseController {
             } else if (elements != null && !elements.isEmpty()) {
                 showMessageProcessesDelete(getMainController());
             } else {
-               LOGGER.error("Nothing selected to delete?");
+                LOGGER.error("Nothing selected to delete?");
             }
         }
-        mainController.loadWorkspace();
     }
 
     /* Show the message tailored to deleting one or more folders. */
@@ -290,12 +289,15 @@ public abstract class BaseListboxController extends BaseController {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
                         deleteElements(mainController);
+                        mainController.loadWorkspace();
+                        refreshContent();
                         break;
                     case Messagebox.NO:
                         break;
                 }
             }
-        });    }
+        });
+    }
 
     /* Show the message tailored to deleting one or more folders. */
     private void showMessageFolderDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
@@ -304,6 +306,8 @@ public abstract class BaseListboxController extends BaseController {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
                         deleteFolders(folders, mainController);
+                        mainController.loadWorkspace();
+                        refreshContent();
                         break;
                     case Messagebox.NO:
                         break;
@@ -320,6 +324,8 @@ public abstract class BaseListboxController extends BaseController {
                     case Messagebox.YES:
                         deleteFolders(folders, mainController);
                         deleteElements(mainController);
+                        mainController.loadWorkspace();
+                        refreshContent();
                         break;
                     case Messagebox.NO:
                         break;
