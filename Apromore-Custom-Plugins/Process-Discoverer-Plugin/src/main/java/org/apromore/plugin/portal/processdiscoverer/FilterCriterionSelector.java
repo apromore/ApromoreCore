@@ -143,14 +143,15 @@ class FilterCriterionSelector {
     }
 
     private void save() throws InterruptedException {
-    	XLog filteredLog = LogFilter.filter(processDiscovererController.getOriginalLog(), criteria);
+    	XLog filteredLog = LogFilter.filter(processDiscovererController.getInitialLog(), criteria);
     	if (filteredLog.isEmpty()) {
     		Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.");
     	}
     	else {
 	        filterSelectorW.detach();
+	        processDiscovererController.setFilteredLog(filteredLog);
 	        processDiscovererController.setCriteria(criteria);
-	        processDiscovererController.refreshCriteria(filteredLog);
+	        processDiscovererController.refreshCriteria();
     	}
     }
 
@@ -158,8 +159,8 @@ class FilterCriterionSelector {
         ListModelList<String> model = new ListModelList<>();
         for(LogFilterCriterion criterion : criteria) {
             String label = criterion.toString();
-            for(String type: LogFilterTypeSelector.getTypes()) {
-                label = label.replaceAll(type, LogFilterTypeSelector.getMatch(type));
+            for(String type: LogFilterTypeSelector.getStandardTypes()) {
+                label = label.replaceAll(type, LogFilterTypeSelector.getNameFromType(type));
             }
 
             if(label.contains("Time-frame")) {

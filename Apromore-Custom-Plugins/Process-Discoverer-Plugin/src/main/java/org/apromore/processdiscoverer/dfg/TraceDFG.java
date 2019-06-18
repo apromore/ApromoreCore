@@ -7,13 +7,12 @@ import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.dfg.collectors.ArcInfoCollector;
 import org.apromore.processdiscoverer.dfg.collectors.NodeInfoCollector;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
+import org.apromore.processdiscoverer.logprocessors.EventClassifier;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
-import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
-import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 
@@ -51,7 +50,7 @@ public class TraceDFG {
     	return nodeInfoCollector;
     }
     
-    private int getStart(XTrace trace, int pos, XEventClassifier classifier) {
+    private int getStart(XTrace trace, int pos, EventClassifier classifier) {
         XEvent event = trace.get(pos);
         XConceptExtension xce = XConceptExtension.instance();
         for(int i = pos - 1; i >= 0; i--) {
@@ -63,7 +62,7 @@ public class TraceDFG {
         return -1;
     }
 
-    private int getPreviousComplete(XTrace trace, int pos, XEventClassifier classifier) {
+    private int getPreviousComplete(XTrace trace, int pos, EventClassifier classifier) {
         for(int i = pos - 1; i >= 0; i--) {
             XEvent event1 = trace.get(i);
             if(classifier.getClassIdentity(event1).toLowerCase().endsWith("complete")) {
@@ -85,29 +84,33 @@ public class TraceDFG {
         BPMNNode lastNode = bpmnDiagramBuilder.addNode(SimplifiedLog.START_NAME);
         for(int i = 0; i < trace.size(); i++) {
             XEvent event = trace.get(i);
-            if(params.getClassifier().getClassIdentity(event).toLowerCase().endsWith("complete")) {
-                String name = xce.extractName(event);
-                int previous_start = getStart(trace, i, params.getClassifier());
-                if(previous_start > -1) {
-                    Date date1 = xte.extractTimestamp(trace.get(previous_start));
-                    Date date2 = xte.extractTimestamp(event);
-                    Long diff = date2.getTime() - date1.getTime();
-                    name += "\\n\\n[" + diff.toString() + "]";
-                }
-
-                BPMNNode node = bpmnDiagramBuilder.addNode(name);
-                String label = "";
-
-                int previous_complete = getPreviousComplete(trace, i, params.getClassifier());
-                if (previous_complete > -1) {
-                    Date date1 = xte.extractTimestamp(trace.get(previous_complete));
-                    Date date2 = xte.extractTimestamp(event);
-                    Long diff = date2.getTime() - date1.getTime();
-                    label = "[" + diff.toString() + "]";
-                }
-                bpmnDiagramBuilder.addFlow(lastNode, node, label);
-                lastNode = node;
-            }
+            //if(params.getClassifier().getClassIdentity(event).toLowerCase().endsWith("complete")) {
+            //String name = xce.extractName(event);
+//            int previous_start = getStart(trace, i, params.getClassifier());
+//            if(previous_start > -1) {
+//                Date date1 = xte.extractTimestamp(trace.get(previous_start));
+//                Date date2 = xte.extractTimestamp(event);
+//                Long diff = date2.getTime() - date1.getTime();
+//                name += "\\n\\n[" + diff.toString() + "]";
+//            }
+            String name = params.getClassifier().getClassIdentity(event);
+            BPMNNode node = bpmnDiagramBuilder.addNode(name);
+//            String label = "";
+//
+//            int previous_complete = getPreviousComplete(trace, i, params.getClassifier());
+//            if (previous_complete > -1) {
+//                Date date1 = xte.extractTimestamp(trace.get(previous_complete));
+//                Date date2 = xte.extractTimestamp(event);
+//                Long diff = date2.getTime() - date1.getTime();
+//                label = "[" + diff.toString() + "]";
+//            }
+            Date date1 = (i==0) ? xte.extractTimestamp(event) : xte.extractTimestamp(trace.get(i-1));
+            Date date2 = xte.extractTimestamp(event);
+            Long diff = date2.getTime() - date1.getTime();
+            String label = "[" + diff.toString() + "]";
+            bpmnDiagramBuilder.addFlow(lastNode, node, label);
+            lastNode = node;
+            //}
         }
         BPMNNode node = bpmnDiagramBuilder.addNode(SimplifiedLog.END_NAME);
         bpmnDiagramBuilder.addFlow(lastNode, node, "");

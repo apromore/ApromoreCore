@@ -41,8 +41,13 @@ import org.apromore.processdiscoverer.VisualizationAggregation;
 import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.ArcType;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
+import org.apromore.processdiscoverer.logfilter.Action;
+import org.apromore.processdiscoverer.logfilter.Containment;
+import org.apromore.processdiscoverer.logfilter.Level;
 import org.apromore.processdiscoverer.logfilter.LogFilter;
 import org.apromore.processdiscoverer.logfilter.LogFilterCriterionFactory;
+import org.apromore.processdiscoverer.logprocessors.ActivityClassifier;
+import org.apromore.processdiscoverer.logprocessors.LogUtils;
 import org.apromore.processdiscoverer.util.StringValues;
 import org.apromore.processdiscoverer.util.TimeConverter;
 import org.apromore.service.CanoniserService;
@@ -50,8 +55,6 @@ import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.bimp_annotation.BIMPAnnotationService;
-import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
-import org.apromore.service.helper.UserInterfaceHelper;
 import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.classification.XEventNameClassifier;
@@ -63,6 +66,7 @@ import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.json.JSONArray;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
@@ -72,7 +76,6 @@ import org.processmining.models.connections.petrinets.behavioral.InitialMarkingC
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
-import org.processmining.models.graphbased.directed.bpmn.elements.Flow;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
 import org.processmining.models.semantics.petrinet.Marking;
@@ -163,6 +166,7 @@ public class ProcessDiscovererController extends BaseController {
     private Button cases;
     private Button fitness;
     private Button animate;
+    private Button fitScreen;
     
     private Menuitem exportFilteredLog;
     
@@ -191,8 +195,9 @@ public class ProcessDiscovererController extends BaseController {
 
 //    public boolean visualized = false;
     private String log_name = "";
-    private XLog log;
-    private Map<String, Integer[]> filtered_log_cases; // list of cases in the filtered log (log after applying filter criteria)
+    private XLog initial_log;
+    private XLog filtered_log;
+    private List<List<String>> filtered_log_cases; // list of cases in the filtered log (log after applying filter criteria)
     
     private BPMNDiagram diagram;
     private JSONArray jsonDiagram; // the corresponding JSON format of the diagram
@@ -201,11 +206,16 @@ public class ProcessDiscovererController extends BaseController {
     private List<LogFilterCriterion> criteria;
     
     //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
-    private Map<String, Map<String, Integer>> options_frequency = new HashMap<>();
+    private Map<String, Map<String, Integer>> local_stats = new HashMap<>(); // for filtered log
+    private Map<String, Map<String, Integer>> global_stats = new HashMap<>(); // always for the original log
+    
     private long min = Long.MAX_VALUE; //the earliest timestamp of the log
     private long max = 0; //the latest timestamp of the log
 
-    private String label = StringValues.b[161]; // the event attribute key used to label each task node, default "concept:name"
+    private String label = "concept:name"; // the event attribute key used to label each task node, default "concept:name"
+    private boolean selectorChanged = false;
+    
+    private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
     
     private CanoniserService canoniserService;
     private DomainService domainService;
@@ -255,11 +265,20 @@ public class ProcessDiscovererController extends BaseController {
         primaryAggregation = (primaryType == FREQUENCY) ? VisualizationAggregation.CASES : VisualizationAggregation.MEAN;
         logSummary = (LogSummaryType) selection;
         log_name = logSummary.getName();
-        log = eventLogService.getXLog(logSummary.getId());
-        if (log != null) {
-        	processDiscoverer = new ProcessDiscoverer(log);
-        	filtered_log_cases = this.getCases(log);
-	        generateOptions(log);
+        initial_log = eventLogService.getXLog(logSummary.getId());
+        if (initial_log != null) {
+        	XLog initial_log_filtered = filterKeepingStartCompleteEvents(initial_log);
+        	if (initial_log_filtered.isEmpty()) {
+        		LogUtils.addCompleteLifecycle(initial_log);
+        	}
+        	else {
+        		initial_log = initial_log_filtered;
+        	}
+        	
+    		filtered_log = initial_log;
+        	processDiscoverer = new ProcessDiscoverer();
+	        generateGlobalStatistics(initial_log, true);
+	        generateLocalStatistics(initial_log);
 	        criteria = new ArrayList<>();
 	        start();
         }
@@ -286,6 +305,7 @@ public class ProcessDiscovererController extends BaseController {
             this.use_fixed = (Radio) slidersWindow.getFellow(StringValues.b[20]);
             this.use_dynamic = (Radio) slidersWindow.getFellow(StringValues.b[21]);
             this.gateways = (Checkbox) slidersWindow.getFellow(StringValues.b[23]);
+            this.isShowingBPMN = gateways.isChecked();
             this.secondary = (Checkbox) slidersWindow.getFellow(StringValues.b[25]);
             this.inverted_nodes = (Checkbox) slidersWindow.getFellow(StringValues.b[26]);
             this.inverted_arcs = (Checkbox) slidersWindow.getFellow(StringValues.b[27]);
@@ -331,6 +351,7 @@ public class ProcessDiscovererController extends BaseController {
             this.fitness = (Button) slidersWindow.getFellow(StringValues.b[65]);
             this.filter = (Button) slidersWindow.getFellow(StringValues.b[66]);
             this.animate = (Button) slidersWindow.getFellow(StringValues.b[67]);
+            this.fitScreen = (Button) slidersWindow.getFellow("fitScreen");
 
             this.exportFilteredLog = (Menuitem) slidersWindow.getFellow(StringValues.b[69]);
 
@@ -340,17 +361,19 @@ public class ProcessDiscovererController extends BaseController {
             Menuitem exportBPMN = (Menuitem) slidersWindow.getFellow(StringValues.b[73]);
             Menuitem exportBPMNAnnotatedForBIMP = (Menuitem) slidersWindow.getFellow("exportBPMNAnnotatedForBIMP");
 
-            populateMetrics(log);
+            populateMetrics(filtered_log);
 
-            for (String option : generateLabels(log)) {
+            for (String option : generateLabels(filtered_log)) {
                 Menuitem item = new Menuitem(option);
                 item.addEventListener("onClick", new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
+                    	selectorChanged = true;
                         setLabel(item.getLabel());
-                        options_frequency.clear();
-                        generateOptions(log);
-                        populateMetrics(log);
+                        generateGlobalStatistics(initial_log, false);
+                        generateLocalStatistics(filtered_log);
+                        populateMetrics(filtered_log);
                         visualizeMap();
+                        filtered_log_cases = getCases(filtered_log);
                     }
                 });
                 selector.appendChild(item);
@@ -389,7 +412,7 @@ public class ProcessDiscovererController extends BaseController {
             this.secondary.addEventListener("onCheck", radioListener);
             this.inverted_nodes.addEventListener("onCheck", radioListener);
             this.inverted_arcs.addEventListener("onCheck", radioListener);
-
+            
             this.activities.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     activitiesText.setValue(activities.getCurpos());
@@ -541,7 +564,7 @@ public class ProcessDiscovererController extends BaseController {
 	            					String logName = (String)event.getData();
 	            					activities_value = activities.getCurpos();
 	        	                    arcs_value = arcs.getCurpos();
-	        	                    XLog filtered_log = processDiscoverer.getFilteredLog();
+	        	                    //XLog filtered_log = processDiscoverer.getFilteredLog();
 	        	                    saveLog(filtered_log, logName);
             					}
                         	}
@@ -556,22 +579,25 @@ public class ProcessDiscovererController extends BaseController {
                 	Window details_window = (Window) Executions.createComponents("/zul/details.zul", null, null);
                     details_window.setTitle("Activities");
                     Listbox listbox = (Listbox) details_window.getFellow(StringValues.b[81]);
+                    
                     Listheader pos = (Listheader) details_window.getFellow(StringValues.b[82]);
                     pos.setSortAscending(new NumberComparator(true, 0));
                     pos.setSortDescending(new NumberComparator(false, 0));
+                    
                     Listheader detail_frequency = (Listheader) details_window.getFellow(StringValues.b[83]);
                     detail_frequency.setSortAscending(new NumberComparator(true, 2));
                     detail_frequency.setSortDescending(new NumberComparator(false, 2));
+                    
                     Listheader detail_ratio = (Listheader) details_window.getFellow(StringValues.b[84]);
                     detail_ratio.setSortAscending(new NumberComparator(true, 2));
                     detail_ratio.setSortDescending(new NumberComparator(false, 2));
 
                     int i = 1;
-                    for (String key : options_frequency.get(getLabel()).keySet()) {
+                    for (String key : local_stats.get(getLabel()).keySet()) {
                         Listcell listcell0 = new Listcell(Integer.toString(i));
                         Listcell listcell1 = new Listcell(key);
-                        Listcell listcell2 = new Listcell(options_frequency.get(getLabel()).get(key).toString());
-                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) options_frequency.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%");
+                        Listcell listcell2 = new Listcell(local_stats.get(getLabel()).get(key).toString());
+                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) local_stats.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%");
                         Listitem listitem = new Listitem();
                         listitem.appendChild(listcell0);
                         listitem.appendChild(listcell1);
@@ -591,8 +617,8 @@ public class ProcessDiscovererController extends BaseController {
                             Writer writer = new BufferedWriter(new OutputStreamWriter(baos));
                             CSVWriter csvWriter = new CSVWriter(writer);
                             csvWriter.writeNext(new String[] {"Activity", "Frequency", "Frequency %"});
-                            for (String key : options_frequency.get(getLabel()).keySet()) {
-                                csvWriter.writeNext(new String[] {key, options_frequency.get(getLabel()).get(key).toString(), decimalFormat.format(100 * ((double) options_frequency.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%"});
+                            for (String key : local_stats.get(getLabel()).keySet()) {
+                                csvWriter.writeNext(new String[] {key, local_stats.get(getLabel()).get(key).toString(), decimalFormat.format(100 * ((double) local_stats.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%"});
                             }
                             csvWriter.flush();
                             csvWriter.close();
@@ -620,29 +646,38 @@ public class ProcessDiscovererController extends BaseController {
                         }
                     });
                     
-                    Listbox listbox = (Listbox) cases_window.getFellow(StringValues.b[85]);
-                    Listheader pos = (Listheader) cases_window.getFellow(StringValues.b[82]);
+                    Listbox listbox = (Listbox) cases_window.getFellow("casesList");
+                    Listheader pos = (Listheader) cases_window.getFellow("pos");
                     pos.setSortAscending(new NumberComparator(true, 0));
                     pos.setSortDescending(new NumberComparator(false, 0));
-                    Listheader variant_value = (Listheader) cases_window.getFellow(StringValues.b[86]);
-                    variant_value.setSortAscending(new NumberComparator(true, 2));
-                    variant_value.setSortDescending(new NumberComparator(false, 2));
-                    Listheader case_length = (Listheader) cases_window.getFellow(StringValues.b[87]);
+                    
+                    Listheader case_length = (Listheader) cases_window.getFellow("case_length");
                     case_length.setSortAscending(new NumberComparator(true, 2));
                     case_length.setSortDescending(new NumberComparator(false, 2));
+                    
+                    Listheader variant_value = (Listheader) cases_window.getFellow("variant_value");
+                    variant_value.setSortAscending(new NumberComparator(true, 3));
+                    variant_value.setSortDescending(new NumberComparator(false, 3));
+                    
+//                    Listheader variant_freq = (Listheader) cases_window.getFellow("variant_freq");
+//                    variant_freq.setSortAscending(new NumberComparator(true, 4));
+//                    variant_freq.setSortDescending(new NumberComparator(false, 4));
 
-                    Map<String, Integer[]> info = filtered_log_cases;
+                    List<List<String>> info = filtered_log_cases;
                     int i = 1;
-                    for (String key : info.keySet()) {
-                        Listcell listcell0 = new Listcell(Integer.toString(i));
-                        Listcell listcell1 = new Listcell(key);
-                        Listcell listcell2 = new Listcell(info.get(key)[1].toString());
-                        Listcell listcell3 = new Listcell(info.get(key)[0].toString());
+                    for (List<String> caseInfo : info) {
+                        Listcell listcell0 = new Listcell(i+"");
+                        Listcell listcell1 = new Listcell(caseInfo.get(0));
+                        Listcell listcell2 = new Listcell(caseInfo.get(1));
+                        Listcell listcell3 = new Listcell(caseInfo.get(2));
+                        Listcell listcell4 = new Listcell(decimalFormat.format(Double.valueOf(caseInfo.get(3))) + "%");
+                        
                         Listitem listitem = new Listitem();
                         listitem.appendChild(listcell0);
                         listitem.appendChild(listcell1);
                         listitem.appendChild(listcell2);
                         listitem.appendChild(listcell3);
+                        listitem.appendChild(listcell4);
 
                         listbox.appendChild(listitem);
                         i++;
@@ -661,11 +696,11 @@ public class ProcessDiscovererController extends BaseController {
 																	parallelism.getCurposInDouble() / 100, 
 																	false, true, 
 																	inverted_nodes.isChecked(), inverted_arcs.isChecked(),
-																	secondary.isChecked(),
+																	false,
 																	fixedType, fixedAggregation, 
-																	primaryType, primaryAggregation, 
-																	secondaryType, secondaryAggregation,
-																	new HashSet<>(Arrays.asList(arcTypes)));                                
+																	VisualizationType.DURATION, VisualizationAggregation.CASES, 
+																	VisualizationType.FREQUENCY, VisualizationAggregation.CASES,
+																	new HashSet<>(Arrays.asList(arcTypes)), null);                                
                                 JSONArray array = processDiscoverer.generateTraceDFGJSON(traceID, params);
 
                                 ProcessDiscovererController.this.displayTrace(array);
@@ -682,10 +717,10 @@ public class ProcessDiscovererController extends BaseController {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             Writer writer = new BufferedWriter(new OutputStreamWriter(baos));
                             CSVWriter csvWriter = new CSVWriter(writer);
-                            Map<String, Integer[]> info = filtered_log_cases;
-                            csvWriter.writeNext(new String[] {"Case ID", "Case Length", "Unique Case ID"});
-                            for (String key : info.keySet()) {
-                                csvWriter.writeNext(new String[] {key, info.get(key)[1].toString(), info.get(key)[0].toString()});
+                            List<List<String>> info = filtered_log_cases;
+                            csvWriter.writeNext(new String[] {"Case ID", "Case Length", "Unique Case"});
+                            for (List<String> caseInfo: info) {
+                                csvWriter.writeNext(new String[] {caseInfo.get(0), caseInfo.get(1), caseInfo.get(2)});
                             }
                             csvWriter.flush();
                             csvWriter.close();
@@ -729,7 +764,7 @@ public class ProcessDiscovererController extends BaseController {
 
             this.filter.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    new FilterCriterionSelector(getLabel(), ProcessDiscovererController.this, criteria, options_frequency, min, max);
+                    new FilterCriterionSelector(getLabel(), ProcessDiscovererController.this, criteria, global_stats, min, max);
                 }
             });
             
@@ -742,9 +777,12 @@ public class ProcessDiscovererController extends BaseController {
                     if(!gateways.isChecked()) {
                     	validDiagram = BPMNDiagramBuilder.insertBPMNGateways(diagram);
                     }
-                    for(BPMNEdge edge : validDiagram.getEdges()) {
-                        edge.setLabel("");
-                    }
+                    
+//                    for(BPMNEdge edge : validDiagram.getEdges()) {
+//                        edge.setLabel("");
+//                    }
+                    // The log animation needs to identify the start and end events by names
+                    BPMNDiagramBuilder.updateStartEndEventLabels(validDiagram);
 
                     UIContext context = new UIContext();
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -768,8 +806,8 @@ public class ProcessDiscovererController extends BaseController {
 
                     model.replaceAll("\n", "");
 
-                    XLog filtered = processDiscoverer.getFilteredLog();
-                    logAnimationPluginInterface.execute(portalContext, model, layout, filtered, gateways.isChecked());
+                    //XLog filtered = processDiscoverer.getFilteredLog();
+                    logAnimationPluginInterface.execute(portalContext, model, layout, filtered_log, gateways.isChecked());
                 }
             });
 
@@ -782,7 +820,7 @@ public class ProcessDiscovererController extends BaseController {
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                    for (String name : local_stats.get(getLabel()).keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -811,7 +849,7 @@ public class ProcessDiscovererController extends BaseController {
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                    for (String name : local_stats.get(getLabel()).keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -840,7 +878,7 @@ public class ProcessDiscovererController extends BaseController {
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                    for (String name : local_stats.get(getLabel()).keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -869,7 +907,7 @@ public class ProcessDiscovererController extends BaseController {
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : options_frequency.get(getLabel()).keySet()) {
+                    for (String name : local_stats.get(getLabel()).keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -899,7 +937,7 @@ public class ProcessDiscovererController extends BaseController {
                     Set<String> manually_removed_arcs = new HashSet<>();
                     String edge = event.getData().toString();
 
-                    for (String name : options_frequency.get(StringValues.b[94]).keySet()) {
+                    for (String name : local_stats.get(StringValues.b[94]).keySet()) {
                         if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
                             manually_removed_arcs.add(name);
                             break;
@@ -929,7 +967,7 @@ public class ProcessDiscovererController extends BaseController {
                     Set<String> manually_removed_arcs = new HashSet<>();
                     String edge = event.getData().toString();
 
-                    for (String name : options_frequency.get(StringValues.b[94]).keySet()) {
+                    for (String name : local_stats.get(StringValues.b[94]).keySet()) {
                         if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
                             manually_removed_arcs.add(name);
                             break;
@@ -946,6 +984,13 @@ public class ProcessDiscovererController extends BaseController {
                                 manually_removed_arcs
                         ));
                     }
+                }
+            });
+            
+            this.fitScreen.addEventListener("onClick", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                	Clients.evalJavaScript("fitToWindow();");
                 }
             });
             
@@ -1074,6 +1119,7 @@ public class ProcessDiscovererController extends BaseController {
                     parallelismText.setValue(i);
                     parallelism.setCurpos(i);
                     visualizeMap();
+                    filtered_log_cases = getCases(filtered_log);
                 }
             };            
             
@@ -1090,27 +1136,41 @@ public class ProcessDiscovererController extends BaseController {
         }
     }
 
-    private Map<String, Integer[]> getCases(XLog filtered_log) {
+    // Return case list: 
+    // 1st: traceID, 2nd: trace size, 3rd: index of the first unique trace having the same sequence.
+    private List<List<String>> getCases(XLog log) {
         //XLog filtered_log = processDiscoverer.getFilteredLog();
-        Map<String, Integer[]> cases = new HashMap<>(filtered_log.size());
-        ObjectIntHashMap<String> variant = new ObjectIntHashMap<>();
-        for(XTrace trace : filtered_log) {
-            int length = 0;
+    	List<List<String>> cases = new ArrayList<>();
+        ObjectIntHashMap<String> variant = new ObjectIntHashMap<>(); //key: trace string, value: index to cases
+        Map<Integer, Integer> countMap = new HashMap<>(); // key: index to unique case in cases, value: number of traces in the variant
+        for(XTrace trace : log) {
+//            int length = 0;
             StringBuilder traceBuilder = new StringBuilder();
             for (XEvent event : trace) {
-                String label = event.getAttributes().get(getLabel()).toString();
-                if(event.getAttributes().get("lifecycle:transition").toString().toLowerCase().endsWith("complete")) length++;
+//                String label = event.getAttributes().get(getLabel()).toString();
+            	String label = processDiscoverer.getAbstractionParams().getClassifier().getClassIdentity(event);
+//                if(event.getAttributes().get("lifecycle:transition").toString().toLowerCase().endsWith("complete")) length++;
                 traceBuilder.append(label + ",");
             }
-            String s = traceBuilder.toString();
-            Integer i;
-            if(variant.containsKey(s)) i = variant.get(s);
-            else {
-                i = variant.size() + 1;
-                variant.put(s, i);
+            String sequence = traceBuilder.toString();
+            Integer variantIndex;
+            if(variant.containsKey(sequence)) {
+            	variantIndex = variant.get(sequence);
+            	countMap.put(variantIndex, countMap.get(variantIndex)+1);
             }
-            cases.put(XConceptExtension.instance().extractName(trace), new Integer[] {i, length});
+            else {
+            	variantIndex = variant.size() + 1;
+                variant.put(sequence, variantIndex);
+                countMap.put(variantIndex, 1);
+            }
+            cases.add(Arrays.asList(XConceptExtension.instance().extractName(trace), trace.size()+"", variantIndex+"", ""));
         }
+        
+        //Update frequency percentage
+        for (List<String> oneCase : cases) {
+        	oneCase.set(3, 1.0*100*countMap.get(Integer.valueOf(oneCase.get(2)))/log.size() + "");
+        }
+        
         return cases;
     }
     
@@ -1187,13 +1247,20 @@ public class ProcessDiscovererController extends BaseController {
     	return bimpAnnotationService;
     }
     
-    
-    public XLog getOriginalLog() {
-    	return this.log;
+    public XLog getInitialLog() {
+    	return this.initial_log;
     }
     
     public String getLogName() {
     	return this.log_name;
+    }
+    
+    public void setFilteredLog(XLog filtered_log) {
+    	this.filtered_log = filtered_log;
+    }
+    
+    public XLog getFilteredLog() {
+    	return this.filtered_log;
     }
     
     public BPMNDiagram getBPMNDiagram() {
@@ -1205,15 +1272,12 @@ public class ProcessDiscovererController extends BaseController {
     	}
     }
 
-    /*
-     * Note that the filtered log may be empty
-     * In that case the UI must be also properly empty, no errors thrown  
-     */
-    public void refreshCriteria(XLog filteredLog) throws InterruptedException {
-    	this.filtered_log_cases = this.getCases(filteredLog);
-        populateMetrics(filteredLog);
-        generateOptions(filteredLog);
+    // Note that the filtered log has been checked to be non-empty
+    public void refreshCriteria() throws InterruptedException {
+        populateMetrics(this.filtered_log);
+        generateLocalStatistics(this.filtered_log);
         visualizeMap();
+        this.filtered_log_cases = this.getCases(this.filtered_log);
     }
     
     private double measureFitness() {
@@ -1236,24 +1300,25 @@ public class ProcessDiscovererController extends BaseController {
 
         PNRepResult result = computeAlignment(
                 new FakePluginContext(),
-                new XEventNameClassifier(),
+                new ActivityClassifier(processDiscoverer.getAbstractionParams().getClassifier().getAttributes()),
                 (Petrinet) petrinet[0],
                 (Marking) petrinet[1],
                 (Marking) petrinet[2],
-                log);
+                filtered_log);
         return getAlignmentValue(result);
     }
 
     private void addCriterion(LogFilterCriterion logFilterCriterion) throws InterruptedException {
         if (!criteria.contains(logFilterCriterion)) {
             criteria.add(logFilterCriterion);
-            XLog filteredLog = LogFilter.filter(this.getOriginalLog(), criteria);
+            XLog filteredLog = LogFilter.filter(this.getInitialLog(), criteria);
         	if (filteredLog.isEmpty()) {
         		Messagebox.show("The log is empty after applying filter criteria! Please use different criteria.");
         		criteria.remove(logFilterCriterion);
         	}
         	else {
-        		refreshCriteria(filteredLog);
+        		setFilteredLog(filteredLog);
+        		refreshCriteria();
         	}
         }
     }
@@ -1313,34 +1378,63 @@ public class ProcessDiscovererController extends BaseController {
         minDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(shortest)));
     }
 
-    // Collect different types of filter from the log
-    // options_frequency contains these filter types
-    // Key: filter type code
-    // Value: map (key: filter type name, value: frequency count of the value)
-    private void generateOptions(XLog log) {
-        boolean firstTime = (options_frequency.keySet().size() == 0);
-        Multimap<String, String> tmp_options = HashMultimap.create();
+
+    /**
+     * Collect frequency statistics for all event attributes except the timestamp
+     * options_frequency is updated
+     * Key: attribute key
+     * Value: map (key: attribute value, value: frequency count of the value)
+     * @param log
+     */
+    private void generateGlobalStatistics(XLog log, boolean attributeStat) {
+        global_stats.putAll(generateStatistics(log, attributeStat));
+        if (attributeStat) {
+        	global_stats.put("time:timestamp", new HashMap<>());
+        	global_stats.put("time:duration", new HashMap<>());
+        }
+    }
+    
+    private void generateLocalStatistics(XLog log) {
+    	if (this.criteria == null || this.criteria.isEmpty()) {
+    		local_stats = global_stats;
+    	}
+    	else {
+        	if (local_stats == global_stats) {
+        		local_stats = new HashMap<>();
+        	}
+        	else {
+        		local_stats.clear();
+        	}
+        	local_stats.putAll(generateStatistics(log, true));    		
+    	}
+    }
+    
+    private Map<String, Map<String, Integer>> generateStatistics(XLog log, boolean attributeStat) {
+        //boolean firstTime = (options_frequency.keySet().size() == 0);
+        Multimap<String, String> tmp_options = HashMultimap.create(); //map from attribute key to attribute values
+        
+        //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
         Map<String, Map<String, Integer>> tmp_options_frequency = new HashMap<>();
 
         for (XTrace trace : log) {
-            if (firstTime) {
-                for (XEvent event : trace) {
-                    for (XAttribute attribute : event.getAttributes().values()) {
-                        String key = attribute.getKey();
-                        if (!(key.equals("lifecycle:model") || key.equals("time:timestamp"))) {
-                            tmp_options.put(key, attribute.toString());
-                            if(tmp_options_frequency.get(key) == null) tmp_options_frequency.put(key, new HashMap<>());
-
-                            Integer i = tmp_options_frequency.get(key).get(attribute.toString());
-                            if (i == null) tmp_options_frequency.get(key).put(attribute.toString(), 1);
-                            else tmp_options_frequency.get(key).put(attribute.toString(), i + 1);
-                        }
-                        if (key.equals("time:timestamp")) {
-                            min = Math.min(min, ((XAttributeTimestamp) attribute).getValueMillis());
-                            max = Math.max(max, ((XAttributeTimestamp) attribute).getValueMillis());
-                        }
-                    }
-                }
+            if (attributeStat) {
+	            for (XEvent event : trace) {
+	                for (XAttribute attribute : event.getAttributes().values()) {
+	                    String key = attribute.getKey();
+	                    if (!(key.equals("lifecycle:model") || key.equals("time:timestamp"))) {
+	                        tmp_options.put(key, attribute.toString());
+	                        if(tmp_options_frequency.get(key) == null) tmp_options_frequency.put(key, new HashMap<>());
+	
+	                        Integer i = tmp_options_frequency.get(key).get(attribute.toString());
+	                        if (i == null) tmp_options_frequency.get(key).put(attribute.toString(), 1);
+	                        else tmp_options_frequency.get(key).put(attribute.toString(), i + 1);
+	                    }
+	                    if (key.equals("time:timestamp")) {
+	                        min = Math.min(min, ((XAttributeTimestamp) attribute).getValueMillis());
+	                        max = Math.max(max, ((XAttributeTimestamp) attribute).getValueMillis());
+	                    }
+	                }
+	            }
             }
 
             for (int i = -1; i < trace.size(); i++) {
@@ -1379,10 +1473,7 @@ public class ProcessDiscovererController extends BaseController {
             }
         }
 
-        options_frequency.putAll(tmp_options_frequency);
-
-        options_frequency.put("time:timestamp", new HashMap<>());
-        options_frequency.put("time:duration", new HashMap<>());
+        return tmp_options_frequency;
     }
 
     private void visualizeFrequency() throws InterruptedException {
@@ -1476,6 +1567,7 @@ public class ProcessDiscovererController extends BaseController {
         try {
         	//Search for the params that return a non-empty diagram
         	boolean found = false;
+        	BPMNDiagram foundDiagram = null;
             while (!found) {
                 activities_value = activities.getCurpos();
                 arcs_value = arcs.getCurpos();
@@ -1490,10 +1582,10 @@ public class ProcessDiscovererController extends BaseController {
     																fixedType, fixedAggregation, 
     																primaryType, primaryAggregation, 
     																secondaryType, secondaryAggregation,
-    																new HashSet<>(Arrays.asList(arcTypes)));
+    																new HashSet<>(Arrays.asList(arcTypes)), null);
                 
-                BPMNDiagram diagram = processDiscoverer.generateDiagramFromLog(params, criteria);
-                if (diagram.getNodes().isEmpty() || diagram.getEdges().isEmpty()) {
+                foundDiagram = processDiscoverer.generateDiagramFromLog(params, this.filtered_log);
+                if (foundDiagram.getNodes().isEmpty() || foundDiagram.getEdges().isEmpty()) {
                 	if (activities_value < arcs_value) {
                 		activities.setCurpos(activities_value + 1);
                 		activitiesText.setValue(activities_value + 1);
@@ -1519,8 +1611,9 @@ public class ProcessDiscovererController extends BaseController {
 																fixedType, fixedAggregation, 
 																primaryType, primaryAggregation, 
 																secondaryType, secondaryAggregation,
-																new HashSet<>(Arrays.asList(arcTypes)));
-                Object[] o = processDiscoverer.generateBPMNJSON(params, criteria);
+																new HashSet<>(Arrays.asList(arcTypes)), 
+																foundDiagram);
+                Object[] o = processDiscoverer.generateBPMNJSON(params, this.filtered_log);
                 jsonDiagram = (JSONArray) o[0];
                 diagram = (BPMNDiagram) o[1];
             }else {
@@ -1534,8 +1627,8 @@ public class ProcessDiscovererController extends BaseController {
 																fixedType, fixedAggregation, 
 																primaryType, primaryAggregation, 
 																secondaryType, secondaryAggregation,
-																new HashSet<>(Arrays.asList(arcTypes)));
-                Object[] o = processDiscoverer.generateDFGJSON(params, criteria);
+																new HashSet<>(Arrays.asList(arcTypes)), foundDiagram);
+                Object[] o = processDiscoverer.generateDFGJSON(params, this.filtered_log);
                 jsonDiagram = (JSONArray) o[0];
                 diagram = (BPMNDiagram) o[1];
             }
@@ -1566,15 +1659,18 @@ public class ProcessDiscovererController extends BaseController {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
         String javascript = "load('" + jsonString + "');";
-        //Clients.evalJavaScript("reset()");
+        if ((isShowingBPMN && !gateways.isChecked()) || (!isShowingBPMN && gateways.isChecked()) || selectorChanged) {
+        	javascript += "fitToWindow();";
+        }
         Clients.evalJavaScript(javascript);
+        isShowingBPMN = gateways.isChecked();
+        selectorChanged = false;
     }
     
     private void displayTrace(JSONArray jsonDiagram) {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
         String javascript = "loadTrace('" + jsonString + "');";
-        //Clients.evalJavaScript("reset()");
         Clients.evalJavaScript(javascript);
     }
 
@@ -1753,5 +1849,29 @@ public class ProcessDiscovererController extends BaseController {
         }else {
             return (Double) pnRepResult.getInfo().get(PNRepResult.TRACEFITNESS);
         }
+    }
+    
+    /**
+     * Add filter to select only start and complete events in traces
+     * @param criteria
+     * @return new list of criteria with new criterion added
+     */
+    private XLog filterKeepingStartCompleteEvents(XLog log) {
+    	Set<String> lifecycle = new UnifiedSet<>();
+    	lifecycle.add(LogUtils.START_CODE);
+    	lifecycle.add(LogUtils.START_CODE.toUpperCase());
+        lifecycle.add(LogUtils.COMPLETE_CODE);
+        lifecycle.add(LogUtils.COMPLETE_CODE.toUpperCase());
+    	LogFilterCriterion criterion = LogFilterCriterionFactory.getLogFilterCriterion(
+    			Action.RETAIN,
+    			Containment.CONTAIN_ANY,
+                Level.EVENT,
+                LogUtils.LIFECYCLE_CODE.toString(),
+                LogUtils.LIFECYCLE_CODE.toString(),
+                lifecycle);
+    	
+    	List<LogFilterCriterion> filterCriteria = new ArrayList<>();
+    	filterCriteria.add(criterion);
+    	return LogFilter.filter(log, filterCriteria);
     }
 }

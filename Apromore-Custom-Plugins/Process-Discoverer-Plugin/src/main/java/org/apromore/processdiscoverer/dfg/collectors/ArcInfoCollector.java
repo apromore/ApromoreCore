@@ -78,7 +78,8 @@ public class ArcInfoCollector {
         return map;
     }
 
-    // add up frequency to the current frequency value of Arc
+    // Add up frequency to the current frequency value of Arc
+    // This method must be used in coordination with the nextTrace() method.
     public void updateArcFrequency(Arc arc, int frequency) {
         LongArrayList list = FrequencySetPopulator.retreiveEntryLong(arcs_frequency_set, arc, number_of_traces);
         calculator.increment(calculator.getCurrentDate(), list.get(trace), frequency);

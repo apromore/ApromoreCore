@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.deckfour.xes.classification.XEventAttributeClassifier;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
@@ -43,7 +40,7 @@ public class SimplifiedLog extends ArrayList<IntList> {
 	private HashBiMap<Integer, Integer> startCompleteEventMap = new HashBiMap<>(); //map between integer-based start and complete events
     private XLog xlog;
     
-	public SimplifiedLog(XLog xlog, XEventAttributeClassifier classifier) throws Exception {
+	public SimplifiedLog(XLog xlog, EventClassifier classifier) throws Exception {
 		super();
 		this.xlog = xlog;
 		
@@ -106,7 +103,7 @@ public class SimplifiedLog extends ArrayList<IntList> {
 
 	}
 	
-    public SimplifiedLog(SimplifiedLog log, IntHashSet retained_activities, XEventAttributeClassifier classifier) throws Exception {
+    public SimplifiedLog(SimplifiedLog log, IntHashSet retained_activities, EventClassifier classifier) throws Exception {
     	super(log.size());
     	
         for(int t = 0; t < log.size(); t++) {
@@ -116,9 +113,26 @@ public class SimplifiedLog extends ArrayList<IntList> {
             	int event = trace.get(i);
                 if(retained_activities.contains(event)) {
                     filtered_trace.add(event);
+                    
                     simplifiedNameMap.put(log.getNameMapping().inverse().get(event), event);
                     startEventMap.put(event, log.getStartEventMap().get(event));
                     completeEventMap.put(event, log.getCompleteEventMap().get(event));
+                    
+                    String collapsed_name = LogUtils.getCollapsedEvent(log.getEventFullName(event));
+                    if (!collapsedNameMap.containsKey(collapsed_name)) {
+                    	collapsedNameMap.put(collapsed_name, new ArrayList<>());
+                    }
+                    if (!collapsedNameMap.get(collapsed_name).contains(event)) {
+                    	collapsedNameMap.get(collapsed_name).add(event);
+                    }
+                    if (collapsedNameMap.get(collapsed_name).size() == 2) {
+                    	if (startEventMap.get(collapsedNameMap.get(collapsed_name).get(0))) { //start event
+                    		startCompleteEventMap.put(collapsedNameMap.get(collapsed_name).get(0), collapsedNameMap.get(collapsed_name).get(1));
+                    	}
+                    	else {
+                    		startCompleteEventMap.put(collapsedNameMap.get(collapsed_name).get(1), collapsedNameMap.get(collapsed_name).get(0));
+                    	}
+                    }
                 }
             }
             this.add(filtered_trace);
@@ -250,14 +264,14 @@ public class SimplifiedLog extends ArrayList<IntList> {
 //        return !LogUtils.isCompleteEvent(name) || getEventNumber(LogUtils.getStartEvent(name)) == null;
 //    }
     
-    public SimplifiedLog filterActivities(IntHashSet retained_activities, XEventAttributeClassifier classifier) throws Exception {
+    public SimplifiedLog filterActivities(IntHashSet retained_activities, EventClassifier classifier) throws Exception {
     	return new SimplifiedLog(this, retained_activities, classifier);
     }
     
     /**
      * Converet this simplified log back to XLog
      */
-    private XLog convertToXLog(XLog parentLog, XEventAttributeClassifier full_classifier) {
+    private XLog convertToXLog(XLog parentLog, EventClassifier classifier) {
         //--------------------------------------------
         // The filtered_log created after initialization() is a simplified log which 
         // has filtered out activities that are not retained by the activity slider
@@ -267,20 +281,26 @@ public class SimplifiedLog extends ArrayList<IntList> {
         XFactory factory = new XFactoryNaiveImpl();
         XLog filtered_xlog = factory.createLog(parentLog.getAttributes());
         for(int trace = 0; trace < this.size(); trace++) {
-            XTrace filtered_xtrace = factory.createTrace(parentLog.get(trace).getAttributes());
-            // filtered_trace is a list of event numbers that are mapped to full event names in simplifiedNameMap map.
-            // Note that the first and last elements are "1" and "2" which are used to mark the two ends of the trace
-            IntList filtered_trace = this.get(trace); 
-            int unfiltered_event = 0;
-            for(int event = 1; event < filtered_trace.size() - 1; event++) {
-            	//Jump over events that are not in the filtered trace 
-                while(!full_classifier.getClassIdentity(parentLog.get(trace).get(unfiltered_event)).equalsIgnoreCase(getEventFullName(filtered_trace.get(event)))) {
-                    unfiltered_event++;
+        	XTrace parentTrace = parentLog.get(trace);
+            XTrace filtered_xtrace = factory.createTrace(parentTrace.getAttributes());
+            
+            IntList intTrace = this.get(trace); 
+            int parentTraceIndex = 0; //parentTrace starts from 0
+            // For intTrace, the first and last elements are "1" and "2" which are used to mark the two ends
+            for(int event = 1; event < intTrace.size() - 1; event++) {
+            	String currentEventName = getEventFullName(intTrace.get(event));
+            	//Jump over events in parent trace that are not in the intTrace 
+                while(parentTraceIndex < parentTrace.size() &&
+                		!classifier.getClassIdentity(parentTrace.get(parentTraceIndex)).equalsIgnoreCase(currentEventName)) {
+                	parentTraceIndex++;
                 }
 
-                filtered_xtrace.add(parentLog.get(trace).get(unfiltered_event));
-                unfiltered_event++;
+                if (parentTraceIndex < parentTrace.size()) {
+                	filtered_xtrace.add(parentTrace.get(parentTraceIndex));
+                	parentTraceIndex++;
+                }
             }
+            
             if(filtered_xtrace.size() > 0) {
                 filtered_xlog.add(filtered_xtrace);
             }

@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.apromore.processdiscoverer.dfg.ArcType;
-import org.apromore.processdiscoverer.logprocessors.LogUtils;
-import org.deckfour.xes.classification.XEventAttributeClassifier;
-import org.deckfour.xes.classification.XEventClassifier;
+import org.apromore.processdiscoverer.logprocessors.EventClassifier;
+
+import  org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 
 /**
  * 
@@ -15,7 +15,7 @@ import org.deckfour.xes.classification.XEventClassifier;
  */
 public class AbstractionParams {
 	private String attribute;
-	private XEventAttributeClassifier classifier;
+	private EventClassifier classifier;
 	private double activities;
 	private double arcs;
 	private double parallelism;
@@ -31,6 +31,7 @@ public class AbstractionParams {
 	private VisualizationType secondaryType;
 	private VisualizationAggregation secondaryAggregation;
 	private Set<ArcType> arcTypes;
+	private BPMNDiagram correspondingDFG; 
 	
 	public AbstractionParams(String attribute, double activities, double arcs, double parallelism, 
 							boolean prioritizeParallelism, boolean preserve_connectivity, 
@@ -38,9 +39,10 @@ public class AbstractionParams {
 							VisualizationAggregation fixedAggregation, VisualizationType primaryType, 
 							VisualizationAggregation primaryAggregation, VisualizationType secondaryType, 
 							VisualizationAggregation secondaryAggregation, 
-							Set<ArcType> arcTypes) {
+							Set<ArcType> arcTypes,
+							BPMNDiagram correspondingDFG) {
 		this.attribute = attribute;
-		this.classifier = new XEventAttributeClassifier(attribute, new String[] {attribute, LogUtils.LIFECYCLE_CODE.toString()});
+		this.classifier = new EventClassifier(attribute);
 		this.activities = activities;
 		this.arcs = arcs;
 		this.parallelism = parallelism;
@@ -56,13 +58,14 @@ public class AbstractionParams {
 		this.secondaryAggregation= secondaryAggregation;
 		this.secondary = secondary;
 		this.arcTypes = arcTypes;
+		this.correspondingDFG = correspondingDFG;
 	}
 	
 	public String getAttribute() {
 		return this.attribute;
 	}
 	
-	public XEventAttributeClassifier getClassifier() {
+	public EventClassifier getClassifier() {
 		return classifier;
 	}
 	
@@ -124,5 +127,9 @@ public class AbstractionParams {
 	
 	public Set<ArcType> getArcTypes() {
 		return Collections.unmodifiableSet(this.arcTypes);
+	}
+	
+	public BPMNDiagram getCorrepondingDFG() {
+		return this.correspondingDFG;
 	}
 }

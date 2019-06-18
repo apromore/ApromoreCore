@@ -30,19 +30,19 @@ import java.util.Comparator;
  */
 public class NumberComparator implements Comparator<Object> {
 
-    private boolean var1;
-    private int var2;
+    private boolean ascending;
+    private int columnIndex;
 
-    public NumberComparator(boolean var3, int var4) {
-        this.var1 = var3;
-        this.var2 = var4;
+    public NumberComparator(boolean ascending, int columnIndex) {
+        this.ascending = ascending;
+        this.columnIndex = columnIndex;
     }
 
     @Override
     public int compare(Object o1, Object o2) {
-        Double contributor1 = Double.parseDouble(((Listcell) ((Listitem) o1).getChildren().get(var2)).getLabel());
-        Double contributor2 = Double.parseDouble(((Listcell) ((Listitem) o2).getChildren().get(var2)).getLabel());
-        return contributor1.compareTo(contributor2) * (var1 ? 1 : -1);
+        Double contributor1 = Double.parseDouble(((Listcell) ((Listitem) o1).getChildren().get(columnIndex)).getLabel());
+        Double contributor2 = Double.parseDouble(((Listcell) ((Listitem) o2).getChildren().get(columnIndex)).getLabel());
+        return contributor1.compareTo(contributor2) * (ascending ? 1 : -1);
     }
 
 }
