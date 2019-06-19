@@ -58,7 +58,7 @@ import com.opencsv.CSVReader;
 import sun.nio.cs.StreamDecoder;
 
 @Component("csvImporterPortalPlugin")
-public class CSVImporterPortal extends DefaultPortalPlugin implements FileImporterPlugin {
+public class CSVImporterPortal implements FileImporterPlugin {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterPortal.class);
 
