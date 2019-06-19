@@ -40,6 +40,6 @@
     </beans:bean>
 
     <!-- Exposes the component as OSGi service -->
-    <service ref="csvImporterPortalPlugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+    <service ref="csvImporterPortalPlugin" interface="org.apromore.plugin.portal.FileImporterPlugin" auto-export="interfaces" />
 
 </beans:beans>

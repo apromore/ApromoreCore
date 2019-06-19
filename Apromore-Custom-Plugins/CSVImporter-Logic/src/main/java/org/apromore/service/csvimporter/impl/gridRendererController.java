@@ -22,7 +22,7 @@ public class gridRendererController implements RowRenderer<String[]> {
 			lbl.setWidth(this.AttribWidth + "px");
 			lbl.setMultiline(false);
 			lbl.setMaxlength(25);
-
+			lbl.setTooltiptext(data[i]);
 			row.appendChild(lbl);
 
 //			row.setStyle("height: 10px;");

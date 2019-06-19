@@ -27,15 +27,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apromore.model.ImportLogResultType;
+import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.exception.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -45,6 +52,8 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.*;
 
 public class ImportController extends BaseController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImportController.class);
 
     private MainController mainC;
     private Window importWindow;
@@ -80,12 +89,22 @@ public class ImportController extends BaseController {
             isPublic = ((Checkbox) this.importWindow.getFellow("public")).isChecked();
 
             // build the list of supported extensions to display
-            String supportedExtS = "xes, xes.gz, mxml, mxml.gz, zip";
-            Set<String> supportedExt = this.mainC.getNativeTypes().keySet();
-            for (String aSupportedExt : supportedExt) {
-                supportedExtS += ", " + aSupportedExt;
+            SortedSet<String> supportedExt = new TreeSet<>();
+            Collections.addAll(supportedExt, "xes", "xes.gz", "mxml", "mxml.gz", "zip");
+            supportedExt.addAll(this.mainC.getNativeTypes().keySet());
+            List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+            for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
+                supportedExt.addAll(fileImporterPlugin.getFileExtensions());
             }
 
+            String supportedExtS = null;
+            for (String aSupportedExt : supportedExt) {
+                if (supportedExtS == null) {
+                    supportedExtS = aSupportedExt;
+                } else {
+                    supportedExtS += ", " + aSupportedExt;
+                }
+            }
             supportedExtL.setValue(supportedExtS);
 
             uploadButton.addEventListener("onUpload", new EventListener<Event>() {
@@ -106,6 +125,7 @@ public class ImportController extends BaseController {
 
             win.doModal();
         } catch (Exception e) {
+            LOGGER.error("Failed to construct ImportController", e);
             throw new DialogException("Error in importProcesses controller: " + e.getMessage());
         }
     }
@@ -157,6 +177,15 @@ public class ImportController extends BaseController {
         fileName = media.getName();
         String[] list_extensions = fileName.split("\\.");
         extension = list_extensions[list_extensions.length - 1];
+
+        List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+        for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
+            if (fileImporterPlugin.getFileExtensions().contains(extension)) {
+                okButton.setDisabled(false);
+                return;
+            }
+        }
+
         if(!extension.equalsIgnoreCase("zip") && !extension.equalsIgnoreCase("gz") && !extension.equalsIgnoreCase("xes") && !extension.equalsIgnoreCase("mxml")) {
             fileType = this.mainC.getNativeTypes().get(extension);
             if (fileType == null) {
@@ -168,6 +197,15 @@ public class ImportController extends BaseController {
     }
 
     private void importFile() throws InterruptedException, IOException, ExceptionDomains, ExceptionAllUsers, JAXBException {
+        List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+        for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
+            if (fileImporterPlugin.getFileExtensions().contains(extension)) {
+                closePopup();
+                fileImporterPlugin.importFile(this.media, new PluginPortalContext(mainC), isPublic);
+                return;
+            }
+        }
+
         if(extension.equals("zip")) {
             extractArchiveOrFile();
         }else if(fileName.toLowerCase().endsWith("xes") || fileName.toLowerCase().endsWith("xes.gz") || fileName.toLowerCase().endsWith("mxml") || fileName.toLowerCase().endsWith("mxml.gz")) {
