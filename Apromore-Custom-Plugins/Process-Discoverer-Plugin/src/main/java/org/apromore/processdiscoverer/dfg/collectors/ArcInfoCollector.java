@@ -34,44 +34,35 @@ import static org.apromore.processdiscoverer.VisualizationType.DURATION;
 import static org.apromore.processdiscoverer.VisualizationType.FREQUENCY;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 15/07/2018.
  */
 public class ArcInfoCollector {
-
-    private final int number_of_traces;
-
     private final Map<Arc, LongArrayList> arcs_frequency_set; //map from an Arc to a list of frequencies, each frequency for one trace
     private final Map<Arc, LongArrayList> arcs_duration_set; //map from an Arc to a list of duration, each duration is an occurrence of arc (could be multiple times in a trace).
-    private final Map<Arc, DoubleArrayList> arcs_impact_set;
-    private final Map<Arc, LongArrayList> tmp_arcs_impact_set;
+    //private final Map<Arc, DoubleArrayList> arcs_impact_set;
+    //private final Map<Arc, LongArrayList> tmp_arcs_impact_set;
 
     private final Calculator calculator;
-
+    private final int number_of_traces;
     private int trace = 0; //current trace
     
-    private LogDFG logDfg;
-
     public ArcInfoCollector(LogDFG logDfg) {
-    	this.logDfg = logDfg;
         this.number_of_traces = logDfg.getSimplifiedLog().size();
 
         this.arcs_frequency_set = new UnifiedMap<>();
         this.arcs_duration_set = new UnifiedMap<>();
-        this.arcs_impact_set = new UnifiedMap<>();
-        this.tmp_arcs_impact_set = new UnifiedMap<>();
+        //this.arcs_impact_set = new UnifiedMap<>();
+        //this.tmp_arcs_impact_set = new UnifiedMap<>();
 
         this.calculator = new Calculator();
         calculator.setCurrentDate(Long.toString(System.currentTimeMillis()));
     }
-    
-    public LogDFG getLogDFG() {
-    	return this.logDfg;
-    }
 
     public ObjectDoubleHashMap<Arc> getArcsFrequencyMap(VisualizationType type, VisualizationAggregation aggregation) {
-        ObjectDoubleHashMap map = new ObjectDoubleHashMap();
+        ObjectDoubleHashMap<Arc> map = new ObjectDoubleHashMap<Arc>();
         for(Arc arc : arcs_frequency_set.keySet()) {
             map.put(arc, getArcInfo(arc, type, aggregation));
         }
@@ -109,24 +100,28 @@ public class ArcInfoCollector {
         durations.add(duration);
     }
 
-    public void updateArcImpact(Arc arc, long duration) {
-        LongArrayList impacts = tmp_arcs_impact_set.get(arc);
-        if(impacts == null) {
-            impacts = new LongArrayList();
-            tmp_arcs_impact_set.put(arc, impacts);
-        }
-        impacts.add(duration);
-    }
+//    public void updateArcImpact(Arc arc, long duration) {
+//        LongArrayList impacts = tmp_arcs_impact_set.get(arc);
+//        if(impacts == null) {
+//            impacts = new LongArrayList();
+//            tmp_arcs_impact_set.put(arc, impacts);
+//        }
+//        impacts.add(duration);
+//    }
 
-    public void consolidateArcImpact(Arc arc, long total_duration) {
-        DoubleArrayList list = FrequencySetPopulator.retreiveEntryDouble(arcs_impact_set, arc, number_of_traces);
-        LongArrayList impacts = tmp_arcs_impact_set.get(arc);
-        double impact = (double) impacts.sum() / ((double) total_duration);
-        list.set(trace, list.get(trace) + impact);
-    }
+//    public void consolidateArcImpact(Arc arc, long total_duration) {
+//        DoubleArrayList list = FrequencySetPopulator.retreiveEntryDouble(arcs_impact_set, arc, number_of_traces);
+//        LongArrayList impacts = tmp_arcs_impact_set.get(arc);
+//        double impact = (double) impacts.sum() / ((double) total_duration);
+//        list.set(trace, list.get(trace) + impact);
+//    }
 
     public boolean exists(Arc arc) {
         return arcs_frequency_set.get(arc) != null;
+    }
+    
+    public Set<Arc> getArcs() {
+    	return arcs_frequency_set.keySet();
     }
 
     public double getArcInfo(Arc arc, VisualizationType type, VisualizationAggregation aggregation) {
@@ -139,8 +134,13 @@ public class ArcInfoCollector {
     }
 
     public void nextTrace() {
-        tmp_arcs_impact_set.clear();
+        //tmp_arcs_impact_set.clear();
         calculator.increment(calculator.getCurrentDate(), trace, 1); 
         trace = (int) calculator.getCurrent(); //method6 returns var4 = trace + 1
+    }
+    
+    public void clear() {
+    	arcs_frequency_set.clear();
+    	arcs_duration_set.clear();
     }
 }

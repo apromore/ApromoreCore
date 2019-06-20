@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.apromore.processdiscoverer.dfg.ArcType;
+import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
 import org.apromore.processdiscoverer.logprocessors.EventClassifier;
 
 import  org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -31,7 +32,7 @@ public class AbstractionParams {
 	private VisualizationType secondaryType;
 	private VisualizationAggregation secondaryAggregation;
 	private Set<ArcType> arcTypes;
-	private BPMNDiagram correspondingDFG; 
+	private DFGAbstraction correspondingDFG; 
 	
 	public AbstractionParams(String attribute, double activities, double arcs, double parallelism, 
 							boolean prioritizeParallelism, boolean preserve_connectivity, 
@@ -40,7 +41,7 @@ public class AbstractionParams {
 							VisualizationAggregation primaryAggregation, VisualizationType secondaryType, 
 							VisualizationAggregation secondaryAggregation, 
 							Set<ArcType> arcTypes,
-							BPMNDiagram correspondingDFG) {
+							DFGAbstraction correspondingDFG) {
 		this.attribute = attribute;
 		this.classifier = new EventClassifier(attribute);
 		this.activities = activities;
@@ -129,7 +130,7 @@ public class AbstractionParams {
 		return Collections.unmodifiableSet(this.arcTypes);
 	}
 	
-	public BPMNDiagram getCorrepondingDFG() {
+	public DFGAbstraction getCorrepondingDFG() {
 		return this.correspondingDFG;
 	}
 }

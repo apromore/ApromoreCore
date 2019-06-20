@@ -24,6 +24,9 @@ import org.apromore.plugin.portal.processdiscoverer.LogFilterCriterion;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.VisualizationAggregation;
 import org.apromore.processdiscoverer.VisualizationType;
+import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.TraceAbstraction;
 import org.apromore.processdiscoverer.logprocessors.SearchStrategy;
 import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
@@ -39,7 +42,6 @@ import java.util.List;
 public interface ProcessDiscovererService {
     Object[] generateDFGJSON(XLog log, AbstractionParams params) throws Exception;
     Object[] generateBPMNJSON(XLog log, AbstractionParams params) throws Exception;
-    BPMNDiagram generateDFGFromLog(XLog log, AbstractionParams params) throws Exception;
-    BPMNDiagram generateBPMNFromLog(XLog log, AbstractionParams params) throws Exception;
-    BPMNDiagram insertBPMNGateways(BPMNDiagram bpmnDiagram);
+    DFGAbstraction generateDFGAbstraction(XLog log, AbstractionParams params) throws Exception;
+    BPMNAbstraction generateBPMNAbstraction(XLog log, AbstractionParams params) throws Exception;
 }

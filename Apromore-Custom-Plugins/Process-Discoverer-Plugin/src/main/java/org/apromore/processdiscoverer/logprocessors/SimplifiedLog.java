@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -39,10 +41,12 @@ public class SimplifiedLog extends ArrayList<IntList> {
 	private Map<Integer,Boolean> completeEventMap = new HashMap<>();
 	private HashBiMap<Integer, Integer> startCompleteEventMap = new HashBiMap<>(); //map between integer-based start and complete events
     private XLog xlog;
+    private EventClassifier classifier;
     
 	public SimplifiedLog(XLog xlog, EventClassifier classifier) throws Exception {
 		super();
 		this.xlog = xlog;
+		this.classifier = classifier;
 		
         simplifiedNameMap.put(START_NAME, START_INT); 
         simplifiedNameMap.put(END_NAME, END_INT); 
@@ -103,8 +107,14 @@ public class SimplifiedLog extends ArrayList<IntList> {
 
 	}
 	
-    public SimplifiedLog(SimplifiedLog log, IntHashSet retained_activities, EventClassifier classifier) throws Exception {
+    public SimplifiedLog(SimplifiedLog log, IntHashSet retained_activities) throws Exception {
     	super(log.size());
+    	
+    	simplifiedNameMap.put(START_NAME, START_INT); 
+        simplifiedNameMap.put(END_NAME, END_INT); 
+        
+        collapsedNameMap.put(START_NAME, Arrays.asList(new Integer[] {START_INT}));
+        collapsedNameMap.put(END_NAME, Arrays.asList(new Integer[] {END_INT}));
     	
         for(int t = 0; t < log.size(); t++) {
             IntList trace = log.get(t);
@@ -114,7 +124,7 @@ public class SimplifiedLog extends ArrayList<IntList> {
                 if(retained_activities.contains(event)) {
                     filtered_trace.add(event);
                     
-                    simplifiedNameMap.put(log.getNameMapping().inverse().get(event), event);
+                    simplifiedNameMap.put(log.getRawEventBiMap().inverse().get(event), event);
                     startEventMap.put(event, log.getStartEventMap().get(event));
                     completeEventMap.put(event, log.getCompleteEventMap().get(event));
                     
@@ -140,11 +150,33 @@ public class SimplifiedLog extends ArrayList<IntList> {
         if (!this.containStartEvent() && !this.containCompleteEvent()) {
         	throw new Exception("Invalid log as it does not contain 'start' or 'complete' events");
         }
-        this.xlog = this.convertToXLog(log.getXLog(), classifier);
+        
+        this.xlog = this.convertToXLog(log.getXLog(), log.getEventClassifier());
+        this.classifier = log.getEventClassifier();
     }
 	
 	public XLog getXLog() {
 		return xlog;
+	}
+	
+	public EventClassifier getEventClassifier() {
+		return classifier;
+	}
+	
+	public int getStartEvent() {
+		return SimplifiedLog.START_INT;
+	}
+	
+	public int getEndEvent() {
+		return SimplifiedLog.END_INT;
+	}
+	
+	public IntHashSet getCompleteEvents() {
+		IntHashSet completeEvents = new IntHashSet();
+		for (int event : completeEventMap.keySet()) {
+			if (completeEventMap.get(event)) completeEvents.add(event);
+		}
+		return completeEvents;
 	}
 	
     public String getEventFullName(int event) {
@@ -231,8 +263,16 @@ public class SimplifiedLog extends ArrayList<IntList> {
     
 	// The mapping between raw event names in the log and the integer-based indexes
 	// It is a one-to-one and bi-directional mapping 
-    public MutableBiMap<String, Integer> getNameMapping() {
+    public MutableBiMap<String, Integer> getRawEventBiMap() {
     	return simplifiedNameMap.asUnmodifiable();
+    }
+    
+    public Map<String, Integer> getNameToEventMap() {
+    	return Collections.unmodifiableMap(simplifiedNameMap);
+    }
+    
+    public Map<Integer, String> getEventToNameMap() {
+    	return Collections.unmodifiableMap(simplifiedNameMap.inverse());
     }
     
     // The mapping from collapsed event names to the integer-based indexes
@@ -264,8 +304,8 @@ public class SimplifiedLog extends ArrayList<IntList> {
 //        return !LogUtils.isCompleteEvent(name) || getEventNumber(LogUtils.getStartEvent(name)) == null;
 //    }
     
-    public SimplifiedLog filterActivities(IntHashSet retained_activities, EventClassifier classifier) throws Exception {
-    	return new SimplifiedLog(this, retained_activities, classifier);
+    public SimplifiedLog filterActivities(IntHashSet retained_activities) throws Exception {
+    	return new SimplifiedLog(this, retained_activities);
     }
     
     /**

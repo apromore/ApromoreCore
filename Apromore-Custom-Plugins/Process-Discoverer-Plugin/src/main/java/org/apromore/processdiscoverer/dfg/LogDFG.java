@@ -4,16 +4,18 @@ import static org.apromore.processdiscoverer.logfilter.Containment.CONTAIN_ANY;
 import static org.apromore.processdiscoverer.logfilter.Level.EVENT;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apromore.plugin.portal.processdiscoverer.LogFilterCriterion;
 import org.apromore.processdiscoverer.AbstractionParams;
+import org.apromore.processdiscoverer.VisualizationAggregation;
+import org.apromore.processdiscoverer.VisualizationType;
+import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
 import org.apromore.processdiscoverer.dfg.collectors.ArcInfoCollector;
 import org.apromore.processdiscoverer.dfg.collectors.NodeInfoCollector;
 import org.apromore.processdiscoverer.dfg.filters.ArcSelector;
@@ -27,10 +29,10 @@ import org.apromore.processdiscoverer.logprocessors.LogUtils;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.apromore.processdiscoverer.logprocessors.TimeLog;
 import org.apromore.processdiscoverer.splitminer.DFGPWithLogThreshold;
+import org.apromore.processdiscoverer.splitminer.ProcessDiscovererDFGP;
+import org.apromore.processdiscoverer.splitminer.SimpleLogAdapter;
 import org.deckfour.xes.classification.XEventAttributeClassifier;
-import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
@@ -39,6 +41,7 @@ import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.eclipse.collections.api.iterator.MutableIntIterator;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.list.primitive.LongList;
+import org.eclipse.collections.api.set.primitive.IntSet;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
@@ -47,6 +50,7 @@ import com.raffaeleconforti.foreignkeydiscovery.Pair;
 import com.raffaeleconforti.splitminer.log.LogParser;
 import com.raffaeleconforti.splitminer.log.SimpleLog;
 import com.raffaeleconforti.splitminer.splitminer.SplitMiner;
+import com.raffaeleconforti.splitminer.splitminer.dfgp.DirectlyFollowGraphPlus;
 import com.raffaeleconforti.splitminer.splitminer.ui.miner.SplitMinerUIResult;
 
 /**
@@ -60,8 +64,6 @@ import com.raffaeleconforti.splitminer.splitminer.ui.miner.SplitMinerUIResult;
  *
  */
 public class LogDFG {
-	private IntHashSet nodes;
-	private Set<Arc> arcs;
 	private ArcInfoCollector arcInfoCollector;
 	private NodeInfoCollector nodeInfoCollector;
 	
@@ -77,10 +79,8 @@ public class LogDFG {
     	this.dfgAbstraction = null;
     	this.bpmnAbstraction = null;
     	
-    	nodes = new IntHashSet();
-    	arcs = new HashSet<Arc>();
     	this.arcInfoCollector = new ArcInfoCollector(this);
-        this.nodeInfoCollector = new NodeInfoCollector(this, arcInfoCollector);
+        this.nodeInfoCollector = new NodeInfoCollector(this);
         
     	for(int t = 0; t < log.size(); t++) {
             IntList trace = log.get(t);
@@ -92,15 +92,13 @@ public class LogDFG {
         	ObjectIntHashMap<Arc> arcsCount = new ObjectIntHashMap<>();
         	
     		for(int i = 0; i < trace.size(); i++) {
-    			nodes.add(trace.get(i));
     			eventsCount.addToValue(trace.get(i), 1);
     			if (i < trace.size()-1) {
     				Arc arc = new Arc(trace.get(i), trace.get(i + 1));
         			arcsCount.addToValue(arc, 1);
         			long arcDuration = time_trace.get(i + 1) - time_trace.get(i);
         			arcInfoCollector.updateArcDuration(arc, arcDuration);
-        	        arcInfoCollector.updateArcImpact(arc, arcDuration);
-        	        arcs.add(arc);
+        	        //arcInfoCollector.updateArcImpact(arc, arcDuration);
     			}
     		}
     		
@@ -109,10 +107,10 @@ public class LogDFG {
             }
         	nodeInfoCollector.updateActivityFrequency(SimplifiedLog.END_INT, 1);
         	
-        	Long trace_duration = time_trace.get(time_trace.size() - 1) - time_trace.get(0);
+        	//Long trace_duration = time_trace.get(time_trace.size() - 1) - time_trace.get(0);
         	for(Arc arc : arcsCount.keySet().toArray(new Arc[arcsCount.size()])) {
                 arcInfoCollector.updateArcFrequency(arc, arcsCount.get(arc));
-                arcInfoCollector.consolidateArcImpact(arc, trace_duration);
+                //arcInfoCollector.consolidateArcImpact(arc, trace_duration);
             }
             arcInfoCollector.nextTrace();
     	}
@@ -126,16 +124,16 @@ public class LogDFG {
     	return this.timeLog;
     }
     
-    public IntHashSet getNodes() {
-    	return nodes;
+    public IntSet getNodes() {
+    	return this.nodeInfoCollector.getNodes();
     }
     
     public Set<Arc> getArcs() {
-    	return arcs;
+    	return this.arcInfoCollector.getArcs();
     }
     
     public Arc getArc(int source, int target) {
-    	for (Arc arc : this.arcs) {
+    	for (Arc arc : this.getArcs()) {
     		if (arc.getSource() == source && arc.getTarget() == target) {
     			return arc;
     		}
@@ -189,11 +187,11 @@ public class LogDFG {
     												params.getFixedAggregation(), 
     												params.invertedNodes());
     	
-    	if (params.getCorrepondingDFG() != null) return params.getCorrepondingDFG();
+    	if (params.getCorrepondingDFG() != null) return params.getCorrepondingDFG().getDiagram();
     	
     	IntHashSet retained_activities = nodeSelector.selectActivities();
     	
-    	ArcSelector arcSelector = new ArcSelector(arcInfoCollector, params);
+    	ArcSelector arcSelector = new ArcSelector(this, params);
         Set<Arc> retained_arcs = arcSelector.selectArcs();
         
         //---------------------------------------
@@ -260,9 +258,10 @@ public class LogDFG {
         //---------------------------------------
         // Create collapsed diagram from the raw one
         //---------------------------------------
-        return this.createCollapsedDiagram(bpmnDiagramBuilder.getBpmnDiagram(), params);
-        
-        
+        BPMNDiagram collapsedDiagram = createCollapsedDiagram(bpmnDiagramBuilder.getBpmnDiagram(), params);
+        BPMNDiagramBuilder.updateStartEndEventLabels(collapsedDiagram);
+
+        return collapsedDiagram;
     }
     
     /**
@@ -347,17 +346,23 @@ public class LogDFG {
     			params.getArcTypes().contains(this.getArcType(source, target));
     }
     
-    public DFGAbstraction getDFGAbstraction(AbstractionParams params) {
+    public DFGAbstraction getDFGAbstraction(AbstractionParams params) throws Exception {
     	if (dfgAbstraction != null) {
     		AbstractionParams currentParams = dfgAbstraction.getAbstractionParams();
     		// The diagram is unchanged, only need to update weights
     		if (currentParams.getAttribute() == params.getAttribute() &&
+    			
     			currentParams.getActivityLevel() == params.getActivityLevel() &&
     			currentParams.getArcLevel() == params.getArcLevel() &&
+    			
     			currentParams.getFixedType() == params.getFixedType() &&
     			currentParams.getFixedAggregation() == params.getFixedAggregation() &&
+    			
     			currentParams.invertedNodes() == params.invertedNodes() &&
     			currentParams.invertedArcs() == params.invertedArcs() &&
+    			
+    			currentParams.preserveConnectivity() == params.preserveConnectivity() &&
+    					
     			currentParams.getArcTypes().equals(params.getArcTypes())) {
     			
     			dfgAbstraction.updateWeights(params);
@@ -373,33 +378,90 @@ public class LogDFG {
     	return this.dfgAbstraction;
     }
     
-    public BPMNAbstraction getBPMNAbstraction(AbstractionParams params) throws Exception {
+    /**
+     * Create a frequency-based DFGAbstraction based an existing DFGAbstraction
+     * Frequency-based DFGAbstraction is often needed for process discovery algorithms like 
+     * SplitMiner. The returning DFGAbstraction has the same DFG as the 
+     * input DFGAbstraction, but weights of acrs and nodes are frequency.
+     * @param dfgAbs: an existing DFGAbstraction
+     * @return: a frequency-based DFGAbstraction
+     * @throws Exception
+     */
+    public DFGAbstraction getFrequencyBasedDFGAbstraction(DFGAbstraction dfgAbs) throws Exception {
+    	if (dfgAbs == null) return null;
+    	
+    	AbstractionParams params = dfgAbs.getAbstractionParams();
+    	AbstractionParams newParams = new AbstractionParams(params.getAttribute(), params.getActivityLevel(), 
+    														params.getArcLevel(), 
+    														params.getParallelismLevel(), 
+    														true, true, false, false, false, 
+    														VisualizationType.FREQUENCY, 
+    														VisualizationAggregation.TOTAL, 
+    														VisualizationType.FREQUENCY, 
+    														VisualizationAggregation.TOTAL, 
+    														VisualizationType.FREQUENCY, 
+    														VisualizationAggregation.TOTAL,
+    														params.getArcTypes(), null);
+    	return new DFGAbstraction(dfgAbs, newParams);
+    }
+    
+    /**
+     * Create a BPMN abstraction of this LogDFG
+     * @param params
+     * @param dfgAbstraction: the corresponding DFGAbstraction with the same type of nodes/arcs and weights
+     * @return
+     * @throws Exception
+     */
+    public BPMNAbstraction getBPMNAbstraction(AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception {
     	if (bpmnAbstraction != null) {
     		AbstractionParams currentParams = bpmnAbstraction.getAbstractionParams();
     		// The diagram is unchanged, only need to update weights
     		if (currentParams.getAttribute() == params.getAttribute() &&
+    			
     			currentParams.getActivityLevel() == params.getActivityLevel() &&
+    			currentParams.getArcLevel() == params.getArcLevel() &&
+    			currentParams.getParallelismLevel() == params.getParallelismLevel() &&
+    			
     			currentParams.getFixedType() == params.getFixedType() &&
     			currentParams.getFixedAggregation() == params.getFixedAggregation() &&
-    			currentParams.invertedNodes() == params.invertedNodes() &&
     			
-    			currentParams.getArcLevel() == params.getArcLevel() &&
-    	    	currentParams.getParallelismLevel() == params.getParallelismLevel() &&
+    			currentParams.invertedNodes() == params.invertedNodes() &&
+    			currentParams.invertedArcs() == params.invertedArcs() &&
+    			
     	    	currentParams.prioritizeParallelism() == params.prioritizeParallelism() && 
     	    	currentParams.preserveConnectivity() == params.preserveConnectivity() &&
-    			currentParams.invertedArcs() == params.invertedArcs()) {
+    	    	
+    			currentParams.getArcTypes().equals(params.getArcTypes())) {
     			
     			bpmnAbstraction.updateWeights(params);
     		}
     		else {
-    			this.bpmnAbstraction = new BPMNAbstraction(this, params);
+    			this.bpmnAbstraction = new BPMNAbstraction(this, params, dfgAbstraction);
     		}
     	}
     	else {
-    		this.bpmnAbstraction = new BPMNAbstraction(this, params);
+    		this.bpmnAbstraction = new BPMNAbstraction(this, params, dfgAbstraction);
     	}
     	
     	return this.bpmnAbstraction;
+    }
+    
+    /**
+     * Mine a BPMN model from an input DFGAbstraction. 
+     * This DFGAbstraction must be frequency-based because it will be used
+     * by SplitMiner.  
+     * @param params
+     * @param dfgAbs: DFGAbstraction
+     * @return
+     * @throws Exception
+     */
+    public BPMNDiagram getBPMN(AbstractionParams params, DFGAbstraction dfgAbs) throws Exception {
+    	SimpleLog simpleLog = SimpleLogAdapter.getSimpleLog(dfgAbs.getLogDFG().getSimplifiedLog());
+    	DirectlyFollowGraphPlus dfgp = new ProcessDiscovererDFGP(simpleLog, dfgAbs, 1.0, params.getParallelismLevel(), params.prioritizeParallelism());
+    	SplitMiner splitMiner = new SplitMiner();
+    	BPMNDiagram bpmnDiagram = splitMiner.mineBPMNModel(simpleLog, dfgp, SplitMinerUIResult.StructuringTime.NONE);
+        BPMNDiagramBuilder.updateStartEndEventLabels(bpmnDiagram);
+        return bpmnDiagram;
     }
     
     // Note that the arc and parallelism sliders are used in the DFG input to SplitMiner
@@ -420,7 +482,8 @@ public class LogDFG {
      * @return BPMN diagram
      * @throws Exception
      */
-    public BPMNDiagram getBPMN(AbstractionParams params) throws Exception {
+    @Deprecated
+    public BPMNDiagram getBPMN(AbstractionParams params, BPMNDiagram correspondingDFG) throws Exception {
     	
     	NodeSelector nodeSelector = new NodeSelector(
     										nodeInfoCollector, 
@@ -431,10 +494,9 @@ public class LogDFG {
 		IntHashSet retained_activities = nodeSelector.selectActivities(); 
 		
 		//Make BPMN model contain equal or less nodes than the corresponding graph.
-		if (params.getCorrepondingDFG() != null) {
-			BPMNDiagram dfg = params.getCorrepondingDFG();
+		if (correspondingDFG != null) {
 			Set<String> nodeNames = new HashSet<>();
-			for (BPMNNode node : dfg.getNodes()) {
+			for (BPMNNode node : correspondingDFG.getNodes()) {
 				nodeNames.add(node.getLabel());
 			}
 			MutableIntIterator iterator = retained_activities.intIterator(); 
@@ -448,7 +510,7 @@ public class LogDFG {
         //--------------------------------------------------
         // Filter log and reconstruct XLog for process discovery 
         //--------------------------------------------------
-		SimplifiedLog filtered_simplified_log = this.simplifiedLog.filterActivities(retained_activities, params.getClassifier());
+		SimplifiedLog filtered_simplified_log = this.simplifiedLog.filterActivities(retained_activities);
         XLog filtered_xlog = filtered_simplified_log.getXLog();
         
         //--------------------------------------------------
@@ -475,6 +537,7 @@ public class LogDFG {
         if (filtered_simplified_log.containStartEvent()) {
             Set<String> lifecycle = new UnifiedSet<>();
             lifecycle.add(LogUtils.COMPLETE_CODE);
+            lifecycle.add(LogUtils.COMPLETE_CODE.toUpperCase());
             LogFilterCriterion criterion = LogFilterCriterionFactory.getLogFilterCriterion(Action.RETAIN,
                     CONTAIN_ANY,
                     EVENT,
@@ -500,16 +563,9 @@ public class LogDFG {
         										params.invertedArcs()), 
         										SplitMinerUIResult.StructuringTime.NONE);
         
+        BPMNDiagramBuilder.updateStartEndEventLabels(bpmnDiagram);
+        
         return bpmnDiagram;
-        //return this.populateWeights(bpmnDiagram, params, transitions);
     }
-   
-//    public boolean isCollapsedNode(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge) {
-//    	int source = simplifiedLog.getEventNumber(edge.getSource().getLabel());
-//    	int target = simplifiedLog.getEventNumber(edge.getTarget().getLabel());
-//    	String source_collapsed_name = LogUtils.getCollapsedEvent(edge.getSource().getLabel());
-//    	String target_collapsed_name = LogUtils.getCollapsedEvent(edge.getTarget().getLabel());
-//    	return source_collapsed_name.equals(target_collapsed_name) && 
-//    			simplifiedLog.isStartEvent(source) && simplifiedLog.isCompleteEvent(target);
-//    }
+
 }

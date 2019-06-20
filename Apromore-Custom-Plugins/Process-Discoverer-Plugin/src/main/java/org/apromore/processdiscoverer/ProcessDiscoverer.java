@@ -22,11 +22,11 @@ package org.apromore.processdiscoverer;
 
 
 import org.apromore.plugin.portal.processdiscoverer.LogFilterCriterion;
-import org.apromore.processdiscoverer.dfg.BPMNAbstraction;
-import org.apromore.processdiscoverer.dfg.DFGAbstraction;
 import org.apromore.processdiscoverer.dfg.LogDFG;
-import org.apromore.processdiscoverer.dfg.TraceAbstraction;
 import org.apromore.processdiscoverer.dfg.TraceDFG;
+import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.TraceAbstraction;
 import org.apromore.processdiscoverer.dfg.vis.JSONBuilder;
 import org.apromore.processdiscoverer.logfilter.Action;
 import org.apromore.processdiscoverer.logfilter.Containment;
@@ -71,39 +71,20 @@ public class ProcessDiscoverer {
     	return this.log;
     }
 
-    public Object[] generateDFGJSON(AbstractionParams params, XLog log) throws Exception {
-    	boolean statusChanged = false;
-//    	if(this.criteria == null || !this.criteria.equals(filter_criteria)) {
-//    		statusChanged = true;
-//        	this.criteria = new ArrayList<>(filter_criteria);
-//            this.filtered_criteria_log = LogFilter.filter(initial_log, criteria);
-//    	}
-    	
-    	if (this.log != log || this.params == null || !params.getAttribute().equals(this.params.getAttribute())) {
-    		statusChanged = true;
-    		this.params = params;
-    		this.log = log;
+    public Object[] generateDFGJSON(XLog log, AbstractionParams params) throws Exception {
+    	DFGAbstraction dfgAbstraction = null;
+    	if (params.getCorrepondingDFG() != null) {
+    		dfgAbstraction = params.getCorrepondingDFG();
     	}
-    	
-    	if (statusChanged) {
-	    	SimplifiedLog simplified_log = new SimplifiedLog(log, params.getClassifier());
-	    	TimeLog simplified_times_log = new TimeLog(log) ;
-	    	logDfg = new LogDFG(simplified_log, simplified_times_log);
+    	else {
+    		dfgAbstraction = this.generateDFGAbstraction(log, params);
     	}
-    	
-    	DFGAbstraction dfgAbstraction = logDfg.getDFGAbstraction(params);
         JSONBuilder jsonBuilder = new JSONBuilder(dfgAbstraction);
-        return new Object[] {jsonBuilder.generateJSONFromBPMN(false), dfgAbstraction.getDiagram()} ;
+        return new Object[] {jsonBuilder.generateJSONFromBPMN(false), dfgAbstraction} ;
     }
-
-    public Object[] generateBPMNJSON(AbstractionParams params, XLog log) throws Exception {
+    
+    public DFGAbstraction generateDFGAbstraction(XLog log, AbstractionParams params) throws Exception {
     	boolean statusChanged = false;
-//    	if(this.criteria == null || !this.criteria.equals(filter_criteria)) {
-//    		statusChanged = true;
-//        	this.criteria = new ArrayList<>(filter_criteria);
-//            this.filtered_criteria_log = LogFilter.filter(initial_log, criteria);
-//    	}
-    	
     	if (this.log != log || this.params == null || !params.getAttribute().equals(this.params.getAttribute())) {
     		statusChanged = true;
     		this.params = params;
@@ -116,30 +97,17 @@ public class ProcessDiscoverer {
 	    	logDfg = new LogDFG(simplified_log, simplified_times_log);
     	}
     	
-    	BPMNAbstraction bpmnAbstraction = logDfg.getBPMNAbstraction(params);
+    	return logDfg.getDFGAbstraction(params);
+    }
+
+    public Object[] generateBPMNJSON(XLog log, AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception {
+    	BPMNAbstraction bpmnAbstraction = this.generateBPMNAbstraction(log, params, dfgAbstraction);
         JSONBuilder jsonBuilder = new JSONBuilder(bpmnAbstraction);
-        return new Object[] {jsonBuilder.generateJSONFromBPMN(false), bpmnAbstraction.getDiagram()} ;
+        return new Object[] {jsonBuilder.generateJSONFromBPMN(false), bpmnAbstraction} ;
     }
-
-    /**
-     * Generate a directly-follows graph from log
-     * Before the diagram is generated, ares are selected based on arc slider
-     * Then, arcs and nodes are filtered out until they both form a connected DFG
-     * On the generated diagram, the arc label contains the aggregate measures. 
-     * However, the node label only contains the activity label.
-     * @param params
-     * @param criteria
-     * @return
-     * @throws Exception 
-     */
-    public BPMNDiagram generateDiagramFromLog(AbstractionParams params, XLog log) throws Exception {
+    
+    public BPMNAbstraction generateBPMNAbstraction(XLog log, AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception {
     	boolean statusChanged = false;
-//    	if(this.criteria == null || !this.criteria.equals(filter_criteria)) {
-//    		statusChanged = true;
-//        	this.criteria = new ArrayList<>(filter_criteria);
-//            this.filtered_criteria_log = LogFilter.filter(initial_log, criteria);
-//    	}
-    	
     	if (this.log != log || this.params == null || !params.getAttribute().equals(this.params.getAttribute())) {
     		statusChanged = true;
     		this.params = params;
@@ -152,79 +120,18 @@ public class ProcessDiscoverer {
 	    	logDfg = new LogDFG(simplified_log, simplified_times_log);
     	}
     	
-    	return logDfg.getDFG(params);
-    }
-    
-    /**
-     * Generate a BPMN model from a log 
-     * Unlike generateDiagramFromLog, the arc filtering based on arc slider is used in DFGPWithLogThreshold for SplitMiner
-     * On the diagram, the aggregate measure on the arcs must be populated to fit BPMN semantics
-     * @param params
-     * @param filter_criteria
-     * @return
-     * @throws Exception 
-     */
-    public BPMNDiagram generateBPMNFromLog(AbstractionParams params, XLog log) throws Exception {
-		boolean statusChanged = false;
-//		if(this.criteria == null || !this.criteria.equals(filter_criteria)) {
-//			statusChanged = true;
-//			this.criteria = new ArrayList<>(filter_criteria);
-//			this.filtered_criteria_log = LogFilter.filter(initial_log, criteria);
-//    	}
-    	
-    	if (this.log != log || this.params == null || !params.getAttribute().equals(this.params.getAttribute())) {
-    		statusChanged = true;
-    		this.params = params;
-    		this.log = log;
-    	}
-    	
-    	if (statusChanged) {
-			SimplifiedLog simplified_log = new SimplifiedLog(log, params.getClassifier());
-			TimeLog simplified_times_log = new TimeLog(log);
-			logDfg = new LogDFG(simplified_log, simplified_times_log);
-		}
-		
-		return logDfg.getBPMN(params);
-    }
-    
-    // The diagram generated from a trace contains duration weight, not frequency weight, on arcs and nodes 
-    // This is because a trace usually contains frequency of 1 for arcs and nodes
-    // So, it is more informative to display a trace model with duration other than frequency weight
-    // The duration is determined based on two consecutive events with the same concept:name and
-    // one ending with "start" while the other one ending with "complete"
-    // The node label will be 
-    /**
-     * Generate a directly-follows graph from a trace
-     * This method is only used after abstraction has been generated for a log and the 
-     * abstraction contains some traces. It does not affect the internal status of ProcessDiscoverer object
-     * @param traceID
-     * @param params
-     * @return
-     */
-    public BPMNDiagram generateDiagramFromTrace(String traceID, AbstractionParams params) throws Exception {
-    	if(this.log == null || this.log.size() == 0) {
-    		throw new Exception("No log abstraction has been done yet!");
-    	}
-        
-        XTrace trace = null;
-        XConceptExtension xce = XConceptExtension.instance();
-        for(XTrace trace1 : this.log) {
-            if(xce.extractName(trace1).equals(traceID)) {
-                trace = trace1;
-                break;
-            }
-        }
-        
-        if (trace == null) {
-        	throw new Exception("The trace with ID = " + traceID + " is not in the current log abstraction!");
-        }
-       
-        TraceDFG traceDfg = new TraceDFG(trace, this.logDfg);
-        return traceDfg.getDFG(params);
+    	return logDfg.getBPMNAbstraction(params, dfgAbstraction);
     }
     
     // This method does not affect the internal status of ProcessDiscoverer object
     public JSONArray generateTraceDFGJSON(String traceID, AbstractionParams params) throws Exception {
+        TraceAbstraction traceAbs = this.generateTraceAbstraction(traceID, params);
+        JSONBuilder jsonBuilder = new JSONBuilder(traceAbs);
+        return jsonBuilder.generateJSONFromBPMN(false);
+    }
+    
+    // This method does not affect the internal status of ProcessDiscoverer object
+    public TraceAbstraction generateTraceAbstraction(String traceID, AbstractionParams params) throws Exception {
     	if(this.log == null || this.log.size() == 0) {
     		throw new Exception("No log abstraction has been done yet!");
     	}
@@ -243,9 +150,7 @@ public class ProcessDiscoverer {
         }
        
         TraceDFG traceDfg = new TraceDFG(trace, this.logDfg);
-        TraceAbstraction traceAbs = traceDfg.getTraceAbstraction(params);
-        JSONBuilder jsonBuilder = new JSONBuilder(traceAbs);
-        return jsonBuilder.generateJSONFromBPMN(false);
+        return traceDfg.getTraceAbstraction(params);
     }
     
 }
