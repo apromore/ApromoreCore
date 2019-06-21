@@ -60,6 +60,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private GroupRepository groupRepo;
     private GroupFolderRepository groupFolderRepo;
     private GroupProcessRepository groupProcessRepo;
+    private GroupLogRepository groupLogRepo;
 
 
     /**
@@ -77,7 +78,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                                 final FolderRepository folderRepository,
                                 final GroupRepository groupRepository,
                                 final GroupFolderRepository groupFolderRepository,
-                                final GroupProcessRepository groupProcessRepository) {
+                                final GroupProcessRepository groupProcessRepository,
+                                final GroupLogRepository groupLogRepository) {
 
         workspaceRepo = workspaceRepository;
         userRepo = userRepository;
@@ -87,6 +89,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         groupRepo = groupRepository;
         groupFolderRepo = groupFolderRepository;
         groupProcessRepo = groupProcessRepository;
+        groupLogRepo = groupLogRepository;
     }
 
 
@@ -103,6 +106,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public List<GroupProcess> getGroupProcesses(Integer processId) {
         return groupProcessRepo.findByProcessId(processId);
+    }
+
+    @Override
+    public List<GroupLog> getGroupLogs(Integer logId) {
+        return groupLogRepo.findByLogId(logId);
     }
 
     @Override
@@ -270,6 +278,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     @Transactional(readOnly = false)
+    public String removeLogPermissions(Integer logId, String groupRowGuid) {
+        Log log = logRepo.findOne(logId);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+        removeGroupLog(group, log);
+        return "";
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         Process process = processRepo.findOne(processId);
         Group group = groupRepo.findByRowGuid(groupRowGuid);
@@ -277,6 +294,24 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         createGroupProcess(group, process, hasRead, hasWrite, hasOwnership);
 
         Folder parentFolder = process.getFolder();
+        while (parentFolder != null && parentFolder.getId() > 0) {
+            parentFolder = folderRepo.findOne(parentFolder.getId());
+            createGroupFolder(group, parentFolder, true, false, false);
+            parentFolder = parentFolder.getParentFolder();
+        }
+
+        return "";
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+        Log log = logRepo.findOne(logId);
+        Group group = groupRepo.findByRowGuid(groupRowGuid);
+
+        createGroupLog(group, log, hasRead, hasWrite, hasOwnership);
+
+        Folder parentFolder = log.getFolder();
         while (parentFolder != null && parentFolder.getId() > 0) {
             parentFolder = folderRepo.findOne(parentFolder.getId());
             createGroupFolder(group, parentFolder, true, false, false);
@@ -428,6 +463,26 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         groupProcessRepo.save(groupProcess);
     }
 
+    private void createGroupLog(Group group, Log log, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+        GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
+        if (groupLog == null) {
+            groupLog= new GroupLog();
+            groupLog.setGroup(group);
+            groupLog.setLog(log);
+            groupLog.setHasRead(hasRead);
+            groupLog.setHasWrite(hasWrite);
+            groupLog.setHasOwnership(hasOwnership);
+
+            log.getGroupLogs().add(groupLog);
+            //group.getGroupLogs().add(groupLog);
+        } else {
+            groupLog.setHasRead(hasRead);
+            groupLog.setHasWrite(hasWrite);
+            groupLog.setHasOwnership(hasOwnership);
+        }
+        groupLogRepo.save(groupLog);
+    }
+
     private void removeGroupFolder(Group group, Folder folder) {
         GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
         if (groupFolder != null) {
@@ -439,6 +494,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         GroupProcess groupProcess = groupProcessRepo.findByGroupAndProcess(group, process);
         if (groupProcess != null) {
             groupProcessRepo.delete(groupProcess);
+        }
+    }
+
+    private void removeGroupLog(Group group, Log log) {
+        GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
+        if (groupLog != null) {
+            groupLogRepo.delete(groupLog);
         }
     }
 }
