@@ -57,13 +57,15 @@ import org.deckfour.xes.model.XLog;
 import com.opencsv.CSVReader;
 import sun.nio.cs.StreamDecoder;
 
+
 @Component("csvImporterPortalPlugin")
 public class CSVImporterPortal implements FileImporterPlugin {
-
+    private char[] supportedSeparators = {',','|',';','\t'};
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterPortal.class);
 
     @Inject private CSVImporterLogic csvImporterLogic;
     @Inject private EventLogService eventLogService;
+
 
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         this.csvImporterLogic = newCSVImporterLogic;
@@ -100,22 +102,25 @@ public class CSVImporterPortal implements FileImporterPlugin {
         portalContext.refreshContent();
     }
 
-    static char getMaxOccuringChar(String str)
+
+    private char getMaxOccuringChar(String str)
     {
         if (str == null || str.isEmpty()) {
             throw new IllegalArgumentException("input word must have non-empty value.");
         }
         char maxchar = ' ';
         int maxcnt = 0;
-        // if you are confident that your input will be only ascii, then this array can be size 128.
         int[] charcnt = new int[Character.MAX_VALUE + 1];
         for (int i = str.length() - 1; i >= 0; i--) {
             if(!Character.isLetter(str.charAt(i))) {
-                char ch = str.charAt(i);
-                // increment this character's cnt and compare it to our max.
-                if (++charcnt[ch] >= maxcnt) {
-                    maxcnt = charcnt[ch];
-                    maxchar = ch;
+                for(int j =0; j < supportedSeparators.length; j++) {
+                    if(str.charAt(i) == supportedSeparators[j]) {
+                        char ch = str.charAt(i);
+                        if (++charcnt[ch] >= maxcnt) {
+                            maxcnt = charcnt[ch];
+                            maxchar = ch;
+                        }
+                    }
                 }
             }
         }
@@ -132,7 +137,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @SuppressWarnings("null")
     private void displayCSVContent(Media media, ListModelList<String[]> result, Grid myGrid, Div attrBox, Div popUPBox) {
         String firstLine = null;
-        char separator;
+        char separator = Character.UNASSIGNED;
         BufferedReader brReader = new BufferedReader(new InputStreamReader(media.getStreamData()));
 
         try {
@@ -144,83 +149,85 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
         separator = getMaxOccuringChar(firstLine);
         CSVReader reader = null;
+        if(separator == Character.UNASSIGNED) {
+            Messagebox.show("Separator is not supported.", "Error", Messagebox.OK, Messagebox.ERROR);
+        } else {
+            try {
 
-        try {
+                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
+                // check file format to choose correct file reader.
+                if (media.isBinary()) {
+                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).build();
+                } else {
+                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).build();
+                }
+                String[] header;
+                String[] line;
 
-            CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
-            // check file format to choose correct file reader.
-            if(media.isBinary()){
-                reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).build();
-            } else {
-                reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).build();
-            }
-            String[] header;
-            String[] line;
-
-            if(myGrid.getColumns() == null) {
-                new Columns().setParent(myGrid);
-            } else {
-                myGrid.getColumns().getChildren().clear();
-            }
-
-
-            /// display first numberOfrows to user and display drop down lists to set attributes
-            header = reader.readNext();   // read first line
+                if (myGrid.getColumns() == null) {
+                    new Columns().setParent(myGrid);
+                } else {
+                    myGrid.getColumns().getChildren().clear();
+                }
 
 
+                /// display first numberOfrows to user and display drop down lists to set attributes
+                header = reader.readNext();   // read first line
 
-            for(int i=0; i<header.length ; i++) {
-                Column newColumn = new Column();
-                newColumn.setWidth(AttribWidth + "px");
-                newColumn.setValue(header[i]);
-                newColumn.setLabel(header[i]);
-                newColumn.setAlign("center");
-                myGrid.getColumns().appendChild(newColumn);
+
+                for (int i = 0; i < header.length; i++) {
+                    Column newColumn = new Column();
+                    newColumn.setWidth(AttribWidth + "px");
+                    newColumn.setValue(header[i]);
+                    newColumn.setLabel(header[i]);
+                    newColumn.setAlign("center");
+                    myGrid.getColumns().appendChild(newColumn);
 //                myGrid.getColumns().appendChild(newColumn);
-            }
-            // add dropdown lists
-            if(attrBox != null) {
-                attrBox.getChildren().clear();
-            }
-            if(popUPBox != null) {
-                popUPBox.getChildren().clear();
-            }
-            if(result != null) {
-                result.clear();
-            }
+                }
+                // add dropdown lists
+                if (attrBox != null) {
+                    attrBox.getChildren().clear();
+                }
+                if (popUPBox != null) {
+                    popUPBox.getChildren().clear();
+                }
+                if (result != null) {
+                    result.clear();
+                }
 
-            line = reader.readNext();
-            if(line == null || header == null) {
-                Messagebox.show("Could not parse file!");
-            }
-
-            csvImporterLogic.setLine(line);
-            csvImporterLogic.setHeads(header);
-            csvImporterLogic.setOtherTimestamps();
-
-            attrBox.setWidth(line.length * AttribWidth + "px");
-
-            csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth + "px");
-
-            List<Listbox> lists = csvImporterLogic.getLists();
-            for (Listbox list : lists) {
-                attrBox.appendChild(list);
-            }
-
-            createPopUpTextBox(line.length, popUPBox);
-            csvImporterLogic.openPopUp();
-
-            // display first 1000 rows
-            int numberOfrows = 1000 - 1;
-            while (line != null && numberOfrows >= 0) {
-                result.add(line);
-                numberOfrows--;
                 line = reader.readNext();
+                if (line == null || header == null) {
+                    Messagebox.show("Could not parse file!");
+                }
+
+                csvImporterLogic.setLine(line);
+                csvImporterLogic.setHeads(header);
+                csvImporterLogic.setOtherTimestamps();
+
+                attrBox.setWidth(line.length * AttribWidth + "px");
+
+                csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth + "px");
+
+                List<Listbox> lists = csvImporterLogic.getLists();
+                for (Listbox list : lists) {
+                    attrBox.appendChild(list);
+                }
+
+                createPopUpTextBox(line.length, popUPBox);
+                csvImporterLogic.openPopUp();
+
+                // display first 1000 rows
+                int numberOfrows = 1000 - 1;
+                while (line != null && numberOfrows >= 0) {
+                    result.add(line);
+                    numberOfrows--;
+                    line = reader.readNext();
+                }
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Messagebox.show(e.getMessage());
             }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Messagebox.show(e.getMessage());
         }
     }
 
