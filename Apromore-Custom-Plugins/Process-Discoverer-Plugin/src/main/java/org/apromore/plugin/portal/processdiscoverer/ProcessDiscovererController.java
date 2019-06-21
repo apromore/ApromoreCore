@@ -40,6 +40,8 @@ import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.apromore.processdiscoverer.VisualizationAggregation;
 import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.ArcType;
+import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
 import org.apromore.processdiscoverer.logfilter.Action;
 import org.apromore.processdiscoverer.logfilter.Containment;
@@ -57,7 +59,6 @@ import org.apromore.service.ProcessService;
 import org.apromore.service.bimp_annotation.BIMPAnnotationService;
 import org.deckfour.xes.classification.XEventClass;
 import org.deckfour.xes.classification.XEventClassifier;
-import org.deckfour.xes.classification.XEventNameClassifier;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
@@ -74,7 +75,6 @@ import org.processmining.framework.plugin.PluginContext;
 import org.processmining.models.connections.petrinets.behavioral.FinalMarkingConnection;
 import org.processmining.models.connections.petrinets.behavioral.InitialMarkingConnection;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.petrinet.Petrinet;
 import org.processmining.models.graphbased.directed.petrinet.elements.Transition;
@@ -782,7 +782,7 @@ public class ProcessDiscovererController extends BaseController {
 //                        edge.setLabel("");
 //                    }
                     // The log animation needs to identify the start and end events by names
-                    BPMNDiagramBuilder.updateStartEndEventLabels(validDiagram);
+                   // BPMNDiagramBuilder.updateStartEndEventLabels(validDiagram);
 
                     UIContext context = new UIContext();
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -1565,9 +1565,10 @@ public class ProcessDiscovererController extends BaseController {
      */
     public void visualizeMap() {
         try {
-        	//Search for the params that return a non-empty diagram
+        	// Always create a non-empty DFGAbstraction first
+        	// This DFGAbstraction will be used if BPMNAbstraction is visualized
         	boolean found = false;
-        	BPMNDiagram foundDiagram = null;
+        	DFGAbstraction dfgAbstraction = null;
             while (!found) {
                 activities_value = activities.getCurpos();
                 arcs_value = arcs.getCurpos();
@@ -1584,8 +1585,8 @@ public class ProcessDiscovererController extends BaseController {
     																secondaryType, secondaryAggregation,
     																new HashSet<>(Arrays.asList(arcTypes)), null);
                 
-                foundDiagram = processDiscoverer.generateDiagramFromLog(params, this.filtered_log);
-                if (foundDiagram.getNodes().isEmpty() || foundDiagram.getEdges().isEmpty()) {
+                dfgAbstraction = processDiscoverer.generateDFGAbstraction(this.filtered_log, params);
+                if (dfgAbstraction.getDiagram().getNodes().isEmpty() || dfgAbstraction.getDiagram().getEdges().isEmpty()) {
                 	if (activities_value < arcs_value) {
                 		activities.setCurpos(activities_value + 1);
                 		activitiesText.setValue(activities_value + 1);
@@ -1600,37 +1601,26 @@ public class ProcessDiscovererController extends BaseController {
             }
 
             //Actual operation with the new params
+            AbstractionParams params = new AbstractionParams(getLabel(), 
+					1 - activities.getCurposInDouble() / 100, 
+					1 - arcs.getCurposInDouble() / 100, 
+					parallelism.getCurposInDouble() / 100, 
+					true, true, 
+					inverted_nodes.isChecked(), inverted_arcs.isChecked(),
+					secondary.isChecked(),
+					fixedType, fixedAggregation, 
+					primaryType, primaryAggregation, 
+					secondaryType, secondaryAggregation,
+					new HashSet<>(Arrays.asList(arcTypes)), 
+					dfgAbstraction);
             if(gateways.isChecked()) {
-            	AbstractionParams params = new AbstractionParams(getLabel(), 
-																1 - activities.getCurposInDouble() / 100, 
-																1 - arcs.getCurposInDouble() / 100, 
-																parallelism.getCurposInDouble() / 100, 
-																true, true, 
-																inverted_nodes.isChecked(), inverted_arcs.isChecked(),
-																secondary.isChecked(),
-																fixedType, fixedAggregation, 
-																primaryType, primaryAggregation, 
-																secondaryType, secondaryAggregation,
-																new HashSet<>(Arrays.asList(arcTypes)), 
-																foundDiagram);
-                Object[] o = processDiscoverer.generateBPMNJSON(params, this.filtered_log);
+                Object[] o = processDiscoverer.generateBPMNJSON(this.filtered_log, params, dfgAbstraction);
                 jsonDiagram = (JSONArray) o[0];
-                diagram = (BPMNDiagram) o[1];
+                diagram = ((BPMNAbstraction)o[1]).getDiagram();
             }else {
-            	AbstractionParams params = new AbstractionParams(getLabel(), 
-																1 - activities.getCurposInDouble() / 100, 
-																1 - arcs.getCurposInDouble() / 100, 
-																parallelism.getCurposInDouble() / 100, 
-																false, true, 
-																inverted_nodes.isChecked(), inverted_arcs.isChecked(),
-																secondary.isChecked(),
-																fixedType, fixedAggregation, 
-																primaryType, primaryAggregation, 
-																secondaryType, secondaryAggregation,
-																new HashSet<>(Arrays.asList(arcTypes)), foundDiagram);
-                Object[] o = processDiscoverer.generateDFGJSON(params, this.filtered_log);
+                Object[] o = processDiscoverer.generateDFGJSON(this.filtered_log, params);
                 jsonDiagram = (JSONArray) o[0];
-                diagram = (BPMNDiagram) o[1];
+                diagram = ((DFGAbstraction)o[1]).getDiagram();
             }
 
             this.display(jsonDiagram);

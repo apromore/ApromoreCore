@@ -1,6 +1,7 @@
-package org.apromore.processdiscoverer.dfg;
+package org.apromore.processdiscoverer.dfg.abstraction;
 
 import org.apromore.processdiscoverer.AbstractionParams;
+import org.apromore.processdiscoverer.dfg.TraceDFG;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 

@@ -1,7 +1,11 @@
-package org.apromore.processdiscoverer.dfg;
+package org.apromore.processdiscoverer.dfg.abstraction;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,11 +13,13 @@ import java.util.Set;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.VisualizationAggregation;
 import org.apromore.processdiscoverer.VisualizationType;
+import org.apromore.processdiscoverer.dfg.LogDFG;
 import org.apromore.processdiscoverer.dfg.collectors.NodeInfoCollector;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 
 /**
  * 
@@ -34,25 +40,31 @@ public abstract class AbstractAbstraction implements Abstraction {
 		this.params = params;
 	}
 	
-	protected void updateNodeWeights(AbstractionParams params) {
+	public LogDFG getLogDFG() {
+		return this.logDfg;
+	}
+	
+	protected void updateNodeWeights(AbstractionParams params) throws Exception {
 		nodePrimaryWeights.clear();
 		nodeSecondaryWeights.clear();
 		
 		NodeInfoCollector nodeInfoCollector = logDfg.getNodeInfoCollector();
 		for (BPMNNode node: diagram.getNodes()) {
-			if (params.getPrimaryType() == VisualizationType.FREQUENCY) {
-				nodePrimaryWeights.put(node, nodeInfoCollector.getNodeFrequency(false, node.getLabel(), params.getPrimaryAggregation()));
-			}
-			else {
-				nodePrimaryWeights.put(node, nodeInfoCollector.getNodeDuration(node.getLabel(), params.getPrimaryAggregation()));
-			}
-			
-			if (params.getSecondary()) {
-				if (params.getSecondaryType() == VisualizationType.FREQUENCY) {
-					nodeSecondaryWeights.put(node, nodeInfoCollector.getNodeFrequency(false, node.getLabel(), params.getSecondaryAggregation()));
+			if (node instanceof Activity) {
+				if (params.getPrimaryType() == VisualizationType.FREQUENCY) {
+					nodePrimaryWeights.put(node, nodeInfoCollector.getNodeFrequency(false, node.getLabel(), params.getPrimaryAggregation()));
 				}
 				else {
-					nodeSecondaryWeights.put(node, nodeInfoCollector.getNodeDuration(node.getLabel(), params.getSecondaryAggregation()));
+					nodePrimaryWeights.put(node, nodeInfoCollector.getNodeDuration(node.getLabel(), params.getPrimaryAggregation()));
+				}
+				
+				if (params.getSecondary()) {
+					if (params.getSecondaryType() == VisualizationType.FREQUENCY) {
+						nodeSecondaryWeights.put(node, nodeInfoCollector.getNodeFrequency(false, node.getLabel(), params.getSecondaryAggregation()));
+					}
+					else {
+						nodeSecondaryWeights.put(node, nodeInfoCollector.getNodeDuration(node.getLabel(), params.getSecondaryAggregation()));
+					}
 				}
 			}
 		}
@@ -60,7 +72,7 @@ public abstract class AbstractAbstraction implements Abstraction {
 	
 	protected abstract void updateArcWeights(AbstractionParams params);
 	
-	protected void updateWeights(AbstractionParams params) {
+	public void updateWeights(AbstractionParams params) throws Exception {
 		if (this.diagram == null) return;
 		this.params = params;
 		this.updateNodeWeights(params);
@@ -105,5 +117,40 @@ public abstract class AbstractAbstraction implements Abstraction {
         }
         return number;
     }
+    
+    //Breadth-first traversal from a given source s and a given set of in-scope nodes
+    protected List<BPMNNode> getNodesByBFS(BPMNNode source, Collection<BPMNNode> selectedNodes) {
+        // Mark all the vertices as not visited(By default set as false) 
+    	Map<BPMNNode, Boolean> visited = new HashMap<>();
+    	for (BPMNNode node: diagram.getNodes()) {
+    		visited.put(node, false);
+    	}
+  
+        // Create a queue for BFS 
+        LinkedList<BPMNNode> queue = new LinkedList<BPMNNode>(); 
+  
+        // Mark the current node as visited and enqueue it 
+        visited.put(source, Boolean.TRUE); 
+        queue.add(source);
+
+        // BFS by queue and collect traversed nodes in order 
+        List<BPMNNode> traversedNodes = new ArrayList<>();
+        BPMNNode queueHead = null;
+        while (queue.size() != 0) { 
+        	queueHead = queue.poll(); 
+        	if (selectedNodes.contains(queueHead)) traversedNodes.add(queueHead);
+            // Get all adjacent vertices of the dequeued vertex s 
+            // If a adjacent has not been visited, then mark it visited and enqueue it 
+            for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge: diagram.getOutEdges(queueHead)) {
+            	BPMNNode adjacentNode = edge.getTarget();
+                if (!visited.get(adjacentNode)) { 
+                    visited.put(adjacentNode, true); 
+                    queue.add(adjacentNode); 
+                } 
+            }
+        }
+        
+        return traversedNodes;
+    } 
 
 }

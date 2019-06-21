@@ -111,6 +111,7 @@ public class StageMiningShowResult { //extends SelectorComposer<Window> {
 
         
         String jsonString = Visualization_cytoscape.createJson(tree).toString();
+        jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
         String javascript = "load('" + jsonString + "');";
         System.out.println(javascript);
         Clients.evalJavaScript(javascript);

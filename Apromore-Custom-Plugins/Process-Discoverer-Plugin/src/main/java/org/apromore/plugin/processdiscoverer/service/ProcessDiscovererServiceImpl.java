@@ -26,6 +26,9 @@ import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.apromore.processdiscoverer.VisualizationAggregation;
 import org.apromore.processdiscoverer.VisualizationType;
+import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.TraceAbstraction;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
 import org.apromore.processdiscoverer.logfilter.LogFilter;
 import org.apromore.processdiscoverer.logprocessors.SearchStrategy;
@@ -48,32 +51,27 @@ public class ProcessDiscovererServiceImpl extends DefaultParameterAwarePlugin im
     @Override
     public Object[] generateDFGJSON(XLog log, AbstractionParams params) throws Exception {
         ProcessDiscoverer processDiscoverer = new ProcessDiscoverer();
-        return processDiscoverer.generateDFGJSON(params, log);
+        return processDiscoverer.generateDFGJSON(log, params);
     }
 
     @Override
     public Object[] generateBPMNJSON(XLog log, AbstractionParams params) throws Exception {
         ProcessDiscoverer processDiscoverer = new ProcessDiscoverer();
-        return processDiscoverer.generateBPMNJSON(params, log);
+        DFGAbstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(log, params);
+        return processDiscoverer.generateBPMNJSON(log, params, dfgAbstraction);
     }
     
     @Override
-    public BPMNDiagram generateDFGFromLog(XLog log, AbstractionParams params) throws Exception {
+    public DFGAbstraction generateDFGAbstraction(XLog log, AbstractionParams params) throws Exception {
         ProcessDiscoverer processDiscoverer = new ProcessDiscoverer();
-        return processDiscoverer.generateDiagramFromLog(params, log);
+        return processDiscoverer.generateDFGAbstraction(log, params);
     }
     
     @Override
-    public BPMNDiagram generateBPMNFromLog(XLog log, AbstractionParams params) throws Exception {
+    public BPMNAbstraction generateBPMNAbstraction(XLog log, AbstractionParams params) throws Exception {
     	ProcessDiscoverer processDiscoverer = new ProcessDiscoverer();
-    	return processDiscoverer.generateBPMNFromLog(params, log);
-    }
-
-    @Override
-    public BPMNDiagram insertBPMNGateways(BPMNDiagram bpmnDiagram) {
-        //ProcessDiscoverer processDiscoverer = new ProcessDiscoverer(null);
-        //return processDiscoverer.insertBPMNGateways(bpmnDiagram);
-    	return BPMNDiagramBuilder.insertBPMNGateways(bpmnDiagram);
+    	DFGAbstraction dfgAbstraction = processDiscoverer.generateDFGAbstraction(log, params);
+    	return processDiscoverer.generateBPMNAbstraction(log, params, dfgAbstraction);
     }
 
 }

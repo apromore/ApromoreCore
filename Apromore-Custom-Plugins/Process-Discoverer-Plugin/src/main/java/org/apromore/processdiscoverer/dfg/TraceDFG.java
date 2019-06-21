@@ -4,6 +4,7 @@ package org.apromore.processdiscoverer.dfg;
 import java.util.Date;
 
 import org.apromore.processdiscoverer.AbstractionParams;
+import org.apromore.processdiscoverer.dfg.abstraction.TraceAbstraction;
 import org.apromore.processdiscoverer.dfg.collectors.ArcInfoCollector;
 import org.apromore.processdiscoverer.dfg.collectors.NodeInfoCollector;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
@@ -31,7 +32,7 @@ public class TraceDFG {
     	this.trace = trace;
     	this.logDfg = logDfg;
     	this.arcInfoCollector = new ArcInfoCollector(logDfg);
-    	nodeInfoCollector = new NodeInfoCollector(logDfg, arcInfoCollector);
+    	nodeInfoCollector = new NodeInfoCollector(logDfg);
     }
     
     public XTrace getTrace() {

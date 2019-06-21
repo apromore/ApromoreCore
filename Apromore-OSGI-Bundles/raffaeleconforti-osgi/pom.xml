@@ -479,7 +479,7 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>assembly</artifactId>
-            <version>1.0.20190327</version>
+            <version>1.0.20190617</version>
 			<!--<version>1.0.20180719</version>-->
         </dependency>
     </dependencies>

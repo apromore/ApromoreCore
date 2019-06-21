@@ -37,8 +37,51 @@ import java.util.List;
 public class LogFilter {
 
     private static final XFactory factory = new XFactoryNaiveImpl();
+    
+//    public static XLog filter(XLog log, List<LogFilterCriterion> criteria) {
+//    	if (criteria == null || criteria.isEmpty()) return log;
+//    	
+//    	XLog newLog = factory.createLog(log.getAttributes());
+//        for (XTrace trace : log) { // Object order OO
+//        	XTrace newTrace = getXTrace(trace);;
+//        	boolean removeTrace = false;
+//            for (int i = 0; i < criteria.size(); i++) { // Criterion order OC
+//                LogFilterCriterion criterion = criteria.get(i);
+//                if (criterion.getLevel() == Level.TRACE) {
+//                    if(criterion.isToRemove(newTrace)) { //matching & action
+//                    	removeTrace = true;
+//                    	break;
+//                    }
+//                } else { //down-level shift
+//                    for (XEvent event : trace) {
+//                    	if (newTrace.contains(event)) {
+//	                        for (int j = i; j < criteria.size(); j++) {  // Criterion order OC
+//	                            LogFilterCriterion criterion1 = criteria.get(j);
+//	                            if (criterion1.getLevel() == Level.TRACE) break; // up-level shift
+//	                            if (criterion1.isToRemove(event)) { //matching & action
+//	                            	newTrace.remove(event);
+//	                                break;
+//	                            }
+//	                        }
+//                    	}
+//                        
+//                    }
+//                    if(newTrace.isEmpty()) {
+//                    	break;
+//                    }
+//                }
+//            }
+//            
+//            if (!removeTrace && !newTrace.isEmpty()) {
+//            	newLog.add(newTrace);
+//            }
+//        }
+//        return newLog;
+//    }
 
     public static XLog filter(XLog log, List<LogFilterCriterion> criteria) {
+    	if (criteria == null || criteria.isEmpty()) return log;
+    	
         log = cloneLog(log);
         Iterator<XTrace> traceIterator = log.iterator();
         while (traceIterator.hasNext()) { // Object order OO

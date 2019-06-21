@@ -24,6 +24,7 @@ import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.VisualizationAggregation;
 import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.Arc;
+import org.apromore.processdiscoverer.dfg.LogDFG;
 import org.apromore.processdiscoverer.dfg.collectors.ArcInfoCollector;
 import org.apromore.processdiscoverer.dfg.collectors.Calculator;
 import org.apromore.processdiscoverer.dfg.reachability.ReachabilityChecker;
@@ -55,20 +56,20 @@ public class ArcSelector {
     private double max;
     private boolean inverted;
     private VisualizationType type;
-    private ArcInfoCollector arcInfoCollector;
+    private LogDFG logDfg;
     private AbstractionParams params;
 
     //public ArcSelector(ArcInfoCollector arcInfoCollector, double arcs, boolean preserve_connectivity, VisualizationType type, VisualizationAggregation aggregation, boolean inverted) {
-    public ArcSelector(ArcInfoCollector arcInfoCollector, AbstractionParams params) {
+    public ArcSelector(LogDFG logDfg, AbstractionParams params) {
+    	this.logDfg = logDfg;
     	this.params = params;
-    	this.arcInfoCollector = arcInfoCollector; 
     	
 		VisualizationAggregation aggregation = params.getFixedAggregation();
 		double arcs = params.getArcLevel();
         this.inverted = params.invertedArcs();
         this.type = params.getFixedType();
         this.preserve_connectivity = params.preserveConnectivity();
-        ObjectDoubleHashMap<Arc> arcs_frequency = arcInfoCollector.getArcsFrequencyMap(type, aggregation);
+        ObjectDoubleHashMap<Arc> arcs_frequency = logDfg.getArcInfoCollector().getArcsFrequencyMap(type, aggregation);
 
         this.calculator = new Calculator();
         calculator.setCurrentDate(Long.toString(System.currentTimeMillis()));
@@ -103,7 +104,7 @@ public class ArcSelector {
             calculator.increment(calculator.getCurrentDate(), (long) sorted_arcs_frequency.get(i).getTwo(),1);
             double current = scale(calculator.getCurrent());
             Arc arc = sorted_arcs_frequency.get(i).getOne();
-            if (arcInfoCollector.getLogDFG().isAcceptedArc(arc.getSource(), arc.getTarget(), params)) {
+            if (this.logDfg.isAcceptedArc(arc.getSource(), arc.getTarget(), params)) {
 	            if(current < threshold) {
 	                if(retained_arcs.contains(arc)) {
 	                    if(type != VisualizationType.FREQUENCY && (arc.getSource() == 1 || arc.getTarget() == 2)) {

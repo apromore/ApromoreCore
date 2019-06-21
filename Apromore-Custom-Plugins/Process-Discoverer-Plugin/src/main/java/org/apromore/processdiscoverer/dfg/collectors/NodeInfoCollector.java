@@ -26,6 +26,7 @@ import org.apromore.processdiscoverer.dfg.Arc;
 import org.apromore.processdiscoverer.dfg.LogDFG;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.apromore.processdiscoverer.util.StringValues;
+import org.eclipse.collections.api.set.primitive.IntSet;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
@@ -42,28 +43,23 @@ public class NodeInfoCollector {
     private final String plus_complete_code = StringValues.b[120]; //"+complete"
     private final String plus_start_code = StringValues.b[121]; //"+start"
 
-    private final int number_of_traces;
-
     //private final HashBiMap<String, Integer> simplified_names; //map from activity name to number and vice versa 
 
     //key: activity number, values: frequency values of the activity in each trace
     private final IntObjectHashMap<LongArrayList> activity_frequency_set; 
-
-    private final ArcInfoCollector arcInfoCollector;
 
     private final Calculator calculator;
 
     private int trace = -1; // current trace number
     
     private LogDFG logDfg;
+    private final int number_of_traces;
     
-    public NodeInfoCollector(LogDFG logDfg, ArcInfoCollector arcInfoCollector) {
+    public NodeInfoCollector(LogDFG logDfg) {
     	this.logDfg = logDfg;
         this.number_of_traces = logDfg.getSimplifiedLog().size();
 
         activity_frequency_set = new IntObjectHashMap<>();
-
-        this.arcInfoCollector = arcInfoCollector;
 
         this.calculator = new Calculator();
         calculator.setCurrentDate(Long.toString(System.currentTimeMillis()));
@@ -115,8 +111,9 @@ public class NodeInfoCollector {
      * must use the real event names and choose between the "start" and "complete" event names 
      * @param aggregation
      * @return
+     * @throws Exception 
      */
-    public double getNodeFrequency(boolean min, String event, VisualizationAggregation aggregation) {
+    public double getNodeFrequency(boolean min, String event, VisualizationAggregation aggregation) throws Exception {
     	SimplifiedLog log = this.logDfg.getSimplifiedLog();
         if(event.isEmpty()) return 0;
         if(log.getEventNumber(event) == null) {
@@ -130,8 +127,11 @@ public class NodeInfoCollector {
                 }
             }else if(log.getEventNumber(start_event) != null) {
                 return getNodeFrequency(min, start_event, aggregation);
-            }else {
+            }else if(log.getEventNumber(complete_event) != null) {
                 return getNodeFrequency(min, complete_event, aggregation);
+            }
+            else {
+            	throw new Exception("Inconsistent data: NodeInfoCollector.getNodeFrequency() cannot find frequency for node with label = " + event);
             }
         }else {
             return getNodeFrequency(log.getEventNumber(event), aggregation);
@@ -167,7 +167,7 @@ public class NodeInfoCollector {
     		if (pair != null) {
     			Arc arc = this.logDfg.getArc(pair.get(0), pair.get(1));
     			if (arc != null) {
-    				return arcInfoCollector.getArcInfo(arc, VisualizationType.DURATION, aggregation);
+    				return logDfg.getArcInfoCollector().getArcInfo(arc, VisualizationType.DURATION, aggregation);
     			}
     			else {
     				return 0;
@@ -181,9 +181,17 @@ public class NodeInfoCollector {
     		return 0;
     	}
     }
+    
+    public IntSet getNodes() {
+    	return this.activity_frequency_set.keySet();
+    }
 
     public void nextTrace() {
         calculator.increment(calculator.getCurrentDate(), trace, 1);
         trace = (int) calculator.getCurrent();
+    }
+    
+    public void clear() {
+    	activity_frequency_set.clear();
     }
 }

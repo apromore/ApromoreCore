@@ -1,4 +1,4 @@
-package org.apromore.processdiscoverer.dfg;
+package org.apromore.processdiscoverer.dfg.abstraction;
 
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.VisualizationAggregation;

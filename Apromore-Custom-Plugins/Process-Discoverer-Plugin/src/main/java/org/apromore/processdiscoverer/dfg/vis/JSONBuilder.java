@@ -22,7 +22,7 @@ package org.apromore.processdiscoverer.dfg.vis;
 
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.VisualizationType;
-import org.apromore.processdiscoverer.dfg.Abstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.Abstraction;
 import org.apromore.processdiscoverer.util.ColorGradient;
 import org.apromore.processdiscoverer.util.StringValues;
 import org.apromore.processdiscoverer.util.TimeConverter;
@@ -113,7 +113,7 @@ public class JSONBuilder {
         }
         if(!used_bpmn_size) {
             if(string_length * 6 > 80) activity_width = (string_length * 6) + "px";
-            textwidth = Math.max(string_length*6 - 10, 2) + "px";
+            textwidth = Math.max(string_length*6 - 10, 20) + "px";
         }
 
         ObjectIntHashMap<Event> boundary = new ObjectIntHashMap<>();
