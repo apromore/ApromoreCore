@@ -457,7 +457,7 @@ public class LogDFG {
     public BPMNDiagram getBPMN(AbstractionParams params, DFGAbstraction dfgAbs) throws Exception {
     	SimpleLog simpleLog = SimpleLogAdapter.getSimpleLog(dfgAbs.getLogDFG().getSimplifiedLog());
     	DirectlyFollowGraphPlus dfgp = new ProcessDiscovererDFGP(simpleLog, dfgAbs, 1.0, params.getParallelismLevel(), params.prioritizeParallelism());
-    	SplitMiner splitMiner = new SplitMiner();
+    	SplitMiner splitMiner = new SplitMiner(false, false, SplitMinerUIResult.StructuringTime.NONE);
 //    	BPMNDiagram bpmnDiagram = splitMiner.mineBPMNModel(simpleLog, dfgp, SplitMinerUIResult.StructuringTime.NONE);
     	BPMNDiagram bpmnDiagram = splitMiner.discoverFromDFGP(dfgp);
         BPMNDiagramBuilder.updateStartEndEventLabels(bpmnDiagram);
