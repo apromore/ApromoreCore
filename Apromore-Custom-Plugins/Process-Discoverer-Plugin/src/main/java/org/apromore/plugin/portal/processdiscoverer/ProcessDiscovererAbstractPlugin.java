@@ -39,7 +39,6 @@ import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.bimp_annotation.BIMPAnnotationService;
-import org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.springframework.stereotype.Component;
 import org.zkoss.zul.Messagebox;

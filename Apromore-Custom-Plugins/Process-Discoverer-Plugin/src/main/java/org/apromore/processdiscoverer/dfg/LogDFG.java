@@ -28,7 +28,6 @@ import org.apromore.processdiscoverer.logfilter.LogFilterCriterionFactory;
 import org.apromore.processdiscoverer.logprocessors.LogUtils;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.apromore.processdiscoverer.logprocessors.TimeLog;
-import org.apromore.processdiscoverer.splitminer.DFGPWithLogThreshold;
 import org.apromore.processdiscoverer.splitminer.ProcessDiscovererDFGP;
 import org.apromore.processdiscoverer.splitminer.SimpleLogAdapter;
 import org.deckfour.xes.classification.XEventAttributeClassifier;
@@ -47,11 +46,11 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 
 import com.raffaeleconforti.foreignkeydiscovery.Pair;
-import com.raffaeleconforti.splitminer.log.LogParser;
-import com.raffaeleconforti.splitminer.log.SimpleLog;
-import com.raffaeleconforti.splitminer.splitminer.SplitMiner;
-import com.raffaeleconforti.splitminer.splitminer.dfgp.DirectlyFollowGraphPlus;
-import com.raffaeleconforti.splitminer.splitminer.ui.miner.SplitMinerUIResult;
+
+import au.edu.qut.processmining.log.SimpleLog;
+import au.edu.qut.processmining.miners.splitminer.SplitMiner;
+import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
+import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
 
 /**
  * LogDFG represents the directly-follows graph created from event logs.
@@ -459,7 +458,8 @@ public class LogDFG {
     	SimpleLog simpleLog = SimpleLogAdapter.getSimpleLog(dfgAbs.getLogDFG().getSimplifiedLog());
     	DirectlyFollowGraphPlus dfgp = new ProcessDiscovererDFGP(simpleLog, dfgAbs, 1.0, params.getParallelismLevel(), params.prioritizeParallelism());
     	SplitMiner splitMiner = new SplitMiner();
-    	BPMNDiagram bpmnDiagram = splitMiner.mineBPMNModel(simpleLog, dfgp, SplitMinerUIResult.StructuringTime.NONE);
+//    	BPMNDiagram bpmnDiagram = splitMiner.mineBPMNModel(simpleLog, dfgp, SplitMinerUIResult.StructuringTime.NONE);
+    	BPMNDiagram bpmnDiagram = splitMiner.discoverFromDFGP(dfgp);
         BPMNDiagramBuilder.updateStartEndEventLabels(bpmnDiagram);
         return bpmnDiagram;
     }
@@ -482,90 +482,69 @@ public class LogDFG {
      * @return BPMN diagram
      * @throws Exception
      */
-    @Deprecated
-    public BPMNDiagram getBPMN(AbstractionParams params, BPMNDiagram correspondingDFG) throws Exception {
-    	
-    	NodeSelector nodeSelector = new NodeSelector(
-    										nodeInfoCollector, 
-    										params.getActivityLevel(), 
-											params.getFixedType(), 
-											params.getFixedAggregation(), 
-											params.invertedNodes());
-		IntHashSet retained_activities = nodeSelector.selectActivities(); 
-		
-		//Make BPMN model contain equal or less nodes than the corresponding graph.
-		if (correspondingDFG != null) {
-			Set<String> nodeNames = new HashSet<>();
-			for (BPMNNode node : correspondingDFG.getNodes()) {
-				nodeNames.add(node.getLabel());
-			}
-			MutableIntIterator iterator = retained_activities.intIterator(); 
-			while (iterator.hasNext()) {
-				if (!nodeNames.contains(simplifiedLog.getEventCollapsedName(iterator.next()))) {
-					iterator.remove();
-				}
-			}
-		}
-		
-        //--------------------------------------------------
-        // Filter log and reconstruct XLog for process discovery 
-        //--------------------------------------------------
-		SimplifiedLog filtered_simplified_log = this.simplifiedLog.filterActivities(retained_activities);
-        XLog filtered_xlog = filtered_simplified_log.getXLog();
-        
-        //--------------------------------------------------
-        // Detect if the log contains more than one lifecycle:transition
-        // If so, filter the log to select only complete events
-        // This is necessary because process model discovery algorithms usually only
-        // work on one type of events for the same activity.
-        //--------------------------------------------------
-//        Set<String> transitions = new UnifiedSet<>(); // size > 1 if the log contains both start and end events
-//        String complete = null;
-//        String start = null;
-//        for (XTrace trace : filtered) {
-//            for (XEvent event : trace) {
-//                String lifecycle = event.getAttributes().get(LogUtils.LIFECYCLE_CODE.toString()).toString();
-//                if(lifecycle.toLowerCase().equals(LogUtils.COMPLETE_CODE.toString())) complete = lifecycle;
-//                if(lifecycle.toLowerCase().equals(LogUtils.START_CODE.toString())) start = lifecycle;
-//                transitions.add(lifecycle);
-//                if (transitions.size() > 1 && complete != null && start != null) break;
-//            }
-//            if (transitions.size() > 1 && complete != null && start != null) break;
+//    @Deprecated
+//    public BPMNDiagram getBPMN(AbstractionParams params, BPMNDiagram correspondingDFG) throws Exception {
+//    	
+//    	NodeSelector nodeSelector = new NodeSelector(
+//    										nodeInfoCollector, 
+//    										params.getActivityLevel(), 
+//											params.getFixedType(), 
+//											params.getFixedAggregation(), 
+//											params.invertedNodes());
+//		IntHashSet retained_activities = nodeSelector.selectActivities(); 
+//		
+//		//Make BPMN model contain equal or less nodes than the corresponding graph.
+//		if (correspondingDFG != null) {
+//			Set<String> nodeNames = new HashSet<>();
+//			for (BPMNNode node : correspondingDFG.getNodes()) {
+//				nodeNames.add(node.getLabel());
+//			}
+//			MutableIntIterator iterator = retained_activities.intIterator(); 
+//			while (iterator.hasNext()) {
+//				if (!nodeNames.contains(simplifiedLog.getEventCollapsedName(iterator.next()))) {
+//					iterator.remove();
+//				}
+//			}
+//		}
+//		
+//        //--------------------------------------------------
+//        // Filter log and reconstruct XLog for process discovery 
+//        //--------------------------------------------------
+//		SimplifiedLog filtered_simplified_log = this.simplifiedLog.filterActivities(retained_activities);
+//        XLog filtered_xlog = filtered_simplified_log.getXLog();
+//        XLog complete_event_xlog = null;
+//        if (filtered_simplified_log.containStartEvent()) {
+//            Set<String> lifecycle = new UnifiedSet<>();
+//            lifecycle.add(LogUtils.COMPLETE_CODE);
+//            lifecycle.add(LogUtils.COMPLETE_CODE.toUpperCase());
+//            LogFilterCriterion criterion = LogFilterCriterionFactory.getLogFilterCriterion(Action.RETAIN,
+//                    CONTAIN_ANY,
+//                    EVENT,
+//                    LogUtils.LIFECYCLE_CODE,
+//                    LogUtils.LIFECYCLE_CODE,
+//                    lifecycle);
+//            List<LogFilterCriterion> criteria = new ArrayList<>(1);
+//            criteria.add(criterion);
+//            complete_event_xlog = LogFilter.filter(filtered_xlog, criteria);
 //        }
-//        if (transitions.size() > 1) {
-        XLog complete_event_xlog = null;
-        if (filtered_simplified_log.containStartEvent()) {
-            Set<String> lifecycle = new UnifiedSet<>();
-            lifecycle.add(LogUtils.COMPLETE_CODE);
-            lifecycle.add(LogUtils.COMPLETE_CODE.toUpperCase());
-            LogFilterCriterion criterion = LogFilterCriterionFactory.getLogFilterCriterion(Action.RETAIN,
-                    CONTAIN_ANY,
-                    EVENT,
-                    LogUtils.LIFECYCLE_CODE,
-                    LogUtils.LIFECYCLE_CODE,
-                    lifecycle);
-            List<LogFilterCriterion> criteria = new ArrayList<>(1);
-            criteria.add(criterion);
-            complete_event_xlog = LogFilter.filter(filtered_xlog, criteria);
-        }
-        else {
-        	complete_event_xlog = filtered_xlog;
-        }
-        
-        SplitMiner splitMiner = new SplitMiner();
-        SimpleLog simpleLog = LogParser.getSimpleLog(complete_event_xlog, new XEventAttributeClassifier(params.getAttribute(), params.getAttribute()));
-        BPMNDiagram bpmnDiagram = splitMiner.mineBPMNModel(simpleLog, 
-        				new DFGPWithLogThreshold(simpleLog, 
-        										params.getArcLevel(), 
-        										params.getParallelismLevel(), 
-        										params.prioritizeParallelism(), 
-        										params.preserveConnectivity(), 
-        										params.invertedArcs()), 
-        										SplitMinerUIResult.StructuringTime.NONE);
-        
-        BPMNDiagramBuilder.updateStartEndEventLabels(bpmnDiagram);
-        
-        return bpmnDiagram;
-    }
+//        else {
+//        	complete_event_xlog = filtered_xlog;
+//        }
+//        
+//        SplitMiner splitMiner = new SplitMiner();
+//        SimpleLog simpleLog = LogParser.getSimpleLog(complete_event_xlog, new XEventAttributeClassifier(params.getAttribute(), params.getAttribute()));
+//        BPMNDiagram bpmnDiagram = splitMiner.mineBPMNModel(simpleLog, 
+//        				new DFGPWithLogThreshold(simpleLog, 
+//        										params.getArcLevel(), 
+//        										params.getParallelismLevel(), 
+//        										params.prioritizeParallelism(), 
+//        										params.preserveConnectivity(), 
+//        										params.invertedArcs()), 
+//        										SplitMinerUIResult.StructuringTime.NONE);
+//        
+//        BPMNDiagramBuilder.updateStartEndEventLabels(bpmnDiagram);
+//        
+//        return bpmnDiagram;
+//    }
 
 }

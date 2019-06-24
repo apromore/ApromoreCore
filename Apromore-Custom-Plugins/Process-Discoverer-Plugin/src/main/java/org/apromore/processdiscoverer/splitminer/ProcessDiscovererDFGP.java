@@ -8,10 +8,11 @@ import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 
-import com.raffaeleconforti.splitminer.log.SimpleLog;
-import com.raffaeleconforti.splitminer.splitminer.dfgp.DFGEdge;
-import com.raffaeleconforti.splitminer.splitminer.dfgp.DFGNode;
-import com.raffaeleconforti.splitminer.splitminer.dfgp.DirectlyFollowGraphPlus;
+import au.edu.qut.processmining.log.SimpleLog;
+import au.edu.qut.processmining.miners.splitminer.dfgp.DFGEdge;
+import au.edu.qut.processmining.miners.splitminer.dfgp.DFGNode;
+import au.edu.qut.processmining.miners.splitminer.dfgp.DirectlyFollowGraphPlus;
+import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 
 /**
  * This class is used as a bridging DFGP created from a DFGAbstraction
@@ -25,8 +26,9 @@ public class ProcessDiscovererDFGP extends DirectlyFollowGraphPlus {
 
 	public ProcessDiscovererDFGP(SimpleLog log, DFGAbstraction dfgAbs, double percentileFrequencyThreshold, double parallelismsThreshold,
 						boolean parallelismsFirst) throws Exception {
-		super(log, percentileFrequencyThreshold, parallelismsThreshold, parallelismsFirst);
+		super(log, percentileFrequencyThreshold, parallelismsThreshold, DFGPUIResult.FilterType.WTH, parallelismsFirst);
 		this.dfgAbs = dfgAbs;
+		this.buildDFGP(); // call this at the end
 	}
 	
 	public DFGAbstraction getDFGAbstraction() {
