@@ -8,7 +8,7 @@ import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.list.primitive.IntList;
 
-import com.raffaeleconforti.splitminer.log.SimpleLog;
+import au.edu.qut.processmining.log.SimpleLog;
 
 
 
