@@ -53,6 +53,8 @@ import java.util.*;
 
 /**
  * Created by Adriano on 24/10/2016.
+ * Modified by Bruce Nguyen
+ * 		- Add constructor
  */
 public class SplitMiner {
 
@@ -73,6 +75,13 @@ public class SplitMiner {
     public static void main(String[] args) {
     	SplitMiner miner = new SplitMiner();
     	
+    }
+    
+    //Bruce added
+    public SplitMiner(boolean replaceIORs, boolean removeLoopActivities, SplitMinerUIResult.StructuringTime structuringTime) {
+        this.replaceIORs = replaceIORs;
+        this.removeLoopActivities = removeLoopActivities;
+        this.structuringTime = structuringTime;
     }
 
     public SplitMiner() {
