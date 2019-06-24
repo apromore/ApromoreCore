@@ -30,6 +30,8 @@ import au.edu.qut.processmining.miners.splitminer.oracle.Oracle;
 import au.edu.qut.processmining.miners.splitminer.oracle.OracleItem;
 import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
+
+import au.edu.unimelb.processmining.optimization.SimpleDirectlyFollowGraph;
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
@@ -37,8 +39,10 @@ import de.hpi.bpt.graph.algo.rpst.RPST;
 import de.hpi.bpt.graph.algo.rpst.RPSTNode;
 import de.hpi.bpt.graph.algo.tctree.TCType;
 import de.hpi.bpt.hypergraph.abs.Vertex;
+
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
+
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
@@ -57,7 +61,7 @@ public class SplitMiner {
     private BPMNDiagram bpmnDiagram;
 
     private boolean replaceIORs;
-    private boolean removeSelfLoops;
+    private boolean removeLoopActivities;
     private SplitMinerUIResult.StructuringTime structuringTime;
 
     private int gateCounter;
@@ -66,8 +70,16 @@ public class SplitMiner {
     private Set<Gateway> bondsEntries;
     private Set<Gateway> rigidsEntries;
 
+    public static void main(String[] args) {
+    	SplitMiner miner = new SplitMiner();
+    	
+    }
 
-    public SplitMiner() {}
+    public SplitMiner() {
+        this.replaceIORs = true;
+        this.removeLoopActivities = true;
+        this.structuringTime = SplitMinerUIResult.StructuringTime.NONE;
+    }
 
     public DirectlyFollowGraphPlus getDFGP() { return dfgp; }
 
@@ -75,18 +87,38 @@ public class SplitMiner {
 
     public BPMNDiagram mineBPMNModel(XLog log, XEventClassifier xEventClassifier, double percentileFrequencyThreshold, double parallelismsThreshold,
                                      DFGPUIResult.FilterType filterType, boolean parallelismsFirst,
-                                     boolean replaceIORs, boolean removeSelfLoops, SplitMinerUIResult.StructuringTime structuringTime)
+                                     boolean replaceIORs, boolean removeLoopActivities, SplitMinerUIResult.StructuringTime structuringTime)
     {
-//        System.out.println("SplitMiner - starting ...");
-//        System.out.println("SplitMiner - [Settings] replace IORs: " + replaceIORs);
-//        System.out.println("SplitMiner - [Settings] structuring: " + structuringTime);
-
         this.replaceIORs = replaceIORs;
-        this.removeSelfLoops = removeSelfLoops;
+        this.removeLoopActivities = removeLoopActivities;
         this.structuringTime = structuringTime;
 
+//        this.log = (new LogParser()).getSimpleLog(log, xEventClassifier, 1.00);
         this.log = LogParser.getSimpleLog(log, xEventClassifier);
-//        System.out.println("SplitMiner - log parsed successfully");
+
+        generateDFGP(percentileFrequencyThreshold, parallelismsThreshold, filterType, parallelismsFirst);
+        try {
+            transformDFGPintoBPMN();
+            if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
+        } catch(Exception e) {
+            System.out.println("ERROR - something went wrong translating DFG to BPMN");
+            e.printStackTrace();
+            return dfgp.convertIntoBPMNDiagram();
+        }
+
+        return bpmnDiagram;
+    }
+
+    public BPMNDiagram mineBPMNModel(SimpleLog log, XEventClassifier xEventClassifier, double percentileFrequencyThreshold, double parallelismsThreshold,
+                                     DFGPUIResult.FilterType filterType, boolean parallelismsFirst,
+                                     boolean replaceIORs, boolean removeLoopActivities, SplitMinerUIResult.StructuringTime structuringTime)
+    {
+        this.replaceIORs = replaceIORs;
+        this.removeLoopActivities = removeLoopActivities;
+        this.structuringTime = structuringTime;
+
+//        this.log = (new LogParser()).getSimpleLog(log, xEventClassifier, 1.00);
+        this.log = log;
 
         generateDFGP(percentileFrequencyThreshold, parallelismsThreshold, filterType, parallelismsFirst);
         try {
@@ -104,6 +136,28 @@ public class SplitMiner {
     private void generateDFGP(double percentileFrequencyThreshold, double parallelismsThreshold, DFGPUIResult.FilterType filterType, boolean parallelismsFirst) {
         dfgp = new DirectlyFollowGraphPlus(log, percentileFrequencyThreshold, parallelismsThreshold, filterType, parallelismsFirst);
         dfgp.buildDFGP();
+    }
+
+    public BPMNDiagram discoverFromDFGP(DirectlyFollowGraphPlus idfgp) {
+        this.log = idfgp.getSimpleLog();
+        dfgp = idfgp;
+        try {
+            transformDFGPintoBPMN();
+            if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
+        } catch(Exception e) {
+            System.out.println("ERROR - something went wrong translating DFG to BPMN");
+            e.printStackTrace();
+            return dfgp.convertIntoBPMNDiagram();
+        }
+        return bpmnDiagram;
+    }
+
+    public BPMNDiagram discoverFromSDFG(SimpleDirectlyFollowGraph sdfg) throws Exception {
+        this.log = sdfg.getSimpleLog();
+        dfgp = sdfg;
+        transformDFGPintoBPMN();
+        if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
+        return bpmnDiagram;
     }
 
     private void transformDFGPintoBPMN() {
@@ -235,10 +289,11 @@ public class SplitMiner {
 
         updateLabels(this.log.getEvents());
 
-        if(!removeSelfLoops) helper.removeSelfLoopMarkers(bpmnDiagram);
+        if(removeLoopActivities) helper.removeLoopActivityMarkers(bpmnDiagram);
 
         if( replaceIORs ) {
-//            helper.expandSplitGateways(bpmnDiagram);
+            helper.collapseSplitGateways(bpmnDiagram);
+            helper.collapseJoinGateways(bpmnDiagram);
         } else {
             helper.collapseSplitGateways(bpmnDiagram);
             helper.collapseJoinGateways(bpmnDiagram);
