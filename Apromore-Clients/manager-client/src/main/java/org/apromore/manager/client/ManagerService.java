@@ -94,13 +94,13 @@ public interface ManagerService {
 
     void editLogData(Integer logId, String logName, String username, boolean isPublic) throws Exception;
 
-    void createFolder(String userId, String folderName, int parentFolderId, Boolean isGEDMatrixReady);
+    void createFolder(String userId, String folderName, int parentFolderId);
 
     void addProcessToFolder(int processId, int folderId);
 
     boolean isGEDReadyFolder(int folderId);
 
-    void updateFolder(int folderId, String folderName, Boolean isGEDMatrixReady);
+    void updateFolder(int folderId, String folderName);
 
     void deleteFolder(int folderId);
 

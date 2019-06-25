@@ -23,6 +23,7 @@ package org.apromore.portal.dialogController;
 import org.apromore.model.*;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
+import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -180,7 +181,7 @@ public abstract class BaseListboxController extends BaseController {
     protected void addFolder() throws InterruptedException {
         getMainController().eraseMessage();
         try {
-            new AddFolderController(getMainController(), 0, "", false);
+            new AddFolderController(getMainController());
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
@@ -219,24 +220,6 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
-    /*
-    protected void changeGED() throws InterruptedException {
-        getMainController().eraseMessage();
-        try {
-            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
-
-            if (folderIds.size() == 1) {
-                boolean isGEDReady = this.mainController.getService().isGEDReadyFolder(folderIds.get(0));
-                new AddFolderController(getMainController(), folderIds.get(0), null, isGEDReady);
-            } else if (folderIds.size() > 1) {
-                Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
-            }
-        } catch (DialogException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-    */
-
     protected void renameFolder() throws InterruptedException {
         getMainController().eraseMessage();
         try {
@@ -253,7 +236,7 @@ public abstract class BaseListboxController extends BaseController {
                     }
                 }
 
-                new AddFolderController(getMainController(), folderIds.get(0), selectedFolderName, null);
+                new RenameFolderController(getMainController(), folderIds.get(0), selectedFolderName);
             } else if (folderIds.size() > 1) {
                 Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {

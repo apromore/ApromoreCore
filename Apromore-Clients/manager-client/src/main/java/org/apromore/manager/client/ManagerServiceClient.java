@@ -438,7 +438,7 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void createFolder(String userId, String folderName, int parentFolderId, Boolean isGEDMatrixReady) {
+    public void createFolder(String userId, String folderName, int parentFolderId) {
         LOGGER.debug("Preparing createFolderRequest.....");
 
         CreateFolderInputMsgType msg = new CreateFolderInputMsgType();
@@ -483,13 +483,12 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void updateFolder(int folderId, String folderName, Boolean isGEDMatrixReady) {
+    public void updateFolder(int folderId, String folderName) {
         LOGGER.debug("Preparing createFolderRequest.....");
 
         UpdateFolderInputMsgType msg = new UpdateFolderInputMsgType();
         msg.setFolderId(folderId);
         msg.setFolderName(folderName);
-        msg.setGEDMatrixReady(isGEDMatrixReady);
 
         JAXBElement<UpdateFolderInputMsgType> request = WS_CLIENT_FACTORY.createUpdateFolderRequest(msg);
 
