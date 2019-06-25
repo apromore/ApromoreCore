@@ -149,7 +149,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
 
                     case Log:
                         SummaryType lsummaryType = (SummaryType) clickedNodeValue.getData();
-                        if(lsummaryType instanceof ProcessSummaryType) {
+                        if(lsummaryType instanceof LogSummaryType) {
                             LogSummaryType log = (LogSummaryType) lsummaryType;
                             hasOwnership = log.isHasOwnership();
                             selectedId = log.getId();

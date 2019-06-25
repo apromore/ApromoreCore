@@ -34,24 +34,27 @@ import org.zkoss.zul.*;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class AddFolderController extends BaseController {
+public class RenameFolderController extends BaseController {
 
     private MainController mainController;
     private Window folderEditWindow;
     private Button btnSave;
     private Button btnCancel;
     private Textbox txtName;
+    private int folderId;
     private Logger LOGGER = Logger.getLogger(AddFolderController.class.getCanonicalName());
 
-    public AddFolderController(MainController mainController) throws DialogException {
+    public RenameFolderController(MainController mainController, int folderId, String name) throws DialogException {
         this.mainController = mainController;
 
         try {
-            final Window win = (Window) Executions.createComponents("macros/folderCreate.zul", null, null);
-            this.folderEditWindow = (Window) win.getFellow("winFolderCreate");
+            final Window win = (Window) Executions.createComponents("macros/folderRename.zul", null, null);
+            this.folderEditWindow = (Window) win.getFellow("winFolderRename");
             this.txtName = (Textbox) this.folderEditWindow.getFellow("txtName");
+            this.txtName.setValue(name);
             this.btnSave = (Button) this.folderEditWindow.getFellow("btnSave");
             this.btnCancel = (Button) this.folderEditWindow.getFellow("btnCancel");
+            this.folderId = folderId;
 
             folderEditWindow.addEventListener("onLater", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -72,7 +75,7 @@ public class AddFolderController extends BaseController {
             });
             win.doModal();
         } catch (Exception e) {
-            throw new DialogException("Error in AddFolderController: " + e.getMessage());
+            throw new DialogException("Error in RenameFolderController: " + e.getMessage());
         }
     }
 
@@ -89,9 +92,7 @@ public class AddFolderController extends BaseController {
             }
 
             LOGGER.warning("folderName " + folderName);
-            String userId = UserSessionManager.getCurrentUser().getId();
-            int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
-            this.mainController.getService().createFolder(userId, folderName, currentParentFolderId);
+            this.mainController.getService().updateFolder(this.folderId, folderName);
             this.mainController.reloadSummaries();
 
         } catch (Exception ex) {
@@ -99,8 +100,8 @@ public class AddFolderController extends BaseController {
             StackTraceElement[] trace = ex.getStackTrace();
             for (StackTraceElement traceElement : trace)
                 LOGGER.warning("\tat " + traceElement);
-        }
 
+        }
         this.folderEditWindow.detach();
     }
 }

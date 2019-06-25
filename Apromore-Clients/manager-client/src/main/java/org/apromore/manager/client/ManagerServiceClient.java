@@ -313,6 +313,24 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
+    public String saveLogPermissions(int logId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
+        LOGGER.debug("Preparing SaveLogPermissionsRequest.....");
+
+        SaveLogPermissionsInputMsgType msg = new SaveLogPermissionsInputMsgType();
+        msg.setLogId(logId);
+        msg.setUserId(userId);
+        msg.setHasRead(hasRead);
+        msg.setHasWrite(hasWrite);
+        msg.setHasOwnership(hasOwnership);
+
+        JAXBElement<SaveLogPermissionsInputMsgType> request = WS_CLIENT_FACTORY.createSaveLogPermissionsRequest(msg);
+
+        JAXBElement<SaveLogPermissionsOutputMsgType> response = (JAXBElement<SaveLogPermissionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getMessage();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public String removeFolderPermissions(int folderId, String userId) {
         LOGGER.debug("Preparing RemoveFolderPermissionsRequest.....");
 
@@ -343,6 +361,21 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
+    public String removeLogPermissions(int logId, String userId) {
+        LOGGER.debug("Preparing RemoveLogPermissionsRequest.....");
+
+        RemoveLogPermissionsInputMsgType msg = new RemoveLogPermissionsInputMsgType();
+        msg.setLogId(logId);
+        msg.setUserId(userId);
+
+        JAXBElement<RemoveLogPermissionsInputMsgType> request = WS_CLIENT_FACTORY.createRemoveLogPermissionsRequest(msg);
+
+        JAXBElement<RemoveLogPermissionsOutputMsgType> response = (JAXBElement<RemoveLogPermissionsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getMessage();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public List<GroupAccessType> getProcessGroups(int processId) {
         LOGGER.debug("Preparing GetProcessGroupsRequest.....");
 
@@ -352,6 +385,20 @@ public class ManagerServiceClient implements ManagerService {
         JAXBElement<GetProcessGroupsInputMsgType> request = WS_CLIENT_FACTORY.createGetProcessGroupsRequest(msg);
 
         JAXBElement<GetProcessGroupsOutputMsgType> response = (JAXBElement<GetProcessGroupsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        return response.getValue().getGroups();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<GroupAccessType> getLogGroups(int logId) {
+        LOGGER.debug("Preparing GetLogGroupsRequest.....");
+
+        GetLogGroupsInputMsgType msg = new GetLogGroupsInputMsgType();
+        msg.setLogId(logId);
+
+        JAXBElement<GetLogGroupsInputMsgType> request = WS_CLIENT_FACTORY.createGetLogGroupsRequest(msg);
+
+        JAXBElement<GetLogGroupsOutputMsgType> response = (JAXBElement<GetLogGroupsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getGroups();
     }
 
@@ -391,7 +438,7 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void createFolder(String userId, String folderName, int parentFolderId, Boolean isGEDMatrixReady) {
+    public void createFolder(String userId, String folderName, int parentFolderId) {
         LOGGER.debug("Preparing createFolderRequest.....");
 
         CreateFolderInputMsgType msg = new CreateFolderInputMsgType();
@@ -436,13 +483,12 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void updateFolder(int folderId, String folderName, Boolean isGEDMatrixReady) {
+    public void updateFolder(int folderId, String folderName) {
         LOGGER.debug("Preparing createFolderRequest.....");
 
         UpdateFolderInputMsgType msg = new UpdateFolderInputMsgType();
         msg.setFolderId(folderId);
         msg.setFolderName(folderName);
-        msg.setGEDMatrixReady(isGEDMatrixReady);
 
         JAXBElement<UpdateFolderInputMsgType> request = WS_CLIENT_FACTORY.createUpdateFolderRequest(msg);
 
