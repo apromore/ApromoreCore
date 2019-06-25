@@ -370,23 +370,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
     }
 
-    /**
-     * @see org.apromore.service.WorkspaceService#updateUsersPublicModels(org.apromore.dao.model.User)
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = false)
-    public void updateUsersPublicModels(User user) {
-        List<Process> processes = processRepo.findAll();
-        for (Process process : processes) {
-            createProcessUser(process, user, true, false, false);
-            createFolderUser(process.getFolder(), user, true, false, false);
-        }
-    }
-
-
-
-
     /* Save the Sub Folder Permissions. */
     private void saveSubFolderPermissions(Folder folder, Group group, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         for (Folder subFolder : folder.getSubFolders()) {
@@ -409,10 +392,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
     }
 
-    private void createFolderUser(Folder folder, User user, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
-        createGroupFolder(user.getGroup(), folder, hasRead, hasWrite, hasOwnership);
-    }
-
     private void createGroupFolder(Group group, Folder folder, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         GroupFolder groupFolder = groupFolderRepo.findByGroupAndFolder(group, folder);
         if (groupFolder == null) {
@@ -426,21 +405,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         groupFolder.setHasOwnership(hasOwnership);
 
         groupFolderRepo.save(groupFolder);
-    }
-
-    private void createProcessUser(Process process, User user, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
-        GroupProcess groupProcess = groupProcessRepo.findByGroupAndProcess(user.getGroup(), process);
-        if (groupProcess == null) {
-            groupProcess = new GroupProcess();
-            groupProcess.setGroup(user.getGroup());
-            groupProcess.setProcess(process);
-        }
-        assert groupProcess != null;
-        groupProcess.setHasRead(hasRead);
-        groupProcess.setHasWrite(hasWrite);
-        groupProcess.setHasOwnership(hasOwnership);
-
-        groupProcessRepo.save(groupProcess);
     }
 
     private void createGroupProcess(Group group, Process process, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
@@ -466,13 +430,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private void createGroupLog(Group group, Log log, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         GroupLog groupLog = groupLogRepo.findByGroupAndLog(group, log);
         if (groupLog == null) {
-            groupLog= new GroupLog();
-            groupLog.setGroup(group);
-            groupLog.setLog(log);
-            groupLog.setHasRead(hasRead);
-            groupLog.setHasWrite(hasWrite);
-            groupLog.setHasOwnership(hasOwnership);
-
+            groupLog= new GroupLog(group, log, hasRead, hasWrite, hasOwnership);
             log.getGroupLogs().add(groupLog);
             //group.getGroupLogs().add(groupLog);
         } else {

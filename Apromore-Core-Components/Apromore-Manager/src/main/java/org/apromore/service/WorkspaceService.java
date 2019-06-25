@@ -95,10 +95,4 @@ public interface WorkspaceService {
      * @param process the process model we are restricting access to.
      */
     void removePublicStatusForUsers(final Process process);
-
-    /**
-     * For this User make sure all the public models and folders are accessible.
-     * @param user the user to update.
-     */
-    void updateUsersPublicModels(User user);
 }

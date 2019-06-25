@@ -21,13 +21,18 @@ package org.apromore.service.impl;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.GroupLog;
 import org.apromore.dao.model.Log;
+import org.apromore.dao.model.User;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.SummariesType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserService;
+import org.apromore.service.WorkspaceService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
@@ -52,6 +57,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 //import javax.annotation.Resource;
 
@@ -65,9 +71,10 @@ public class EventLogServiceImpl implements EventLogService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImpl.class);
 
-    private UserService userSrv;
-    private FolderRepository folderRepo;
     private LogRepository logRepo;
+    private GroupRepository groupRepo;
+    private FolderRepository folderRepo;
+    private UserService userSrv;
     private UserInterfaceHelper ui;
 
     /**
@@ -76,8 +83,9 @@ public class EventLogServiceImpl implements EventLogService {
      * @param ui User Interface Helper.
      */
     @Inject
-    public EventLogServiceImpl(final LogRepository logRepository, final FolderRepository folderRepo, final UserService userSrv, final UserInterfaceHelper ui) {
+    public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository, final FolderRepository folderRepo, final UserService userSrv, final UserInterfaceHelper ui) {
         this.logRepo = logRepository;
+        this.groupRepo = groupRepository;
         this.folderRepo = folderRepo;
         this.userSrv = userSrv;
         this.ui = ui;
@@ -91,7 +99,9 @@ public class EventLogServiceImpl implements EventLogService {
 
     @Override
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog, String extension, String domain, String created, boolean publicModel) throws Exception {
-        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(new XFactoryNaiveImpl(), inputStreamLog, extension), userSrv.findUserByLogin(username).getId(), domain, created, publicModel);
+        User user = userSrv.findUserByLogin(username);
+
+        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(new XFactoryNaiveImpl(), inputStreamLog, extension), user.getId(), domain, created, publicModel);
         Log log = new Log();
         log.setFolder(folderRepo.findUniqueByID(folderId));
         log.setDomain(domain);
@@ -100,8 +110,28 @@ public class EventLogServiceImpl implements EventLogService {
         log.setName(logName);
         log.setPublicLog(publicModel);
         log.setRanking("");
-        log.setUser(userSrv.findUserByLogin(username));
+        log.setUser(user);
+
+        Set<GroupLog> groupLogs = log.getGroupLogs();
+
+        // Add the user's personal group
+        groupLogs.add(new GroupLog(user.getGroup(), log, true, true, true));
+
+        // Add the public group
+        if (publicModel) {
+            Group publicGroup = groupRepo.findPublicGroup();
+            if (publicGroup == null) {
+                LOGGER.warn("No public group present in repository");
+            } else {
+                groupLogs.add(new GroupLog(publicGroup, log, true, true, false));
+            }
+        }
+
+        log.setGroupLogs(groupLogs);
+
+        // Perform the update
         logRepo.saveAndFlush(log);
+
         return log;
     }
 
