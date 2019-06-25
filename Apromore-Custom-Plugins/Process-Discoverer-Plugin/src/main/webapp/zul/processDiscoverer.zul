@@ -620,9 +620,9 @@
 			avoidOverlap: !0,
 			edgeSep: 50,
 			nodeSep: 110,
-			randomize: a,
+			randomize: false,
 			rankDir: "LR",
-			ranker: "tight-tree"
+			ranker: "network-simplex"
 		  }).run()
 		  
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
