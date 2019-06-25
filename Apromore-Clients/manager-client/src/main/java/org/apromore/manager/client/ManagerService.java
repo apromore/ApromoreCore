@@ -84,6 +84,8 @@ public interface ManagerService {
 
     List<GroupAccessType> getProcessGroups(int processId);
 
+    List<GroupAccessType> getLogGroups(int logId);
+
     SummariesType getProcessSummaries(String userId, int folderId, int pageIndex, int pageSize);
 
     SummariesType getLogSummaries(String userId, int folderId, int pageIndex, int pageSize);
@@ -106,9 +108,13 @@ public interface ManagerService {
 
     String saveProcessPermissions(int processId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership);
 
+    String saveLogPermissions(int logId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership);
+
     String removeFolderPermissions(int folderId, String userId);
 
     String removeProcessPermissions(int processId, String userId);
+
+    String removeLogPermissions(int logId, String userId);
 
     /**
      * Read all the users from the apromore manager.
