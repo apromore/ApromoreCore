@@ -112,32 +112,36 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
                 HashMap<String, String> others;
                 Timestamp startTimestamp = null;
                 String resourceCol = null;
+                try {
+                    while ((line = reader.readNext()) != null) {
 
-                while ((line = reader.readNext()) != null) {
+                        otherTimestamps = new HashMap<String, Timestamp>();
+                        others = new HashMap<String, String>();
 
-                    otherTimestamps = new HashMap<String, Timestamp>();
-                    others = new HashMap<String, String>();
-
-                    for(int p=0; p<= line.length-1; p++) {
-                        if(otherTimeStampsPos.get(p) !=null){
-                            otherTimestamps.put(header[p], parse.parseTimestamp(line[p], otherTimeStampsPos.get(p)));
+                        for (int p = 0; p <= line.length - 1; p++) {
+                            if (otherTimeStampsPos.get(p) != null) {
+                                otherTimestamps.put(header[p], parse.parseTimestamp(line[p], otherTimeStampsPos.get(p)));
+                            } else if (p != heads.get(caseid) && p != heads.get(activity) && p != heads.get(timestamp) && p != heads.get(tsStart) && p != heads.get(resource) && (ignoredPos.isEmpty() || !ignoredPos.contains(p))) {
+                                others.put(header[p], line[p]);
+                            }
                         }
-                        else if (p!= heads.get(caseid) && p!= heads.get(activity) && p!= heads.get(timestamp)&& p!= heads.get(tsStart)&& p!= heads.get(resource) && (ignoredPos.isEmpty() || !ignoredPos.contains(p)) ) {
-                            others.put(header[p], line[p]);
+                        Timestamp tStamp = parse.parseTimestamp(line[heads.get(timestamp)], timestampFormat);
+
+                        if (heads.get(tsStart) != -1) {
+                            startTimestamp = parse.parseTimestamp(line[heads.get(tsStart)], startTsFormat);
                         }
-                    }
-                    Timestamp tStamp =  parse.parseTimestamp(line[heads.get(timestamp)], timestampFormat);
+                        if (heads.get(resource) != -1) {
+                            resourceCol = line[heads.get(resource)];
+                        }
 
-                    if (heads.get(tsStart)!=  -1){
-                        startTimestamp =  parse.parseTimestamp(line[heads.get(tsStart)], startTsFormat);
-                    }
-                    if (heads.get(resource)!=  -1){
-                        resourceCol = line[heads.get(resource)];
-                    }
+                        logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
 
-                    logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp ,startTimestamp, otherTimestamps,resourceCol, others));
-
+                    }
+                }catch(Exception e) {
+                    Messagebox.show("Failed: One or more rows contains invalid timestamp Value!", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+                    return null;
                 }
+
                 return sortTraces(logData);
 
             } catch (IOException e) {
@@ -548,14 +552,18 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
                     xEvent.getAttributes().put(entry.getKey(), attribute);
                 }
             }
+            try {
+                if (!isEndTimestamp) {
+                    lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.START);
+                    timestamp.assignTimestamp(xEvent, theTrace.getStartTimestamp());
 
-            if(!isEndTimestamp){
-                lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.START);
-                timestamp.assignTimestamp(xEvent, theTrace.getStartTimestamp());
-
-            }else{
-                lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.COMPLETE);
-                timestamp.assignTimestamp(xEvent, theTrace.getTimestamp());
+                } else {
+                    lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.COMPLETE);
+                    timestamp.assignTimestamp(xEvent, theTrace.getTimestamp());
+                }
+            } catch(Exception e) {
+                Messagebox.show("Cannot be converted, one of the timestamps are not valid!", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+                return null;
             }
 
             return  xEvent;

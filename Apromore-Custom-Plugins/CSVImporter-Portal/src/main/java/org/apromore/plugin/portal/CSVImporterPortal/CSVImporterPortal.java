@@ -170,7 +170,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     myGrid.getColumns().getChildren().clear();
                 }
 
-
                 /// display first numberOfrows to user and display drop down lists to set attributes
                 header = reader.readNext();   // read first line
 
@@ -335,7 +334,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
                 }
             }
-
             toXESButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     // on clicking the button: CONVERT TO XES
@@ -347,8 +345,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         if (xesModel != null) {
                             // create XES file
                             XLog xlog = csvImporterLogic.createXLog(xesModel);
-                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-                            Messagebox.show("Your file has been created!");
+                            if(xlog != null) {
+                                saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                Messagebox.show("Your file has been created!");
+                            }
                             window.detach();
                         }
                     }else{
