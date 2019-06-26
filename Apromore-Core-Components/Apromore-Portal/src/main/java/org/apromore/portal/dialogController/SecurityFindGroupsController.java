@@ -91,12 +91,19 @@ public class SecurityFindGroupsController extends BaseController {
                             Label lblId = (Label) cells.get(5).getChildren().get(0);
                             if (chkWrite != null && chkOwner != null && lblId != null) {
                                 String message = "";
-                                if (selectedType == FolderTreeNodeTypes.Folder) {
+                                switch (selectedType) {
+                                case Folder:
                                     message = mainController.getService().saveFolderPermissions(selectedId,
                                             lblId.getValue(), true, chkWrite.isChecked(), chkOwner.isChecked());
-                                } else if (selectedType == FolderTreeNodeTypes.Process) {
+                                    break;
+                                case Process:
                                     message = mainController.getService().saveProcessPermissions(selectedId,
                                             lblId.getValue(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                    break;
+                                case Log:
+                                    message = mainController.getService().saveLogPermissions(selectedId,
+                                            lblId.getValue(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                    break;
                                 }
                                 if (message.isEmpty()) {
                                     securitySetupController.getPermissionsController().loadUsers(

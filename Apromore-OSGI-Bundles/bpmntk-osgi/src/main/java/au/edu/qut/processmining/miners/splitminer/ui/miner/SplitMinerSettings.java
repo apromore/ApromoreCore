@@ -20,7 +20,7 @@ public class SplitMinerSettings extends ProMPropertiesPanel {
     final SplitMinerUIResult result;
 
     JCheckBox replaceIORs;
-    JCheckBox removeSelfLoops;
+    JCheckBox removeLoopActivities;
 //    ProMComboBox structuring;
 
     public SplitMinerSettings() {
@@ -41,11 +41,11 @@ public class SplitMinerSettings extends ProMPropertiesPanel {
         replaceIORs = this.addCheckBox("Remove OR-joins", false);
         replaceIORs.addChangeListener(smpil);
 
-        removeSelfLoops = this.addCheckBox("Remove Self-loops", true);
-        removeSelfLoops.addChangeListener(smpil);
+        removeLoopActivities = this.addCheckBox("Remove Loop Activities", true);
+        removeLoopActivities.addChangeListener(smpil);
 
         result.setReplaceIORs(replaceIORs.isSelected());
-        result.setRemoveSelfLoops(removeSelfLoops.isSelected());
+        result.setRemoveLoopActivities(removeLoopActivities.isSelected());
         result.setStructuringTime(SplitMinerUIResult.STRUCT_POLICY);
     }
 
@@ -58,7 +58,7 @@ public class SplitMinerSettings extends ProMPropertiesPanel {
         @Override
         public void stateChanged(ChangeEvent e) {
             result.setReplaceIORs(replaceIORs.isSelected());
-            result.setRemoveSelfLoops(removeSelfLoops.isSelected());
+            result.setRemoveLoopActivities(removeLoopActivities.isSelected());
         }
 
         @Override

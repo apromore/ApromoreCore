@@ -50,7 +50,7 @@ import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 
-public class UserSessionManager {
+public abstract class UserSessionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserSessionManager.class);
 
@@ -69,9 +69,6 @@ public class UserSessionManager {
      * Map from user session UUIDs passed as the query part of URLs, to Signavio session objects.
      */
     static Map<String,SignavioSession> editSessionMap = new HashMap<>();
-
-    private UserSessionManager() { }
-
 
     public static void setCurrentUser(UserType user) {
         setAttribute(USER, user);

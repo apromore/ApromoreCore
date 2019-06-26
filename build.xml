@@ -97,8 +97,8 @@
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
 
-        <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
+        <!--<include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>-->
+        <!--<include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/> -->
         <!--<include name="Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
 
         <include name="Apromore-Custom-Plugins/Metrics-Logic/target/metrics-logic-1.1.jar"/>
@@ -176,8 +176,8 @@
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
 
-        <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
+        <!-- <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/> -->
+        <!-- <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/> -->
         <!--<include name="Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
 
         <include name="Apromore-Custom-Plugins/Metrics-Logic/target/metrics-logic-1.1.jar"/>
@@ -238,6 +238,9 @@
         <include name="Apromore-Custom-Plugins/Compare-Logic/target/compare-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin/target/compareBP-portal-plugin-1.1.war"/>
 
+        <include name="Apromore-Custom-Plugins/CSVImporter-Logic/target/csvimporter-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/CSVImporter-Portal/target/csvimporter-portal-1.0.jar"/>
+
         <include name="Apromore-Custom-Plugins/LTL-Conf-Logic/target/ltl-conf-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin/target/ltl-conf-portal-plugin-1.1.war"/>
         
@@ -270,8 +273,8 @@
         <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
 		<include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
 
-        <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/>
-        <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/>
+        <!-- <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic/target/log-visualizer-logic-1.1.jar"/> -->
+        <!-- <include name="Apromore-Custom-Plugins/Log-Visualizer-Logic-WS/target/log-visualizer-logic-ws-1.1.war"/> -->
         <!--<include name="Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin/target/log-visualizer-portal-plugin-1.1.jar"/>-->
 
         <include name="Apromore-Custom-Plugins/Metrics-Logic/target/metrics-logic-1.1.jar"/>

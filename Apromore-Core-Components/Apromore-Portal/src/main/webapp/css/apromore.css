@@ -35,6 +35,10 @@ body .main-content {
     overflow: visible;
 }
 
+.span7 {
+    text-align: center;
+}
+
 .tab-content {
     border-color: #BABECC;
     border-style: solid;

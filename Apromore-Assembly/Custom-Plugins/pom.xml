@@ -41,6 +41,18 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>4.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.ow2.bundles</groupId>
             <artifactId>ow2-bundles-externals-opencsv</artifactId>
             <version>1.0.36</version>

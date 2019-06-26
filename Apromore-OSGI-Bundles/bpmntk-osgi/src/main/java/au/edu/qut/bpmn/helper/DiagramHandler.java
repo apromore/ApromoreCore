@@ -22,7 +22,6 @@ package au.edu.qut.bpmn.helper;
 
 import de.hpi.bpt.graph.DirectedEdge;
 import de.hpi.bpt.graph.DirectedGraph;
-import de.hpi.bpt.graph.abs.AbstractDirectedEdge;
 import de.hpi.bpt.graph.abs.IDirectedEdge;
 import de.hpi.bpt.graph.abs.IDirectedGraph;
 import de.hpi.bpt.graph.algo.rpst.RPST;
@@ -119,7 +118,7 @@ public class DiagramHandler {
         }
     }
 
-    public void removeSelfLoopMarkers(BPMNDiagram diagram) {
+    public void removeLoopActivityMarkers(BPMNDiagram diagram) {
         Gateway entry, exit;
         BPMNEdge<? extends BPMNNode, ? extends BPMNNode> in, out;
         in = null;
