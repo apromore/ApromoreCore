@@ -410,13 +410,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private void createGroupProcess(Group group, Process process, boolean hasRead, boolean hasWrite, boolean hasOwnership) {
         GroupProcess groupProcess = groupProcessRepo.findByGroupAndProcess(group, process);
         if (groupProcess == null) {
-            groupProcess = new GroupProcess();
-            groupProcess.setGroup(group);
-            groupProcess.setProcess(process);
-            groupProcess.setHasRead(hasRead);
-            groupProcess.setHasWrite(hasWrite);
-            groupProcess.setHasOwnership(hasOwnership);
-
+            groupProcess = new GroupProcess(process, group, hasRead, hasWrite, hasOwnership);
             process.getGroupProcesses().add(groupProcess);
             //group.getGroupProcesses().add(groupProcess);
         } else {

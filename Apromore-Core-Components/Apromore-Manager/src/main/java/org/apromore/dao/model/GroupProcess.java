@@ -65,6 +65,17 @@ public class GroupProcess implements Serializable {
     }
 
     /**
+     * Convenient constructor.
+     */
+    public GroupProcess(Process newProcess, Group newGroup, boolean newHasRead, boolean newHasWrite, boolean newHasOwnership) {
+        this.process      = newProcess;
+        this.group        = newGroup;
+        this.hasRead      = newHasRead;
+        this.hasWrite     = newHasWrite;
+        this.hasOwnership = newHasOwnership;
+    }
+
+    /**
      * Get the Primary Key for the Object.
      * @return Returns the Id.
      */

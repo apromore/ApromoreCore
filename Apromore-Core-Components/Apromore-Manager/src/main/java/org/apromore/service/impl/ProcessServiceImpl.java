@@ -964,28 +964,15 @@ public class ProcessServiceImpl implements ProcessService {
             Set<GroupProcess> groupProcesses = process.getGroupProcesses();
 
             // Add the user's personal group
-            GroupProcess gp1 = new GroupProcess();
-            gp1.setGroup(user.getGroup());
-            gp1.setProcess(process);
-            gp1.setHasRead(true);
-            gp1.setHasWrite(true);
-            gp1.setHasOwnership(true);
-            groupProcesses.add(gp1);
+            groupProcesses.add(new GroupProcess(process, user.getGroup(), true, true, true));
 
-            // Add the public group
             /*
             if (publicModel) {
                 Group publicGroup = groupRepo.findPublicGroup();
                 if (publicGroup == null) {
                     LOGGER.warn("No public group present in repository");
                 } else {
-                    GroupProcess gp2 = new GroupProcess();
-                    gp2.setGroup(publicGroup);
-                    gp2.setProcess(process);
-                    gp2.setHasRead(true);
-                    gp2.setHasWrite(true);
-                    gp2.setHasOwnership(false);
-                    groupProcesses.add(gp2);
+                    groupProcesses.add(new GroupProcess(process, publicGroup, true, true, false));
                 }
             }
             */
@@ -1005,13 +992,7 @@ public class ProcessServiceImpl implements ProcessService {
                 if (publicGroup == null) {
                     LOGGER.warn("No public group present in repository");
                 } else {
-                    GroupProcess gp2 = new GroupProcess();
-                    gp2.setGroup(publicGroup);
-                    gp2.setProcess(process);
-                    gp2.setHasRead(true);
-                    gp2.setHasWrite(true);
-                    gp2.setHasOwnership(false);
-                    groupProcesses.add(gp2);
+                    groupProcesses.add(new GroupProcess(process, publicGroup, true, true, false));
                 }
             }
 
