@@ -57,6 +57,17 @@ public class GroupLog implements Serializable {
     }
 
     /**
+     * Convenient constructor.
+     */
+    public GroupLog(Group newGroup, Log newLog, boolean newHasRead, boolean newHasWrite, boolean newHasOwnership) {
+        this.group        = newGroup;
+        this.log          = newLog;
+        this.hasRead      = newHasRead;
+        this.hasWrite     = newHasWrite;
+        this.hasOwnership = newHasOwnership;
+    }
+
+    /**
      * Get the Primary Key for the Object.
      * @return Returns the Id.
      */

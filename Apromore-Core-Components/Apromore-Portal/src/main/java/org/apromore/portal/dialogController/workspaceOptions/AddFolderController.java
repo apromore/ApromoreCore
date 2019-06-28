@@ -41,18 +41,17 @@ public class AddFolderController extends BaseController {
     private Button btnSave;
     private Button btnCancel;
     private Textbox txtName;
-    private Checkbox checkboxGED;
-    private int folderId;
     private Logger LOGGER = Logger.getLogger(AddFolderController.class.getCanonicalName());
 
-    public AddFolderController(MainController mainController, int folderId, String name, Boolean isGEDMatrixReady) throws DialogException {
+    public AddFolderController(MainController mainController) throws DialogException {
         this.mainController = mainController;
 
         try {
-//            final Window win = (Window) Executions.createComponents("macros/folderRename.zul", null, null);
-            final Window win = getWindow(name, isGEDMatrixReady);
-
-            this.folderId = folderId;
+            final Window win = (Window) Executions.createComponents("macros/folderCreate.zul", null, null);
+            this.folderEditWindow = (Window) win.getFellow("winFolderCreate");
+            this.txtName = (Textbox) this.folderEditWindow.getFellow("txtName");
+            this.btnSave = (Button) this.folderEditWindow.getFellow("btnSave");
+            this.btnCancel = (Button) this.folderEditWindow.getFellow("btnCancel");
 
             folderEditWindow.addEventListener("onLater", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -77,62 +76,31 @@ public class AddFolderController extends BaseController {
         }
     }
 
-    private  Window getWindow(String name, Boolean isGEDMatrixReady) {
-        Window win = null;
-        if(isGEDMatrixReady != null && name != null) {
-            win = (Window) Executions.createComponents("macros/folderCreate.zul", null, null);
-            this.folderEditWindow = (Window) win.getFellow("winFolderCreate");
-            this.txtName = (Textbox) this.folderEditWindow.getFellow("txtName");
-            this.checkboxGED = (Checkbox) this.folderEditWindow.getFellow("checkboxGED");
-        }else if(isGEDMatrixReady != null) {
-            win = (Window) Executions.createComponents("macros/folderGED.zul", null, null);
-            this.folderEditWindow = (Window) win.getFellow("winFolderGED");
-            this.checkboxGED = (Checkbox) this.folderEditWindow.getFellow("checkboxGED");
-            this.checkboxGED.setChecked(isGEDMatrixReady);
-            this.txtName = null;
-        }else if(name != null) {
-            win = (Window) Executions.createComponents("macros/folderRename.zul", null, null);
-            this.folderEditWindow = (Window) win.getFellow("winFolderRename");
-            this.checkboxGED = null;
-            this.txtName = (Textbox) this.folderEditWindow.getFellow("txtName");
-            this.txtName.setValue(name);
-        }
-
-        this.btnSave = (Button) this.folderEditWindow.getFellow("btnSave");
-        this.btnCancel = (Button) this.folderEditWindow.getFellow("btnCancel");
-
-        return win;
-    }
-
     private void cancel() throws IOException {
         this.folderEditWindow.detach();
     }
 
     private void save() throws InterruptedException {
         try {
-            String folderName = txtName!=null?txtName.getValue():null;
-            Boolean isGEDMatrixReady = checkboxGED!=null?checkboxGED.isChecked():null;
-            if (txtName != null && folderName.isEmpty()) {
+            String folderName = txtName.getValue();
+            if (folderName.isEmpty()) {
                 Messagebox.show("Name cannot be empty.", "Attention", Messagebox.OK, Messagebox.ERROR);
-            } else {
-                LOGGER.warning("folderName " + folderName);
-                if (this.folderId == 0) {
-                    String userId = UserSessionManager.getCurrentUser().getId();
-                    int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
-                    this.mainController.getService().createFolder(userId, folderName, currentParentFolderId, isGEDMatrixReady);
-                } else {
-                    this.mainController.getService().updateFolder(this.folderId, folderName, isGEDMatrixReady);
-                }
-
-                this.mainController.reloadSummaries();
+                return;
             }
+
+            LOGGER.warning("folderName " + folderName);
+            String userId = UserSessionManager.getCurrentUser().getId();
+            int currentParentFolderId = UserSessionManager.getCurrentFolder() == null || UserSessionManager.getCurrentFolder().getId() == 0 ? 0 : UserSessionManager.getCurrentFolder().getId();
+            this.mainController.getService().createFolder(userId, folderName, currentParentFolderId);
+            this.mainController.reloadSummaries();
+
         } catch (Exception ex) {
             LOGGER.warning("Exception ");
             StackTraceElement[] trace = ex.getStackTrace();
             for (StackTraceElement traceElement : trace)
                 LOGGER.warning("\tat " + traceElement);
-
         }
+
         this.folderEditWindow.detach();
     }
 }

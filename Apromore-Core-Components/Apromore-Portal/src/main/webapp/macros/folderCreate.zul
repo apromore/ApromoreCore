@@ -35,10 +35,12 @@ and CreateProcessController.java for creating process purpose.
                     <label value="Folder name" width="100%"/>
                     <textbox id="txtName" width="100%"/>
                 </row>
+<!--
                 <row tooltiptext="GED Matrix Computation.">
                     <label value="GED Matrix Required" width="100%"/>
                     <checkbox id="checkboxGED" width="100%"/>
                 </row>
+-->
                 <row spans="3">
                     <div align="center">
                         <button id="btnSave" label="Save" image="img/ok.png"></button>

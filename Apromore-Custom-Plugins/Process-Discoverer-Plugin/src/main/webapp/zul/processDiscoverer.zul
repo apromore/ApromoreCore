@@ -149,7 +149,7 @@
 		font-weight: bold; }
 	</style>
 		
-	<window id="win" border="none" closable="false" height="100%" width="100%" use="org.apromore.plugin.processdiscoverer.ProcessDiscovererController">
+	<window id="win" border="none" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
 		<caption id="windowcaption" sclass="mainCaption">
 			<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank" sclass="captionButtons">
 				<button label="Help" image="/img/Help-16x16.png" style="float: right;" height="25px"></button>
@@ -298,6 +298,7 @@
 								<menuitem id="layout_klay_tb" onClick='Clients.evalJavaScript("layout_klay_TB(false)")' label="Klay Top-Bottom" />
 							</menupopup>
 						</combobutton>
+						<button id="fitScreen" label="Fit to screen" />
 						<combobutton id="export" label="Export">
 							<menupopup>
 								<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>
@@ -465,6 +466,12 @@
 		  cy.add($.parseJSON(a)); 
 		  layout_dagre_LR(false);
 		}
+		
+		function fitToWindow() {
+			if (window.cy) {
+				window.cy.fit();
+			}
+		}
 
 		function horizontal() {
 		  cy.style().selector("edge").style({
@@ -613,9 +620,9 @@
 			avoidOverlap: !0,
 			edgeSep: 50,
 			nodeSep: 110,
-			randomize: a,
+			randomize: false,
 			rankDir: "LR",
-			ranker: "tight-tree"
+			ranker: "network-simplex"
 		  }).run()
 		  
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);

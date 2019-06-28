@@ -56,9 +56,8 @@
                             org.processmining.framework.*;version="[1.0,2.0)",
                             org.processmining.models.*;version="[1.0,2.0)",
                             org.processmining.plugins.*;version="[1.0,2.0)",
-                            org.deckfour.xes.model.*;version="[1.0,2.0)",
-                            org.deckfour.xes.factory.*;version="[1.0,2.0)",
-                            !com.raffaeleconforti.processdiscoverer.*,
+                            <!-- org.deckfour.xes.model.*;version="[1.0,2.0)", -->
+                            <!-- org.deckfour.xes.factory.*;version="[1.0,2.0)", -->
 							org.eclipse.virgo.web.dm,
                             org.springframework.beans.factory.aspectj,
                             org.springframework.security.web.session,
@@ -80,10 +79,10 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.plugin.processdiscoverer, 
+                            org.apromore.plugin.portal.processdiscoverer, 
 							org.apromore.plugin.processdiscoverer.service,
-							org.apromore.plugin.processdiscoverer.impl.filter, 
-							org.apromore.plugin.processdiscoverer.impl
+							org.apromore.processdiscoverer,
+							org.apromore.processdiscoverer.logfilter
                         </Export-Package>
 						<Web-ContextPath>processdiscoverer</Web-ContextPath>
                     </instructions>
@@ -106,9 +105,13 @@
     </build>
 
     <dependencies>
+		<dependency>
+			<groupId>org.apromore</groupId>
+			<artifactId>bpmntk-osgi</artifactId>
+		</dependency>
 		
 		<dependency>
-            <groupId>org.apromore</groupId>
+			<groupId>org.apromore</groupId>
             <artifactId>raffaeleconforti-osgi</artifactId>
         </dependency>
 		
@@ -139,12 +142,6 @@
             <groupId>org.apromore</groupId>
             <artifactId>bimp-annotation-logic</artifactId>
             <version>1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>bpmndiagramimporter-logic</artifactId>
-            <version>1.1</version>
         </dependency>
 		
 		<!-- Note: this dependency is only for -->

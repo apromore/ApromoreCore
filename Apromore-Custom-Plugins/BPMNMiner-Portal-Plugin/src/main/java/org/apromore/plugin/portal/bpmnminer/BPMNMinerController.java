@@ -409,12 +409,14 @@ public class BPMNMinerController {
         });
 
         descriptionLabel = (Label) window.getFellow("description");
+        assert descriptionLabel != null;
 
         fractionCompleteProgressmeter = (Progressmeter) window.getFellow("fractionComplete");
+        assert fractionCompleteProgressmeter != null;
 
         window.doModal();
 
-        eventQueue.subscribe(new EventListener<Event>() {
+        EventListener<Event> eventListener = new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 switch (event.getName()) {
                 case CHANGE_DESCRIPTION:
@@ -434,9 +436,10 @@ public class BPMNMinerController {
                     } catch (Exception e) {
                         e.printStackTrace();
                         Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+
                     }
-                    //window.detach();
-                    //this.portalContext.refreshContent();
+                    window.detach();
+                    BPMNMinerController.this.portalContext.refreshContent();
 
                     break;
 
@@ -451,7 +454,8 @@ public class BPMNMinerController {
                     break;
                 }
             }
-        });
+        };
+        eventQueue.subscribe(eventListener);
 
         new Thread() {
             public void run() {
@@ -463,6 +467,7 @@ public class BPMNMinerController {
                     e.printStackTrace();
                     eventQueue.publish(new Event(MINING_EXCEPTION, null, e));
                 }
+                eventQueue.unsubscribe(eventListener);
             }
         }.start();
     }

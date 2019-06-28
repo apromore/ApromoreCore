@@ -620,12 +620,11 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bpmntk-osgi</artifactId>
-            <version>1.1</version>
         </dependency>
 
         <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
+            <groupId>org.deckfour</groupId>
+            <artifactId>openxes</artifactId>
         </dependency>
 		
 		<!-- GUI related dependencies -->
