@@ -135,7 +135,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
      * read CSV content and create list model to be set as grid model.
      */
     @SuppressWarnings("null")
-    private void displayCSVContent(Media media, ListModelList<String[]> result, Grid myGrid, Div attrBox, Div popUPBox) {
+    private void displayCSVContent(Media media, ListModelList<String[]> result, Grid myGrid, Div attrBox, Div popUPBox, Window window) {
         String firstLine = null;
         char separator = Character.UNASSIGNED;
         BufferedReader brReader = new BufferedReader(new InputStreamReader(media.getStreamData()));
@@ -199,30 +199,38 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     Messagebox.show("Could not parse file!");
                 }
 
-                csvImporterLogic.setLine(line);
-                csvImporterLogic.setHeads(header);
-                csvImporterLogic.setOtherTimestamps();
+                    csvImporterLogic.setLine(line);
+                    csvImporterLogic.setHeads(header);
+                    csvImporterLogic.setOtherTimestamps();
 
-                attrBox.setWidth(line.length * AttribWidth + "px");
+                    if (line.length != header.length) {
+                        Messagebox.show("Number of headers does not match number of values", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
+                        window.detach();
+                        reader.close();
+                    } else {
 
-                csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth + "px");
+                        attrBox.setWidth(line.length * AttribWidth + "px");
 
-                List<Listbox> lists = csvImporterLogic.getLists();
-                for (Listbox list : lists) {
-                    attrBox.appendChild(list);
-                }
+                        csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth + "px");
 
-                createPopUpTextBox(line.length, popUPBox);
-                csvImporterLogic.openPopUp();
+                        List<Listbox> lists = csvImporterLogic.getLists();
+                        for (Listbox list : lists) {
+                            attrBox.appendChild(list);
+                        }
 
-                // display first 1000 rows
-                int numberOfrows = 1000 - 1;
-                while (line != null && numberOfrows >= 0) {
-                    result.add(line);
-                    numberOfrows--;
-                    line = reader.readNext();
-                }
-                reader.close();
+                        createPopUpTextBox(line.length, popUPBox);
+                        csvImporterLogic.openPopUp();
+
+
+                        // display first 1000 rows
+                        int numberOfrows = 1000 - 1;
+                        while (line != null && numberOfrows >= 0) {
+                            result.add(line);
+                            numberOfrows--;
+                            line = reader.readNext();
+                        }
+                        reader.close();
+                    }
             } catch (IOException e) {
                 e.printStackTrace();
                 Messagebox.show(e.getMessage());
@@ -313,53 +321,60 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 String[] allowedExtensions = {"csv", "xls", "xlsx"};
                 if (Arrays.asList(allowedExtensions).contains(media.getFormat())) {
 
-                    displayCSVContent(media, result, myGrid, attrBox, popUPBox);
+                    displayCSVContent(media, result, myGrid, attrBox, popUPBox, window);
+                    if (window != null) {
 //                            gridBox.setWidth(attrBox.getWidth());
-                    // set grid model
-                    if (result != null) {
-                        myGrid.setModel(result);
-                    } else {
-                        Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
+                        // set grid model
+                        if (result != null) {
+                            myGrid.setModel(result);
+                        } else {
+                            Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
+                        }
+                        //set grid row renderer
+                        gridRendererController rowRenderer = new gridRendererController();
+                        rowRenderer.setAttribWidth(AttribWidth);
+
+                        myGrid.setRowRenderer(rowRenderer);
+                        toXESButton.setDisabled(false);
+
+                        fileNameLabel.setValue("Current File: " + media.getName());
+                        window.setPosition("top,left");
                     }
-                    //set grid row renderer
-                    gridRendererController rowRenderer = new gridRendererController();
-                    rowRenderer.setAttribWidth(AttribWidth);
-
-                    myGrid.setRowRenderer(rowRenderer);
-                    toXESButton.setDisabled(false);
-
-                    fileNameLabel.setValue("Current File: " + media.getName());
-                    window.setPosition("top,left");
                 } else {
                     Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
                 }
             }
             toXESButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    // on clicking the button: CONVERT TO XES
-
-                    if (media != null){
-                        Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData())
-                                : media.getReaderData();
-                        List<LogModel> xesModel = csvImporterLogic.prepareXesModel(reader);
-                        if (xesModel != null) {
-                            // create XES file
-                            XLog xlog = csvImporterLogic.createXLog(xesModel);
-                            if(xlog != null) {
-                                saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-                                Messagebox.show("Your file has been created!");
+                    if(window != null) {
+                        // on clicking the button: CONVERT TO XES
+                        if (media != null) {
+                            Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData())
+                                    : media.getReaderData();
+                            List<LogModel> xesModel = csvImporterLogic.prepareXesModel(reader);
+                            if (xesModel != null) {
+                                // create XES file
+                                XLog xlog = csvImporterLogic.createXLog(xesModel);
+                                if (xlog != null) {
+                                    saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                    Messagebox.show("Your file has been created!");
+                                }
+                                window.detach();
                             }
-                            window.detach();
+                        } else {
+                            Messagebox.show("Upload file first!");
                         }
-                    }else{
-                        Messagebox.show("Upload file first!");
                     }
                 }
 
             });
 
+            try {
+                window.doModal();
 
-            window.doModal();
+            }catch (Exception e) {
+                //
+            }
 
         } catch (IOException e) {
             LOGGER.warn("Unable to execute sample method", e);

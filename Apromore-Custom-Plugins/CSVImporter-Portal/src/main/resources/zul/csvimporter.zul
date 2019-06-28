@@ -68,7 +68,7 @@
             <!--<label value="CSV File (.csv)" width="100%"/>-->
             <hbox align="center">
                 <!--<button id="uploadButton" label="Import File (To be removed)" upload="true,maxsize=-1,multiple=false,native"/>-->
-                <button id="toXESButton" label="Convert To XES" image="img/ok.png" disabled="true"></button>
+                <button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true"></button>
                 <!--<button id="toXESButton" label="Convert To XES"/>-->
                 <separator />
                 <!--<button id="topCancelButton" label=" " image="img/cancel2.png"></button>-->

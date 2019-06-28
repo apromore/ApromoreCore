@@ -34,7 +34,6 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
      */
     public class CSVImporterLogicImpl implements CSVImporterLogic {
 
-
         /** The case id values. */
         private String[] caseIdValues = {"case", "case id", "case-id", "service id", "event id"};
 
@@ -58,6 +57,7 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
         /** The Constant timestamp. */
         private static final String timestamp = "timestamp";
 
+        private static final double errorAcceptance = 0.2;
         private static final String tsStart = "startTimestamp";
         private static final String resource = "resource";
         private static final String tsValue = "otherTimestamp";
@@ -90,7 +90,8 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
          */
         @SuppressWarnings("resource")
         public List<LogModel> prepareXesModel(Reader r) {
-
+            int errorCount = 0;
+            int lineCount = 0;
             try (CSVReader reader = new CSVReader(r)) {
 
                 // read first line from CSV as header
@@ -112,9 +113,10 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
                 HashMap<String, String> others;
                 Timestamp startTimestamp = null;
                 String resourceCol = null;
-                try {
-                    while ((line = reader.readNext()) != null) {
 
+                    while ((line = reader.readNext()) != null) {
+                        lineCount++;
+                        try {
                         otherTimestamps = new HashMap<String, Timestamp>();
                         others = new HashMap<String, String>();
 
@@ -136,13 +138,24 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 
                         logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
 
+                        } catch(Exception e) {
+                                errorCount++;
+                        }
                     }
-                }catch(Exception e) {
-                    Messagebox.show("Failed: One or more rows contains invalid timestamp Value!", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
-                    return null;
+
+//                Messagebox.show("Line count is: "+ lineCount + " Error count is: " + errorCount);
+                if(errorCount > (lineCount * errorAcceptance)) {
+                        Messagebox.show("Detected more than " + errorAcceptance * 100 + "% of the log with errors. Please make sure input file is a valid CSV file.", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+                        return null;
+                }else {
+                    if (errorCount > 0) {
+                        Messagebox.show("Imported with Errors: " + errorCount + " rows contains invalid values!", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+                    }
+                    return sortTraces(logData);
                 }
 
-                return sortTraces(logData);
+
+
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -524,7 +537,11 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
                 xTrace.addAll(allEvents);
             }
 
-            return xLog;
+            if(xEvent == null) {
+                return null;
+            } else {
+                return xLog;
+            }
         }
 
 
