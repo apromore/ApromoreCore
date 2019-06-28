@@ -67,7 +67,7 @@ public class ImportController extends BaseController {
     private String fileType = null;
     private String extension;
     private Label fileNameLabel;
-    private boolean isPublic;
+    private Checkbox isPublicCheckbox;
 
     private Button okButton;
 
@@ -86,7 +86,7 @@ public class ImportController extends BaseController {
             okButton = (Button) this.importWindow.getFellow("okButtonImport");
             this.fileNameLabel = (Label) this.importWindow.getFellow("fileNameLabel");
             Label supportedExtL = (Label) this.importWindow.getFellow("supportedExt");
-            isPublic = ((Checkbox) this.importWindow.getFellow("public")).isChecked();
+            isPublicCheckbox = ((Checkbox) this.importWindow.getFellow("public"));
 
             // build the list of supported extensions to display
             SortedSet<String> supportedExt = new TreeSet<>();
@@ -201,7 +201,7 @@ public class ImportController extends BaseController {
         for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
             if (fileImporterPlugin.getFileExtensions().contains(extension)) {
                 closePopup();
-                fileImporterPlugin.importFile(this.media, new PluginPortalContext(mainC), isPublic);
+                fileImporterPlugin.importFile(this.media, new PluginPortalContext(mainC), isPublicCheckbox.isChecked());
                 return;
             }
         }
@@ -232,7 +232,7 @@ public class ImportController extends BaseController {
             String logFileName = fileName.substring(0, fileName.indexOf(extension) - 1);
 
             getService().importLog(UserSessionManager.getCurrentUser().getUsername(), folderId, logFileName, inputStream,
-                    extension, "", DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(), isPublic);
+                    extension, "", DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(), isPublicCheckbox.isChecked());
 
             mainC.refresh();
         } catch (Exception e) {
@@ -314,7 +314,7 @@ public class ImportController extends BaseController {
     }
 
     private void importProcess(MainController mainC, ImportController importC, InputStream xml_is, String processName, String nativeType, String filename) throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
-        ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importC, xml_is, processName, nativeType, filename, isPublic);
+        ImportOneProcessController oneImport = new ImportOneProcessController(mainC, importC, xml_is, processName, nativeType, filename, isPublicCheckbox.isChecked());
         this.toImportList.add(oneImport);
     }
 
