@@ -20,9 +20,7 @@
 
 package org.apromore.portal.common;
 
-import org.apromore.manager.client.ManagerService;
 import org.apromore.model.FolderType;
-import org.apromore.model.LogSummaryType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SummariesType;
 import org.apromore.model.SummaryType;
@@ -69,44 +67,33 @@ public class FolderTree {
                     node.add(buildTree(childNode, folder.getFolders(), folder.getId(), set));
                 } else {
                     node.add(childNode);
-                    addProcessesAndLogs(childNode, folder.getId());
+                    addProcesses(childNode, folder.getId());
                 }
             }else {
                 node.add(new FolderTreeNode((SummaryType) null, null, !loadAll, FolderTreeNodeTypes.Process));
             }
         }
 
-        addProcessesAndLogs(node, folderId);
+        addProcesses(node, folderId);
 
         return node;
     }
 
-    private void addProcessesAndLogs(FolderTreeNode node, int folderId) {
+    private void addProcesses(FolderTreeNode node, int folderId) {
         if (loadAll) {
             final int PAGE_SIZE = 100;
-
-            ManagerService service = UserSessionManager.getMainController().getService();
-            String userId = UserSessionManager.getCurrentUser().getId();
-
             int page = 0;
             SummariesType processes;
             do {
-                processes = service.getProcessSummaries(userId, folderId, page, PAGE_SIZE);
+                processes = UserSessionManager.getMainController().getService().getProcessSummaries(UserSessionManager.getCurrentUser().getId(), folderId, page, PAGE_SIZE);
                 for (SummaryType summaryType : processes.getSummary()) {
-                    assert summaryType instanceof ProcessSummaryType;
-                    node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Process));
+                    if(summaryType instanceof ProcessSummaryType) {
+                        node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Process));
+                    }else {
+                        node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Log));
+                    }
                 }
             } while(PAGE_SIZE * page++ + processes.getSummary().size() < processes.getCount());
-
-            int logsPage = 0;
-            SummariesType logs;
-            do {
-                logs = service.getLogSummaries(userId, folderId, logsPage, PAGE_SIZE);
-                for (SummaryType summaryType : logs.getSummary()) {
-                    assert summaryType instanceof LogSummaryType;
-                    node.add(new FolderTreeNode(summaryType, null, !loadAll, FolderTreeNodeTypes.Log));
-                }
-            } while(PAGE_SIZE * (page + logsPage++) + processes.getSummary().size() + logs.getSummary().size() < processes.getCount() + logs.getCount());
         }
     }
 

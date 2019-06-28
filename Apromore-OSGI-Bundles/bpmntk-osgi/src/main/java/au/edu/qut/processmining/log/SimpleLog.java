@@ -56,13 +56,10 @@ public class SimpleLog {
         this.xlog = xlog;
     }
 
-    public XLog getXLog() { return xlog; }
-
     public Map<String, Integer> getTraces() { return traces; }
     public Map<Integer, String> getEvents() { return events; }
-
     public int size() { return size; }
-    public void setSize(int size) { this.size = size; }
+    public XLog getXLog() { return xlog; }
 
     public Map<String, Integer> getReverseMap() { return reverseMap; }
     public void setReverseMap(Map<String, Integer> reverseMap) { this.reverseMap = reverseMap; }

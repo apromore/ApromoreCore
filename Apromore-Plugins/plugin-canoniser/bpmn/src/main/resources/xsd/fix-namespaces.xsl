@@ -4,7 +4,6 @@
   xmlns:bpmndi = "http://www.omg.org/spec/BPMN/20100524/DI"
   xmlns:dc     = "http://www.omg.org/spec/DD/20100524/DC"
   xmlns:di     = "http://www.omg.org/spec/DD/20100524/DI"
-  xmlns:ixbpmn = "http://www.igrafx.com/2015/bpmn"
   xmlns:xalan  = "http://xml.apache.org/xslt"
   xmlns:xsl    = "http://www.w3.org/1999/XSL/Transform">
 
@@ -45,11 +44,6 @@
         <xsl:apply-templates select="@*|node()"/>
     </xsl:element>
 </xsl:template>
-
-<!-- Strip iGrafx namespace -->
-
-<xsl:template match="@ixbpmn:*"/>
-<xsl:template match="ixbpmn:htmlText"/>
 
 <!-- Each of BPMN's peculiar QName references needs to be individually corrected -->
 

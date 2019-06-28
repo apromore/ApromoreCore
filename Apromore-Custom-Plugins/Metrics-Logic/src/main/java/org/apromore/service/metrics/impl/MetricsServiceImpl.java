@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -148,16 +147,13 @@ public class MetricsServiceImpl extends DefaultParameterAwarePlugin implements M
         shortest = shortest / 3600000;
         longhest = longhest / 3600000;
 
-        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.FULL);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-
         result.put("Number of Traces", Integer.toString(log.size()));
         result.put("Number of Activities", Integer.toString(labels.size()));
         result.put("Number of Events", Integer.toString(events));
         result.put("Number of Resources", Integer.toString(resources.size()));
         result.put("Number of UniqueTraces", Integer.toString(uniqueTraces.size()));
-        result.put("Log StartTime", dateFormat.format(start));
-        result.put("Log EndTime", dateFormat.format(end));
+        result.put("Log StartTime", start.toString());
+        result.put("Log EndTime", end.toString());
         result.put("Mean duration in hours",  new DecimalFormat("#.##").format(mean));
         result.put("Median duration in hours",  new DecimalFormat("#.##").format(median));
         result.put("Min duration in hours",  new DecimalFormat("#.##").format(shortest));

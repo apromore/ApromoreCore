@@ -24,7 +24,6 @@ import org.apromore.dao.dataObject.FolderTreeNode;
 import org.apromore.dao.model.Folder;
 import org.apromore.dao.model.GroupFolder;
 import org.apromore.dao.model.GroupProcess;
-import org.apromore.dao.model.GroupLog;
 import org.apromore.model.FolderType;
 import org.apromore.model.GroupAccessType;
 
@@ -146,22 +145,4 @@ public class WorkspaceMapper {
         return groupAccessTypes;
     }
 
-    /**
-     * Convert group/log pairs to GroupAccessType Webservice objects.
-     * @param groupLogs the DB model
-     * @return the Webservice GroupAccessType
-     */
-    public static List<GroupAccessType> convertGroupLogsToGroupAccessTypes(List<GroupLog> groupLogs) {
-        List<GroupAccessType> groupAccessTypes = new ArrayList<>();
-        for(GroupLog node : groupLogs) {
-            GroupAccessType gat = new GroupAccessType();
-            gat.setGroupId(node.getGroup().getRowGuid());
-            gat.setName(node.getGroup().getName());
-            gat.setHasRead(node.getHasRead());
-            gat.setHasWrite(node.getHasWrite());
-            gat.setHasOwnership(node.getHasOwnership());
-            groupAccessTypes.add(gat);
-        }
-        return groupAccessTypes;
-    }
 }

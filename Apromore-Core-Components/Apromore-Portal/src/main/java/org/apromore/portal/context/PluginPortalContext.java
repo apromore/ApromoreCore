@@ -28,7 +28,6 @@ import org.apromore.portal.dialogController.MainController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Session;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -145,9 +144,7 @@ public class PluginPortalContext implements PortalContext {
     public UserType getCurrentUser() {
         //return UserSessionManager.getCurrentUser();
     	Desktop desktop = mainController.getDesktop();
-        Session session = desktop.getSession();
-        UserType userType = (UserType) session.getAttribute(UserSessionManager.USER);
-    	return userType;
+    	return (UserType)desktop.getSession().getAttribute(UserSessionManager.USER);
     }
     
     /**

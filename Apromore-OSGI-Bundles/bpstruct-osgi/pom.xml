@@ -30,7 +30,7 @@
 
     <groupId>org.apromore</groupId>
     <artifactId>bpstruct-osgi</artifactId>
-    <version>1.2</version>
+    <version>1.1</version>
     <packaging>bundle</packaging>
 
     <build>
@@ -92,8 +92,7 @@
                             de.hpi.bpt.process,
                             de.hpi.bpt.process.*,
                             de.hpi.bpt.process.petri,
-                            ee.ut.bpstruct,
-							ee.ut.comptech
+                            ee.ut.bpstruct
                         </Export-Package>
                     </instructions>
                 </configuration>

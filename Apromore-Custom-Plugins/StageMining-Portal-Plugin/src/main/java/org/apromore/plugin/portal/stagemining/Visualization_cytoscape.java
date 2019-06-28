@@ -82,7 +82,7 @@ public class Visualization_cytoscape {
                     nodeName += (", " + v.getName());
                 }
             }
-            jsonOneNode.put("name", escapeChars(nodeName));
+            jsonOneNode.put("name", nodeName);
             JSONObject jsonDataNode = new JSONObject();
             jsonDataNode.put("data", jsonOneNode);
             jsonNodeAndArcArray.put(jsonDataNode);
@@ -110,15 +110,5 @@ public class Visualization_cytoscape {
         //json.put("elements", jsonNodeAndArcArray);
         //return json;
         return jsonNodeAndArcArray;
-    }
-    
-    /**
-     * To make string conform to JSON rules. 
-     * See ProcessDiscovererController.display()
-     * Note: escape characters are doubled since expression patterns also use the same escape characters 
-     * @param value
-     */
-    private static String escapeChars(String value) {
-    	return value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"");
     }
 }

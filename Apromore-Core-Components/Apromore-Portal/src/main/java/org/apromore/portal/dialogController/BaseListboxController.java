@@ -23,7 +23,6 @@ package org.apromore.portal.dialogController;
 import org.apromore.model.*;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
-import org.apromore.portal.dialogController.workspaceOptions.RenameFolderController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -181,7 +180,7 @@ public abstract class BaseListboxController extends BaseController {
     protected void addFolder() throws InterruptedException {
         getMainController().eraseMessage();
         try {
-            new AddFolderController(getMainController());
+            new AddFolderController(getMainController(), 0, "", false);
         } catch (DialogException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         }
@@ -220,6 +219,24 @@ public abstract class BaseListboxController extends BaseController {
         }
     }
 
+    /*
+    protected void changeGED() throws InterruptedException {
+        getMainController().eraseMessage();
+        try {
+            List<Integer> folderIds = UserSessionManager.getSelectedFolderIds();
+
+            if (folderIds.size() == 1) {
+                boolean isGEDReady = this.mainController.getService().isGEDReadyFolder(folderIds.get(0));
+                new AddFolderController(getMainController(), folderIds.get(0), null, isGEDReady);
+            } else if (folderIds.size() > 1) {
+                Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
+        } catch (DialogException e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
+    */
+
     protected void renameFolder() throws InterruptedException {
         getMainController().eraseMessage();
         try {
@@ -236,7 +253,7 @@ public abstract class BaseListboxController extends BaseController {
                     }
                 }
 
-                new RenameFolderController(getMainController(), folderIds.get(0), selectedFolderName);
+                new AddFolderController(getMainController(), folderIds.get(0), selectedFolderName, null);
             } else if (folderIds.size() > 1) {
                 Messagebox.show("Only one item can be renamed at the time.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
@@ -249,7 +266,7 @@ public abstract class BaseListboxController extends BaseController {
 
     protected void removeFolder() throws Exception {
         // See if the user has mixed folders and process models. we handle everything differently.
-        ArrayList<FolderType> folders = getMainController().getMenu().getSelectedFolders();
+        ArrayList<FolderType> folders =  getMainController().getMenu().getSelectedFolders();
         Map<SummaryType, List<VersionSummaryType>> elements =  getMainController().getSelectedElementsAndVersions();
 
         if (doesSelectionContainFoldersAndElements(folders, elements)) {
@@ -260,9 +277,10 @@ public abstract class BaseListboxController extends BaseController {
             } else if (elements != null && !elements.isEmpty()) {
                 showMessageProcessesDelete(getMainController());
             } else {
-                LOGGER.error("Nothing selected to delete?");
+               LOGGER.error("Nothing selected to delete?");
             }
         }
+        mainController.loadWorkspace();
     }
 
     /* Show the message tailored to deleting one or more folders. */
@@ -272,15 +290,12 @@ public abstract class BaseListboxController extends BaseController {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
                         deleteElements(mainController);
-                        mainController.loadWorkspace();
-                        refreshContent();
                         break;
                     case Messagebox.NO:
                         break;
                 }
             }
-        });
-    }
+        });    }
 
     /* Show the message tailored to deleting one or more folders. */
     private void showMessageFolderDelete(final MainController mainController, final ArrayList<FolderType> folders) throws Exception {
@@ -289,8 +304,6 @@ public abstract class BaseListboxController extends BaseController {
                 switch (((Integer) evt.getData())) {
                     case Messagebox.YES:
                         deleteFolders(folders, mainController);
-                        mainController.loadWorkspace();
-                        refreshContent();
                         break;
                     case Messagebox.NO:
                         break;
@@ -307,8 +320,6 @@ public abstract class BaseListboxController extends BaseController {
                     case Messagebox.YES:
                         deleteFolders(folders, mainController);
                         deleteElements(mainController);
-                        mainController.loadWorkspace();
-                        refreshContent();
                         break;
                     case Messagebox.NO:
                         break;

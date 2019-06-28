@@ -199,8 +199,8 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.deckfour</groupId>
-            <artifactId>openxes</artifactId>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
             <scope>runtime</scope>
         </dependency>
         <!-- held over from experiments to replace DavFileSystemView with the one in Jakarta Slide

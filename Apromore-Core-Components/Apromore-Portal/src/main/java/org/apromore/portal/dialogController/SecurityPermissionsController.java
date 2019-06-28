@@ -20,10 +20,8 @@
 
 package org.apromore.portal.dialogController;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.apromore.manager.client.ManagerService;
 import org.apromore.model.GroupAccessType;
 import org.apromore.portal.common.FolderTreeNodeTypes;
 import org.apromore.portal.common.UserSessionManager;
@@ -54,25 +52,9 @@ public class SecurityPermissionsController extends BaseController {
 
     @SuppressWarnings("unchecked")
     public void loadUsers(final int id, FolderTreeNodeTypes type){
-        List<GroupAccessType> groups;
-        ManagerService service = securitySetupController.getMainController().getService();
-        switch (type) {
-        case Folder:
-            groups = service.getFolderGroups(id);
-            break;
-
-        case Process:
-            groups = service.getProcessGroups(id);
-            break;
-
-        case Log:
-            groups = service.getLogGroups(id);
-            break;
-
-        default:
-            groups = Collections.emptyList();
-        }
-
+        List<GroupAccessType> groups = type == FolderTreeNodeTypes.Folder
+                                       ? securitySetupController.getMainController().getService().getFolderGroups(id)
+                                       : securitySetupController.getMainController().getService().getProcessGroups(id);
         lstPermissions.getItems().clear();
         lstPermissions.setPageSize(6);
         UserSessionManager.setCurrentSecurityItem(id);
@@ -122,16 +104,11 @@ public class SecurityPermissionsController extends BaseController {
                                         Checkbox chkOwner = (Checkbox)cells.get(3).getChildren().get(0);
                                         if (chkWrite != null && chkOwner != null){
                                             String message = "";
-                                            switch (selectedType) {
-                                            case Folder:
+                                            if (selectedType == FolderTreeNodeTypes.Folder){
                                                 message = securitySetupController.getMainController().getService().saveFolderPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
-                                                break;
-                                            case Process:
+                                            }
+                                            else if (selectedType == FolderTreeNodeTypes.Process){
                                                 message = securitySetupController.getMainController().getService().saveProcessPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
-                                                break;
-                                            case Log:
-                                                message = securitySetupController.getMainController().getService().saveLogPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
-                                                break;
                                             }
                                             if (message.isEmpty()){
                                                 Messagebox.show("Successfully saved permissions.", "Success", Messagebox.OK,
@@ -157,16 +134,11 @@ public class SecurityPermissionsController extends BaseController {
                                     FolderTreeNodeTypes selectedType = UserSessionManager.getCurrentSecurityType();
                                     String message = "";
                                     if (cells.size() == 5){
-                                        switch (selectedType) {
-                                        case Folder:
+                                        if (selectedType == FolderTreeNodeTypes.Folder){
                                             message = securitySetupController.getMainController().getService().removeFolderPermissions(id, group.getGroupId());
-                                            break;
-                                        case Process:
+                                        }
+                                        else if (selectedType == FolderTreeNodeTypes.Process){
                                             message = securitySetupController.getMainController().getService().removeProcessPermissions(id, group.getGroupId());
-                                            break;
-                                        case Log:
-                                            message = securitySetupController.getMainController().getService().removeLogPermissions(id, group.getGroupId());
-                                            break;
                                         }
                                         if (message.isEmpty()){
                                             Messagebox.show("Successfully removed permissions.", "Success", Messagebox.OK,

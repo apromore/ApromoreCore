@@ -182,8 +182,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.deckfour</groupId>
+            <groupId>org.deckfour.xes</groupId>
             <artifactId>spex</artifactId>
+            <version>6.5.20170418</version>
         </dependency>
 
         <dependency>

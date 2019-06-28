@@ -1209,42 +1209,10 @@ public class ManagerPortalEndpoint {
         return new ObjectFactory().createGetFolderGroupsResponse(res);
     }
 
-    @PayloadRoot(localPart = "GetProcessGroupsRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<GetProcessGroupsOutputMsgType> getProcessGroups(@RequestPayload final JAXBElement<GetProcessGroupsInputMsgType> req) {
-        LOGGER.trace("Executing operation getProcessGroups");
-        GetProcessGroupsInputMsgType payload = req.getValue();
-        GetProcessGroupsOutputMsgType res = new GetProcessGroupsOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-
-        List<GroupAccessType> groupAccessTypes = WorkspaceMapper.convertGroupProcessesToGroupAccessTypes(workspaceSrv.getGroupProcesses(payload.getProcessId()));
-        for (GroupAccessType ft : groupAccessTypes) {
-            res.getGroups().add(ft);
-        }
-        return new ObjectFactory().createGetProcessGroupsResponse(res);
-    }
-
-    @PayloadRoot(localPart = "GetLogGroupsRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<GetLogGroupsOutputMsgType> getLogGroups(@RequestPayload final JAXBElement<GetLogGroupsInputMsgType> req) {
-        LOGGER.trace("Executing operation getLogGroups");
-        GetLogGroupsInputMsgType payload = req.getValue();
-        GetLogGroupsOutputMsgType res = new GetLogGroupsOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-
-        List<GroupAccessType> groupAccessTypes = WorkspaceMapper.convertGroupLogsToGroupAccessTypes(workspaceSrv.getGroupLogs(payload.getLogId()));
-        for (GroupAccessType ft : groupAccessTypes) {
-            res.getGroups().add(ft);
-        }
-        return new ObjectFactory().createGetLogGroupsResponse(res);
-    }
-
     @PayloadRoot(localPart = "SaveFolderPermissionsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<SaveFolderPermissionsOutputMsgType> saveFolderPermissions(@RequestPayload final JAXBElement<SaveFolderPermissionsInputMsgType> req) {
-        LOGGER.trace("Executing operation saveFolderPermissions");
+        LOGGER.trace("Executing operation getFolderUsers");
         SaveFolderPermissionsInputMsgType payload = req.getValue();
         SaveFolderPermissionsOutputMsgType res = new SaveFolderPermissionsOutputMsgType();
         ResultType result = new ResultType();
@@ -1258,7 +1226,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "SaveProcessPermissionsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<SaveProcessPermissionsOutputMsgType> saveProcessPermissions(@RequestPayload final JAXBElement<SaveProcessPermissionsInputMsgType> req) {
-        LOGGER.trace("Executing operation saveProcessPermissions");
+        LOGGER.trace("Executing operation getFolderUsers");
         SaveProcessPermissionsInputMsgType payload = req.getValue();
         SaveProcessPermissionsOutputMsgType res = new SaveProcessPermissionsOutputMsgType();
         ResultType result = new ResultType();
@@ -1267,20 +1235,6 @@ public class ManagerPortalEndpoint {
         String message = workspaceSrv.saveProcessPermissions(payload.getProcessId(), payload.getUserId(), payload.isHasRead(), payload.isHasWrite(), payload.isHasOwnership());
         res.setMessage(message);
         return new ObjectFactory().createSaveProcessPermissionsResponse(res);
-    }
-
-    @PayloadRoot(localPart = "SaveLogPermissionsRequest", namespace = NAMESPACE)
-    @ResponsePayload
-    public JAXBElement<SaveLogPermissionsOutputMsgType> saveLogPermissions(@RequestPayload final JAXBElement<SaveLogPermissionsInputMsgType> req) {
-        LOGGER.trace("Executing operation saveLogPermissions");
-        SaveLogPermissionsInputMsgType payload = req.getValue();
-        SaveLogPermissionsOutputMsgType res = new SaveLogPermissionsOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-
-        String message = workspaceSrv.saveLogPermissions(payload.getLogId(), payload.getUserId(), payload.isHasRead(), payload.isHasWrite(), payload.isHasOwnership());
-        res.setMessage(message);
-        return new ObjectFactory().createSaveLogPermissionsResponse(res);
     }
 
     @PayloadRoot(localPart = "RemoveFolderPermissionsRequest", namespace = NAMESPACE)
@@ -1311,18 +1265,20 @@ public class ManagerPortalEndpoint {
         return new ObjectFactory().createRemoveProcessPermissionsResponse(res);
     }
 
-    @PayloadRoot(localPart = "RemoveLogPermissionsRequest", namespace = NAMESPACE)
+    @PayloadRoot(localPart = "GetProcessGroupsRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<RemoveLogPermissionsOutputMsgType> removeLogPermissions(@RequestPayload final JAXBElement<RemoveLogPermissionsInputMsgType> req) {
-        LOGGER.trace("Executing operation removeLogPermissions");
-        RemoveLogPermissionsInputMsgType payload = req.getValue();
-        RemoveLogPermissionsOutputMsgType res = new RemoveLogPermissionsOutputMsgType();
+    public JAXBElement<GetProcessGroupsOutputMsgType> getProcessGroups(@RequestPayload final JAXBElement<GetProcessGroupsInputMsgType> req) {
+        LOGGER.trace("Executing operation getProcessGroups");
+        GetProcessGroupsInputMsgType payload = req.getValue();
+        GetProcessGroupsOutputMsgType res = new GetProcessGroupsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
 
-        String message = workspaceSrv.removeLogPermissions(payload.getLogId(), payload.getUserId());
-        res.setMessage(message);
-        return new ObjectFactory().createRemoveLogPermissionsResponse(res);
+        List<GroupAccessType> groupAccessTypes = WorkspaceMapper.convertGroupProcessesToGroupAccessTypes(workspaceSrv.getGroupProcesses(payload.getProcessId()));
+        for (GroupAccessType ft : groupAccessTypes) {
+            res.getGroups().add(ft);
+        }
+        return new ObjectFactory().createGetProcessGroupsResponse(res);
     }
 
     @PayloadRoot(localPart = "GetProcessesRequest", namespace = NAMESPACE)

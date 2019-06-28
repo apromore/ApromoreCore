@@ -26,13 +26,6 @@ public class BPMNUpdater {
         return removedFlowIDs;
     }
 
-    /**
-     * 
-     * @param bpmn: BPMN without the drawing section
-     * @param layout
-     * @param remove_gateways: used for graph abstraction
-     * @return
-     */
     public String getUpdatedBPMN(String bpmn, String layout, boolean remove_gateways) {
 //        System.out.println(bpmn);
 //        System.out.println(layout);

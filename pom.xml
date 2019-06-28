@@ -138,7 +138,7 @@
         <module>Apromore-Custom-Plugins/Compare-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Compare-Portal-Plugin2</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Logic</module>
-        <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
+        <module>Apromore-Custom-Plugins/CSVImporter-Portal-Plugin</module>
 
         <module>Apromore-Custom-Plugins/LTL-Conf-Logic</module>
         <module>Apromore-Custom-Plugins/LTL-Conf-Portal-Plugin</module>
@@ -421,7 +421,7 @@
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>assembly</artifactId>
-                <version>1.0.20190617</version>
+                <version>1.0.20190327</version>
             </dependency>
 
             <dependency>
@@ -453,15 +453,11 @@
                 <artifactId>zk-osgi</artifactId>
                 <version>${zk.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apromore</groupId>
-                <artifactId>bpstruct-osgi</artifactId>
-                <version>1.2</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>bpmntk-osgi</artifactId>
-                <version>2.0</version>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
@@ -503,17 +499,6 @@
                 <version>${servlet-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.deckfour</groupId>
-                <artifactId>openxes</artifactId>
-                <version>2.16</version>
-            </dependency>
-            <dependency>
-                <groupId>org.deckfour</groupId>
-                <artifactId>spex</artifactId>
-                <version>1.0</version>
-            </dependency>
-<!--
-            <dependency>
                 <groupId>org.deckfour.xes</groupId>
                 <artifactId>OpenXES</artifactId>
                 <version>6.5.20170418</version>
@@ -523,7 +508,6 @@
                 <artifactId>spex</artifactId>
                 <version>6.5.20170418</version>
             </dependency>
--->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
@@ -1580,11 +1564,6 @@
             <id>ZK CE</id>
             <name>ZK CE Repository</name>
             <url>http://mavensync.zkoss.org/maven2</url>
-        </repository>
-        <repository>
-            <id>source tree</id>
-            <name>Apromore source code embedded Maven repository</name>
-            <url>file://repository</url>
         </repository>
     </repositories>
     <pluginRepositories>

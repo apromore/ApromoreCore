@@ -52,8 +52,8 @@
 
         <!-- BPMNMiner -->
         <dependency>
-            <groupId>org.deckfour</groupId>
-            <artifactId>openxes</artifactId>
+            <groupId>org.deckfour.xes</groupId>
+            <artifactId>OpenXES</artifactId>
         </dependency>
 
         <!-- Pro Drift Dependancies -->

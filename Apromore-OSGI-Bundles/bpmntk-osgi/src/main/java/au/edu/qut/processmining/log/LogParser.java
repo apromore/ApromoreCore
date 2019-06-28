@@ -36,7 +36,6 @@ import java.util.*;
  */
 public class LogParser {
 
-//    !!WARNING - DO NOT CHANGE THESE VALUES!
     private static final int STARTCODE = 0;
     private static final int ENDCODE = -1;
 
@@ -238,51 +237,4 @@ public class LogParser {
 
         return sLog;
     }
-
-    public SimpleLog getSimpleLog(XLog log, XEventClassifier xEventClassifier, double percentage) {
-        SimpleLog sLog = getSimpleLog(log, xEventClassifier);
-        Map<String, Integer> traces = sLog.getTraces();
-
-        TracesComparator tracesComparator = new TracesComparator(traces);
-        TreeMap<String, Integer> sortedTraces = new TreeMap(tracesComparator);
-        sortedTraces.putAll(traces);
-
-        int maxTraces = (int) (sLog.size() * percentage);
-        int parsed = 0;
-        int leastFrequent = 0;
-
-        for( String trace : sortedTraces.keySet() ) {
-            if( parsed < maxTraces ) {
-//                System.out.println("DEBUG - trace, frequency: " + trace + "," + traces.get(trace) );
-                parsed += traces.get(trace);
-                leastFrequent = traces.get(trace);
-            } else sLog.getTraces().remove(trace);
-        }
-
-//        System.out.println("DEBUG - log size: " + sLog.size());
-        System.out.println("INFO - log parsed at " + percentage*100 + "%");
-//        System.out.println("DEBUG - to parse: " + maxTraces);
-//        System.out.println("DEBUG - parsed: " + parsed);
-//        System.out.println("DEBUG - min frequency: " + leastFrequent);
-
-        sLog.setSize(parsed);
-        return sLog;
-    }
-
-
-    private class TracesComparator implements Comparator<String> {
-        Map<String, Integer> base;
-
-        public TracesComparator(Map<String, Integer> base) {
-            this.base = base;
-        }
-
-        @Override
-        public int compare(String a, String b) {
-            if (base.get(a) >= base.get(b)) return -1;
-            else return 1;
-            // returning 0 would merge keys
-        }
-    }
-
 }

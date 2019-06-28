@@ -68,23 +68,17 @@ public class CpfEdgeType extends EdgeType implements Attributed {
 
         // Handle conditionExpression
         if (sequenceFlow.getConditionExpression() != null) {
-            switch (sequenceFlow.getConditionExpression().getContent().size()) {
-            case 0:
-                // Treat this as if the conditionExpression was absent
-                break;
 
-            case 1:
-                ConditionExpressionType conditionExpr = new ConditionExpressionType();
-                conditionExpr.setExpression(sequenceFlow.getConditionExpression().getContent().get(0).toString());
-                setConditionExpr(conditionExpr);
-                break;
-
-            default:
-                // We don't handle multiple conditions
+            // We don't handle multiple conditions
+            if (sequenceFlow.getConditionExpression().getContent().size() != 1) {
                 throw new CanoniserException("BPMN sequence flow " + sequenceFlow.getId() + " has " +
                                              sequenceFlow.getConditionExpression().getContent().size() +
                                              " conditions, which the canoniser doesn't implement");
             }
+
+            ConditionExpressionType conditionExpr = new ConditionExpressionType();
+            conditionExpr.setExpression(sequenceFlow.getConditionExpression().getContent().get(0).toString());
+            setConditionExpr(conditionExpr);
         }
 
         // Handle @name

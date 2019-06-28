@@ -74,8 +74,6 @@
     <xs:element name="GetFolderGroupsResponse" type="tns:GetFolderGroupsOutputMsgType"/>
     <xs:element name="GetProcessGroupsRequest" type="tns:GetProcessGroupsInputMsgType"/>
     <xs:element name="GetProcessGroupsResponse" type="tns:GetProcessGroupsOutputMsgType"/>
-    <xs:element name="GetLogGroupsRequest" type="tns:GetLogGroupsInputMsgType"/>
-    <xs:element name="GetLogGroupsResponse" type="tns:GetLogGroupsOutputMsgType"/>
     <xs:element name="CreateUserRequest" type="tns:CreateUserInputMsgType"/>
     <xs:element name="CreateUserResponse" type="tns:CreateUserOutputMsgType"/>
     <xs:element name="GetProcessesRequest" type="tns:GetProcessesInputMsgType"/>
@@ -96,14 +94,10 @@
     <xs:element name="SaveFolderPermissionsResponse" type="tns:SaveFolderPermissionsOutputMsgType"/>
     <xs:element name="SaveProcessPermissionsRequest" type="tns:SaveProcessPermissionsInputMsgType"/>
     <xs:element name="SaveProcessPermissionsResponse" type="tns:SaveProcessPermissionsOutputMsgType"/>
-    <xs:element name="SaveLogPermissionsRequest" type="tns:SaveLogPermissionsInputMsgType"/>
-    <xs:element name="SaveLogPermissionsResponse" type="tns:SaveLogPermissionsOutputMsgType"/>
     <xs:element name="RemoveFolderPermissionsRequest" type="tns:RemoveFolderPermissionsInputMsgType"/>
     <xs:element name="RemoveFolderPermissionsResponse" type="tns:RemoveFolderPermissionsOutputMsgType"/>
     <xs:element name="RemoveProcessPermissionsRequest" type="tns:RemoveProcessPermissionsInputMsgType"/>
     <xs:element name="RemoveProcessPermissionsResponse" type="tns:RemoveProcessPermissionsOutputMsgType"/>
-    <xs:element name="RemoveLogPermissionsRequest" type="tns:RemoveLogPermissionsInputMsgType"/>
-    <xs:element name="RemoveLogPermissionsResponse" type="tns:RemoveLogPermissionsOutputMsgType"/>
     <xs:element name="AddProcessToFolderRequest" type="tns:AddProcessToFolderInputMsgType"/>
     <xs:element name="AddProcessToFolderResponse" type="tns:AddProcessToFolderOutputMsgType"/>
 
@@ -736,21 +730,6 @@
         <xs:attribute name="Message" type="xs:string"/>
     </xs:complexType>
 
-    <xs:complexType name="SaveLogPermissionsInputMsgType">
-        <xs:attribute name="logId" type="xs:int"/>
-        <xs:attribute name="userId" type="xs:string"/>
-        <xs:attribute name="hasRead" type="xs:boolean"/>
-        <xs:attribute name="hasWrite" type="xs:boolean"/>
-        <xs:attribute name="hasOwnership" type="xs:boolean"/>
-    </xs:complexType>
-
-    <xs:complexType name="SaveLogPermissionsOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="Message" type="xs:string"/>
-    </xs:complexType>
-
     <!-- Manager Data Types -->
     <xs:complexType name="RemoveFolderPermissionsInputMsgType">
         <xs:attribute name="folderId" type="xs:int"/>
@@ -770,18 +749,6 @@
     </xs:complexType>
 
     <xs:complexType name="RemoveProcessPermissionsOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="Message" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="RemoveLogPermissionsInputMsgType">
-        <xs:attribute name="logId" type="xs:int"/>
-        <xs:attribute name="userId" type="xs:string"/>
-    </xs:complexType>
-
-    <xs:complexType name="RemoveLogPermissionsOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
@@ -845,17 +812,6 @@
     </xs:complexType>
 
     <xs:complexType name="GetProcessGroupsOutputMsgType">
-        <xs:sequence>
-            <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="Groups" type="tns:GroupAccessType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="GetLogGroupsInputMsgType">
-        <xs:attribute name="logId" type="xs:int"/>
-    </xs:complexType>
-
-    <xs:complexType name="GetLogGroupsOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="Groups" type="tns:GroupAccessType" minOccurs="0" maxOccurs="unbounded"/>

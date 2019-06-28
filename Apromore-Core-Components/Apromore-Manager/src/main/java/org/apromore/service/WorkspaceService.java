@@ -48,8 +48,6 @@ public interface WorkspaceService {
 
     List<GroupProcess> getGroupProcesses(Integer processId);
 
-    List<GroupLog> getGroupLogs(Integer logId);
-
     List<GroupProcess> getGroupProcesses(String userId, Integer folderId);
 
     Page<Process> getProcesses(String userId, Integer folderId, Pageable pageable);
@@ -76,13 +74,9 @@ public interface WorkspaceService {
 
     String saveProcessPermissions(Integer processId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership);
 
-    String saveLogPermissions(Integer logId, String groupRowGuid, boolean hasRead, boolean hasWrite, boolean hasOwnership);
-
     String removeFolderPermissions(Integer folderId, String userId);
 
     String removeProcessPermissions(Integer processId, String userId);
-
-    String removeLogPermissions(Integer logId, String userId);
 
     /**
      * Creates the public status for the users to have read rights to this model.
@@ -95,4 +89,10 @@ public interface WorkspaceService {
      * @param process the process model we are restricting access to.
      */
     void removePublicStatusForUsers(final Process process);
+
+    /**
+     * For this User make sure all the public models and folders are accessible.
+     * @param user the user to update.
+     */
+    void updateUsersPublicModels(User user);
 }

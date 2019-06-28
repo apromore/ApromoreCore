@@ -74,11 +74,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.deckfour.xes</groupId>
-            <artifactId>OpenXES</artifactId>
-            <version>6.5.20170418</version>
-        </dependency>
+
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zk</artifactId>

@@ -20,8 +20,6 @@
 
 package au.edu.qut.promplugins;
 
-import au.edu.qut.processmining.log.LogParser;
-import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.splitminer.SplitMiner;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUI;
 import au.edu.qut.processmining.miners.splitminer.ui.miner.SplitMinerUIResult;
@@ -61,30 +59,9 @@ public class SplitMinerPlugin {
         SplitMinerUIResult result = gui.showGUI(context, "Setup HM+");
 
         SplitMiner sm = new SplitMiner();
-//        output = sm.mineBPMNModel(log, new XEventNameClassifier(), result.getPercentileFrequencyThreshold(), result.getParallelismsThreshold(),
-//                                        result.getFilterType(), result.isParallelismsFirst(),
-//                                        result.isReplaceIORs(), result.isRemoveLoopActivities(), result.getStructuringTime());
-        SimpleLog simpleLog = LogParser.getSimpleLog(log, new XEventNameClassifier());
-        output = sm.mineBPMNModel(simpleLog, new XEventNameClassifier(), result.getPercentileFrequencyThreshold(), result.getParallelismsThreshold(),
+        output = sm.mineBPMNModel(log, new XEventNameClassifier(), result.getPercentileFrequencyThreshold(), result.getParallelismsThreshold(),
                                         result.getFilterType(), result.isParallelismsFirst(),
-                                        result.isReplaceIORs(), result.isRemoveLoopActivities(), result.getStructuringTime());
-
-        return output;
-    }
-    
-    @PluginVariant(variantLabel = "Discover BPMN model with Split Miner via SimpleLog", requiredParameterLabels = {0})
-    public static BPMNDiagram discoverBPMNModelWithSplitMiner2(UIPluginContext context, XLog log) {
-        boolean debug = false;
-        BPMNDiagram output;
-
-        SplitMinerUI gui = new SplitMinerUI();
-        SplitMinerUIResult result = gui.showGUI(context, "Setup HM+");
-
-        SplitMiner sm = new SplitMiner();
-        SimpleLog simpleLog = LogParser.getSimpleLog(log, new XEventNameClassifier());
-        output = sm.mineBPMNModel(simpleLog, new XEventNameClassifier(), result.getPercentileFrequencyThreshold(), result.getParallelismsThreshold(),
-                                        result.getFilterType(), result.isParallelismsFirst(),
-                                        result.isReplaceIORs(), result.isRemoveLoopActivities(), result.getStructuringTime());
+                                        result.isReplaceIORs(), result.isRemoveSelfLoops(), result.getStructuringTime());
 
         return output;
     }

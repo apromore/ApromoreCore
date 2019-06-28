@@ -20,14 +20,10 @@
 
 package org.apromore.plugin.processdiscoverer.service;
 
-import org.apromore.plugin.portal.processdiscoverer.LogFilterCriterion;
-import org.apromore.processdiscoverer.AbstractionParams;
-import org.apromore.processdiscoverer.VisualizationAggregation;
-import org.apromore.processdiscoverer.VisualizationType;
-import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
-import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
-import org.apromore.processdiscoverer.dfg.abstraction.TraceAbstraction;
-import org.apromore.processdiscoverer.logprocessors.SearchStrategy;
+import org.apromore.plugin.processdiscoverer.LogFilterCriterion;
+import org.apromore.plugin.processdiscoverer.impl.SearchStrategy;
+import org.apromore.plugin.processdiscoverer.impl.VisualizationAggregation;
+import org.apromore.plugin.processdiscoverer.impl.VisualizationType;
 import org.deckfour.xes.model.XLog;
 import org.json.JSONArray;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
@@ -35,13 +31,17 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import java.util.List;
 
 /**
- * This interface and its implementations provide service-oriented interface into ProcessDiscoverer 
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
- * Modified by Bruce Nguyen
  */
 public interface ProcessDiscovererService {
-    Object[] generateDFGJSON(XLog log, AbstractionParams params) throws Exception;
-    Object[] generateBPMNJSON(XLog log, AbstractionParams params) throws Exception;
-    DFGAbstraction generateDFGAbstraction(XLog log, AbstractionParams params) throws Exception;
-    BPMNAbstraction generateBPMNAbstraction(XLog log, AbstractionParams params) throws Exception;
+
+    Object[] generateJSONFromBPMNDiagram(BPMNDiagram diagram);
+    Object[] generateJSONFromLog(XLog log, String attribute, double activities, double arcs, boolean preserve_connectivity, boolean inverted_nodes, boolean inverted_arcs, boolean secondary, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> filter_criteria);
+    Object[] generateJSONWithGatewaysFromLog(XLog log, String attribute, double activities, double arcs, double parallelism, boolean preserve_connectivity, boolean prioritize_parallelism, boolean inverted_nodes, boolean inverted_arcs, boolean secondary, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> filter_criteria);
+    JSONArray generateTraceModel(XLog log, String traceID, String attribute, double activities, double arcs, boolean preserve_connectivity, boolean inverted_nodes, boolean inverted_arcs, boolean secondary, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> filter_criteria);
+    BPMNDiagram generateDFGFromLog(XLog log, String attribute, double activities, double arcs, boolean preserve_connectivity, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> filter_criteria);
+    BPMNDiagram insertBPMNGateways(BPMNDiagram bpmnDiagram);
+    XLog generateFilteredLog(XLog log, String attribute, double activities, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> filter_criteria);
+    XLog generateFilteredFittedLog(XLog log, String attribute, double activities, double arcs, boolean preserve_connectivity, boolean inverted_nodes, boolean inverted_arcs, VisualizationType fixedType, VisualizationAggregation fixedAggregation, VisualizationType primaryType, VisualizationAggregation primaryAggregation, VisualizationType secondaryType, VisualizationAggregation secondaryAggregation, List<LogFilterCriterion> filter_criteria, SearchStrategy searchStrategy);
+    XLog filterUsingCriteria(XLog log, List<LogFilterCriterion> criteria);
 }

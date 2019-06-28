@@ -175,8 +175,9 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.deckfour</groupId>
-      <artifactId>openxes</artifactId>
+      <groupId>org.deckfour.xes</groupId>
+      <artifactId>OpenXES</artifactId>
+      <version>6.5.20170418</version>
       <scope>runtime</scope>
     </dependency>
     <!--
