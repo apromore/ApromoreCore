@@ -29,6 +29,7 @@ import org.deckfour.xes.model.XLog;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -74,4 +75,18 @@ public interface EventLogService {
     void exportToStream(OutputStream outputStream, XLog log) throws Exception;
 
     void updateLogMetaData(Integer logId, String logName, boolean isPublic);
+
+    /**
+     * Get XLog and append statistics as log level metadata
+     * @param logId
+     */
+    XLog getXLogWithStats(Integer logId);
+
+
+    /**
+     * Persist statistics of XLog into DB
+     * @param map nested map that represent statistics
+     * @param logId logID of the XLog
+     */
+    void storeStats(Map<String, Map<String, Integer>> map, Integer logId);
 }

@@ -74,6 +74,7 @@
         <class>org.apromore.dao.model.SearchHistory</class>
         <class>org.apromore.dao.model.User</class>
         <class>org.apromore.dao.model.Workspace</class>
+        <class>org.apromore.dao.model.Statistic</class>
     </persistence-unit>
 
 </persistence>
