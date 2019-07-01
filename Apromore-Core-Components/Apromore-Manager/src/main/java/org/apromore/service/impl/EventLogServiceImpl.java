@@ -82,12 +82,13 @@ public class EventLogServiceImpl implements EventLogService {
      * @param ui User Interface Helper.
      */
     @Inject
-    public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository, final FolderRepository folderRepo, final UserService userSrv, final UserInterfaceHelper ui) {
+    public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository, final FolderRepository folderRepo, final UserService userSrv, final UserInterfaceHelper ui, final StatisticRepository statisticRepository) {
         this.logRepo = logRepository;
         this.groupRepo = groupRepository;
         this.folderRepo = folderRepo;
         this.userSrv = userSrv;
         this.ui = ui;
+        this.statisticRepository = statisticRepository;
     }
 
 
@@ -219,10 +220,10 @@ public class EventLogServiceImpl implements EventLogService {
         //TODO move code from PD to here
 
         List<Statistic> stats = getStats(logId);
-        if (stats == null) {
+        if (null == stats || stats.size() == 0) {
 
             // flat nested map to list of entities
-            HashMap<String, Integer> options_frequency = new HashMap<>();
+//            HashMap<String, Integer> options_frequency = new HashMap<>();
             List<Statistic> statList = new ArrayList();
 
             for (Map.Entry<String, Map<String, Integer>> option : map.entrySet()) {
@@ -235,6 +236,7 @@ public class EventLogServiceImpl implements EventLogService {
                     parent.setPid("0");
                     statList.add(parent);
                 }
+                HashMap<String, Integer> options_frequency = (HashMap) option.getValue();
                 for (Map.Entry<String, Integer> entry : options_frequency.entrySet()) {
                     Statistic child = new Statistic();
                     if (entry.getKey() != null && entry.getValue() != null) {
