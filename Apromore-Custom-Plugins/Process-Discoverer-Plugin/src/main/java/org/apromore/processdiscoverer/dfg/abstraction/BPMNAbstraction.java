@@ -1,5 +1,6 @@
 package org.apromore.processdiscoverer.dfg.abstraction;
 
+import java.awt.Point;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.apromore.processdiscoverer.dfg.Arc;
 import org.apromore.processdiscoverer.dfg.LogDFG;
 import org.apromore.processdiscoverer.dfg.collectors.ArcInfoCollector;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
+import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramLayouter;
 import org.apromore.processdiscoverer.logprocessors.LogUtils;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -50,6 +52,7 @@ public class BPMNAbstraction extends AbstractAbstraction {
 		this.dfgAbsFreq = logDfg.getFrequencyBasedDFGAbstraction(dfgAbstraction);
 		this.diagram = logDfg.getBPMN(params, dfgAbsFreq);
 		this.updateWeights(params);
+		this.layout = BPMNDiagramLayouter.layout(this.diagram);
 	}
 	
 	public DFGAbstraction getDFGAbstraction() {

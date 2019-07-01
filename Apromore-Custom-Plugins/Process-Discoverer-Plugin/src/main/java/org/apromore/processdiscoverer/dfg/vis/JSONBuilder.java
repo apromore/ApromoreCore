@@ -116,83 +116,83 @@ public class JSONBuilder {
             textwidth = Math.max(string_length*6 - 10, 20) + "px";
         }
 
-        ObjectIntHashMap<Event> boundary = new ObjectIntHashMap<>();
-        Map<BPMNNode, Event> bounded = new HashMap<>();
-        for(Event node : getBoundaryEvents(bpmnDiagram)) {
-            boundary.put(node, i);
-            bounded.put(node.getBoundingNode(), node);
-            i++;
-        }
-
-        ObjectIntHashMap<SubProcess> subprocesses = new ObjectIntHashMap<>();
-        for(SubProcess node : getSubprocesses(bpmnDiagram)) {
-            subprocesses.put(node, i);
-            i++;
-        }
-
-        for(Event node : getBoundaryEvents(bpmnDiagram)) {
-            int invisible_subprocess = boundary.get(node);
-            JSONObject jsonOneNode = new JSONObject();
-            jsonOneNode.put("id", invisible_subprocess);
-            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
-            jsonOneNode.put("shape", "roundrectangle");
-            jsonOneNode.put("color", "black");
-            jsonOneNode.put("width", activity_width);
-            jsonOneNode.put("height", activity_height);
-            jsonOneNode.put("textsize", activity_font_size);
-            jsonOneNode.put("textcolor", "black");
-            jsonOneNode.put("textwidth", textwidth);
-            jsonOneNode.put("borderwidth", "0");
-            if(node.getBoundingNode().getParentSubProcess() != null) {
-                jsonOneNode.put("parent", subprocesses.get(node.getBoundingNode().getParentSubProcess()));
-            }
-            JSONObject jsonDataNode = new JSONObject();
-            jsonDataNode.put("data", jsonOneNode);
-            graph.put(jsonDataNode);
-
-            mapping.put(node, i);
-            jsonOneNode = new JSONObject();
-            jsonOneNode.put("id", i);
-            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
-            jsonOneNode.put("shape", "ellipse");
-            jsonOneNode.put("color", "white");
-            jsonOneNode.put("width", event_width);
-            jsonOneNode.put("height", event_height);
-            jsonOneNode.put("textsize", activity_font_size);
-            jsonOneNode.put("textcolor", "black");
-            jsonOneNode.put("textwidth", textwidth);
-            jsonOneNode.put("borderwidth", "1");
-            jsonOneNode.put("parent", invisible_subprocess);
-            jsonDataNode = new JSONObject();
-            jsonDataNode.put("data", jsonOneNode);
-            graph.put(jsonDataNode);
-            i++;
-        }
-
-        for(SubProcess node : getSubprocesses(bpmnDiagram)) {
-            int j = subprocesses.get(node);
-            mapping.put(node, j);
-            JSONObject jsonOneNode = new JSONObject();
-            jsonOneNode.put("id", j);
-            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
-            jsonOneNode.put("shape", "roundrectangle");
-            jsonOneNode.put("color", "white");
-            jsonOneNode.put("width", event_width);
-            jsonOneNode.put("height", event_height);
-            jsonOneNode.put("textsize", activity_font_size);
-            jsonOneNode.put("textcolor", "black");
-            jsonOneNode.put("textwidth", textwidth);
-            jsonOneNode.put("borderwidth", "2");
-            if(bounded.containsKey(node)) {
-                jsonOneNode.put("parent", boundary.get(bounded.get(node)));
-            }else if(node.getParentSubProcess() != null) {
-                jsonOneNode.put("parent", subprocesses.get(node.getParentSubProcess()));
-            }
-
-            JSONObject jsonDataNode = new JSONObject();
-            jsonDataNode.put("data", jsonOneNode);
-            graph.put(jsonDataNode);
-        }
+//        ObjectIntHashMap<Event> boundary = new ObjectIntHashMap<>();
+//        Map<BPMNNode, Event> bounded = new HashMap<>();
+//        for(Event node : getBoundaryEvents(bpmnDiagram)) {
+//            boundary.put(node, i);
+//            bounded.put(node.getBoundingNode(), node);
+//            i++;
+//        }
+//
+//        ObjectIntHashMap<SubProcess> subprocesses = new ObjectIntHashMap<>();
+//        for(SubProcess node : getSubprocesses(bpmnDiagram)) {
+//            subprocesses.put(node, i);
+//            i++;
+//        }
+//
+//        for(Event node : getBoundaryEvents(bpmnDiagram)) {
+//            int invisible_subprocess = boundary.get(node);
+//            JSONObject jsonOneNode = new JSONObject();
+//            jsonOneNode.put("id", invisible_subprocess);
+//            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
+//            jsonOneNode.put("shape", "roundrectangle");
+//            jsonOneNode.put("color", "black");
+//            jsonOneNode.put("width", activity_width);
+//            jsonOneNode.put("height", activity_height);
+//            jsonOneNode.put("textsize", activity_font_size);
+//            jsonOneNode.put("textcolor", "black");
+//            jsonOneNode.put("textwidth", textwidth);
+//            jsonOneNode.put("borderwidth", "0");
+//            if(node.getBoundingNode().getParentSubProcess() != null) {
+//                jsonOneNode.put("parent", subprocesses.get(node.getBoundingNode().getParentSubProcess()));
+//            }
+//            JSONObject jsonDataNode = new JSONObject();
+//            jsonDataNode.put("data", jsonOneNode);
+//            graph.put(jsonDataNode);
+//
+//            mapping.put(node, i);
+//            jsonOneNode = new JSONObject();
+//            jsonOneNode.put("id", i);
+//            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
+//            jsonOneNode.put("shape", "ellipse");
+//            jsonOneNode.put("color", "white");
+//            jsonOneNode.put("width", event_width);
+//            jsonOneNode.put("height", event_height);
+//            jsonOneNode.put("textsize", activity_font_size);
+//            jsonOneNode.put("textcolor", "black");
+//            jsonOneNode.put("textwidth", textwidth);
+//            jsonOneNode.put("borderwidth", "1");
+//            jsonOneNode.put("parent", invisible_subprocess);
+//            jsonDataNode = new JSONObject();
+//            jsonDataNode.put("data", jsonOneNode);
+//            graph.put(jsonDataNode);
+//            i++;
+//        }
+//
+//        for(SubProcess node : getSubprocesses(bpmnDiagram)) {
+//            int j = subprocesses.get(node);
+//            mapping.put(node, j);
+//            JSONObject jsonOneNode = new JSONObject();
+//            jsonOneNode.put("id", j);
+//            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
+//            jsonOneNode.put("shape", "roundrectangle");
+//            jsonOneNode.put("color", "white");
+//            jsonOneNode.put("width", event_width);
+//            jsonOneNode.put("height", event_height);
+//            jsonOneNode.put("textsize", activity_font_size);
+//            jsonOneNode.put("textcolor", "black");
+//            jsonOneNode.put("textwidth", textwidth);
+//            jsonOneNode.put("borderwidth", "2");
+//            if(bounded.containsKey(node)) {
+//                jsonOneNode.put("parent", boundary.get(bounded.get(node)));
+//            }else if(node.getParentSubProcess() != null) {
+//                jsonOneNode.put("parent", subprocesses.get(node.getParentSubProcess()));
+//            }
+//
+//            JSONObject jsonDataNode = new JSONObject();
+//            jsonDataNode.put("data", jsonOneNode);
+//            graph.put(jsonDataNode);
+//        }
 
         Double[] minMax = this.getMinMax(bpmnDiagram.getNodes());
         for(BPMNNode node : getNodes(bpmnDiagram)) {
@@ -205,9 +205,10 @@ public class JSONBuilder {
             jsonOneNode.put("name", "");
             jsonOneNode.put("textcolor", "black");
             jsonOneNode.put("textwidth", textwidth);
-            if(node.getParentSubProcess() != null) {
-                jsonOneNode.put("parent", subprocesses.get(node.getParentSubProcess()));
-            }
+            
+//            if(node.getParentSubProcess() != null) {
+//                jsonOneNode.put("parent", subprocesses.get(node.getParentSubProcess()));
+//            }
 
             if(node instanceof Event) {
                 jsonOneNode.put("shape", "ellipse");

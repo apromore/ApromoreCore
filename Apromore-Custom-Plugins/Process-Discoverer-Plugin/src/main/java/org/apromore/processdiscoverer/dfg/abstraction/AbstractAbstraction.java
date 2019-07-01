@@ -1,21 +1,17 @@
 package org.apromore.processdiscoverer.dfg.abstraction;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.apromore.processdiscoverer.AbstractionParams;
-import org.apromore.processdiscoverer.VisualizationAggregation;
 import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.LogDFG;
 import org.apromore.processdiscoverer.dfg.collectors.NodeInfoCollector;
-import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
+import org.apromore.processdiscoverer.dfg.vis.Layout;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
@@ -34,6 +30,8 @@ public abstract class AbstractAbstraction implements Abstraction {
 	protected Map<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>,Double> arcSecondaryWeights = new HashMap<>();
 	protected AbstractionParams params;
 	protected LogDFG logDfg;
+	protected Map<BPMNNode, Point> nodeLayoutMap;
+	protected Layout layout;
 	
 	public AbstractAbstraction(LogDFG logDfg, AbstractionParams params) {
 		this.logDfg = logDfg;
@@ -152,5 +150,9 @@ public abstract class AbstractAbstraction implements Abstraction {
         
         return traversedNodes;
     } 
+    
+    protected Layout getLayout() {
+    	return this.layout;
+    }
 
 }
