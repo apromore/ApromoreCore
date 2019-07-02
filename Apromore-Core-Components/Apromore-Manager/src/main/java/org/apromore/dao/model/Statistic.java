@@ -59,7 +59,7 @@ public class Statistic implements Serializable {
         this.logid = logid;
     }
 
-    @Column(name = "stat_key")
+    @Column(name = "stat_key", length = 1023)
     public String getStat_key() {
         return stat_key;
     }
@@ -67,7 +67,7 @@ public class Statistic implements Serializable {
         this.stat_key = stat_key;
     }
 
-    @Column(name = "stat_value")
+    @Column(name = "stat_value", length = 1023)
     public String getStat_value() {
         return stat_value;
     }
