@@ -134,8 +134,12 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                     switch (clickedNodeValue.getType()) {
                     case Folder:
                         FolderType selectedFolder = (FolderType) clickedNodeValue.getData();
-                        hasOwnership = selectedFolder.isHasOwnership();
-                        selectedId = selectedFolder.getId();
+                        if (selectedFolder.getId() == 0) {
+                            // Nobody can edit the permissions of the root folder "Home"
+                        } else {
+                            hasOwnership = selectedFolder.isHasOwnership();
+                            selectedId = selectedFolder.getId();
+                        }
                         break;
   
                     case Process:
