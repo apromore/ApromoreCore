@@ -23,6 +23,7 @@ package org.apromore.processdiscoverer.dfg.vis;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.abstraction.Abstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.util.ColorGradient;
 import org.apromore.processdiscoverer.util.StringValues;
 import org.apromore.processdiscoverer.util.TimeConverter;
@@ -67,6 +68,11 @@ public class JSONBuilder {
     private final ColorGradient arc_frequency_gradient = new ColorGradient(new Color(100, 100, 100), new Color(41, 41, 41));
     private final ColorGradient arc_duration_gradient = new ColorGradient(new Color(100, 100, 100), new Color(139, 0, 0));
     
+    private final int TEXT_TO_PX_RATIO = 4; // from text to pixel is multiplied by this factor
+    private final int MAX_NODE_WIDTH = 80; // maximum number of pixels for node width 
+    private final double ACTUAL_NODE_WIDTH_FACTOR = 1.0; // the actual number of pixels given to node width, accept partially overflow text outside the node shape
+    private final double STD_NODE_WIDTH = 40;
+    
     private Abstraction abs;
     private AbstractionParams params;
 
@@ -84,7 +90,7 @@ public class JSONBuilder {
      * @return
      * @throws Exception
      */
-    public JSONArray generateJSONFromBPMN(boolean used_bpmn_size) throws Exception {
+    public JSONArray generateJSONFromBPMN(boolean used_bpmn_size) throws Exception {    	
         JSONArray graph = new JSONArray();
         Map<BPMNNode, Integer> mapping = new HashMap<>();
         int i = 1;
@@ -94,104 +100,42 @@ public class JSONBuilder {
         String borderwidth = "1";
         String borderwidth_end = "3";
 
-        String event_height = (used_bpmn_size) ? "37px" : "15px";
-        String event_width = (used_bpmn_size) ? "37px" : "15px";
-        String gateway_height = (used_bpmn_size) ? "50px" : "50px";
-        String gateway_width = (used_bpmn_size) ? "50px" :  "50px";
-        String activity_height = (used_bpmn_size) ? "100px" : "50px";
-        String activity_width = (used_bpmn_size) ? "125px" : "80px";
+        String event_height = "8px"; //"15px";
+        String event_width = "8px"; //"15px";
+        String gateway_height = "10px"; //"50px";
+        String gateway_width = "10px"; //"50px";
+        String activity_height = "20px"; //"50px";
+        String activity_width = "20px";//"80px";
 
-        String activity_font_size = (used_bpmn_size) ? "15" : "10";
-        String xor_gateway_font_size = (used_bpmn_size) ? "20" : "20"; //(used_bpmn_size) ? "20" : "10";
-        String and_gateway_font_size = (used_bpmn_size) ? "30" : "30"; //(used_bpmn_size) ? "30" : "10";
+        String activity_font_size = "8"; //"10";
+        String xor_gateway_font_size = "10"; //"20"; //(used_bpmn_size) ? "20" : "10";
+        String and_gateway_font_size = "10"; //"30"; //(used_bpmn_size) ? "30" : "10";
 
-        int string_length = 0;
+        int max_node_label_length = 0;
         String textwidth = "90px";
         BPMNDiagram bpmnDiagram = abs.getDiagram();
         for (BPMNNode node : getNodes(bpmnDiagram)) {
-            string_length = Math.max(string_length, escapeChars(node.getLabel()).length());
+        	max_node_label_length = Math.max(max_node_label_length, escapeChars(node.getLabel()).length());
         }
-        if(!used_bpmn_size) {
-            if(string_length * 6 > 80) activity_width = (string_length * 6) + "px";
-            textwidth = Math.max(string_length*6 - 10, 20) + "px";
+        
+        double node_with = STD_NODE_WIDTH;
+//        if(max_node_label_length * TEXT_TO_PX_RATIO > MAX_NODE_WIDTH) {
+//        	node_with = (max_node_label_length*TEXT_TO_PX_RATIO*ACTUAL_NODE_WIDTH_FACTOR);
+//        }
+//        textwidth = Math.max(string_length*3 - 10, activity_width_measure) + "px";
+        activity_width = node_with + "px";
+        textwidth = activity_width;
+        
+        double max_edge_text_length = 0;
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
+        	max_edge_text_length = Math.max((max_edge_text_length+"").length(), (abs.getArcPrimaryWeight(edge)+"").length());
+        	if (params.getSecondary()) max_edge_text_length = Math.max((max_edge_text_length+"").length(), (abs.getArcSecondaryWeight(edge)+"").length());
         }
-
-//        ObjectIntHashMap<Event> boundary = new ObjectIntHashMap<>();
-//        Map<BPMNNode, Event> bounded = new HashMap<>();
-//        for(Event node : getBoundaryEvents(bpmnDiagram)) {
-//            boundary.put(node, i);
-//            bounded.put(node.getBoundingNode(), node);
-//            i++;
-//        }
-//
-//        ObjectIntHashMap<SubProcess> subprocesses = new ObjectIntHashMap<>();
-//        for(SubProcess node : getSubprocesses(bpmnDiagram)) {
-//            subprocesses.put(node, i);
-//            i++;
-//        }
-//
-//        for(Event node : getBoundaryEvents(bpmnDiagram)) {
-//            int invisible_subprocess = boundary.get(node);
-//            JSONObject jsonOneNode = new JSONObject();
-//            jsonOneNode.put("id", invisible_subprocess);
-//            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
-//            jsonOneNode.put("shape", "roundrectangle");
-//            jsonOneNode.put("color", "black");
-//            jsonOneNode.put("width", activity_width);
-//            jsonOneNode.put("height", activity_height);
-//            jsonOneNode.put("textsize", activity_font_size);
-//            jsonOneNode.put("textcolor", "black");
-//            jsonOneNode.put("textwidth", textwidth);
-//            jsonOneNode.put("borderwidth", "0");
-//            if(node.getBoundingNode().getParentSubProcess() != null) {
-//                jsonOneNode.put("parent", subprocesses.get(node.getBoundingNode().getParentSubProcess()));
-//            }
-//            JSONObject jsonDataNode = new JSONObject();
-//            jsonDataNode.put("data", jsonOneNode);
-//            graph.put(jsonDataNode);
-//
-//            mapping.put(node, i);
-//            jsonOneNode = new JSONObject();
-//            jsonOneNode.put("id", i);
-//            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
-//            jsonOneNode.put("shape", "ellipse");
-//            jsonOneNode.put("color", "white");
-//            jsonOneNode.put("width", event_width);
-//            jsonOneNode.put("height", event_height);
-//            jsonOneNode.put("textsize", activity_font_size);
-//            jsonOneNode.put("textcolor", "black");
-//            jsonOneNode.put("textwidth", textwidth);
-//            jsonOneNode.put("borderwidth", "1");
-//            jsonOneNode.put("parent", invisible_subprocess);
-//            jsonDataNode = new JSONObject();
-//            jsonDataNode.put("data", jsonOneNode);
-//            graph.put(jsonDataNode);
-//            i++;
-//        }
-//
-//        for(SubProcess node : getSubprocesses(bpmnDiagram)) {
-//            int j = subprocesses.get(node);
-//            mapping.put(node, j);
-//            JSONObject jsonOneNode = new JSONObject();
-//            jsonOneNode.put("id", j);
-//            jsonOneNode.put("name", "");//node.getLabel().replaceAll("'", "")); //need to use escapeChars
-//            jsonOneNode.put("shape", "roundrectangle");
-//            jsonOneNode.put("color", "white");
-//            jsonOneNode.put("width", event_width);
-//            jsonOneNode.put("height", event_height);
-//            jsonOneNode.put("textsize", activity_font_size);
-//            jsonOneNode.put("textcolor", "black");
-//            jsonOneNode.put("textwidth", textwidth);
-//            jsonOneNode.put("borderwidth", "2");
-//            if(bounded.containsKey(node)) {
-//                jsonOneNode.put("parent", boundary.get(bounded.get(node)));
-//            }else if(node.getParentSubProcess() != null) {
-//                jsonOneNode.put("parent", subprocesses.get(node.getParentSubProcess()));
-//            }
-//
-//            JSONObject jsonDataNode = new JSONObject();
-//            jsonDataNode.put("data", jsonOneNode);
-//            graph.put(jsonDataNode);
+        double minEdgeHorizontalLength = max_edge_text_length*TEXT_TO_PX_RATIO + 10; //10 is the padding
+        
+        //Adjust layout horizontally to accommodate the new activity width
+//        if (abs instanceof BPMNAbstraction) {
+//        	((BPMNAbstraction) abs).adjustHorizontalLayout(minEdgeHorizontalLength, node_with);
 //        }
 
         Double[] minMax = this.getMinMax(bpmnDiagram.getNodes());
@@ -206,12 +150,12 @@ public class JSONBuilder {
             jsonOneNode.put("textcolor", "black");
             jsonOneNode.put("textwidth", textwidth);
             
-//            if(node.getParentSubProcess() != null) {
-//                jsonOneNode.put("parent", subprocesses.get(node.getParentSubProcess()));
-//            }
+            LayoutElement nodeLayout = (abs instanceof BPMNAbstraction) ? ((BPMNAbstraction) abs).getLayout().getLayoutElement(node): null;
 
             if(node instanceof Event) {
                 jsonOneNode.put("shape", "ellipse");
+//                jsonOneNode.put("width", (nodeLayout == null) ? event_width : nodeLayout.getWidth() + "px");
+//                jsonOneNode.put("height", (nodeLayout == null) ? event_height : nodeLayout.getHeight() + "px");
                 jsonOneNode.put("width", event_width);
                 jsonOneNode.put("height", event_height);
                 jsonOneNode.put("textsize", activity_font_size);
@@ -227,6 +171,8 @@ public class JSONBuilder {
             }else if(node instanceof Gateway) {
                 jsonOneNode.put("shape", "diamond");
                 jsonOneNode.put("color", GATEWAY);
+//                jsonOneNode.put("width", (nodeLayout == null) ? gateway_width : nodeLayout.getWidth() + "px");
+//                jsonOneNode.put("height", (nodeLayout == null) ? gateway_height : nodeLayout.getHeight() + "px");
                 jsonOneNode.put("width", gateway_width);
                 jsonOneNode.put("height", gateway_height);
                 jsonOneNode.put("borderwidth", borderwidth);
@@ -251,13 +197,27 @@ public class JSONBuilder {
             	else {
             		node_name = escapeChars(node_name);
             	}
+            	
                 if(params.getPrimaryType() == null) {
                 	jsonOneNode.put("name", escapeChars(node.getLabel()));
-                } if(params.getPrimaryType() == VisualizationType.DURATION) {
-                	jsonOneNode.put("name", node_name + "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + ((params.getSecondary()) ? "\\n\\n" + decimalFormat.format(abs.getNodeSecondaryWeight(node)) : ""));
+                } 
+                else if(params.getPrimaryType() == VisualizationType.DURATION) {
+                	if (!params.getSecondary()) {
+                		jsonOneNode.put("name", node_name + "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)));
+                	}
+                	else {
+                		jsonOneNode.put("name", node_name + "\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + "\\n" + decimalFormat.format(abs.getNodeSecondaryWeight(node)));
+                	}
+//                	jsonOneNode.put("name", node_name + "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + ((params.getSecondary()) ? "\\n\\n" + decimalFormat.format(abs.getNodeSecondaryWeight(node)) : ""));
                 }
                 else {
-                	jsonOneNode.put("name", node_name + "\\n\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)) + ((params.getSecondary()) ? "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodeSecondaryWeight(node)) : ""));
+                	if (!params.getSecondary()) {
+                		jsonOneNode.put("name", node_name + "\\n\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)));
+                	}
+                	else {
+                		jsonOneNode.put("name", node_name + "\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)) + "\\n" + TimeConverter.convertMilliseconds("" + abs.getNodeSecondaryWeight(node)));
+                	}
+                	//jsonOneNode.put("name", node_name + "\\n\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)) + ((params.getSecondary()) ? "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodeSecondaryWeight(node)) : ""));
                 }
 
                 jsonOneNode.put("shape", "roundrectangle");
@@ -266,9 +226,11 @@ public class JSONBuilder {
                 if(params.getPrimaryType() == null) colors = new String[] {ACTIVITY, "black"};
                 else if(params.getPrimaryType() == VisualizationType.DURATION) colors = getDurationColor(node, minMax[0], minMax[1]);
                 else colors = getFrequencyColor(node, minMax[0], minMax[1]);
-
+                
                 jsonOneNode.put("color", colors[0]);
                 jsonOneNode.put("textcolor", colors[1]);
+//                jsonOneNode.put("width", (nodeLayout == null) ? activity_width : nodeLayout.getWidth() + "px");
+//                jsonOneNode.put("height", (nodeLayout == null) ? activity_height : nodeLayout.getHeight() + "px");
                 jsonOneNode.put("width", activity_width);
                 jsonOneNode.put("height", activity_height);
                 jsonOneNode.put("textsize", activity_font_size);
@@ -276,6 +238,15 @@ public class JSONBuilder {
             }
             JSONObject jsonDataNode = new JSONObject();
             jsonDataNode.put("data", jsonOneNode);
+            
+            // Add layout for BPMN abstraction
+        	if (nodeLayout != null) {
+        		JSONObject jsonPosition = new JSONObject();
+        		jsonPosition.put("x", nodeLayout.getX());
+        		jsonPosition.put("y", nodeLayout.getY());
+        		jsonDataNode.put("position", jsonPosition);
+        	}
+            
             graph.put(jsonDataNode);
             i++;
         }
@@ -283,13 +254,6 @@ public class JSONBuilder {
         double maxWeight = 0.0;
         double minWeight = 0.0;
         for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : getEdges(bpmnDiagram)) {
-//            String number = edge.getLabel();
-//            if (number.contains("[")) {
-//                if(number.contains("\n")) number = number.substring(1, number.indexOf("\n"));
-//                else number = number.substring(1, number.length() - 1);
-//            } else {
-//                number = "0";
-//            }
             double number = abs.getArcPrimaryWeight(edge);
             maxWeight = Math.max(maxWeight, number);
             minWeight = Math.min(minWeight, number);
@@ -327,10 +291,10 @@ public class JSONBuilder {
                 } else {
                     jsonOneLink.put("strength", bd.doubleValue());
                     if (params.getPrimaryType() == VisualizationType.DURATION) {
-                    	jsonOneLink.put("label", TimeConverter.convertMilliseconds(mainNumber+"") + ((params.getSecondary()) ? "\\n\\n" + decimalFormat.format(Double.parseDouble(secondaryNumber+"")) : ""));
+                    	jsonOneLink.put("label", TimeConverter.convertMilliseconds(mainNumber+"") + ((params.getSecondary()) ? "\\n" + decimalFormat.format(Double.parseDouble(secondaryNumber+"")) : ""));
                         jsonOneLink.put("color", "#" + Integer.toHexString(arc_duration_gradient.generateColor(bd.doubleValue() / 100).getRGB()).substring(2));
                     }else {
-                        jsonOneLink.put("label", decimalFormat.format(mainNumber) + ((params.getSecondary()) ? "\\n\\n" + TimeConverter.convertMilliseconds(secondaryNumber+"") : ""));
+                        jsonOneLink.put("label", decimalFormat.format(mainNumber) + ((params.getSecondary()) ? "\\n" + TimeConverter.convertMilliseconds(secondaryNumber+"") : ""));
                         jsonOneLink.put("color", "#" + Integer.toHexString(arc_frequency_gradient.generateColor(bd.doubleValue() / 100).getRGB()).substring(2));
                     }
                 }

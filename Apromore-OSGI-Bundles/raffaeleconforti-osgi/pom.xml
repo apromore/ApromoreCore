@@ -308,6 +308,18 @@
                             org.processmining.models.jgraph.renderers,
                             org.processmining.models.jgraph.views,
                             org.processmining.models.jgraph.visualization,
+							
+							org.jgraph,
+							org.jgraph.event,
+							org.jgraph.graph,
+							org.jgraph.plaf,
+							org.jgraph.plaf.basic,
+							org.jgraph.util,
+							com.jgraph.layout,
+							com.jgraph.layout.hierarchical,
+							com.jgraph.layout.hierarchical.model,
+							com.jgraph.navigation,
+							
                             org.processmining.models.mapping,
                             org.processmining.models.operationalsupport,
                             org.processmining.models.operationalsupport.gui,

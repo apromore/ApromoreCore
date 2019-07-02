@@ -45,8 +45,16 @@ public class LayoutElement {
 		return this.x;
 	}
 	
+	public void setX(double newX) {
+		this.x = newX;
+	}
+	
 	public double getY() {
 		return this.y;
+	}
+	
+	public void setY(double newY) {
+		this.y = newY;
 	}
 	
 	public double getWidth() {
@@ -71,6 +79,10 @@ public class LayoutElement {
 	
 	public List<Point2D> getWaypoints() {
 		return Collections.unmodifiableList(this.wayPoints);
+	}
+	
+	public boolean isEdge() {
+		return !wayPoints.isEmpty();
 	}
 	
 }

@@ -289,11 +289,12 @@
 						</combobutton>
 						<combobutton id="layout" label="Layout">
 							<menupopup>
+								<menuitem id="layout_manual" onClick='Clients.evalJavaScript("layout_manual(false)")' label="Manual" checked="false" />
+								<menuitem id="layout_dagre_lr" onClick='Clients.evalJavaScript("layout_dagre_LR(false)")' label="Dagre Left-Right" checked="true" />
+								<menuitem id="layout_dagre_tb" onClick='Clients.evalJavaScript("layout_dagre_TB(false)")' label="Dagre Top-Bottom" />				
 								<menuitem id="layout_breadthfirst" onClick='Clients.evalJavaScript("layout_breadthfirst(false)")' label="Breadth-First" />
 								<menuitem id="layout_cola" onClick='Clients.evalJavaScript("layout_cola(false)")' label="Cola" />
 								<menuitem id="layout_cose" onClick='Clients.evalJavaScript("layout_cose(false)")' label="Cose" />
-								<menuitem id="layout_dagre_lr" onClick='Clients.evalJavaScript("layout_dagre_LR(false)")' label="Dagre Left-Right" checked="true" />
-								<menuitem id="layout_dagre_tb" onClick='Clients.evalJavaScript("layout_dagre_TB(false)")' label="Dagre Top-Bottom" />
 								<menuitem id="layout_klay_lr" onClick='Clients.evalJavaScript("layout_klay_LR(false)")' label="Klay Left-Right" />
 								<menuitem id="layout_klay_tb" onClick='Clients.evalJavaScript("layout_klay_TB(false)")' label="Klay Top-Bottom" />
 							</menupopup>
@@ -440,7 +441,7 @@
 		  cy.elements().remove();
 		}
 
-		function load(a) {
+		function loadDFG(a) {
 		  loadTraceMode = false;
 		  reset();
 		  // need to store the current zoom and pan level as the load function
@@ -448,7 +449,28 @@
 		  var zoom = currentZoomLevel; 
 		  var pan = currentPanPosition;
 		  cy.add($.parseJSON(a)); 
-		  layout();
+		  //layout();
+		  layout_dagre_LR(false);
+		  if (!initialLoaded) {
+			  window.cy.zoom(zoom);
+			  window.cy.pan(pan);
+			  currentZoomLevel = zoom;
+			  currentPanPosition = pan;
+		  }
+		  else {
+			  initialLoaded = false;
+		  }
+		}
+		
+		function loadBPMN(a) {
+		  loadTraceMode = false;
+		  reset();
+		  // need to store the current zoom and pan level as the load function
+		  // will reset them through the zoom and pan events.
+		  var zoom = currentZoomLevel; 
+		  var pan = currentPanPosition;
+		  cy.add($.parseJSON(a)); 
+		  layout_manual(false);
 		  if (!initialLoaded) {
 			  window.cy.zoom(zoom);
 			  window.cy.pan(pan);
@@ -517,6 +539,9 @@
 
 		function layout() {
 			switch(layout_model) {
+				case 0:
+					layout_manual(!0);
+					break;				
 				case 1:
 					layout_breadthfirst(!0);
 					break;
@@ -542,6 +567,22 @@
 					// code block
 			}
 		}
+		
+		function layout_manual(a) {
+		  layout_model = 0;
+		  cy.elements().layout({
+			name: "preset"
+		  }).run()
+		  
+		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(true);
+		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
+		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
+		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+		  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
+		  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
+		  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
+		}		
 
 		function layout_breadthfirst(a) {
 		  layout_model = 1;
@@ -551,6 +592,7 @@
 			spacingFactor: 1
 		  }).run()
 		  
+		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(true);
 		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
@@ -574,6 +616,7 @@
 			}
 		  }).run()
 		  
+		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(true);
 		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
@@ -604,6 +647,7 @@
 			randomize: a
 		  }).run()
 		  
+		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(true);
@@ -625,6 +669,7 @@
 			ranker: "network-simplex"
 		  }).run()
 		  
+		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
@@ -646,6 +691,7 @@
 			ranker: "tight-tree"
 		  }).run()
 		  
+		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
@@ -676,6 +722,7 @@
 			}
 		  }).run()
 		  
+		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
@@ -706,6 +753,7 @@
 			}
 		  }).run()
 		  
+		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);

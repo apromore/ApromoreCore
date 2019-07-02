@@ -1648,7 +1648,7 @@ public class ProcessDiscovererController extends BaseController {
     private void display(JSONArray jsonDiagram) {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
-        String javascript = "load('" + jsonString + "');";
+        String javascript = !gateways.isChecked() ? "loadDFG('" + jsonString + "');" : "loadBPMN('" + jsonString + "');";
         if ((isShowingBPMN && !gateways.isChecked()) || (!isShowingBPMN && gateways.isChecked()) || selectorChanged) {
         	javascript += "fitToWindow();";
         }

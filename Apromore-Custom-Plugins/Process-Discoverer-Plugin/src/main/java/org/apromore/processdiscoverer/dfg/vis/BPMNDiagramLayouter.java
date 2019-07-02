@@ -57,7 +57,8 @@ public class BPMNDiagramLayouter {
 			graphNode = ((ProMGraphPort)graphCell).getBoundingNode();
 		}
 		// Create BPMNShape
-		String bpmnElementId = graphNode.getId().toString().replace(' ', '_');
+//		String bpmnElementId = graphNode.getId().toString().replace(' ', '_');
+		String bpmnElementId = graphNode.getId().toString();
 		boolean isExpanded = false;
 		boolean isHorizontal = false;
 		if(graphNode instanceof SubProcess) {
@@ -109,8 +110,9 @@ public class BPMNDiagramLayouter {
 	private static void getEdgeLayout(ProMGraphEdge graphEdge, Layout layout) {
 		@SuppressWarnings("rawtypes")
 		BPMNEdge bpmnEdge = (BPMNEdge)graphEdge.getEdge();
-		String bpmnElementId = bpmnEdge.getEdgeID().toString().replace(' ', '_');
-
+//		String bpmnElementId = bpmnEdge.getEdgeID().toString().replace(' ', '_');
+		String bpmnElementId = bpmnEdge.getEdgeID().toString();
+		
 		LayoutElement layoutEdge = new LayoutElement(bpmnElementId);
 		for (Object point : graphEdge.getView().getPoints()) {
 			Point2D point2D;

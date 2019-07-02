@@ -4,18 +4,23 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.LogDFG;
 import org.apromore.processdiscoverer.dfg.collectors.NodeInfoCollector;
 import org.apromore.processdiscoverer.dfg.vis.Layout;
+import org.apromore.processdiscoverer.dfg.vis.LayoutElement;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
+import org.processmining.models.graphbased.directed.bpmn.elements.Event;
 
 /**
  * 
@@ -151,8 +156,37 @@ public abstract class AbstractAbstraction implements Abstraction {
         return traversedNodes;
     } 
     
-    protected Layout getLayout() {
+    public Layout getLayout() {
     	return this.layout;
     }
+    
+	/**
+	 * Adjust node positions in this layout to make sure the edges are
+	 * displayed properly showing fully both the edge and their weights
+	 * @param minEdgeHorizontalLength: the minimum edge length to keep edge weight and the edge
+	 * from being hidden
+	 * @param actualNodeWidth: actual node width
+	 */
+	public void adjustHorizontalLayout(double minEdgeHorizontalLength, double actualNodeWidth) {
+		Event startEvent = null;
+		for (Event event : diagram.getEvents()) {
+			if (event.getEventType() == Event.EventType.START) {
+				startEvent = event;
+				break;
+			}
+		}
+		List<BPMNNode> bfsNodes = this.getNodesByBFS(startEvent, this.diagram.getNodes());
+		for (BPMNNode node: bfsNodes) {
+			Collection<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> outEdges = this.diagram.getOutEdges(node);
+			for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge: outEdges) {
+				double edgeLength = this.layout.getHorizontalLength(edge, actualNodeWidth);
+				if (edgeLength < minEdgeHorizontalLength) {
+					LayoutElement targetLayout = layout.getLayoutElement(edge.getTarget());
+					LayoutElement sourceLayout = layout.getLayoutElement(edge.getSource());
+					targetLayout.setX(sourceLayout.getX() + actualNodeWidth + minEdgeHorizontalLength);
+				}
+			}
+		}
+	}
 
 }
