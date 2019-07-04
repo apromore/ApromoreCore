@@ -1,5 +1,6 @@
 package org.apromore.service.csvimporter;
 
+import com.opencsv.CSVReader;
 import org.apromore.service.csvimporter.impl.LogModel;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.util.media.Media;
@@ -25,7 +26,7 @@ public interface CSVImporterLogic {
      * @return some result
      * @throws SampleException if something goes wrong
      */
-    List<LogModel> prepareXesModel(Reader r);
+    List<LogModel> prepareXesModel(CSVReader r);
     void setHeads(String[] line);
     HashMap<String, Integer> getHeads();
     void setLine(String[] line);
