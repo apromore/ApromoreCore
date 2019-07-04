@@ -394,7 +394,7 @@
 				"text-background-padding": 5,
 				"text-background-shape": "roundrectangle",
 				"text-wrap": "wrap",
-				"text-margin-y": -10,
+				"text-margin-y": -12,
 				width: "mapData(strength, 0, 100, 1, 6)"
 			  }
 			}, {
