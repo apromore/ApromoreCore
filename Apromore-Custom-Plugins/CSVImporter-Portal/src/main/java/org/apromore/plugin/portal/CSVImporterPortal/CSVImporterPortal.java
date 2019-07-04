@@ -65,7 +65,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
     @Inject private CSVImporterLogic csvImporterLogic;
     @Inject private EventLogService eventLogService;
-
+    char separator = Character.UNASSIGNED;
 
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         this.csvImporterLogic = newCSVImporterLogic;
@@ -137,7 +137,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @SuppressWarnings("null")
     private void displayCSVContent(Media media, ListModelList<String[]> result, Grid myGrid, Div attrBox, Div popUPBox, Window window) {
         String firstLine = null;
-        char separator = Character.UNASSIGNED;
+
         BufferedReader brReader = new BufferedReader(new InputStreamReader(media.getStreamData()));
 
         try {
@@ -204,7 +204,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     csvImporterLogic.setOtherTimestamps();
 
                     if (line.length != header.length) {
-                        Messagebox.show("Number of headers does not match number of values", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
+                        Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
                         window.detach();
                         reader.close();
                     } else {
@@ -346,11 +346,26 @@ public class CSVImporterPortal implements FileImporterPlugin {
             }
             toXESButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
+//                    CSVReader reader = null;
+                    CSVReader reader = null;
                     if(window != null) {
                         // on clicking the button: CONVERT TO XES
                         if (media != null) {
-                            Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData())
-                                    : media.getReaderData();
+//                            Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData())
+//                                    : media.getReaderData();
+                            try {
+                                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
+                                // check file format to choose correct file reader.
+                                if (media.isBinary()) {
+//                                    reader = new InputStreamReader(media.getStreamData());
+                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).build();
+                                } else {
+//                                    reader = media.getReaderData();
+                                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).build();
+                                }
+                            }catch (Exception e) {
+                                LOGGER.error("Failed to read");
+                            }
                             List<LogModel> xesModel = csvImporterLogic.prepareXesModel(reader);
                             if (xesModel != null) {
                                 // create XES file

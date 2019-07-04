@@ -1,5 +1,6 @@
 package org.apromore.service.csvimporter.impl;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 
 import java.io.File;
@@ -11,6 +12,8 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.*;
@@ -33,6 +36,8 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
      * The Class CsvToXes.
      */
     public class CSVImporterLogicImpl implements CSVImporterLogic {
+
+        private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterLogicImpl.class);
 
         /** The case id values. */
         private String[] caseIdValues = {"case", "case id", "case-id", "service id", "event id"};
@@ -89,10 +94,10 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
          * @return the list
          */
         @SuppressWarnings("resource")
-        public List<LogModel> prepareXesModel(Reader r) {
+        public List<LogModel> prepareXesModel(CSVReader reader) {
             int errorCount = 0;
             int lineCount = 0;
-            try (CSVReader reader = new CSVReader(r)) {
+            try {
 
                 // read first line from CSV as header
                 String[] header = reader.readNext();
@@ -114,37 +119,52 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
                 Timestamp startTimestamp = null;
                 String resourceCol = null;
 
-                    while ((line = reader.readNext()) != null) {
+                String errorMessage = null;
+//                line = reader.readNext();
+                line = reader.readNext();
+
+                    while (line != null) {
                         lineCount++;
+//                        LOGGER.error("HEAD TIMESTAMP: " + line[heads.get(timestamp)]);
+//                        Messagebox.show("line is:" + line[heads.get(timestamp)]);
                         try {
-                        otherTimestamps = new HashMap<String, Timestamp>();
-                        others = new HashMap<String, String>();
+                            otherTimestamps = new HashMap<String, Timestamp>();
+                            others = new HashMap<String, String>();
 
-                        for (int p = 0; p <= line.length - 1; p++) {
-                            if (otherTimeStampsPos.get(p) != null) {
-                                otherTimestamps.put(header[p], parse.parseTimestamp(line[p], otherTimeStampsPos.get(p)));
-                            } else if (p != heads.get(caseid) && p != heads.get(activity) && p != heads.get(timestamp) && p != heads.get(tsStart) && p != heads.get(resource) && (ignoredPos.isEmpty() || !ignoredPos.contains(p))) {
-                                others.put(header[p], line[p]);
+
+
+                            for (int p = 0; p <= line.length - 1; p++) {
+                                if (otherTimeStampsPos.get(p) != null) {
+                                    otherTimestamps.put(header[p], parse.parseTimestamp(line[p], otherTimeStampsPos.get(p)));
+                                } else if (p != heads.get(caseid) && p != heads.get(activity) && p != heads.get(timestamp) && p != heads.get(tsStart) && p != heads.get(resource) && (ignoredPos.isEmpty() || !ignoredPos.contains(p))) {
+                                    others.put(header[p], line[p]);
+                                }
                             }
-                        }
-                        Timestamp tStamp = parse.parseTimestamp(line[heads.get(timestamp)], timestampFormat);
 
-                        if (heads.get(tsStart) != -1) {
-                            startTimestamp = parse.parseTimestamp(line[heads.get(tsStart)], startTsFormat);
-                        }
-                        if (heads.get(resource) != -1) {
-                            resourceCol = line[heads.get(resource)];
-                        }
+                            Timestamp tStamp = parse.parseTimestamp(line[heads.get(timestamp)], timestampFormat);
 
-                        logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
+                            if (heads.get(tsStart) != -1) {
+                                startTimestamp = parse.parseTimestamp(line[heads.get(tsStart)], startTsFormat);
+                            }
+                            if (heads.get(resource) != -1) {
+                                resourceCol = line[heads.get(resource)];
+                            }
+
+                            logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
 
                         } catch(Exception e) {
+                                errorMessage = ExceptionUtils.getStackTrace(e);
+//                                e.printStackTrace();
                                 errorCount++;
                         }
+                        line = reader.readNext();
                     }
 
-//                Messagebox.show("Line count is: "+ lineCount + " Error count is: " + errorCount);
+                Messagebox.show("Line count is: "+ lineCount + " Error count is: " + errorCount);
                 if(errorCount > (lineCount * errorAcceptance)) {
+//                        Messagebox.show(errorMessage);
+                        LOGGER.error(errorMessage);
+//                        Messagebox.show(errorMessage);
                         Messagebox.show("Detected more than " + errorAcceptance * 100 + "% of the log with errors. Please make sure input file is a valid CSV file.", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
                         return null;
                 }else {

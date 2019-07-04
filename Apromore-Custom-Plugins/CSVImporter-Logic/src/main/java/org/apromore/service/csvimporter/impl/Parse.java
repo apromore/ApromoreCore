@@ -39,13 +39,16 @@ public class Parse {
         put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}$", "yyyy-MM-dd HH:mm:ss");
         put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "MM/dd/yyyy HH:mm:ss");
         put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}$", "yyyy/MM/dd HH:mm:ss");
-        put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy/MM/dd HH:mm:ss.SSS");
+        put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy/MM/dd HH:mm:ss.SSS");  //2011/11/11 03:05:12.522
         put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd MMM yyyy HH:mm:ss");
         put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd MMMM yyyy HH:mm:ss");
         put("^\\d{1,2}.\\d{1,2}.\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "dd.MM.yy HH:mm"); //9.3.10 8:05
+        put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy-MM-dd HH:mm:ss.SSS");//2011-11-11 03:05:12.522
+        put("^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy-MM-ddTHH:mm:ss.SSS");//2011-11-11T03:05:12.522
     }};
 	
 	public Timestamp parseTimestamp(String theDate, String theFormate) {
+//	    Messagebox.show("Date: " + theDate + " Format: " + theFormate);
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(theFormate);
 		    Calendar cal = Calendar.getInstance();
@@ -53,6 +56,7 @@ public class Parse {
 			cal.setTime(d);
 			return new Timestamp(cal.getTimeInMillis());
 		} catch (Exception e) {
+            System.out.print(e.getStackTrace());
             return null;
 		}
 	}
