@@ -289,14 +289,9 @@
 						</combobutton>
 						<combobutton id="layout" label="Layout">
 							<menupopup>
-								<menuitem id="layout_manual" onClick='Clients.evalJavaScript("layout_manual(false)")' label="Manual" checked="false" />
+								<!-- <menuitem id="layout_manual" onClick='Clients.evalJavaScript("layout_manual(false)")' label="Manual" checked="false" /> -->
 								<menuitem id="layout_dagre_lr" onClick='Clients.evalJavaScript("layout_dagre_LR(false)")' label="Dagre Left-Right" checked="true" />
-								<menuitem id="layout_dagre_tb" onClick='Clients.evalJavaScript("layout_dagre_TB(false)")' label="Dagre Top-Bottom" />				
 								<menuitem id="layout_breadthfirst" onClick='Clients.evalJavaScript("layout_breadthfirst(false)")' label="Breadth-First" />
-								<menuitem id="layout_cola" onClick='Clients.evalJavaScript("layout_cola(false)")' label="Cola" />
-								<menuitem id="layout_cose" onClick='Clients.evalJavaScript("layout_cose(false)")' label="Cose" />
-								<menuitem id="layout_klay_lr" onClick='Clients.evalJavaScript("layout_klay_LR(false)")' label="Klay Left-Right" />
-								<menuitem id="layout_klay_tb" onClick='Clients.evalJavaScript("layout_klay_TB(false)")' label="Klay Top-Bottom" />
 							</menupopup>
 						</combobutton>
 						<button id="fitScreen" label="Fit to screen" />
@@ -450,7 +445,8 @@
 		  var pan = currentPanPosition;
 		  cy.add($.parseJSON(a)); 
 		  //layout();
-		  layout_dagre_LR(false);
+		  //layout_dagre_LR(false);
+		  layout_manual(false);
 		  if (!initialLoaded) {
 			  window.cy.zoom(zoom);
 			  window.cy.pan(pan);
@@ -574,14 +570,9 @@
 			name: "preset"
 		  }).run()
 		  
-		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(true);
+		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(true);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 		}		
 
 		function layout_breadthfirst(a) {
@@ -592,38 +583,9 @@
 			spacingFactor: 1
 		  }).run()
 		  
-		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
+		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(true);
-		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
-		}
-
-		function layout_cola(a) {
-		  layout_model = 2;
-		  cy.elements().layout({
-			name: "cola",
-			animate: !1,
-			nodeSpacing: function(a) {
-			  return 25
-			},
-			flow: {
-			  axis: "x",
-			  minSeparation: 150
-			}
-		  }).run()
-		  
-		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(true);
-		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 		}
 
 		function pos(a, b) {
@@ -632,29 +594,6 @@
 			d;
 		  for (d in a.incomers().sources().outgoers().targets()) c += d.position()[0], e += 1;
 		  return 0 == e ? 0 : c / e
-		}
-
-		function layout_cose(a) {
-		  layout_model = 3;
-		  cy.elements().layout({
-			name: "cose-bilkent",
-			avoidOverlap: !0,
-			nodeRepulsion: 1E4,
-			nestingFactor: 1,
-			idealEdgeLength: 75,
-			edgeElasticity: 1,
-			animate: !1,
-			randomize: a
-		  }).run()
-		  
-		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(true);
-		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
 		}
 
 		function layout_dagre_LR(a) {
@@ -669,98 +608,9 @@
 			ranker: "network-simplex"
 		  }).run()
 		  
-		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
+		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(true);
-		  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
-		}
-
-		function layout_dagre_TB(a) {
-		  layout_model = 5;
-		  cy.elements().layout({
-			name: "dagre",
-			avoidOverlap: !0,
-			edgeSep: 50,
-			nodeSep: 110,
-			randomize: a,
-			rankDir: "TB",
-			ranker: "tight-tree"
-		  }).run()
-		  
-		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(true);
-		  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
-		}
-
-		function layout_klay_LR(a) {
-		  layout_model = 6;
-		  cy.elements().layout({
-			name: "klay",
-			klay: {
-			  spacing: 50,
-			  addUnnecessaryBendpoints: !0,
-			  direction: "RIGHT",
-			  edgeSpacingFactor: .1,
-			  edgeRouting: "POLYLINE",
-			  fixedAlignment: "BALANCED",
-			  inLayerSpacingFactor: 2,
-			  layoutHierarchy: !0,
-			  linearSegmentsDeflectionDampening: 1,
-			  nodeLayering: "LONGEST_PATH",
-			  nodePlacement: "LINEAR_SEGMENTS",
-			  routeSelfLoopInside: !0,
-			  thoroughness: 10
-			}
-		  }).run()
-		  
-		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(true);
-		  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(false);
-		}
-
-		function layout_klay_TB(a) {
-		  layout_model = 7;
-		  cy.elements().layout({
-			name: "klay",
-			klay: {
-			  spacing: 50,
-			  addUnnecessaryBendpoints: !0,
-			  direction: "DOWN",
-			  edgeSpacingFactor: .1,
-			  edgeRouting: "POLYLINE",
-			  fixedAlignment: "BALANCED",
-			  inLayerSpacingFactor: 2,
-			  layoutHierarchy: !0,
-			  linearSegmentsDeflectionDampening: 1,
-			  nodeLayering: "LONGEST_PATH",
-			  nodePlacement: "LINEAR_SEGMENTS",
-			  routeSelfLoopInside: !0,
-			  thoroughness: 10
-			}
-		  }).run()
-		  
-		  zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cola")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_cose")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_tb")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_lr")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_klay_tb")[0]).setChecked(true);
 		}
 
 		function removeEdge(a) {

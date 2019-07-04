@@ -11,6 +11,7 @@ import org.apromore.processdiscoverer.dfg.Arc;
 import org.apromore.processdiscoverer.dfg.LogDFG;
 import org.apromore.processdiscoverer.dfg.collectors.ArcInfoCollector;
 import org.apromore.processdiscoverer.dfg.collectors.FrequencySetPopulator;
+import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramLayouter;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
@@ -27,6 +28,7 @@ public class DFGAbstraction extends AbstractAbstraction {
 		super(logDfg, params);
 		this.diagram = logDfg.getDFG(params);
 		this.updateWeights(params);
+		this.layout = BPMNDiagramLayouter.layout(this.diagram);
 	}
 	
 	// Create a DFGAbstraction based on an existing DFGAbstraction

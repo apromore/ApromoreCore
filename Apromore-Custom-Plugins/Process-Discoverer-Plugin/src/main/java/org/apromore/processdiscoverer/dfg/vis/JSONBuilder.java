@@ -22,6 +22,7 @@ package org.apromore.processdiscoverer.dfg.vis;
 
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.VisualizationType;
+import org.apromore.processdiscoverer.dfg.abstraction.AbstractAbstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.Abstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.util.ColorGradient;
@@ -150,7 +151,7 @@ public class JSONBuilder {
             jsonOneNode.put("textcolor", "black");
             jsonOneNode.put("textwidth", textwidth);
             
-            LayoutElement nodeLayout = (abs instanceof BPMNAbstraction) ? ((BPMNAbstraction) abs).getLayout().getLayoutElement(node): null;
+            LayoutElement nodeLayout = ((AbstractAbstraction) abs).getLayout().getLayoutElement(node);
 
             if(node instanceof Event) {
                 jsonOneNode.put("shape", "ellipse");
