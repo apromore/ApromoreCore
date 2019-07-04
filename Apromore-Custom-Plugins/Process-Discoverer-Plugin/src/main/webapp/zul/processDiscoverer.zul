@@ -390,10 +390,11 @@
 				"target-arrow-color": "data(color)",
 				"target-arrow-shape": "triangle",
 				"text-background-color": "#ffffff",
-				"text-background-opacity": 1,
+				"text-background-opacity": 0,
 				"text-background-padding": 5,
 				"text-background-shape": "roundrectangle",
 				"text-wrap": "wrap",
+				"text-margin-y": -10,
 				width: "mapData(strength, 0, 100, 1, 6)"
 			  }
 			}, {
