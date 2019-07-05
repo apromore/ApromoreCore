@@ -17,8 +17,8 @@ import java.io.Serializable;
 @Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Statistic implements Serializable {
 
-    private String id;
-    private String pid;
+    private byte[] id;
+    private byte[] pid;
     private Integer logid;
     private String stat_key;
     private String stat_value;
@@ -35,19 +35,19 @@ public class Statistic implements Serializable {
     }
 
     @Id
-    @Column(name = "id", unique = true, nullable = false, length = 36)
-    public String getId() {
+    @Column(name = "id", unique = true, nullable = false, length = 16)
+    public byte[] getId() {
         return this.id;
     }
-    public void setId(final String id) {
+    public void setId(final byte[] id) {
         this.id = id;
     }
 
-    @Column(name = "pid", length = 36)
-    public String getPid() {
+    @Column(name = "pid", length = 16)
+    public byte[] getPid() {
         return pid;
     }
-    public void setPid(final String pid) {
+    public void setPid(final byte[] pid) {
         this.pid = pid;
     }
 

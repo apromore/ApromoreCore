@@ -31,6 +31,7 @@ import org.apromore.model.SummariesType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
+import org.apromore.service.helper.UuidAdapter;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -179,7 +180,7 @@ public class EventLogServiceImpl implements EventLogService {
 
         if (stats != null && !stats.isEmpty()) {
             for (Statistic stat : stats) {
-                if (stat.getPid().equals("0")) {
+                if (Arrays.equals(stat.getPid(), "0".getBytes())) {
                     parent = factory.createAttributeList(stat.getStat_key(), null);
                     parent.setAttributes(getChildNodes(stat.getId(), stats));
                     log.getAttributes().get("statistics").getAttributes().put(stat.getStat_key(), parent);
@@ -191,23 +192,23 @@ public class EventLogServiceImpl implements EventLogService {
 
     /**
      * Get statistics by LogID
-     * @param logId
-     * @return
+     * @param logId logID
+     * @return list of statistic entities
      */
     private List<Statistic> getStats(Integer logId) {
         return statisticRepository.findByLogid(logId);
     }
 
     /**
-     * @param parentId
-     * @param stats
-     * @return
+     * @param parentId parent ID
+     * @param stats list of statistic entities
+     * @return XAttributeMap
      */
-    private XAttributeMap getChildNodes (String parentId, List<Statistic> stats) {
+    private XAttributeMap getChildNodes (byte[] parentId, List<Statistic> stats) {
         XFactory factory = XFactoryRegistry.instance().currentDefault();
         XAttributeMap attributeMap = factory.createAttributeMap();
         for(Statistic stat : stats) {
-            if(stat.getPid().equals(parentId)){
+            if(Arrays.equals(stat.getPid(), parentId)){
                 XAttribute attribute = factory.createAttributeDiscrete(stat.getStat_key(), Integer.parseInt(stat.getStat_value()), null);
                 attributeMap.put(stat.getStat_key(), attribute);
             }
@@ -223,29 +224,31 @@ public class EventLogServiceImpl implements EventLogService {
         if (null == stats || stats.size() == 0) {
 
             // flat nested map to list of entities
-//            HashMap<String, Integer> options_frequency = new HashMap<>();
-            List<Statistic> statList = new ArrayList();
+            List<Statistic> statList = new ArrayList<>();
 
             for (Map.Entry<String, Map<String, Integer>> option : map.entrySet()) {
                 Statistic parent = new Statistic();
                 if (option.getKey() != null && option.getValue() != null) {
-                    parent.setId(UUID.randomUUID().toString());
+                    parent.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
                     parent.setStat_key(option.getKey());
                     parent.setStat_value("");
                     parent.setLogid(logId);
-                    parent.setPid("0");
+                    parent.setPid("0".getBytes());
                     statList.add(parent);
                 }
-                HashMap<String, Integer> options_frequency = (HashMap) option.getValue();
-                for (Map.Entry<String, Integer> entry : options_frequency.entrySet()) {
-                    Statistic child = new Statistic();
-                    if (entry.getKey() != null && entry.getValue() != null) {
-                        child.setId(UUID.randomUUID().toString());
-                        child.setStat_key(entry.getKey());
-                        child.setStat_value(entry.getValue().toString());
-                        child.setLogid(logId);
-                        child.setPid(parent.getId());
-                        statList.add(child);
+                HashMap<String, Integer> options_frequency = (HashMap<String, Integer>) option.getValue();
+                if (options_frequency != null) {
+                    for (Map.Entry<String, Integer> entry : options_frequency.entrySet()) {
+                        Statistic child = new Statistic();
+                        if (entry.getKey() != null && entry.getValue() != null) {
+//                        child.setId(option.getKey().getBytes());
+                            child.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+                            child.setStat_key(entry.getKey());
+                            child.setStat_value(entry.getValue().toString());
+                            child.setLogid(logId);
+                            child.setPid(parent.getId());
+                            statList.add(child);
+                        }
                     }
                 }
             }
