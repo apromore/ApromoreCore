@@ -23,9 +23,6 @@ package org.apromore.portal.dialogController;
 import java.util.Collections;
 import java.util.List;
 
-import org.apromore.dao.model.Group;
-import org.apromore.dao.model.User;
-import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.GroupAccessType;
 import org.apromore.model.UserType;
@@ -35,7 +32,6 @@ import org.apromore.portal.exception.DialogException;
 import org.apromore.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -56,36 +52,10 @@ public class SecurityPermissionsController extends BaseController {
 
     private Listbox lstPermissions;
     private SecuritySetupController securitySetupController;
-    private UserService userService;
 
     public SecurityPermissionsController(SecuritySetupController securitySetupController, Window win) throws DialogException {
         this.securitySetupController = securitySetupController;
         this.lstPermissions = (Listbox)win.getFellow("existingPermissions").getFellow("lstPermissions");
-        this.userService = (UserService) SpringUtil.getBean("userService");
-    }
-
-    /**
-     * @param groups  permission groups (typically for a folder, log, or process model)
-     * @return whether the <var>groups</var> grant ownership to the current user
-     */
-    private boolean currentUserHasOwnership(List<GroupAccessType> groups) {
-        try {
-            User user = userService.findUserByLogin(UserSessionManager.getCurrentUser().getUsername());
-            for (final GroupAccessType group: groups) {
-                if (group.isHasOwnership()) {
-                    for (final Group userGroup: user.getGroups()) {
-                        if (userGroup.getName().equals(group.getName())) {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-        } catch (UserNotFoundException e) {
-            LOGGER.error("Unrecognized current user", e);
-        }
-
-        return false;
     }
 
     @SuppressWarnings("unchecked")
@@ -113,7 +83,7 @@ public class SecurityPermissionsController extends BaseController {
         lstPermissions.setPageSize(6);
         UserSessionManager.setCurrentSecurityItem(id);
         UserSessionManager.setCurrentSecurityType(type);
-        boolean hasOwnership = currentUserHasOwnership(groups);
+        boolean hasOwnership = UserSessionManager.getCurrentSecurityOwnership();
 
         for (final GroupAccessType group : groups) {
                     Listitem newItem = new Listitem();

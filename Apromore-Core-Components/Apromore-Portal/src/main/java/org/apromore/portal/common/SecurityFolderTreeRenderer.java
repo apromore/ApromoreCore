@@ -20,13 +20,20 @@
 
 package org.apromore.portal.common;
 
+import org.apromore.dao.model.Group;
+import org.apromore.dao.model.User;
+import org.apromore.exception.UserNotFoundException;
+import org.apromore.manager.client.ManagerService;
 import org.apromore.model.FolderType;
+import org.apromore.model.GroupAccessType;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.portal.dialogController.SecurityPermissionsController;
+import org.apromore.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -130,15 +137,17 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
 
                 try {
                     int selectedId = 0;
-                    boolean hasOwnership = false;
+                    List<GroupAccessType> groups = Collections.emptyList();
+
+                    ManagerService service = (ManagerService) SpringUtil.getBean("managerClient");
                     switch (clickedNodeValue.getType()) {
                     case Folder:
                         FolderType selectedFolder = (FolderType) clickedNodeValue.getData();
+                        selectedId = selectedFolder.getId();
                         if (selectedFolder.getId() == 0) {
                             // Nobody can edit the permissions of the root folder "Home"
                         } else {
-                            hasOwnership = selectedFolder.isHasOwnership();
-                            selectedId = selectedFolder.getId();
+                            groups = service.getFolderGroups(selectedId);
                         }
                         break;
   
@@ -146,8 +155,8 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                         SummaryType summaryType = (SummaryType) clickedNodeValue.getData();
                         if(summaryType instanceof ProcessSummaryType) {
                             ProcessSummaryType process = (ProcessSummaryType) summaryType;
-                            hasOwnership = process.isHasOwnership();
                             selectedId = process.getId();
+                            groups = service.getProcessGroups(selectedId);
                         }
                         break;
 
@@ -155,8 +164,8 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                         SummaryType lsummaryType = (SummaryType) clickedNodeValue.getData();
                         if(lsummaryType instanceof LogSummaryType) {
                             LogSummaryType log = (LogSummaryType) lsummaryType;
-                            hasOwnership = log.isHasOwnership();
                             selectedId = log.getId();
+                            groups = service.getLogGroups(selectedId);
                         }
                         break;
 
@@ -164,7 +173,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                         assert false: "Clicked tree node with type " + clickedNodeValue.getType() + " is not implemented";
                     }
 
-                    UserSessionManager.setCurrentSecurityOwnership(hasOwnership);
+                    UserSessionManager.setCurrentSecurityOwnership(currentUserHasOwnership(groups));
                     UserSessionManager.setCurrentSecurityItem(selectedId);
                     UserSessionManager.setCurrentSecurityType(clickedNodeValue.getType());
                     if (permissionsController != null) {
@@ -175,6 +184,32 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 }
             }
         });
+    }
+
+
+    /**
+     * @param groups  permission groups (typically for a folder, log, or process model)
+     * @return whether the <var>groups</var> grant ownership to the current user
+     */
+    private boolean currentUserHasOwnership(List<GroupAccessType> groups) {
+        try {
+            UserService userService = (UserService) SpringUtil.getBean("userService");
+            User user = userService.findUserByLogin(UserSessionManager.getCurrentUser().getUsername());
+            for (final GroupAccessType group: groups) {
+                if (group.isHasOwnership()) {
+                    for (final Group userGroup: user.getGroups()) {
+                        if (userGroup.getName().equals(group.getName())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+        } catch (UserNotFoundException e) {
+            LOGGER.error("Unrecognized current user", e);
+        }
+
+        return false;
     }
 
 
