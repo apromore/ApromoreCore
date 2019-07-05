@@ -10,13 +10,15 @@ import java.io.Serializable;
 @Entity
 @Table(name = "statistic",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"id"}),
+                @UniqueConstraint(columnNames = {"count"}),
+                @UniqueConstraint(columnNames = {"id"})
         }
 )
 @Configurable("statistic")
 @Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
 public class Statistic implements Serializable {
 
+    private Long count;
     private byte[] id;
     private byte[] pid;
     private Integer logid;
@@ -30,11 +32,18 @@ public class Statistic implements Serializable {
         super();
     }
 
-    public Statistic(Integer id) {
-        id = id;
-    }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "count", unique = true, nullable = false)
+    public Long getCount() {
+        return count;
+    }
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
+
     @Column(name = "id", unique = true, nullable = false, length = 16)
     public byte[] getId() {
         return this.id;
