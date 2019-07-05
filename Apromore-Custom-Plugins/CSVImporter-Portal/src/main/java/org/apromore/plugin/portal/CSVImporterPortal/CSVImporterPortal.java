@@ -103,29 +103,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
     }
 
 
-    private char getMaxOccuringChar(String str)
-    {
-        if (str == null || str.isEmpty()) {
-            throw new IllegalArgumentException("input word must have non-empty value.");
-        }
-        char maxchar = ' ';
-        int maxcnt = 0;
-        int[] charcnt = new int[Character.MAX_VALUE + 1];
-        for (int i = str.length() - 1; i >= 0; i--) {
-            if(!Character.isLetter(str.charAt(i))) {
-                for(int j =0; j < supportedSeparators.length; j++) {
-                    if(str.charAt(i) == supportedSeparators[j]) {
-                        char ch = str.charAt(i);
-                        if (++charcnt[ch] >= maxcnt) {
-                            maxcnt = charcnt[ch];
-                            maxchar = ch;
-                        }
-                    }
-                }
-            }
-        }
-        return maxchar;
-    }
     /**
      * Gets the Content.
      *
@@ -351,16 +328,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     if(window != null) {
                         // on clicking the button: CONVERT TO XES
                         if (media != null) {
-//                            Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData())
-//                                    : media.getReaderData();
                             try {
                                 CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
                                 // check file format to choose correct file reader.
                                 if (media.isBinary()) {
-//                                    reader = new InputStreamReader(media.getStreamData());
                                     reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).build();
                                 } else {
-//                                    reader = media.getReaderData();
                                     reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).build();
                                 }
                             }catch (Exception e) {
@@ -383,17 +356,34 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
             });
-
-            try {
                 window.doModal();
-
-            }catch (Exception e) {
-                //
-            }
 
         } catch (IOException e) {
             LOGGER.warn("Unable to execute sample method", e);
             Messagebox.show("Unable to import file : " + e, "Attention", Messagebox.OK, Messagebox.ERROR);
         }
+    }
+    private char getMaxOccuringChar(String str)
+    {
+        if (str == null || str.isEmpty()) {
+            throw new IllegalArgumentException("input word must have non-empty value.");
+        }
+        char maxchar = ' ';
+        int maxcnt = 0;
+        int[] charcnt = new int[Character.MAX_VALUE + 1];
+        for (int i = str.length() - 1; i >= 0; i--) {
+            if(!Character.isLetter(str.charAt(i))) {
+                for(int j =0; j < supportedSeparators.length; j++) {
+                    if(str.charAt(i) == supportedSeparators[j]) {
+                        char ch = str.charAt(i);
+                        if (++charcnt[ch] >= maxcnt) {
+                            maxcnt = charcnt[ch];
+                            maxchar = ch;
+                        }
+                    }
+                }
+            }
+        }
+        return maxchar;
     }
 }
