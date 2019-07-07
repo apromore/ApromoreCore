@@ -33,6 +33,7 @@
     <reference id="fileStoreClient" interface="org.apromore.filestore.client.FileStoreService"/>
     <reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
     <reference id="processService" interface="org.apromore.service.ProcessService"/>
+    <reference id="userService" interface="org.apromore.service.UserService"/>
 
     <list id="editorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=signavio)" availability="optional"/>
     <list id="bpmnEditorPlugins" interface="org.apromore.plugin.editor.EditorPlugin" filter="(org.apromore.plugin.editor=bpmn.io)" availability="optional"/>

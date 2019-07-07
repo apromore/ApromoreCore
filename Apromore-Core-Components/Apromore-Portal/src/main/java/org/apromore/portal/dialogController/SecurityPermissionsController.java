@@ -25,9 +25,13 @@ import java.util.List;
 
 import org.apromore.manager.client.ManagerService;
 import org.apromore.model.GroupAccessType;
+import org.apromore.model.UserType;
 import org.apromore.portal.common.FolderTreeNodeTypes;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -43,6 +47,8 @@ import org.zkoss.zul.Window;
  * Used to setup access groups for processes and folders.
  */
 public class SecurityPermissionsController extends BaseController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityPermissionsController.class);
 
     private Listbox lstPermissions;
     private SecuritySetupController securitySetupController;
@@ -80,8 +86,6 @@ public class SecurityPermissionsController extends BaseController {
         boolean hasOwnership = UserSessionManager.getCurrentSecurityOwnership();
 
         for (final GroupAccessType group : groups) {
-            if (hasOwnership){
-                if (true /*!(group.getGroupId().equals(UserSessionManager.getCurrentUser().getGroup().getId()))*/) {
                     Listitem newItem = new Listitem();
                     newItem.appendChild(new Listcell(group.getName()));
                     newItem.setHeight("20px");
@@ -116,21 +120,20 @@ public class SecurityPermissionsController extends BaseController {
                                     Component target = event.getTarget();
                                     Listitem listItem = (Listitem)target.getParent().getParent();
                                     List<Component> cells = listItem.getChildren();
-                                    FolderTreeNodeTypes selectedType = UserSessionManager.getCurrentSecurityType();
                                     if (cells.size() == 5){
                                         Checkbox chkWrite = (Checkbox)cells.get(2).getChildren().get(0);
                                         Checkbox chkOwner = (Checkbox)cells.get(3).getChildren().get(0);
                                         if (chkWrite != null && chkOwner != null){
                                             String message = "";
-                                            switch (selectedType) {
+                                            switch (type) {
                                             case Folder:
-                                                message = securitySetupController.getMainController().getService().saveFolderPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                                message = service.saveFolderPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
                                                 break;
                                             case Process:
-                                                message = securitySetupController.getMainController().getService().saveProcessPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                                message = service.saveProcessPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
                                                 break;
                                             case Log:
-                                                message = securitySetupController.getMainController().getService().saveLogPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                                message = service.saveLogPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
                                                 break;
                                             }
                                             if (message.isEmpty()){
@@ -154,24 +157,23 @@ public class SecurityPermissionsController extends BaseController {
                                     Component target = event.getTarget();
                                     Listitem listItem = (Listitem)target.getParent().getParent();
                                     List<Component> cells = listItem.getChildren();
-                                    FolderTreeNodeTypes selectedType = UserSessionManager.getCurrentSecurityType();
                                     String message = "";
                                     if (cells.size() == 5){
-                                        switch (selectedType) {
+                                        switch (type) {
                                         case Folder:
-                                            message = securitySetupController.getMainController().getService().removeFolderPermissions(id, group.getGroupId());
+                                            message = service.removeFolderPermissions(id, group.getGroupId());
                                             break;
                                         case Process:
-                                            message = securitySetupController.getMainController().getService().removeProcessPermissions(id, group.getGroupId());
+                                            message = service.removeProcessPermissions(id, group.getGroupId());
                                             break;
                                         case Log:
-                                            message = securitySetupController.getMainController().getService().removeLogPermissions(id, group.getGroupId());
+                                            message = service.removeLogPermissions(id, group.getGroupId());
                                             break;
                                         }
                                         if (message.isEmpty()){
                                             Messagebox.show("Successfully removed permissions.", "Success", Messagebox.OK,
                                                     Messagebox.INFORMATION);
-                                            loadUsers(id, selectedType);
+                                            loadUsers(id, type);
                                         }
                                         else{
                                             Messagebox.show(message, "Error", Messagebox.OK,
@@ -188,8 +190,5 @@ public class SecurityPermissionsController extends BaseController {
 
                     lstPermissions.getItems().add(newItem);
                 }
-            }
-        }
-
     }
 }
