@@ -18,7 +18,8 @@ public class LayoutElement {
 	private double y;
 	private double width;
 	private double height;	
-	private List<Point2D> wayPoints = new ArrayList<>();
+	private List<Point2D> wayPoints = new ArrayList<>(); //waypoints used by some graph libraries like JGraph, bpmn.io.
+	private List<Point2D> dwPoints = new ArrayList<>(); //(distance,weight) points used by some graph libraries like cytoscape 
 	Boolean isExpanded;
 	Boolean isHorizontal;
 	
@@ -77,8 +78,16 @@ public class LayoutElement {
 		this.wayPoints.add(new Point2D.Double(x, y));
 	}
 	
+	public void addDistanceWeightPoint(double d, double w) {
+		this.dwPoints.add(new Point2D.Double(d, w));
+	}
+	
 	public List<Point2D> getWaypoints() {
 		return Collections.unmodifiableList(this.wayPoints);
+	}
+	
+	public List<Point2D> getDWPoints() {
+		return Collections.unmodifiableList(this.dwPoints);
 	}
 	
 	public boolean isEdge() {

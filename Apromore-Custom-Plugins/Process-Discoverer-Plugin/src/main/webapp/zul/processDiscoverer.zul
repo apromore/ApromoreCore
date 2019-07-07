@@ -32,22 +32,20 @@
 	<style src="/css/cytoscape-context-menus.css"/>
 	
 	<script type="text/javascript" src="/js/jquery.js"></script>
+	<!--<script src="https://code.jquery.com/jquery-3.0.0.js"></script> -->
 	<script src="/js/pdf.v1.10.100.js"></script>
 	<script src="/js/jspdf.v1.4.1.debug.js"></script>
 	<script src="/js/canvas2svg.v1.0.19.js"></script>
+	<!-- <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script> -->
 	<script src="/js/cytoscape.v3.2.18.min.js"></script>
 	<script src="/js/cytoscape-edgehandles.v3.2.4.js"></script>
 	<script src="/js/cytoscape-svg-convertor.js"></script>
-	<script src="/js/klay.v0.4.1.js"></script>
-	<script src="/js/cytoscape-klay.v3.1.1.js"></script>
 	<script src="/js/dagre.v0.8.2.min.js"></script>
 	<script src="/js/cytoscape-dagre.v2.2.2.js"></script>
-	<script src="/js/cola.v3.3.8.min.js"></script>
-	<script src="/js/cytoscape-cola.v2.2.3.js"></script>
-	<script src="/js/cytoscape-cose-bilkent.v4.0.0.js"></script>
 	<script src="/js/cytoscape-edge-bend-editing.v1.6.0.js"></script>
-	<script src="/js/cytoscape-undo-redo.js"></script>
-	<script src="/js/cytoscape-context-menus.v3.0.6.js"></script>
+	<!-- <script src="/js/cytoscape-undo-redo.js"></script> -->
+	<!-- <script src="/js/cytoscape-context-menus.v3.0.6.js"></script> -->
+	<!--<script src="/js/cytoscape-edge-bend-editing.js"></script> -->
 	
 	<style dynamic="true">
 		tr.z-row td.z-row-inner, tr.z-row td.z-cell, tr.z-group td.z-group-inner, tr.z-groupfoot td.z-groupfoot-inner {
@@ -325,6 +323,7 @@
 		var initialLoaded = true; // whether the graph is first open.
 		var loadTraceMode = false; // indidate that the graph is loading a trace, not a full log
 		
+		
 		$(document).keydown(function(a) {
 		  if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0;
 		  if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0;
@@ -333,6 +332,7 @@
 		  //console.log(ctrlIsPressed);
 		  //console.log(altIsPressed)
 		});
+		
 
 		function init() {
 		  var a = window.cy = cytoscape({
@@ -371,7 +371,7 @@
 			  selector: ":selected",
 			  style: {
 				"border-width": 4,
-				"border-color": "#333"
+				"border-color": "#00BFFF"
 			  }
 			}, {
 			  selector: "edge",
@@ -415,7 +415,8 @@
 			  edges: []
 			}
 		  });
-		  
+
+			
 		  a.on("cxttap", "edge", function(a) {
 			if (!loadTraceMode) removeEdge(a)
 		  });
@@ -423,6 +424,7 @@
 		  a.on("cxttap", "node", function(a) {
 			if (!loadTraceMode) removeNode(a)
 		  });
+			
 		  
 		  a.on("zoom", function(event) {
 			if (!loadTraceMode) currentZoomLevel = a.zoom();
@@ -430,24 +432,29 @@
 		  
 		  a.on("pan", function(event) {
 			if (!loadTraceMode) currentPanPosition = a.pan();
-		  });		  
+		  });		
+			
 		}
 
 		function reset() {
-		  cy.elements().remove();
+		  //cy.elements().remove();
+			cy.destroy();
 		}
 
 		function loadDFG(a) {
 		  loadTraceMode = false;
-		  reset();
+		  //reset();
+			init();
 		  // need to store the current zoom and pan level as the load function
 		  // will reset them through the zoom and pan events.
 		  var zoom = currentZoomLevel; 
 		  var pan = currentPanPosition;
+			
+		  //console.log(a);
 		  cy.add($.parseJSON(a)); 
 		  //layout();
 		  //layout_dagre_LR(false);
-		  layout_manual(false);
+		  layout_manual_bezier(false);
 		  if (!initialLoaded) {
 			  window.cy.zoom(zoom);
 			  window.cy.pan(pan);
@@ -456,18 +463,40 @@
 		  }
 		  else {
 			  initialLoaded = false;
+				cy.fit();
 		  }
+			
+
+			cy.edgeBendEditing({
+				bendPositionsFunction: function(ele) {
+					return ele.segmentPoints();
+				},	
+				addBendMenuItemTitle: "Add Bend Point",
+				removeBendMenuItemTitle: "Remove Bend Point",
+				initBendPointsAutomatically: true,
+				bendShapeSizeFactor: 6,
+				undoable: false,
+				enabled: true,
+				moveSelectedBendPointsOnKeyEvents: function () {
+					return true;
+				}
+			});
+			
+			
+
 		}
 		
 		function loadBPMN(a) {
 		  loadTraceMode = false;
 		  reset();
+		  init();
 		  // need to store the current zoom and pan level as the load function
 		  // will reset them through the zoom and pan events.
 		  var zoom = currentZoomLevel; 
 		  var pan = currentPanPosition;
+		  //console.log(a);
 		  cy.add($.parseJSON(a)); 
-		  layout_manual(false);
+		  layout_manual_bezier(false);
 		  if (!initialLoaded) {
 			  window.cy.zoom(zoom);
 			  window.cy.pan(pan);
@@ -476,7 +505,25 @@
 		  }
 		  else {
 			  initialLoaded = false;
+				cy.fit();
 		  }
+			
+			cy.edgeBendEditing({
+				bendPositionsFunction: function(ele) {
+					return ele.segmentPoints();
+				},	
+				addBendMenuItemTitle: "Add Bend Point",
+				removeBendMenuItemTitle: "Remove Bend Point",
+				initBendPointsAutomatically: true,
+				bendShapeSizeFactor: 6,
+				undoable: false,
+				enabled: true,
+				moveSelectedBendPointsOnKeyEvents: function () {
+					return true;
+				}
+			});
+			
+			
 		}
 		
 		function loadTrace(a) {
@@ -537,7 +584,7 @@
 		function layout() {
 			switch(layout_model) {
 				case 0:
-					layout_manual(!0);
+					layout_manual_bezier(!0);
 					break;				
 				case 1:
 					layout_breadthfirst(!0);
@@ -565,24 +612,53 @@
 			}
 		}
 		
-		function layout_manual(a) {
+		function layout_manual_bezier(a) {
+		  cy.style().selector("edge").style({
+			"curve-style": "unbundled-bezier",
+			"edge-distances": "node-position",	
+			"control-point-distances": function( ele ){ if (ele.data('curve-style')=="non-straight") {return ele.data('point-distances')} else {return "0"}},
+			"control-point-weights": function( ele ){ if (ele.data('curve-style')=="non-straight") {return ele.data('point-weights')} else {return "0.5"}}	
+		  }).update();
+		  
 		  layout_model = 0;
 		  cy.elements().layout({
 			name: "preset"
-		  }).run()
+		  }).run();
 		  
 		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(true);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
 		}		
+		
+		function layout_manual_segments(a) {
+		  cy.style().selector("edge").style({
+			"curve-style": "segments",
+			"edge-distances": "node-position",	
+			"segment-distances": function( ele ){ if (ele.data('curve-style')=="non-straight") {return ele.data('point-distances')} else {return "0"}},
+			"segment-weights": function( ele ){ if (ele.data('curve-style')=="non-straight") {return ele.data('point-weights')} else {return "0.5"}}	
+		  }).update();
+		  
+		  layout_model = 0;
+		  cy.elements().layout({
+			name: "preset"
+		  }).run();
+		  
+		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(true);
+		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+		}	
 
 		function layout_breadthfirst(a) {
+		  cy.style().selector("edge").style({
+			"curve-style": "bezier"
+		  }).update();
+			
 		  layout_model = 1;
 		  cy.elements().layout({
 			name: "breadthfirst",
 			directed: !0,
 			spacingFactor: 1
-		  }).run()
+		  }).run();
 		  
 		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
 		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(true);
@@ -598,6 +674,10 @@
 		}
 
 		function layout_dagre_LR(a) {
+  		  cy.style().selector("edge").style({
+			"curve-style": "bezier"
+		  }).update()	
+		  
 		  layout_model = 4;
 		  cy.elements().layout({
 			name: "dagre",
@@ -750,9 +830,8 @@
 		}
 		
 		zk.afterMount(function() {
-		  init();
+		  //init();
 		  zAu.send(new zk.Event(zk.Widget.$("$win"), "onLoaded"))
-		  window.cy.fit();
 		});
 	]]>
 	</script>	

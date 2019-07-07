@@ -39,11 +39,13 @@ import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 import org.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
@@ -274,6 +276,8 @@ public class JSONBuilder {
             
             double mainNumber = abs.getArcPrimaryWeight(edge);
             double secondaryNumber = abs.getArcSecondaryWeight(edge);
+            
+            LayoutElement edgeLayout = ((AbstractAbstraction) abs).getLayout().getLayoutElement(edge.getEdgeID().toString());
 
             if(mainNumber != 1.0 || maxWeight != 0) {
                 BigDecimal bd;
@@ -303,6 +307,24 @@ public class JSONBuilder {
                 jsonOneLink.put("strength", 0);
                 jsonOneLink.put("label", "");
                 jsonOneLink.put("color", EDGE_START_COLOR_FREQUENCY);
+            }
+            
+            //Add (distance, weight) points for the edge
+            if (!edgeLayout.getDWPoints().isEmpty()) {
+            	DecimalFormat df = new DecimalFormat("0.00");
+	            String point_distances = "";
+	            String point_weights = "";
+	            for (Point2D dw : edgeLayout.getDWPoints()) {
+	            	point_distances += (df.format(dw.getX()) + " ");
+	            	point_weights += (df.format(dw.getY()) + " ");
+	            }
+	            jsonOneLink.put("curve-style", "non-straight");
+	            jsonOneLink.put("edge-distances", "node-position");
+	            jsonOneLink.put("point-distances", point_distances.trim());
+	            jsonOneLink.put("point-weights", point_weights.trim());
+            }
+            else {
+            	jsonOneLink.put("curve-style", "straight");
             }
 
             JSONObject jsonDataLink = new JSONObject();
