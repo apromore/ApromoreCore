@@ -89,4 +89,10 @@ public interface EventLogService {
      * @param logId logID of the XLog
      */
     void storeStats(Map<String, Map<String, Integer>> map, Integer logId);
+
+    /**
+     * @param logId logID of the XLog
+     * @return List of statistic entities
+     */
+    List<Statistic> getStats(Integer logId);
 }

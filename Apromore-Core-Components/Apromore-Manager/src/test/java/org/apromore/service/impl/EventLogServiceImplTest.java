@@ -1,12 +1,17 @@
 package org.apromore.service.impl;
 
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.LogRepository;
+import org.apromore.dao.*;
+import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.service.helper.UuidAdapter;
+import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.impl.XAttributeDiscreteImpl;
+import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
+import org.deckfour.xes.model.impl.XAttributeMapImpl;
+import org.deckfour.xes.model.impl.XLogImpl;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,17 +23,26 @@ import org.springframework.test.annotation.Rollback;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.easymock.EasyMock.expect;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.powermock.api.easymock.PowerMock.*;
+import static org.powermock.api.easymock.PowerMock.verify;
 
 public class EventLogServiceImplTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImplTest.class);
+
+    // inject EntityManager for simple test
+    private static EntityManagerFactory emf = null;
+    public EntityManagerFactory getEntityManagerFactory() {
+        if (emf == null) {
+            emf = Persistence.createEntityManagerFactory("TESTApromore");
+        }
+        return emf;
+    }
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -38,52 +52,120 @@ public class EventLogServiceImplTest {
     private FolderRepository folderRepo;
     private UserService userSrv;
     private UserInterfaceHelper ui;
+    private StatisticRepository statisticRepository;
 
     private EventLogServiceImpl eventLogService;
-//    private LogRepositoryCustomImpl logRepositoryCustom = new LogRepositoryCustomImpl();
 
-    private static EntityManagerFactory emf = null;
-    public EntityManagerFactory getEntityManagerFactory() {
-        if (emf == null) {
-            emf = Persistence.createEntityManagerFactory("TESTApromore");
-        }
+    @Before
+    public final void setUp() throws Exception {
+        logRepository = createMock(LogRepository.class);
+        groupRepository = createMock(GroupRepository.class);
+        folderRepo = createMock(FolderRepository.class);
+        userSrv = createMock(UserService.class);
+        ui = createMock(UserInterfaceHelper.class);
+        statisticRepository = createMock(StatisticRepository.class);
 
-        return emf;
+        eventLogService = new EventLogServiceImpl(logRepository, groupRepository, folderRepo, userSrv, ui, statisticRepository);
     }
 
-//    @Resource( name="logRepositoryCustom" )
-//    LogRepositoryCustomImpl logRepositoryCustom;
 
-//    private static EventLogService eventLogService;
-//    @BeforeClass
-//    public static void init() {
-//        ApplicationContext
-//                context = new ClassPathXmlApplicationContext("classpath:META-INF/spring/applicationContext-services-TEST.xml");
-//        eventLogService = (EventLogService)context.getBean("accountService");
-//    }
+    @Test
+    public void getStatsTest() {
+        List<Statistic> stats = new ArrayList<>();
+        Integer logId = 001;
+        expect(statisticRepository.findByLogid(logId)).andReturn(stats);
+        replay(statisticRepository);
 
-//    @Inject
-//    private EventLogService eventLogService;
-
-//    @Autowired
-//    private LogRepositoryCustomImpl logRepositoryCustom;
-//
-//    @Autowired
-//    private StatisticRepository statisticRepository;
-
-    private byte[] getUUID() {
-        UUID uuid = UUID.randomUUID();
-        byte[] uuidBytes = new byte[16];
-        ByteBuffer.wrap(uuidBytes)
-                .order(ByteOrder.BIG_ENDIAN)
-                .putLong(uuid.getMostSignificantBits())
-                .putLong(uuid.getLeastSignificantBits());
-        return uuidBytes;
+        List<Statistic> result = eventLogService.getStats(logId);
+        verify(statisticRepository);
+        assertThat(result, equalTo(stats));
     }
 
     @Test
-    @Rollback(true)
-    public void getStatistic() {
+    public void getXLogWithStatsTest() {
+
+
+
+        List<Statistic> stats = new ArrayList<>();
+
+        Statistic parent = new Statistic();
+        parent.setId("parent".getBytes());
+        parent.setStat_key("key");
+        parent.setLogid(88);
+        parent.setPid("0".getBytes());
+        parent.setStat_value("01");
+        stats.add(parent);
+
+        Statistic child = new Statistic();
+        child.setId("child".getBytes());
+        child.setStat_key("key");
+        child.setLogid(88);
+        child.setPid("parent".getBytes());
+        child.setStat_value("01");
+        stats.add(child);
+
+        Integer logId = 001;
+        expect(statisticRepository.findByLogid(logId)).andReturn(stats);
+        replay(statisticRepository);
+
+//        List<Statistic> result = eventLogService.getStats(logId);
+//        verify(statisticRepository);
+//        assertThat(result, equalTo(stats));
+
+        Log log = new Log();
+        XLog xlog = new XLogImpl(new XAttributeMapImpl());
+
+        expect(logRepository.findUniqueByID(logId)).andReturn(log);
+        expect(logRepository.getProcessLog(log)).andReturn(xlog);
+        replay(logRepository);
+//        XLog expectXlog = eventLogService.getXLog(logId);
+//        verify(logRepository);
+//        assertThat(expectXlog, equalTo(xlog));
+
+        XLog expectResult = eventLogService.getXLogWithStats(logId);
+        verify(statisticRepository, logRepository);
+
+        XAttribute statsAttribute = expectResult.getAttributes().get("statistics");
+
+        assertThat(statsAttribute, equalTo(new XAttributeLiteralImpl("statistics", "")));
+        assertThat(statsAttribute.getAttributes().size(), equalTo(1));
+        assertThat(statsAttribute.getAttributes().get("key"), equalTo(new XAttributeLiteralImpl("key", "")));
+        assertThat(statsAttribute.getAttributes().get("key").getAttributes().get("key"), equalTo(new XAttributeDiscreteImpl("key", 01)));
+    }
+
+
+    @Test
+    public void flattenNestedMapTest() {
+
+        Map<String, Map<String, Integer>> options = new HashMap<>();
+
+        Map<String, Integer> options_frequency = new HashMap<>();
+
+        options_frequency.put("Activity", 10);
+        options_frequency.put("direct:follow", 40);
+        options.put("concept:name", options_frequency);
+        options.put("concept:test", options_frequency);
+
+        List<Statistic> result = eventLogService.flattenNestedMap(options, 88);
+
+        assertThat(result.size(), equalTo(6));
+        assertThat(result.get(0).getPid(), equalTo("0".getBytes()));
+        assertThat(result.get(0).getStat_key(), equalTo("concept:name"));
+        assertThat(result.get(1).getStat_key(), equalTo("direct:follow"));
+        assertThat(result.get(1).getStat_value(), equalTo("40"));
+        assertThat(result.get(2).getStat_key(), equalTo("Activity"));
+        assertThat(result.get(2).getStat_value(), equalTo("10"));
+        assertThat(result.get(3).getStat_key(), equalTo("concept:test"));
+        assertThat(result.get(4).getStat_key(), equalTo("direct:follow"));
+        assertThat(result.get(4).getStat_value(), equalTo("40"));
+        assertThat(result.get(5).getStat_key(), equalTo("Activity"));
+        assertThat(result.get(5).getStat_value(), equalTo("10"));
+    }
+
+
+    @Test
+    @Rollback
+    public void simpleTest() {
 
 
         EntityManager em = getEntityManagerFactory().createEntityManager();
