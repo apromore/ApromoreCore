@@ -79,8 +79,15 @@ public class ProcessDiscoverer {
     	else {
     		dfgAbstraction = this.generateDFGAbstraction(log, params);
     	}
-        JSONBuilder jsonBuilder = new JSONBuilder(dfgAbstraction);
-        return new Object[] {jsonBuilder.generateJSONFromBPMN(false), dfgAbstraction} ;
+    	
+    	// Temporary handling because the new layout generates rare errors 
+    	if (dfgAbstraction.getLayout() != null) {
+    		JSONBuilder jsonBuilder = new JSONBuilder(dfgAbstraction);
+            return new Object[] {jsonBuilder.generateJSONFromBPMN(false), dfgAbstraction} ;
+    	}
+    	else {
+    		return null;
+    	}
     }
     
     public DFGAbstraction generateDFGAbstraction(XLog log, AbstractionParams params) throws Exception {
@@ -102,8 +109,13 @@ public class ProcessDiscoverer {
 
     public Object[] generateBPMNJSON(XLog log, AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception {
     	BPMNAbstraction bpmnAbstraction = this.generateBPMNAbstraction(log, params, dfgAbstraction);
-        JSONBuilder jsonBuilder = new JSONBuilder(bpmnAbstraction);
-        return new Object[] {jsonBuilder.generateJSONFromBPMN(false), bpmnAbstraction} ;
+    	if (bpmnAbstraction.getLayout() != null) {
+	        JSONBuilder jsonBuilder = new JSONBuilder(bpmnAbstraction);
+	        return new Object[] {jsonBuilder.generateJSONFromBPMN(false), bpmnAbstraction} ;
+    	}
+    	else {
+    		return null;
+    	}
     }
     
     public BPMNAbstraction generateBPMNAbstraction(XLog log, AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception {

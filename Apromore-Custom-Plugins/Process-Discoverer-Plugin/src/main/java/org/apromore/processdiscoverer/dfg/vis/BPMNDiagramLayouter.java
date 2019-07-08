@@ -28,86 +28,104 @@ import org.processmining.models.jgraph.views.JGraphPortView;
 
 public class BPMNDiagramLayouter {
 	
-	public static Layout layout(BPMNDiagram diagram) throws Exception {
-		UIContext context = new UIContext();
-        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        UIPluginContext uiPluginContext = context.getMainPluginContext();
-		ProMJGraphPanel graphPanel = ProMJGraphVisualizer.instance().visualizeGraph(uiPluginContext, diagram);
-		ProMGraphModel graphModel = graphPanel.getGraph().getModel();
-
-		Layout layout = new Layout(diagram);
-		for (Object o : graphModel.getRoots()) {
-			if (o instanceof ProMGraphCell) {
-				ProMGraphCell graphCell = (ProMGraphCell) o;
-				getCellLayout(graphCell, layout);
-			}
-			if (o instanceof ProMGraphPort) {
-				ProMGraphPort graphPort = (ProMGraphPort) o;
-				if(graphPort.getBoundingNode() != null) {
-					getCellLayout(graphPort, layout);
+	public static Layout layout(BPMNDiagram diagram) {
+		Layout layout = null;
+		
+		try {
+			UIContext context = new UIContext();
+	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+	        UIPluginContext uiPluginContext = context.getMainPluginContext();
+			ProMJGraphPanel graphPanel = ProMJGraphVisualizer.instance().visualizeGraph(uiPluginContext, diagram);
+			ProMGraphModel graphModel = graphPanel.getGraph().getModel();
+	
+			layout = new Layout(diagram);
+			for (Object o : graphModel.getRoots()) {
+				if (o instanceof ProMGraphCell) {
+					ProMGraphCell graphCell = (ProMGraphCell) o;
+					getCellLayout(graphCell, layout);
+				}
+				if (o instanceof ProMGraphPort) {
+					ProMGraphPort graphPort = (ProMGraphPort) o;
+					if(graphPort.getBoundingNode() != null) {
+						getCellLayout(graphPort, layout);
+					}
+				}
+				if (o instanceof ProMGraphEdge) {
+					ProMGraphEdge graphEdge = (ProMGraphEdge) o;
+					getEdgeLayout(graphEdge, layout);
 				}
 			}
-			if (o instanceof ProMGraphEdge) {
-				ProMGraphEdge graphEdge = (ProMGraphEdge) o;
-				getEdgeLayout(graphEdge, layout);
-			}
-		}
-		
-		// Add (distance, weight) points for edges
-		// Btw, fix the special case of loop L2 (A-->B, B-->A) because JGraph
-		// creates sub-optimal waypoints
-		Set<BPMNEdge> checkedLoopEdges = new HashSet<>();
-		for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : diagram.getEdges()) {
-			if (checkedLoopEdges.contains(edge)) continue;
 			
-			List<Point2D> dwPoints = getDistWeight(edge, layout);
-			if (!dwPoints.isEmpty()) {
-				boolean fixedLoopL2 = false;
-				BPMNEdge<? extends BPMNNode, ? extends BPMNNode> loopEdge = getLoopL2Edge(edge, diagram);
-				if (loopEdge != null) {
-					List<Point2D> loopdwPoints = getDistWeight(loopEdge, layout);
-					if (!loopdwPoints.isEmpty()) { 
-						double d1 = dwPoints.get(0).getX();
-						double w1 = dwPoints.get(0).getY();
-						w1 = (w1 > 0) ? 0.5 : -0.5; // move to the middle of source to target
-						
-						double d2 = loopdwPoints.get(0).getX();
-						double w2 = loopdwPoints.get(0).getY();
-						w2 = (w2 > 0) ? 0.5 : -0.5; // move to the middle of source to target
-						
-						// The edge closer to the line source to target would keep the same distance 
-						BPMNEdge<? extends BPMNNode, ? extends BPMNNode> unchangedDistanceEdge = Math.abs(d1) < Math.abs(d2) ? edge : loopEdge;
-						double unchangedDistance = unchangedDistanceEdge == edge ? d1 : d2;
-						double unchangedWeight = unchangedDistanceEdge == edge ? w1 : w2;
-						
-						// The edge further to the line source to target would be placed opposite the other edge over the line
-						BPMNEdge<? extends BPMNNode, ? extends BPMNNode> changedDistanceEdge = (unchangedDistanceEdge == edge) ? loopEdge : edge;
-						double changedDistance = (unchangedDistanceEdge == edge) ? d1 : d2;
-						double changedWeight = (unchangedDistanceEdge == edge) ? w2 : w1;
-						
-						// Adjust distance so that they are not too close
-						if (Math.abs(unchangedDistance) + Math.abs(unchangedDistance) < 10) {
-							unchangedDistance = (unchangedDistance < 0) ? unchangedDistance - 2 : unchangedDistance + 2;
-							changedDistance = (changedDistance < 0) ? changedDistance - 2 : changedDistance + 2;
+			// Add (distance, weight) points for edges
+			// Btw, fix the special case of loop L2 (A-->B, B-->A) because JGraph
+			// creates sub-optimal waypoints
+			Set<BPMNEdge> checkedLoopEdges = new HashSet<>();
+			for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : diagram.getEdges()) {
+				if (checkedLoopEdges.contains(edge)) continue;
+				
+				List<Point2D> dwPoints = getDistWeight(edge, layout);
+				if (!dwPoints.isEmpty()) {
+					boolean fixedLoopL2 = false;
+					
+					//Fix loop L2 edges
+					BPMNEdge<? extends BPMNNode, ? extends BPMNNode> loopEdge = getLoopL2Edge(edge, diagram);
+					if (loopEdge != null) {
+						List<Point2D> loopdwPoints = getDistWeight(loopEdge, layout);
+						if (!loopdwPoints.isEmpty()) { 
+							double d1 = dwPoints.get(0).getX();
+							double w1 = dwPoints.get(0).getY();
+							//w1 = (w1 > 0) ? 0.5 : -0.5; // move to the middle of source to target
+							
+							double d2 = loopdwPoints.get(0).getX();
+							double w2 = loopdwPoints.get(0).getY();
+							//w2 = (w2 > 0) ? 0.5 : -0.5; // move to the middle of source to target
+							
+							// The edge closer to the line source to target would keep the same distance 
+	//						BPMNEdge<? extends BPMNNode, ? extends BPMNNode> unchangedDistanceEdge = Math.abs(d1) < Math.abs(d2) ? edge : loopEdge;
+	//						double unchangedDistance = unchangedDistanceEdge == edge ? d1 : d2;
+	//						double unchangedWeight = unchangedDistanceEdge == edge ? w1 : w2;
+							
+							// The edge further to the line source to target would be placed opposite the other edge over the line
+	//						BPMNEdge<? extends BPMNNode, ? extends BPMNNode> changedDistanceEdge = (unchangedDistanceEdge == edge) ? loopEdge : edge;
+	//						double changedDistance = (unchangedDistanceEdge == edge) ? d1 : d2;
+	//						double changedWeight = (unchangedDistanceEdge == edge) ? w2 : w1;
+							
+							// Adjust distance so that they are not too close
+	//						if (Math.abs(unchangedDistance) + Math.abs(unchangedDistance) < 10) {
+	//							unchangedDistance = (unchangedDistance < 0) ? unchangedDistance - 2 : unchangedDistance + 2;
+	//							changedDistance = (changedDistance < 0) ? changedDistance - 2 : changedDistance + 2;
+	//						}
+							
+							if (Math.abs(d1) - Math.abs(d2) < 20) {
+								if (Math.abs(d1) > Math.abs(d2)) {
+									d1 = (d1 < 0) ? d1 - 15 : d1 + 15;
+								}
+								else {
+									d2 = (d2 < 0) ? d2 - 15 : d2 + 15;
+								}
+							}
+	
+							layout.getLayoutElement(edge.getEdgeID().toString()).addDistanceWeightPoint(d1, w1);
+							layout.getLayoutElement(loopEdge.getEdgeID().toString()).addDistanceWeightPoint(d2, w2);
+							
+							fixedLoopL2 = true;
 						}
-
-						layout.getLayoutElement(unchangedDistanceEdge.getEdgeID().toString()).addDistanceWeightPoint(unchangedDistance, unchangedWeight);
-						layout.getLayoutElement(changedDistanceEdge.getEdgeID().toString()).addDistanceWeightPoint(changedDistance, changedWeight);
-						
-						fixedLoopL2 = true;
+						checkedLoopEdges.add(loopEdge);
 					}
-					checkedLoopEdges.add(loopEdge);
+					
+					if (!fixedLoopL2) {
+						LayoutElement edgeLayout = layout.getLayoutElement(edge.getEdgeID().toString());
+						for (Point2D p : dwPoints) {
+							edgeLayout.addDistanceWeightPoint(p.getX(), p.getY());
+						}
+					}
+	
 				}
 				
-				if (!fixedLoopL2) {
-					LayoutElement edgeLayout = layout.getLayoutElement(edge.getEdgeID().toString());
-					for (Point2D p : dwPoints) {
-						edgeLayout.addDistanceWeightPoint(p.getX(), p.getY());
-					}
-				}
-
 			}
-			
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
 		}
 		
 		return layout;
@@ -217,7 +235,7 @@ public class BPMNDiagramLayouter {
 	    double st =  Math.sqrt(Math.pow(sX-tX,2) + Math.pow(sY-tY,2)); //the side s to t
 	    double semiP = (sp+tp+st)/2; //semi perimeter of the triangle s, p, t
 	    
-	    if (st == 0) return null;
+	    if (st == 0) return new Point2D.Double(5, 0); // self-loop
 	    
 	    D = 2*Math.sqrt(semiP*(semiP-sp)*(semiP-tp)*(semiP-st))/st;
 	    W = Math.sqrt(Math.pow(sp,2) - Math.pow(D,2))/st;
