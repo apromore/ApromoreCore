@@ -40,6 +40,7 @@ import org.apromore.processdiscoverer.ProcessDiscoverer;
 import org.apromore.processdiscoverer.VisualizationAggregation;
 import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.ArcType;
+import org.apromore.processdiscoverer.dfg.abstraction.AbstractAbstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
@@ -1613,17 +1614,21 @@ public class ProcessDiscovererController extends BaseController {
 					secondaryType, secondaryAggregation,
 					new HashSet<>(Arrays.asList(arcTypes)), 
 					dfgAbstraction);
+            
+            Object[] result = null;
             if(gateways.isChecked()) {
-                Object[] o = processDiscoverer.generateBPMNJSON(this.filtered_log, params, dfgAbstraction);
-                jsonDiagram = (JSONArray) o[0];
-                diagram = ((BPMNAbstraction)o[1]).getDiagram();
+            	result = processDiscoverer.generateBPMNJSON(this.filtered_log, params, dfgAbstraction);
             }else {
-                Object[] o = processDiscoverer.generateDFGJSON(this.filtered_log, params);
-                jsonDiagram = (JSONArray) o[0];
-                diagram = ((DFGAbstraction)o[1]).getDiagram();
+            	result = processDiscoverer.generateDFGJSON(this.filtered_log, params);
             }
-
-            this.display(jsonDiagram);
+            
+            if (result != null) {
+            	AbstractAbstraction abs = (AbstractAbstraction)result[1];
+            	jsonDiagram = (JSONArray) result[0];
+            	diagram = abs.getDiagram();
+            	this.display(jsonDiagram);
+            }
+            
         } catch(Exception e) {
         	e.printStackTrace();
             Messagebox.show(!e.getMessage().trim().isEmpty() ? e.getMessage() : "Unexpected error has occurred! Check log files.");

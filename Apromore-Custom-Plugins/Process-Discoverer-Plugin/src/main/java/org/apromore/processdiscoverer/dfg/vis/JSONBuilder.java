@@ -310,21 +310,27 @@ public class JSONBuilder {
             }
             
             //Add (distance, weight) points for the edge
-            if (!edgeLayout.getDWPoints().isEmpty()) {
-            	DecimalFormat df = new DecimalFormat("0.00");
-	            String point_distances = "";
-	            String point_weights = "";
-	            for (Point2D dw : edgeLayout.getDWPoints()) {
-	            	point_distances += (df.format(dw.getX()) + " ");
-	            	point_weights += (df.format(dw.getY()) + " ");
+            if (edge.getSource() != edge.getTarget()) {
+	            if (!edgeLayout.getDWPoints().isEmpty()) {
+	            	DecimalFormat df = new DecimalFormat("0.00");
+		            String point_distances = "";
+		            String point_weights = "";
+		            for (Point2D dw : edgeLayout.getDWPoints()) {
+		            	point_distances += (df.format(dw.getX()) + " ");
+		            	point_weights += (df.format(dw.getY()) + " ");
+		            }
+		            jsonOneLink.put("curve-style", "unbundled-bezier");
+		            jsonOneLink.put("point-distances", point_distances.trim());
+		            jsonOneLink.put("point-weights", point_weights.trim());
 	            }
-	            jsonOneLink.put("curve-style", "non-straight");
-	            jsonOneLink.put("edge-distances", "node-position");
-	            jsonOneLink.put("point-distances", point_distances.trim());
-	            jsonOneLink.put("point-weights", point_weights.trim());
+	            else {
+	            	jsonOneLink.put("curve-style", "unbundled-bezier");
+	            	jsonOneLink.put("point-distances", "0");
+		            jsonOneLink.put("point-weights", "0.5");
+	            }
             }
             else {
-            	jsonOneLink.put("curve-style", "straight");
+            	jsonOneLink.put("curve-style", "bezier");
             }
 
             JSONObject jsonDataLink = new JSONObject();

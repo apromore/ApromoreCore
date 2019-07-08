@@ -29,23 +29,16 @@
 	
 	<style src="/css/apromoreOld.css"/>
 	<style src="/css/site.css"/>
-	<style src="/css/cytoscape-context-menus.css"/>
 	
 	<script type="text/javascript" src="/js/jquery.js"></script>
-	<!--<script src="https://code.jquery.com/jquery-3.0.0.js"></script> -->
 	<script src="/js/pdf.v1.10.100.js"></script>
 	<script src="/js/jspdf.v1.4.1.debug.js"></script>
 	<script src="/js/canvas2svg.v1.0.19.js"></script>
-	<!-- <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script> -->
 	<script src="/js/cytoscape.v3.2.18.min.js"></script>
-	<script src="/js/cytoscape-edgehandles.v3.2.4.js"></script>
 	<script src="/js/cytoscape-svg-convertor.js"></script>
 	<script src="/js/dagre.v0.8.2.min.js"></script>
 	<script src="/js/cytoscape-dagre.v2.2.2.js"></script>
-	<script src="/js/cytoscape-edge-bend-editing.v1.6.0.js"></script>
-	<!-- <script src="/js/cytoscape-undo-redo.js"></script> -->
-	<!-- <script src="/js/cytoscape-context-menus.v3.0.6.js"></script> -->
-	<!--<script src="/js/cytoscape-edge-bend-editing.js"></script> -->
+	<!--<script src="/js/cytoscape-edge-bend-editing.v1.6.0.js"></script> -->
 	
 	<style dynamic="true">
 		tr.z-row td.z-row-inner, tr.z-row td.z-cell, tr.z-group td.z-group-inner, tr.z-groupfoot td.z-groupfoot-inner {
@@ -337,10 +330,6 @@
 		function init() {
 		  var a = window.cy = cytoscape({
 			container: document.getElementById("cy"),
-			layout: {
-			  name: "dagre",
-			  padding: 10
-			},
 			zoom: 1,
 			minZoom: 1E-50,
 			maxZoom: 1E50,
@@ -368,12 +357,6 @@
 				width: "data(width)"
 			  }
 			}, {
-			  selector: ":selected",
-			  style: {
-				"border-width": 4,
-				"border-color": "#00BFFF"
-			  }
-			}, {
 			  selector: "edge",
 			  style: {
 				color: "data(color)",
@@ -398,17 +381,13 @@
 				width: "mapData(strength, 0, 100, 1, 6)"
 			  }
 			}, {
-			  selector: "edge.questionable",
-			  style: {
-				"line-style": "dotted",
-				"target-arrow-shape": "diamond"
-			  }
-			}, {
-			  selector: ".faded",
-			  style: {
-				opacity: .25,
-				"text-opacity": 0
-			  }
+				selector: ":selected",
+				style: {
+					"line-color": "#ffa500",
+					"target-arrow-color": "#ffa500",
+					"color": "#ffa500",
+					"line-style": "solid"
+				}
 			}],
 			elements: {
 			  nodes: [],
@@ -450,7 +429,7 @@
 		  var zoom = currentZoomLevel; 
 		  var pan = currentPanPosition;
 			
-		  //console.log(a);
+		  console.log(a);
 		  cy.add($.parseJSON(a)); 
 		  //layout();
 		  //layout_dagre_LR(false);
@@ -466,22 +445,22 @@
 				cy.fit();
 		  }
 			
-
+			/*
 			cy.edgeBendEditing({
 				bendPositionsFunction: function(ele) {
-					return ele.segmentPoints();
+					return ele.controlPoints();
 				},	
 				addBendMenuItemTitle: "Add Bend Point",
 				removeBendMenuItemTitle: "Remove Bend Point",
-				initBendPointsAutomatically: true,
-				bendShapeSizeFactor: 6,
+				initBendPointsAutomatically: false,
+				bendShapeSizeFactor: 3,
 				undoable: false,
 				enabled: true,
 				moveSelectedBendPointsOnKeyEvents: function () {
 					return true;
 				}
 			});
-			
+			*/
 			
 
 		}
@@ -508,20 +487,22 @@
 				cy.fit();
 		  }
 			
+			/*
 			cy.edgeBendEditing({
 				bendPositionsFunction: function(ele) {
-					return ele.segmentPoints();
+					return ele.controlPoints();
 				},	
 				addBendMenuItemTitle: "Add Bend Point",
 				removeBendMenuItemTitle: "Remove Bend Point",
-				initBendPointsAutomatically: true,
-				bendShapeSizeFactor: 6,
+				initBendPointsAutomatically: false,
+				bendShapeSizeFactor: 3,
 				undoable: false,
 				enabled: true,
 				moveSelectedBendPointsOnKeyEvents: function () {
 					return true;
 				}
 			});
+			*/
 			
 			
 		}
@@ -537,48 +518,6 @@
 			if (window.cy) {
 				window.cy.fit();
 			}
-		}
-
-		function horizontal() {
-		  cy.style().selector("edge").style({
-			"curve-style": "bezier",
-			opacity: 1,
-			width: "mapData(strength, 0, 100, 1, 6)",
-			"target-arrow-shape": "triangle",
-			color: "data(color)",
-			"line-color": "data(color)",
-			"source-arrow-color": "data(color)",
-			"target-arrow-color": "data(color)",
-			label: "data(label)",
-			"line-style": "data(style)",
-			"font-size": 11,
-			"text-background-color": "#ffffff",
-			"text-background-opacity": 1,
-			"text-background-padding": 5,
-			"text-background-shape": "roundrectangle",
-			"edge-text-rotation": 0
-		  }).update()
-		}
-
-		function vertical() {
-		  cy.style().selector("edge").style({
-			"curve-style": "bezier",
-			opacity: 1,
-			width: "mapData(strength, 0, 100, 1, 6)",
-			"target-arrow-shape": "triangle",
-			color: "data(color)",
-			"line-color": "data(color)",
-			"source-arrow-color": "data(color)",
-			"target-arrow-color": "data(color)",
-			label: "data(label)",
-			"line-style": "data(style)",
-			"font-size": 11,
-			"text-background-color": "#ffffff",
-			"text-background-opacity": 1,
-			"text-background-padding": 5,
-			"text-background-shape": "roundrectangle",
-			"edge-text-rotation": 0
-		  }).update()
 		}
 
 		function layout() {
@@ -612,13 +551,35 @@
 			}
 		}
 		
+		function layout_manual_bezier1(a) {
+			/*
+		  cy.edges().forEach(function(edge){
+				var edgeType = 
+				if (edge.isLoop()) {
+					e.style("curve-style", "bezier");
+				}
+			});
+			*/
+		  
+		  layout_model = 0;
+		  cy.elements().layout({
+			name: "preset"
+		  }).run();
+		  
+		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(true);
+		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
+		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+		}	
+		
 		function layout_manual_bezier(a) {
+			
 		  cy.style().selector("edge").style({
-			"curve-style": "unbundled-bezier",
+			"curve-style": function( ele ){ return ele.data('curve-style')},
 			"edge-distances": "node-position",	
-			"control-point-distances": function( ele ){ if (ele.data('curve-style')=="non-straight") {return ele.data('point-distances')} else {return "0"}},
-			"control-point-weights": function( ele ){ if (ele.data('curve-style')=="non-straight") {return ele.data('point-weights')} else {return "0.5"}}	
+			"control-point-distances": function( ele ){ if (ele.data('curve-style')=="unbundled-bezier") {return ele.data('point-distances')} else {return "0"}},
+			"control-point-weights": function( ele ){ if (ele.data('curve-style')=="unbundled-bezier") {return ele.data('point-weights')} else {return "0.5"}}
 		  }).update();
+			
 		  
 		  layout_model = 0;
 		  cy.elements().layout({

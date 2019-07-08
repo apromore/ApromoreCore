@@ -12,6 +12,7 @@ import org.apromore.processdiscoverer.dfg.LogDFG;
 import org.apromore.processdiscoverer.dfg.collectors.ArcInfoCollector;
 import org.apromore.processdiscoverer.dfg.collectors.FrequencySetPopulator;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramLayouter;
+import org.apromore.processdiscoverer.dfg.vis.Layout;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
