@@ -38,11 +38,7 @@ public class SecurityFolderTreeController extends BaseController {
 
 //        FolderTreeModel model = new FolderTreeModel(new FolderTree(false).getRoot());
         FolderTreeModel model = new FolderTreeModel(new FolderTree(true).getRoot());
-        if (securitySetupController != null) {
-            tree.setItemRenderer(new SecurityFolderTreeRenderer(securitySetupController.getPermissionsController()));
-        } else {
-            tree.setItemRenderer(new SecurityFolderTreeRenderer(null));
-        }
+        tree.setItemRenderer(new SecurityFolderTreeRenderer(securitySetupController));
         tree.setModel(model);
     }
 }
