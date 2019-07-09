@@ -55,7 +55,6 @@ import org.zkoss.zul.*;
 
 import org.deckfour.xes.model.XLog;
 import com.opencsv.CSVReader;
-import sun.nio.cs.StreamDecoder;
 
 
 @Component("csvImporterPortalPlugin")
@@ -158,7 +157,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     newColumn.setLabel(header[i]);
                     newColumn.setAlign("center");
                     myGrid.getColumns().appendChild(newColumn);
-//                myGrid.getColumns().appendChild(newColumn);
                 }
                 // add dropdown lists
                 if (attrBox != null) {
@@ -283,7 +281,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if(media != null) {
 
                 window.setWidth("95%");
-//                        media = event.getMedia();
 
                 myGrid.setHeight("95%");
 
@@ -300,7 +297,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     displayCSVContent(media, result, myGrid, attrBox, popUPBox, window);
                     if (window != null) {
-//                            gridBox.setWidth(attrBox.getWidth());
                         // set grid model
                         if (result != null) {
                             myGrid.setModel(result);
@@ -323,7 +319,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
             }
             toXESButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-//                    CSVReader reader = null;
                     CSVReader reader = null;
                     if(window != null) {
                         // on clicking the button: CONVERT TO XES
