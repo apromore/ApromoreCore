@@ -86,109 +86,101 @@ public class SecurityPermissionsController extends BaseController {
         boolean hasOwnership = UserSessionManager.getCurrentSecurityOwnership();
 
         for (final GroupAccessType group : groups) {
-                    Listitem newItem = new Listitem();
-                    newItem.appendChild(new Listcell(group.getName()));
-                    newItem.setHeight("20px");
+            Listitem newItem = new Listitem();
+            newItem.appendChild(new Listcell(group.getName()));
+            newItem.setHeight("20px");
 
-                    Checkbox chkRead = new Checkbox();
-                    chkRead.setChecked(group.isHasRead());
-                    chkRead.setDisabled(true);
-                    Listcell cellRead = new Listcell();
-                    cellRead.appendChild(chkRead);
-                    newItem.appendChild(cellRead);
+            Checkbox chkRead = new Checkbox();
+            chkRead.setChecked(group.isHasRead());
+            chkRead.setDisabled(true);
+            Listcell cellRead = new Listcell();
+            cellRead.appendChild(chkRead);
+            newItem.appendChild(cellRead);
 
-                    Checkbox chkWrite = new Checkbox();
-                    chkWrite.setChecked(group.isHasWrite());
-                    chkWrite.setDisabled(!hasOwnership);
-                    Listcell cellWrite = new Listcell();
-                    cellWrite.appendChild(chkWrite);
-                    newItem.appendChild(cellWrite);
+            Checkbox chkWrite = new Checkbox();
+            chkWrite.setChecked(group.isHasWrite());
+            chkWrite.setDisabled(!hasOwnership);
+            Listcell cellWrite = new Listcell();
+            cellWrite.appendChild(chkWrite);
+            newItem.appendChild(cellWrite);
 
-                    Checkbox chkOwner = new Checkbox();
-                    chkOwner.setChecked(group.isHasOwnership());
-                    chkOwner.setDisabled(!hasOwnership);
-                    Listcell cellOwner = new Listcell();
-                    cellOwner.appendChild(chkOwner);
-                    newItem.appendChild(cellOwner);
+            Checkbox chkOwner = new Checkbox();
+            chkOwner.setChecked(group.isHasOwnership());
+            chkOwner.setDisabled(!hasOwnership);
+            Listcell cellOwner = new Listcell();
+            cellOwner.appendChild(chkOwner);
+            newItem.appendChild(cellOwner);
 
-                    Button btnSave = new Button();
-                    btnSave.setLabel("Save");
-                    btnSave.setDisabled(!hasOwnership);
-                    btnSave.addEventListener("onClick",
-                            new EventListener() {
-                                public void onEvent(Event event) throws Exception {
-                                    Component target = event.getTarget();
-                                    Listitem listItem = (Listitem)target.getParent().getParent();
-                                    List<Component> cells = listItem.getChildren();
-                                    if (cells.size() == 5){
-                                        Checkbox chkWrite = (Checkbox)cells.get(2).getChildren().get(0);
-                                        Checkbox chkOwner = (Checkbox)cells.get(3).getChildren().get(0);
-                                        if (chkWrite != null && chkOwner != null){
-                                            String message = "";
-                                            switch (type) {
-                                            case Folder:
-                                                message = service.saveFolderPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
-                                                break;
-                                            case Process:
-                                                message = service.saveProcessPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
-                                                break;
-                                            case Log:
-                                                message = service.saveLogPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
-                                                break;
-                                            }
-                                            if (message.isEmpty()){
-                                                Messagebox.show("Successfully saved permissions.", "Success", Messagebox.OK,
-                                                        Messagebox.INFORMATION);
-                                            }
-                                            else{
-                                                Messagebox.show(message, "Error", Messagebox.OK,
-                                                        Messagebox.ERROR);
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                    Button btnRemove = new Button();
-                    btnRemove.setLabel("Delete");
-                    btnRemove.setDisabled(!hasOwnership);
-                    btnRemove.addEventListener("onClick",
-                            new EventListener() {
-                                public void onEvent(Event event) throws Exception {
-                                    Component target = event.getTarget();
-                                    Listitem listItem = (Listitem)target.getParent().getParent();
-                                    List<Component> cells = listItem.getChildren();
-                                    String message = "";
-                                    if (cells.size() == 5){
-                                        switch (type) {
-                                        case Folder:
-                                            message = service.removeFolderPermissions(id, group.getGroupId());
-                                            break;
-                                        case Process:
-                                            message = service.removeProcessPermissions(id, group.getGroupId());
-                                            break;
-                                        case Log:
-                                            message = service.removeLogPermissions(id, group.getGroupId());
-                                            break;
-                                        }
-                                        if (message.isEmpty()){
-                                            Messagebox.show("Successfully removed permissions.", "Success", Messagebox.OK,
-                                                    Messagebox.INFORMATION);
-                                            loadUsers(id, type);
-                                        }
-                                        else{
-                                            Messagebox.show(message, "Error", Messagebox.OK,
-                                                    Messagebox.ERROR);
-                                        }
-
-                                    }
-                                }
-                            });
-                    Listcell cellCommand = new Listcell();
-                    cellCommand.appendChild(btnSave);
-                    cellCommand.appendChild(btnRemove);
-                    newItem.appendChild(cellCommand);
-
-                    lstPermissions.getItems().add(newItem);
+            Button btnSave = new Button();
+            btnSave.setLabel("Save");
+            btnSave.setDisabled(!hasOwnership);
+            btnSave.addEventListener("onClick", new EventListener() {
+                public void onEvent(Event event) throws Exception {
+                    Component target = event.getTarget();
+                    Listitem listItem = (Listitem)target.getParent().getParent();
+                    List<Component> cells = listItem.getChildren();
+                    if (cells.size() == 5){
+                        Checkbox chkWrite = (Checkbox)cells.get(2).getChildren().get(0);
+                        Checkbox chkOwner = (Checkbox)cells.get(3).getChildren().get(0);
+                        if (chkWrite != null && chkOwner != null){
+                            String message = "";
+                            switch (type) {
+                            case Folder:
+                                message = service.saveFolderPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                break;
+                            case Process:
+                                message = service.saveProcessPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                break;
+                            case Log:
+                                message = service.saveLogPermissions(id, group.getGroupId(), true, chkWrite.isChecked(), chkOwner.isChecked());
+                                break;
+                            }
+                            if (message.isEmpty()){
+                                Messagebox.show("Successfully saved permissions.", "Success", Messagebox.OK, Messagebox.INFORMATION);
+                            } else {
+                                Messagebox.show(message, "Error", Messagebox.OK, Messagebox.ERROR);
+                            }
+                        }
+                    }
                 }
+            });
+            Button btnRemove = new Button();
+            btnRemove.setLabel("Delete");
+            btnRemove.setDisabled(!hasOwnership);
+            btnRemove.addEventListener("onClick", new EventListener() {
+                public void onEvent(Event event) throws Exception {
+                    Component target = event.getTarget();
+                    Listitem listItem = (Listitem)target.getParent().getParent();
+                    List<Component> cells = listItem.getChildren();
+                    String message = "";
+                    if (cells.size() == 5){
+                        switch (type) {
+                        case Folder:
+                            message = service.removeFolderPermissions(id, group.getGroupId());
+                            break;
+                        case Process:
+                            message = service.removeProcessPermissions(id, group.getGroupId());
+                            break;
+                        case Log:
+                            message = service.removeLogPermissions(id, group.getGroupId());
+                            break;
+                        }
+                        if (message.isEmpty()){
+                            Messagebox.show("Successfully removed permissions.", "Success", Messagebox.OK, Messagebox.INFORMATION);
+                            loadUsers(id, type);
+                        } else {
+                            Messagebox.show(message, "Error", Messagebox.OK, Messagebox.ERROR);
+                        }
+
+                    }
+                }
+            });
+            Listcell cellCommand = new Listcell();
+            cellCommand.appendChild(btnSave);
+            cellCommand.appendChild(btnRemove);
+            newItem.appendChild(cellCommand);
+
+            lstPermissions.getItems().add(newItem);
+        }
     }
 }

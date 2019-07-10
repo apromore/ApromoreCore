@@ -29,7 +29,7 @@ import org.apromore.model.GroupAccessType;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SummaryType;
-import org.apromore.portal.dialogController.SecurityPermissionsController;
+import org.apromore.portal.dialogController.SecuritySetupController;
 import org.apromore.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +56,13 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityFolderTreeRenderer.class.getName());
 
+    private SecuritySetupController securitySetupController;
+
+    public SecurityFolderTreeRenderer(SecuritySetupController securitySetupController) {
+        this.securitySetupController = securitySetupController;
+    }
+
+    /*
     private SecurityPermissionsController permissionsController;
 
     public SecurityFolderTreeRenderer() {
@@ -68,6 +75,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
     public void setController(SecurityPermissionsController permissionsController) {
         this.permissionsController = permissionsController;
     }
+    */
 
     @Override
     public void render(final Treeitem treeItem, Object treeNode, int i) throws Exception {
@@ -176,8 +184,9 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                     UserSessionManager.setCurrentSecurityOwnership(currentUserHasOwnership(groups));
                     UserSessionManager.setCurrentSecurityItem(selectedId);
                     UserSessionManager.setCurrentSecurityType(clickedNodeValue.getType());
-                    if (permissionsController != null) {
-                        permissionsController.loadUsers(selectedId, clickedNodeValue.getType());
+                    if (securitySetupController != null) {
+                        securitySetupController.getPermissionsController().loadUsers(selectedId, clickedNodeValue.getType());
+                        securitySetupController.getFindGroupsController().updateSelection();
                     }
                 } catch (Exception ex) {
                     LOGGER.error("SecurityFolderTree Renderer failed to render an item", ex);

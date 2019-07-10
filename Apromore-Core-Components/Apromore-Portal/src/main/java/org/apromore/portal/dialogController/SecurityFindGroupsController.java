@@ -21,6 +21,7 @@
 package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -50,6 +51,8 @@ public class SecurityFindGroupsController extends BaseController {
     private Button btnSave;
     private Textbox txtSearch;
     private Listbox lstGroups;
+
+    private List<GroupType> groups = Collections.emptyList();
 
     @SuppressWarnings("unchecked")
     public SecurityFindGroupsController(final SecuritySetupController securitySetupController, Window win) throws DialogException {
@@ -132,12 +135,10 @@ public class SecurityFindGroupsController extends BaseController {
                 if (txtSearch.getText().isEmpty()) {
                     Messagebox.show("Please type search text", "Attention", Messagebox.OK, Messagebox.ERROR);
                 } else {
-                    boolean hasOwnership = UserSessionManager.getCurrentSecurityOwnership();
-                    lstGroups.getItems().clear();
-                    List<GroupType> groups = mainController.getService().searchGroups(txtSearch.getText().replace("*", "%"));
+                    groups = mainController.getService().searchGroups(txtSearch.getText().replace("*", "%"));
+                    updateSelection();
                     lstGroups.setVisible(groups.size() > 0);
-                    btnSave.setDisabled(groups.size() == 0 || !hasOwnership);
-
+                    lstGroups.getItems().clear();
                     for (GroupType group : groups) {
                         if (true /*!(group.getId().equals(UserSessionManager.getCurrentUser().getId()))*/) {
                             Listitem newItem = new Listitem();
@@ -177,5 +178,10 @@ public class SecurityFindGroupsController extends BaseController {
                 }
             }
         });
+    }
+
+    public void updateSelection() {
+        boolean hasOwnership = UserSessionManager.getCurrentSecurityOwnership();
+        btnSave.setDisabled(groups.size() == 0 || !hasOwnership);
     }
 }
