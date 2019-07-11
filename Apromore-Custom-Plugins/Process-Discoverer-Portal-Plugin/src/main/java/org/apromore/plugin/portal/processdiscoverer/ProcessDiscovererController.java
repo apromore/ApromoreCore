@@ -24,6 +24,10 @@ import au.com.bytecode.opencsv.CSVWriter;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+
+import org.apromore.logfilter.LogFilterService;
+import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.plugin.portal.PortalContext;
@@ -39,12 +43,6 @@ import org.apromore.processdiscoverer.dfg.ArcType;
 import org.apromore.processdiscoverer.dfg.abstraction.AbstractAbstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
-import org.apromore.processdiscoverer.logfilter.Action;
-import org.apromore.processdiscoverer.logfilter.Containment;
-import org.apromore.processdiscoverer.logfilter.Level;
-import org.apromore.processdiscoverer.logfilter.LogFilter;
-import org.apromore.processdiscoverer.logfilter.LogFilterCriterion;
-import org.apromore.processdiscoverer.logfilter.LogFilterCriterionFactory;
 import org.apromore.processdiscoverer.logprocessors.ActivityClassifier;
 import org.apromore.processdiscoverer.logprocessors.EventClassifier;
 import org.apromore.processdiscoverer.logprocessors.LogUtils;
@@ -86,11 +84,10 @@ import java.util.regex.Pattern;
 import static org.apromore.processdiscoverer.VisualizationAggregation.*;
 import static org.apromore.processdiscoverer.VisualizationType.DURATION;
 import static org.apromore.processdiscoverer.VisualizationType.FREQUENCY;
-import static org.apromore.processdiscoverer.logfilter.Action.REMOVE;
-import static org.apromore.processdiscoverer.logfilter.Action.RETAIN;
-import static org.apromore.processdiscoverer.logfilter.Containment.CONTAIN_ANY;
-import static org.apromore.processdiscoverer.logfilter.Level.EVENT;
-import static org.apromore.processdiscoverer.logfilter.Level.TRACE;
+
+import org.apromore.logfilter.criteria.model.Action;
+import org.apromore.logfilter.criteria.model.Containment;
+import org.apromore.logfilter.criteria.model.Level;
 
 /**
  * Initialization: after the window has been loaded, the ZK client engine will send onLoaded event to the main window 
@@ -206,6 +203,8 @@ public class ProcessDiscovererController extends BaseController {
     private ProcessDiscoverer processDiscoverer;
     private LogAnimationPluginInterface logAnimationPluginInterface;
     private BIMPAnnotationService bimpAnnotationService;
+    private LogFilterService logFilterService;
+    private LogFilterCriterionFactory logFilterCriterionFactory;
     
     private SummaryType selection = null;
     
@@ -231,6 +230,8 @@ public class ProcessDiscovererController extends BaseController {
         eventLogService = (EventLogService)beanFactory.getBean("eventLogService");
         logAnimationPluginInterface = (LogAnimationPluginInterface)beanFactory.getBean("logAnimationPlugin");
         bimpAnnotationService = (BIMPAnnotationService)beanFactory.getBean("bimpAnnotationService");
+        logFilterService = (LogFilterService)beanFactory.getBean("logFilterService");
+        logFilterCriterionFactory = (LogFilterCriterionFactory)beanFactory.getBean("LogFilterCriterionFactory");
         
         portalContext = (PortalContext)session.get("context");
         primaryType = (VisualizationType)session.get("visType");
@@ -814,10 +815,10 @@ public class ProcessDiscovererController extends BaseController {
                     }
 
                     if (manually_removed_activities.size() > 0) {
-                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                REMOVE,
-                                CONTAIN_ANY,
-                                TRACE,
+                        addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
+                                Action.REMOVE,
+                                Containment.CONTAIN_ANY,
+                                Level.TRACE,
                                 getLabel(),
                                 getLabel(),
                                 manually_removed_activities
@@ -843,10 +844,10 @@ public class ProcessDiscovererController extends BaseController {
                     }
 
                     if (manually_removed_activities.size() > 0) {
-                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                RETAIN,
-                                CONTAIN_ANY,
-                                TRACE,
+                        addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
+                                Action.RETAIN,
+                                Containment.CONTAIN_ANY,
+                                Level.TRACE,
                                 getLabel(),
                                 getLabel(),
                                 manually_removed_activities
@@ -872,10 +873,10 @@ public class ProcessDiscovererController extends BaseController {
                     }
 
                     if (manually_removed_activities.size() > 0) {
-                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                REMOVE,
-                                CONTAIN_ANY,
-                                EVENT,
+                        addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
+                                Action.REMOVE,
+                                Containment.CONTAIN_ANY,
+                                Level.EVENT,
                                 getLabel(),
                                 getLabel(),
                                 manually_removed_activities
@@ -901,10 +902,10 @@ public class ProcessDiscovererController extends BaseController {
                     }
 
                     if (manually_removed_activities.size() > 0) {
-                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                RETAIN,
-                                CONTAIN_ANY,
-                                EVENT,
+                        addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
+                                Action.RETAIN,
+                                Containment.CONTAIN_ANY,
+                                Level.EVENT,
                                 getLabel(),
                                 getLabel(),
                                 manually_removed_activities
@@ -931,10 +932,10 @@ public class ProcessDiscovererController extends BaseController {
                     }
 
                     if (manually_removed_arcs.size() > 0) {
-                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                REMOVE,
-                                CONTAIN_ANY,
-                                TRACE,
+                        addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
+                                Action.REMOVE,
+                                Containment.CONTAIN_ANY,
+                                Level.TRACE,
                                 getLabel(),
                                 StringValues.b[94],
                                 manually_removed_arcs
@@ -961,10 +962,10 @@ public class ProcessDiscovererController extends BaseController {
                     }
 
                     if (manually_removed_arcs.size() > 0) {
-                        addCriterion(LogFilterCriterionFactory.getLogFilterCriterion(
-                                RETAIN,
-                                CONTAIN_ANY,
-                                TRACE,
+                        addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
+                                Action.RETAIN,
+                                Containment.CONTAIN_ANY,
+                                Level.TRACE,
                                 getLabel(),
                                 StringValues.b[94],
                                 manually_removed_arcs
@@ -1233,6 +1234,14 @@ public class ProcessDiscovererController extends BaseController {
     	return bimpAnnotationService;
     }
     
+    public LogFilterService getLogFilterService() {
+    	return logFilterService;
+    }
+    
+    public LogFilterCriterionFactory getLogFilterCriterionFactory() {
+    	return logFilterCriterionFactory;
+    }
+    
     public XLog getInitialLog() {
     	return this.initial_log;
     }
@@ -1269,7 +1278,7 @@ public class ProcessDiscovererController extends BaseController {
     private void addCriterion(LogFilterCriterion logFilterCriterion) throws InterruptedException {
         if (!criteria.contains(logFilterCriterion)) {
             criteria.add(logFilterCriterion);
-            XLog filteredLog = LogFilter.filter(this.getInitialLog(), criteria);
+            XLog filteredLog = logFilterService.filter(this.getInitialLog(), criteria);
         	if (filteredLog.isEmpty()) {
         		Messagebox.show("The log is empty after applying filter criteria! Please use different criteria.");
         		criteria.remove(logFilterCriterion);
@@ -1699,7 +1708,7 @@ public class ProcessDiscovererController extends BaseController {
     	lifecycle.add(LogUtils.START_CODE.toUpperCase());
         lifecycle.add(LogUtils.COMPLETE_CODE);
         lifecycle.add(LogUtils.COMPLETE_CODE.toUpperCase());
-    	LogFilterCriterion criterion = LogFilterCriterionFactory.getLogFilterCriterion(
+    	LogFilterCriterion criterion = logFilterCriterionFactory.getLogFilterCriterion(
     			Action.RETAIN,
     			Containment.CONTAIN_ANY,
                 Level.EVENT,
@@ -1709,6 +1718,6 @@ public class ProcessDiscovererController extends BaseController {
     	
     	List<LogFilterCriterion> filterCriteria = new ArrayList<>();
     	filterCriteria.add(criterion);
-    	return LogFilter.filter(log, filterCriteria);
+    	return logFilterService.filter(log, filterCriteria);
     }
 }

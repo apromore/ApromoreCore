@@ -40,23 +40,13 @@
 
     <context:annotation-config />
     <context:spring-configured />
-
-    <aop:aspectj-autoproxy />
-
-    <!-- Other OSGi services this component consumes -->
-    <osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
-    <osgi:reference id="logAnimationPlugin" interface="org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface" />
-    <osgi:reference id="canoniserService" interface="org.apromore.service.CanoniserService"/>
-    <osgi:reference id="domainService" interface="org.apromore.service.DomainService"/>
-    <osgi:reference id="processService" interface="org.apromore.service.ProcessService"/>
-    <osgi:reference id="bimpAnnotationService" interface="org.apromore.service.bimp_annotation.BIMPAnnotationService"/>
-		<osgi:reference id="managerClient" interface="org.apromore.manager.client.ManagerService"/>
-    <osgi:reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
-		<osgi:reference id="logFilterService" interface="org.apromore.logfilter.LogFilterService"/>
-		<osgi:reference id="LogFilterCriterionFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory"/>
-
-    <!-- Exposes the component as OSGi service -->
-    <context:component-scan base-package="org.apromore.plugin.portal.processdiscoverer" />
-    <osgi:service ref="frequencyPlugin" interface="org.apromore.plugin.portal.PortalPlugin" />
-    <osgi:service ref="performancePlugin" interface="org.apromore.plugin.portal.PortalPlugin" />
+	
+		<beans:bean id="logFilter" class="org.apromore.logfilter.impl.LogFilterImpl">
+    </beans:bean>
+		
+		<beans:bean id="logFilterFactory" class="org.apromore.logfilter.criteria.factory.impl.LogFilterCriterionFactoryImpl">
+    </beans:bean>
+		
+    <osgi:service ref="logFilter" interface="org.apromore.logfilter.LogFilterService" />
+		<osgi:service ref="logFilterFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory" />
 </beans:beans>

@@ -18,8 +18,11 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.logfilter;
+package org.apromore.logfilter.criteria;
 
+import org.apromore.logfilter.criteria.model.Action;
+import org.apromore.logfilter.criteria.model.Containment;
+import org.apromore.logfilter.criteria.model.Level;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 

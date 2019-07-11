@@ -18,21 +18,28 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.logfilter;
+package org.apromore.logfilter.criteria.factory.impl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apromore.processdiscoverer.logfilter.impl.LogFilterCriterionAttribute;
-import org.apromore.processdiscoverer.logfilter.impl.LogFilterCriterionDirectFollow;
-import org.apromore.processdiscoverer.logfilter.impl.LogFilterCriterionDuration;
-import org.apromore.processdiscoverer.logfilter.impl.LogFilterCriterionEventuallyFollow;
+import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
+import org.apromore.logfilter.criteria.impl.LogFilterCriterionAttribute;
+import org.apromore.logfilter.criteria.impl.LogFilterCriterionDirectFollow;
+import org.apromore.logfilter.criteria.impl.LogFilterCriterionDuration;
+import org.apromore.logfilter.criteria.impl.LogFilterCriterionEventuallyFollow;
+import org.apromore.logfilter.criteria.model.Action;
+import org.apromore.logfilter.criteria.model.Containment;
+import org.apromore.logfilter.criteria.model.Level;
+import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
 
-public class LogFilterCriterionFactory {
+public class LogFilterCriterionFactoryImpl implements LogFilterCriterionFactory {
 
-    public static LogFilterCriterion getLogFilterCriterion(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
+	@Override
+    public LogFilterCriterion getLogFilterCriterion(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
         switch (LogFilterTypeSelector.getType(attribute)) {
             case DIRECT_FOLLOW:
                 return new LogFilterCriterionDirectFollow(action, containment, level, label, attribute, value);
@@ -45,8 +52,9 @@ public class LogFilterCriterionFactory {
         }
     }
     
-    public static LogFilterCriterion copyFilterCriterion(LogFilterCriterion criterion) {
-    	return LogFilterCriterionFactory.getLogFilterCriterion(criterion.getAction(), 
+	@Override
+    public LogFilterCriterion copyFilterCriterion(LogFilterCriterion criterion) {
+    	return this.getLogFilterCriterion(criterion.getAction(), 
     															criterion.getContainment(), 
     															criterion.getLevel(), 
     															criterion.getLabel(), 
@@ -54,10 +62,11 @@ public class LogFilterCriterionFactory {
     															new HashSet<>(criterion.getValue()));
     }
     
-    public static List<LogFilterCriterion> copyFilterCriterionList(List<LogFilterCriterion> list) {
+	@Override
+    public List<LogFilterCriterion> copyFilterCriterionList(List<LogFilterCriterion> list) {
     	List<LogFilterCriterion> newList = new ArrayList<>();
     	for (LogFilterCriterion c : list) {
-    		newList.add(LogFilterCriterionFactory.copyFilterCriterion(c));
+    		newList.add(this.copyFilterCriterion(c));
     	}
     	return newList;
     }

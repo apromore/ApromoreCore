@@ -20,24 +20,18 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import org.apromore.processdiscoverer.logfilter.Level;
-import org.apromore.processdiscoverer.logfilter.LogFilterCriterion;
-import org.apromore.processdiscoverer.logfilter.LogFilterCriterionFactory;
-import org.apromore.processdiscoverer.logfilter.LogFilterTypeSelector;
-import org.apromore.processdiscoverer.logfilter.Type;
 import org.apromore.processdiscoverer.util.StringValues;
 import org.apromore.processdiscoverer.util.TimeConverter;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;
-
-import static org.apromore.processdiscoverer.logfilter.Action.REMOVE;
-import static org.apromore.processdiscoverer.logfilter.Action.RETAIN;
-import static org.apromore.processdiscoverer.logfilter.Containment.CONTAIN_ALL;
-import static org.apromore.processdiscoverer.logfilter.Containment.CONTAIN_ANY;
-import static org.apromore.processdiscoverer.logfilter.Level.EVENT;
-import static org.apromore.processdiscoverer.logfilter.Level.TRACE;
+import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.model.Action;
+import org.apromore.logfilter.criteria.model.Containment;
+import org.apromore.logfilter.criteria.model.Level;
+import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
+import org.apromore.logfilter.criteria.model.Type;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -84,8 +78,15 @@ class CreateFilterCriterion {
 
     private Button okButton;
     private Button cancelButton;
+    
+    private ProcessDiscovererController discovererController;
 
-    public CreateFilterCriterion(String label, FilterCriterionSelector filterCriterionSelector, List<LogFilterCriterion> criteria, Map<String, Map<String, Integer>> options_frequency, long min, long max, int pos) throws IOException {
+    public CreateFilterCriterion(String label, FilterCriterionSelector filterCriterionSelector,
+    							ProcessDiscovererController discovererController,
+    							List<LogFilterCriterion> criteria, 
+    							Map<String, Map<String, Integer>> options_frequency, 
+    							long min, long max, int pos) throws IOException {
+    	this.discovererController = discovererController;
         this.label = label;
         setInputs(filterCriterionSelector, criteria, options_frequency, min, max, pos);
         initComponents(); 		// Initialize values
@@ -96,8 +97,11 @@ class CreateFilterCriterion {
         createFilterCriterionW.doModal();
     }
 
-    public CreateFilterCriterion(String label, FilterCriterionSelector filterCriterionSelector, List<LogFilterCriterion> criteria, Map<String, Map<String, Integer>> options_frequency, long min, long max) throws IOException {
-        this(label, filterCriterionSelector, criteria, options_frequency, min, max, -1);
+    public CreateFilterCriterion(String label, FilterCriterionSelector filterCriterionSelector,
+    							ProcessDiscovererController discovererController,
+    							List<LogFilterCriterion> criteria, 
+    							Map<String, Map<String, Integer>> options_frequency, long min, long max) throws IOException {
+        this(label, filterCriterionSelector, discovererController, criteria, options_frequency, min, max, -1);
     }
 
     private void setInputs(FilterCriterionSelector filterCriterionSelector, List<LogFilterCriterion> criteria, Map<String, Map<String, Integer>> options_frequency, long min, long max, int pos) throws IOException {
@@ -189,9 +193,9 @@ class CreateFilterCriterion {
     	// If an existing Filter Criterion is provided, set form field values to those in the Filter Criterion 
         if(pos != -1) {
             LogFilterCriterion criterion = criteria.get(pos);
-            level.setSelectedIndex(criterion.getLevel()== EVENT ? 0 : 1);
-            containment.setSelectedIndex(criterion.getContainment() == CONTAIN_ANY ? 0 : 1);
-            action.setSelectedIndex(criterion.getAction() == RETAIN ? 0 : 1);
+            level.setSelectedIndex(criterion.getLevel()== Level.EVENT ? 0 : 1);
+            containment.setSelectedIndex(criterion.getContainment() == Containment.CONTAIN_ANY ? 0 : 1);
+            action.setSelectedIndex(criterion.getAction() == Action.RETAIN ? 0 : 1);
             
             // Update codes, names and displayed labels according to the level of the current Filter Criterion
             filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
@@ -376,10 +380,10 @@ class CreateFilterCriterion {
                 }
                 
                 if (set.size() > 0) {
-                    LogFilterCriterion criterion = LogFilterCriterionFactory.getLogFilterCriterion(
-                            action.getSelectedIndex() == 0 ? RETAIN : REMOVE,
-                            containment.getSelectedIndex() == 0 ? CONTAIN_ANY : CONTAIN_ALL,
-                            level.getSelectedIndex() == 0 ? EVENT : TRACE,
+                    LogFilterCriterion criterion = discovererController.getLogFilterCriterionFactory().getLogFilterCriterion(
+                            action.getSelectedIndex() == 0 ? Action.RETAIN : Action.REMOVE,
+                            containment.getSelectedIndex() == 0 ? Containment.CONTAIN_ANY : Containment.CONTAIN_ALL,
+                            level.getSelectedIndex() == 0 ? Level.EVENT : Level.TRACE,
                             label,
                             option,
                             set

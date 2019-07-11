@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.logfilter;
+package org.apromore.logfilter.criteria.model;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.

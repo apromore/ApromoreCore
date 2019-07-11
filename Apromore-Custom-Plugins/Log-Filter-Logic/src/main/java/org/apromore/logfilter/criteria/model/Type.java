@@ -1,4 +1,4 @@
-package org.apromore.processdiscoverer.logfilter;
+package org.apromore.logfilter.criteria.model;
 
 /**
  * 

@@ -18,35 +18,32 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.logfilter.impl;
+package org.apromore.logfilter.criteria.impl;
 
-import org.apromore.processdiscoverer.logfilter.Action;
-import org.apromore.processdiscoverer.logfilter.Containment;
-import org.apromore.processdiscoverer.logfilter.Level;
-import org.apromore.processdiscoverer.logfilter.LogFilterCriterionImpl;
+import org.apromore.logfilter.criteria.model.Action;
+import org.apromore.logfilter.criteria.model.Containment;
+import org.apromore.logfilter.criteria.model.Level;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 
 import java.util.Set;
 
-public class LogFilterCriterionDirectFollow extends LogFilterCriterionImpl {
+public class LogFilterCriterionEventuallyFollow extends AbstractLogFilterCriterion {
 
-    public LogFilterCriterionDirectFollow(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
+    public LogFilterCriterionEventuallyFollow(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
         super(action, containment, level, label, attribute, value);
     }
 
     @Override
     public boolean matchesCriterion(XTrace trace) {
         if(level == Level.TRACE) {
-            String s = trace.get(0).getAttributes().get(label).toString();
-            if (value.contains("|> => " + s)) return true;
-            for (int i = 0; i < trace.size() - 1; i++) {
-                String event1 = trace.get(i).getAttributes().get(label).toString();
-                String event2 = trace.get(i + 1).getAttributes().get(label).toString();
-                if (value.contains(event1 + " => " + event2)) return true;
+            for (int i = -1; i < trace.size(); i++) {
+                String event1 = (i == -1) ? "|>" : trace.get(i).getAttributes().get(label).toString();
+                for (int j = i + 1; j < trace.size() + 1; j++) {
+                    String event2 = (j == trace.size()) ? "[]" : trace.get(j).getAttributes().get(label).toString();
+                    if (value.contains(event1 + " => " + event2)) return true;
+                }
             }
-            String e = trace.get(trace.size() - 1).getAttributes().get(label).toString();
-            return (value.contains(e + " => []"));
         }
         return false;
     }

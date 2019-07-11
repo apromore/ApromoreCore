@@ -18,8 +18,11 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.logfilter;
+package org.apromore.logfilter.impl;
 
+import org.apromore.logfilter.LogFilterService;
+import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.model.Level;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.XEvent;
@@ -30,55 +33,14 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Bruce: add comments
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
+ * Bruce Nguyen: comments, restructure
  */
-public class LogFilter {
+public class LogFilterImpl implements LogFilterService {
+    private final XFactory factory = new XFactoryNaiveImpl();
 
-    private static final XFactory factory = new XFactoryNaiveImpl();
-    
-//    public static XLog filter(XLog log, List<LogFilterCriterion> criteria) {
-//    	if (criteria == null || criteria.isEmpty()) return log;
-//    	
-//    	XLog newLog = factory.createLog(log.getAttributes());
-//        for (XTrace trace : log) { // Object order OO
-//        	XTrace newTrace = getXTrace(trace);;
-//        	boolean removeTrace = false;
-//            for (int i = 0; i < criteria.size(); i++) { // Criterion order OC
-//                LogFilterCriterion criterion = criteria.get(i);
-//                if (criterion.getLevel() == Level.TRACE) {
-//                    if(criterion.isToRemove(newTrace)) { //matching & action
-//                    	removeTrace = true;
-//                    	break;
-//                    }
-//                } else { //down-level shift
-//                    for (XEvent event : trace) {
-//                    	if (newTrace.contains(event)) {
-//	                        for (int j = i; j < criteria.size(); j++) {  // Criterion order OC
-//	                            LogFilterCriterion criterion1 = criteria.get(j);
-//	                            if (criterion1.getLevel() == Level.TRACE) break; // up-level shift
-//	                            if (criterion1.isToRemove(event)) { //matching & action
-//	                            	newTrace.remove(event);
-//	                                break;
-//	                            }
-//	                        }
-//                    	}
-//                        
-//                    }
-//                    if(newTrace.isEmpty()) {
-//                    	break;
-//                    }
-//                }
-//            }
-//            
-//            if (!removeTrace && !newTrace.isEmpty()) {
-//            	newLog.add(newTrace);
-//            }
-//        }
-//        return newLog;
-//    }
-
-    public static XLog filter(XLog log, List<LogFilterCriterion> criteria) {
+    @Override
+    public XLog filter(XLog log, List<LogFilterCriterion> criteria) {
     	if (criteria == null || criteria.isEmpty()) return log;
     	
         log = cloneLog(log);
@@ -117,7 +79,7 @@ public class LogFilter {
         return log;
     }
 
-    private static XLog cloneLog(XLog log) {
+    private XLog cloneLog(XLog log) {
         XLog newLog = factory.createLog(log.getAttributes());
         for (XTrace trace : log) {
             XTrace newTrace = getXTrace(trace);
@@ -127,7 +89,7 @@ public class LogFilter {
         return newLog;
     }
 
-    private static XTrace getXTrace(XTrace trace) {
+    private XTrace getXTrace(XTrace trace) {
         XTrace newTrace = factory.createTrace(trace.getAttributes());
         newTrace.addAll(trace);
         return newTrace;

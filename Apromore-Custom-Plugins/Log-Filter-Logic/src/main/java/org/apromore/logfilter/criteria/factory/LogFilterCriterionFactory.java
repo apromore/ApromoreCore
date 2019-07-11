@@ -18,13 +18,20 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.logfilter;
+package org.apromore.logfilter.criteria.factory;
 
-/**
- * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
- */
-public enum Action {
+import java.util.List;
+import java.util.Set;
 
-    RETAIN, REMOVE
+import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.model.Action;
+import org.apromore.logfilter.criteria.model.Containment;
+import org.apromore.logfilter.criteria.model.Level;
+
+public interface LogFilterCriterionFactory {
+
+    public LogFilterCriterion getLogFilterCriterion(Action action, Containment containment, Level level, String label, String attribute, Set<String> value);
+    public LogFilterCriterion copyFilterCriterion(LogFilterCriterion criterion);
+    public List<LogFilterCriterion> copyFilterCriterionList(List<LogFilterCriterion> list);
 
 }

@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.logfilter;
+package org.apromore.logfilter.criteria.model;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +32,7 @@ import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
- * Modified: Bruce Nguyen: add checkLevelValidity()
+ * Modified: Bruce Nguyen
  * Note that this class only contains standard filter types
  * There are non-standard types which are other attributes available in logs
  */

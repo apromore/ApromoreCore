@@ -20,11 +20,9 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
+import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.processdiscoverer.logfilter.LogFilter;
-import org.apromore.processdiscoverer.logfilter.LogFilterCriterion;
-import org.apromore.processdiscoverer.logfilter.LogFilterCriterionFactory;
-import org.apromore.processdiscoverer.logfilter.LogFilterTypeSelector;
 import org.apromore.processdiscoverer.util.StringValues;
 import org.apromore.processdiscoverer.util.TimeConverter;
 import org.deckfour.xes.model.XLog;
@@ -61,7 +59,7 @@ class FilterCriterionSelector {
 
     public FilterCriterionSelector(String label, ProcessDiscovererController processDiscovererController, List<LogFilterCriterion> originalCriteria, Map<String, Map<String, Integer>> options_frequency, long min, long max) throws IOException {
         this.processDiscovererController = processDiscovererController;
-        this.criteria = LogFilterCriterionFactory.copyFilterCriterionList(originalCriteria);
+        this.criteria = processDiscovererController.getLogFilterCriterionFactory().copyFilterCriterionList(originalCriteria);
 
         portalContext = processDiscovererController.portalContext;
 
@@ -93,13 +91,17 @@ class FilterCriterionSelector {
         });        
         createButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                new CreateFilterCriterion(label, FilterCriterionSelector.this, criteria, options_frequency, min, max);
+                new CreateFilterCriterion(label, FilterCriterionSelector.this,
+                							processDiscovererController,
+                							criteria, options_frequency, min, max);
             }
         });
         editButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 if (criteriaList.getSelectedIndex() > -1) {
-                    new CreateFilterCriterion(label, FilterCriterionSelector.this, criteria, options_frequency, min, max, criteriaList.getSelectedIndex());
+                    new CreateFilterCriterion(label, FilterCriterionSelector.this,
+                    				processDiscovererController,
+                    				criteria, options_frequency, min, max, criteriaList.getSelectedIndex());
                 }
             }
         });
@@ -144,7 +146,7 @@ class FilterCriterionSelector {
     }
 
     private void save() throws InterruptedException {
-    	XLog filteredLog = LogFilter.filter(processDiscovererController.getInitialLog(), criteria);
+    	XLog filteredLog = processDiscovererController.getLogFilterService().filter(processDiscovererController.getInitialLog(), criteria);
     	if (filteredLog.isEmpty()) {
     		Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.");
     	}

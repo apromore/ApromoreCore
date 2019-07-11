@@ -18,14 +18,13 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.logfilter.impl;
+package org.apromore.logfilter.criteria.impl;
 
-import org.apromore.processdiscoverer.logfilter.Action;
-import org.apromore.processdiscoverer.logfilter.Containment;
-import org.apromore.processdiscoverer.logfilter.Level;
-import org.apromore.processdiscoverer.logfilter.LogFilterCriterionImpl;
-import org.apromore.processdiscoverer.logfilter.LogFilterTypeSelector;
-import org.apromore.processdiscoverer.logfilter.Type;
+import org.apromore.logfilter.criteria.model.Action;
+import org.apromore.logfilter.criteria.model.Containment;
+import org.apromore.logfilter.criteria.model.Level;
+import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
+import org.apromore.logfilter.criteria.model.Type;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
@@ -33,7 +32,7 @@ import org.deckfour.xes.model.XTrace;
 
 import java.util.Set;
 
-public class LogFilterCriterionAttribute extends LogFilterCriterionImpl {
+public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
 
     public LogFilterCriterionAttribute(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
         super(action, containment, level, label, attribute, value);

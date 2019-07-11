@@ -18,10 +18,13 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.logfilter;
+package org.apromore.logfilter.criteria.impl;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apromore.processdiscoverer.util.StringValues;
+import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.model.Action;
+import org.apromore.logfilter.criteria.model.Containment;
+import org.apromore.logfilter.criteria.model.Level;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import java.util.Set;
@@ -29,9 +32,9 @@ import java.util.Set;
 /**
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 15/07/2018.
  */
-public abstract class LogFilterCriterionImpl implements LogFilterCriterion {
+public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
 
-    protected final String timestamp_code = StringValues.b[122];
+    protected final String timestamp_code = "time:timestamp";
 
     protected final String label; // the current event attribute key used to label task nodes in the process map, NOT USED at the moment
     protected final String attribute; //attribute name of trace or event
@@ -41,7 +44,7 @@ public abstract class LogFilterCriterionImpl implements LogFilterCriterion {
     protected final Level level;
     private final int hashCode;
 
-    protected LogFilterCriterionImpl(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
+    protected AbstractLogFilterCriterion(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
         this.label = label;
         this.action = action;
         this.containment = containment;
@@ -106,8 +109,8 @@ public abstract class LogFilterCriterionImpl implements LogFilterCriterion {
 
     @Override
     public boolean equals(Object o) {
-        if(o instanceof LogFilterCriterionImpl) {
-            LogFilterCriterionImpl logFilterCriterion = (LogFilterCriterionImpl) o;
+        if(o instanceof AbstractLogFilterCriterion) {
+            AbstractLogFilterCriterion logFilterCriterion = (AbstractLogFilterCriterion) o;
             return this.level == logFilterCriterion.level &&
                     this.containment == logFilterCriterion.containment &&
                     this.action == logFilterCriterion.action &&
