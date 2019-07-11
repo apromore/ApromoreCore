@@ -180,7 +180,7 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
                         line = reader.readNext();
                     }
 
-                Messagebox.show("Line count is: "+ lineCount + " Error count is: " + errorCount);
+//                Messagebox.show("Number of lines processed: "+ lineCount + "\n Number of errors encountered: " + errorCount);
                 if(errorCount > (lineCount * errorAcceptance)) {
 //                        Messagebox.show(errorMessage);
                         LOGGER.error(errorMessage);
@@ -189,8 +189,12 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
                         return null;
                 }else {
                     if (errorCount > 0) {
-                        Messagebox.show("Imported with Errors: " + errorCount + " rows contains invalid values!", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+                        Messagebox.show("Imported: "+ lineCount + " lines, skipped " + errorCount + " rows that contains invalid values!", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+                        return sortTraces(logData);
                     }
+
+                    Messagebox.show("Number of lines processed: "+ lineCount + "\n Number of errors encountered: "
+                            + errorCount + "\n\n\n" + " Your file has been imported.");
                     return sortTraces(logData);
                 }
 
