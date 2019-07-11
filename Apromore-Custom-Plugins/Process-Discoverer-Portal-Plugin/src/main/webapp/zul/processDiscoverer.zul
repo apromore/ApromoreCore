@@ -278,11 +278,11 @@
 								<menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
 							</menupopup>
 						</combobutton>
-						<combobutton id="layout" label="Layout">
+						<combobutton id="layout" label="Layout" onClick='layout_hiera.setChecked(true);layout_dagre.setChecked(false);layout_bf.setChecked(false);'>
 							<menupopup>
-								<!-- <menuitem id="layout_manual" onClick='Clients.evalJavaScript("layout_manual(false)")' label="Manual" checked="false" /> -->
-								<menuitem id="layout_dagre_lr" onClick='Clients.evalJavaScript("layout_dagre_LR(false)")' label="Dagre Left-Right" checked="true" />
-								<menuitem id="layout_breadthfirst" onClick='Clients.evalJavaScript("layout_breadthfirst(false)")' label="Breadth-First" />
+								<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre.setChecked(false);layout_bf.setChecked(false);' label="Hierarchical" checked="true" />
+								<menuitem id="layout_dagre" onClick='layout_hiera.setChecked(false);layout_dagre.setChecked(true);layout_bf.setChecked(false);' label="Dagre" checked="false" />
+								<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />
 							</menupopup>
 						</combobutton>
 						<button id="fitScreen" label="Fit to screen" />
@@ -310,7 +310,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.5/svg.min.js"></script>
 	<script type="text/javascript">
 		<![CDATA[
-		var layout_model = 4, ctrlIsPressed = !1, altIsPressed = !1;
+		var layout_model = 0, ctrlIsPressed = !1, altIsPressed = !1;
 		var currentZoomLevel = 1;
 		var currentPanPosition;
 		var initialLoaded = true; // whether the graph is first open.
@@ -421,7 +421,7 @@
 		  cy.elements().remove();
 		}
 
-		function loadDFG(a) {
+		function loadDFG(json, layout_option) {
 		  loadTraceMode = false;
 		  reset();
 		  // need to store the current zoom and pan level as the load function
@@ -429,11 +429,10 @@
 		  var zoom = currentZoomLevel; 
 		  var pan = currentPanPosition;
 			
-		  console.log(a);
-		  cy.add($.parseJSON(a)); 
-		  //layout();
-		  //layout_dagre_LR(false);
-		  layout_manual_bezier(false);
+		  //console.log(json);
+		  cy.add($.parseJSON(json)); 
+			layout(layout_option);
+			
 		  if (!initialLoaded) {
 			  window.cy.zoom(zoom);
 			  window.cy.pan(pan);
@@ -465,16 +464,17 @@
 
 		}
 		
-		function loadBPMN(a) {
+		function loadBPMN(json, layout_option) {
 		  loadTraceMode = false;
 		  reset();
 		  // need to store the current zoom and pan level as the load function
 		  // will reset them through the zoom and pan events.
 		  var zoom = currentZoomLevel; 
 		  var pan = currentPanPosition;
-		  //console.log(a);
-		  cy.add($.parseJSON(a)); 
-		  layout_manual_bezier(false);
+		  //console.log(json);
+		  cy.add($.parseJSON(json)); 
+			layout(layout_option);
+			
 		  if (!initialLoaded) {
 			  window.cy.zoom(zoom);
 			  window.cy.pan(pan);
@@ -485,7 +485,7 @@
 			  initialLoaded = false;
 				cy.fit();
 		  }
-			
+
 			/*
 			cy.edgeBendEditing({
 				bendPositionsFunction: function(ele) {
@@ -520,59 +520,24 @@
 			}
 		}
 
-		function layout() {
+		function layout(layout_option) {
+			layout_model = layout_option;
 			switch(layout_model) {
 				case 0:
 					layout_manual_bezier(!0);
 					break;				
 				case 1:
-					layout_breadthfirst(!0);
-					break;
-				case 2:
-					layout_cola(!0);
-					break;
-				case 3:
-					layout_cose(!0);
-					break;
-				case 4:
 					layout_dagre_LR(!0);
 					break;
-				case 5:
-					layout_dagre_TB(!0);		
-					break;			
-				case 6:
-					layout_klay_LR(!0);	
-					break;		
-				case 7:
-					layout_klay_TB(!0);	
-					break;				
+				case 2:
+					layout_breadthfirst(!0);
+					break;
 				default:
 					// code block
 			}
 		}
 		
-		function layout_manual_bezier1(a) {
-			/*
-		  cy.edges().forEach(function(edge){
-				var edgeType = 
-				if (edge.isLoop()) {
-					e.style("curve-style", "bezier");
-				}
-			});
-			*/
-		  
-		  layout_model = 0;
-		  cy.elements().layout({
-			name: "preset"
-		  }).run();
-		  
-		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(true);
-		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
-		}	
-		
 		function layout_manual_bezier(a) {
-			
 		  cy.style().selector("edge").style({
 			"curve-style": function( ele ){ return ele.data('curve-style')},
 			"edge-distances": "node-position",	
@@ -580,58 +545,21 @@
 			"control-point-weights": function( ele ){ if (ele.data('curve-style')=="unbundled-bezier") {return ele.data('point-weights')} else {return "0.5"}}
 		  }).update();
 			
-		  
-		  layout_model = 0;
 		  cy.elements().layout({
 			name: "preset"
-		  }).run();
-		  
-		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(true);
-		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
+		  }).run();		  
 		}		
-		
-		function layout_manual_segments(a) {
-		  cy.style().selector("edge").style({
-			"curve-style": "segments",
-			"edge-distances": "node-position",	
-			"segment-distances": function( ele ){ if (ele.data('curve-style')=="non-straight") {return ele.data('point-distances')} else {return "0"}},
-			"segment-weights": function( ele ){ if (ele.data('curve-style')=="non-straight") {return ele.data('point-weights')} else {return "0.5"}}	
-		  }).update();
-		  
-		  layout_model = 0;
-		  cy.elements().layout({
-			name: "preset"
-		  }).run();
-		  
-		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(true);
-		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
-		}	
 
 		function layout_breadthfirst(a) {
 		  cy.style().selector("edge").style({
 			"curve-style": "bezier"
 		  }).update();
-			
-		  layout_model = 1;
+
 		  cy.elements().layout({
 			name: "breadthfirst",
 			directed: !0,
 			spacingFactor: 1
 		  }).run();
-		  
-		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(true);
-		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(false);
-		}
-
-		function pos(a, b) {
-		  var c = 0,
-			e = 0,
-			d;
-		  for (d in a.incomers().sources().outgoers().targets()) c += d.position()[0], e += 1;
-		  return 0 == e ? 0 : c / e
 		}
 
 		function layout_dagre_LR(a) {
@@ -639,7 +567,6 @@
 			"curve-style": "bezier"
 		  }).update()	
 		  
-		  layout_model = 4;
 		  cy.elements().layout({
 			name: "dagre",
 			avoidOverlap: !0,
@@ -649,10 +576,14 @@
 			rankDir: "LR",
 			ranker: "network-simplex"
 		  }).run()
-		  
-		  //zk.Widget.$(jq("$layout_manual")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_breadthfirst")[0]).setChecked(false);
-		  zk.Widget.$(jq("$layout_dagre_lr")[0]).setChecked(true);
+		}
+		
+		function pos(a, b) {
+		  var c = 0,
+			e = 0,
+			d;
+		  for (d in a.incomers().sources().outgoers().targets()) c += d.position()[0], e += 1;
+		  return 0 == e ? 0 : c / e
 		}
 
 		function removeEdge(a) {

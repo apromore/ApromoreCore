@@ -139,6 +139,11 @@ public class ProcessDiscovererController extends BaseController {
     private Menuitem mean_duration;
     private Menuitem max_duration;
     private Menuitem min_duration;
+    
+    private Combobutton layout;
+    private Menuitem layout_hiera;
+    private Menuitem layout_dagre;
+    private Menuitem layout_bf;
 
     private Button filter;
     private Button details;
@@ -195,6 +200,8 @@ public class ProcessDiscovererController extends BaseController {
     private boolean selectorChanged = false;
     
     private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
+    
+    private int selectedLayout = 0; //0: hierarchical, 1: dagre, 2: breadth-first
     
     private CanoniserService canoniserService;
     private DomainService domainService;
@@ -328,6 +335,11 @@ public class ProcessDiscovererController extends BaseController {
             this.mean_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[54]);
             this.max_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[55]);
             this.min_duration = (Menuitem) slidersWindow.getFellow(StringValues.b[56]);
+            
+            this.layout = (Combobutton) slidersWindow.getFellow("layout");
+            this.layout_hiera = (Menuitem) slidersWindow.getFellow("layout_hiera");
+            this.layout_dagre = (Menuitem) slidersWindow.getFellow("layout_dagre");
+            this.layout_bf = (Menuitem) slidersWindow.getFellow("layout_bf");
 
             this.details = (Button) slidersWindow.getFellow(StringValues.b[63]);
             this.cases = (Button) slidersWindow.getFellow(StringValues.b[64]);
@@ -518,7 +530,7 @@ public class ProcessDiscovererController extends BaseController {
             this.mode_frequency.addEventListener("onClick", frequencyListener);
             this.max_frequency.addEventListener("onClick", frequencyListener);
             this.min_frequency.addEventListener("onClick", frequencyListener);
-
+            
             EventListener<Event> durationListener = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     visualizeDuration();
@@ -530,6 +542,17 @@ public class ProcessDiscovererController extends BaseController {
             this.mean_duration.addEventListener("onClick", durationListener);
             this.max_duration.addEventListener("onClick", durationListener);
             this.min_duration.addEventListener("onClick", durationListener);
+            
+            EventListener<Event> layoutListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    changeLayout();
+                }
+            };
+            
+            this.layout.addEventListener("onClick", layoutListener);
+            this.layout_hiera.addEventListener("onClick", layoutListener);
+            this.layout_dagre.addEventListener("onClick", layoutListener);
+            this.layout_bf.addEventListener("onClick", layoutListener);
 
             this.exportFilteredLog.addEventListener("onExport", new EventListener<Event>() {
                 @Override
@@ -1523,6 +1546,20 @@ public class ProcessDiscovererController extends BaseController {
         visualizeMap();
     }
     
+    private void changeLayout() throws InterruptedException {
+    	if (layout_hiera.isChecked()) {
+    		this.selectedLayout = 0;
+    	}
+    	else if (this.layout_dagre.isChecked()) {
+    		this.selectedLayout = 1;
+    	}
+    	else if (this.layout_bf.isChecked()) {
+    		this.selectedLayout = 2;
+    	}
+    	
+    	this.display(jsonDiagram);
+    }
+    
     public void setCriteria(List<LogFilterCriterion> newCriteria) {
     	this.criteria = newCriteria;
     }
@@ -1619,11 +1656,20 @@ public class ProcessDiscovererController extends BaseController {
     private void display(JSONArray jsonDiagram) {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
-        String javascript = !gateways.isChecked() ? "loadDFG('" + jsonString + "');" : "loadBPMN('" + jsonString + "');";
-        if ((isShowingBPMN && !gateways.isChecked()) || (!isShowingBPMN && gateways.isChecked()) || selectorChanged) {
+    	
+    	String javascript = "";
+    	if (!gateways.isChecked()) {
+    		javascript = "loadDFG('" + jsonString + "'," +  this.selectedLayout + ");";
+    	}
+    	else {
+    		javascript = "loadBPMN('" + jsonString  + "'," +  this.selectedLayout + ");";
+    	}
+
+    	if ((isShowingBPMN && !gateways.isChecked()) || (!isShowingBPMN && gateways.isChecked()) || selectorChanged) {
         	javascript += "fitToWindow();";
         }
-        Clients.evalJavaScript(javascript);
+        
+    	Clients.evalJavaScript(javascript);
         isShowingBPMN = gateways.isChecked();
         selectorChanged = false;
     }
