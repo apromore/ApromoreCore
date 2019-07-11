@@ -221,6 +221,8 @@
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
 
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
+				
+				<include name="Apromore-Custom-Plugins/Log-Filter-Logic/target/log-filter-logic-1.0.0.jar"/>
 
         <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
@@ -302,7 +304,8 @@
         <include name="Apromore-Custom-Plugins/StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 		
-		<include name="Apromore-Custom-Plugins/Process-Discoverer-Plugin/target/process-discoverer-1.0.0.war"/>
+				<include name="Apromore-Custom-Plugins/Process-Discoverer-Logic/target/process-discoverer-logic-2.0.0.jar"/>
+				<include name="Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/target/process-discoverer-portal-plugin-2.0.0.war"/>
 
         <!--<include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/> -->
         <!-- <include name="Supplements/process-discoverer-1.0.20181204.jar"/> -->
@@ -325,6 +328,8 @@
         <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor-student.plan"/>
+				
+				<include name="Apromore-Custom-Plugins/Log-Filter-Logic/target/log-filter-logic-1.0.0.jar"/>
 
         <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
@@ -405,7 +410,8 @@
         <include name="Apromore-Custom-Plugins/StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
 		
-		<include name="Apromore-Custom-Plugins/Process-Discoverer-Plugin/target/process-discoverer-1.0.0.war"/>
+				<include name="Apromore-Custom-Plugins/Process-Discoverer-Logic/target/process-discoverer-logic-2.0.0.jar"/>
+				<include name="Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/target/process-discoverer-portal-plugin-2.0.0.war"/>
 
 		<!--
         <include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/>
@@ -839,8 +845,8 @@
         <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
         <copy file="Supplements/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
         <copy file="Supplements/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
-		<copy file="Supplements/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
-		<copy file="Supplements/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
+				<copy file="Supplements/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
+				<copy file="Supplements/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
 
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
