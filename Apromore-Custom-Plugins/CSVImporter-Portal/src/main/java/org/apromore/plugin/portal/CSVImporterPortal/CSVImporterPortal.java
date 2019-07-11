@@ -150,6 +150,14 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 header = reader.readNext();   // read first line
 
 
+                if(header.length > 9) {
+                    window.setWidth("95%");
+                } else {
+                    Integer DynamicWidth = null;
+                    DynamicWidth = 11 * header.length;
+                    window.setWidth(DynamicWidth + "%");
+                }
+
                 for (int i = 0; i < header.length; i++) {
                     Column newColumn = new Column();
                     newColumn.setWidth(AttribWidth + "px");
@@ -281,7 +289,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if(media != null) {
 
                 window.setWidth("95%");
-
+//                window.setVflex("min");
                 myGrid.setHeight("95%");
 
 
@@ -340,7 +348,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                 XLog xlog = csvImporterLogic.createXLog(xesModel);
                                 if (xlog != null) {
                                     saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-                                    Messagebox.show("Your file has been created!");
+//                                    Messagebox.show("Your file has been created!");
                                 }
                                 window.detach();
                             }
