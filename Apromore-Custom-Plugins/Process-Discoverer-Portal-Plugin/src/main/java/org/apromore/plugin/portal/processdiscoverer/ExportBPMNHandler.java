@@ -226,7 +226,7 @@ public class ExportBPMNHandler implements EventListener<Event> {
 				        Version version = new Version(1, 0);
 				        Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
 				        String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-				        boolean publicModel = true;
+				        boolean publicModel = false;
 
 				        List<String> domains = controller.getDomainService().findAllDomains();
 				        SelectDynamicListController domainCB = new SelectDynamicListController(domains);

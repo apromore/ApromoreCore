@@ -68,9 +68,11 @@ import org.processmining.plugins.bpmn.BpmnDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.*;
@@ -96,8 +98,9 @@ import org.apromore.logfilter.criteria.model.Level;
  * Modified by Bruce Nguyen
  */
 public class ProcessDiscovererController extends BaseController {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiscovererController.class);
+	public static final String DEFAULT_SELECTOR = "concept:name";
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiscovererController.class);
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
     
     // These are the types of directly-follow relations to be visualized from logs 
@@ -122,6 +125,7 @@ public class ProcessDiscovererController extends BaseController {
     private Intbox parallelismText;
     private Row parallelismRow;
 
+    private Combobutton selectorButton;
     private Menupopup selector;
 
     private Combobutton frequency;
@@ -196,7 +200,7 @@ public class ProcessDiscovererController extends BaseController {
     private long min = Long.MAX_VALUE; //the earliest timestamp of the log
     private long max = 0; //the latest timestamp of the log
 
-    private String label = "concept:name"; // the event attribute key used to label each task node, default "concept:name"
+    private String label = DEFAULT_SELECTOR; // the event attribute key used to label each task node, default "concept:name"
     private boolean selectorChanged = false;
     
     private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
@@ -319,6 +323,7 @@ public class ProcessDiscovererController extends BaseController {
             this.minDuration = (Label) slidersWindow.getFellow(StringValues.b[41]);
 
             this.selector = (Menupopup) slidersWindow.getFellow(StringValues.b[42]);
+            this.selectorButton = (Combobutton) slidersWindow.getFellow("selector");
 
             this.frequency = (Combobutton) slidersWindow.getFellow(StringValues.b[43]);
             this.absolute_frequency = (Menuitem) slidersWindow.getFellow(StringValues.b[44]);
@@ -357,11 +362,18 @@ public class ProcessDiscovererController extends BaseController {
             Menuitem exportBPMNAnnotatedForBIMP = (Menuitem) slidersWindow.getFellow("exportBPMNAnnotatedForBIMP");
 
             populateMetrics(filtered_log);
-
+            
             for (String option : generateLabels(filtered_log)) {
                 Menuitem item = new Menuitem(option);
+                item.setCheckmark(true);
+                item.setAutocheck(true);
+                item.setChecked(option.equals(DEFAULT_SELECTOR) ? true : false);
                 item.addEventListener("onClick", new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
+                    	for (Component comp: item.getParent().getChildren()) {
+                    		if (comp != item) ((Menuitem)comp).setChecked(false);
+                    	}
+                    	
                     	selectorChanged = true;
                         setLabel(item.getLabel());
                         generateGlobalStatistics(initial_log, false);
@@ -373,6 +385,19 @@ public class ProcessDiscovererController extends BaseController {
                 });
                 selector.appendChild(item);
             }
+            
+            selectorButton.addEventListener("onClick", new EventListener<Event>() {
+            	public void onEvent(Event event) throws Exception {
+            		for (Component comp: selector.getChildren()) {
+                		Menuitem item = (Menuitem)comp;
+                		if (item.getLabel().equals(DEFAULT_SELECTOR)) {
+                			item.setChecked(true);
+                			Events.postEvent(Events.ON_CLICK, item, null);
+                			break;
+                		}
+                	}
+            	}
+            });
 
             EventListener<Event> radioListener = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -724,9 +749,10 @@ public class ProcessDiscovererController extends BaseController {
                             Writer writer = new BufferedWriter(new OutputStreamWriter(baos));
                             CSVWriter csvWriter = new CSVWriter(writer);
                             List<List<String>> info = filtered_log_cases;
-                            csvWriter.writeNext(new String[] {"Case ID", "Case Length", "Unique Case"});
+                            csvWriter.writeNext(new String[] {"Case ID", "Case Length", "Unique Case", "Percentage"});
                             for (List<String> caseInfo: info) {
-                                csvWriter.writeNext(new String[] {caseInfo.get(0), caseInfo.get(1), caseInfo.get(2)});
+                                csvWriter.writeNext(new String[] {caseInfo.get(0), caseInfo.get(1), caseInfo.get(2), 
+                                									decimalFormat.format(Double.valueOf(caseInfo.get(3)))+"%"});
                             }
                             csvWriter.flush();
                             csvWriter.close();

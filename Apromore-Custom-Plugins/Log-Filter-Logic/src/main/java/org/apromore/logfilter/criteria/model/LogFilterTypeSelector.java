@@ -37,7 +37,6 @@ import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
  * There are non-standard types which are other attributes available in logs
  */
 public class LogFilterTypeSelector {
-
 	// Must be sorted for Arrays.binarySearch
     private static String[] type = new String[] {
             "concept:name",
