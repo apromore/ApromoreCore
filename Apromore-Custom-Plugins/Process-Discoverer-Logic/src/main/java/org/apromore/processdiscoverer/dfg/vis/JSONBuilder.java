@@ -20,11 +20,13 @@
 
 package org.apromore.processdiscoverer.dfg.vis;
 
+import org.apache.commons.lang.StringUtils;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.abstraction.AbstractAbstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.Abstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
+import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.apromore.processdiscoverer.util.ColorGradient;
 import org.apromore.processdiscoverer.util.StringValues;
 import org.apromore.processdiscoverer.util.TimeConverter;
@@ -37,6 +39,8 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.Event;
 import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 import org.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
+
+import com.google.common.base.CharMatcher;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -56,8 +60,8 @@ public class JSONBuilder {
     private final DecimalFormat decimalFormat = new DecimalFormat(StringValues.b[123]);
 
     private final double change_color_limit = 0.7;
-    private final String start_name = "|>";
-    private final String end_name = "[]";
+    private final String start_name = SimplifiedLog.START_NAME;
+    private final String end_name = SimplifiedLog.END_NAME;
 
     private final String EDGE_START_COLOR_FREQUENCY = "#646464";
 
@@ -107,7 +111,7 @@ public class JSONBuilder {
         String event_width = "8px"; //"15px";
         String gateway_height = "10px"; //"50px";
         String gateway_width = "10px"; //"50px";
-        String activity_height = "20px"; //"50px";
+        String activity_height = "24px"; //"50px";
         String activity_width = "20px";//"80px";
 
         String activity_font_size = "8"; //"10";
@@ -164,10 +168,12 @@ public class JSONBuilder {
                 jsonOneNode.put("textsize", activity_font_size);
                 if(((Event) node).getEventType() == Event.EventType.START || node.getLabel().equals(start_name)) {
                     start_node = i;
+                    jsonOneNode.put("oriname", start_name);
                     jsonOneNode.put("color", START);
                     jsonOneNode.put("borderwidth", borderwidth);
                 }else if(((Event) node).getEventType() == Event.EventType.END || node.getLabel().equals(end_name)) {
                     end_node = i;
+                    jsonOneNode.put("oriname", end_name);
                     jsonOneNode.put("color", END);
                     jsonOneNode.put("borderwidth", borderwidth_end);
                 }
@@ -184,43 +190,90 @@ public class JSONBuilder {
                 Gateway gateway = (Gateway) node;
                 if(gateway.getGatewayType() == Gateway.GatewayType.DATABASED) {
                     jsonOneNode.put("name", "X");
+                    jsonOneNode.put("oriname", "X");
                     jsonOneNode.put("textsize", xor_gateway_font_size);
                 }else if(gateway.getGatewayType() == Gateway.GatewayType.PARALLEL) {
                     jsonOneNode.put("name", "+");
+                    jsonOneNode.put("oriname", "+");
                     jsonOneNode.put("textsize", and_gateway_font_size);
                 }else if(gateway.getGatewayType() == Gateway.GatewayType.INCLUSIVE) {
                     jsonOneNode.put("name", "O");
+                    jsonOneNode.put("oriname", "O");
                     jsonOneNode.put("textsize", xor_gateway_font_size);
                 }
             }else {
-            	String node_name = node.getLabel();
-            	if (node_name.contains("\\n")) { // This is for trace abstraction as the values are stored in node labels.
-                    node_name =  escapeChars(node_name.substring(0, node_name.indexOf("\\n")));
+            	String node_oriname = node.getLabel();
+            	// This is only for trace abstraction as the values are stored in the node label
+            	if (node_oriname.contains("\\n")) { 
+            		node_oriname =  node_oriname.substring(0, node_oriname.indexOf("\\n"));
             	}
-            	else {
-            		node_name = escapeChars(node_name);
+            	jsonOneNode.put("oriname", escapeChars(node_oriname));
+            	
+            	//--------------------------------------------
+            	// Adjust node display name to prevent it from
+            	// overflowing the node shape horizontally and vertically
+            	//--------------------------------------------
+            	String node_displayname = node_oriname.trim(); 
+
+            	// Prevent the display name from occupying 3 lines
+            	if (StringUtils.countMatches(node_displayname, " ") >= 2) { //likely occupy 3 lines
+            		String[] split = node_displayname.split(" ");
+            		if (CharMatcher.JAVA_LOWER_CASE.matchesNoneOf(node_displayname)) { // If all uppercase: only allows 1 line
+            			node_displayname = split[0];
+            		}
+            		else { // allows 2 lines
+            			node_displayname = split[0] + " " + split[1];
+            		}
             	}
             	
-                if(params.getPrimaryType() == null) {
-                	jsonOneNode.put("name", escapeChars(node.getLabel()));
-                } 
-                else if(params.getPrimaryType() == VisualizationType.DURATION) {
+            	// Limit the length of the display name to avoid text overflow issue
+            	if (CharMatcher.JAVA_LOWER_CASE.matchesNoneOf(node_displayname)) { // All uppercase or spaces
+            		if (node_displayname.length() > 7) {
+            			node_displayname = node_displayname.substring(0, 7) + "...";
+            		}
+            		else if (node_displayname.length() < node_oriname.length()) {
+            			node_displayname = node_displayname + "...";
+            		}
+            	}
+            	else if (node_displayname.contains(" ")) { // likely occupy 2 lines
+            		String[] split = node_displayname.split(" ");
+            		if (split[0].length() > 9) { // if the first line is long
+            			node_displayname = split[0].substring(0, 9) + "...";
+            		}
+            		else if (node_displayname.length() > 18) {
+            			node_displayname = node_displayname.substring(0, 18) + "...";
+            		}
+            		else if (node_displayname.length() < node_oriname.length()) {
+            			node_displayname = node_displayname + "...";
+            		}
+	            } 
+            	else { // occupy only 1 line
+            		if (node_displayname.length() > 9) {
+            			node_displayname = node_displayname.substring(0, 9) + "...";
+            		}
+            		else if (node_displayname.length() < node_oriname.length()) {
+            			node_displayname = node_displayname + "...";
+            		}
+	            }
+            	node_displayname = escapeChars(node_displayname);
+            	
+            	if(params.getPrimaryType() == VisualizationType.DURATION) {
+            		// No empty line if dual info
                 	if (!params.getSecondary()) {
-                		jsonOneNode.put("name", node_name + "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)));
+                		jsonOneNode.put("name", node_displayname + "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)));
                 	}
                 	else {
-                		jsonOneNode.put("name", node_name + "\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + "\\n" + decimalFormat.format(abs.getNodeSecondaryWeight(node)));
+                		jsonOneNode.put("name", node_displayname + "\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + "\\n" + decimalFormat.format(abs.getNodeSecondaryWeight(node)));
                 	}
-//                	jsonOneNode.put("name", node_name + "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + ((params.getSecondary()) ? "\\n\\n" + decimalFormat.format(abs.getNodeSecondaryWeight(node)) : ""));
                 }
                 else {
+                	// No empty line if dual info
                 	if (!params.getSecondary()) {
-                		jsonOneNode.put("name", node_name + "\\n\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)));
+                		jsonOneNode.put("name", node_displayname + "\\n\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)));
                 	}
                 	else {
-                		jsonOneNode.put("name", node_name + "\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)) + "\\n" + TimeConverter.convertMilliseconds("" + abs.getNodeSecondaryWeight(node)));
+                		jsonOneNode.put("name", node_displayname + "\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)) + "\\n" + TimeConverter.convertMilliseconds("" + abs.getNodeSecondaryWeight(node)));
                 	}
-                	//jsonOneNode.put("name", node_name + "\\n\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)) + ((params.getSecondary()) ? "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodeSecondaryWeight(node)) : ""));
                 }
 
                 jsonOneNode.put("shape", "roundrectangle");
@@ -232,8 +285,6 @@ public class JSONBuilder {
                 
                 jsonOneNode.put("color", colors[0]);
                 jsonOneNode.put("textcolor", colors[1]);
-//                jsonOneNode.put("width", (nodeLayout == null) ? activity_width : nodeLayout.getWidth() + "px");
-//                jsonOneNode.put("height", (nodeLayout == null) ? activity_height : nodeLayout.getHeight() + "px");
                 jsonOneNode.put("width", activity_width);
                 jsonOneNode.put("height", activity_height);
                 jsonOneNode.put("textsize", activity_font_size);
