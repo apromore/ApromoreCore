@@ -437,6 +437,9 @@
         <include name="Apromore-Assembly/**/repository/usr/*.war"/>
         <include name="site.properties"/>
         <include name="git.properties"/>
+
+        <!-- Free builds won't include the following encumbered components -->
+        <include name="Apromore-OSGI-Bundles/zkcharts-osgi/target/zkcharts-osgi-*.jar"/>
     </fileset>
 
     <!-- Virgo Related -->
