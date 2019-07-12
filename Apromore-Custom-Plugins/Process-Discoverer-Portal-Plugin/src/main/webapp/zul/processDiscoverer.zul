@@ -35,7 +35,7 @@
 	<script src="/js/pdf.v1.10.100.js"></script>
 	<script src="/js/jspdf.v1.4.1.debug.js"></script>
 	<script src="/js/canvas2svg.v1.0.19.js"></script>
-	<script src="/js/cytoscape.v3.8.1.min.js"></script>
+	<script src="/js/cytoscape.v3.2.18.min.js"></script>
 	<script src="/js/cytoscape-svg-convertor.js"></script>
 	<script src="/js/dagre.v0.8.2.min.js"></script>
 	<script src="/js/cytoscape-dagre.v2.2.2.js"></script>
@@ -282,11 +282,12 @@
 								<menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
 							</menupopup>
 						</combobutton>
-						<combobutton id="layout" label="Layout" onClick='layout_hiera.setChecked(true);layout_dagre.setChecked(false);layout_bf.setChecked(false);'>
+						<combobutton id="layout" label="Layout" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);'>
 							<menupopup>
-								<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre.setChecked(false);layout_bf.setChecked(false);' label="Hierarchical" checked="true" />
-								<menuitem id="layout_dagre" onClick='layout_hiera.setChecked(false);layout_dagre.setChecked(true);layout_bf.setChecked(false);' label="Dagre" checked="false" />
-								<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />
+								<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Hierarchical" checked="true" />
+								<menuitem id="layout_dagre_LR" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(true);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Dagre Left-Right" checked="false" />
+								<menuitem id="layout_dagre_TB" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(true);layout_bf.setChecked(false);' label="Dagre Top-Bottom" checked="false" />
+								<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />
 							</menupopup>
 						</combobutton>
 						<button id="fitScreen" label="Fit to screen" />
@@ -456,61 +457,39 @@
 		}
 
 		function reset() {
-		  cy.elements().remove();
-		}
-
-		function loadDFG(json, layout_option) {
-		  loadTraceMode = false;
-		  reset();
-		  // need to store the current zoom and pan level as the load function
-		  // will reset them through the zoom and pan events.
-		  var zoom = currentZoomLevel; 
-		  var pan = currentPanPosition;
-			
-		  console.log(json);
-		  cy.add($.parseJSON(json)); 
-			layout(layout_option);
-			
-		  if (!initialLoaded) {
-			  window.cy.zoom(zoom);
-			  window.cy.pan(pan);
-			  currentZoomLevel = zoom;
-			  currentPanPosition = pan;
-		  }
-		  else {
-			  initialLoaded = false;
-				cy.fit();
-		  }
-			
+		  //cy.elements().remove();
+			cy.destroy(); // must destroy instead of removing elements because some style settings are retained through different actions, e.g. the curve-style.
 		}
 		
-		function loadBPMN(json, layout_option) {
+		function load(json, layout_option, retain) {
+			// need to set the current zoom/pan level again as the reset/zoom/pan actions will generate zoom and pan events and change them.
+			var zoom = currentZoomLevel; 
+		  var pan = currentPanPosition;
+			
 		  loadTraceMode = false;
 		  reset();
-		  // need to store the current zoom and pan level as the load function
-		  // will reset them through the zoom and pan events.
-		  var zoom = currentZoomLevel; 
-		  var pan = currentPanPosition;
+			init();
+			
 		  //console.log(json);
 		  cy.add($.parseJSON(json)); 
 			layout(layout_option);
 			
-		  if (!initialLoaded) {
+		  if (retain) {
 			  window.cy.zoom(zoom);
 			  window.cy.pan(pan);
-			  currentZoomLevel = zoom;
+			  currentZoomLevel = zoom; 
 			  currentPanPosition = pan;
 		  }
-		  else {
-			  initialLoaded = false;
+			else {
 				cy.fit();
-		  }
-	
+			}
+			
 		}
 		
 		function loadTrace(a) {
 		  loadTraceMode = true;
 		  reset();
+			init();
 		  cy.add($.parseJSON(a)); 
 		  layout_dagre_LR(false);
 			cy.fit();
@@ -532,6 +511,9 @@
 					layout_dagre_LR(!0);
 					break;
 				case 2:
+					layout_dagre_TB(!0);
+					break;					
+				case 3:
 					layout_breadthfirst(!0);
 					break;
 				default:
@@ -541,10 +523,10 @@
 		
 		function layout_manual_bezier(a) {
 		  cy.style().selector("edge").style({
-			"curve-style": function( ele ){ return ele.data('curve-style')},
+			"curve-style": function( ele ){ return ele.data('edge-style')},
 			"edge-distances": "node-position",	
-			"control-point-distances": function( ele ){ if (ele.data('curve-style')=="unbundled-bezier") {return ele.data('point-distances')} else {return "0"}},
-			"control-point-weights": function( ele ){ if (ele.data('curve-style')=="unbundled-bezier") {return ele.data('point-weights')} else {return "0.5"}}
+			"control-point-distances": function( ele ){ if (ele.data('edge-style')=="unbundled-bezier") {return ele.data('point-distances')} else {return "0"}},
+			"control-point-weights": function( ele ){ if (ele.data('edge-style')=="unbundled-bezier") {return ele.data('point-weights')} else {return "0.5"}}
 		  }).update();
 			
 		  cy.elements().layout({
@@ -552,23 +534,7 @@
 		  }).run();		  
 		}		
 
-		function layout_breadthfirst(a) {
-		  cy.style().selector("edge").style({
-			"curve-style": "bezier"
-		  }).update();
-
-		  cy.elements().layout({
-			name: "breadthfirst",
-			directed: !0,
-			spacingFactor: 1
-		  }).run();
-		}
-
 		function layout_dagre_LR(a) {
-  		  cy.style().selector("edge").style({
-			"curve-style": "bezier"
-		  }).update()	
-		  
 		  cy.elements().layout({
 			name: "dagre",
 			avoidOverlap: !0,
@@ -579,6 +545,37 @@
 			ranker: "network-simplex"
 		  }).run()
 		}
+		
+		function layout_dagre_TB(a) {
+			cy.style().selector("edge").style({
+				"text-background-opacity": 1,
+				"text-margin-y": 0
+		  }).update();			
+			
+		  cy.elements().layout({
+			name: "dagre",
+			avoidOverlap: !0,
+			edgeSep: 50,
+			nodeSep: 110,
+			randomize: a,
+			rankDir: "TB",
+			ranker: "tight-tree"
+		  }).run()
+		}
+		
+		function layout_breadthfirst(a) {
+			cy.style().selector("edge").style({
+				"text-background-opacity": 1,
+				"text-margin-y": 0
+		  }).update();
+			
+		  cy.elements().layout({
+			name: "breadthfirst",
+			directed: !0,
+			spacingFactor: 1,
+			avoidOverlap: true
+		  }).run();
+		}		
 		
 		function pos(a, b) {
 		  var c = 0,

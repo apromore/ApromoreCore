@@ -146,7 +146,8 @@ public class ProcessDiscovererController extends BaseController {
     
     private Combobutton layout;
     private Menuitem layout_hiera;
-    private Menuitem layout_dagre;
+    private Menuitem layout_dagre_LR;
+    private Menuitem layout_dagre_TB;
     private Menuitem layout_bf;
 
     private Button filter;
@@ -205,7 +206,7 @@ public class ProcessDiscovererController extends BaseController {
     
     private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
     
-    private int selectedLayout = 0; //0: hierarchical, 1: dagre, 2: breadth-first
+    private int selectedLayout = 0; //0: hierarchical, 1: dagre_LR, 2: dagre_TB, 3: breadth-first
     
     private CanoniserService canoniserService;
     private DomainService domainService;
@@ -343,7 +344,8 @@ public class ProcessDiscovererController extends BaseController {
             
             this.layout = (Combobutton) slidersWindow.getFellow("layout");
             this.layout_hiera = (Menuitem) slidersWindow.getFellow("layout_hiera");
-            this.layout_dagre = (Menuitem) slidersWindow.getFellow("layout_dagre");
+            this.layout_dagre_LR = (Menuitem) slidersWindow.getFellow("layout_dagre_LR");
+            this.layout_dagre_TB = (Menuitem) slidersWindow.getFellow("layout_dagre_TB");
             this.layout_bf = (Menuitem) slidersWindow.getFellow("layout_bf");
 
             this.details = (Button) slidersWindow.getFellow(StringValues.b[63]);
@@ -576,7 +578,8 @@ public class ProcessDiscovererController extends BaseController {
             
             this.layout.addEventListener("onClick", layoutListener);
             this.layout_hiera.addEventListener("onClick", layoutListener);
-            this.layout_dagre.addEventListener("onClick", layoutListener);
+            this.layout_dagre_LR.addEventListener("onClick", layoutListener);
+            this.layout_dagre_TB.addEventListener("onClick", layoutListener);
             this.layout_bf.addEventListener("onClick", layoutListener);
 
             this.exportFilteredLog.addEventListener("onExport", new EventListener<Event>() {
@@ -1576,11 +1579,14 @@ public class ProcessDiscovererController extends BaseController {
     	if (layout_hiera.isChecked()) {
     		this.selectedLayout = 0;
     	}
-    	else if (this.layout_dagre.isChecked()) {
+    	else if (this.layout_dagre_LR.isChecked()) {
     		this.selectedLayout = 1;
     	}
-    	else if (this.layout_bf.isChecked()) {
+    	else if (this.layout_dagre_TB.isChecked()) {
     		this.selectedLayout = 2;
+    	}    	
+    	else if (this.layout_bf.isChecked()) {
+    		this.selectedLayout = 3;
     	}
     	
     	this.display(jsonDiagram);
@@ -1683,19 +1689,23 @@ public class ProcessDiscovererController extends BaseController {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
     	
-    	String javascript = "";
-    	if (!gateways.isChecked()) {
-    		javascript = "loadDFG('" + jsonString + "'," +  this.selectedLayout + ");";
-    	}
-    	else {
-    		javascript = "loadBPMN('" + jsonString  + "'," +  this.selectedLayout + ");";
-    	}
+//    	if (!gateways.isChecked()) {
+//    		javascript = "loadDFG('" + jsonString + "'," +  this.selectedLayout + ");";
+//    	}
+//    	else {
+//    		javascript = "loadBPMN('" + jsonString  + "'," +  this.selectedLayout + ");";
+//    	}
 
-    	if ((isShowingBPMN && !gateways.isChecked()) || (!isShowingBPMN && gateways.isChecked()) || selectorChanged) {
-        	javascript += "fitToWindow();";
+    	int retainZoomPan = 1;
+    	if ((isShowingBPMN && !gateways.isChecked()) || 
+    			(!isShowingBPMN && gateways.isChecked()) || 
+    			selectorChanged) {
+    		retainZoomPan = 0;
         }
-        
+    	
+    	String javascript = "load('" + jsonString + "'," +  this.selectedLayout + "," + retainZoomPan + ");";
     	Clients.evalJavaScript(javascript);
+    	
         isShowingBPMN = gateways.isChecked();
         selectorChanged = false;
     }

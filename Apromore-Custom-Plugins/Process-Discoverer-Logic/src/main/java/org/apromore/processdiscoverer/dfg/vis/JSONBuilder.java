@@ -370,18 +370,18 @@ public class JSONBuilder {
 		            	point_distances += (df.format(dw.getX()) + " ");
 		            	point_weights += (df.format(dw.getY()) + " ");
 		            }
-		            jsonOneLink.put("curve-style", "unbundled-bezier");
+		            jsonOneLink.put("edge-style", "unbundled-bezier");
 		            jsonOneLink.put("point-distances", point_distances.trim());
 		            jsonOneLink.put("point-weights", point_weights.trim());
 	            }
 	            else {
-	            	jsonOneLink.put("curve-style", "unbundled-bezier");
+	            	jsonOneLink.put("edge-style", "unbundled-bezier");
 	            	jsonOneLink.put("point-distances", "0");
 		            jsonOneLink.put("point-weights", "0.5");
 	            }
             }
             else {
-            	jsonOneLink.put("curve-style", "bezier");
+            	jsonOneLink.put("edge-style", "bezier");
             }
 
             JSONObject jsonDataLink = new JSONObject();
