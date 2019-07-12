@@ -1,0 +1,6 @@
+<zk>
+    <div>
+        Test
+        <charts id="charts01"/>
+    </div>
+</zk>

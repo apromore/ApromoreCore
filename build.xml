@@ -321,6 +321,7 @@
         <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
         <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
+        <include name="Apromore-Custom-Plugins/Dashboard/target/dashboard-1.0.war"/>
     </fileset>
 
     <fileset id="pickupRepo-student" dir=".">
@@ -437,6 +438,9 @@
         <include name="Apromore-Assembly/**/repository/usr/*.war"/>
         <include name="site.properties"/>
         <include name="git.properties"/>
+
+        <!-- Free builds won't include the following encumbered components -->
+        <include name="Apromore-OSGI-Bundles/zkcharts-osgi/target/zkcharts-osgi-*.jar"/>
     </fileset>
 
     <!-- Virgo Related -->

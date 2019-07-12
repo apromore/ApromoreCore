@@ -193,8 +193,7 @@ import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
                         return sortTraces(logData);
                     }
 
-                    Messagebox.show("Number of lines processed: "+ lineCount + "\n Number of errors encountered: "
-                            + errorCount + "\n\n\n" + " Your file has been imported.");
+                    Messagebox.show("Total number of lines processed: "+ lineCount + "\n Your file has been imported.");
                     return sortTraces(logData);
                 }
 
