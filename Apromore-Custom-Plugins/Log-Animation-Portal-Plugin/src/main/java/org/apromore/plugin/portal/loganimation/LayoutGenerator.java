@@ -67,8 +67,9 @@ public class LayoutGenerator {
             } else if (element.contains("diamond")) {
                 elementName = "";
             } else {
-                elementName = element.substring(element.indexOf("\"name\":\"") + 8, element.indexOf("\",\"width"));
-                elementName = elementName.substring(0, elementName.indexOf("\\n"));
+                elementName = element.substring(element.indexOf("\"oriname\":\"") + 11, element.indexOf("\",\"name"));
+                //elementName = element.substring(element.indexOf("\"name\":\"") + 8, element.indexOf("\",\"width"));
+                //elementName = elementName.substring(0, elementName.indexOf("\\n"));
             }
 
             String height = element.substring(element.indexOf("\"height\":\"") + 10);
@@ -95,8 +96,9 @@ public class LayoutGenerator {
             } else if (element.contains("diamond")) {
                 elementName = "";
             } else {
-                elementName = element.substring(element.indexOf("\"name\":\"") + 8, element.indexOf("\",\"width"));
-                elementName = elementName.substring(0, elementName.indexOf("\\n"));
+            	elementName = element.substring(element.indexOf("\"oriname\":\"") + 11, element.indexOf("\",\"name"));
+                //elementName = element.substring(element.indexOf("\"name\":\"") + 8, element.indexOf("\",\"width"));
+                //elementName = elementName.substring(0, elementName.indexOf("\\n"));
             }
 
             String width = element.substring(element.indexOf("\"width\":\"") + 9);
