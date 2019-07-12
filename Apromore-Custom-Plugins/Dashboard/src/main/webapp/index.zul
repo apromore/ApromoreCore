@@ -1,0 +1,908 @@
+<?import org.zkoss.chart.Version ?>
+<?style src="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"?>
+<zk>
+    <style>
+        .chartsDiv {
+        overflow:auto;
+        background: #EEE;
+        box-shadow: inset 0px 5px 10px rgb(0,0,0,.3);
+        }
+
+        .chartNote {
+        float:right;
+        font-size: 9px;
+        color:rgb(0, 0, 0, .5);
+        padding:5px 0px 3px 0px;
+        margin:0px 10px 0px 0px;
+        }
+
+        .logData {
+        border:0px solid #000;
+        border-bottom: 1px solid rgb(0,0,0,.1);
+        }
+
+        .labelClose {
+        color:#900;
+        cursor: pointer;
+        }
+        .labelClose:hover {
+        color:#5DADE2;
+        }
+
+        .caseDetailsHeading {
+        background: #EEE;
+        box-shadow: inset 0px 3px 6px rgb(0,0,0,.3);
+        color:#777;
+        text-shadow: 1px 1px 1px #FFF;
+        }
+
+
+        .red a:link{
+            color:#EF5350;
+            text-decoration:none;
+            border:  2px double rgb(0, 0, 0, 0);
+        }
+        .red a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .pink a:link{
+            color:#F06292;
+            text-decoration:none;
+        border:  2px double rgb(0, 0, 0, 0);
+        }
+        .pink a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .pueple a:link{
+            color:#AB47BC;
+        text-decoration:none;
+        border:  2px double rgb(0, 0, 0, 0);
+        }
+        .pueple a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .violet a:link{
+            color:#7E57C2;
+        text-decoration:none;    border:  2px double rgb(0, 0, 0, 0);
+        }
+        .violet a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .blue a:link{
+            color:#03A9F4;
+        text-decoration:none;    border:  2px double rgb(0, 0, 0, 0);
+        }
+        .blue a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .cyan a:link{
+            color:#00F0F0;
+        text-decoration:none;    border:  2px double rgb(0, 0, 0, 0);
+        }
+        .cyan a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .green a:link{
+            color:#43A047;
+        text-decoration:none;    border:  2px double rgb(0, 0, 0, 0);
+        }
+        .green a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .olive a:link{
+            color:#C0CA33;
+        text-decoration:none;    border:  2px double rgb(0, 0, 0, 0);
+        }
+        .olive a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .yellow a:link{
+            color:#FDD835;
+        text-decoration:none;    border:  2px double rgb(0, 0, 0, 0);
+        }
+        .yellow a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .orange a:link{
+            color:#FF5722;
+        text-decoration:none;    border:  2px double rgb(0, 0, 0, 0);
+        }
+        .orange a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .brown a:link{
+            color:#795548;
+        text-decoration:none;    border:  2px double rgb(0, 0, 0, 0);
+        }
+        .brown a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+        .gray a:link{
+            color:#757575;
+        text-decoration:none;    border:  2px double rgb(0, 0, 0, 0);
+        }
+        .gray a:hover{
+        border:  2px double rgb(80, 223, 255, .75);
+        }
+
+
+    </style>
+    <div visible="false">Charts ${Version.UID}</div>
+    <window border="none" apply="dashboard.MainController" height="100%" width="100%" style="border: 0px solid rgba(33, 33, 33, 1);"  onClientInfo="$composer.onClientInfo(event)">
+        <borderlayout vflex="1" >
+            <west id="west01" title="Filter something" width="500px" open="true"
+                  splittable="false" collapsible="false" visible="false"
+                    style="background-color:#F9FDFE;">
+                <div height="100%">
+                    <borderlayout>
+                    <north id="filterNorth" style="background: #EEE; box-shadow: inset 0px 5px 10px rgb(0,0,0,.2);">
+                        <div style="padding:10px 0px 5px 0px;" align="center">
+                            <radiogroup id="rdgView"/>
+                            <radio id="rdCase" label="Case" radiogroup="rdgView"/>
+                            <radio id="rdAct" label="Activity" radiogroup="rdgView"/>
+                            <radio id="rdRes" label="Resource" radiogroup="rdgView"/>
+                        </div>
+                    </north>
+                    <center>
+                        <div style="overflow:auto; " vflex="1">
+                            <listbox id="lbxFilterCase" mold="paging" autopaging="true" vflex="true" sizedByContent="false" checkmark="true">
+                                <listhead>
+                                    <listheader label="caseID" sort="auto(caseId)"/>
+                                </listhead>
+                                <template name="model">
+                                    <listitem>
+                                        <listcell label="${each.caseId}"/>
+                                    </listitem>
+                                </template>
+                            </listbox>
+                            <listbox id="lbxFilterAct" mold="paging" autopaging="true" vflex="true" sizedByContent="false" checkmark="true" visible="false">
+                                <listhead>
+                                    <listheader label="Activity" sort="auto(name)"/>
+                                </listhead>
+                                <template name="model">
+                                    <listitem>
+                                        <listcell label="${each.name}"/>
+                                    </listitem>
+                                </template>
+                            </listbox>
+                            <listbox id="lbxFilterRes" mold="paging" autopaging="true" vflex="true" sizedByContent="false" checkmark="true" visible="false">
+                                <listhead>
+                                    <listheader label="Resource" sort="auto(caseId)"/>
+                                </listhead>
+                                <template name="model">
+                                    <listitem>
+                                        <listcell label="${each.name}"/>
+                                    </listitem>
+                                </template>
+                            </listbox>
+                        </div>
+                    </center>
+                    <south style="background: #EEE; box-shadow: inset 0px 5px 5px rgb(255,255,255,1);">
+                        <div align="right">
+                            <hlayout>
+                                <button id="btFilter" label="Filter"/>
+                                <button id="btCloseFilter" label="Close"/>
+                            </hlayout>
+                        </div>
+
+                    </south>
+                </borderlayout>
+                </div>
+            </west>
+            <center style="padding:0px;">
+                <div height="100%" >
+                    <tabbox height="100%" width="100%" orient="top" style="margin:-0px 00px 0px 0px; padding:0px 0px 0px 0px;">
+                        <tabs  height="5px" style="padding:0px;">
+                            <tab id="tabOverview" label="Overview" iconSclass="fas fa-globe"/>
+                            <tab id="tabActivity" label="Activity" iconSclass="fas fa-dove"/>
+                            <tab id="tabResource" label="Resource" iconSclass="fas fa-users-cog"/>
+                        </tabs>
+                        <toolbar>
+                            <hlayout width="100%">
+<!--                                <button id="btUp" label="Open File..." upload="true,maxsize=-1,multiple=true"/>-->
+                                <menubar id="mainMenubar" hflex="1" style="border: 0px solid rgba(33, 33, 33, 1);">
+                                    <menu id="menuClose" label="Close"/>
+                                    <menu id="menuSelectLog" label="Dataset"/>
+                                    <menu id="menuFilter" label="Filter"/>
+                                    <menu id="menuColor" label="Color"/>
+                                    <menu id="menuTheme" label="Theme">
+                                        <menupopup>
+                                            <menuitem label="DEFAULT" onClick='$composer.changeTheme("DEFAULT")'/>
+                                            <menuitem label="GRID" onClick='$composer.changeTheme("GRID")'/>
+                                            <menuitem label="GRAY" onClick='$composer.changeTheme("GRAY")'/>
+                                            <menuitem label="DARK_BLUE" onClick='$composer.changeTheme("DARK_BLUE")'/>
+                                            <menuitem label="DARK_GREEN" onClick='$composer.changeTheme("DARK_GREEN")'/>
+                                            <menuitem label="DARK_UNICA" onClick='$composer.changeTheme("DARK_UNICA")'/>
+                                            <menuitem label="SAND_SIGNIKA" onClick='$composer.changeTheme("SAND_SIGNIKA")'/>
+                                            <menuitem label="GRID_LIGHT" onClick='$composer.changeTheme("GRID_LIGHT")'/>
+                                        </menupopup>
+                                    </menu>
+                                    <menuitem label=" "/>
+                                </menubar>
+                            </hlayout>
+                        </toolbar>
+                        <tabpanels>
+                            <!-- ******************* -->
+                            <!--                     -->
+                            <!-- Overview View Panel -->
+                            <!--                     -->
+                            <!-- ******************* -->
+                            <tabpanel style=" padding:0px;">
+                                <borderlayout style=" padding:0px; margin:0px; ">
+                                    <north id="northOV" style=" padding:0px; margin:0px;"
+                                           splittable="true" collapsible="true" height="280px" minsize="250"
+                                            onSize='$composer.sizeNorthOV()' hflex="1">
+                                        <div  vflex="1">
+                                            <tabbox vflex="1" orient="left" >
+                                            <tabs width="230px">
+                                                <tab id="tabOVEventOT" label="Events over time"/>
+                                                <tab id="tabOVActCaseOT" label="Active case over time" />
+                                                <tab id="tabOVCaseVari" label="Case variants"/>
+                                                <tab id="tabOVEventsPC" label="Events per case "/>
+                                                <tab id="tabOVCaseDur" label="Case duration"/>
+                                                <tab id="tabOVMeanActDur" label="Mean activity duration" visible="false"/>
+                                            </tabs>
+                                            <tabpanels>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartOVEventOT" zoomType="x" borderWidth="0"
+                                                                title=""
+                                                                height="250"
+                                                                style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+                                                    </div>
+                                                </tabpanel>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartOVActiveCaseOT" zoomType="x" borderWidth="0"
+                                                                height="250" title=""
+                                                                style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+                                                    </div>
+                                                </tabpanel>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartOVCaseVariant" zoomType="x" borderWidth="0"
+                                                                height="250" title=""
+                                                                style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+                                                    </div>
+                                                </tabpanel>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartOVEventsPC" zoomType="x" borderWidth="0"
+                                                                height="250" title="" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+                                                    </div>
+                                                </tabpanel>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartOVCaseDur" zoomType="x" borderWidth="0"
+                                                                height="250" title="" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+                                                    </div>
+                                                </tabpanel>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartOVMeanActDur" zoomType="x" borderWidth="0"
+                                                                height="250" title="" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+                                                    </div>
+                                                </tabpanel>
+                                            </tabpanels>
+                                        </tabbox>
+                                        </div>
+                                    </north>
+                                    <center id="centerOV">
+                                       <tabbox vflex="1" hflex="1" ><!--Cases and Variants of Overview -->
+                                           <tabs >
+                                                <tab id="tabOVCases" label="Cases" />
+                                                <tab id="tabOVVariants" label="Variants" />
+<!--                                               <tab id="tabOVCaseDetails" label="Case Details" />-->
+                                            </tabs>
+                                           <toolbar visible="false">
+                                                <div style="padding-top:18px;padding-bottom:0px; padding-right:20px; color:#88929A;">
+                                                    <label id="lblOVSelectedLog" value="..." />
+                                                </div>
+                                           </toolbar>
+                                           <tabpanels>
+                                                <tabpanel  style=" padding:0px;   overflow:auto;">
+<!--                                                    <grid id="gridOVCases"  mold="paging" autopaging="true" vflex="true" sizedByContent="true">-->
+<!--                                                        <columns>-->
+<!--                                                            <column label="caseID" sort="auto(caseId)"/>-->
+<!--                                                            <column label="Events" sort="auto(eventsSize)"/>-->
+<!--                                                            <column label="Variant" sort="auto(variantId)"/>-->
+<!--                                                            <column label="Start Time" sort="auto(startTimeString)"   onCreate="self.sort(true);"/>-->
+<!--                                                            <column label="End Time" sort="auto(endTimeString)" />-->
+<!--                                                            <column label="Duration" sort="auto(duration)" />-->
+<!--                                                        </columns>-->
+<!--                                                        <template name="model">-->
+<!--                                                            <row>-->
+<!--                                                                <label value="${each.caseId}" style="padding: 0px; margin:0px;"/>-->
+<!--                                                                <label value="${each.eventsSize}"/>-->
+<!--                                                                <label value="${each.variantId}"/>-->
+<!--                                                                <label value="${each.startTimeString}"/>-->
+<!--                                                                <label value="${each.endTimeString}"/>-->
+<!--                                                                <label value="${each.durationString}"/>-->
+<!--                                                            </row>-->
+<!--                                                        </template>-->
+<!--                                                    </grid>-->
+                                                    <listbox id="lbxOVCases" mold="paging" autopaging="true" vflex="true"
+                                                             sizedByContent="true">
+                                                        <listhead>
+                                                            <listheader label="caseID" sort="auto(caseId)"/>
+                                                            <listheader label="Events" sort="auto(eventsSize)"/>
+                                                            <listheader label="Variant" sort="auto(variantId)"/>
+                                                            <listheader label="Start Time" sort="auto(startTimeString)"   onCreate="self.sort(true);"/>
+                                                            <listheader label="End Time" sort="auto(endTimeString)" />
+                                                            <listheader label="Duration" sort="auto(duration)" />
+                                                        </listhead>
+                                                        <template name="model">
+                                                            <listitem context="${each.caseId}" onClick="$composer.showCaseDetails(self.context)">
+                                                                <listcell label="${each.caseId}"/>
+                                                                <listcell label="${each.eventsSize}"/>
+                                                                <listcell label="${each.variantId}"/>
+                                                                <listcell label="${each.startTimeString}"/>
+                                                                <listcell label="${each.endTimeString}"/>
+                                                                <listcell label="${each.durationString}"/>
+                                                            </listitem>
+                                                        </template>
+                                                    </listbox>
+
+                                                </tabpanel>
+                                                <tabpanel  style=" padding:0px;">
+                                                    <grid id="gridOVVariants"  mold="paging" autopaging="true" vflex="true" sizedByContent="true">
+                                                        <columns>
+                                                            <column label="Variant" sort="auto(id)" onCreate="self.sort(true);"/>
+                                                            <column label="Cases" sort="auto(numberOfCases)"/>
+                                                            <column label="Events" sort="auto(numberOfEvents)"/>
+                                                            <column label="Median duration" sort="auto(medianDuration)"/>
+                                                            <column label="Mean duration" sort="auto(meanDuration)"/>
+                                                        </columns>
+                                                        <template name="model">
+                                                            <row>
+                                                                <label value="${each.id}"/>
+                                                                <label value="${each.numberOfCases}"/>
+                                                                <label value="${each.numberOfEvents}"/>
+                                                                <label value="${each.medianDurationString}"/>
+                                                                <label value="${each.meanDurationString}"/>
+                                                            </row>
+                                                        </template>
+                                                    </grid>
+                                                </tabpanel>
+<!--                                               <tabpanel  style=" padding:0px;">-->
+<!--                                                   <grid id="gridOVCaseDetails"  mold="paging" autopaging="true" vflex="true" sizedByContent="true">-->
+<!--                                                       <columns>-->
+<!--                                                           <column label="caseID" sort="auto"/>-->
+<!--                                                           <column label="Events" sort="auto"/>-->
+<!--                                                           <column label="Variant" sort="auto"/>-->
+<!--                                                           <column label="Start Time" sort="auto"/>-->
+<!--                                                           <column label="End Time" sort="auto"/>-->
+<!--                                                           <column label="Duration" sort="auto"/>-->
+<!--                                                       </columns>-->
+<!--&lt;!&ndash;                                                       <rows>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                           <row>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               <label value="1"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               <label value="2"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               <label value="3"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               <label value="4"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               <label value="5"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               <label value="6"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                           </row>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                           <row>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               <cell colspan="6" align="center">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                                   WWWWW WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW&ndash;&gt;-->
+<!--&lt;!&ndash;                                                               </cell>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                           </row>&ndash;&gt;-->
+<!--&lt;!&ndash;                                                       </rows>&ndash;&gt;-->
+<!--                                                   </grid>-->
+<!--                                               </tabpanel>-->
+                                            </tabpanels>
+                                       </tabbox>
+                                    </center>
+                                    <east id="eastOV"
+                                          title="East (selected log name)"
+                                          width="330px" splittable="true" collapsible="true">
+                                        <div vflex="1" hflex="1" style="overflow-y:auto;">
+                                            <listbox style="border:0px solid rgb(0,0,0,1)">
+                                                <listhead>
+                                                    <listheader  align="left" width="190px"/>
+                                                    <listheader align="right"/>
+                                                </listhead>
+                                                <listitem >
+                                                    <listcell label="Events" sclass="logData"/>
+                                                    <listcell  id="lcOvEvents" label="......" sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Cases" sclass="logData"/>
+                                                    <listcell id="lcOvCases" sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Activities" sclass="logData"/>
+                                                    <listcell id="lcOvActivities" sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Median case duration" sclass="logData"/>
+                                                    <listcell id="lcOvMedianCaseDuration" sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Mean case duration" sclass="logData"/>
+                                                    <listcell id="lcOvMeanCaseDuration" sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Start" sclass="logData"/>
+                                                    <listcell id="lcOvStart" sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="End" sclass="logData"/>
+                                                    <listcell id="lcOvEnd" sclass="logData"/>
+                                                </listitem>
+                                            </listbox>
+<!--                                            <listbox style="border:0px solid red;">-->
+<!--                                                <listhead>-->
+<!--                                                    <listheader  align="left" sclass="logData"/>-->
+<!--                                                    <listheader align="right" width="200px" sclass="logData"/>-->
+<!--                                                </listhead>-->
+<!--                                                <listitem>-->
+<!--                                                    <listcell label="Start" sclass="logData"/>-->
+<!--                                                    <listcell id="lcOvStart" sclass="logData"/>-->
+<!--                                                </listitem>-->
+<!--                                                <listitem>-->
+<!--                                                    <listcell label="End" sclass="logData"/>-->
+<!--                                                    <listcell id="lcOvEnd" sclass="logData"/>-->
+<!--                                                </listitem>-->
+<!--                                            </listbox>-->
+                                        </div>
+                                    </east>
+                                    <south id="southOV" height="55%" visible="false" splittable="true" collapsible="true">
+                                        <borderlayout style="border:0px solid #000;">
+                                            <north>
+                                                <hlayout sclass="caseDetailsHeading" hflex="1" style="border:0px solid #F00;">
+                                                    <div  align="left" hflex="1"
+                                                          style="color:#555;border:0px solid #000; padding:9px 5px 5px 9px;">
+                                                        <label value="Case ID: "/>
+                                                        <label id="lblOVCaseDetails" style="color:#000;"/>
+                                                    </div>
+                                                    <div id="southOVnDiv2" align="right" hflex="1" style="border:0px solid #00F; padding:9px 12px 5px 5px;">
+<!--                                                        <label sclass="labelClose" value="Close" onClick="$composer.closeOVSouth()" />-->
+                                                    </div>
+                                                </hlayout>
+                                            </north>
+                                            <center>
+                                                <listbox id="lbxOVCaseDetails" mold="paging" autopaging="true"
+                                                         sizedByContent="true"
+                                                         vflex="true" hflex="1" style="border:0px solid #00F;">
+                                                    <listhead>
+                                                        <listheader label="Timestamp" sort="auto(timestampMilli)" id="lhOVCaseDetail"/>
+                                                        <listheader label="Activity" sort="auto(activityName)"/>
+                                                        <listheader label="Resource" sort="auto(resourceName)"/>
+                                                        <listheader label="Lifecycle" sort="auto(status)" />
+                                                        <listheader label="Start" sort="auto(startTimeMilli)" />
+                                                        <listheader label="End" sort="auto(endTimeMilli)" />
+                                                    </listhead>
+                                                    <template name="model">
+                                                        <listitem>
+                                                            <listcell label="${each.timestampString}" context="${each.timestampMilli}"/>
+                                                            <listcell label="${each.activityName}"/>
+                                                            <listcell label="${each.resourceName}"/>
+                                                            <listcell label="${each.status}"/>
+                                                            <listcell label="${each.startTimeString}" context="${each.startTimeMilli}"/>
+                                                            <listcell label="${each.endTimeString}" context="${each.endTimeMilli}"/>
+                                                        </listitem>
+                                                    </template>
+                                                </listbox>
+                                            </center>
+<!--                                            <south visible="false" >-->
+<!--                                                <div vflex="true" hflex="1" style="border:0px solid #00F;"-->
+<!--                                                align="right">-->
+<!--                                                    <button id="btCloseOVSouth" label="Close"/>-->
+<!--                                                </div>-->
+
+<!--                                            </south>-->
+                                        </borderlayout>
+                                    </south>
+                                </borderlayout>
+                            </tabpanel>
+                            <!-- ******************* -->
+                            <!--                     -->
+                            <!-- Activity View Panel -->
+                            <!--                     -->
+                            <!-- ******************* -->
+                            <tabpanel style="padding: 0px;">
+                                <borderlayout>
+                                    <north id="northAT" style=" padding:0px; margin:0px; "
+                                           splittable="true" collapsible="true" height="280px"  minsize="250"
+                                           onSize='$composer.sizeNorthAT()'>
+                                        <div  vflex="1">
+                                            <tabbox vflex="1" orient="left" >
+                                            <tabs width="210px">
+                                                <tab  label="Frequency"/>
+                                                <tab  label="Median duration" />
+                                                <tab  label="Mean duration"/>
+                                                <tab  label="Duration range"/>
+                                                <tab  label="Total duration"/>
+                                            </tabs>
+                                            <tabpanels>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartATFreq" zoomType="x" borderWidth="0"
+                                                                title=""
+                                                                height="250" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+
+                                                    </div>
+                                                </tabpanel>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartATMediDur" zoomType="x" borderWidth="0"
+                                                                title=""
+                                                                height="250" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+
+                                                    </div>
+                                                </tabpanel>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartATMeanDur" zoomType="x" borderWidth="0"
+                                                                title=""
+                                                                height="250" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+
+                                                    </div>
+                                                </tabpanel>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartATDurRng" zoomType="x" borderWidth="0"
+                                                                title=""
+                                                                height="250" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+
+                                                    </div>
+                                                </tabpanel>
+                                                <tabpanel style=" padding:0px;">
+                                                    <div sclass="chartsDiv" align="center" vflex="1">
+                                                        <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                        <charts id="chartATTtlDur" zoomType="x" borderWidth="0"
+                                                                title=""
+                                                                height="250" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                        />
+
+                                                    </div>
+                                                </tabpanel>
+                                            </tabpanels>
+                                        </tabbox>
+                                        </div>
+                                    </north>
+                                    <center id="centerAT"  >
+                                        <tabbox vflex="1" hflex="1"  orient="top"><!--tables of activity -->
+                                            <tabs>
+                                                <tab id="tabATActs" label="All activities" />
+                                                <tab id="tabATFIC" label="First in case" />
+                                                <tab id="tabATLIC" label="Last in case" />
+                                            </tabs>
+                                            <tabpanels>
+                                                <tabpanel style=" padding:0px;">
+                                                    <grid id="gridATAllActs"  mold="paging" autopaging="true" vflex="true" sizedByContent="true">
+                                                        <columns>
+                                                            <column label="Activity" sort="auto(name)"  align="left"/>
+                                                            <column label="Frequency" sort="auto(frequency)" align="right" width="100px"/>
+                                                            <column label="Relative freq." sort="auto(relativeFrequency)"/>
+                                                            <column label="Median duration" sort="auto(medianDuration)" align="right"/>
+                                                            <column label="Mean duration" sort="auto(meanDuration)" align="right"/>
+                                                            <column label="Duration range" sort="auto(durationRange)" align="right"/>
+                                                        </columns>
+                                                        <template name="model">
+                                                            <row>
+                                                                <label value="${each.name}"/>
+                                                                <label value="${each.frequency}"/>
+                                                                <label value="${each.relativeFrequencyString}" context="${each.relativeFrequency}"/>
+                                                                <label value="${each.medianDurationString}" context="${each.medianDuration}"/>
+                                                                <label value="${each.meanDurationString}" context="${each.meanDuration}"/>
+                                                                <label value="${each.durationRangeString}" context="${each.durationRange}"/>
+                                                            </row>
+                                                        </template>
+                                                    </grid>
+                                                </tabpanel>
+                                                <tabpanel  style=" padding:0px;">
+                                                    <grid id="gridATFIC"  mold="paging" autopaging="true" vflex="true" sizedByContent="true">
+                                                        <columns>
+                                                            <column label="Activity" sort="auto(name)"  align="left"/>
+                                                            <column label="Frequency" sort="auto(frequency)" align="right"  onCreate="self.sort(true);"/>
+                                                            <column label="Relative freq." sort="auto(relativeFrequency)"/>
+                                                            <column label="Median duration" sort="auto(medianDuration)" align="right"/>
+                                                            <column label="Mean duration" sort="auto(meanDuration)" align="right"/>
+                                                            <column label="Duration range" sort="auto(durationRange)" align="right"/>
+                                                        </columns>
+                                                        <template name="model">
+                                                            <row>
+                                                                <label value="${each.name}"/>
+                                                                <label value="${each.frequency}"/>
+                                                                <label value="${each.relativeFrequencyString}" context="${each.relativeFrequency}"/>
+                                                                <label value="${each.medianDurationString}" context="${each.medianDuration}"/>
+                                                                <label value="${each.meanDurationString}" context="${each.meanDuration}"/>
+                                                                <label value="${each.durationRangeString}" context="${each.durationRange}"/>
+                                                            </row>
+                                                        </template>
+                                                    </grid>
+                                                </tabpanel>
+                                                <tabpanel style="padding:0px;"><!-- Last in case panel -->
+                                                    <grid id="gridATLIC" mold="paging" autopaging="true" vflex="true" sizedByContent="true">
+                                                        <columns>
+                                                            <column label="Activity" sort="auto(name)"  align="left"/>
+                                                            <column label="Frequency" sort="auto(frequency)" align="right"  onCreate="self.sort(true);"/>
+                                                            <column label="Relative freq." sort="auto(relativeFrequency)"/>
+                                                            <column label="Median duration" sort="auto(medianDuration)" align="right"/>
+                                                            <column label="Mean duration" sort="auto(meanDuration)" align="right"/>
+                                                            <column label="Duration range" sort="auto(durationRange)" align="right"/>
+                                                        </columns>
+                                                        <template name="model">
+                                                            <row>
+                                                                <label value="${each.name}"/>
+                                                                <label value="${each.frequency}"/>
+                                                                <label value="${each.relativeFrequencyString}" context="${each.relativeFrequency}"/>
+                                                                <label value="${each.medianDurationString}" context="${each.medianDuration}"/>
+                                                                <label value="${each.meanDurationString}" context="${each.meanDuration}"/>
+                                                                <label value="${each.durationRangeString}" context="${each.durationRange}"/>
+                                                            </row>
+                                                        </template>
+                                                    </grid>
+                                                </tabpanel>
+                                            </tabpanels>
+                                        </tabbox>
+                                    </center>
+                                    <east id="eastAT"
+                                          title="East (selected log name)"
+                                          width="310px" splittable="true" collapsible="true">
+                                        <div vflex="1" hflex="1" style=" overflow-y:auto;">
+                                            <listbox style=" border: 0px; " >
+                                                <listhead>
+                                                    <listheader  align="left" width="220px"/>
+                                                    <listheader align="right"/>
+                                                </listhead>
+                                                <listitem>
+                                                    <listcell label="Activities" sclass="logData"/>
+                                                    <listcell  id="lcATActs" label="......" sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Minial frequency"  sclass="logData"/>
+                                                    <listcell id="lcATMiniFreq"  sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Median frequency"  sclass="logData"/>
+                                                    <listcell id="lcATMediFreq"  sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Mean frequency"  sclass="logData"/>
+                                                    <listcell id="lcATMeanFreq" sclass="logData" />
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Maximal frequency"  sclass="logData"/>
+                                                    <listcell id="lcATMaxiFreq" sclass="logData" />
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Frequency std. deviation" sclass="logData" />
+                                                    <listcell id="lcATFSD" sclass="logData" />
+                                                </listitem>
+                                            </listbox>
+                                        </div>
+                                    </east>
+                                </borderlayout>
+                            </tabpanel>
+                            <!-- ******************* -->
+                            <!--                     -->
+                            <!-- Resource View Panel -->
+                            <!--                     -->
+                            <!-- ******************* -->
+                            <tabpanel style="padding: 0px;">
+                                <borderlayout>
+                                    <north id="northRS" style=" padding:0px; margin:0px;"
+                                           splittable="true" collapsible="true" height="280px"  minsize="250"
+                                           onSize='$composer.sizeNorthRS()'>
+                                        <div  vflex="1">
+                                            <tabbox vflex="1" orient="left" >
+                                                <tabs width="210px">
+                                                    <tab  label="Frequency"/>
+                                                    <tab  label="Median duration" />
+                                                    <tab  label="Mean duration"/>
+                                                    <tab  label="Duration range"/>
+                                                    <tab  label="Total duration"/>
+                                                </tabs>
+                                                <tabpanels>
+                                                    <tabpanel style=" padding:0px;">
+                                                        <div sclass="chartsDiv" align="center" vflex="1">
+                                                            <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                            <charts id="chartRSFreq" zoomType="x" borderWidth="0"
+                                                                    title=""
+                                                                    height="250" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                            />
+
+                                                        </div>
+                                                    </tabpanel>
+                                                    <tabpanel style=" padding:0px;">
+                                                        <div sclass="chartsDiv" align="center" vflex="1">
+                                                            <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                            <charts id="chartRSMediDur" zoomType="x" borderWidth="0"
+                                                                    title=""
+                                                                    height="250" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                            />
+
+                                                        </div>
+                                                    </tabpanel>
+                                                    <tabpanel style=" padding:0px;">
+                                                        <div sclass="chartsDiv" align="center" vflex="1">
+                                                            <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                            <charts id="chartRSMeanDur" zoomType="x" borderWidth="0"
+                                                                    title=""
+                                                                    height="250" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                            />
+
+                                                        </div>
+                                                    </tabpanel>
+                                                    <tabpanel style=" padding:0px;">
+                                                        <div sclass="chartsDiv" align="center" vflex="1">
+                                                            <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                            <charts id="chartRSDurRng" zoomType="x" borderWidth="0"
+                                                                    title=""
+                                                                    height="250" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                            />
+
+                                                        </div>
+                                                    </tabpanel>
+                                                    <tabpanel style=" padding:0px;">
+                                                        <div sclass="chartsDiv" align="center" vflex="1">
+                                                            <label sclass="chartNote" >Click and drag in the plot area to zoom in.</label>
+                                                            <charts id="chartRSTtlDur" zoomType="x" borderWidth="0"
+                                                                    title=""
+                                                                    subtitle=""
+                                                                    height="250" style="border-radius: 12px; box-shadow: 0px 0px 5px rgb(0,0,0,.25);"
+                                                            />
+                                                        </div>
+                                                    </tabpanel>
+                                                </tabpanels>
+                                            </tabbox>
+                                        </div>
+                                    </north>
+                                    <center id="centerRS" >
+                                        <tabbox vflex="1" hflex="1"  orient="top"><!--tables of resource -->
+                                            <tabs>
+                                                <tab id="tabRSAll" label="All resources" />
+                                                <tab id="tabRSFIC" label="First in case" />
+                                                <tab id="tabRSLIC" label="Last in case" />
+                                            </tabs>
+                                            <tabpanels>
+                                                <tabpanel  style=" padding:0px;">
+                                                    <grid id="gridRSAll" mold="paging" autopaging="true" vflex="true" sizedByContent="true">
+                                                        <columns>
+                                                            <column label="Resource" sort="auto(name)"  align="left" width="100px" onCreate="self.sort(true);"/>
+                                                            <column label="Frequency" sort="auto(frequency)" align="right" width="100px"/>
+                                                            <column label="Relative freq." sort="auto(relativeFrequency)"/>
+                                                            <column label="Median duration" sort="auto(medianDuration)" align="right"/>
+                                                            <column label="Mean duration" sort="auto(meanDuration)" align="right"/>
+                                                            <column label="Duration range" sort="auto(durationRange)" align="right"/>
+                                                        </columns>
+                                                        <template name="model">
+                                                            <row>
+                                                                <label value="${each.name}"/>
+                                                                <label value="${each.frequency}"/>
+                                                                <label value="${each.relativeFrequencyString}" context="${each.relativeFrequency}"/>
+                                                                <label value="${each.medianDurationString}" context="${each.medianDuration}"/>
+                                                                <label value="${each.meanDurationString}" context="${each.meanDuration}"/>
+                                                                <label value="${each.durationRangeString}" context="${each.durationRange}"/>
+                                                            </row>
+                                                        </template>
+                                                    </grid>
+                                                </tabpanel>
+                                                <tabpanel  style=" padding:0px;">
+                                                    <grid id="gridRSFIC"  mold="paging" autopaging="true" vflex="true" sizedByContent="true">
+                                                        <columns>
+                                                            <column label="Resource" sort="auto(name)"  align="left"  width="100px"/>
+                                                            <column label="Frequency" sort="auto(frequency)" align="right" width="100px" onCreate="self.sort(true);"/>
+                                                            <column label="Relative freq." sort="auto(relativeFrequency)"/>
+                                                            <column label="Median duration" sort="auto(medianDuration)" align="right"/>
+                                                            <column label="Mean duration" sort="auto(meanDuration)" align="right"/>
+                                                            <column label="Duration range" sort="auto(durationRange)" align="right"/>
+                                                        </columns>
+                                                        <template name="model">
+                                                            <row>
+                                                                <label value="${each.name}"/>
+                                                                <label value="${each.frequency}"/>
+                                                                <label value="${each.relativeFrequencyString}" context="${each.relativeFrequency}"/>
+                                                                <label value="${each.medianDurationString}" context="${each.medianDuration}"/>
+                                                                <label value="${each.meanDurationString}" context="${each.meanDuration}"/>
+                                                                <label value="${each.durationRangeString}" context="${each.durationRange}"/>
+                                                            </row>
+                                                        </template>
+                                                    </grid>
+                                                </tabpanel>
+                                                <tabpanel style="padding:0px;"><!-- Last in case panel -->
+                                                    <grid id="gridRSLIC" mold="paging" autopaging="true" vflex="true" sizedByContent="true">
+                                                        <columns>
+                                                            <column label="Resource" sort="auto(name)"  align="left" width="100px" />
+                                                            <column label="Frequency" sort="auto(frequency)" align="right" width="100px" onCreate="self.sort(true);"/>
+                                                            <column label="Relative freq." sort="auto(relativeFrequency)"/>
+                                                            <column label="Median duration" sort="auto(medianDuration)" align="right"/>
+                                                            <column label="Mean duration" sort="auto(meanDuration)" align="right"/>
+                                                            <column label="Duration range" sort="auto(durationRange)" align="right"/>
+                                                        </columns>
+                                                        <template name="model">
+                                                            <row>
+                                                                <label value="${each.name}"/>
+                                                                <label value="${each.frequency}"/>
+                                                                <label value="${each.relativeFrequencyString}" context="${each.relativeFrequency}"/>
+                                                                <label value="${each.medianDurationString}" context="${each.medianDuration}"/>
+                                                                <label value="${each.meanDurationString}" context="${each.meanDuration}"/>
+                                                                <label value="${each.durationRangeString}" context="${each.durationRange}"/>
+                                                            </row>
+                                                        </template>
+                                                    </grid>
+                                                </tabpanel>
+                                            </tabpanels>
+                                        </tabbox>
+                                    </center>
+                                    <east id="eastRS"
+                                          title="East (selected log name)"
+                                          width="310px" splittable="true" collapsible="true">
+                                        <div vflex="1" hflex="1" style=" overflow-y:auto;">
+                                            <listbox style=" border: 0px; " >
+                                                <listhead>
+                                                    <listheader  align="left" width="220px" />
+                                                    <listheader align="right"/>
+                                                </listhead>
+                                                <listitem>
+                                                    <listcell label="Resources" sclass="logData"/>
+                                                    <listcell  id="lcRSRes" label="......" sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Minial frequency" sclass="logData" />
+                                                    <listcell id="lcRSMiniFreq"  sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Median frequency"  sclass="logData"/>
+                                                    <listcell id="lcRSMediFreq" sclass="logData" />
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Mean frequency"  sclass="logData"/>
+                                                    <listcell id="lcRSMeanFreq"  sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Maximal frequency"  sclass="logData"/>
+                                                    <listcell id="lcRSMaxiFreq"  sclass="logData"/>
+                                                </listitem>
+                                                <listitem>
+                                                    <listcell label="Frequency std. deviation" sclass="logData" />
+                                                    <listcell id="lcRSFSD"  sclass="logData"/>
+                                                </listitem>
+                                            </listbox>
+                                        </div>
+                                    </east>
+                                </borderlayout>
+                            </tabpanel>
+                        </tabpanels>
+                    </tabbox>
+
+                </div>
+            </center>
+        </borderlayout>
+    </window>
+</zk>
