@@ -206,6 +206,8 @@ public class ProcessDiscovererController extends BaseController {
     
     private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
     
+    private boolean displayFirstTime = true;
+    
     private int selectedLayout = 0; //0: hierarchical, 1: dagre_LR, 2: dagre_TB, 3: breadth-first
     
     private CanoniserService canoniserService;
@@ -1699,7 +1701,7 @@ public class ProcessDiscovererController extends BaseController {
     	int retainZoomPan = 1;
     	if ((isShowingBPMN && !gateways.isChecked()) || 
     			(!isShowingBPMN && gateways.isChecked()) || 
-    			selectorChanged) {
+    			selectorChanged || displayFirstTime) {
     		retainZoomPan = 0;
         }
     	
@@ -1708,6 +1710,7 @@ public class ProcessDiscovererController extends BaseController {
     	
         isShowingBPMN = gateways.isChecked();
         selectorChanged = false;
+        displayFirstTime = false;
     }
     
     private void displayTrace(JSONArray jsonDiagram) {
