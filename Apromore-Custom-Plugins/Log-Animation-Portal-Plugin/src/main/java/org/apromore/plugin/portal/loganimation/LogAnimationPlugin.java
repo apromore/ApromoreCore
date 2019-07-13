@@ -171,6 +171,15 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
     }
     
     @Override
+    /**
+     * The log will be replayed on the process model represented by bpmn param.
+     * However, the model displayed in the animation is different from the replayed model
+     * For example: if it's a graph, all XOR gateways should be removed to show it as a graph
+     * Therefore,  BPMNUpdater is used to create an updated BPMN based on the original bpmn
+     * But then it requires the replay result to be also updated to make it relevant for 
+     * the displayed BPMN only because it is created for the original BPMN. That's why 
+     * AnimationUpdater is used to create an updated animation data from the created animation data
+     */
     public void execute(PortalContext portalContext, String bpmn, String layout, XLog eventlog, boolean maintain_gateways) {
         try {
             List<LogAnimationService.Log> logs = new ArrayList<>();
@@ -197,7 +206,9 @@ public class LogAnimationPlugin extends DefaultPortalPlugin implements LogAnimat
             Set<RequestParameterType<?>> requestParameterTypes = new HashSet<>();
             SignavioSession session = new SignavioSession(editSession, null, null, processSummaryType, versionSummaryType, null, null, requestParameterTypes);
 
-            String updatedBPMN = escapeQuotedJavascript(bpmn);
+            //Bruce: Do not escape here because it will make the name containing quotes in BPMN different from the name in layout  
+            //String updatedBPMN = escapeQuotedJavascript(bpmn);
+            String updatedBPMN = bpmn;
 
             BPMNUpdater bpmnUpdater = new BPMNUpdater();
             updatedBPMN = bpmnUpdater.getUpdatedBPMN(updatedBPMN, layout, !maintain_gateways);

@@ -129,7 +129,7 @@ public class LayoutGenerator {
             double y_shift = (Double.parseDouble(height) * scaling / 2);
             String key = (elementName.isEmpty()) ? elementId : elementName;
             elementLayoutMap.put(key, new ElementLayout(
-                    elementName,
+            		elementName,
                     elementId,
                     Double.parseDouble(width) * scaling,
                     Double.parseDouble(height) * scaling,
