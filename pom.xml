@@ -111,7 +111,7 @@
 
         <!-- ZK Osgi -->
         <module>Apromore-OSGI-Bundles/zk-osgi</module>
-        <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>  <!-- Uncomment if you have credentials for the ZK EE repository -->
+        <!--<module>Apromore-OSGI-Bundles/zkcharts-osgi</module>-->  <!-- Uncomment if you have credentials for the ZK EE repository -->
 
         <!-- Similarity Search -->
         <module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
