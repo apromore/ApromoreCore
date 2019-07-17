@@ -1590,11 +1590,6 @@
             <name>ZK CE Repository</name>
             <url>http://mavensync.zkoss.org/maven2</url>
         </repository>
-        <repository>
-            <id>source tree</id>
-            <name>Apromore source code embedded Maven repository</name>
-            <url>file://repository</url>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>

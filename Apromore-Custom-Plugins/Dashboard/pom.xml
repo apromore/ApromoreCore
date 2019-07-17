@@ -28,13 +28,13 @@
 	</licenses>
 	<repositories>
 		<repository>
-			<id>ZK EE</id>
-			<url>https://maven.zkoss.org/repo/zk/ee</url>
+			<id>ApromoreDev.mvn-repo</id>
+			<name>Maven repository for JARs specific to the Apromore project</name>
+			<url>https://raw.github.com/apromore/ApromoreDev/master/mvn-repo/</url>
 		</repository>
 		<repository>
-			<id>source tree</id>
-			<name>Apromore source code embedded Maven repository</name>
-			<url>file://../../repository</url>
+			<id>ZK EE</id>
+			<url>https://maven.zkoss.org/repo/zk/ee</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
