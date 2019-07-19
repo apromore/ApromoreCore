@@ -57,11 +57,12 @@
             overflow: auto;
             zoom: 1;
             width: 100%;
-            height: 80%;
+            height: 95%;
             }
-            .relavePos{
+            .relativePos{
             position:relative;
             width: 100%;
+            height: 57px;
             }
 
             tr.z-row td.z-row-inner, tr.z-row .z-cell {
@@ -70,33 +71,20 @@
             }
         </style>
 
-        <groupbox>
-            <!--<label value="CSV File (.csv)" width="100%"/>-->
-            <hbox align="center">
-                <!--<button id="uploadButton" label="Import File (To be removed)" upload="true,maxsize=-1,multiple=false,native"/>-->
-                <button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true"></button>
-                <!--<button id="toXESButton" label="Convert To XES"/>-->
-                <separator />
-                <!--<button id="topCancelButton" label=" " image="img/cancel2.png"></button>-->
-            </hbox>
-            <hbox align="right">
-                <label id="fileNameLabel" width="100%" />
-            </hbox>
-        </groupbox>
-
-        <!--<groupbox zclass="z-groupbox-content">-->
-
-        <!--<space bar="false"/>-->
         <div id="gridBox" zclass="myGroupBox">
-            <div id="popUPBox" sclass="relavePos"></div>
+            <button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true" style="position:absolute;"></button>
+            <separator />
+            <div id="popUPBox" zclass="relativePos"></div>
             <div id="attrBox"></div>
-            <grid id="myGrid" mold="paging" pageSize="15" height="80%" hflex="min" sclass="z-row-content" />
+            <grid id="myGrid" mold="paging" hflex="min" vflex="min" />
         </div>
+
+        <!--<groupbox>-->
+            <!--<hbox align="center">-->
+                <!--<button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true"></button>-->
+                <!--<separator />-->
+            <!--</hbox>-->
         <!--</groupbox>-->
-        <!--<div align="center">-->
-        <!--<button id="toXESButton" label="Convert To XES" image="img/ok.png" disabled="true"></button>-->
-        <!--<button id="cancelButton" label="Cancel" image="img/cancel2.png"></button>-->
-        <!--</div>-->
-        <!--</vbox>-->
+
     </window>
 </zk>
