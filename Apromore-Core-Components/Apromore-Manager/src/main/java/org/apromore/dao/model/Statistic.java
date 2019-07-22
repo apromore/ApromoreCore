@@ -10,8 +10,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "statistic",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"count"}),
-                @UniqueConstraint(columnNames = {"id"})
+                @UniqueConstraint(columnNames = {"count"})
         }
 )
 @Configurable("statistic")
@@ -34,7 +33,7 @@ public class Statistic implements Serializable {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "count", unique = true, nullable = false)
     public Long getCount() {
         return count;
@@ -43,8 +42,7 @@ public class Statistic implements Serializable {
         this.count = count;
     }
 
-
-    @Column(name = "id", unique = true, nullable = false, length = 16)
+    @Column(name = "id", nullable = false, length = 16)
     public byte[] getId() {
         return this.id;
     }

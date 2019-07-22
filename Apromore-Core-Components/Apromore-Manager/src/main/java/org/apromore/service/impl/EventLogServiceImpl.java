@@ -52,6 +52,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -216,13 +219,22 @@ public class EventLogServiceImpl implements EventLogService {
         return attributeMap;
     }
 
+    // just for test, delete when finish
+    private static EntityManagerFactory emf = null;
+    public EntityManagerFactory getEntityManagerFactory() {
+        if (emf == null) {
+            emf = Persistence.createEntityManagerFactory("Apromore");
+        }
+        return emf;
+    }
+
     @Override
     public void storeStats(Map<String, Map<String, Integer>> map, Integer logId) {
 
         List<Statistic> stats = getStats(logId);
         if (null == stats || stats.size() == 0) {
 
-            statisticRepository.save(flattenNestedMap(map, logId));
+            statisticRepository.storeAllStats(flattenNestedMap(map, logId));
             LOGGER.debug("Stored statistics of Log: " + logId);
         }
         LOGGER.debug("statistics already exist in Log: " + logId);
