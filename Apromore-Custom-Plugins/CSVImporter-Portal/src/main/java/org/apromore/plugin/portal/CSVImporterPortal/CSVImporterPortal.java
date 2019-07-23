@@ -230,10 +230,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) )  + "px; position: absolute; z-index: 10; visibility: hidden; top:-9px;");
+            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) )  + "px; position: absolute; z-index: 10; visibility: hidden; top:0px;");
 
             Button sp = new Button();
-            sp.setLabel("Hide");
+//            sp.setLabel("-");
+            sp.setIconSclass("z-icon-compress");
+            sp.setZclass("min-height: 16px;");
             A hidelink = new A();
             hidelink.appendChild(sp);
             sp.addEventListener("onClick", (Event event) -> {

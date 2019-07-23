@@ -17,9 +17,10 @@
   ~ License along with this program.
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
-<zk>
+<?style src="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"?>
 
-    <window closable="true" height="min" width="min" position="center" title="CSV Importer">
+<zk>
+    <window closable="true" height="min" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px">
         <!--<vbox>-->
         <style>
             .greenLabel {
@@ -53,7 +54,7 @@
             height: inherit;
             border: 1px solid #cfcfcf;
             border-top: 0;
-            padding: 2px;
+            padding: 0px;
             overflow: auto;
             zoom: 1;
             width: 100%;
@@ -62,29 +63,44 @@
             .relativePos{
             position:relative;
             width: 100%;
-            height: 57px;
             }
-
+            .banner{
+            position:absolute;
+            width: 100%;
+            height: 61px;
+            background-image: url("https://apromore.org/wp-content/uploads/2019/07/back5.png");
+            background-size: 150% 100%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            }
             tr.z-row td.z-row-inner, tr.z-row .z-cell {
             <!--line-height: 25px;-->
             padding-left: 10px;
             }
+
+            .z-window-content {
+            border: 1px solid #cfcfcf;
+            margin: 0;
+            padding: 0px 0px 0px 4px;
+            background: #fff;
+            overflow: hidden;
+            zoom: 1;
+            }
         </style>
 
         <div id="gridBox" zclass="myGroupBox">
-            <button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true" style="position:absolute;"></button>
-            <separator />
             <div id="popUPBox" zclass="relativePos"></div>
-            <div id="attrBox"></div>
+            <div zclass="banner" />
+            <div id="attrBox" style="padding-top: 60px;"></div>
             <grid id="myGrid" mold="paging" hflex="min" vflex="min" />
         </div>
 
-        <!--<groupbox>-->
-            <!--<hbox align="center">-->
-                <!--<button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true"></button>-->
-                <!--<separator />-->
-            <!--</hbox>-->
-        <!--</groupbox>-->
+        <groupbox>
+            <hbox align="center">
+                <button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true"> </button>
+                <separator />
+            </hbox>
+        </groupbox>
 
     </window>
 </zk>
