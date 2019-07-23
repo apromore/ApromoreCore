@@ -207,7 +207,7 @@ public class EventLogServiceImplTest {
         assert em != null;
         em.getTransaction().begin();
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 285804; i++) {
 
             Statistic fe = new Statistic();
             fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
