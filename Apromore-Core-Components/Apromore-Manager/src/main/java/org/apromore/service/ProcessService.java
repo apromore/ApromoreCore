@@ -114,6 +114,8 @@ public interface ProcessService {
     void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username,
         final Version preVersion, final Version newVersion, final String ranking, final boolean isPublic) throws UpdateProcessException;
 
+    boolean isPublicProcess(Integer processId);
+
     /**
      * Add a new ProcessModelVersion record into the DB.
      * @param branch the process branch

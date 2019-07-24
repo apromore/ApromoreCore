@@ -425,8 +425,7 @@ CREATE TABLE process
    nativeTypeId int,
    folderId int,
    ranking varchar(10),
-   createDate varchar(40),
-   public_model bit DEFAULT 0 NOT NULL
+   createDate varchar(40)
 )
 ;
 CREATE TABLE log (
@@ -434,7 +433,6 @@ CREATE TABLE log (
   folderId int DEFAULT NULL,
   name varchar(255) NOT NULL,
   file_path varchar(255) NOT NULL,
-  public_log bit DEFAULT 0 NOT NULL,
   domain varchar(255),
   ranking varchar(10),
   createDate varchar(40),

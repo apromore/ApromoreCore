@@ -83,4 +83,12 @@ public interface ProcessRepository extends JpaRepository<Process, Integer>, Proc
            "User u JOIN u.groups g2 " +
            "WHERE (f.id = ?1) AND (u.rowGuid = ?2) AND (g1 = g2) ORDER BY p.id")
     Page<Process> findAllProcessesInFolderForUser(Integer folderId, String userRowGuid, Pageable pageable);
+
+    /**
+     * Returns a Process
+     * @param processId the id of the process
+     * @return the process
+     */
+    @Query("SELECT DISTINCT p FROM Process p WHERE p.id = ?1")
+    Process findUniqueByID(Integer processId);
 }

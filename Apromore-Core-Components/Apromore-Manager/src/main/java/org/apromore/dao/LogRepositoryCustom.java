@@ -53,7 +53,7 @@ public interface LogRepositoryCustom {
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
 
-    String storeProcessLog(final Integer folderId, String logName, XLog log, Integer userID, String domain, String created, boolean publicModel);
+    String storeProcessLog(final Integer folderId, String logName, XLog log, Integer userID, String domain, String created);
 
     void deleteProcessLog(Log log);
 

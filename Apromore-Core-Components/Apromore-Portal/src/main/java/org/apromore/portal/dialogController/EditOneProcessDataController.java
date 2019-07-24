@@ -27,6 +27,8 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.service.ProcessService;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -201,7 +203,10 @@ public class EditOneProcessDataController extends BaseController {
         this.versionNumberT.setValue(this.preVersion.getVersionNumber());
         this.domainCB.setValue(this.process.getDomain());
         this.ownerCB.setValue(UserSessionManager.getCurrentUser().getUsername());
-        this.makePublicCb.setChecked(this.process.isMakePublic());
+
+        ProcessService processService = (ProcessService) SpringUtil.getBean("processService");
+        this.makePublicCb.setChecked(processService.isPublicProcess(this.process.getId()));
+
         if (this.preVersion.getRanking() != null) {
             r0.setChecked("0".compareTo(this.preVersion.getRanking()) == 0);
             r1.setChecked("1".compareTo(this.preVersion.getRanking()) == 0);

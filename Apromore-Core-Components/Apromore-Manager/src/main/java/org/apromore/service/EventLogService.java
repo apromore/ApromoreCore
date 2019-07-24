@@ -76,6 +76,8 @@ public interface EventLogService {
 
     void updateLogMetaData(Integer logId, String logName, boolean isPublic);
 
+    boolean isPublicLog(Integer logId);
+
     /**
      * Get XLog and append statistics as log level metadata
      * @param logId

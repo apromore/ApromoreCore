@@ -102,14 +102,13 @@ public class EventLogServiceImpl implements EventLogService {
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog, String extension, String domain, String created, boolean publicModel) throws Exception {
         User user = userSrv.findUserByLogin(username);
 
-        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(new XFactoryNaiveImpl(), inputStreamLog, extension), user.getId(), domain, created, publicModel);
+        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(new XFactoryNaiveImpl(), inputStreamLog, extension), user.getId(), domain, created);
         Log log = new Log();
         log.setFolder(folderRepo.findUniqueByID(folderId));
         log.setDomain(domain);
         log.setCreateDate(created);
         log.setFilePath(path);
         log.setName(logName);
-        log.setPublicLog(publicModel);
         log.setRanking("");
         log.setUser(user);
 
@@ -141,8 +140,45 @@ public class EventLogServiceImpl implements EventLogService {
     public void updateLogMetaData(Integer logId, String logName, boolean isPublic) {
         Log log = logRepo.findUniqueByID(logId);
         log.setName(logName);
-        log.setPublicLog(isPublic);
+
+        Set<GroupLog> groupLogs = log.getGroupLogs();
+        Set<GroupLog> publicGroupLogs = filterPublicGroupLogs(groupLogs);
+
+        if (publicGroupLogs.isEmpty() && isPublic) {
+            groupLogs.add(new GroupLog(groupRepo.findPublicGroup(), log, true, true, false));
+            log.setGroupLogs(groupLogs);
+
+        } else if (!publicGroupLogs.isEmpty() && !isPublic) {
+            groupLogs.removeAll(publicGroupLogs);
+            log.setGroupLogs(groupLogs);
+        }
+
         logRepo.saveAndFlush(log);
+    }
+
+    @Override
+    public boolean isPublicLog(Integer logId) {
+        return !filterPublicGroupLogs(logRepo.findUniqueByID(logId).getGroupLogs()).isEmpty();
+    }
+
+    private Set<GroupLog> filterPublicGroupLogs(Set<GroupLog> groupLogs) {
+        Group publicGroup = groupRepo.findPublicGroup();
+        if (publicGroup == null) {
+            LOGGER.warn("No public group present in repository");
+            return Collections.emptySet();
+        }
+
+        Set<GroupLog> publicGroupLogs = new HashSet<>(); /* groupLogs
+                .stream()
+                .filter(groupLog -> publicGroup.equals(groupLog.getGroup()))
+                .collect(Collectors.toSet());*/
+        for (GroupLog groupLog: groupLogs) {
+            if (publicGroup.equals(groupLog.getGroup())) {
+                publicGroupLogs.add(groupLog);
+            }
+        }
+
+        return publicGroupLogs;
     }
 
     @Override
