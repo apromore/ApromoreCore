@@ -73,6 +73,7 @@
                 <prop key="eclipselink.jdbc.batch-writing.size">10000</prop>
                 <!--  Optimization #2 - statement caching -->
                 <prop key="eclipselink.jdbc.cache-statements">true</prop>
+                <prop key="eclipselink.jdbc.cache-statements.size">100</prop>
 
                 <!--<prop key="eclipselink.profiler">PerformanceProfiler</prop>-->
                 <!--<prop key="eclipselink.profiler">QueryMonitor</prop>-->

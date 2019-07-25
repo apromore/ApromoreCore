@@ -125,15 +125,6 @@ public class Log implements Serializable {
         this.ranking = newRanking;
     }
 
-    @Column(name = "public_log")
-    public boolean getPublicLog() {
-        return this.publicLog;
-    }
-
-    public void setPublicLog(final boolean newPublicLog) {
-        this.publicLog = newPublicLog;
-    }
-
     @Column(name = "createDate")
     public String getCreateDate() {
         return this.createDate;

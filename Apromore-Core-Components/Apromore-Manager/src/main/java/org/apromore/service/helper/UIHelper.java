@@ -265,7 +265,6 @@ public class UIHelper implements UserInterfaceHelper {
         processSummary.setName(process.getName());
         processSummary.setDomain(process.getDomain());
         processSummary.setRanking(process.getRanking());
-        processSummary.setMakePublic(process.getPublicModel());
 
         ProcessModelVersion latestVersion = pmvRepository.getLatestProcessModelVersion(process.getId(), "MAIN");
         if (latestVersion != null) {
@@ -302,7 +301,6 @@ public class UIHelper implements UserInterfaceHelper {
         logSummaryType.setName(log.getName());
         logSummaryType.setDomain(log.getDomain());
         logSummaryType.setRanking(log.getRanking());
-        logSummaryType.setMakePublic(log.getPublicLog());
 
 //        ProcessModelVersion latestVersion = pmvRepository.getLatestProcessModelVersion(log.getId(), "MAIN");
 //        if (latestVersion != null) {
@@ -340,7 +338,6 @@ public class UIHelper implements UserInterfaceHelper {
         processSummary.setName(process.getName());
         processSummary.setDomain(process.getDomain());
         processSummary.setRanking(process.getRanking());
-        processSummary.setMakePublic(process.getPublicModel());
         if (process.getNativeType() != null) {
             processSummary.setOriginalNativeType(process.getNativeType().getNatType());
         }

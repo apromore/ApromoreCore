@@ -106,6 +106,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -436,29 +437,40 @@ public class ProcessServiceImpl implements ProcessService {
         LOGGER.debug("Executing operation update process meta data.");
 
         try {
-            boolean updatePublicSecurity = false;
-
             ProcessModelVersion processModelVersion = processModelVersionRepo.getCurrentProcessModelVersion(processId, preVersion.toString());
             ProcessBranch branch = processModelVersion.getProcessBranch();
             Process process = processRepo.findOne(processId);
-
-            if (process.getPublicModel() != isPublic) {
-                updatePublicSecurity = true;
-            }
 
             process.setDomain(domain);
             process.setName(processName);
             process.setRanking(ranking);
             process.setUser(userSrv.findUserByLogin(username));
-            process.setPublicModel(isPublic);
             processModelVersion.setVersionNumber(newVersion.toString());
 
-            updateNative(processModelVersion.getNativeDocument(), processName, username, newVersion);
-            if (updatePublicSecurity) {
-                if (isPublic) {
-                    workspaceSrv.createPublicStatusForUsers(process);
-                } else {
-                    workspaceSrv.removePublicStatusForUsers(process);
+            Group publicGroup = groupRepo.findPublicGroup();
+            if (publicGroup == null) {
+                LOGGER.warn("No public group present in repository");
+
+            } else {
+                Set<GroupProcess> groupProcesses = process.getGroupProcesses();
+                Set<GroupProcess> publicGroupProcesses = filterPublicGroupProcesses(groupProcesses);
+
+                if (publicGroupProcesses.isEmpty() && isPublic) {
+                    groupProcesses.add(new GroupProcess(process, publicGroup, true, true, false));
+                    process.setGroupProcesses(groupProcesses);
+
+                } else if (!publicGroupProcesses.isEmpty() && !isPublic) {
+                    groupProcesses.removeAll(publicGroupProcesses);
+                    process.setGroupProcesses(groupProcesses);
+                }
+
+                updateNative(processModelVersion.getNativeDocument(), processName, username, newVersion);
+                if (isPublic != !publicGroupProcesses.isEmpty()) {
+                    if (isPublic) {
+                        workspaceSrv.createPublicStatusForUsers(process);
+                    } else {
+                        workspaceSrv.removePublicStatusForUsers(process);
+                    }
                 }
             }
 
@@ -468,6 +480,31 @@ public class ProcessServiceImpl implements ProcessService {
         } catch (Exception e) {
             throw new UpdateProcessException(e.getMessage(), e.getCause());
         }
+    }
+
+    @Override
+    public boolean isPublicProcess(Integer processId) {
+        return !filterPublicGroupProcesses(processRepo.findUniqueByID(processId).getGroupProcesses()).isEmpty();
+    }
+
+    private Set<GroupProcess> filterPublicGroupProcesses(Set<GroupProcess> groupProcesses) {
+        Group publicGroup = groupRepo.findPublicGroup();
+        if (publicGroup == null) {
+            LOGGER.warn("No public group present in repository");
+            return Collections.emptySet();
+        }
+
+        Set<GroupProcess> publicGroupProcesses = new HashSet<>(); /* groupProcesses
+                .stream()
+                .filter(groupProcess -> publicGroup.equals(groupProcess.getGroup()))
+                .collect(Collectors.toSet());*/
+        for (GroupProcess groupProcess: groupProcesses) {
+            if (publicGroup.equals(groupProcess.getGroup())) {
+                publicGroupProcesses.add(groupProcess);
+            }
+        }
+
+        return publicGroupProcesses;
     }
 
 
@@ -956,7 +993,6 @@ public class ProcessServiceImpl implements ProcessService {
             process.setDomain(domain);
             process.setNativeType(nativeType);
             process.setCreateDate(created);
-            process.setPublicModel(publicModel);
             if (folderId != null) {
                 process.setFolder(workspaceSrv.getFolder(folderId));
             }
@@ -965,18 +1001,6 @@ public class ProcessServiceImpl implements ProcessService {
 
             // Add the user's personal group
             groupProcesses.add(new GroupProcess(process, user.getGroup(), true, true, true));
-
-            /*
-            if (publicModel) {
-                Group publicGroup = groupRepo.findPublicGroup();
-                if (publicGroup == null) {
-                    LOGGER.warn("No public group present in repository");
-                } else {
-                    groupProcesses.add(new GroupProcess(process, publicGroup, true, true, false));
-                }
-            }
-            */
-
             process.setGroupProcesses(groupProcesses);
 
             process = processRepo.save(process);

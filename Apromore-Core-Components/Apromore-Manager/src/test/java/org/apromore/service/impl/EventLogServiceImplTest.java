@@ -125,9 +125,9 @@ public class EventLogServiceImplTest {
         XLog expectResult = eventLogService.getXLogWithStats(logId);
         verify(statisticRepository, logRepository);
 
-        XAttribute statsAttribute = expectResult.getAttributes().get("statistics");
+        XAttribute statsAttribute = expectResult.getAttributes().get("apromore:filter");
 
-        assertThat(statsAttribute, equalTo(new XAttributeLiteralImpl("statistics", "")));
+        assertThat(statsAttribute, equalTo(new XAttributeLiteralImpl("apromore:filter", "")));
         assertThat(statsAttribute.getAttributes().size(), equalTo(1));
         assertThat(statsAttribute.getAttributes().get("key"), equalTo(new XAttributeLiteralImpl("key", "")));
         assertThat(statsAttribute.getAttributes().get("key").getAttributes().get("key"), equalTo(new XAttributeDiscreteImpl("key", 01)));
@@ -207,7 +207,7 @@ public class EventLogServiceImplTest {
         assert em != null;
         em.getTransaction().begin();
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 285804; i++) {
 
             Statistic fe = new Statistic();
             fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));

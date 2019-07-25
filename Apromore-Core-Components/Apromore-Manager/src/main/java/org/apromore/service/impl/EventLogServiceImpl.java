@@ -73,6 +73,9 @@ public class EventLogServiceImpl implements EventLogService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImpl.class);
 
+    private static final Integer PROCESS_DISCOVERER = 0;
+    private static final Integer DASHBOARD = 1;
+
     private LogRepository logRepo;
     private GroupRepository groupRepo;
     private FolderRepository folderRepo;
@@ -105,14 +108,13 @@ public class EventLogServiceImpl implements EventLogService {
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog, String extension, String domain, String created, boolean publicModel) throws Exception {
         User user = userSrv.findUserByLogin(username);
 
-        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(new XFactoryNaiveImpl(), inputStreamLog, extension), user.getId(), domain, created, publicModel);
+        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(new XFactoryNaiveImpl(), inputStreamLog, extension), user.getId(), domain, created);
         Log log = new Log();
         log.setFolder(folderRepo.findUniqueByID(folderId));
         log.setDomain(domain);
         log.setCreateDate(created);
         log.setFilePath(path);
         log.setName(logName);
-        log.setPublicLog(publicModel);
         log.setRanking("");
         log.setUser(user);
 
@@ -144,8 +146,45 @@ public class EventLogServiceImpl implements EventLogService {
     public void updateLogMetaData(Integer logId, String logName, boolean isPublic) {
         Log log = logRepo.findUniqueByID(logId);
         log.setName(logName);
-        log.setPublicLog(isPublic);
+
+        Set<GroupLog> groupLogs = log.getGroupLogs();
+        Set<GroupLog> publicGroupLogs = filterPublicGroupLogs(groupLogs);
+
+        if (publicGroupLogs.isEmpty() && isPublic) {
+            groupLogs.add(new GroupLog(groupRepo.findPublicGroup(), log, true, true, false));
+            log.setGroupLogs(groupLogs);
+
+        } else if (!publicGroupLogs.isEmpty() && !isPublic) {
+            groupLogs.removeAll(publicGroupLogs);
+            log.setGroupLogs(groupLogs);
+        }
+
         logRepo.saveAndFlush(log);
+    }
+
+    @Override
+    public boolean isPublicLog(Integer logId) {
+        return !filterPublicGroupLogs(logRepo.findUniqueByID(logId).getGroupLogs()).isEmpty();
+    }
+
+    private Set<GroupLog> filterPublicGroupLogs(Set<GroupLog> groupLogs) {
+        Group publicGroup = groupRepo.findPublicGroup();
+        if (publicGroup == null) {
+            LOGGER.warn("No public group present in repository");
+            return Collections.emptySet();
+        }
+
+        Set<GroupLog> publicGroupLogs = new HashSet<>(); /* groupLogs
+                .stream()
+                .filter(groupLog -> publicGroup.equals(groupLog.getGroup()))
+                .collect(Collectors.toSet());*/
+        for (GroupLog groupLog: groupLogs) {
+            if (publicGroup.equals(groupLog.getGroup())) {
+                publicGroupLogs.add(groupLog);
+            }
+        }
+
+        return publicGroupLogs;
     }
 
     @Override
@@ -176,17 +215,17 @@ public class EventLogServiceImpl implements EventLogService {
         XAttribute parent;
 
         XLog log = getXLog(logId);
-        XAttribute containerAttribute = factory.createAttributeLiteral("statistics", "", null);
-        log.getAttributes().put("statistics", containerAttribute);
+        XAttribute containerAttribute = factory.createAttributeLiteral("apromore:filter", "", null);
+        log.getAttributes().put("apromore:filter", containerAttribute);
 
         List<Statistic> stats = getStats(logId);
 
         if (stats != null && !stats.isEmpty()) {
             for (Statistic stat : stats) {
                 if (Arrays.equals(stat.getPid(), "0".getBytes())) {
-                    parent = factory.createAttributeList(stat.getStat_key(), null);
+                    parent = factory.createAttributeLiteral(stat.getStat_key(), "", null);
                     parent.setAttributes(getChildNodes(stat.getId(), stats));
-                    log.getAttributes().get("statistics").getAttributes().put(stat.getStat_key(), parent);
+                    log.getAttributes().get("apromore:filter").getAttributes().put(stat.getStat_key(), parent);
                 }
             }
         }
@@ -199,6 +238,7 @@ public class EventLogServiceImpl implements EventLogService {
      * @return list of statistic entities
      */
     public List<Statistic> getStats(Integer logId) {
+        // if flag = pd, if flag = db
         return statisticRepository.findByLogid(logId);
     }
 
@@ -240,6 +280,18 @@ public class EventLogServiceImpl implements EventLogService {
         LOGGER.debug("statistics already exist in Log: " + logId);
     }
 
+    //storeDashboard()
+    public void storeDashboard(Map<String, Map<String, String>> map, Integer logId) {
+
+        List<Statistic> stats = getStats(logId);
+        if (null == stats || stats.size() == 0) {
+// preprocess map from PD
+//            statisticRepository.storeAllStats(flattenNestedMap(map, logId));
+            LOGGER.debug("Stored statistics of Log: " + logId);
+        }
+        LOGGER.debug("statistics already exist in Log: " + logId);
+    }
+
     /**
      * flatten nested map into list of entities
      * @param map nested map generated by Process Discover generateStatistic() method
@@ -266,7 +318,7 @@ public class EventLogServiceImpl implements EventLogService {
                 for (Map.Entry<String, Integer> entry : options_frequency.entrySet()) {
                     Statistic child = new Statistic();
                     if (entry.getKey() != null && entry.getValue() != null) {
-//                        child.setId(option.getKey().getBytes());
+                        // child.setId(option.getKey().getBytes());
                         child.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
                         child.setStat_key(entry.getKey());
                         child.setStat_value(entry.getValue().toString());

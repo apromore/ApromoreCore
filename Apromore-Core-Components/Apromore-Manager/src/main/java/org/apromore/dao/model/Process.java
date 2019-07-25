@@ -125,15 +125,6 @@ public class Process implements Serializable {
         this.ranking = newRanking;
     }
 
-    @Column(name = "public_model")
-    public boolean getPublicModel() {
-        return this.publicModel;
-    }
-
-    public void setPublicModel(final boolean newPublicModel) {
-        this.publicModel = newPublicModel;
-    }
-
     @Column(name = "createDate")
     public String getCreateDate() {
         return this.createDate;
