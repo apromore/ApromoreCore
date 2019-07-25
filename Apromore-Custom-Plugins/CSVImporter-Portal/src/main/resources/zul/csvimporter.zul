@@ -95,12 +95,12 @@
             <grid id="myGrid" mold="paging" hflex="min" vflex="min" />
         </div>
 
-        <groupbox>
+        <div style="padding: 5px 0 5px 45%">
             <hbox align="center">
-                <button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true"> </button>
+                <button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true" > </button>
                 <separator />
             </hbox>
-        </groupbox>
+        </div>
 
     </window>
 </zk>
