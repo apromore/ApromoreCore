@@ -8,14 +8,14 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "statistic",
+@Table(name = "dashboard",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"count"})
         }
 )
 @Configurable("statistic")
 @Cache(expiry = 180000, size = 5000, coordinationType = CacheCoordinationType.INVALIDATE_CHANGED_OBJECTS)
-public class Statistic implements Serializable {
+public class Dashboard implements Serializable {
 
     private Long count;
     private byte[] id;
@@ -27,7 +27,7 @@ public class Statistic implements Serializable {
     /**
      * Default constructor.
      */
-    public Statistic() {
+    public Dashboard() {
         super();
     }
 

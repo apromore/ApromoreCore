@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StatisticRepository extends JpaRepository<Statistic, Integer> {
+public interface StatisticRepository extends JpaRepository<Statistic, Integer>, StatisticRepositoryCustom {
 
     /**
      * Get statistics of specified LogId from DB

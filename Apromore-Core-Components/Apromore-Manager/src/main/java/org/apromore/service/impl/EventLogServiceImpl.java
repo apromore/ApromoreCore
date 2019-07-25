@@ -52,6 +52,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -69,6 +72,9 @@ import java.util.*;
 public class EventLogServiceImpl implements EventLogService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImpl.class);
+
+    private static final Integer PROCESS_DISCOVERER = 0;
+    private static final Integer DASHBOARD = 1;
 
     private LogRepository logRepo;
     private GroupRepository groupRepo;
@@ -209,17 +215,17 @@ public class EventLogServiceImpl implements EventLogService {
         XAttribute parent;
 
         XLog log = getXLog(logId);
-        XAttribute containerAttribute = factory.createAttributeLiteral("statistics", "", null);
-        log.getAttributes().put("statistics", containerAttribute);
+        XAttribute containerAttribute = factory.createAttributeLiteral("apromore:filter", "", null);
+        log.getAttributes().put("apromore:filter", containerAttribute);
 
         List<Statistic> stats = getStats(logId);
 
         if (stats != null && !stats.isEmpty()) {
             for (Statistic stat : stats) {
                 if (Arrays.equals(stat.getPid(), "0".getBytes())) {
-                    parent = factory.createAttributeList(stat.getStat_key(), null);
+                    parent = factory.createAttributeLiteral(stat.getStat_key(), "", null);
                     parent.setAttributes(getChildNodes(stat.getId(), stats));
-                    log.getAttributes().get("statistics").getAttributes().put(stat.getStat_key(), parent);
+                    log.getAttributes().get("apromore:filter").getAttributes().put(stat.getStat_key(), parent);
                 }
             }
         }
@@ -232,6 +238,7 @@ public class EventLogServiceImpl implements EventLogService {
      * @return list of statistic entities
      */
     public List<Statistic> getStats(Integer logId) {
+        // if flag = pd, if flag = db
         return statisticRepository.findByLogid(logId);
     }
 
@@ -252,13 +259,34 @@ public class EventLogServiceImpl implements EventLogService {
         return attributeMap;
     }
 
+    // just for test, delete when finish
+    private static EntityManagerFactory emf = null;
+    public EntityManagerFactory getEntityManagerFactory() {
+        if (emf == null) {
+            emf = Persistence.createEntityManagerFactory("Apromore");
+        }
+        return emf;
+    }
+
     @Override
     public void storeStats(Map<String, Map<String, Integer>> map, Integer logId) {
 
         List<Statistic> stats = getStats(logId);
         if (null == stats || stats.size() == 0) {
 
-            statisticRepository.save(flattenNestedMap(map, logId));
+            statisticRepository.storeAllStats(flattenNestedMap(map, logId));
+            LOGGER.debug("Stored statistics of Log: " + logId);
+        }
+        LOGGER.debug("statistics already exist in Log: " + logId);
+    }
+
+    //storeDashboard()
+    public void storeDashboard(Map<String, Map<String, String>> map, Integer logId) {
+
+        List<Statistic> stats = getStats(logId);
+        if (null == stats || stats.size() == 0) {
+// preprocess map from PD
+//            statisticRepository.storeAllStats(flattenNestedMap(map, logId));
             LOGGER.debug("Stored statistics of Log: " + logId);
         }
         LOGGER.debug("statistics already exist in Log: " + logId);
@@ -290,7 +318,7 @@ public class EventLogServiceImpl implements EventLogService {
                 for (Map.Entry<String, Integer> entry : options_frequency.entrySet()) {
                     Statistic child = new Statistic();
                     if (entry.getKey() != null && entry.getValue() != null) {
-//                        child.setId(option.getKey().getBytes());
+                        // child.setId(option.getKey().getBytes());
                         child.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
                         child.setStat_key(entry.getKey());
                         child.setStat_value(entry.getValue().toString());
