@@ -1,12 +1,18 @@
 package org.apromore.processdiscoverer.splitminer;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import javax.swing.UIManager;
+
 import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
+import org.processmining.contexts.uitopia.UIContext;
+import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
 
 import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.splitminer.dfgp.DFGEdge;
@@ -26,7 +32,7 @@ public class ProcessDiscovererDFGP extends DirectlyFollowGraphPlus {
 
 	public ProcessDiscovererDFGP(SimpleLog log, DFGAbstraction dfgAbs, double percentileFrequencyThreshold, double parallelismsThreshold,
 						boolean parallelismsFirst) throws Exception {
-		super(log, percentileFrequencyThreshold, parallelismsThreshold, DFGPUIResult.FilterType.WTH, parallelismsFirst);
+		super(log, percentileFrequencyThreshold, parallelismsThreshold, DFGPUIResult.FilterType.NOF, parallelismsFirst);
 		this.dfgAbs = dfgAbs;
 		this.buildDFGP(); // call this at the end
 	}
@@ -46,24 +52,33 @@ public class ProcessDiscovererDFGP extends DirectlyFollowGraphPlus {
         incomings = new HashMap<>();
         dfgp = new HashMap<>();
         
-//        DFGNode autogenStart = new DFGNode(events.get(startcode), startcode);
-//        this.addNode(autogenStart);
-//        autogenStart.increaseFrequency(log.size());
-//        DFGNode  autogenEnd = new DFGNode(events.get(endcode), endcode);
-//        this.addNode(autogenEnd);
+        // Bruce: debug only
+//        try {
+//	        UIContext context = new UIContext();
+//	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+//	        UIPluginContext uiPluginContext = context.getMainPluginContext();
+//	        BpmnExportPlugin exportPlugin = new BpmnExportPlugin();
+//	        exportPlugin.export(uiPluginContext, dfgAbs.getDiagram(), new File("bpmnDiagram_0.bpmn"));
+//        }
+//        catch (Exception ex) {
+//        	ex.printStackTrace();
+//        }
         
         Map<BPMNNode, DFGNode> nodeMap = new HashMap<>();
 		for (BPMNNode node: dfgAbs.getDiagram().getNodes()) {
 			DFGNode dfgNode = new DFGNode(node.getLabel(), log.getReverseMap().get(node.getLabel()));
-			dfgNode.increaseFrequency((int)dfgAbs.getNodePrimaryWeight(node));
+			dfgNode.increaseFrequency((int)Math.round(dfgAbs.getNodePrimaryWeight(node)));
             this.addNode(dfgNode);
             nodeMap.put(node, dfgNode);
 		}
 		
 		for (BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : dfgAbs.getDiagram().getEdges()) {
 			DFGEdge dfgEdge = new DFGEdge(nodeMap.get(edge.getSource()), nodeMap.get(edge.getTarget()));
-			dfgEdge.increaseFrequency((int)dfgAbs.getArcPrimaryWeight(edge));
+			dfgEdge.increaseFrequency((int)Math.round(dfgAbs.getArcPrimaryWeight(edge)));
             this.addEdge(dfgEdge);
+            if (dfgEdge.getFrequency() == 0) {
+            	System.out.println("Edge " + dfgEdge.getSourceCode() + "->" + dfgEdge.getTargetCode() + " has 0 weight.");
+            } 
 		}
 	}
 	

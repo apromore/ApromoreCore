@@ -61,7 +61,6 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
     private static final String GET_ALL_LOGS_JPA = "SELECT l FROM Log l ";
     private static final String GET_ALL_LOGS_FOLDER_JPA = "SELECT l FROM Log l JOIN l.folder f ";
-    private static final String GET_ALL_PUBLIC_JPA = "l.publicLog = true ";
     private static final String GET_ALL_FOLDER_JPA = "f.id = ";
     private static final String GET_ALL_SORT_JPA = " ORDER by l.id";
 
@@ -79,9 +78,6 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         strQry.append(GET_ALL_LOGS_JPA);
         if (conditions != null && !conditions.isEmpty()) {
             strQry.append(" WHERE ").append(conditions);
-            strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);
-        } else {
-            strQry.append(" WHERE ").append(GET_ALL_PUBLIC_JPA);
         }
         strQry.append(GET_ALL_SORT_JPA);
 
@@ -99,20 +95,11 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         boolean whereAdded = false;
         StringBuilder strQry = new StringBuilder(0);
         strQry.append(GET_ALL_LOGS_FOLDER_JPA);
+        strQry.append(" WHERE ");
         if (conditions != null && !conditions.isEmpty()) {
-            strQry.append(" WHERE ").append(conditions);
-            strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);
-            whereAdded = true;
-        }
-        else {
-           strQry.append(" WHERE ").append(GET_ALL_PUBLIC_JPA);
-        }
-//        if (whereAdded) {
+            strQry.append(conditions);
             strQry.append(" AND ");
-//        } else {
-//            strQry.append(" WHERE ");
-//        }
-
+        }
         strQry.append(GET_ALL_FOLDER_JPA).append(folderId);
         strQry.append(GET_ALL_SORT_JPA);
 
@@ -125,7 +112,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
      * {@inheritDoc}
      */
     @Override
-    public String storeProcessLog(final Integer folderId, final String logName, XLog log, final Integer userID, final String domain, final String created, final boolean publicModel) {
+    public String storeProcessLog(final Integer folderId, final String logName, XLog log, final Integer userID, final String domain, final String created) {
 
         LOGGER.error("Storing Log " + log.size() + " " + logName);
         if (log != null && logName != null) {

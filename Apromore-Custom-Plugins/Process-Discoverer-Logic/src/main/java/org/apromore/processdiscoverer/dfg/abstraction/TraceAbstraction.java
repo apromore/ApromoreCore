@@ -19,7 +19,7 @@ public class TraceAbstraction extends AbstractAbstraction {
 		this.traceDfg = traceDfg;
 		this.diagram = traceDfg.getDFG(params);
 		this.updateWeights(params);
-		this.layout = BPMNDiagramLayouter.layout(this.diagram);
+		this.layout = BPMNDiagramLayouter.layout(this.diagram, false);
 	}
 	
 	public TraceDFG getTraceDFG() {

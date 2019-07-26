@@ -29,7 +29,7 @@ public class DFGAbstraction extends AbstractAbstraction {
 		super(logDfg, params);
 		this.diagram = logDfg.getDFG(params);
 		this.updateWeights(params);
-		this.layout = BPMNDiagramLayouter.layout(this.diagram);
+		this.layout = BPMNDiagramLayouter.layout(this.diagram, false);
 	}
 	
 	// Create a DFGAbstraction based on an existing DFGAbstraction

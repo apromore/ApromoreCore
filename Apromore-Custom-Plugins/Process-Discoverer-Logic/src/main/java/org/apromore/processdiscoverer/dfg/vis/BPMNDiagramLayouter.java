@@ -3,40 +3,57 @@ package org.apromore.processdiscoverer.dfg.vis;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.jgraph.ProMJGraphVisualizer;
 import org.processmining.models.jgraph.visualization.ProMJGraphPanel;
+
+import com.jgraph.layout.JGraphFacade;
+import com.jgraph.layout.JGraphLayout;
+import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
+
 import org.processmining.models.jgraph.ProMGraphModel;
+import org.processmining.models.jgraph.ProMJGraph;
 import org.processmining.models.jgraph.elements.ProMGraphPort;
 import org.processmining.models.jgraph.elements.ProMGraphEdge;
 import org.processmining.contexts.uitopia.UIContext;
 import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.framework.plugin.PluginContext;
+
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+
+import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.jgraph.graph.AbstractCellView;
 import org.jgraph.graph.DefaultGraphCell;
+import org.processmining.models.connections.GraphLayoutConnection;
+import org.processmining.models.graphbased.AttributeMap;
+import org.processmining.models.graphbased.ViewSpecificAttributeMap;
+import org.processmining.models.graphbased.directed.DirectedGraph;
 import org.processmining.models.graphbased.directed.DirectedGraphNode;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.processmining.models.graphbased.directed.bpmn.elements.Event;
 import org.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
 import org.processmining.models.graphbased.directed.bpmn.elements.Swimlane;
 import org.processmining.models.jgraph.elements.ProMGraphCell;
 import org.processmining.models.jgraph.views.JGraphPortView;
 
 public class BPMNDiagramLayouter {
+	private static final int SEQUENCE_LENGTH = 3;
 	
-	public static Layout layout(BPMNDiagram diagram) {
+	public static Layout layout(BPMNDiagram diagram, boolean isBPMN) {
 		Layout layout = null;
 		
 		try {
-			UIContext context = new UIContext();
-	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-	        UIPluginContext uiPluginContext = context.getMainPluginContext();
-			ProMJGraphPanel graphPanel = ProMJGraphVisualizer.instance().visualizeGraph(uiPluginContext, diagram);
-			ProMGraphModel graphModel = graphPanel.getGraph().getModel();
+			//ProMJGraphPanel graphPanel = ProMJGraphVisualizer.instance().visualizeGraph(uiPluginContext, diagram);
+	        ProMJGraph graph = visualizeGraph(diagram);
+			ProMGraphModel graphModel = graph.getModel();
 	
 			layout = new Layout(diagram);
 			for (Object o : graphModel.getRoots()) {
@@ -57,9 +74,7 @@ public class BPMNDiagramLayouter {
 			}
 			
 			// Add (distance, weight) points for edges
-			// Btw, fix the special case of loop L2 (A-->B, B-->A) because JGraph
-			// creates sub-optimal waypoints
-			Set<BPMNEdge> checkedLoopEdges = new HashSet<>();
+			Set<BPMNEdge<? extends BPMNNode, ? extends BPMNNode>> checkedLoopEdges = new HashSet<>();
 			for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : diagram.getEdges()) {
 				if (checkedLoopEdges.contains(edge)) continue;
 				
@@ -70,47 +85,7 @@ public class BPMNDiagramLayouter {
 					//Fix loop L2 edges
 					BPMNEdge<? extends BPMNNode, ? extends BPMNNode> loopEdge = getLoopL2Edge(edge, diagram);
 					if (loopEdge != null) {
-						List<Point2D> loopdwPoints = getDistWeight(loopEdge, layout);
-						if (!loopdwPoints.isEmpty()) { 
-							double d1 = dwPoints.get(0).getX();
-							double w1 = dwPoints.get(0).getY();
-							//w1 = (w1 > 0) ? 0.5 : -0.5; // move to the middle of source to target
-							
-							double d2 = loopdwPoints.get(0).getX();
-							double w2 = loopdwPoints.get(0).getY();
-							//w2 = (w2 > 0) ? 0.5 : -0.5; // move to the middle of source to target
-							
-							// The edge closer to the line source to target would keep the same distance 
-	//						BPMNEdge<? extends BPMNNode, ? extends BPMNNode> unchangedDistanceEdge = Math.abs(d1) < Math.abs(d2) ? edge : loopEdge;
-	//						double unchangedDistance = unchangedDistanceEdge == edge ? d1 : d2;
-	//						double unchangedWeight = unchangedDistanceEdge == edge ? w1 : w2;
-							
-							// The edge further to the line source to target would be placed opposite the other edge over the line
-	//						BPMNEdge<? extends BPMNNode, ? extends BPMNNode> changedDistanceEdge = (unchangedDistanceEdge == edge) ? loopEdge : edge;
-	//						double changedDistance = (unchangedDistanceEdge == edge) ? d1 : d2;
-	//						double changedWeight = (unchangedDistanceEdge == edge) ? w2 : w1;
-							
-							// Adjust distance so that they are not too close
-	//						if (Math.abs(unchangedDistance) + Math.abs(unchangedDistance) < 10) {
-	//							unchangedDistance = (unchangedDistance < 0) ? unchangedDistance - 2 : unchangedDistance + 2;
-	//							changedDistance = (changedDistance < 0) ? changedDistance - 2 : changedDistance + 2;
-	//						}
-							
-							if (Math.abs(d1) - Math.abs(d2) < 20) {
-								if (Math.abs(d1) > Math.abs(d2)) {
-									d1 = (d1 < 0) ? d1 - 15 : d1 + 15;
-								}
-								else {
-									d2 = (d2 < 0) ? d2 - 15 : d2 + 15;
-								}
-							}
-	
-							layout.getLayoutElement(edge.getEdgeID().toString()).addDistanceWeightPoint(d1, w1);
-							layout.getLayoutElement(loopEdge.getEdgeID().toString()).addDistanceWeightPoint(d2, w2);
-							
-							fixedLoopL2 = true;
-						}
-						checkedLoopEdges.add(loopEdge);
+						fixedLoopL2 = fixLoopL2Edges(edge, loopEdge, layout);
 					}
 					
 					if (!fixedLoopL2) {
@@ -119,16 +94,220 @@ public class BPMNDiagramLayouter {
 							edgeLayout.addDistanceWeightPoint(p.getX(), p.getY());
 						}
 					}
+					else {
+						checkedLoopEdges.add(loopEdge);
+					}
 	
 				}
 				
 			}
+			
+			// Fix the horizontal alignment for sequence to be a straight line
+			if (isBPMN) {
+				fixHorizontalAlignment(layout);
+			}
+			
+			fixStartEndEvents(layout);
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		
 		return layout;
+	}
+	
+	private static JGraphLayout getLayout(int orientation) {
+		JGraphHierarchicalLayout layout = new JGraphHierarchicalLayout();
+		layout.setDeterministic(true);
+		layout.setCompactLayout(true);
+		layout.setFineTuning(true);
+		layout.setParallelEdgeSpacing(15);
+		layout.setFixRoots(true);
+		
+	
+		layout.setOrientation(orientation);
+
+		return layout;
+	}
+	
+	/**
+	 * Call to the JGraph layout engine to layout the input graph
+	 * It uses ProMJGraph as a bridge between ProM's graph library and 
+	 * JGraph library 
+	 * @param graph: the graph without the layout. This graph is ProM's graph model which can be
+	 * BPMNDiagram, PetriNet or any graphs.
+	 * @return: ProMGraph with layout updated
+	 */
+	public static ProMJGraph visualizeGraph(DirectedGraph<?, ?> graph) {       
+		ViewSpecificAttributeMap map = new ViewSpecificAttributeMap();
+		GraphLayoutConnection layoutConnection = new GraphLayoutConnection(graph);
+		ProMGraphModel model = new ProMGraphModel(graph);
+		/*
+		 * Make sure that only a single ProMJGraph is created at every time.
+		 * The underlying JGrpah code cannot handle creating multiple creations at the same time.
+		 */
+		ProMJGraph jgraph = new ProMJGraph(model, map, layoutConnection);
+
+		JGraphLayout layout = getLayout(map.get(graph, AttributeMap.PREF_ORIENTATION, SwingConstants.WEST));
+		JGraphFacade facade = new JGraphFacade(jgraph);
+		facade.setOrdered(false);
+		facade.setEdgePromotion(true);
+		facade.setIgnoresCellsInGroups(false);
+		facade.setIgnoresHiddenCells(false);
+		facade.setIgnoresUnconnectedCells(false);
+		facade.setDirected(true);
+		facade.resetControlPoints();
+		if (layout instanceof JGraphHierarchicalLayout) {
+			facade.run((JGraphHierarchicalLayout) layout, true);
+		} else {
+			facade.run(layout, true);
+		}
+
+		Map<?, ?> nested = facade.createNestedMap(true, true);
+		jgraph.getGraphLayoutCache().edit(nested);
+//			jgraph.repositionToOrigin();
+		layoutConnection.setLayedOut(true);
+		jgraph.setUpdateLayout(layout);
+
+		return jgraph;
+	}
+	
+	/**
+	 * Fix the special case of loop L2 (A-->B, B-->A) because JGraph creates unbalanced waypoints
+	 * @param e1
+	 * @param e2
+	 * @param layout
+	 * @return true: fixed, false: no fix
+	 */
+	private static boolean fixLoopL2Edges(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e1,
+										BPMNEdge<? extends BPMNNode, ? extends BPMNNode> e2,
+										Layout layout) {
+		List<Point2D> e1DwPoints = getDistWeight(e1, layout);
+		List<Point2D> e2DwPoints = getDistWeight(e2, layout);
+		if (!e2DwPoints.isEmpty()) { 
+			double d1 = e1DwPoints.get(0).getX();
+			double w1 = e1DwPoints.get(0).getY();
+			w1 = (w1 > 0) ? 0.5 : -0.5; // move to the middle of source to target
+			
+			double d2 = e2DwPoints.get(0).getX();
+			double w2 = e2DwPoints.get(0).getY();
+			w2 = (w2 > 0) ? 0.5 : -0.5; // move to the middle of source to target
+			
+			// The edge closer to the line source to target would keep the same distance 
+			BPMNEdge<? extends BPMNNode, ? extends BPMNNode> unchangedEdge = (Math.abs(d1) < Math.abs(d2)) ? e1 : e2;
+			double unchangedDistance = (unchangedEdge == e1) ? d1 : d2;
+			double unchangedWeight = (unchangedEdge == e1) ? w1 : w2;
+			
+			// The edge further to the line source to target would be placed opposite the other edge over the line
+			BPMNEdge<? extends BPMNNode, ? extends BPMNNode> changedEdge = (unchangedEdge == e1) ? e2 : e1;
+			double changedDistance = (unchangedEdge == e1) ? d1 : d2; //same as unchangedDistance as it is in reversed direction
+			double changedWeight = (unchangedEdge == e1) ? w2 : w1; 
+			
+			// Adjust distance so that the loop edges are not too narrow
+			if (Math.abs(changedDistance) + Math.abs(unchangedDistance) < 10) {
+				unchangedDistance = (unchangedDistance < 0) ? unchangedDistance - 5 : unchangedDistance + 5;
+				changedDistance = (changedDistance < 0) ? changedDistance - 5 : changedDistance + 5;
+			}
+			
+//					if (Math.abs(d1) - Math.abs(d2) < 20) {
+//						if (Math.abs(d1) > Math.abs(d2)) {
+//							d1 = (d1 < 0) ? d1 - 15 : d1 + 15;
+//						}
+//						else {
+//							d2 = (d2 < 0) ? d2 - 15 : d2 + 15;
+//						}
+//					}
+//					layout.getLayoutElement(edge.getEdgeID().toString()).addDistanceWeightPoint(d1, w1);
+//					layout.getLayoutElement(loopEdge.getEdgeID().toString()).addDistanceWeightPoint(d2, w2);
+			
+			layout.getLayoutElement(unchangedEdge.getEdgeID().toString()).addDistanceWeightPoint(unchangedDistance, unchangedWeight);
+			layout.getLayoutElement(changedEdge.getEdgeID().toString()).addDistanceWeightPoint(changedDistance, changedWeight);
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private static void fixHorizontalAlignment(Layout layout) {
+		BPMNDiagram d = layout.getDiagram();
+		Set<BPMNNode> visited = new HashSet<>();
+		
+		//----------------------------------------------
+		// Get all sequences
+		//----------------------------------------------
+		Set<List<BPMNNode>> sequences = new HashSet<>();
+		for (BPMNNode node : d.getNodes()) {
+			if (visited.contains(node)) continue;
+			
+			List<BPMNNode> sequence = new ArrayList<>();
+			
+			//Traverse backward from the node
+			BPMNNode n = node;
+			while (n != null && d.getInEdges(n).size() <= 1 && d.getOutEdges(n).size() <= 1) { //sequence
+				sequence.add(0, n);
+				n = d.getInEdges(n).isEmpty() ? null : d.getInEdges(n).iterator().next().getSource();
+			}
+			
+			//Traverse forward from the node
+			n = node;
+			while (n != null && d.getInEdges(n).size() <= 1 && d.getOutEdges(n).size() <= 1) { //sequence
+				if (!sequence.contains(n)) sequence.add(n); //avoid add the current node again
+				n = d.getOutEdges(n).isEmpty() ? null : d.getOutEdges(n).iterator().next().getTarget();
+			}
+			
+			if (sequence.size() >= 2) {
+				sequences.add(sequence);
+			}
+			
+			visited.add(node);
+			visited.addAll(sequence);
+		}
+		
+		//----------------------------------------------
+		// Fix coordinates for each sequence
+		// Align Y-axis of nodes in a sequence to the last node or the node after
+		//----------------------------------------------
+		for (List<BPMNNode> sequence : sequences) {
+			if (sequence.size() >= SEQUENCE_LENGTH) {
+				BPMNNode alignedNode = null;
+				BPMNNode lastNode = sequence.get(sequence.size()-1);
+				if (d.getOutEdges(lastNode).isEmpty()) {
+					alignedNode = lastNode;
+				}
+				else {
+					alignedNode = d.getOutEdges(lastNode).iterator().next().getTarget();
+				}
+				
+				double adjustedY = layout.getLayoutElement(alignedNode).getY();
+				for (int i=1; i<sequence.size(); i++) {
+					layout.getLayoutElement(sequence.get(i)).setY(adjustedY);
+				}
+			}
+		}
+	}
+	
+	private static void fixStartEndEvents(Layout layout) {
+		BPMNDiagram d = layout.getDiagram();
+		Event start=null, end=null;
+		for (Event node : d.getEvents()) {
+    		if (((Event) node).getEventType() == Event.EventType.START) {
+    			start = node;
+    		}
+    		else if (((Event) node).getEventType() == Event.EventType.END) {
+    			end = node;
+    		}
+		}
+		
+		if (d.getOutEdges(start).size() == 1) {
+			BPMNNode alignedNode = d.getOutEdges(start).iterator().next().getTarget();
+			layout.getLayoutElement(start).setY(layout.getLayoutElement(alignedNode).getY());
+		}
+		
+		if (d.getInEdges(end).size() == 1) {
+			BPMNNode alignedNode = d.getInEdges(end).iterator().next().getSource();
+			layout.getLayoutElement(end).setY(layout.getLayoutElement(alignedNode).getY());
+		}
 	}
 	
 	private static void getCellLayout(DefaultGraphCell graphCell, Layout layout) {
