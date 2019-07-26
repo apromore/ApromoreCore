@@ -42,14 +42,21 @@ import de.hpi.bpt.hypergraph.abs.Vertex;
 
 import org.deckfour.xes.classification.XEventClassifier;
 import org.deckfour.xes.model.XLog;
-
+import org.processmining.contexts.uitopia.UIContext;
+import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.models.graphbased.AttributeMap;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.*;
+import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
+import javax.swing.UIManager;
 
+import java.io.File;
 import java.util.*;
+
+import javax.swing.UIManager;
 
 /**
  * Created by Adriano on 24/10/2016.
@@ -192,6 +199,19 @@ public class SplitMiner {
 //        we retrieve the starting BPMN diagram from the DFGP,
 //        it is a DFGP with start and end events, but no gateways
         bpmnDiagram = dfgp.convertIntoBPMNDiagram();
+        
+        // Bruce: debug only
+//        try {
+//	        UIContext context = new UIContext();
+//	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+//	        UIPluginContext uiPluginContext = context.getMainPluginContext();
+//	        BpmnExportPlugin exportPlugin = new BpmnExportPlugin();
+//	        exportPlugin.export(uiPluginContext, bpmnDiagram, new File("bpmnDiagram_1.bpmn"));
+//        }
+//        catch (Exception ex) {
+//        	ex.printStackTrace();
+//        }
+        
         candidateJoins = new HashMap<>();
 
 //        firstly we generate the split gateways
@@ -283,6 +303,19 @@ public class SplitMiner {
         bondsEntries = new HashSet<>();
         rigidsEntries = new HashSet<>();
 //        System.out.println("SplitMiner - generating SESE joins ...");
+        
+        // Bruce: debug only
+//        try {
+//	        UIContext context = new UIContext();
+//	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+//	        UIPluginContext uiPluginContext = context.getMainPluginContext();
+//	        BpmnExportPlugin exportPlugin = new BpmnExportPlugin();
+//	        exportPlugin.export(uiPluginContext, bpmnDiagram, new File("bpmnDiagram_2.bpmn"));
+//        }
+//        catch (Exception ex) {
+//        	ex.printStackTrace();
+//        }
+        
         while( generateSESEjoins() );
 
 //        this second method adds the remaining joins, which were no entry neither exits of any RPST node
