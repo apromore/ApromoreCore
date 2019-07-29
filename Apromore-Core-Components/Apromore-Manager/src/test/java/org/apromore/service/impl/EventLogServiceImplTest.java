@@ -1,12 +1,15 @@
 package org.apromore.service.impl;
 
-import org.apromore.dao.*;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.StatisticRepository;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.util.UuidAdapter;
 import org.apromore.util.StatType;
+import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
@@ -23,6 +26,7 @@ import org.springframework.test.annotation.Rollback;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import java.util.*;
 
 import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
@@ -30,7 +34,6 @@ import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.powermock.api.easymock.PowerMock.*;
-import static org.powermock.api.easymock.PowerMock.verify;
 
 public class EventLogServiceImplTest {
 
@@ -213,11 +216,14 @@ public class EventLogServiceImplTest {
 
         em.persist(fe);
 //        Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param").setParameter("param", fe.getLogid());
-//        List<Statistic> stats = query.getResultList();
-//
-//        for (Statistic stat : stats) {
-//            LOGGER.info(stat.getStat_value());
-//        }
+        Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_value=:param2")
+                .setParameter("param1", 88)
+                .setParameter("param2", "value");
+        List<Statistic> stats = query.getResultList();
+
+        for (Statistic stat : stats) {
+            LOGGER.info(stat.getStat_value());
+        }
 
         em.flush();
         em.getTransaction().commit();

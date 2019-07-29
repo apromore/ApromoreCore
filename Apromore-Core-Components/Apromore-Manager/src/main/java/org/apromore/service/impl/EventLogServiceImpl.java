@@ -291,9 +291,13 @@ public class EventLogServiceImpl implements EventLogService {
      * @return
      */
     public Boolean isStatsExits(Integer logId, StatType statType) {
-        List<Statistic> stats = statisticRepository.findByLogid(logId);
-        return (null == stats || stats.size() == 0);
+        return statisticRepository.existsByLogidAndStatType(logId, statType);
     }
+
+//    public Boolean isStatsExits(Integer logId, StatType statType) {
+//        List<Statistic> stats = statisticRepository.findByLogid(logId);
+//        return (null == stats || stats.size() == 0);
+//    }
 
     // just for test, delete when finish
 //    private static EntityManagerFactory emf = null;

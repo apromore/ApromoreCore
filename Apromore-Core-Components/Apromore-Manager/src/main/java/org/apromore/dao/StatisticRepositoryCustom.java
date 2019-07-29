@@ -1,6 +1,7 @@
 package org.apromore.dao;
 
 import org.apromore.dao.model.Statistic;
+import org.apromore.util.StatType;
 
 import java.util.List;
 
@@ -11,4 +12,6 @@ public interface StatisticRepositoryCustom {
      * @param stats
      */
     void storeAllStats(List<Statistic> stats);
+
+    boolean existsByLogidAndStatType(Integer logid, StatType statType);
 }
