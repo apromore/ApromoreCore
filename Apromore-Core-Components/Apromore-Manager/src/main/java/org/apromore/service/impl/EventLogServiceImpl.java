@@ -20,10 +20,7 @@
 package org.apromore.service.impl;
 
 import org.apromore.common.Constants;
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.StatisticRepository;
+import org.apromore.dao.*;
 import org.apromore.dao.model.*;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.PluginMessages;
@@ -31,7 +28,8 @@ import org.apromore.model.SummariesType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.helper.UuidAdapter;
+import org.apromore.util.UuidAdapter;
+import org.apromore.util.StatType;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -52,7 +50,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.io.ByteArrayInputStream;
@@ -73,8 +70,8 @@ public class EventLogServiceImpl implements EventLogService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImpl.class);
 
-    private static final Integer PROCESS_DISCOVERER = 0;
-    private static final Integer DASHBOARD = 1;
+    private static final String PARENT_NODE_FLAG = "0";
+    public static final String STAT_NODE_NAME = "apromore:stat";
 
     private LogRepository logRepo;
     private GroupRepository groupRepo;
@@ -82,6 +79,8 @@ public class EventLogServiceImpl implements EventLogService {
     private UserService userSrv;
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
+//    private DashboardRepository dashboardRepository;
+
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -96,6 +95,7 @@ public class EventLogServiceImpl implements EventLogService {
         this.userSrv = userSrv;
         this.ui = ui;
         this.statisticRepository = statisticRepository;
+//        this.dashboardRepository = dashboardRepository;
     }
 
 
@@ -215,21 +215,39 @@ public class EventLogServiceImpl implements EventLogService {
         XAttribute parent;
 
         XLog log = getXLog(logId);
-        XAttribute containerAttribute = factory.createAttributeLiteral("apromore:filter", "", null);
-        log.getAttributes().put("apromore:filter", containerAttribute);
+
+        // TODO: The value of containerAttribute can be used to store the availability of different of statistics by bitwise.
+        XAttribute containerAttribute = factory.createAttributeLiteral(STAT_NODE_NAME, "", null);
+        log.getAttributes().put(STAT_NODE_NAME, containerAttribute);
 
         List<Statistic> stats = getStats(logId);
 
         if (stats != null && !stats.isEmpty()) {
             for (Statistic stat : stats) {
-                if (Arrays.equals(stat.getPid(), "0".getBytes())) {
-                    parent = factory.createAttributeLiteral(stat.getStat_key(), "", null);
-                    parent.setAttributes(getChildNodes(stat.getId(), stats));
-                    log.getAttributes().get("apromore:filter").getAttributes().put(stat.getStat_key(), parent);
+                if (Arrays.equals(stat.getPid(), PARENT_NODE_FLAG.getBytes())) {
+                    parent = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
+                    parent.setAttributes(getChildNodes(stat.getId(), stats, factory));
+                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getStat_key(), parent);
                 }
             }
         }
         return log;
+    }
+
+    /**
+     * @param parentId parent ID
+     * @param stats list of statistic entities
+     * @return XAttributeMap
+     */
+    private XAttributeMap getChildNodes (byte[] parentId, List<Statistic> stats, XFactory factory) {
+        XAttributeMap attributeMap = factory.createAttributeMap();
+        for(Statistic stat : stats) {
+            if(Arrays.equals(stat.getPid(), parentId)){
+                XAttribute attribute = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
+                attributeMap.put(stat.getStat_key(), attribute);
+            }
+        }
+        return attributeMap;
     }
 
     /**
@@ -238,35 +256,53 @@ public class EventLogServiceImpl implements EventLogService {
      * @return list of statistic entities
      */
     public List<Statistic> getStats(Integer logId) {
-        // if flag = pd, if flag = db
         return statisticRepository.findByLogid(logId);
     }
 
     /**
-     * @param parentId parent ID
-     * @param stats list of statistic entities
-     * @return XAttributeMap
+     * @param logId
+     * @param statType
+     * @return
      */
-    private XAttributeMap getChildNodes (byte[] parentId, List<Statistic> stats) {
-        XFactory factory = XFactoryRegistry.instance().currentDefault();
-        XAttributeMap attributeMap = factory.createAttributeMap();
-        for(Statistic stat : stats) {
-            if(Arrays.equals(stat.getPid(), parentId)){
-                XAttribute attribute = factory.createAttributeDiscrete(stat.getStat_key(), Integer.parseInt(stat.getStat_value()), null);
-                attributeMap.put(stat.getStat_key(), attribute);
-            }
-        }
-        return attributeMap;
+//    public List<?> getStatsByType(Integer logId, StatType statType) {
+//        // if flag = pd, if flag = db
+//        List<?> stats;
+//
+//        switch (statType) {
+//
+//            case FILTER:
+//                stats = statisticRepository.findByLogid(logId);
+//                break;
+//            case CASE:
+//            case ACTIVITY:
+//            case RESOURCE:
+//                stats = dashboardRepository.findByLogid(logId);
+//                break;
+//            default:
+//                stats = null;
+//                break;
+//        }
+//        return stats;
+//    }
+
+    /**
+     * @param logId
+     * @param statType
+     * @return
+     */
+    public Boolean isStatsExits(Integer logId, StatType statType) {
+        List<Statistic> stats = statisticRepository.findByLogid(logId);
+        return (null == stats || stats.size() == 0);
     }
 
     // just for test, delete when finish
-    private static EntityManagerFactory emf = null;
-    public EntityManagerFactory getEntityManagerFactory() {
-        if (emf == null) {
-            emf = Persistence.createEntityManagerFactory("Apromore");
-        }
-        return emf;
-    }
+//    private static EntityManagerFactory emf = null;
+//    public EntityManagerFactory getEntityManagerFactory() {
+//        if (emf == null) {
+//            emf = Persistence.createEntityManagerFactory("Apromore");
+//        }
+//        return emf;
+//    }
 
     @Override
     public void storeStats(Map<String, Map<String, Integer>> map, Integer logId) {
@@ -275,14 +311,102 @@ public class EventLogServiceImpl implements EventLogService {
         if (null == stats || stats.size() == 0) {
 
             statisticRepository.storeAllStats(flattenNestedMap(map, logId));
+
+//            statisticRepository.save(flattenNestedMap(map, logId));
             LOGGER.debug("Stored statistics of Log: " + logId);
         }
         LOGGER.debug("statistics already exist in Log: " + logId);
     }
 
+    public void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType) {
+
+        if(isStatsExits(logId, statType)) {
+            statisticRepository.storeAllStats(flattenNestedStringMap(map, logId,statType));
+        }
+
+//        switch (statType) {
+//
+//            case FILTER:
+//                List<Statistic> stats = getStats(logId);
+//                if (null == stats || stats.size() == 0) {
+//
+//                    statisticRepository.storeAllStats(flattenNestedStringMap(map, logId));
+//                    LOGGER.debug("Stored statistics of Log: " + logId);
+//                }
+//                LOGGER.debug("statistics already exist in Log: " + logId);
+//                break;
+//            case CASE:
+//                List<Dashboard> dashboards = getDashboard(logId);
+//                if (null == dashboards || dashboards.size() == 0) {
+//
+//                    statisticRepository.save(flattenNestedStringMap(map, logId));
+//                    LOGGER.debug("Stored statistics of Log: " + logId);
+//                }
+//                LOGGER.debug("statistics already exist in Log: " + logId);
+//                break;
+//            case ACTIVITY:
+//                break;
+//            case RESOURCE:
+//                break;
+//        }
+    }
+
+
     /**
-     * flatten nested map into list of entities
+     * flatten nested map into list of {@link org.apromore.dao.model.Statistic } entities
      * @param map nested map generated by Process Discover generateStatistic() method
+     *            <caseId, <key, value>>
+     *            <activityId, <key, value>>
+     *            <resourceId, <key, value>>
+     *
+     *            <caseId, <caseID, 173640>>, <caseId, <Events, 20>>, <caseId, <Variant, 2>>
+     *
+     * @param logId logID
+     * @return list of statistic entities
+     */
+
+    public List<Statistic> flattenNestedStringMap(Map<String, Map<String, String>> map, Integer logId, StatType statType) {
+
+        List<Statistic> statList = new ArrayList<>();
+
+        for (Map.Entry<String, Map<String, String>> option : map.entrySet()) {
+            Statistic parent = new Statistic();
+            if (option.getKey() != null && option.getValue() != null) {
+                parent.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+                parent.setStat_key(statType.toString()); //assign statType to the key, align with XAttritable object
+                parent.setStat_value(option.getKey());
+                parent.setLogid(logId);
+                parent.setPid(PARENT_NODE_FLAG.getBytes());
+                statList.add(parent);
+            }
+            HashMap<String, String> options_frequency = (HashMap<String, String>) option.getValue();
+            if (options_frequency != null) {
+                for (Map.Entry<String, String> entry : options_frequency.entrySet()) {
+                    Statistic child = new Statistic();
+                    if (entry.getKey() != null && entry.getValue() != null) {
+                        // child.setId(option.getKey().getBytes());
+                        child.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+                        child.setStat_key(entry.getKey());
+                        child.setStat_value(entry.getValue());
+                        child.setLogid(logId);
+                        child.setPid(parent.getId());
+                        statList.add(child);
+                    }
+                }
+            }
+        }
+        return statList;
+    }
+
+    /**
+     * flatten nested map into list of Statistic entities
+     * @param map nested map generated by Process Discover generateStatistic() method
+     *            <caseId, <key, value>>
+     *            <activityId, <key, value>>
+     *            <resourceId, <key, value>>
+     *
+     *            <caseId, <caseID, 173640>>, <caseId, <Events, 20>>, <caseId, <Variant, 2>>
+     *
      * @param logId logID
      * @return list of statistic entities
      */
@@ -297,8 +421,7 @@ public class EventLogServiceImpl implements EventLogService {
                 parent.setStat_key(option.getKey());
                 parent.setStat_value("");
                 parent.setLogid(logId);
-                // use 0 to indicate parent attribute
-                parent.setPid("0".getBytes());
+                parent.setPid(PARENT_NODE_FLAG.getBytes());
                 statList.add(parent);
             }
             HashMap<String, Integer> options_frequency = (HashMap<String, Integer>) option.getValue();

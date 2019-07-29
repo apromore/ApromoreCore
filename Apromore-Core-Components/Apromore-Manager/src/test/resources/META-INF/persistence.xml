@@ -80,6 +80,12 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/apromore?autoReconnect=true"/>
             <property name="javax.persistence.jdbc.user" value="apromore"/>
             <property name="javax.persistence.jdbc.password" value="MAcri"/>
+
+            <!--<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>-->
+            <!--<property name="eclipselink.create-ddl-jdbc-file-name" value="createDDL_ddlGeneration.jdbc"/>-->
+            <!--<property name="eclipselink.drop-ddl-jdbc-file-name" value="dropDDL_ddlGeneration.jdbc"/>-->
+            <!--<property name="eclipselink.ddl-generation.output-mode" value="both"/>-->
+
         </properties>
 
     </persistence-unit>

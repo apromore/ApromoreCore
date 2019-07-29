@@ -1,7 +1,6 @@
 package org.apromore.service.impl;
 
 import org.apromore.dao.*;
-import org.apromore.dao.model.Dashboard;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
 import org.apromore.service.UserService;
@@ -10,7 +9,6 @@ import org.apromore.util.UuidAdapter;
 import org.apromore.util.StatType;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.impl.XAttributeDiscreteImpl;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeMapImpl;
 import org.deckfour.xes.model.impl.XLogImpl;
@@ -56,7 +54,6 @@ public class EventLogServiceImplTest {
     private UserService userSrv;
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
-    private DashboardRepository dashboardRepository;
 
     private EventLogServiceImpl eventLogService;
 
@@ -68,9 +65,8 @@ public class EventLogServiceImplTest {
         userSrv = createMock(UserService.class);
         ui = createMock(UserInterfaceHelper.class);
         statisticRepository = createMock(StatisticRepository.class);
-        dashboardRepository = createMock(DashboardRepository.class);
 
-        eventLogService = new EventLogServiceImpl(logRepository, groupRepository, folderRepo, userSrv, ui, statisticRepository, dashboardRepository);
+        eventLogService = new EventLogServiceImpl(logRepository, groupRepository, folderRepo, userSrv, ui, statisticRepository);
     }
 
 
@@ -243,7 +239,7 @@ public class EventLogServiceImplTest {
         assert em != null;
         em.getTransaction().begin();
 
-        for (int i = 0; i < 285804; i++) {
+        for (int i = 0; i < 100; i++) {
 
             Statistic fe = new Statistic();
             fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
@@ -269,24 +265,24 @@ public class EventLogServiceImplTest {
 
     }
 
-    @Test
-    public void getStatsByType() {
-
-        List<Statistic> stats = new ArrayList<>();
-        List<Dashboard> dashboard = new ArrayList<>();
-        Integer logId = 001;
-        expect(statisticRepository.findByLogid(logId)).andReturn(stats);
-        replay(statisticRepository);
-
-        expect(dashboardRepository.findByLogid(logId)).andReturn(dashboard);
-        replay(dashboardRepository);
-
-        List<Statistic> result = (List<Statistic>) eventLogService.getStatsByType(logId, StatType.FILTER);
-        verify(statisticRepository);
-        assertThat(result, equalTo(stats));
-
-        List<Dashboard> dbList = (List<Dashboard>) eventLogService.getStatsByType(logId, StatType.ACTIVITY);
-        verify(statisticRepository);
-        assertThat(dbList, equalTo(dashboard));
-    }
+//    @Test
+//    public void getStatsByType() {
+//
+//        List<Statistic> stats = new ArrayList<>();
+//        List<Dashboard> dashboard = new ArrayList<>();
+//        Integer logId = 001;
+//        expect(statisticRepository.findByLogid(logId)).andReturn(stats);
+//        replay(statisticRepository);
+//
+//        expect(dashboardRepository.findByLogid(logId)).andReturn(dashboard);
+//        replay(dashboardRepository);
+//
+//        List<Statistic> result = (List<Statistic>) eventLogService.getStatsByType(logId, StatType.FILTER);
+//        verify(statisticRepository);
+//        assertThat(result, equalTo(stats));
+//
+//        List<Dashboard> dbList = (List<Dashboard>) eventLogService.getStatsByType(logId, StatType.ACTIVITY);
+//        verify(statisticRepository);
+//        assertThat(dbList, equalTo(dashboard));
+//    }
 }
