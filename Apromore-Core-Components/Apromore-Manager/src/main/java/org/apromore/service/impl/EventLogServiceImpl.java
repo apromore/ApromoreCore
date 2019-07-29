@@ -240,7 +240,6 @@ public class EventLogServiceImpl implements EventLogService {
      * @return XAttributeMap
      */
     private XAttributeMap getChildNodes (byte[] parentId, List<Statistic> stats, XFactory factory) {
-//        XFactory factory = XFactoryRegistry.instance().currentDefault();
         XAttributeMap attributeMap = factory.createAttributeMap();
         for(Statistic stat : stats) {
             if(Arrays.equals(stat.getPid(), parentId)){
@@ -259,15 +258,6 @@ public class EventLogServiceImpl implements EventLogService {
     public List<Statistic> getStats(Integer logId) {
         return statisticRepository.findByLogid(logId);
     }
-
-    /**
-     * Get dashboard statistics by LogID
-     * @param logId logID
-     * @return list of statistic entities
-     */
-//    public List<Dashboard> getDashboard(Integer logId) {
-//        return dashboardRepository.findByLogid(logId);
-//    }
 
     /**
      * @param logId
@@ -301,17 +291,18 @@ public class EventLogServiceImpl implements EventLogService {
      * @return
      */
     public Boolean isStatsExits(Integer logId, StatType statType) {
-        return statisticRepository.existsByLogidAndStat_value(logId, statType.toString());
+        List<Statistic> stats = statisticRepository.findByLogid(logId);
+        return (null == stats || stats.size() == 0);
     }
 
     // just for test, delete when finish
-    private static EntityManagerFactory emf = null;
-    public EntityManagerFactory getEntityManagerFactory() {
-        if (emf == null) {
-            emf = Persistence.createEntityManagerFactory("Apromore");
-        }
-        return emf;
-    }
+//    private static EntityManagerFactory emf = null;
+//    public EntityManagerFactory getEntityManagerFactory() {
+//        if (emf == null) {
+//            emf = Persistence.createEntityManagerFactory("Apromore");
+//        }
+//        return emf;
+//    }
 
     @Override
     public void storeStats(Map<String, Map<String, Integer>> map, Integer logId) {
