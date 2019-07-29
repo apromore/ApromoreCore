@@ -40,24 +40,27 @@ public class Parse {
         put("^\\d{8}$", "yyyyMMdd");
         put("^\\d{1,2}-\\d{1,2}-\\d{4}$", "dd-MM-yyyy");
         put("^\\d{4}-\\d{1,2}-\\d{1,2}$", "yyyy-MM-dd");
-        put("^\\d{1,2}/\\d{1,2}/\\d{4}$", "MM/dd/yyyy");
+        put("^\\d{1,2}/\\d{1,2}/\\d{4}$", "dd/MM/yyyy");
         put("^\\d{4}/\\d{1,2}/\\d{1,2}$", "yyyy/MM/dd");
         put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}$", "dd MMM yyyy");
         put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}$", "dd MMMM yyyy");
         put("^\\d{12}$", "yyyyMMddHHmm");
         put("^\\d{8}\\s\\d{4}$", "yyyyMMdd HHmm");
-        put("^\\d{1,2}-\\d{1,2}-\\d{4}\\s\\d{1,2}:\\d{2}$", "dd-MM-yyyy HH:mm");
-        put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{2}$", "yyyy-MM-dd HH:mm");
-        put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{2}$", "MM/dd/yyyy HH:mm");
+        put("^\\d{1,2}-\\d[0-12]-\\d{4}\\s\\d{1,2}:\\d{2}$", "dd-MM-yyyy HH:mm");
+        put("^\\d{4}-\\d[0-12]-\\d{1,2}\\s\\d{1,2}:\\d{2}$", "yyyy-MM-dd HH:mm");
+        put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{2}$", "dd/MM/yyyy HH:mm");
+//        put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{2}$", "MM/dd/yyyy HH:mm");
+        
         put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{2}$", "yyyy/MM/dd HH:mm");
         put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{2}$", "dd MMM yyyy HH:mm");
         put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{2}$", "dd MMMM yyyy HH:mm");
-        put("^\\d{14}$", "yyyyMMddHHmmss");   // 20110625031548
+        put("^\\d{4}\\d{1,2}\\d[0-12]\\d{6}$", "yyyyMMddHHmmss");   // 20110625031548
+        put("^\\d{4}\\d[0-12]\\d{1,2}\\d{6}$", "yyyyddMMHHmmss");   // 20112506031548
         put("^\\d{8}\\s\\d{6}$", "yyyyMMdd HHmmss");  //20110520 031548
         put("^\\d{1,2}-\\d{1,2}-\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd-MM-yyyy HH:mm:ss"); //21-11-2011 11:11:!1
-        put("^\\d{1,2}/\\d{1,2}/\\d{4} \\s\\d{1,2}:\\d{2}:\\d{2}$.\\d{3}", "dd/MM/yyyy HH:mm:ss.SSS"); // 21/11/2011 11:11:11.111
+//        put("^\\d{1,2}/\\d{1,2}/\\d{4} \\s\\d{1,2}:\\d{2}:\\d{2}$.\\d{3}", "dd/MM/yyyy HH:mm:ss.SSS"); // 21/11/2011 11:11:11.111
         put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}$", "yyyy-MM-dd HH:mm:ss");    // 2011-11-21 11:11:11
-        put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "MM/dd/yyyy HH:mm:ss");   //11/21/2011 11:11:11
+        put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd/MM/yyyy HH:mm:ss");   //11/21/2011 11:11:11
         put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}$", "yyyy/MM/dd HH:mm:ss"); // 2011/11/21 11:11:11
         put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy/MM/dd HH:mm:ss.SSS");  //2011/11/11 03:05:12.522
         put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd MMM yyyy HH:mm:ss");   // 11 Nov 2011 03:05:12
@@ -68,6 +71,12 @@ public class Parse {
         put("^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{2}:\\d{2}$", "yyyy-MM-ddTHH:mm:ss");//2011-11-11T03:05:12.522
         put("^\\d{4}/\\d{1,2}/\\d{1,2}T\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy/MM/ddTHH:mm:ss.SSS");//2011/11/11T03:05:12.522
         put("^\\d{4}/\\d{1,2}/\\d{1,2}T\\d{1,2}:\\d{2}:\\d{2}$", "yyyy/MM/ddTHH:mm:ss");//2011/11/11T03:05:12.522
+
+//        put("^(0[1-9]|1[0-2])/\\d{1,2}/\\d{4} \\s\\d{1,2}:\\d{2}:\\d{2}$.\\d{3}", "MM/dd/yyyy HH:mm:ss.SSS"); // 01/21/2011 11:11:11.111
+//        put("^([1-9]|1[0-2])/\\d{1,2}/\\d{4} \\s\\d{1,2}:\\d{2}:\\d{2}$.\\d{3}", "M/dd/yyyy HH:mm:ss.SSS"); // 1/21/2011 11:11:11.111
+
+//        put("^d{1,2}/\\(0[1-9]|1[0-9]|2[009]|30|31)/\\d{4} \\s\\d{1,2}:\\d{2}:\\d{2}$.\\d{3}", "MM/dd/yyyy HH:mm:ss.SSS"); // 01/21/2011 11:11:11.111
+//        put("^([1-9]|1[0-2])/\\d{1,2})/\\d{4} \\s\\d{1,2}:\\d{2}:\\d{2}$.\\d{3}", "M/dd/yyyy HH:mm:ss.SSS"); // 1/21/2011 11:11:11.111
     }};
 	
 	public Timestamp parseTimestamp(String theDate, String theFormate) {
@@ -79,7 +88,7 @@ public class Parse {
 			cal.setTime(d);
 			return new Timestamp(cal.getTimeInMillis());
 		} catch (Exception e) {
-            System.out.print(e.getStackTrace());
+//            System.out.print(e.getStackTrace());
             return null;
 		}
 	}
