@@ -107,33 +107,36 @@ public class JSONBuilder {
         String borderwidth = "1";
         String borderwidth_end = "3";
 
-        String event_height = "8px"; //"15px";
-        String event_width = "8px"; //"15px";
-        String gateway_height = "10px"; //"50px";
-        String gateway_width = "10px"; //"50px";
-        String activity_height = "24px"; //"50px";
-        String activity_width = "20px";//"80px";
+        String event_height = BPMNDiagramLayouter.EVENT_STD_HEIGHT + "px";//"8px"; //"15px";
+        String event_width = BPMNDiagramLayouter.EVENT_STD_WIDTH + "px" ;//"8px"; //"15px";
+        String gateway_height = BPMNDiagramLayouter.GATEWAY_STD_HEIGHT + "px"; //10px, "50px";
+        String gateway_width = BPMNDiagramLayouter.GATEWAY_STD_WIDTH + "px"; //"50px";
+        //String activity_height = "24px"; //"50px";
+        //String activity_width = "20px";//"80px";
 
-        String activity_font_size = "8"; //"10";
-        String xor_gateway_font_size = "10"; //"20"; //(used_bpmn_size) ? "20" : "10";
-        String and_gateway_font_size = "10"; //"30"; //(used_bpmn_size) ? "30" : "10";
+        String activity_font_size = "16"; //"10";
+        String xor_gateway_font_size = "20"; //"20"; //(used_bpmn_size) ? "20" : "10";
+        String and_gateway_font_size = "32"; //"30"; //(used_bpmn_size) ? "30" : "10";
 
-        int max_node_label_length = 0;
-        String textwidth = "90px";
-        BPMNDiagram bpmnDiagram = abs.getDiagram();
-        for (BPMNNode node : getNodes(bpmnDiagram)) {
-        	max_node_label_length = Math.max(max_node_label_length, escapeChars(node.getLabel()).length());
-        }
-        
-        double node_with = STD_NODE_WIDTH;
+//        int max_node_label_length = 0;
+//        //String textwidth = "90px";
+//        BPMNDiagram bpmnDiagram = abs.getDiagram();
+//        for (BPMNNode node : getNodes(bpmnDiagram)) {
+//        	max_node_label_length = Math.max(max_node_label_length, escapeChars(node.getLabel()).length());
+//        }
+//        
 //        if(max_node_label_length * TEXT_TO_PX_RATIO > MAX_NODE_WIDTH) {
 //        	node_with = (max_node_label_length*TEXT_TO_PX_RATIO*ACTUAL_NODE_WIDTH_FACTOR);
 //        }
 //        textwidth = Math.max(string_length*3 - 10, activity_width_measure) + "px";
-        activity_width = node_with + "px";
-        textwidth = activity_width;
+//        activity_width = node_with + "px";
+//        textwidth = activity_width ;
+        String activity_width = BPMNDiagramLayouter.ACTIVITY_STD_WIDTH + "px";
+        String activity_height = BPMNDiagramLayouter.ACTIVITY_STD_HEIGHT + "px";
+        String textwidth = (BPMNDiagramLayouter.ACTIVITY_STD_WIDTH-5) + "px";
         
         double max_edge_text_length = 0;
+        BPMNDiagram bpmnDiagram = abs.getDiagram();
         for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
         	max_edge_text_length = Math.max((max_edge_text_length+"").length(), (abs.getArcPrimaryWeight(edge)+"").length());
         	if (params.getSecondary()) max_edge_text_length = Math.max((max_edge_text_length+"").length(), (abs.getArcSecondaryWeight(edge)+"").length());
@@ -146,7 +149,8 @@ public class JSONBuilder {
 //        }
 
         Double[] minMax = this.getMinMax(bpmnDiagram.getNodes());
-        for(BPMNNode node : getNodes(bpmnDiagram)) {
+        //for(BPMNNode node : getNodes(bpmnDiagram)) {
+        for(BPMNNode node : bpmnDiagram.getNodes()) {
             if(mapping.containsKey(node)) continue;
             if(node.getLabel().equals("unknown")) continue;
 
@@ -214,47 +218,6 @@ public class JSONBuilder {
             	// overflowing the node shape horizontally and vertically
             	//--------------------------------------------
             	String node_displayname = node_oriname.trim(); 
-
-            	// Prevent the display name from occupying 3 lines
-            	if (StringUtils.countMatches(node_displayname, " ") >= 2) { //likely occupy 3 lines
-            		String[] split = node_displayname.split(" ");
-            		if (CharMatcher.JAVA_LOWER_CASE.matchesNoneOf(node_displayname)) { // If all uppercase: only allows 1 line
-            			node_displayname = split[0];
-            		}
-            		else { // allows 2 lines
-            			node_displayname = split[0] + " " + split[1];
-            		}
-            	}
-            	
-            	// Limit the length of the display name to avoid text overflow issue
-            	if (CharMatcher.JAVA_LOWER_CASE.matchesNoneOf(node_displayname)) { // All uppercase or spaces
-            		if (node_displayname.length() > 7) {
-            			node_displayname = node_displayname.substring(0, 7) + "...";
-            		}
-            		else if (node_displayname.length() < node_oriname.length()) {
-            			node_displayname = node_displayname + "...";
-            		}
-            	}
-            	else if (node_displayname.contains(" ")) { // likely occupy 2 lines
-            		String[] split = node_displayname.split(" ");
-            		if (split[0].length() > 9) { // if the first line is long
-            			node_displayname = split[0].substring(0, 9) + "...";
-            		}
-            		else if (node_displayname.length() > 18) {
-            			node_displayname = node_displayname.substring(0, 18) + "...";
-            		}
-            		else if (node_displayname.length() < node_oriname.length()) {
-            			node_displayname = node_displayname + "...";
-            		}
-	            } 
-            	else { // occupy only 1 line
-            		if (node_displayname.length() > 9) {
-            			node_displayname = node_displayname.substring(0, 9) + "...";
-            		}
-            		else if (node_displayname.length() < node_oriname.length()) {
-            			node_displayname = node_displayname + "...";
-            		}
-	            }
             	node_displayname = escapeChars(node_displayname);
             	
             	if(params.getPrimaryType() == VisualizationType.DURATION) {
@@ -263,7 +226,7 @@ public class JSONBuilder {
                 		jsonOneNode.put("name", node_displayname + "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)));
                 	}
                 	else {
-                		jsonOneNode.put("name", node_displayname + "\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + "\\n" + decimalFormat.format(abs.getNodeSecondaryWeight(node)));
+                		jsonOneNode.put("name", node_displayname + "\\n\\n" + TimeConverter.convertMilliseconds("" + abs.getNodePrimaryWeight(node)) + "\\n" + decimalFormat.format(abs.getNodeSecondaryWeight(node)));
                 	}
                 }
                 else {
@@ -272,7 +235,7 @@ public class JSONBuilder {
                 		jsonOneNode.put("name", node_displayname + "\\n\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)));
                 	}
                 	else {
-                		jsonOneNode.put("name", node_displayname + "\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)) + "\\n" + TimeConverter.convertMilliseconds("" + abs.getNodeSecondaryWeight(node)));
+                		jsonOneNode.put("name", node_displayname + "\\n\\n" + decimalFormat.format(abs.getNodePrimaryWeight(node)) + "\\n" + TimeConverter.convertMilliseconds("" + abs.getNodeSecondaryWeight(node)));
                 	}
                 }
 
@@ -294,10 +257,25 @@ public class JSONBuilder {
             jsonDataNode.put("data", jsonOneNode);
             
             // Add layout for BPMN abstraction
+
         	if (nodeLayout != null) {
+        		double nodeX = 0, nodeY = 0;
+                if (node instanceof Event) {
+                	nodeX = nodeLayout.getX() + BPMNDiagramLayouter.EVENT_STD_WIDTH/2;
+                	nodeY = nodeLayout.getY() + BPMNDiagramLayouter.EVENT_STD_HEIGHT/2;
+                }
+                else if (node instanceof Gateway) {
+                	nodeX = nodeLayout.getX() + BPMNDiagramLayouter.GATEWAY_STD_WIDTH/2;
+                	nodeY = nodeLayout.getY() + BPMNDiagramLayouter.GATEWAY_STD_HEIGHT/2;
+                }
+                else {
+                	nodeX = nodeLayout.getX() + BPMNDiagramLayouter.ACTIVITY_STD_WIDTH/2;
+                	nodeY = nodeLayout.getY() + BPMNDiagramLayouter.ACTIVITY_STD_HEIGHT/2;
+                }
+                
         		JSONObject jsonPosition = new JSONObject();
-        		jsonPosition.put("x", nodeLayout.getX());
-        		jsonPosition.put("y", nodeLayout.getY());
+        		jsonPosition.put("x", nodeX);
+        		jsonPosition.put("y", nodeY);
         		jsonDataNode.put("position", jsonPosition);
         	}
             
@@ -307,13 +285,15 @@ public class JSONBuilder {
 
         double maxWeight = 0.0;
         double minWeight = 0.0;
-        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : getEdges(bpmnDiagram)) {
+//        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : getEdges(bpmnDiagram)) {
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
             double number = abs.getArcPrimaryWeight(edge);
             maxWeight = Math.max(maxWeight, number);
             minWeight = Math.min(minWeight, number);
         }
 
-        for(BPMNEdge<BPMNNode, BPMNNode> edge : getEdges(bpmnDiagram)) {
+//        for(BPMNEdge<BPMNNode, BPMNNode> edge : getEdges(bpmnDiagram)) {
+        for(BPMNEdge<? extends BPMNNode, ? extends BPMNNode> edge : bpmnDiagram.getEdges()) {
             Integer source = mapping.get(edge.getSource());
             Integer target = mapping.get(edge.getTarget());
 

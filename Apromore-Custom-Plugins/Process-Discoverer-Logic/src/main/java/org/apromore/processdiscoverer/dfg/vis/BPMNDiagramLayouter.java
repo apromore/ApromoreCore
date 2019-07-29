@@ -1,34 +1,23 @@
 package org.apromore.processdiscoverer.dfg.vis;
 
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
-import org.processmining.models.jgraph.ProMJGraphVisualizer;
-import org.processmining.models.jgraph.visualization.ProMJGraphPanel;
-
 import com.jgraph.layout.JGraphFacade;
 import com.jgraph.layout.JGraphLayout;
 import com.jgraph.layout.hierarchical.JGraphHierarchicalLayout;
-
 import org.processmining.models.jgraph.ProMGraphModel;
 import org.processmining.models.jgraph.ProMJGraph;
 import org.processmining.models.jgraph.elements.ProMGraphPort;
 import org.processmining.models.jgraph.elements.ProMGraphEdge;
-import org.processmining.contexts.uitopia.UIContext;
-import org.processmining.contexts.uitopia.UIPluginContext;
-import org.processmining.framework.plugin.PluginContext;
 
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-
-import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.jgraph.graph.AbstractCellView;
 import org.jgraph.graph.DefaultGraphCell;
 import org.processmining.models.connections.GraphLayoutConnection;
@@ -38,6 +27,7 @@ import org.processmining.models.graphbased.directed.DirectedGraph;
 import org.processmining.models.graphbased.directed.DirectedGraphNode;
 import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
+import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.models.graphbased.directed.bpmn.elements.Event;
 import org.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
 import org.processmining.models.graphbased.directed.bpmn.elements.Swimlane;
@@ -45,13 +35,59 @@ import org.processmining.models.jgraph.elements.ProMGraphCell;
 import org.processmining.models.jgraph.views.JGraphPortView;
 
 public class BPMNDiagramLayouter {
+	public static final int ACTIVITY_STD_WIDTH = 160;
+	public static final int ACTIVITY_STD_HEIGHT = 70;
+	
+	public static final int EVENT_STD_WIDTH = 25;
+	public static final int EVENT_STD_HEIGHT = 25;
+	
+	public static final int GATEWAY_STD_WIDTH = 25;
+	public static final int GATEWAY_STD_HEIGHT = 25;
+	
+	public static final int INTER_RANK_CELL_SPACING = 100;
+	public static final int PARALLEL_EDGE_SPACING = 15;
+	
 	private static final int SEQUENCE_LENGTH = 3;
 	
 	public static Layout layout(BPMNDiagram diagram, boolean isBPMN) {
+		preLayout(diagram);
+		Layout layout = createLayout(diagram, isBPMN);
+		if (layout != null) {
+			postLayout(layout, isBPMN);
+		}
+		return layout;
+	}
+	
+	/**
+	 * Prepare settings for the diagram and its elements before 
+	 * calling the layout engine
+	 * @param diagram
+	 */
+	private static void preLayout(BPMNDiagram diagram) {
+		diagram.getAttributeMap().put(AttributeMap.PREF_ORIENTATION, SwingConstants.WEST);
+		
+		for (BPMNNode node : diagram.getActivities()) {
+			node.getAttributeMap().put(AttributeMap.SIZE, new Dimension(ACTIVITY_STD_WIDTH, ACTIVITY_STD_HEIGHT));
+		}
+		
+		for (BPMNNode node : diagram.getEvents()) {
+			node.getAttributeMap().put(AttributeMap.SIZE, new Dimension(EVENT_STD_WIDTH, EVENT_STD_HEIGHT));
+		}
+		
+		for (BPMNNode node : diagram.getGateways()) {
+			node.getAttributeMap().put(AttributeMap.SIZE, new Dimension(GATEWAY_STD_WIDTH, GATEWAY_STD_HEIGHT));
+		}
+	}
+	
+	public static Layout createLayout(BPMNDiagram diagram, boolean isBPMN) {
 		Layout layout = null;
 		
 		try {
-			//ProMJGraphPanel graphPanel = ProMJGraphVisualizer.instance().visualizeGraph(uiPluginContext, diagram);
+//			UIContext context = new UIContext();
+//	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+//	        UIPluginContext uiPluginContext = context.getMainPluginContext();
+//			ProMJGraphPanel graphPanel = ProMJGraphVisualizer.instance().visualizeGraph(uiPluginContext, diagram);
+//			ProMGraphModel graphModel = graphPanel.getGraph().getModel();
 	        ProMJGraph graph = visualizeGraph(diagram);
 			ProMGraphModel graphModel = graph.getModel();
 	
@@ -101,19 +137,27 @@ public class BPMNDiagramLayouter {
 				}
 				
 			}
-			
-			// Fix the horizontal alignment for sequence to be a straight line
-			if (isBPMN) {
-				fixHorizontalAlignment(layout);
-			}
-			
-			fixStartEndEvents(layout);
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
+			return null;
 		}
 		
 		return layout;
+	}
+	
+	/**
+	 * Post processing for the layout, e.g. adjusting connection styles
+	 * @param layout
+	 * @param isBPMN: true if the diagram is a BPMN model.
+	 */
+	private static void postLayout(Layout layout, boolean isBPMN) {
+		// Fix the horizontal alignment for sequence to be a straight line
+		if (isBPMN) {
+			fixHorizontalAlignment(layout);
+		}
+		
+		//fixStartEndEvents(layout);
 	}
 	
 	private static JGraphLayout getLayout(int orientation) {
@@ -121,10 +165,9 @@ public class BPMNDiagramLayouter {
 		layout.setDeterministic(true);
 		layout.setCompactLayout(true);
 		layout.setFineTuning(true);
-		layout.setParallelEdgeSpacing(15);
+		layout.setParallelEdgeSpacing(PARALLEL_EDGE_SPACING);
+		layout.setInterRankCellSpacing(INTER_RANK_CELL_SPACING);
 		layout.setFixRoots(true);
-		
-	
 		layout.setOrientation(orientation);
 
 		return layout;
@@ -138,7 +181,7 @@ public class BPMNDiagramLayouter {
 	 * BPMNDiagram, PetriNet or any graphs.
 	 * @return: ProMGraph with layout updated
 	 */
-	public static ProMJGraph visualizeGraph(DirectedGraph<?, ?> graph) {       
+	private static ProMJGraph visualizeGraph(DirectedGraph<?, ?> graph) {       
 		ViewSpecificAttributeMap map = new ViewSpecificAttributeMap();
 		GraphLayoutConnection layoutConnection = new GraphLayoutConnection(graph);
 		ProMGraphModel model = new ProMGraphModel(graph);
@@ -280,8 +323,24 @@ public class BPMNDiagramLayouter {
 				}
 				
 				double adjustedY = layout.getLayoutElement(alignedNode).getY();
-				for (int i=1; i<sequence.size(); i++) {
-					layout.getLayoutElement(sequence.get(i)).setY(adjustedY);
+				int startIndex = (sequence.get(0) instanceof Event) ? 0 : 1; //startIndex=1 to avoid the case the first node is connected from a gateway
+				for (int i=startIndex; i<sequence.size(); i++) { 
+					if (sequence.get(i) instanceof Event) {
+						if (alignedNode instanceof Activity) {
+							layout.getLayoutElement(sequence.get(i)).setY(adjustedY + (ACTIVITY_STD_HEIGHT - EVENT_STD_HEIGHT)/2);
+						}
+						else {
+							layout.getLayoutElement(sequence.get(i)).setY(adjustedY);
+						}
+					}
+					else {
+						if (alignedNode instanceof Activity) {
+							layout.getLayoutElement(sequence.get(i)).setY(adjustedY);
+						}
+						else {
+							layout.getLayoutElement(sequence.get(i)).setY(adjustedY - (ACTIVITY_STD_HEIGHT - EVENT_STD_HEIGHT)/2);
+						}
+					}
 				}
 			}
 		}

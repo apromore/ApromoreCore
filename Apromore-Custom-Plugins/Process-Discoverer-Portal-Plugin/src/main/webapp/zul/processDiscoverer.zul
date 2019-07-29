@@ -42,6 +42,9 @@
 	<script src="/js/popper.v1.14.7.min.js"></script>
 	<script src="/js/cytoscape-popper.v1.0.4.js"></script>
 	<script src="/js/tippy.v4.0.1.min.js"></script>
+	<script src="/js/cytoscape-undo-redo.js"></script>
+	<script src="/js/cytoscape-edge-bend-editing.js"></script>
+	
 	
 	<style dynamic="true">
 		tr.z-row td.z-row-inner, tr.z-row td.z-cell, tr.z-group td.z-group-inner, tr.z-groupfoot td.z-groupfoot-inner {
@@ -321,17 +324,6 @@
 		var initialLoaded = true; // whether the graph is first open.
 		var loadTraceMode = false; // indidate that the graph is loading a trace, not a full log
 		
-		
-		$(document).keydown(function(a) {
-		  if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0;
-		  if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0;
-		}).keyup(function() {
-		  altIsPressed = ctrlIsPressed = !1;
-		  //console.log(ctrlIsPressed);
-		  //console.log(altIsPressed)
-		});
-		
-
 		function init() {
 		  var a = window.cy = cytoscape({
 			container: document.getElementById("cy"),
@@ -436,6 +428,33 @@
 				if (currentNodeTooltip) currentNodeTooltip.hide();
 			});
 			
+		$(document).keydown(function(a) {
+		  if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0;
+		  if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0;
+
+			if (a.ctrlKey && a.which == '90') {
+        cy.undoRedo().undo();	     
+			}
+			else if (a.ctrlKey && a.which == '89') {
+				cy.undoRedo().redo();     
+			}
+		}).keyup(function() {
+		  altIsPressed = ctrlIsPressed = !1;
+		  //console.log(ctrlIsPressed);
+		  //console.log(altIsPressed)
+		});
+			
+			/*
+			document.addEventListener('keydown', function (e){
+                                if (e.ctrlKey && e.which == '90') {
+                                        cy.undoRedo().undo();	     
+                                }
+                                else if (e.ctrlKey && e.which == '89') {
+                                        cy.undoRedo().redo();     
+                                }
+                        }, true );
+												*/
+			
 		}
 		
 		function makeTippy(node, text){
@@ -484,6 +503,12 @@
 				cy.fit();
 			}
 			
+			cy.edgeBendEditing({
+													undoable: true,
+													initBendPointsAutomatically: false,
+													enabled: true
+												});
+			
 		}
 		
 		function loadTrace(a) {
@@ -524,7 +549,7 @@
 		function layout_manual_bezier(a) {
 		  cy.style().selector("edge").style({
 			"curve-style": function( ele ){ return ele.data('edge-style')},
-			"edge-distances": "node-position",	
+			"edge-distances": "intersection",	
 			"control-point-distances": function( ele ){ if (ele.data('edge-style')=="unbundled-bezier") {return ele.data('point-distances')} else {return "0"}},
 			"control-point-weights": function( ele ){ if (ele.data('edge-style')=="unbundled-bezier") {return ele.data('point-weights')} else {return "0.5"}}
 		  }).update();
