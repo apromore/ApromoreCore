@@ -73,7 +73,6 @@
         <class>org.apromore.dao.model.User</class>
         <class>org.apromore.dao.model.Workspace</class>
         <class>org.apromore.dao.model.Statistic</class>
-        <class>org.apromore.dao.model.Dashboard</class>
 
         <!--For unit test purpose-->
         <properties>

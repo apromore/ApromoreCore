@@ -79,7 +79,7 @@ public class EventLogServiceImpl implements EventLogService {
     private UserService userSrv;
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
-    private DashboardRepository dashboardRepository;
+//    private DashboardRepository dashboardRepository;
 
 
     /**
@@ -88,14 +88,14 @@ public class EventLogServiceImpl implements EventLogService {
      * @param ui User Interface Helper.
      */
     @Inject
-    public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository, final FolderRepository folderRepo, final UserService userSrv, final UserInterfaceHelper ui, final StatisticRepository statisticRepository, final DashboardRepository dashboardRepository) {
+    public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository, final FolderRepository folderRepo, final UserService userSrv, final UserInterfaceHelper ui, final StatisticRepository statisticRepository) {
         this.logRepo = logRepository;
         this.groupRepo = groupRepository;
         this.folderRepo = folderRepo;
         this.userSrv = userSrv;
         this.ui = ui;
         this.statisticRepository = statisticRepository;
-        this.dashboardRepository = dashboardRepository;
+//        this.dashboardRepository = dashboardRepository;
     }
 
 
@@ -265,35 +265,35 @@ public class EventLogServiceImpl implements EventLogService {
      * @param logId logID
      * @return list of statistic entities
      */
-    public List<Dashboard> getDashboard(Integer logId) {
-        return dashboardRepository.findByLogid(logId);
-    }
+//    public List<Dashboard> getDashboard(Integer logId) {
+//        return dashboardRepository.findByLogid(logId);
+//    }
 
     /**
      * @param logId
      * @param statType
      * @return
      */
-    public List<?> getStatsByType(Integer logId, StatType statType) {
-        // if flag = pd, if flag = db
-        List<?> stats;
-
-        switch (statType) {
-
-            case FILTER:
-                stats = statisticRepository.findByLogid(logId);
-                break;
-            case CASE:
-            case ACTIVITY:
-            case RESOURCE:
-                stats = dashboardRepository.findByLogid(logId);
-                break;
-            default:
-                stats = null;
-                break;
-        }
-        return stats;
-    }
+//    public List<?> getStatsByType(Integer logId, StatType statType) {
+//        // if flag = pd, if flag = db
+//        List<?> stats;
+//
+//        switch (statType) {
+//
+//            case FILTER:
+//                stats = statisticRepository.findByLogid(logId);
+//                break;
+//            case CASE:
+//            case ACTIVITY:
+//            case RESOURCE:
+//                stats = dashboardRepository.findByLogid(logId);
+//                break;
+//            default:
+//                stats = null;
+//                break;
+//        }
+//        return stats;
+//    }
 
     /**
      * @param logId
