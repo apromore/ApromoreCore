@@ -1,4 +1,4 @@
-package org.apromore.service.helper;
+package org.apromore.util;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;

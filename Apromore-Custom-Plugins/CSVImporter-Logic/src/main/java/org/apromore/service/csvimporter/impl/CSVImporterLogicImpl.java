@@ -117,6 +117,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     public List<LogModel> prepareXesModel(CSVReader reader) {
         int errorCount = 0;
         int lineCount = 0;
+        boolean terminating = false;
         ArrayList<String> invalidRows = new ArrayList<String>();
         try {
 
@@ -146,7 +147,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
             while (line != null) {
                 lineCount++;
-
+ 
                 try {
                     otherTimestamps = new HashMap<String, Timestamp>();
                     others = new HashMap<String, String>();
@@ -158,17 +159,45 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             otherTimestamps.put(header[p], parse.parseTimestamp(line[p], otherTimeStampsPos.get(p)));
                         } else if (p != heads.get(caseid) && p != heads.get(activity) && p != heads.get(timestamp) && p != heads.get(tsStart) && p != heads.get(resource) && (ignoredPos.isEmpty() || !ignoredPos.contains(p))) {
                             others.put(header[p], line[p]);
+                            if(header.length != line.length) {
+                                if(invalidRows.size() < 5) {
+                                    invalidRows.add("Line: " + (lineCount + 1) + ", Error: number of columns does not match number of headers. "
+                                            + "Number of headers: " + header.length + ", Number of columns: " + line.length + "\n");
+                                    break;
+                                }
+                            }
                         }
                     }
+
 
                     Timestamp tStamp = parse.parseTimestamp(line[heads.get(timestamp)], timestampFormat);
 
                     if (heads.get(tsStart) != -1) {
+
                         startTimestamp = parse.parseTimestamp(line[heads.get(tsStart)], startTsFormat);
+
+                        if(startTimestamp == null) {
+                            if(invalidRows.size() < 5) {
+                                invalidRows.add("Line: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. ");
+                            }
+                        }
                     }
                     if (heads.get(resource) != -1) {
                         resourceCol = line[heads.get(resource)];
+
+                        if(startTimestamp == null) {
+                            if(invalidRows.size() < 5) {
+                                invalidRows.add("Line: " + (lineCount + 1) + ", Error: Resource field is invalid. ");
+                            }
+                        }
                     }
+
+                    if(tStamp == null) {
+                            terminating = true;
+                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Critical field - End time stamp field is invalid. \n Unable to import the file.");
+                            break;
+                    }
+
 
                     logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
 
@@ -177,42 +206,48 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //                                e.printStackTrace();
                     errorCount++;
                     if(invalidRows.size() < 5) {
+
                         invalidRows.add("Line: " + (lineCount + 1) + ", Content: " + line[0] + "," +
                                 line[1] + "," + line[2] + "," + line[3] + " ...");
                     }
+
+//                    Messagebox.show(errorMessage);
                 }
                 line = reader.readNext();
             }
 
-            if(errorCount > (lineCount * errorAcceptance)) {
-                String notificationMessage = "Detected more than " + errorAcceptance * 100 + "% of the log with errors. Please make sure input file is a valid CSV file. \n" +
-                        "\n Invalid rows: \n";
+            if(terminating == false) {
+                if (errorCount > (lineCount * errorAcceptance)) {
+                    String notificationMessage = "Detected more than " + errorAcceptance * 100 + "% of the log with errors. Please make sure input file is a valid CSV file. \n" +
+                            "\n Invalid rows: \n";
 
-                for(String content : invalidRows) {
-                    notificationMessage = notificationMessage + content + "\n";
-                }
-                LOGGER.error(errorMessage);
-                Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
-
-                notificationMessage = notificationMessage + "\n ...";
-//                        Messagebox.show("Detected more than " + errorAcceptance * 100 + "% of the log with errors. Please make sure input file is a valid CSV file.", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
-                return null;
-            }else {
-                if (errorCount > 0) {
-                    String notificationMessage = "Imported: "+ lineCount + " lines, skipped " + errorCount + " rows that contains invalid values! \n" +
-                            "Invalid rows: \n";
-
-                    for(String content : invalidRows) {
+                    for (String content : invalidRows) {
                         notificationMessage = notificationMessage + content + "\n";
                     }
-
-                    notificationMessage = notificationMessage + "\n ..." + "\n\n Your file has been imported with some problems.";
+                    LOGGER.error(errorMessage);
                     Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+
+                    notificationMessage = notificationMessage + "\n ...";
+                    return null;
+                } else {
+                    if (errorCount > 0) {
+                        String notificationMessage = "Imported: " + lineCount + " lines, skipped " + errorCount + " rows that contains invalid values! \n" +
+                                "Invalid rows: \n";
+
+                        for (String content : invalidRows) {
+                            notificationMessage = notificationMessage + content + "\n";
+                        }
+
+                        notificationMessage = notificationMessage + "\n ..." + "\n\n Your file has been imported with some problems.";
+                        Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+                        return sortTraces(logData);
+                    }
+
+                    Messagebox.show("Total number of lines processed: " + lineCount + "\n Your file has been imported.");
                     return sortTraces(logData);
                 }
-
-                Messagebox.show("Total number of lines processed: "+ lineCount + "\n Your file has been imported.");
-                return sortTraces(logData);
+            }else{
+                Messagebox.show("Unable to import the file: critical field(Endtime stamp, Activity, CaseId) failure.", "Import Failed", Messagebox.OK, Messagebox.ERROR);
             }
 
 
@@ -220,7 +255,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
         } catch (IOException e) {
             e.printStackTrace();
-            Messagebox.show(e.getMessage());
+//            Messagebox.show(e.getMessage());
         }
         return null;
     }
@@ -661,7 +696,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         String FileNameWithoutExtention = FileName.replaceFirst("[.][^.]+$", "");
         XesXmlSerializer serializer = new XesXmlSerializer();
         serializer.serialize(xLog, new FileOutputStream(new File(FileNameWithoutExtention + ".xes")));
-        Messagebox.show("Your file has been created!");
+//        Messagebox.show("Your file has been created!");
 
     }
 }
