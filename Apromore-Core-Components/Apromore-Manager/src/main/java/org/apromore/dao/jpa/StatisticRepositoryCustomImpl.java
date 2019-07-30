@@ -1,10 +1,12 @@
 package org.apromore.dao.jpa;
 
 import org.apromore.dao.StatisticRepositoryCustom;
+import org.apromore.dao.dataObject.DistanceDO;
 import org.apromore.dao.model.Statistic;
 import org.apromore.util.StatType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,8 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom {
@@ -26,24 +30,21 @@ public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom 
 
     /* ************************** JPA Methods here ******************************* */
 
-
-    @Override
-    @Transactional
-    public void storeAllStats(List<Statistic> stats) {
-        try {
-            int ip = 0;
-                for(Statistic stat : stats) {
-                    ip = ip +1;
-                    em.persist(stat);
-                    if((ip % 10000) == 0 ) {
-                        em.flush();
-                        em.clear();
-                    }
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error " + e.getMessage());
-        }
-    }
+//    public void storeAllStats(List<Statistic> stats) {
+//        try {
+//            int ip = 0;
+//                for(Statistic stat : stats) {
+//                    ip = ip +1;
+//                    em.persist(stat);
+//                    if((ip % 10000) == 0 ) {
+//                        em.flush();
+//                        em.clear();
+//                    }
+//            }
+//        } catch (Exception e) {
+//            LOGGER.error("Error " + e.getMessage());
+//        }
+//    }
 
     @Override
     @Transactional
@@ -61,4 +62,29 @@ public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom 
     }
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
+
+    @Override
+    @Transactional
+    public void storeAllStats(final List<Statistic> stats) {
+        if (null != stats && stats.size() != 0) {
+            String sql = "INSERT INTO statistic (id, logid, pid, stat_key, stat_value) VALUES (?,?,?,?,?)";
+
+            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    Statistic stat = stats.get(i);
+                    ps.setBytes(1, stat.getId());
+                    ps.setInt(2, stat.getLogid());
+                    ps.setBytes(3, stat.getPid());
+                    ps.setString(4, stat.getStat_key());
+                    ps.setString(5, stat.getStat_value());
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return stats.size();
+                }
+            });
+        }
+    }
 }

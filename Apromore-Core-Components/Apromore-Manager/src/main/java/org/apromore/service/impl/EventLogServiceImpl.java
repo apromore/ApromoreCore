@@ -325,7 +325,7 @@ public class EventLogServiceImpl implements EventLogService {
     public void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType) {
 
         if(!isStatsExits(logId, statType)) {
-            statisticRepository.storeAllStats(flattenNestedStringMap(map, logId,statType));
+            statisticRepository.storeAllStats(flattenNestedStringMap(map, logId, statType));
         }
 
 //        switch (statType) {
