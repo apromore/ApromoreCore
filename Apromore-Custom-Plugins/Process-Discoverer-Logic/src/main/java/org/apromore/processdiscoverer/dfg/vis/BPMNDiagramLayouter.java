@@ -10,6 +10,8 @@ import org.processmining.models.jgraph.elements.ProMGraphPort;
 import org.processmining.models.jgraph.elements.ProMGraphEdge;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -29,12 +31,20 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNEdge;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.models.graphbased.directed.bpmn.elements.Event;
+import org.processmining.models.graphbased.directed.bpmn.elements.Gateway;
 import org.processmining.models.graphbased.directed.bpmn.elements.SubProcess;
 import org.processmining.models.graphbased.directed.bpmn.elements.Swimlane;
 import org.processmining.models.jgraph.elements.ProMGraphCell;
 import org.processmining.models.jgraph.views.JGraphPortView;
 
+/**
+ * Layout BPMN diagrams using JGraph hierarchical layout method 
+ * @author Bruce Nguyen
+ *
+ */
 public class BPMNDiagramLayouter {
+	// It's important these width/height are used by both JGraph (layout engine) and 
+	// Cytoscape.js (visualization engine)
 	public static final int ACTIVITY_STD_WIDTH = 160;
 	public static final int ACTIVITY_STD_HEIGHT = 70;
 	
@@ -44,8 +54,9 @@ public class BPMNDiagramLayouter {
 	public static final int GATEWAY_STD_WIDTH = 25;
 	public static final int GATEWAY_STD_HEIGHT = 25;
 	
-	public static final int INTER_RANK_CELL_SPACING = 100;
-	public static final int PARALLEL_EDGE_SPACING = 15;
+	public static final int INTRA_CELL_SPACING = 50;
+	public static final int INTER_RANK_CELL_SPACING = 150;
+	public static final int PARALLEL_EDGE_SPACING = 30;
 	
 	private static final int SEQUENCE_LENGTH = 3;
 	
@@ -146,6 +157,28 @@ public class BPMNDiagramLayouter {
 		return layout;
 	}
 	
+	private static boolean isOverlapping(BPMNNode node, Rectangle2D r, Layout layout) {
+		LayoutElement nodeLayout = layout.getLayoutElement(node);
+		double x = nodeLayout.getX();
+		double y = nodeLayout.getY();
+		double width = nodeLayout.getWidth();
+		double height = nodeLayout.getHeight();
+		return x < r.getX() + r.getWidth() && x + width > r.getX() && y < r.getY() + r.getHeight() && y + height > r.getY();
+	}
+	
+	private static Rectangle2D getAlignedRect(List<BPMNNode> sequence, BPMNNode alignedNode, Layout layout) {
+		double maxX = 0, maxY = 0;
+		double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
+		
+		maxX = layout.getLayoutElement(sequence.get(sequence.size()-1)).getX() + getWidth(sequence.get(sequence.size()-1), layout);
+		minX = Math.min(minX, layout.getLayoutElement(sequence.get(0)).getX());
+		for (BPMNNode node : sequence) {
+			maxY = Math.max(maxY, getAlignedY(node, alignedNode, layout) + getHeight(node, layout));
+			minY = Math.min(minY, getAlignedY(node, alignedNode, layout));
+		}
+		return new Rectangle2D.Double(minX, minY, maxX-minX, maxY-minY);
+	}
+	
 	/**
 	 * Post processing for the layout, e.g. adjusting connection styles
 	 * @param layout
@@ -166,8 +199,9 @@ public class BPMNDiagramLayouter {
 		layout.setCompactLayout(true);
 		layout.setFineTuning(true);
 		layout.setParallelEdgeSpacing(PARALLEL_EDGE_SPACING);
+		layout.setIntraCellSpacing(INTRA_CELL_SPACING);
 		layout.setInterRankCellSpacing(INTER_RANK_CELL_SPACING);
-		layout.setFixRoots(true);
+		layout.setFixRoots(false);
 		layout.setOrientation(orientation);
 
 		return layout;
@@ -312,38 +346,68 @@ public class BPMNDiagramLayouter {
 		// Align Y-axis of nodes in a sequence to the last node or the node after
 		//----------------------------------------------
 		for (List<BPMNNode> sequence : sequences) {
+			// It's not good to change the Y-axis if the first node is an activity 
+			// because it will be connected from a gateway, so remove it from the sequence 
+			if (sequence.get(0) instanceof Activity) {
+				sequence.remove(0);
+			}
+			
 			if (sequence.size() >= SEQUENCE_LENGTH) {
-				BPMNNode alignedNode = null;
+				// Choose the last node to align the sequence
 				BPMNNode lastNode = sequence.get(sequence.size()-1);
-				if (d.getOutEdges(lastNode).isEmpty()) {
-					alignedNode = lastNode;
-				}
-				else {
-					alignedNode = d.getOutEdges(lastNode).iterator().next().getTarget();
+				BPMNNode alignedNode = d.getOutEdges(lastNode).isEmpty() ? lastNode : d.getOutEdges(lastNode).iterator().next().getTarget();
+				
+				if (isHorizontalAlignable(sequence, alignedNode, layout)) {
+					for (int i=0; i<sequence.size(); i++) {
+						layout.getLayoutElement(sequence.get(i)).setY(getAlignedY(sequence.get(i), alignedNode, layout));
+					}					
 				}
 				
-				double adjustedY = layout.getLayoutElement(alignedNode).getY();
-				int startIndex = (sequence.get(0) instanceof Event) ? 0 : 1; //startIndex=1 to avoid the case the first node is connected from a gateway
-				for (int i=startIndex; i<sequence.size(); i++) { 
-					if (sequence.get(i) instanceof Event) {
-						if (alignedNode instanceof Activity) {
-							layout.getLayoutElement(sequence.get(i)).setY(adjustedY + (ACTIVITY_STD_HEIGHT - EVENT_STD_HEIGHT)/2);
-						}
-						else {
-							layout.getLayoutElement(sequence.get(i)).setY(adjustedY);
-						}
-					}
-					else {
-						if (alignedNode instanceof Activity) {
-							layout.getLayoutElement(sequence.get(i)).setY(adjustedY);
-						}
-						else {
-							layout.getLayoutElement(sequence.get(i)).setY(adjustedY - (ACTIVITY_STD_HEIGHT - EVENT_STD_HEIGHT)/2);
-						}
-					}
+			}
+		}
+	}
+	
+	private static double getAlignedX(BPMNNode node, BPMNNode alignedNode, Layout layout) {
+		double adjustedX = layout.getLayoutElement(alignedNode).getX();
+		double diff = getWidth(alignedNode, layout) - getWidth(node, layout);
+		return adjustedX + Math.signum(diff)*Math.abs(diff)/2;
+	}
+	
+	private static double getAlignedY(BPMNNode node, BPMNNode alignedNode, Layout layout) {
+		double adjustedY = layout.getLayoutElement(alignedNode).getY();
+		double diff = getHeight(alignedNode, layout) - getHeight(node, layout);
+		return adjustedY + Math.signum(diff)*Math.abs(diff)/2;
+	}
+	
+	private static double getWidth(BPMNNode node, Layout layout) {
+		return layout.getLayoutElement(node).getWidth();
+	}
+	
+	private static double getHeight(BPMNNode node, Layout layout) {
+		return layout.getLayoutElement(node).getHeight();
+	}
+	
+	private static boolean isHorizontalAlignable(List<BPMNNode> sequence, BPMNNode alignedNode, Layout layout) {
+		// X-axis of nodes must keep increasing in the sequence
+		double previousX = Double.MIN_VALUE;
+		for (BPMNNode node : sequence) {
+			double currentX = layout.getLayoutElement(node).getX();
+			if (previousX != Double.MIN_VALUE && previousX > currentX) {
+				return false;
+			}
+			previousX = currentX;
+		}
+		
+		Rectangle2D rect = getAlignedRect(sequence, alignedNode, layout);
+		for (BPMNNode node : layout.getDiagram().getNodes()) {
+			if (!sequence.contains(node)) {
+				if (isOverlapping(node, rect, layout)) {
+					return false;
 				}
 			}
 		}
+		
+		return true;
 	}
 	
 	private static void fixStartEndEvents(Layout layout) {
