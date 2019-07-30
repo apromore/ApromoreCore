@@ -256,6 +256,34 @@ public class SecurityServiceImpl implements SecurityService {
         }
     }
 
+    /**
+     * @see org.apromore.service.SecurityService#changeUserPassword(String, String, String)
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean changeUserPassword(String username, String oldPassword, String newPassword) {
+
+        User user = userRepo.findByUsername(username);
+        Membership membership = user.getMembership();
+
+        if (!membership.getPassword().equals(SecurityUtil.hashPassword(oldPassword))) {
+            LOGGER.warning("Failed attempt to change password for user " + membership.getEmail());
+            return false;
+        }
+
+        try {
+            // Change the password in the database
+            membership.setPassword(SecurityUtil.hashPassword(newPassword));
+            membership = membershipRepo.save(membership);
+
+            return membership.getPassword().equals(SecurityUtil.hashPassword(newPassword));
+
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Unable to change password for user " + membership.getEmail(), e);
+            return false;
+        }
+    }
+
     /* Email the Users Password to them. */
     private void emailUserPassword(Membership membership, String newPswd) throws MailException {
         SimpleMailMessage message = new SimpleMailMessage();
