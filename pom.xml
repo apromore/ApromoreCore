@@ -120,6 +120,7 @@
 
         <module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
 
+        <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/APQL-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/BEBoP-Logic</module>
         <module>Apromore-Custom-Plugins/BEBoP-Portal-Plugin</module>
