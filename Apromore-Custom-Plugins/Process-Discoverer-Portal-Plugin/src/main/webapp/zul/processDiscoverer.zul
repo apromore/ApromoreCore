@@ -359,7 +359,7 @@
 				color: "data(color)",
 				"curve-style": "bezier",
 				"edge-text-rotation": 0,
-				"font-size": 11,
+				"font-size": 16,
 				label: "data(label)",
 				"line-color": "data(color)",
 				"line-style": "data(style)",
@@ -429,31 +429,20 @@
 			});
 			
 		$(document).keydown(function(a) {
-		  if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0;
-		  if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0;
+				if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0;
+				if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0;
 
-			if (a.ctrlKey && a.which == '90') {
-        cy.undoRedo().undo();	     
-			}
-			else if (a.ctrlKey && a.which == '89') {
-				cy.undoRedo().redo();     
-			}
-		}).keyup(function() {
-		  altIsPressed = ctrlIsPressed = !1;
-		  //console.log(ctrlIsPressed);
-		  //console.log(altIsPressed)
-		});
-			
-			/*
-			document.addEventListener('keydown', function (e){
-                                if (e.ctrlKey && e.which == '90') {
-                                        cy.undoRedo().undo();	     
-                                }
-                                else if (e.ctrlKey && e.which == '89') {
-                                        cy.undoRedo().redo();     
-                                }
-                        }, true );
-												*/
+				if (a.ctrlKey && a.which == '90') {
+					cy.undoRedo().undo();	     
+				}
+				else if (a.ctrlKey && a.which == '89') {
+					cy.undoRedo().redo();     
+				}
+			}).keyup(function() {
+				altIsPressed = ctrlIsPressed = !1;
+				//console.log(ctrlIsPressed);
+				//console.log(altIsPressed)
+			});
 			
 		}
 		
@@ -500,7 +489,7 @@
 			  currentPanPosition = pan;
 		  }
 			else {
-				cy.fit();
+				fitToWindow(layout_option);
 			}
 			
 			cy.edgeBendEditing({
@@ -517,12 +506,34 @@
 			init();
 		  cy.add($.parseJSON(a)); 
 		  layout_dagre_LR(false);
-			cy.fit();
+			fitToWindow(1);
 		}
 		
-		function fitToWindow() {
+		function fitToWindow(layout_option) {
 			if (window.cy) {
-				window.cy.fit();
+				cy.fit();
+				moveTop(layout_option);
+			}
+		}
+		
+		function moveTop(layout_option) {
+			switch(layout_option) {
+				case 0:
+				case 1:
+					cy.pan({x: 2, y: 0 });
+					break;				
+				case 2:
+					cy.center(cy.nodes().filter(function( ele ){
+																										return ele.data('oriname') == "|>";
+																									}));
+					var currentPos = cy.pan();
+					cy.pan({x: currentPos.x, y: 0 });
+					break;
+				case 3:
+					cy.fit();
+					break;
+				default:
+					// code block
 			}
 		}
 

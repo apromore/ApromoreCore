@@ -203,6 +203,7 @@ public class ProcessDiscovererController extends BaseController {
 
     private String label = DEFAULT_SELECTOR; // the event attribute key used to label each task node, default "concept:name"
     private boolean selectorChanged = false;
+    private boolean layoutChanged = false;
     
     private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
     
@@ -574,6 +575,7 @@ public class ProcessDiscovererController extends BaseController {
             
             EventListener<Event> layoutListener = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
+                	layoutChanged = true;
                     changeLayout();
                 }
             };
@@ -1031,7 +1033,7 @@ public class ProcessDiscovererController extends BaseController {
             this.fitScreen.addEventListener("onClick", new EventListener<Event>() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                	Clients.evalJavaScript("fitToWindow();");
+                	Clients.evalJavaScript("fitToWindow(" + selectedLayout + ");");
                 }
             });
             
@@ -1691,17 +1693,10 @@ public class ProcessDiscovererController extends BaseController {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
     	
-//    	if (!gateways.isChecked()) {
-//    		javascript = "loadDFG('" + jsonString + "'," +  this.selectedLayout + ");";
-//    	}
-//    	else {
-//    		javascript = "loadBPMN('" + jsonString  + "'," +  this.selectedLayout + ");";
-//    	}
-
     	int retainZoomPan = 1;
     	if ((isShowingBPMN && !gateways.isChecked()) || 
     			(!isShowingBPMN && gateways.isChecked()) || 
-    			selectorChanged || displayFirstTime) {
+    			selectorChanged || layoutChanged || displayFirstTime) {
     		retainZoomPan = 0;
         }
     	
@@ -1711,6 +1706,7 @@ public class ProcessDiscovererController extends BaseController {
         isShowingBPMN = gateways.isChecked();
         selectorChanged = false;
         displayFirstTime = false;
+        layoutChanged = false;
     }
     
     private void displayTrace(JSONArray jsonDiagram) {
@@ -1730,7 +1726,7 @@ public class ProcessDiscovererController extends BaseController {
             eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
                     logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     logSummary.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                    logSummary.isMakePublic());
+                    false);
             
             Messagebox.show("A new log named '" + logName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
 
