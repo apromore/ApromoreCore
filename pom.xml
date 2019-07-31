@@ -229,10 +229,9 @@
         <!--<module>Supplements/epml2cpf</module>-->
         <!--<module>Supplements/pnml2cpf</module>-->
 
-        <!-- Uncomment the following components if you have credentials to access the ZK EE repository -->
+        <!-- Uncomment the following component if you have credentials to access the ZK EE repository -->
         <!--
         <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>
-        <module>Apromore-Custom-Plugins/Dashboard</module>
         -->
 
     </modules>
