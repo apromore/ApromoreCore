@@ -24,6 +24,7 @@
         <!--<vbox>-->
         <style>
             .greenLabel {
+            padding-left: 1px;
             font-family: sans-serif;
             color: green;
             font-size: 11px;
@@ -32,6 +33,7 @@
             }
 
             .redLabel {
+            padding-left: 1px;
             font-family: sans-serif;
             color: red;
             font-size: 11px;
@@ -68,7 +70,7 @@
             position:absolute;
             width: 100%;
             height: 61px;
-            background-image: url("https://apromore.org/wp-content/uploads/2019/07/back5.png");
+            background-image: url("img/apromore_banner.png");
             background-size: 150% 100%;
             background-repeat: no-repeat;
             background-position: center center;

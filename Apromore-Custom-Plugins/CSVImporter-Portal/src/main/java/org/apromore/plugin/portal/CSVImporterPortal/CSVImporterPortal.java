@@ -234,9 +234,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             Button sp = new Button();
 //            sp.setLabel("-");
-            sp.setImage("https://www.pngfind.com/mpng/oTRRxJ_x-cross-close-symbol-icon-button-gui-close/");
+//            sp.setImage("img/close-icon.png");
 //            sp.setIconSclass("z-icon-compress");
-            sp.setStyle("margin-left:20px;");
+            sp.setStyle("margin-left:27px; background-image: url(img/close-icon.png); background-size: auto; background-repeat: repeat; ");
 //            sp.setZclass("min-height: 16px;");
             A hidelink = new A();
             hidelink.appendChild(sp);
