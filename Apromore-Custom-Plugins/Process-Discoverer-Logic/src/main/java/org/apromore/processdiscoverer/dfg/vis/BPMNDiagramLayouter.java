@@ -55,7 +55,7 @@ public class BPMNDiagramLayouter {
 	public static final int GATEWAY_STD_HEIGHT = 25;
 	
 	public static final int INTRA_CELL_SPACING = 50;
-	public static final int INTER_RANK_CELL_SPACING = 150;
+	public static final int INTER_RANK_CELL_SPACING = 100;
 	public static final int PARALLEL_EDGE_SPACING = 30;
 	
 	private static final int SEQUENCE_LENGTH = 3;
@@ -186,9 +186,7 @@ public class BPMNDiagramLayouter {
 	 */
 	private static void postLayout(Layout layout, boolean isBPMN) {
 		// Fix the horizontal alignment for sequence to be a straight line
-		if (isBPMN) {
-			fixHorizontalAlignment(layout);
-		}
+		fixHorizontalAlignment(layout);
 		
 		//fixStartEndEvents(layout);
 	}
