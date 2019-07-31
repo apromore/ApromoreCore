@@ -117,9 +117,9 @@ public interface EventLogService {
      *
      * Check if this log has this type of statistic in the database.
      *
-     * @param logId
-     * @param statType
+     * @param logId logID of XES log file
+     * @param statType enum that store all the types of statistic
      * @return
      */
-    boolean isStatsExits(Integer logId, StatType statType);
+    boolean isStatsExists(Integer logId, StatType statType);
 }

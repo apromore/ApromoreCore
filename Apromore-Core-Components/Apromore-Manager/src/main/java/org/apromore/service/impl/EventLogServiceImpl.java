@@ -293,11 +293,11 @@ public class EventLogServiceImpl implements EventLogService {
      * @return
      */
     @Override
-    public boolean isStatsExits(Integer logId, StatType statType) {
+    public boolean isStatsExists(Integer logId, StatType statType) {
         return statisticRepository.existsByLogidAndStatType(logId, statType);
     }
 
-//    public Boolean isStatsExits(Integer logId, StatType statType) {
+//    public Boolean isStatsExists(Integer logId, StatType statType) {
 //        List<Statistic> stats = statisticRepository.findByLogid(logId);
 //        return (null == stats || stats.size() == 0);
 //    }
@@ -327,7 +327,7 @@ public class EventLogServiceImpl implements EventLogService {
 
     public void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType) {
 
-        if(!isStatsExits(logId, statType)) {
+        if(!isStatsExists(logId, statType)) {
             statisticRepository.storeAllStats(flattenNestedStringMap(map, logId, statType));
         }
 
