@@ -133,7 +133,6 @@ public class Parse {
             SimpleDateFormat formatter = new SimpleDateFormat(theFormate);
             formatter.setLenient(false);
 		    Calendar cal = Calendar.getInstance();
-		    cal.setLenient(false);
 		    Date d = formatter.parse(theDate);
 			cal.setTime(d);
 			return new Timestamp(cal.getTimeInMillis());
@@ -149,6 +148,7 @@ public class Parse {
             if (dateString.toLowerCase().matches(regexp)) {
                 try{
                     SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_REGEXPS.get(regexp));
+                    formatter.setLenient(false);
                     Calendar cal = Calendar.getInstance();
                     Date d = formatter.parse(dateString);
                     return DATE_FORMAT_REGEXPS.get(regexp);
