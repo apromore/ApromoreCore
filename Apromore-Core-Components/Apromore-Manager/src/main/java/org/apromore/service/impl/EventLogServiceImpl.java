@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import sun.font.AttributeMap;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
@@ -70,7 +71,7 @@ public class EventLogServiceImpl implements EventLogService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImpl.class);
 
-    private static final String PARENT_NODE_FLAG = "0";
+    public static final String PARENT_NODE_FLAG = "0";
     public static final String STAT_NODE_NAME = "apromore:stat";
 
     private LogRepository logRepo;
@@ -222,12 +223,13 @@ public class EventLogServiceImpl implements EventLogService {
 
         List<Statistic> stats = getStats(logId);
 
-        if (stats != null && !stats.isEmpty()) {
+        if (stats != null && !stats.isEmpty()) { // if there is cache, then append it to XES log as metadata
             for (Statistic stat : stats) {
                 if (Arrays.equals(stat.getPid(), PARENT_NODE_FLAG.getBytes())) {
                     parent = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
                     parent.setAttributes(getChildNodes(stat.getId(), stats, factory));
-                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getStat_key(), parent);
+                    // Since parent share the same stat_key, so use stat_value as key when put stat into XAttributeMap
+                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getStat_value(), parent);
                 }
             }
         }
@@ -290,7 +292,8 @@ public class EventLogServiceImpl implements EventLogService {
      * @param statType
      * @return
      */
-    public Boolean isStatsExits(Integer logId, StatType statType) {
+    @Override
+    public boolean isStatsExits(Integer logId, StatType statType) {
         return statisticRepository.existsByLogidAndStatType(logId, statType);
     }
 

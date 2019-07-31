@@ -50,7 +50,7 @@ public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom 
     @Transactional
     public boolean existsByLogidAndStatType(Integer logid, StatType statType) {
         if (logid != null && statType != null) {
-            Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_value=:param2");
+            Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_key=:param2");
             query.setParameter("param1", logid);
             query.setParameter("param2", statType.toString());
             List<Statistic> stats = query.getResultList();

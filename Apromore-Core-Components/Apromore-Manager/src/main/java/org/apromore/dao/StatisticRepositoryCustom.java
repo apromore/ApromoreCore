@@ -13,5 +13,11 @@ public interface StatisticRepositoryCustom {
      */
     void storeAllStats(List<Statistic> stats);
 
+    /**
+     * check if these type of stat exist in database.
+     * @param logid
+     * @param statType
+     * @return
+     */
     boolean existsByLogidAndStatType(Integer logid, StatType statType);
 }

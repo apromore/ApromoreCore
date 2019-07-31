@@ -29,6 +29,7 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.util.*;
 
+import static org.apromore.service.impl.EventLogServiceImpl.PARENT_NODE_FLAG;
 import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -185,14 +186,22 @@ public class EventLogServiceImplTest {
         assertThat(result.get(0).getPid(), equalTo("0".getBytes()));
         assertThat(result.get(0).getStat_key(), equalTo(StatType.FILTER.toString()));
         assertThat(result.get(0).getStat_value(), equalTo("concept:name"));
+        assertThat(result.get(0).getLogid(), equalTo(88));
+
         assertThat(result.get(1).getStat_key(), equalTo("direct:follow"));
         assertThat(result.get(1).getStat_value(), equalTo("40"));
+        assertThat(result.get(1).getPid(), equalTo(result.get(0).getId()));
+        assertThat(result.get(1).getLogid(), equalTo(88));
+
         assertThat(result.get(2).getStat_key(), equalTo("Activity"));
         assertThat(result.get(2).getStat_value(), equalTo("10"));
+
         assertThat(result.get(3).getStat_key(), equalTo(StatType.FILTER.toString()));
         assertThat(result.get(3).getStat_value(), equalTo("concept:test"));
+
         assertThat(result.get(4).getStat_key(), equalTo("direct:follow"));
         assertThat(result.get(4).getStat_value(), equalTo("40"));
+
         assertThat(result.get(5).getStat_key(), equalTo("Activity"));
         assertThat(result.get(5).getStat_value(), equalTo("10"));
     }
