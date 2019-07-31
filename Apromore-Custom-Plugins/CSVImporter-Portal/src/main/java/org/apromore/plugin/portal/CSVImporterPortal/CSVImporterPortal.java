@@ -151,7 +151,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 //                window.setHeight("100%");
                 if(header.length > 9) {
-                    window.setWidth("100%");
+                    window.setWidth("98%");
                 } else {
                     Double DynamicWidth = null;
                     DynamicWidth = 10.88 * header.length;

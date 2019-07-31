@@ -597,8 +597,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
         String newTraceID = null;	// to keep track of traces, when a new trace is created we assign its value and add the respective events for the trace.
 
-        try {
-            Comparator<XEvent> compareTimestamp = (XEvent o1, XEvent o2) -> ((XAttributeTimestampImpl) o1.getAttributes().get("time:timestamp")).getValue().compareTo(((XAttributeTimestampImpl) o2.getAttributes().get("time:timestamp")).getValue());
+        Comparator<XEvent> compareTimestamp = (XEvent o1, XEvent o2) -> ((XAttributeTimestampImpl) o1.getAttributes().get("time:timestamp")).getValue().compareTo(((XAttributeTimestampImpl) o2.getAttributes().get("time:timestamp")).getValue());
 
             for (LogModel trace : traces) {
                 String caseID = trace.getCaseID();
@@ -632,9 +631,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 xTrace.addAll(allEvents);
             }
 
-        } catch(Exception e) {
-            // Something is wrong with parsing.
-        }
+
         if(xEvent == null) {
             return null;
         } else {
