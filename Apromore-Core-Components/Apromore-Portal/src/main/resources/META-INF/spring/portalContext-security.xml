@@ -29,11 +29,12 @@
     <beans:bean id="newUserRegistration" class="org.apromore.portal.servlet.NewUserRegistrationHttpServletRequestHandler" />
 
     <!-- Http Security Setup -->
+    <http pattern="/applets/**" security="none"/>
     <http pattern="/css/**" security="none"/>
     <http pattern="/font/**" security="none"/>
     <http pattern="/img/**" security="none"/>
     <http pattern="/js/**" security="none"/>
-    <http pattern="/applets/**" security="none"/>
+    <http pattern="/robots.txt" security="none"/>
     <http pattern="/zkau/**" security="none"/>
 
     <http pattern="/info.zul*" security="none"/>
