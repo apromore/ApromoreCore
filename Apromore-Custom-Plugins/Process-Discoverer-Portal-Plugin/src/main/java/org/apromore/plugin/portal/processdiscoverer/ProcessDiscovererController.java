@@ -1323,11 +1323,22 @@ public class ProcessDiscovererController extends BaseController {
     	}
     }
 
-    // Note that the filtered log has been checked to be non-empty
-    public void refreshCriteria() throws InterruptedException {
+    /**
+     * Note that the filtered log has been checked to be non-empty
+     * @param reset: true if the list of criteria is emptied
+     * @throws InterruptedException
+     */
+    public void refreshCriteria(boolean reset) throws InterruptedException {
         populateMetrics(this.filtered_log);
         generateLocalStatistics(this.filtered_log);
         visualizeMap();
+        if (reset) {
+        	Clients.evalJavaScript("fitToWindow(" + selectedLayout + ");");
+        }
+        else {
+        	Clients.evalJavaScript("centerToWindow(" + selectedLayout + ");");
+        }
+        
         this.filtered_log_cases = this.getCases(this.filtered_log);
     }
 
@@ -1341,7 +1352,7 @@ public class ProcessDiscovererController extends BaseController {
         	}
         	else {
         		setFilteredLog(filteredLog);
-        		refreshCriteria();
+        		refreshCriteria(false);
         	}
         }
     }

@@ -318,7 +318,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.5/svg.min.js"></script>
 	<script type="text/javascript">
 		<![CDATA[
-		var layout_model = 0, ctrlIsPressed = !1, altIsPressed = !1;
+		var currentLayout = 0, ctrlIsPressed = !1, altIsPressed = !1;
 		var currentZoomLevel = 1;
 		var currentPanPosition;
 		var initialLoaded = true; // whether the graph is first open.
@@ -393,6 +393,25 @@
 			  edges: []
 			}
 		  });
+			
+			// Convert a rendered position to a model position
+			cy.toModelPosition = (pos) => {
+					const pan = cy.pan();
+					const zoom = cy.zoom();
+					return {
+							x: (pos.x - pan.x) / zoom,
+							y: (pos.y - pan.y) / zoom,
+					};
+			};
+			// Convert a model position to a rendered position
+			cy.toRenderedPosition = (pos) => {
+					const pan = cy.pan();
+					const zoom = cy.zoom();
+					return {
+							x: pos.x * zoom + pan.x,
+							y: pos.y * zoom + pan.y,
+					};
+			};
 
 			
 		  a.on("cxttap", "edge", function(a) {
@@ -445,6 +464,7 @@
 			});
 			
 		}
+
 		
 		function makeTippy(node, text){
 				return tippy( node.popperRef(), {
@@ -470,6 +490,8 @@
 		}
 		
 		function load(json, layout_option, retain) {
+			currentLayout = layout_option;
+			
 			// need to set the current zoom/pan level again as the reset/zoom/pan actions will generate zoom and pan events and change them.
 			var zoom = currentZoomLevel; 
 		  var pan = currentPanPosition;
@@ -516,17 +538,31 @@
 			}
 		}
 		
+		function centerToWindow(layout_option) {
+			if (window.cy) {
+				cy.center();
+				moveTop(layout_option);
+			}
+		}
+		
 		function moveTop(layout_option) {
+			var currentPos = cy.pan();
+			var box = cy.elements().boundingBox({includeNodes: true, includeEdges: true});
+			//window.alert(cy.zoom());
 			switch(layout_option) {
 				case 0:
 				case 1:
-					cy.pan({x: 2, y: 0 });
+					if (cy.zoom() > 1.0) {
+						cy.pan({x: currentPos.x, y: -box.y1 + 10});
+					}
+					else {
+						cy.pan({x: currentPos.x, y: -box.y1*cy.zoom() + 10});
+					}
 					break;				
 				case 2:
 					cy.center(cy.nodes().filter(function( ele ){
 																										return ele.data('oriname') == "|>";
 																									}));
-					var currentPos = cy.pan();
 					cy.pan({x: currentPos.x, y: 0 });
 					break;
 				case 3:
@@ -538,8 +574,7 @@
 		}
 
 		function layout(layout_option) {
-			layout_model = layout_option;
-			switch(layout_model) {
+			switch(layout_option) {
 				case 0:
 					layout_manual_bezier(!0);
 					break;				
@@ -642,6 +677,7 @@
 			else {
 				zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRemoved", a));
 			}
+			
 		}
 
 		function removeNode(a, b) {
@@ -666,6 +702,7 @@
 					zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRemovedTrace", c));
 				}
 		  }
+
 		}
 	
 

@@ -29,6 +29,7 @@ import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -154,7 +155,7 @@ class FilterCriterionSelector {
 	        filterSelectorW.detach();
 	        processDiscovererController.setFilteredLog(filteredLog);
 	        processDiscovererController.setCriteria(criteria);
-	        processDiscovererController.refreshCriteria();
+	        processDiscovererController.refreshCriteria(criteria.isEmpty());
     	}
     }
 
