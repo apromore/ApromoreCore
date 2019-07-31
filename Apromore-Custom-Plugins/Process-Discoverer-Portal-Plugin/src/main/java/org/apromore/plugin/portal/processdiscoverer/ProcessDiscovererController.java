@@ -1730,7 +1730,7 @@ public class ProcessDiscovererController extends BaseController {
             eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
                     logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     logSummary.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                    logSummary.isMakePublic());
+                    false);
             
             Messagebox.show("A new log named '" + logName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
 
