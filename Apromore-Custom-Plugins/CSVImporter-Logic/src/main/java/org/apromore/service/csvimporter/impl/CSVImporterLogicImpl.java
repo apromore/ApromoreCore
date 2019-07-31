@@ -327,8 +327,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             }
         }
     }
-
-
+    
     /**
      * Gets the pos.
      *
