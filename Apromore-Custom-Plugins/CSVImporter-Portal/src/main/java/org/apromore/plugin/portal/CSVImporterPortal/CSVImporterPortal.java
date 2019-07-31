@@ -153,8 +153,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 if(header.length > 9) {
                     window.setWidth("100%");
                 } else {
-                    Integer DynamicWidth = null;
-                    DynamicWidth = 11 * header.length;
+                    Double DynamicWidth = null;
+                    DynamicWidth = 10.88 * header.length;
                     window.setWidth(DynamicWidth + "%");
                 }
 
@@ -234,7 +234,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             Button sp = new Button();
 //            sp.setLabel("-");
-            sp.setIconSclass("z-icon-compress");
+            sp.setImage("https://www.pngfind.com/mpng/oTRRxJ_x-cross-close-symbol-icon-button-gui-close/");
+//            sp.setIconSclass("z-icon-compress");
             sp.setStyle("margin-left:20px;");
 //            sp.setZclass("min-height: 16px;");
             A hidelink = new A();
@@ -252,12 +253,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     csvImporterLogic.tryParsing(event.getValue(), Integer.parseInt(textbox.getId().replace(textboxID,"")));
                 }
             });
-            item.appendChild(textbox);
+//            item.appendChild(textbox);
 
             Label check_lbl = new Label();
             check_lbl.setId(labelID + i);
             item.appendChild(check_lbl);
             item.appendChild(hidelink);
+            item.appendChild(textbox);
             popUPBox.appendChild(item);
         }
         popUPBox.clone();

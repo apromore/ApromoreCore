@@ -193,9 +193,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     }
 
                     if(tStamp == null) {
-                            terminating = true;
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Critical field - End time stamp field is invalid. \n Unable to import the file.");
-                            break;
+//                            terminating = true;
+                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Critical field - End time stamp field is invalid. \n Skipping this row completely");
+//                            break;
                     }
 
 
@@ -247,7 +247,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     return sortTraces(logData);
                 }
             }else{
-                Messagebox.show("Unable to import the file: critical field(Endtime stamp, Activity, CaseId) failure.", "Import Failed", Messagebox.OK, Messagebox.ERROR);
+                Messagebox.show("Unable to import the file: Critical field value ( One of Endtime stamp, Activity, CaseId) is invalid and cannot be parsed.", "Import Failed", Messagebox.OK, Messagebox.ERROR);
             }
 
 
@@ -597,38 +597,40 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
         String newTraceID = null;	// to keep track of traces, when a new trace is created we assign its value and add the respective events for the trace.
 
-        Comparator<XEvent> compareTimestamp= (XEvent o1, XEvent o2) -> ((XAttributeTimestampImpl) o1.getAttributes().get("time:timestamp")).getValue().compareTo(((XAttributeTimestampImpl) o2.getAttributes().get("time:timestamp")).getValue());
+        Comparator<XEvent> compareTimestamp = (XEvent o1, XEvent o2) -> ((XAttributeTimestampImpl) o1.getAttributes().get("time:timestamp")).getValue().compareTo(((XAttributeTimestampImpl) o2.getAttributes().get("time:timestamp")).getValue());
 
-        for (LogModel trace : traces) {
-            String caseID = trace.getCaseID();
+            for (LogModel trace : traces) {
+                String caseID = trace.getCaseID();
 
-            if(newTraceID == null || !newTraceID.equals(caseID)){	// This could be new trace
+                if (newTraceID == null || !newTraceID.equals(caseID)) {    // This could be new trace
 
-                if(!allEvents.isEmpty()){
-                    Collections.sort(allEvents, compareTimestamp);
-                    xTrace.addAll(allEvents);
-                    allEvents = new ArrayList<XEvent>();
+                    if (!allEvents.isEmpty()) {
+                        Collections.sort(allEvents, compareTimestamp);
+                        xTrace.addAll(allEvents);
+                        allEvents = new ArrayList<XEvent>();
+                    }
+
+                    xTrace = xFactory.createTrace();
+                    concept.assignName(xTrace, caseID);
+                    xLog.add(xTrace);
+                    newTraceID = caseID;
                 }
 
-                xTrace = xFactory.createTrace();
-                concept.assignName(xTrace, caseID);
-                xLog.add(xTrace);
-                newTraceID = caseID;
-            }
-
-            if(trace.getStartTimestamp() != null){
-                xEvent = createEvent(trace, xFactory, concept, lifecycle, timestamp, resource, false);
+                if (trace.getStartTimestamp() != null) {
+                    xEvent = createEvent(trace, xFactory, concept, lifecycle, timestamp, resource, false);
+                    allEvents.add(xEvent);
+                }
+                if (timestamp != null) {
+                    xEvent = createEvent(trace, xFactory, concept, lifecycle, timestamp, resource, true);
+                }
                 allEvents.add(xEvent);
             }
 
-            xEvent = createEvent(trace, xFactory, concept, lifecycle, timestamp, resource, true);
-            allEvents.add(xEvent);
-        }
+            if (!allEvents.isEmpty()) {
+                Collections.sort(allEvents, compareTimestamp);
+                xTrace.addAll(allEvents);
+            }
 
-        if(!allEvents.isEmpty()){
-            Collections.sort(allEvents, compareTimestamp);
-            xTrace.addAll(allEvents);
-        }
 
         if(xEvent == null) {
             return null;
@@ -662,7 +664,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 xEvent.getAttributes().put(entry.getKey(), attribute);
             }
         }
-        try {
+//        try {
+        if(theTrace.getTimestamp() != null) {
             if (!isEndTimestamp) {
                 lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.START);
                 timestamp.assignTimestamp(xEvent, theTrace.getStartTimestamp());
@@ -671,10 +674,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 lifecycle.assignStandardTransition(xEvent, XLifecycleExtension.StandardModel.COMPLETE);
                 timestamp.assignTimestamp(xEvent, theTrace.getTimestamp());
             }
-        } catch(Exception e) {
-            Messagebox.show("Cannot be converted, one of the timestamps are not valid!", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
-            return null;
         }
+//        } catch(Exception e) {
+//            Messagebox.show("Cannot be converted, one of the timestamps are not valid!", "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+//            return null;
+//        }
 
         return  xEvent;
     }

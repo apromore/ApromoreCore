@@ -228,13 +228,6 @@
         <!--<module>Supplements/cpf2pnml</module>-->
         <!--<module>Supplements/epml2cpf</module>-->
         <!--<module>Supplements/pnml2cpf</module>-->
-
-        <!-- Uncomment the following components if you have credentials to access the ZK EE repository -->
-        <!--
-        <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>
-        <module>Apromore-Custom-Plugins/Dashboard</module>
-        -->
-
     </modules>
 
     <properties>
@@ -2234,5 +2227,23 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <profiles>
+        <!-- If you have a license for the ZK Enterprise Edition libraries, you can
+             install the credentials ~/.m2/settings.xml and activate the following
+             profile by passing -Pzkee to the mvn command.  -->
+        <profile>
+            <id>zkee</id>
+            <repositories>
+                <repository>
+                    <id>ZK EE</id>
+                    <url>https://maven.zkoss.org/repo/zk/ee</url>
+                </repository>
+            </repositories>
+            <modules>
+                <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>
