@@ -165,6 +165,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     newColumn.setLabel(header[i]);
                     newColumn.setAlign("center");
                     myGrid.getColumns().appendChild(newColumn);
+//                    myGrid.getColumns().setSizable(true);
                 }
                 // add dropdown lists
                 if (attrBox != null) {
@@ -236,7 +237,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //            sp.setLabel("-");
 //            sp.setImage("img/close-icon.png");
 //            sp.setIconSclass("z-icon-compress");
-            sp.setStyle("margin-left:27px; background-image: url(img/close-icon.png); background-size: auto; background-repeat: repeat; ");
+            sp.setStyle("margin-left:27px; background-image: url(\"img/close-icon.png\"); background-size: auto; background-repeat: repeat; ");
 //            sp.setZclass("min-height: 16px;");
             A hidelink = new A();
             hidelink.appendChild(sp);
@@ -246,7 +247,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             Textbox textbox = new Textbox();
             textbox.setId(textboxID + i);
-            textbox.setWidth("100%");
+            textbox.setWidth("98%");
             textbox.setPlaceholder("Specify timestamp format");
             textbox.addEventListener("onChanging", (InputEvent event) -> {
                 if(!(event.getValue().isEmpty() || event.getValue().equals(""))){
