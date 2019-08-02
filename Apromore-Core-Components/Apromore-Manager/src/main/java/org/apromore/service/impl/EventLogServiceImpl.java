@@ -45,6 +45,11 @@ import org.deckfour.xes.out.XSerializer;
 import org.deckfour.xes.out.XesXmlGZIPSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -67,6 +72,7 @@ import java.util.*;
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
+@EnableCaching
 public class EventLogServiceImpl implements EventLogService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImpl.class);
@@ -81,6 +87,11 @@ public class EventLogServiceImpl implements EventLogService {
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
 //    private DashboardRepository dashboardRepository;
+
+    @Bean
+    public CacheManager cacheManager() {
+        return new ConcurrentMapCacheManager("log");
+    }
 
 
     /**
@@ -228,8 +239,8 @@ public class EventLogServiceImpl implements EventLogService {
                 if (Arrays.equals(stat.getPid(), PARENT_NODE_FLAG.getBytes())) {
                     parent = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
                     parent.setAttributes(getChildNodes(stat.getId(), stats, factory));
-                    // Since parent share the same stat_key, so add UUID as key when put stat into XAttributeMap
-                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getStat_key() + "-" + UuidAdapter.getUUIDFromBytes(stat.getId()), parent);
+                    // Since parent share the same stat_key, so add Statistic.count as key when put stat into XAttributeMap
+                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getUniqueKey(), parent);
                 }
             }
         }
@@ -257,6 +268,7 @@ public class EventLogServiceImpl implements EventLogService {
      * @param logId logID
      * @return list of statistic entities
      */
+//    @Cacheable("log")
     public List<Statistic> getStats(Integer logId) {
         return statisticRepository.findByLogid(logId);
     }

@@ -94,18 +94,18 @@ public class EventLogServiceImplTest {
         List<Statistic> stats = new ArrayList<>();
 
         Statistic parent = new Statistic();
-        parent.setId("parent".getBytes());
-        parent.setStat_key("key");
+        parent.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+        parent.setStat_key("parent_key");
         parent.setLogid(88);
         parent.setPid("0".getBytes());
         parent.setStat_value("01");
         stats.add(parent);
 
         Statistic child = new Statistic();
-        child.setId("child".getBytes());
+        child.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
         child.setStat_key("child_key");
         child.setLogid(88);
-        child.setPid("parent".getBytes());
+        child.setPid(parent.getId());
         child.setStat_value("02");
         stats.add(child);
 
@@ -135,8 +135,8 @@ public class EventLogServiceImplTest {
 
         assertThat(statsAttribute, equalTo(new XAttributeLiteralImpl(STAT_NODE_NAME, "")));
         assertThat(statsAttribute.getAttributes().size(), equalTo(1));
-        assertThat(statsAttribute.getAttributes().get("key"), equalTo(new XAttributeLiteralImpl("key", "01")));
-        assertThat(statsAttribute.getAttributes().get("key").getAttributes().get("child_key"), equalTo(new XAttributeLiteralImpl("child_key", "02")));
+        assertThat(statsAttribute.getAttributes().get(parent.getUniqueKey()), equalTo(new XAttributeLiteralImpl("parent_key", "01")));
+        assertThat(statsAttribute.getAttributes().get(parent.getUniqueKey()).getAttributes().get(child.getStat_key()), equalTo(new XAttributeLiteralImpl("child_key", "02")));
     }
 
 
@@ -254,7 +254,7 @@ public class EventLogServiceImplTest {
         assert em != null;
         em.getTransaction().begin();
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 100; i++) {
 
             Statistic fe = new Statistic();
             fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));

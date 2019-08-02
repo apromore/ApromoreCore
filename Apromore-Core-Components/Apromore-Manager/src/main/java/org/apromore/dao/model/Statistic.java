@@ -1,5 +1,6 @@
 package org.apromore.dao.model;
 
+import org.apromore.util.UuidAdapter;
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -80,6 +81,10 @@ public class Statistic implements Serializable {
     }
     public void setStat_value(final String stat_value) {
         this.stat_value = stat_value;
+    }
+
+    public String getUniqueKey() {
+        return stat_key + "-" + count;
     }
 
 }
