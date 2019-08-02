@@ -311,7 +311,7 @@
 					</row>
 				</rows>
 			</grid>
-			<n:div id="cy" xmlns:n="native" style="height:80vh; width:100%;" />
+			<n:div id="cy" xmlns:n="native" style="height:350px; width:100%;" />
 		</vbox>
 	</window>
 
@@ -345,9 +345,9 @@
 				content: "data(name)",
 				"font-size": "data(textsize)",
 				height: "data(height)",
-				padding: 5,
+				padding: 0,
 				shape: "data(shape)",
-				"text-border-width": 10,
+				"text-border-width": 0,
 				"text-max-width": "data(textwidth)",
 				"text-valign": "center",
 				"text-wrap": "wrap",
@@ -415,20 +415,20 @@
 
 			
 		  a.on("cxttap", "edge", function(a) {
-			if (!loadTraceMode) removeEdge(a)
+				if (!loadTraceMode) removeEdge(a)
 		  });
 		  
 		  a.on("cxttap", "node", function(a) {
-			if (!loadTraceMode) removeNode(a)
+				if (!loadTraceMode) removeNode(a)
 		  });
 			
 		  
 		  a.on("zoom", function(event) {
-			if (!loadTraceMode) currentZoomLevel = a.zoom();
+				if (!loadTraceMode) currentZoomLevel = a.zoom();
 		  });
 		  
 		  a.on("pan", function(event) {
-			if (!loadTraceMode) currentPanPosition = a.pan();
+				if (!loadTraceMode) currentPanPosition = a.pan();
 		  });		
 			
 			var currentNodeTooltip;
@@ -514,11 +514,13 @@
 				fitToWindow(layout_option);
 			}
 			
+			/*
 			cy.edgeBendEditing({
 													undoable: true,
 													initBendPointsAutomatically: false,
 													enabled: true
 												});
+												*/
 			
 		}
 		
@@ -534,21 +536,21 @@
 		function fitToWindow(layout_option) {
 			if (window.cy) {
 				cy.fit();
-				moveTop(layout_option);
+				//moveTop(layout_option);
 			}
 		}
 		
 		function centerToWindow(layout_option) {
 			if (window.cy) {
 				cy.center();
-				moveTop(layout_option);
+				//moveTop(layout_option);
 			}
 		}
 		
 		function moveTop(layout_option) {
 			var currentPos = cy.pan();
 			var box = cy.elements().boundingBox({includeNodes: true, includeEdges: true});
-			//window.alert(cy.zoom());
+			//window.alert(cy.zoom() + "," + box.h);
 			switch(layout_option) {
 				case 0:
 				case 1:

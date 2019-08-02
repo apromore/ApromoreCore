@@ -202,14 +202,14 @@ public class ProcessDiscovererController extends BaseController {
     private long max = 0; //the latest timestamp of the log
 
     private String label = DEFAULT_SELECTOR; // the event attribute key used to label each task node, default "concept:name"
-    private boolean selectorChanged = false;
-    private boolean layoutChanged = false;
     
-    private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
-    
-    private boolean displayFirstTime = true;
+//    private boolean selectorChanged = false;
+//    private boolean layoutChanged = false;
+//    private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
+//    private boolean displayFirstTime = true;
     
     private int selectedLayout = 0; //0: hierarchical, 1: dagre_LR, 2: dagre_TB, 3: breadth-first
+    private boolean retainZoomPan = false;
     
     private CanoniserService canoniserService;
     private DomainService domainService;
@@ -303,7 +303,7 @@ public class ProcessDiscovererController extends BaseController {
             this.use_fixed = (Radio) slidersWindow.getFellow(StringValues.b[20]);
             this.use_dynamic = (Radio) slidersWindow.getFellow(StringValues.b[21]);
             this.gateways = (Checkbox) slidersWindow.getFellow(StringValues.b[23]);
-            this.isShowingBPMN = gateways.isChecked();
+//            this.isShowingBPMN = gateways.isChecked();
             this.secondary = (Checkbox) slidersWindow.getFellow(StringValues.b[25]);
             this.inverted_nodes = (Checkbox) slidersWindow.getFellow(StringValues.b[26]);
             this.inverted_arcs = (Checkbox) slidersWindow.getFellow(StringValues.b[27]);
@@ -379,7 +379,7 @@ public class ProcessDiscovererController extends BaseController {
                     		if (comp != item) ((Menuitem)comp).setChecked(false);
                     	}
                     	
-                    	selectorChanged = true;
+//                    	selectorChanged = true;
                         setLabel(item.getLabel());
                         generateGlobalStatistics(initial_log, false);
                         generateLocalStatistics(filtered_log);
@@ -403,6 +403,13 @@ public class ProcessDiscovererController extends BaseController {
                 	}
             	}
             });
+            
+            EventListener<Event> secondaryListener = new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                	retainZoomPan = true;
+                	visualizeMap();
+                }
+            };            
 
             EventListener<Event> radioListener = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -434,9 +441,10 @@ public class ProcessDiscovererController extends BaseController {
             this.use_fixed.addEventListener("onCheck", radioListener);
             this.use_dynamic.addEventListener("onCheck", radioListener);
             this.gateways.addEventListener("onCheck", radioListener);
-            this.secondary.addEventListener("onCheck", radioListener);
             this.inverted_nodes.addEventListener("onCheck", radioListener);
             this.inverted_arcs.addEventListener("onCheck", radioListener);
+            
+            this.secondary.addEventListener("onCheck", secondaryListener);
             
             this.activities.addEventListener("onScroll", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
@@ -549,6 +557,7 @@ public class ProcessDiscovererController extends BaseController {
 
             EventListener<Event> frequencyListener = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
+                	retainZoomPan = true;
                     visualizeFrequency();
                 }
             };
@@ -563,6 +572,7 @@ public class ProcessDiscovererController extends BaseController {
             
             EventListener<Event> durationListener = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
+                	retainZoomPan = true;
                     visualizeDuration();
                 }
             };
@@ -575,7 +585,7 @@ public class ProcessDiscovererController extends BaseController {
             
             EventListener<Event> layoutListener = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                	layoutChanged = true;
+//                	layoutChanged = true;
                     changeLayout();
                 }
             };
@@ -1331,11 +1341,11 @@ public class ProcessDiscovererController extends BaseController {
     public void refreshCriteria(boolean reset) throws InterruptedException {
         populateMetrics(this.filtered_log);
         generateLocalStatistics(this.filtered_log);
+        this.retainZoomPan = !reset;
+        
         visualizeMap();
-        if (reset) {
-        	Clients.evalJavaScript("fitToWindow(" + selectedLayout + ");");
-        }
-        else {
+        
+        if (!reset) {
         	Clients.evalJavaScript("centerToWindow(" + selectedLayout + ");");
         }
         
@@ -1704,20 +1714,21 @@ public class ProcessDiscovererController extends BaseController {
     	String jsonString = jsonDiagram.toString();
     	jsonString = jsonString.replaceAll("'", "\\\\\'"); // to make string conform to Javascript rules
     	
-    	int retainZoomPan = 1;
-    	if ((isShowingBPMN && !gateways.isChecked()) || 
-    			(!isShowingBPMN && gateways.isChecked()) || 
-    			selectorChanged || layoutChanged || displayFirstTime) {
-    		retainZoomPan = 0;
-        }
-    	
+//    	int retainZoomPan = 1;
+//    	if ((isShowingBPMN && !gateways.isChecked()) || 
+//    			(!isShowingBPMN && gateways.isChecked()) || 
+//    			selectorChanged || layoutChanged || displayFirstTime) {
+//    		retainZoomPan = 0;
+//        }
+    	int retainZoomPan = this.retainZoomPan ? 1 : 0;
     	String javascript = "load('" + jsonString + "'," +  this.selectedLayout + "," + retainZoomPan + ");";
     	Clients.evalJavaScript(javascript);
+    	this.retainZoomPan = false;
     	
-        isShowingBPMN = gateways.isChecked();
-        selectorChanged = false;
-        displayFirstTime = false;
-        layoutChanged = false;
+//        isShowingBPMN = gateways.isChecked();
+//        selectorChanged = false;
+//        displayFirstTime = false;
+//        layoutChanged = false;
     }
     
     private void displayTrace(JSONArray jsonDiagram) {

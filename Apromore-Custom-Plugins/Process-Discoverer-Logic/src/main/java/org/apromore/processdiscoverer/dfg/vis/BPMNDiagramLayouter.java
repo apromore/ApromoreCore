@@ -51,8 +51,8 @@ public class BPMNDiagramLayouter {
 	public static final int EVENT_STD_WIDTH = 25;
 	public static final int EVENT_STD_HEIGHT = 25;
 	
-	public static final int GATEWAY_STD_WIDTH = 25;
-	public static final int GATEWAY_STD_HEIGHT = 25;
+	public static final int GATEWAY_STD_WIDTH = 50;
+	public static final int GATEWAY_STD_HEIGHT = 50;
 	
 	public static final int INTRA_CELL_SPACING = 50;
 	public static final int INTER_RANK_CELL_SPACING = 100;

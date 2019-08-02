@@ -74,11 +74,8 @@ public class JSONBuilder {
     private final ColorGradient activity_duration_gradient = new ColorGradient(new Color(254,240,217), new Color(179, 0, 0));
     private final ColorGradient arc_frequency_gradient = new ColorGradient(new Color(100, 100, 100), new Color(41, 41, 41));
     private final ColorGradient arc_duration_gradient = new ColorGradient(new Color(100, 100, 100), new Color(139, 0, 0));
-    
+
     private final int TEXT_TO_PX_RATIO = 4; // from text to pixel is multiplied by this factor
-    private final int MAX_NODE_WIDTH = 80; // maximum number of pixels for node width 
-    private final double ACTUAL_NODE_WIDTH_FACTOR = 1.0; // the actual number of pixels given to node width, accept partially overflow text outside the node shape
-    private final double STD_NODE_WIDTH = 40;
     
     private Abstraction abs;
     private AbstractionParams params;
@@ -115,8 +112,8 @@ public class JSONBuilder {
         //String activity_width = "20px";//"80px";
 
         String activity_font_size = "16"; //"10";
-        String xor_gateway_font_size = "20"; //"20"; //(used_bpmn_size) ? "20" : "10";
-        String and_gateway_font_size = "32"; //"30"; //(used_bpmn_size) ? "30" : "10";
+        String xor_gateway_font_size = "14"; //"20"; //(used_bpmn_size) ? "20" : "10";
+        String and_gateway_font_size = "20"; //"30"; //(used_bpmn_size) ? "30" : "10";
 
 //        int max_node_label_length = 0;
 //        //String textwidth = "90px";
