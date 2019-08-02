@@ -279,7 +279,7 @@
 						<combobutton id="duration" label="Duration" onClick="total_duration.setChecked(false);median_duration.setChecked(false);mean_duration.setChecked(true);max_duration.setChecked(false);min_duration.setChecked(false)">
 							<menupopup>
 								<menuitem id="total_duration" label="Cumulative" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
-								<menuitem id="mean_duration" label="Mean" checked="true" onCheck='median_duration.setChecked(false);total_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+								<menuitem id="mean_duration" label="Average" checked="true" onCheck='median_duration.setChecked(false);total_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
 								<menuitem id="median_duration" label="Median" onCheck='total_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
 								<menuitem id="max_duration" label="Max" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);total_duration.setChecked(false);min_duration.setChecked(false)' />
 								<menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
@@ -374,8 +374,9 @@
 				"text-background-padding": 5,
 				"text-background-shape": "roundrectangle",
 				"text-wrap": "wrap",
-				"text-margin-y": -12,
-				width: "mapData(strength, 0, 100, 1, 6)"
+				"text-margin-y": -16,
+				width: "mapData(strength, 0, 100, 1, 6)",
+				"control-point-step-size": 60
 			  }
 			}, {
 				selector: ":selected",
