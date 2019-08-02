@@ -20,7 +20,10 @@
 package org.apromore.service.impl;
 
 import org.apromore.common.Constants;
-import org.apromore.dao.*;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.StatisticRepository;
 import org.apromore.dao.model.*;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.PluginMessages;
@@ -28,8 +31,8 @@ import org.apromore.model.SummariesType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.util.UuidAdapter;
 import org.apromore.util.StatType;
+import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -46,13 +49,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sun.font.AttributeMap;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -228,8 +228,8 @@ public class EventLogServiceImpl implements EventLogService {
                 if (Arrays.equals(stat.getPid(), PARENT_NODE_FLAG.getBytes())) {
                     parent = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
                     parent.setAttributes(getChildNodes(stat.getId(), stats, factory));
-                    // Since parent share the same stat_key, so use stat_value as key when put stat into XAttributeMap
-                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getStat_value(), parent);
+                    // Since parent share the same stat_key, so add UUID as key when put stat into XAttributeMap
+                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getStat_key() + "-" + UuidAdapter.getUUIDFromBytes(stat.getId()), parent);
                 }
             }
         }
@@ -329,33 +329,9 @@ public class EventLogServiceImpl implements EventLogService {
 
         if(!isStatsExists(logId, statType)) {
             statisticRepository.storeAllStats(flattenNestedStringMap(map, logId, statType));
-        }
 
-//        switch (statType) {
-//
-//            case FILTER:
-//                List<Statistic> stats = getStats(logId);
-//                if (null == stats || stats.size() == 0) {
-//
-//                    statisticRepository.storeAllStats(flattenNestedStringMap(map, logId));
-//                    LOGGER.debug("Stored statistics of Log: " + logId);
-//                }
-//                LOGGER.debug("statistics already exist in Log: " + logId);
-//                break;
-//            case CASE:
-//                List<Dashboard> dashboards = getDashboard(logId);
-//                if (null == dashboards || dashboards.size() == 0) {
-//
-//                    statisticRepository.save(flattenNestedStringMap(map, logId));
-//                    LOGGER.debug("Stored statistics of Log: " + logId);
-//                }
-//                LOGGER.debug("statistics already exist in Log: " + logId);
-//                break;
-//            case ACTIVITY:
-//                break;
-//            case RESOURCE:
-//                break;
-//        }
+            LOGGER.debug("Stored statistics of " + statType.toString() + " in Log [" + logId + "]");
+        }
     }
 
 
@@ -370,9 +346,14 @@ public class EventLogServiceImpl implements EventLogService {
      *
      * @param logId logID
      * @return list of statistic entities
+     * @throws IllegalArgumentException
      */
 
     public List<Statistic> flattenNestedStringMap(Map<String, Map<String, String>> map, Integer logId, StatType statType) {
+
+        if (map == null || logId == null || statType == null) {
+            throw new IllegalArgumentException();
+        }
 
         List<Statistic> statList = new ArrayList<>();
 
@@ -380,7 +361,7 @@ public class EventLogServiceImpl implements EventLogService {
             Statistic parent = new Statistic();
             if (option.getKey() != null && option.getValue() != null) {
                 parent.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-                parent.setStat_key(statType.toString()); //assign statType to the key, align with XAttritable object
+                parent.setStat_key(statType.toString()); //assign statType to the key, align with XAttributable object
                 parent.setStat_value(option.getKey());
                 parent.setLogid(logId);
                 parent.setPid(PARENT_NODE_FLAG.getBytes());

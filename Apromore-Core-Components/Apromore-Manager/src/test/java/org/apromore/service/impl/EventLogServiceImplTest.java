@@ -254,7 +254,7 @@ public class EventLogServiceImplTest {
         assert em != null;
         em.getTransaction().begin();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 100000; i++) {
 
             Statistic fe = new Statistic();
             fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
@@ -276,6 +276,7 @@ public class EventLogServiceImplTest {
         // *******  profiling code start here ********
         long elapsedNanos = System.nanoTime() - startTime;
         LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
+        LOGGER.info("Insert speed: " + 100000 / ( elapsedNanos / 1000000 /1000 ) + " records/sec");
         // *******  profiling code end here ********
 
     }

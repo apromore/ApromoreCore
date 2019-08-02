@@ -110,6 +110,7 @@ public interface EventLogService {
      *             {caseID, {[attrKey, attrValue] [attrKey, attrValue]}}
      * @param logId logID of XES log file
      * @param statType enum that store all the types of statistic
+     * @throws IllegalArgumentException
      */
     void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType);
 
