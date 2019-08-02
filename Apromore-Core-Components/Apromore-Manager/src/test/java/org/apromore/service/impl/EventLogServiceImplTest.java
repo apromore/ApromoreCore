@@ -136,6 +136,7 @@ public class EventLogServiceImplTest {
         assertThat(statsAttribute, equalTo(new XAttributeLiteralImpl(STAT_NODE_NAME, "")));
         assertThat(statsAttribute.getAttributes().size(), equalTo(1));
         assertThat(statsAttribute.getAttributes().get(parent.getUniqueKey()), equalTo(new XAttributeLiteralImpl("parent_key", "01")));
+        assertThat(statsAttribute.getAttributes().get(parent.getUniqueKey()).getAttributes().size(), equalTo(1));
         assertThat(statsAttribute.getAttributes().get(parent.getUniqueKey()).getAttributes().get(child.getStat_key()), equalTo(new XAttributeLiteralImpl("child_key", "02")));
     }
 

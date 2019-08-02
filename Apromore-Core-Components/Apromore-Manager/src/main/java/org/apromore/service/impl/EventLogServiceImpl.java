@@ -72,7 +72,7 @@ import java.util.*;
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
-@EnableCaching
+//@EnableCaching
 public class EventLogServiceImpl implements EventLogService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImpl.class);
@@ -88,10 +88,10 @@ public class EventLogServiceImpl implements EventLogService {
     private StatisticRepository statisticRepository;
 //    private DashboardRepository dashboardRepository;
 
-    @Bean
-    public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("log");
-    }
+//    @Bean
+//    public CacheManager cacheManager() {
+//        return new ConcurrentMapCacheManager("log");
+//    }
 
 
     /**
