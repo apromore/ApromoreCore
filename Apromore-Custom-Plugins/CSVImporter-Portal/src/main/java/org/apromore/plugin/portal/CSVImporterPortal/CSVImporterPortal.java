@@ -149,7 +149,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 /// display first numberOfrows to user and display drop down lists to set attributes
                 header = reader.readNext();   // read first line
 
-//                window.setHeight("100%");
                 if(header.length > 9) {
                     window.setWidth("100%");
                 } else {
@@ -167,7 +166,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     myGrid.getColumns().appendChild(newColumn);
 //                    myGrid.getColumns().setSizable(true);
                 }
-                // add dropdown lists
                 if (attrBox != null) {
                     attrBox.getChildren().clear();
                 }
