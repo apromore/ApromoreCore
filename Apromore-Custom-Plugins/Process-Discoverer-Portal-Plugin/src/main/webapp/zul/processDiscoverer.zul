@@ -311,7 +311,7 @@
 					</row>
 				</rows>
 			</grid>
-			<n:div id="cy" xmlns:n="native" style="height:55vh; width:100%;" />
+			<n:div id="cy" xmlns:n="native" style="height:66vh; width:100%;" />
 		</vbox>
 	</window>
 
