@@ -21,6 +21,7 @@
 package org.apromore.plugin.portal.CSVImporterPortal;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -149,7 +150,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 /// display first numberOfrows to user and display drop down lists to set attributes
                 header = reader.readNext();   // read first line
 
-//                window.setHeight("100%");
+                // Deal with UTF-8 with BOM file encoding
+                String BomC = new String(header[0].getBytes(), Charset.forName("UTF-8"));
+                header[0] = BomC;
+
+
+//                Messagebox.show("A: " + BomC + " First is: " + header[0].getBytes().toString() +", suppose to be: ï»¿STU_ID");
                 if(header.length > 9) {
                     window.setWidth("100%");
                 } else {
@@ -167,7 +173,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     myGrid.getColumns().appendChild(newColumn);
 //                    myGrid.getColumns().setSizable(true);
                 }
-                // add dropdown lists
                 if (attrBox != null) {
                     attrBox.getChildren().clear();
                 }
@@ -213,6 +218,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                             numberOfrows--;
                             line = reader.readNext();
                         }
+
+
                         reader.close();
                     }
             } catch (IOException e) {
@@ -309,6 +316,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 if (Arrays.asList(allowedExtensions).contains(media.getFormat())) {
 
                     displayCSVContent(media, result, myGrid, attrBox, popUPBox, window);
+
                     if (window != null) {
                         // set grid model
                         if (result != null) {

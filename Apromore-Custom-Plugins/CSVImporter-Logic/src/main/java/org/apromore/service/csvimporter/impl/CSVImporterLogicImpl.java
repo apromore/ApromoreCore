@@ -117,7 +117,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     public List<LogModel> prepareXesModel(CSVReader reader) {
         int errorCount = 0;
         int lineCount = 0;
-        boolean terminating = false;
         ArrayList<String> invalidRows = new ArrayList<String>();
         try {
 
@@ -159,6 +158,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             otherTimestamps.put(header[p], parse.parseTimestamp(line[p], otherTimeStampsPos.get(p)));
                         } else if (p != heads.get(caseid) && p != heads.get(activity) && p != heads.get(timestamp) && p != heads.get(tsStart) && p != heads.get(resource) && (ignoredPos.isEmpty() || !ignoredPos.contains(p))) {
                             others.put(header[p], line[p]);
+
                             if(header.length != line.length) {
                                 if(invalidRows.size() < 5) {
                                     invalidRows.add("Line: " + (lineCount + 1) + ", Error: number of columns does not match number of headers. "
@@ -166,6 +166,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                     break;
                                 }
                             }
+
+                        } else {
+                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Other time stamp field is invalid. ");
                         }
                     }
 
@@ -194,10 +197,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                     if(tStamp == null) {
 //                            terminating = true;
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Critical field - End time stamp field is invalid. \n Skipping this row completely");
+                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Critical field - End time stamp field is invalid. Skipping this row completely");
 //                            break;
                     }
-
 
                     logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
 
@@ -216,7 +218,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 line = reader.readNext();
             }
 
-            if(terminating == false) {
                 if (errorCount > (lineCount * errorAcceptance)) {
                     String notificationMessage = "Detected more than " + errorAcceptance * 100 + "% of the log with errors. Please make sure input file is a valid CSV file. \n" +
                             "\n Invalid rows: \n";
@@ -231,7 +232,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     return null;
                 } else {
                     if (errorCount > 0) {
-                        String notificationMessage = "Imported: " + lineCount + " lines, skipped " + errorCount + " rows that contains invalid values! \n" +
+                        String notificationMessage = "Imported: " + lineCount + " lines, skipped " + errorCount + " row(s) that contains invalid values! \n" +
                                 "Invalid rows: \n";
 
                         for (String content : invalidRows) {
@@ -246,9 +247,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     Messagebox.show("Total number of lines processed: " + lineCount + "\n Your file has been imported.");
                     return sortTraces(logData);
                 }
-            }else{
-                Messagebox.show("Unable to import the file: Critical field value ( One of Endtime stamp, Activity, CaseId) is invalid and cannot be parsed.", "Import Failed", Messagebox.OK, Messagebox.ERROR);
-            }
+
 
 
 
