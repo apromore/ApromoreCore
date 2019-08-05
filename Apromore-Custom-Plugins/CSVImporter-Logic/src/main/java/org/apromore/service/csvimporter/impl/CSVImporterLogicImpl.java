@@ -166,9 +166,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                     break;
                                 }
                             }
-
-                        } else {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Other time stamp field is invalid. ");
                         }
                     }
 
