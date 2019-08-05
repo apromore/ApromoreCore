@@ -112,8 +112,8 @@ public class JSONBuilder {
         //String activity_width = "20px";//"80px";
 
         String activity_font_size = "16"; //"10";
-        String xor_gateway_font_size = "14"; //"20"; //(used_bpmn_size) ? "20" : "10";
-        String and_gateway_font_size = "20"; //"30"; //(used_bpmn_size) ? "30" : "10";
+        String xor_gateway_font_size = "25"; //"20"; //(used_bpmn_size) ? "20" : "10";
+        String and_gateway_font_size = "40"; //"30"; //(used_bpmn_size) ? "30" : "10";
 
 //        int max_node_label_length = 0;
 //        //String textwidth = "90px";
