@@ -534,13 +534,14 @@
 				fitToWindow(layout_option);
 			}
 			
-			/*
+			
 			cy.edgeBendEditing({
 													undoable: true,
 													initBendPointsAutomatically: false,
-													enabled: true
+													enabled: true,
+													bendShapeSizeFactor: 6
 												});
-												*/
+												
 			
 		}
 		
