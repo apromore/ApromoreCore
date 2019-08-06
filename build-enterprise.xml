@@ -52,6 +52,10 @@
         <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
         <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
     </fileset>
+
+    <fileset id="pickupRepo-dashboard" dir="../Dashboard">
+        <include name="target/dashboard-0.1.war"/>
+    </fileset>
     
     <target name="start-virgo-enterprise" depends="set-permissions,copy-virgo-enterprise">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
@@ -98,6 +102,7 @@
         </copy>
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset refid="pickupRepo-enterprise"/>
+            <fileset refid="pickupRepo-dashboard"/>
         </copy>
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset dir="${dir-annotation}">

@@ -2241,6 +2241,7 @@
                 </repository>
             </repositories>
             <modules>
+                <module>../Dashboard</module>
                 <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>
             </modules>
         </profile>
