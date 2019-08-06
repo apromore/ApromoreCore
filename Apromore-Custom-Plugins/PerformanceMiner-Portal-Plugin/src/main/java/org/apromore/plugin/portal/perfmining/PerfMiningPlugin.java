@@ -61,7 +61,7 @@ public class PerfMiningPlugin extends DefaultPortalPlugin {
     private final PerfMiningService perfMiningService;
     private final EventLogService eventLogService;
     
-    private String label = "Mine stage-based process performance";
+    private String label = "Mine stage-based process performance (β)";
     private String groupLabel = "Analyze";
 
     @Inject
