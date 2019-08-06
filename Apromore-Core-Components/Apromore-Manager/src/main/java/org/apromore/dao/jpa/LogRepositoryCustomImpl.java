@@ -114,7 +114,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
     @Override
     public String storeProcessLog(final Integer folderId, final String logName, XLog log, final Integer userID, final String domain, final String created) {
 
-        LOGGER.error("Storing Log " + log.size() + " " + logName);
+        LOGGER.debug("Storing Log " + log.size() + " " + logName);
         if (log != null && logName != null) {
             String logNameId = simpleDateFormat.format(new Date());
 

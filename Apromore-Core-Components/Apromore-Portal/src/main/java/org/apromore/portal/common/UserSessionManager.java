@@ -46,9 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.zkoss.zk.ui.Execution;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 
 public abstract class UserSessionManager {
 
@@ -74,26 +72,12 @@ public abstract class UserSessionManager {
         setAttribute(USER, user);
     }
 
-    private static Session getSession() {
-        Execution execution = Executions.getCurrent();
-        if (execution == null) {
-            throw new RuntimeException("No current execution");
-        }
-
-        Session session = execution.getSession();
-        if (session == null) {
-            throw new RuntimeException("Session was not set for the current execution");
-        }
-
-        return session;
-    }
-
     private static Object getAttribute(String attribute) {
-        return getSession().getAttribute(attribute);
+        return Sessions.getCurrent().getAttribute(attribute);
     }
 
     private static void setAttribute(String attribute, Object value) {
-        getSession().setAttribute(attribute, value);
+        Sessions.getCurrent().setAttribute(attribute, value);
     }
 
     public static UserType getCurrentUser() {
@@ -198,17 +182,21 @@ public abstract class UserSessionManager {
 
     public static void setCurrentFolder(FolderType folder) {
         setAttribute(CURRENT_FOLDER, folder);
-        if (folder != null) {
+        if (folder != null && getMainController() != null) {
             getMainController().setBreadcrumbs(folder.getId());
         }
     }
 
     public static FolderType getCurrentFolder() {
-        if (getAttribute(CURRENT_FOLDER) != null) {
-            return (FolderType) getAttribute(CURRENT_FOLDER);
+        FolderType folder = (FolderType) getAttribute(CURRENT_FOLDER);
+        if (folder == null) {
+            folder = new FolderType();
+            folder.setId(0);
+            folder.setFolderName("Home");
+            setCurrentFolder(folder);
         }
 
-        return null;
+        return folder;
     }
 
     public static void setSelectedFolderIds(List<Integer> folderIds) {
