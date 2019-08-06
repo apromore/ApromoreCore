@@ -111,16 +111,16 @@
 
         <!-- ZK Osgi -->
         <module>Apromore-OSGI-Bundles/zk-osgi</module>
-        <!--<module>Apromore-OSGI-Bundles/zkcharts-osgi</module>-->  <!-- Uncomment if you have credentials for the ZK EE repository -->
 
         <!-- Similarity Search -->
         <module>Apromore-OSGI-Bundles/similaritysearch-osgi</module>
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
-				
-				<module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
 
+        <module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
+
+        <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/APQL-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/BEBoP-Logic</module>
         <module>Apromore-Custom-Plugins/BEBoP-Portal-Plugin</module>
@@ -184,8 +184,8 @@
         <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/StageMining-Logic</module>
         <module>Apromore-Custom-Plugins/StageMining-Portal-Plugin</module>
-				<module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
-				<module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
+        <module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>
 
         <!-- Applets -->
         <module>Apromore-Extras/Cmapper</module>
@@ -217,7 +217,7 @@
 
         <module>Apromore-Assembly/PQL-Indexer-Assembly</module>
         <module>Apromore-Assembly/Predictive-Monitor-Assembly</module>
-		<module>Apromore-Assembly/Custom-Plugins</module>
+        <module>Apromore-Assembly/Custom-Plugins</module>
 
         <!-- Command line tools -->
         <module>Apromore-Extras/bpmncmap</module>
@@ -228,7 +228,6 @@
         <!--<module>Supplements/cpf2pnml</module>-->
         <!--<module>Supplements/epml2cpf</module>-->
         <!--<module>Supplements/pnml2cpf</module>-->
-
     </modules>
 
     <properties>
@@ -1585,11 +1584,6 @@
             <name>ZK CE Repository</name>
             <url>http://mavensync.zkoss.org/maven2</url>
         </repository>
-        <repository>
-            <id>source tree</id>
-            <name>Apromore source code embedded Maven repository</name>
-            <url>file://repository</url>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -2233,5 +2227,23 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <profiles>
+        <!-- If you have a license for the ZK Enterprise Edition libraries, you can
+             install the credentials ~/.m2/settings.xml and activate the following
+             profile by passing -Pzkee to the mvn command.  -->
+        <profile>
+            <id>zkee</id>
+            <repositories>
+                <repository>
+                    <id>ZK EE</id>
+                    <url>https://maven.zkoss.org/repo/zk/ee</url>
+                </repository>
+            </repositories>
+            <modules>
+                <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

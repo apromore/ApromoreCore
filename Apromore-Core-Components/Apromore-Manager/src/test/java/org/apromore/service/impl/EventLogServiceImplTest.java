@@ -5,10 +5,10 @@ import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.service.helper.UuidAdapter;
+import org.apromore.util.UuidAdapter;
+import org.apromore.util.StatType;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.impl.XAttributeDiscreteImpl;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeMapImpl;
 import org.deckfour.xes.model.impl.XLogImpl;
@@ -25,6 +25,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.*;
 
+import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -98,13 +99,14 @@ public class EventLogServiceImplTest {
 
         Statistic child = new Statistic();
         child.setId("child".getBytes());
-        child.setStat_key("key");
+        child.setStat_key("child_key");
         child.setLogid(88);
         child.setPid("parent".getBytes());
-        child.setStat_value("01");
+        child.setStat_value("02");
         stats.add(child);
 
         Integer logId = 001;
+
         expect(statisticRepository.findByLogid(logId)).andReturn(stats);
         replay(statisticRepository);
 
@@ -125,12 +127,12 @@ public class EventLogServiceImplTest {
         XLog expectResult = eventLogService.getXLogWithStats(logId);
         verify(statisticRepository, logRepository);
 
-        XAttribute statsAttribute = expectResult.getAttributes().get("statistics");
+        XAttribute statsAttribute = expectResult.getAttributes().get(STAT_NODE_NAME);
 
-        assertThat(statsAttribute, equalTo(new XAttributeLiteralImpl("statistics", "")));
+        assertThat(statsAttribute, equalTo(new XAttributeLiteralImpl(STAT_NODE_NAME, "")));
         assertThat(statsAttribute.getAttributes().size(), equalTo(1));
-        assertThat(statsAttribute.getAttributes().get("key"), equalTo(new XAttributeLiteralImpl("key", "")));
-        assertThat(statsAttribute.getAttributes().get("key").getAttributes().get("key"), equalTo(new XAttributeDiscreteImpl("key", 01)));
+        assertThat(statsAttribute.getAttributes().get("key"), equalTo(new XAttributeLiteralImpl("key", "01")));
+        assertThat(statsAttribute.getAttributes().get("key").getAttributes().get("child_key"), equalTo(new XAttributeLiteralImpl("child_key", "02")));
     }
 
 
@@ -156,6 +158,36 @@ public class EventLogServiceImplTest {
         assertThat(result.get(2).getStat_key(), equalTo("Activity"));
         assertThat(result.get(2).getStat_value(), equalTo("10"));
         assertThat(result.get(3).getStat_key(), equalTo("concept:test"));
+        assertThat(result.get(4).getStat_key(), equalTo("direct:follow"));
+        assertThat(result.get(4).getStat_value(), equalTo("40"));
+        assertThat(result.get(5).getStat_key(), equalTo("Activity"));
+        assertThat(result.get(5).getStat_value(), equalTo("10"));
+    }
+
+    @Test
+    public void flattenNestedStringMapTest() {
+
+        Map<String, Map<String, String>> options = new HashMap<>();
+
+        Map<String, String> options_frequency = new HashMap<>();
+
+        options_frequency.put("Activity", "10");
+        options_frequency.put("direct:follow", "40");
+        options.put("concept:name", options_frequency);
+        options.put("concept:test", options_frequency);
+
+        List<Statistic> result = eventLogService.flattenNestedStringMap(options, 88, StatType.FILTER);
+
+        assertThat(result.size(), equalTo(6));
+        assertThat(result.get(0).getPid(), equalTo("0".getBytes()));
+        assertThat(result.get(0).getStat_key(), equalTo(StatType.FILTER.toString()));
+        assertThat(result.get(0).getStat_value(), equalTo("concept:name"));
+        assertThat(result.get(1).getStat_key(), equalTo("direct:follow"));
+        assertThat(result.get(1).getStat_value(), equalTo("40"));
+        assertThat(result.get(2).getStat_key(), equalTo("Activity"));
+        assertThat(result.get(2).getStat_value(), equalTo("10"));
+        assertThat(result.get(3).getStat_key(), equalTo(StatType.FILTER.toString()));
+        assertThat(result.get(3).getStat_value(), equalTo("concept:test"));
         assertThat(result.get(4).getStat_key(), equalTo("direct:follow"));
         assertThat(result.get(4).getStat_value(), equalTo("40"));
         assertThat(result.get(5).getStat_key(), equalTo("Activity"));
@@ -194,4 +226,63 @@ public class EventLogServiceImplTest {
 //        logRepositoryCustom.saveStat(stats.get(0));
 //        eventLogService.insertStatistic(stat);
     }
+
+    @Test
+    @Rollback
+    public void batchInsertTest() {
+
+        // *******  profiling code start here ********
+        long startTime = System.nanoTime();
+        // *******  profiling code end here ********
+
+        EntityManager em = getEntityManagerFactory().createEntityManager();
+        assert em != null;
+        em.getTransaction().begin();
+
+        for (int i = 0; i < 100; i++) {
+
+            Statistic fe = new Statistic();
+            fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+            fe.setStat_key("key");
+            fe.setLogid(88);
+            fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+            fe.setStat_value(Double.toString(Math.random()));
+
+            em.persist(fe);
+            if ((i % 10000) == 0) {
+                em.getTransaction().commit();
+                em.clear();
+                em.getTransaction().begin();
+            }
+        }
+        em.getTransaction().commit();
+//        em.close();
+
+        // *******  profiling code start here ********
+        long elapsedNanos = System.nanoTime() - startTime;
+        LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
+        // *******  profiling code end here ********
+
+    }
+
+//    @Test
+//    public void getStatsByType() {
+//
+//        List<Statistic> stats = new ArrayList<>();
+//        List<Dashboard> dashboard = new ArrayList<>();
+//        Integer logId = 001;
+//        expect(statisticRepository.findByLogid(logId)).andReturn(stats);
+//        replay(statisticRepository);
+//
+//        expect(dashboardRepository.findByLogid(logId)).andReturn(dashboard);
+//        replay(dashboardRepository);
+//
+//        List<Statistic> result = (List<Statistic>) eventLogService.getStatsByType(logId, StatType.FILTER);
+//        verify(statisticRepository);
+//        assertThat(result, equalTo(stats));
+//
+//        List<Dashboard> dbList = (List<Dashboard>) eventLogService.getStatsByType(logId, StatType.ACTIVITY);
+//        verify(statisticRepository);
+//        assertThat(dbList, equalTo(dashboard));
+//    }
 }

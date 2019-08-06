@@ -104,4 +104,13 @@ public interface SecurityService {
      * @return if success or not.
      */
     boolean resetUserPassword(String username, String password);
+
+    /**
+     * Update the user password with the new one passed in.
+     * @param username the user to find.
+     * @param oldPassword the current password
+     * @param newPassword the new password
+     * @return if success or not.
+     */
+    boolean changeUserPassword(String username, String oldPassword, String newPassword);
 }

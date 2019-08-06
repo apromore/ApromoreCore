@@ -127,7 +127,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Page<Log> getLogs(String userId, Integer folderId, Pageable pageable) {
-        return (folderId == 0) ? logRepo.findLogsByUser(userId, pageable)
+        return (folderId == 0) ? logRepo.findRootLogsByUser(userId, pageable)
                                : logRepo.findAllLogsInFolderForUser(folderId, userId, pageable);
     }
 

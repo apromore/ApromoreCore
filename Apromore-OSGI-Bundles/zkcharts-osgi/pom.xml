@@ -38,14 +38,6 @@
     <artifactId>zkcharts-osgi</artifactId>
     <version>3.0.3<!--${zkcharts.version}--></version>
 
-    <repositories>
-        <!-- Proprietary repository: requires credentials in Maven settings.xml -->
-        <repository>
-            <id>ZK EE</id>
-            <url>https://maven.zkoss.org/repo/zk/ee</url>
-        </repository>
-    </repositories>
-
     <build>
         <plugins>
             <plugin>

@@ -25,7 +25,7 @@
     xmlns:h="http://www.w3.org/1999/xhtml"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
-    xmlns:x="xhtml" xmlns:zk="zk" xmlns:w="client">
+    xmlns:x="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:n="native">
 	
 	<style src="/css/apromoreOld.css"/>
 	<style src="/css/site.css"/>
@@ -42,6 +42,9 @@
 	<script src="/js/popper.v1.14.7.min.js"></script>
 	<script src="/js/cytoscape-popper.v1.0.4.js"></script>
 	<script src="/js/tippy.v4.0.1.min.js"></script>
+	<script src="/js/cytoscape-undo-redo.js"></script>
+	<script src="/js/cytoscape-edge-bend-editing.js"></script>
+	
 	
 	<style dynamic="true">
 		tr.z-row td.z-row-inner, tr.z-row td.z-cell, tr.z-group td.z-group-inner, tr.z-groupfoot td.z-groupfoot-inner {
@@ -144,194 +147,202 @@
 		
 	</style>
 		
-	<window id="win" border="none" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
+	<window id="win" border="0" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
 		<caption id="windowcaption" sclass="mainCaption">
 			<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank" sclass="captionButtons">
 				<button label="Help" image="/img/Help-16x16.png" style="float: right;" height="25px"></button>
 			</a>
 		</caption>
 
-		<vbox>
-			<radiogroup id="sv1" onCheck="choice1.value = self.selectedItem.label" />
-			<groupbox id="optionbox" closable="false" mold="3d" open="true">
-				<attribute name="onOpen">
-					<![CDATA[
-						//arrow.setSclass("open-" + self.isOpen());
-					]]>
-				</attribute>
-				<caption id="optionlabel" label="Options" width="100%" sclass="customIcon" >
-					<!--<span id="arrow" class="open-true" />-->
-					<!--<div id="arrow" class="open-true"></div> -->
-				</caption>
-				<hbox align="center" id="optiondetails">
-					<vbox align="left" pack="center" width="80px">
-						<hbox align="center">
-							<vbox align="left" pack="center" width="90px">
-								<groupbox closable="false"><caption height="20px">Slider</caption>
-									<vbox align="left" pack="top">
-										<radio id="use_fixed" label="Locked" selected="true" radiogroup="sv1" width="100px"/>
-										<radio id="use_dynamic" label="Unlocked" radiogroup="sv1" width="100px"/>
+		<n:table style="height:100%;width:100%;border:1px;">
+			<n:tr>
+				<n:td>
+					<groupbox id="optionbox" closable="false" mold="3d" open="true" style="background-color:none;">
+						<attribute name="onOpen">
+							<![CDATA[
+								//arrow.setSclass("open-" + self.isOpen());
+							]]>
+						</attribute>
+						<caption id="optionlabel" label="Options" width="100%" sclass="customIcon" >
+							<!--<span id="arrow" class="open-true" />-->
+							<!--<div id="arrow" class="open-true"></div> -->
+						</caption>
+						
+						<hbox align="center" id="optiondetails">
+							<vbox align="left" pack="center" width="80px">
+								<hbox align="center">
+									<vbox align="left" pack="center" width="90px">
+										<groupbox closable="false"><caption height="20px">Slider</caption>
+												<radiogroup>
+													<vbox align="left" pack="top">
+														<radio id="use_fixed" label="Locked" selected="true" width="100px"/>
+														<radio id="use_dynamic" label="Unlocked" width="100px"/>
+													</vbox>
+												</radiogroup>
+										</groupbox>
 									</vbox>
-								</groupbox>
+									<vbox align="left" pack="center" width="80px" height="85px">
+										<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px" />
+										<checkbox id="secondary" checked="false" label="Dual Info" height="30px" width="100px"/>
+									</vbox>
+								</hbox>
+								<vbox align="left" pack="top">
+									<checkbox id="inverted_nodes" checked="false" label="Invert Priority Nodes" height="30px" width="100px"/>
+									<checkbox id="inverted_arcs" checked="false" label="Invert Priority Arcs" height="30px" width="100px"/>
+								</vbox>
 							</vbox>
-							<vbox align="left" pack="center" width="80px" height="85px">
-								<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px" />
-								<checkbox id="secondary" checked="false" label="Dual Info" height="30px" width="100px"/>
-							</vbox>
+							<grid>
+								<columns>
+									<column width="55px"/>
+									<column width="50%"/>
+									<column width="40px"/>
+								</columns>
+								<rows>
+									<row height="21px">
+										<label>Activities</label>
+										<slider id="slider1" mold="scale" maxpos="100" width="100%" curpos="100"/>
+										<intbox id="activityText" value="100" width="35px" />
+									</row>
+									<row height="21px">
+										<label>Arcs</label>
+										<slider id="slider2" mold="scale" maxpos="100" width="100%" curpos="10"/>
+										<intbox id="arcText" value="10" width="35px" />
+									</row>
+									<row id="parallelismRow" height="21px">
+										<label id="parallelismLabel">Parallelism</label>
+										<slider id="parallelismSlider" mold="scale" maxpos="100" width="100%" curpos="40" />
+										<intbox id="parallelismText" value="40" width="35px" />
+									</row>
+								</rows>
+							</grid>
+							<grid>
+								<columns>
+									<column width="12.5%"/>
+									<column width="12.5%"/>
+									<column width="12.5%"/>
+									<column width="12.5%"/>
+									<column width="12.5%"/>
+									<column width="12.5%"/>
+									<column width="12.5%"/>
+									<column width="12.5%"/>
+								</columns>
+								<rows>
+									<row height="58px">
+										<label>Cases</label>
+										<label>Unique Cases</label>
+										<label>Events</label>
+										<label>Activities</label>
+										<label>Average Duration</label>
+										<label>Median Duration</label>
+										<label>Max Duration</label>
+										<label>Min Duration</label>
+									</row>
+									<row height="58px">
+										<label id="caseNumber">Cases</label>
+										<label id="uniquecaseNumber">Unique Cases</label>
+										<label id="eventNumber">Events</label>
+										<label id="activityNumber">Activities</label>
+										<label id="meanDuration">Activities</label>
+										<label id="medianDuration">Activities</label>
+										<label id="maxDuration">Activities</label>
+										<label id="minDuration">Activities</label>
+									</row>
+								</rows>
+							</grid>
 						</hbox>
-						<vbox align="left" pack="top">
-							<checkbox id="inverted_nodes" checked="false" label="Invert Priority Nodes" height="30px" width="100px"/>
-							<checkbox id="inverted_arcs" checked="false" label="Invert Priority Arcs" height="30px" width="100px"/>
-						</vbox>
-					</vbox>
-					<grid>
+					</groupbox>
+				</n:td>
+			</n:tr>
+			
+			<n:tr style="background-color:none;">
+				<n:td>
+					<grid id="actionband">
 						<columns>
-							<column width="55px"/>
-							<column width="50%"/>
-							<column width="40px"/>
+							<column width="9%"/>
+							<column width="9%"/>
+							<column width="9%"/>
+							<column width="9%"/>
+							<column width="9%"/>
+							<column width="9%"/>
+							<column width="9%"/>
+							<column width="9%"/>
+							<column width="9%"/>
+							<column width="9%"/>
+							<column width="10%"/>
 						</columns>
 						<rows>
-							<row height="21px">
-								<label>Activities</label>
-								<slider id="slider1" mold="scale" maxpos="100" width="100%" curpos="100"/>
-								<intbox id="activityText" value="100" width="35px" />
-							</row>
-							<row height="21px">
-								<label>Arcs</label>
-								<slider id="slider2" mold="scale" maxpos="100" width="100%" curpos="10"/>
-								<intbox id="arcText" value="10" width="35px" />
-							</row>
-							<row id="parallelismRow" height="21px">
-								<label id="parallelismLabel">Parallelism</label>
-								<slider id="parallelismSlider" mold="scale" maxpos="100" width="100%" curpos="40" />
-								<intbox id="parallelismText" value="40" width="35px" />
+							<row align="center">
+								<combobutton id="selector" label="Selector">
+									<menupopup id="selectormenu" />
+								</combobutton>
+								<combobutton id="frequency" label="Frequency" onClick="case_frequency.setChecked(true);absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)">
+									<menupopup>
+										<menuitem id="case_frequency" label="Case" checked="true" onCheck='absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+										<menuitem id="absolute_frequency" label="Cumulative" onCheck='case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+										<menuitem id="mean_frequency" label="Average" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+										<menuitem id="median_frequency" label="Median" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+										<menuitem id="mode_frequency" label="Mode" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+										<menuitem id="max_frequency" label="Max" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);min_frequency.setChecked(false)' />
+										<menuitem id="min_frequency" label="Min" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false)' />
+									</menupopup>
+								</combobutton>
+								<combobutton id="duration" label="Duration" onClick="total_duration.setChecked(false);median_duration.setChecked(false);mean_duration.setChecked(true);max_duration.setChecked(false);min_duration.setChecked(false)">
+									<menupopup>
+										<menuitem id="total_duration" label="Cumulative" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+										<menuitem id="mean_duration" label="Average" checked="true" onCheck='median_duration.setChecked(false);total_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+										<menuitem id="median_duration" label="Median" onCheck='total_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+										<menuitem id="max_duration" label="Max" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);total_duration.setChecked(false);min_duration.setChecked(false)' />
+										<menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
+									</menupopup>
+								</combobutton>
+								<combobutton id="layout" label="Layout" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);'>
+									<menupopup>
+										<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Hierarchical" checked="true" />
+										<menuitem id="layout_dagre_LR" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(true);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Dagre Left-Right" checked="false" />
+										<menuitem id="layout_dagre_TB" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(true);layout_bf.setChecked(false);' label="Dagre Top-Bottom" checked="false" />
+										<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />
+									</menupopup>
+								</combobutton>
+								<button id="fitScreen" label="Fit to screen" />
+								<combobutton id="export" label="Export">
+									<menupopup>
+										<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>
+										<menuitem id="exportBPMN" label="Save as BPMN Model..." onCheck='exportBPMN.setChecked(false)'/>
+										<menuitem id="exportBPMNAnnotatedForBIMP" label="Save as BPMN model annotated for BIMP..." onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>
+										<menuitem id="downloadPDF" label="Export map as PDF" onCheck='downloadPDF.setChecked(false)'/>
+										<menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
+									</menupopup>
+								</combobutton>
+								<button id="details" label="Activities" />
+								<button id="cases" label="Cases" />
+								<button id="fitness" label="Fitness" />
+								<button id="filter" label="Filter" />
+								<button id="animate" onClick='Clients.evalJavaScript("animate()")' label="Animate" />
 							</row>
 						</rows>
 					</grid>
-					<grid>
-						<columns>
-							<column width="12.5%"/>
-							<column width="12.5%"/>
-							<column width="12.5%"/>
-							<column width="12.5%"/>
-							<column width="12.5%"/>
-							<column width="12.5%"/>
-							<column width="12.5%"/>
-							<column width="12.5%"/>
-						</columns>
-						<rows>
-							<row height="58px">
-								<label>Cases</label>
-								<label>Unique Cases</label>
-								<label>Events</label>
-								<label>Activities</label>
-								<label>Mean Duration</label>
-								<label>Median Duration</label>
-								<label>Max Duration</label>
-								<label>Min Duration</label>
-							</row>
-							<row height="58px">
-								<label id="caseNumber">Cases</label>
-								<label id="uniquecaseNumber">Unique Cases</label>
-								<label id="eventNumber">Events</label>
-								<label id="activityNumber">Activities</label>
-								<label id="meanDuration">Activities</label>
-								<label id="medianDuration">Activities</label>
-								<label id="maxDuration">Activities</label>
-								<label id="minDuration">Activities</label>
-							</row>
-						</rows>
-					</grid>
-				</hbox>
-			</groupbox>
-			<grid id="actionband">
-				<columns>
-					<column width="10%"/>
-					<column width="10%"/>
-					<column width="10%"/>
-					<column width="10%"/>
-					<column width="10%"/>
-					<column width="7.5%"/>
-					<column width="7.5%"/>
-					<column width="7.5%"/>
-					<column width="7.5%"/>
-					<column width="10%"/>
-				</columns>
-				<rows>
-					<row align="center">
-						<combobutton id="selector" label="Selector">
-							<menupopup id="selectormenu" />
-						</combobutton>
-						<combobutton id="frequency" label="Frequency" onClick="case_frequency.setChecked(true);absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)">
-							<menupopup>
-								<menuitem id="case_frequency" label="Case" checked="true" onCheck='absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
-								<menuitem id="absolute_frequency" label="Cumulative" onCheck='case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
-								<menuitem id="mean_frequency" label="Mean" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
-								<menuitem id="median_frequency" label="Median" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
-								<menuitem id="mode_frequency" label="Mode" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
-								<menuitem id="max_frequency" label="Max" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);min_frequency.setChecked(false)' />
-								<menuitem id="min_frequency" label="Min" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false)' />
-							</menupopup>
-						</combobutton>
-						<combobutton id="duration" label="Duration" onClick="total_duration.setChecked(false);median_duration.setChecked(false);mean_duration.setChecked(true);max_duration.setChecked(false);min_duration.setChecked(false)">
-							<menupopup>
-								<menuitem id="total_duration" label="Cumulative" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
-								<menuitem id="mean_duration" label="Mean" checked="true" onCheck='median_duration.setChecked(false);total_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
-								<menuitem id="median_duration" label="Median" onCheck='total_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
-								<menuitem id="max_duration" label="Max" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);total_duration.setChecked(false);min_duration.setChecked(false)' />
-								<menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
-							</menupopup>
-						</combobutton>
-						<combobutton id="layout" label="Layout" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);'>
-							<menupopup>
-								<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Hierarchical" checked="true" />
-								<menuitem id="layout_dagre_LR" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(true);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Dagre Left-Right" checked="false" />
-								<menuitem id="layout_dagre_TB" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(true);layout_bf.setChecked(false);' label="Dagre Top-Bottom" checked="false" />
-								<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />
-							</menupopup>
-						</combobutton>
-						<button id="fitScreen" label="Fit to screen" />
-						<combobutton id="export" label="Export">
-							<menupopup>
-								<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>
-								<menuitem id="exportBPMN" label="Save as BPMN Model..." onCheck='exportBPMN.setChecked(false)'/>
-								<menuitem id="exportBPMNAnnotatedForBIMP" label="Save as BPMN model annotated for BIMP..." onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>
-								<menuitem id="downloadPDF" label="Export map as PDF" onCheck='downloadPDF.setChecked(false)'/>
-								<menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
-							</menupopup>
-						</combobutton>
-						<button id="details" label="Activities" />
-						<button id="cases" label="Cases" />
-						<button id="fitness" label="Fitness" />
-						<button id="filter" label="Filter" />
-						<button id="animate" onClick='Clients.evalJavaScript("animate()")' label="Animate" />
-					</row>
-				</rows>
-			</grid>
-			<n:div id="cy" xmlns:n="native" style="height:80vh; width:100%;" />
-		</vbox>
+				</n:td>
+			</n:tr>
+			
+			<n:tr>
+				<n:td style="height:100%;width:100%">
+					<n:div id="cy" style="height:100%;width:100%;background-color:none;" />
+				</n:td>
+			</n:tr>
+		</n:table>
+		
+		
 	</window>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.5/svg.min.js"></script>
 	<script type="text/javascript">
 		<![CDATA[
-		var layout_model = 0, ctrlIsPressed = !1, altIsPressed = !1;
+		var currentLayout = 0, ctrlIsPressed = !1, altIsPressed = !1;
 		var currentZoomLevel = 1;
 		var currentPanPosition;
 		var initialLoaded = true; // whether the graph is first open.
 		var loadTraceMode = false; // indidate that the graph is loading a trace, not a full log
 		
-		
-		$(document).keydown(function(a) {
-		  if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0;
-		  if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0;
-		}).keyup(function() {
-		  altIsPressed = ctrlIsPressed = !1;
-		  //console.log(ctrlIsPressed);
-		  //console.log(altIsPressed)
-		});
-		
-
 		function init() {
 		  var a = window.cy = cytoscape({
 			container: document.getElementById("cy"),
@@ -353,9 +364,9 @@
 				content: "data(name)",
 				"font-size": "data(textsize)",
 				height: "data(height)",
-				padding: 5,
+				padding: 0,
 				shape: "data(shape)",
-				"text-border-width": 10,
+				"text-border-width": 0,
 				"text-max-width": "data(textwidth)",
 				"text-valign": "center",
 				"text-wrap": "wrap",
@@ -367,7 +378,7 @@
 				color: "data(color)",
 				"curve-style": "bezier",
 				"edge-text-rotation": 0,
-				"font-size": 11,
+				"font-size": 16,
 				label: "data(label)",
 				"line-color": "data(color)",
 				"line-style": "data(style)",
@@ -382,8 +393,9 @@
 				"text-background-padding": 5,
 				"text-background-shape": "roundrectangle",
 				"text-wrap": "wrap",
-				"text-margin-y": -12,
-				width: "mapData(strength, 0, 100, 1, 6)"
+				"text-margin-y": -16,
+				width: "mapData(strength, 0, 100, 1, 6)",
+				"control-point-step-size": 60
 			  }
 			}, {
 				selector: ":selected",
@@ -401,23 +413,42 @@
 			  edges: []
 			}
 		  });
+			
+			// Convert a rendered position to a model position
+			cy.toModelPosition = (pos) => {
+					const pan = cy.pan();
+					const zoom = cy.zoom();
+					return {
+							x: (pos.x - pan.x) / zoom,
+							y: (pos.y - pan.y) / zoom,
+					};
+			};
+			// Convert a model position to a rendered position
+			cy.toRenderedPosition = (pos) => {
+					const pan = cy.pan();
+					const zoom = cy.zoom();
+					return {
+							x: pos.x * zoom + pan.x,
+							y: pos.y * zoom + pan.y,
+					};
+			};
 
 			
 		  a.on("cxttap", "edge", function(a) {
-			if (!loadTraceMode) removeEdge(a)
+				if (!loadTraceMode) removeEdge(a)
 		  });
 		  
 		  a.on("cxttap", "node", function(a) {
-			if (!loadTraceMode) removeNode(a)
+				if (!loadTraceMode) removeNode(a)
 		  });
 			
 		  
 		  a.on("zoom", function(event) {
-			if (!loadTraceMode) currentZoomLevel = a.zoom();
+				if (!loadTraceMode) currentZoomLevel = a.zoom();
 		  });
 		  
 		  a.on("pan", function(event) {
-			if (!loadTraceMode) currentPanPosition = a.pan();
+				if (!loadTraceMode) currentPanPosition = a.pan();
 		  });		
 			
 			var currentNodeTooltip;
@@ -436,7 +467,24 @@
 				if (currentNodeTooltip) currentNodeTooltip.hide();
 			});
 			
+		$(document).keydown(function(a) {
+				if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0;
+				if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0;
+
+				if (a.ctrlKey && a.which == '90') {
+					cy.undoRedo().undo();	     
+				}
+				else if (a.ctrlKey && a.which == '89') {
+					cy.undoRedo().redo();     
+				}
+			}).keyup(function() {
+				altIsPressed = ctrlIsPressed = !1;
+				//console.log(ctrlIsPressed);
+				//console.log(altIsPressed)
+			});
+			
 		}
+
 		
 		function makeTippy(node, text){
 				return tippy( node.popperRef(), {
@@ -462,6 +510,8 @@
 		}
 		
 		function load(json, layout_option, retain) {
+			currentLayout = layout_option;
+			
 			// need to set the current zoom/pan level again as the reset/zoom/pan actions will generate zoom and pan events and change them.
 			var zoom = currentZoomLevel; 
 		  var pan = currentPanPosition;
@@ -481,8 +531,17 @@
 			  currentPanPosition = pan;
 		  }
 			else {
-				cy.fit();
+				fitToWindow(layout_option);
 			}
+			
+			
+			cy.edgeBendEditing({
+													undoable: true,
+													initBendPointsAutomatically: false,
+													enabled: true,
+													bendShapeSizeFactor: 6
+												});
+												
 			
 		}
 		
@@ -492,18 +551,53 @@
 			init();
 		  cy.add($.parseJSON(a)); 
 		  layout_dagre_LR(false);
-			cy.fit();
+			fitToWindow(1);
 		}
 		
-		function fitToWindow() {
+		function fitToWindow(layout_option) {
 			if (window.cy) {
-				window.cy.fit();
+				cy.fit();
+				//moveTop(layout_option);
+			}
+		}
+		
+		function centerToWindow(layout_option) {
+			if (window.cy) {
+				cy.center();
+				//moveTop(layout_option);
+			}
+		}
+		
+		function moveTop(layout_option) {
+			var currentPos = cy.pan();
+			var box = cy.elements().boundingBox({includeNodes: true, includeEdges: true});
+			//window.alert(cy.zoom() + "," + box.h);
+			switch(layout_option) {
+				case 0:
+				case 1:
+					if (cy.zoom() > 1.0) {
+						cy.pan({x: currentPos.x, y: -box.y1 + 10});
+					}
+					else {
+						cy.pan({x: currentPos.x, y: -box.y1*cy.zoom() + 10});
+					}
+					break;				
+				case 2:
+					cy.center(cy.nodes().filter(function( ele ){
+																										return ele.data('oriname') == "|>";
+																									}));
+					cy.pan({x: currentPos.x, y: 0 });
+					break;
+				case 3:
+					cy.fit();
+					break;
+				default:
+					// code block
 			}
 		}
 
 		function layout(layout_option) {
-			layout_model = layout_option;
-			switch(layout_model) {
+			switch(layout_option) {
 				case 0:
 					layout_manual_bezier(!0);
 					break;				
@@ -524,7 +618,7 @@
 		function layout_manual_bezier(a) {
 		  cy.style().selector("edge").style({
 			"curve-style": function( ele ){ return ele.data('edge-style')},
-			"edge-distances": "node-position",	
+			"edge-distances": "intersection",	
 			"control-point-distances": function( ele ){ if (ele.data('edge-style')=="unbundled-bezier") {return ele.data('point-distances')} else {return "0"}},
 			"control-point-weights": function( ele ){ if (ele.data('edge-style')=="unbundled-bezier") {return ele.data('point-weights')} else {return "0.5"}}
 		  }).update();
@@ -606,6 +700,7 @@
 			else {
 				zAu.send(new zk.Event(zk.Widget.$("$animate"), "onEdgeRemoved", a));
 			}
+			
 		}
 
 		function removeNode(a, b) {
@@ -630,6 +725,7 @@
 					zAu.send(new zk.Event(zk.Widget.$("$animate"), "onNodeRemovedTrace", c));
 				}
 		  }
+
 		}
 	
 

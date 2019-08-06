@@ -89,7 +89,7 @@
             <artifactId>eclipse-collections</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.xeslite</groupId>
+            <groupId>io.github.andreas-solti.xeslite</groupId>
             <artifactId>xeslite</artifactId>
             <version>0.0.1</version>
         </dependency>

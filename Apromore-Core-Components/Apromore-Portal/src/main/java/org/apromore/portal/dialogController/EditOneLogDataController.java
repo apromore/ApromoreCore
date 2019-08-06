@@ -23,6 +23,8 @@ package org.apromore.portal.dialogController;
 import org.apromore.model.LogSummaryType;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.service.EventLogService;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -127,11 +129,11 @@ public class EditOneLogDataController extends BaseController {
 
     protected void reset() {
         this.logNameT.setValue(this.log.getName());
-        this.makePublicCb.setChecked(this.log.isMakePublic());
+        EventLogService eventLogService = (EventLogService) SpringUtil.getBean("eventLogService");
+        this.makePublicCb.setChecked(eventLogService.isPublicLog(this.log.getId()));
     }
 
     public Window getEditDataOneProcessWindow() {
         return editDataWindow;
     }
-
 }

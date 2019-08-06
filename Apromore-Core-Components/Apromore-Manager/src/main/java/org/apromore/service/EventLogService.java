@@ -24,6 +24,7 @@ import org.apromore.dao.model.*;
 import org.apromore.exception.*;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.SummariesType;
+import org.apromore.util.StatType;
 import org.deckfour.xes.model.XLog;
 
 import java.io.InputStream;
@@ -76,6 +77,8 @@ public interface EventLogService {
 
     void updateLogMetaData(Integer logId, String logName, boolean isPublic);
 
+    boolean isPublicLog(Integer logId);
+
     /**
      * Get XLog and append statistics as log level metadata
      * @param logId
@@ -95,4 +98,17 @@ public interface EventLogService {
      * @return List of statistic entities
      */
     List<Statistic> getStats(Integer logId);
+
+
+    /**
+     * Persist statistics of XLog into DB by stat types
+     * TODO: explain the format of input nested map
+     * @param map  {String statUID {[String stat_key, String stat_value]}}
+     *             The statUID is a unique identifier that is associated with a set of statistics of the same type.
+     *             For example, it can be the caseID which is used to identify a set of attributes of one case.
+     *             {caseID, {[attrKey, attrValue] [attrKey, attrValue]}}
+     * @param logId logID of XES log file
+     * @param statType enum that store all the types of statistic
+     */
+    void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType);
 }

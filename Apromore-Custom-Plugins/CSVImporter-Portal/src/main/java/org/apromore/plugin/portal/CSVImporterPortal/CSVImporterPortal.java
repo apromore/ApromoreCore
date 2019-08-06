@@ -149,12 +149,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 /// display first numberOfrows to user and display drop down lists to set attributes
                 header = reader.readNext();   // read first line
 
-
+//                window.setHeight("100%");
                 if(header.length > 9) {
-                    window.setWidth("95%");
+                    window.setWidth("100%");
                 } else {
-                    Integer DynamicWidth = null;
-                    DynamicWidth = 11 * header.length;
+                    Double DynamicWidth = null;
+                    DynamicWidth = 10.88 * header.length;
                     window.setWidth(DynamicWidth + "%");
                 }
 
@@ -165,6 +165,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     newColumn.setLabel(header[i]);
                     newColumn.setAlign("center");
                     myGrid.getColumns().appendChild(newColumn);
+//                    myGrid.getColumns().setSizable(true);
                 }
                 // add dropdown lists
                 if (attrBox != null) {
@@ -230,10 +231,14 @@ public class CSVImporterPortal implements FileImporterPlugin {
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) )  + "px; position: absolute; z-index: 10; visibility: hidden; top:51px;");
+            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) )  + "px; position: absolute; z-index: 10; visibility: hidden; top:1px;");
 
             Button sp = new Button();
-            sp.setLabel("Hide");
+//            sp.setLabel("-");
+//            sp.setImage("img/close-icon.png");
+//            sp.setIconSclass("z-icon-compress");
+            sp.setStyle("margin-left:27px; background-image: url(\"img/close-icon.png\"); background-size: auto; background-repeat: repeat; ");
+//            sp.setZclass("min-height: 16px;");
             A hidelink = new A();
             hidelink.appendChild(sp);
             sp.addEventListener("onClick", (Event event) -> {
@@ -242,19 +247,20 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             Textbox textbox = new Textbox();
             textbox.setId(textboxID + i);
-            textbox.setWidth("100%");
+            textbox.setWidth("98%");
             textbox.setPlaceholder("Specify timestamp format");
             textbox.addEventListener("onChanging", (InputEvent event) -> {
                 if(!(event.getValue().isEmpty() || event.getValue().equals(""))){
                     csvImporterLogic.tryParsing(event.getValue(), Integer.parseInt(textbox.getId().replace(textboxID,"")));
                 }
             });
-            item.appendChild(textbox);
+//            item.appendChild(textbox);
 
             Label check_lbl = new Label();
             check_lbl.setId(labelID + i);
             item.appendChild(check_lbl);
             item.appendChild(hidelink);
+            item.appendChild(textbox);
             popUPBox.appendChild(item);
         }
         popUPBox.clone();
@@ -279,7 +285,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
-            Label fileNameLabel = (Label) window.getFellow("fileNameLabel");
+//            Label fileNameLabel = (Label) window.getFellow("fileNameLabel");
             ListModelList<String[]> result = new ListModelList<String[]>();
             Grid myGrid  = (Grid) window.getFellow("myGrid");
             Div attrBox = (Div) window.getFellow("attrBox");
@@ -287,10 +293,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Button toXESButton = (Button) window.getFellow("toXESButton");
 
             if(media != null) {
-
                 window.setWidth("95%");
 //                window.setVflex("min");
-                myGrid.setHeight("95%");
+                myGrid.setHeight("100%");
 
 
                 csvImporterLogic.resetLine();
@@ -317,8 +322,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                         myGrid.setRowRenderer(rowRenderer);
                         toXESButton.setDisabled(false);
-
-                        fileNameLabel.setValue("Current File: " + media.getName());
+                        window.setTitle("CSV Importer - " + media.getName());
+//                        fileNameLabel.setValue("Current File: " + media.getName());
                         window.setPosition("top,left");
                     }
                 } else {

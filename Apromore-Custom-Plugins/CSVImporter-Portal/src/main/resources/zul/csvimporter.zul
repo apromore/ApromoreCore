@@ -17,80 +17,95 @@
   ~ License along with this program.
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
-<zk>
+<?style src="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"?>
 
-<window closable="true" height="min" width="min" position="center" title="CSV Importer">
-    <!--<vbox>-->
-    <style>
-        .greenLabel {
+<zk>
+    <window closable="true" height="min" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px">
+        <!--<vbox>-->
+        <style>
+            .greenLabel {
+            padding-left: 1px;
             font-family: sans-serif;
             color: green;
             font-size: 11px;
             font-weight: normal;
             margin-left: -3px;
-        }
+            }
 
-        .redLabel {
+            .redLabel {
+            padding-left: 1px;
             font-family: sans-serif;
             color: red;
             font-size: 11px;
             font-weight: normal;
             margin-left: -3px;
-        }
+            }
 
-        .z-row-content, .z-group-content, .z-groupfoot-content, .z-footer-content {
+            .z-row-content, .z-group-content, .z-groupfoot-content, .z-footer-content {
             font-family: Arial,Sans-serif;
             font-size: 12px;
             color: #636363;
             padding: 0px 0px;
             line-height: 12px;
-            overflow: auto;
-        }
+            overflow: hidden;
+            width: max-content;
+            }
 
-        .myGroupBox {
+            .myGroupBox {
             display: block;
             height: inherit;
             border: 1px solid #cfcfcf;
             border-top: 0;
-            padding: 2px;
+            padding: 0px;
             overflow: auto;
             zoom: 1;
             width: 100%;
-            height: 80%;
-        }
-        .relavePos{
+            height: 95%;
+            }
+            .relativePos{
             position:relative;
             width: 100%;
-        }
-    </style>
+            }
+            .banner{
+            position:absolute;
+            width: 100%;
+            height: 61px;
+            background-image: url("img/apromore_banner.png");
+            background-size: 150% 100%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            }
+            tr.z-row td.z-row-inner, tr.z-row .z-cell {
+            <!--line-height: 25px;-->
+            padding-left: 10px;
+            }
 
-        <groupbox>
-            <!--<label value="CSV File (.csv)" width="100%"/>-->
+            .z-window-content {
+            border: 1px solid #cfcfcf;
+            margin: 0;
+            padding: 0px 0px 0px 4px;
+            background: #fff;
+            overflow: hidden;
+            zoom: 1;
+            }
+        </style>
+
+        <div id="gridBox" zclass="myGroupBox">
+            <div id="popUPBox" zclass="relativePos"></div>
+            <div zclass="banner" />
+            <div id="attrBox" style="padding-top: 60px;"></div>
+            <grid id="myGrid" mold="paging" pageSize="32" hflex="min" vflex="min" />
+        </div>
+
+        <div style="padding: 5px 0 5px 45%; background-image: url(img/apromore_banner.png);
+        background-size: 150% 100%;
+        background-repeat: no-repeat;
+        background-position: center center;">
             <hbox align="center">
-                <!--<button id="uploadButton" label="Import File (To be removed)" upload="true,maxsize=-1,multiple=false,native"/>-->
-                <button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true"></button>
-                <!--<button id="toXESButton" label="Convert To XES"/>-->
+                <button id="toXESButton" label="Import Log" image="img/ok.png" disabled="true" > </button>
                 <separator />
-                <!--<button id="topCancelButton" label=" " image="img/cancel2.png"></button>-->
             </hbox>
-            <hbox align="right">
-                <label id="fileNameLabel" width="100%" />
-            </hbox>
-        </groupbox>
+        </div>
 
-        <!--<groupbox zclass="z-groupbox-content">-->
-
-            <!--<space bar="false"/>-->
-            <div id="gridBox" zclass="myGroupBox">
-                <div id="popUPBox" sclass="relavePos"></div>
-                <div id="attrBox"></div>
-                <grid id="myGrid" mold="paging" pageSize="15" height="80%" hflex="min" sclass="z-row-content" />
-            </div>
-        <!--</groupbox>-->
-        <!--<div align="center">-->
-            <!--<button id="toXESButton" label="Convert To XES" image="img/ok.png" disabled="true"></button>-->
-            <!--<button id="cancelButton" label="Cancel" image="img/cancel2.png"></button>-->
-        <!--</div>-->
-    <!--</vbox>-->
-</window>
+    </window>
 </zk>

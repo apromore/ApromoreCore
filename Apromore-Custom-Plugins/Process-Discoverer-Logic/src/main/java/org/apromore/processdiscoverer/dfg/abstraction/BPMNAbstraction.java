@@ -52,7 +52,7 @@ public class BPMNAbstraction extends AbstractAbstraction {
 		this.dfgAbsFreq = logDfg.getFrequencyBasedDFGAbstraction(dfgAbstraction);
 		this.diagram = logDfg.getBPMN(params, dfgAbsFreq);
 		this.updateWeights(params);
-		this.layout = BPMNDiagramLayouter.layout(this.diagram);
+		this.layout = BPMNDiagramLayouter.layout(this.diagram, true);
 	}
 	
 	public DFGAbstraction getDFGAbstraction() {

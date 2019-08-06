@@ -73,6 +73,21 @@
         <class>org.apromore.dao.model.User</class>
         <class>org.apromore.dao.model.Workspace</class>
         <class>org.apromore.dao.model.Statistic</class>
+
+        <!--For unit test purpose-->
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/apromore?autoReconnect=true"/>
+            <property name="javax.persistence.jdbc.user" value="apromore"/>
+            <property name="javax.persistence.jdbc.password" value="MAcri"/>
+
+            <!--<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>-->
+            <!--<property name="eclipselink.create-ddl-jdbc-file-name" value="createDDL_ddlGeneration.jdbc"/>-->
+            <!--<property name="eclipselink.drop-ddl-jdbc-file-name" value="dropDDL_ddlGeneration.jdbc"/>-->
+            <!--<property name="eclipselink.ddl-generation.output-mode" value="both"/>-->
+
+        </properties>
+
     </persistence-unit>
 
 </persistence>

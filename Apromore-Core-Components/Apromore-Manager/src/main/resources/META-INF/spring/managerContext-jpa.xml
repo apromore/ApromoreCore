@@ -58,15 +58,22 @@
                 <prop key="eclipselink.query-results-cache">true</prop>
                 <prop key="eclipselink.query-results-cache.size">10000</prop>
                 <prop key="eclipselink.jdbc.cache-statements">true</prop>
-                <prop key="eclipselink.persistence-context.persist-on-commit">true</prop>
+                <!--  Optimization #5 - avoid cost of persist on commit -->
+                <prop key="eclipselink.persistence-context.persist-on-commit">false</prop>
                 <prop key="eclipselink.persistence-context.close-on-commit">true</prop>
-                <prop key="eclipselink.persistence-context.flush-mode">AUTO</prop>
+                <!--  Optimization #4 - avoid auto flush cost on query execution -->
+                <prop key="eclipselink.persistence-context.flush-mode">commit</prop>
 
+                <!--  Optimization #3 - disable caching for batch insert (caching only improves reads, so only adds overhead for inserts) -->
                 <prop key="eclipselink.cache.shared.default">false</prop>
                 <prop key="eclipselink.cache.type.default">SOFT</prop>
 
+                <!--  Optimization #1 - batch writing -->
                 <prop key="eclipselink.jdbc.batch-writing">JDBC</prop>
-                <prop key="eclipselink.jdbc.batch-writing.size">1000</prop>
+                <prop key="eclipselink.jdbc.batch-writing.size">10000</prop>
+                <!--  Optimization #2 - statement caching -->
+                <prop key="eclipselink.jdbc.cache-statements">true</prop>
+                <prop key="eclipselink.jdbc.cache-statements.size">100</prop>
 
                 <!--<prop key="eclipselink.profiler">PerformanceProfiler</prop>-->
                 <!--<prop key="eclipselink.profiler">QueryMonitor</prop>-->
