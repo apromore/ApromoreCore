@@ -167,8 +167,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                 }
                             }
 
-                        } else {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Other time stamp field is invalid. ");
                         }
                     }
 
@@ -197,7 +195,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                     if(tStamp == null) {
 //                            terminating = true;
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Critical field - End time stamp field is invalid. Skipping this row completely");
+                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Critical field - End time stamp field is invalid. Skipping this row completely.\n");
 //                            break;
                     }
 
