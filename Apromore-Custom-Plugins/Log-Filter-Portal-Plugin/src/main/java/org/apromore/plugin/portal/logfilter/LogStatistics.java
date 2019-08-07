@@ -18,12 +18,17 @@ public class LogStatistics {
 	private long min;
 	private long max;
 	private XLog log;
-	private String eventClassifier;
+	private String eventClassifier = "concept:name";
 	
 	public LogStatistics(XLog log) {
 		this.log = log;
-		this.eventClassifier = "concept:name";
 		options_frequency = this.generateStatistics(log, true);
+	}
+	
+	public LogStatistics(Map<String, Map<String, Integer>> stats, long min, long max) {
+		this.min = min;
+		this.max = max;
+		this.options_frequency = stats;
 	}
 	
 	public Map<String, Map<String, Integer>> getStatistics() {

@@ -32,10 +32,11 @@ import org.zkoss.zul.Messagebox;
 /**
  * This plugin allows to filter log from the portal menu or 
  * other plugins to show log filter window to filter the log used in those plugins
- * The portal will access this plugin via the DefaultPortalPlugin interface 
- * Other plugins will access this plugin via the LogFilterInterface interface
  * This plugin provides the UI and uses the log-filter-logic plugin to do the actual
  * filtering
+ * The portal will access this plugin via the DefaultPortalPlugin interface 
+ * Other plugins will access this plugin via the LogFilterInterface and 
+ * LogFilterResultListener interfaces.
  * @author Bruce Nguyen
  *
  */
@@ -111,12 +112,18 @@ public class LogFilterPlugin extends DefaultPortalPlugin implements LogFilterInt
 	 */
 	public void execute(PortalContext portalContext, XLog log, String label, 
 							List<LogFilterCriterion> originalCriteria,
-							LogStatistics logStats) {
+							LogStatistics logStats,
+							LogFilterService logFilterService,
+							LogFilterCriterionFactory logFilterCriterionFactory,
+							LogFilterResultListener resultListener) {
 		this.portalContext = portalContext;
-    	portalContext.getMessageHandler().displayInfo("Execute log filter plug-in!");
-        try {
+		
+		//The call has to be commented out because it causes security issue when called from another web plugin
+    	//portalContext.getMessageHandler().displayInfo("Execute log filter plug-in!");
+        
+		try {
         	new LogFilterController(portalContext, logFilterService, logFilterCriterionFactory, 
-        							log, label, originalCriteria, logStats, null);
+        							log, label, originalCriteria, logStats, resultListener);
         	
         } catch (IOException | SuspendNotAllowedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);

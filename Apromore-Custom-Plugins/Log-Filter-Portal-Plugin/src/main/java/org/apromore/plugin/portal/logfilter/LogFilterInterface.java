@@ -2,7 +2,10 @@ package org.apromore.plugin.portal.logfilter;
 
 import java.io.IOException;
 import java.util.List;
+
+import org.apromore.logfilter.LogFilterService;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
 import org.apromore.plugin.portal.PortalContext;
 import org.deckfour.xes.model.XLog;
 
@@ -24,5 +27,8 @@ public interface LogFilterInterface {
 	 * @throws IOException
 	 */
 	public void execute(PortalContext portalContext, XLog log, String label, 
-			List<LogFilterCriterion> originalCriteria, LogStatistics logStats) throws IOException;
+			List<LogFilterCriterion> originalCriteria, LogStatistics logStats,
+			LogFilterService logFilterService,
+			LogFilterCriterionFactory logFilterCriterionFactory,
+			LogFilterResultListener resultListener) throws IOException;
 }
