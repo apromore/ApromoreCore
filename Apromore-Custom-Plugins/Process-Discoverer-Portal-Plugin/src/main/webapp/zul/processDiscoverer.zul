@@ -308,7 +308,7 @@
 									<menupopup>
 										<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>
 										<menuitem id="exportBPMN" label="Save as BPMN Model..." onCheck='exportBPMN.setChecked(false)'/>
-										<!--<menuitem id="exportBPMNAnnotatedForBIMP" label="Save as BPMN model annotated for BIMP..." onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>-->
+										<menuitem id="exportBPMNAnnotatedForBIMP" visible="false" label="Save as BPMN model annotated for BIMP..." onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>
 										<menuitem id="downloadPDF" label="Export map as PDF" onCheck='downloadPDF.setChecked(false)'/>
 										<menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
 									</menupopup>

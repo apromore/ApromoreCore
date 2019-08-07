@@ -32,6 +32,9 @@ import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
+import org.apromore.plugin.portal.logfilter.LogFilterPlugin;
+import org.apromore.plugin.portal.logfilter.LogFilterResultListener;
+import org.apromore.plugin.portal.logfilter.LogStatistics;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
@@ -97,7 +100,7 @@ import org.apromore.logfilter.criteria.model.Level;
  * Modified by Simon Rabozi for SiMo
  * Modified by Bruce Nguyen
  */
-public class ProcessDiscovererController extends BaseController {
+public class ProcessDiscovererController extends BaseController implements LogFilterResultListener {
 	public static final String DEFAULT_SELECTOR = "concept:name";
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiscovererController.class);
@@ -817,7 +820,14 @@ public class ProcessDiscovererController extends BaseController {
 
             this.filter.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    new FilterCriterionSelector(getLabel(), ProcessDiscovererController.this, criteria, global_stats, min, max);
+                	LogFilterPlugin filterPlugin = new LogFilterPlugin();
+                	filterPlugin.execute(portalContext, ProcessDiscovererController.this.getInitialLog(), 
+                						label, criteria, 
+                						new LogStatistics(global_stats, min, max), 
+                						logFilterService,
+                						logFilterCriterionFactory,
+                						ProcessDiscovererController.this);
+//                    new FilterCriterionSelector(getLabel(), ProcessDiscovererController.this, criteria, global_stats, min, max);
                 }
             });
             
@@ -1338,7 +1348,7 @@ public class ProcessDiscovererController extends BaseController {
      * @param reset: true if the list of criteria is emptied
      * @throws InterruptedException
      */
-    public void refreshCriteria(boolean reset) throws InterruptedException {
+    public void refreshCriteria(boolean reset) {
         populateMetrics(this.filtered_log);
         generateLocalStatistics(this.filtered_log);
         this.retainZoomPan = !reset;
@@ -1823,4 +1833,12 @@ public class ProcessDiscovererController extends BaseController {
     	filterCriteria.add(criterion);
     	return logFilterService.filter(log, filterCriteria);
     }
+
+
+	@Override
+	public void filterFinished(List<LogFilterCriterion> criteria, XLog filteredLog) {
+		this.setFilteredLog(filteredLog);
+        this.setCriteria(criteria);
+		this.refreshCriteria(criteria.isEmpty());
+	}
 }
