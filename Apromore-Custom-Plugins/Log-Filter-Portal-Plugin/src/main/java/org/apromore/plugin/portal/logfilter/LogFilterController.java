@@ -68,7 +68,7 @@ class LogFilterController {
     	this.logFilterService = logFilterService;
     	this.logFilterCriterionFactory = logFilterCriterionFactory;
     	this.resultListener = resultListener;
-    	initialize(portalContext, log, "", new ArrayList<LogFilterCriterion>(), stats.getStatistics(), 
+    	initialize(portalContext, log, "concept:name", new ArrayList<LogFilterCriterion>(), stats.getStatistics(), 
     				stats.getMinTimestamp(), stats.getMaxTimetamp());
 
     }
