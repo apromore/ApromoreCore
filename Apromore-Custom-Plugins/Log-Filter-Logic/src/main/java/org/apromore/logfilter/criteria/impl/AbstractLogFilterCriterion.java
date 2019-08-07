@@ -36,7 +36,7 @@ public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
 
     protected final String timestamp_code = "time:timestamp";
 
-    protected final String label; // the current event attribute key used to label task nodes in the process map, NOT USED at the moment
+    protected final String label; // the current event attribute key used to label task nodes in the process map
     protected final String attribute; //attribute name of trace or event
     protected final Set<String> value; // set of attribute values
     private final Action action;
