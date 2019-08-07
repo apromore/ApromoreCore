@@ -28,6 +28,7 @@
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
                 
         <include name="Apromore-Custom-Plugins/Log-Filter-Logic/target/log-filter-logic-1.0.0.jar"/>
+				<include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin/target/log-filter-portal-plugin-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Compare-Logic/target/compare-logic-1.1.jar"/>
