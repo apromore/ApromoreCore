@@ -15,8 +15,8 @@ import com.google.common.collect.Multimap;
 
 public class LogStatistics {
 	private Map<String, Map<String, Integer>> options_frequency;
-	private long min;
-	private long max;
+    private long min = Long.MAX_VALUE; //the earliest timestamp of the log
+    private long max = 0; //the latest timestamp of the log
 	private XLog log;
 	private String eventClassifier = "concept:name";
 	
