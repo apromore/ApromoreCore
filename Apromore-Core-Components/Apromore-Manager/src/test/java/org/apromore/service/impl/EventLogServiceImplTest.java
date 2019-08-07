@@ -93,23 +93,45 @@ public class EventLogServiceImplTest {
 
         List<Statistic> stats = new ArrayList<>();
 
+        Integer logId = 001;
+
         Statistic parent = new Statistic();
         parent.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
         parent.setStat_key("parent_key");
-        parent.setLogid(88);
+        parent.setLogid(logId);
         parent.setPid("0".getBytes());
         parent.setStat_value("01");
+        parent.setCount((long) 1);
         stats.add(parent);
 
         Statistic child = new Statistic();
         child.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
         child.setStat_key("child_key");
-        child.setLogid(88);
+        child.setLogid(logId);
         child.setPid(parent.getId());
         child.setStat_value("02");
+        child.setCount((long) 2);
         stats.add(child);
 
-        Integer logId = 001;
+        Statistic parent1 = new Statistic();
+        parent1.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+        parent1.setStat_key("parent_key1");
+        parent1.setLogid(logId);
+        parent1.setPid("0".getBytes());
+        parent1.setStat_value("03");
+        parent1.setCount((long) 3);
+        stats.add(parent1);
+
+        Statistic child1 = new Statistic();
+        child1.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+        child1.setStat_key("child_key1");
+        child1.setLogid(logId);
+        child1.setPid(parent1.getId());
+        child1.setStat_value("04");
+        child1.setCount((long) 4);
+        stats.add(child1);
+
+
 
         expect(statisticRepository.findByLogid(logId)).andReturn(stats);
         replay(statisticRepository);
@@ -134,10 +156,10 @@ public class EventLogServiceImplTest {
         XAttribute statsAttribute = expectResult.getAttributes().get(STAT_NODE_NAME);
 
         assertThat(statsAttribute, equalTo(new XAttributeLiteralImpl(STAT_NODE_NAME, "")));
-        assertThat(statsAttribute.getAttributes().size(), equalTo(1));
-        assertThat(statsAttribute.getAttributes().get(parent.getUniqueKey()), equalTo(new XAttributeLiteralImpl("parent_key", "01")));
-        assertThat(statsAttribute.getAttributes().get(parent.getUniqueKey()).getAttributes().size(), equalTo(1));
-        assertThat(statsAttribute.getAttributes().get(parent.getUniqueKey()).getAttributes().get(child.getStat_key()), equalTo(new XAttributeLiteralImpl("child_key", "02")));
+        assertThat(statsAttribute.getAttributes().size(), equalTo(2));
+        assertThat(statsAttribute.getAttributes().get(parent.getCount().toString()), equalTo(new XAttributeLiteralImpl("parent_key", "01")));
+        assertThat(statsAttribute.getAttributes().get(parent.getCount().toString()).getAttributes().size(), equalTo(1));
+        assertThat(statsAttribute.getAttributes().get(parent.getCount().toString()).getAttributes().get(child.getStat_key()), equalTo(new XAttributeLiteralImpl("child_key", "02")));
     }
 
 

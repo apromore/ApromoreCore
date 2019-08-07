@@ -55,6 +55,8 @@ public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom 
             query.setParameter("param2", statType.toString());
             List<Statistic> stats = query.getResultList();
 
+            LOGGER.info(" The number of stats is: " + statType + " - "  + stats.size());
+
             return stats != null && stats.size() > 0;
         } else {
             return false;
@@ -99,6 +101,8 @@ public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom 
                     return stats.size();
                 }
             });
+
+            LOGGER.info("Stored [" + stats.size() + "] stats into db for log");
         }
     }
 }

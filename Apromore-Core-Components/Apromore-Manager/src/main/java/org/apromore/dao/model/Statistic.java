@@ -83,8 +83,4 @@ public class Statistic implements Serializable {
         this.stat_value = stat_value;
     }
 
-    public String getUniqueKey() {
-        return stat_key + "-" + count;
-    }
-
 }

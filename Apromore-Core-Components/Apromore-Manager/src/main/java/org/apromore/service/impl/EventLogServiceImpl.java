@@ -227,12 +227,38 @@ public class EventLogServiceImpl implements EventLogService {
         List<Statistic> stats = getStats(logId);
 
         if (stats != null && !stats.isEmpty()) { // if there is cache, then append it to XES log as metadata
-            for (Statistic stat : stats) {
-                if (Arrays.equals(stat.getPid(), PARENT_NODE_FLAG.getBytes())) {
-                    parent = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
-                    parent.setAttributes(getChildNodes(stat.getId(), stats, factory));
-                    // Since parent share the same stat_key, so add Statistic.count as key when put stat into XAttributeMap
-                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getUniqueKey(), parent);
+//            for (Statistic stat : stats) {
+//                if (Arrays.equals(stat.getPid(), PARENT_NODE_FLAG.getBytes())) {
+//                    parent = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
+//                    parent.setAttributes(getChildNodes(stat.getId(), stats, factory));
+//                    // Since parent share the same stat_key, so add Statistic.count as key when put stat into XAttributeMap
+//                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getCount().toString(), parent);
+//                }
+//            }
+
+            for (int i = 0; i < stats.size(); i++) {
+
+                Statistic pStat = stats.get(i);
+                byte[] parentId = pStat.getId();
+
+                if (Arrays.equals(pStat.getPid(), PARENT_NODE_FLAG.getBytes())){
+
+                    parent = factory.createAttributeLiteral(pStat.getStat_key(), pStat.getStat_value(), null);
+
+                    XAttributeMap attributeMap = factory.createAttributeMap();
+
+                    for (int j = 1; j < 15; j++) {
+                        if( i + j < stats.size()) {
+                            if(Arrays.equals(stats.get(i+j).getPid(), parentId)) {
+                                XAttribute attribute = factory.createAttributeLiteral(stats.get(i+j).getStat_key(), stats.get(i+j).getStat_value(), null);
+                                attributeMap.put(stats.get(i+j).getStat_key(), attribute);
+                                i = i + 1;
+                            }
+                        }
+
+                    }
+                    parent.setAttributes(attributeMap);
+                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(pStat.getCount().toString(), parent);
                 }
             }
         }
@@ -324,9 +350,9 @@ public class EventLogServiceImpl implements EventLogService {
             statisticRepository.storeAllStats(flattenNestedMap(map, logId));
 
 //            statisticRepository.save(flattenNestedMap(map, logId));
-            LOGGER.debug("Stored statistics of Log: " + logId);
+            LOGGER.info("Stored statistics of Log: " + logId);
         }
-        LOGGER.debug("statistics already exist in Log: " + logId);
+        LOGGER.info("statistics already exist in Log: " + logId);
     }
 
     public void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType) {
@@ -334,7 +360,7 @@ public class EventLogServiceImpl implements EventLogService {
         if(!isStatsExists(logId, statType)) {
             statisticRepository.storeAllStats(flattenNestedStringMap(map, logId, statType));
 
-            LOGGER.debug("Stored statistics of " + statType.toString() + " in Log [" + logId + "]");
+            LOGGER.info("Stored statistics of " + statType.toString() + " in Log [" + logId + "]");
         }
     }
 
