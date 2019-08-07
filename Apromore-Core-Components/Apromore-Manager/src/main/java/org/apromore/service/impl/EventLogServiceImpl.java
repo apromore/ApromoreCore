@@ -86,13 +86,6 @@ public class EventLogServiceImpl implements EventLogService {
     private UserService userSrv;
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
-//    private DashboardRepository dashboardRepository;
-
-//    @Bean
-//    public CacheManager cacheManager() {
-//        return new ConcurrentMapCacheManager("log");
-//    }
-
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -107,7 +100,6 @@ public class EventLogServiceImpl implements EventLogService {
         this.userSrv = userSrv;
         this.ui = ui;
         this.statisticRepository = statisticRepository;
-//        this.dashboardRepository = dashboardRepository;
     }
 
 

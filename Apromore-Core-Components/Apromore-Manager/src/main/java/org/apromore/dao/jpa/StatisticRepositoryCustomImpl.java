@@ -59,6 +59,20 @@ public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom 
         } else {
             return false;
         }
+
+//        if (logid != null && statType != null) {
+//            Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_key=:param2");
+//            query.setParameter("param1", logid);
+//            query.setParameter("param2", statType.toString());
+////            string result = query.getSingleResult().toString();
+//
+//            boolean notFound = query.setMaxResults(1).getResultList().isEmpty();
+//
+//            return notFound;
+//        } else {
+//            return true;
+//        }
+
     }
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */
