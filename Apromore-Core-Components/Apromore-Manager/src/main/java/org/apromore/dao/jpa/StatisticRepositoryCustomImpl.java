@@ -49,32 +49,29 @@ public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom 
     @Override
     @Transactional
     public boolean existsByLogidAndStatType(Integer logid, StatType statType) {
-        if (logid != null && statType != null) {
-            Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_key=:param2");
-            query.setParameter("param1", logid);
-            query.setParameter("param2", statType.toString());
-            List<Statistic> stats = query.getResultList();
-
-            LOGGER.info(" The number of stats is: " + statType + " - "  + stats.size());
-
-            return stats != null && stats.size() > 0;
-        } else {
-            return false;
-        }
-
 //        if (logid != null && statType != null) {
 //            Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_key=:param2");
 //            query.setParameter("param1", logid);
 //            query.setParameter("param2", statType.toString());
-////            string result = query.getSingleResult().toString();
+//            List<Statistic> stats = query.getResultList();
 //
-//            boolean notFound = query.setMaxResults(1).getResultList().isEmpty();
+//            LOGGER.info(" The number of stats is: " + statType + " - "  + stats.size());
 //
-//            return notFound;
+//            return stats != null && stats.size() > 0;
 //        } else {
-//            return true;
+//            return false;
 //        }
 
+        if (logid != null && statType != null) {
+            Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_key=:param2");
+            query.setParameter("param1", logid);
+            query.setParameter("param2", statType.toString());
+//            string result = query.getSingleResult().toString();
+
+            return !query.setMaxResults(1).getResultList().isEmpty();
+        }
+
+        return false;
     }
 
     /* ************************** JDBC Template / native SQL Queries ******************************* */

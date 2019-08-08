@@ -247,12 +247,14 @@ public class EventLogServiceImpl implements EventLogService {
 
                     XAttributeMap attributeMap = factory.createAttributeMap();
 
-                    for (int j = 1; j < 15; j++) {
+                    for (int j = 1; j < stats.size(); j++) {
                         if( i + j < stats.size()) {
                             if(Arrays.equals(stats.get(i+j).getPid(), parentId)) {
                                 XAttribute attribute = factory.createAttributeLiteral(stats.get(i+j).getStat_key(), stats.get(i+j).getStat_value(), null);
                                 attributeMap.put(stats.get(i+j).getStat_key(), attribute);
-                                i = i + 1;
+                            } else {
+                                i = i + j - 1;
+                                break;
                             }
                         }
 
