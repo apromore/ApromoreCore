@@ -309,7 +309,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //            Timestamp validTS;
             // do multiple line
             outerloop:
-            for (int i = 0; i < Math.min(200, result.size()); i++) {
+            for (int i = 0; i < Math.min(1000, result.size()); i+=5) {
                 String[] newLine = result.get(i);
 
                 for (int j = 0; j < newLine.length; j++) {
