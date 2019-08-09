@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.*;
 
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
@@ -50,6 +51,8 @@ import org.deckfour.xes.model.*;
 import org.deckfour.xes.out.XesXmlSerializer;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
+
+import javax.swing.*;
 //import org.deckfour.xes.*;
 // TODO: Auto-generated Javadoc
 /**
@@ -60,7 +63,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterLogicImpl.class);
 
     /** The case id values. */
-    private String[] caseIdValues = {"case", "case id", "case-id", "service id", "event id"};
+    private String[] caseIdValues = {"case", "case id", "case-id", "service id", "event id", "caseid", "serviceid"};
 
     /** The activity values. */
     private String[] activityValues = {"activity", "activity id", "activity-id", "operation", "event"};
@@ -69,7 +72,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     private String[] timestampValues = {"timestamp", "end date", "complete timestamp", "time:timestamp"};
 
 
-    private String[] StartTsValues = {"start date", "start timestamp"};
+    private String[] StartTsValues = {"start date", "start timestamp", "start time"};
 
     private String[] resourceValues = {"resource", "agent", "employee", "group"};
 
@@ -266,41 +269,131 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
      */
 
     public void setHeads(String[] line) {
-        // initialize map
-        heads = new HashMap<String, Integer>();
-        heads.put(caseid, -1);
-        heads.put(activity, -1);
-        heads.put(timestamp, -1);
-        heads.put(tsStart, -1);
-        heads.put(resource, -1);
+            // initialize map
+            heads = new HashMap<String, Integer>();
+            heads.put(caseid, -1);
+            heads.put(activity, -1);
+            heads.put(timestamp, -1);
+            heads.put(tsStart, -1);
+            heads.put(resource, -1);
 
-        for(int i=0; i<= line.length -1; i++) {
-            if((heads.get(caseid) == -1) && getPos(caseIdValues, line[i])){
-                heads.put(caseid, i);
-            }
-            else if((heads.get(activity) == -1) && getPos(activityValues, line[i])) {
-                heads.put(activity, i);
-            }
-            else if((heads.get(timestamp) == -1) && getPos(timestampValues, line[i])) {
-                String format = parse.determineDateFormat(this.line[i]);
-                if(format!= null){
-                    heads.put(timestamp, i);
-                    timestampFormat = format;
+            for (int i = 0; i <= line.length - 1; i++) {
+                if ((heads.get(caseid) == -1) && getPos(caseIdValues, line[i])) {
+                    heads.put(caseid, i);
+                } else if ((heads.get(activity) == -1) && getPos(activityValues, line[i])) {
+                    heads.put(activity, i);
+                } else if ((heads.get(timestamp) == -1) && getPos(timestampValues, line[i])) {
+                    String format = parse.determineDateFormat(this.line[i]);
+                    if (format != null) {
+                        heads.put(timestamp, i);
+                        timestampFormat = format;
+                    }
+                } else if ((heads.get(tsStart) == -1) && getPos(StartTsValues, line[i])) {
+                    String format = parse.determineDateFormat(this.line[i]);
+                    if (format != null) {
+                        heads.put(tsStart, i);
+                        startTsFormat = format;
+                    }
+                } else if ((heads.get(resource) == -1) && getPos(resourceValues, line[i])) {
+                    heads.put(resource, i);
                 }
             }
-            else if((heads.get(tsStart) == -1) && getPos(StartTsValues, line[i])) {
-                String format = parse.determineDateFormat(this.line[i]);
-                if(format!= null){
-                    heads.put(tsStart, i);
-                    startTsFormat = format;
-                }
-            }
-            else if((heads.get(resource) == -1) && getPos(resourceValues, line[i])) {
-                heads.put(resource, i);
-            }
-        }
     }
 
+
+    public void automaticFormat(ListModelList<String[]> result, String[] myHeader) {
+        try {
+            String currentFormat = null;
+            String startFormat = null;
+            String otherFormat = null;
+//            Timestamp validTS;
+            // do multiple line
+            outerloop:
+            for (int i = 0; i < Math.min(200, result.size()); i++) {
+                String[] newLine = result.get(i);
+
+                for (int j = 0; j < newLine.length; j++) {
+                    // Going row by rowe
+                    if (getPos(timestampValues, myHeader[j])) {
+                        // if its timestamp field
+                        String format = parse.determineDateFormat((newLine[j])); // dd.MM.yyyy //MM.dd.yyyy
+                        Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
+
+                        if (validTS != null) {
+                            try{
+                                if(currentFormat != null) {
+                                    // determine which one is right which one is wrong
+                                    // hint: use sets to store all the possible formats, then parse them again.
+
+                                    if(currentFormat != format) {
+                                        validTS = Parse.parseTimestamp(result.get(i-1)[j], format);
+                                        if(validTS != null) {
+//                                            Messagebox.show("Current: " + currentFormat + ", Changing to: " + format);
+                                            currentFormat = format;
+                                            break outerloop;
+                                        } else {
+                                            continue;
+                                        }
+                                    }
+                                } else {
+                                    currentFormat = format;
+                                }
+                            } catch(Exception e) {
+                                // automatic parse might be in accurate.
+                                Messagebox.show("Automatic parse of End timestamp might be in accurate. Please validate end timestamp field.");
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                    if (getPos(StartTsValues, myHeader[j])) {
+                        // if its timestamp field
+                        String format = parse.determineDateFormat((newLine[j])); // dd.MM.yyyy //MM.dd.yyyy
+                        Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
+
+
+                        if (validTS != null) {
+                            try{
+                                if(startFormat != null) {
+
+                                    // determine which one is right which one is wrong
+                                    // hint: use sets to store all the possible formats, then parse them again.
+                                    if(startFormat != format) {
+                                        validTS = Parse.parseTimestamp(result.get(i-1)[j], format);
+                                        if(validTS != null) {
+//                                            Messagebox.show("Current: " + startFormat + ", Changing to: " + format);
+                                            startFormat = format;
+                                            break outerloop;
+                                        } else {
+                                            continue;
+                                        }
+                                    }
+                                } else {
+                                    startFormat = format;
+                                }
+                            } catch(Exception e) {
+                                // automatic parse might be in accurate.
+                                Messagebox.show("Automatic parse of start timestamp might be in accurate. Please validate end timestamp field.");
+                                break;
+                            }
+
+                        }
+
+                    }
+
+                }
+            }
+            timestampFormat = currentFormat;
+            startTsFormat = startFormat;
+//            Messagebox.show(currentFormat);
+        } catch (Exception e) {
+            // automatic detection failed.
+            e.printStackTrace();
+//            LOGGER.error( );
+        }
+    }
     public HashMap<String, Integer> getHeads() {
         return this.heads;
     }
@@ -312,16 +405,20 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     public void resetLine() { this.line = null; };
     public void resetHead() { this.heads = null; };
     public void resetList() { this.lists = null; };
-    public void setOtherTimestamps(){
-        otherTimeStampsPos = new HashMap<Integer, String>();
-        Integer timeStampPos = heads.get(timestamp);
-        Integer StartTimeStampPos = heads.get(tsStart);
+    public void setOtherTimestamps(ListModelList<String[]> result){
+        if(result == null || result.size() == 0) {
+            otherTimeStampsPos = new HashMap<Integer, String>();
+            Integer timeStampPos = heads.get(timestamp);
+            Integer StartTimeStampPos = heads.get(tsStart);
 
-        for(int i=0; i<= this.line.length -1; i++) {
-            String detectedFormat = parse.determineDateFormat(this.line[i]);
-            if((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)){
-                otherTimeStampsPos.put(i, detectedFormat);
+            for (int i = 0; i <= this.line.length - 1; i++) {
+                String detectedFormat = parse.determineDateFormat(this.line[i]);
+                if ((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)) {
+                    otherTimeStampsPos.put(i, detectedFormat);
+                }
             }
+        } else {
+            // do multiple line
         }
     }
     

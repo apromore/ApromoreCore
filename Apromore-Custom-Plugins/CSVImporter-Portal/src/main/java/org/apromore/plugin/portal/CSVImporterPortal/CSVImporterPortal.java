@@ -186,10 +186,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 if (line == null || header == null) {
                     Messagebox.show("Could not parse file!");
                 }
-
+                    String[] myLine = header;
                     csvImporterLogic.setLine(line);
                     csvImporterLogic.setHeads(header);
-                    csvImporterLogic.setOtherTimestamps();
+                    csvImporterLogic.setOtherTimestamps(result);
 
                     if (line.length != header.length) {
                         Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
@@ -205,10 +205,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         for (Listbox list : lists) {
                             attrBox.appendChild(list);
                         }
-
-                        createPopUpTextBox(line.length, popUPBox);
-                        csvImporterLogic.openPopUp();
-
+                        String[] newLine = line;
 
                         // display first 1000 rows
                         int numberOfrows = 1000 - 1;
@@ -218,6 +215,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
                             line = reader.readNext();
                         }
 
+
+                        csvImporterLogic.automaticFormat(result, myLine);
+                        csvImporterLogic.setOtherTimestamps(result);
+                        createPopUpTextBox(newLine.length, popUPBox);
+                        csvImporterLogic.openPopUp();
 
                         reader.close();
                     }
