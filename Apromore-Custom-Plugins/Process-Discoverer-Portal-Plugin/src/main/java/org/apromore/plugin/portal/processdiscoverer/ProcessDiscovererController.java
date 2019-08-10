@@ -1692,12 +1692,12 @@ public class ProcessDiscovererController extends BaseController implements LogFi
             	result = processDiscoverer.generateDFGJSON(this.filtered_log, params);
             }
             
-            if (result != null) {
+//            if (result != null) {
             	AbstractAbstraction abs = (AbstractAbstraction)result[1];
             	jsonDiagram = (JSONArray) result[0];
             	diagram = abs.getDiagram();
             	this.display(jsonDiagram);
-            }
+//            }
             
         } catch(Exception e) {
         	e.printStackTrace();
