@@ -43,14 +43,18 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=
+                            artifactId=<!--atlantic|-->sapphire|silvertail|
                             bsh|zk|zcommon|zel|zkbind|zkplus|zsoup
-                            |zul|zhtml|zweb|zjavassist-osgi|zkspring-core
+                            |zul|zhtml|zweb|zkspring-core
                         </Embed-Dependency>
                         <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Bundle-Name>ZK OSGI</Bundle-Name>
                         <Import-Package>
+                            !javax.annotation,
+                            com.google.common.collect;version="[20,21)",
+                            !com.google.javascript.closure-compiler-unshaded,
+                            !com.google.debugging.sourcemap,
                             !com.sun.jdi.*,
                             !org.zkoss.zsoup.*,
                             !javax.enterprise.*,
@@ -65,6 +69,10 @@
                             !org.xml.*,
                             !org.zkforge.*,
                             !org.apache.bsf.*,
+
+                            !org.zkoss.zkex.theme,
+                            !org.zkoss.zkmax.theme,
+
                             *
                         </Import-Package>
                         <Export-Package>
@@ -81,12 +89,13 @@
     </build>
 
     <dependencies>
-
+<!--
         <dependency>
             <groupId>org.processmining</groupId>
             <artifactId>bsh</artifactId>
             <version>1.0</version>
         </dependency>
+-->
 
         <!-- ZK Libraries -->
         <dependency>
@@ -97,13 +106,30 @@
             <groupId>org.zkoss.common</groupId>
             <artifactId>zcommon</artifactId>
         </dependency>
+<!--
         <dependency>
             <groupId>org.zkoss.common</groupId>
             <artifactId>zjavassist-osgi</artifactId>
         </dependency>
+-->
         <dependency>
             <groupId>org.zkoss.common</groupId>
             <artifactId>zweb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.theme</groupId>
+            <artifactId>atlantic</artifactId>
+            <version>${zk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.theme</groupId>
+            <artifactId>sapphire</artifactId>
+            <version>${zk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.theme</groupId>
+            <artifactId>silvertail</artifactId>
+            <version>${zk.version}</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>

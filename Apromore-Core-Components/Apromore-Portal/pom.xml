@@ -83,7 +83,6 @@
                         <Embed-Directory>WEB-INF/lib</Embed-Directory>
                         <Bundle-ClassPath>.,{maven-dependencies},WEB-INF/classes</Bundle-ClassPath>
                         <Import-Bundle>
-                            com.springsource.javassist;version="[3.15.0.GA,3.15.0.GA]",
                             com.springsource.org.apache.httpcomponents.httpclient;version="[4.2.1,4.2.1]",
                             com.springsource.org.apache.httpcomponents.httpcore;version="[4.2.1,4.2.1]",
                             com.springsource.org.apache.xmlbeans;version="[2.4.0,2.4.0]",

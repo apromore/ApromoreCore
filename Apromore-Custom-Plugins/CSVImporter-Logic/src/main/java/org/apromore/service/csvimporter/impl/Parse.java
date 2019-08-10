@@ -28,18 +28,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 
 import org.zkoss.zul.Messagebox;
 
+
 public class Parse {
 
-	
+    static final private Logger LOGGER = Logger.getAnonymousLogger();
 	
     private static final Map<String, String> DATE_FORMAT_REGEXPS = new HashMap<String, String>() {
     	{
         put("^\\d{4}$\\d{2}\\d{2}", "yyyyMMdd");
-        put("^\\d{4}$\\d{2}\\d{2}", "yyyyddMM");
-        put("^\\d{2}\\d{2}\\d{4}$", "MMddyyyy");
+        put("^\\d{4}$\\d{1,2}\\d{2}", "yyyyddMM");
+        put("^\\d{2}\\d{1,2}\\d{4}$", "MMddyyyy");
         put("^\\d{2}\\d{2}\\d{4}$", "ddMMyyyy");
         put("^\\d{1,2}-\\d{1,2}-\\d{4}$", "dd-MM-yyyy");
         put("^\\d{4}-\\d{1,2}-\\d{1,2}$", "yyyy-MM-dd");
@@ -69,7 +71,7 @@ public class Parse {
         put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd MMM yyyy HH:mm:ss");   // 11 Nov 2011 03:05:12
         put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}$", "dd MMMM yyyy HH:mm:ss"); // 11 November 2011 03:05:12
         put("^\\d{1,2}.\\d{1,2}.\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "dd.MM.yy HH:mm"); //19.3.10 8:05
-        put("^\\d{1,2}.\\d{1,2}.\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "MM.dd.yy HH:mm"); //9.13.10 8:05
+        put("^\\d{1,2}.\\d{1,2}.\\d{2}\\s\\d{1,2}:\\d{1,2}$", "MM.dd.yy HH:mm"); //9.13.10 8:05
         put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy-MM-dd HH:mm:ss.SSS");//2011-11-11 03:05:12.522
         put("^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy-MM-ddTHH:mm:ss.SSS");//2011-11-11T03:05:12.522
         put("^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{2}:\\d{2}$", "yyyy-MM-ddTHH:mm:ss");//2011-11-11T03:05:12.522
@@ -128,7 +130,7 @@ public class Parse {
 //            put("^\\d{4}/\\d{1,2}/\\d{1,2}T\\d{1,2}:\\d{2}:\\d{2}$", "yyyy/MM/ddTHH:mm:ss");//2011/11/11T03:05:12.522
     }};
 	
-	public Timestamp parseTimestamp(String theDate, String theFormate) {
+	public static Timestamp parseTimestamp(String theDate, String theFormate) {
 //	    Messagebox.show("Date: " + theDate + " Format: " + theFormate);
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(theFormate);
@@ -146,20 +148,22 @@ public class Parse {
 	
     public String determineDateFormat(String dateString) {
         for (String regexp : DATE_FORMAT_REGEXPS.keySet()) {
+//            LOGGER.info("Checking: " + dateString.toLowerCase() + " -- to -- : " + DATE_FORMAT_REGEXPS.get(regexp));
             if (dateString.toLowerCase().matches(regexp)) {
                 try{
                     SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_REGEXPS.get(regexp));
                     formatter.setLenient(false);
                     Calendar cal = Calendar.getInstance();
                     Date d = formatter.parse(dateString);
+//                    LOGGER.info("FOUND! :" + d);
                     return DATE_FORMAT_REGEXPS.get(regexp);
                 } catch (ParseException e) {
-                    e.printStackTrace();
-                    return null;
+//                    LOGGER.severe(e.getMessage() + "Tried: " + DATE_FORMAT_REGEXPS.get(regexp));
                 }
 
             }
         }
         return null; // Unknown format.
     }
+
 }

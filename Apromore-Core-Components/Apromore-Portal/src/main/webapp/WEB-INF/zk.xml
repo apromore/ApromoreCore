@@ -13,6 +13,11 @@
             <debug-js>true</debug-js>
     </client-config>
 
+    <library-property>
+        <name>org.zkoss.theme.preferred</name>
+        <value>silvertail</value>  <!-- atlantic, iceblue, sapphire, silvertail -->
+    </library-property>
+
     <!-- Uncomment if you turn off the caching of resources loaded from
             the class path (aka., class Web resources).
             By default, class Web resources are cached by the browser until
