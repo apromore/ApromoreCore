@@ -154,18 +154,21 @@
 			</a>
 		</caption>
 
-		<n:table style="height:100%;width:100%;border:1px;">
+		<n:table style="height:100%;width:100%;border:0px;">
 			<n:tr>
 				<n:td>
-					<groupbox id="optionbox" closable="false" mold="3d" open="true" style="background-color:none;">
+					<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%">
 						<attribute name="onOpen">
 							<![CDATA[
-								//arrow.setSclass("open-" + self.isOpen());
+								arrow.setSclass("open-" + self.isOpen());
+                Clients.evalJavaScript("resize();");
+                optionbox.invalidate();
+                
 							]]>
 						</attribute>
-						<caption id="optionlabel" label="Options" width="100%" sclass="customIcon" >
+						<caption id="optionlabel" label="Options" sclass="customIcon" >
 							<!--<span id="arrow" class="open-true" />-->
-							<!--<div id="arrow" class="open-true"></div> -->
+							<div id="arrow" class="open-true"></div>
 						</caption>
 						
 						<hbox align="center" id="optiondetails">
@@ -325,7 +328,7 @@
 			</n:tr>
 			
 			<n:tr>
-				<n:td style="height:100%;width:100%">
+				<n:td style="height:100%;width:100%;">
 					<n:div id="cy" style="height:100%;width:100%;background-color:none;" />
 				</n:td>
 			</n:tr>
@@ -340,6 +343,7 @@
 		var currentLayout = 0, ctrlIsPressed = !1, altIsPressed = !1;
 		var currentZoomLevel = 1;
 		var currentPanPosition;
+    var smallViewportHeight=0;
 		var initialLoaded = true; // whether the graph is first open.
 		var loadTraceMode = false; // indidate that the graph is loading a trace, not a full log
 		
@@ -484,6 +488,25 @@
 			});
 			
 		}
+    
+    function resize() {
+      var optionbox = zk.Widget.$("$optionbox");
+      
+      //Some caveats of cytoscape
+      //Need to set width in exact pixels since cy.resize() will expand the viewport slightly
+      //Cytoscape.resize() can recalculate the height accurately with 100% setting when groupbox is open 
+      //However, it is not able to do that when groupbox is collapsed.
+      //Therefore the height must be remembered and set in pixels when groupbox is collapsed
+      if (!optionbox.isOpen()) {
+        document.getElementById('cy').setAttribute("style","width:"+window.cy.width()+"px;height:100%;");
+      }
+      else {
+        document.getElementById('cy').setAttribute("style","width:"+window.cy.width()+"px;height:"+smallViewportHeight+"px;");
+      }
+      
+      window.cy.resize();
+      window.cy.fit();
+    }
 
 		
 		function makeTippy(node, text){
@@ -533,7 +556,10 @@
 			else {
 				fitToWindow(layout_option);
 			}
-			
+      
+      if (smallViewportHeight==0) {
+        smallViewportHeight = window.cy.height();
+      }
 			
 			cy.edgeBendEditing({
 													undoable: true,
