@@ -425,7 +425,7 @@
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>assembly</artifactId>
-                <version>1.0.20190808</version>
+                <version>1.0.20190812</version>
             </dependency>
 
             <dependency>
