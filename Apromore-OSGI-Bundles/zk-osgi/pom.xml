@@ -43,7 +43,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=<!--atlantic|-->sapphire|silvertail|
+                            artifactId=atlantic|sapphire|silvertail|
                             bsh|zk|zcommon|zel|zkbind|zkplus|zsoup
                             |zul|zhtml|zweb|zkspring-core
                         </Embed-Dependency>
