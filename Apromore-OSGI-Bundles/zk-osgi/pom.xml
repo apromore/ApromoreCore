@@ -43,7 +43,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=<!--atlantic|-->sapphire|silvertail|
+                            artifactId=atlantic|breeze|iceblue_c|sapphire|silvertail|
                             bsh|zk|zcommon|zel|zkbind|zkplus|zsoup
                             |zul|zhtml|zweb|zkspring-core
                         </Embed-Dependency>
@@ -119,6 +119,16 @@
         <dependency>
             <groupId>org.zkoss.theme</groupId>
             <artifactId>atlantic</artifactId>
+            <version>${zk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.theme</groupId>
+            <artifactId>breeze</artifactId>
+            <version>${zk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.theme</groupId>
+            <artifactId>iceblue_c</artifactId>
             <version>${zk.version}</version>
         </dependency>
         <dependency>

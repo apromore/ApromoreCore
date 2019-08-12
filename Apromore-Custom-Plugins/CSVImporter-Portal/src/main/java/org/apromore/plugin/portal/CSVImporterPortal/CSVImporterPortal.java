@@ -193,7 +193,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     if (line.length != header.length) {
                         Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
-                        window.detach();
+                        if(window != null) {
+                            window.detach();
+                        }
                         reader.close();
                     } else {
 
