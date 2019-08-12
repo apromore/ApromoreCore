@@ -69,7 +69,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     private String[] activityValues = {"activity", "activity id", "activity-id", "operation", "event"};
 
     /** The timestamp Values. */
-    private String[] timestampValues = {"timestamp", "end date", "complete timestamp", "time:timestamp"};
+    private String[] timestampValues = {"timestamp", "end date", "complete timestamp", "time:timestamp", "completion time"};
 
 
     private String[] StartTsValues = {"start date", "start timestamp", "start time"};
@@ -282,7 +282,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     heads.put(caseid, i);
                 } else if ((heads.get(activity) == -1) && getPos(activityValues, line[i])) {
                     heads.put(activity, i);
-                } else if ((heads.get(timestamp) == -1) && getPos(timestampValues, line[i])) {
+                } else if ((heads.get(timestamp) == -1) && getPos(timestampValues, line[i].toLowerCase())) {
                     String format = parse.determineDateFormat(this.line[i]);
                     if (format != null) {
                         heads.put(timestamp, i);
@@ -308,13 +308,19 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             String otherFormat = null;
 //            Timestamp validTS;
             // do multiple line
-            outerloop:
-            for (int i = 0; i < Math.min(1000, result.size()); i+=5) {
+            int IncValue = 5;
+            // skipping 5 lines is too much for small logs, go through every line when its less than 1000 lines in total.
+            if(result.size() < 1000) {
+                IncValue = 1;
+            }
+
+            outerloop: // naming the outer loop so we can break out from this loop within nested loops.
+            for (int i = 0; i < Math.min(1000, result.size()); i+=IncValue) {
                 String[] newLine = result.get(i);
 
                 for (int j = 0; j < newLine.length; j++) {
                     // Going row by rowe
-                    if (getPos(timestampValues, myHeader[j])) {
+                    if (getPos(timestampValues, myHeader[j].toLowerCase())) {
                         // if its timestamp field
                         String format = parse.determineDateFormat((newLine[j])); // dd.MM.yyyy //MM.dd.yyyy
                         Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
@@ -350,7 +356,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                     if (getPos(StartTsValues, myHeader[j])) {
                         // if its timestamp field
-                        String format = parse.determineDateFormat((newLine[j])); // dd.MM.yyyy //MM.dd.yyyy
+//                        LOGGER.info("newline is: " + newLine[j]);
+                        String format = parse.determineDateFormat((newLine[j]));
                         Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
 
 
@@ -378,11 +385,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                 Messagebox.show("Automatic parse of start timestamp might be in accurate. Please validate end timestamp field.");
                                 break;
                             }
-
                         }
-
                     }
-
                 }
             }
             timestampFormat = currentFormat;
