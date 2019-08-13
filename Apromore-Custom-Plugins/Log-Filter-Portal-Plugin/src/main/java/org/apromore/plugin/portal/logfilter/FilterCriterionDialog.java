@@ -18,33 +18,34 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.processdiscoverer;
+package org.apromore.plugin.portal.logfilter;
 
-import org.apromore.processdiscoverer.util.StringValues;
-import org.apromore.processdiscoverer.util.TimeConverter;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
 import org.apromore.logfilter.criteria.model.Action;
 import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
 import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
 import org.apromore.logfilter.criteria.model.Type;
-
+import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.logfilter.util.TimeConverter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Calendar;
 
 /**
+ * This is a dialog to create one filter criterion
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Modified by Bruce Nguyen
  */
-class CreateFilterCriterion {
+class FilterCriterionDialog {
 
-    private final DecimalFormat decimalFormat = new DecimalFormat(StringValues.b[123]);
+    private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
     private final String label;
 
     private Window createFilterCriterionW;
@@ -52,7 +53,7 @@ class CreateFilterCriterion {
     private Radiogroup containment;
     private Radiogroup action;
 
-    private FilterCriterionSelector filterCriterionSelector;
+    private LogFilterController filterCriterionSelector;
     private List<LogFilterCriterion> criteria;
     private Map<String, Map<String, Integer>> options_frequency; // key: filter type code, value: map{key:code value, value: count}
     private long min; // the earliest timstamp in the log
@@ -79,14 +80,17 @@ class CreateFilterCriterion {
     private Button okButton;
     private Button cancelButton;
     
-    private ProcessDiscovererController discovererController;
+    private PortalContext portalContext;
+    
+    private LogFilterCriterionFactory logFilterCriterionFactory;
 
-    public CreateFilterCriterion(String label, FilterCriterionSelector filterCriterionSelector,
-    							ProcessDiscovererController discovererController,
+    public FilterCriterionDialog(PortalContext portalContext, String label, LogFilterController filterCriterionSelector,
+    							LogFilterCriterionFactory logFilterCriterionFactory,
     							List<LogFilterCriterion> criteria, 
     							Map<String, Map<String, Integer>> options_frequency, 
     							long min, long max, int pos) throws IOException {
-    	this.discovererController = discovererController;
+    	this.portalContext = portalContext;
+    	this.logFilterCriterionFactory = logFilterCriterionFactory;
         this.label = label;
         setInputs(filterCriterionSelector, criteria, options_frequency, min, max, pos);
         initComponents(); 		// Initialize values
@@ -97,16 +101,17 @@ class CreateFilterCriterion {
         createFilterCriterionW.doModal();
     }
 
-    public CreateFilterCriterion(String label, FilterCriterionSelector filterCriterionSelector,
-    							ProcessDiscovererController discovererController,
+    public FilterCriterionDialog(PortalContext portalContext, String label, LogFilterController filterCriterionSelector,
+    							LogFilterCriterionFactory logFilterCriterionFactory,
     							List<LogFilterCriterion> criteria, 
     							Map<String, Map<String, Integer>> options_frequency, long min, long max) throws IOException {
-        this(label, filterCriterionSelector, discovererController, criteria, options_frequency, min, max, -1);
+        this(portalContext, label, filterCriterionSelector, logFilterCriterionFactory, criteria, options_frequency, min, max, -1);
     }
 
-    private void setInputs(FilterCriterionSelector filterCriterionSelector, List<LogFilterCriterion> criteria, Map<String, Map<String, Integer>> options_frequency, long min, long max, int pos) throws IOException {
+    private void setInputs(LogFilterController filterCriterionSelector, List<LogFilterCriterion> criteria, Map<String, Map<String, Integer>> options_frequency, long min, long max, int pos) throws IOException {
         //this.createFilterCriterionW = (Window) filterCriterionSelector.portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/createFilterCriterion.zul", null, null);
-    	this.createFilterCriterionW = (Window) Executions.createComponents("/zul/createFilterCriterion.zul", null, null);
+    	//this.createFilterCriterionW = (Window) Executions.createComponents("/zul/createFilterCriterion.zul", null, null);
+    	this.createFilterCriterionW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/createFilterCriterion.zul", null, null);
         this.createFilterCriterionW.setTitle("Create Filter Criterion");
         this.filterCriterionSelector = filterCriterionSelector;
         this.criteria = criteria;
@@ -354,7 +359,7 @@ class CreateFilterCriterion {
         filterType.addEventListener("onSelect", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) {
-            	CreateFilterCriterion.this.setValues(filterType.getSelectedIndex());
+            	FilterCriterionDialog.this.setValues(filterType.getSelectedIndex());
                 setStatus();
             }
         });
@@ -380,7 +385,7 @@ class CreateFilterCriterion {
                 }
                 
                 if (set.size() > 0) {
-                    LogFilterCriterion criterion = discovererController.getLogFilterCriterionFactory().getLogFilterCriterion(
+                    LogFilterCriterion criterion = logFilterCriterionFactory.getLogFilterCriterion(
                             action.getSelectedIndex() == 0 ? Action.RETAIN : Action.REMOVE,
                             containment.getSelectedIndex() == 0 ? Containment.CONTAIN_ANY : Containment.CONTAIN_ALL,
                             level.getSelectedIndex() == 0 ? Level.EVENT : Level.TRACE,

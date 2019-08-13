@@ -18,54 +18,88 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.processdiscoverer;
+package org.apromore.plugin.portal.logfilter;
 
+import org.apromore.logfilter.LogFilterService;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
 import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.processdiscoverer.util.StringValues;
-import org.apromore.processdiscoverer.util.TimeConverter;
 import org.deckfour.xes.model.XLog;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
-
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * This is the main window controller for log filter plugin
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Modified by Bruce Nguyen
  */
-class FilterCriterionSelector {
-
-    private final DecimalFormat decimalFormat = new DecimalFormat(StringValues.b[123]);
-
-    PortalContext portalContext;
-    private ProcessDiscovererController processDiscovererController;
+class LogFilterController {
+	private static final long serialVersionUID = 1L;
+	private PortalContext portalContext;
     private List<LogFilterCriterion> criteria;
+    
+    private LogFilterService logFilterService;
+    private LogFilterCriterionFactory logFilterCriterionFactory;
 
     private Window filterSelectorW;
     private Listbox criteriaList;
+    private XLog log;
+    
+    private LogFilterResultListener resultListener;
+    
+    public LogFilterController(PortalContext portalContext, XLog log,
+    							LogFilterService logFilterService,
+    							LogFilterCriterionFactory logFilterCriterionFactory,
+    							LogFilterResultListener resultListener) throws IOException {
+    	this.log = log;
+    	LogStatistics stats = new LogStatistics(this.log);
+    	this.logFilterService = logFilterService;
+    	this.logFilterCriterionFactory = logFilterCriterionFactory;
+    	this.resultListener = resultListener;
+    	initialize(portalContext, log, "concept:name", new ArrayList<LogFilterCriterion>(), stats.getStatistics(), 
+    				stats.getMinTimestamp(), stats.getMaxTimetamp());
 
-    public FilterCriterionSelector(String label, ProcessDiscovererController processDiscovererController, List<LogFilterCriterion> originalCriteria, Map<String, Map<String, Integer>> options_frequency, long min, long max) throws IOException {
-        this.processDiscovererController = processDiscovererController;
-        this.criteria = processDiscovererController.getLogFilterCriterionFactory().copyFilterCriterionList(originalCriteria);
-
-        portalContext = processDiscovererController.portalContext;
-
+    }
+    
+    public LogFilterController(PortalContext portalContext, 
+    							LogFilterService logFilterService,
+    							LogFilterCriterionFactory logFilterCriterionFactory,
+    							XLog log, String label, 
+								List<LogFilterCriterion> originalCriteria, 
+								LogStatistics logStats,
+								LogFilterResultListener resultListener) throws IOException {
+    	this.logFilterService = logFilterService;
+    	this.logFilterCriterionFactory = logFilterCriterionFactory;
+    	this.resultListener = resultListener;
+    	initialize(portalContext, log, label, originalCriteria, logStats.getStatistics(), 
+    				logStats.getMinTimestamp(), logStats.getMaxTimetamp());
+    }
+    
+    private void initialize(PortalContext portalContext, XLog log, String label, 
+    							List<LogFilterCriterion> originalCriteria, 
+    							Map<String, Map<String, Integer>> options_frequency, 
+    							long min, long max) throws IOException {
+    	this.portalContext = portalContext;
+    	this.log = log;
+//    	logFilterService = (LogFilterService)beanFactory.getBean("logFilterService");
+//    	logFilterCriterionFactory = (LogFilterCriterionFactory)beanFactory.getBean("LogFilterCriterionFactory");
+        this.criteria = logFilterCriterionFactory.copyFilterCriterionList(originalCriteria);
+        
         //filterSelectorW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/filterCriteria.zul", null, null);
-        filterSelectorW = (Window) Executions.createComponents("/zul/filterCriteria.zul", null, null);
+        //filterSelectorW = (Window) Executions.createComponents("/zul/filterCriteria.zul", null, null);
+        filterSelectorW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/filterCriteria.zul", null, null);
         filterSelectorW.setTitle("Filter Criteria");
 
         criteriaList = (Listbox) filterSelectorW.getFellow("criteria");
@@ -92,16 +126,16 @@ class FilterCriterionSelector {
         });        
         createButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
-                new CreateFilterCriterion(label, FilterCriterionSelector.this,
-                							processDiscovererController,
+                new FilterCriterionDialog(portalContext, label, LogFilterController.this,
+                							logFilterCriterionFactory,
                 							criteria, options_frequency, min, max);
             }
         });
         editButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 if (criteriaList.getSelectedIndex() > -1) {
-                    new CreateFilterCriterion(label, FilterCriterionSelector.this,
-                    				processDiscovererController,
+                    new FilterCriterionDialog(portalContext, label, LogFilterController.this,
+                    				logFilterCriterionFactory,
                     				criteria, options_frequency, min, max, criteriaList.getSelectedIndex());
                 }
             }
@@ -147,18 +181,16 @@ class FilterCriterionSelector {
     }
 
     private void save() throws InterruptedException {
-    	XLog filteredLog = processDiscovererController.getLogFilterService().filter(processDiscovererController.getInitialLog(), criteria);
+    	XLog filteredLog = this.logFilterService.filter(this.log, criteria);
     	if (filteredLog.isEmpty()) {
     		Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.");
     	}
     	else {
-	        filterSelectorW.detach();
-	        processDiscovererController.setFilteredLog(filteredLog);
-	        processDiscovererController.setCriteria(criteria);
-	        processDiscovererController.refreshCriteria(criteria.isEmpty());
+    		filterSelectorW.detach();
+    		resultListener.filterFinished(criteria, filteredLog);
     	}
     }
-
+    
     public void updateList() {
         ListModelList<String> model = new ListModelList<>();
         for(LogFilterCriterion criterion : criteria) {
