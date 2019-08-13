@@ -31,9 +31,8 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
 
-import com.opencsv.CSVParser;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReaderBuilder;
+import com.opencsv.*;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -55,7 +54,6 @@ import org.zkoss.zul.Window;
 import org.zkoss.zul.*;
 
 import org.deckfour.xes.model.XLog;
-import com.opencsv.CSVReader;
 
 
 @Component("csvImporterPortalPlugin")
@@ -131,12 +129,14 @@ public class CSVImporterPortal implements FileImporterPlugin {
         } else {
             try {
 
-                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
+                RFC4180ParserBuilder builder = new RFC4180ParserBuilder();
+                RFC4180Parser parser = builder.withSeparator(separator).build();
+//                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
                 // check file format to choose correct file reader.
                 if (media.isBinary()) {
-                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).build();
+                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 } else {
-                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).build();
+                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 }
                 String[] header;
                 String[] line;
@@ -348,12 +348,16 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         // on clicking the button: CONVERT TO XES
                         if (media != null) {
                             try {
-                                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
+                                RFC4180ParserBuilder builder = new RFC4180ParserBuilder();
+                                RFC4180Parser parser = builder.withSeparator(separator).build();
+
+
+//                                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
                                 // check file format to choose correct file reader.
                                 if (media.isBinary()) {
-                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).build();
+                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 } else {
-                                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).build();
+                                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 }
                             }catch (Exception e) {
                                 LOGGER.error("Failed to read");

@@ -1,13 +1,21 @@
 package org.apromore.dao.jpa;
 
 import org.apromore.dao.StatisticRepositoryCustom;
+import org.apromore.dao.dataObject.DistanceDO;
 import org.apromore.dao.model.Statistic;
+import org.apromore.util.StatType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom {
@@ -17,21 +25,93 @@ public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom 
     @PersistenceContext
     private EntityManager em;
 
+    @Resource
+    private JdbcTemplate jdbcTemplate;
+
+    /* ************************** JPA Methods here ******************************* */
+
+//    public void storeAllStats(List<Statistic> stats) {
+//        try {
+//            int ip = 0;
+//                for(Statistic stat : stats) {
+//                    ip = ip +1;
+//                    em.persist(stat);
+//                    if((ip % 10000) == 0 ) {
+//                        em.flush();
+//                        em.clear();
+//                    }
+//            }
+//        } catch (Exception e) {
+//            LOGGER.error("Error " + e.getMessage());
+//        }
+//    }
+
     @Override
     @Transactional
-    public void storeAllStats(List<Statistic> stats) {
-        try {
-            int ip = 0;
-                for(Statistic stat : stats) {
-                    ip = ip +1;
-                    em.persist(stat);
-                    if((ip % 10000) == 0 ) {
-                        em.flush();
-                        em.clear();
-                    }
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error " + e.getMessage());
+    public boolean existsByLogidAndStatType(Integer logid, StatType statType) {
+//        if (logid != null && statType != null) {
+//            Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_key=:param2");
+//            query.setParameter("param1", logid);
+//            query.setParameter("param2", statType.toString());
+//            List<Statistic> stats = query.getResultList();
+//
+//            LOGGER.info(" The number of stats is: " + statType + " - "  + stats.size());
+//
+//            return stats != null && stats.size() > 0;
+//        } else {
+//            return false;
+//        }
+
+        if (logid != null && statType != null) {
+            Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_key=:param2");
+            query.setParameter("param1", logid);
+            query.setParameter("param2", statType.toString());
+//            string result = query.getSingleResult().toString();
+
+            return !query.setMaxResults(1).getResultList().isEmpty();
         }
+
+        return false;
+    }
+
+    /* ************************** JDBC Template / native SQL Queries ******************************* */
+
+    @Override
+    @Transactional
+    public void storeAllStats(final List<Statistic> stats) {
+
+        // *******  profiling code start here ********
+        long startTime = System.nanoTime();
+        // *******  profiling code end here ********
+
+        if (null != stats && stats.size() != 0) {
+            String sql = "INSERT INTO statistic (id, logid, pid, stat_key, stat_value) VALUES (?,?,?,?,?)";
+
+            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement ps, int i) throws SQLException {
+                    Statistic stat = stats.get(i);
+                    ps.setBytes(1, stat.getId());
+                    ps.setInt(2, stat.getLogid());
+                    ps.setBytes(3, stat.getPid());
+                    ps.setString(4, stat.getStat_key());
+                    ps.setString(5, stat.getStat_value());
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return stats.size();
+                }
+            });
+        }
+
+        // *******  profiling code start here ********
+        long elapsedNanos = System.nanoTime() - startTime;
+//        LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
+//        LOGGER.info("Insert speed: " + 100000 / ( elapsedNanos / 1000000 /1000 ) + " records/sec");
+        // *******  profiling code end here ********
+
+            LOGGER.info("Stored [" + stats.size() + "] stats in " + elapsedNanos / 1000000 );
+
     }
 }

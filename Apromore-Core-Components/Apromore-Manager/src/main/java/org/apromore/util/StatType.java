@@ -8,5 +8,8 @@ public enum StatType {
     FILTER,
     CASE,
     ACTIVITY,
-    RESOURCE
+    RESOURCE,
+    VARIANT,
+    CHART_POINT,
+    CHART_CATEGORY
 }
