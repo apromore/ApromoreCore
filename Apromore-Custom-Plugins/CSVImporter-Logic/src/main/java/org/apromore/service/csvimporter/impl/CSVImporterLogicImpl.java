@@ -209,9 +209,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //                                e.printStackTrace();
                     errorCount++;
                     if(invalidRows.size() < 5) {
-
-                        invalidRows.add("Line: " + (lineCount + 1) + ", Content: " + line[0] + "," +
-                                line[1] + "," + line[2] + "," + line[3] + " ...");
+                        if(line.length > 4) {
+                            invalidRows.add("Line: " + (lineCount + 1) + ", Content: " + line[0] + "," +
+                                    line[1] + "," + line[2] + "," + line[3] + " ...");
+                        } else {
+                            invalidRows.add("Line: " + (lineCount + 1) + ", Content: " + " Empty, or too short for display.");
+                        }
                     }
 
 //                    Messagebox.show(errorMessage);
