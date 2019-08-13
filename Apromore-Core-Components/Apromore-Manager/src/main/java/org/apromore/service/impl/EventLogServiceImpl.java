@@ -64,6 +64,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
+import org.springframework.cache.ehcache.*;
+
 //import javax.annotation.Resource;
 
 /**
@@ -236,6 +238,7 @@ public class EventLogServiceImpl implements EventLogService {
 //                }
 //            }
 
+            // Append stats into Log in one loop
             for (int i = 0; i < stats.size(); i++) {
 
                 Statistic pStat = stats.get(i);

@@ -230,98 +230,90 @@ public class EventLogServiceImplTest {
     }
 
 
-    @Test
-    @Rollback
-    public void simpleTest() {
+    /* Below are performance testing which are comment out in production */
 
-
-        EntityManager em = getEntityManagerFactory().createEntityManager();
-        assert em != null;
-        Statistic fe = new Statistic();
-        fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-        fe.setStat_key("key");
-        fe.setLogid(88);
-        fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-        fe.setStat_value("value");
-        em.getTransaction().begin();
-
-
-        em.persist(fe);
-//        Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param").setParameter("param", fe.getLogid());
-        Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_value=:param2")
-                .setParameter("param1", 88)
-                .setParameter("param2", "value");
-        List<Statistic> stats = query.getResultList();
-
-        for (Statistic stat : stats) {
-            LOGGER.info(stat.getStat_value());
-        }
-
-        em.flush();
-        em.getTransaction().commit();
-        em.close();
-
-//        logRepositoryCustom.saveStat(stats.get(0));
-//        eventLogService.insertStatistic(stat);
-    }
-
-    @Test
-    @Rollback
-    public void batchInsertTest() {
-
-        // *******  profiling code start here ********
-        long startTime = System.nanoTime();
-        // *******  profiling code end here ********
-
-        EntityManager em = getEntityManagerFactory().createEntityManager();
-        assert em != null;
-        em.getTransaction().begin();
-
-        for (int i = 0; i < 100; i++) {
-
-            Statistic fe = new Statistic();
-            fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-            fe.setStat_key("key");
-            fe.setLogid(88);
-            fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-            fe.setStat_value(Double.toString(Math.random()));
-
-            em.persist(fe);
-            if ((i % 10000) == 0) {
-                em.getTransaction().commit();
-                em.clear();
-                em.getTransaction().begin();
-            }
-        }
-        em.getTransaction().commit();
+//    @Test
+//    @Rollback
+//    public void simpleTest() {
+//
+//
+//        EntityManager em = getEntityManagerFactory().createEntityManager();
+//        assert em != null;
+//        Statistic fe = new Statistic();
+//        fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+//        fe.setStat_key("key");
+//        fe.setLogid(88);
+//        fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+//        fe.setStat_value("value");
+//        em.getTransaction().begin();
+//
+//
+//        em.persist(fe);
+//        Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_value=:param2")
+//                .setParameter("param1", 88)
+//                .setParameter("param2", "value");
+//        List<Statistic> stats = query.getResultList();
+//
+//        for (Statistic stat : stats) {
+//            LOGGER.info(stat.getStat_value());
+//        }
+//
+//        em.flush();
+//        em.getTransaction().commit();
 //        em.close();
+//
+//    }
 
-        // *******  profiling code start here ********
-        long elapsedNanos = System.nanoTime() - startTime;
-        LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
-        LOGGER.info("Insert speed: " + 100000 / ( elapsedNanos / 1000000 /1000 ) + " records/sec");
-        // *******  profiling code end here ********
-
-    }
+//    @Test
+//    @Rollback
+//    public void batchInsertTest() {
+//
+//        // *******  profiling code start here ********
+//        long startTime = System.nanoTime();
+//        // *******  profiling code end here ********
+//
+//        EntityManager em = getEntityManagerFactory().createEntityManager();
+//        assert em != null;
+//        em.getTransaction().begin();
+//
+//        for (int i = 0; i < 100; i++) {
+//
+//            Statistic fe = new Statistic();
+//            fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+//            fe.setStat_key("key");
+//            fe.setLogid(88);
+//            fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+//            fe.setStat_value(Double.toString(Math.random()));
+//
+//            em.persist(fe);
+//            if ((i % 10000) == 0) {
+//                em.getTransaction().commit();
+//                em.clear();
+//                em.getTransaction().begin();
+//            }
+//        }
+//        em.getTransaction().commit();
+////        em.close();
+//
+//        // *******  profiling code start here ********
+//        long elapsedNanos = System.nanoTime() - startTime;
+//        LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
+//        LOGGER.info("Insert speed: " + 100000 / ( elapsedNanos / 1000000 /1000 ) + " records/sec");
+//        // *******  profiling code end here ********
+//
+//    }
 
 //    @Test
 //    public void getStatsByType() {
 //
 //        List<Statistic> stats = new ArrayList<>();
-//        List<Dashboard> dashboard = new ArrayList<>();
 //        Integer logId = 001;
 //        expect(statisticRepository.findByLogid(logId)).andReturn(stats);
 //        replay(statisticRepository);
-//
-//        expect(dashboardRepository.findByLogid(logId)).andReturn(dashboard);
-//        replay(dashboardRepository);
 //
 //        List<Statistic> result = (List<Statistic>) eventLogService.getStatsByType(logId, StatType.FILTER);
 //        verify(statisticRepository);
 //        assertThat(result, equalTo(stats));
 //
-//        List<Dashboard> dbList = (List<Dashboard>) eventLogService.getStatsByType(logId, StatType.ACTIVITY);
-//        verify(statisticRepository);
-//        assertThat(dbList, equalTo(dashboard));
 //    }
 }

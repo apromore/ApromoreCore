@@ -79,6 +79,11 @@ public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom 
     @Override
     @Transactional
     public void storeAllStats(final List<Statistic> stats) {
+
+        // *******  profiling code start here ********
+        long startTime = System.nanoTime();
+        // *******  profiling code end here ********
+
         if (null != stats && stats.size() != 0) {
             String sql = "INSERT INTO statistic (id, logid, pid, stat_key, stat_value) VALUES (?,?,?,?,?)";
 
@@ -98,8 +103,15 @@ public class StatisticRepositoryCustomImpl implements StatisticRepositoryCustom 
                     return stats.size();
                 }
             });
-
-            LOGGER.info("Stored [" + stats.size() + "] stats into db for log");
         }
+
+        // *******  profiling code start here ********
+        long elapsedNanos = System.nanoTime() - startTime;
+//        LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
+//        LOGGER.info("Insert speed: " + 100000 / ( elapsedNanos / 1000000 /1000 ) + " records/sec");
+        // *******  profiling code end here ********
+
+            LOGGER.info("Stored [" + stats.size() + "] stats in " + elapsedNanos / 1000000 );
+
     }
 }

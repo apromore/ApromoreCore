@@ -58,7 +58,6 @@
                 <bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean">
                     <property name="name" value="log"/>
                 </bean>
-
             </set>
         </property>
     </bean>
