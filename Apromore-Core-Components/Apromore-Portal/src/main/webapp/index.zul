@@ -123,13 +123,23 @@
                         <!--]]>-->
                     <!--</attribute>-->
                 <!--</toolbarbutton>-->
-                <toolbarbutton id="releaseNotes" />
-                <separator orient="vertical" bar="true"/>
-                <toolbarbutton id="moreButton" label="Apromore Initiative"/>
-                <separator orient="vertical" bar="true"/>
-                <toolbarbutton id="installedPlugins" label="Active Plugins"/>
-                <separator orient="vertical" bar="true"/>
-                <toolbarbutton id="webDav" label="webDav"/>
+                <listbox id="header">
+                    <listhead>
+                    <listheader id="releaseNotes"/>
+                    <listheader id="moreButton" label="Apromore Initiative" />
+                    <listheader id="installedPlugins" label="Active Plugins"/>
+                    </listhead>
+                    <!--<listhead id="webDav"/>-->
+                    <!--<listhead id="developerResources"/>-->
+                </listbox>
+                <!---->
+                <!--<toolbarbutton id="releaseNotes" />-->
+                <!--<separator orient="vertical" bar="true"/>-->
+                <!--<toolbarbutton id="moreButton" label="Apromore Initiative"/>-->
+                <!--<separator orient="vertical" bar="true"/>-->
+                <!--<toolbarbutton id="installedPlugins" label="Active Plugins"/>-->
+                <!--<separator orient="vertical" bar="true"/>-->
+                <!--<toolbarbutton id="webDav" label="webDav"/>-->
                 <!--<separator orient="vertical" bar="true"/>-->
                 <!--<toolbarbutton id="developerResources" label="Developer Resources"/>-->
             </div>
