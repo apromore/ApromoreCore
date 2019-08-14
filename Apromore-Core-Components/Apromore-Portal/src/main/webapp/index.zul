@@ -107,11 +107,14 @@
             font-weight: normal;
             text-align: center;
         }
+        .z-toolbarbutton-content {
+            color: white;
+        }
     </style>
 
     <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
 
-        <div height="40px" style="background-color: #CDE6F5;">
+        <div height="40px" style="background-color: #0093f9;">
             <div style="float:left; margin-top: 5px;" >
                 <!--<toolbarbutton id="releaseNotes"  mode="toggle">-->
                     <!--<attribute name="onCheck">-->
