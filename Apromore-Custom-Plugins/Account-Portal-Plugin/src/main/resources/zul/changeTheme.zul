@@ -1,0 +1,22 @@
+<window xmlns:n="http://www.zkoss.org/2005/zk/native"
+        xmlns:w="http://www.zkoss.org/2005/zk/client"
+        xmlns:z="http://www.zkoss.org/2005/zul"
+        id="win" width="450px" closable="true" position="center" title="Change Theme">
+    <grid>
+        <columns>
+            <column width="140px"/>
+            <column width="200px"/>
+        </columns>
+        <rows>
+            <row>
+                <label value="Theme"/>
+                <listbox id="themeListbox" mold="select"/>
+            </row>
+            <row>
+                <cell colspan="2" style="text-align: center">
+                    <button id="okButton" label="OK" tabindex="1"/>
+                </cell>
+           </row>
+        </rows>
+    </grid>
+</window>
