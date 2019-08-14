@@ -60,6 +60,7 @@
 
         <!-- Free builds won't include the following encumbered components -->
         <include name="Apromore-OSGI-Bundles/zkcharts-osgi/target/zkcharts-osgi-*.jar"/>
+        <include name="Apromore-OSGI-Bundles/zkthemepack-osgi/target/zkthemepack-osgi-*.jar"/>
     </fileset>
 
     <!-- Virgo Related -->

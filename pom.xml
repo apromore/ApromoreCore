@@ -2244,6 +2244,7 @@
             <modules>
                 <module>../Dashboard</module>
                 <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>
+                <!-- <module>Apromore-OSGI-Bundles/zkthemepack-osgi</module> -->
             </modules>
         </profile>
     </profiles>
