@@ -125,6 +125,7 @@
                 <!--</toolbarbutton>-->
 
                 <!---->
+                <toolbar>
                 <toolbarbutton id="releaseNotes" style="" />
                 <separator orient="vertical" bar="true"/>
                 <toolbarbutton id="moreButton" label="Apromore Initiative"/>
@@ -134,6 +135,7 @@
                 <toolbarbutton id="webDav" label="webDav"/>
                 <separator orient="vertical" bar="true"/>
                 <toolbarbutton id="developerResources" label="Developer Resources"/>
+                </toolbar>
             </div>
             <div style="float:right; margin-top: 5px;">
 				<toolbarbutton id="featuresButton" label="Help" visible="true"/>
