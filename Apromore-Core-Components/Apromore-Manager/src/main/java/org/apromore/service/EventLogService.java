@@ -103,12 +103,24 @@ public interface EventLogService {
     /**
      * Persist statistics of XLog into DB by stat types
      * TODO: explain the format of input nested map
+     *
      * @param map  {String statUID {[String stat_key, String stat_value]}}
      *             The statUID is a unique identifier that is associated with a set of statistics of the same type.
      *             For example, it can be the caseID which is used to identify a set of attributes of one case.
      *             {caseID, {[attrKey, attrValue] [attrKey, attrValue]}}
      * @param logId logID of XES log file
      * @param statType enum that store all the types of statistic
+     * @throws IllegalArgumentException
      */
     void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType);
+
+    /**
+     *
+     * Check if this log has this type of statistic in the database.
+     *
+     * @param logId logID of XES log file
+     * @param statType enum that store all the types of statistic
+     * @return
+     */
+    boolean isStatsExists(Integer logId, StatType statType);
 }

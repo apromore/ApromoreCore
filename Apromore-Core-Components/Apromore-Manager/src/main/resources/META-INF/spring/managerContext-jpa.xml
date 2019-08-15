@@ -58,6 +58,8 @@
                 <prop key="eclipselink.query-results-cache">true</prop>
                 <prop key="eclipselink.query-results-cache.size">10000</prop>
                 <prop key="eclipselink.jdbc.cache-statements">true</prop>
+                <!--  Optimization #6 - configure the row fetch size used in the query to improve performance by reducing the number database hits required to satisfy the selection criteria -->
+                <prop key="eclipselink.jdbc.fetch-size">1000</prop>
                 <!--  Optimization #5 - avoid cost of persist on commit -->
                 <prop key="eclipselink.persistence-context.persist-on-commit">false</prop>
                 <prop key="eclipselink.persistence-context.close-on-commit">true</prop>

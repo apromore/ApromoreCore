@@ -61,14 +61,14 @@ class FilterCriterionDialog {
     private int pos; // the index of the Filter Criterion in the list
 
     private List<String> allFilterTypeCodes; // list of all filter type codes (standard + non-standard)
-    private List<String> allFilterTypeNames; // list of all corresponding filter type names (standard + non-standard)
+//    private List<String> allFilterTypeNames; // list of all corresponding filter type names (standard + non-standard)
     										 // This list is needed because the values displayed on UI could be different, e.g. with quotes
     
     // The indexes of filter type labels displayed on UI and these lists are the same
     // The values could be different: one is code, name and label (displayed in the list box)
     // Some non-standard types in the list are displayed in quotes 
     private List<String> filterTypeCodes; // valid filter type codes according to the selected level
-    private List<String> filterTypeNames; // valid filter type names according to the selected level
+//    private List<String> filterTypeNames; // valid filter type names according to the selected level
     
     private Listbox filterType;
     private Listbox value;
@@ -168,14 +168,16 @@ class FilterCriterionDialog {
         // Update all codes and names to be used
         allFilterTypeCodes = new ArrayList<>(options_frequency.keySet()); // list of filterType types
         this.sortFilterTypeCodes(allFilterTypeCodes);
-        allFilterTypeNames = new ArrayList<>();
-        for(String option : allFilterTypeCodes) {
-        	allFilterTypeNames.add(this.getFilterTypeName(option));
-        }
+        //15.08: comment out
+//        allFilterTypeNames = new ArrayList<>();
+//        for(String option : allFilterTypeCodes) {
+//        	allFilterTypeNames.add(this.getFilterTypeName(option));
+//        }
         
         // Update codes and names according to the level
         filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
-        filterTypeNames = getValidFilterTypeNames(level);
+        //15.08
+        //filterTypeNames = getValidFilterTypeNames(level);
 
         this.populateFilterTypes();
 
@@ -187,8 +189,8 @@ class FilterCriterionDialog {
      */
     private void populateFilterTypes() {
     	filterType.getItems().clear();
-        for(String option : filterTypeCodes) {
-        	filterType.appendItem(getFilterTypeLabel(option), getFilterTypeLabel(option));
+        for(String filterCode : filterTypeCodes) {
+        	filterType.appendItem(getFilterTypeLabel(filterCode), filterCode);//getFilterTypeLabel(option)); //15.08
         }
     }
     
@@ -204,7 +206,7 @@ class FilterCriterionDialog {
             
             // Update codes, names and displayed labels according to the level of the current Filter Criterion
             filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
-            filterTypeNames = getValidFilterTypeNames(level);
+//            filterTypeNames = getValidFilterTypeNames(level);
             this.populateFilterTypes();
 
             String a = null;
@@ -216,8 +218,9 @@ class FilterCriterionDialog {
                     break;
                 }
             }
-            setValues(attribute_index);
+            
             filterType.setSelectedIndex(attribute_index);
+            setValues(filterType.getSelectedItem()); //15.08
 
             if (LogFilterTypeSelector.getType(a) == Type.TIME_TIMESTAMP) {
                 Long start = null;
@@ -287,7 +290,7 @@ class FilterCriterionDialog {
             //okButton.setDisabled(false);
         	
             if(filterType.getSelectedIndex() >= 0) {  
-            	boolean eventInvalid = !LogFilterTypeSelector.isValidType(filterTypeCodes.get(filterType.getSelectedIndex()), Level.EVENT);
+            	boolean eventInvalid = !LogFilterTypeSelector.isValidCode(filterTypeCodes.get(filterType.getSelectedIndex()), Level.EVENT); //15.08
                 for (Radio radio : containment.getItems()) {
                     radio.setDisabled(eventInvalid);
                 }
@@ -325,7 +328,7 @@ class FilterCriterionDialog {
                 	String currentFilterType = filterTypeCodes.get(filterType.getSelectedIndex());
                 	
                 	filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
-                	filterTypeNames = getValidFilterTypeNames(level);
+//                	filterTypeNames = getValidFilterTypeNames(level);
             		populateFilterTypes(); // filterType is updated
             		
 	            	if (isLevelValid(currentFilterType, level)) {
@@ -349,7 +352,7 @@ class FilterCriterionDialog {
             	}
             	else {
             		filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
-                	filterTypeNames = getValidFilterTypeNames(level);
+//                	filterTypeNames = getValidFilterTypeNames(level);
             		populateFilterTypes();
             	}
                 setStatus();
@@ -359,7 +362,7 @@ class FilterCriterionDialog {
         filterType.addEventListener("onSelect", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) {
-            	FilterCriterionDialog.this.setValues(filterType.getSelectedIndex());
+            	FilterCriterionDialog.this.setValues(filterType.getSelectedItem()); //15.08
                 setStatus();
             }
         });
@@ -411,20 +414,26 @@ class FilterCriterionDialog {
     }
 
     /**
+     * 15.08: change input parameter
      * Set value or populate values to fields/list on the form 
      * @param index: the index of the selected filter type in filterTypeCodes 
      */
-    private void setValues(int index) {
-        String option = filterTypeNames.get(index); //option is the label of the selected filter type code 
+    private void setValues(Listitem selectedItem) {
+    	//15.08
+        //String option = filterTypeNames.get(index); //option is the label of the selected filter type code
+    	String filterCode = selectedItem.getValue();
 
-        if(option.equals("Time-frame")) {
+        //15.08: if(option.equals("Time-frame")) {
+    	if (LogFilterTypeSelector.getType(filterCode) == Type.TIME_TIMESTAMP) { 
             //value.setModel(modelValue);
         	value.getItems().clear();
             startDate.setDisabled(false);
             endDate.setDisabled(false);
             duration.setDisabled(true);
             durationUnits.setDisabled(true);
-        }else if(option.equals("Duration")) {
+        //15.08: }else if(option.equals("Duration")) {
+    	}
+    	else if (LogFilterTypeSelector.getType(filterCode) == Type.TIME_DURATION) {
             // value.setModel(modelValue);
         	value.getItems().clear();
             startDate.setDisabled(true);
@@ -438,22 +447,23 @@ class FilterCriterionDialog {
             durationUnits.setDisabled(true);
 
             Collection<String> set;
-            String coded_option; // the filter type corresponding to option 
-            if(LogFilterTypeSelector.isStandardName(option)) coded_option = LogFilterTypeSelector.getTypeFromName(option);
-            else coded_option = option;
-
-            set = options_frequency.get(coded_option).keySet(); // list of values
+//            15.08: 
+//            String coded_option; // the filter type corresponding to option 
+//            if(LogFilterTypeSelector.isStandardName(option)) coded_option = LogFilterTypeSelector.getTypeFromName(option);
+//            else coded_option = option;
+            
+            set = options_frequency.get(filterCode).keySet(); // list of values
 
             value.getItems().clear();
             double total = 0;
             for (String option_value : set) {
-                total += options_frequency.get(coded_option).get(option_value); // calculate total frequency
+                total += options_frequency.get(filterCode).get(option_value); // calculate total frequency
             }
 
             for (String option_value : set) {
                 Listcell listcell1 = new Listcell(option_value);
-                Listcell listcell2 = new Listcell(options_frequency.get(coded_option).get(option_value).toString());
-                Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) options_frequency.get(coded_option).get(option_value) / total)) + "%");
+                Listcell listcell2 = new Listcell(options_frequency.get(filterCode).get(option_value).toString());
+                Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) options_frequency.get(filterCode).get(option_value) / total)) + "%");
 
                 Listitem listitem = new Listitem();
                 listitem.appendChild(listcell1);
@@ -479,7 +489,7 @@ class FilterCriterionDialog {
     }
     
     private boolean isLevelValid(String filterType, Radiogroup level) {
-    	return LogFilterTypeSelector.isValidType(filterType, getLevel(level));
+    	return LogFilterTypeSelector.isValidCode(filterType, getLevel(level)); //15.08
     }
     
     private List<String> getValidFilterTypeCodes(List<String> types, Radiogroup level) {
@@ -492,7 +502,7 @@ class FilterCriterionDialog {
     
     private String getFilterTypeName(String type) {
     	if(isStandard(type)) {
-        	return LogFilterTypeSelector.getNameFromType(type);
+        	return LogFilterTypeSelector.getNameFromCode(type); //15.08
         }
         else {
         	return type;
@@ -545,7 +555,7 @@ class FilterCriterionDialog {
     //Note: non-standard type has its label displayed in quotes ("").
     private String getFilterTypeLabel(String type) {
         if(isStandard(type)) { 
-        	return LogFilterTypeSelector.getNameFromType(type);
+        	return LogFilterTypeSelector.getNameFromCode(type); //15.08
         }
         else { 
         	return "\"" + type + "\"";
