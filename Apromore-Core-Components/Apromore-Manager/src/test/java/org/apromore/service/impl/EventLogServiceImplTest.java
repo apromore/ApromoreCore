@@ -1,12 +1,15 @@
 package org.apromore.service.impl;
 
-import org.apromore.dao.*;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.StatisticRepository;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.util.UuidAdapter;
 import org.apromore.util.StatType;
+import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
@@ -23,14 +26,15 @@ import org.springframework.test.annotation.Rollback;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import java.util.*;
 
+import static org.apromore.service.impl.EventLogServiceImpl.PARENT_NODE_FLAG;
 import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.powermock.api.easymock.PowerMock.*;
-import static org.powermock.api.easymock.PowerMock.verify;
 
 public class EventLogServiceImplTest {
 
@@ -89,23 +93,45 @@ public class EventLogServiceImplTest {
 
         List<Statistic> stats = new ArrayList<>();
 
+        Integer logId = 001;
+
         Statistic parent = new Statistic();
-        parent.setId("parent".getBytes());
-        parent.setStat_key("key");
-        parent.setLogid(88);
+        parent.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+        parent.setStat_key("parent_key");
+        parent.setLogid(logId);
         parent.setPid("0".getBytes());
         parent.setStat_value("01");
+        parent.setCount((long) 1);
         stats.add(parent);
 
         Statistic child = new Statistic();
-        child.setId("child".getBytes());
+        child.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
         child.setStat_key("child_key");
-        child.setLogid(88);
-        child.setPid("parent".getBytes());
+        child.setLogid(logId);
+        child.setPid(parent.getId());
         child.setStat_value("02");
+        child.setCount((long) 2);
         stats.add(child);
 
-        Integer logId = 001;
+        Statistic parent1 = new Statistic();
+        parent1.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+        parent1.setStat_key("parent_key1");
+        parent1.setLogid(logId);
+        parent1.setPid("0".getBytes());
+        parent1.setStat_value("03");
+        parent1.setCount((long) 3);
+        stats.add(parent1);
+
+        Statistic child1 = new Statistic();
+        child1.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+        child1.setStat_key("child_key1");
+        child1.setLogid(logId);
+        child1.setPid(parent1.getId());
+        child1.setStat_value("04");
+        child1.setCount((long) 4);
+        stats.add(child1);
+
+
 
         expect(statisticRepository.findByLogid(logId)).andReturn(stats);
         replay(statisticRepository);
@@ -130,9 +156,10 @@ public class EventLogServiceImplTest {
         XAttribute statsAttribute = expectResult.getAttributes().get(STAT_NODE_NAME);
 
         assertThat(statsAttribute, equalTo(new XAttributeLiteralImpl(STAT_NODE_NAME, "")));
-        assertThat(statsAttribute.getAttributes().size(), equalTo(1));
-        assertThat(statsAttribute.getAttributes().get("key"), equalTo(new XAttributeLiteralImpl("key", "01")));
-        assertThat(statsAttribute.getAttributes().get("key").getAttributes().get("child_key"), equalTo(new XAttributeLiteralImpl("child_key", "02")));
+        assertThat(statsAttribute.getAttributes().size(), equalTo(2));
+        assertThat(statsAttribute.getAttributes().get(parent.getCount().toString()), equalTo(new XAttributeLiteralImpl("parent_key", "01")));
+        assertThat(statsAttribute.getAttributes().get(parent.getCount().toString()).getAttributes().size(), equalTo(1));
+        assertThat(statsAttribute.getAttributes().get(parent.getCount().toString()).getAttributes().get(child.getStat_key()), equalTo(new XAttributeLiteralImpl("child_key", "02")));
     }
 
 
@@ -182,107 +209,111 @@ public class EventLogServiceImplTest {
         assertThat(result.get(0).getPid(), equalTo("0".getBytes()));
         assertThat(result.get(0).getStat_key(), equalTo(StatType.FILTER.toString()));
         assertThat(result.get(0).getStat_value(), equalTo("concept:name"));
+        assertThat(result.get(0).getLogid(), equalTo(88));
+
         assertThat(result.get(1).getStat_key(), equalTo("direct:follow"));
         assertThat(result.get(1).getStat_value(), equalTo("40"));
+        assertThat(result.get(1).getPid(), equalTo(result.get(0).getId()));
+        assertThat(result.get(1).getLogid(), equalTo(88));
+
         assertThat(result.get(2).getStat_key(), equalTo("Activity"));
         assertThat(result.get(2).getStat_value(), equalTo("10"));
+
         assertThat(result.get(3).getStat_key(), equalTo(StatType.FILTER.toString()));
         assertThat(result.get(3).getStat_value(), equalTo("concept:test"));
+
         assertThat(result.get(4).getStat_key(), equalTo("direct:follow"));
         assertThat(result.get(4).getStat_value(), equalTo("40"));
+
         assertThat(result.get(5).getStat_key(), equalTo("Activity"));
         assertThat(result.get(5).getStat_value(), equalTo("10"));
     }
 
 
-    @Test
-    @Rollback
-    public void simpleTest() {
+    /* Below are performance testing which are comment out in production */
 
-
-        EntityManager em = getEntityManagerFactory().createEntityManager();
-        assert em != null;
-        Statistic fe = new Statistic();
-        fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-        fe.setStat_key("key");
-        fe.setLogid(88);
-        fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-        fe.setStat_value("value");
-        em.getTransaction().begin();
-
-
-        em.persist(fe);
-//        Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param").setParameter("param", fe.getLogid());
+//    @Test
+//    @Rollback
+//    public void simpleTest() {
+//
+//
+//        EntityManager em = getEntityManagerFactory().createEntityManager();
+//        assert em != null;
+//        Statistic fe = new Statistic();
+//        fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+//        fe.setStat_key("key");
+//        fe.setLogid(88);
+//        fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+//        fe.setStat_value("value");
+//        em.getTransaction().begin();
+//
+//
+//        em.persist(fe);
+//        Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_value=:param2")
+//                .setParameter("param1", 88)
+//                .setParameter("param2", "value");
 //        List<Statistic> stats = query.getResultList();
 //
 //        for (Statistic stat : stats) {
 //            LOGGER.info(stat.getStat_value());
 //        }
-
-        em.flush();
-        em.getTransaction().commit();
-        em.close();
-
-//        logRepositoryCustom.saveStat(stats.get(0));
-//        eventLogService.insertStatistic(stat);
-    }
-
-    @Test
-    @Rollback
-    public void batchInsertTest() {
-
-        // *******  profiling code start here ********
-        long startTime = System.nanoTime();
-        // *******  profiling code end here ********
-
-        EntityManager em = getEntityManagerFactory().createEntityManager();
-        assert em != null;
-        em.getTransaction().begin();
-
-        for (int i = 0; i < 100; i++) {
-
-            Statistic fe = new Statistic();
-            fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-            fe.setStat_key("key");
-            fe.setLogid(88);
-            fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-            fe.setStat_value(Double.toString(Math.random()));
-
-            em.persist(fe);
-            if ((i % 10000) == 0) {
-                em.getTransaction().commit();
-                em.clear();
-                em.getTransaction().begin();
-            }
-        }
-        em.getTransaction().commit();
+//
+//        em.flush();
+//        em.getTransaction().commit();
 //        em.close();
+//
+//    }
 
-        // *******  profiling code start here ********
-        long elapsedNanos = System.nanoTime() - startTime;
-        LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
-        // *******  profiling code end here ********
-
-    }
+//    @Test
+//    @Rollback
+//    public void batchInsertTest() {
+//
+//        // *******  profiling code start here ********
+//        long startTime = System.nanoTime();
+//        // *******  profiling code end here ********
+//
+//        EntityManager em = getEntityManagerFactory().createEntityManager();
+//        assert em != null;
+//        em.getTransaction().begin();
+//
+//        for (int i = 0; i < 100; i++) {
+//
+//            Statistic fe = new Statistic();
+//            fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+//            fe.setStat_key("key");
+//            fe.setLogid(88);
+//            fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+//            fe.setStat_value(Double.toString(Math.random()));
+//
+//            em.persist(fe);
+//            if ((i % 10000) == 0) {
+//                em.getTransaction().commit();
+//                em.clear();
+//                em.getTransaction().begin();
+//            }
+//        }
+//        em.getTransaction().commit();
+////        em.close();
+//
+//        // *******  profiling code start here ********
+//        long elapsedNanos = System.nanoTime() - startTime;
+//        LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
+//        LOGGER.info("Insert speed: " + 100000 / ( elapsedNanos / 1000000 /1000 ) + " records/sec");
+//        // *******  profiling code end here ********
+//
+//    }
 
 //    @Test
 //    public void getStatsByType() {
 //
 //        List<Statistic> stats = new ArrayList<>();
-//        List<Dashboard> dashboard = new ArrayList<>();
 //        Integer logId = 001;
 //        expect(statisticRepository.findByLogid(logId)).andReturn(stats);
 //        replay(statisticRepository);
-//
-//        expect(dashboardRepository.findByLogid(logId)).andReturn(dashboard);
-//        replay(dashboardRepository);
 //
 //        List<Statistic> result = (List<Statistic>) eventLogService.getStatsByType(logId, StatType.FILTER);
 //        verify(statisticRepository);
 //        assertThat(result, equalTo(stats));
 //
-//        List<Dashboard> dbList = (List<Dashboard>) eventLogService.getStatsByType(logId, StatType.ACTIVITY);
-//        verify(statisticRepository);
-//        assertThat(dbList, equalTo(dashboard));
 //    }
 }

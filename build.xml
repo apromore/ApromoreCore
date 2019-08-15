@@ -60,6 +60,7 @@
 
         <!-- Free builds won't include the following encumbered components -->
         <include name="Apromore-OSGI-Bundles/zkcharts-osgi/target/zkcharts-osgi-*.jar"/>
+        <include name="Apromore-OSGI-Bundles/zkthemepack-osgi/target/zkthemepack-osgi-*.jar"/>
     </fileset>
 
     <!-- Virgo Related -->
@@ -98,6 +99,7 @@
             <fileset dir="Supplements/Virgo">
                 <include name="tomcat-server.xml"/>
                 <include name="java6-server.profile"/>
+                <include name="serviceability.xml"/>
             </fileset>
         </copy>
         <delete file="${dir-virgo}/pickup/org.eclipse.virgo.apps.splash_3.6.4.RELEASE.jar" />

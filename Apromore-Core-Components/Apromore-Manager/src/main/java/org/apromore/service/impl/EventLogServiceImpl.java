@@ -20,7 +20,10 @@
 package org.apromore.service.impl;
 
 import org.apromore.common.Constants;
-import org.apromore.dao.*;
+import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupRepository;
+import org.apromore.dao.LogRepository;
+import org.apromore.dao.StatisticRepository;
 import org.apromore.dao.model.*;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.PluginMessages;
@@ -28,8 +31,8 @@ import org.apromore.model.SummariesType;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
-import org.apromore.util.UuidAdapter;
 import org.apromore.util.StatType;
+import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -42,6 +45,11 @@ import org.deckfour.xes.out.XSerializer;
 import org.deckfour.xes.out.XesXmlGZIPSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -50,13 +58,13 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.activation.DataHandler;
 import javax.inject.Inject;
 import javax.mail.util.ByteArrayDataSource;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
+
+import org.springframework.cache.ehcache.*;
 
 //import javax.annotation.Resource;
 
@@ -66,11 +74,12 @@ import java.util.*;
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = true, rollbackFor = Exception.class)
+//@EnableCaching
 public class EventLogServiceImpl implements EventLogService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImpl.class);
 
-    private static final String PARENT_NODE_FLAG = "0";
+    public static final String PARENT_NODE_FLAG = "0";
     public static final String STAT_NODE_NAME = "apromore:stat";
 
     private LogRepository logRepo;
@@ -79,8 +88,6 @@ public class EventLogServiceImpl implements EventLogService {
     private UserService userSrv;
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
-//    private DashboardRepository dashboardRepository;
-
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
@@ -95,7 +102,6 @@ public class EventLogServiceImpl implements EventLogService {
         this.userSrv = userSrv;
         this.ui = ui;
         this.statisticRepository = statisticRepository;
-//        this.dashboardRepository = dashboardRepository;
     }
 
 
@@ -222,12 +228,42 @@ public class EventLogServiceImpl implements EventLogService {
 
         List<Statistic> stats = getStats(logId);
 
-        if (stats != null && !stats.isEmpty()) {
-            for (Statistic stat : stats) {
-                if (Arrays.equals(stat.getPid(), PARENT_NODE_FLAG.getBytes())) {
-                    parent = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
-                    parent.setAttributes(getChildNodes(stat.getId(), stats, factory));
-                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getStat_key(), parent);
+        if (stats != null && !stats.isEmpty()) { // if there is cache, then append it to XES log as metadata
+//            for (Statistic stat : stats) {
+//                if (Arrays.equals(stat.getPid(), PARENT_NODE_FLAG.getBytes())) {
+//                    parent = factory.createAttributeLiteral(stat.getStat_key(), stat.getStat_value(), null);
+//                    parent.setAttributes(getChildNodes(stat.getId(), stats, factory));
+//                    // Since parent share the same stat_key, so add Statistic.count as key when put stat into XAttributeMap
+//                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(stat.getCount().toString(), parent);
+//                }
+//            }
+
+            // Append stats into Log in one loop
+            for (int i = 0; i < stats.size(); i++) {
+
+                Statistic pStat = stats.get(i);
+                byte[] parentId = pStat.getId();
+
+                if (Arrays.equals(pStat.getPid(), PARENT_NODE_FLAG.getBytes())){
+
+                    parent = factory.createAttributeLiteral(pStat.getStat_key(), pStat.getStat_value(), null);
+
+                    XAttributeMap attributeMap = factory.createAttributeMap();
+
+                    for (int j = 1; j < stats.size(); j++) {
+                        if( i + j < stats.size()) {
+                            if(Arrays.equals(stats.get(i+j).getPid(), parentId)) {
+                                XAttribute attribute = factory.createAttributeLiteral(stats.get(i+j).getStat_key(), stats.get(i+j).getStat_value(), null);
+                                attributeMap.put(stats.get(i+j).getStat_key(), attribute);
+                            } else {
+                                i = i + j - 1;
+                                break;
+                            }
+                        }
+
+                    }
+                    parent.setAttributes(attributeMap);
+                    log.getAttributes().get(STAT_NODE_NAME).getAttributes().put(pStat.getCount().toString(), parent);
                 }
             }
         }
@@ -255,6 +291,7 @@ public class EventLogServiceImpl implements EventLogService {
      * @param logId logID
      * @return list of statistic entities
      */
+//    @Cacheable("log")
     public List<Statistic> getStats(Integer logId) {
         return statisticRepository.findByLogid(logId);
     }
@@ -290,10 +327,15 @@ public class EventLogServiceImpl implements EventLogService {
      * @param statType
      * @return
      */
-    public Boolean isStatsExits(Integer logId, StatType statType) {
-        List<Statistic> stats = statisticRepository.findByLogid(logId);
-        return (null == stats || stats.size() == 0);
+    @Override
+    public boolean isStatsExists(Integer logId, StatType statType) {
+        return statisticRepository.existsByLogidAndStatType(logId, statType);
     }
+
+//    public Boolean isStatsExists(Integer logId, StatType statType) {
+//        List<Statistic> stats = statisticRepository.findByLogid(logId);
+//        return (null == stats || stats.size() == 0);
+//    }
 
     // just for test, delete when finish
 //    private static EntityManagerFactory emf = null;
@@ -313,42 +355,18 @@ public class EventLogServiceImpl implements EventLogService {
             statisticRepository.storeAllStats(flattenNestedMap(map, logId));
 
 //            statisticRepository.save(flattenNestedMap(map, logId));
-            LOGGER.debug("Stored statistics of Log: " + logId);
+            LOGGER.info("Stored statistics of Log: " + logId);
         }
-        LOGGER.debug("statistics already exist in Log: " + logId);
+        LOGGER.info("statistics already exist in Log: " + logId);
     }
 
     public void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType) {
 
-        if(isStatsExits(logId, statType)) {
-            statisticRepository.storeAllStats(flattenNestedStringMap(map, logId,statType));
-        }
+        if(!isStatsExists(logId, statType)) {
+            statisticRepository.storeAllStats(flattenNestedStringMap(map, logId, statType));
 
-//        switch (statType) {
-//
-//            case FILTER:
-//                List<Statistic> stats = getStats(logId);
-//                if (null == stats || stats.size() == 0) {
-//
-//                    statisticRepository.storeAllStats(flattenNestedStringMap(map, logId));
-//                    LOGGER.debug("Stored statistics of Log: " + logId);
-//                }
-//                LOGGER.debug("statistics already exist in Log: " + logId);
-//                break;
-//            case CASE:
-//                List<Dashboard> dashboards = getDashboard(logId);
-//                if (null == dashboards || dashboards.size() == 0) {
-//
-//                    statisticRepository.save(flattenNestedStringMap(map, logId));
-//                    LOGGER.debug("Stored statistics of Log: " + logId);
-//                }
-//                LOGGER.debug("statistics already exist in Log: " + logId);
-//                break;
-//            case ACTIVITY:
-//                break;
-//            case RESOURCE:
-//                break;
-//        }
+            LOGGER.info("Stored statistics of " + statType.toString() + " in Log [" + logId + "]");
+        }
     }
 
 
@@ -363,9 +381,14 @@ public class EventLogServiceImpl implements EventLogService {
      *
      * @param logId logID
      * @return list of statistic entities
+     * @throws IllegalArgumentException
      */
 
     public List<Statistic> flattenNestedStringMap(Map<String, Map<String, String>> map, Integer logId, StatType statType) {
+
+        if (map == null || logId == null || statType == null) {
+            throw new IllegalArgumentException();
+        }
 
         List<Statistic> statList = new ArrayList<>();
 
@@ -373,7 +396,7 @@ public class EventLogServiceImpl implements EventLogService {
             Statistic parent = new Statistic();
             if (option.getKey() != null && option.getValue() != null) {
                 parent.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-                parent.setStat_key(statType.toString()); //assign statType to the key, align with XAttritable object
+                parent.setStat_key(statType.toString()); //assign statType to the key, align with XAttributable object
                 parent.setStat_value(option.getKey());
                 parent.setLogid(logId);
                 parent.setPid(PARENT_NODE_FLAG.getBytes());
