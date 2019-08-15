@@ -114,7 +114,7 @@
 
     <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
 
-        <div height="40px" style="background-color: #0093f9;">
+        <div height="40px" zclass=".z-listheader >
             <div style="float:left; margin-top: 5px; " zclass=".z-listheader" >
                 <!--<toolbarbutton id="releaseNotes"  mode="toggle">-->
                     <!--<attribute name="onCheck">-->
@@ -126,13 +126,13 @@
 
                 <!---->
                 <toolbarbutton id="releaseNotes" />
-                <separator orient="vertical" bar="true"/>
+                <!--<separator orient="vertical" bar="true"/>-->
                 <toolbarbutton id="moreButton" label="Apromore Initiative"/>
-                <separator orient="vertical" bar="true"/>
+                <!--<separator orient="vertical" bar="true"/>-->
                 <toolbarbutton id="installedPlugins" label="Active Plugins"/>
-                <separator orient="vertical" bar="true"/>
+                <!--<separator orient="vertical" bar="true"/>-->
                 <toolbarbutton id="webDav" label="webDav"/>
-                <separator orient="vertical" bar="true"/>
+                <!--<separator orient="vertical" bar="true"/>-->
                 <toolbarbutton id="developerResources" label="Developer Resources"/>
 
             </div>
