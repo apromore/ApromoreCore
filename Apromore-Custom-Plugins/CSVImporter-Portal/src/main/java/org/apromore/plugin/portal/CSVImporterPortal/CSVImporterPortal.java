@@ -305,7 +305,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if(media != null) {
                 window.setWidth("95%");
 //                window.setVflex("min");
-                myGrid.setHeight("100%");
+                myGrid.setHeight("99%");
 
 
                 csvImporterLogic.resetLine();

@@ -107,11 +107,10 @@
         font-weight: normal;
         text-align: center;
         }
-        .z-toolbarbutton-content {
-        color: white;
-        position:relative;
-        }
 
+        .z-toolbarbutton-content{
+        color: unset;
+        }
     </style>
 
     <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
@@ -141,9 +140,9 @@
                 <toolbarbutton id="developerResources" label="Developer Resources" sclass="z-listheader-content"/>
 
             </div>
-            <div style="float:right; margin-top: 5px; margin-right: 5px">
-                <toolbarbutton id="featuresButton" label="Help" visible="true"/>
-                <toolbarbutton id="signoutButton" label="Sign out" visible="true"/>
+            <div style="float:right; margin-top: 5px; margin-right: 5px" >
+                <toolbarbutton id="featuresButton" label="Help" visible="true" sclass="z-listheader-content"  />
+                <toolbarbutton id="signoutButton" label="Sign out" visible="true" sclass="z-listheader-content" />
             </div>
         </div>
 
