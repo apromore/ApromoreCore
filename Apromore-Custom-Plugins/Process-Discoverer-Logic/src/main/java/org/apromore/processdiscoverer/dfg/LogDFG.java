@@ -176,19 +176,35 @@ public class LogDFG {
     	
     	if (params.getCorrepondingDFG() != null) return params.getCorrepondingDFG().getDiagram();
     	
-    	IntHashSet retained_activities = nodeSelector.selectActivities();
-    	
+    	IntHashSet retained_nodes = nodeSelector.selectActivities();
     	ArcSelector arcSelector = new ArcSelector(this, params);
         Set<Arc> retained_arcs = arcSelector.selectArcs();
         
         //---------------------------------------
-        // Check reachability on the retained nodes and arcs.
+        // Initial cleaning the graph
+        // Note that nodes and arcs are filtered independently above
+        // So the initial graph (based on retained_nodes and retained_arcs) might be not clean
+        // For example, there could be arcs with source or target not in retained_nodes
+        // or there could be nodes not to be the source or target of any arcs in retained_arcs
+        //---------------------------------------
+        Set<Arc> arcsWithNodes = new UnifiedSet<>();
+        IntHashSet nodesWithArcs = new IntHashSet();
+        for(Arc arc : retained_arcs) {
+            if(retained_nodes.contains(arc.getSource()) && retained_nodes.contains(arc.getTarget())) {
+            	arcsWithNodes.add(arc);
+            	nodesWithArcs.add(arc.getSource());
+            	nodesWithArcs.add(arc.getTarget());
+            }
+        }
+        
+        //---------------------------------------
+        // Check the graph reachability
         // At the end, the selected set of nodes and arcs ensure that
         // all nodes are reachable from the source and to the sink
         //---------------------------------------
         boolean cycle = true;
-        IntHashSet candidate_nodes = retained_activities;
-        Set<Arc> candidate_arcs = retained_arcs;
+        IntHashSet candidate_nodes = nodesWithArcs;
+        Set<Arc> candidate_arcs = arcsWithNodes;
         IntHashSet new_candidate_nodes;
         Set<Arc> new_candidate_arcs;
         ReachabilityChecker reachabilityChecker = new ReachabilityChecker();
@@ -200,6 +216,7 @@ public class LogDFG {
             for(int i : candidate_nodes.toArray()) {
                 boolean input = false;
                 boolean output = false;
+                //Only check nodes on arcs, so nodes without any arc will be removed
                 for (Arc arc : candidate_arcs) {
                     if (arc.getSource() == i && arc.getTarget() != i && candidate_nodes.contains(arc.getTarget()) && reachabilityChecker.reachable(i, candidate_arcs)) output = true;
                     if (arc.getTarget() == i && arc.getSource() != i && candidate_nodes.contains(arc.getSource()) && reachabilityChecker.reaching(i, candidate_arcs)) input = true;
@@ -214,13 +231,15 @@ public class LogDFG {
             candidate_nodes = new_candidate_nodes;
 
             // Update the candidate arcs to contain only the connected nodes
-            new_candidate_arcs = new UnifiedSet<>();
-            for(Arc arc : candidate_arcs) {
-                if(candidate_nodes.contains(arc.getSource()) && candidate_nodes.contains(arc.getTarget())) {
-                    new_candidate_arcs.add(arc);
-                }
+            if (cycle) {
+	            new_candidate_arcs = new UnifiedSet<>();
+	            for(Arc arc : candidate_arcs) {
+	                if(candidate_nodes.contains(arc.getSource()) && candidate_nodes.contains(arc.getTarget())) {
+	                    new_candidate_arcs.add(arc);
+	                }
+	            }
+	            candidate_arcs = new_candidate_arcs;
             }
-            candidate_arcs = new_candidate_arcs;
         }
         
         //---------------------------------------
@@ -451,88 +470,5 @@ public class LogDFG {
         BPMNDiagramBuilder.updateStartEndEventLabels(bpmnDiagram);
         return bpmnDiagram;
     }
-    
-    // Note that the arc and parallelism sliders are used in the DFG input to SplitMiner
-    // Not by the ArcSelector as in the case of DFG.
-    /**
-     * Create a BPMN representation from the log
-     * The created BPMN diagram should be closely aligned with the DFG representation
-     * TODO: A technical issue is that SplitMiner also needs a log in addition to 
-     * a DFG to discover a BPMN diagram. Therefore, a filtered log is recreated from the 
-     * original log and the retained activities. The filtered log is then used as the input
-     * to SplitMiner; however, this step creates differences between the DFG and the resulting BPMN.
-     * Another issue is that the log is filtered to only keep complete events. This is because
-     * this log is suitable for process discovery algorithms which only work with complete events.
-     * A third issue is that another DFG called DFGPWithLogThreshold is created as input to SplitMiner. 
-     * That's where the arc and parallelism slider values are used for filtering. However, this is a duplication of
-     * LogDFG.getDFG() method.
-     * @param params
-     * @return BPMN diagram
-     * @throws Exception
-     */
-//    @Deprecated
-//    public BPMNDiagram getBPMN(AbstractionParams params, BPMNDiagram correspondingDFG) throws Exception {
-//    	
-//    	NodeSelector nodeSelector = new NodeSelector(
-//    										nodeInfoCollector, 
-//    										params.getActivityLevel(), 
-//											params.getFixedType(), 
-//											params.getFixedAggregation(), 
-//											params.invertedNodes());
-//		IntHashSet retained_activities = nodeSelector.selectActivities(); 
-//		
-//		//Make BPMN model contain equal or less nodes than the corresponding graph.
-//		if (correspondingDFG != null) {
-//			Set<String> nodeNames = new HashSet<>();
-//			for (BPMNNode node : correspondingDFG.getNodes()) {
-//				nodeNames.add(node.getLabel());
-//			}
-//			MutableIntIterator iterator = retained_activities.intIterator(); 
-//			while (iterator.hasNext()) {
-//				if (!nodeNames.contains(simplifiedLog.getEventCollapsedName(iterator.next()))) {
-//					iterator.remove();
-//				}
-//			}
-//		}
-//		
-//        //--------------------------------------------------
-//        // Filter log and reconstruct XLog for process discovery 
-//        //--------------------------------------------------
-//		SimplifiedLog filtered_simplified_log = this.simplifiedLog.filterActivities(retained_activities);
-//        XLog filtered_xlog = filtered_simplified_log.getXLog();
-//        XLog complete_event_xlog = null;
-//        if (filtered_simplified_log.containStartEvent()) {
-//            Set<String> lifecycle = new UnifiedSet<>();
-//            lifecycle.add(LogUtils.COMPLETE_CODE);
-//            lifecycle.add(LogUtils.COMPLETE_CODE.toUpperCase());
-//            LogFilterCriterion criterion = LogFilterCriterionFactory.getLogFilterCriterion(Action.RETAIN,
-//                    CONTAIN_ANY,
-//                    EVENT,
-//                    LogUtils.LIFECYCLE_CODE,
-//                    LogUtils.LIFECYCLE_CODE,
-//                    lifecycle);
-//            List<LogFilterCriterion> criteria = new ArrayList<>(1);
-//            criteria.add(criterion);
-//            complete_event_xlog = LogFilter.filter(filtered_xlog, criteria);
-//        }
-//        else {
-//        	complete_event_xlog = filtered_xlog;
-//        }
-//        
-//        SplitMiner splitMiner = new SplitMiner();
-//        SimpleLog simpleLog = LogParser.getSimpleLog(complete_event_xlog, new XEventAttributeClassifier(params.getAttribute(), params.getAttribute()));
-//        BPMNDiagram bpmnDiagram = splitMiner.mineBPMNModel(simpleLog, 
-//        				new DFGPWithLogThreshold(simpleLog, 
-//        										params.getArcLevel(), 
-//        										params.getParallelismLevel(), 
-//        										params.prioritizeParallelism(), 
-//        										params.preserveConnectivity(), 
-//        										params.invertedArcs()), 
-//        										SplitMinerUIResult.StructuringTime.NONE);
-//        
-//        BPMNDiagramBuilder.updateStartEndEventLabels(bpmnDiagram);
-//        
-//        return bpmnDiagram;
-//    }
 
 }
