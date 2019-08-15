@@ -115,7 +115,7 @@
     <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
 
         <div height="40px" style="background-color: #0093f9;">
-            <div style="float:left; margin-top: 5px;" >
+            <div style="float:left; margin-top: 5px; " zclass=".z-listheader" >
                 <!--<toolbarbutton id="releaseNotes"  mode="toggle">-->
                     <!--<attribute name="onCheck">-->
                         <!--<![CDATA[-->
@@ -125,8 +125,7 @@
                 <!--</toolbarbutton>-->
 
                 <!---->
-                <toolbar>
-                <toolbarbutton id="releaseNotes" style="" />
+                <toolbarbutton id="releaseNotes" />
                 <separator orient="vertical" bar="true"/>
                 <toolbarbutton id="moreButton" label="Apromore Initiative"/>
                 <separator orient="vertical" bar="true"/>
@@ -135,7 +134,7 @@
                 <toolbarbutton id="webDav" label="webDav"/>
                 <separator orient="vertical" bar="true"/>
                 <toolbarbutton id="developerResources" label="Developer Resources"/>
-                </toolbar>
+
             </div>
             <div style="float:right; margin-top: 5px;">
 				<toolbarbutton id="featuresButton" label="Help" visible="true"/>
