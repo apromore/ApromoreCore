@@ -195,8 +195,8 @@ class LogFilterController {
         ListModelList<String> model = new ListModelList<>();
         for(LogFilterCriterion criterion : criteria) {
             String label = criterion.toString();
-            for(String type: LogFilterTypeSelector.getStandardTypes()) {
-                label = label.replaceAll(type, LogFilterTypeSelector.getNameFromType(type));
+            for(String type: LogFilterTypeSelector.getStandardCodes()) { 
+                label = label.replaceAll(type, LogFilterTypeSelector.getNameFromCode(type)); //15.08
             }
 
             if(label.contains("Time-frame")) {
