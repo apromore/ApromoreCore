@@ -654,6 +654,23 @@ class FilterCriterionDialog {
 //        String option = filterTypeNames.get(index); //option is the label of the selected filter type code
         String filterCode = selectedItem.getValue();
 
+        /**
+         * Change header label based on the option
+         */
+        if(LogFilterTypeSelector.getType(filterCode) == Type.CASE_VARIANT) {
+            lhValue1.setLabel("Case variant ID");
+            lhValue2.setLabel("Cases");
+            lhValue3.setLabel("Frequency");
+            lbxValue.setMold("paging");
+            lbxValue.setAutopaging(true);
+        }else{
+            lhValue1.setLabel("Value");
+            lhValue2.setLabel("Frequency");
+            lhValue3.setLabel("Relative frequency");
+            lbxValue.setMold("default");
+            lbxValue.setAutopaging(false);
+        }
+
         if (LogFilterTypeSelector.getType(filterCode) == Type.DIRECT_FOLLOW) {
             lbxValue.setVisible(false);
             hlDFollow.setVisible(true);
@@ -782,22 +799,7 @@ class FilterCriterionDialog {
             //value.selectAll();
             //modelValue.setMultiple(true);
 
-            /**
-             * Change header label based on the option
-             */
-            if(filterCode.toLowerCase().equals("case variant")) {
-                lhValue1.setLabel("Case variant ID");
-                lhValue2.setLabel("Cases");
-                lhValue3.setLabel("Frequency");
-                lbxValue.setMold("paging");
-                lbxValue.setAutopaging(true);
-            }else{
-                lhValue1.setLabel("Value");
-                lhValue2.setLabel("Frequency");
-                lhValue3.setLabel("Relative frequency");
-                lbxValue.setMold("default");
-                lbxValue.setAutopaging(false);
-            }
+
 
             lhValue1.sort(true, true);
         }

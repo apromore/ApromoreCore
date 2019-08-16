@@ -95,10 +95,10 @@
                     </rows>
                 </grid>
                 <listbox id="lbxValue" checkmark="true" multiple="true" rows="5" mold="paging"  autopaging="true" vflex="true" span="true">
-                    <listhead>
-                        <listheader id="lhValue1" label="Value" sort="auto" width="70%"/>
+                    <listhead sizable="true">
+                        <listheader id="lhValue1" label="Value" sort="auto" width="60%"/>
                         <listheader id="lhValue2" label="Frequency" sort="auto" width="15%"/>
-                        <listheader id="lhValue3" label="Percentage" sort="auto" width="15%"/>
+                        <listheader id="lhValue3" label="Percentage" sort="auto" width="25%"/>
                     </listhead>
                 </listbox>
                 <hlayout id="hlDFollow" vflex="1" visible="false" style="border:0px solid #6DF;">
