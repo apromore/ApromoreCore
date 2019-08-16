@@ -19,6 +19,14 @@
   -->
 
 <!-- controller is ShortMessageController -->
+
+
+
+<style>
+    tr.z-row td.z-row-inner, tr.z-row .z-cell, tr.z-row {
+    background: none repeat scroll 0% 0% unset;
+    }
+</style>
 <window id="shortmessage"  sclass="z-window">
     <grid hflex="true">
         <columns>
