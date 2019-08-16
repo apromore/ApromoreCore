@@ -18,87 +18,131 @@
  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  -->
 
-<window id="createFilterCriterion" width="600px" sizable="true" maximizable="true" closable="true" position="center" contentStyle="overflow:auto">
-    <vbox>
-        <radiogroup id="level">
-            <grid>
-                <rows>
-                    <row>
-                        <radio id="levelEvent" label="Event" selected="true" />
-                        <radio id="levelTrace" label="Trace" />
-                    </row>
-                </rows>
-            </grid>
-        </radiogroup>
-        <radiogroup id="containment">
-            <grid>
-                <rows>
-                    <row>
-                        <radio id="containsAny" label="Contains Any" selected="true" disabled="true"/>
-                        <radio id="containsAll" label="Contains All" disabled="true"/>
-                    </row>
-                </rows>
-            </grid>
-        </radiogroup>
-        <radiogroup id="action">
-            <grid>
-                <rows>
-                    <row>
-                        <radio label="Retain" selected="true" />
-                        <radio label="Remove" />
-                    </row>
-                </rows>
-            </grid>
-        </radiogroup>
-        <grid>
-            <rows>
-                <row>
-                    Type of filter <listbox id="filterType" rows="1" mold="select"></listbox>
-                </row>
-            </rows>
-        </grid>
-        <grid>
-            <rows>
-                <row>Events between</row>
-                <row>
-                    Start :
-                    <cell colspan="2">
-                        <datebox id="startDate" cols="12" format="long+medium"  width="230px" />
-                    </cell>
-                </row>
-                <row>
-                    End :
-                    <cell colspan="2">
-                        <datebox id="endDate" cols="12" format="long+medium" width="230px" />
-                    </cell>
-                </row>
-                <row>
-                    Duration greater than:
-                    <decimalbox id="duration" format="###.##" value="0.00" width="100px" />
-                    <listbox id="durationUnits" rows="1" mold="select">
-                        <listitem label="Years" />
-                        <listitem label="Months" />
-                        <listitem label="Weeks" />
-                        <listitem label="Days" />
-                        <listitem label="Hours" />
-                        <listitem label="Minutes" />
-                        <listitem label="Seconds" />
+<window id="createFilterCriterion" height="100%" width="720px" sizable="true" maximizable="true" closable="true"  style="overflow:auto">
+    <borderlayout width="100%">
+        <center>
+            <vlayout width="100%" height="100%">
+                <radiogroup id="action">
+                    <grid>
+                        <rows>
+                            <row>
+                                <radio label="Retain" selected="true" />
+                                <radio label="Remove" />
+                            </row>
+                        </rows>
+                    </grid>
+                </radiogroup>
+                <radiogroup id="level">
+                    <grid>
+                        <rows>
+                            <row>
+                                <radio id="levelEvent" label="Event" selected="true" />
+                                <radio id="levelTrace" label="Trace" />
+                                <!--                        <button id="btCloseWindow" iconSclass="z-icon-times" style="width:21px; height:18px; padding:0px;"/>-->
+                            </row>
+                        </rows>
+                    </grid>
+                </radiogroup>
+                <radiogroup id="containment">
+                    <grid id="gridContainment">
+                        <rows>
+                            <row>
+                                <radio id="containsAny" label="Contains Any" selected="true" disabled="true"/>
+                                <radio id="containsAll" label="Contains All" disabled="true"/>
+                            </row>
+                        </rows>
+                    </grid>
+                </radiogroup>
+                <grid>
+                    <rows>
+                        <row>
+                            Type of filter <listbox id="lbxFilterType" rows="1" mold="select"></listbox>
+                        </row>
+                    </rows>
+                </grid>
+                <grid id="gridTimeframe">
+                    <rows>
+                        <row>Events between</row>
+                        <row>
+                            Start :
+                            <cell colspan="2">
+                                <datebox id="dateBxStartDate" cols="12" format="long+medium"  width="230px" />
+                            </cell>
+                        </row>
+                        <row>
+                            End :
+                            <cell colspan="2">
+                                <datebox id="dateBxEndDate" cols="12" format="long+medium" width="230px" />
+                            </cell>
+                        </row>
+                    </rows>
+                </grid>
+                <grid id="gridDuration">
+                    <rows>
+                        <row>
+                            Duration greater than:
+                            <decimalbox id="duration" format="###.##" value="0.00" width="100px" />
+                            <listbox id="durationUnits" rows="1" mold="select">
+                                <listitem label="Years" />
+                                <listitem label="Months" />
+                                <listitem label="Weeks" />
+                                <listitem label="Days" />
+                                <listitem label="Hours" />
+                                <listitem label="Minutes" />
+                                <listitem label="Seconds" />
+                            </listbox>
+                        </row>
+                    </rows>
+                </grid>
+                <listbox id="lbxValue" checkmark="true" multiple="true" rows="5" mold="paging"  autopaging="true" vflex="true" span="true">
+                    <listhead>
+                        <listheader id="lhValue1" label="Value" sort="auto" width="70%"/>
+                        <listheader id="lhValue2" label="Frequency" sort="auto" width="15%"/>
+                        <listheader id="lhValue3" label="Percentage" sort="auto" width="15%"/>
+                    </listhead>
+                </listbox>
+                <hlayout id="hlDFollow" vflex="1" visible="false" style="border:0px solid #6DF;">
+                    <listbox id="lbxDFollowFrom" vflex="true" hflex="true" checkmark="true" multiple="true">
+                        <listhead>
+                            <listheader label="From" sort="auto"/>
+                        </listhead>
                     </listbox>
-                </row>
-            </rows>
-        </grid>
-        <listbox id="value" rows="5" checkmark="true" multiple="true">
-            <listhead>
-                <!--<listheader label="Value" sort="auto"/>-->
-                <!--&lt;!&ndash;<listheader label="Frequency" sort="auto(1)"/>&ndash;&gt;-->
-                <listheader id="value_header" label="Value" sort="auto" width="70%"/>
-                <listheader id="frequency_header" label="Frequency" sort="auto" width="15%"/>
-                <listheader id="percentage_header" label="Percentage" sort="auto" width="15%"/>
-            </listhead>
-        </listbox>
-        <div align="center">
-            <button id="criterionOkButton" label="Ok"></button>
-            <button id="criterionCancelButton" label="Cancel"></button>
-        </div>
-    </vbox>
+                    <listbox id="lbxDFollowTo" vflex="true" hflex="true" checkmark="true" multiple="true">
+                        <listhead>
+                            <listheader label="To" sort="auto"/>
+                        </listhead>
+                    </listbox>
+                </hlayout>
+                <hlayout id="hlEFollow" vflex="1" visible="false" style="border:0px solid #6DF;">
+                    <listbox id="lbxEFollowFrom" vflex="true" hflex="true" checkmark="true" multiple="true">
+                        <listhead>
+                            <listheader label="From" sort="auto"/>
+                        </listhead>
+                    </listbox>
+                    <listbox id="lbxEFollowTo" vflex="true" hflex="true" checkmark="true" multiple="true">
+                        <listhead>
+                            <listheader label="To" sort="auto"/>
+                        </listhead>
+                    </listbox>
+                </hlayout>
+
+            </vlayout>
+        </center>
+        <west id="detailView" collapsible="true" splittable="true" width="300px">
+            <listbox id="lbxItemDetail" mold="paging" autopaging="true" vflex="true" span="true" >
+                <listhead>
+                    <listheader label="Order" width="70px"/>
+                    <listheader label="Activity"/>
+                </listhead>
+            </listbox>
+        </west>
+        <south height="30px">
+            <div align="center">
+                <hlayout>
+                    <button id="criterionOkButton" label="Ok"></button>
+                    <button id="criterionCancelButton" label="Cancel"></button>
+                </hlayout>
+            </div>
+        </south>
+    </borderlayout>
 </window>
