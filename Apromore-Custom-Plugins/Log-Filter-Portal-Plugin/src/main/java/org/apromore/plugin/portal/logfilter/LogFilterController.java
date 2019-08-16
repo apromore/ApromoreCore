@@ -99,8 +99,8 @@ class LogFilterController {
         this.directFollowMap = logStats.getDirectFollowMap();
         this.eventualFollowMap = logStats.getEventualFollowMap();
         this.variantEventsMap = logStats.getVariantEventsMap();
-
-        this.logFilterService = logFilterService;
+        
+    	this.logFilterService = logFilterService;
     	this.logFilterCriterionFactory = logFilterCriterionFactory;
     	this.resultListener = resultListener;
     	initialize(portalContext, log, label, originalCriteria, logStats.getStatistics(), 

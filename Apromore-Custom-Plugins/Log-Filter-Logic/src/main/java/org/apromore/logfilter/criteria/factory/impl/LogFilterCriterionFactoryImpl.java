@@ -28,6 +28,7 @@ import java.util.Set;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
 import org.apromore.logfilter.criteria.impl.LogFilterCriterionAttribute;
+import org.apromore.logfilter.criteria.impl.LogFilterCriterionCaseVariant;
 import org.apromore.logfilter.criteria.impl.LogFilterCriterionDirectFollow;
 import org.apromore.logfilter.criteria.impl.LogFilterCriterionDuration;
 import org.apromore.logfilter.criteria.impl.LogFilterCriterionEventuallyFollow;
@@ -47,6 +48,8 @@ public class LogFilterCriterionFactoryImpl implements LogFilterCriterionFactory 
                 return new LogFilterCriterionEventuallyFollow(action, containment, level, label, attribute, value);
             case TIME_DURATION:
                 return new LogFilterCriterionDuration(action, containment, level, label, attribute, value);
+            case CASE_VARIANT:
+                return new LogFilterCriterionCaseVariant(action, containment, level, label, attribute, value);
             default:
                 return new LogFilterCriterionAttribute(action, containment, level, label, attribute, value);
         }
