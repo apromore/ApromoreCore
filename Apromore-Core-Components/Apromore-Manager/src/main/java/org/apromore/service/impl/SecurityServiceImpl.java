@@ -188,7 +188,7 @@ public class SecurityServiceImpl implements SecurityService {
         Group group = new Group();
         group.setName(user.getUsername());
         group.setType(Group.Type.USER);
-        group = groupRepo.save(group);
+        group = groupRepo.saveAndFlush(group);
         LOGGER.info("  Created group " + group.getId() + " named " + group.getName());
 
         // Create the actual user record

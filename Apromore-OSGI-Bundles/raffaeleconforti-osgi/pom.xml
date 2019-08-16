@@ -21,14 +21,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-	<!-- Bruce: This module should not inherit from the root apromore project since the assembly has many overlappings with this project
+    <!-- Bruce: This module should not inherit from the root apromore project since the assembly has many overlappings with this project -->
     <parent>
         <groupId>org.apromore</groupId>
         <artifactId>apromore</artifactId>
         <version>1.1</version>
         <relativePath>../../</relativePath>
     </parent>
-	-->
+	
 	
     <groupId>org.apromore</groupId>
     <artifactId>raffaeleconforti-osgi</artifactId>
@@ -45,6 +45,7 @@
 
     <build>
         <plugins>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -78,6 +79,8 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
+            
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -94,6 +97,7 @@
                         <Import-Bundle>
                             com.springsource.org.apache.tools.ant;version="[1.8.3,1.8.3]"
                         </Import-Bundle>
+
                         <Import-Package>
                             org.deckfour.spex,
                             org.deckfour.spex.util,
@@ -113,9 +117,11 @@
                             org.deckfour.xes.nikefs2,
                             org.deckfour.xes.out,
                             org.deckfour.xes.util,
-                            org.deckfour.xes.xstream,
+                            org.deckfour.xes.xstream
                         </Import-Package>
+                        
                         <Export-Package>
+                           
                             com.raffaeleconforti.splitminer.log,
                             com.raffaeleconforti.splitminer.log.graph,
                             com.raffaeleconforti.splitminer.log.graph.*,
@@ -128,6 +134,7 @@
                             com.raffaeleconforti.splitminer.splitminer.ui.dfgp.*,
                             com.raffaeleconforti.splitminer.splitminer.ui.miner,
                             com.raffaeleconforti.splitminer.splitminer.ui.miner.*,
+                        
 
                             com.raffaeleconforti.automaton.*,
                             com.raffaeleconforti.bpmnminer.*,
@@ -138,7 +145,7 @@
                             com.raffaeleconforti.log.util,
                             com.raffaeleconforti.noisefiltering.event.*,
                             com.raffaeleconforti.wrappers.settings.*,
-							com.raffaeleconforti.statistics.*,
+                            com.raffaeleconforti.statistics.*,
 
                             org.processmining,
                             org.processmining.analysis,
@@ -309,16 +316,16 @@
                             org.processmining.models.jgraph.views,
                             org.processmining.models.jgraph.visualization,
 							
-							org.jgraph,
-							org.jgraph.event,
-							org.jgraph.graph,
-							org.jgraph.plaf,
-							org.jgraph.plaf.basic,
-							org.jgraph.util,
-							com.jgraph.layout,
-							com.jgraph.layout.hierarchical,
-							com.jgraph.layout.hierarchical.model,
-							com.jgraph.navigation,
+                            org.jgraph,
+                            org.jgraph.event,
+                            org.jgraph.graph,
+                            org.jgraph.plaf,
+                            org.jgraph.plaf.basic,
+                            org.jgraph.util,
+                            com.jgraph.layout,
+                            com.jgraph.layout.hierarchical,
+                            com.jgraph.layout.hierarchical.model,
+                            com.jgraph.navigation,
 							
                             org.processmining.models.mapping,
                             org.processmining.models.operationalsupport,
@@ -481,8 +488,9 @@
                             org.processmining.plugins.kutoolbox.visualizators,
                             org.processmining.plugins.nikefsmonitor,
 
-                            nl.tue.astar.*,
+                            nl.tue.astar.*
                         </Export-Package>
+                        
                     </instructions>
                 </configuration>
             </plugin>
@@ -493,8 +501,8 @@
         <dependency>
             <groupId>com.raffaeleconforti</groupId>
             <artifactId>assembly</artifactId>
-            <version>1.0.20190617</version>
-			<!--<version>1.0.20180719</version>-->
+            <!--<version>1.0.20190617</version>-->
+            <!--<version>1.0.20180719</version>-->
         </dependency>
     </dependencies>
 </project>

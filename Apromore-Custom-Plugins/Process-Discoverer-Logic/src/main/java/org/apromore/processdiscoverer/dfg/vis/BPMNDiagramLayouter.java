@@ -93,7 +93,7 @@ public class BPMNDiagramLayouter {
 	public static Layout createLayout(BPMNDiagram diagram, boolean isBPMN) {
 		Layout layout = null;
 		
-		try {
+//		try {
 //			UIContext context = new UIContext();
 //	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 //	        UIPluginContext uiPluginContext = context.getMainPluginContext();
@@ -148,11 +148,11 @@ public class BPMNDiagramLayouter {
 				}
 				
 			}
-		}
-		catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
+//		}
+//		catch (Exception ex) {
+//			ex.printStackTrace();
+//			return null;
+//		}
 		
 		return layout;
 	}
