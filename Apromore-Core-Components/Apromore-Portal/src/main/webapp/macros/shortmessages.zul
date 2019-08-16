@@ -21,23 +21,24 @@
 <!-- controller is ShortMessageController -->
 
 
-
-<style>
-    tr.z-row td.z-row-inner, tr.z-row .z-cell, tr.z-row {
-    background: none repeat scroll 0% 0% unset;
-    }
-</style>
-<window id="shortmessage"  sclass="z-window">
-    <grid hflex="true">
-        <columns>
-            <column width="80px"></column>
-            <column></column>
-        </columns>
-        <rows>
-            <row sclass="z-window">
-                <image id="image" src="img/info.png" visible="false"/>
-                <label id="message" value="no messages"/>
-            </row>
-        </rows>
-    </grid>
-</window>
+<zk>
+    <style>
+        .unsetColor {
+        background: none repeat scroll 0% 0% unset;
+        }
+    </style>
+    <window id="shortmessage" sclass="z-window" style="line-height: 40px;">
+        <grid hflex="true">
+            <columns>
+                <column width="80px"></column>
+                <column></column>
+            </columns>
+            <rows>
+                <row zclass="unsetColor">
+                    <image id="image" src="img/info.png" visible="false"/>
+                    <label id="message" value="no messages"/>
+                </row>
+            </rows>
+        </grid>
+    </window>
+</zk>
