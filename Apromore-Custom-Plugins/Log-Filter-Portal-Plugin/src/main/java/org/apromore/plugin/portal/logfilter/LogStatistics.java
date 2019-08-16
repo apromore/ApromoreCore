@@ -14,23 +14,38 @@ import org.deckfour.xes.model.impl.XAttributeMapImpl;
 
 import static java.util.Map.Entry.comparingByValue;
 
-public class
-LogStatistics {
+public class LogStatistics {
+	public static final String DEFAULT_CLASSIFIER_KEY = "concept:name";
+	public static final String CASE_VARIANT_KEY = "case:variant";
+	public static final String TIMESTAMP_KEY = "time:timestamp";
+	public static final String LIFECYCLE_KEY = "lifecycle:transition";
+	public static final String TIME_DURATION_KEY = "time:duration";
+	public static final String DIRECTLY_FOLLOW_KEY = "direct:follow";
+	public static final String EVENTUALLY_FOLLOW_KEY = "eventually:follow";
+	
 	private Map<String, Map<String, Integer>> options_frequency;
     private long min = Long.MAX_VALUE; //the earliest timestamp of the log
     private long max = 0; //the latest timestamp of the log
 	private XLog log;
-	private String eventClassifier = "concept:name";
+	private String eventClassifier = DEFAULT_CLASSIFIER_KEY;
 	private Map<String, Set<String>> directFollowMap = new HashMap<String, Set<String>>();
     private Map<String, Set<String>> eventualFollowMap = new HashMap<String, Set<String>>();
     private Map<Integer, List<String>> variantEventsMap = new HashMap<Integer, List<String>>();
 
 	public LogStatistics(XLog log) {
 		this.log = log;
+		this.eventClassifier = DEFAULT_CLASSIFIER_KEY;
+		options_frequency = this.generateStatistics(log, true);
+	}
+	
+	public LogStatistics(XLog log, String eventClassifier) {
+		this.log = log;
+		this.eventClassifier = eventClassifier;
 		options_frequency = this.generateStatistics(log, true);
 	}
 	
 	public LogStatistics(Map<String, Map<String, Integer>> stats, long min, long max) {
+		this.eventClassifier = DEFAULT_CLASSIFIER_KEY;
 		this.min = min;
 		this.max = max;
 		this.options_frequency = stats;
@@ -76,7 +91,7 @@ LogStatistics {
             int variantFreq = variantFrequencyMap.get(list);
             variIdFreqMap.put(variantIdString, variantFreq);
         }
-        tmp_options_frequency.put("case:variant", variIdFreqMap);
+        tmp_options_frequency.put(CASE_VARIANT_KEY, variIdFreqMap);
         this.log = logWithVariant(this.log, variantIdMap);
 
 //        XAttributeMap xm = this.log.get(0).getAttributes();
@@ -88,7 +103,7 @@ LogStatistics {
 	            for (XEvent event : trace) {
 	                for (XAttribute attribute : event.getAttributes().values()) {
 	                    String key = attribute.getKey();
-	                    if (!(key.equals("lifecycle:model") || key.equals("time:timestamp"))) {
+	                    if (!(key.equals("lifecycle:model") || key.equals(TIMESTAMP_KEY))) {
 	                        tmp_options.put(key, attribute.toString());
 	                        if(tmp_options_frequency.get(key) == null) tmp_options_frequency.put(key, new HashMap<>());
 	
@@ -96,7 +111,7 @@ LogStatistics {
 	                        if (i == null) tmp_options_frequency.get(key).put(attribute.toString(), 1);
 	                        else tmp_options_frequency.get(key).put(attribute.toString(), i + 1);
 	                    }
-	                    if (key.equals("time:timestamp")) {
+	                    if (key.equals(TIMESTAMP_KEY)) {
 	                        min = Math.min(min, ((XAttributeTimestamp) attribute).getValueMillis());
 	                        max = Math.max(max, ((XAttributeTimestamp) attribute).getValueMillis());
 	                    }
@@ -125,28 +140,28 @@ LogStatistics {
 
                     if(j == i + 1) {
                         String df = (event1 + " => " + event2);
-                        tmp_options.put("direct:follow", df);
-                        if (tmp_options_frequency.get("direct:follow") == null)
-                            tmp_options_frequency.put("direct:follow", new HashMap<>());
-                        Integer k = tmp_options_frequency.get("direct:follow").get(df);
-                        if (k == null) tmp_options_frequency.get("direct:follow").put(df, 1);
-                        else tmp_options_frequency.get("direct:follow").put(df, k + 1);
+                        tmp_options.put(DIRECTLY_FOLLOW_KEY, df);
+                        if (tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY) == null)
+                            tmp_options_frequency.put(DIRECTLY_FOLLOW_KEY, new HashMap<>());
+                        Integer k = tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY).get(df);
+                        if (k == null) tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY).put(df, 1);
+                        else tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY).put(df, k + 1);
                     }
                     if(i != -1 && j != trace.size()) {
                         String ef = (event1 + " => " + event2);
-                        tmp_options.put("eventually:follow", ef);
-                        if (tmp_options_frequency.get("eventually:follow") == null)
-                            tmp_options_frequency.put("eventually:follow", new HashMap<>());
-                        Integer k = tmp_options_frequency.get("eventually:follow").get(ef);
-                        if (k == null) tmp_options_frequency.get("eventually:follow").put(ef, 1);
-                        else tmp_options_frequency.get("eventually:follow").put(ef, k + 1);
+                        tmp_options.put(EVENTUALLY_FOLLOW_KEY, ef);
+                        if (tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY) == null)
+                            tmp_options_frequency.put(EVENTUALLY_FOLLOW_KEY, new HashMap<>());
+                        Integer k = tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY).get(ef);
+                        if (k == null) tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY).put(ef, 1);
+                        else tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY).put(ef, k + 1);
                     }
                 }
             }
         }
         
-        tmp_options_frequency.put("time:timestamp", new HashMap<>());
-        tmp_options_frequency.put("time:duration", new HashMap<>());
+        tmp_options_frequency.put(TIMESTAMP_KEY, new HashMap<>());
+        tmp_options_frequency.put(TIME_DURATION_KEY, new HashMap<>());
 
         return tmp_options_frequency;
     }
@@ -157,8 +172,8 @@ LogStatistics {
             List<String> actList = activitySequenceOf(trace);
             int variantId = variantIdMap.get(actList);
             variantEventsMap.put(variantId, actList);
-            XAttribute attribute = new XAttributeLiteralImpl("case:variant", Integer.toString(variantId));
-            log.get(i).getAttributes().put("case:variant", attribute);
+            XAttribute attribute = new XAttributeLiteralImpl(CASE_VARIANT_KEY, Integer.toString(variantId));
+            log.get(i).getAttributes().put(CASE_VARIANT_KEY, attribute);
         }
         return log;
     }
@@ -204,8 +219,8 @@ LogStatistics {
             XEvent iEvent = trace.get(i);
             boolean hasStart = true;
             String iActName = "";
-            if(iEvent.getAttributes().containsKey("concept:name")) {
-                iActName = iEvent.getAttributes().get("concept:name").toString();
+            if(iEvent.getAttributes().containsKey(DEFAULT_CLASSIFIER_KEY)) {
+                iActName = iEvent.getAttributes().get(DEFAULT_CLASSIFIER_KEY).toString();
             }
 
             /**
@@ -213,8 +228,8 @@ LogStatistics {
              */
             if(i < (trace.size()-1)) {
                 XEvent dfEvent = trace.get(i+1);
-                if(dfEvent.getAttributes().containsKey("concept:name")) {
-                    String dfActName = dfEvent.getAttributes().get("concept:name").toString();
+                if(dfEvent.getAttributes().containsKey(DEFAULT_CLASSIFIER_KEY)) {
+                    String dfActName = dfEvent.getAttributes().get(DEFAULT_CLASSIFIER_KEY).toString();
                     if(directFollowMap.containsKey(iActName)) {
                         Set followSet = directFollowMap.get(iActName);
                         followSet.add(dfActName);
@@ -232,8 +247,8 @@ LogStatistics {
              */
             for(int j= (i+1); j<trace.size(); j++) {
                 XEvent fEvent = trace.get(j);
-                if(fEvent.getAttributes().containsKey("concept:name")) {
-                    String fActName = fEvent.getAttributes().get("concept:name").toString();
+                if(fEvent.getAttributes().containsKey(DEFAULT_CLASSIFIER_KEY)) {
+                    String fActName = fEvent.getAttributes().get(DEFAULT_CLASSIFIER_KEY).toString();
                     if(eventualFollowMap.containsKey(iActName)) {
                         Set followSet = eventualFollowMap.get(iActName);
                         followSet.add(fActName);
@@ -247,23 +262,23 @@ LogStatistics {
             }
 
             String iLifecycle = "";
-            if(iEvent.getAttributes().containsKey("lifecycle:transition")) {
-                iLifecycle = iEvent.getAttributes().get("lifecycle:transition").toString().toLowerCase();
+            if(iEvent.getAttributes().containsKey(LIFECYCLE_KEY)) {
+                iLifecycle = iEvent.getAttributes().get(LIFECYCLE_KEY).toString().toLowerCase();
             }
             ZonedDateTime iZdt = zonedDateTimeOf(iEvent);
             if(iLifecycle.equals("start")) {
                 for(int j=(i+1); j < trace.size(); j++) {
                     XEvent jEvent = trace.get(j);
                     String jActName = "";
-                    if(jEvent.getAttributes().containsKey("concept:name")) {
-                        jActName = jEvent.getAttributes().get("concept:name").toString();
+                    if(jEvent.getAttributes().containsKey(DEFAULT_CLASSIFIER_KEY)) {
+                        jActName = jEvent.getAttributes().get(DEFAULT_CLASSIFIER_KEY).toString();
                     }
                     String jLifecycle = "";
-                    if(jEvent.getAttributes().containsKey("lifecycle:transition")) {
-                        jLifecycle = iEvent.getAttributes().get("lifecycle:transition").toString().toLowerCase();
+                    if(jEvent.getAttributes().containsKey(LIFECYCLE_KEY)) {
+                        jLifecycle = iEvent.getAttributes().get(LIFECYCLE_KEY).toString().toLowerCase();
                     }
                     ZonedDateTime jZdt = null;
-                    if(jEvent.getAttributes().containsKey("time:timestamp")) {
+                    if(jEvent.getAttributes().containsKey(TIMESTAMP_KEY)) {
                         jZdt = zonedDateTimeOf(jEvent);
                     }
                     if(jActName.equals(iActName) && jLifecycle.equals("complete")) {
