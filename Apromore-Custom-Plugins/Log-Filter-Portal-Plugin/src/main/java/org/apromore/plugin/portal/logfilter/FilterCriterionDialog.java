@@ -34,6 +34,7 @@ import org.apromore.logfilter.criteria.model.Type;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.logfilter.util.TimeConverter;
 import java.io.IOException;
+import java.sql.Time;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Calendar;
@@ -53,12 +54,22 @@ class FilterCriterionDialog {
     private Radiogroup containment;
     private Radiogroup action;
 
+    private Grid gridContainment;
+    private Grid gridTimeframe;
+    private Grid gridDuration;
+
+//    private Tab tabTimeframe;
+//    private Tab tabAttribute;
+//    private Tab tabDFollow;
+//    private Tab tabEFollow;
+
     private LogFilterController filterCriterionSelector;
     private List<LogFilterCriterion> criteria;
     private Map<String, Map<String, Integer>> options_frequency; // key: filter type code, value: map{key:code value, value: count}
     private long min; // the earliest timstamp in the log
     private long max; // the latest timstamp in the log
     private int pos; // the index of the Filter Criterion in the list
+
 
     private List<String> allFilterTypeCodes; // list of all filter type codes (standard + non-standard)
     private List<String> allFilterTypeNames; // list of all corresponding filter type names (standard + non-standard)
@@ -69,16 +80,33 @@ class FilterCriterionDialog {
     // Some non-standard types in the list are displayed in quotes 
     private List<String> filterTypeCodes; // valid filter type codes according to the selected level
     private List<String> filterTypeNames; // valid filter type names according to the selected level
-    
-    private Listbox filterType;
-    private Listbox value;
-    private Datebox startDate;
-    private Datebox endDate;
+
+    private Listbox lbxFilterType;
+    private Listbox lbxValue;
+    private Datebox dateBxStartDate;
+    private Datebox dateBxEndDate;
+
     private Decimalbox duration;
     private Listbox durationUnits;
 
+    private Listheader lhValue1;
+    private Listheader lhValue2;
+    private Listheader lhValue3;
+
+    private Hlayout hlDFollow;
+    private Listbox lbxDFollowFrom;
+    private Listbox lbxDFollowTo;
+
+    private Hlayout hlEFollow;
+    private Listbox lbxEFollowFrom;
+    private Listbox lbxEFollowTo;
+
+    private West detailView;
+    private Listbox lbxItemDetail;
+
     private Button okButton;
     private Button cancelButton;
+//    private Button btCloseWindow;
     
     private PortalContext portalContext;
     
@@ -127,7 +155,10 @@ class FilterCriterionDialog {
         containment = (Radiogroup) createFilterCriterionW.getFellow("containment");
         action = (Radiogroup) createFilterCriterionW.getFellow("action");
 
-        filterType = (Listbox) createFilterCriterionW.getFellow("filterType");
+        lbxFilterType = (Listbox) createFilterCriterionW.getFellow("lbxFilterType");
+        gridContainment = (Grid) createFilterCriterionW.getFellow("gridContainment");
+        gridTimeframe = (Grid) createFilterCriterionW.getFellow("gridTimeframe");
+        gridTimeframe.setVisible(false);
 
         Calendar c = Calendar.getInstance();
         c.setTime(new Date(min));
@@ -138,63 +169,170 @@ class FilterCriterionDialog {
         Date e = c.getTime();
         SimpleDateConstraint simpleDateConstraint = new SimpleDateConstraint(SimpleConstraint.NO_ZERO, s, e, null);
 
-        startDate = (Datebox) createFilterCriterionW.getFellow("startDate");
-        startDate.setConstraint(simpleDateConstraint);
-        startDate.setValue(new Date(min));
-        startDate.setDisabled(true);
+        dateBxStartDate = (Datebox) createFilterCriterionW.getFellow("dateBxStartDate");
+//        dateBxStartDate.setConstraint(simpleDateConstraint); // this cause the value never get update
+        dateBxStartDate.setValue(new Date(min));
+        dateBxStartDate.setDisabled(true);
 
-        endDate = (Datebox) createFilterCriterionW.getFellow("endDate");
-        endDate.setConstraint(simpleDateConstraint);
-        endDate.setValue(new Date(max));
-        endDate.setDisabled(true);
+        dateBxEndDate = (Datebox) createFilterCriterionW.getFellow("dateBxEndDate");
+//        dateBxEndDate.setConstraint(simpleDateConstraint); // this cause the value never get update
+        dateBxEndDate.setValue(new Date(max));
+        dateBxEndDate.setDisabled(true);
 
+        gridDuration = (Grid) createFilterCriterionW.getFellow("gridDuration");
+        gridDuration.setVisible(false);
         duration = (Decimalbox) createFilterCriterionW.getFellow("duration");
         duration.setDisabled(true);
         durationUnits = (Listbox) createFilterCriterionW.getFellow("durationUnits");
         durationUnits.setSelectedIndex(0);
         durationUnits.setDisabled(true);
 
-        value = (Listbox) createFilterCriterionW.getFellow("value");
-        Listheader frequency_header = (Listheader) createFilterCriterionW.getFellow("frequency_header");
-        frequency_header.setSortAscending(new NumberComparator(true, 1));
-        frequency_header.setSortDescending(new NumberComparator(false, 1));
-        Listheader percentage_header = (Listheader) createFilterCriterionW.getFellow("percentage_header");
-        percentage_header.setSortAscending(new NumberComparator(true, 1));
-        percentage_header.setSortDescending(new NumberComparator(false, 1));
+        lhValue1 = (Listheader) createFilterCriterionW.getFellow("lhValue1");
+        lhValue2 = (Listheader) createFilterCriterionW.getFellow("lhValue2");
+        lhValue2.setSortAscending(new NumberComparator(true, 1));
+        lhValue2.setSortDescending(new NumberComparator(false, 1));
+        lhValue3 = (Listheader) createFilterCriterionW.getFellow("lhValue3");
+//        lhValue3.setSortAscending(new NumberComparator(true, 2));
+//        lhValue3.setSortDescending(new NumberComparator(false, 2));
+
+
+        lbxValue = (Listbox) createFilterCriterionW.getFellow("lbxValue");
+
+//        Listheader frequency_header = (Listheader) createFilterCriterionW.getFellow("frequency_header");
+//        frequency_header.setSortAscending(new NumberComparator(true, 1));
+//        frequency_header.setSortDescending(new NumberComparator(false, 1));
+//        Listheader percentage_header = (Listheader) createFilterCriterionW.getFellow("percentage_header");
+//        percentage_header.setSortAscending(new NumberComparator(true, 1));
+//        percentage_header.setSortDescending(new NumberComparator(false, 1));
+
+        lbxDFollowFrom = (Listbox) createFilterCriterionW.getFellow("lbxDFollowFrom");
+        lbxDFollowTo = (Listbox) createFilterCriterionW.getFellow("lbxDFollowTo");
+        hlDFollow = (Hlayout) createFilterCriterionW.getFellow("hlDFollow");
+
+        lbxEFollowFrom = (Listbox) createFilterCriterionW.getFellow("lbxEFollowFrom");
+        lbxEFollowTo = (Listbox) createFilterCriterionW.getFellow("lbxEFollowTo");
+        hlEFollow = (Hlayout) createFilterCriterionW.getFellow("hlEFollow");
+
+        detailView = (West) createFilterCriterionW.getFellow("detailView");
+        lbxItemDetail = (Listbox) createFilterCriterionW.getFellow("lbxItemDetail");
 
         okButton = (Button) createFilterCriterionW.getFellow("criterionOkButton");
         cancelButton = (Button) createFilterCriterionW.getFellow("criterionCancelButton");
-
+//        btCloseWindow = (Button) createFilterCriterionW.getFellow("btCloseWindow");
         // Update all codes and names to be used
         allFilterTypeCodes = new ArrayList<>(options_frequency.keySet()); // list of filterType types
         this.sortFilterTypeCodes(allFilterTypeCodes);
-        allFilterTypeNames = new ArrayList<>();
-        for(String option : allFilterTypeCodes) {
-        	allFilterTypeNames.add(this.getFilterTypeName(option));
-        }
+//        allFilterTypeNames = new ArrayList<>();
+//        for(String option : allFilterTypeCodes) {
+//        	allFilterTypeNames.add(this.getFilterTypeName(option));
+//        }
         
         // Update codes and names according to the level
         filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
-        filterTypeNames = getValidFilterTypeNames(level);
+//        filterTypeNames = getValidFilterTypeNames(level);
 
         this.populateFilterTypes();
-
     }
-    
+
     /*
      * Standard filter types have labels = "filtername"
      * Non-standard filter types have label = "filtername" (in quotes) 
      */
     private void populateFilterTypes() {
-    	filterType.getItems().clear();
-        for(String option : filterTypeCodes) {
-        	filterType.appendItem(getFilterTypeLabel(option), getFilterTypeLabel(option));
+        lbxFilterType.getItems().clear();
+//        String optionListString = "";
+        for(int i = 0; i < filterTypeCodes.size(); i++) {
+            String filterCode = filterTypeCodes.get(i);
+//            optionListString += option + "\n";
+            lbxFilterType.appendItem(getFilterTypeLabel(filterCode), filterCode);// getFilterTypeLabel(option));
         }
+//        Messagebox.show(optionListString);
     }
     
 
     // Set values on the form based on the corresponding attributes of the Filter Criterion 
     private void readValues() {
+
+        /**
+         * Set direct follow relation: 'FROM' values
+         */
+        // Add [Start] element to the list
+        Listcell cellStart = new Listcell("[Start]");
+        Listitem itemStart = new Listitem();
+        itemStart.appendChild(cellStart);
+        lbxDFollowFrom.appendChild(itemStart);
+        Map<String, Set<String>> dfFollowMap =  filterCriterionSelector.getDirectFollowMap();
+        for(String key : dfFollowMap.keySet()) {
+            Listcell listcell = new Listcell();
+            listcell.setLabel(key);
+            Listitem listitem = new Listitem();
+            listitem.appendChild(listcell);
+            lbxDFollowFrom.appendChild(listitem);
+        }
+        lbxDFollowFrom.setMultiple(true);
+        lbxDFollowFrom.setCheckmark(true);
+
+        /**
+         * Set direct follow relation: 'TO' values
+         */
+        Map<String, Set<String>> dtFollowMap =  filterCriterionSelector.getEventualFollowMap();
+        Set<String> uniqueFollowMap = new HashSet<String>();
+        for(String key : dtFollowMap.keySet()) {
+            Set<String> fSet = dtFollowMap.get(key);
+            for(String fKey : fSet) {
+                if(!uniqueFollowMap.contains(fKey)) uniqueFollowMap.add(fKey);
+            }
+        }
+        // Add [End] element to the list
+        Listcell cellEnd = new Listcell("[End]");
+        Listitem itemEnd = new Listitem();
+        itemEnd.appendChild(cellEnd);
+        lbxDFollowTo.appendChild(itemEnd);
+        for(String key : uniqueFollowMap) {
+            Listcell listcell = new Listcell(key);
+            Listitem listitem = new Listitem();
+            listitem.appendChild(listcell);
+            lbxDFollowTo.appendChild(listitem);
+        }
+        lbxDFollowTo.setMultiple(true);
+        lbxDFollowTo.setCheckmark(true);
+
+        /**
+         * Set eventually follow relation: 'FROM' values
+         */
+        Map<String, Set<String>> efFollowMap =  filterCriterionSelector.getEventualFollowMap();
+        for(String key : efFollowMap.keySet()) {
+            Listcell listcell = new Listcell();
+            listcell.setLabel(key);
+            Listitem listitem = new Listitem();
+            listitem.appendChild(listcell);
+            lbxEFollowFrom.appendChild(listitem);
+        }
+        lbxEFollowFrom.setMultiple(true);
+        lbxEFollowFrom.setCheckmark(true);
+
+        /**
+         * Set eventually follow relation: 'TO' values
+         */
+        Map<String, Set<String>> etFollowMap =  filterCriterionSelector.getEventualFollowMap();
+        Set<String> uniqueFollowMap2 = new HashSet<String>();
+        for(String key : etFollowMap.keySet()) {
+            Set<String> fSet = etFollowMap.get(key);
+            for(String fKey : fSet) {
+                if(!uniqueFollowMap2.contains(fKey)) uniqueFollowMap2.add(fKey);
+            }
+        }
+        for(String key : uniqueFollowMap2) {
+            Listcell listcell = new Listcell(key);
+            Listitem listitem = new Listitem();
+            listitem.appendChild(listcell);
+            lbxEFollowTo.appendChild(listitem);
+        }
+        lbxEFollowTo.setMultiple(true);
+        lbxEFollowTo.setCheckmark(true);
+
+
+
     	// If an existing Filter Criterion is provided, set form field values to those in the Filter Criterion 
         if(pos != -1) {
             LogFilterCriterion criterion = criteria.get(pos);
@@ -216,8 +354,9 @@ class FilterCriterionDialog {
                     break;
                 }
             }
-            setValues(attribute_index);
-            filterType.setSelectedIndex(attribute_index);
+//            setValues(attribute_index);
+            lbxFilterType.setSelectedIndex(attribute_index);
+            setValues(lbxFilterType.getSelectedItem());
 
             if (LogFilterTypeSelector.getType(a) == Type.TIME_TIMESTAMP) {
                 Long start = null;
@@ -227,11 +366,11 @@ class FilterCriterionDialog {
                     if (v.startsWith("<")) end = Long.parseLong(v.substring(1));
                 }
 
-                startDate.setValue(new Date(start));
-                startDate.setDisabled(false);
-
-                endDate.setValue(new Date(end));
-                endDate.setDisabled(false);
+                dateBxStartDate.setValue(new Date(start));
+                dateBxStartDate.setDisabled(false);
+                dateBxEndDate.setValue(new Date(end));
+                dateBxEndDate.setDisabled(false);
+                gridTimeframe.setVisible(true);
             }else if (LogFilterTypeSelector.getType(a) == Type.TIME_DURATION) {
                 String d = null;
                 for (String v : criterion.getValue()) {
@@ -240,6 +379,7 @@ class FilterCriterionDialog {
                 String[] values = TimeConverter.parseDuration2(d);
                 duration.setValue(values[0]);
                 duration.setDisabled(false);
+                gridDuration.setVisible(true);
 //                Listitem found = durationUnits.getItems().stream()
 //                	.filter(item -> item.getLabel().equals(values[1]))
 //                	.findAny()
@@ -253,8 +393,45 @@ class FilterCriterionDialog {
                 }
                 if (found != null) durationUnits.setSelectedItem(found);
                 durationUnits.setDisabled(false);
+            }else if (LogFilterTypeSelector.getType(a) == Type.DIRECT_FOLLOW) {
+                // get the criterion values then break them down to FROM and TO
+                Set<String> fromSet = new HashSet<String>();
+                Set<String> toSet = new HashSet<String>();
+                Set<String> valueSet = criterion.getValue();
+                for(String composedValue : valueSet) {
+                    int arrowIndex = composedValue.indexOf(" => ");
+                    String fromValue = composedValue.substring(0, arrowIndex);
+//                    if(fromValue.equals("|>")) fromValue = "[Start]";
+                    String toValue = composedValue.substring(arrowIndex+4, composedValue.length());
+//                    if(toValue.equals("[]")) toValue = "[End]";
+                    fromSet.add(fromValue);
+                    toSet.add(toValue);
+                }
+                for(Listitem listitem : lbxDFollowFrom.getItems()) {
+                    if(fromSet.contains(listitem.getLabel())) listitem.setSelected(true);
+                }
+                for(Listitem listitem : lbxDFollowTo.getItems()) {
+                    if(toSet.contains(listitem.getLabel())) listitem.setSelected(true);
+                }
+            }else if (LogFilterTypeSelector.getType(a) == Type.EVENTUAL_FOLLOW) {
+                Set<String> fromSet = new HashSet<String>();
+                Set<String> toSet = new HashSet<String>();
+                Set<String> valueSet = criterion.getValue();
+                for(String composedValue : valueSet) {
+                    int arrowIndex = composedValue.indexOf(" => ");
+                    String fromValue = composedValue.substring(0, arrowIndex);
+                    String toValue = composedValue.substring(arrowIndex+4, composedValue.length());
+                    fromSet.add(fromValue);
+                    toSet.add(toValue);
+                }
+                for(Listitem listitem : lbxEFollowFrom.getItems()) {
+                    if(fromSet.contains(listitem.getLabel())) listitem.setSelected(true);
+                }
+                for(Listitem listitem : lbxEFollowTo.getItems()) {
+                    if(toSet.contains(listitem.getLabel())) listitem.setSelected(true);
+                }
             }else {
-                for(Listitem listitem : value.getItems()) {
+                for(Listitem listitem : lbxValue.getItems()) {
                     if(criterion.getValue().contains(listitem.getLabel())) listitem.setSelected(true);
                 }
             }
@@ -262,15 +439,18 @@ class FilterCriterionDialog {
     }
 
     private void setStatus() {
+
+        detailView.setVisible(false);
+
         if(level.getSelectedIndex() == 0) { // Event Level
-            if(filterType.getSelectedIndex() >= 0) {
-            	Type type = LogFilterTypeSelector.getType(filterTypeCodes.get(filterType.getSelectedIndex()));
+            if(lbxFilterType.getSelectedIndex() >= 0) {
+            	Type type = LogFilterTypeSelector.getType(filterTypeCodes.get(lbxFilterType.getSelectedIndex()));
                 switch (type) {
 	            	case TIME_TIMESTAMP:
 	            		okButton.setDisabled(false);
 	            		break;
 	            	default:
-	            		okButton.setDisabled(value.getItems().size() == 0);
+	            		okButton.setDisabled(lbxValue.getItems().size() == 0);
                 }
             }
             else {
@@ -279,37 +459,57 @@ class FilterCriterionDialog {
             
             duration.setDisabled(true);
             durationUnits.setDisabled(true);
+            gridDuration.setVisible(false);
+
             for(Radio radio : containment.getItems()) {
                 radio.setDisabled(true);
             }
+            /**
+             * 2019-09-16
+             */
+            gridContainment.setVisible(false);
+
             containment.setStyle("background-color: #D3D3D3;");
         }else { //Trace Level
-            //okButton.setDisabled(false);
+            okButton.setDisabled(false);
         	
-            if(filterType.getSelectedIndex() >= 0) {  
-            	boolean eventInvalid = !LogFilterTypeSelector.isValidType(filterTypeCodes.get(filterType.getSelectedIndex()), Level.EVENT);
-                for (Radio radio : containment.getItems()) {
+            if(lbxFilterType.getSelectedIndex() >= 0) {
+            	boolean eventInvalid = !LogFilterTypeSelector.isValidCode(filterTypeCodes.get(lbxFilterType.getSelectedIndex()), Level.EVENT);
+            	for (Radio radio : containment.getItems()) {
                     radio.setDisabled(eventInvalid);
+                }
+            	if(eventInvalid) {
+            	    gridContainment.setVisible(false);
+                }else{
+            	    gridContainment.setVisible(true);
                 }
                 containment.setStyle(eventInvalid ? "background-color: #D3D3D3;" : "transparent;");
                 
-                Type type = LogFilterTypeSelector.getType(filterTypeCodes.get(filterType.getSelectedIndex()));
+                Type type = LogFilterTypeSelector.getType(filterTypeCodes.get(lbxFilterType.getSelectedIndex()));
                 switch (type) {
+                    case DIRECT_FOLLOW:
+                        okButton.setDisabled(false);
+                        break;
+                    case EVENTUAL_FOLLOW:
+                        okButton.setDisabled(false);
+                        break;
                 	case TIME_TIMESTAMP:
                 		okButton.setDisabled(false);
                 		break;
                 	case TIME_DURATION: 
                 		duration.setDisabled(false);
                         durationUnits.setDisabled(false);
+                        gridDuration.setVisible(true);
                 		okButton.setDisabled(false);
                 		break;
                 	default:
-                		okButton.setDisabled(value.getItems().size() == 0);
+                		okButton.setDisabled(lbxValue.getItems().size() == 0);
                 }
             }else {
-//                for (Radio radio : containment.getItems()) {
-//                    radio.setDisabled(false);
-//                }
+                for (Radio radio : containment.getItems()) {
+                    radio.setDisabled(false);
+                }
+                gridContainment.setVisible(true);
             	okButton.setDisabled(true);
             }
         }
@@ -320,9 +520,13 @@ class FilterCriterionDialog {
         level.addEventListener("onCheck", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) {
-            	if (filterType.getSelectedIndex() >= 0) {
-            		String currentLabel = filterType.getSelectedItem().getLabel();
-                	String currentFilterType = filterTypeCodes.get(filterType.getSelectedIndex());
+
+                hlDFollow.setVisible(false);
+                hlEFollow.setVisible(false);
+
+            	if (lbxFilterType.getSelectedIndex() >= 0) {
+            		String currentLabel = lbxFilterType.getSelectedItem().getLabel();
+                	String currentFilterType = filterTypeCodes.get(lbxFilterType.getSelectedIndex());
                 	
                 	filterTypeCodes = getValidFilterTypeCodes(allFilterTypeCodes, level);
                 	filterTypeNames = getValidFilterTypeNames(level);
@@ -330,21 +534,21 @@ class FilterCriterionDialog {
             		
 	            	if (isLevelValid(currentFilterType, level)) {
 	            		int selectedIndex = -1;
-	            		for (Listitem item : filterType.getItems()) {
+	            		for (Listitem item : lbxFilterType.getItems()) {
 	            			if (item.getLabel().equals(currentLabel)) {
 	            				selectedIndex = item.getIndex();
 	            				break;
 	            			}
 	            		}
 	            		if (selectedIndex >= 0) {
-	            			filterType.setSelectedIndex(selectedIndex);
+                            lbxFilterType.setSelectedIndex(selectedIndex);
 	            		}
 	            		else {
-	            			value.getItems().clear();
+                            lbxValue.getItems().clear();
 	            		}
 	            	}
 	            	else {
-	            		value.getItems().clear();
+                        lbxValue.getItems().clear();
 	            	}
             	}
             	else {
@@ -356,10 +560,10 @@ class FilterCriterionDialog {
             }
         });
 
-        filterType.addEventListener("onSelect", new EventListener<Event>() {
+        lbxFilterType.addEventListener("onSelect", new EventListener<Event>() {
             @Override
             public void onEvent(Event event) {
-            	FilterCriterionDialog.this.setValues(filterType.getSelectedIndex());
+            	FilterCriterionDialog.this.setValues(lbxFilterType.getSelectedItem());
                 setStatus();
             }
         });
@@ -367,20 +571,46 @@ class FilterCriterionDialog {
         okButton.addEventListener("onClick", new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 Set<String> set = new HashSet<>();
-                String option = filterTypeCodes.get(filterType.getSelectedIndex());
+
+                String option = filterTypeCodes.get(lbxFilterType.getSelectedIndex());
                 //String option = filterTypeNames.get(filterType.getSelectedIndex());
                 //if(LogFilterTypeSelector.getName(option) > -1) option = LogFilterTypeSelector.getReverseMatch(option);
 
                 if(LogFilterTypeSelector.getType(option) == Type.TIME_TIMESTAMP) {
-                    set.add(">" + startDate.getValue().getTime());
-                    set.add("<" + endDate.getValue().getTime());
+                    set.add(">" + dateBxStartDate.getValue().getTime());
+                    set.add("<" + dateBxEndDate.getValue().getTime());
                 }else if(LogFilterTypeSelector.getType(option) == Type.TIME_DURATION) {
                     String span = durationUnits.getSelectedItem().getLabel();
                     //BigDecimal d = TimeConverter.convertMilliseconds(duration.getValue(), span);
                     set.add(">" + duration.getValue().doubleValue() + TimeConverter.DURATION_UNIT_MARKER + span);
                 }else {
-                    for (Listitem listItem : value.getSelectedItems()) {
-                        set.add(((Listcell) listItem.getFirstChild()).getLabel());
+//                    for (Listitem listItem : lbxValue.getSelectedItems()) {
+//                        set.add(((Listcell) listItem.getFirstChild()).getLabel());
+//                    }
+                    if(LogFilterTypeSelector.getType(option) == Type.DIRECT_FOLLOW) {
+                        for(Listitem liFrom : lbxDFollowFrom.getSelectedItems()) {
+                            String lblFrom = ((Listcell) liFrom.getFirstChild()).getLabel();
+//                            if(lblFrom.equals("[Start]")) lblFrom = "|>";
+                            for(Listitem liTo : lbxDFollowTo.getSelectedItems()) {
+                                String lblTo = ((Listcell) liTo.getFirstChild()).getLabel();
+//                                if(lblTo.equals("[End]")) lblTo = "[]";
+                                String composedString = lblFrom + " => " + lblTo;
+                                set.add(composedString);
+                            }
+                        }
+                    }else if(LogFilterTypeSelector.getType(option) == Type.EVENTUAL_FOLLOW) { // is Direct follow relation
+                        for(Listitem liFrom : lbxEFollowFrom.getSelectedItems()) {
+                            String lblFrom = ((Listcell) liFrom.getFirstChild()).getLabel();
+                            for(Listitem liTo : lbxEFollowTo.getSelectedItems()) {
+                                String lblTo = ((Listcell) liTo.getFirstChild()).getLabel();
+                                String composedString = lblFrom + " => " + lblTo;
+                                set.add(composedString);
+                            }
+                        }
+                    }else{
+                        for (Listitem listItem : lbxValue.getSelectedItems()) {
+                            set.add(((Listcell) listItem.getFirstChild()).getLabel());
+                        }
                     }
                 }
                 
@@ -408,65 +638,170 @@ class FilterCriterionDialog {
                 createFilterCriterionW.detach();
             }
         });
+//        btCloseWindow.addEventListener("onClick", new EventListener<Event>() {
+//            public void onEvent(Event event) {
+//                createFilterCriterionW.detach();
+//            }
+//        });
     }
 
     /**
-     * Set value or populate values to fields/list on the form 
-     * @param index: the index of the selected filter type in filterTypeCodes 
+     * 15.08: change input parameter
+     * Set value or populate values to fields/list on the form
+     * @param selectedItem: the index of the selected filter type in filterTypeCodes
      */
-    private void setValues(int index) {
-        String option = filterTypeNames.get(index); //option is the label of the selected filter type code 
+    private void setValues(Listitem selectedItem) {
+//        String option = filterTypeNames.get(index); //option is the label of the selected filter type code
+        String filterCode = selectedItem.getValue();
 
-        if(option.equals("Time-frame")) {
+        /**
+         * Change header label based on the option
+         */
+        if(LogFilterTypeSelector.getType(filterCode) == Type.CASE_VARIANT) {
+            lhValue1.setLabel("Case variant ID");
+            lhValue2.setLabel("Cases");
+            lhValue3.setLabel("Frequency");
+            lbxValue.setMold("paging");
+            lbxValue.setAutopaging(true);
+        }else{
+            lhValue1.setLabel("Value");
+            lhValue2.setLabel("Frequency");
+            lhValue3.setLabel("Relative frequency");
+            lbxValue.setMold("default");
+            lbxValue.setAutopaging(false);
+        }
+
+        if (LogFilterTypeSelector.getType(filterCode) == Type.DIRECT_FOLLOW) {
+            lbxValue.setVisible(false);
+            hlDFollow.setVisible(true);
+            hlEFollow.setVisible(false);
+        }else if (LogFilterTypeSelector.getType(filterCode) == Type.EVENTUAL_FOLLOW) {
+            lbxValue.setVisible(false);
+            hlDFollow.setVisible(false);
+            hlEFollow.setVisible(true);
+        }else{
+            lbxValue.setVisible(true);
+            hlDFollow.setVisible(false);
+            hlEFollow.setVisible(false);
+        }
+
+        if (LogFilterTypeSelector.getType(filterCode) == Type.TIME_TIMESTAMP) {
             //value.setModel(modelValue);
-        	value.getItems().clear();
-            startDate.setDisabled(false);
-            endDate.setDisabled(false);
+            lbxValue.getItems().clear();
+            dateBxStartDate.setDisabled(false);
+            dateBxEndDate.setDisabled(false);
+            gridTimeframe.setVisible(true);
             duration.setDisabled(true);
             durationUnits.setDisabled(true);
-        }else if(option.equals("Duration")) {
+            gridDuration.setVisible(false);
+        }else if (LogFilterTypeSelector.getType(filterCode) == Type.TIME_DURATION) {
             // value.setModel(modelValue);
-        	value.getItems().clear();
-            startDate.setDisabled(true);
-            endDate.setDisabled(true);
+            lbxValue.getItems().clear();
+            dateBxStartDate.setDisabled(true);
+            dateBxEndDate.setDisabled(true);
+            gridTimeframe.setVisible(false);
             duration.setDisabled(false);
             durationUnits.setDisabled(false);
-        }else {       	
-            startDate.setDisabled(true);
-            endDate.setDisabled(true);
+            gridDuration.setVisible(true);
+//        }else if(!option.toLowerCase().equals("direct follow relation") &&
+//        !option.toLowerCase().equals("eventually follow relation")) {
+        }else if(LogFilterTypeSelector.getType(filterCode) != Type.DIRECT_FOLLOW && LogFilterTypeSelector.getType(filterCode) != Type.EVENTUAL_FOLLOW) {
+            dateBxStartDate.setDisabled(true);
+            dateBxEndDate.setDisabled(true);
+            gridTimeframe.setVisible(false);
             duration.setDisabled(true);
             durationUnits.setDisabled(true);
+            gridDuration.setVisible(false);
 
             Collection<String> set;
-            String coded_option; // the filter type corresponding to option 
-            if(LogFilterTypeSelector.isStandardName(option)) coded_option = LogFilterTypeSelector.getTypeFromName(option);
-            else coded_option = option;
+//            String coded_option; // the filter type corresponding to option
+//            if(LogFilterTypeSelector.isStandardName(option)) coded_option = LogFilterTypeSelector.getTypeFromName(option);
+//            else coded_option = option;
 
-            set = options_frequency.get(coded_option).keySet(); // list of values
+            set = options_frequency.get(filterCode).keySet(); // list of values
 
-            value.getItems().clear();
+            lbxValue.getItems().clear();
             double total = 0;
             for (String option_value : set) {
-                total += options_frequency.get(coded_option).get(option_value); // calculate total frequency
+                total += options_frequency.get(filterCode).get(option_value); // calculate total frequency
             }
 
             for (String option_value : set) {
-                Listcell listcell1 = new Listcell(option_value);
-                Listcell listcell2 = new Listcell(options_frequency.get(coded_option).get(option_value).toString());
-                Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) options_frequency.get(coded_option).get(option_value) / total)) + "%");
+                Listcell listcell1 = new Listcell();
+                if(option_value.matches("-?\\d+(\\.\\d+)?")) { // if its numeric
+                    boolean hasDot = option_value.contains(".");
+                    if(hasDot) { //is  double value
+                        double doubleValue = Double.parseDouble(option_value);
+                        listcell1.setValue(doubleValue);
+                        listcell1.setLabel(doubleValue + "");
+                    }else{ // is not double value
+                        long numericOptionValue = Long.parseLong(option_value);
+                        listcell1.setValue(numericOptionValue);
+                        listcell1.setLabel(numericOptionValue + "");
+                    }
+                    lhValue1.setSortAscending(new NumberComparator(true, 0));
+                    lhValue1.setSortDescending(new NumberComparator(false, 0));
+                }else{
+                    listcell1.setValue(option_value);
+                    listcell1.setLabel(option_value);
+                    /**
+                     * To overwrite the NumberComparator
+                     */
+                    lhValue1.setSortAscending(new StringComparator(true, 0));
+                    lhValue1.setSortDescending(new StringComparator(false, 0));
+                    lhValue1.setSort("auto"); // reset the sorting method
+                }
+                Listcell listcell2 = new Listcell();
+                listcell2.setValue(options_frequency.get(filterCode).get(option_value).toString());
+                listcell2.setLabel(options_frequency.get(filterCode).get(option_value).toString());
+                Listcell listcell3 = new Listcell();
+                listcell3.setLabel(decimalFormat.format(100 * ((double) options_frequency.get(filterCode).get(option_value) / total)) + "%");
+                listcell3.setValue(100 * ((double) options_frequency.get(filterCode).get(option_value) / total));
 
                 Listitem listitem = new Listitem();
                 listitem.appendChild(listcell1);
                 listitem.appendChild(listcell2);
                 listitem.appendChild(listcell3);
-                value.appendChild(listitem);
+
+                listitem.addEventListener("onClick", new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        String option = filterTypeNames.get(lbxFilterType.getSelectedIndex());
+                        if(option.toLowerCase().equals("case variant")) {
+                            if(lbxValue.getSelectedItems() != null && lbxValue.getSelectedItem()!= null) {
+                                lbxItemDetail.getItems().clear();
+                                String vIdString = listcell1.getLabel();
+                                detailView.setVisible(true);
+                                detailView.setTitle("Variant ID: " + vIdString);
+                                List<String> actList = filterCriterionSelector.getVariantEventsMap().get(Integer.parseInt(vIdString));
+                                for (int i = 0; i < actList.size(); i++) {
+                                    Listcell listcell1 = new Listcell((i + 1) + "");
+                                    Listcell listcell2 = new Listcell(actList.get(i));
+                                    Listitem listitem = new Listitem();
+                                    listitem.appendChild(listcell1);
+                                    listitem.appendChild(listcell2);
+                                    lbxItemDetail.appendChild(listitem);
+                                }
+                            }else{
+                                detailView.setVisible(false);
+                            }
+                        }
+                    }
+                });
+
+
+                lbxValue.appendChild(listitem);
                 //modelValue.add(listitem);
             }
-            value.setCheckmark(true);
-            value.setMultiple(true);
+
+            lbxValue.setCheckmark(true);
+            lbxValue.setMultiple(true);
+
             //value.selectAll();
             //modelValue.setMultiple(true);
 
+
+
+            lhValue1.sort(true, true);
         }
     }
     
@@ -479,7 +814,8 @@ class FilterCriterionDialog {
     }
     
     private boolean isLevelValid(String filterType, Radiogroup level) {
-    	return LogFilterTypeSelector.isValidType(filterType, getLevel(level));
+//    	return LogFilterTypeSelector.isValidType(filterType, getLevel(level));
+        return LogFilterTypeSelector.isValidCode(filterType, getLevel(level));
     }
     
     private List<String> getValidFilterTypeCodes(List<String> types, Radiogroup level) {
@@ -487,12 +823,221 @@ class FilterCriterionDialog {
     	for (String code : types) {
     		if (isLevelValid(code, level)) selection.add(code);
     	}
+
+        /**
+         * Re-order the filter type codes
+         */
+        Set<String> optionSet = new HashSet<String>(selection);
+        for(int i=0; i<selection.size(); i++) {
+            String t = selection.get(i);
+            if(t.toLowerCase().equals("case:variant")) {
+                selection.remove(i);
+                selection.add(0, t);
+                break;
+            }
+        }
+        for(int i=0; i<selection.size(); i++) {
+            String t = selection.get(i);
+            if(t.toLowerCase().equals("time:timestamp")) {
+                if(optionSet.contains("case:variant")) {
+                    selection.remove(i);
+                    selection.add(1, t);
+                    break;
+                }else{
+                    selection.remove(i);
+                    selection.add(0, t);
+                    break;
+                }
+            }
+        }
+        for(int i=0; i<selection.size(); i++) {
+            String t = selection.get(i);
+            if(t.toLowerCase().equals("time:duration")) {
+                for(int j=0; j<selection.size();j++) {
+                    String jOption = selection.get(j);
+                    if(jOption.toLowerCase().equals("time:timestamp")) {
+                        selection.remove(i);
+                        selection.add(j+1, t);
+                        break;
+                    }
+                }
+            }
+        }
+        for(int i=0; i<selection.size(); i++) {
+            String t = selection.get(i);
+            if(t.toLowerCase().equals("direct:follow")) {
+                for(int j=0; j<selection.size();j++) {
+                    String jOption = selection.get(j);
+                    if(optionSet.contains("time:duration")) {
+                        if(jOption.toLowerCase().equals("time:duration")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else{
+                        if(jOption.toLowerCase().equals("time:timestamp")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        for(int i=0; i<selection.size(); i++) {
+            String t = selection.get(i);
+            if(t.toLowerCase().equals("eventually:follow")) {
+                for(int j=0; j<selection.size();j++) {
+                    String jOption = selection.get(j);
+                    if(optionSet.contains("direct:follow")) {
+                        if(jOption.toLowerCase().equals("direct:follow")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else if(optionSet.contains("time:duration")) {
+                        if(jOption.toLowerCase().equals("time:duration")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else{
+                        if(jOption.toLowerCase().equals("time:timestamp")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        for(int i=0; i<selection.size(); i++) {
+            String t = selection.get(i);
+            if(t.toLowerCase().equals("concept:name")) {
+                for(int j=0; j<selection.size();j++) {
+                    String jOption = selection.get(j);
+                    if(optionSet.contains("eventually:follow")) {
+                        if(jOption.toLowerCase().equals("eventually:follow")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else if(optionSet.contains("time:duration")) {
+                        if(jOption.toLowerCase().equals("time:duration")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else{
+                        if(jOption.toLowerCase().equals("time:timestamp")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        for(int i=0; i<selection.size(); i++) {
+            String t = selection.get(i);
+            if(t.toLowerCase().equals("org:resource")) {
+                for(int j=0; j<selection.size();j++) {
+                    String jOption = selection.get(j);
+                    if(optionSet.contains("concept:name")) {
+                        if(jOption.toLowerCase().equals("concept:name")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else{
+                        if(jOption.toLowerCase().equals("time:timestamp")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        for(int i=0; i<selection.size(); i++) {
+            String t = selection.get(i);
+            if(t.toLowerCase().equals("org:group")) {
+                for(int j=0; j<selection.size();j++) {
+                    String jOption = selection.get(j);
+                    if(optionSet.contains("org:resource")) {
+                        if(jOption.toLowerCase().equals("org:resource")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else if(optionSet.contains("concept:name")) {
+                        if(jOption.toLowerCase().equals("concept:name")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else{
+                        if(jOption.toLowerCase().equals("time:timestamp")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        for(int i=0; i<selection.size(); i++) {
+            String t = selection.get(i);
+            if(t.toLowerCase().equals("lifecycle:transition")) {
+                for(int j=0; j<selection.size();j++) {
+                    String jOption = selection.get(j);
+                    if(optionSet.contains("org:group")) {
+                        if(jOption.toLowerCase().equals("org:group")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else if(optionSet.contains("org:resource")) {
+                        if(jOption.toLowerCase().equals("org:resource")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else if(optionSet.contains("concept:name")) {
+                        if(jOption.toLowerCase().equals("concept:name")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }else{
+                        if(jOption.toLowerCase().equals("time:timestamp")) {
+                            selection.remove(i);
+                            selection.add(j+1, t);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+//        List<String> recorderedList = new ArrayList<String>();
+//        List<String> tempList = new ArrayList<String>();
+//    	for(int i=0; i<selection.size(); i++) {
+//    	    String t = selection.get(i);
+//    	    if(t.toLowerCase().equals("case:variant")) {
+//    	        tempList.add(0, t);
+//            }else{
+//    	        tempList.add(t);
+//            }
+//        }
+
+
     	return selection;
     }
     
     private String getFilterTypeName(String type) {
     	if(isStandard(type)) {
-        	return LogFilterTypeSelector.getNameFromType(type);
+        	return LogFilterTypeSelector.getNameFromCode(type);
         }
         else {
         	return type;
@@ -545,7 +1090,7 @@ class FilterCriterionDialog {
     //Note: non-standard type has its label displayed in quotes ("").
     private String getFilterTypeLabel(String type) {
         if(isStandard(type)) { 
-        	return LogFilterTypeSelector.getNameFromType(type);
+        	return LogFilterTypeSelector.getNameFromCode(type);
         }
         else { 
         	return "\"" + type + "\"";

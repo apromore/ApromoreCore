@@ -38,14 +38,16 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
     public boolean matchesCriterion(XTrace trace) {
         if(level == Level.TRACE) {
             String s = trace.get(0).getAttributes().get(label).toString();
-            if (value.contains("|> => " + s)) return true;
+//            if (value.contains("|> => " + s)) return true;
+            if (value.contains("[Start] => " + s)) return true;
             for (int i = 0; i < trace.size() - 1; i++) {
                 String event1 = trace.get(i).getAttributes().get(label).toString();
                 String event2 = trace.get(i + 1).getAttributes().get(label).toString();
                 if (value.contains(event1 + " => " + event2)) return true;
             }
             String e = trace.get(trace.size() - 1).getAttributes().get(label).toString();
-            return (value.contains(e + " => []"));
+//            return (value.contains(e + " => []"));
+            return (value.contains(e + " => [End]"));
         }
         return false;
     }

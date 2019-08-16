@@ -128,29 +128,24 @@
 			text-align: right;
 			margin-right: 1px;
 		}
-
-		.captionButton {
-			font-size: 18px;
-			margin: 0px 0px 0px -1px;
-			padding: 2px 6px;
-			border: 1px solid #cfcfcf;
-			color: #636363;
+    
+    .helpButton {
+			position: absolute;
+      right: 0px;
+      margin-right: 10px;
 		}
-		
-		.open-true {float:right; background:url('/img/up.png')
-		no-repeat right 0; height: 20px; padding-right: 20px;
-		font-weight: bold; }
-
-		.open-false {float:right; background:url('/img/down.png')
-		no-repeat right 0; height: 20px; padding-right: 20px;
-		font-weight: bold; }
+    
+    .z-caption.customPosition .z-caption-content i {
+      position: absolute;
+      right: 0px;
+      font-size: 16px; }
 		
 	</style>
 		
 	<window id="win" border="0" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
 		<caption id="windowcaption" sclass="mainCaption">
-			<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank" sclass="captionButtons">
-				<button label="Help" image="/img/Help-16x16.png" style="float: right;" height="25px"></button>
+			<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
+				<button label="Help" image="/img/Help-16x16.png" style="float: right;" height="25px" sclass="helpButton"></button>
 			</a>
 		</caption>
 
@@ -160,16 +155,15 @@
 					<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%">
 						<attribute name="onOpen">
 							<![CDATA[
-								arrow.setSclass("open-" + self.isOpen());
+                optionlabel.setIconSclass(self.isOpen() ? "z-icon-chevron-up" : "z-icon-chevron-down");
                 Clients.evalJavaScript("resize();");
                 optionbox.invalidate();
                 
 							]]>
 						</attribute>
-						<caption id="optionlabel" label="Options" sclass="customIcon" >
-							<!--<span id="arrow" class="open-true" />-->
-							<div id="arrow" class="open-true"></div>
+						<caption id="optionlabel" label="Options" width="100%" sclass="customPosition" iconSclass="z-icon-chevron-up">
 						</caption>
+            
 						
 						<hbox align="center" id="optiondetails">
 							<vbox align="left" pack="center" width="80px">

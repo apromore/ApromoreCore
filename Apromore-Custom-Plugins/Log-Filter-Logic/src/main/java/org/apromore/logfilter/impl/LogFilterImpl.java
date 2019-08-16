@@ -22,6 +22,7 @@ package org.apromore.logfilter.impl;
 
 import org.apromore.logfilter.LogFilterService;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logfilter.criteria.model.Action;
 import org.apromore.logfilter.criteria.model.Level;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
@@ -40,15 +41,17 @@ public class LogFilterImpl implements LogFilterService {
     private final XFactory factory = new XFactoryNaiveImpl();
 
     @Override
-    public XLog filter(XLog log, List<LogFilterCriterion> criteria) {
-    	if (criteria == null || criteria.isEmpty()) return log;
-    	
-        log = cloneLog(log);
+//    public XLog filter(XLog log, List<LogFilterCriterion> criteria) {
+    public XLog filter(XLog theLog, List<LogFilterCriterion> criteria) {
+    	if (criteria == null || criteria.isEmpty()) return theLog;
+//        log = cloneLog(log);
+        XLog log = (XLog) theLog.clone();
         Iterator<XTrace> traceIterator = log.iterator();
         while (traceIterator.hasNext()) { // Object order OO
             XTrace trace = traceIterator.next();
             if(criteria != null) {
                 for (int i = 0; i < criteria.size(); i++) { // Criterion order OC
+
                     LogFilterCriterion criterion = criteria.get(i);
                     if (criterion.getLevel() == Level.TRACE) {
                         if(criterion.isToRemove(trace)) { //matching & action
@@ -79,15 +82,15 @@ public class LogFilterImpl implements LogFilterService {
         return log;
     }
 
-    private XLog cloneLog(XLog log) {
-        XLog newLog = factory.createLog(log.getAttributes());
-        for (XTrace trace : log) {
-            XTrace newTrace = getXTrace(trace);
-            newLog.add(newTrace);
-        }
-
-        return newLog;
-    }
+//    private XLog cloneLog(XLog log) {
+//        XLog newLog = factory.createLog(log.getAttributes());
+//        for (XTrace trace : log) {
+//            XTrace newTrace = getXTrace(trace);
+//            newLog.add(newTrace);
+//        }
+//
+//        return newLog;
+//    }
 
     private XTrace getXTrace(XTrace trace) {
         XTrace newTrace = factory.createTrace(trace.getAttributes());

@@ -117,9 +117,17 @@ public class SplitMiner {
             transformDFGPintoBPMN();
             if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
         } catch(Exception e) {
-            System.out.println("ERROR - something went wrong translating DFG to BPMN");
+            System.out.println("ERROR - something went wrong translating DFG to BPMN, trying a second time");
             e.printStackTrace();
-            return dfgp.convertIntoBPMNDiagram();
+            try{
+                dfgp = new DirectlyFollowGraphPlus(this.log, percentileFrequencyThreshold, parallelismsThreshold, filterType, parallelismsFirst);
+                dfgp.buildSafeDFGP();
+                transformDFGPintoBPMN();
+                if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
+            } catch ( Exception ee ) {
+                System.out.println("ERROR - nothing to do, returning the bare DFGP");
+                return dfgp.convertIntoBPMNDiagram();
+            }
         }
 
         return bpmnDiagram;
@@ -141,9 +149,17 @@ public class SplitMiner {
             transformDFGPintoBPMN();
             if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
         } catch(Exception e) {
-            System.out.println("ERROR - something went wrong translating DFG to BPMN");
+            System.out.println("ERROR - something went wrong translating DFG to BPMN, trying a second time");
             e.printStackTrace();
-            return dfgp.convertIntoBPMNDiagram();
+            try{
+                dfgp = new DirectlyFollowGraphPlus(log, percentileFrequencyThreshold, parallelismsThreshold, filterType, parallelismsFirst);
+                dfgp.buildSafeDFGP();
+                transformDFGPintoBPMN();
+                if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
+            } catch ( Exception ee ) {
+                System.out.println("ERROR - nothing to do, returning the bare DFGP");
+                return dfgp.convertIntoBPMNDiagram();
+            }
         }
 
         return bpmnDiagram;
@@ -154,16 +170,30 @@ public class SplitMiner {
         dfgp.buildDFGP();
     }
 
-    public BPMNDiagram discoverFromDFGP(DirectlyFollowGraphPlus idfgp) {
+    public BPMNDiagram discoverFromDFGP(DirectlyFollowGraphPlus idfgp) throws Exception {
         this.log = idfgp.getSimpleLog();
         dfgp = idfgp;
+        transformDFGPintoBPMN();
+        if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
         try {
             transformDFGPintoBPMN();
             if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
         } catch(Exception e) {
-            System.out.println("ERROR - something went wrong translating DFG to BPMN");
-            e.printStackTrace();
-            return dfgp.convertIntoBPMNDiagram();
+//        	System.out.println("ERROR - something went wrong translating DFG to BPMN, trying a second time");
+//            e.printStackTrace();
+//            try{
+//            	dfgp.resetDFGPStructures();
+//                dfgp.buildSafeDFGP(); //recreate a safe data structure for the graph in case errors happen (the graph could be disconnected)  
+//                transformDFGPintoBPMN();
+//                if (structuringTime == SplitMinerUIResult.StructuringTime.POST) structure();
+//            } catch ( Exception ee ) {
+//                System.out.println("ERROR - nothing to do, returning the bare DFGP");
+//                return dfgp.convertIntoBPMNDiagram();
+//            }
+        	System.out.println("ERROR - something went wrong in translating DFG to BPMN");
+        	e.printStackTrace();        	
+            throw e;
+        	
         }
         return bpmnDiagram;
     }
@@ -195,22 +225,10 @@ public class SplitMiner {
         OracleItem oracleItem;
         OracleItem finalOracleItem;
         HashSet<OracleItem> oracleItems;
-
+        
 //        we retrieve the starting BPMN diagram from the DFGP,
 //        it is a DFGP with start and end events, but no gateways
         bpmnDiagram = dfgp.convertIntoBPMNDiagram();
-        
-        // Bruce: debug only
-//        try {
-//	        UIContext context = new UIContext();
-//	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-//	        UIPluginContext uiPluginContext = context.getMainPluginContext();
-//	        BpmnExportPlugin exportPlugin = new BpmnExportPlugin();
-//	        exportPlugin.export(uiPluginContext, bpmnDiagram, new File("bpmnDiagram_1.bpmn"));
-//        }
-//        catch (Exception ex) {
-//        	ex.printStackTrace();
-//        }
         
         candidateJoins = new HashMap<>();
 
@@ -303,18 +321,6 @@ public class SplitMiner {
         bondsEntries = new HashSet<>();
         rigidsEntries = new HashSet<>();
 //        System.out.println("SplitMiner - generating SESE joins ...");
-        
-        // Bruce: debug only
-//        try {
-//	        UIContext context = new UIContext();
-//	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-//	        UIPluginContext uiPluginContext = context.getMainPluginContext();
-//	        BpmnExportPlugin exportPlugin = new BpmnExportPlugin();
-//	        exportPlugin.export(uiPluginContext, bpmnDiagram, new File("bpmnDiagram_2.bpmn"));
-//        }
-//        catch (Exception ex) {
-//        	ex.printStackTrace();
-//        }
         
         while( generateSESEjoins() );
 
@@ -480,6 +486,7 @@ public class SplitMiner {
             boolean isRigid;
             Gateway.GatewayType gType;
 
+            int d = 1;
             while( !rpstBottomUpHierarchy.isEmpty() ) {
                 rpstNode = rpstBottomUpHierarchy.remove(0);
                 entry = rpstNode.getEntry().getName();
@@ -549,7 +556,7 @@ public class SplitMiner {
             System.out.println("ERROR - impossible to generate split gateways");
             return false;
         }
-
+        
 //        System.out.println("DEBUG - SESE joins placed: " + counter );
         return !changed.isEmpty();
     }
@@ -616,6 +623,20 @@ public class SplitMiner {
             else System.out.println("ERROR - diagram labels updating failed [2].");
         }
         bpmnDiagram = duplicateDiagram;
+    }
+    
+    // Bruce: for debug only
+    private void writeDiagram(BPMNDiagram d, String filename) {
+	    try {
+	        UIContext context = new UIContext();
+	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+	        UIPluginContext uiPluginContext = context.getMainPluginContext();
+	        BpmnExportPlugin exportPlugin = new BpmnExportPlugin();
+	        exportPlugin.export(uiPluginContext, d, new File(filename));
+	    }
+	    catch (Exception ex) {
+	    	ex.printStackTrace();
+	    }
     }
 
 }
