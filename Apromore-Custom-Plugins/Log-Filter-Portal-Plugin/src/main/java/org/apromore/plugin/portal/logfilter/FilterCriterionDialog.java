@@ -765,8 +765,9 @@ class FilterCriterionDialog {
 
                 listitem.addEventListener("onClick", new EventListener<Event>() {
                     public void onEvent(Event event) throws Exception {
-                        String option = filterTypeNames.get(lbxFilterType.getSelectedIndex());
-                        if(option.toLowerCase().equals("case variant")) {
+//                        String option = filterTypeNames.get(lbxFilterType.getSelectedIndex());
+                        String option = filterTypeCodes.get(lbxFilterType.getSelectedIndex());
+                        if(option.toLowerCase().equals("case:variant")) {
                             if(lbxValue.getSelectedItems() != null && lbxValue.getSelectedItem()!= null) {
                                 lbxItemDetail.getItems().clear();
                                 String vIdString = listcell1.getLabel();
