@@ -275,7 +275,7 @@ class FilterCriterionDialog {
         /**
          * Set direct follow relation: 'TO' values
          */
-        Map<String, Set<String>> dtFollowMap =  filterCriterionSelector.getEventualFollowMap();
+        Map<String, Set<String>> dtFollowMap =  filterCriterionSelector.getDirectFollowMap();
         Set<String> uniqueFollowMap = new HashSet<String>();
         for(String key : dtFollowMap.keySet()) {
             Set<String> fSet = dtFollowMap.get(key);
