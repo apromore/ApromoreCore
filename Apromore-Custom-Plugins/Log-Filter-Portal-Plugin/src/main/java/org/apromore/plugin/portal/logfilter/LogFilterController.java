@@ -92,6 +92,14 @@ class LogFilterController {
 								List<LogFilterCriterion> originalCriteria, 
 								LogStatistics logStats,
 								LogFilterResultListener resultListener) throws IOException {
+        /**
+         * Get the log with case-variant values
+         */
+        this.log = logStats.getLog();
+        this.directFollowMap = logStats.getDirectFollowMap();
+        this.eventualFollowMap = logStats.getEventualFollowMap();
+        this.variantEventsMap = logStats.getVariantEventsMap();
+        
     	this.logFilterService = logFilterService;
     	this.logFilterCriterionFactory = logFilterCriterionFactory;
     	this.resultListener = resultListener;
