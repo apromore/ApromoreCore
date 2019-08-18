@@ -36,8 +36,9 @@
                     <grid>
                         <rows>
                             <row>
-                                <radio id="levelEvent" label="Event" selected="true" />
                                 <radio id="levelTrace" label="Trace" selected="true"/>
+                                <radio id="levelEvent" label="Event"/>
+
                                 <!--                        <button id="btCloseWindow" iconSclass="z-icon-times" style="width:21px; height:18px; padding:0px;"/>-->
                             </row>
                         </rows>

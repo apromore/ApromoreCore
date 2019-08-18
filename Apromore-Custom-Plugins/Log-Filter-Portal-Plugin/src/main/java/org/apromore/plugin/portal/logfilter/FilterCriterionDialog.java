@@ -54,6 +54,9 @@ class FilterCriterionDialog {
     private Radiogroup containment;
     private Radiogroup action;
 
+    private Radio levelTrace;
+    private Radio levelEvent;
+
     private Grid gridContainment;
     private Grid gridTimeframe;
     private Grid gridDuration;
@@ -159,6 +162,9 @@ class FilterCriterionDialog {
         gridContainment = (Grid) createFilterCriterionW.getFellow("gridContainment");
         gridTimeframe = (Grid) createFilterCriterionW.getFellow("gridTimeframe");
         gridTimeframe.setVisible(false);
+
+        levelTrace = (Radio) createFilterCriterionW.getFellow("levelTrace");
+        levelEvent = (Radio) createFilterCriterionW.getFellow("levelEvent");
 
         Calendar c = Calendar.getInstance();
         c.setTime(new Date(min));
@@ -336,7 +342,9 @@ class FilterCriterionDialog {
     	// If an existing Filter Criterion is provided, set form field values to those in the Filter Criterion 
         if(pos != -1) {
             LogFilterCriterion criterion = criteria.get(pos);
-            level.setSelectedIndex(criterion.getLevel()== Level.EVENT ? 0 : 1);
+//            level.setSelectedIndex(criterion.getLevel()== Level.EVENT ? 0 : 1);
+            if(criterion.getLevel()== Level.EVENT) level.setSelectedItem(levelEvent);
+            else level.setSelectedItem(levelTrace);
             containment.setSelectedIndex(criterion.getContainment() == Containment.CONTAIN_ANY ? 0 : 1);
             action.setSelectedIndex(criterion.getAction() == Action.RETAIN ? 0 : 1);
             
@@ -442,7 +450,8 @@ class FilterCriterionDialog {
 
         detailView.setVisible(false);
 
-        if(level.getSelectedIndex() == 0) { // Event Level
+//        if(level.getSelectedIndex() == 0) { // Event Level
+        if(level.getSelectedItem().equals(levelEvent)) {
             if(lbxFilterType.getSelectedIndex() >= 0) {
             	Type type = LogFilterTypeSelector.getType(filterTypeCodes.get(lbxFilterType.getSelectedIndex()));
                 switch (type) {
@@ -472,6 +481,9 @@ class FilterCriterionDialog {
             containment.setStyle("background-color: #D3D3D3;");
         }else { //Trace Level
             okButton.setDisabled(false);
+            duration.setDisabled(true);
+            durationUnits.setDisabled(true);
+            gridDuration.setVisible(false);
         	
             if(lbxFilterType.getSelectedIndex() >= 0) {
             	boolean eventInvalid = !LogFilterTypeSelector.isValidCode(filterTypeCodes.get(lbxFilterType.getSelectedIndex()), Level.EVENT);
@@ -613,12 +625,15 @@ class FilterCriterionDialog {
                         }
                     }
                 }
-                
+
+
+
                 if (set.size() > 0) {
                     LogFilterCriterion criterion = logFilterCriterionFactory.getLogFilterCriterion(
                             action.getSelectedIndex() == 0 ? Action.RETAIN : Action.REMOVE,
                             containment.getSelectedIndex() == 0 ? Containment.CONTAIN_ANY : Containment.CONTAIN_ALL,
-                            level.getSelectedIndex() == 0 ? Level.EVENT : Level.TRACE,
+//                            level.getSelectedIndex() == 0 ? Level.EVENT : Level.TRACE,
+                            getLevel(level),
                             label,
                             option,
                             set
@@ -807,7 +822,9 @@ class FilterCriterionDialog {
     }
     
     private Level getLevel(Radiogroup level) {
-    	return level.getSelectedIndex() == 0 ? Level.EVENT : Level.TRACE;
+//    	return level.getSelectedIndex() == 0 ? Level.EVENT : Level.TRACE;
+    	if(level.getSelectedItem().equals(levelEvent)) return Level.EVENT;
+    	else return Level.TRACE;
     }
     
     private boolean isStandard(String filterType) {

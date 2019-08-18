@@ -253,6 +253,14 @@ class LogFilterController {
                     label = "Retain all traces containing the Direct Follow Relation " + d;
                 }
             }
+            if(label.contains("Eventually Follow Relation")) {
+                String d = label.substring(label.indexOf("["));
+                if(label.contains("Remove")) {
+                    label = "Remove all traces containing the Eventually Follow Relation " + d;
+                }else {
+                    label = "Retain all traces containing the Eventually Follow Relation " + d;
+                }
+            }
             model.add(label);
         }
         criteriaList.setModel(model);
