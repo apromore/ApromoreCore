@@ -33,8 +33,9 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.UserSessionManager;
-
 import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.service.ProcessService;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -160,6 +161,8 @@ public class SaveAsDialogController extends BaseController {
     }
 
     protected void saveModel(boolean isNormalSave) throws Exception {
+        ProcessService processService = (ProcessService) SpringUtil.getBean("processService");
+
         String userName = UserSessionManager.getCurrentUser().getUsername();
         String nativeType = this.editSession.getNativeType();
         String versionName = this.version.getName();
@@ -168,7 +171,7 @@ public class SaveAsDialogController extends BaseController {
         Integer processId = this.process.getId();
         String created = this.version.getCreationDate();
         String branch = this.branchName.getText();
-        boolean makePublic = this.process.isMakePublic();
+        boolean makePublic = processService.isPublicProcess(processId);
         String versionNo = versionNumber.getText();
 
         if (branch == null || branch.equals("")) {
