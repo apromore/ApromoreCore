@@ -305,10 +305,10 @@ CREATE TABLE membership
    userId int NOT NULL,
    password varchar(100) NOT NULL,
    password_salt varchar(100) NOT NULL,
-   mobile_pin varchar(100),
+   mobile_pin varchar(100) DEFAULT NULL,
    email varchar(200) NOT NULL,
-   password_question varchar(50) NOT NULL,
-   password_answer varchar(50) NOT NULL,
+   password_question varchar(50) DEFAULT NULL,
+   password_answer varchar(50) DEFAULT NULL,
    is_approved bit DEFAULT 1 NOT NULL,
    is_locked bit DEFAULT 1 NOT NULL,
    date_created timestamp NOT NULL,
@@ -568,8 +568,14 @@ CREATE TABLE user_group
 (
    userId int NOT NULL,
    groupId int NOT NULL,
-   PRIMARY KEY (userId,groupId)
+   PRIMARY KEY (userId,groupId),
 )
+;
+ALTER TABLE user_group
+ADD CONSTRAINT fk_user_group_user FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
+;
+ALTER TABLE user_group
+ADD CONSTRAINT fk_user_group_group FOREIGN KEY (groupId) REFERENCES "group"(id) ON DELETE CASCADE ON UPDATE CASCADE
 ;
 CREATE TABLE user_role
 (
