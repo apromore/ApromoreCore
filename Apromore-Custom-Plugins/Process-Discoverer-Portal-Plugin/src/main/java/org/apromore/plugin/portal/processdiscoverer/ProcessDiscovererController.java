@@ -96,6 +96,10 @@ import org.apromore.logfilter.criteria.model.Level;
 
 /**
  * Initialization: after the window has been loaded, the ZK client engine will send onLoaded event to the main window 
+ * TODO: as this is open in a separate browser tab with a different ZK execution from that of the portal,
+ * if the user signs out of the portal tab, the actions in this plugin calling to the portal session would fail
+ * Similarly, this plugin stores the containing folder on the portal to a local variable. So if the user deletes or
+ * move that folder in the portal, the related actions here would fail.   
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Modified by Simon Rabozi for SiMo
  * Modified by Bruce Nguyen
@@ -226,6 +230,9 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     
     private SummaryType selection = null;
     
+    private int containingFolderId = 0;
+    private String containingFolderName = "";
+    
     public ProcessDiscovererController() throws Exception {
     	super();
     }
@@ -254,14 +261,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         portalContext = (PortalContext)session.get("context");
         primaryType = (VisualizationType)session.get("visType");
         selection = (SummaryType)session.get("selection");
-        
-//        if (portalContext.getCurrentUser() == null) {
-//            LOGGER.warn("Faking user session with admin(!)");
-//            UserType user = new UserType();
-//            user.setId("8");
-//            user.setUsername("admin");
-//            UserSessionManager.setCurrentUser(user);
-//        }
+        containingFolderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+        containingFolderName = portalContext.getCurrentFolder() == null ? "Home" : portalContext.getCurrentFolder().getFolderName();
         
         primaryAggregation = (primaryType == FREQUENCY) ? VisualizationAggregation.CASES : VisualizationAggregation.MEAN;
         logSummary = (LogSummaryType) selection;
@@ -1331,6 +1332,14 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     	return this.log_name;
     }
     
+    public int getContainingFolderId() {
+    	return this.containingFolderId;
+    }
+    
+    public String getContainingFolderName() {
+    	return this.containingFolderName;
+    }
+    
     public void setFilteredLog(XLog filtered_log) {
     	this.filtered_log = filtered_log;
     }
@@ -1681,14 +1690,15 @@ public class ProcessDiscovererController extends BaseController implements LogFi
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             eventLogService.exportToStream(outputStream, filtered_log);
 
-            int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+            //int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
 
-            eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
+            eventLogService.importLog(portalContext.getCurrentUser().getUsername(), containingFolderId,
                     logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     logSummary.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     false);
             
-            Messagebox.show("A new log named '" + logName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
+            //Messagebox.show("A new log named '" + logName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
+            Messagebox.show("A new log named '" + logName + "' has been saved in the '" + this.containingFolderName + "' folder.");
 
             portalContext.refreshContent();
         } catch (Exception e) {

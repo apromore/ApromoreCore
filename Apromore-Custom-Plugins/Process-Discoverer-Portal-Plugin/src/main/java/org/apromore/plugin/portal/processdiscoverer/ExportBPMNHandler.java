@@ -237,7 +237,7 @@ public class ExportBPMNHandler implements EventListener<Event> {
 				        domainCB.setAttribute("hflex", "1");
 
 				        controller.getProcessService().importProcess(user,
-				        		portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),
+				        		portalContext.getCurrentFolder() == null ? 0 : controller.getContainingFolderId(), //portalContext.getCurrentFolder().getId(),
 				        		modelName,
 				                version,
 				                "BPMN 2.0",
@@ -247,7 +247,7 @@ public class ExportBPMNHandler implements EventListener<Event> {
 				                now,  // creation timestamp
 				                now,  // last update timestamp
 				                publicModel);
-				        Messagebox.show("A new BPMN model named '" + modelName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
+				        Messagebox.show("A new BPMN model named '" + modelName + "' has been saved in the '" + controller.getContainingFolderName() + "' folder."); //portalContext.getCurrentFolder().getFolderName() + "' folder.");
 				        portalContext.refreshContent();
 					}
             	}
