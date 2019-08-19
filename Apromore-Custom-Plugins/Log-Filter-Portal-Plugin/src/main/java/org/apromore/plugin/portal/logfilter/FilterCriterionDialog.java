@@ -473,6 +473,7 @@ class FilterCriterionDialog {
             duration.setDisabled(true);
             durationUnits.setDisabled(true);
             gridDuration.setVisible(false);
+            gridTimeframe.setVisible(false);
 
             for(Radio radio : containment.getItems()) {
                 radio.setDisabled(true);
@@ -480,7 +481,11 @@ class FilterCriterionDialog {
             /**
              * 2019-09-16
              */
-            gridContainment.setVisible(false);
+//            gridContainment.setVisible(false);
+            for(Radio radio : containment.getItems()) {
+                radio.setDisabled(true);
+                radio.setStyle("color:#CCC");
+            }
 
             containment.setStyle("background-color: #D3D3D3;");
         }else { //Trace Level
@@ -488,6 +493,7 @@ class FilterCriterionDialog {
             duration.setDisabled(true);
             durationUnits.setDisabled(true);
             gridDuration.setVisible(false);
+            gridTimeframe.setVisible(false);
         	
             if(lbxFilterType.getSelectedIndex() >= 0) {
             	boolean eventInvalid = !LogFilterTypeSelector.isValidCode(filterTypeCodes.get(lbxFilterType.getSelectedIndex()), Level.EVENT);
@@ -495,9 +501,17 @@ class FilterCriterionDialog {
                     radio.setDisabled(eventInvalid);
                 }
             	if(eventInvalid) {
-            	    gridContainment.setVisible(false);
+//            	    gridContainment.setVisible(false);
+                    for(Radio radio : containment.getItems()) {
+                        radio.setDisabled(true);
+                        radio.setStyle("color:#CCC");
+                    }
                 }else{
-            	    gridContainment.setVisible(true);
+//            	    gridContainment.setVisible(true);
+                    for(Radio radio : containment.getItems()) {
+                        radio.setDisabled(false);
+                        radio.setStyle("color:#333");
+                    }
                 }
                 containment.setStyle(eventInvalid ? "background-color: #D3D3D3;" : "transparent;");
                 
@@ -511,6 +525,7 @@ class FilterCriterionDialog {
                         break;
                 	case TIME_TIMESTAMP:
                 		okButton.setDisabled(false);
+                        gridTimeframe.setVisible(true);
                 		break;
                 	case TIME_DURATION: 
                 		duration.setDisabled(false);
@@ -525,7 +540,11 @@ class FilterCriterionDialog {
                 for (Radio radio : containment.getItems()) {
                     radio.setDisabled(false);
                 }
-                gridContainment.setVisible(true);
+//                gridContainment.setVisible(true);
+                for(Radio radio : containment.getItems()) {
+                    radio.setDisabled(false);
+                    radio.setStyle("color:#333");
+                }
             	okButton.setDisabled(true);
             }
         }
