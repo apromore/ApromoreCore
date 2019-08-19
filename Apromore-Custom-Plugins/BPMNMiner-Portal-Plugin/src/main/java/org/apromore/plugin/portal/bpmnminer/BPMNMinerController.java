@@ -129,6 +129,15 @@ public class BPMNMinerController {
     private final EventLogService eventLogService;
     private final InfrequentBehaviourFilterService infrequentBehaviourFilterService;
     private final UserInterfaceHelper userInterfaceHelper;
+    
+    private static final String EVENT_QUEUE = BPMNMinerController.class.getCanonicalName(); //"EVENT_QUEUE";  
+    private static final String CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
+    private static final String CHANGE_FRACTION_COMPLETE = "CHANGE_FRACTION_COMPLETE";
+    private static final String MINING_COMPLETE = "MINING_COMPLETE";
+    private static final String MINING_EXCEPTION = "MINING_EXCEPTION";
+    private static final String ANNOTATION_EXCEPTION = "ANNOTATION_EXCEPTION";
+    private EventQueue<Event> eventQueue = EventQueues.lookup(EVENT_QUEUE, EventQueues.SESSION, true);
+    private EventListener<Event> miningEventListener = null;
 
     public BPMNMinerController(PortalContext portalContext,
                                BIMPAnnotationService bimpAnnotationService,
@@ -382,14 +391,6 @@ public class BPMNMinerController {
         mineAndSave(new ArrayList<String>(), new HashMap<Set<String>, Set<String>>());
     }
 
-    private static final String EVENT_QUEUE = "EVENT_QUEUE";
-    private static final String CHANGE_DESCRIPTION = "CHANGE_DESCRIPTION";
-    private static final String CHANGE_FRACTION_COMPLETE = "CHANGE_FRACTION_COMPLETE";
-    private static final String MINING_COMPLETE = "MINING_COMPLETE";
-    private static final String MINING_EXCEPTION = "MINING_EXCEPTION";
-    private static final String ANNOTATION_EXCEPTION = "ANNOTATION_EXCEPTION";
-    private EventQueue<Event> eventQueue = EventQueues.lookup(EVENT_QUEUE, EventQueues.SESSION, true);
-
     private void mineAndSave(List<String> listCandidates, Map<Set<String>, Set<String>> group) {
 
         Window window;
@@ -416,7 +417,7 @@ public class BPMNMinerController {
 
         window.doModal();
 
-        EventListener<Event> eventListener = new EventListener<Event>() {
+        miningEventListener = new EventListener<Event>() {
             public void onEvent(Event event) throws Exception {
                 switch (event.getName()) {
                 case CHANGE_DESCRIPTION:
@@ -435,6 +436,7 @@ public class BPMNMinerController {
 
                     } catch (Exception e) {
                         e.printStackTrace();
+                        eventQueue.unsubscribe(miningEventListener); 
                         Messagebox.show("Process mining failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
 
                     }
@@ -453,9 +455,11 @@ public class BPMNMinerController {
                     Messagebox.show("Unable to annotate BPMN model for BIMP simulation (" + e2.getMessage() + ")\n\nModel will be created without annotations.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
                     break;
                 }
+                
+                eventQueue.unsubscribe(miningEventListener); 
             }
         };
-        eventQueue.subscribe(eventListener);
+        eventQueue.subscribe(miningEventListener);
 
         new Thread() {
             public void run() {
@@ -467,7 +471,9 @@ public class BPMNMinerController {
                     e.printStackTrace();
                     eventQueue.publish(new Event(MINING_EXCEPTION, null, e));
                 }
-                eventQueue.unsubscribe(eventListener);
+                // Do not do this: call unsubscribe in another thread will not be successful
+                // because Executions.getCurrent() will be null
+                //eventQueue.unsubscribe(eventListener); 
             }
         }.start();
     }
@@ -516,7 +522,7 @@ public class BPMNMinerController {
         Version version = new Version(1, 0);
         Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
         String now = DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString();
-        boolean publicModel = true;
+        boolean publicModel = false;
             
         ProcessModelVersion pmv = processService.importProcess(user,
             portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId(),

@@ -203,7 +203,7 @@ class FilterCriterionDialog {
 
 
         lbxValue = (Listbox) createFilterCriterionW.getFellow("lbxValue");
-
+        lbxValue.setVisible(false);
 //        Listheader frequency_header = (Listheader) createFilterCriterionW.getFellow("frequency_header");
 //        frequency_header.setSortAscending(new NumberComparator(true, 1));
 //        frequency_header.setSortDescending(new NumberComparator(false, 1));
@@ -365,6 +365,7 @@ class FilterCriterionDialog {
 //            setValues(attribute_index);
             lbxFilterType.setSelectedIndex(attribute_index);
             setValues(lbxFilterType.getSelectedItem());
+            lbxValue.setVisible(false);
 
             if (LogFilterTypeSelector.getType(a) == Type.TIME_TIMESTAMP) {
                 Long start = null;
@@ -379,6 +380,7 @@ class FilterCriterionDialog {
                 dateBxEndDate.setValue(new Date(end));
                 dateBxEndDate.setDisabled(false);
                 gridTimeframe.setVisible(true);
+                lbxValue.setVisible(false);
             }else if (LogFilterTypeSelector.getType(a) == Type.TIME_DURATION) {
                 String d = null;
                 for (String v : criterion.getValue()) {
@@ -442,6 +444,7 @@ class FilterCriterionDialog {
                 for(Listitem listitem : lbxValue.getItems()) {
                     if(criterion.getValue().contains(listitem.getLabel())) listitem.setSelected(true);
                 }
+                lbxValue.setVisible(true);
             }
         }
     }
@@ -464,11 +467,13 @@ class FilterCriterionDialog {
             }
             else {
             	okButton.setDisabled(true);
+                lbxValue.setVisible(false);
             }
             
             duration.setDisabled(true);
             durationUnits.setDisabled(true);
             gridDuration.setVisible(false);
+            gridTimeframe.setVisible(false);
 
             for(Radio radio : containment.getItems()) {
                 radio.setDisabled(true);
@@ -476,7 +481,11 @@ class FilterCriterionDialog {
             /**
              * 2019-09-16
              */
-            gridContainment.setVisible(false);
+//            gridContainment.setVisible(false);
+            for(Radio radio : containment.getItems()) {
+                radio.setDisabled(true);
+                radio.setStyle("color:#CCC");
+            }
 
             containment.setStyle("background-color: #D3D3D3;");
         }else { //Trace Level
@@ -484,6 +493,7 @@ class FilterCriterionDialog {
             duration.setDisabled(true);
             durationUnits.setDisabled(true);
             gridDuration.setVisible(false);
+            gridTimeframe.setVisible(false);
         	
             if(lbxFilterType.getSelectedIndex() >= 0) {
             	boolean eventInvalid = !LogFilterTypeSelector.isValidCode(filterTypeCodes.get(lbxFilterType.getSelectedIndex()), Level.EVENT);
@@ -491,9 +501,17 @@ class FilterCriterionDialog {
                     radio.setDisabled(eventInvalid);
                 }
             	if(eventInvalid) {
-            	    gridContainment.setVisible(false);
+//            	    gridContainment.setVisible(false);
+                    for(Radio radio : containment.getItems()) {
+                        radio.setDisabled(true);
+                        radio.setStyle("color:#CCC");
+                    }
                 }else{
-            	    gridContainment.setVisible(true);
+//            	    gridContainment.setVisible(true);
+                    for(Radio radio : containment.getItems()) {
+                        radio.setDisabled(false);
+                        radio.setStyle("color:#333");
+                    }
                 }
                 containment.setStyle(eventInvalid ? "background-color: #D3D3D3;" : "transparent;");
                 
@@ -507,6 +525,7 @@ class FilterCriterionDialog {
                         break;
                 	case TIME_TIMESTAMP:
                 		okButton.setDisabled(false);
+                        gridTimeframe.setVisible(true);
                 		break;
                 	case TIME_DURATION: 
                 		duration.setDisabled(false);
@@ -521,7 +540,11 @@ class FilterCriterionDialog {
                 for (Radio radio : containment.getItems()) {
                     radio.setDisabled(false);
                 }
-                gridContainment.setVisible(true);
+//                gridContainment.setVisible(true);
+                for(Radio radio : containment.getItems()) {
+                    radio.setDisabled(false);
+                    radio.setStyle("color:#333");
+                }
             	okButton.setDisabled(true);
             }
         }
@@ -673,12 +696,14 @@ class FilterCriterionDialog {
          * Change header label based on the option
          */
         if(LogFilterTypeSelector.getType(filterCode) == Type.CASE_VARIANT) {
+            lbxValue.setVisible(true);
             lhValue1.setLabel("Case variant ID");
             lhValue2.setLabel("Cases");
             lhValue3.setLabel("Frequency");
             lbxValue.setMold("paging");
             lbxValue.setAutopaging(true);
         }else{
+            lbxValue.setVisible(false);
             lhValue1.setLabel("Value");
             lhValue2.setLabel("Frequency");
             lhValue3.setLabel("Relative frequency");
@@ -703,6 +728,7 @@ class FilterCriterionDialog {
         if (LogFilterTypeSelector.getType(filterCode) == Type.TIME_TIMESTAMP) {
             //value.setModel(modelValue);
             lbxValue.getItems().clear();
+            lbxValue.setVisible(false);
             dateBxStartDate.setDisabled(false);
             dateBxEndDate.setDisabled(false);
             gridTimeframe.setVisible(true);
@@ -712,6 +738,7 @@ class FilterCriterionDialog {
         }else if (LogFilterTypeSelector.getType(filterCode) == Type.TIME_DURATION) {
             // value.setModel(modelValue);
             lbxValue.getItems().clear();
+            lbxValue.setVisible(false);
             dateBxStartDate.setDisabled(true);
             dateBxEndDate.setDisabled(true);
             gridTimeframe.setVisible(false);
@@ -736,6 +763,7 @@ class FilterCriterionDialog {
             set = options_frequency.get(filterCode).keySet(); // list of values
 
             lbxValue.getItems().clear();
+
             double total = 0;
             for (String option_value : set) {
                 total += options_frequency.get(filterCode).get(option_value); // calculate total frequency
@@ -811,6 +839,7 @@ class FilterCriterionDialog {
 
             lbxValue.setCheckmark(true);
             lbxValue.setMultiple(true);
+            lbxValue.setVisible(true);
 
             //value.selectAll();
             //modelValue.setMultiple(true);
