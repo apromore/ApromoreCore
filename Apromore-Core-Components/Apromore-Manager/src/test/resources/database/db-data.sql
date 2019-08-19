@@ -67,7 +67,6 @@ INSERT INTO `user_group` VALUES (8,8),(8,9);
 INSERT INTO `user_group` VALUES (10,10),(10,9);
 INSERT INTO `user_group` VALUES (11,11),(11,9);
 INSERT INTO `user_group` VALUES (12,12),(12,9);
-INSERT INTO `user_group` VALUES (13,13),(13,9);
 
 
 INSERT INTO user_role VALUES (1,1);
