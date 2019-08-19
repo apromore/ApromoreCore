@@ -74,8 +74,8 @@ public class LogFilterTypeSelector {
     static {
 		codeNameMap.put("concept:name", "Activity");
 		codeNameMap.put("case:variant", "Case variant");
-		codeNameMap.put("direct:follow", "Direct follow relation");
-		codeNameMap.put("eventually:follow", "Eventually follow relation");
+		codeNameMap.put("direct:follow", "Directly-follows relation");
+		codeNameMap.put("eventually:follow", "Eventually-follows relation");
 		codeNameMap.put("lifecycle:transition", "State");
 		codeNameMap.put("org:group", "Resource group");
 		codeNameMap.put("org:resource", "Resource");

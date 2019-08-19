@@ -48,8 +48,8 @@
                     <grid id="gridContainment">
                         <rows>
                             <row>
-                                <radio id="containsAny" label="Contains Any" selected="true" disabled="true"/>
-                                <radio id="containsAll" label="Contains All" disabled="true"/>
+                                <radio id="containsAny" label="Contains any event" selected="true" disabled="true"/>
+                                <radio id="containsAll" label="Contains all events" disabled="true"/>
                             </row>
                         </rows>
                     </grid>
@@ -105,24 +105,24 @@
                 <hlayout id="hlDFollow" vflex="1" visible="false" style="border:0px solid #6DF;">
                     <listbox id="lbxDFollowFrom" vflex="true" hflex="true" checkmark="true" multiple="true">
                         <listhead>
-                            <listheader label="From" sort="auto"/>
+                            <listheader id="lhDFollowFrom" label="From" sort="auto"/>
                         </listhead>
                     </listbox>
                     <listbox id="lbxDFollowTo" vflex="true" hflex="true" checkmark="true" multiple="true">
                         <listhead>
-                            <listheader label="To" sort="auto"/>
+                            <listheader id="lhDFollowTo" label="To" sort="auto"/>
                         </listhead>
                     </listbox>
                 </hlayout>
                 <hlayout id="hlEFollow" vflex="1" visible="false" style="border:0px solid #6DF;">
                     <listbox id="lbxEFollowFrom" vflex="true" hflex="true" checkmark="true" multiple="true">
                         <listhead>
-                            <listheader label="From" sort="auto"/>
+                            <listheader id="lhEFollowFrom" label="From" sort="auto"/>
                         </listhead>
                     </listbox>
                     <listbox id="lbxEFollowTo" vflex="true" hflex="true" checkmark="true" multiple="true">
                         <listhead>
-                            <listheader label="To" sort="auto"/>
+                            <listheader id="lhEFollowTo" label="To" sort="auto"/>
                         </listhead>
                     </listbox>
                 </hlayout>

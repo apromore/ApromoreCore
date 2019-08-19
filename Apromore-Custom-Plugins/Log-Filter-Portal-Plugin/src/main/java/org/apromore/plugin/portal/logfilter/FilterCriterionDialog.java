@@ -97,10 +97,14 @@ class FilterCriterionDialog {
     private Listheader lhValue3;
 
     private Hlayout hlDFollow;
+    private Listheader lhDFollowFrom;
+    private Listheader lhDFollowTo;
     private Listbox lbxDFollowFrom;
     private Listbox lbxDFollowTo;
 
     private Hlayout hlEFollow;
+    private Listheader lhEFollowFrom;
+    private Listheader lhEFollowTo;
     private Listbox lbxEFollowFrom;
     private Listbox lbxEFollowTo;
 
@@ -212,10 +216,14 @@ class FilterCriterionDialog {
 //        percentage_header.setSortDescending(new NumberComparator(false, 1));
 
         lbxDFollowFrom = (Listbox) createFilterCriterionW.getFellow("lbxDFollowFrom");
+        lhDFollowFrom = (Listheader) createFilterCriterionW.getFellow("lhDFollowFrom");
+        lhDFollowTo = (Listheader) createFilterCriterionW.getFellow("lhDFollowTo");
         lbxDFollowTo = (Listbox) createFilterCriterionW.getFellow("lbxDFollowTo");
         hlDFollow = (Hlayout) createFilterCriterionW.getFellow("hlDFollow");
 
         lbxEFollowFrom = (Listbox) createFilterCriterionW.getFellow("lbxEFollowFrom");
+        lhEFollowFrom = (Listheader) createFilterCriterionW.getFellow("lhEFollowFrom");
+        lhEFollowTo = (Listheader) createFilterCriterionW.getFellow("lhEFollowTo");
         lbxEFollowTo = (Listbox) createFilterCriterionW.getFellow("lbxEFollowTo");
         hlEFollow = (Hlayout) createFilterCriterionW.getFellow("hlEFollow");
 
@@ -277,6 +285,9 @@ class FilterCriterionDialog {
         }
         lbxDFollowFrom.setMultiple(true);
         lbxDFollowFrom.setCheckmark(true);
+//        lhDFollowFrom.setSortAscending(new StringComparator(true, 0));
+
+        lhDFollowFrom.setSort("auto");
 
         /**
          * Set direct follow relation: 'TO' values
@@ -302,6 +313,9 @@ class FilterCriterionDialog {
         }
         lbxDFollowTo.setMultiple(true);
         lbxDFollowTo.setCheckmark(true);
+//        lhDFollowTo.setSortAscending(new StringComparator(true, 0));
+
+        lhDFollowTo.setSort("auto");
 
         /**
          * Set eventually follow relation: 'FROM' values
@@ -316,7 +330,8 @@ class FilterCriterionDialog {
         }
         lbxEFollowFrom.setMultiple(true);
         lbxEFollowFrom.setCheckmark(true);
-
+//        lhEFollowFrom.setSortAscending(new StringComparator(true, 0));
+        lhEFollowFrom.setSort("auto");
         /**
          * Set eventually follow relation: 'TO' values
          */
@@ -336,7 +351,8 @@ class FilterCriterionDialog {
         }
         lbxEFollowTo.setMultiple(true);
         lbxEFollowTo.setCheckmark(true);
-
+//        lhEFollowTo.setSortAscending(new StringComparator(true, 0));
+        lhEFollowTo.setSort("auto");
 
 
     	// If an existing Filter Criterion is provided, set form field values to those in the Filter Criterion 
@@ -473,7 +489,7 @@ class FilterCriterionDialog {
             duration.setDisabled(true);
             durationUnits.setDisabled(true);
             gridDuration.setVisible(false);
-            gridTimeframe.setVisible(false);
+//            gridTimeframe.setVisible(false);
 
             for(Radio radio : containment.getItems()) {
                 radio.setDisabled(true);

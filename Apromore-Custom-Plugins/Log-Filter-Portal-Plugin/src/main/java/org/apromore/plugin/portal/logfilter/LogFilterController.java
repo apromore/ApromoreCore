@@ -23,8 +23,7 @@ package org.apromore.plugin.portal.logfilter;
 import org.apromore.logfilter.LogFilterService;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
-import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
-import org.apromore.logfilter.criteria.model.Type;
+import org.apromore.logfilter.criteria.model.*;
 import org.apromore.plugin.portal.PortalContext;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XLog;
@@ -236,6 +235,21 @@ class LogFilterController {
                         + (new Date(Long.parseLong(s))).toString()
                         + " and "
                         + (new Date(Long.parseLong(e))).toString();
+                if(criterion.getLevel() == Level.TRACE) {
+                    if(criterion.getAction() == Action.RETAIN) {
+                        if(criterion.getContainment()== Containment.CONTAIN_ANY) {
+                            label = "Retain all traces containing an event whose Timestamp is between "
+                                    + (new Date(Long.parseLong(s))).toString()
+                                    + " and "
+                                    + (new Date(Long.parseLong(e))).toString();
+                        }else if(criterion.getContainment()== Containment.CONTAIN_ALL) {
+                            label = "Retain all traces where all events have Timestamp between "
+                                    + (new Date(Long.parseLong(s))).toString()
+                                    + " and "
+                                    + (new Date(Long.parseLong(e))).toString();
+                        }
+                    }
+                }
             }
             if(label.contains("Duration")) {
                 String d = label.substring(label.indexOf(">") + 1, label.indexOf("]"));
@@ -245,20 +259,20 @@ class LogFilterController {
                     label = "Retain all traces with a Duration greater than " + d; //TimeConverter.stringify(d);
                 }
             }
-            if(label.contains("Direct Follow Relation")) {
+            if(label.contains("Directly-follows relation")) {
                 String d = label.substring(label.indexOf("["));
                 if(label.contains("Remove")) {
-                    label = "Remove all traces containing the Direct Follow Relation " + d;
+                    label = "Remove all traces containing the direct follow relation " + d;
                 }else {
-                    label = "Retain all traces containing the Direct Follow Relation " + d;
+                    label = "Retain all traces which have a directly-follows relation equal to " + d;
                 }
             }
-            if(label.contains("Eventually Follow Relation")) {
+            if(label.contains("Eventually-follows relation")) {
                 String d = label.substring(label.indexOf("["));
                 if(label.contains("Remove")) {
-                    label = "Remove all traces containing the Eventually Follow Relation " + d;
+                    label = "Remove all traces containing the eventually follow relation " + d;
                 }else {
-                    label = "Retain all traces containing the Eventually Follow Relation " + d;
+                    label = "Retain all traces which have an eventually-follows relation equal to " + d;
                 }
             }
             model.add(label);
