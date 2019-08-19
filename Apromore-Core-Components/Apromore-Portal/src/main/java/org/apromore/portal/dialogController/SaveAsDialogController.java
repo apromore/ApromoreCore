@@ -141,6 +141,7 @@ public class SaveAsDialogController extends BaseController {
             this.branchName.setText("MAIN");
             this.branchName.setReadonly(true);
             this.versionNumber.setText("1.0");
+            this.modelName.setText(this.modelName.getText() + "_new"); //18.08: add to make it a new name
         }
 
         this.saveAsW.doModal();
@@ -194,6 +195,17 @@ public class SaveAsDialogController extends BaseController {
                     getService().updateProcess(editSession.hashCode(), userName, nativeType, processId, domain, process.getName(),
                             editSession.getOriginalBranchName(), branch, versionNo, originalVersionNumber, versionName, is);
                 }
+                
+                // 18.08: update current version number to ensure it will be always auto-increment
+                // It seems that original version number and current version number are set 
+                // to the same version number all the times (see MainController.createEditSession())
+                // However, the design here is not completely safe when setting attributes of editSession manually.
+                // For example, the lastUpdate information is not available 
+                // The updateProcess() method should return a successfully saved VersionSummaryType
+                editSession.setOriginalVersionNumber(versionNo);
+                editSession.setCurrentVersionNumber(versionNo);
+                originalVersionNumber = versionNo;
+                
                 Messagebox.show("Saved Successfully!", "Save", Messagebox.OK, Messagebox.INFORMATION);
                 qe.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
                 closePopup();
