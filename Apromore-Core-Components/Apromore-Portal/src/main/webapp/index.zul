@@ -191,7 +191,7 @@
             </center>
         </borderlayout>
 
-        <ShortMessages id="shortmessagescomp" />
+        <ShortMessages id="shortmessagescomp" hide="true"  />
     </window>
 
     <!-- Following script improves performance of listbox dropdown display time-->
