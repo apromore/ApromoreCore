@@ -152,7 +152,9 @@ public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
                 if(containment == Containment.CONTAIN_ANY) {
                     string += "containing an event where attribute " + attribute + " is equal to " + values;
                 }else {
-                    string += "where attribute " + attribute + " is equal to " + values + " for all events";
+//                    string += "where attribute " + attribute + " is equal to " + values + " for all events";
+                    //2019-08-20 : Chii
+                    string += "where all events have attribute " + attribute + " equal to " + values + " for all events";
                 }
             }
         }
