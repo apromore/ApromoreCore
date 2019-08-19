@@ -120,46 +120,47 @@ public class LogStatistics {
             }
 
             /**
-             * Calculating Sequent
+             * Calculating Sequent // removed at 2019-08-19
              */
-            for (int i = -1; i < trace.size(); i++) {
-                String event1;
-//                if (i == -1) event1 = "|>";
-                if (i == -1) event1 = "[Start]";
-                else event1 = trace.get(i).getAttributes().get(getLabel()).toString();
-
-                for (int j = i + 1; j < trace.size() + 1; j++) {
-                    String event2;
-//                    if (j == trace.size()) event2 = "[]";
-                    if (j == trace.size()) event2 = "[End]";
-                    else {
-                        XAttribute attribute = trace.get(j).getAttributes().get(getLabel());
-                        if (attribute != null) event2 = attribute.toString();
-                        else event2 = "";
-                    }
-
-                    if(j == i + 1) {
-                        String df = (event1 + " => " + event2);
-                        tmp_options.put(DIRECTLY_FOLLOW_KEY, df);
-                        if (tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY) == null)
-                            tmp_options_frequency.put(DIRECTLY_FOLLOW_KEY, new HashMap<>());
-                        Integer k = tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY).get(df);
-                        if (k == null) tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY).put(df, 1);
-                        else tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY).put(df, k + 1);
-                    }
-                    if(i != -1 && j != trace.size()) {
-                        String ef = (event1 + " => " + event2);
-                        tmp_options.put(EVENTUALLY_FOLLOW_KEY, ef);
-                        if (tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY) == null)
-                            tmp_options_frequency.put(EVENTUALLY_FOLLOW_KEY, new HashMap<>());
-                        Integer k = tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY).get(ef);
-                        if (k == null) tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY).put(ef, 1);
-                        else tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY).put(ef, k + 1);
-                    }
-                }
-            }
+//            for (int i = -1; i < trace.size(); i++) {
+//                String event1;
+////                if (i == -1) event1 = "|>";
+//                if (i == -1) event1 = "[Start]";
+//                else event1 = trace.get(i).getAttributes().get(getLabel()).toString();
+//
+//                for (int j = i + 1; j < trace.size() + 1; j++) {
+//                    String event2;
+////                    if (j == trace.size()) event2 = "[]";
+//                    if (j == trace.size()) event2 = "[End]";
+//                    else {
+//                        XAttribute attribute = trace.get(j).getAttributes().get(getLabel());
+//                        if (attribute != null) event2 = attribute.toString();
+//                        else event2 = "";
+//                    }
+//
+//                    if(j == i + 1) {
+//                        String df = (event1 + " => " + event2);
+//                        tmp_options.put(DIRECTLY_FOLLOW_KEY, df);
+//                        if (tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY) == null)
+//                            tmp_options_frequency.put(DIRECTLY_FOLLOW_KEY, new HashMap<>());
+//                        Integer k = tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY).get(df);
+//                        if (k == null) tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY).put(df, 1);
+//                        else tmp_options_frequency.get(DIRECTLY_FOLLOW_KEY).put(df, k + 1);
+//                    }
+//                    if(i != -1 && j != trace.size()) {
+//                        String ef = (event1 + " => " + event2);
+//                        tmp_options.put(EVENTUALLY_FOLLOW_KEY, ef);
+//                        if (tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY) == null)
+//                            tmp_options_frequency.put(EVENTUALLY_FOLLOW_KEY, new HashMap<>());
+//                        Integer k = tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY).get(ef);
+//                        if (k == null) tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY).put(ef, 1);
+//                        else tmp_options_frequency.get(EVENTUALLY_FOLLOW_KEY).put(ef, k + 1);
+//                    }
+//                }
+//            }
         }
-        
+        tmp_options_frequency.put(DIRECTLY_FOLLOW_KEY, new HashMap<>());
+        tmp_options_frequency.put(EVENTUALLY_FOLLOW_KEY, new HashMap<>());
         tmp_options_frequency.put(TIMESTAMP_KEY, new HashMap<>());
         tmp_options_frequency.put(TIME_DURATION_KEY, new HashMap<>());
 
