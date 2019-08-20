@@ -1006,12 +1006,13 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     Set<String> manually_removed_arcs = new HashSet<>();
                     String edge = event.getData().toString();
 
-                    for (String name : local_stats.getStatistics().get(LogStatistics.DIRECTLY_FOLLOW_KEY).keySet()) {
-                        if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
-                            manually_removed_arcs.add(name);
-                            break;
-                        }
-                    }
+                    manually_removed_arcs.add(edge);
+//                    for (String name : local_stats.getStatistics().get(LogStatistics.DIRECTLY_FOLLOW_KEY).keySet()) {
+//                        if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
+//                            manually_removed_arcs.add(name);
+//                            break;
+//                        }
+//                    }
 
                     if (manually_removed_arcs.size() > 0) {
                         addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
@@ -1036,12 +1037,13 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     Set<String> manually_removed_arcs = new HashSet<>();
                     String edge = event.getData().toString();
 
-                    for (String name : local_stats.getStatistics().get(LogStatistics.DIRECTLY_FOLLOW_KEY).keySet()) {
-                        if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
-                            manually_removed_arcs.add(name);
-                            break;
-                        }
-                    }
+                    manually_removed_arcs.add(edge);
+//                    for (String name : local_stats.getStatistics().get(LogStatistics.DIRECTLY_FOLLOW_KEY).keySet()) {
+//                        if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
+//                            manually_removed_arcs.add(name);
+//                            break;
+//                        }
+//                    }
 
                     if (manually_removed_arcs.size() > 0) {
                         addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
