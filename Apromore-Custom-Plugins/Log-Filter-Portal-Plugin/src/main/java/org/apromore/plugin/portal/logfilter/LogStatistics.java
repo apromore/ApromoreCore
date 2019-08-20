@@ -171,10 +171,12 @@ public class LogStatistics {
         for(int i=0; i<log.size(); i++) {
             XTrace trace = log.get(i);
             List<String> actList = activitySequenceOf(trace);
-            int variantId = variantIdMap.get(actList);
-            variantEventsMap.put(variantId, actList);
-            XAttribute attribute = new XAttributeLiteralImpl(CASE_VARIANT_KEY, Integer.toString(variantId));
-            log.get(i).getAttributes().put(CASE_VARIANT_KEY, attribute);
+            if(actList.size() > 0) {
+                int variantId = variantIdMap.get(actList);
+                variantEventsMap.put(variantId, actList);
+                XAttribute attribute = new XAttributeLiteralImpl(CASE_VARIANT_KEY, Integer.toString(variantId));
+                log.get(i).getAttributes().put(CASE_VARIANT_KEY, attribute);
+            }
         }
         return log;
     }
@@ -200,11 +202,13 @@ public class LogStatistics {
         for(int i=0; i<theLog.size(); i++) {
             XTrace trace = theLog.get(i);
             List<String> actSeq = activitySequenceOf(trace);
-            if(variFreqMap.containsKey(actSeq)) {
-                int freq = variFreqMap.get(actSeq) + 1;
-                variFreqMap.put(actSeq, freq);
-            }else{
-                variFreqMap.put(actSeq, 1);
+            if(actSeq.size() > 0) {
+                if(variFreqMap.containsKey(actSeq)) {
+                    int freq = variFreqMap.get(actSeq) + 1;
+                    variFreqMap.put(actSeq, freq);
+                }else{
+                    variFreqMap.put(actSeq, 1);
+                }
             }
         }
         return variFreqMap;
@@ -284,9 +288,10 @@ public class LogStatistics {
                     }
                     if(jActName.equals(iActName) && jLifecycle.equals("complete")) {
                         markedMap.put(jZdt, 0);
-                        activitySequence.add(iActName);
+                        break;
                     }
                 }
+                activitySequence.add(iActName);
             }
             if(iLifecycle.equals("complete") && !markedMap.containsKey(iZdt)) {
                 activitySequence.add(iActName);
