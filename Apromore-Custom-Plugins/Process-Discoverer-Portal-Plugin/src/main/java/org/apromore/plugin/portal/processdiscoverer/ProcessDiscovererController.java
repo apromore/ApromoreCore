@@ -106,9 +106,23 @@ import org.apromore.logfilter.criteria.model.Level;
  */
 public class ProcessDiscovererController extends BaseController implements LogFilterResultListener {
 	public static final String DEFAULT_SELECTOR = LogStatistics.DEFAULT_CLASSIFIER_KEY;
-	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiscovererController.class);
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
+    
+    private final String STARTEVENT_REL_PATTERN = "|> =>";
+    private final String STARTEVENT_NEW_REL_PATTERN = "[Start] =>";
+    
+    private final String ENDEVENT_REL_PATTERN = "=> []";
+    private final String ENDEVENT_NEW_REL_PATTERN = "=> [End]";
+    
+    private final String XOR_FROM_PATTERN = "X =>";
+    private final String XOR_TO_PATTERN = "=> X";
+    
+    private final String OR_FROM_PATTERN = "O =>";
+    private final String OR_TO_PATTERN = "=> O";
+    
+    private final String AND_FROM_PATTERN = "+ =>";
+    private final String AND_TO_PATTERN = "=> +";
     
     // These are the types of directly-follow relations to be visualized from logs 
     // Event logs usually contain only complete events or both start and complete events
@@ -1005,6 +1019,13 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
                     Set<String> manually_removed_arcs = new HashSet<>();
                     String edge = event.getData().toString();
+                    
+                    if (isGatewayEdge(edge)) {
+                    	return;
+                    }
+                    else if (isStartOrEndEdge(edge)) {
+                    	edge = convertStartOrEndEdge(edge);
+                    }
 
                     manually_removed_arcs.add(edge);
 //                    for (String name : local_stats.getStatistics().get(LogStatistics.DIRECTLY_FOLLOW_KEY).keySet()) {
@@ -1037,6 +1058,13 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     Set<String> manually_removed_arcs = new HashSet<>();
                     String edge = event.getData().toString();
 
+                    if (isGatewayEdge(edge)) {
+                    	return;
+                    }
+                    else if (isStartOrEndEdge(edge)) {
+                    	edge = convertStartOrEndEdge(edge);
+                    }
+                    
                     manually_removed_arcs.add(edge);
 //                    for (String name : local_stats.getStatistics().get(LogStatistics.DIRECTLY_FOLLOW_KEY).keySet()) {
 //                        if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
@@ -1205,6 +1233,28 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private boolean isGatewayEdge(String edge) {
+    	return (edge.contains(AND_FROM_PATTERN) || edge.contains(AND_TO_PATTERN) ||
+    			edge.contains(OR_FROM_PATTERN) || edge.contains(OR_TO_PATTERN) ||
+    			edge.contains(XOR_FROM_PATTERN) || edge.contains(XOR_TO_PATTERN));
+    }
+    
+    private boolean isStartOrEndEdge(String edge) {
+    	return (edge.contains(STARTEVENT_REL_PATTERN) || edge.contains(ENDEVENT_REL_PATTERN));
+    }
+    
+    private String convertStartOrEndEdge(String edge) {
+    	if (edge.contains(STARTEVENT_REL_PATTERN)) {
+    		return edge.replace(STARTEVENT_REL_PATTERN, STARTEVENT_NEW_REL_PATTERN);
+    	}
+    	else if (edge.contains(ENDEVENT_REL_PATTERN)) {
+    		return edge.replace(ENDEVENT_REL_PATTERN, ENDEVENT_NEW_REL_PATTERN);
+    	}
+    	else {
+    		return null;
+    	}
     }
 
     // Return case list: 
