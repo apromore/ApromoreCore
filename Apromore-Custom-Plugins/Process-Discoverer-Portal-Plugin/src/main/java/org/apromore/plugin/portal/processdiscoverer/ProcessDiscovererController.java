@@ -1236,9 +1236,9 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     }
     
     private boolean isGatewayEdge(String edge) {
-    	return (edge.contains(AND_FROM_PATTERN) || edge.contains(AND_TO_PATTERN) ||
-    			edge.contains(OR_FROM_PATTERN) || edge.contains(OR_TO_PATTERN) ||
-    			edge.contains(XOR_FROM_PATTERN) || edge.contains(XOR_TO_PATTERN));
+    	return (edge.startsWith(AND_FROM_PATTERN) || edge.endsWith(AND_TO_PATTERN) ||
+    			edge.startsWith(OR_FROM_PATTERN) || edge.endsWith(OR_TO_PATTERN) ||
+    			edge.startsWith(XOR_FROM_PATTERN) || edge.endsWith(XOR_TO_PATTERN));
     }
     
     private boolean isStartOrEndEdge(String edge) {
