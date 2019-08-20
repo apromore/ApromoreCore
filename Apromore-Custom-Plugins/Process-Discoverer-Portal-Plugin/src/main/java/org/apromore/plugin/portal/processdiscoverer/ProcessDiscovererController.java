@@ -96,12 +96,16 @@ import org.apromore.logfilter.criteria.model.Level;
 
 /**
  * Initialization: after the window has been loaded, the ZK client engine will send onLoaded event to the main window 
+ * TODO: as this is open in a separate browser tab with a different ZK execution from that of the portal,
+ * if the user signs out of the portal tab, the actions in this plugin calling to the portal session would fail
+ * Similarly, this plugin stores the containing folder on the portal to a local variable. So if the user deletes or
+ * move that folder in the portal, the related actions here would fail.   
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Modified by Simon Rabozi for SiMo
  * Modified by Bruce Nguyen
  */
 public class ProcessDiscovererController extends BaseController implements LogFilterResultListener {
-	public static final String DEFAULT_SELECTOR = "concept:name";
+	public static final String DEFAULT_SELECTOR = LogStatistics.DEFAULT_CLASSIFIER_KEY;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDiscovererController.class);
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
@@ -198,8 +202,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     private List<LogFilterCriterion> criteria;
     
     //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
-    private Map<String, Map<String, Integer>> local_stats = new HashMap<>(); // for filtered log
-    private Map<String, Map<String, Integer>> global_stats = new HashMap<>(); // always for the original log
+    private LogStatistics local_stats = null; // for filtered log
+    private LogStatistics global_stats = null; // always for the original log
     
     private long min = Long.MAX_VALUE; //the earliest timestamp of the log
     private long max = 0; //the latest timestamp of the log
@@ -225,6 +229,9 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     private LogFilterCriterionFactory logFilterCriterionFactory;
     
     private SummaryType selection = null;
+    
+    private int containingFolderId = 0;
+    private String containingFolderName = "";
     
     public ProcessDiscovererController() throws Exception {
     	super();
@@ -254,14 +261,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         portalContext = (PortalContext)session.get("context");
         primaryType = (VisualizationType)session.get("visType");
         selection = (SummaryType)session.get("selection");
-        
-//        if (portalContext.getCurrentUser() == null) {
-//            LOGGER.warn("Faking user session with admin(!)");
-//            UserType user = new UserType();
-//            user.setId("8");
-//            user.setUsername("admin");
-//            UserSessionManager.setCurrentUser(user);
-//        }
+        containingFolderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+        containingFolderName = portalContext.getCurrentFolder() == null ? "Home" : portalContext.getCurrentFolder().getFolderName();
         
         primaryAggregation = (primaryType == FREQUENCY) ? VisualizationAggregation.CASES : VisualizationAggregation.MEAN;
         logSummary = (LogSummaryType) selection;
@@ -278,7 +279,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         	
     		filtered_log = initial_log;
         	processDiscoverer = new ProcessDiscoverer();
-	        generateGlobalStatistics(initial_log, true);
+	        generateGlobalStatistics(initial_log);
 	        generateLocalStatistics(initial_log);
 	        criteria = new ArrayList<>();
 	        start();
@@ -302,6 +303,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     }
                 }
             });
+            
+            Map<String, Integer> classifierValues = local_stats.getStatistics().get(getLabel());
 
             this.use_fixed = (Radio) slidersWindow.getFellow(StringValues.b[20]);
             this.use_dynamic = (Radio) slidersWindow.getFellow(StringValues.b[21]);
@@ -382,13 +385,15 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     		if (comp != item) ((Menuitem)comp).setChecked(false);
                     	}
                     	
-//                    	selectorChanged = true;
-                        setLabel(item.getLabel());
-                        generateGlobalStatistics(initial_log, false);
-                        generateLocalStatistics(filtered_log);
-                        populateMetrics(filtered_log);
-                        visualizeMap();
-                        filtered_log_cases = getCases(filtered_log);
+                        if (!item.getLabel().equals(getLabel())) {
+                        	setLabel(item.getLabel());
+                        	generateGlobalStatistics(initial_log);
+                        	generateLocalStatistics(filtered_log);
+                            populateMetrics(filtered_log);
+                            visualizeMap();
+                            filtered_log_cases = getCases(filtered_log);
+                        }
+                        
                     }
                 });
                 selector.appendChild(item);
@@ -644,11 +649,12 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     detail_ratio.setSortDescending(new NumberComparator(false, 2));
 
                     int i = 1;
-                    for (String key : local_stats.get(getLabel()).keySet()) {
+                    for (String key : classifierValues.keySet()) {
                         Listcell listcell0 = new Listcell(Integer.toString(i));
                         Listcell listcell1 = new Listcell(key);
-                        Listcell listcell2 = new Listcell(local_stats.get(getLabel()).get(key).toString());
-                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) local_stats.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%");
+                        Listcell listcell2 = new Listcell(classifierValues.get(key).toString());
+                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) classifierValues.get(key) / Double.parseDouble(eventNumber.getValue()))) + "%");
+                        
                         Listitem listitem = new Listitem();
                         listitem.appendChild(listcell0);
                         listitem.appendChild(listcell1);
@@ -668,8 +674,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                             Writer writer = new BufferedWriter(new OutputStreamWriter(baos));
                             CSVWriter csvWriter = new CSVWriter(writer);
                             csvWriter.writeNext(new String[] {"Activity", "Frequency", "Frequency %"});
-                            for (String key : local_stats.get(getLabel()).keySet()) {
-                                csvWriter.writeNext(new String[] {key, local_stats.get(getLabel()).get(key).toString(), decimalFormat.format(100 * ((double) local_stats.get(getLabel()).get(key) / Double.parseDouble(eventNumber.getValue()))) + "%"});
+                            for (String key : classifierValues.keySet()) {
+                                csvWriter.writeNext(new String[] {key, classifierValues.toString(), decimalFormat.format(100 * ((double) classifierValues.get(key) / Double.parseDouble(eventNumber.getValue()))) + "%"});
                             }
                             csvWriter.flush();
                             csvWriter.close();
@@ -823,7 +829,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                 	LogFilterPlugin filterPlugin = new LogFilterPlugin();
                 	filterPlugin.execute(portalContext, ProcessDiscovererController.this.getInitialLog(), 
                 						label, criteria, 
-                						new LogStatistics(global_stats, min, max), 
+                						global_stats, 
                 						logFilterService,
                 						logFilterCriterionFactory,
                 						ProcessDiscovererController.this);
@@ -883,7 +889,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : local_stats.get(getLabel()).keySet()) {
+                    for (String name : classifierValues.keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -912,7 +918,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : local_stats.get(getLabel()).keySet()) {
+                    for (String name : classifierValues.keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -941,7 +947,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : local_stats.get(getLabel()).keySet()) {
+                    for (String name : classifierValues.keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -970,7 +976,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : local_stats.get(getLabel()).keySet()) {
+                    for (String name : classifierValues.keySet()) {
                         if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
                             manually_removed_activities.add(name);
                             break;
@@ -1000,7 +1006,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     Set<String> manually_removed_arcs = new HashSet<>();
                     String edge = event.getData().toString();
 
-                    for (String name : local_stats.get(StringValues.b[94]).keySet()) {
+                    for (String name : local_stats.getStatistics().get(LogStatistics.DIRECTLY_FOLLOW_KEY).keySet()) {
                         if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
                             manually_removed_arcs.add(name);
                             break;
@@ -1030,7 +1036,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     Set<String> manually_removed_arcs = new HashSet<>();
                     String edge = event.getData().toString();
 
-                    for (String name : local_stats.get(StringValues.b[94]).keySet()) {
+                    for (String name : local_stats.getStatistics().get(LogStatistics.DIRECTLY_FOLLOW_KEY).keySet()) {
                         if (name.equals(edge) || name.replaceAll("'", "").equals(edge)) {
                             manually_removed_arcs.add(name);
                             break;
@@ -1326,6 +1332,14 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     	return this.log_name;
     }
     
+    public int getContainingFolderId() {
+    	return this.containingFolderId;
+    }
+    
+    public String getContainingFolderName() {
+    	return this.containingFolderName;
+    }
+    
     public void setFilteredLog(XLog filtered_log) {
     	this.filtered_log = filtered_log;
     }
@@ -1440,12 +1454,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
      * Value: map (key: attribute value, value: frequency count of the value)
      * @param log
      */
-    private void generateGlobalStatistics(XLog log, boolean attributeStat) {
-        global_stats.putAll(generateStatistics(log, attributeStat));
-        if (attributeStat) {
-        	global_stats.put("time:timestamp", new HashMap<>());
-        	global_stats.put("time:duration", new HashMap<>());
-        }
+    private void generateGlobalStatistics(XLog log) {
+        global_stats = new LogStatistics(log, this.getLabel());
     }
     
     private void generateLocalStatistics(XLog log) {
@@ -1453,81 +1463,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     		local_stats = global_stats;
     	}
     	else {
-        	if (local_stats == global_stats) {
-        		local_stats = new HashMap<>();
-        	}
-        	else {
-        		local_stats.clear();
-        	}
-        	local_stats.putAll(generateStatistics(log, true));    		
+        	local_stats = new LogStatistics(log, this.getLabel());	
     	}
-    }
-    
-    private Map<String, Map<String, Integer>> generateStatistics(XLog log, boolean attributeStat) {
-        //boolean firstTime = (options_frequency.keySet().size() == 0);
-        Multimap<String, String> tmp_options = HashMultimap.create(); //map from attribute key to attribute values
-        
-        //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
-        Map<String, Map<String, Integer>> tmp_options_frequency = new HashMap<>();
-
-        for (XTrace trace : log) {
-            if (attributeStat) {
-	            for (XEvent event : trace) {
-	                for (XAttribute attribute : event.getAttributes().values()) {
-	                    String key = attribute.getKey();
-	                    if (!(key.equals("lifecycle:model") || key.equals("time:timestamp"))) {
-	                        tmp_options.put(key, attribute.toString());
-	                        if(tmp_options_frequency.get(key) == null) tmp_options_frequency.put(key, new HashMap<>());
-	
-	                        Integer i = tmp_options_frequency.get(key).get(attribute.toString());
-	                        if (i == null) tmp_options_frequency.get(key).put(attribute.toString(), 1);
-	                        else tmp_options_frequency.get(key).put(attribute.toString(), i + 1);
-	                    }
-	                    if (key.equals("time:timestamp")) {
-	                        min = Math.min(min, ((XAttributeTimestamp) attribute).getValueMillis());
-	                        max = Math.max(max, ((XAttributeTimestamp) attribute).getValueMillis());
-	                    }
-	                }
-	            }
-            }
-
-            for (int i = -1; i < trace.size(); i++) {
-                String event1;
-                if (i == -1) event1 = "|>";
-                else event1 = trace.get(i).getAttributes().get(getLabel()).toString();
-
-                for (int j = i + 1; j < trace.size() + 1; j++) {
-                    String event2;
-                    if (j == trace.size()) event2 = "[]";
-                    else {
-                        XAttribute attribute = trace.get(j).getAttributes().get(getLabel());
-                        if (attribute != null) event2 = attribute.toString();
-                        else event2 = "";
-                    }
-
-                    if(j == i + 1) {
-                        String df = (event1 + " => " + event2);
-                        tmp_options.put("direct:follow", df);
-                        if (tmp_options_frequency.get("direct:follow") == null)
-                            tmp_options_frequency.put("direct:follow", new HashMap<>());
-                        Integer k = tmp_options_frequency.get("direct:follow").get(df);
-                        if (k == null) tmp_options_frequency.get("direct:follow").put(df, 1);
-                        else tmp_options_frequency.get("direct:follow").put(df, k + 1);
-                    }
-                    if(i != -1 && j != trace.size()) {
-                        String ef = (event1 + " => " + event2);
-                        tmp_options.put("eventually:follow", ef);
-                        if (tmp_options_frequency.get("eventually:follow") == null)
-                            tmp_options_frequency.put("eventually:follow", new HashMap<>());
-                        Integer k = tmp_options_frequency.get("eventually:follow").get(ef);
-                        if (k == null) tmp_options_frequency.get("eventually:follow").put(ef, 1);
-                        else tmp_options_frequency.get("eventually:follow").put(ef, k + 1);
-                    }
-                }
-            }
-        }
-
-        return tmp_options_frequency;
     }
 
     private void visualizeFrequency() throws InterruptedException {
@@ -1753,14 +1690,15 @@ public class ProcessDiscovererController extends BaseController implements LogFi
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             eventLogService.exportToStream(outputStream, filtered_log);
 
-            int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+            //int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
 
-            eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
+            eventLogService.importLog(portalContext.getCurrentUser().getUsername(), containingFolderId,
                     logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
                     logSummary.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
                     false);
             
-            Messagebox.show("A new log named '" + logName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
+            //Messagebox.show("A new log named '" + logName + "' has been saved in '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
+            Messagebox.show("A new log named '" + logName + "' has been saved in the '" + this.containingFolderName + "' folder.");
 
             portalContext.refreshContent();
         } catch (Exception e) {

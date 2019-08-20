@@ -25,6 +25,7 @@ import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logfilter.criteria.model.Action;
 import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
+import org.apromore.logfilter.criteria.model.Type;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import java.util.Set;
@@ -144,10 +145,17 @@ public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
             string += "all events where attribute " + attribute + " is equal to " + values;
         }else {
             string += "all traces ";
-            if(containment == Containment.CONTAIN_ANY) {
-                string += "containing an event where attribute " + attribute + " is equal to " + values;
-            }else {
-                string += "where attribute " + attribute + " is equal to " + values + " for all events";
+            if(attribute.equals("case:variant")) {
+                string += "where case variant is equal to " + values;
+            }
+            else{
+                if(containment == Containment.CONTAIN_ANY) {
+                    string += "containing an event where attribute " + attribute + " is equal to " + values;
+                }else {
+//                    string += "where attribute " + attribute + " is equal to " + values + " for all events";
+                    //2019-08-20 : Chii
+                    string += "where all events have attribute " + attribute + " equal to " + values + " for all events";
+                }
             }
         }
 

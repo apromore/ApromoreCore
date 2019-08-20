@@ -24,13 +24,19 @@ import au.edu.qut.processmining.log.SimpleLog;
 import au.edu.qut.processmining.miners.splitminer.ui.dfgp.DFGPUIResult;
 
 import org.apache.commons.lang3.StringUtils;
+import org.processmining.contexts.uitopia.UIContext;
+import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.models.graphbased.directed.bpmn.BPMNDiagramImpl;
 import org.processmining.models.graphbased.directed.bpmn.BPMNNode;
 import org.processmining.models.graphbased.directed.bpmn.elements.Activity;
 import org.processmining.models.graphbased.directed.bpmn.elements.Event;
+import org.processmining.plugins.bpmn.plugins.BpmnExportPlugin;
 
+import java.io.File;
 import java.util.*;
+
+import javax.swing.UIManager;
 
 /**
  * Created by Adriano on 24/10/2016.
@@ -192,9 +198,21 @@ public class DirectlyFollowGraphPlus {
         untouchableEdges = new HashSet<>();
 
         buildDirectlyFollowsGraph();                //first method to execute
+        
+        //Debug only
+//        loopsL1 = new HashSet<>();
+//        this.writeDiagram(this.convertIntoBPMNDiagram(), "bpmnDiagram_after_buildDirectlyFollowsGraph.bpmn");
+        
         detectLoops();                              //depends on buildDirectlyFollowsGraph()
+        
+        //Debug only
+//        this.writeDiagram(this.convertIntoBPMNDiagram(), "bpmnDiagram_after_detectLoops.bpmn");
+        
         detectParallelisms();                       //depends on detectLoops()
-
+        
+        //Debug only
+//        this.writeDiagram(this.convertIntoBPMNDiagram(), "bpmnDiagram_after_detectParallelisms.bpmn");
+        
         switch(filterType) {                        //depends on detectParallelisms()
             case FWG:
                 filterWithGuarantees();
@@ -211,6 +229,14 @@ public class DirectlyFollowGraphPlus {
 //                filterWithGuarantees();
 //                exploreAndRemove();
                 break;
+        }
+        
+        // The above steps involve removing edges which may make the diagram disconnected 
+        // at some point. The code here is a quick fix to rerun the above steps
+        // with a constraint that some edges cannot be removed (so called safe)
+        if (!isConnected()) {
+        	resetDFGPStructures();
+        	buildSafeDFGP();
         }
 
     }
@@ -872,5 +898,65 @@ public class DirectlyFollowGraphPlus {
 	//          System.out.println("DEBUG - " + n + " : [" + maxCapacitiesFromSource.get(n) + "][" + maxCapacitiesToSink.get(n) + "]");
 	//      }
 	}
+	
+	public boolean isConnected() {
+        int src, tgt;
+
+        LinkedList<Integer> toVisit = new LinkedList<>();
+        Set<Integer> unvisited = new HashSet<>();
+
+//      forward exploration
+        toVisit.add(startcode);
+        unvisited.addAll(nodes.keySet());
+        unvisited.remove(startcode);
+
+        while( !toVisit.isEmpty() ) {
+            src = toVisit.removeFirst();
+            for( DFGEdge oe : outgoings.get(src) ) {
+                tgt = oe.getTargetCode();
+                if( unvisited.contains(tgt) ) {
+                    toVisit.addLast(tgt);
+                    unvisited.remove(tgt);
+                }
+            }
+        }
+
+		if(!unvisited.isEmpty()) return false;
+
+//      backward exploration
+        toVisit.add(endcode);
+        unvisited.clear();
+        unvisited.addAll(nodes.keySet());
+        unvisited.remove(endcode);
+
+        while( !toVisit.isEmpty() ) {
+            tgt = toVisit.removeFirst();
+            for( DFGEdge oe : incomings.get(tgt) ) {
+                src = oe.getSourceCode();
+                if( unvisited.contains(src) ) {
+                    toVisit.addLast(src);
+                    unvisited.remove(src);
+                }
+            }
+        }
+
+		if(!unvisited.isEmpty()) return false;
+		
+		return true;
+    }
+	
+    // Bruce: for debug only
+    private void writeDiagram(BPMNDiagram d, String filename) {
+	    try {
+	        UIContext context = new UIContext();
+	        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+	        UIPluginContext uiPluginContext = context.getMainPluginContext();
+	        BpmnExportPlugin exportPlugin = new BpmnExportPlugin();
+	        exportPlugin.export(uiPluginContext, d, new File(filename));
+	    }
+	    catch (Exception ex) {
+	    	ex.printStackTrace();
+	    }
+    }
 	
 }

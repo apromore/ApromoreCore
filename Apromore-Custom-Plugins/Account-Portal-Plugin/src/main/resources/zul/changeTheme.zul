@@ -1,12 +1,8 @@
 <window xmlns:n="http://www.zkoss.org/2005/zk/native"
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:z="http://www.zkoss.org/2005/zul"
-        id="win" width="450px" closable="true" position="center" title="Change Theme">
-    <grid>
-        <columns>
-            <column width="140px"/>
-            <column width="200px"/>
-        </columns>
+        id="win" closable="true" position="center" title="Change Theme">
+    <grid hflex="min">
         <rows>
             <row>
                 <label value="Theme"/>

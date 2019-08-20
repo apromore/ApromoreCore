@@ -45,6 +45,7 @@ public class LogFilterTypeSelector {
 	// Must be sorted for Arrays.binarySearch
     private static String[] codes = new String[] {
             "concept:name",
+			"case:variant",
             "direct:follow",
             "eventually:follow",
             "lifecycle:transition",
@@ -55,8 +56,10 @@ public class LogFilterTypeSelector {
             "time:timestamp"
     };
     
-//    private static String[] names = new String[] {
+    // Must be sorted for Arrays.binarySearch
+//    private static String[] name = new String[] {
 //            "Activity",
+//			"Case variant",
 //            "Direct Follow Relation",
 //            "Duration",
 //            "Eventually Follow Relation",
@@ -64,25 +67,27 @@ public class LogFilterTypeSelector {
 //            "Lifecycle",
 //            "Resource",
 //            "Role",
-//            "Timeframe"
+//            "Time-frame"
 //    };
     
-    private static Map<String,String> codeNameMap = new HashMap<>();
+    private static HashBiMap<String,String> codeNameMap = new HashBiMap<>();
     static {
-    	codeNameMap.put("concept:name", "Activity");
-    	codeNameMap.put("direct:follow", "Direct Follow Relation");
-    	codeNameMap.put("eventually:follow", "Eventually Follow Relation");
-    	codeNameMap.put("lifecycle:transition", "State");
-    	codeNameMap.put("org:group", "Resource Group");
-    	codeNameMap.put("org:resource", "Resource");
-    	codeNameMap.put("org:role", "Role");
-    	codeNameMap.put("time:duration", "Duration");
-    	codeNameMap.put("time:timestamp", "Timeframe");
+		codeNameMap.put("concept:name", "Activity");
+		codeNameMap.put("case:variant", "Case variant");
+		codeNameMap.put("direct:follow", "Directly-follows relation");
+		codeNameMap.put("eventually:follow", "Eventually-follows relation");
+		codeNameMap.put("lifecycle:transition", "State");
+		codeNameMap.put("org:group", "Resource group");
+		codeNameMap.put("org:resource", "Resource");
+		codeNameMap.put("org:role", "Role");
+		codeNameMap.put("time:duration", "Duration");
+		codeNameMap.put("time:timestamp", "Timeframe");
     }
        
     private static Map<String,Type> typeMap = new HashMap<>();
     static {
     	typeMap.put("concept:name", Type.CONCEPT_NAME);
+		typeMap.put("case:variant", Type.CASE_VARIANT);
     	typeMap.put("direct:follow", Type.DIRECT_FOLLOW);
     	typeMap.put("eventually:follow", Type.EVENTUAL_FOLLOW);
     	typeMap.put("lifecycle:transition", Type.LIFECYCLE_TRANSITION);
@@ -103,6 +108,7 @@ public class LogFilterTypeSelector {
     
     private static Set<String> traceStandardCodes = new HashSet<>(Arrays.asList(
 													    		"concept:name",
+													            "case:variant",
 													            "direct:follow",
 													            "eventually:follow",
 													            "lifecycle:transition",
@@ -111,25 +117,25 @@ public class LogFilterTypeSelector {
 													            "org:role",
 													            "time:duration",
 													            "time:timestamp"));
+
+	public static List<String> getStandardCodes() {
+		List<String> codeList = Arrays.asList(codes);
+		return Collections.unmodifiableList(codeList);
+	}
     
-    public static List<String> getStandardCodes() {
-    	List<String> codeList = Arrays.asList(codes);
-    	return Collections.unmodifiableList(codeList);
-    }
     
-//    
 //    public static List<String> getStandardNames() {
-//    	List<String> nameList = Arrays.asList(names);
-//    	return Collections.unmodifiableList(nameList);
+//    	List<String> names = Arrays.asList(name);
+//    	return Collections.unmodifiableList(names);
 //    }
     
 
-    public static Type getType(String code) {
-    	if (!typeMap.containsKey(code)) {
+    public static Type getType(String typeName) {
+    	if (!typeMap.containsKey(typeName)) {
     		return Type.UNKNOWN;
     	}
     	else {
-    		return typeMap.get(code.toLowerCase());
+    		return typeMap.get(typeName);
     	}
     }
 
@@ -141,11 +147,11 @@ public class LogFilterTypeSelector {
 //    }
     
 //    public static boolean isStandardType(String type) {
-//    	return codeNameMap.containsKey(type);
+//    	return typeNameMap.containsKey(type);
 //    }
     
 //    public static boolean isStandardName(String name) {
-//    	return codeNameMap.inverse().containsKey(name);
+//    	return typeNameMap.inverse().containsKey(name);
 //    }
 
     // search the corresponding name of a given type
@@ -159,7 +165,7 @@ public class LogFilterTypeSelector {
 ////        return search2(attribute, name, type);
 //    	return codeNameMap.inverse().get(name);
 //    }
-//    
+    
     public static boolean isValidCode(String type, Level level) {
     	if (level == Level.EVENT) {
     		return !codeNameMap.containsKey(type) || eventStandardCodes.contains(type);
@@ -169,5 +175,38 @@ public class LogFilterTypeSelector {
     	}
     }
     
+//    // The index is not 1-1 between the two arrays as the array values must be ordered
+//    private static String search1(String attribute, String[] origin, String[] translation) {
+//        int t = Arrays.binarySearch(origin, attribute);
+//        switch (t) {
+//            case 0 : return translation[0];
+//            case 1 : return translation[1];
+//            case 2 : return translation[3];
+//            case 3 : return translation[4];
+//            case 4 : return translation[5];
+//            case 5 : return translation[6];
+//            case 6 : return translation[7];
+//            case 7 : return translation[2];
+//            case 8 : return translation[8];
+//            default : return null;
+//        }
+//    }
+//
+//    // The index is not 1-1 between the two arrays as the array values must be ordered
+//    private static String search2(String attribute, String[] origin, String[] translation) {
+//        int t = Arrays.binarySearch(origin, attribute);
+//        switch (t) {
+//            case 0 : return translation[0];
+//            case 1 : return translation[1];
+//            case 3 : return translation[2];
+//            case 4 : return translation[3];
+//            case 5 : return translation[4];
+//            case 6 : return translation[5];
+//            case 7 : return translation[6];
+//            case 2 : return translation[7];
+//            case 8 : return translation[8];
+//            default : return null;
+//        }
+//    }
 
 }

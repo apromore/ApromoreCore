@@ -23,8 +23,9 @@ package org.apromore.plugin.portal.logfilter;
 import org.apromore.logfilter.LogFilterService;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
-import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
+import org.apromore.logfilter.criteria.model.*;
 import org.apromore.plugin.portal.PortalContext;
+import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -34,11 +35,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This is the main window controller for log filter plugin
@@ -58,19 +55,33 @@ class LogFilterController {
     private XLog log;
     
     private LogFilterResultListener resultListener;
-    
+
+    private Map<String, Set<String>> directFollowMap = new HashMap<String, Set<String>>();
+    private Map<String, Set<String>> eventualFollowMap = new HashMap<String, Set<String>>();
+    private Map<Integer, List<String>> variantEventsMap = new HashMap<Integer, List<String>>();
+
+
     public LogFilterController(PortalContext portalContext, XLog log,
     							LogFilterService logFilterService,
     							LogFilterCriterionFactory logFilterCriterionFactory,
     							LogFilterResultListener resultListener) throws IOException {
     	this.log = log;
     	LogStatistics stats = new LogStatistics(this.log);
+        /**
+         * Get the log with case-variant values
+         */
+        this.log = stats.getLog();
+        this.directFollowMap = stats.getDirectFollowMap();
+        this.eventualFollowMap = stats.getEventualFollowMap();
+        this.variantEventsMap = stats.getVariantEventsMap();
+//        XAttributeMap xm = this.log.get(0).getAttributes();
+//        System.out.println(xm);
+
     	this.logFilterService = logFilterService;
     	this.logFilterCriterionFactory = logFilterCriterionFactory;
     	this.resultListener = resultListener;
     	initialize(portalContext, log, "concept:name", new ArrayList<LogFilterCriterion>(), stats.getStatistics(), 
     				stats.getMinTimestamp(), stats.getMaxTimetamp());
-
     }
     
     public LogFilterController(PortalContext portalContext, 
@@ -80,6 +91,14 @@ class LogFilterController {
 								List<LogFilterCriterion> originalCriteria, 
 								LogStatistics logStats,
 								LogFilterResultListener resultListener) throws IOException {
+        /**
+         * Get the log with case-variant values
+         */
+        this.log = logStats.getLog();
+        this.directFollowMap = logStats.getDirectFollowMap();
+        this.eventualFollowMap = logStats.getEventualFollowMap();
+        this.variantEventsMap = logStats.getVariantEventsMap();
+        
     	this.logFilterService = logFilterService;
     	this.logFilterCriterionFactory = logFilterCriterionFactory;
     	this.resultListener = resultListener;
@@ -100,7 +119,7 @@ class LogFilterController {
         //filterSelectorW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/filterCriteria.zul", null, null);
         //filterSelectorW = (Window) Executions.createComponents("/zul/filterCriteria.zul", null, null);
         filterSelectorW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/filterCriteria.zul", null, null);
-        filterSelectorW.setTitle("Filter Criteria");
+        filterSelectorW.setTitle("Log Filter Criteria");
 
         criteriaList = (Listbox) filterSelectorW.getFellow("criteria");
         updateList();
@@ -195,11 +214,12 @@ class LogFilterController {
         ListModelList<String> model = new ListModelList<>();
         for(LogFilterCriterion criterion : criteria) {
             String label = criterion.toString();
-            for(String type: LogFilterTypeSelector.getStandardCodes()) { 
-                label = label.replaceAll(type, LogFilterTypeSelector.getNameFromCode(type)); //15.08
+            for(String type: LogFilterTypeSelector.getStandardCodes()) {
+                label = label.replaceAll(type, LogFilterTypeSelector.getNameFromCode(type));
             }
 
-            if(label.contains("Time-frame")) {
+            if(label.contains("Timeframe")) {
+//            if(label.contains(LogFilterTypeSelector.getNameFromCode(Type.TIME_TIMESTAMP.toString()))) {
                 String tmp_label = label.substring(0, label.indexOf("is equal"));
                 String s, e;
                 if (label.contains("OR <")) {
@@ -215,6 +235,21 @@ class LogFilterController {
                         + (new Date(Long.parseLong(s))).toString()
                         + " and "
                         + (new Date(Long.parseLong(e))).toString();
+                if(criterion.getLevel() == Level.TRACE) {
+                    if(criterion.getAction() == Action.RETAIN) {
+                        if(criterion.getContainment()== Containment.CONTAIN_ANY) {
+                            label = "Retain all traces containing an event whose Timestamp is between "
+                                    + (new Date(Long.parseLong(s))).toString()
+                                    + " and "
+                                    + (new Date(Long.parseLong(e))).toString();
+                        }else if(criterion.getContainment()== Containment.CONTAIN_ALL) {
+                            label = "Retain all traces where all events have Timestamp between "
+                                    + (new Date(Long.parseLong(s))).toString()
+                                    + " and "
+                                    + (new Date(Long.parseLong(e))).toString();
+                        }
+                    }
+                }
             }
             if(label.contains("Duration")) {
                 String d = label.substring(label.indexOf(">") + 1, label.indexOf("]"));
@@ -224,16 +259,36 @@ class LogFilterController {
                     label = "Retain all traces with a Duration greater than " + d; //TimeConverter.stringify(d);
                 }
             }
-            if(label.contains("Direct Follow Relation")) {
+            if(label.contains("Directly-follows relation")) {
                 String d = label.substring(label.indexOf("["));
                 if(label.contains("Remove")) {
-                    label = "Remove all traces containing the Direct Follow Relation " + d;
+                    label = "Remove all traces containing the direct follow relation " + d;
                 }else {
-                    label = "Retain all traces containing the Direct Follow Relation " + d;
+                    label = "Retain all traces which have a directly-follows relation equal to " + d;
+                }
+            }
+            if(label.contains("Eventually-follows relation")) {
+                String d = label.substring(label.indexOf("["));
+                if(label.contains("Remove")) {
+                    label = "Remove all traces containing the eventually follow relation " + d;
+                }else {
+                    label = "Retain all traces which have an eventually-follows relation equal to " + d;
                 }
             }
             model.add(label);
         }
         criteriaList.setModel(model);
+    }
+
+    public Map<String, Set<String>> getDirectFollowMap() {
+        return directFollowMap;
+    }
+
+    public Map<String, Set<String>> getEventualFollowMap() {
+        return eventualFollowMap;
+    }
+
+    public Map<Integer, List<String>> getVariantEventsMap() {
+        return variantEventsMap;
     }
 }

@@ -31,6 +31,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.ListModelArray;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
@@ -40,18 +41,31 @@ import org.zkoss.zul.theme.Themes;
 public class ChangeThemeController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ChangeThemeController.class);
+    private static String THEME_ATTRIBUTE = "theme.name";
 
     public ChangeThemeController(PortalContext portalContext) {
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/changeTheme.zul", null, null);
 
-            Listbox themeListbox = (Listbox) window.getFellow("themeListbox");
-            ListModelArray model = new ListModelArray(Themes.getThemes());
+            ListModelArray<String> model = new ListModelArray<>(Themes.getThemes());
             model.addToSelection(Themes.getCurrentTheme());
+            model.sort((a, b) -> Themes.getDisplayName(a).compareTo(Themes.getDisplayName(b)), true);
+
+            Listbox themeListbox = (Listbox) window.getFellow("themeListbox");
             themeListbox.setModel(model);
+            themeListbox.setItemRenderer(new ListitemRenderer<String>() {
+                public void render(final Listitem listitem,
+                                   final String   theme,
+                                   final int      index) {
+
+                    listitem.setAttribute(THEME_ATTRIBUTE, theme);
+                    listitem.setLabel(Themes.getDisplayName(theme));
+            }
+            });
             themeListbox.addEventListener("onSelect", new EventListener<SelectEvent<Listitem, String>>() {
                 public void onEvent(SelectEvent<Listitem, String> selectEvent) {
-                    String newTheme = selectEvent.getReference().getValue();
+                    String newTheme = (String) selectEvent.getReference()
+                                              .getAttribute(THEME_ATTRIBUTE);
                     LOGGER.info(String.format("Changed ZK theme: %s", newTheme));
                     Themes.setTheme(Executions.getCurrent(), newTheme);
                     Executions.sendRedirect("");
