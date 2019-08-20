@@ -95,7 +95,7 @@
                         </row>
                     </rows>
                 </grid>
-                <listbox id="lbxValue" checkmark="true" multiple="true" rows="5" mold="paging"  autopaging="true" vflex="true" span="true">
+                <listbox id="lbxValue" vflex="1"  checkmark="true" multiple="true"  mold="paging"  autopaging="true" span="true">
                     <listhead sizable="true">
                         <listheader id="lhValue1" label="Value" sort="auto" width="60%"/>
                         <listheader id="lhValue2" label="Frequency" sort="auto" width="15%"/>
