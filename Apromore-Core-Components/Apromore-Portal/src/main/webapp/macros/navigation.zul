@@ -21,8 +21,12 @@
 <window id="treeW" hflex="true" vflex="true">
     <style>
         .h-inline-block {
-        display: inline-block;
-        _display: inline;
+            display: inline-block;
+            _display: inline;
+        }
+
+        .z-tree-icon {
+            vertical-align: unset;
         }
     </style>
     <div class="z-west-header" style="display: -webkit-flex; display: flex">
