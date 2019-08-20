@@ -79,6 +79,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
     private static Integer AttribWidth = 150;
 
+    private boolean isPublic;
+
     private void saveLog(XLog xlog, String name, PortalContext portalContext) throws Exception {
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -94,7 +96,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 "xes.gz",
                 "",  // domain
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                false  // public?
+                isPublic  // public?
         );
 
         portalContext.refreshContent();
@@ -292,6 +294,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @Override
     public void importFile(Media media, PortalContext portalContext, boolean isPublic) {
         LOGGER.info("Import file: " + media.getName());
+
+        this.isPublic = isPublic;
 
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
