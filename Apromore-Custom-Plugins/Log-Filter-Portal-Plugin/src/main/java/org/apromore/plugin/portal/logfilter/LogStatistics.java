@@ -288,10 +288,10 @@ public class LogStatistics {
                     }
                     if(jActName.equals(iActName) && jLifecycle.equals("complete")) {
                         markedMap.put(jZdt, 0);
+                        activitySequence.add(iActName);
                         break;
                     }
                 }
-                activitySequence.add(iActName);
             }
             if(iLifecycle.equals("complete") && !markedMap.containsKey(iZdt)) {
                 activitySequence.add(iActName);
