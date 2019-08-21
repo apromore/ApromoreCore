@@ -33,11 +33,10 @@
     xmlns:h="http://www.w3.org/1999/xhtml"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
-    xmlns:x="xhtml" xmlns:zk="zk">
+    xmlns:x="xhtml" xmlns:zk="zk"
+    sclass="body">
 
-    <style src="css/apromoreOld.css"/>
-    <style src="css/site.css"/>
-	<style src="css/cytoscape-context-menus.css"/>
+    <style src="css/cytoscape-context-menus.css"/>
 
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/highstock.js"></script>
@@ -60,79 +59,87 @@
     <script src="js/cytoscape-undo-redo.js"></script>
     <script src="js/cytoscape-context-menus.v3.0.6.js"></script>
 
-	<!--<script type="text/javascript" src="js/go.js"></script>-->
-	
-	
+    <!--<script type="text/javascript" src="js/go.js"></script>-->
+
+
     <style dynamic="true">
-        tr.z-row td.z-row-inner, tr.z-row td.z-cell, tr.z-group td.z-group-inner, tr.z-groupfoot td.z-groupfoot-inner {
-            padding: 1px 1px 1px 1px;
+        .custom-btn {
+        font-family: Arial, Sans-Serif;
+        font-size: 16px;
+        text-decoration: none;
+        /*text-shadow: -1px -1px 1px #616161;*/
+        position: relative;
+
+        -webkit-box-shadow: 0px 0px 0 #9a9a9a;
+        -moz-box-shadow: 0px 0px 0 #9a9a9a;
+        -webkit-transition: all 0.1s ease;
+        -moz-transition: all 0.1s ease;
+        padding: 7px;
+        width: 40px;
+        height: 100%;
         }
-        td.z-listcell {
-            border: 1px solid transparent;
+
+        .custom-btn:hover {
+        -webkit-box-shadow: 0px 0px 0 #4A7EBB;
+        -moz-box-shadow: 0px 0px 0 #4A7EBB;
+        top: 1px;
+        left:1px;
+        background:#656565;
         }
-        tr.z-row td.z-row-inner, tr.z-row .z-cell {
-            line-height: 25px;
+        .z-toolbarbutton-content {
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 12px;
+        font-weight: normal;
+        font-style: normal;
+        color: unset;
+        background-color: transparent;
+        border: 2px solid transparent;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        -o-border-radius: 4px;
+        -ms-border-radius: 4px;
+        border-radius: 4px;
+        line-height: 18px;
+        display: inline-block;
+        vertical-align: middle;
+        position: relative;
+        white-space: nowrap;
         }
-        div.z-listbox-body .z-listcell {
-            padding: 0;
-        }
-        tr.z-row td.z-row-inner, tr.z-row .z-cell, tr.z-row {
-            background: none repeat scroll 0% 0% white;
-        }
-        tr.z-grid-odd td.z-row-inner, tr.z-grid-odd .z-cell, tr.z-grid-odd {
-            background: none repeat scroll 0% 0% rgb(240, 250, 255);
-        }
-        div.z-listcell-cnt {
-            line-height: 25px;
-            padding: 1px 0;
-        }
-        .z-listbox-autopaging .z-listcell-cnt {
-            /*height: 25px;*/
-            overflow: hidden;
-            vertical-align: middle;
-        }
-        tbody.z-listbox-empty-body tr {
-            color: #000000;
-            height: 25px;
-            font-size: 12px;
-            font-weight: normal;
-            text-decoration: none;
-        }
-        tbody.z-listbox-empty-body td {
-            color: #7D7D7D;
-            line-height: 25px;
-            font-family: arial,sans-serif;
-            font-size: 12px;
-            font-style: italic;
-            font-weight: normal;
-            text-align: center;
-        }
+
     </style>
+
+    <style> body { padding: 0} </style>
 
     <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
 
-        <div height="40px" style="background-color: #CDE6F5;">
-            <div style="float:left; margin-top: 5px;" >
+        <div height="40px" sclass="z-listheader">
+            <div style="float:left; margin-top: 5px;">
                 <!--<toolbarbutton id="releaseNotes"  mode="toggle">-->
-                    <!--<attribute name="onCheck">-->
-                        <!--<![CDATA[-->
-                            <!--event.getTarget().setLabel("Welcome bla. "+event.getTarget().getLabel());-->
-                        <!--]]>-->
-                    <!--</attribute>-->
+                <!--<attribute name="onCheck">-->
+                <!--<![CDATA[-->
+                <!--event.getTarget().setLabel("Welcome bla. "+event.getTarget().getLabel());-->
+                <!--]]>-->
+                <!--</attribute>-->
                 <!--</toolbarbutton>-->
-                <toolbarbutton id="releaseNotes" />
-                <separator orient="vertical" bar="true"/>
-                <toolbarbutton id="moreButton" label="Apromore Initiative"/>
-                <separator orient="vertical" bar="true"/>
-                <toolbarbutton id="installedPlugins" label="Active Plugins"/>
-                <separator orient="vertical" bar="true"/>
-                <toolbarbutton id="webDav" label="webDav"/>
-                <!--<separator orient="vertical" bar="true"/>-->
-                <!--<toolbarbutton id="developerResources" label="Developer Resources"/>-->
+
+                <!---->
+                <toolbarbutton id="releaseNotes" sclass="z-listheader-content" />
+                <space bar="true" spacing="1px" style="height:100%; position:absolute;"/>
+                <toolbarbutton id="moreButton" label="Apromore Initiative" sclass="z-listheader-content" />
+
+                <space bar="true" spacing="1px" style="height:100%; position:absolute;"/>
+                <toolbarbutton id="installedPlugins" label="Active Plugins" sclass="z-listheader-content"/>
+
+                <space bar="true" spacing="1px" style="height:100%; position:absolute;" visible="false"/>
+                <toolbarbutton id="webDav" label="webDav" sclass="z-listheader-content" visible="false"/>
+
+                <space bar="true" spacing="1px" style="height:100%; position:absolute;"/>
+                <toolbarbutton id="developerResources" label="Developer Resources" sclass="z-listheader-content"/>
+
             </div>
-            <div style="float:right; margin-top: 5px;">
-				<toolbarbutton id="featuresButton" label="Help" visible="true"/>
-                <toolbarbutton id="signoutButton" label="Sign out" visible="true"/>
+            <div style="float:right; margin-top: 5px; margin-right: 5px" >
+                <toolbarbutton id="featuresButton" label="Help" visible="true" sclass="z-listheader-content"  />
+                <toolbarbutton id="signoutButton" label="Sign out" visible="true" sclass="z-listheader-content" />
             </div>
         </div>
 
@@ -153,44 +160,44 @@
 
             <center id="mainPanel">
                 <div vflex="true">
-                    <Menu id="menucomp" style="background-color: #F9F9F9;" width="100%"/>
-                    <hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9; border-bottom: 1px solid #CFCFCF;">
+                    <Menu id="menucomp" style="background-color: unset;" width="100%"/>
+                    <hbox id="pagingandbuttons" width="100%" style="background-color: unset; border-bottom: 1px solid #CFCFCF;">
                         <paging id="pg" style="border-bottom: 0px solid #F9F9F9;" />
                         <hbox id="buttons" align="center" height="100%" vflex="min">
-                            <button id="refreshB" label="" style="background: transparent; border:none" image="img/arrow_refresh.png" tooltiptext="Reload data" />
+                            <button class="custom-btn" id="refreshB" label="" style="background: transparent; border:none" image="img/arrow_refresh.png" tooltiptext="Reload data" />
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
-                            <button id="btnAddFolder" label="" image="img/folder_add.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
-                            <button id="btnAddProcess" label="" image="img/new.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
-                            <button id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/delete.png" tooltiptext="Delete" visible="true"/>
-                            <button id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="Rename" visible="true"/>
+                            <button class="custom-btn" id="btnAddFolder" label="" image="img/folder_add.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
+                            <button class="custom-btn" id="btnAddProcess" label="" image="img/new.png" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
+                            <button class="custom-btn" id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/delete.png" tooltiptext="Delete" visible="true"/>
+                            <button class="custom-btn" id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="Rename" visible="true"/>
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
-                            <button id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/key.png" tooltiptext="Security"/>
+                            <button class="custom-btn" id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/key.png" tooltiptext="Security"/>
                         </hbox>
                     </hbox>
 
-<!--
-                    <window id="breadCrumbsWindow" apply="org.apromore.portal.dialogController.FolderController" visible="false">
-                        <html>
-                            <![CDATA[
-                            <script type="text/javascript">
-                                function bindBreadcrumbs() {
-                                    jq('a.breadCrumbLink').unbind("click");
-                                    jq('a.breadCrumbLink').click(function(e){
-                                        payload = jq(this).attr('id');
-                                        zAu.send(new zk.Event(zk.Widget.$(jq('$breadCrumbsWindow')[0]), 'onBreadCrumbClick', payload));
-                                    });
-                                }
+                    <!--
+                                        <window id="breadCrumbsWindow" apply="org.apromore.portal.dialogController.FolderController" visible="false">
+                                            <html>
+                                                <![CDATA[
+                                                <script type="text/javascript">
+                                                    function bindBreadcrumbs() {
+                                                        jq('a.breadCrumbLink').unbind("click");
+                                                        jq('a.breadCrumbLink').click(function(e){
+                                                            payload = jq(this).attr('id');
+                                                            zAu.send(new zk.Event(zk.Widget.$(jq('$breadCrumbsWindow')[0]), 'onBreadCrumbClick', payload));
+                                                        });
+                                                    }
 
-                                jq(function() {
-                                    bindBreadcrumbs();
-                                });
-                            </script>
-                            ]]>
-                        </html>
-                    </window>
+                                                    jq(function() {
+                                                        bindBreadcrumbs();
+                                                    });
+                                                </script>
+                                                ]]>
+                                            </html>
+                                        </window>
 
-                    <html id="breadCrumbs" width="100%" height="10" style="font-family: arial; font-size: 12px; font-weight: normal;" />
--->
+                                        <html id="breadCrumbs" width="100%" height="10" style="font-family: arial; font-size: 12px; font-weight: normal;" />
+                    -->
                     <html id="folders" width="100%" visible="false" height="100%"/>
 
                     <tabbox id="tabbox" vflex="true">
@@ -207,7 +214,7 @@
             </center>
         </borderlayout>
 
-        <ShortMessages id="shortmessagescomp" />
+        <ShortMessages id="shortmessagescomp" visible="false" />
     </window>
 
     <!-- Following script improves performance of listbox dropdown display time-->

@@ -421,10 +421,11 @@ public interface ManagerService {
     /**
      * Delete process models / versions from the repository.
      * @param elements the list of process models
+     * @param username the user on whose authority the deletion will be performed
      * @throws Exception ... change to be something more relevant
      * TODO: Fix Exception
      */
-    void deleteElements(Map<SummaryType, List<VersionSummaryType>> elements) throws Exception;
+    void deleteElements(Map<SummaryType, List<VersionSummaryType>> elements, String username) throws Exception;
 
 
     /**

@@ -1042,12 +1042,13 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void deleteElements(final Map<SummaryType, List<VersionSummaryType>> elements) throws Exception {
+    public void deleteElements(final Map<SummaryType, List<VersionSummaryType>> elements, String username) throws Exception {
         LOGGER.debug("Preparing DeleteProcessVersions.....");
 
         for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
             if(entry.getKey() instanceof ProcessSummaryType) {
                 DeleteProcessVersionsInputMsgType msg = new DeleteProcessVersionsInputMsgType();
+                msg.setUsername(username);
                 msg.getProcessVersionIdentifier().addAll(DeleteProcessVersionHelper.setElements(elements));
 
                 JAXBElement<DeleteProcessVersionsInputMsgType> request = WS_CLIENT_FACTORY.createDeleteProcessVersionsRequest(msg);

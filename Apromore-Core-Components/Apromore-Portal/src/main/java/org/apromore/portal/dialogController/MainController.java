@@ -379,7 +379,7 @@ public class MainController extends BaseController implements MainControllerInte
      */
     public void deleteElements(final Map<SummaryType, List<VersionSummaryType>> elements) throws InterruptedException {
         try {
-            getService().deleteElements(elements);
+            getService().deleteElements(elements, UserSessionManager.getCurrentUser().getUsername());
             switchToProcessSummaryView();
             this.baseListboxController.refreshContent();
             String message;
@@ -397,8 +397,8 @@ public class MainController extends BaseController implements MainControllerInte
             }
             displayMessage(message);
         } catch (Exception e) {
-//            e.printStackTrace();
-//            Messagebox.show("Deletion failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+            e.printStackTrace();
+            Messagebox.show("Deletion failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 

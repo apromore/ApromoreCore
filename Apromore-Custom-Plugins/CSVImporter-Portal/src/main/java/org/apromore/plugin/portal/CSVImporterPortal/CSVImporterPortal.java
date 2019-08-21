@@ -166,6 +166,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     window.setWidth("auto");
                 }
 
+
                 for (int i = 0; i < header.length; i++) {
                     Column newColumn = new Column();
                     newColumn.setWidth(AttribWidth + "px");
@@ -310,7 +311,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if(media != null) {
                 window.setWidth("95%");
 //                window.setVflex("min");
-                myGrid.setHeight("100%");
+                myGrid.setHeight("99%");
 
 
                 csvImporterLogic.resetLine();

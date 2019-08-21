@@ -1,40 +1,44 @@
-        <!--
-  ~ Copyright © 2009-2018 The Apromore Initiative.
-  ~
-  ~ This file is part of "Apromore".
-  ~
-  ~ "Apromore" is free software; you can redistribute it and/or modify
-  ~ it under the terms of the GNU Lesser General Public License as
-  ~ published by the Free Software Foundation; either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~
-  ~ "Apromore" is distributed in the hope that it will be useful, but
-  ~ WITHOUT ANY WARRANTY; without even the implied warranty
-  ~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  ~ See the GNU Lesser General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU Lesser General Public
-  ~ License along with this program.
-  ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
-  -->
+<!--
+~ Copyright © 2009-2018 The Apromore Initiative.
+~
+~ This file is part of "Apromore".
+~
+~ "Apromore" is free software; you can redistribute it and/or modify
+~ it under the terms of the GNU Lesser General Public License as
+~ published by the Free Software Foundation; either version 3 of the
+~ License, or (at your option) any later version.
+~
+~ "Apromore" is distributed in the hope that it will be useful, but
+~ WITHOUT ANY WARRANTY; without even the implied warranty
+~ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+~ See the GNU Lesser General Public License for more details.
+~
+~ You should have received a copy of the GNU Lesser General Public
+~ License along with this program.
+~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
+-->
 
 <window id="treeW" hflex="true" vflex="true">
-            <style>
-                .h-inline-block {
-                    display: inline-block;
-                    _display: inline;
-                }
-            </style>
-            <div class="z-west-header" style="display: -webkit-flex; display: flex">
-                <label style="color: black; font-weight: bold; -webkit-flex: 1; flex: 1" value="Folders"/>
-                <toolbarbutton id="expand" image="/img/expandall.gif" />
-                <toolbarbutton id="contract" image="/img/collapseall.gif" />
-            </div>
-            <vlayout vflex="true" style="overflow: auto">
-            <tree id="tree" >
-                <treecols>
-                    <treecol label=""/>
-                </treecols>
-            </tree>
-            </vlayout>
-        </window>
+    <style>
+        .h-inline-block {
+            display: inline-block;
+            _display: inline;
+        }
+
+        .z-tree-icon {
+            vertical-align: unset;
+        }
+    </style>
+    <div class="z-west-header" style="display: -webkit-flex; display: flex">
+        <label style="color: unset; font-weight: bold; -webkit-flex: 1; flex: 1" value="Folders"/>
+        <toolbarbutton id="expand" image="/img/expandall.gif" />
+        <toolbarbutton id="contract" image="/img/collapseall.gif" />
+    </div>
+    <vlayout vflex="true" style="overflow: auto">
+        <tree id="tree" >
+            <treecols>
+                <treecol label=""/>
+            </treecols>
+        </tree>
+    </vlayout>
+</window>

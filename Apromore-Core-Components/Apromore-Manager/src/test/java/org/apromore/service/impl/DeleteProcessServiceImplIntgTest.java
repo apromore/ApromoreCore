@@ -22,12 +22,14 @@ package org.apromore.service.impl;
 
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.model.User;
 import org.apromore.helper.Version;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ProcessData;
+import org.apromore.service.SecurityService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -67,6 +69,8 @@ public class DeleteProcessServiceImplIntgTest {
     private CanoniserService cSrv;
     @Inject
     private ProcessService pSrv;
+    @Inject
+    private SecurityService sSrv;
 
     private String username = "james";
     private String domain = "Tests";
@@ -82,6 +86,7 @@ public class DeleteProcessServiceImplIntgTest {
         String natType = "EPML 2.0";
         String name = "AudioTest1";
         String branch = "MAIN";
+        User user = sSrv.getUserByName("james");
 
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test1.epml"), "text/xml"));
@@ -92,7 +97,7 @@ public class DeleteProcessServiceImplIntgTest {
         // Delete Process
         List<ProcessData> deleteList = new ArrayList<>();
         deleteList.add(new ProcessData(pst.getId(), version));
-        pSrv.deleteProcessModel(deleteList);
+        pSrv.deleteProcessModel(deleteList, user);
 
         // Try and Find it again
         CanonicalProcessType cpt = pSrv.getCurrentProcessModel(name, branch, false);
@@ -106,6 +111,7 @@ public class DeleteProcessServiceImplIntgTest {
         String natType = "EPML 2.0";
         String name = "AudioTest2";
         String branch = "MAIN";
+        User user = sSrv.getUserByName("james");
 
         // Insert Process
         DataHandler stream = new DataHandler(new ByteArrayDataSource(ClassLoader.getSystemResourceAsStream("EPML_models/test2.epml"), "text/xml"));
@@ -120,7 +126,7 @@ public class DeleteProcessServiceImplIntgTest {
         // Delete Process
         List<ProcessData> deleteList = new ArrayList<>();
         deleteList.add(new ProcessData(pst.getId(), version));
-        pSrv.deleteProcessModel(deleteList);
+        pSrv.deleteProcessModel(deleteList, user);
 
         // Try and Find it again
         CanonicalProcessType cpt = pSrv.getCurrentProcessModel(name, branch, false);

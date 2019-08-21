@@ -25,6 +25,9 @@
                 display: inline-block;
                 _display: inline;
             }
+            .z-hlayout, .z-vlayout {
+            overflow: unset;
+            }
         </style>
         <tree id="folderTree" vflex="true" width="100%" style="border-width: 0px;">
             <treecols sizable="true">
