@@ -148,7 +148,7 @@
 		} 
 
     .shortcutPopup {
-			background-color:rgba(0,255,0,0.3);
+			background:rgba(0,255,0,0.3);
       margin-left: 0px;
       margin-right: 0px;
 		}      
@@ -195,8 +195,8 @@
             <li><b>CTRL + Right-click</b> on an arc: retain only traces containing the selected direct-follow relation</li>
             <li><b>Right-click</b> on a node: remove all traces with an event containing the selected attribute</li>
             <li><b>CTRL + Right-click</b> on a node: retain only traces with an event containing the selected attribute</li>
-            <li><b>Alt (Option) + Right-click</b> on a node: remove all events containing the selected attribute</li>
-            <li><b>Alt (Option) + CTRL + Right-click</b> on a node: retain only events containing the selected attribute</li>
+            <li><b>ALT + Right-click</b> on a node: remove all events containing the selected attribute</li>
+            <li><b>ALT + CTRL + Right-click</b> on a node: retain only events containing the selected attribute</li>
           </ul>
           ]]>
         </html>
@@ -286,7 +286,7 @@
 										<label>Cases</label>
 										<label>Unique Cases</label>
 										<label>Events</label>
-										<label>Entities</label>
+										<label>Activities</label>
 										<label>Average Duration</label>
 										<label>Median Duration</label>
 										<label>Max Duration</label>
@@ -327,7 +327,7 @@
 						</columns>
 						<rows>
 							<row align="center">
-								<combobutton id="selector" label="Entity">
+								<combobutton id="selector" label="Activity">
 									<menupopup id="selectormenu" />
 								</combobutton>
 								<combobutton id="frequency" label="Frequency" onClick="case_frequency.setChecked(true);absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)">
@@ -368,7 +368,7 @@
 										<menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
 									</menupopup>
 								</combobutton>
-								<button id="details" label="Entities" />
+								<button id="details" label="Activities" />
 								<button id="cases" label="Cases" />
 								<button id="fitness" label="Fitness" />
 								<button id="filter" label="Filter" />

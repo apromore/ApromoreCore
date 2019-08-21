@@ -647,7 +647,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                 public void onEvent(Event event) throws Exception {
                     //Window details_window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), StringValues.b[17], null, null);
                 	Window details_window = (Window) Executions.createComponents("/zul/details.zul", null, null);
-                    details_window.setTitle("Entities");
+                    details_window.setTitle("Activities");
                     Listbox listbox = (Listbox) details_window.getFellow(StringValues.b[81]);
                     
                     Listheader pos = (Listheader) details_window.getFellow(StringValues.b[82]);
