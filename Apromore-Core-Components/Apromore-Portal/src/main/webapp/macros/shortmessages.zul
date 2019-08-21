@@ -19,17 +19,26 @@
   -->
 
 <!-- controller is ShortMessageController -->
-<window id="shortmessage" style="background: #DAE7F6">
-    <grid hflex="true">
-        <columns>
-            <column width="80px"></column>
-            <column></column>
-        </columns>
-        <rows>
-            <row style="background-color:#CDE6F5">
-                <image id="image" src="img/info.png" visible="false"/>
-                <label id="message" value="no messages"/>
-            </row>
-        </rows>
-    </grid>
-</window>
+
+
+<zk>
+    <style>
+        .unsetColor {
+        background: none repeat scroll 0% 0% unset;
+        }
+    </style>
+    <window id="shortmessage" sclass="z-window" style="line-height: 40px;">
+        <grid hflex="true">
+            <columns>
+                <column width="80px"></column>
+                <column></column>
+            </columns>
+            <rows>
+                <row zclass="unsetColor">
+                    <image id="image" src="img/info.png" visible="false"/>
+                    <label id="message" value="no messages"/>
+                </row>
+            </rows>
+        </grid>
+    </window>
+</zk>

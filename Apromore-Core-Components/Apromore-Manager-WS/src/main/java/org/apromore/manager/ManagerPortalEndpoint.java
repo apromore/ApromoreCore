@@ -244,7 +244,7 @@ public class ManagerPortalEndpoint {
                 }
                 processVersions.add(new ProcessData(p.getProcessId(), new Version(version)));
             }
-            procSrv.deleteProcessModel(processVersions);
+            procSrv.deleteProcessModel(processVersions, secSrv.getUserByName(payload.getUsername()));
 
             result.setCode(0);
             result.setMessage("");

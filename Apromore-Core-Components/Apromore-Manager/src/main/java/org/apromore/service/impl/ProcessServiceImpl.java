@@ -717,18 +717,20 @@ public class ProcessServiceImpl implements ProcessService {
      */
     @Override
     @Transactional(readOnly = false)
-    public void deleteProcessModel(final List<ProcessData> models) {
-        ProcessModelVersion pvid;
+    public void deleteProcessModel(final List<ProcessData> models, final User user) throws UpdateProcessException {
         for (ProcessData entry : models) {
-            try {
-                pvid = processModelVersionRepo.getCurrentProcessModelVersion(entry.getId(), entry.getVersionNumber().toString());
+            ProcessModelVersion pvid = processModelVersionRepo.getCurrentProcessModelVersion(entry.getId(), entry.getVersionNumber().toString());
 
-                if (pvid != null) {
-                    Process process = pvid.getProcessBranch().getProcess();
-                    List<ProcessBranch> branches = process.getProcessBranches();
+            if (pvid != null) {
+                Process process = pvid.getProcessBranch().getProcess();
+                if (!canUserWriteProcess(user, process.getId())) {
+                    throw new UpdateProcessException("Write permission denied for " + user.getUsername());
+                }
+                List<ProcessBranch> branches = process.getProcessBranches();
 
-                    LOGGER.debug("Retrieving the Process Model of the current version of " + process.getName() + " to be deleted.");
+                LOGGER.debug("Retrieving the Process Model of the current version of " + process.getName() + " to be deleted.");
 
+                try {
                     // Only delete the version selected, but if there is only a single version then remove all of the process
                     if (branches.size() > 1 || (branches.size() == 1 && pvid.getProcessBranch().getProcessModelVersions().size() > 1)) {
                         ProcessBranch branch = pvid.getProcessBranch();
@@ -738,17 +740,22 @@ public class ProcessServiceImpl implements ProcessService {
                         deleteProcessModelVersion(pvid);
                         processRepo.delete(process);
                     }
-
-                    // Also delete the PQL index for this process model version
-                    //notifyDelete(pvid);
-
-                    // Notify process plugin providers
-                    notifyProcessPlugins(pvid);
+                } catch (ExceptionDao e) {
+                    throw new UpdateProcessException("Unable to modify " + process.getName(), e);
                 }
+
+                // Also delete the PQL index for this process model version
+                //notifyDelete(pvid);
+
+                // Notify process plugin providers
+                notifyProcessPlugins(pvid);
+            }
+/*
             } catch (Exception e) {
                 String msg = "Failed to delete the current version of the Process with id: " + entry.getId();
                 LOGGER.error(msg, e);
             }
+*/
         }
     }
 

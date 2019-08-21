@@ -1100,6 +1100,7 @@
         <xs:sequence>
             <xs:element name="ProcessVersionIdentifier" type="tns:ProcessVersionIdentifierType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
+        <xs:attribute name="username" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="DeleteProcessVersionsOutputMsgType">

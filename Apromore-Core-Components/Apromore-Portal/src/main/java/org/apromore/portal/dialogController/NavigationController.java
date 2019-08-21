@@ -46,10 +46,10 @@ public class NavigationController extends BaseController {
         mainC = newMainC;
 
         Window treeW = (Window) mainC.getFellow("navigationcomp").getFellow("treeW");
-        treeW.setContentStyle("background-image: none; background-color: white");
+//        treeW.setContentStyle("background-image: none; background-color: white");
 
         tree = (Tree) treeW.getFellow("tree");
-        tree.setStyle("background-image: none; background-color: white");
+//        tree.setStyle("background-image: none; background-color: white");
 
         Button expandBtn = (Button) treeW.getFellow("expand");
         Button contractBtn = (Button) treeW.getFellow("contract");
