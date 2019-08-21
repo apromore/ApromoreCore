@@ -129,11 +129,29 @@
 			margin-right: 1px;
 		}
     
+    .optionButton {
+			position: absolute;
+      right: 130px;
+      margin-right: 10px;
+		}
+    
+    .shortcutButton {
+			position: absolute;
+      right: 80px;
+      margin-right: 10px;
+		}
+    
     .helpButton {
 			position: absolute;
       right: 0px;
       margin-right: 10px;
-		}
+		} 
+
+    .shortcutPopup {
+			background-color:rgba(0,255,0,0.3);
+      margin-left: 0px;
+      margin-right: 0px;
+		}      
     
     .z-caption.customPosition .z-caption-content i {
       position: absolute;
@@ -144,15 +162,51 @@
 		
 	<window id="win" border="0" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
 		<caption id="windowcaption" sclass="mainCaption">
+      <button id="optionButton" label="Hide options" style="float: right;" height="25px" iconSclass="z-icon-chevron-up" sclass="optionButton">
+          <attribute name="onClick">
+            <![CDATA[
+              optionButton.setIconSclass(optionbox.isOpen() ? "z-icon-chevron-down" : "z-icon-chevron-up");
+              optionButton.setLabel(optionbox.isOpen() ? "Show options" : "Hide options");
+              optionbox.setOpen(!optionbox.isOpen());
+              Clients.evalJavaScript("resize();");
+              optionbox.invalidate();
+            ]]>
+					</attribute>
+      </button>
+      
+      <button id="shortcutButton" style="float: right;" height="25px" iconSclass="z-icon-keyboard-o" sclass="shortcutButton">
+          <attribute name="onClick">
+            <![CDATA[
+              shortcutPopup.open(self,"after_pointer");
+            ]]>
+					</attribute>      
+      </button>      
+      
 			<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
 				<button label="Help" image="/img/Help-16x16.png" style="float: right;" height="25px" sclass="helpButton"></button>
 			</a>
 		</caption>
+    
+    <popup id="shortcutPopup" width="600px">
+        <html>
+          <![CDATA[
+          <ul>
+            <li><b>Right-click</b> on an arc: remove all traces containing the selected direct-follow relation</li>
+            <li><b>CTRL + Right-click</b> on an arc: retain only traces containing the selected direct-follow relation</li>
+            <li><b>Right-click</b> on a node: remove all traces with an event containing the selected attribute</li>
+            <li><b>CTRL + Right-click</b> on a node: retain only traces with an event containing the selected attribute</li>
+            <li><b>Alt (Option) + Right-click</b> on a node: remove all events containing the selected attribute</li>
+            <li><b>Alt (Option) + CTRL + Right-click</b> on a node: retain only events containing the selected attribute</li>
+          </ul>
+          ]]>
+        </html>
+    </popup>
 
 		<n:table style="height:100%;width:100%;border:0px;">
 			<n:tr>
 				<n:td>
 					<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%">
+            <!--
 						<attribute name="onOpen">
 							<![CDATA[
                 optionlabel.setIconSclass(self.isOpen() ? "z-icon-chevron-up" : "z-icon-chevron-down");
@@ -161,8 +215,12 @@
                 
 							]]>
 						</attribute>
+            -->
+            
+            <!--
 						<caption id="optionlabel" label="Options" width="100%" sclass="customPosition" iconSclass="z-icon-chevron-up">
 						</caption>
+            -->
             
 						
 						<hbox align="center" id="optiondetails">
