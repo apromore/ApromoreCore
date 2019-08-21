@@ -228,7 +228,7 @@
 										<label>Cases</label>
 										<label>Unique Cases</label>
 										<label>Events</label>
-										<label>Activities</label>
+										<label>Entities</label>
 										<label>Average Duration</label>
 										<label>Median Duration</label>
 										<label>Max Duration</label>
@@ -269,7 +269,7 @@
 						</columns>
 						<rows>
 							<row align="center">
-								<combobutton id="selector" label="Selector">
+								<combobutton id="selector" label="Entity">
 									<menupopup id="selectormenu" />
 								</combobutton>
 								<combobutton id="frequency" label="Frequency" onClick="case_frequency.setChecked(true);absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)">
@@ -310,7 +310,7 @@
 										<menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
 									</menupopup>
 								</combobutton>
-								<button id="details" label="Activities" />
+								<button id="details" label="Entities" />
 								<button id="cases" label="Cases" />
 								<button id="fitness" label="Fitness" />
 								<button id="filter" label="Filter" />
