@@ -109,7 +109,7 @@ public class UpdateProcessServiceImplIntgTest {
         // Delete Process
         List<ProcessData> deleteList = new ArrayList<>();
         deleteList.add(new ProcessData(pst.getId(), updatedVersion));
-        pSrv.deleteProcessModel(deleteList);
+        pSrv.deleteProcessModel(deleteList, user);
 
         // Try and Find it again
         CanonicalProcessType cpt = pSrv.getCurrentProcessModel(name, branch, false);

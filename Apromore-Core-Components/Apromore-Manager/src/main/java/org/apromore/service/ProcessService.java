@@ -218,8 +218,10 @@ public interface ProcessService {
     /**
      * Deletes the current process model version of the given branch.
      * @param models A map of models that are to be removed.
+     * @param user with write permission
+     * @throws UpdateProcessException if the user doesn't have write permission on any of the models
      */
-    void deleteProcessModel(List<ProcessData> models);
+    void deleteProcessModel(List<ProcessData> models, User user) throws UpdateProcessException;;
 
 
     /**
