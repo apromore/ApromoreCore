@@ -252,7 +252,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //            sp.setImage("img/close-icon.png");
 //            sp.setIconSclass("z-icon-compress");
             sp.setStyle("margin-left:10px;");
-            sp.setIconSclass("z-icon-times");
+            sp.setIconSclass("z-icon-times fa-xs");
 //            sp.setZclass("min-height: 16px;");
             A hidelink = new A();
             hidelink.appendChild(sp);
