@@ -44,8 +44,9 @@
                 </row>
                 <row spans="3">
                     <div align="center">
-                        <button id="okButtonImport" label="OK" image="img/ok.png" disabled="true" />
-                        <button id="cancelButtonImport" label="Cancel" image="img/cancel2.png" />
+                        <button id="okButtonImport" label="OK" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" />
+                        <button id="cancelButtonImport" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" >
+                        </button>
                     </div>
                 </row>
             </rows>
