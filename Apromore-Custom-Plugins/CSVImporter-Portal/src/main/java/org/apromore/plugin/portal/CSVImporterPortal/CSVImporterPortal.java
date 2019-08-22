@@ -156,13 +156,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 String BomC = new String(header[0].getBytes(), Charset.forName("UTF-8"));
                 header[0] = BomC;
 
-//                Messagebox.show("A: " + BomC + " First is: " + header[0].getBytes().toString() +", suppose to be: ï»¿STU_ID");
                 if(header.length > 9) {
                     window.setWidth("100%");
                 } else {
-                    Double DynamicWidth = null;
-                    DynamicWidth = 10.88 * header.length;
-//                    window.setWidth(DynamicWidth + "%");
+//                    Double DynamicWidth = null;
+//                    DynamicWidth = 10.88 * header.length;
+////                    window.setWidth(DynamicWidth + "%");
                     window.setWidth("auto");
                 }
 
@@ -226,7 +225,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         csvImporterLogic.setOtherTimestamps(result);
                         createPopUpTextBox(newLine.length, popUPBox);
                         csvImporterLogic.openPopUp();
-
                         reader.close();
                     }
             } catch (IOException e) {
@@ -251,7 +249,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //            sp.setLabel("-");
 //            sp.setImage("img/close-icon.png");
 //            sp.setIconSclass("z-icon-compress");
-            sp.setStyle("margin-left:10px;");
+            sp.setStyle("margin-left:10px; line-height: 10px; min-height: 5px; padding:3px;");
             sp.setIconSclass("z-icon-times");
 //            sp.setZclass("min-height: 16px;");
             A hidelink = new A();
@@ -269,8 +267,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     csvImporterLogic.tryParsing(event.getValue(), Integer.parseInt(textbox.getId().replace(textboxID,"")));
                 }
             });
-//            item.appendChild(textbox);
-
             Label check_lbl = new Label();
             check_lbl.setId(labelID + i);
             item.appendChild(check_lbl);
