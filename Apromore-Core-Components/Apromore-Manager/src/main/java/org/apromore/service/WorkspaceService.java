@@ -20,12 +20,12 @@
 
 package org.apromore.service;
 
-import org.apromore.dao.dataObject.FolderTreeNode;
-import org.apromore.dao.model.*;
-
 import java.util.List;
 
+import org.apromore.dao.dataObject.FolderTreeNode;
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
+import org.apromore.exception.NotAuthorizedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,7 +39,7 @@ public interface WorkspaceService {
 
     /**
      * Finds a folders and returns it.
-     * @param folderId the id oif the folder to find.
+     * @param folderId the id of the folder to find.
      * @return the found folder or null.
      */
     Folder getFolder(Integer folderId);
@@ -62,9 +62,9 @@ public interface WorkspaceService {
 
     boolean isGEDReadyFolder(Integer folderId);
 
-    void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady);
+    void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady, User user) throws NotAuthorizedException;
 
-    void deleteFolder(Integer folderId);
+    void deleteFolder(Integer folderId, User user) throws NotAuthorizedException;
 
     List<FolderTreeNode> getWorkspaceFolderTree(String userId);
 

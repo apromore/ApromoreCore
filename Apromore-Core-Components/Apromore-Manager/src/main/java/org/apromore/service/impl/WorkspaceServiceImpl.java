@@ -24,6 +24,7 @@ import org.apromore.dao.*;
 import org.apromore.dao.dataObject.FolderTreeNode;
 import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
+import org.apromore.exception.NotAuthorizedException;
 import org.apromore.service.WorkspaceService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -172,20 +173,40 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady) {
+    public void updateFolder(Integer folderId, String folderName, Boolean isGEDMatrixReady, User user) throws NotAuthorizedException {
+        if (!canUserWriteFolder(user, folderId)) {
+            throw new NotAuthorizedException("User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
+        }
         Folder folder = folderRepo.findOne(folderId);
         if(folderName != null && !folderName.isEmpty()) folder.setName(folderName);
         if(isGEDMatrixReady != null) {
             folder.setGEDMatrixReady(isGEDMatrixReady);
             for(Folder subfolder : folder.getSubFolders()) {
-                updateFolder(subfolder.getId(), null, isGEDMatrixReady);
+                updateFolder(subfolder.getId(), null, isGEDMatrixReady, user);
             }
         }
     }
 
+    /**
+     * @param user  a user
+     * @param folderId  identifier for a folder
+     * @return whether the <var>user</var> should be allowed to update the folder identified by <var>folderId</var>
+     */
+    private boolean canUserWriteFolder(User user, Integer folderId) {
+        for (GroupFolder gf: groupFolderRepo.findByFolderAndUser(folderId, user.getRowGuid())) {
+            if (gf.isHasWrite()) {
+                 return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     @Transactional(readOnly = false)
-    public void deleteFolder(Integer folderId) {
+    public void deleteFolder(Integer folderId, User user) throws NotAuthorizedException {
+        if (!canUserWriteFolder(user, folderId)) {
+            throw new NotAuthorizedException("User " + user.getUsername() + " is not permitted to delete folder with id " + folderId);
+        }
         Folder folder = folderRepo.findOne(folderId);
         if (folder != null) {
             folderRepo.delete(folder);

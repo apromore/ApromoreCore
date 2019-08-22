@@ -1,6 +1,7 @@
 package org.apromore.service.impl;
 
 import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupLogRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.StatisticRepository;
@@ -54,6 +55,7 @@ public class EventLogServiceImplTest {
 
     private LogRepository logRepository;
     private GroupRepository groupRepository;
+    private GroupLogRepository groupLogRepository;
     private FolderRepository folderRepo;
     private UserService userSrv;
     private UserInterfaceHelper ui;
@@ -65,12 +67,13 @@ public class EventLogServiceImplTest {
     public final void setUp() throws Exception {
         logRepository = createMock(LogRepository.class);
         groupRepository = createMock(GroupRepository.class);
+        groupLogRepository = createMock(GroupLogRepository.class);
         folderRepo = createMock(FolderRepository.class);
         userSrv = createMock(UserService.class);
         ui = createMock(UserInterfaceHelper.class);
         statisticRepository = createMock(StatisticRepository.class);
 
-        eventLogService = new EventLogServiceImpl(logRepository, groupRepository, folderRepo, userSrv, ui, statisticRepository);
+        eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo, userSrv, ui, statisticRepository);
     }
 
 

@@ -92,7 +92,7 @@ public class RenameFolderController extends BaseController {
             }
 
             LOGGER.warning("folderName " + folderName);
-            this.mainController.getService().updateFolder(this.folderId, folderName);
+            this.mainController.getService().updateFolder(this.folderId, folderName, UserSessionManager.getCurrentUser().getUsername());
             this.mainController.reloadSummaries();
 
         } catch (Exception ex) {
