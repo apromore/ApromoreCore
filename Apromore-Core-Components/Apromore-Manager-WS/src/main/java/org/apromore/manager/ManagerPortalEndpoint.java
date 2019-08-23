@@ -28,6 +28,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.*;
 import org.apromore.exception.ExportFormatException;
+import org.apromore.exception.NotAuthorizedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.helper.CanoniserHelper;
 import org.apromore.helper.PluginHelper;
@@ -271,7 +272,7 @@ public class ManagerPortalEndpoint {
                 Log log = new Log(l.getId());
                 logs.add(log);
             }
-            logSrv.deleteLogs(logs);
+            logSrv.deleteLogs(logs, secSrv.getUserByName(payload.getUsername()));
 
             result.setCode(0);
             result.setMessage("");
@@ -1390,7 +1391,13 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        workspaceSrv.updateFolder(payload.getFolderId(), payload.getFolderName(), payload.isGEDMatrixReady());
+        try {
+            workspaceSrv.updateFolder(payload.getFolderId(), payload.getFolderName(), payload.isGEDMatrixReady(), secSrv.getUserByName(payload.getUsername()));
+        } catch (NotAuthorizedException ex) {
+            LOGGER.error("", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
 
         return new ObjectFactory().createUpdateFolderResponse(res);
     }
@@ -1416,7 +1423,13 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
 
-        workspaceSrv.deleteFolder(payload.getFolderId());
+        try {
+            workspaceSrv.deleteFolder(payload.getFolderId(), secSrv.getUserByName(payload.getUsername()));
+        } catch (NotAuthorizedException ex) {
+            LOGGER.error("", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
 
         return new ObjectFactory().createDeleteFolderResponse(res);
     }

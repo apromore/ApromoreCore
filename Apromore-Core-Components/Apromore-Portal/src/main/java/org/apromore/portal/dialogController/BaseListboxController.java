@@ -337,7 +337,7 @@ public abstract class BaseListboxController extends BaseController {
     /* Removes all the selected folders and the containing folders and processes. */
     private void deleteFolders(ArrayList<FolderType> folders, MainController mainController) {
         for (FolderType folderId : folders) {
-            mainController.getService().deleteFolder(folderId.getId());
+            mainController.getService().deleteFolder(folderId.getId(), UserSessionManager.getCurrentUser().getUsername());
         }
         mainController.reloadSummaries();
     }

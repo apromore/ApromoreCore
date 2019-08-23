@@ -610,7 +610,6 @@ public class MainController extends BaseController implements MainControllerInte
      */
     public Map<SummaryType, List<VersionSummaryType>> getSelectedElementsAndVersions() {
         Map<SummaryType, List<VersionSummaryType>> summaryTypes = new HashMap<>();
-        String versionNumber;
 
         if (getBaseListboxController() instanceof ProcessListboxController) {
             ArrayList<VersionSummaryType> versionList;
@@ -621,24 +620,26 @@ public class MainController extends BaseController implements MainControllerInte
                 if (obj instanceof ProcessSummaryType) {
                     ProcessSummaryType processSummaryType = (ProcessSummaryType) obj;
                     versionList = new ArrayList<>();
-                    if (selectedVersions != null) {
+                    if (selectedVersions != null && !selectedVersions.isEmpty()) {
                         for (VersionDetailType detail: selectedVersions) {
                             versionList.add(detail.getVersion());
                         }
                     } else {
+                        String versionNumber = processSummaryType.getLastVersion();
                         for (VersionSummaryType summaryType : processSummaryType.getVersionSummaries()) {
-                            versionNumber = processSummaryType.getLastVersion();
                             if (summaryType.getVersionNumber().compareTo(versionNumber) == 0) {
                                 versionList.add(summaryType);
                             }
                         }
                     }
                     summaryTypes.put(processSummaryType, versionList);
-                }else if (obj instanceof LogSummaryType) {
+
+                } else if (obj instanceof LogSummaryType) {
                     summaryTypes.put((LogSummaryType) obj, null);
                 }
             }
         }
+        LOGGER.info("Got selected elements and versions");
         return summaryTypes;
     }
 

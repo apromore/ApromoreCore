@@ -483,12 +483,13 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void updateFolder(int folderId, String folderName) {
+    public void updateFolder(int folderId, String folderName, String username) {
         LOGGER.debug("Preparing createFolderRequest.....");
 
         UpdateFolderInputMsgType msg = new UpdateFolderInputMsgType();
         msg.setFolderId(folderId);
         msg.setFolderName(folderName);
+        msg.setUsername(username);
 
         JAXBElement<UpdateFolderInputMsgType> request = WS_CLIENT_FACTORY.createUpdateFolderRequest(msg);
 
@@ -498,11 +499,12 @@ public class ManagerServiceClient implements ManagerService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void deleteFolder(int folderId) {
+    public void deleteFolder(int folderId, String username) {
         LOGGER.debug("Preparing deleteFolderRequest.....");
 
         DeleteFolderInputMsgType msg = new DeleteFolderInputMsgType();
         msg.setFolderId(folderId);
+        msg.setUsername(username);
 
         JAXBElement<DeleteFolderInputMsgType> request = WS_CLIENT_FACTORY.createDeleteFolderRequest(msg);
 
@@ -1045,8 +1047,8 @@ public class ManagerServiceClient implements ManagerService {
     public void deleteElements(final Map<SummaryType, List<VersionSummaryType>> elements, String username) throws Exception {
         LOGGER.debug("Preparing DeleteProcessVersions.....");
 
-        for(Map.Entry<SummaryType, List<VersionSummaryType>> entry : elements.entrySet()) {
-            if(entry.getKey() instanceof ProcessSummaryType) {
+        for(SummaryType key: elements.keySet()) {
+            if (key instanceof ProcessSummaryType) {
                 DeleteProcessVersionsInputMsgType msg = new DeleteProcessVersionsInputMsgType();
                 msg.setUsername(username);
                 msg.getProcessVersionIdentifier().addAll(DeleteProcessVersionHelper.setElements(elements));
@@ -1057,9 +1059,10 @@ public class ManagerServiceClient implements ManagerService {
                 if (response.getValue().getResult().getCode() == -1) {
                     throw new Exception(response.getValue().getResult().getMessage());
                 }
-            }else {
+            } else if (key instanceof LogSummaryType) {
                 DeleteLogInputMsgType msg = new DeleteLogInputMsgType();
-                msg.getLogSummaryType().add((LogSummaryType) entry.getKey());
+                msg.setUsername(username);
+                msg.getLogSummaryType().add((LogSummaryType) key);
 
                 JAXBElement<DeleteLogInputMsgType> request = WS_CLIENT_FACTORY.createDeleteLogRequest(msg);
 
@@ -1067,6 +1070,8 @@ public class ManagerServiceClient implements ManagerService {
                 if (response.getValue().getResult().getCode() == -1) {
                     throw new Exception(response.getValue().getResult().getMessage());
                 }
+            } else {
+                throw new Exception("Deletion not supported for " + key);
             }
         }
     }

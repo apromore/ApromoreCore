@@ -71,7 +71,7 @@ public interface EventLogService {
 
     XLog getXLog(Integer logId);
 
-    void deleteLogs(List<Log> logs) throws Exception;
+    void deleteLogs(List<Log> logs, User user) throws Exception;
 
     void exportToStream(OutputStream outputStream, XLog log) throws Exception;
 

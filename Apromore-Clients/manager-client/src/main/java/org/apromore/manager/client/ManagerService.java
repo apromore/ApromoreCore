@@ -100,9 +100,9 @@ public interface ManagerService {
 
     boolean isGEDReadyFolder(int folderId);
 
-    void updateFolder(int folderId, String folderName);
+    void updateFolder(int folderId, String folderName, String username);
 
-    void deleteFolder(int folderId);
+    void deleteFolder(int folderId, String username);
 
     String saveFolderPermissions(int folderId, String userId, boolean hasRead, boolean hasWrite, boolean hasOwnership);
 

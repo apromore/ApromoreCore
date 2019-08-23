@@ -21,10 +21,12 @@ package org.apromore.service.impl;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.FolderRepository;
+import org.apromore.dao.GroupLogRepository;
 import org.apromore.dao.GroupRepository;
 import org.apromore.dao.LogRepository;
 import org.apromore.dao.StatisticRepository;
 import org.apromore.dao.model.*;
+import org.apromore.exception.NotAuthorizedException;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.SummariesType;
@@ -84,6 +86,7 @@ public class EventLogServiceImpl implements EventLogService {
 
     private LogRepository logRepo;
     private GroupRepository groupRepo;
+    private GroupLogRepository groupLogRepo;
     private FolderRepository folderRepo;
     private UserService userSrv;
     private UserInterfaceHelper ui;
@@ -95,9 +98,10 @@ public class EventLogServiceImpl implements EventLogService {
      * @param ui User Interface Helper.
      */
     @Inject
-    public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository, final FolderRepository folderRepo, final UserService userSrv, final UserInterfaceHelper ui, final StatisticRepository statisticRepository) {
+    public EventLogServiceImpl(final LogRepository logRepository, final GroupRepository groupRepository, final GroupLogRepository groupLogRepository, final FolderRepository folderRepo, final UserService userSrv, final UserInterfaceHelper ui, final StatisticRepository statisticRepository) {
         this.logRepo = logRepository;
         this.groupRepo = groupRepository;
+        this.groupLogRepo = groupLogRepository;
         this.folderRepo = folderRepo;
         this.userSrv = userSrv;
         this.ui = ui;
@@ -191,6 +195,20 @@ public class EventLogServiceImpl implements EventLogService {
         }
 
         return publicGroupLogs;
+    }
+
+    /**
+     * @param user  a user
+     * @param logId  identifier for a log
+     * @return whether the <var>user</var> should be allowed to update the log identified by <var>logId</var>
+     */
+    private boolean canUserWriteLog(User user, Integer logId) {
+        for (GroupLog gl: groupLogRepo.findByLogAndUser(logId, user.getRowGuid())) {
+            if (gl.getHasWrite()) {
+                 return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -467,8 +485,11 @@ public class EventLogServiceImpl implements EventLogService {
     }
 
     @Override
-    public void deleteLogs(List<Log> logs) throws Exception {
+    public void deleteLogs(List<Log> logs, User user) throws Exception {
         for(Log log : logs) {
+            if (!canUserWriteLog(user, log.getId())) {
+                throw new NotAuthorizedException("Log with id " + log.getId() + " may not be deleted by " + user.getUsername());
+            }
             Log realLog = logRepo.findUniqueByID(log.getId());
             logRepo.delete(realLog);
             logRepo.deleteProcessLog(realLog);
