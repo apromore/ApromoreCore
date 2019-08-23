@@ -18,14 +18,14 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.util;
+package org.apromore.plugin.portal.processdiscoverer.util;
 
 import java.text.DecimalFormat;
 
 public class TimeConverter
 {
 	public static final String DURATION_UNIT_MARKER = " ";
-	private static final DecimalFormat decimalFormat = new DecimalFormat(StringValues.b[123]);
+	private static final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
   
 	  /*
 	   * Convert from UI entry value to milliseconds

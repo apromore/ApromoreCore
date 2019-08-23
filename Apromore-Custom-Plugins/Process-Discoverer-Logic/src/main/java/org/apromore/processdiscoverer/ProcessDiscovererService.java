@@ -28,9 +28,9 @@ import org.json.JSONArray;
 
 public interface ProcessDiscovererService {
     public DFGAbstraction generateDFGAbstraction(XLog log, AbstractionParams params) throws Exception;
-    public Object[] generateDFGJSON(XLog log, AbstractionParams params) throws Exception;
+//    public Object[] generateDFGJSON(XLog log, AbstractionParams params) throws Exception;
     public BPMNAbstraction generateBPMNAbstraction(XLog log, AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception;
-    public Object[] generateBPMNJSON(XLog log, AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception;
+//    public Object[] generateBPMNJSON(XLog log, AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception;
     public TraceAbstraction generateTraceAbstraction(String traceID, AbstractionParams params) throws Exception;
-    public JSONArray generateTraceDFGJSON(String traceID, AbstractionParams params) throws Exception;
+//    public JSONArray generateTraceDFGJSON(String traceID, AbstractionParams params) throws Exception;
 }

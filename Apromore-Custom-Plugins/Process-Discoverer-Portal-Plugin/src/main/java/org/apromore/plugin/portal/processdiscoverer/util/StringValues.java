@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.util;
+package org.apromore.plugin.portal.processdiscoverer.util;
 
 import java.nio.charset.StandardCharsets;
 

@@ -52,12 +52,12 @@ public class LogUtils {
 
     // Get the start event name corresponding to the complete event <name>
     public static String getStartEvent(String name) {
-        return name.substring(0, name.length() - 8) + StringValues.b[119]; //"start"
+        return name.substring(0, name.length() - 8) + "start"; // StringValues.b[119]; //"start"
     }
 
     // Get the complete event name corresponding to the start event <name>
     public static String getCompleteEvent(String name) {
-        return name.substring(0, name.length() - 5) + StringValues.b[118]; //"complete"
+        return name.substring(0, name.length() - 5) + "complete"; //StringValues.b[118]; //"complete"
     }
 
     

@@ -25,7 +25,6 @@ import org.apromore.processdiscoverer.dfg.TraceDFG;
 import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.TraceAbstraction;
-import org.apromore.processdiscoverer.dfg.vis.JSONBuilder;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
 import org.apromore.processdiscoverer.logprocessors.TimeLog;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -52,25 +51,25 @@ public class ProcessDiscoverer implements ProcessDiscovererService {
     	return this.log;
     }
 
-    @Override
-    public Object[] generateDFGJSON(XLog log, AbstractionParams params) throws Exception {
-    	DFGAbstraction dfgAbstraction = null;
-    	if (params.getCorrepondingDFG() != null) {
-    		dfgAbstraction = params.getCorrepondingDFG();
-    	}
-    	else {
-    		dfgAbstraction = this.generateDFGAbstraction(log, params);
-    	}
-    	
-    	// Temporary handling because the new layout generates rare errors 
-//    	if (dfgAbstraction.getLayout() != null) {
-    		JSONBuilder jsonBuilder = new JSONBuilder(dfgAbstraction);
-            return new Object[] {jsonBuilder.generateJSONFromBPMN(false), dfgAbstraction} ;
+//    @Override
+//    public Object[] generateDFGJSON(XLog log, AbstractionParams params) throws Exception {
+//    	DFGAbstraction dfgAbstraction = null;
+//    	if (params.getCorrepondingDFG() != null) {
+//    		dfgAbstraction = params.getCorrepondingDFG();
 //    	}
 //    	else {
-//    		return null;
+//    		dfgAbstraction = this.generateDFGAbstraction(log, params);
 //    	}
-    }
+//    	
+//    	// Temporary handling because the new layout generates rare errors 
+////    	if (dfgAbstraction.getLayout() != null) {
+//    		JSONBuilder jsonBuilder = new JSONBuilder(dfgAbstraction);
+//            return new Object[] {jsonBuilder.generateJSONFromBPMN(false), dfgAbstraction} ;
+////    	}
+////    	else {
+////    		return null;
+////    	}
+//    }
     
     @Override
     public DFGAbstraction generateDFGAbstraction(XLog log, AbstractionParams params) throws Exception {
@@ -90,17 +89,17 @@ public class ProcessDiscoverer implements ProcessDiscovererService {
     	return logDfg.getDFGAbstraction(params);
     }
 
-    @Override
-    public Object[] generateBPMNJSON(XLog log, AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception {
-    	BPMNAbstraction bpmnAbstraction = this.generateBPMNAbstraction(log, params, dfgAbstraction);
-//    	if (bpmnAbstraction.getLayout() != null) {
-	        JSONBuilder jsonBuilder = new JSONBuilder(bpmnAbstraction);
-	        return new Object[] {jsonBuilder.generateJSONFromBPMN(false), bpmnAbstraction} ;
-//    	}
-//    	else {
-//    		return null;
-//    	}
-    }
+//    @Override
+//    public Object[] generateBPMNJSON(XLog log, AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception {
+//    	BPMNAbstraction bpmnAbstraction = this.generateBPMNAbstraction(log, params, dfgAbstraction);
+////    	if (bpmnAbstraction.getLayout() != null) {
+//	        JSONBuilder jsonBuilder = new JSONBuilder(bpmnAbstraction);
+//	        return new Object[] {jsonBuilder.generateJSONFromBPMN(false), bpmnAbstraction} ;
+////    	}
+////    	else {
+////    		return null;
+////    	}
+//    }
     
     @Override
     public BPMNAbstraction generateBPMNAbstraction(XLog log, AbstractionParams params, DFGAbstraction dfgAbstraction) throws Exception {
@@ -118,14 +117,6 @@ public class ProcessDiscoverer implements ProcessDiscovererService {
     	}
     	
     	return logDfg.getBPMNAbstraction(params, dfgAbstraction);
-    }
-    
-    // This method does not affect the internal status of ProcessDiscoverer object
-    @Override
-    public JSONArray generateTraceDFGJSON(String traceID, AbstractionParams params) throws Exception {
-        TraceAbstraction traceAbs = this.generateTraceAbstraction(traceID, params);
-        JSONBuilder jsonBuilder = new JSONBuilder(traceAbs);
-        return jsonBuilder.generateJSONFromBPMN(false);
     }
     
     // This method does not affect the internal status of ProcessDiscoverer object

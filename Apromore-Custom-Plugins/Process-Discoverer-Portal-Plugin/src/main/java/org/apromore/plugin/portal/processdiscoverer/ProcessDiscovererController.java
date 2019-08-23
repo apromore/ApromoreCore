@@ -35,6 +35,9 @@ import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
 import org.apromore.plugin.portal.logfilter.LogFilterPlugin;
 import org.apromore.plugin.portal.logfilter.LogFilterResultListener;
 import org.apromore.plugin.portal.logfilter.LogStatistics;
+import org.apromore.plugin.portal.processdiscoverer.json.JSONBuilder;
+import org.apromore.plugin.portal.processdiscoverer.util.StringValues;
+import org.apromore.plugin.portal.processdiscoverer.util.TimeConverter;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
@@ -45,13 +48,12 @@ import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.ArcType;
 import org.apromore.processdiscoverer.dfg.abstraction.AbstractAbstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.DFGAbstraction;
+import org.apromore.processdiscoverer.dfg.abstraction.TraceAbstraction;
 import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramBuilder;
 import org.apromore.processdiscoverer.logprocessors.ActivityClassifier;
 import org.apromore.processdiscoverer.logprocessors.EventClassifier;
 import org.apromore.processdiscoverer.logprocessors.LogUtils;
 import org.apromore.processdiscoverer.qualitymeasures.AlignmentBasedFitness;
-import org.apromore.processdiscoverer.util.StringValues;
-import org.apromore.processdiscoverer.util.TimeConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.EventLogService;
@@ -210,6 +212,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     private List<List<String>> filtered_log_cases; // list of cases in the filtered log (log after applying filter criteria)
     
     private BPMNDiagram diagram;
+    private AbstractAbstraction currentAbstraction;
     private JSONArray jsonDiagram; // the corresponding JSON format of the diagram
     private LogSummaryType logSummary;
 
@@ -772,7 +775,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 																	VisualizationType.DURATION, VisualizationAggregation.CASES, 
 																	VisualizationType.FREQUENCY, VisualizationAggregation.CASES,
 																	new HashSet<>(Arrays.asList(arcTypes)), null);                                
-                                JSONArray array = processDiscoverer.generateTraceDFGJSON(traceID, params);
+                                JSONArray array = ProcessDiscovererController.this.generateTraceDFGJSON(traceID, params);
 
                                 ProcessDiscovererController.this.displayTrace(array);
                             } catch(Exception e) {
@@ -1674,24 +1677,32 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 					new HashSet<>(Arrays.asList(arcTypes)), 
 					dfgAbstraction);
             
-            Object[] result = null;
             if(gateways.isChecked()) {
-            	result = processDiscoverer.generateBPMNJSON(this.filtered_log, params, dfgAbstraction);
+            	currentAbstraction = processDiscoverer.generateBPMNAbstraction(this.filtered_log, params, dfgAbstraction);
             }else {
-            	result = processDiscoverer.generateDFGJSON(this.filtered_log, params);
+            	currentAbstraction = dfgAbstraction;
             }
             
-//            if (result != null) {
-            	AbstractAbstraction abs = (AbstractAbstraction)result[1];
-            	jsonDiagram = (JSONArray) result[0];
-            	diagram = abs.getDiagram();
-            	this.display(jsonDiagram);
-//            }
+            diagram = currentAbstraction.getDiagram();
+	    	jsonDiagram = this.generateJSON(dfgAbstraction, params);
+	    	this.display(jsonDiagram);
             
         } catch(Exception e) {
         	e.printStackTrace();
             Messagebox.show(!e.getMessage().trim().isEmpty() ? e.getMessage() : "Unexpected error has occurred! Check log files.");
         }
+    }
+    
+    private JSONArray generateJSON(AbstractAbstraction dfgAbstraction, AbstractionParams params) throws Exception {
+    	JSONBuilder jsonBuilder = new JSONBuilder(dfgAbstraction);
+    	return jsonBuilder.generateJSONFromBPMN(false);
+    }
+    
+    // This method does not affect the internal status of ProcessDiscoverer object
+    public JSONArray generateTraceDFGJSON(String traceID, AbstractionParams params) throws Exception {
+    	TraceAbstraction traceAbs = processDiscoverer.generateTraceAbstraction(traceID, params);
+    	JSONBuilder jsonBuilder = new JSONBuilder(traceAbs);
+    	return jsonBuilder.generateJSONFromBPMN(false);
     }
     
     /**

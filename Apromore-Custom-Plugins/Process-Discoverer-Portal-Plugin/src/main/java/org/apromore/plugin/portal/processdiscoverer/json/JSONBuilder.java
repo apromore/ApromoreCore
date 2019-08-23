@@ -18,18 +18,20 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.processdiscoverer.dfg.vis;
+package org.apromore.plugin.portal.processdiscoverer.json;
 
 import org.apache.commons.lang.StringUtils;
+import org.apromore.plugin.portal.processdiscoverer.util.ColorGradient;
+import org.apromore.plugin.portal.processdiscoverer.util.StringValues;
+import org.apromore.plugin.portal.processdiscoverer.util.TimeConverter;
 import org.apromore.processdiscoverer.AbstractionParams;
 import org.apromore.processdiscoverer.VisualizationType;
 import org.apromore.processdiscoverer.dfg.abstraction.AbstractAbstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.Abstraction;
 import org.apromore.processdiscoverer.dfg.abstraction.BPMNAbstraction;
+import org.apromore.processdiscoverer.dfg.vis.BPMNDiagramLayouter;
+import org.apromore.processdiscoverer.dfg.vis.LayoutElement;
 import org.apromore.processdiscoverer.logprocessors.SimplifiedLog;
-import org.apromore.processdiscoverer.util.ColorGradient;
-import org.apromore.processdiscoverer.util.StringValues;
-import org.apromore.processdiscoverer.util.TimeConverter;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -57,7 +59,7 @@ import java.util.List;
  */
 public class JSONBuilder {
 
-    private final DecimalFormat decimalFormat = new DecimalFormat(StringValues.b[123]);
+    private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
 
     private final double change_color_limit = 0.7;
     private final String start_name = SimplifiedLog.START_NAME;

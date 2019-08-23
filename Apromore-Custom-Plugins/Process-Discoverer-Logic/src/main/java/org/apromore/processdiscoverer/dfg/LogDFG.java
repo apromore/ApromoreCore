@@ -470,5 +470,6 @@ public class LogDFG {
         BPMNDiagramBuilder.updateStartEndEventLabels(bpmnDiagram);
         return bpmnDiagram;
     }
+    
 
 }
