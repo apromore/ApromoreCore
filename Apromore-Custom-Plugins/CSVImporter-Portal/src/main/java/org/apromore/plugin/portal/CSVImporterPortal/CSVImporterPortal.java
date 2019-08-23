@@ -21,6 +21,7 @@
 package org.apromore.plugin.portal.CSVImporterPortal;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -30,9 +31,8 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
 
-import com.opencsv.CSVParser;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReaderBuilder;
+import com.opencsv.*;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -54,7 +54,6 @@ import org.zkoss.zul.Window;
 import org.zkoss.zul.*;
 
 import org.deckfour.xes.model.XLog;
-import com.opencsv.CSVReader;
 
 
 @Component("csvImporterPortalPlugin")
@@ -80,6 +79,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
     private static Integer AttribWidth = 150;
 
+    private boolean isPublic;
+
     private void saveLog(XLog xlog, String name, PortalContext portalContext) throws Exception {
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -95,7 +96,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 "xes.gz",
                 "",  // domain
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                false  // public?
+                isPublic  // public?
         );
 
         portalContext.refreshContent();
@@ -130,12 +131,14 @@ public class CSVImporterPortal implements FileImporterPlugin {
         } else {
             try {
 
-                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
+                RFC4180ParserBuilder builder = new RFC4180ParserBuilder();
+                RFC4180Parser parser = builder.withSeparator(separator).build();
+//                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
                 // check file format to choose correct file reader.
                 if (media.isBinary()) {
-                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).build();
+                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 } else {
-                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).build();
+                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 }
                 String[] header;
                 String[] line;
@@ -149,13 +152,18 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 /// display first numberOfrows to user and display drop down lists to set attributes
                 header = reader.readNext();   // read first line
 
-//                window.setHeight("100%");
+                // Deal with UTF-8 with BOM file encoding
+                String BomC = new String(header[0].getBytes(), Charset.forName("UTF-8"));
+                header[0] = BomC;
+
+//                Messagebox.show("A: " + BomC + " First is: " + header[0].getBytes().toString() +", suppose to be: ï»¿STU_ID");
                 if(header.length > 9) {
                     window.setWidth("100%");
                 } else {
                     Double DynamicWidth = null;
                     DynamicWidth = 10.88 * header.length;
-                    window.setWidth(DynamicWidth + "%");
+//                    window.setWidth(DynamicWidth + "%");
+                    window.setWidth("auto");
                 }
 
                 for (int i = 0; i < header.length; i++) {
@@ -167,7 +175,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     myGrid.getColumns().appendChild(newColumn);
 //                    myGrid.getColumns().setSizable(true);
                 }
-                // add dropdown lists
                 if (attrBox != null) {
                     attrBox.getChildren().clear();
                 }
@@ -182,14 +189,16 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 if (line == null || header == null) {
                     Messagebox.show("Could not parse file!");
                 }
-
+                    String[] myLine = header;
                     csvImporterLogic.setLine(line);
                     csvImporterLogic.setHeads(header);
-                    csvImporterLogic.setOtherTimestamps();
+                    csvImporterLogic.setOtherTimestamps(result);
 
                     if (line.length != header.length) {
                         Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
-                        window.detach();
+                        if(window != null) {
+                            window.detach();
+                        }
                         reader.close();
                     } else {
 
@@ -201,10 +210,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         for (Listbox list : lists) {
                             attrBox.appendChild(list);
                         }
-
-                        createPopUpTextBox(line.length, popUPBox);
-                        csvImporterLogic.openPopUp();
-
+                        String[] newLine = line;
 
                         // display first 1000 rows
                         int numberOfrows = 1000 - 1;
@@ -213,6 +219,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
                             numberOfrows--;
                             line = reader.readNext();
                         }
+
+
+                        csvImporterLogic.automaticFormat(result, myLine);
+                        csvImporterLogic.setOtherTimestamps(result);
+                        createPopUpTextBox(newLine.length, popUPBox);
+                        csvImporterLogic.openPopUp();
+
                         reader.close();
                     }
             } catch (IOException e) {
@@ -283,6 +296,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
     public void importFile(Media media, PortalContext portalContext, boolean isPublic) {
         LOGGER.info("Import file: " + media.getName());
 
+        this.isPublic = isPublic;
+
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
 //            Label fileNameLabel = (Label) window.getFellow("fileNameLabel");
@@ -309,6 +324,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 if (Arrays.asList(allowedExtensions).contains(media.getFormat())) {
 
                     displayCSVContent(media, result, myGrid, attrBox, popUPBox, window);
+
                     if (window != null) {
                         // set grid model
                         if (result != null) {
@@ -337,12 +353,16 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         // on clicking the button: CONVERT TO XES
                         if (media != null) {
                             try {
-                                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
+                                RFC4180ParserBuilder builder = new RFC4180ParserBuilder();
+                                RFC4180Parser parser = builder.withSeparator(separator).build();
+
+
+//                                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
                                 // check file format to choose correct file reader.
                                 if (media.isBinary()) {
-                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).build();
+                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 } else {
-                                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).build();
+                                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 }
                             }catch (Exception e) {
                                 LOGGER.error("Failed to read");

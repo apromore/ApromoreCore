@@ -6,6 +6,7 @@ import org.deckfour.xes.model.XLog;
 import org.zkoss.util.media.Media;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 
 import java.io.FileNotFoundException;
@@ -30,11 +31,11 @@ public interface CSVImporterLogic {
     void setHeads(String[] line);
     HashMap<String, Integer> getHeads();
     void setLine(String[] line);
-
+    void automaticFormat(ListModelList<String[]> result, String[] myHeader);
      void resetLine();
      void resetHead();
      void resetList() ;
-     void setOtherTimestamps();
+     void setOtherTimestamps(ListModelList<String[]> result);
     void setLists(int cols, HashMap<String, Integer> heads, String boxwidth);
      List<Listbox> getLists();
     void tryParsing(String format, int colPos);

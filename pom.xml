@@ -119,6 +119,7 @@
         <module>Apromore-Plugins</module>
 
         <module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
+				<module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin</module>
 
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/APQL-Portal-Plugin</module>
@@ -306,7 +307,7 @@
         <jackson.version>1.9.12</jackson.version>
         <xmlbeans.version>2.4.0</xmlbeans.version>
 
-        <zk.version>8.0.2.2</zk.version>
+        <zk.version>8.6.0.1</zk.version>
         <zk.spring.version>3.1</zk.spring.version>
         <zk.security.version>3.1</zk.security.version>
 
@@ -424,7 +425,7 @@
             <dependency>
                 <groupId>com.raffaeleconforti</groupId>
                 <artifactId>assembly</artifactId>
-                <version>1.0.20190617</version>
+                <version>1.0.20190812</version>
             </dependency>
 
             <dependency>
@@ -464,7 +465,7 @@
             <dependency>
                 <groupId>org.apromore</groupId>
                 <artifactId>bpmntk-osgi</artifactId>
-                <version>2.0</version>
+                <version>2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apromore</groupId>
@@ -2241,7 +2242,9 @@
                 </repository>
             </repositories>
             <modules>
+                <module>../Dashboard</module>
                 <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>
+                <!-- <module>Apromore-OSGI-Bundles/zkthemepack-osgi</module> -->
             </modules>
         </profile>
     </profiles>

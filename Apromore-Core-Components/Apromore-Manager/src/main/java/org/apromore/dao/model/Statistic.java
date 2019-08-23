@@ -1,5 +1,6 @@
 package org.apromore.dao.model;
 
+import org.apromore.util.UuidAdapter;
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheCoordinationType;
 import org.springframework.beans.factory.annotation.Configurable;

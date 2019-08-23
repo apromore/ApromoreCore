@@ -128,45 +128,42 @@
 			text-align: right;
 			margin-right: 1px;
 		}
-
-		.captionButton {
-			font-size: 18px;
-			margin: 0px 0px 0px -1px;
-			padding: 2px 6px;
-			border: 1px solid #cfcfcf;
-			color: #636363;
+    
+    .helpButton {
+			position: absolute;
+      right: 0px;
+      margin-right: 10px;
 		}
-		
-		.open-true {float:right; background:url('/img/up.png')
-		no-repeat right 0; height: 20px; padding-right: 20px;
-		font-weight: bold; }
-
-		.open-false {float:right; background:url('/img/down.png')
-		no-repeat right 0; height: 20px; padding-right: 20px;
-		font-weight: bold; }
+    
+    .z-caption.customPosition .z-caption-content i {
+      position: absolute;
+      right: 0px;
+      font-size: 16px; }
 		
 	</style>
 		
 	<window id="win" border="0" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
 		<caption id="windowcaption" sclass="mainCaption">
-			<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank" sclass="captionButtons">
-				<button label="Help" image="/img/Help-16x16.png" style="float: right;" height="25px"></button>
+			<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
+				<button label="Help" image="/img/Help-16x16.png" style="float: right;" height="25px" sclass="helpButton"></button>
 			</a>
 		</caption>
 
-		<n:table style="height:100%;width:100%;border:1px;">
+		<n:table style="height:100%;width:100%;border:0px;">
 			<n:tr>
 				<n:td>
-					<groupbox id="optionbox" closable="false" mold="3d" open="true" style="background-color:none;">
+					<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%">
 						<attribute name="onOpen">
 							<![CDATA[
-								//arrow.setSclass("open-" + self.isOpen());
+                optionlabel.setIconSclass(self.isOpen() ? "z-icon-chevron-up" : "z-icon-chevron-down");
+                Clients.evalJavaScript("resize();");
+                optionbox.invalidate();
+                
 							]]>
 						</attribute>
-						<caption id="optionlabel" label="Options" width="100%" sclass="customIcon" >
-							<!--<span id="arrow" class="open-true" />-->
-							<!--<div id="arrow" class="open-true"></div> -->
+						<caption id="optionlabel" label="Options" width="100%" sclass="customPosition" iconSclass="z-icon-chevron-up">
 						</caption>
+            
 						
 						<hbox align="center" id="optiondetails">
 							<vbox align="left" pack="center" width="80px">
@@ -308,7 +305,7 @@
 									<menupopup>
 										<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>
 										<menuitem id="exportBPMN" label="Save as BPMN Model..." onCheck='exportBPMN.setChecked(false)'/>
-										<menuitem id="exportBPMNAnnotatedForBIMP" label="Save as BPMN model annotated for BIMP..." onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>
+										<menuitem id="exportBPMNAnnotatedForBIMP" visible="false" label="Save as BPMN model annotated for BIMP..." onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>
 										<menuitem id="downloadPDF" label="Export map as PDF" onCheck='downloadPDF.setChecked(false)'/>
 										<menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
 									</menupopup>
@@ -325,7 +322,7 @@
 			</n:tr>
 			
 			<n:tr>
-				<n:td style="height:100%;width:100%">
+				<n:td style="height:100%;width:100%;">
 					<n:div id="cy" style="height:100%;width:100%;background-color:none;" />
 				</n:td>
 			</n:tr>
@@ -340,6 +337,7 @@
 		var currentLayout = 0, ctrlIsPressed = !1, altIsPressed = !1;
 		var currentZoomLevel = 1;
 		var currentPanPosition;
+    var smallViewportHeight=0;
 		var initialLoaded = true; // whether the graph is first open.
 		var loadTraceMode = false; // indidate that the graph is loading a trace, not a full log
 		
@@ -484,6 +482,25 @@
 			});
 			
 		}
+    
+    function resize() {
+      var optionbox = zk.Widget.$("$optionbox");
+      
+      //Some caveats of cytoscape
+      //Need to set width in exact pixels since cy.resize() will expand the viewport slightly
+      //Cytoscape.resize() can recalculate the height accurately with 100% setting when groupbox is open 
+      //However, it is not able to do that when groupbox is collapsed.
+      //Therefore the height must be remembered and set in pixels when groupbox is collapsed
+      if (!optionbox.isOpen()) {
+        document.getElementById('cy').setAttribute("style","width:"+window.cy.width()+"px;height:100%;");
+      }
+      else {
+        document.getElementById('cy').setAttribute("style","width:"+window.cy.width()+"px;height:"+smallViewportHeight+"px;");
+      }
+      
+      window.cy.resize();
+      window.cy.fit();
+    }
 
 		
 		function makeTippy(node, text){
@@ -533,7 +550,10 @@
 			else {
 				fitToWindow(layout_option);
 			}
-			
+      
+      if (smallViewportHeight==0) {
+        smallViewportHeight = window.cy.height();
+      }
 			
 			cy.edgeBendEditing({
 													undoable: true,

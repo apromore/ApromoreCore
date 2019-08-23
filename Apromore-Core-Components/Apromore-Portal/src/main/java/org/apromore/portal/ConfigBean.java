@@ -20,10 +20,15 @@
 
 package org.apromore.portal;
 
+// Java 2 Standard Edition
+import java.io.Serializable;
+
 // Third party packages
 import org.slf4j.LoggerFactory;
 
-public class ConfigBean {
+public class ConfigBean implements Serializable {
+
+    private static final long serialVersionUID = 117L;
 
     private String  siteEditor;
     private String  siteExternalHost;
