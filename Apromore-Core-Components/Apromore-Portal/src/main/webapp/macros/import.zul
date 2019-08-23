@@ -19,7 +19,7 @@
   -->
 
 <!-- importProcessesWindow window has ImportProcessesController as a controller -->
-<window id="importWindow" position="center" title="Import process models or logs"
+<window id="importWindow" position="center" title=port process models or logs"
         visible="true" sizable="true" width="550px">
     <vbox vflex="1">
         <grid>
