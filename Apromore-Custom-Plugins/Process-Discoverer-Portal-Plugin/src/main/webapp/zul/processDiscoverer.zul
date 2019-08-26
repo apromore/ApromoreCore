@@ -284,7 +284,7 @@
 								<rows>
 									<row height="58px">
 										<label>Cases</label>
-										<label>Unique Cases</label>
+										<label>Case Variants</label>
 										<label>Events</label>
 										<label>Activities</label>
 										<label>Average Duration</label>
