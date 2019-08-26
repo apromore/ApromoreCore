@@ -1684,7 +1684,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
             }
             
             diagram = currentAbstraction.getDiagram();
-	    	jsonDiagram = this.generateJSON(dfgAbstraction, params);
+	    	jsonDiagram = this.generateJSON(currentAbstraction, params);
 	    	this.display(jsonDiagram);
             
         } catch(Exception e) {
