@@ -107,7 +107,15 @@
         }
         .z-window {
         background-color: unset;
+        padding: 0;
+        margin: 0;
         }
+        .z-window-content {
+        background-color: unset;
+        padding: 0;
+        margin: 0;
+        }
+
         .z-paging {
         background: unset;
         }
@@ -150,17 +158,16 @@
 
                 <!---->
                 <toolbarbutton id="releaseNotes" sclass="z-listheader-content" />
-                <space bar="true" spacing="1px" style="height:100%; position:absolute;"/>
+                <space bar="true" spacing="1px" style="height:100%; background:#323232; position:absolute;" />
                 <toolbarbutton id="moreButton" label="Apromore Initiative" sclass="z-listheader-content" />
 
-                <space bar="true" spacing="1px" style="height:100%; position:absolute;"/>
+                <space bar="true" spacing="1px" style="height:100%; background:#323232; position:absolute;"/>
                 <toolbarbutton id="installedPlugins" label="Active Plugins" sclass="z-listheader-content"/>
 
-                <space bar="true" spacing="1px" style="height:100%; position:absolute;" visible="false"/>
+                <space bar="true" spacing="1px" style="height:100%; background:#323232; position:absolute;" visible="false"/>
                 <toolbarbutton id="webDav" label="webDav" sclass="z-listheader-content" visible="false"/>
 
-                <space bar="true" spacing="1px" style="height:100%; position:absolute;"/>
-                <toolbarbutton id="developerResources" label="Developer Resources" sclass="z-listheader-content"/>
+                <toolbarbutton id="developerResources" label="Developer Resources" sclass="z-listheader-content" visible="false"/>
 
             </div>
             <div style="float:right; margin-top: 5px; margin-right: 5px" >
