@@ -552,6 +552,15 @@ CREATE TABLE search_history
    search varchar(200)
 )
 ;
+CREATE TABLE statistic (
+  count bigint(20) auto_increment PRIMARY KEY NOT NULL,
+  id varbinary(16) NOT NULL,
+  logid int(11) DEFAULT NULL,
+  pid varbinary(16) DEFAULT NULL,
+  stat_key varchar(1023) DEFAULT NULL,
+  stat_value varchar(1023) DEFAULT NULL
+);
+CREATE INDEX idx_logid ON statistic(logid);
 CREATE TABLE user
 (
    id int auto_increment PRIMARY KEY NOT NULL,

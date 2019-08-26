@@ -52,6 +52,7 @@ DROP TABLE IF EXISTS `cluster`;
 DROP TABLE IF EXISTS `cluster_assignment`;
 DROP TABLE IF EXISTS `fragment_distance`;
 DROP TABLE IF EXISTS `metric`;
+DROP TABLE IF EXISTS `statistic`;
 
 DROP TABLE IF EXISTS `history_event`;
 
@@ -714,6 +715,16 @@ CREATE TABLE `metric` (
   CONSTRAINT `fk_metric1` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `statistic` (
+  `count` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` varbinary(16) NOT NULL,
+  `logid` int(11) DEFAULT NULL,
+  `pid` varbinary(16) DEFAULT NULL,
+  `stat_key` varchar(1023) DEFAULT NULL,
+  `stat_value` varchar(1023) DEFAULT NULL,
+  PRIMARY KEY (`count`),
+  KEY `idx_logid` (`logid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 -- Scheduler tables
