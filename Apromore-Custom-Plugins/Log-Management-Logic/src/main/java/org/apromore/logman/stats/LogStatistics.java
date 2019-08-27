@@ -63,6 +63,64 @@ public class LogStatistics {
 		return max;
 	}
 	
+	/**
+	 * 
+	 * @return: case_duration => number of cases
+	 */
+	public Map<Double, Integer> getCaseDurationStats() {
+		
+	}
+	
+	/**
+	 * 
+	 * @return: case utilization rate => numberOfCases
+	 */
+	public Map<Double, Integer> getCaseUtilization() {
+		
+	}
+	
+	/**
+	 * 
+	 * @return: number of events per case => numberOfCases have that number of events per case
+	 */
+	public Map<Double, Integer> getEventsPerCase() {
+		
+	}
+	
+	/**
+	 * 
+	 * @return: time window => numberOfCases in that time window
+	 */
+	public Map<Interval, Integer> getActiveCasesOverTime() {
+		
+	}
+	
+	/**
+	 * 
+	 * @return: time window => number of events in that time window
+	 */
+	public Map<Interval, Integer> getActiveCasesOverTime() {
+		
+	}
+	
+	/**
+	 * 
+	 * @return: avg waiting time => number of cases
+	 */
+	public Map<Double, Integer> getAvgProcessingTime() {
+		
+	}
+	
+	/**
+	 * 
+	 * @return: avg processing time => number of cases
+	 */
+	public Map<Double, Integer> getAvgWaitingTime() {
+		
+	}
+	
+	
+	
 	public XLog getLog() {
 		return log;
 	}
