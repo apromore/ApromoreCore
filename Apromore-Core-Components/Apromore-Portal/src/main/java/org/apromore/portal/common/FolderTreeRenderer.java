@@ -74,9 +74,9 @@ public class FolderTreeRenderer implements TreeitemRenderer {
         Hlayout hl = new Hlayout();
         hl.setValign("middle");
         if (folder.getId() == 0) {
-            hl.appendChild(new Image("/img/home-folder24.png"));
+            hl.appendChild(new Image("/img/icon/folder_home.svg"));
         } else {
-            hl.appendChild(new Image("/img/folder24.png"));
+            hl.appendChild(new Image("/img/icon/folder_icons.svg"));
         }
 
         hl.appendChild(new Label(folder.getFolderName()));

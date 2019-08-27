@@ -57,8 +57,8 @@
         <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
     </fileset>
 
-    <fileset id="pickupRepo-dashboard" dir="../Dashboard">
-        <include name="target/dashboard-0.1.war"/>
+    <fileset id="pickupRepo-enterprise-proprietary" dir="../Dashboard">
+        <include name="target/dashboard-0.2.war"/>
     </fileset>
     
     <target name="start-virgo-enterprise" depends="set-permissions,copy-virgo-enterprise">
@@ -106,7 +106,7 @@
         </copy>
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset refid="pickupRepo-enterprise"/>
-            <fileset refid="pickupRepo-dashboard"/>
+            <fileset refid="pickupRepo-enterprise-proprietary"/>
         </copy>
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset dir="${dir-annotation}">
