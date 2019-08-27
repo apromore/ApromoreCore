@@ -52,7 +52,7 @@ public final class Constants {
     public static final String FOLDER_ICON = "/img/icon/folder_icons.svg";
     public static final String PROCESS_ICON = "/img/icon/bpmn_model.svg";
     public static final String CLUSTER_ICON = "/img/icon/cluster-22x22.png";
-    public static final String LOG_ICON = "/img/icon/log-22x22.png";
+    public static final String LOG_ICON = "/img/icon/log_icon.svg";
 
     // Icons displayed in the "Ranking" column of the process summary list
     public static final String STAR_FULL_ICON = "/img/selectAll-12.png";
