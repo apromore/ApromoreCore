@@ -41,12 +41,12 @@
     <context:annotation-config />
     <context:spring-configured />
 	
-		<beans:bean id="logFilter" class="org.apromore.logfilter.impl.LogFilterImpl">
+	<beans:bean id="logFilter" class="org.apromore.logfilter.impl.LogFilterImpl">
     </beans:bean>
 		
-		<beans:bean id="logFilterFactory" class="org.apromore.logfilter.criteria.factory.impl.LogFilterCriterionFactoryImpl">
+	<beans:bean id="logFilterFactory" class="org.apromore.logfilter.criteria.factory.impl.LogFilterCriterionFactoryImpl">
     </beans:bean>
 		
     <osgi:service ref="logFilter" interface="org.apromore.logfilter.LogFilterService" />
-		<osgi:service ref="logFilterFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory" />
+	<osgi:service ref="logFilterFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory" />
 </beans:beans>

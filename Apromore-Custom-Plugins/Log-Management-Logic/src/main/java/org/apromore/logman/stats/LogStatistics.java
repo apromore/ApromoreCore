@@ -68,7 +68,7 @@ public class LogStatistics {
 	 * @return: case_duration => number of cases
 	 */
 	public Map<Double, Integer> getCaseDurationStats() {
-		
+		return null;
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class LogStatistics {
 	 * @return: case utilization rate => numberOfCases
 	 */
 	public Map<Double, Integer> getCaseUtilization() {
-		
+		return null;
 	}
 	
 	/**
@@ -84,31 +84,31 @@ public class LogStatistics {
 	 * @return: number of events per case => numberOfCases have that number of events per case
 	 */
 	public Map<Double, Integer> getEventsPerCase() {
-		
+		return null;
 	}
 	
 	/**
 	 * 
 	 * @return: time window => numberOfCases in that time window
 	 */
-	public Map<Interval, Integer> getActiveCasesOverTime() {
-		
-	}
+//	public Map<Interval, Integer> getActiveCasesOverTime() {
+//		return null;
+//	}
 	
 	/**
 	 * 
 	 * @return: time window => number of events in that time window
 	 */
-	public Map<Interval, Integer> getActiveCasesOverTime() {
-		
-	}
+//	public Map<Interval, Integer> getActiveCasesOverTime() {
+//		
+//	}
 	
 	/**
 	 * 
 	 * @return: avg waiting time => number of cases
 	 */
 	public Map<Double, Integer> getAvgProcessingTime() {
-		
+		return null;
 	}
 	
 	/**
@@ -116,7 +116,7 @@ public class LogStatistics {
 	 * @return: avg processing time => number of cases
 	 */
 	public Map<Double, Integer> getAvgWaitingTime() {
-		
+		return null;
 	}
 	
 	

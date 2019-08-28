@@ -61,6 +61,12 @@
         <!-- Free builds won't include the following encumbered components -->
         <include name="Apromore-OSGI-Bundles/zkcharts-osgi/target/zkcharts-osgi-*.jar"/>
         <include name="Apromore-OSGI-Bundles/zkthemepack-osgi/target/zkthemepack-osgi-*.jar"/>
+        
+        <!-- These plugins need to use .plan file to install them in order -->
+        <include name="Apromore-Custom-Plugins/Log-Filter-Logic/target/log-filter-logic-1.0.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Management-Logic/target/log-management-logic-1.0.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-API/target/log-filter-portal-plugin-api-1.0.0.jar"/>
+		<include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin/target/log-filter-portal-plugin-1.0.0.jar"/>
     </fileset>
 
     <!-- Virgo Related -->
@@ -165,7 +171,7 @@
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
-            <arg line="-clean -debug 8002"/>
+            <arg line="-clean -debug 8888"/>
         </exec>
         <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
             <arg line="-clean -debug"/>

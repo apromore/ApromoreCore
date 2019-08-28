@@ -1,14 +1,13 @@
 package org.apromore.logman;
 
 import java.util.List;
-import java.util.Map;
-
-import org.apromore.logfilter.LogFilterService;
+import java.util.Set;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
-import org.apromore.logfilter.impl.LogFilterImpl;
 import org.apromore.logman.stats.LogStatistics;
 import org.apromore.logman.stats.LogSummary;
+import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 
 import au.edu.qut.processmining.log.SimpleLog;
 
@@ -42,7 +41,7 @@ public class LogManager {
 	}
 	
 	public LogStatistics getOriginalLogStats() {
-		
+		return null;
 	}
 	
 	public String getClassifierAttribute() {
@@ -57,7 +56,7 @@ public class LogManager {
 			this.activityLog = this.originalLog;
 		}
 		else {
-			this.activityLog = this.createActivityLog(this.classifierAttribute);
+			this.activityLog = this.createActivityLog(this.originalLog, this.classifierAttribute);
 		}
 	}
 	
@@ -69,24 +68,30 @@ public class LogManager {
 		return this.simpleActivityLog;
 	}
 	
-	private XLog createActivityLog(String classifierAttribute) {
+	private XLog createActivityLog(XLog log, String classifierAttribute) {
 		if (classifierAttribute.equals(CONCEPT_NAME)) {
-			return this.eagerMatchStartEndEvents()
+			return this.eagerMatchStartEndEvents(log);
 		}
+		return null;
 	}
 	
 	private XLog eagerMatchStartEndEvents(XLog log) {
-		
+		for (XTrace trace : log) {
+			for (XEvent event: trace) {
+				
+			}
+		}
+		return null;
 	}
 	
 	public Set<String> getDistinctActivities() {
-		
+		return null;
 	}
 	
 	public void filter(List<LogFilterCriterion> filterCriteria) {
-		this.filterCriteria = filterCriteria;
-		LogFilterService logFilter = new LogFilterImpl();
-		XLog filteredLog = logFilter.filter(this.activityLog, filterCriteria);
+//		this.filterCriteria = filterCriteria;
+//		LogFilterService logFilter = new LogFilterImpl();
+//		XLog filteredLog = logFilter.filter(this.activityLog, filterCriteria);
 	}
 	
 	public XLog getFilteredLog() {
@@ -94,7 +99,7 @@ public class LogManager {
 	}
 	
 	public LogStatistics getFilteredLogStats() {
-		
+		return null;
 	}
 	
 	public List<LogFilterCriterion> getLogFilterCriteria() {

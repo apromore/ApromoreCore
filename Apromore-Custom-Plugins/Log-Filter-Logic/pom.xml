@@ -49,14 +49,14 @@
                             org.apromore.log-osgi;bundle-version="[1.0,2.0]"
                         </Import-Bundle>
                         <Import-Package>
-														org.springframework.beans.factory.aspectj,
+                            org.springframework.beans.factory.aspectj,
                             *
                         </Import-Package>
                         <Export-Package>
-														org.apromore.logfilter,
-														org.apromore.logfilter.criteria,
-														org.apromore.logfilter.criteria.model,
-														org.apromore.logfilter.criteria.factory
+                            org.apromore.logfilter,
+                            org.apromore.logfilter.criteria,
+                            org.apromore.logfilter.criteria.model,
+                            org.apromore.logfilter.criteria.factory
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -65,22 +65,22 @@
     </build>
 
     <dependencies>
-			<dependency>
-					<groupId>commons-lang</groupId>
-					<artifactId>commons-lang</artifactId>
-			</dependency>
-			
-			<dependency>
-					<groupId>org.apromore</groupId>
-					<artifactId>log-osgi</artifactId>
-					<version>1.1</version>
-			</dependency>
-			
-			<dependency>
-					<groupId>org.apromore</groupId>
-					<artifactId>eclipse-collections-osgi</artifactId>
-					<version>1.1</version>
-			</dependency>					
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>log-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>eclipse-collections-osgi</artifactId>
+            <version>1.1</version>
+        </dependency>					
     </dependencies>
 </project>
 

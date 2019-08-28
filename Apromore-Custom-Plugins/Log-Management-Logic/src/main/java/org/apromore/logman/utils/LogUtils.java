@@ -20,7 +20,6 @@
 
 package org.apromore.logman.utils;
 
-import java.nio.charset.StandardCharsets;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;

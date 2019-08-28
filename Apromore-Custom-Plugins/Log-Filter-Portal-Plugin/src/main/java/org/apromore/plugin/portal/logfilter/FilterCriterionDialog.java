@@ -32,6 +32,8 @@ import org.apromore.logfilter.criteria.model.Level;
 import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
 import org.apromore.logfilter.criteria.model.Type;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.logfilter.util.NumberComparator;
+import org.apromore.plugin.portal.logfilter.util.StringComparator;
 import org.apromore.plugin.portal.logfilter.util.TimeConverter;
 import java.io.IOException;
 import java.sql.Time;
@@ -44,7 +46,7 @@ import java.util.Calendar;
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Modified by Bruce Nguyen
  */
-class FilterCriterionDialog {
+public class FilterCriterionDialog {
 
     private final DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
     private final String label;

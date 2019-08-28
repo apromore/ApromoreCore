@@ -15,11 +15,16 @@ import javax.xml.datatype.DatatypeFactory;
 import org.apromore.logfilter.LogFilterService;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
+import org.apromore.logman.stats.LogStatistics;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.logfilter.api.LogFilterInputParams;
+import org.apromore.plugin.portal.logfilter.api.LogFilterOuputParams;
+import org.apromore.plugin.portal.logfilter.api.LogFilterPlugin;
+import org.apromore.plugin.portal.logfilter.api.LogFilterResultListener;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
@@ -40,7 +45,7 @@ import org.zkoss.zul.Messagebox;
  * @author Bruce Nguyen
  *
  */
-public class LogFilterPlugin extends DefaultPortalPlugin implements LogFilterInterface, LogFilterResultListener {
+public class LogFilterStandardPlugin extends DefaultPortalPlugin implements LogFilterPlugin, LogFilterResultListener {
 	private PortalContext portalContext;
 	private LogSummaryType portalItem;
 	private String label = "Log Filter";
@@ -110,12 +115,8 @@ public class LogFilterPlugin extends DefaultPortalPlugin implements LogFilterInt
 	 * This method is used by other plugins to call to this plugin
 	 * The return result is the filtered log
 	 */
-	public void execute(PortalContext portalContext, XLog log, String label, 
-							List<LogFilterCriterion> originalCriteria,
-							LogStatistics logStats,
-							LogFilterService logFilterService,
-							LogFilterCriterionFactory logFilterCriterionFactory,
-							LogFilterResultListener resultListener) {
+    public void execute(PortalContext portalContext, LogFilterInputParams inputParams,
+            LogFilterResultListener resultListener) {	    
 		this.portalContext = portalContext;
 		
 		//The call has to be commented out because it causes security issue when called from another web plugin
@@ -123,7 +124,10 @@ public class LogFilterPlugin extends DefaultPortalPlugin implements LogFilterInt
         
 		try {
         	new LogFilterController(portalContext, logFilterService, logFilterCriterionFactory, 
-        							log, label, originalCriteria, logStats, resultListener);
+        	                        inputParams.getLog(), 
+        	                        inputParams.getClassifierAttribute(), 
+        	                        inputParams.getFilterCriteria(), 
+        	                        resultListener);
         	
         } catch (IOException | SuspendNotAllowedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -131,24 +135,11 @@ public class LogFilterPlugin extends DefaultPortalPlugin implements LogFilterInt
 		
 	}
 	
-    private void saveLog(PortalContext portalContext, XLog filtered_log, String logName, LogSummaryType portalItem) throws Exception {
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        eventLogService.exportToStream(outputStream, filtered_log);
-
-        int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
-
-        eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
-        		logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
-                portalItem.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
-                false);
-        
-        Messagebox.show("A new log named '" + logName + "' has been saved in the '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
-
-        portalContext.refreshContent();
-    }
-
 	@Override
-	public void filterFinished(List<LogFilterCriterion> criteria, XLog filteredLog) {
+	public void filterFinished(LogFilterOuputParams outputParams) {
+	    XLog filteredLog = outputParams.getLog();
+	    //List<LogFilterCriterion> criteria = outputParams.getFilterCriteria();
+	    
     	if (filteredLog != null) {
     		if (this.portalContext instanceof PluginPortalContext) {
     			((PluginPortalContext)portalContext).getMainController().showInputDialog(
@@ -172,4 +163,22 @@ public class LogFilterPlugin extends DefaultPortalPlugin implements LogFilterInt
     		}
     	}
 	}
+	
+    private void saveLog(PortalContext portalContext, XLog filtered_log, String logName, LogSummaryType portalItem) throws Exception {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        eventLogService.exportToStream(outputStream, filtered_log);
+
+        int folderId = portalContext.getCurrentFolder() == null ? 0 : portalContext.getCurrentFolder().getId();
+
+        eventLogService.importLog(portalContext.getCurrentUser().getUsername(), folderId,
+        		logName, new ByteArrayInputStream(outputStream.toByteArray()), "xes.gz",
+                portalItem.getDomain(), DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(),
+                false);
+        
+        Messagebox.show("A new log named '" + logName + "' has been saved in the '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
+
+        portalContext.refreshContent();
+    }
+
+
 }

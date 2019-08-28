@@ -24,7 +24,11 @@ import org.apromore.logfilter.LogFilterService;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
 import org.apromore.logfilter.criteria.model.*;
+import org.apromore.logman.stats.LogStatistics;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.logfilter.api.LogFilterOuputParams;
+import org.apromore.plugin.portal.logfilter.api.LogFilterResultListener;
+import org.apromore.plugin.portal.logfilter.api.WrongOutputParamsException;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.event.Event;
@@ -42,7 +46,7 @@ import java.util.*;
  * Created by Raffaele Conforti (conforti.raffaele@gmail.com) on 05/08/2018.
  * Modified by Bruce Nguyen
  */
-class LogFilterController {
+public class LogFilterController {
 	private static final long serialVersionUID = 1L;
 	private PortalContext portalContext;
     private List<LogFilterCriterion> criteria;
@@ -87,14 +91,13 @@ class LogFilterController {
     public LogFilterController(PortalContext portalContext, 
     							LogFilterService logFilterService,
     							LogFilterCriterionFactory logFilterCriterionFactory,
-    							XLog log, String label, 
+    							XLog log, String classifierAttribute, 
 								List<LogFilterCriterion> originalCriteria, 
-								LogStatistics logStats,
 								LogFilterResultListener resultListener) throws IOException {
         /**
          * Get the log with case-variant values
          */
-        this.log = logStats.getLog();
+        LogStatistics logStats = new LogStatistics(log);
         this.directFollowMap = logStats.getDirectFollowMap();
         this.eventualFollowMap = logStats.getEventualFollowMap();
         this.variantEventsMap = logStats.getVariantEventsMap();
@@ -102,7 +105,7 @@ class LogFilterController {
     	this.logFilterService = logFilterService;
     	this.logFilterCriterionFactory = logFilterCriterionFactory;
     	this.resultListener = resultListener;
-    	initialize(portalContext, log, label, originalCriteria, logStats.getStatistics(), 
+    	initialize(portalContext, log, classifierAttribute, originalCriteria, logStats.getStatistics(), 
     				logStats.getMinTimestamp(), logStats.getMaxTimetamp());
     }
     
@@ -199,15 +202,20 @@ class LogFilterController {
         filterSelectorW.doModal();
     }
 
-    private void save() throws InterruptedException {
-    	XLog filteredLog = this.logFilterService.filter(this.log, criteria);
-    	if (filteredLog.isEmpty()) {
-    		Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.");
-    	}
-    	else {
-    		filterSelectorW.detach();
-    		resultListener.filterFinished(criteria, filteredLog);
-    	}
+    private void save() {
+        try {
+        	XLog filteredLog = this.logFilterService.filter(this.log, criteria);
+        	if (filteredLog.isEmpty()) {
+        		Messagebox.show("The log is empty after applying all filter criteria! Please use different criteria.");
+        	}
+        	else {
+    		    filterSelectorW.detach();
+    		    resultListener.filterFinished(new LogFilterOuputParams(filteredLog, criteria));
+        	}
+        }
+        catch (Exception ex) {
+            Messagebox.show(ex.getMessage());
+        }
     }
     
     public void updateList() {

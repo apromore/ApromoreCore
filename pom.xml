@@ -117,9 +117,12 @@
 
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
+        
+        <module>Apromore-Custom-Plugins/Log-Management-Logic</module>
 
         <module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
-				<module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-API</module>
+		<module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin</module>
 
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/APQL-Portal-Plugin</module>

@@ -33,13 +33,9 @@
             http://www.eclipse.org/gemini/blueprint/schema/blueprint         http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
-    <!-- Access the site.properties configuration artifact
-    <osgi-compendium:cm-properties id="properties" persistent-id="site" init-timeout="60"/>
-    <context:property-placeholder properties-ref="properties"/>
-    -->
+    <!-- <context:annotation-config /> -->
+    <!-- <context:spring-configured /> -->
 
-    <context:annotation-config />
-    <context:spring-configured />
-	
-    <osgi:reference id="logFilterCriterionFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory"/>
+    <!-- <aop:aspectj-autoproxy /> -->
+
 </beans:beans>

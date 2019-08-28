@@ -31,14 +31,17 @@ import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
-import org.apromore.plugin.portal.logfilter.LogFilterPlugin;
-import org.apromore.plugin.portal.logfilter.LogFilterResultListener;
-import org.apromore.plugin.portal.logfilter.LogStatistics;
+import org.apromore.plugin.portal.logfilter.api.LogFilterInputParams;
+import org.apromore.plugin.portal.logfilter.api.LogFilterOuputParams;
+import org.apromore.plugin.portal.logfilter.api.LogFilterPlugin;
+import org.apromore.plugin.portal.logfilter.api.LogFilterResultListener;
 import org.apromore.plugin.portal.processdiscoverer.json.JSONBuilder;
 import org.apromore.plugin.portal.processdiscoverer.util.StringValues;
 import org.apromore.plugin.portal.processdiscoverer.util.TimeConverter;
 import org.apromore.portal.common.UserSessionManager;
+import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.processdiscoverer.AbstractionParams;
@@ -72,6 +75,7 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.plugins.bpmn.BpmnDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -95,6 +99,7 @@ import static org.apromore.processdiscoverer.VisualizationType.FREQUENCY;
 import org.apromore.logfilter.criteria.model.Action;
 import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
+import org.apromore.logman.stats.LogStatistics;
 
 /**
  * Initialization: after the window has been loaded, the ZK client engine will send onLoaded event to the main window 
@@ -244,6 +249,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     private BIMPAnnotationService bimpAnnotationService;
     private LogFilterService logFilterService;
     private LogFilterCriterionFactory logFilterCriterionFactory;
+    private LogFilterPlugin logFilterPlugin;
     
     private SummaryType selection = null;
     
@@ -273,7 +279,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         logAnimationPluginInterface = (LogAnimationPluginInterface)beanFactory.getBean("logAnimationPlugin");
         bimpAnnotationService = (BIMPAnnotationService)beanFactory.getBean("bimpAnnotationService");
         logFilterService = (LogFilterService)beanFactory.getBean("logFilterService");
-        logFilterCriterionFactory = (LogFilterCriterionFactory)beanFactory.getBean("LogFilterCriterionFactory");
+        logFilterCriterionFactory = (LogFilterCriterionFactory)beanFactory.getBean("logFilterCriterionFactory");
+        logFilterPlugin = (LogFilterPlugin)beanFactory.getBean("logFilterPlugin");
         
         portalContext = (PortalContext)session.get("context");
         primaryType = (VisualizationType)session.get("visType");
@@ -843,14 +850,15 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
             this.filter.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                	LogFilterPlugin filterPlugin = new LogFilterPlugin();
-                	filterPlugin.execute(portalContext, ProcessDiscovererController.this.getInitialLog(), 
-                						label, criteria, 
-                						global_stats, 
-                						logFilterService,
-                						logFilterCriterionFactory,
-                						ProcessDiscovererController.this);
-//                    new FilterCriterionSelector(getLabel(), ProcessDiscovererController.this, criteria, global_stats, min, max);
+//                	logFilterPlugin.execute(portalContext, ProcessDiscovererController.this.getInitialLog(), 
+//                						label, criteria, 
+//                						global_stats, 
+//                						logFilterService,
+//                						logFilterCriterionFactory,
+//                						ProcessDiscovererController.this);
+                    logFilterPlugin.execute(portalContext, 
+                            new LogFilterInputParams(ProcessDiscovererController.this.getInitialLog(), label, criteria),
+                            ProcessDiscovererController.this);
                 }
             });
             
@@ -1837,9 +1845,9 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
 
 	@Override
-	public void filterFinished(List<LogFilterCriterion> criteria, XLog filteredLog) {
-		this.setFilteredLog(filteredLog);
-        this.setCriteria(criteria);
-		this.refreshCriteria(criteria.isEmpty());
+	public void filterFinished(LogFilterOuputParams outputParams) {
+		this.setFilteredLog(outputParams.getLog());
+        this.setCriteria(outputParams.getFilterCriteria());
+		this.refreshCriteria(outputParams.getFilterCriteria().isEmpty());
 	}
 }
