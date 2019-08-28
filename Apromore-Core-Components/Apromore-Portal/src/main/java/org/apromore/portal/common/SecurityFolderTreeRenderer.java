@@ -123,7 +123,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
             summaryType = (SummaryType) ctn.getData();
             if(summaryType instanceof LogSummaryType) {
                 LogSummaryType log = (LogSummaryType) summaryType;
-                hl.appendChild(new Image("/img/icon/log_icon.svg"));
+                hl.appendChild(new Image("/img/icon/svg/log_icon.svg"));
                 String processName = log.getName();
                 hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
             }
