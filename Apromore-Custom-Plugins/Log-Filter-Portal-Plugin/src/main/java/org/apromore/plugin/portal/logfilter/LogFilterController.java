@@ -220,7 +220,7 @@ class LogFilterController {
 
             if(label.contains("Timeframe")) {
 //            if(label.contains(LogFilterTypeSelector.getNameFromCode(Type.TIME_TIMESTAMP.toString()))) {
-                String tmp_label = label.substring(0, label.indexOf("is equal"));
+                String tmp_label = label.substring(0, label.indexOf("equal"));
                 String s, e;
                 if (label.contains("OR <")) {
                 	s = label.substring(label.indexOf(">") + 1, label.indexOf(" OR <"));

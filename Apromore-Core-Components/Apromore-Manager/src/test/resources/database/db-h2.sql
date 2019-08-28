@@ -593,6 +593,15 @@ CREATE TABLE workspace
    date_created timestamp NOT NULL
 )
 ;
+CREATE TABLE statistic (
+  count bigint(20) auto_increment PRIMARY KEY NOT NULL,
+  id varbinary(16) NOT NULL,
+  logid int(11) DEFAULT NULL,
+  pid varbinary(16) DEFAULT NULL,
+  stat_key varchar(1023) DEFAULT NULL,
+  stat_value varchar(1023) DEFAULT NULL
+)
+;
 ALTER TABLE annotation
 ADD CONSTRAINT fk_annotation2
 FOREIGN KEY (processModelVersionId)
@@ -1363,6 +1372,8 @@ REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 CREATE UNIQUE INDEX id_primary_workspace ON workspace(id)
 ;
 CREATE INDEX workspace_user ON workspace(userId)
+;
+CREATE INDEX idx_logid ON statistic(logid)
 ;
 CREATE VIEW keywords AS
   SELECT process.id AS processId, process.id AS value
