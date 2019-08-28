@@ -199,9 +199,9 @@
                         <hbox id="buttons" align="center" height="100%" vflex="min">
                             <button class="custom-btn" id="refreshB" label="" style="background: transparent; border:none" image="img/icon/svg/refresh_icon.svg" tooltiptext="Reload data" />
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
-                            <button class="custom-btn" id="btnAddFolder" label="" image="img/icon/svg/create_folder.svg" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
-                            <button class="custom-btn" id="btnAddProcess" label="" image="img/icon/svg/create_file.svg" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
-                            <button class="custom-btn" id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/icon/svg/delete_file.svg" tooltiptext="Delete" visible="true"/>
+                            <button class="custom-btn" id="btnAddFolder" label="" image="img/icon/svg/folder_add.svg" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
+                            <button class="custom-btn" id="btnAddProcess" label="" image="img/icon/svg/add_icon.svg" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Process"/>
+                            <button class="custom-btn" id="btnRemoveFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/icon/svg/delete_icon.svg" tooltiptext="Delete" visible="true"/>
                             <button class="custom-btn" id="btnRenameFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/icon/svg/rename_icon.svg" tooltiptext="Rename" visible="true"/>
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
                             <button class="custom-btn" id="btnSecurity" label="" style="background: transparent; border:none; cursor: pointer;" image="img/icon/svg/security_icon.svg" tooltiptext="Security"/>
