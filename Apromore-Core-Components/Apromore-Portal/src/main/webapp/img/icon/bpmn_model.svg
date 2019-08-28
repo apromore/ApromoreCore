@@ -1,3 +1,128 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="19px" height="15px" viewBox="-0.5 -0.5 19 15" content="&lt;mxfile modified=&quot;2019-08-26T06:21:43.653Z&quot; host=&quot;www.draw.io&quot; agent=&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36&quot; version=&quot;11.2.2&quot; etag=&quot;U42acmEVuLkf9p5wCcMx&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;aR3AoUZuQ6zCME-vOgFX&quot;&gt;5VhNU9swEP01OcL4kyTHEkh7aDud4dByFLawRWXLIyvE6a+vFK1sOTbESUyg0zBDvKtdSbvv7UrxxF9k1WeOivQbizGdeE5cTfybiee5wVT+V4qNVoRzXysSTmKwaRR35A8GpQPaFYlx2TIUjFFBirYyYnmOI9HSIc7Zum32yGh71QIluKO4ixDtan+SWKRaO3WcRv8FkySFlUMzkCFjC4oyRTFbWyr/duIvOGNCP2XVAlOVOpMW7bd8YbTeF8e5GOLgaYdnRFcQGuxLbEysCWerAswwF7jqyzB6MOZOdwtuHZjkA2YZFnwjTWAibwZrAhcuXB/YsW5S604vQ61Mrby6/qXn2B9gEQJ4k3qxJgXyAbLQnxH/HBnx+jPyLgEH5wjY/0ABh+cIOPhAAV/tD1jGm8dY2bsT/3qdEoHvChSp0bXs4FKXiozCcCk4+40XjDK+9faDG/VXj5iWqGwfCaWW5XL7UXqWiyXKCFVVv2ArTjCXW/qO1zAITd+9ArlvOVQWurs/kkpt/hrxCPwcKb0IoA1U+Gpzcj0DEnQnx8gWkj0wBqejNu2AhGN5CIGYs1x+XTe4qYAZFylLWI7oV8YKQOAJC7GBrKCVYG0scUXEL+v5Xk0lY9TSTQUzb4WNEXIZSu2kBMtLiY3bVjJ+pUDc4OptR+NP6jCWYkRRWZJIK5eE1tvLY8thFNJ0OdrmM2RWZ1+l/HXqSITkRiKwmmmVDDTBwlJ1CcYxRYI8t2c/hS+zAVWesuxhVf7LFT5GTQ8p4PB0QOb7AbEqAGh3JAgnlbFzWBmPVhlXe8/I0OlBBnSDCwhW+MGI3F7Ngmmrre+csnrj4GFfn3cmcb3XZtGxdmbZ8qaOdxCVzO+e/+AIH6/AAZT5sBN7hHuW6w6oeErlj1S8H6FOYoZC5r01ZGMg5Lch6gAUvMmVypTreVpy3V6bjnpvj73QXk0rb9r3vd29e1v5cS3ZdJUBt5Xz9OTdy7Z7dFvemejtGvOA1wXjM+rAe3fNqAMuB0cyyryMsxjlOpN3pFQwaxHBvHg8lFHz9jQXYxFKis3LPm3evDD1b/8C&lt;/diagram&gt;&lt;/mxfile&gt;"><defs/><g><rect x="12.5" y="0.5" width="5" height="4" fill="#ffffff" stroke="#4d4d4d" pointer-events="none"/><path d="M 3.5 0 L 6 2.5 L 3.5 5 L 1 2.5 Z" fill="#ffffff" stroke="#4d4d4d" stroke-miterlimit="10" pointer-events="none"/><path d="M 6 2.5 L 12.5 2.5" fill="none" stroke="#4d4d4d" stroke-miterlimit="10" pointer-events="none"/><rect x="1" y="9.5" width="5" height="3" rx="0.45" ry="0.45" fill="#ffffff" stroke="#4d4d4d" pointer-events="none"/><ellipse cx="15" cy="11" rx="2" ry="2" fill="#ffffff" stroke="#4d4d4d" stroke-width="2" pointer-events="none"/><path d="M 3.5 9.5 L 3.5 5" fill="none" stroke="#4d4d4d" stroke-miterlimit="10" pointer-events="none"/><path d="M 13 11 L 6 11" fill="none" stroke="#4d4d4d" stroke-miterlimit="10" pointer-events="none"/></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="22"
+   height="22"
+   viewBox="-0.5 -0.5 22 22"
+   content="&lt;mxfile modified=&quot;2019-08-27T04:44:50.837Z&quot; host=&quot;pebppomjfocnoigkeepgbmcifnnlndla&quot; agent=&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&quot; version=&quot;11.2.1&quot; etag=&quot;ab1KB8W0PwC_0QnYvY9D&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;nWRSiut38nmDKHdNcYNb&quot;&gt;7VhNc5swEP01XDt82z62dtwe2l58aHxUQQa1wDJCBNxfX8ksX4bYjkOcJlN7xsM+aeXVvreLQLOWcfmZkzT8Bj6NNFP3S81aaaa5MB35q4B9BbiWWwEBZ34FGS2wYX8ogjqiOfNp1psoACLB0j7oQZJQT/QwwjkU/Wk7iPr/mpKADoCNR6Ih+oP5IqzQma63+BfKghD/2akHYlLPRSALiQ9FB7LuNGvJAUR1FZdLGqnU1Wmp/NaPjDZxcZqISxzMyuGBRDluDeMS+3qvHPLEp2q+oVmfipAJukmJp0YLSa7EQhFHOJwJDr+bnEi6amgJEfDDgpa9Ul85QriH1M6khZFQLmj56G6MJkdSWhRiKvheTkEHx7QqF5SV484+oNKKlqYm+WGHogYkKI2gWb1Nn7zADI5n0zqRPJUK4CKEABISfQVIMWW/qBB7zAPJBfQTSksm7jvXW7WU3FRlrUpc+WDsayORcd93jY6XMlu3g1X77SARaxKzSAFLyDmjXG7nOy1wEKM09Hr2GKsjEqCJ/1FVnbQTSGiFrJnK4+q0RKqEUv+oHDMZnIcQEiwIDyiS6V4sHE4jIthDf/XnSMAeSEAFv0ETdz+ZKlolbDsj51TRCmHb08G4Kq4nb0QJ00jsOlXMX08VzgVtNoT4Z56db7H9fvy07EvWOlN3h8/ErDyvgdtHDXxhDNr3fKR7zydo3u6L3ArfCzOubfaYcfURZswhM+4EzMxu2lNvcad9mz11Puyphn6xkCZvqvP/BXuylR4V7GJxs4JdvOIhSL+wYPuHIONdFmxdnf/I2bgO51TFSg/5EE/PVyvJ0urJfsdKpaJrz0XOWyhm1zGOink2KGbXHilm+8msSbN9/XAY67zCse7+Ag==&lt;/diagram&gt;&lt;/mxfile&gt;"
+   id="svg24"
+   sodipodi:docname="bpm_22.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata28">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1148"
+     inkscape:window-height="664"
+     id="namedview26"
+     showgrid="false"
+     inkscape:zoom="1.026087"
+     inkscape:cx="114.5"
+     inkscape:cy="115"
+     inkscape:window-x="0"
+     inkscape:window-y="103"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg24" />
+  <defs
+     id="defs2" />
+  <g
+     id="g22"
+     transform="matrix(0.09565217,0,0,0.09565217,-0.5,-0.45217392)">
+    <rect
+       x="5"
+       y="4.5"
+       width="220"
+       height="220"
+       rx="15.4"
+       ry="15.4"
+       pointer-events="none"
+       id="rect4"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:10" />
+    <path
+       d="m 105,68 h 19"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path6"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#4d4d4d;stroke-width:10;stroke-miterlimit:10" />
+    <path
+       d="m 65,108 v 28"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path8"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#4d4d4d;stroke-width:10;stroke-miterlimit:10" />
+    <path
+       d="M 45,48 57.93,35.07 Q 65,28 72.07,35.07 l 25.86,25.86 q 7.07,7.07 0,14.14 L 72.07,100.93 Q 65,108 57.93,100.93 L 32.07,75.07 Q 25,68 32.07,60.93 Z"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path10"
+       inkscape:connector-curvature="0"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:10;stroke-miterlimit:10" />
+    <rect
+       x="124"
+       y="38"
+       width="82"
+       height="60"
+       rx="9"
+       ry="9"
+       pointer-events="none"
+       id="rect12"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:10" />
+    <path
+       d="m 106,166 h 27"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path14"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#4d4d4d;stroke-width:10;stroke-miterlimit:10" />
+    <rect
+       x="24"
+       y="136"
+       width="82"
+       height="60"
+       rx="9"
+       ry="9"
+       pointer-events="none"
+       id="rect16"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:10" />
+    <path
+       d="M 165,134 V 98"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path18"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#4d4d4d;stroke-width:10;stroke-miterlimit:10" />
+    <circle
+       cx="165"
+       cy="166"
+       pointer-events="none"
+       id="ellipse20"
+       r="32"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:15" />
+  </g>
+</svg>

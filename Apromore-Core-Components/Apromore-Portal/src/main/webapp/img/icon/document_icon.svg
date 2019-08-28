@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="22"
+   height="22"
+   viewBox="-0.5 -0.5 22 22"
+   content="&lt;mxfile modified=&quot;2019-08-27T04:41:07.426Z&quot; host=&quot;pebppomjfocnoigkeepgbmcifnnlndla&quot; agent=&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&quot; version=&quot;11.2.1&quot; etag=&quot;tBCmdbQfkkjSzbc2kaK1&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;PedRTupG6E0SOKPpicn8&quot;&gt;7ZhNj5swEIZ/DdcKYz6Sa9nd9tJecujZgkmwapjIcUrSX1+zjCEEqKia7AkhIXhnjO338cQQj6fl5YsWx+Ib5qC8wM8vHn/xgmAbRPbcCNdWiHncCgct81ZivbCTv4FEn9SzzOE0SDSIysjjUMywqiAzA01ojfUwbY9q2OtRHGAk7DKhxuoPmZuiVRPf7/WvIA8F9Ry5QClcLgmnQuRY30j81eOpRjTtVXlJQTXWOVvadm8z0W5cGiqzpEHQNvgl1JmmRuMyVzdXjecqhyafefxzXUgDu6PImmht4VqtMKWi8Mlo/Nl5YnE5KUWF+v2BPHxpDhsROiO0ib2jkYA2cJmdDes8sksLsASjrzaFGgQ8+UQrixZWFJPRdY+pM7+4QdSJgpbGoXt6b5+9IAen3eT/4qa/1E1nXYUVTFu8x8q8iVKqZtYpnrUEbbv9DjUFyWbmu+wpHHup1JT+CDARH2LZjLGwTTLGwqL/pxKuVJZRif1oRCV5EpRohTINhbtfrL9B2T4HSrxCma2Uu40lDj+uVpIVy2IsyXhjeRaWzYplDkt0j2UbL8LCH/AStl2xzGGJB1CScOolLHxOsbgvtxXLeMMP7nYW9mG1wthKZSEVVxiPp2Jv+w/+99jNnyb89Q8=&lt;/diagram&gt;&lt;/mxfile&gt;"
+   id="svg26"
+   sodipodi:docname="doc_22.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata30">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1280"
+     inkscape:window-height="714"
+     id="namedview28"
+     showgrid="false"
+     inkscape:zoom="1.026087"
+     inkscape:cx="115"
+     inkscape:cy="115.5"
+     inkscape:window-x="0"
+     inkscape:window-y="104"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg26" />
+  <defs
+     id="defs2" />
+  <g
+     id="g24"
+     transform="matrix(0.09565217,0,0,0.09565217,-0.45217391,-0.5)">
+    <rect
+       x="4.5"
+       y="5"
+       width="220"
+       height="220"
+       rx="15.4"
+       ry="15.4"
+       pointer-events="none"
+       id="rect4"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:10" />
+    <rect
+       x="20"
+       y="25"
+       width="187"
+       height="15"
+       pointer-events="none"
+       id="rect6"
+       style="fill:#4d4d4d;stroke:none" />
+    <rect
+       x="20"
+       y="50"
+       width="77"
+       height="15"
+       pointer-events="none"
+       id="rect8"
+       style="fill:#4d4d4d;stroke:none" />
+    <rect
+       x="127"
+       y="50"
+       width="79"
+       height="15"
+       pointer-events="none"
+       id="rect10"
+       style="fill:#4d4d4d;stroke:none" />
+    <rect
+       x="20.5"
+       y="90"
+       width="77"
+       height="15"
+       pointer-events="none"
+       id="rect12"
+       style="fill:#4d4d4d;stroke:none" />
+    <rect
+       x="20.5"
+       y="115"
+       width="77"
+       height="15"
+       pointer-events="none"
+       id="rect14"
+       style="fill:#4d4d4d;stroke:none" />
+    <rect
+       x="22.5"
+       y="141"
+       width="77"
+       height="30"
+       pointer-events="none"
+       id="rect16"
+       style="fill:#4d4d4d;stroke:none" />
+    <rect
+       x="23"
+       y="185"
+       width="184"
+       height="15"
+       pointer-events="none"
+       id="rect18"
+       style="fill:#4d4d4d;stroke:none" />
+    <rect
+       x="129"
+       y="86"
+       width="77"
+       height="30"
+       pointer-events="none"
+       id="rect20"
+       style="fill:#4d4d4d;stroke:none" />
+    <rect
+       x="129"
+       y="129"
+       width="77"
+       height="30"
+       pointer-events="none"
+       id="rect22"
+       style="fill:#4d4d4d;stroke:none" />
+  </g>
+</svg>
