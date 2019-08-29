@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:xhtml="http://www.w3.org/1999/xhtml"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="22"
+   height="22"
+   viewBox="-0.5 -0.5 22 22"
+   content="&lt;mxfile modified=&quot;2019-08-29T02:24:08.653Z&quot; host=&quot;pebppomjfocnoigkeepgbmcifnnlndla&quot; agent=&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&quot; version=&quot;11.2.1&quot; etag=&quot;gW5MyaWfFEI5Cm_GvZhs&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;-TeeIcgIoauZDZGGsstc&quot;&gt;rZTdjtsgEIWfxpetsInbvW2STfemldqs1GvWntio4LEwWTv79B0M+EfeXbVSEymBbwbwnDM44Qc9fDWirb9hCSrJWDkk/JhkWcYYpz9Hbp7cfWIeVEaWHqUzOMsXCDCmXWUJ3SrRIior2zUssGmgsCsmjMF+nXZBtT61FRVswLkQakt/ydLWnn5mbOYPIKs6nJzHgBYxN4CuFiX2C8TvE34wiNaP9HAA5bSLsvh1pzei03MZaOzfLMj8gmehrqG08Fz2Fms1NeqnKwm272tp4dyKwkV6cpZYbbWiWUrDzhr8DQdUaMaV/DR+pkhUyuVepFKLzN3RfR3Hxp6Elso1xgOoZ7CyECEQ+iDNw/y1o4SSVUOsIAHAONC1vgMucgCqeh8qBmNheFO1dPKCehhQgzU3SpkaOP2Y+0WhgXe7YGg/twO/86hedEJkIjRgNe09m0SD4NPrnvGNZz82plFtdu2OgU6+iKcxgdG8RdnY8SnyfZI77cXVYhckXiip4OK2coKRFepLwBad/R11g2yqRzc5ftitjXISrh19lJqubca+Q0+/P1GL5h0vx61CTen/sC2+PibTsmjj0ja2tS1e13+wjabzNR5ji3chv/8D&lt;/diagram&gt;&lt;/mxfile&gt;"
+   id="svg14"
+   sodipodi:docname="config_q_22.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <metadata
+     id="metadata18">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3840"
+     inkscape:window-height="1973"
+     id="namedview16"
+     showgrid="false"
+     inkscape:zoom="6.0512821"
+     inkscape:cx="20.707107"
+     inkscape:cy="19.707107"
+     inkscape:window-x="-18"
+     inkscape:window-y="-18"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg14" />
+  <defs
+     id="defs2" />
+  <g
+     id="g12"
+     transform="matrix(0.55817427,0,0,0.55817427,0.17377595,-0.10531119)">
+    <path
+       d="m 18.5,0 19,19 -19,19 -19,-19 z"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path4"
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d;stroke:#ffffff;stroke-miterlimit:10" />
+    <g
+       transform="translate(9.5,5.5)"
+       id="g10">
+      <switch
+         id="switch8">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="17"
+           height="24"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 22px; font-family: &quot;Times New Roman&quot;; color: rgb(255, 255, 255); line-height: 1.2; vertical-align: top; white-space: nowrap; font-weight: bold; text-align: left;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">Q</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <text
+           x="9"
+           y="23"
+           font-size="22px"
+           font-weight="bold"
+           id="text6"
+           style="font-weight:bold;font-size:22px;font-family:'Times New Roman';text-anchor:middle;fill:#ffffff">Q</text>
+      </switch>
+    </g>
+  </g>
+</svg>
