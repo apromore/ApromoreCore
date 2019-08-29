@@ -165,7 +165,7 @@ ORYX.Plugins.LogAnimation = ORYX.Plugins.AbstractPlugin.extend({
             'name': 'Animate',
             'functionality': this.showDialog.bind(this),
             'group': 'Configuration',
-            'icon': "/loganimation/images/icon.png",
+            'icon': "/loganimation/images/icon.svg",
             'description': 'Animate logs...',
             'index': 1
         });
