@@ -118,9 +118,8 @@
         <!-- Plugins -->
         <module>Apromore-Plugins</module>
         
-        <module>Apromore-Custom-Plugins/Log-Management-Logic</module>
-
         <module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
+        <module>Apromore-Custom-Plugins/Log-Management-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-API</module>
 		<module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin</module>
 
