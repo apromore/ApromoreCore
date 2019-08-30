@@ -82,17 +82,17 @@ public class ProcessDiscovererAbstractPlugin extends DefaultPortalPlugin {
     	
     }
 
-    protected void prepare(PortalContext context, VisualizationType visType) {
+    protected boolean prepare(PortalContext context, VisualizationType visType) {
         try {
             Map<SummaryType, List<VersionSummaryType>> elements = context.getSelection().getSelectedProcessModelVersions();
             if (elements.size() != 1) {
                 Messagebox.show("Please select exactly one log!", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
-                return;
+                return false;
             }
             SummaryType selection = elements.keySet().iterator().next();
             if (!(selection instanceof LogSummaryType)) {
             	Messagebox.show("Please select a log!", "Wrong Selection", Messagebox.OK, Messagebox.INFORMATION);
-                return;
+                return false;
             }
         	
         	String username = context.getCurrentUser().getUsername();
@@ -119,6 +119,8 @@ public class ProcessDiscovererAbstractPlugin extends DefaultPortalPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        return true;
 
     }
     

@@ -57,7 +57,8 @@ public class ProcessDiscovererFrequencyVisualizer extends ProcessDiscovererAbstr
     @Override
     public void execute(PortalContext context) {
         try {
-        	this.prepare(context, VisualizationType.FREQUENCY); //prepare session
+        	boolean prepare = this.prepare(context, VisualizationType.FREQUENCY); //prepare session
+        	if (!prepare) return;
         	Clients.evalJavaScript("window.open('../processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
         } catch (Exception e) {
             e.printStackTrace();

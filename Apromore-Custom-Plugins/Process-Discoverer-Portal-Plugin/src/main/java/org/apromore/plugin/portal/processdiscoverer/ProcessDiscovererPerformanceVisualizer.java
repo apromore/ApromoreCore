@@ -57,7 +57,8 @@ public class ProcessDiscovererPerformanceVisualizer extends ProcessDiscovererAbs
     @Override
     public void execute(PortalContext context) {
         try {
-        	this.prepare(context, VisualizationType.DURATION); //prepare session
+        	boolean prepare = this.prepare(context, VisualizationType.DURATION); //prepare session
+            if (!prepare) return;
         	Clients.evalJavaScript("window.open('../processdiscoverer/zul/processDiscoverer.zul?id=" + this.getSessionId() + "')");
         } catch (Exception e) {
             e.printStackTrace();
