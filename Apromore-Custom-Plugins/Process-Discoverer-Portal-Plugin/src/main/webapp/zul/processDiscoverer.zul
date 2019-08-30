@@ -327,7 +327,7 @@
 						</columns>
 						<rows>
 							<row align="center">
-								<combobutton id="selector" label="Activity">
+								<combobutton id="selector" label="Perspective">
 									<menupopup id="selectormenu" />
 								</combobutton>
 								<combobutton id="frequency" label="Frequency" onClick="case_frequency.setChecked(true);absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)">
