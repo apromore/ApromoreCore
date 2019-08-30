@@ -1,3 +1,118 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="25px" height="24px" viewBox="-0.5 -0.5 25 24" content="&lt;mxfile modified=&quot;2019-08-29T06:25:33.997Z&quot; host=&quot;www.draw.io&quot; agent=&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&quot; version=&quot;11.2.3&quot; etag=&quot;LIM-acjf0Wt3NY9Ya4-O&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;cjs2znAXwimSaER2JZ0V&quot;&gt;7VhNc9owEP01HJPxt+FYTGgv6XSGQ8NRsYWtqWx5ZBGb/vquseQPRMGFFDrTmAPep921dt+TEJ7YQVp95ihPnlmE6cQyompiLyaWZXquDV81slOIL5GYk0hiHbAiP7EEDYluSYSLgaNgjAqSD8GQZRkOxQBDnLNy6LZhdPjUHMVYA1Yhojr6nUQiaVDfMDr8CyZxIp/sqoEUKV8JFAmKWNmD7KeJHXDGRHOXVgGmdfNUW5q45W9G23lxnIkxAVYT8IboVpYm5yV2qtaYs20u3TAXuDrWYfSq3A19CmZbGCgCsxQLvgMXmejBM2aPbhMl9fDgmFMFlV1/LSmSpNdaNWEkGY3b/F3VcCMLP94Ee2wT7HkhOPvRcm4CclVnrOOduUHNzi2It8+XZx0pz7i+PPd8eRAA2wUY8zIhAq9yFNYjJWxZgCUipZJhVOTNHrIhFY5aEQSMMr5PZXv7S5MH1D7fEEp7nsv9VeMsE0uUElpLPmBbTjCH+X3FpRyUm57pSbuXxFnUn1Pa65PgnFx95nDlmba26nydIf96grzzBIH8sqhu+J6FMyT9M5xoarmGJMWKM4YV59F7B2L8EcQkLH3dFv8rKX99bUw/1sblG9jtVspsxG9MFn2qj5tgZSzDQ1oOWpqSEIJXKCvg63l1oo3QGb57AdBQxro24MQkzUXVH1zslFUR8SIfXt/3osDqgmpDxfyJdprycaSdnQ+4hBaBgEI84EcgHmPRWwAnF55r6KwqjGOKBHkbTuIY0fIJ3xiB6bWCmg70NDPUQVRlaOYug/pH64M87jCRoyVqKtYS7WXXVj1Kiepv0T2l2KlvrSQ2Qoqd/NZ99d1Jip4uRf+eUjTfS4veDbVo3k2LF2xvl26ld9Gi+6HFk1oEs3tz0rh375/sp18=&lt;/diagram&gt;&lt;/mxfile&gt;"><defs/><g><ellipse cx="19" cy="17" rx="3.5" ry="3.5" fill="#ffffff" stroke="#666666" stroke-width="2" pointer-events="none"/><rect x="0.5" y="14.5" width="7" height="4.67" rx="0.7" ry="0.7" fill="#ffffff" stroke="#666666" stroke-width="2" pointer-events="none"/><path d="M 4 0.5 L 7.5 4 L 4 7.5 L 0.5 4 Z" fill="#ffffff" stroke="#666666" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><rect x="15.5" y="1.5" width="7" height="4.67" rx="0.7" ry="0.7" fill="#ffffff" stroke="#666666" stroke-width="2" pointer-events="none"/><path d="M 7.5 4 L 15.5 3.84" fill="none" stroke="#666666" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 4 14.5 L 4 7.5" fill="none" stroke="#666666" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 7.5 16.84 L 15.5 17" fill="none" stroke="#666666" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="22"
+   height="21.392103"
+   viewBox="-0.5 -0.5 22 21.392103"
+   content="&lt;mxfile modified=&quot;2019-08-29T23:52:48.413Z&quot; host=&quot;pebppomjfocnoigkeepgbmcifnnlndla&quot; agent=&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&quot; version=&quot;11.2.1&quot; etag=&quot;wIIAE7WixwCTPYkm8qGK&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;_krJ_BqonHNX0nYDhP6p&quot;&gt;7VdNt5owEP01bj1K+HJZ9b120a5c9LlMYYT0BYYTwxP765tAEFK0eqrVd04rCzN3MmFyZ26AEVlk1UdBi/QLxsBHziSuRmQ5chxnRlz1p5F9g0zdwCCJYLHBOmDFfoABJwYtWQxba6JE5JIVNhhhnkMkLYwKgTt72ga5fdeCJjAAVhHlQ/Qri2XaoMFk0uGfgCWpubPXOjLazjXANqUx7noQeRqRhUCUzSirFsA1eS0tTdzzCe8hLwG5vCTAaQLeKC/N1kxect/uVaSYfSsVYfNdyiSsChppz06VVmGpzLiypmq4lQJfYYEcRR1J3KW+Dp6WKZUSmW8Y572pm/qncLotmoJtWAUqyblJEISE6uQmpwfqVM8BZiDFXk0xAYEfNiFtu7VL7Hq1mzVQ2itbi1HTLclh5Y5RNTCkHieYXEAwlnms91qzeBeSRWQ0Rby/xHkYTm3OiT/gPJwMOXfDsRteT7v7G5Y1MyhkignmlH9GLAy330HKvSGGlhJt5qFi8qU3Xuulxp6xlpVZuTb2rZGrvF/6Ri9Km11YbXVx8Qd9TCkzxxwa5Jnp7db+I7U+3RgNFRD/cqRtsRQRWMeApCIBaTXuBRUXwKlkb/bq1xTP+0c1E/jB2LNU47hei9xHN/6Aad03K2OaXryZlDr5rHuec1Lq1LO2xHONlC5sjj+Tkvc4KQXnpaQC1GsTnJfRoOVvoqubPGuIrRriDJ/v/pHnu389weF/wVwpGDIUTPA4wczuWs/38y5xu3p6j6ynMruPp9rX+wQlTz8B&lt;/diagram&gt;&lt;/mxfile&gt;"
+   id="svg22"
+   sodipodi:docname="bpmn_22.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <metadata
+     id="metadata26">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3840"
+     inkscape:window-height="1973"
+     id="namedview24"
+     showgrid="false"
+     inkscape:zoom="1.1400966"
+     inkscape:cx="110.64214"
+     inkscape:cy="104"
+     inkscape:window-x="-18"
+     inkscape:window-y="-18"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg22" />
+  <defs
+     id="defs2" />
+  <g
+     id="g20"
+     transform="matrix(0.10131613,0,0,0.10131613,-0.08033485,-0.08033485)">
+    <path
+       d="M 49.5,10 89,49.5 49.5,89 10,49.5 Z"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path4"
+       inkscape:connector-curvature="0"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:20;stroke-miterlimit:10" />
+    <rect
+       x="123"
+       y="25"
+       width="80"
+       height="48.48"
+       rx="16.969999"
+       ry="16.969999"
+       pointer-events="none"
+       id="rect6"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:20" />
+    <path
+       d="m 89,49.5 34,-0.26"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path8"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#4d4d4d;stroke-width:20;stroke-miterlimit:10" />
+    <rect
+       x="9.5"
+       y="134.5"
+       width="80"
+       height="48.48"
+       rx="16.969999"
+       ry="16.969999"
+       pointer-events="none"
+       id="rect10"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:20" />
+    <path
+       d="m 49.5,89 v 45.5"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path12"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#4d4d4d;stroke-width:20;stroke-miterlimit:10" />
+    <circle
+       cx="163"
+       cy="159"
+       pointer-events="none"
+       id="ellipse14"
+       r="38"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:20" />
+    <path
+       d="M 163,73.48 V 121"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path16"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#4d4d4d;stroke-width:20;stroke-miterlimit:10" />
+    <path
+       d="M 89.5,158.74 125,159"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path18"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#4d4d4d;stroke-width:20;stroke-miterlimit:10" />
+  </g>
+</svg>
