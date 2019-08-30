@@ -33,10 +33,11 @@ import org.apromore.model.SummaryType;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
-import org.apromore.plugin.portal.logfilter.api.LogFilterInputParams;
-import org.apromore.plugin.portal.logfilter.api.LogFilterOuputParams;
-import org.apromore.plugin.portal.logfilter.api.LogFilterPlugin;
-import org.apromore.plugin.portal.logfilter.api.LogFilterResultListener;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterContext;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterInputParams;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterOutputResult;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterResultListener;
 import org.apromore.plugin.portal.processdiscoverer.json.JSONBuilder;
 import org.apromore.plugin.portal.processdiscoverer.util.StringValues;
 import org.apromore.plugin.portal.processdiscoverer.util.TimeConverter;
@@ -856,7 +857,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 //                						logFilterService,
 //                						logFilterCriterionFactory,
 //                						ProcessDiscovererController.this);
-                    logFilterPlugin.execute(portalContext, 
+                    logFilterPlugin.execute(new LogFilterContext(portalContext), 
                             new LogFilterInputParams(ProcessDiscovererController.this.getInitialLog(), label, criteria),
                             ProcessDiscovererController.this);
                 }
@@ -1845,7 +1846,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
 
 	@Override
-	public void filterFinished(LogFilterOuputParams outputParams) {
+	public void onPluginExecutionFinished(LogFilterOutputResult outputParams) throws Exception {
 		this.setFilteredLog(outputParams.getLog());
         this.setCriteria(outputParams.getFilterCriteria());
 		this.refreshCriteria(outputParams.getFilterCriteria().isEmpty());

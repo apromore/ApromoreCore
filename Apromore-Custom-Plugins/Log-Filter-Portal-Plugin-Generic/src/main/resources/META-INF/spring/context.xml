@@ -33,23 +33,9 @@
             http://www.eclipse.org/gemini/blueprint/schema/blueprint         http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
             http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
-    <context:annotation-config />
-    <context:spring-configured />
+    <!-- <context:annotation-config /> -->
+    <!-- <context:spring-configured /> -->
 
-    <aop:aspectj-autoproxy />
+    <!-- <aop:aspectj-autoproxy /> -->
 
-    <!-- Other OSGi services this component consumes -->
-    <osgi:reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
-	<osgi:reference id="logFilterService" interface="org.apromore.logfilter.LogFilterService"/>
-	<osgi:reference id="logFilterCriterionFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory"/>
-		
-	<beans:bean id="plugin" class="org.apromore.plugin.portal.logfilter.LogFilterStandardPlugin">
-        <beans:property name="groupLabel" value="Discover" />
-        <beans:property name="label" value="Filter Log" />
-    </beans:bean>
-
-    <!-- Exposes the component as OSGi service -->
-    <!-- <context:component-scan base-package="org.apromore.plugin.portal.logfilter" /> -->
-    <osgi:service ref="plugin" interface="org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin" />
-	<osgi:service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" />
 </beans:beans>

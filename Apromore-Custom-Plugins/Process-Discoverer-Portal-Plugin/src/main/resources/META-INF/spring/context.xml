@@ -54,7 +54,7 @@
     <osgi:reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
 	<osgi:reference id="logFilterService" interface="org.apromore.logfilter.LogFilterService"/>
 	<osgi:reference id="logFilterCriterionFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory"/>
-    <osgi:reference id="logFilterPlugin" interface="org.apromore.plugin.portal.logfilter.api.LogFilterPlugin"/>
+    <osgi:reference id="logFilterPlugin" interface="org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin"/>
 
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.processdiscoverer" />

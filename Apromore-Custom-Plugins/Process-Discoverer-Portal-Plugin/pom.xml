@@ -101,7 +101,7 @@
 		
 		<dependency>
             <groupId>org.apromore.plugin</groupId>
-            <artifactId>log-filter-portal-plugin-api</artifactId>
+            <artifactId>log-filter-portal-plugin-generic</artifactId>
 			<version>1.0.0</version>
         </dependency>
         

@@ -13,18 +13,16 @@ import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.apromore.logfilter.LogFilterService;
-import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
-import org.apromore.logman.stats.LogStatistics;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.logfilter.api.LogFilterInputParams;
-import org.apromore.plugin.portal.logfilter.api.LogFilterOuputParams;
-import org.apromore.plugin.portal.logfilter.api.LogFilterPlugin;
-import org.apromore.plugin.portal.logfilter.api.LogFilterResultListener;
+import org.apromore.plugin.portal.logfilter.generic.GenericLogFilterPlugin;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterContext;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterInputParams;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterOutputResult;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterResultListener;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.service.EventLogService;
 import org.deckfour.xes.model.XLog;
@@ -45,7 +43,7 @@ import org.zkoss.zul.Messagebox;
  * @author Bruce Nguyen
  *
  */
-public class LogFilterStandardPlugin extends DefaultPortalPlugin implements LogFilterPlugin, LogFilterResultListener {
+public class LogFilterStandardPlugin extends GenericLogFilterPlugin {
 	private PortalContext portalContext;
 	private LogSummaryType portalItem;
 	private String label = "Log Filter";
@@ -110,60 +108,6 @@ public class LogFilterStandardPlugin extends DefaultPortalPlugin implements LogF
     	}
     }
 
-	@Override
-	/**
-	 * This method is used by other plugins to call to this plugin
-	 * The return result is the filtered log
-	 */
-    public void execute(PortalContext portalContext, LogFilterInputParams inputParams,
-            LogFilterResultListener resultListener) {	    
-		this.portalContext = portalContext;
-		
-		//The call has to be commented out because it causes security issue when called from another web plugin
-    	//portalContext.getMessageHandler().displayInfo("Execute log filter plug-in!");
-        
-		try {
-        	new LogFilterController(portalContext, logFilterService, logFilterCriterionFactory, 
-        	                        inputParams.getLog(), 
-        	                        inputParams.getClassifierAttribute(), 
-        	                        inputParams.getFilterCriteria(), 
-        	                        resultListener);
-        	
-        } catch (IOException | SuspendNotAllowedException e) {
-            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-		
-	}
-	
-	@Override
-	public void filterFinished(LogFilterOuputParams outputParams) {
-	    XLog filteredLog = outputParams.getLog();
-	    //List<LogFilterCriterion> criteria = outputParams.getFilterCriteria();
-	    
-    	if (filteredLog != null) {
-    		if (this.portalContext instanceof PluginPortalContext) {
-    			((PluginPortalContext)portalContext).getMainController().showInputDialog(
-            			"Input", 
-						"Enter a log name (no more than 60 characters)", 
-						portalItem.getName() + "_filtered", 
-						"^[a-zA-Z0-9_\\-\\s]{1,60}$",
-						"a-z, A-Z, 0-9, hyphen, underscore, and space. No more than 60 chars.",
-						new EventListener<Event>() {
-            				@Override
-                        	public void onEvent(Event event) throws Exception {
-            					if (event.getName().equals("onOK")) {
-	            					String logName = (String)event.getData();
-	        	                    saveLog(portalContext, filteredLog, logName, portalItem);
-            					}
-                        	}
-	                	});
-            }
-    		else {
-    			Messagebox.show("The current context is not a valid plugin portal context", "Attention", Messagebox.OK, Messagebox.ERROR);
-    		}
-    	}
-	}
-	
     private void saveLog(PortalContext portalContext, XLog filtered_log, String logName, LogSummaryType portalItem) throws Exception {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         eventLogService.exportToStream(outputStream, filtered_log);
@@ -178,6 +122,56 @@ public class LogFilterStandardPlugin extends DefaultPortalPlugin implements LogF
         Messagebox.show("A new log named '" + logName + "' has been saved in the '" + portalContext.getCurrentFolder().getFolderName() + "' folder.");
 
         portalContext.refreshContent();
+    }
+
+    @Override
+    public void execute(LogFilterContext filterContext, LogFilterInputParams inputParams,
+            LogFilterResultListener resultListener) throws Exception {
+        this.portalContext = filterContext.getPortalContext();
+        
+        //The call has to be commented out because it causes security issue when called from another web plugin
+        //portalContext.getMessageHandler().displayInfo("Execute log filter plug-in!");
+        
+        try {
+            new LogFilterController(portalContext, logFilterService, logFilterCriterionFactory, 
+                                    inputParams.getLog(), 
+                                    inputParams.getClassifierAttribute(), 
+                                    inputParams.getFilterCriteria(), 
+                                    resultListener);
+            
+        } catch (IOException | SuspendNotAllowedException e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+        
+    }
+
+    @Override
+    public void onPluginExecutionFinished(LogFilterOutputResult outputParams) throws Exception {
+        XLog filteredLog = outputParams.getLog();
+        //List<LogFilterCriterion> criteria = outputParams.getFilterCriteria();
+        
+        if (filteredLog != null) {
+            if (this.portalContext instanceof PluginPortalContext) {
+                ((PluginPortalContext)portalContext).getMainController().showInputDialog(
+                        "Input", 
+                        "Enter a log name (no more than 60 characters)", 
+                        portalItem.getName() + "_filtered", 
+                        "^[a-zA-Z0-9_\\-\\s]{1,60}$",
+                        "a-z, A-Z, 0-9, hyphen, underscore, and space. No more than 60 chars.",
+                        new EventListener<Event>() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                if (event.getName().equals("onOK")) {
+                                    String logName = (String)event.getData();
+                                    saveLog(portalContext, filteredLog, logName, portalItem);
+                                }
+                            }
+                        });
+            }
+            else {
+                Messagebox.show("The current context is not a valid plugin portal context", "Attention", Messagebox.OK, Messagebox.ERROR);
+            }
+        }
     }
 
 

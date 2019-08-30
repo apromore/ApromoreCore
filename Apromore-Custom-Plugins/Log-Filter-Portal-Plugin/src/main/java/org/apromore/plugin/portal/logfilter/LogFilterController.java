@@ -26,9 +26,8 @@ import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
 import org.apromore.logfilter.criteria.model.*;
 import org.apromore.logman.stats.LogStatistics;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.logfilter.api.LogFilterOuputParams;
-import org.apromore.plugin.portal.logfilter.api.LogFilterResultListener;
-import org.apromore.plugin.portal.logfilter.api.WrongOutputParamsException;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterOutputResult;
+import org.apromore.plugin.portal.logfilter.generic.LogFilterResultListener;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.zk.ui.event.Event;
@@ -210,7 +209,7 @@ public class LogFilterController {
         	}
         	else {
     		    filterSelectorW.detach();
-    		    resultListener.filterFinished(new LogFilterOuputParams(filteredLog, criteria));
+    		    resultListener.onPluginExecutionFinished(new LogFilterOutputResult(filteredLog, criteria));
         	}
         }
         catch (Exception ex) {

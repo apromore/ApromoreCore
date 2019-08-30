@@ -32,10 +32,10 @@
         <relativePath>../../Apromore-Plugins/</relativePath>
     </parent>
 	
-    <artifactId>log-filter-portal-plugin-api</artifactId>
+    <artifactId>generic-portal-plugin</artifactId>
     <version>1.0.0</version>
     <packaging>bundle</packaging>
-    <name>Log Filter Portal Plugin API</name>
+    <name>Custom Plugin Framework</name>
 
     <build>
         <plugins>
@@ -50,7 +50,8 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.plugin.portal.logfilter.api
+                            org.apromore.plugin.portal.generic,
+                            org.apromore.plugin.portal.generic.exception
                         </Export-Package>
                     </instructions>
                 </configuration>
@@ -62,13 +63,7 @@
         <dependency>
             <groupId>org.apromore.plugin</groupId>
             <artifactId>portal-plugin-api</artifactId>
-        </dependency>
-		
-        <dependency>
-			<groupId>org.apromore.plugin</groupId>
-            <artifactId>log-management-logic</artifactId>
-			<version>1.0.0</version>
-        </dependency> 
+        </dependency>     
     </dependencies>
 </project>
 
