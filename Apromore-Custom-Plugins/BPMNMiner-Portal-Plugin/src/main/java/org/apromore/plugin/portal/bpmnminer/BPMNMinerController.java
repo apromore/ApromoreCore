@@ -177,7 +177,7 @@ public class BPMNMinerController {
             }
 
             // At least 2 process versions must be selected. Not necessarily of different processes
-            if (elements.size() == 0) {
+            if (selectedLogSummaryType.size() == 0 || selectedLogSummaryType.size() > 1) {
 //                this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMinerInput.zul", null, null);
 //                this.l = (Label) this.bpmnMinerW.getFellow("fileName");
 //                this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
@@ -188,12 +188,9 @@ public class BPMNMinerController {
 //                });
                 portalContext.getMessageHandler().displayInfo("Select one log for process discovery.");
                 return;
-            }else if (selectedLogSummaryType.size() == 1) {
+            }else {
                 log = eventLogService.getXLog(selectedLogSummaryType.iterator().next().getId());
                 this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMiner.zul", null, null);
-            }else {
-                portalContext.getMessageHandler().displayInfo("Select one log for process discovery.");
-                return;
             }
 
             this.modelName = (Textbox) this.bpmnMinerW.getFellow("bpmnMinerModelName");
