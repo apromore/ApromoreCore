@@ -178,14 +178,16 @@ public class BPMNMinerController {
 
             // At least 2 process versions must be selected. Not necessarily of different processes
             if (elements.size() == 0) {
-                this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMinerInput.zul", null, null);
-                this.l = (Label) this.bpmnMinerW.getFellow("fileName");
-                this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
-                this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
-                    public void onEvent(Event event) throws Exception {
-                        uploadFile((UploadEvent) event);
-                    }
-                });
+//                this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMinerInput.zul", null, null);
+//                this.l = (Label) this.bpmnMinerW.getFellow("fileName");
+//                this.uploadLog = (Button) this.bpmnMinerW.getFellow("bpmnMinerUpload");
+//                this.uploadLog.addEventListener("onUpload", new EventListener<Event>() {
+//                    public void onEvent(Event event) throws Exception {
+//                        uploadFile((UploadEvent) event);
+//                    }
+//                });
+                portalContext.getMessageHandler().displayInfo("Select one log for process discovery.");
+                return;
             }else if (selectedLogSummaryType.size() == 1) {
                 log = eventLogService.getXLog(selectedLogSummaryType.iterator().next().getId());
                 this.bpmnMinerW = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/bpmnMiner.zul", null, null);
@@ -195,6 +197,7 @@ public class BPMNMinerController {
             }
 
             this.modelName = (Textbox) this.bpmnMinerW.getFellow("bpmnMinerModelName");
+            this.modelName.setText(selectedLogSummaryType.iterator().next().getName()+"_model");
             this.miningAlgorithms = (Selectbox) this.bpmnMinerW.getFellow("bpmnMinerMiningAlgorithm");
             ListModelArray listModelArray = new ListModelArray<Object>(arrayMiningAlgorithms);
             listModelArray.addToSelection(arrayMiningAlgorithms[0]);
@@ -244,6 +247,11 @@ public class BPMNMinerController {
             });
             this.okButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
+                    modelName.setText(modelName.getText().trim());
+                    if (modelName.getText().equals("")) {
+                        Messagebox.show("Please enter a model name");
+                        return;
+                    }
                     setupMiningAlgorithm();
                 }
             });
