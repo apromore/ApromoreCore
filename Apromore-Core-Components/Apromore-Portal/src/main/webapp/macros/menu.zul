@@ -25,10 +25,10 @@
             <menuitem id="createProcess" visible="true" label="Create Model in Signavio" disabled="true" image="/img/icon/svg/create_signavio.svg" />
             <menuitem id="createProcess2" label="Create Model" disabled="true" image="/img/icon/svg/create_file.svg"/>
 
-            <menuitem id="fileImport" label="Import" disabled="true" image="/img/icon/svg/import_22.svg"/>
-            <menuitem id="fileExport" label="Export" disabled="true" image="/img/icon/svg/export_22.svg"/>
+            <menuitem id="fileImport" label="Import" disabled="true" image="/img/icon/svg/import.svg"/>
+            <menuitem id="fileExport" label="Export" disabled="true" image="/img/icon/svg/export.svg"/>
 
-            <menuitem id="processEdit" visible="true" label="Edit Model in Signavio" disabled="true" image="/img/icon/svg/edit_22.svg"/>
+            <menuitem id="processEdit" visible="true" label="Edit Model in Signavio" disabled="true" image="/img/icon/svg/edit_signavio.svg"/>
             <menuitem id="processEdit2" label="Edit Model" disabled="true" image="/img/icon/svg/edit_22.svg"/>
 
             <menuitem id="dataEdit" label="Edit Metadata" disabled="true" image="/img/icon/svg/edit_meta_22.svg"/>
