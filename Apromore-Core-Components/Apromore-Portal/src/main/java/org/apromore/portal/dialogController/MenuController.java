@@ -52,12 +52,14 @@ public class MenuController extends Menubar {
 
     private final MainController mainC;
     private Menubar menuB;
+    private Menubar accountMenuB;
     private PortalContext portalContext;
 
     public MenuController(final MainController mainController) throws ExceptionFormats {
         this.mainC = mainController;
         this.portalContext = new PluginPortalContext(mainC);
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
+        this.accountMenuB = (Menubar) this.mainC.getFellow("accountMenu");
 
         Menuitem createMI = (Menuitem) this.menuB.getFellow("createProcess");
         Menuitem createMI2 = (Menuitem) this.menuB.getFellow("createProcess2");
@@ -169,7 +171,13 @@ public class MenuController extends Menubar {
             }
 
             // Add the menus to the menu bar
-            for (final Menu menu: menuMap.values()) { menuB.appendChild(menu); }
+            for (final Menu menu: menuMap.values()) {
+                if ("Account".equals(menu.getLabel())) {
+                    accountMenuB.appendChild(menu);
+                } else {
+                    menuB.appendChild(menu);
+                }
+            }
         }
     }
 
