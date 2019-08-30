@@ -289,23 +289,12 @@ public class MainController extends BaseController implements MainControllerInte
     // disable/enable features depending on user status
     public void updateActions() {
         Boolean connected = UserSessionManager.getCurrentUser() != null;
+        List<String> blacklist = Arrays.asList("designPatternCr", "designReference", "designPatternCo", /*"designConfiguration",*/ "designExtension");
 
         // disable/enable menu items in menu bar
         for (Component C : this.menu.getMenuB().getFellows()) {
-            if (C.getClass().getName().compareTo("org.zkoss.zul.Menuitem") == 0) {
-                if (C.getId().equals("designPatternCr")) {
-                    ((Menuitem) C).setDisabled(true);
-                } else if (C.getId().equals("designReference")) {
-                    ((Menuitem) C).setDisabled(true);
-                } else if (C.getId().equals("designPatternCo")) {
-                    ((Menuitem) C).setDisabled(true);
-//              } else if (C.getId().equals("designConfiguration")) {
-//                  ((Menuitem) C).setDisabled(true);
-                } else if (C.getId().equals("designExtension")) {
-                    ((Menuitem) C).setDisabled(true);
-                } else {
-                    ((Menuitem) C).setDisabled(!connected);
-                }
+            if (C instanceof Menuitem) {
+                ((Menuitem) C).setDisabled(!connected && !blacklist.contains(C.getId()));
             }
         }
     }

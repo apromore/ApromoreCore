@@ -29,6 +29,7 @@
                 
         <include name="Apromore-Assembly/Custom-Plugins/custom-plugins.plan"/>
         
+        <include name="Apromore-Custom-Plugins/Account-Portal-Plugin/target/account-portal-plugin-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/Compare-Logic/target/compare-logic-1.1.jar"/>
