@@ -44,4 +44,8 @@
     <beans:bean id="portalPlugin3" class="org.apromore.plugin.portal.account.ChangeThemePlugin"/>
     <osgi:service ref="portalPlugin3" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
 
+    <osgi:service interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces">
+        <beans:bean class="org.apromore.plugin.portal.account.SignOutPlugin"/>
+    </osgi:service>
+
 </beans:beans>

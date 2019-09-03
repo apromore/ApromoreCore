@@ -52,14 +52,12 @@ public class MenuController extends Menubar {
 
     private final MainController mainC;
     private Menubar menuB;
-    private Menubar accountMenuB;
     private PortalContext portalContext;
 
     public MenuController(final MainController mainController) throws ExceptionFormats {
         this.mainC = mainController;
         this.portalContext = new PluginPortalContext(mainC);
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
-        this.accountMenuB = (Menubar) this.mainC.getFellow("accountMenu");
 
         Menuitem createMI = (Menuitem) this.menuB.getFellow("createProcess");
         Menuitem createMI2 = (Menuitem) this.menuB.getFellow("createProcess2");
@@ -172,9 +170,24 @@ public class MenuController extends Menubar {
 
             // Add the menus to the menu bar
             for (final Menu menu: menuMap.values()) {
+                if (!"Account".equals(menu.getLabel())) {
+                    menuB.appendChild(menu);
+                }
+            }
+
+            Menuseparator separator = new Menuseparator();
+            separator.setHflex("1");
+            separator.setStyle("border-width: 0");
+            menuB.appendChild(separator);
+
+            for (final Menu menu: menuMap.values()) {
                 if ("Account".equals(menu.getLabel())) {
-                    accountMenuB.appendChild(menu);
-                } else {
+                    try {
+                        menu.setLabel(UserSessionManager.getCurrentUser().getUsername());
+                    } catch (Exception e) {
+                        LOGGER.warn("Unable to set Account menu to current user name", e);
+                    }
+
                     menuB.appendChild(menu);
                 }
             }

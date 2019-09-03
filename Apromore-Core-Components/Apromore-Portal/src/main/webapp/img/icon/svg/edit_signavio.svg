@@ -1,3 +1,107 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="23px" height="23px" viewBox="-0.5 -0.5 23 23" content="&lt;mxfile modified=&quot;2019-08-30T04:40:59.190Z&quot; host=&quot;www.draw.io&quot; agent=&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&quot; version=&quot;11.2.3&quot; etag=&quot;rUTEKcgslReGTkKV3fgl&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;DczijQ0cat_AX9OySdrj&quot;&gt;rVXBjpswEP0ajkUYw5Iem2TTPexKlVKpZwccsNYwyJhNsl9fj7ETaMhuq5RIBN7MGM978yCgq/r4XbG2eoGCyyCOimNA10Ecp1ESmT9ETgNCF5FDSiWKASMXYCveuQN9Wi8K3k0SNYDUop2COTQNz/UEY0rBYZq2Bzl9astKfgVscyav0V+i0NWAZr4LxJ+4KCvtO3aBmvlcB3QVK+AwguhjQFcKQA9X9XHFJZLnaRnqNjei530p3ui/KYiHgjcme9ea25c++V5LBX3r0rjS/DjHMNv59Oh6C+TcmJkIDjXX6mRS3EJxvCBhtkgzksT2PCzgRuOBkjAdkMOF6Zh8DWOfj+fFkFKNSCeLyFcyJ3d5fviFEnPhWJlniH7OUKVrU70mAV0iQ8LMyTPbcfkDOqEFNCa2A62hNglMihKB3LDDlQEkZi5Z/oo8N8UKJCi7LN3bY7ToN1eroTVopxW8nsfP8O6h0RLJGn8mshdSjvCNPbDCzx+WF6yreOFuTKTF/upjiSYOBXRZKIzcXVhA3tdW3eXNuRjrH8/rf/KenhGYZNmMoll0v57JlZ7bK0FNM9jcSFfFO/HuhhzZaUE02u4iXQYpMsx6beS2Lyoy0lnyvb4tYcty0ZQ/8Wb9JUGdoNHudUfSyAEbVguJbD33uSiY2evKyAC4GRufE/weYXxBMuuxsUre7X/47n6V0s9dZ+1ixxX5PlRC863hE6MHM7FT/W47Y2ojEn1gFgWaOT8TmmKiFO2TF1zlTjir23/gP51/xznbxHTONg8zgtB/18PcXr5BNjb6ktPH3w==&lt;/diagram&gt;&lt;/mxfile&gt;"><defs/><g><path d="M 0.98 4.6 L 13.62 4.6 L 18.68 8 L 18.68 21.6 L 0.98 21.6 Z" fill="#ffffff" stroke="#4d4d4d" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><path d="M 13.62 4.6 L 13.62 8 L 18.68 8" fill="none" stroke="#4d4d4d" stroke-width="2" stroke-miterlimit="10" pointer-events="none"/><g transform="translate(2.5,3.5)scale(0.1)"><switch><foreignObject style="overflow:visible;" pointer-events="all" width="83" height="178" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; font-size: 150px; font-family: &quot;Lucida Console&quot;; color: rgb(77, 77, 77); line-height: 1.2; vertical-align: top; white-space: nowrap; text-align: left;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block;text-align:inherit;text-decoration:inherit;">S</div></div></foreignObject><text x="42" y="164" fill="#4D4D4D" text-anchor="middle" font-size="150px" font-family="Lucida Console">S</text></switch></g><rect x="6.9" y="5.9" width="16" height="3" rx="1.5" ry="1.5" fill="#ffffff" stroke="#4d4d4d" transform="translate(14.9,0)scale(-1,1)translate(-14.9,0)rotate(-135,14.9,7.4)" pointer-events="none"/></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:xhtml="http://www.w3.org/1999/xhtml"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="21.909294"
+   height="21.889294"
+   viewBox="-0.5 -0.5 21.909294 21.889294"
+   content="&lt;mxfile modified=&quot;2019-08-31T02:52:21.020Z&quot; host=&quot;pebppomjfocnoigkeepgbmcifnnlndla&quot; agent=&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&quot; version=&quot;11.2.1&quot; etag=&quot;B5M9U0tTZm7BepE0wFnY&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;MI1sTLJs2hXxMis8uiM3&quot;&gt;rVVRj6IwEP41PK6hFMR7PHW9fdhNLvGSe660QrOFIaWsur/+pqUoLJK7S8RE229m2pn5vsGAbsrzD83q4g24UEEU8nNAt0EURQlJ8ccilw5JqQdyLXkHkRuwl5/Cg6FHW8lFM3I0AMrIegxmUFUiMyOMaQ2nsdsR1PjWmuViAuwzpqbob8lN4asIwxv+ImRe+JuT3lCy3tcDTcE4nAYQfQ7oRgOYblWeN0LZ3vVt6eJ2M9ZrXlpU5l8Coi7gg6nWl+bzMpe+1sKUClckoOsPoY3ELryyg1A/oZFGQoW2AxgDJTowJXMLZHi90Ago67lm2Xuuoa34BhRodyw9umdw6Hcfa6BGtDEa3q/NxSp6aHBEvLUftBylUgN85x4b0XfXhnPWFIL7DVpqW195zq1CFxKadCFRLs2CQ9aWrn1r3xxMUJxnG0yutKHcBZTC6Au69Fqnq3CRrpKUxJH77g649HqOvfBPNxmR1GPFQEIk9YphXrr59aobvbjwDN9nm07Y3k/oxlJt6QPWtWjkJzs4B9u7GmRlXBbJOkhs/1lrUAxuSMlABUoczTzBNctklf+ym+1TbFmEyvhRJ45wC+xYKZXt1mubSc4w1w2SBDYZZ78rB3uQr4g8hsNvX2ijy0UyJa6f6hFxqwcQF/99TN18OX1bCk6FNGKPLbbWE0p8TOn8KN2Zu7np0mCYfwEQmlhHJeuXXgM681wm4YMmKaZfWVjGUw6Wdzig/08Bbm9vYWcb/JXR5z8=&lt;/diagram&gt;&lt;/mxfile&gt;"
+   id="svg18"
+   sodipodi:docname="edit_in_signavio.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <metadata
+     id="metadata22">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3840"
+     inkscape:window-height="1973"
+     id="namedview20"
+     showgrid="false"
+     inkscape:zoom="10.26087"
+     inkscape:cx="11.02"
+     inkscape:cy="11.9"
+     inkscape:window-x="-18"
+     inkscape:window-y="-18"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg18" />
+  <defs
+     id="defs2" />
+  <g
+     id="g16"
+     transform="translate(-0.48,-1.5107057)">
+    <path
+       d="m 0.98,4.9 h 12.64 l 5.06,3.4 V 21.9 H 0.98 Z"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path4"
+       inkscape:connector-curvature="0"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:2;stroke-miterlimit:10" />
+    <path
+       d="m 13.62,4.9 v 3.4 h 5.06"
+       stroke-miterlimit="10"
+       pointer-events="none"
+       id="path6"
+       inkscape:connector-curvature="0"
+       style="fill:none;stroke:#4d4d4d;stroke-width:2;stroke-miterlimit:10" />
+    <g
+       transform="matrix(0.1,0,0,0.1,1.5,3.5)"
+       id="g12">
+      <switch
+         id="switch10">
+        <foreignObject
+           style="overflow:visible;"
+           pointer-events="all"
+           width="75"
+           height="142"
+           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+          <xhtml:div
+             style="display: inline-block; font-size: 120px; font-family: &quot;Lucida Console&quot;; color: rgb(77, 77, 77); line-height: 1.2; vertical-align: top; white-space: nowrap; font-weight: bold; text-align: left;">
+            <xhtml:div
+               style="display:inline-block;text-align:inherit;text-decoration:inherit;">S</xhtml:div>
+          </xhtml:div>
+        </foreignObject>
+        <text
+           x="38"
+           y="131"
+           font-size="120px"
+           font-weight="bold"
+           id="text8"
+           style="font-weight:bold;font-size:120px;font-family:'Lucida Console';text-anchor:middle;fill:#4d4d4d">S</text>
+      </switch>
+    </g>
+    <rect
+       x="6.8000002"
+       y="6.5999999"
+       width="16"
+       height="3"
+       rx="1.5"
+       ry="1.5"
+       transform="matrix(0.70710678,-0.70710678,-0.70710678,-0.70710678,10.062385,24.292745)"
+       pointer-events="none"
+       id="rect14"
+       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:2" />
+  </g>
+</svg>
