@@ -182,6 +182,12 @@ public class MenuController extends Menubar {
 
             for (final Menu menu: menuMap.values()) {
                 if ("Account".equals(menu.getLabel())) {
+                    try {
+                        menu.setLabel(UserSessionManager.getCurrentUser().getUsername());
+                    } catch (Exception e) {
+                        LOGGER.warn("Unable to set Account menu to current user name", e);
+                    }
+
                     menuB.appendChild(menu);
                 }
             }
