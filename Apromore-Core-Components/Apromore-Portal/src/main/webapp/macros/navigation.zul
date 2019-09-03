@@ -28,6 +28,14 @@
         .z-tree-icon {
             vertical-align: super;
         }
+
+        .z-toolbarbutton-content>img, .z-toolbarbutton-content>i {
+        margin-right: 2px;
+        max-height: 22px;
+        max-width: 22px;
+        font-size: 16px;
+        vertical-align: top;
+        }
     </style>
     <div class="z-west-header" style="display: -webkit-flex; display: flex">
         <label style="color: unset; padding-top: 5px; font-weight: bold; -webkit-flex: 1; flex: 1" value="Folders"/>

@@ -20,8 +20,13 @@
 
 <!-- Controller is SimpleSearchController -->
 <window id="simplesearchwindow">
+    <style>
+        .z-button {
+        box-shadow: unset;
+        }
+    </style>
     <hbox id="previoussearcheshbox" pack="stretch" width="100%" height="24px">
-        <combobox id="previoussearchescombobox" autodrop="true" mold="rounded" buttonVisible="true" hflex="true" tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."/>
+        <combobox id="previoussearchescombobox" autodrop="true" mold="rounded" buttonVisible="true" width="100%" tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."/>
         <button id="previoussearchesbutton" style="background: transparent; border:none" image="img/icon/svg/search_22.svg"/>
     </hbox>
 </window>
