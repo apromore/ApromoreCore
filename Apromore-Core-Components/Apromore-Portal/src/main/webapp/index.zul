@@ -191,10 +191,7 @@
 
             <center id="mainPanel">
                 <div vflex="true">
-                    <hbox width="100%">
-                        <Menu id="menucomp" style="background-color: unset;" hflex="1"/>
-                        <menubar id="accountMenu"/>
-                    </hbox>
+                    <Menu id="menucomp" style="background-color: unset" width="100%"/>
                     <hbox id="pagingandbuttons" width="100%" style="background-color: unset; border-bottom: 1px solid #CFCFCF;">
                         <paging id="pg" style="border-bottom: 0px solid #F9F9F9;" />
                         <hbox id="buttons" align="center" height="100%" vflex="min">
