@@ -22,6 +22,6 @@
 <window id="simplesearchwindow">
     <hbox id="previoussearcheshbox" pack="stretch" width="100%" height="24px">
         <combobox id="previoussearchescombobox" autodrop="true" mold="rounded" buttonVisible="true" hflex="true" tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."/>
-        <button id="previoussearchesbutton" style="background: transparent; border:none" image="img/search.png"/>
+        <button id="previoussearchesbutton" style="background: transparent; border:none" image="img/icon/svg/search_22.svg"/>
     </hbox>
 </window>
