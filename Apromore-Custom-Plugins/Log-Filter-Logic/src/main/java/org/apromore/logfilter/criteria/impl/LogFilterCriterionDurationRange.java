@@ -27,8 +27,22 @@ public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion 
         long greaterThan = 0;
         long lesserThan = Long.MAX_VALUE;
         for(String v : value) {
-            if(v.startsWith(">")) greaterThan = Long.parseLong(v.substring(1));
-            if(v.startsWith("<")) lesserThan = Long.parseLong(v.substring(1));
+            if(v.startsWith(">")) {
+                int spaceIndex = v.indexOf(" ");
+                String numberString = v.substring(1, spaceIndex);
+                long longValue = new Double(numberString).longValue();
+                String unit = v.substring(spaceIndex + 1);
+                long unitValue = stringToMilli(unit);
+                greaterThan = longValue * unitValue;
+            }
+            if(v.startsWith("<")){
+                int spaceIndex = v.indexOf(" ");
+                String numberString = v.substring(1, spaceIndex);
+                long longValue = new Double(numberString).longValue();
+                String unit = v.substring(spaceIndex + 1);
+                long unitValue = stringToMilli(unit);
+                lesserThan = longValue * unitValue;
+            }
         }
         long s = epochMilliOf(zonedDateTimeOf(trace.get(0)));
         long e = epochMilliOf(zonedDateTimeOf(trace.get(trace.size()-1)));
@@ -52,5 +66,16 @@ public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion 
         ZonedDateTime z =
                 ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
         return z;
+    }
+
+    private long stringToMilli(String s) {
+        if(s.equals("Years")) return new Long("31556952000");
+        if(s.equals("Months")) return new Long("2628000000");
+        if(s.equals("Weeks")) return 1000 * 60 * 60 * 24 * 7;
+        if(s.equals("Days")) return 1000 * 60 * 60 * 24;
+        if(s.equals("Hours")) return 1000 * 60 * 60;
+        if(s.equals("Minutes")) return 1000 * 60;
+        if(s.equals("Seconds")) return 1000;
+        return 0;
     }
 }
