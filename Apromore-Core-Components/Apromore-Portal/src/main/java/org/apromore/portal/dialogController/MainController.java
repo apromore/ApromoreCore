@@ -55,8 +55,6 @@ import org.zkoss.zul.ext.Paginal;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -222,6 +220,10 @@ public class MainController extends BaseController implements MainControllerInte
             // https://www.zkoss.org/javadoc/latest/zk/org/zkoss/zk/ui/Executions.html#sendRedirect(java.lang.String)
             LOGGER.warn("ZK default redirection failed", e);
         }
+    }
+    
+    public PortalContext getPortalContext() {
+    	return this.portalContext;
     }
 
     public void loadWorkspace() {
@@ -402,7 +404,7 @@ public class MainController extends BaseController implements MainControllerInte
         }
     }
 
-    private static EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
+    private EditSessionType createEditSession(final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
 
         EditSessionType editSession = new EditSessionType();
 
@@ -416,7 +418,7 @@ public class MainController extends BaseController implements MainControllerInte
         editSession.setOriginalVersionNumber(version.getVersionNumber());
         editSession.setCurrentVersionNumber(version.getVersionNumber());
         editSession.setMaxVersionNumber(findMaxVersion(process));
-
+        editSession.setFolderId(portalContext.getCurrentFolder().getId());
         editSession.setCreationDate(version.getCreationDate());
         editSession.setLastUpdate(version.getLastUpdate());
         if (annotation == null) {
@@ -489,8 +491,8 @@ public class MainController extends BaseController implements MainControllerInte
     public void saveModel(ProcessSummaryType process, VersionSummaryType version, EditSessionType editSession,
             boolean isNormalSave, String data) throws  InterruptedException {
     	try {
-    		Window window = (Window) portalContext.getUI().createComponent(this.getClass().getClassLoader(), "macros/saveAsDialog.zul", null, null);
-    		SaveAsDialogController saveDiaglog = new SaveAsDialogController(process, version, editSession, isNormalSave, data, window);
+    		//Window window = (Window) portalContext.getUI().createComponent(this.getClass().getClassLoader(), "macros/saveAsDialog.zul", null, null);
+    		SaveAsDialogController saveDiaglog = new SaveAsDialogController(process, version, editSession, isNormalSave, data);
     	}
     	catch (Exception e) {
     		Messagebox.show("Cannot edit " + process.getName() + " (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -640,6 +642,16 @@ public class MainController extends BaseController implements MainControllerInte
             }
         }
         return summaryTypes;
+    }
+    
+    private VersionSummaryType getLatestVersion(List<VersionSummaryType> versionSummaries) {
+        VersionSummaryType result = null;
+        for (VersionSummaryType version : versionSummaries) {
+            if (result == null || (version.getVersionNumber().compareTo(result.getVersionNumber()) > 0)) {
+                result = version;
+            }
+        }
+        return result;
     }
 
 

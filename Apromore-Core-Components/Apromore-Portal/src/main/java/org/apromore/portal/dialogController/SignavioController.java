@@ -30,6 +30,7 @@ import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
 import org.apromore.plugin.editor.EditorPlugin;
+import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,7 +79,7 @@ public class SignavioController extends BaseController {
     private Set<RequestParameterType<?>> params;
     private int m1PESSize, m2PESSize;
     private JSONObject differences;
-
+    
     public SignavioController() {
         super();
 
