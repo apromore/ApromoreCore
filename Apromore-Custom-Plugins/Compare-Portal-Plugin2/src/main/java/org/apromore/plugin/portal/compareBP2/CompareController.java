@@ -311,7 +311,7 @@ public class CompareController {
         }
     }
 
-    private static EditSessionType createEditSession(final String username, final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
+    private EditSessionType createEditSession(final String username, final ProcessSummaryType process, final VersionSummaryType version, final String nativeType, final String annotation) {
 
         EditSessionType editSession = new EditSessionType();
 
@@ -325,7 +325,7 @@ public class CompareController {
         editSession.setOriginalVersionNumber(version.getVersionNumber());
         editSession.setCurrentVersionNumber(version.getVersionNumber());
         editSession.setMaxVersionNumber(findMaxVersion(process));
-
+        editSession.setFolderId(portalContext.getCurrentFolder().getId());
         editSession.setCreationDate(version.getCreationDate());
         editSession.setLastUpdate(version.getLastUpdate());
         if (annotation == null) {

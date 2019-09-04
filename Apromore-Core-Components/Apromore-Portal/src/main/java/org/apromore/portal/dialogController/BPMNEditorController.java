@@ -91,7 +91,6 @@ public class BPMNEditorController extends BaseController {
 
     public BPMNEditorController() {
         super();
-
 //        processService = (ProcessService) beanFactory.getBean("processService");
         if (userSessionManager.getCurrentUser() == null) {
 //            LOGGER.warn("Faking user session with admin(!)");
