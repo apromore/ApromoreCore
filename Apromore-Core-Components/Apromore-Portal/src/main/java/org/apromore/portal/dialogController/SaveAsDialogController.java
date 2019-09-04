@@ -186,7 +186,7 @@ public class SaveAsDialogController extends BaseController {
             this.branchName.setText("MAIN");
             this.branchName.setReadonly(true);
             this.versionNumber.setText("1.0");
-            this.versionNumber.setReadonly(true);
+            //this.versionNumber.setReadonly(true);
             this.modelName.setText(this.modelName.getText() + "_new"); //18.08: add to make it a new name
         }
 
@@ -276,7 +276,7 @@ public class SaveAsDialogController extends BaseController {
         		//
         	}
         	else if (this.isSaveCurrent) {
-                if (newVersion.compareTo(curVersion) < 0) {
+                if (newVersion.compareTo(curVersion) <= 0) {
                     valid = false;
                     message = message + "New Version number has to be greater than " + this.editSession.getCurrentVersionNumber();
                     title = "Wrong Version Number";

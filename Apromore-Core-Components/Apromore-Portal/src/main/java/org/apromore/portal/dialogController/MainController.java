@@ -448,6 +448,7 @@ public class MainController extends BaseController implements MainControllerInte
             UserSessionManager.setEditSession(id, session);
 
             String url = "macros/openModelInSignavio.zul?id=" + id;
+            if (annotation != null && annotation.equals(Constants.INITIAL_ANNOTATION)) url += "&newProcess=true";
             instruction += "window.open('" + url + "');";
 
             Clients.evalJavaScript(instruction);

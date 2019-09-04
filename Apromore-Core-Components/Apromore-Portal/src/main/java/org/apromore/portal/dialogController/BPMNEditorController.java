@@ -214,6 +214,7 @@ public class BPMNEditorController extends BaseController {
             e.printStackTrace();
         }
         
+        //todo: the exception catching here is not effective as ZK dialogs are asynchronous
         this.addEventListener("onSave", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
@@ -227,15 +228,19 @@ public class BPMNEditorController extends BaseController {
                 		new SaveAsDialogController(process, vst, editSession, true, eventToString(event));
                 	}
                 } catch (Exception ex) {
-                	Messagebox.show("Error saving model: " + ex.getMessage());
+//                	Messagebox.show("Error saving model: " + ex.getMessage());
                     LOGGER.error("Error saving model.", ex.getStackTrace().toString());
+                    Messagebox.show("Unable to save model! Check if a model with the same name and version number has already existed.");
                     isNewProcess = isNewProcessBackup; //change the status back in case of saving error
                 }
             }
         });
+        
+        //todo: the exception catching here is not effective as ZK dialogs are asynchronous
         this.addEventListener("onSaveAs", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
+                boolean isNewProcessBackup = isNewProcess;
                 try {
                 	// If new model: choose Save As is the same as choose Save 
                 	if (isNewProcess) {
@@ -246,8 +251,10 @@ public class BPMNEditorController extends BaseController {
                 		new SaveAsDialogController(process, vst, editSession, false, eventToString(event));
                 	}
                 } catch (Exception ex) {
-                	Messagebox.show("Error saving model: " + ex.getMessage());
+//                	Messagebox.show("Error saving model: " + ex.getMessage());
                     LOGGER.error("Error saving model.", ex.getStackTrace().toString());
+                    Messagebox.show("Unable to save model! Check if a model with the same name and version number has already existed.");
+                    isNewProcess = isNewProcessBackup; //change the status back in case of saving error
                 }
             }
         });
