@@ -231,29 +231,28 @@ public class SaveAsDialogController extends BaseController {
 
         try {
             if (validateFields()) {
-                if (this.isSaveCurrent != null && !this.isSaveCurrent) {
+                Folder folder = workspaceService.getFolder(editSession.getFolderId());
+                String containingFolderName = (folder == null) ? "Home" : folder.getName();
+                if (this.isSaveCurrent != null && !this.isSaveCurrent) { //Save As
                 	// the branch name is by default "MAIN", see org.apromore.common.Constants.TRUNK_NAME
                     getService().importProcess(userName, containingFolderId, nativeType, processName, versionNo, is, domain, null, created, null,
                             makePublic, pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
+                    Messagebox.show("The model '" + processName + "' has been created in the '" + containingFolderName + "' folder");
                 } else {
                 	//Note: the versionName parameter is never used in updateProcess(), so any value should be fine. 
                 	//Update the 2nd time with same name and version number for the state (1) is allowed 
                 	//because the pre-created empty model has no root fragments. 
                     getService().updateProcess(editSession.hashCode(), userName, nativeType, processId, domain, processName,
                             editSession.getOriginalBranchName(), branch, versionNo, originalVersionNumber, versionName, is);
-                    //Messagebox.show("The model '" + processName + "' has been updated in the '" + containingFolderName + "' folder");
+                    Messagebox.show("The model '" + processName + "' has been updated in the '" + containingFolderName + "' folder");
+                    
+                    // 18.08: update current version number to ensure it will be always auto-increment
+                    // It seems that original version number and current version number are set 
+                    // to the same version number all the times (see MainController.createEditSession())
+                    editSession.setOriginalVersionNumber(versionNo);
+                    editSession.setCurrentVersionNumber(versionNo);
+                    originalVersionNumber = versionNo;
                 }
-                
-                Folder folder = workspaceService.getFolder(editSession.getFolderId());
-            	String containingFolderName = (folder == null) ? "Home" : folder.getName();
-                Messagebox.show("The model '" + processName + "' has been updated in the '" + containingFolderName + "' folder");
-                
-                // 18.08: update current version number to ensure it will be always auto-increment
-                // It seems that original version number and current version number are set 
-                // to the same version number all the times (see MainController.createEditSession())
-                editSession.setOriginalVersionNumber(versionNo);
-                editSession.setCurrentVersionNumber(versionNo);
-                originalVersionNumber = versionNo;
                 
                 qe.publish(new Event(Constants.EVENT_MESSAGE_SAVE, null, Boolean.TRUE));
                 closePopup();
