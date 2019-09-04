@@ -54,7 +54,7 @@
             .myGroupBox {
             display: block;
             height: inherit;
-            border: 1px solid #cfcfcf;
+            border: 0px solid #cfcfcf;
             border-top: 0;
             padding: 0px;
             overflow: auto;
@@ -67,9 +67,11 @@
             width: 100%;
             }
             .banner{
-            position:absolute;
+            position: absolute;
             width: 100%;
-            height: 61px;
+            height: 80px;
+            background: linear-gradient(180deg, transparent, #008cfd);
+            z-index: -1;
             }
             tr.z-row td.z-row-inner, tr.z-row .z-cell {
             padding-left: 10px;
@@ -87,7 +89,7 @@
         <div id="gridBox" zclass="myGroupBox">
             <div id="popUPBox" zclass="relativePos"></div>
             <div zclass="banner" />
-            <div id="attrBox" style="padding-top: 60px;"></div>
+            <div id="attrBox" style="padding-top: 45px;"></div>
             <grid id="myGrid" mold="paging" pageSize="32" hflex="min" vflex="min" />
         </div>
         <div style="padding: 5px 0 5px 45%;">
