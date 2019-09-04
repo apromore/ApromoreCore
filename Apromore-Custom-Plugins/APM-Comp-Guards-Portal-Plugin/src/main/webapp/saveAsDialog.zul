@@ -44,7 +44,7 @@
                 </row>
                 <row spans="3">
                     <div align="center">
-                        <button label="Save" image="../img/ok.png" >
+                        <button label="Save" iconSclass="z-icon-check-circle" >
                         </button>
                         <button label="Cancel"
                             image="../img/cancel2.png">

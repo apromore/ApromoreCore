@@ -193,8 +193,8 @@
 
                 <row id="driftButtons" spans="2">
                     <div align="center">
-                        <button id="proDriftOKButton" label="OK" image="img/ok.png" disabled="false"></button>
-                        <button id="proDriftCancelButton" label="Cancel" image="img/cancel2.png"></button>
+                        <button id="proDriftOKButton" label="OK" iconSclass="z-icon-check-circle" disabled="false"></button>
+                        <button id="proDriftCancelButton" label="Cancel" iconSclass="z-icon-times-circle"></button>
                     </div>
                 </row>
             </rows>

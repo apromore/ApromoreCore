@@ -26,8 +26,9 @@
             </listhead>
         </listbox>
         <div align="center">
-            <button id="entityCancelButton" label="Cancel" image="img/cancel2.png"></button>
-            <button id="entityNextButton" label="Ok" image="img/ok.png"></button>
+            <button id="entityNextButton" label="Ok" iconSclass="z-icon-check-circle"></button>
+            <button id="entityCancelButton" label="Cancel" iconSclass="z-icon-times-circle"></button>
+
         </div>
     </vbox>
 </window>

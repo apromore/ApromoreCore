@@ -107,8 +107,8 @@
             </groupbox>
         </groupbox>
         <div align="center">
-            <button id="ibpsCancelButton" label="Cancel" image="img/cancel2.png"></button>
-            <button id="ibpsOKButton" label="Structure" image="img/ok.png"></button>
+            <button id="ibpsOKButton" label="Structure" iconSclass="z-icon-check-circle"></button>
+            <button id="ibpsCancelButton" label="Cancel" iconSclass="z-icon-times-circle"></button>
         </div>
     </vbox>
 

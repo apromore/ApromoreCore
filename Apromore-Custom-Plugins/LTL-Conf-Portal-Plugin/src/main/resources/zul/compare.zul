@@ -46,8 +46,8 @@
             </hbox>
         </groupbox>
         <div align="center">
-            <button id="cancelButton" label="Cancel" image="img/cancel2.png"></button>
-            <button id="oKButton" label="OK" image="img/ok.png"></button>
+            <button id="oKButton" label="OK" iconSclass="z-icon-check-circle"></button>
+            <button id="cancelButton" label="Cancel" iconSclass="z-icon-check-circle"></button>
         </div>
     </vbox>
 

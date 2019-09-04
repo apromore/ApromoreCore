@@ -30,8 +30,8 @@
             <slider id="activityFilterThreshold" mold="scale" maxpos="100" curpos="90" width="270px"/>
         </groupbox>
         <div align="center">
-            <button id="activityFilterCancelButton" label="Cancel" image="img/cancel2.png"></button>
-            <button id="activityFilterOKButton" label="OK" image="img/ok.png"></button>
+            <button id="activityFilterOKButton" label="OK" iconSclass="z-icon-check-circle"></button>
+            <button id="activityFilterCancelButton" label="Cancel" iconSclass="z-icon-times-circle"></button>
         </div>
     </vbox>
 

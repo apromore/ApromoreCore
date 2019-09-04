@@ -63,8 +63,8 @@
 
                 <row id="Buttons" spans="2">
                     <div align="center">
-                        <button id="createLogOKButton" label="OK" image="img/ok.png" disabled="false" height="30px"></button>
-                        <button id="createLogCancelButton" label="Cancel" image="img/cancel2.png" height="30px"></button>
+                        <button id="createLogOKButton" label="OK" iconSclass="z-icon-check-circle" disabled="false" height="30px"></button>
+                        <button id="createLogCancelButton" label="Cancel" iconSclass="z-icon-times-circle" height="30px"></button>
                     </div>
                 </row>
             </rows>

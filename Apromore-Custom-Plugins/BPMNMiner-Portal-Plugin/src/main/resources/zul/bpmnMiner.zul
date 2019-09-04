@@ -164,8 +164,8 @@
             </panelchildren>
         </panel>
         <div align="center">
-            <button id="bpmnMinerCancelButton" label="Cancel" image="img/cancel2.png"></button>
-            <button id="bpmnMinerOKButton" label="OK" image="img/ok.png"></button>
+            <button id="bpmnMinerOKButton" label="OK" iconSclass="z-icon-check-circle"></button>
+            <button id="bpmnMinerCancelButton" label="Cancel" iconSclass="z-icon-times-circle"></button>
         </div>
     </vbox>
     <zscript>
