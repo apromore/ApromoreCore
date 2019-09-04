@@ -42,8 +42,8 @@ public class LogFilterCriterionFactoryImpl implements LogFilterCriterionFactory 
                 return new LogFilterCriterionDirectFollow(action, containment, level, label, attribute, value);
             case EVENTUAL_FOLLOW:
                 return new LogFilterCriterionEventuallyFollow(action, containment, level, label, attribute, value);
-            case TIME_DURATION:
-                return new LogFilterCriterionDuration(action, containment, level, label, attribute, value);
+//            case TIME_DURATION:
+//                return new LogFilterCriterionDuration(action, containment, level, label, attribute, value);
             case DURATION_RANGE:
                 return new LogFilterCriterionDurationRange(action, containment, level, label, attribute, value);
             case CASE_VARIANT:

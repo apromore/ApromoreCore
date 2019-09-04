@@ -52,7 +52,7 @@ public class LogFilterTypeSelector {
             "org:group",
             "org:resource",
             "org:role",
-            "time:duration",
+//            "time:duration",
             "time:timestamp",
 			"duration:range"
     };
@@ -81,7 +81,7 @@ public class LogFilterTypeSelector {
 		codeNameMap.put("org:group", "Resource group");
 		codeNameMap.put("org:resource", "Resource");
 		codeNameMap.put("org:role", "Role");
-		codeNameMap.put("time:duration", "Duration");
+//		codeNameMap.put("time:duration", "Duration");
 		codeNameMap.put("time:timestamp", "Timeframe");
 		codeNameMap.put("duration:range", "Duration range");
     }
@@ -96,7 +96,7 @@ public class LogFilterTypeSelector {
     	typeMap.put("org:group", Type.ORG_GROUP);
     	typeMap.put("org:resource", Type.ORG_RESOURCE);
     	typeMap.put("org:role", Type.ORG_ROLE);
-    	typeMap.put("time:duration", Type.TIME_DURATION);
+//    	typeMap.put("time:duration", Type.TIME_DURATION);
     	typeMap.put("time:timestamp", Type.TIME_TIMESTAMP);
 		typeMap.put("duration:range", Type.DURATION_RANGE);
     }
@@ -118,7 +118,7 @@ public class LogFilterTypeSelector {
 													            "org:group",
 													            "org:resource",
 													            "org:role",
-													            "time:duration",
+//													            "time:duration",
 													            "time:timestamp",
 																"duration:range"));
 

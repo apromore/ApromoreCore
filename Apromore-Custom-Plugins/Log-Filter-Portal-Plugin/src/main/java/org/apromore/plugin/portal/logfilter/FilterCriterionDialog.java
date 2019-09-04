@@ -842,7 +842,7 @@ public class FilterCriterionDialog {
 //            duration.setDisabled(true);
 //            durationUnits.setDisabled(true);
             gridDuration.setVisible(false);
-        }else if (LogFilterTypeSelector.getType(filterCode) == Type.TIME_DURATION) {
+        }else if (LogFilterTypeSelector.getType(filterCode) == Type.DURATION_RANGE) {
             // value.setModel(modelValue);
             lbxValue.getItems().clear();
             lbxValue.setVisible(false);
@@ -1264,9 +1264,9 @@ public class FilterCriterionDialog {
                 
                 if(LogFilterTypeSelector.getType(o1) == Type.TIME_TIMESTAMP) return -1;
                 if(LogFilterTypeSelector.getType(o2) == Type.TIME_TIMESTAMP) return 1;
-                
-                if(LogFilterTypeSelector.getType(o1) == Type.TIME_DURATION) return -1;
-                if(LogFilterTypeSelector.getType(o2) == Type.TIME_DURATION) return 1;
+//
+//                if(LogFilterTypeSelector.getType(o1) == Type.TIME_DURATION) return -1;
+//                if(LogFilterTypeSelector.getType(o2) == Type.TIME_DURATION) return 1;
                 
                 if(LogFilterTypeSelector.getType(o1) == Type.DIRECT_FOLLOW) return -1;
                 if(LogFilterTypeSelector.getType(o2) == Type.DIRECT_FOLLOW) return 1;
