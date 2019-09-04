@@ -29,8 +29,9 @@ public class LogStatistics {
     private long max = 0; //the latest timestamp of the log
 	private XLog log;
 	private String eventClassifier = DEFAULT_CLASSIFIER_KEY;
-	private Map<String, Set<String>> directFollowMap = new HashMap<String, Set<String>>();
-    private Map<String, Set<String>> eventualFollowMap = new HashMap<String, Set<String>>();
+//	private Map<String, Set<String>> directFollowMap = new HashMap<String, Set<String>>();
+//    private Map<String, Set<String>> eventualFollowMap = new HashMap<String, Set<String>>();
+    private Set<String> eventNameSet = new HashSet<>();
     private Map<Integer, List<String>> variantEventsMap = new HashMap<Integer, List<String>>();
 
 	public LogStatistics(XLog log) {
@@ -175,6 +176,7 @@ public class LogStatistics {
 	                        max = Math.max(max, ((XAttributeTimestamp) attribute).getValueMillis());
 	                    }
 	                }
+	                if(event.getAttributes().containsKey("concept:name")) eventNameSet.add(event.getAttributes().get("concept:name").toString());
 	            }
             }
 
@@ -291,40 +293,40 @@ public class LogStatistics {
             /**
              * Directly followed
              */
-            if(i < (trace.size()-1)) {
-                XEvent dfEvent = trace.get(i+1);
-                if(dfEvent.getAttributes().containsKey(DEFAULT_CLASSIFIER_KEY)) {
-                    String dfActName = dfEvent.getAttributes().get(DEFAULT_CLASSIFIER_KEY).toString();
-                    if(directFollowMap.containsKey(iActName)) {
-                        Set followSet = directFollowMap.get(iActName);
-                        followSet.add(dfActName);
-                        directFollowMap.put(iActName, followSet);
-                    }else{
-                        Set followSet = new HashSet();
-                        followSet.add(dfActName);
-                        directFollowMap.put(iActName, followSet);
-                    }
-                }
-            }
+//            if(i < (trace.size()-1)) {
+//                XEvent dfEvent = trace.get(i+1);
+//                if(dfEvent.getAttributes().containsKey(DEFAULT_CLASSIFIER_KEY)) {
+//                    String dfActName = dfEvent.getAttributes().get(DEFAULT_CLASSIFIER_KEY).toString();
+//                    if(directFollowMap.containsKey(iActName)) {
+//                        Set followSet = directFollowMap.get(iActName);
+//                        followSet.add(dfActName);
+//                        directFollowMap.put(iActName, followSet);
+//                    }else{
+//                        Set followSet = new HashSet();
+//                        followSet.add(dfActName);
+//                        directFollowMap.put(iActName, followSet);
+//                    }
+//                }
+//            }
 
             /**
              * Eventually followed
              */
-            for(int j= (i+1); j<trace.size(); j++) {
-                XEvent fEvent = trace.get(j);
-                if(fEvent.getAttributes().containsKey(DEFAULT_CLASSIFIER_KEY)) {
-                    String fActName = fEvent.getAttributes().get(DEFAULT_CLASSIFIER_KEY).toString();
-                    if(eventualFollowMap.containsKey(iActName)) {
-                        Set followSet = eventualFollowMap.get(iActName);
-                        followSet.add(fActName);
-                        eventualFollowMap.put(iActName, followSet);
-                    }else{
-                        Set followSet = new HashSet();
-                        followSet.add(fActName);
-                        eventualFollowMap.put(iActName, followSet);
-                    }
-                }
-            }
+//            for(int j= (i+1); j<trace.size(); j++) {
+//                XEvent fEvent = trace.get(j);
+//                if(fEvent.getAttributes().containsKey(DEFAULT_CLASSIFIER_KEY)) {
+//                    String fActName = fEvent.getAttributes().get(DEFAULT_CLASSIFIER_KEY).toString();
+//                    if(eventualFollowMap.containsKey(iActName)) {
+//                        Set followSet = eventualFollowMap.get(iActName);
+//                        followSet.add(fActName);
+//                        eventualFollowMap.put(iActName, followSet);
+//                    }else{
+//                        Set followSet = new HashSet();
+//                        followSet.add(fActName);
+//                        eventualFollowMap.put(iActName, followSet);
+//                    }
+//                }
+//            }
 
             String iLifecycle = "";
             if(iEvent.getAttributes().containsKey(LIFECYCLE_KEY)) {
@@ -373,12 +375,17 @@ public class LogStatistics {
     	return this.eventClassifier;
     }
 
-    public Map<String, Set<String>> getDirectFollowMap() {
-        return directFollowMap;
-    }
+//    public Map<String, Set<String>> getDirectFollowMap() {
+//        return directFollowMap;
+//    }
+//
+//    public Map<String, Set<String>> getEventualFollowMap() {
+//        return eventualFollowMap;
+//    }
 
-    public Map<String, Set<String>> getEventualFollowMap() {
-        return eventualFollowMap;
+
+    public Set<String> getEventNameSet() {
+        return eventNameSet;
     }
 
     public Map<Integer, List<String>> getVariantEventsMap() {

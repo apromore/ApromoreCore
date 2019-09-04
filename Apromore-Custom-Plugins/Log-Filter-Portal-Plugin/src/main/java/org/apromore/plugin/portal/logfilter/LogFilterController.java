@@ -59,9 +59,10 @@ public class LogFilterController {
     
     private LogFilterResultListener resultListener;
 
-    private Map<String, Set<String>> directFollowMap = new HashMap<String, Set<String>>();
-    private Map<String, Set<String>> eventualFollowMap = new HashMap<String, Set<String>>();
+//    private Map<String, Set<String>> directFollowMap = new HashMap<String, Set<String>>();
+//    private Map<String, Set<String>> eventualFollowMap = new HashMap<String, Set<String>>();
     private Map<Integer, List<String>> variantEventsMap = new HashMap<Integer, List<String>>();
+    private Set<String> eventNameSet;
 
 
     public LogFilterController(PortalContext portalContext, XLog log,
@@ -74,8 +75,9 @@ public class LogFilterController {
          * Get the log with case-variant values
          */
         this.log = stats.getLog();
-        this.directFollowMap = stats.getDirectFollowMap();
-        this.eventualFollowMap = stats.getEventualFollowMap();
+//        this.directFollowMap = stats.getDirectFollowMap();
+//        this.eventualFollowMap = stats.getEventualFollowMap();
+        this.eventNameSet = stats.getEventNameSet();
         this.variantEventsMap = stats.getVariantEventsMap();
 //        XAttributeMap xm = this.log.get(0).getAttributes();
 //        System.out.println(xm);
@@ -97,8 +99,9 @@ public class LogFilterController {
          * Get the log with case-variant values
          */
         LogStatistics logStats = new LogStatistics(log);
-        this.directFollowMap = logStats.getDirectFollowMap();
-        this.eventualFollowMap = logStats.getEventualFollowMap();
+//        this.directFollowMap = logStats.getDirectFollowMap();
+//        this.eventualFollowMap = logStats.getEventualFollowMap();
+        this.eventNameSet = logStats.getEventNameSet();
         this.variantEventsMap = logStats.getVariantEventsMap();
         
     	this.logFilterService = logFilterService;
@@ -300,12 +303,17 @@ public class LogFilterController {
         criteriaList.setModel(model);
     }
 
-    public Map<String, Set<String>> getDirectFollowMap() {
-        return directFollowMap;
-    }
+//    public Map<String, Set<String>> getDirectFollowMap() {
+//        return directFollowMap;
+//    }
+//
+//    public Map<String, Set<String>> getEventualFollowMap() {
+//        return eventualFollowMap;
+//    }
 
-    public Map<String, Set<String>> getEventualFollowMap() {
-        return eventualFollowMap;
+
+    public Set<String> getEventNameSet() {
+        return eventNameSet;
     }
 
     public Map<Integer, List<String>> getVariantEventsMap() {

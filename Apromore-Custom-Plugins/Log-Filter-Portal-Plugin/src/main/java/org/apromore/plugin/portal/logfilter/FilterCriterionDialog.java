@@ -281,13 +281,18 @@ public class FilterCriterionDialog {
         /**
          * Set direct follow relation: 'FROM' values
          */
+        lbxDFollowFrom.getItems().clear();
         // Add [Start] element to the list
         Listcell cellStart = new Listcell("[Start]");
         Listitem itemStart = new Listitem();
         itemStart.appendChild(cellStart);
         lbxDFollowFrom.appendChild(itemStart);
-        Map<String, Set<String>> dfFollowMap =  filterCriterionSelector.getDirectFollowMap();
-        for(String key : dfFollowMap.keySet()) {
+//        Map<String, Set<String>> dfFollowMap =  filterCriterionSelector.getDirectFollowMap();
+
+        Set<String> eventNameSet = filterCriterionSelector.getEventNameSet();
+
+//        for(String key : dfFollowMap.keySet()) {
+        for(String key : eventNameSet) {
             Listcell listcell = new Listcell();
             listcell.setLabel(key);
             Listitem listitem = new Listitem();
@@ -303,13 +308,17 @@ public class FilterCriterionDialog {
         /**
          * Set direct follow relation: 'TO' values
          */
-        Map<String, Set<String>> dtFollowMap =  filterCriterionSelector.getDirectFollowMap();
+        lbxDFollowTo.getItems().clear();
+//        Map<String, Set<String>> dtFollowMap =  filterCriterionSelector.getDirectFollowMap();
         Set<String> uniqueFollowMap = new HashSet<String>();
-        for(String key : dtFollowMap.keySet()) {
-            Set<String> fSet = dtFollowMap.get(key);
-            for(String fKey : fSet) {
-                if(!uniqueFollowMap.contains(fKey)) uniqueFollowMap.add(fKey);
-            }
+//        for(String key : dtFollowMap.keySet()) {
+//            Set<String> fSet = dtFollowMap.get(key);
+//            for(String fKey : fSet) {
+//                if(!uniqueFollowMap.contains(fKey)) uniqueFollowMap.add(fKey);
+//            }
+//        }
+        for(String key : eventNameSet) {
+            if(!uniqueFollowMap.contains(key)) uniqueFollowMap.add(key);
         }
         // Add [End] element to the list
         Listcell cellEnd = new Listcell("[End]");
@@ -331,14 +340,23 @@ public class FilterCriterionDialog {
         /**
          * Set eventually follow relation: 'FROM' values
          */
-        Map<String, Set<String>> efFollowMap =  filterCriterionSelector.getEventualFollowMap();
-        for(String key : efFollowMap.keySet()) {
+//        Map<String, Set<String>> efFollowMap =  filterCriterionSelector.getEventualFollowMap();
+//        for(String key : efFollowMap.keySet()) {
+//            Listcell listcell = new Listcell();
+//            listcell.setLabel(key);
+//            Listitem listitem = new Listitem();
+//            listitem.appendChild(listcell);
+//            lbxEFollowFrom.appendChild(listitem);
+//        }
+        lbxEFollowFrom.getItems().clear();
+        for(String key : eventNameSet) {
             Listcell listcell = new Listcell();
             listcell.setLabel(key);
             Listitem listitem = new Listitem();
             listitem.appendChild(listcell);
             lbxEFollowFrom.appendChild(listitem);
         }
+
         lbxEFollowFrom.setMultiple(true);
         lbxEFollowFrom.setCheckmark(true);
 //        lhEFollowFrom.setSortAscending(new StringComparator(true, 0));
@@ -346,14 +364,19 @@ public class FilterCriterionDialog {
         /**
          * Set eventually follow relation: 'TO' values
          */
-        Map<String, Set<String>> etFollowMap =  filterCriterionSelector.getEventualFollowMap();
+        lbxEFollowTo.getItems().clear();
+//        Map<String, Set<String>> etFollowMap =  filterCriterionSelector.getEventualFollowMap();
         Set<String> uniqueFollowMap2 = new HashSet<String>();
-        for(String key : etFollowMap.keySet()) {
-            Set<String> fSet = etFollowMap.get(key);
-            for(String fKey : fSet) {
-                if(!uniqueFollowMap2.contains(fKey)) uniqueFollowMap2.add(fKey);
-            }
+//        for(String key : etFollowMap.keySet()) {
+//            Set<String> fSet = etFollowMap.get(key);
+//            for(String fKey : fSet) {
+//                if(!uniqueFollowMap2.contains(fKey)) uniqueFollowMap2.add(fKey);
+//            }
+//        }
+        for(String key : eventNameSet) {
+            if(!uniqueFollowMap2.contains(key)) uniqueFollowMap2.add(key);
         }
+
         for(String key : uniqueFollowMap2) {
             Listcell listcell = new Listcell(key);
             Listitem listitem = new Listitem();
