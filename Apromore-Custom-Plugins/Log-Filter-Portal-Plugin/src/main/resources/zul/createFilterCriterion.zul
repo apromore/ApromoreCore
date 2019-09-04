@@ -81,9 +81,9 @@
                 <grid id="gridDuration">
                     <rows>
                         <row>
-                            Duration greater than:
-                            <decimalbox id="duration" format="###.##" value="0.00" width="100px" />
-                            <listbox id="durationUnits" rows="1" mold="select">
+                            Greater than:
+                            <decimalbox id="dBxDurationFrom" format="###.##" value="0.00" width="100px" height="24px"/>
+                            <listbox id="lbxDurationUnitsFrom" rows="1" mold="select" height="24px">
                                 <listitem label="Years" />
                                 <listitem label="Months" />
                                 <listitem label="Weeks" />
@@ -92,6 +92,29 @@
                                 <listitem label="Minutes" />
                                 <listitem label="Seconds" />
                             </listbox>
+                            <space/>
+                            Lesser than:
+                            <decimalbox id="dBxDurationTo" format="###.##" value="0.00" width="100px" height="24px"/>
+                            <listbox id="lbxDurationUnitsTo" rows="1" mold="select" height="24px">
+                                <listitem label="Years" />
+                                <listitem label="Months" />
+                                <listitem label="Weeks" />
+                                <listitem label="Days" />
+                                <listitem label="Hours" />
+                                <listitem label="Minutes" />
+                                <listitem label="Seconds" />
+                            </listbox>
+<!--                            Duration greater than:-->
+<!--                            <decimalbox id="duration" format="###.##" value="0.00" width="100px" />-->
+<!--                            <listbox id="durationUnits" rows="1" mold="select">-->
+<!--                                <listitem label="Years" />-->
+<!--                                <listitem label="Months" />-->
+<!--                                <listitem label="Weeks" />-->
+<!--                                <listitem label="Days" />-->
+<!--                                <listitem label="Hours" />-->
+<!--                                <listitem label="Minutes" />-->
+<!--                                <listitem label="Seconds" />-->
+<!--                            </listbox>-->
                         </row>
                     </rows>
                 </grid>
