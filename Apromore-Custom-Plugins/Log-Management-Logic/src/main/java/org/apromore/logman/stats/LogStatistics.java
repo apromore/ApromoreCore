@@ -20,6 +20,7 @@ public class LogStatistics {
 	public static final String TIMESTAMP_KEY = "time:timestamp";
 	public static final String LIFECYCLE_KEY = "lifecycle:transition";
 	public static final String TIME_DURATION_KEY = "time:duration";
+    public static final String DURATION_RANGE_KEY = "duration:range";
 	public static final String DIRECTLY_FOLLOW_KEY = "direct:follow";
 	public static final String EVENTUALLY_FOLLOW_KEY = "eventually:follow";
 	
@@ -221,6 +222,7 @@ public class LogStatistics {
         tmp_options_frequency.put(EVENTUALLY_FOLLOW_KEY, new HashMap<>());
         tmp_options_frequency.put(TIMESTAMP_KEY, new HashMap<>());
         tmp_options_frequency.put(TIME_DURATION_KEY, new HashMap<>());
+        tmp_options_frequency.put(DURATION_RANGE_KEY, new HashMap<>());
 
         return tmp_options_frequency;
     }

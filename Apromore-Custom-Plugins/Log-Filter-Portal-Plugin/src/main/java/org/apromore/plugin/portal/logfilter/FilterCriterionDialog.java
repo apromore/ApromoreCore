@@ -91,8 +91,10 @@ public class FilterCriterionDialog {
     private Datebox dateBxStartDate;
     private Datebox dateBxEndDate;
 
-    private Decimalbox duration;
-    private Listbox durationUnits;
+//    private Decimalbox duration;
+//    private Listbox durationUnits;
+    private Decimalbox dBxDurationFrom, dBxDurationTo;
+    private Listbox lbxDurationUnitsFrom, lbxDurationUnitsTo;
 
     private Listheader lhValue1;
     private Listheader lhValue2;
@@ -193,11 +195,18 @@ public class FilterCriterionDialog {
 
         gridDuration = (Grid) createFilterCriterionW.getFellow("gridDuration");
         gridDuration.setVisible(false);
-        duration = (Decimalbox) createFilterCriterionW.getFellow("duration");
-        duration.setDisabled(true);
-        durationUnits = (Listbox) createFilterCriterionW.getFellow("durationUnits");
-        durationUnits.setSelectedIndex(0);
-        durationUnits.setDisabled(true);
+//        duration = (Decimalbox) createFilterCriterionW.getFellow("duration");
+//        duration.setDisabled(true);
+//        durationUnits = (Listbox) createFilterCriterionW.getFellow("durationUnits");
+//        durationUnits.setSelectedIndex(0);
+//        durationUnits.setDisabled(true);
+
+        dBxDurationFrom = (Decimalbox) createFilterCriterionW.getFellow("dBxDurationFrom");
+        dBxDurationTo = (Decimalbox) createFilterCriterionW.getFellow("dBxDurationTo");
+        lbxDurationUnitsFrom = (Listbox) createFilterCriterionW.getFellow("lbxDurationUnitsFrom");
+        lbxDurationUnitsTo = (Listbox) createFilterCriterionW.getFellow("lbxDurationUnitsTo");
+        lbxDurationUnitsFrom.setSelectedIndex(0);
+        lbxDurationUnitsTo.setSelectedIndex(0);
 
         lhValue1 = (Listheader) createFilterCriterionW.getFellow("lhValue1");
         lhValue2 = (Listheader) createFilterCriterionW.getFellow("lhValue2");
@@ -260,7 +269,7 @@ public class FilterCriterionDialog {
         for(int i = 0; i < filterTypeCodes.size(); i++) {
             String filterCode = filterTypeCodes.get(i);
 //            optionListString += option + "\n";
-            lbxFilterType.appendItem(getFilterTypeLabel(filterCode), filterCode);// getFilterTypeLabel(option));
+            if(!filterCode.equals("time:duration")) lbxFilterType.appendItem(getFilterTypeLabel(filterCode), filterCode);// getFilterTypeLabel(option));
         }
 //        Messagebox.show(optionListString);
     }
@@ -399,28 +408,59 @@ public class FilterCriterionDialog {
                 dateBxEndDate.setDisabled(false);
                 gridTimeframe.setVisible(true);
                 lbxValue.setVisible(false);
-            }else if (LogFilterTypeSelector.getType(a) == Type.TIME_DURATION) {
-                String d = null;
-                for (String v : criterion.getValue()) {
-                    if (v.startsWith(">")) d = v.substring(1);
-                }
-                String[] values = TimeConverter.parseDuration2(d);
-                duration.setValue(values[0]);
-                duration.setDisabled(false);
+            }else if (LogFilterTypeSelector.getType(a) == Type.DURATION_RANGE) {
                 gridDuration.setVisible(true);
-//                Listitem found = durationUnits.getItems().stream()
-//                	.filter(item -> item.getLabel().equals(values[1]))
-//                	.findAny()
-//                	.orElse(null);
-                Listitem found = null;
-                for (Listitem item : durationUnits.getItems()) {
-                	if (item.getLabel().equals(values[1])) {
-                		found = item;
-                		break;
-                	}
+                String d = null;
+                String sTime = null;
+                String eTime = null;
+                String fromUnit = null;
+                String toUnit = null;
+                for(String v : criterion.getValue()) {
+                    if(v.startsWith(">")) {
+                        sTime = v.substring(1, v.indexOf(" "));
+                        fromUnit = v.substring(v.indexOf(" ") + 1);
+                    }
+                    if(v.startsWith("<")) {
+                        eTime = v.substring(1, v.indexOf(" "));
+                        toUnit = v.substring(v.indexOf(" ") + 1);
+                    }
                 }
-                if (found != null) durationUnits.setSelectedItem(found);
-                durationUnits.setDisabled(false);
+                dBxDurationFrom.setValue(sTime);
+                dBxDurationTo.setValue(eTime);
+                for(Listitem listitem : lbxDurationUnitsFrom.getItems()) {
+                    if(listitem.getLabel().toLowerCase().equals(fromUnit.toLowerCase())) {
+                        lbxDurationUnitsFrom.setSelectedItem(listitem);
+                        break;
+                    }
+                }
+                for(Listitem listitem : lbxDurationUnitsTo.getItems()) {
+                    if(listitem.getLabel().toLowerCase().equals(toUnit.toLowerCase())) {
+                        lbxDurationUnitsTo.setSelectedItem(listitem);
+                        break;
+                    }
+                }
+//            }else if (LogFilterTypeSelector.getType(a) == Type.TIME_DURATION) {
+//                String d = null;
+//                for (String v : criterion.getValue()) {
+//                    if (v.startsWith(">")) d = v.substring(1);
+//                }
+//                String[] values = TimeConverter.parseDuration2(d);
+//                duration.setValue(values[0]);
+//                duration.setDisabled(false);
+//                gridDuration.setVisible(true);
+////                Listitem found = durationUnits.getItems().stream()
+////                	.filter(item -> item.getLabel().equals(values[1]))
+////                	.findAny()
+////                	.orElse(null);
+//                Listitem found = null;
+//                for (Listitem item : durationUnits.getItems()) {
+//                	if (item.getLabel().equals(values[1])) {
+//                		found = item;
+//                		break;
+//                	}
+//                }
+//                if (found != null) durationUnits.setSelectedItem(found);
+//                durationUnits.setDisabled(false);
             }else if (LogFilterTypeSelector.getType(a) == Type.DIRECT_FOLLOW) {
                 // get the criterion values then break them down to FROM and TO
                 Set<String> fromSet = new HashSet<String>();
@@ -488,8 +528,8 @@ public class FilterCriterionDialog {
                 lbxValue.setVisible(false);
             }
             
-            duration.setDisabled(true);
-            durationUnits.setDisabled(true);
+//            duration.setDisabled(true);
+//            durationUnits.setDisabled(true);
             gridDuration.setVisible(false);
 //            gridTimeframe.setVisible(false);
 
@@ -508,8 +548,8 @@ public class FilterCriterionDialog {
             containment.setStyle("background-color: #D3D3D3;");
         }else { //Trace Level
             okButton.setDisabled(false);
-            duration.setDisabled(true);
-            durationUnits.setDisabled(true);
+//            duration.setDisabled(true);
+//            durationUnits.setDisabled(true);
             gridDuration.setVisible(false);
             gridTimeframe.setVisible(false);
         	
@@ -533,7 +573,7 @@ public class FilterCriterionDialog {
                 }
                 containment.setStyle(eventInvalid ? "background-color: #D3D3D3;" : "transparent;");
                 
-                Type type = LogFilterTypeSelector.getType(filterTypeCodes.get(lbxFilterType.getSelectedIndex()));
+                Type type = LogFilterTypeSelector.getType(lbxFilterType.getSelectedItem().getValue());
                 switch (type) {
                     case DIRECT_FOLLOW:
                         okButton.setDisabled(false);
@@ -545,13 +585,16 @@ public class FilterCriterionDialog {
                 		okButton.setDisabled(false);
                         gridTimeframe.setVisible(true);
                 		break;
-                	case TIME_DURATION: 
-                		duration.setDisabled(false);
-                        durationUnits.setDisabled(false);
+//                	case TIME_DURATION:
+//                		duration.setDisabled(false);
+//                        durationUnits.setDisabled(false);
+                    case DURATION_RANGE:
                         gridDuration.setVisible(true);
                 		okButton.setDisabled(false);
+                        lbxValue.setVisible(false);
                 		break;
                 	default:
+                        lbxValue.setVisible(true);
                 		okButton.setDisabled(lbxValue.getItems().size() == 0);
                 }
             }else {
@@ -625,18 +668,41 @@ public class FilterCriterionDialog {
             public void onEvent(Event event) throws Exception {
                 Set<String> set = new HashSet<>();
 
-                String option = filterTypeCodes.get(lbxFilterType.getSelectedIndex());
+//                String option = filterTypeCodes.get(lbxFilterType.getSelectedIndex());
+                String option = lbxFilterType.getSelectedItem().getValue();
                 //String option = filterTypeNames.get(filterType.getSelectedIndex());
                 //if(LogFilterTypeSelector.getName(option) > -1) option = LogFilterTypeSelector.getReverseMatch(option);
 
                 if(LogFilterTypeSelector.getType(option) == Type.TIME_TIMESTAMP) {
                     set.add(">" + dateBxStartDate.getValue().getTime());
                     set.add("<" + dateBxEndDate.getValue().getTime());
-                }else if(LogFilterTypeSelector.getType(option) == Type.TIME_DURATION) {
-                    String span = durationUnits.getSelectedItem().getLabel();
-                    //BigDecimal d = TimeConverter.convertMilliseconds(duration.getValue(), span);
-                    set.add(">" + duration.getValue().doubleValue() + TimeConverter.DURATION_UNIT_MARKER + span);
-                }else {
+                } else if (LogFilterTypeSelector.getType(option) == Type.DURATION_RANGE) {
+                    if(lbxDurationUnitsFrom.getSelectedItem() == null ||
+                            dBxDurationFrom.getValue() == null ||
+                            lbxDurationUnitsTo.getSelectedItem() == null ||
+                            dBxDurationTo.getValue() == null) {
+                        Messagebox.show("Please enter duration values.", "Error", Messagebox.OK, Messagebox.ERROR);
+                    }else{
+                        String spanFrom = lbxDurationUnitsFrom.getSelectedItem().getLabel();
+                        long fromValue = dBxDurationFrom.getValue().longValue() * stringToMilli(spanFrom);
+
+                        String spanTo = lbxDurationUnitsTo.getSelectedItem().getLabel();
+                        long toValue = dBxDurationTo.getValue().longValue() * stringToMilli(spanTo);
+
+                        if(fromValue > toValue) {
+                            Messagebox.show("Please enter valid duration values.", "Error", Messagebox.OK, Messagebox.ERROR);
+                        }else{
+                            String fromValueString = dBxDurationFrom.getValue().doubleValue() + TimeConverter.DURATION_UNIT_MARKER + spanFrom;
+                            String toValueString = dBxDurationTo.getValue().doubleValue() + TimeConverter.DURATION_UNIT_MARKER + spanTo;
+                            set.add(">" + fromValueString);
+                            set.add("<" + toValueString);
+                        }
+                    }
+//                }else if(LogFilterTypeSelector.getType(option) == Type.TIME_DURATION) {
+//                    String span = durationUnits.getSelectedItem().getLabel();
+//                    //BigDecimal d = TimeConverter.convertMilliseconds(duration.getValue(), span);
+//                    set.add(">" + duration.getValue().doubleValue() + TimeConverter.DURATION_UNIT_MARKER + span);
+                } else {
 //                    for (Listitem listItem : lbxValue.getSelectedItems()) {
 //                        set.add(((Listcell) listItem.getFirstChild()).getLabel());
 //                    }
@@ -750,8 +816,8 @@ public class FilterCriterionDialog {
             dateBxStartDate.setDisabled(false);
             dateBxEndDate.setDisabled(false);
             gridTimeframe.setVisible(true);
-            duration.setDisabled(true);
-            durationUnits.setDisabled(true);
+//            duration.setDisabled(true);
+//            durationUnits.setDisabled(true);
             gridDuration.setVisible(false);
         }else if (LogFilterTypeSelector.getType(filterCode) == Type.TIME_DURATION) {
             // value.setModel(modelValue);
@@ -760,8 +826,8 @@ public class FilterCriterionDialog {
             dateBxStartDate.setDisabled(true);
             dateBxEndDate.setDisabled(true);
             gridTimeframe.setVisible(false);
-            duration.setDisabled(false);
-            durationUnits.setDisabled(false);
+//            duration.setDisabled(false);
+//            durationUnits.setDisabled(false);
             gridDuration.setVisible(true);
 //        }else if(!option.toLowerCase().equals("direct follow relation") &&
 //        !option.toLowerCase().equals("eventually follow relation")) {
@@ -769,8 +835,8 @@ public class FilterCriterionDialog {
             dateBxStartDate.setDisabled(true);
             dateBxEndDate.setDisabled(true);
             gridTimeframe.setVisible(false);
-            duration.setDisabled(true);
-            durationUnits.setDisabled(true);
+//            duration.setDisabled(true);
+//            durationUnits.setDisabled(true);
             gridDuration.setVisible(false);
 
             Collection<String> set;
@@ -917,32 +983,54 @@ public class FilterCriterionDialog {
         }
         for(int i=0; i<selection.size(); i++) {
             String t = selection.get(i);
-            if(t.toLowerCase().equals("time:duration")) {
-                for(int j=0; j<selection.size();j++) {
+            if(t.toLowerCase().equals("duration:range")) {
+                for(int j=0; j < selection.size();j++) {
                     String jOption = selection.get(j);
                     if(jOption.toLowerCase().equals("time:timestamp")) {
                         selection.remove(i);
-                        selection.add(j+1, t);
+                        if(j < (selection.size()-1)) selection.add(j+1, t);
+                        else selection.add(j, t);
                         break;
                     }
                 }
             }
         }
+//        for(int i=0; i<selection.size(); i++) {
+//            String t = selection.get(i);
+//            if(t.toLowerCase().equals("time:duration")) {
+//                for(int j=0; j<selection.size();j++) {
+//                    String jOption = selection.get(j);
+//                    if(jOption.toLowerCase().equals("time:timestamp")) {
+//                        selection.remove(i);
+//                        selection.add(j+1, t);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
         for(int i=0; i<selection.size(); i++) {
             String t = selection.get(i);
             if(t.toLowerCase().equals("direct:follow")) {
                 for(int j=0; j<selection.size();j++) {
                     String jOption = selection.get(j);
-                    if(optionSet.contains("time:duration")) {
-                        if(jOption.toLowerCase().equals("time:duration")) {
+//                    if(optionSet.contains("time:duration")) {
+//                        if(jOption.toLowerCase().equals("time:duration")) {
+//                            selection.remove(i);
+//                            selection.add(j+1, t);
+//                            break;
+//                        }
+                    if(optionSet.contains("duration:range")) {
+                        if(jOption.toLowerCase().equals("duration:range")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }else{
                         if(jOption.toLowerCase().equals("time:timestamp")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }
@@ -957,19 +1045,28 @@ public class FilterCriterionDialog {
                     if(optionSet.contains("direct:follow")) {
                         if(jOption.toLowerCase().equals("direct:follow")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
-                    }else if(optionSet.contains("time:duration")) {
-                        if(jOption.toLowerCase().equals("time:duration")) {
+//                    }else if(optionSet.contains("time:duration")) {
+//                        if(jOption.toLowerCase().equals("time:duration")) {
+//                            selection.remove(i);
+//                            selection.add(j+1, t);
+//                            break;
+//                        }
+                    }else if(optionSet.contains("duration:range")) {
+                        if(jOption.toLowerCase().equals("duration:range")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }else{
                         if(jOption.toLowerCase().equals("time:timestamp")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }
@@ -985,19 +1082,28 @@ public class FilterCriterionDialog {
                     if(optionSet.contains("eventually:follow")) {
                         if(jOption.toLowerCase().equals("eventually:follow")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
-                    }else if(optionSet.contains("time:duration")) {
-                        if(jOption.toLowerCase().equals("time:duration")) {
+//                    }else if(optionSet.contains("time:duration")) {
+//                        if(jOption.toLowerCase().equals("time:duration")) {
+//                            selection.remove(i);
+//                            selection.add(j+1, t);
+//                            break;
+//                        }
+                    }else if(optionSet.contains("duration:range")) {
+                        if(jOption.toLowerCase().equals("duration:range")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }else{
                         if(jOption.toLowerCase().equals("time:timestamp")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }
@@ -1012,13 +1118,15 @@ public class FilterCriterionDialog {
                     if(optionSet.contains("concept:name")) {
                         if(jOption.toLowerCase().equals("concept:name")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }else{
                         if(jOption.toLowerCase().equals("time:timestamp")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }
@@ -1033,19 +1141,22 @@ public class FilterCriterionDialog {
                     if(optionSet.contains("org:resource")) {
                         if(jOption.toLowerCase().equals("org:resource")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }else if(optionSet.contains("concept:name")) {
                         if(jOption.toLowerCase().equals("concept:name")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }else{
                         if(jOption.toLowerCase().equals("time:timestamp")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }
@@ -1060,25 +1171,29 @@ public class FilterCriterionDialog {
                     if(optionSet.contains("org:group")) {
                         if(jOption.toLowerCase().equals("org:group")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }else if(optionSet.contains("org:resource")) {
                         if(jOption.toLowerCase().equals("org:resource")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }else if(optionSet.contains("concept:name")) {
                         if(jOption.toLowerCase().equals("concept:name")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }else{
                         if(jOption.toLowerCase().equals("time:timestamp")) {
                             selection.remove(i);
-                            selection.add(j+1, t);
+                            if(j < (selection.size()-1)) selection.add(j+1, t);
+                            else selection.add(j, t);
                             break;
                         }
                     }
@@ -1161,5 +1276,15 @@ public class FilterCriterionDialog {
         	return "\"" + type + "\"";
         }
     }
-   
+
+    private long stringToMilli(String s) {
+        if(s.equals("Years")) return new Long("31556952000");
+        if(s.equals("Months")) return new Long("2628000000");
+        if(s.equals("Weeks")) return 1000 * 60 * 60 * 24 * 7;
+        if(s.equals("Days")) return 1000 * 60 * 60 * 24;
+        if(s.equals("Hours")) return 1000 * 60 * 60;
+        if(s.equals("Minutes")) return 1000 * 60;
+        if(s.equals("Seconds")) return 1000;
+        return 0;
+    }
 }

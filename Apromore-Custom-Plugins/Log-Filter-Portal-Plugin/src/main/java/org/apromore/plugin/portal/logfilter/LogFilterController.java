@@ -258,12 +258,25 @@ public class LogFilterController {
                     }
                 }
             }
-            if(label.contains("Duration")) {
-                String d = label.substring(label.indexOf(">") + 1, label.indexOf("]"));
+//            if(label.contains("Duration")) {
+//                String d = label.substring(label.indexOf(">") + 1, label.indexOf("]"));
+//                if(label.contains("Remove")) {
+//                    label = "Remove all traces with a Duration greater than " + d; //TimeConverter.stringify(d);
+//                }else {
+//                    label = "Retain all traces with a Duration greater than " + d; //TimeConverter.stringify(d);
+//                }
+//            }
+            if(criterion.getAttribute().equals("duration:range")) {
+                String s = "";
+                String e = "";
+                for(String v : criterion.getValue()) {
+                    if(v.startsWith(">")) s = v.substring(1);
+                    if(v.startsWith("<")) e = v.substring(1);
+                }
                 if(label.contains("Remove")) {
-                    label = "Remove all traces with a Duration greater than " + d; //TimeConverter.stringify(d);
+                    label = "Remove all traces with a duration between " + s + " to " + e;
                 }else {
-                    label = "Retain all traces with a Duration greater than " + d; //TimeConverter.stringify(d);
+                    label = "Retain all traces with a duration between " + s + " to " + e;
                 }
             }
             if(label.contains("Directly-follows relation")) {
