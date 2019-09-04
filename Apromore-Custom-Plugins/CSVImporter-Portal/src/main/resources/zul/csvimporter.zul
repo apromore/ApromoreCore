@@ -89,7 +89,7 @@
         <div id="gridBox" zclass="myGroupBox">
             <div id="popUPBox" zclass="relativePos"></div>
             <div zclass="banner" />
-            <div id="attrBox" style="padding-top: 45px;"></div>
+            <div id="attrBox" style="padding-top: 50px;"></div>
             <grid id="myGrid" mold="paging" pageSize="32" hflex="min" vflex="min" />
         </div>
         <div style="padding: 5px 0 5px 45%;">

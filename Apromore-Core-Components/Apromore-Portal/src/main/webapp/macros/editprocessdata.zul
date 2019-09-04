@@ -70,9 +70,9 @@ and CreateProcessController.java for creating process purpose.
                 </row>
                 <row spans="3">
                     <div align="center">
-                        <button label="OK" image="img/ok.png" />
-                        <button label="Cancel" image="img/cancel2.png" />
-                        <button label="Cancel all" image="img/cancel2.png" visible="false" tooltiptext="Cancel edit of all remaining process models." />
+                        <button label="OK" iconSclass="z-icon-check-circle" />
+                        <button label="Cancel" iconSclass="z-icon-times-circle" />
+                        <button label="Cancel all" iconSclass="z-icon-times-circle" visible="false" tooltiptext="Cancel edit of all remaining process models." />
                         <button label="Reset" image="img/reset.png" tooltiptext="Restore initial values." />
                     </div>
                 </row>

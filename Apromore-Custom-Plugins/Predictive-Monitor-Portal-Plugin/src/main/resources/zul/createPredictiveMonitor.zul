@@ -61,10 +61,10 @@
             </template>
         </listbox>
         <div align="center">
-            <button id="create" label="Create Monitor" image="img/ok.png"/>
+            <button id="create" label="Create Monitor" iconSclass="z-icon-check-circle"/>
             <button id="loadPredictorFile" label="Load predictor file" height="32px"/>
             <button id="deletePredictors" label="Delete predictor" height="32px"/>
-            <button id="cancel" label="Cancel" image="img/cancel2.png"/>
+            <button id="cancel" label="Cancel" iconSclass="z-icon-times-circle"/>
         </div>
     </vbox>
 </window>

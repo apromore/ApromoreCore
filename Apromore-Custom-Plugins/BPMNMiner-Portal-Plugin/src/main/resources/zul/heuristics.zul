@@ -69,8 +69,8 @@
             </rows>
         </grid>
         <div align="center">
-            <button id="settingsCancelButton" label="Cancel" image="img/cancel2.png"></button>
-            <button id="settingsOKButton" label="OK" image="img/ok.png"></button>
+            <button id="settingsOKButton" label="OK" iconSclass="z-icon-check-circle"></button>
+            <button id="settingsCancelButton" label="Cancel" iconSclass="z-icon-times-circle"></button>
         </div>
     </vbox>
 </window>

@@ -79,9 +79,9 @@
                         </row>
                         <row id="similaritySearchButtons" spans="2">
                             <div align="center">
-                                <button id="similaritySearchOKbutton" label="OK" image="img/ok.png" disabled="true">
+                                <button id="similaritySearchOKbutton" label="OK" iconSclass="z-icon-check-circle" disabled="true">
                                 </button>
-                                <button id="similaritySearchCancelbutton" label="Cancel" image="img/cancel2.png">
+                                <button id="similaritySearchCancelbutton" label="Cancel" iconSclass="z-icon-times-circle">
                                 </button>
                             </div>
                         </row>
