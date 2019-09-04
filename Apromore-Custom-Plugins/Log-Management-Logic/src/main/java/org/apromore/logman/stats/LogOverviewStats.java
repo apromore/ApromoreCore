@@ -1,5 +1,5 @@
 package org.apromore.logman.stats;
 
-public class LogSummary {
+public class LogOverviewStats {
 
 }
