@@ -11,15 +11,8 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XLogImpl;
 
-/**
- * This log must be an XLog as it will replace the original log
- * in all log operations: filter, select, etc.
- * If classifierAttribuge = concept:name, it will aggregates start and complete events
- * Otherwise, it just copies properties and all traces from the raw XLog
- * There is a communication channel established between this log and he raw XLog
- * such that any changes on this log will be updated into the raw XLog and vice versa 
- * For example, the follower filter will operate on the DurationAwareLog while
- * the attribute filter operates on the raw XLog
+/** 
+ * This log contains only ActivityAwareTrace
  * @author Bruce Nguyen
  *
  */

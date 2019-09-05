@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
@@ -13,6 +14,11 @@ public class Activity implements Pair<XEvent, XEvent> {
     
     public Activity(XEvent source, XEvent target) {
         this.pair = Tuples.pair(source, target);
+    }
+    
+    public long getDuration() {
+        return (XTimeExtension.instance().extractTimestamp(pair.getTwo()).toInstant().getEpochSecond() - 
+            XTimeExtension.instance().extractTimestamp(pair.getOne()).toInstant().getEpochSecond());
     }
 
     @Override

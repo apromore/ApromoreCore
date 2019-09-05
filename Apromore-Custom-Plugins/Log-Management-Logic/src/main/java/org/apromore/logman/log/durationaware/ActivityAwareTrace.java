@@ -14,12 +14,12 @@ import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XTraceImpl;
 
 /**
- * DurationAwareTrace is created from the raw trace by aggregating start and complete events
- * This is kept in an activity map
+ * This class object is created from a raw trace by aggregating start and complete events
+ * It is the same as the original trace, but events are paired to form activities (event mapping)
  * Once constructed, it is not allowed to add new events or change any events in this trace
  * It is only allowed to remove (filter out) events from this trace
- * This is to ensure the activity map is always maintained accordingly to the original data
- * at the time of the trace construction
+ * There is a set of rules used to maintain the event mapping after event removal 
+ * This ensures the event mapping is always maintained based on the original raw trace
  * @author Bruce Nguyen
  *
  */
