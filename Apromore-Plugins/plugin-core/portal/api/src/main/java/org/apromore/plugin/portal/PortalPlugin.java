@@ -50,6 +50,11 @@ public interface PortalPlugin extends ParameterAwarePlugin {
     RenderedImage getIcon();
 
     /**
+     * @return pathname of the icon resource in this bundle
+     */
+    String getIconPath();
+
+    /**
      * Label of the group of plug-ins this one belongs to.
      *
      * This is used for the menu.

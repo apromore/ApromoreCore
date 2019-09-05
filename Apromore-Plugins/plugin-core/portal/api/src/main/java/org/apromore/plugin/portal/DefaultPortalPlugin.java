@@ -67,6 +67,11 @@ public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements 
     }
 
     @Override
+    public String getIconPath() {
+        return "icon.svg";
+    }
+
+    @Override
     public InputStream getResourceAsStream(String resource) {
         return getClass().getClassLoader().getResourceAsStream(resource);
     }
