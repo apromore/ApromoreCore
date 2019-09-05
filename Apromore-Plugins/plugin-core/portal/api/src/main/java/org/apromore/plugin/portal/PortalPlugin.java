@@ -22,6 +22,7 @@ package org.apromore.plugin.portal;
 import org.apromore.plugin.ParameterAwarePlugin;
 
 import java.awt.image.RenderedImage;
+import java.io.InputStream;
 import java.util.Locale;
 
 /**
@@ -57,6 +58,14 @@ public interface PortalPlugin extends ParameterAwarePlugin {
      * @return
      */
     String getGroupLabel(Locale locale);
+
+    /**
+     * Access a resource provided by the plugin.
+     *
+     * @param resource  name of the resource
+     * @return the resource, or null if absent
+     */
+    InputStream getResourceAsStream(String resource);
 
     /**
      * Call-back that is called when this plug-in is executed.

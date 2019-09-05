@@ -67,6 +67,11 @@ public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements 
     }
 
     @Override
+    public InputStream getResourceAsStream(String resource) {
+        return getClass().getClassLoader().getResourceAsStream(resource);
+    }
+
+    @Override
     public void execute(PortalContext context) {
     }
 
