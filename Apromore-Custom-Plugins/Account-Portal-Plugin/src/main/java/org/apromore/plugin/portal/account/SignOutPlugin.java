@@ -68,6 +68,11 @@ public class SignOutPlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getIconPath() {
+        return "sign-out-icon.svg";
+    }
+
+    @Override
     public void execute(PortalContext portalContext) {
         Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                 new EventListener<Event>() {

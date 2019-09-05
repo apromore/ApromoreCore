@@ -63,6 +63,11 @@ public class ChangeThemePlugin extends DefaultPortalPlugin {
     }
 
     @Override
+    public String getIconPath() {
+        return "change-theme-icon.svg";
+    }
+
+    @Override
     public void execute(PortalContext portalContext) {
         new ChangeThemeController(portalContext);
     }
