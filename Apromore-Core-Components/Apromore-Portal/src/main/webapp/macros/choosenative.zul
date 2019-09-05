@@ -68,9 +68,9 @@
                 </row>
                 <row spans="3">
                     <div align="center">
-                        <button label="OK" image="img/ok.png" />
-                        <button label="Cancel" image="img/cancel2.png" />
-                        <button label="Cancel all" image="img/cancel2.png" tooltiptext="Cancel edit of all remaining process models."/>
+                        <button label="OK" iconSclass="z-icon-check-circle" />
+                        <button label="Cancel" iconSclass="z-icon-times-circle" />
+                        <button label="Cancel all" iconSclass="z-icon-times-circle" tooltiptext="Cancel edit of all remaining process models."/>
                     </div>
                 </row>
             </rows>

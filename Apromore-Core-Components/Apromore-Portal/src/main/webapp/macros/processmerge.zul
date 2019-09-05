@@ -75,8 +75,8 @@
                 </row>
                 <row id="mergeButtons" spans="2">
                     <div align="center">
-                        <button id="mergeOKButton" label="OK" image="img/ok.png" disabled="true"></button>
-                        <button id="mergeCancelButton" label="Cancel" image="img/cancel2.png">
+                        <button id="mergeOKButton" label="OK" iconSclass="z-icon-check-circle" disabled="true"></button>
+                        <button id="mergeCancelButton" label="Cancel" iconSclass="z-icon-times-circle">
                         </button>
                     </div>
                 </row>

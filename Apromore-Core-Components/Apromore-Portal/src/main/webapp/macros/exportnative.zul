@@ -80,9 +80,9 @@
                 </row>
                 <row spans="2">
                     <div align="center">
-                        <button label="OK" image="img/ok.png"></button>
-                        <button label="Cancel" image="img/cancel2.png"></button>
-                        <button label="Cancel all" image="img/cancel2.png" tooltiptext="Cancel export of all remaining process models."></button>
+                        <button label="OK" iconSclass="z-icon-check-circle"></button>
+                        <button label="Cancel" iconSclass="z-icon-times-circle"></button>
+                        <button label="Cancel all" iconSclass="z-icon-times-circle" tooltiptext="Cancel export of all remaining process models."></button>
                     </div>
                 </row>
             </rows>

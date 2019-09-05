@@ -30,6 +30,6 @@
         </listhead>
     </listbox>
     <div align="center">
-        <button id="ok" label="OK" image="img/ok.png"/>
+        <button id="ok" label="OK" iconSclass="z-icon-check-circle"/>
     </div>
 </window>

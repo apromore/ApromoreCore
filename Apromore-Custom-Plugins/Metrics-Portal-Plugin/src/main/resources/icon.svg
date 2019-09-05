@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="22"
+   height="22"
+   viewBox="-0.5 -0.5 22 22"
+   content="&lt;mxfile modified=&quot;2019-08-29T03:09:43.441Z&quot; host=&quot;pebppomjfocnoigkeepgbmcifnnlndla&quot; agent=&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&quot; version=&quot;11.2.1&quot; etag=&quot;O03zxH3B2YIW1niNAISg&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;c5WXHMndwkIhbL-vjerI&quot;&gt;rZTBUoMwEEC/hjuQ1tZrsdWLXnrwHMkWMgaWSYNQv94NLFBER52xnekkb3cJ7FsaiKRo762s8kdUYII4VG0g7oI4vr2J6NeDSw+iTdyDzGrFaAJH/Q4MQ6a1VnCeJTpE43Q1hymWJaRuxqS12MzTTmjmp1YygwU4ptIs6bNWLu/pJgwn/gA6y/nk9RAo5JDL4JxLhc0VEvtAJBbR9auiTcD41g1t6esO30TH+7JQut8UcNvfpKn50fi+3GV4ViqgttJmRzdbeaiwfjGwH3mTawfHSqY+2JBwYrkrDO0iWspz1Ts46RaUv46z+AoJGrTdEeLQfcbI0FLqxu6kjbnKXN35r+dYuoMstPET9ADmDZxOJQd4YKIb3n91lDQ6K4ml1Cmg4I47AdZB+203o9ERjTZgAc5eKIULVlsu4bEWw5w305CIbY/yq/kYmOSxzMYrT+powfa+Nil+NmmxLpU30Gn5wdpcUoklLPxESz9je2d+EqytpibH4RM0nxytl45GydKmnLYOaWvRSafRWxNd3X8ou93OlW1WC2VRvFS2+rMx2k7vdRe7+m8U+w8=&lt;/diagram&gt;&lt;/mxfile&gt;"
+   id="svg12"
+   sodipodi:docname="measure_22.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <metadata
+     id="metadata16">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3840"
+     inkscape:window-height="1973"
+     id="namedview14"
+     showgrid="false"
+     inkscape:zoom="5.9"
+     inkscape:cx="16.70339"
+     inkscape:cy="23.29661"
+     inkscape:window-x="-18"
+     inkscape:window-y="-18"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg12" />
+  <defs
+     id="defs2" />
+  <g
+     id="g10"
+     transform="matrix(0.55,0,0,0.55,-0.5,-0.5)">
+    <circle
+       cx="20"
+       cy="20"
+       pointer-events="none"
+       id="ellipse4"
+       r="19"
+       style="fill:#4d4d4d;stroke:#ffffff;stroke-width:2" />
+    <circle
+       cx="20"
+       cy="20"
+       pointer-events="none"
+       id="ellipse6"
+       r="14"
+       style="fill:none;stroke:#ffffff;stroke-width:2" />
+    <rect
+       x="18"
+       y="14"
+       width="12"
+       height="4"
+       rx="2"
+       ry="2"
+       transform="rotate(-45,24,16)"
+       pointer-events="none"
+       id="rect8"
+       style="fill:#ffffff;stroke:none" />
+  </g>
+</svg>
