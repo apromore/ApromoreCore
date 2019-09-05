@@ -1,5 +1,6 @@
-package org.apromore.logman.relation;
+package org.apromore.logman.log.durationaware;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -17,8 +18,15 @@ public class Activity implements Pair<XEvent, XEvent> {
     }
     
     public long getDuration() {
-        return (XTimeExtension.instance().extractTimestamp(pair.getTwo()).toInstant().getEpochSecond() - 
-            XTimeExtension.instance().extractTimestamp(pair.getOne()).toInstant().getEpochSecond());
+        return (getEndTime().toInstant().getEpochSecond() - getStartTime().toInstant().getEpochSecond());
+    }
+    
+    public Date getStartTime() {
+        return XTimeExtension.instance().extractTimestamp(pair.getOne());
+    }
+    
+    public Date getEndTime() {
+        return XTimeExtension.instance().extractTimestamp(pair.getTwo());
     }
 
     @Override

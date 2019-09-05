@@ -1,7 +1,7 @@
 package org.apromore.logman.relation;
 
-import org.apromore.logman.log.durationaware.ActivityAwareTrace;
+import org.apromore.logman.log.durationaware.AXTrace;
 
 public interface RelationChecker {
-    boolean contains(ActivityAwareTrace trace);
+    boolean contains(AXTrace trace);
 }

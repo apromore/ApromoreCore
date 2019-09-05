@@ -2,14 +2,16 @@ package org.apromore.logman.relation;
 
 import java.util.Set;
 
-import org.apromore.logman.log.durationaware.ActivityAwareTrace;
+import org.apromore.logman.log.durationaware.Activity;
+import org.apromore.logman.log.durationaware.AXTrace;
+import org.apromore.logman.log.durationaware.ActivityMap;
 import org.deckfour.xes.model.XEvent;
 import org.eclipse.collections.impl.tuple.Tuples;
 
 public class EFSSReader implements EFRelationReader {
 
     @Override
-    public ActivityMap read(ActivityAwareTrace trace) {
+    public ActivityMap read(AXTrace trace) {
         Set<XEvent> startEvents = trace.getEventMapping().keySet();
         ActivityMap actMap = new ActivityMap();
         for (int i=0;i<trace.size();i++) {

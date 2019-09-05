@@ -1,4 +1,4 @@
-package org.apromore.logman.relation;
+package org.apromore.logman.log.durationaware;
 
 import org.eclipse.collections.api.block.predicate.Predicate2;
 import org.eclipse.collections.api.map.MutableMap;

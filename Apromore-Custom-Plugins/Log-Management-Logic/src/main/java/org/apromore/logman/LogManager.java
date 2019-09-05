@@ -2,13 +2,13 @@ package org.apromore.logman;
 
 import java.util.List;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
-import org.apromore.logman.log.durationaware.ActivityAwareLog;
+import org.apromore.logman.log.durationaware.AXLog;
 import org.apromore.logman.stats.LogStatistics;
 import org.deckfour.xes.model.XLog;
 
 
 public class LogManager {
-	private ActivityAwareLog log;
+	private AXLog log;
 
 	//Should make in LogStatistics
 	//private Map<String, Map<String, Float>> originalLogAttMap; //attributename => (attributevalue => NumberOFOccurrence)
@@ -22,11 +22,11 @@ public class LogManager {
 	private String classifierAttribute;
 	private boolean classifierAggregate = false;
 	
-	public LogManager(ActivityAwareLog log) {
+	public LogManager(AXLog log) {
 		this.log = log;
 	}
 	
-	public ActivityAwareLog getlLog() {
+	public AXLog getlLog() {
 		return this.log;
 	}
 	

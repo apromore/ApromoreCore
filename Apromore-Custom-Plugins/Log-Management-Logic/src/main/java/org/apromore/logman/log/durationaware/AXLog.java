@@ -16,14 +16,14 @@ import org.deckfour.xes.model.impl.XLogImpl;
  * @author Bruce Nguyen
  *
  */
-public class ActivityAwareLog extends XLogImpl {
+public class AXLog extends XLogImpl {
 	private XLog rawLog;	
 	
-	public ActivityAwareLog(XLog log) {
+	public AXLog(XLog log) {
 		super(log.getAttributes());
 		this.rawLog = log;
 		for (XTrace trace: log) {
-			this.add(new ActivityAwareTrace(trace));
+			this.add(new AXTrace(trace));
 		}
 	}
 	

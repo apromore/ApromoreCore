@@ -1,6 +1,7 @@
 package org.apromore.logman.relation;
 
-import org.apromore.logman.log.durationaware.ActivityAwareTrace;
+import org.apromore.logman.log.durationaware.AXTrace;
+import org.apromore.logman.log.durationaware.ActivityMap;
 
 /**
  * Interpret the eventually-follows relation from a trace
@@ -9,5 +10,5 @@ import org.apromore.logman.log.durationaware.ActivityAwareTrace;
  *
  */
 public interface EFRelationReader {
-    ActivityMap read(ActivityAwareTrace trace);
+    ActivityMap read(AXTrace trace);
 }

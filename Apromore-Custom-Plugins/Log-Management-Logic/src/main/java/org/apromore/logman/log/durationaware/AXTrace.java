@@ -3,12 +3,20 @@ package org.apromore.logman.log.durationaware;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Spliterator;
+import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+
+import org.apromore.logman.log.Constants;
+import org.apromore.logman.utils.LogUtils;
+import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XTraceImpl;
@@ -23,10 +31,10 @@ import org.deckfour.xes.model.impl.XTraceImpl;
  * @author Bruce Nguyen
  *
  */
-public class ActivityAwareTrace extends XTraceImpl {
+public class AXTrace extends XTraceImpl {
 	private Map<XEvent,XEvent> eventMapping;
 	
-	public ActivityAwareTrace(XTrace trace) {
+	public AXTrace(XTrace trace) {
 		super(trace.getAttributes());
 		super.addAll(trace);
 		this.buildEventMapping();
@@ -39,7 +47,37 @@ public class ActivityAwareTrace extends XTraceImpl {
 	// Pair start and complete events in the trace
 	private void buildEventMapping() {
 	    eventMapping = new HashMap<>();
-		// to be implemented later
+	    Queue<XEvent> startEvents = new LinkedList<>();
+		for (XEvent event : this) {
+		    if (LogUtils.getLifecycleTransition(event).equalsIgnoreCase(Constants.LIFECYCLE_START)) {
+		        startEvents.add(event);
+		    }
+		    else if (LogUtils.getLifecycleTransition(event).equalsIgnoreCase(Constants.LIFECYCLE_COMPLETE)) {
+		        XEvent matchedStart = startEvents.poll();
+		        if (matchedStart != null) {
+		            eventMapping.put(matchedStart, event);
+		        }
+		        else {
+		            eventMapping.put(event, event);
+		        }
+		    }
+		}
+		while (!startEvents.isEmpty()) {
+		    XEvent event = startEvents.poll();
+		    eventMapping.put(event, event);
+		}
+	}
+	
+	public Date getStartTime() {
+	    return (this.isEmpty() ? null : XTimeExtension.instance().extractTimestamp(this.get(0)));
+	}
+	
+	public Date getEndTime() {
+        return (this.isEmpty() ? null : XTimeExtension.instance().extractTimestamp(this.get(this.size()-1)));
+    }
+
+	public long getDuration() {
+	    return (this.getStartTime().toInstant().toEpochMilli() - this.getStartTime().toInstant().toEpochMilli());
 	}
 	
 	   

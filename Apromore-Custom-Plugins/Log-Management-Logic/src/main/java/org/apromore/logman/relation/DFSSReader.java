@@ -3,7 +3,9 @@ package org.apromore.logman.relation;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.apromore.logman.log.durationaware.ActivityAwareTrace;
+import org.apromore.logman.log.durationaware.Activity;
+import org.apromore.logman.log.durationaware.AXTrace;
+import org.apromore.logman.log.durationaware.ActivityTrace;
 import org.deckfour.xes.model.XEvent;
 
 /**
@@ -14,7 +16,7 @@ import org.deckfour.xes.model.XEvent;
  */
 public class DFSSReader implements DFRelationReader {
     @Override
-    public ActivityTrace read(ActivityAwareTrace trace) {
+    public ActivityTrace read(AXTrace trace) {
         ActivityTrace actTrace = new ActivityTrace();
         Set<XEvent> startEvents = trace.getEventMapping().keySet();
         for (XEvent event : trace) {
