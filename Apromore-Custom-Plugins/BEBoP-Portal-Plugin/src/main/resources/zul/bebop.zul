@@ -182,8 +182,8 @@
         </radiogroup>
 
         <div align="center">
-            <button id="CancelButton" label="Cancel" image="img/cancel2.png"></button>
-            <button id="OKButton" label="OK" image="img/ok.png"></button>
+            <button id="OKButton" label="OK" iconSclass="z-icon-check-circle"></button>
+            <button id="CancelButton" label="Cancel" iconSclass="z-icon-times-circle"></button>
         </div>
     </vbox>
 </window>

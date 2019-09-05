@@ -43,8 +43,8 @@ and CreateProcessController.java for creating process purpose.
 -->
                 <row spans="3">
                     <div align="center">
-                        <button id="btnSave" label="Save" image="img/ok.png"></button>
-                        <button id="btnCancel" label="Cancel" image="img/cancel2.png"></button>
+                        <button id="btnSave" label="Save" iconSclass="z-icon-check-circle"></button>
+                        <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>
                     </div>
                 </row>
             </rows>

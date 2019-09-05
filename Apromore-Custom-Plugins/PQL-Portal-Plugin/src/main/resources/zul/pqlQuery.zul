@@ -25,8 +25,8 @@
       <textbox name="query-name" id="query" width="570px" />
     </groupbox>
     <div align="center">
-      <button id="cancelButton" label="Cancel" image="img/cancel2.png"></button>
-      <button id="okButton"     label="OK"     image="img/ok.png"></button>
+      <button id="okButton"     label="OK"     iconSclass="z-icon-check-circle"></button>
+      <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle"></button>
     </div>
   </vbox>
 </window>
