@@ -57,7 +57,7 @@ public class SignOutPlugin extends DefaultPortalPlugin {
 
     @Override
     public RenderedImage getIcon() {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("/sign-out.png")) {
+        try (InputStream in = getClass().getClassLoader().getResourceAsStream("/sign-out-icon.png")) {
             BufferedImage icon = ImageIO.read(in);
             return icon;
 
