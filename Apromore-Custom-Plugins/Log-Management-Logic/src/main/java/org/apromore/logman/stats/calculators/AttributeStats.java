@@ -1,4 +1,6 @@
-package org.apromore.logman.stats;
+package org.apromore.logman.stats.calculators;
+
+import org.apromore.logman.stats.StatsCalculator;
 
 public class AttributeStats {
 	private String attribute;
@@ -10,4 +12,9 @@ public class AttributeStats {
 	public String getAttribute() {
 		return this.attribute;
 	}
+
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+    }
 }
