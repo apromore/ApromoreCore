@@ -1,5 +1,5 @@
 package org.apromore.logman.stats.calculators;
 
-public class EventCountStats {
+public class EventsOverTimeStats {
 
 }

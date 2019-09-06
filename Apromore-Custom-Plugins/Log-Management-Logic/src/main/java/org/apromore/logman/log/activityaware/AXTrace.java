@@ -1,4 +1,4 @@
-package org.apromore.logman.log.durationaware;
+package org.apromore.logman.log.activityaware;
 
 import java.util.Arrays;
 import java.util.Collection;

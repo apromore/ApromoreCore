@@ -57,7 +57,11 @@
                             org.apromore.logman,
                             org.apromore.logman.classifier,
                             org.apromore.logman.log,
-                            org.apromore.logman.stats
+                            org.apromore.logman.log.event,
+                            org.apromore.logman.log.activityaware,
+                            org.apromore.logman.log.relation,
+                            org.apromore.logman.stats,
+                            org.apromore.logman.stats.calculators
                         </Export-Package>
                     </instructions>
                 </configuration>

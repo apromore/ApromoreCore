@@ -2,9 +2,10 @@ package org.apromore.logman.relation;
 
 import java.util.Set;
 import java.util.Map;
-import org.apromore.logman.log.durationaware.Activity;
-import org.apromore.logman.log.durationaware.AXTrace;
-import org.apromore.logman.log.durationaware.ActivityTrace;
+
+import org.apromore.logman.log.activityaware.AXTrace;
+import org.apromore.logman.log.activityaware.Activity;
+import org.apromore.logman.log.activityaware.ActivityTrace;
 import org.deckfour.xes.model.XEvent;
 
 /**

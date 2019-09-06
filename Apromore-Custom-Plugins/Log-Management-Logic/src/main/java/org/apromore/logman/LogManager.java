@@ -5,19 +5,19 @@ import java.util.List;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logman.log.Constants;
 import org.apromore.logman.log.LogVisitor;
-import org.apromore.logman.log.durationaware.AXTrace;
-import org.apromore.logman.log.durationaware.Activity;
+import org.apromore.logman.log.activityaware.AXLog;
+import org.apromore.logman.log.activityaware.AXTrace;
+import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.log.event.LogFilterListener;
 import org.apromore.logman.log.event.LogFilteredEvent;
 import org.apromore.logman.log.event.PerspectiveChangeListener;
 import org.apromore.logman.log.event.PerspectiveChangedEvent;
 import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 
 
 public class LogManager {
-    private XLog log;
+    private AXLog log;
     private List<LogFilterCriterion> filterCriteria;
     private String perspectiveAttribute;
     
@@ -25,11 +25,11 @@ public class LogManager {
     private List<LogFilterListener> logFilterListeners;
     private List<PerspectiveChangeListener> perspectiveChangeListeners;
     
-    public LogManager(XLog log) {
+    public LogManager(AXLog log) {
         this(log, Constants.CONCEPT_NAME);
     }
     
-    public LogManager(XLog log, String initialPerspective) {
+    public LogManager(AXLog log, String initialPerspective) {
         this.log = log;
         logVisitors = new ArrayList<>();
         logFilterListeners = new ArrayList<>();
@@ -49,7 +49,7 @@ public class LogManager {
     }
     
     public void scan() {
-        this.prepareBeforeScanning();
+        visit(log);
         for (XTrace xtrace: log) {
             AXTrace trace = (AXTrace)xtrace;
             visit(trace);
@@ -88,27 +88,27 @@ public class LogManager {
         }
     }
     
-    private void prepareBeforeScanning() {
+    private void visit(AXLog log) {
         for (LogVisitor visitor : logVisitors) {
-            visitor.beforeVisit();
+            visitor.visitLog(log);
         }
     }
     
     private void visit(AXTrace trace) {
         for (LogVisitor visitor : logVisitors) {
-            visitor.visit(trace);
+            visitor.visitTrace(trace);
         }
     }
     
     private void visit(Activity act) {
         for (LogVisitor visitor : logVisitors) {
-            visitor.visit(act);
+            visitor.visitActivity(act);
         }
     }
     
     private void visit(XEvent event) {
         for (LogVisitor visitor : logVisitors) {
-            visitor.visit(event);
+            visitor.visitEvent(event);
         }
     }
 }

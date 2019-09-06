@@ -53,8 +53,8 @@ public class SimpleLog extends ArrayList<IntList> {
 
             for(XEvent event : trace) {
                 String name = classifier.getClassIdentity(event);
-                if(name.toLowerCase().endsWith(LogUtils.PLUS_START_CODE) || 
-                		name.toLowerCase().endsWith(LogUtils.PLUS_COMPLETE_CODE)) {
+                if(name.toLowerCase().endsWith(Constants.PLUS_START_CODE) || 
+                		name.toLowerCase().endsWith(Constants.PLUS_COMPLETE_CODE)) {
                     String prename = name.substring(0, name.indexOf("+"));
                     String postname = name.substring(name.indexOf("+"));
                     name = prename + postname.toLowerCase(); //name = "xxx+start" or "xxx+complete" or "xxx+schedule"

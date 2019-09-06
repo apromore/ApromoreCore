@@ -136,7 +136,7 @@ public class LogStatistics {
      */
     private Map<String, Map<String, Integer>> generateStatistics(XLog log, boolean attributeStat) {
         //boolean firstTime = (options_frequency.keySet().size() == 0);
-        Multimap<String, String> tmp_options = HashMultimap.create(); //map from attribute key to attribute values
+//        Multimap<String, String> tmp_options = HashMultimap.create(); //map from attribute key to attribute values
         
         //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
         Map<String, Map<String, Integer>> tmp_options_frequency = new HashMap<>();
@@ -164,7 +164,7 @@ public class LogStatistics {
 	                for (XAttribute attribute : event.getAttributes().values()) {
 	                    String key = attribute.getKey();
 	                    if (!(key.equals("lifecycle:model") || key.equals(TIMESTAMP_KEY))) {
-	                        tmp_options.put(key, attribute.toString());
+//	                        tmp_options.put(key, attribute.toString());
 	                        if(tmp_options_frequency.get(key) == null) tmp_options_frequency.put(key, new HashMap<>());
 	
 	                        Integer i = tmp_options_frequency.get(key).get(attribute.toString());

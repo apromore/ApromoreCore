@@ -1,6 +1,9 @@
 package org.apromore.logman.log;
 
-import org.deckfour.xes.model.XAttributable;
+import org.apromore.logman.log.activityaware.AXLog;
+import org.apromore.logman.log.activityaware.AXTrace;
+import org.apromore.logman.log.activityaware.Activity;
+import org.deckfour.xes.model.XEvent;
 
 /**
  * This interface represents any task to do on a log at any level
@@ -10,6 +13,8 @@ import org.deckfour.xes.model.XAttributable;
  *
  */
 public interface LogVisitor {
-    public void beforeVisit();
-    public void visit(XAttributable attribute);
+    public void visitLog(AXLog log);
+    public void visitTrace(AXTrace trace);
+    public void visitActivity(Activity act);
+    public void visitEvent(XEvent event);
 }
