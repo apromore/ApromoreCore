@@ -22,61 +22,63 @@
 for editing purpose 
 and CreateProcessController.java for creating process purpose.
 -->
+<zk xmlns:h="native">
+    <window width="500px" closable="false" position="center">
 
-<window width="500px" closable="false" position="center">
-    <vbox vflex="1">
-        <grid>
-            <columns sizable="true">
-                <column width="30%"></column>
-                <column width="70%"></column>
-            </columns>
-            <rows>
-                <row tooltiptext="Process name modification will be applied on all process versions.">
-                    <label value="Process name*" width="100%"/>
-                    <textbox width="100%"/>
-                </row>
-                <row>
-                    <label value="Version number*" width="100%"/>
-                    <textbox width="100%"/>
-                </row>
-                <row width="100%" tooltiptext="Process domain modification will be applied on all process versions.">
-                    <label value="Domain"/>
-                </row>
-                <row width="100%" tooltiptext="Process owner modification will be applied on all process versions.">
-                    <label value="Owner*"/>
-                </row>
-                <row visible="false">
-                    <label value="Native type*"/>
-                    <listbox width="100%" multiple="false" mold="select" rows="1" />
-                </row>
-                <row>
-                    <label value="Ranking"/>
-                    <radiogroup>
-                        <radio label="0"/>
-                        <radio label="1"/>
-                        <radio label="2"/>
-                        <radio label="3"/>
-                        <radio label="4"/>
-                        <radio label="5"/>
-                        <radio label="uncheck all"/>
-                    </radiogroup>
-                </row>
-                <row id="makePublic">
-                    <label value="Make Process Public"/>
-                    <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
-                </row>
-                <row spans="3">
-                    <label value="*: mandatory fields"/>
-                </row>
-                <row spans="3">
-                    <div align="center">
-                        <button label="OK" iconSclass="z-icon-check-circle" />
-                        <button label="Cancel" iconSclass="z-icon-times-circle" />
-                        <button label="Cancel all" iconSclass="z-icon-times-circle" visible="false" tooltiptext="Cancel edit of all remaining process models." />
-                        <button label="Reset" image="img/reset.png" tooltiptext="Restore initial values." />
-                    </div>
-                </row>
-            </rows>
-        </grid>
-    </vbox>
-</window>
+        <vbox vflex="1">
+            <grid>
+                <columns sizable="true">
+                    <column width="30%"></column>
+                    <column width="70%"></column>
+                </columns>
+                <rows>
+                    <row tooltiptext="Process name modification will be applied on all process versions.">
+                        <label value="Process name*" width="100%"/>
+                        <textbox width="100%"/>
+                    </row>
+                    <row>
+                        <label value="Version number*" width="100%"/>
+                        <textbox width="100%"/>
+                    </row>
+                    <row width="100%" tooltiptext="Process domain modification will be applied on all process versions.">
+                        <label value="Domain"/>
+                    </row>
+                    <row width="100%" tooltiptext="Process owner modification will be applied on all process versions.">
+                        <label value="Owner*"/>
+                    </row>
+                    <row visible="false">
+                        <label value="Native type*"/>
+                        <listbox width="100%" multiple="false" mold="select" rows="1" />
+                    </row>
+                    <row>
+                        <label value="Ranking"/>
+                        <radiogroup>
+                            <radio label="0"/>
+                            <radio label="1"/>
+                            <radio label="2"/>
+                            <radio label="3"/>
+                            <radio label="4"/>
+                            <radio label="5"/>
+                            <radio label="uncheck all"/>
+                        </radiogroup>
+                    </row>
+                    <row id="makePublic">
+                        <label value="Make Process Public"/>
+                        <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
+                    </row>
+                    <row spans="3">
+                        <label value="*: mandatory fields"/>
+                    </row>
+                    <row spans="3">
+                        <div align="center">
+                            <button label="OK" iconSclass="z-icon-check-circle" width="85px" />
+                            <button label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
+                            <button label="Cancel all" iconSclass="z-icon-times-circle" width="85px" visible="false" tooltiptext="Cancel edit of all remaining process models." />
+                            <button label="Reset" iconSclass="z-icon-undo"  width="85px" tooltiptext="Restore initial values." />
+                        </div>
+                    </row>
+                </rows>
+            </grid>
+        </vbox>
+    </window>
+</zk>
