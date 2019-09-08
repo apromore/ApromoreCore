@@ -1,7 +1,10 @@
 package org.apromore.logman.relation;
 
+import java.util.List;
+
 import org.apromore.logman.log.activityaware.AXTrace;
-import org.apromore.logman.log.activityaware.ActivityTrace;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XTrace;
 
 /**
  * Interpret the directly-follows relation from a trace
@@ -10,5 +13,6 @@ import org.apromore.logman.log.activityaware.ActivityTrace;
  *
  */
 public interface DFRelationReader {
-    ActivityTrace read(AXTrace trace);
+	List<? extends XEvent> read(AXTrace trace);
+	List<? extends XEvent> read(XTrace trace);
 }

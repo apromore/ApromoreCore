@@ -3,34 +3,38 @@ package org.apromore.logman.log.activityaware;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-
-import org.deckfour.xes.extension.XExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
-import org.deckfour.xes.model.XAttributable;
-import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.impl.XAttributeContinuousImpl;
-import org.deckfour.xes.model.impl.XAttributeMapImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
-import org.deckfour.xes.util.XAttributeUtils;
+import org.deckfour.xes.model.impl.XEventImpl;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
-public class Activity implements Pair<XEvent, XEvent>, XAttributable {
-    public static final String ACTIVITY_DURATION = "duration";
-    public static final String ACTIVITY_START_TIME = "start_time";
-    public static final String ACTIVITY_END_TIME = "end_time";
+public class Activity extends XEventImpl implements Pair<XEvent, XEvent> {
+    public static final String ACTIVITY_DURATION = "activity:duration";
+    public static final String ACTIVITY_START_TIME = "activity:start_time";
+    public static final String ACTIVITY_END_TIME = "activity:end_time";
     
     private Pair<XEvent,XEvent> pair;
-    private XAttributeMap attributes;
+    private boolean useComplete;
     
-    public Activity(XEvent source, XEvent target) {
-        this.pair = Tuples.pair(source, target);
-        this.attributes = new XAttributeMapImpl();
-        attributes.put(ACTIVITY_DURATION, new XAttributeContinuousImpl(ACTIVITY_DURATION, this.getDuration()));
-        attributes.put(ACTIVITY_DURATION, new XAttributeTimestampImpl(ACTIVITY_START_TIME, this.getStartTime()));
-        attributes.put(ACTIVITY_END_TIME, new XAttributeTimestampImpl(ACTIVITY_END_TIME, this.getEndTime()));
+    public Activity(XEvent event) {
+    	this(event,event,true);
+    }
+    
+    public Activity(XEvent start, XEvent complete) {
+    	this(start,complete,true);
+    }
+    
+    public Activity(XEvent start, XEvent complete, boolean useComplete) {
+    	super();
+    	this.setAttributes(useComplete ? complete.getAttributes() : start.getAttributes());
+        this.pair = Tuples.pair(start, complete);
+        this.useComplete = useComplete;
+        this.getAttributes().put(ACTIVITY_DURATION, new XAttributeContinuousImpl(ACTIVITY_DURATION, this.getDuration()));
+        this.getAttributes().put(ACTIVITY_DURATION, new XAttributeTimestampImpl(ACTIVITY_START_TIME, this.getStartTime()));
+        this.getAttributes().put(ACTIVITY_END_TIME, new XAttributeTimestampImpl(ACTIVITY_END_TIME, this.getEndTime()));
     }
     
     public long getDuration() {
@@ -43,6 +47,10 @@ public class Activity implements Pair<XEvent, XEvent>, XAttributable {
     
     public Date getEndTime() {
         return XTimeExtension.instance().extractTimestamp(pair.getTwo());
+    }
+    
+    public boolean isUseComplete() {
+    	return this.useComplete;
     }
 
     @Override
@@ -74,35 +82,6 @@ public class Activity implements Pair<XEvent, XEvent>, XAttributable {
     public Pair<XEvent, XEvent> swap() {
         //Cannot swap
         return null;
-    }
-    
-    @Override
-    public int hashCode() {
-        // Use Cantor pairing function
-        int k1 = this.getOne().hashCode();
-        int k2 = this.getTwo().hashCode();
-        return (k1+k2)*(k1+k2+1)/2 + k2;
-    }
-
-    @Override
-    public XAttributeMap getAttributes() {
-        return this.attributes;
-    }
-
-    @Override
-    public Set<XExtension> getExtensions() {
-        return XAttributeUtils.extractExtensions(attributes);
-    }
-
-    @Override
-    public void setAttributes(XAttributeMap arg0) {
-        this.attributes = arg0;
-    }
-
-    @Override
-    public boolean hasAttributes() {
-        // TODO Auto-generated method stub
-        return false;
     }
     
 }

@@ -1,5 +1,5 @@
 package org.apromore.logman.log.event;
 
-public class PerspectiveChangedEvent {
+public class ClassifierChangedEvent {
 
 }

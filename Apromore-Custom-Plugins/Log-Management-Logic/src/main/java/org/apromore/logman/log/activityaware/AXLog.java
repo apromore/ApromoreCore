@@ -1,5 +1,6 @@
 package org.apromore.logman.log.activityaware;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,7 +15,7 @@ import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XLogImpl;
 
 /** 
- * This log contains only ActivityAwareTrace
+ * This log contains AXTrace
  * @author Bruce Nguyen
  *
  */
@@ -36,7 +37,9 @@ public class AXLog extends XLogImpl {
 		return this.rawLog;
 	}
 	
-	private void compressXLog(XLog log, Map<String,Integer> valueMapping) {
-	    
+	public List<AXTrace> getTraces() {
+		AXTrace[] traces = new AXTrace[this.size()];
+		this.toArray(traces);
+		return Arrays.asList(traces);
 	}
 }

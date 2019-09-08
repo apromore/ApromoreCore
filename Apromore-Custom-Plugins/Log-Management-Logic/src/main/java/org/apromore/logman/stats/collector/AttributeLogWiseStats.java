@@ -1,7 +1,8 @@
-package org.apromore.logman.stats.calculators;
+package org.apromore.logman.stats.collector;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apromore.logman.log.Constants;
 import org.apromore.logman.log.LogVisitor;
@@ -15,12 +16,20 @@ import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 
-public class EventAttributeStats extends StatsCollector {
+public class AttributeLogWiseStats extends StatsCollector {
     // attribute name => (attribute value => occurrence count)
     private Map<String, Map<String, Integer>> attributeTotalFreqMap = new HashMap<>();
     
     public Map<String, Integer> getAttributeTotalFrequencies(String attribute) {
         return attributeTotalFreqMap.get(attribute);
+    }
+    
+    public Set<String> getAttributeKeys() {
+    	return attributeTotalFreqMap.keySet();
+    }
+    
+    public Set<String> getAttributeValues(String atributeName) {
+    	return attributeTotalFreqMap.get(atributeName).keySet();
     }
 
     @Override

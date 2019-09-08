@@ -60,8 +60,9 @@
                             org.apromore.logman.log.event,
                             org.apromore.logman.log.activityaware,
                             org.apromore.logman.log.relation,
+                            org.apromore.logman.log.classifieraware,
                             org.apromore.logman.stats,
-                            org.apromore.logman.stats.calculators
+                            org.apromore.logman.stats.collector
                         </Export-Package>
                     </instructions>
                 </configuration>

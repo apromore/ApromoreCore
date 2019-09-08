@@ -1,4 +1,4 @@
-package org.apromore.logman.stats.calculators;
+package org.apromore.logman.stats.collector;
 
 import org.apromore.logman.log.activityaware.AXLog;
 import org.apromore.logman.log.activityaware.AXTrace;

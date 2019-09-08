@@ -1,15 +1,17 @@
-package org.apromore.logman.stats.calculators;
+package org.apromore.logman.stats.collector;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apromore.logman.log.activityaware.AXTrace;
+import org.eclipse.collections.api.list.primitive.IntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 public class EventsPerCaseStats extends StatsCollector {
-    //number of events => number of cases containing the number of events
+    // number of events => number of cases containing the number of events
     private Map<Integer,Integer> eventToCaseMap = new HashMap<>(); 
-
+    
     public Map<Integer,Integer> getEventCountMap() {
         return Collections.unmodifiableMap(eventToCaseMap);
     }

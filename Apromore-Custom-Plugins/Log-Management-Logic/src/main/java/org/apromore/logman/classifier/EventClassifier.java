@@ -31,10 +31,6 @@ public class EventClassifier extends XEventAttributeClassifier {
 			if (identity1 != null) identity.append(identity1);
 			if (i < classifiers.length-1) identity.append("+");
 		}
-		XEventClassifier lifecycleClassifier = new XEventLifeTransClassifier();
-		String lifecycle = lifecycleClassifier.getClassIdentity(event);
-		if (lifecycle != null) identity.append("+" + lifecycle); 
-		
 		return identity.toString();
 	}
 	

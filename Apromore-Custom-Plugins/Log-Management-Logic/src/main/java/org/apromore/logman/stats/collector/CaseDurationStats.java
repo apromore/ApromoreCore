@@ -1,4 +1,4 @@
-package org.apromore.logman.stats.calculators;
+package org.apromore.logman.stats.collector;
 
 import java.util.Collections;
 import java.util.HashMap;

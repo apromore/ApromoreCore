@@ -1,41 +1,82 @@
 package org.apromore.logman;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 import org.apromore.logfilter.criteria.LogFilterCriterion;
+import org.apromore.logman.classifier.EventClassifier;
 import org.apromore.logman.log.Constants;
 import org.apromore.logman.log.LogVisitor;
 import org.apromore.logman.log.activityaware.AXLog;
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.activityaware.Activity;
+import org.apromore.logman.log.classifieraware.IntLog;
 import org.apromore.logman.log.event.LogFilterListener;
 import org.apromore.logman.log.event.LogFilteredEvent;
-import org.apromore.logman.log.event.PerspectiveChangeListener;
-import org.apromore.logman.log.event.PerspectiveChangedEvent;
+import org.apromore.logman.log.event.ClassifierChangeListener;
+import org.apromore.logman.log.event.ClassifierChangedEvent;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 
-
+/**
+ * LogManager is used to manage a log and the operations on the log
+ * The operations on logs include:
+ * 		- Filtering actions 
+ * 		- Compute statistics
+ * 		- Set a perspective attribute
+ * 		- Compute case variants
+ * 
+ * @author Bruce Nguyen
+ *
+ */
 public class LogManager {
     private AXLog log;
+    private IntLog intLog;
+    private EventClassifier classifier;
+    
     private List<LogFilterCriterion> filterCriteria;
-    private String perspectiveAttribute;
+    private AXLog filteredLog;
+    private IntLog filteredIntLog;
     
     private List<LogVisitor> logVisitors;
     private List<LogFilterListener> logFilterListeners;
-    private List<PerspectiveChangeListener> perspectiveChangeListeners;
+    private List<ClassifierChangeListener> classifierChangeListeners;
     
     public LogManager(AXLog log) {
-        this(log, Constants.CONCEPT_NAME);
+        this(log, new EventClassifier(Constants.CONCEPT_NAME));
     }
     
-    public LogManager(AXLog log, String initialPerspective) {
+    public LogManager(AXLog log, EventClassifier classifier) {
         this.log = log;
         logVisitors = new ArrayList<>();
         logFilterListeners = new ArrayList<>();
-        perspectiveAttribute = initialPerspective;
+        
+        intLog = new IntLog(log, classifier);
+        this.registerLogFilterListener(intLog);
     }
     
+    //@todo: return an unmodifiable version
+    public AXLog getLog() {
+    	return this.log;
+    }
+    
+    //@todo: return an unmodifiable version
+    public IntLog getIntLog() {
+    	return this.intLog;
+    }
+    
+    
+    // return: List of trace indexes belonging to a case variant => CountOfCaseVariant
+    public Map<List<Integer>, Integer> getCaseVariantMap() {
+    	return this.intLog.getCaseVariantMap();
+    }
+    
+    public List<LogFilterCriterion> getLogFilterCriteria() {
+    	return Collections.unmodifiableList(filterCriteria);
+    }
+
     public void registerLogVisitor(LogVisitor visitor) {
         this.logVisitors.add(visitor);
     }
@@ -44,8 +85,8 @@ public class LogManager {
         this.logFilterListeners.add(listener);
     }
     
-    public void registerPerspectiveChangeListener(PerspectiveChangeListener listener) {
-        this.perspectiveChangeListeners.add(listener);
+    public void registerPerspectiveChangeListener(ClassifierChangeListener listener) {
+        this.classifierChangeListeners.add(listener);
     }
     
     public void scan() {
@@ -78,11 +119,11 @@ public class LogManager {
         }
     }
     
-    public void setPerspective(String perspectiveAttribute) {
-        if (!this.perspectiveAttribute.equals(perspectiveAttribute)) {
-            this.perspectiveAttribute = perspectiveAttribute;
-            PerspectiveChangedEvent event = new PerspectiveChangedEvent();
-            for (PerspectiveChangeListener listener : perspectiveChangeListeners) {
+    public void setClassifier(EventClassifier newClassifier) {
+        if (!this.classifier.equals(newClassifier)) {
+            this.classifier = newClassifier;
+            ClassifierChangedEvent event = new ClassifierChangedEvent();
+            for (ClassifierChangeListener listener : classifierChangeListeners) {
                 listener.onPerspectiveChanged(event);
             }            
         }

@@ -17,19 +17,4 @@ public class ActivityTrace extends ArrayList<Activity> {
         }
         return result;
     }
-    
-    public IntList getAttributeTrace(XEventAttributeClassifier attributeClassifier, boolean useStart, 
-                                            Map<String,Integer> nameMapping) throws AttributeMappingNotFoundException {
-        IntArrayList result = new IntArrayList();
-        for (Activity a : this) {
-            String attValue = attributeClassifier.getClassIdentity(useStart ? a.getOne() : a.getTwo()).toString();
-            if (nameMapping.containsKey(attValue)) {
-                result.add(nameMapping.get(attValue));
-            }
-            else {
-                throw new AttributeMappingNotFoundException("Not found mapping for attribute value = " + attValue);
-            }
-        }
-        return result;
-    }
 }
