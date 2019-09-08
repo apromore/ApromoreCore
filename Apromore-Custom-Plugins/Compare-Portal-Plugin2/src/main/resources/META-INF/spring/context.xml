@@ -39,6 +39,7 @@
     <reference id="userService" interface="org.apromore.service.UserService"/>
     <reference id="userInterfaceHelper" interface="org.apromore.service.helper.UserInterfaceHelper"/>
     <reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
+    <reference id="workspaceService" interface="org.apromore.service.WorkspaceService"/>
 
     <reference id="portalConfig" interface="org.apromore.portal.ConfigBean"/>
 
