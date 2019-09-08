@@ -237,7 +237,7 @@
     <session-config>
         <!-- Turn on the following if you want a different timeout
                 Note: The unit is seconds (while that of web.xml is minute)
-        <session-timeout>1800</session-timeout>
+        <session-timeout>7200</session-timeout>
         -->
         <!-- Turn on the following if you want to reset the session-timeout
         counter when receiving onTimer, like any other request
