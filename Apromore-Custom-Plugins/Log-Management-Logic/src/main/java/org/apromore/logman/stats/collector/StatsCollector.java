@@ -30,11 +30,11 @@ public abstract class StatsCollector implements LogVisitor, LogFilterListener {
     }
     
     @Override
-    public void start(LogManager logManager) {
+    public void startVisit(LogManager logManager) {
     }
     
     @Override
-    public void finish() {
+    public void finishVisit() {
     	
     }
     

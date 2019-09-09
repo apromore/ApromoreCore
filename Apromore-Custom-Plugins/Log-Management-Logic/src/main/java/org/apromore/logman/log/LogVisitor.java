@@ -14,10 +14,10 @@ import org.deckfour.xes.model.XEvent;
  *
  */
 public interface LogVisitor {
-	public void start(LogManager logManager);
+	public void startVisit(LogManager logManager);
     public void visitLog(AXLog log);
     public void visitTrace(AXTrace trace);
     public void visitActivity(Activity act);
     public void visitEvent(XEvent event);
-    public void finish();
+    public void finishVisit();
 }

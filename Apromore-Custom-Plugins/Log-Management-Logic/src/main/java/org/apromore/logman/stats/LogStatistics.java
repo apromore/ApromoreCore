@@ -176,7 +176,7 @@ public class LogStatistics {
 	                        max = Math.max(max, ((XAttributeTimestamp) attribute).getValueMillis());
 	                    }
 	                }
-	                if(event.getAttributes().containsKey("concept:name")) eventNameSet.add(event.getAttributes().get("concept:name").toString());
+	                if(event.getAttributes().containsKey(this.eventClassifier)) eventNameSet.add(event.getAttributes().get(this.eventClassifier).toString());
 	            }
             }
 

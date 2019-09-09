@@ -155,13 +155,13 @@ public class LogManager {
     
     private void startVisit() {
         for (LogVisitor visitor : logVisitors) {
-            visitor.start(this);
+            visitor.startVisit(this);
         }
     }    
     
     private void finishVisit() {
         for (LogVisitor visitor : logVisitors) {
-            visitor.finish();
+            visitor.finishVisit();
         }
     } 
     
