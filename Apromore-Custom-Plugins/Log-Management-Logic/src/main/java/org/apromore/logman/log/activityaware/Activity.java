@@ -11,12 +11,13 @@ import org.deckfour.xes.model.impl.XEventImpl;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
 
-public class Activity extends XEventImpl implements Pair<XEvent, XEvent> {
+public class Activity extends XEventImpl implements Map.Entry<XEvent,XEvent> {// Pair<XEvent, XEvent> {
     public static final String ACTIVITY_DURATION = "activity:duration";
     public static final String ACTIVITY_START_TIME = "activity:start_time";
     public static final String ACTIVITY_END_TIME = "activity:end_time";
     
-    private Pair<XEvent,XEvent> pair;
+    //private Pair<XEvent,XEvent> pair;
+    XEvent start, complete;
     private boolean useComplete;
     
     public Activity(XEvent event) {
@@ -30,7 +31,9 @@ public class Activity extends XEventImpl implements Pair<XEvent, XEvent> {
     public Activity(XEvent start, XEvent complete, boolean useComplete) {
     	super();
     	this.setAttributes(useComplete ? complete.getAttributes() : start.getAttributes());
-        this.pair = Tuples.pair(start, complete);
+        //this.pair = Tuples.pair(start, complete);
+    	this.start = start;
+    	this.complete = complete;
         this.useComplete = useComplete;
         this.getAttributes().put(ACTIVITY_DURATION, new XAttributeContinuousImpl(ACTIVITY_DURATION, this.getDuration()));
         this.getAttributes().put(ACTIVITY_DURATION, new XAttributeTimestampImpl(ACTIVITY_START_TIME, this.getStartTime()));
@@ -42,46 +45,67 @@ public class Activity extends XEventImpl implements Pair<XEvent, XEvent> {
     }
     
     public Date getStartTime() {
-        return XTimeExtension.instance().extractTimestamp(pair.getOne());
+        return XTimeExtension.instance().extractTimestamp(start);
     }
     
     public Date getEndTime() {
-        return XTimeExtension.instance().extractTimestamp(pair.getTwo());
+        return XTimeExtension.instance().extractTimestamp(complete);
     }
     
     public boolean isUseComplete() {
     	return this.useComplete;
     }
 
-    @Override
-    public int compareTo(Pair<XEvent, XEvent> o) {
-        return pair.compareTo(o);
-    }
+	@Override
+	public XEvent getKey() {
+		return start;
+	}
+	
+	public void setKey(XEvent newKey) {
+		this.start = newKey;
+	}
 
-    @Override
-    public XEvent getOne() {
-        return pair.getOne();
-    }
+	@Override
+	public XEvent getValue() {
+		return complete;
+	}
 
-    @Override
-    public XEvent getTwo() {
-        return pair.getTwo();
-    }
+	@Override
+	public XEvent setValue(XEvent value) {
+		XEvent oldEvent = this.complete;
+		this.complete = value;
+		return oldEvent;
+	}
 
-    @Override
-    public void put(Map<XEvent, XEvent> map) {
-        pair.put(map);
-    }
-
-    @Override
-    public Entry<XEvent, XEvent> toEntry() {
-        return pair.toEntry();
-    }
-
-    @Override
-    public Pair<XEvent, XEvent> swap() {
-        //Cannot swap
-        return null;
-    }
+//    @Override
+//    public int compareTo(Pair<XEvent, XEvent> o) {
+//        return pair.compareTo(o);
+//    }
+//
+//    @Override
+//    public XEvent getOne() {
+//        return pair.getOne();
+//    }
+//
+//    @Override
+//    public XEvent getTwo() {
+//        return pair.getTwo();
+//    }
+//
+//    @Override
+//    public void put(Map<XEvent, XEvent> map) {
+//        pair.put(map);
+//    }
+//
+//    @Override
+//    public Entry<XEvent, XEvent> toEntry() {
+//        return pair.toEntry();
+//    }
+//
+//    @Override
+//    public Pair<XEvent, XEvent> swap() {
+//        //Cannot swap
+//        return null;
+//    }
     
 }

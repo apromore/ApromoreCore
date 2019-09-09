@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
@@ -32,11 +33,13 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
  * It is only allowed to remove (filter out) events from this trace
  * There is a set of rules used to maintain the event mapping after event removal 
  * This ensures the event mapping is always maintained based on the original raw trace
+ * @todo: need to check if the Map's backing entry set is the same as the activity set????
  * @author Bruce Nguyen
  *
  */
 public class AXTrace extends XTraceImpl {
-	private Map<XEvent,XEvent> eventMapping;
+	private Map<XEvent,XEvent> eventMapping; // startEvent => Activity (startEvent,completeEvent)
+	private List<Activity> activities; //Directly-follow start-to-start (DFSS) order
 	
 	public AXTrace(XTrace trace) {
 		super(trace.getAttributes());
@@ -67,16 +70,22 @@ public class AXTrace extends XTraceImpl {
 		    else if (LogUtils.getLifecycleTransition(event).equalsIgnoreCase(Constants.LIFECYCLE_COMPLETE)) {
 		        XEvent matchedStart = startEvents.poll();
 		        if (matchedStart != null) {
-		            eventMapping.put(matchedStart, event);
+		        	Activity act = new Activity(matchedStart, event);
+		            activities.add(act);
+		            eventMapping.entrySet().add(act);
 		        }
 		        else {
-		            eventMapping.put(event, event);
+		        	Activity act = new Activity(event, event);
+		            activities.add(act);
+		            eventMapping.entrySet().add(act);
 		        }
 		    }
 		}
 		while (!startEvents.isEmpty()) {
 		    XEvent event = startEvents.poll();
-		    eventMapping.put(event, event);
+        	Activity act = new Activity(event, event);
+            activities.add(act);
+            eventMapping.entrySet().add(act);
 		}
 	}
 	
@@ -92,20 +101,25 @@ public class AXTrace extends XTraceImpl {
 	    return (this.getStartTime().toInstant().toEpochMilli() - this.getStartTime().toInstant().toEpochMilli());
 	}
 	
-	   
     private void updateEventMapping(Collection<?> removed) {
-        for (XEvent source : eventMapping.keySet()) {
-            XEvent target = eventMapping.get(source);
+        for (Entry<XEvent,XEvent> pair : eventMapping.entrySet()) {
+        	XEvent source = pair.getKey();
+            XEvent target = pair.getValue();
+            Activity act = (Activity)pair;
             boolean sourceRemoved = removed.contains(source);
             boolean targetRemoved = removed.contains(target);
             if (sourceRemoved && targetRemoved) {
                 eventMapping.remove(source);
+                activities.remove(act);
             }
             else if (sourceRemoved) {
+            	act.setKey(target);
+            	eventMapping.remove(source);
                 eventMapping.put(target, target);
             }
             else if (targetRemoved) {
-                eventMapping.put(source, source);
+            	act.setValue(source);
+            	eventMapping.put(source, source);
             }
         }
     }   

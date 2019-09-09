@@ -22,11 +22,36 @@ import org.deckfour.xes.model.XTrace;
 
 /**
  * LogManager is used to manage a log and the operations on the log
- * The operations on logs include:
- * 		- Filtering actions 
- * 		- Compute statistics
- * 		- Set a perspective attribute
- * 		- Compute case variants
+ * The log may change due to a number of actions:
+ * 		- Filtering actions: remove events, update activities, traces 
+ * 		- Change the classifier attribute
+ * 		- ...
+ * 
+ * Other objects need to access to the log for calculations. For example,
+ * these calculates can be various statistics derived from the log, or 
+ * calculations of case variants. These calculations usually involve traversing
+ * all events, activities and traces in the log.
+ * 
+ * For efficiency, LogManager expects these objects to do their calculation
+ * all at once rather than that each object traverses the log separately multiple times.
+ * To do that, each object must implement the LogVisitor interface and register themselves
+ * with the LogManager. When the LogManager scans the log, it will notify these 
+ * objects when it visits different structural elements in the log. 
+ * 
+ * To avoid recaculating every time the log has been filtered, these objects must implement 
+ * LogFilterListener interface and register with LogManager to be notified of changes in the log. 
+ * In that way, they can update their calculation incrementally rather than redoing it from scratch.
+ * 
+ * LogManager keeps a integer-based log of the original log. Each trace is a list of integers which
+ * are mapped from the event values based on a chosen event classifier. This IntLog is efficient in 
+ * calculating case variants and relations based on the event classifier. However, this IntLog is 
+ * lazily created, i.e. it is created from the original log only when there are any required objects
+ * to do related calculations (e.g. case variants).
+ * 
+ * It is advised to register dependent objects with LogManager right from the beginning rather than
+ * somewhere in the log handling process. This is because if they are registered in the middle
+ * of the process, the original log might have been filtered and it will create unexpected behavior
+ * in the program.
  * 
  * @author Bruce Nguyen
  *
@@ -52,9 +77,6 @@ public class LogManager {
         this.log = log;
         logVisitors = new ArrayList<>();
         logFilterListeners = new ArrayList<>();
-        
-        intLog = new IntLog(log, classifier);
-        this.registerLogFilterListener(intLog);
     }
     
     //@todo: return an unmodifiable version
@@ -62,15 +84,15 @@ public class LogManager {
     	return this.log;
     }
     
+    public IntLog createIntLog() {
+        intLog = new IntLog(log, classifier);
+        this.registerLogFilterListener(intLog);
+        return intLog;
+    }
+    
     //@todo: return an unmodifiable version
     public IntLog getIntLog() {
     	return this.intLog;
-    }
-    
-    
-    // return: List of trace indexes belonging to a case variant => CountOfCaseVariant
-    public Map<List<Integer>, Integer> getCaseVariantMap() {
-    	return this.intLog.getCaseVariantMap();
     }
     
     public List<LogFilterCriterion> getLogFilterCriteria() {
@@ -90,6 +112,7 @@ public class LogManager {
     }
     
     public void scan() {
+    	startVisit();
         visit(log);
         for (XTrace xtrace: log) {
             AXTrace trace = (AXTrace)xtrace;
@@ -103,6 +126,7 @@ public class LogManager {
                 visit(act);
             }
         }
+        finishVisit();
     }
     
     public void filter(List<LogFilterCriterion> filterCriteria) {
@@ -128,6 +152,18 @@ public class LogManager {
             }            
         }
     }
+    
+    private void startVisit() {
+        for (LogVisitor visitor : logVisitors) {
+            visitor.start(this);
+        }
+    }    
+    
+    private void finishVisit() {
+        for (LogVisitor visitor : logVisitors) {
+            visitor.finish();
+        }
+    } 
     
     private void visit(AXLog log) {
         for (LogVisitor visitor : logVisitors) {

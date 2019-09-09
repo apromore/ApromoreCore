@@ -1,7 +1,6 @@
 package org.apromore.logman.relation;
 
 import org.apromore.logman.log.activityaware.AXTrace;
-import org.apromore.logman.log.activityaware.ActivityMap;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.multimap.Multimap;

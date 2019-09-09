@@ -55,8 +55,6 @@ public class IntLog extends FastList<IntArrayList> implements LogFilterListener 
             }
             this.add(intTrace);
         }
-        
-        this.caseVariants = this.distinct();
 	}
 	
 	public int totalTraceCount() {
@@ -78,37 +76,6 @@ public class IntLog extends FastList<IntArrayList> implements LogFilterListener 
     
     public Integer getNumber(String event) {
         return nameMap.get(event);
-    }
-    
-    public MutableList<IntArrayList> getCaseVariants() {
-    	return this.caseVariants;
-    }
-    
-	public int countCaseVariant(IntArrayList caseVariant) {
-		return this.count(c -> c.equals(caseVariant)); 
-	}
-    
-	public List<String> getNamesFromCaseVariant(IntArrayList caseVariant) {
-		List<String> stringVariant = new ArrayList<>();
-		for (int i=0; i<caseVariant.size(); i++) {
-			stringVariant.add(nameMap.inverse().get(i));
-		}
-		return stringVariant;
-	}
-    
-	// Return a list of trace indexes
-    public List<Integer> getIndexesFromCaseVariant(IntArrayList caseVariant) {
-    	FastList<Integer> indexes = this.collectIf(trace -> trace.equals(caseVariant), trace -> this.indexOf(trace));
-    	return indexes;
-    }
-    
-    // return: List of trace indexes belonging to a case variant => CountOfCaseVariant 
-    public Map<List<Integer>, Integer> getCaseVariantMap() {
-    	Map<List<Integer>, Integer> variantMap = new HashMap<>();
-    	for (IntArrayList variant : this.getCaseVariants()) {
-    		variantMap.put(this.getIndexesFromCaseVariant(variant), this.countCaseVariant(variant));
-    	}
-    	return variantMap;
     }
     
 	@Override

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.activityaware.Activity;
-import org.apromore.logman.log.activityaware.ActivityTrace;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 
