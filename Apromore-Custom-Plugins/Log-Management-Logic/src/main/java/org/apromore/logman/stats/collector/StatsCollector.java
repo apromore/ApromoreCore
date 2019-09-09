@@ -13,6 +13,10 @@ import org.deckfour.xes.model.XEvent;
  * Abstract class represents all statistics calculation object.
  * It is advised to initialize and register all statstics calculation objects
  * with the LogManager all at once at the start of a program
+ * In addition, a StatsCollector should take care not to duplicate its
+ * log data retrieval when accessing the log elements at different levels to 
+ * ensure the accuracy of its calculation
+ * 
  * @author Bruce Nguyen
  *
  */

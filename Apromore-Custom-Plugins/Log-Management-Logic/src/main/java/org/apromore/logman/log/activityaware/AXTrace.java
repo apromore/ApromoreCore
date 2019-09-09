@@ -6,25 +6,20 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
-import java.util.Set;
 import java.util.Spliterator;
-import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-
 import org.apromore.logman.log.Constants;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XTraceImpl;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 /**
  * This class object is created from a raw trace by aggregating start and complete events
@@ -33,7 +28,10 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
  * It is only allowed to remove (filter out) events from this trace
  * There is a set of rules used to maintain the event mapping after event removal 
  * This ensures the event mapping is always maintained based on the original raw trace
- * @todo: need to check if the Map's backing entry set is the same as the activity set????
+ * This trace object also maintains a list of Activity objects. Each activity corresponds to 
+ * a pair of events what has been coupled.
+ * @todo: due to the implementation of HashMap in Java, the activity list and the event mapping are separated
+ * Another implementation of HashMap may support this synchronization and thus makes it more efficient 
  * @author Bruce Nguyen
  *
  */
@@ -51,12 +49,8 @@ public class AXTrace extends XTraceImpl {
 		return Collections.unmodifiableMap(this.eventMapping);
 	}
 	
-	public Set<Activity> getActivities() {
-	    Set<Activity> acts = new HashSet<>();
-	    for (Entry<XEvent, XEvent> entry : eventMapping.entrySet()) {
-	        acts.add(new Activity(entry.getKey(), entry.getValue()));
-	    }
-	    return acts;
+	public List<Activity> getActivities() {
+	    return activities;
 	}
 	
 	// Pair start and complete events in the trace
@@ -72,12 +66,12 @@ public class AXTrace extends XTraceImpl {
 		        if (matchedStart != null) {
 		        	Activity act = new Activity(matchedStart, event);
 		            activities.add(act);
-		            eventMapping.entrySet().add(act);
+		            eventMapping.put(act.getKey(), act.getValue());
 		        }
 		        else {
 		        	Activity act = new Activity(event, event);
 		            activities.add(act);
-		            eventMapping.entrySet().add(act);
+		            eventMapping.put(act.getKey(), act.getValue());
 		        }
 		    }
 		}
@@ -85,7 +79,7 @@ public class AXTrace extends XTraceImpl {
 		    XEvent event = startEvents.poll();
         	Activity act = new Activity(event, event);
             activities.add(act);
-            eventMapping.entrySet().add(act);
+            eventMapping.put(act.getKey(), act.getValue());
 		}
 	}
 	

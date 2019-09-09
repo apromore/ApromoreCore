@@ -86,7 +86,7 @@ public class LogManager {
     
     public IntLog createIntLog() {
         intLog = new IntLog(log, classifier);
-        this.registerLogFilterListener(intLog);
+        this.registerLogFilterListener(intLog); // register to keep IntLog in sync with the main log
         return intLog;
     }
     

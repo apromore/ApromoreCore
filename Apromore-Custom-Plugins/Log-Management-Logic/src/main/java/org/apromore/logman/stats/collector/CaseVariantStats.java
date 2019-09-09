@@ -7,10 +7,19 @@ import java.util.Map;
 
 import org.apromore.logman.LogManager;
 import org.apromore.logman.log.classifieraware.IntLog;
+import org.apromore.logman.log.event.LogFilteredEvent;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
+/**
+ * Note: this class is auto updated via IntLog when the main log is filtered.
+ * However, it also needs to registers with LogManager to get updated the list
+ * of case variants from the IntLog.
+ * 
+ * @author Bruce Nguyen
+ *
+ */
 public class CaseVariantStats extends StatsCollector {
 	private IntLog intLog;
 	private MutableList<IntArrayList> caseVariants;
@@ -18,8 +27,8 @@ public class CaseVariantStats extends StatsCollector {
 	public CaseVariantStats(LogManager logManager) {
 		if (logManager.getIntLog() == null) {
     		intLog = logManager.createIntLog();
+    		caseVariants = intLog.distinct();
     	}
-    	caseVariants = intLog.distinct();
 	}
 
     public MutableList<IntArrayList> getCaseVariants() {
@@ -52,4 +61,10 @@ public class CaseVariantStats extends StatsCollector {
     	}
     	return variantMap;
     }	
+    
+    ///////////////////////// Update statistics //////////////////////////////
+    @Override
+    public void onLogFiltered(LogFilteredEvent event) {
+    	if (intLog != null) this.caseVariants = intLog.distinct();
+    }
 }

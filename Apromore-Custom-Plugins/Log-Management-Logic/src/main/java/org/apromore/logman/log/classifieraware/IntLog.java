@@ -31,7 +31,6 @@ public class IntLog extends FastList<IntArrayList> implements LogFilterListener 
 	private HashBiMap<String, Integer> nameMap = new HashBiMap<>(); //bi-directiona map between string name and integer name
     private XLog xlog;
     private EventClassifier classifier;
-    private MutableList<IntArrayList> caseVariants;
     
 	public IntLog(XLog xlog, EventClassifier classifier) {
 		super();
@@ -78,23 +77,25 @@ public class IntLog extends FastList<IntArrayList> implements LogFilterListener 
         return nameMap.get(event);
     }
     
+    
+    ///////////////////////// Update statistics //////////////////////////////
+    
 	@Override
 	public void onLogFiltered(LogFilteredEvent filterEvent) {
-		for (int i : filterEvent.getDeletedTraces()) {
-			this.remove(i);
+		for (XTrace trace : filterEvent.getDeletedTraces()) {
+			this.remove(xlog.indexOf(trace));
 		}
 		
-		for (Entry<Integer,Set<Integer>> event: filterEvent.getDeletedEvents().entrySet()) {
-			int traceIndex = event.getKey();
-			for (int i: event.getValue()) {
-				this.get(traceIndex).remove(i);
+		for (Entry<XTrace,Set<XEvent>> event: filterEvent.getDeletedEvents().entrySet()) {
+			XTrace trace = event.getKey();
+			int traceIndex = xlog.indexOf(event.getKey());
+			for (XEvent e: event.getValue()) {
+				this.get(traceIndex).remove(trace.indexOf(e));
 			}
 			if (this.get(traceIndex).isEmpty()) {
 				this.remove(traceIndex);
 			}
 		}
-		
-		this.caseVariants = this.distinct();
 	}
     
 }

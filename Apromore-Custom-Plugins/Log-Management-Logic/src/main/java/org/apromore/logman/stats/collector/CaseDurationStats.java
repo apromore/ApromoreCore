@@ -14,6 +14,7 @@ public class CaseDurationStats extends StatsCollector {
         return Collections.unmodifiableMap(caseDurationToCaseMap);
     }
     
+    ///////////////////////// Collect statistics the first time //////////////////////////////    
     @Override
     public void visitTrace(AXTrace trace) {
         long dur = trace.getDuration();

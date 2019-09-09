@@ -6,13 +6,24 @@ import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.log.event.LogFilteredEvent;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 
 public class LogOverviewStats extends StatsCollector {
+	private AXLog xlog;
     private long eventCount = 0;
     private long actCount = 0;
     private long caseCount = 0;
-    private long minTime = Long.MAX_VALUE;
-    private long maxTime = Long.MIN_VALUE;
+    private LongArrayList traceStartTimes = new LongArrayList(); // each element is for one trace in order
+    private LongArrayList traceEndTimes = new LongArrayList(); // each element is for one trace in order
+    
+    public LogOverviewStats() {
+        eventCount = 0;
+        actCount = 0;
+        caseCount = 0;       
+        traceStartTimes.clear();
+        traceEndTimes.clear();
+    }
     
     public long getTotalEventCount() {
         return eventCount;
@@ -27,42 +38,36 @@ public class LogOverviewStats extends StatsCollector {
     }
     
     public long getLogMinTime() {
-        return minTime;
+        return traceStartTimes.min();
     }
     
     public long getLogMaxTime() {
-        return maxTime;
+        return traceEndTimes.max();
     }    
-    
-    @Override
-    public void initialize() {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public void reset() {
         eventCount = 0;
         actCount = 0;
-        caseCount = 0;        
-        minTime = Long.MAX_VALUE;
-        maxTime = Long.MIN_VALUE;
+        caseCount = 0;       
+        traceStartTimes.clear();
+        traceEndTimes.clear();
     }
+    
+
+    ///////////////////////// Collect statistics the first time //////////////////////////////
     
     @Override
     public void visitLog(AXLog log) {
+    	xlog = log;
         caseCount = log.size();
     }
 
     @Override
     public void visitTrace(AXTrace trace) {
         if (!trace.isEmpty()) {
-            if (LogUtils.getTimeMilliseconds(trace.get(0)) < minTime) {
-                minTime = LogUtils.getTimeMilliseconds(trace.get(0));
-            }
-            if (LogUtils.getTimeMilliseconds(trace.get(trace.size()-1)) > maxTime) {
-                maxTime = LogUtils.getTimeMilliseconds(trace.get(trace.size()-1));
-            }
+            traceStartTimes.add(LogUtils.getTimeMilliseconds(trace.get(0)));
+            traceEndTimes.add(LogUtils.getTimeMilliseconds(trace.get(trace.size()-1)));
         }
     }
 
@@ -76,6 +81,37 @@ public class LogOverviewStats extends StatsCollector {
         eventCount++;
     }
 
-
+    
+    ///////////////////////// Update statistics  //////////////////////////////
+    
+    @Override
+    public void onLogFiltered(LogFilteredEvent filterEvent) {
+    	caseCount -= filterEvent.getDeletedTraces().size();
+    	eventCount -= filterEvent.getAllDeletedEvents().size();
+    	actCount -= filterEvent.getAllDeletedActs().size();
+    	
+    	for (XTrace trace : filterEvent.getDeletedTraces()) {
+    		traceStartTimes.remove(xlog.indexOf(trace));
+    		traceEndTimes.remove(xlog.indexOf(trace));
+    	}
+    	
+    	for (XTrace trace : filterEvent.getDeletedEvents().keySet()) {
+    		int traceIndex = xlog.indexOf(trace);
+    		for (int i=0; i<trace.size(); i++) {
+    			XEvent e = trace.get(i);
+    			if (!filterEvent.getDeletedEvents().get(trace).contains(e)) {
+    				traceStartTimes.set(traceIndex, LogUtils.getTimeMilliseconds(e));
+    				break;
+    			}
+    		}
+    		for (int i=trace.size()-1; i>=0; i--) {
+    			XEvent e = trace.get(i);
+    			if (!filterEvent.getDeletedEvents().get(trace).contains(e)) {
+    				traceEndTimes.set(traceIndex, LogUtils.getTimeMilliseconds(e));
+    				break;
+    			}
+    		}
+    	}
+    }
 
 }

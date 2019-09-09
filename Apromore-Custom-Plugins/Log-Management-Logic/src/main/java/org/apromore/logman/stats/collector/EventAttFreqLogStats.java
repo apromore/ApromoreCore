@@ -16,7 +16,7 @@ import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 
-public class AttributeLogWiseStats extends StatsCollector {
+public class EventAttFreqLogStats extends StatsCollector {
     // attribute name => (attribute value => occurrence count)
     private Map<String, Map<String, Integer>> attributeTotalFreqMap = new HashMap<>();
     
@@ -31,6 +31,8 @@ public class AttributeLogWiseStats extends StatsCollector {
     public Set<String> getAttributeValues(String atributeName) {
     	return attributeTotalFreqMap.get(atributeName).keySet();
     }
+    
+    ///////////////////////// Collect statistics the first time //////////////////////////////
 
     @Override
     public void visitEvent(XEvent event) {
@@ -45,6 +47,7 @@ public class AttributeLogWiseStats extends StatsCollector {
         }
     }    
 
+    ///////////////////////// Update statistics //////////////////////////////
     @Override
     public void onLogFiltered(LogFilteredEvent event) {
         // TODO Auto-generated method stub
