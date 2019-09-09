@@ -11,7 +11,19 @@ import org.apromore.logman.log.activityaware.Activity;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 
-
+/**
+ * Group of all changes on log returned from filtering actions.
+ * Note that deleted activities and deleted events may overlap, meaning
+ * the activities already contain deleted events. Users of this class
+ * should be aware to use these two lists appropriately, i.e. not to duplicate
+ * the processing code. Similarly, the updated activities may contain some 
+ * deleted events already. For example, if you want to check at the event level,
+ * then check the list of deleted events only. However, if you want to check 
+ * at the activity level, you can check the deleted and updated activities.
+ * 
+ * @author Bruce Nguyen
+ *
+ */
 public class LogFilteredEvent {
 	private Set<XTrace> deletedTraces;  
 	private Map<XTrace, Set<XEvent>> deletedEvents; 
