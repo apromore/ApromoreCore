@@ -233,11 +233,6 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
     private String label = DEFAULT_SELECTOR; // the event attribute key used to label each task node, default "concept:name"
     
-//    private boolean selectorChanged = false;
-//    private boolean layoutChanged = false;
-//    private boolean isShowingBPMN = false; //true if a BPMN model is being shown, not a graph
-//    private boolean displayFirstTime = true;
-    
     private int selectedLayout = 0; //0: hierarchical, 1: dagre_LR, 2: dagre_TB, 3: breadth-first
     private boolean retainZoomPan = false;
     
@@ -329,8 +324,6 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                 }
             });
             
-            Map<String, Integer> classifierValues = local_stats.getStatistics().get(getLabel());
-
             this.use_fixed = (Radio) slidersWindow.getFellow(StringValues.b[20]);
             this.use_dynamic = (Radio) slidersWindow.getFellow(StringValues.b[21]);
             this.gateways = (Checkbox) slidersWindow.getFellow(StringValues.b[23]);
@@ -672,7 +665,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                     Listheader detail_ratio = (Listheader) details_window.getFellow(StringValues.b[84]);
                     detail_ratio.setSortAscending(new NumberComparator(true, 2));
                     detail_ratio.setSortDescending(new NumberComparator(false, 2));
-
+                    
+                    Map<String, Integer> classifierValues = local_stats.getStatistics().get(getLabel());
                     int i = 1;
                     for (String key : classifierValues.keySet()) {
                         Listcell listcell0 = new Listcell(Integer.toString(i));
@@ -915,12 +909,13 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : classifierValues.keySet()) {
-                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
-                            manually_removed_activities.add(name);
-                            break;
-                        }
-                    }
+                    manually_removed_activities.add(node);
+//                    for (String name : classifierValues.keySet()) {
+//                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
+//                            manually_removed_activities.add(name);
+//                            break;
+//                        }
+//                    }
 
                     if (manually_removed_activities.size() > 0) {
                         addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
@@ -944,12 +939,13 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : classifierValues.keySet()) {
-                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
-                            manually_removed_activities.add(name);
-                            break;
-                        }
-                    }
+                    manually_removed_activities.add(node);
+//                    for (String name : classifierValues.keySet()) {
+//                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
+//                            manually_removed_activities.add(name);
+//                            break;
+//                        }
+//                    }
 
                     if (manually_removed_activities.size() > 0) {
                         addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
@@ -973,12 +969,13 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : classifierValues.keySet()) {
-                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
-                            manually_removed_activities.add(name);
-                            break;
-                        }
-                    }
+                    manually_removed_activities.add(node);
+//                    for (String name : classifierValues.keySet()) {
+//                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
+//                            manually_removed_activities.add(name);
+//                            break;
+//                        }
+//                    }
 
                     if (manually_removed_activities.size() > 0) {
                         addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
@@ -1002,12 +999,13 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
                     Set<String> manually_removed_activities = new HashSet<>();
                     String node = event.getData().toString();
-                    for (String name : classifierValues.keySet()) {
-                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
-                            manually_removed_activities.add(name);
-                            break;
-                        }
-                    }
+                    manually_removed_activities.add(node);
+//                    for (String name : classifierValues.keySet()) {
+//                        if (name.equals(node) || name.replaceAll("'", "").equals(node)) {
+//                            manually_removed_activities.add(name);
+//                            break;
+//                        }
+//                    }
 
                     if (manually_removed_activities.size() > 0) {
                         addCriterion(logFilterCriterionFactory.getLogFilterCriterion(
