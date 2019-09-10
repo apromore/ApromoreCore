@@ -1,5 +1,5 @@
 package org.apromore.logman.log.event;
 
 public interface LogFilterListener {
-    public void onLogFiltered(LogFilteredEvent event);
+    public void onLogFiltered(LogFilteredEvent filterEvent);
 }

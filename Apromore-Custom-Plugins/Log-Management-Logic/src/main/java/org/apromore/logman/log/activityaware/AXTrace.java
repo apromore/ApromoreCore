@@ -3,7 +3,6 @@ package org.apromore.logman.log.activityaware;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -16,10 +15,10 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import org.apromore.logman.log.Constants;
 import org.apromore.logman.utils.LogUtils;
-import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.impl.XTraceImpl;
+import org.joda.time.DateTime;
 
 /**
  * This class object is created from a raw trace by aggregating start and complete events
@@ -83,16 +82,24 @@ public class AXTrace extends XTraceImpl {
 		}
 	}
 	
-	public Date getStartTime() {
-	    return (this.isEmpty() ? null : XTimeExtension.instance().extractTimestamp(this.get(0)));
+	public DateTime getStartTime() {
+	    return (this.isEmpty() ? null : LogUtils.getDateTime(this.get(0)));
 	}
 	
-	public Date getEndTime() {
-        return (this.isEmpty() ? null : XTimeExtension.instance().extractTimestamp(this.get(this.size()-1)));
+	public long getStartTimestamp() {
+		return (this.isEmpty() ? 0 : LogUtils.getTimestamp(this.get(0)));
+	}
+	
+	public DateTime getEndTime() {
+		return (this.isEmpty() ? null : LogUtils.getDateTime(this.get(this.size()-1)));
     }
+	
+	public long getEndTimestamp() {
+		return (this.isEmpty() ? 0 : LogUtils.getTimestamp(this.get(this.size()-1)));
+	}
 
 	public long getDuration() {
-	    return (this.getStartTime().toInstant().toEpochMilli() - this.getStartTime().toInstant().toEpochMilli());
+	    return (this.getEndTimestamp() - this.getStartTimestamp());
 	}
 	
     private void updateEventMapping(Collection<?> removed) {

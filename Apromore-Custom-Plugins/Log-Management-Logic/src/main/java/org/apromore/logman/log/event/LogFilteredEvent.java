@@ -21,6 +21,8 @@ import org.deckfour.xes.model.XTrace;
  * then check the list of deleted events only. However, if you want to check 
  * at the activity level, you can check the deleted and updated activities.
  * 
+ * In the deleted event list, note that the trace here has already had the events deleted.
+ * 
  * @author Bruce Nguyen
  *
  */

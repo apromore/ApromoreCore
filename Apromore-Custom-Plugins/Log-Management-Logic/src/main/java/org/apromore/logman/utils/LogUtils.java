@@ -18,6 +18,7 @@ import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
+import org.joda.time.DateTime;
 
 public class LogUtils {
 
@@ -43,14 +44,12 @@ public class LogUtils {
 		XTimeExtension.instance().assignTimestamp(event, timestamp);
 	}
 
-	public static Date getTimestamp(XEvent event) {
-		Date value = XTimeExtension.instance().extractTimestamp(event);
-		return value;
+	public static DateTime getDateTime(XEvent event) {
+		return new DateTime(XTimeExtension.instance().extractTimestamp(event));
 	}
 	
-    public static long getTimeMilliseconds(XEvent event) {
-        Date value = XTimeExtension.instance().extractTimestamp(event);
-        return value.toInstant().toEpochMilli();
+    public static long getTimestamp(XEvent event) {
+        return XTimeExtension.instance().extractTimestamp(event).toInstant().toEpochMilli();
     }	
 
 	public static String getOrganizationalResource(XEvent event) {

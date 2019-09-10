@@ -1,15 +1,12 @@
 package org.apromore.logman.log.activityaware;
 
-import java.util.Date;
 import java.util.Map;
-import java.util.Map.Entry;
-import org.deckfour.xes.extension.std.XTimeExtension;
+import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.impl.XAttributeContinuousImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
 import org.deckfour.xes.model.impl.XEventImpl;
-import org.eclipse.collections.api.tuple.Pair;
-import org.eclipse.collections.impl.tuple.Tuples;
+import org.joda.time.DateTime;
 
 public class Activity extends XEventImpl implements Map.Entry<XEvent,XEvent> {// Pair<XEvent, XEvent> {
     public static final String ACTIVITY_DURATION = "activity:duration";
@@ -36,20 +33,28 @@ public class Activity extends XEventImpl implements Map.Entry<XEvent,XEvent> {//
     	this.complete = complete;
         this.useComplete = useComplete;
         this.getAttributes().put(ACTIVITY_DURATION, new XAttributeContinuousImpl(ACTIVITY_DURATION, this.getDuration()));
-        this.getAttributes().put(ACTIVITY_DURATION, new XAttributeTimestampImpl(ACTIVITY_START_TIME, this.getStartTime()));
-        this.getAttributes().put(ACTIVITY_END_TIME, new XAttributeTimestampImpl(ACTIVITY_END_TIME, this.getEndTime()));
+        this.getAttributes().put(ACTIVITY_START_TIME, new XAttributeTimestampImpl(ACTIVITY_START_TIME, this.getStartTimestamp()));
+        this.getAttributes().put(ACTIVITY_END_TIME, new XAttributeTimestampImpl(ACTIVITY_END_TIME, this.getEndTimestamp()));
     }
     
     public long getDuration() {
-        return (getEndTime().toInstant().getEpochSecond() - getStartTime().toInstant().getEpochSecond());
+        return (getEndTimestamp() - getStartTimestamp());
     }
     
-    public Date getStartTime() {
-        return XTimeExtension.instance().extractTimestamp(start);
+    public DateTime getStartTime() {
+        return LogUtils.getDateTime(start);
     }
     
-    public Date getEndTime() {
-        return XTimeExtension.instance().extractTimestamp(complete);
+    public long getStartTimestamp() {
+        return LogUtils.getTimestamp(start);
+    }
+    
+    public DateTime getEndTime() {
+        return LogUtils.getDateTime(complete);
+    }
+    
+    public long getEndTimestamp() {
+        return LogUtils.getTimestamp(complete);
     }
     
     public boolean isUseComplete() {

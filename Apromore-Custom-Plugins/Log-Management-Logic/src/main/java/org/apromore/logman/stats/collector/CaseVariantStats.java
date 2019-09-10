@@ -14,7 +14,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * Note: this class is auto updated via IntLog when the main log is filtered.
- * However, it also needs to registers with LogManager to get updated the list
+ * However, it also needs to register with LogManager to get updated with the list
  * of case variants from the IntLog.
  * 
  * @author Bruce Nguyen

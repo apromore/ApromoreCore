@@ -61,7 +61,7 @@ public abstract class StatsCollector implements LogVisitor, LogFilterListener {
     }
 
     @Override
-    public void onLogFiltered(LogFilteredEvent event) {
+    public void onLogFiltered(LogFilteredEvent filterEvent) {
         // TODO Auto-generated method stub
         
     }

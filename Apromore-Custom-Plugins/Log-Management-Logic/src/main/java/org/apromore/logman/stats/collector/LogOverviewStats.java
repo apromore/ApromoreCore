@@ -66,8 +66,8 @@ public class LogOverviewStats extends StatsCollector {
     @Override
     public void visitTrace(AXTrace trace) {
         if (!trace.isEmpty()) {
-            traceStartTimes.add(LogUtils.getTimeMilliseconds(trace.get(0)));
-            traceEndTimes.add(LogUtils.getTimeMilliseconds(trace.get(trace.size()-1)));
+            traceStartTimes.add(LogUtils.getTimestamp(trace.get(0)));
+            traceEndTimes.add(LogUtils.getTimestamp(trace.get(trace.size()-1)));
         }
     }
 
@@ -100,14 +100,14 @@ public class LogOverviewStats extends StatsCollector {
     		for (int i=0; i<trace.size(); i++) {
     			XEvent e = trace.get(i);
     			if (!filterEvent.getDeletedEvents().get(trace).contains(e)) {
-    				traceStartTimes.set(traceIndex, LogUtils.getTimeMilliseconds(e));
+    				traceStartTimes.set(traceIndex, LogUtils.getTimestamp(e));
     				break;
     			}
     		}
     		for (int i=trace.size()-1; i>=0; i--) {
     			XEvent e = trace.get(i);
     			if (!filterEvent.getDeletedEvents().get(trace).contains(e)) {
-    				traceEndTimes.set(traceIndex, LogUtils.getTimeMilliseconds(e));
+    				traceEndTimes.set(traceIndex, LogUtils.getTimestamp(e));
     				break;
     			}
     		}
