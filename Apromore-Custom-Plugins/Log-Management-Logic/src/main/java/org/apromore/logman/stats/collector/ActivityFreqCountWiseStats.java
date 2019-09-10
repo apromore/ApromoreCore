@@ -37,7 +37,7 @@ public class ActivityFreqCountWiseStats extends StatsCollector {
     
     @Override
     public void onLogFiltered(LogFilteredEvent event) {
-        for (Activity act : event.getAllDeletedActs()) {
+        for (Activity act : event.getDeletedActs()) {
         	actCountMap.addToValue(LogUtils.getConceptName(act), -1);
         }
     }

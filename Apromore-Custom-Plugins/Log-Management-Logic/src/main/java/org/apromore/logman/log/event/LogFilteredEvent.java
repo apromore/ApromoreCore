@@ -1,100 +1,104 @@
 package org.apromore.logman.log.event;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.activityaware.Activity;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.api.tuple.Pair;
 
 /**
  * Group of all changes on log returned from filtering actions.
- * Note that deleted activities and deleted events may overlap, meaning
- * the activities already contain deleted events. Users of this class
- * should be aware to use these two lists appropriately, i.e. not to duplicate
- * the processing code. Similarly, the updated activities may contain some 
- * deleted events already. For example, if you want to check at the event level,
- * then check the list of deleted events only. However, if you want to check 
- * at the activity level, you can check the deleted and updated activities.
- * 
- * In the deleted event list, note that the trace here has already had the events deleted.
+ * Note that events and activities in deleted traces are not include in the other results
+ * For example, events in deleted traces are not include in the deletedEvents result.
+ * Apart from that, other results are related.
+ * So, programs using this class should update separately for deleted traces.
  * 
  * @author Bruce Nguyen
  *
  */
 public class LogFilteredEvent {
-	private Set<XTrace> deletedTraces;  
-	private Map<XTrace, Set<XEvent>> deletedEvents; 
-	private Map<XTrace, Set<Activity>> deletedActs;
-	private Map<XTrace, Set<Activity>> updatedActs;
+	private Set<XEvent> deletedEvents;
+	private Set<Activity> deletedActs; //events of activities are included in deletedEvents
+	// pair = {old act, new act}, deleted events in these acts are included in deletedEvents
+	private Set<Pair<Activity, Activity>> updatedActs; 		
+	
+	// pair = {old trace, new trace}, these are traces affected by deletedEvents, deletedActs and updatedActs
+	private Set<Pair<XTrace, XTrace>> updatedTraces; 
+	
+	//events and activities in these traces are NOT included in deletedEvents and deletedActs
+	private Set<XTrace> deletedTraces; 
+	
+	
 	
 	public LogFilteredEvent() {
 		deletedTraces = new HashSet<>();
-		deletedEvents = new HashMap<>();
-		deletedActs = new HashMap<>();
-		updatedActs = new HashMap<>();
+		updatedTraces = new HashSet<>();
+		deletedEvents = new HashSet<>();
+		deletedActs = new HashSet<>();
+		updatedActs = new HashSet<>();
 	}
 	
 	public void addDeletedTrace(XTrace trace) {
 		deletedTraces.add(trace);
 	}
 	
-	public void addDeletedEvent(XTrace trace, XEvent event) {
-		if (!deletedEvents.containsKey(trace)) deletedEvents.put(trace, new HashSet<>());
-		deletedEvents.get(trace).add(event);
+	public void addUpdatedTrace(Pair<XTrace, XTrace> tracePair) {
+		updatedTraces.add(tracePair);
 	}
 	
-	public void addDeletedAct(XTrace trace, Activity act) {
-		if (!deletedActs.containsKey(trace)) deletedActs.put(trace, new HashSet<>());
-		deletedActs.get(trace).add(act);
+	public void addDeletedEvent(XEvent event) {
+		deletedEvents.add(event);
 	}
 	
-	public void addUpdatedAct(XTrace trace, Activity act) {
-		if (!updatedActs.containsKey(trace)) updatedActs.put(trace, new HashSet<>());
-		updatedActs.get(trace).add(act);
+	public void addDeletedAct(Activity act) {
+		deletedActs.add(act);
+	}
+	
+	public void addUpdatedAct(Pair<Activity,Activity> act) {
+		updatedActs.add(act);
 	}
 	
 	public Set<XTrace> getDeletedTraces() {
 		return Collections.unmodifiableSet(deletedTraces);
 	}
 	
-	public Map<XTrace, Set<XEvent>> getDeletedEvents() {
-		return Collections.unmodifiableMap(deletedEvents);
+	public Set<Pair<XTrace,XTrace>> getUpdatedTraces() {
+		return Collections.unmodifiableSet(updatedTraces);
+	}	
+	
+	public Set<XEvent> getDeletedEvents() {
+		return Collections.unmodifiableSet(deletedEvents);
 	}
 	
 	public Set<XEvent> getAllDeletedEvents() {
-		Set<XEvent> all = new HashSet<>();
-		deletedEvents.values().forEach(c -> all.addAll(c));
-		deletedTraces.forEach(c -> all.addAll(c));
-		return all;
-	}
-	
-	public Map<XTrace, Set<Activity>> getDeletedActs() {
-		return Collections.unmodifiableMap(deletedActs);
+		Set<XEvent> result = new HashSet<XEvent>();
+		result.addAll(deletedEvents);
+		for (XTrace trace : deletedTraces) {
+			result.addAll(trace);
+		}
+		return Collections.unmodifiableSet(result);
+	}	
+		
+	public Set<Activity> getDeletedActs() {
+		return Collections.unmodifiableSet(deletedActs);
 	}
 	
 	public Set<Activity> getAllDeletedActs() {
-		Set<Activity> all = new HashSet<>();
-		deletedActs.values().forEach(c -> all.addAll(c));
-		for (XTrace trace: deletedTraces) {
+		Set<Activity> result = new HashSet<Activity>();
+		result.addAll(deletedActs);
+		for (XTrace trace : deletedTraces) {
 			if (trace instanceof AXTrace) {
-				all.addAll(((AXTrace)trace).getActivities());
+				result.addAll(((AXTrace)trace).getActivities());
 			}
 		}
-		return all;
+		return Collections.unmodifiableSet(result);
 	}
 	
-	public Map<XTrace, Set<Activity>> getUpdatedActs() {
-		return Collections.unmodifiableMap(updatedActs);
-	}
-	
-	public Set<Activity> getAllUpdatedActs() {
-		Set<Activity> all = new HashSet<>();
-		updatedActs.values().forEach(c -> all.addAll(c));
-		return all;
+	public Set<Pair<Activity,Activity>> getUpdatedActs() {
+		return Collections.unmodifiableSet(updatedActs);
 	}
 }

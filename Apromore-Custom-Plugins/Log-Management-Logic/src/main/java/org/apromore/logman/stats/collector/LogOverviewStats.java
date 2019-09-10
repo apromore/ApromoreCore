@@ -7,6 +7,7 @@ import org.apromore.logman.log.event.LogFilteredEvent;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 
 public class LogOverviewStats extends StatsCollector {
@@ -87,30 +88,29 @@ public class LogOverviewStats extends StatsCollector {
     @Override
     public void onLogFiltered(LogFilteredEvent filterEvent) {
     	caseCount -= filterEvent.getDeletedTraces().size();
-    	eventCount -= filterEvent.getAllDeletedEvents().size();
-    	actCount -= filterEvent.getAllDeletedActs().size();
+    	eventCount -= filterEvent.getDeletedEvents().size();
+    	actCount -= filterEvent.getDeletedActs().size();
+    	for (XTrace trace : filterEvent.getDeletedTraces()) {
+    		eventCount -= trace.size();
+    		if (trace instanceof AXTrace) {
+    			actCount -= ((AXTrace)trace).getActivities().size();
+    		}
+    		else {
+    			actCount -= trace.size();
+    		}
+    	}
     	
+    	for (Pair<XTrace,XTrace> pair : filterEvent.getUpdatedTraces()) {
+    		int oldTraceIndex = xlog.indexOf(pair.getOne()); // old trace
+    		XTrace newTrace = pair.getTwo();
+			traceStartTimes.set(oldTraceIndex, LogUtils.getTimestamp(newTrace.get(0)));
+			traceEndTimes.set(oldTraceIndex, LogUtils.getTimestamp(newTrace.get(newTrace.size()-1)));
+    	}
+    	
+    	// Note: Delete must be after the update
     	for (XTrace trace : filterEvent.getDeletedTraces()) {
     		traceStartTimes.remove(xlog.indexOf(trace));
     		traceEndTimes.remove(xlog.indexOf(trace));
-    	}
-    	
-    	for (XTrace trace : filterEvent.getDeletedEvents().keySet()) {
-    		int traceIndex = xlog.indexOf(trace);
-    		for (int i=0; i<trace.size(); i++) {
-    			XEvent e = trace.get(i);
-    			if (!filterEvent.getDeletedEvents().get(trace).contains(e)) {
-    				traceStartTimes.set(traceIndex, LogUtils.getTimestamp(e));
-    				break;
-    			}
-    		}
-    		for (int i=trace.size()-1; i>=0; i--) {
-    			XEvent e = trace.get(i);
-    			if (!filterEvent.getDeletedEvents().get(trace).contains(e)) {
-    				traceEndTimes.set(traceIndex, LogUtils.getTimestamp(e));
-    				break;
-    			}
-    		}
     	}
     }
 

@@ -15,6 +15,7 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
@@ -82,19 +83,18 @@ public class IntLog extends FastList<IntArrayList> implements LogFilterListener 
     
 	@Override
 	public void onLogFiltered(LogFilteredEvent filterEvent) {
-		for (XTrace trace : filterEvent.getDeletedTraces()) {
-			this.remove(xlog.indexOf(trace));
+		for (Pair<XTrace,XTrace> pair: filterEvent.getUpdatedTraces()) {
+			XTrace old = pair.getOne();
+			int oldIndex = xlog.indexOf(old);
+			XTrace ne = pair.getTwo();
+			for (XEvent e : old) {
+				if (!ne.contains(e)) this.get(oldIndex).remove(old.indexOf(e));
+			}
 		}
 		
-		for (Entry<XTrace,Set<XEvent>> event: filterEvent.getDeletedEvents().entrySet()) {
-			XTrace trace = event.getKey();
-			int traceIndex = xlog.indexOf(event.getKey());
-			for (XEvent e: event.getValue()) {
-				this.get(traceIndex).remove(trace.indexOf(e));
-			}
-			if (this.get(traceIndex).isEmpty()) {
-				this.remove(traceIndex);
-			}
+		// NOTE: delete must be done AFTER update
+		for (XTrace trace : filterEvent.getDeletedTraces()) {
+			this.remove(xlog.indexOf(trace));
 		}
 	}
     
