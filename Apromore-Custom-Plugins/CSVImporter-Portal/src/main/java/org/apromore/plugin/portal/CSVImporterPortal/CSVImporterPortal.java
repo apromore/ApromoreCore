@@ -185,6 +185,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     result.clear();
                 }
 
+
                 line = reader.readNext();
                 if (line == null || header == null) {
                     Messagebox.show("Could not parse file!");
@@ -308,7 +309,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if(media != null) {
                 window.setWidth("95%");
 //                window.setVflex("min");
-                myGrid.setHeight("99%");
+//                myGrid.setHeight("99%");
 
 
                 csvImporterLogic.resetLine();
