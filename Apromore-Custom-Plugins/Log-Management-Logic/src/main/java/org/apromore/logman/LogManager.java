@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
-import org.apromore.logman.classifier.EventClassifier;
+import org.apromore.logman.classifier.SimpleEventClassifier;
 import org.apromore.logman.log.Constants;
 import org.apromore.logman.log.LogVisitor;
 import org.apromore.logman.log.activityaware.AXLog;
@@ -57,7 +57,7 @@ import org.deckfour.xes.model.XTrace;
 public class LogManager {
     private AXLog log;
     private IntLog intLog;
-    private EventClassifier classifier;
+    private SimpleEventClassifier classifier;
     
     private List<LogFilterCriterion> filterCriteria;
     private AXLog filteredLog;
@@ -68,10 +68,10 @@ public class LogManager {
     private List<ClassifierChangeListener> classifierChangeListeners;
     
     public LogManager(AXLog log) {
-        this(log, new EventClassifier(Constants.CONCEPT_NAME));
+        this(log, new SimpleEventClassifier(Constants.CONCEPT_NAME));
     }
     
-    public LogManager(AXLog log, EventClassifier classifier) {
+    public LogManager(AXLog log, SimpleEventClassifier classifier) {
         this.log = log;
         logVisitors = new ArrayList<>();
         logFilterListeners = new ArrayList<>();
@@ -141,7 +141,7 @@ public class LogManager {
         }
     }
     
-    public void setClassifier(EventClassifier newClassifier) {
+    public void setClassifier(SimpleEventClassifier newClassifier) {
         if (!this.classifier.equals(newClassifier)) {
             this.classifier = newClassifier;
             ClassifierChangedEvent event = new ClassifierChangedEvent();

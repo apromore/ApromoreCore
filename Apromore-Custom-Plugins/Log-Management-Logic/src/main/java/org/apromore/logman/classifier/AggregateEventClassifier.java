@@ -3,14 +3,15 @@ package org.apromore.logman.classifier;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.deckfour.xes.classification.XEventAttributeClassifier;
 import org.deckfour.xes.model.XEvent;
 
-public class EventClassifier extends XEventAttributeClassifier {
+public class AggregateEventClassifier extends XEventAttributeClassifier {
 	protected String[] attributes;
 	protected XEventAttributeClassifier[] classifiers;
 	
-	public EventClassifier(String... attributes) {
+	public AggregateEventClassifier(String... attributes) {
 		super("eventClassifier", attributes);
 		this.attributes = attributes;
 		
@@ -44,8 +45,8 @@ public class EventClassifier extends XEventAttributeClassifier {
 	
 	@Override
 	public boolean equals(Object other) {
-		if (!(other instanceof EventClassifier)) return false;
-		EventClassifier otherClassifier = (EventClassifier) other;
+		if (!(other instanceof AggregateEventClassifier)) return false;
+		AggregateEventClassifier otherClassifier = (AggregateEventClassifier) other;
 		Set<String> attributes1 = new HashSet<>(Arrays.asList(this.getAttributes()));
 		Set<String> attributes2 = new HashSet<>(Arrays.asList(otherClassifier.getAttributes()));
 		return attributes1.equals(attributes2);

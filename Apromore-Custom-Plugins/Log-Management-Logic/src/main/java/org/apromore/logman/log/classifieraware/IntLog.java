@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.apromore.logman.classifier.EventClassifier;
+import org.apromore.logman.classifier.SimpleEventClassifier;
 import org.apromore.logman.log.Constants;
 import org.apromore.logman.log.event.LogFilterListener;
 import org.apromore.logman.log.event.LogFilteredEvent;
@@ -31,9 +31,9 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 public class IntLog extends FastList<IntArrayList> implements LogFilterListener {
 	private HashBiMap<String, Integer> nameMap = new HashBiMap<>(); //bi-directiona map between string name and integer name
     private XLog xlog;
-    private EventClassifier classifier;
+    private SimpleEventClassifier classifier;
     
-	public IntLog(XLog xlog, EventClassifier classifier) {
+	public IntLog(XLog xlog, SimpleEventClassifier classifier) {
 		super();
 		this.xlog = xlog;
 		this.classifier = classifier;
@@ -66,7 +66,7 @@ public class IntLog extends FastList<IntArrayList> implements LogFilterListener 
 		return xlog;
 	}
 	
-	public EventClassifier getEventClassifier() {
+	public SimpleEventClassifier getEventClassifier() {
 		return classifier;
 	}
 	
