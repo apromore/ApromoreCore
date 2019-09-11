@@ -3,6 +3,7 @@ package org.apromore.logman;
 import org.apromore.logman.attribute.Attribute;
 import org.apromore.logman.attribute.AttributeFactory;
 import org.apromore.logman.attribute.AttributeLevel;
+import org.apromore.logman.attribute.AttributeType;
 import org.apromore.logman.attribute.BooleanAttribute;
 import org.apromore.logman.attribute.ContinuousAttribute;
 import org.apromore.logman.attribute.DiscreteAttribute;
@@ -31,12 +32,10 @@ import org.eclipse.collections.impl.list.mutable.FastList;
  * @author Bruce Nguyen
  *
  */
-public class AttributeMap {
-	private FastList<Attribute> logAttributes = new FastList<Attribute>();
-	private FastList<Attribute> traceAttributes = new FastList<Attribute>();
-	private FastList<Attribute> eventAttributes = new FastList<Attribute>();
+public class AttributeManager {
+	private FastList<Attribute> attributes = new FastList<Attribute>();
 	
-	public AttributeMap(XLog log) {
+	public AttributeManager(XLog log) {
 		registerXAttributes(log.getAttributes(), AttributeLevel.LOG);
 		for (XTrace trace: log) {
 			registerXAttributes(trace.getAttributes(), AttributeLevel.TRACE);
@@ -47,33 +46,46 @@ public class AttributeMap {
 	}
 	
 	public ImmutableList<Attribute> getLogAttributes() {
-		return logAttributes.toImmutable();
+		return attributes.select(a -> a.getLevel() == AttributeLevel.LOG).toImmutable();
 	}
 	
 	public ImmutableList<Attribute> getTraceAttributes() {
-		return traceAttributes.toImmutable();
+		return attributes.select(a -> a.getLevel() == AttributeLevel.TRACE).toImmutable();
 	}
 	
 	public ImmutableList<Attribute> getEventAttributes() {
-		return eventAttributes.toImmutable();
+		return attributes.select(a -> a.getLevel() == AttributeLevel.EVENT).toImmutable();
+	}
+	
+	public ImmutableList<Attribute> getLiteralAttributes() {
+		return attributes.select(a -> a.getType() == AttributeType.LITERAL).toImmutable();
+	}
+	
+	public ImmutableList<Attribute> getContinuousAttributes() {
+		return attributes.select(a -> a.getType() == AttributeType.CONTINUOUS).toImmutable();
+	}
+	
+	public ImmutableList<Attribute> getDiscreteAttributes() {
+		return attributes.select(a -> a.getType() == AttributeType.DISCRETE).toImmutable();
+	}
+	
+	public ImmutableList<Attribute> getBooleanAttributes() {
+		return attributes.select(a -> a.getType() == AttributeType.BOOLEAN).toImmutable();
+	}
+	
+	public ImmutableList<Attribute> getTimestampAttributes() {
+		return attributes.select(a -> a.getType() == AttributeType.TIMESTAMP).toImmutable();
 	}
 	
 	public Attribute find(String key, AttributeLevel level) {
-		if (level == AttributeLevel.LOG) {
-			return logAttributes.detect(a -> a.getKey().equals(key));
-		}
-		else if (level == AttributeLevel.TRACE) {
-			return traceAttributes.detect(a -> a.getKey().equals(key));
-		}
-		else if (level == AttributeLevel.EVENT) {
-			return eventAttributes.detect(a -> a.getKey().equals(key));
-		}
-		else {
-			return null;
-		}
+		return attributes.detect(a -> a.getKey().equals(key) && a.getLevel() == level);
 	}
 	
-	public int getIndex(XAttribute xatt, AttributeLevel level) {
+	public int getIndex(String key, AttributeLevel level) {
+		return attributes.detectIndex(a -> a.getKey().equals(key) && a.getLevel()==level);
+	}
+	
+	public int getValueIndex(XAttribute xatt, AttributeLevel level) {
 		Attribute find = this.find(xatt.getKey(), level);
 		if (find != null && find instanceof Indexable) {
 			if (find instanceof LiteralAttribute && xatt instanceof XAttributeLiteral) {
@@ -111,24 +123,14 @@ public class AttributeMap {
 		for (String key : attMap.keySet()) {
 			XAttribute xatt = attMap.get(key);
 			if (xatt instanceof XAttributeLiteral) {
-				Attribute attr = AttributeFactory.createLiteralAttribute(key, level);
-				attr.registerXAttribute(xatt);
-				if (level == AttributeLevel.LOG) {
-					addAttribute(logAttributes, attr);
+				Attribute att = this.find(xatt.getKey(), level);
+				if (att == null) {
+					att = AttributeFactory.createLiteralAttribute(key, level);
 				}
-				else if (level == AttributeLevel.TRACE) {
-					addAttribute(traceAttributes, attr);
-				}
-				else if (level == AttributeLevel.EVENT) {
-					addAttribute(eventAttributes, attr);
-				}
+				att.registerXAttribute(xatt);
+				attributes.add(att);
 			}
 		}
-	}
-	
-	private void addAttribute(FastList<Attribute> attributes, Attribute attr) {
-		Attribute find = attributes.detect(a -> a.getKey().equals(attr.getKey()));
-		if (find == null) attributes.add(attr);
 	}
 	
 }
