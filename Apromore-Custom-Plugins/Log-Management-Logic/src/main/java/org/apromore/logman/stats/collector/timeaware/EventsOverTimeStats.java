@@ -1,19 +1,23 @@
 package org.apromore.logman.stats.collector.timeaware;
 
-import java.util.stream.IntStream;
-
-import org.apromore.logman.log.activityaware.Activity;
+import org.apromore.logman.LogManager;
 import org.apromore.logman.log.event.LogFilteredEvent;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
-import org.eclipse.collections.api.tuple.Pair;
 
 public class EventsOverTimeStats extends TimeAwareStatsCollector {
 	
-    public EventsOverTimeStats(XLog xlog) {
-		super(xlog);
+	@Override 
+	public void startVisit(LogManager logManager) {
+		super.startVisit(logManager);
 	}
+	
+	@Override
+	public void visitLog(XLog log) {
+		super.visitLog(log);
+	}
+	
 
 	@Override
     public void visitEvent(XEvent event) {

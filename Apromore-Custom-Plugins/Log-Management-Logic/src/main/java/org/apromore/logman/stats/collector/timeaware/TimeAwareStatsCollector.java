@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import org.apromore.logman.LogManager;
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.stats.collector.StatsCollector;
 import org.apromore.logman.utils.LogUtils;
@@ -60,8 +61,22 @@ public class TimeAwareStatsCollector extends StatsCollector {
 	protected int numberOfWindows = 1; // number of windows
 	protected double[] values; // index: window index, value: measure value
 	
-	public TimeAwareStatsCollector(XLog xlog) {
-		this.log = xlog;
+	@Override 
+	public void startVisit(LogManager logManager) {
+		log = null;
+		startTime = Long.MAX_VALUE;
+		endTime = Long.MIN_VALUE;
+		windowSize = 24;
+		numberOfWindows = 1;
+		values = new double[] {};
+	}
+	
+    @Override
+    public void visitLog(XLog log) {
+		this.log = log;
+		
+		// This traversal is required to set up the data structures
+		// to be used by other steps
 		for (XTrace trace: log) {
 			if (LogUtils.getTimestamp(trace.get(0)) < startTime) {
 	        	startTime = LogUtils.getTimestamp(trace.get(0));
@@ -87,7 +102,8 @@ public class TimeAwareStatsCollector extends StatsCollector {
     	numberOfWindows = (int)periodHours/windowSize + 1;
     	values = new double[numberOfWindows];
     	Arrays.fill(values, 0);
-	}
+        
+    }
 	
     public long getStartTimestamp() {
     	return this.startTime;

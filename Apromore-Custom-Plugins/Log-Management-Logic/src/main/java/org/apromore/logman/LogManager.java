@@ -3,8 +3,6 @@ package org.apromore.logman;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-
 import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logman.classifier.EventClassifier;
 import org.apromore.logman.log.Constants;
@@ -111,7 +109,7 @@ public class LogManager {
         this.classifierChangeListeners.add(listener);
     }
     
-    public void scan() {
+    public void visitLog() {
     	startVisit();
         visit(log);
         for (XTrace xtrace: log) {

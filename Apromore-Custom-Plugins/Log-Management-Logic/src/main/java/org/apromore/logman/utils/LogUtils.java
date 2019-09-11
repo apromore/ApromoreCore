@@ -18,10 +18,12 @@ import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.joda.time.DateTime;
 
 public class LogUtils {
 
+	////////////////////////// Attribute utilities //////////////////////////
 	public static String getConceptName(XAttributable attrib) {
 		String value = XConceptExtension.instance().extractName(attrib);
 		return (value != null ? value : "");
@@ -39,24 +41,7 @@ public class LogUtils {
 	public static void setLifecycleTransition(XEvent event, String transition) {
 		XLifecycleExtension.instance().assignTransition(event, transition);
 	}
-
-	public static void setTimestamp(XEvent event, Date timestamp) {
-		XTimeExtension.instance().assignTimestamp(event, timestamp);
-	}
-
-	public static DateTime getDateTime(XEvent event) {
-		return new DateTime(XTimeExtension.instance().extractTimestamp(event));
-	}
 	
-    public static long getTimestamp(XEvent event) {
-        return XTimeExtension.instance().extractTimestamp(event).toInstant().toEpochMilli();
-    }	
-
-	public static String getOrganizationalResource(XEvent event) {
-		String value = XOrganizationalExtension.instance().extractResource(event);
-		return (value != null ? value : "");
-	}
-
 	public static String getValue(XAttribute attr) {
 		if (attr instanceof XAttributeBoolean) {
 			Boolean b = ((XAttributeBoolean) attr).getValue();
@@ -77,5 +62,51 @@ public class LogUtils {
 		return "";
 	}
 	
+	////////////////////////////// Event utilities //////////////////////////
+
+	public static void setTimestamp(XEvent event, Date timestamp) {
+		XTimeExtension.instance().assignTimestamp(event, timestamp);
+	}
+
+	public static DateTime getDateTime(XEvent event) {
+		return new DateTime(XTimeExtension.instance().extractTimestamp(event));
+	}
+	
+    public static long getTimestamp(XEvent event) {
+        return XTimeExtension.instance().extractTimestamp(event).toInstant().toEpochMilli();
+    }	
+    
+    /////////////////// XTrace utilities ////////////////////////////////
+    
+    public static long getStartTimestamp(XTrace trace) {
+    	return (trace.isEmpty() ? 0 : getTimestamp(trace.get(0)));
+    }
+    
+    public static long getEndTimestamp(XTrace trace) {
+    	return (trace.isEmpty() ? 0 : getTimestamp(trace.get(trace.size()-1)));
+    }
+    
+    public static long getDuration(XTrace trace) {
+    	if (trace.isEmpty() || trace.size()==1) {
+    		return 0;
+    	}
+    	else {
+    		return (getEndTimestamp(trace) - getStartTimestamp(trace));
+    	}
+    }
+    
+    public static DateTime getStartDate(XTrace trace) {
+    	return (trace.isEmpty() ? null : getDateTime(trace.get(0)));
+    }
+    
+    public static DateTime getEndDate(XTrace trace) {
+    	return (trace.isEmpty() ? null : getDateTime(trace.get(trace.size()-1)));
+    }
+
+	public static String getOrganizationalResource(XEvent event) {
+		String value = XOrganizationalExtension.instance().extractResource(event);
+		return (value != null ? value : "");
+	}
+
 	
 }

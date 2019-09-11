@@ -3,10 +3,7 @@ package org.apromore.logman.classifier;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.deckfour.xes.classification.XEventAttributeClassifier;
-import org.deckfour.xes.classification.XEventClassifier;
-import org.deckfour.xes.classification.XEventLifeTransClassifier;
 import org.deckfour.xes.model.XEvent;
 
 public class EventClassifier extends XEventAttributeClassifier {

@@ -2,6 +2,7 @@ package org.apromore.logman.stats.collector.timeaware;
 
 import java.util.stream.IntStream;
 
+import org.apromore.logman.LogManager;
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.log.event.LogFilteredEvent;
@@ -12,9 +13,16 @@ import org.eclipse.collections.api.tuple.Pair;
 
 public class ActivitiesOverTimeStats extends TimeAwareStatsCollector {
 	
-	public ActivitiesOverTimeStats(XLog xlog) {
-		super(xlog);
+	@Override 
+	public void startVisit(LogManager logManager) {
+		super.startVisit(logManager);
 	}
+	
+	@Override
+	public void visitLog(XLog log) {
+		super.visitLog(log);
+	}
+	
 
     @Override
     public void visitActivity(Activity act) {
@@ -22,10 +30,6 @@ public class ActivitiesOverTimeStats extends TimeAwareStatsCollector {
     	for (int i : overlapWindows) {
     		this.values[i] = this.values[i] + 1; 
     	}
-    }
-    
-    @Override
-    public void finishVisit() {
     }
 
 

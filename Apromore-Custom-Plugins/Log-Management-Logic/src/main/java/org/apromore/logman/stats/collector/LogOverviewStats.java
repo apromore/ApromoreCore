@@ -1,17 +1,18 @@
 package org.apromore.logman.stats.collector;
 
-import org.apromore.logman.log.activityaware.AXLog;
+import org.apromore.logman.LogManager;
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.log.event.LogFilteredEvent;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 
 public class LogOverviewStats extends StatsCollector {
-	private AXLog xlog;
+	private XLog xlog;
     private long eventCount = 0;
     private long actCount = 0;
     private long caseCount = 0;
@@ -19,11 +20,7 @@ public class LogOverviewStats extends StatsCollector {
     private LongArrayList traceEndTimes = new LongArrayList(); // each element is for one trace in order
     
     public LogOverviewStats() {
-        eventCount = 0;
-        actCount = 0;
-        caseCount = 0;       
-        traceStartTimes.clear();
-        traceEndTimes.clear();
+
     }
     
     public long getTotalEventCount() {
@@ -46,8 +43,10 @@ public class LogOverviewStats extends StatsCollector {
         return traceEndTimes.max();
     }    
 
+    ///////////////////////// Collect statistics the first time //////////////////////////////
+    
     @Override
-    public void reset() {
+    public void startVisit(LogManager logManager) {
         eventCount = 0;
         actCount = 0;
         caseCount = 0;       
@@ -55,17 +54,14 @@ public class LogOverviewStats extends StatsCollector {
         traceEndTimes.clear();
     }
     
-
-    ///////////////////////// Collect statistics the first time //////////////////////////////
-    
     @Override
-    public void visitLog(AXLog log) {
+    public void visitLog(XLog log) {
     	xlog = log;
         caseCount = log.size();
     }
 
     @Override
-    public void visitTrace(AXTrace trace) {
+    public void visitTrace(XTrace trace) {
         if (!trace.isEmpty()) {
             traceStartTimes.add(LogUtils.getTimestamp(trace.get(0)));
             traceEndTimes.add(LogUtils.getTimestamp(trace.get(trace.size()-1)));

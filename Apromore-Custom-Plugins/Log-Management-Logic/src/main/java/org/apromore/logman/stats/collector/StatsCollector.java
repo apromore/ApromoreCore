@@ -8,6 +8,8 @@ import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.log.event.LogFilterListener;
 import org.apromore.logman.log.event.LogFilteredEvent;
 import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 
 /**
  * Abstract class represents all statistics calculation object.
@@ -21,14 +23,6 @@ import org.deckfour.xes.model.XEvent;
  *
  */
 public abstract class StatsCollector implements LogVisitor, LogFilterListener {
-    public void initialize() {
-        
-    }
-    
-    public void reset() {
-        
-    }
-    
     @Override
     public void startVisit(LogManager logManager) {
     }
@@ -39,13 +33,13 @@ public abstract class StatsCollector implements LogVisitor, LogFilterListener {
     }
     
     @Override
-    public void visitLog(AXLog log) {
+    public void visitLog(XLog log) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void visitTrace(AXTrace trace) {
+    public void visitTrace(XTrace trace) {
         // TODO Auto-generated method stub
         
     }

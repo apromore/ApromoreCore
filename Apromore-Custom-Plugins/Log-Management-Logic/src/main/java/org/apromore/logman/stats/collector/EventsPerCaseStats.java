@@ -1,28 +1,45 @@
 package org.apromore.logman.stats.collector;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apromore.logman.log.activityaware.AXTrace;
+import org.apromore.logman.LogManager;
 import org.apromore.logman.log.event.LogFilteredEvent;
-import org.eclipse.collections.api.list.primitive.IntList;
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.api.map.primitive.IntIntMap;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 
 public class EventsPerCaseStats extends StatsCollector {
-    // number of events => number of cases containing the number of events
-    private Map<Integer,Integer> eventToCaseMap = new HashMap<>(); 
+	private XLog log;
+    // trace index => number of events
+    private IntIntHashMap caseEventCountMap = new IntIntHashMap();
     
-    public Map<Integer,Integer> getEventCountMap() {
-        return Collections.unmodifiableMap(eventToCaseMap);
+    private int traceIndex;
+    
+    public IntIntMap getEventCountMap() {
+    	IntIntHashMap eventCountCaseCountMap = new IntIntHashMap();
+    	for (int caseIndex : caseEventCountMap.keySet().toArray()) {
+    		eventCountCaseCountMap.addToValue(caseEventCountMap.get(caseIndex), 1);
+    	}
+    	return eventCountCaseCountMap.toImmutable();
     }
     
     ///////////////////////// Collect statistics the first time //////////////////////////////
     
     @Override
-    public void visitTrace(AXTrace trace) {
-        Integer count = trace.size();
-        eventToCaseMap.put(count, !eventToCaseMap.containsKey(count) ? 1 : eventToCaseMap.get(count) + 1);
+    public void startVisit(LogManager logManager) {
+    	caseEventCountMap.clear();
+    	traceIndex = 0;
+    }
+    
+    @Override
+    public void visitLog(XLog log) {
+    	this.log = log;
+    }
+    
+    @Override
+    public void visitTrace(XTrace trace) {
+    	caseEventCountMap.addToValue(traceIndex, trace.size());
+        traceIndex++;
     }
     
     
@@ -31,7 +48,12 @@ public class EventsPerCaseStats extends StatsCollector {
     
     @Override
     public void onLogFiltered(LogFilteredEvent event) {
-        // TODO Auto-generated method stub
+        for (XTrace trace: event.getDeletedTraces()) {
+        	caseEventCountMap.put(log.indexOf(trace), 0);
+        }
         
+        for (Pair<XTrace,XTrace> pair: event.getUpdatedTraces()) {
+        	caseEventCountMap.put(log.indexOf(pair.getOne()), pair.getTwo().size());
+        }
     }
 }

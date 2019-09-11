@@ -1,6 +1,8 @@
 package org.apromore.logman.stats.collector.timeaware;
 
 import java.util.stream.IntStream;
+
+import org.apromore.logman.LogManager;
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.event.LogFilteredEvent;
 import org.apromore.logman.utils.LogUtils;
@@ -10,13 +12,20 @@ import org.eclipse.collections.api.tuple.Pair;
 
 public class ActiveCasesOverTimeStats extends TimeAwareStatsCollector {
 	
-	public ActiveCasesOverTimeStats(XLog xlog) {
-		super(xlog);
-	}
 
+	@Override 
+	public void startVisit(LogManager logManager) {
+		super.startVisit(logManager);
+	}
+	
+	@Override
+	public void visitLog(XLog log) {
+		super.visitLog(log);
+	}
+	
     @Override
-    public void visitTrace(AXTrace trace) {
-    	int[] overlapWindows = getOverlappingWindows(trace.getStartTimestamp(),trace.getEndTimestamp());
+    public void visitTrace(XTrace trace) {
+    	int[] overlapWindows = getOverlappingWindows(LogUtils.getStartTimestamp(trace), LogUtils.getEndTimestamp(trace));
     	for (int i : overlapWindows) {
     		this.values[i] = this.values[i] + 1; 
     	}
