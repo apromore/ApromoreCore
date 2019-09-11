@@ -3,16 +3,8 @@ package org.apromore.logman.stats.collector;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.apromore.logman.log.Constants;
-import org.apromore.logman.log.LogVisitor;
-import org.apromore.logman.log.activityaware.AXLog;
-import org.apromore.logman.log.activityaware.AXTrace;
-import org.apromore.logman.log.activityaware.Activity;
-import org.apromore.logman.log.event.LogFilterListener;
 import org.apromore.logman.log.event.LogFilteredEvent;
 import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 
