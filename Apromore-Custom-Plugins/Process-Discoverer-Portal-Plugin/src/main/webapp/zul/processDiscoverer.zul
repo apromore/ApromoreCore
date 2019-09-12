@@ -131,19 +131,19 @@
 
 		.optionButton {
 		position: absolute;
-		right: 130px;
+		left: 88%;
 		margin-right: 10px;
 		}
 
 		.shortcutButton {
 		position: absolute;
-		right: 80px;
+		left: 92%;
 		margin-right: 10px;
 		}
 
 		.helpButton {
 		position: absolute;
-		right: 0px;
+		left: 96%;
 		margin-right: 10px;
 		}
 
@@ -162,29 +162,32 @@
 
 	<window id="win" border="0" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
 		<caption id="windowcaption" sclass="mainCaption">
-			<button id="optionButton" label="Hide options" style="float: right;" height="2em" iconSclass="z-icon-chevron-up" sclass="optionButton">
-				<attribute name="onClick">
-					<![CDATA[
-              optionButton.setIconSclass(optionbox.isOpen() ? "z-icon-chevron-down" : "z-icon-chevron-up");
-              optionButton.setLabel(optionbox.isOpen() ? "Show options" : "Hide options");
+			<div id="utilityTools">
+
+				<button id="optionButton" style="float: right; min-width: 4em;" height="2em" iconSclass="z-icon-caret-up" sclass="optionButton">
+					<attribute name="onClick">
+						<![CDATA[
+              optionButton.setIconSclass(optionbox.isOpen() ? "z-icon-caret-down" : "z-icon-caret-up");
+              optionButton.setLabel(optionbox.isOpen() ? " " : "");
               optionbox.setOpen(!optionbox.isOpen());
               Clients.evalJavaScript("resize();");
               optionbox.invalidate();
             ]]>
-				</attribute>
-			</button>
+					</attribute>
+				</button>
 
-			<button id="shortcutButton" style="float: right;" hflex="min" height="2em" width="2em" iconSclass="z-icon-keyboard-o" sclass="shortcutButton">
-				<attribute name="onClick">
-					<![CDATA[
+				<button id="shortcutButton" style="float: right; min-width: 4em;" height="2em" iconSclass="z-icon-keyboard-o" sclass="shortcutButton">
+					<attribute name="onClick">
+						<![CDATA[
               shortcutPopup.open(self,"after_pointer");
             ]]>
-				</attribute>
-			</button>
+					</attribute>
+				</button>
 
-			<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
-				<button label="Help" image="/img/Help-16x16.png" style="float: right;" height="2em" sclass="helpButton"></button>
-			</a>
+				<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
+					<button iconSclass="z-icon-exclamation" style="float: right; min-width: 4em;" height="2em" sclass="helpButton"></button>
+				</a>
+			</div>
 		</caption>
 
 		<popup id="shortcutPopup" width="600px">
