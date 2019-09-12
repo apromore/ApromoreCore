@@ -31,13 +31,14 @@ import org.joda.time.DateTime;
  * Each attribute carries the range of its domain values
  * It provides a vertical view of attributes in a log.
  * 
+ * 
  * @author Bruce Nguyen
  *
  */
-public class AttributeManager {
+public class AttributeStore {
 	private FastList<Attribute> attributes = new FastList<Attribute>();
 	
-	public AttributeManager(XLog log) {
+	public AttributeStore(XLog log) {
 		registerXAttributes(log.getAttributes(), AttributeLevel.LOG);
 		for (XTrace trace: log) {
 			registerXAttributes(trace.getAttributes(), AttributeLevel.TRACE);
@@ -119,7 +120,8 @@ public class AttributeManager {
 		return attributes.detect(a -> a.getKey().equals(key) && a.getLevel() == level);
 	}
 	
-	public int getIndex(String key, AttributeLevel level) {
+	//return -1 if not found
+	public int getAttributeIndex(String key, AttributeLevel level) {
 		return attributes.detectIndex(a -> a.getKey().equals(key) && a.getLevel()==level);
 	}
 	

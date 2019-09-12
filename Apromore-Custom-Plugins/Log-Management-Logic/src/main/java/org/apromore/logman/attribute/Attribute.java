@@ -8,6 +8,10 @@ import org.deckfour.xes.model.XAttribute;
  * So Attribute contains a range of all values of XAttribute of the same key,
  * level and type in the whole log.
  * 
+ * The coordinate of an attribute is: key and level. For example, a log attribute
+ * can have key="concept:name" and the level is LOG. a trace attribute can have
+ * the key "concept:name" and the level is TRACE, and similr to event attributes.
+ * 
  * @author Bruce Nguyen
  *
  */
