@@ -9,6 +9,7 @@ import org.apromore.logman.attribute.ContinuousAttribute;
 import org.apromore.logman.attribute.DiscreteAttribute;
 import org.apromore.logman.attribute.Indexable;
 import org.apromore.logman.attribute.LiteralAttribute;
+import org.apromore.logman.attribute.TimestampAttribute;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeBoolean;
 import org.deckfour.xes.model.XAttributeContinuous;
@@ -21,6 +22,7 @@ import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.impl.list.mutable.FastList;
+import org.joda.time.DateTime;
 
 /**
  * This class is used to manage all attributes in a log
@@ -75,6 +77,42 @@ public class AttributeManager {
 	
 	public ImmutableList<Attribute> getTimestampAttributes() {
 		return attributes.select(a -> a.getType() == AttributeType.TIMESTAMP).toImmutable();
+	}
+	
+	public ImmutableList<Attribute> getAttributesWithValue(String value) {
+		return this.getLiteralAttributes().select(a -> {
+											LiteralAttribute att = (LiteralAttribute)a;
+											return att.getValues().contains(value);
+										});
+	}
+	
+	public ImmutableList<Attribute> getAttributesWithValue(long value) {
+		return this.getDiscreteAttributes().select(a -> {
+											DiscreteAttribute att = (DiscreteAttribute)a;
+											return att.getValues().contains(value);
+										});
+	}
+	
+	public ImmutableList<Attribute> getAttributesWithValue(double value) {
+		return this.getContinuousAttributes().select(a -> {
+											ContinuousAttribute att = (ContinuousAttribute)a;
+											return att.getValues().contains(value);
+										});
+	}
+	
+	public ImmutableList<Attribute> getAttributesWithValue(boolean value) {
+		return this.getBooleanAttributes().select(a -> {
+											BooleanAttribute att = (BooleanAttribute)a;
+											return att.getValues().contains(value);
+										});
+	}
+	
+	public ImmutableList<Attribute> getAttributesWithValue(DateTime value) {
+		long timestamp = value.getMillis();
+		return this.getTimestampAttributes().select(a -> {
+											TimestampAttribute att = (TimestampAttribute)a;
+											return att.getStart() <= timestamp && att.getEnd() <= timestamp;
+										});
 	}
 	
 	public Attribute find(String key, AttributeLevel level) {
