@@ -3,16 +3,14 @@ package org.apromore.logman.stats.collector.timeaware;
 import java.util.stream.IntStream;
 
 import org.apromore.logman.LogManager;
-import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.log.event.LogFilteredEvent;
-import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.tuple.Pair;
 
 public class ActivitiesOverTimeStats extends TimeAwareStatsCollector {
 	
+	///////////////////////// Collect statistics the first time //////////////////////////////
 	@Override 
 	public void startVisit(LogManager logManager) {
 		super.startVisit(logManager);
@@ -32,7 +30,9 @@ public class ActivitiesOverTimeStats extends TimeAwareStatsCollector {
     	}
     }
 
-
+	///////////////////////// Update statistics //////////////////////////////
+    
+    
     @Override
     public void onLogFiltered(LogFilteredEvent filterEvent) {
         for (Activity act: filterEvent.getAllDeletedActs()) {

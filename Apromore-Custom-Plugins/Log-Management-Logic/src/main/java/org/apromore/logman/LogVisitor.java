@@ -1,6 +1,5 @@
-package org.apromore.logman.log;
+package org.apromore.logman;
 
-import org.apromore.logman.LogManager;
 import org.apromore.logman.log.activityaware.Activity;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;

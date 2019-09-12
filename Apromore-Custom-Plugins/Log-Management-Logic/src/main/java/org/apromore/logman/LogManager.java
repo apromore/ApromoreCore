@@ -3,18 +3,17 @@ package org.apromore.logman;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logman.classifier.SimpleEventClassifier;
-import org.apromore.logman.log.Constants;
-import org.apromore.logman.log.LogVisitor;
 import org.apromore.logman.log.activityaware.AXLog;
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.log.classifieraware.IntLog;
-import org.apromore.logman.log.event.LogFilterListener;
-import org.apromore.logman.log.event.LogFilteredEvent;
 import org.apromore.logman.log.event.ClassifierChangeListener;
 import org.apromore.logman.log.event.ClassifierChangedEvent;
+import org.apromore.logman.log.event.LogFilterListener;
+import org.apromore.logman.log.event.LogFilteredEvent;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 
@@ -56,6 +55,7 @@ import org.deckfour.xes.model.XTrace;
  */
 public class LogManager {
     private AXLog log;
+    private AttributeStore attributeStore;
     private IntLog intLog;
     private SimpleEventClassifier classifier;
     
@@ -75,11 +75,16 @@ public class LogManager {
         this.log = log;
         logVisitors = new ArrayList<>();
         logFilterListeners = new ArrayList<>();
+        attributeStore = new AttributeStore(log);
     }
     
     //@todo: return an unmodifiable version
     public AXLog getLog() {
     	return this.log;
+    }
+    
+    public AttributeStore getAttributeStore() {
+    	return this.attributeStore;
     }
     
     public IntLog createIntLog() {

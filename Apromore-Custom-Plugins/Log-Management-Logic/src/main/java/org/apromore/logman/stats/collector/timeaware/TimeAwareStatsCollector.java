@@ -1,24 +1,13 @@
 package org.apromore.logman.stats.collector.timeaware;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.apromore.logman.LogManager;
-import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.stats.collector.StatsCollector;
 import org.apromore.logman.utils.LogUtils;
-import org.apromore.logman.utils.MathUtils;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.eclipse.collections.api.factory.map.primitive.MutableIntDoubleMapFactory;
-import org.eclipse.collections.api.list.primitive.IntList;
-import org.eclipse.collections.api.map.primitive.IntDoubleMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntDoubleHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.MutableIntDoubleMapFactoryImpl;
 import org.joda.time.Interval;
-
-import cern.colt.list.IntArrayList;
 
 /**
  * Represent all stats that have to do calculation over time

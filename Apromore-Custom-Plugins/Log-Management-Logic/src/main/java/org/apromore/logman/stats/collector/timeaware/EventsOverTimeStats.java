@@ -8,6 +8,8 @@ import org.deckfour.xes.model.XLog;
 
 public class EventsOverTimeStats extends TimeAwareStatsCollector {
 	
+	///////////////////////// Collect statistics the first time //////////////////////////////
+	
 	@Override 
 	public void startVisit(LogManager logManager) {
 		super.startVisit(logManager);
@@ -26,6 +28,8 @@ public class EventsOverTimeStats extends TimeAwareStatsCollector {
     		this.values[containingWindow] = this.values[containingWindow] + 1; 
     	}
     }
+	
+	///////////////////////// Update statistics //////////////////////////////
 	
     @Override
     public void onLogFiltered(LogFilteredEvent filterEvent) {

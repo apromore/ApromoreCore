@@ -1,4 +1,4 @@
-package org.apromore.logman.log;
+package org.apromore.logman;
 
 public class Constants {
     public static final String LIFECYCLE_START = "start";

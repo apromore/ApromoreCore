@@ -13,7 +13,8 @@ import java.util.Queue;
 import java.util.Spliterator;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-import org.apromore.logman.log.Constants;
+
+import org.apromore.logman.Constants;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;

@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.apromore.logman.Constants;
 import org.apromore.logman.classifier.SimpleEventClassifier;
-import org.apromore.logman.log.Constants;
 import org.apromore.logman.log.event.LogFilterListener;
 import org.apromore.logman.log.event.LogFilteredEvent;
 import org.apromore.logman.relation.DFSSReader;

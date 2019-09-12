@@ -16,6 +16,7 @@ import org.deckfour.xes.model.XAttributeContinuous;
 import org.deckfour.xes.model.XAttributeDiscrete;
 import org.deckfour.xes.model.XAttributeLiteral;
 import org.deckfour.xes.model.XAttributeMap;
+import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XElement;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
@@ -32,6 +33,9 @@ import org.joda.time.DateTime;
  * Each attribute carries the range of its domain values
  * It provides a vertical view of attributes in a log.
  * 
+ * A coordinate to access an attribute in the AttributeStore is: attribute index and value index
+ * Programs using AttributeStore should use this coordinate as 
+ * they are primitive integer types which are lightweight and fast.
  * 
  * @author Bruce Nguyen
  *
@@ -48,6 +52,37 @@ public class AttributeStore {
 			}
 		}
 	}
+	
+	private void registerXAttributes(XAttributeMap attMap, AttributeLevel level) {
+		for (String key : attMap.keySet()) {
+			XAttribute xatt = attMap.get(key);
+			Attribute att = this.find(xatt.getKey(), level);
+			if (att == null) {
+				if (xatt instanceof XAttributeLiteral) {
+					att = AttributeFactory.createLiteralAttribute(key, level);
+				}
+				else if (xatt instanceof XAttributeContinuous) {
+					att = AttributeFactory.createContinuousAttribute(key, level);
+				}
+				else if (xatt instanceof XAttributeDiscrete) {
+					att = AttributeFactory.createDiscreteAttribute(key, level);
+				}
+				else if (xatt instanceof XAttributeBoolean) {
+					att = AttributeFactory.createBooleanAttribute(key, level);
+				}
+				else if (xatt instanceof XAttributeTimestamp) {
+					att = AttributeFactory.createTimestampAttribute(key, level);
+				}
+				else {
+					continue; //ignore this attribute value
+				}
+			}
+			att.registerXAttribute(xatt);
+			attributes.add(att);
+		}
+	}
+	
+	/////////////////////// Get list of attributes //////////////////////////////////////////
 	
 	public ImmutableList<Attribute> getLogAttributes() {
 		return attributes.select(a -> a.getLevel() == AttributeLevel.LOG).toImmutable();
@@ -117,6 +152,45 @@ public class AttributeStore {
 										});
 	}
 	
+	////////////////////////////// Access attributes using (attIndex, valueIndex) /////////////////////
+	
+	public Attribute getAttribute(int attIndex) {
+		try {
+			return attributes.get(attIndex);
+		}
+		catch (Exception ex) {
+			return null;
+		}
+	}
+	
+	public Object getValue(int attIndex, int valueIndex) {
+		try {
+			Attribute att = attributes.get(attIndex);
+			switch (att.getType()) {
+				case LITERAL: 
+					LiteralAttribute att2 = (LiteralAttribute)att;
+					return att2.getValue(valueIndex);
+				case CONTINUOUS:
+					ContinuousAttribute att3 = (ContinuousAttribute)att;
+					return att3.getValue(valueIndex);
+				case DISCRETE:
+					DiscreteAttribute att4 = (DiscreteAttribute)att;
+					return att4.getValue(valueIndex);
+				case BOOLEAN:
+					BooleanAttribute att5 = (BooleanAttribute)att;
+					return att5.getValue(valueIndex);
+				default:
+					return null;
+			}
+		}
+		catch (Exception ex) {
+			return null;
+		}
+		
+	}
+	
+	////////////////////////////// Access an attribute using (key, level) /////////////////////
+	
 	// return null if not found.
 	public Attribute find(String key, AttributeLevel level) {
 		return attributes.detect(a -> a.getKey().equals(key) && a.getLevel() == level);
@@ -128,6 +202,7 @@ public class AttributeStore {
 	}
 	
 	
+	// return null if not found or Indexable
 	public IntList getIndexes(String key, AttributeLevel level) {
 		Attribute find = this.find(key, level);
 		if (find != null && find instanceof Indexable) {
@@ -138,22 +213,8 @@ public class AttributeStore {
 		}
 	}
 	
-	private void registerXAttributes(XAttributeMap attMap, AttributeLevel level) {
-		for (String key : attMap.keySet()) {
-			XAttribute xatt = attMap.get(key);
-			if (xatt instanceof XAttributeLiteral) {
-				Attribute att = this.find(xatt.getKey(), level);
-				if (att == null) {
-					att = AttributeFactory.createLiteralAttribute(key, level);
-				}
-				att.registerXAttribute(xatt);
-				attributes.add(att);
-			}
-		}
-	}
-	
-	
-	//////////////////// Mapping from XAttribute (a value) to an Attribute ////////////////
+
+	//////////////////// Access attributes using OpenXES (XAttribute, XElement) ////////////////
 	
 	public AttributeLevel getLevel(XElement element) {
 		if (element instanceof XLog) {
@@ -170,6 +231,27 @@ public class AttributeStore {
 		}
 	}	
 	
+	public AttributeType getType(XAttribute attr) {
+		if (attr instanceof XAttributeLiteral) {
+			return AttributeType.LITERAL;
+		}
+		else if (attr instanceof XAttributeContinuous) {
+			return AttributeType.CONTINUOUS;
+		}
+		else if (attr instanceof XAttributeDiscrete) {
+			return AttributeType.DISCRETE;
+		}
+		else if (attr instanceof XAttributeBoolean) {
+			return AttributeType.BOOLEAN;
+		}
+		else if (attr instanceof XAttributeTimestamp) {
+			return AttributeType.TIMESTAMP;
+		}
+		else {
+			return AttributeType.UNKNOWN;
+		}
+	}
+	
 	// return null if not found
 	public Attribute getAttribute(XAttribute xatt, XElement element) {
 		return this.find(xatt.getKey(), getLevel(element));
@@ -180,6 +262,7 @@ public class AttributeStore {
 		return attributes.detectIndex(a -> a.getKey().equals(xatt.getKey()) && a.getLevel()==getLevel(element));
 	}
 	
+	// Return -1 if not found or Indexable
 	public int getValueIndex(XAttribute xatt, XElement element) {
 		Attribute find = this.getAttribute(xatt, element);
 		if (find != null && find instanceof Indexable) {

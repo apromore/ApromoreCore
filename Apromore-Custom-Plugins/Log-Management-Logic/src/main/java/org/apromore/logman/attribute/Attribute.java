@@ -26,6 +26,10 @@ public abstract class Attribute {
 	}
 	
 	public String getKey() {
+		return key;
+	}
+	
+	public String getKeyWithLevel() {
 		if (level == AttributeLevel.LOG) {
 			return "(log)" + key;
 		}

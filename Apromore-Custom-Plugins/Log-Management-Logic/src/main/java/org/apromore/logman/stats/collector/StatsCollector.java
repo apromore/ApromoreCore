@@ -1,7 +1,7 @@
 package org.apromore.logman.stats.collector;
 
 import org.apromore.logman.LogManager;
-import org.apromore.logman.log.LogVisitor;
+import org.apromore.logman.LogVisitor;
 import org.apromore.logman.log.activityaware.AXLog;
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.activityaware.Activity;

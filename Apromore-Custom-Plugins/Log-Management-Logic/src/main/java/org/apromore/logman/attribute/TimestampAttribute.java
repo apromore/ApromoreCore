@@ -2,6 +2,7 @@ package org.apromore.logman.attribute;
 
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeTimestamp;
+import org.eclipse.collections.api.list.primitive.ImmutableLongList;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 
 /**
@@ -41,8 +42,8 @@ public class TimestampAttribute extends Attribute {
 		return end;
 	}
 	
-	public LongArrayList getValues() {
-		return LongArrayList.newListWith(start, end);
+	public ImmutableLongList getValues() {
+		return LongArrayList.newListWith(start, end).toImmutable();
 	}	
 
 }
