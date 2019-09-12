@@ -1,4 +1,4 @@
-package org.apromore.logman.stats.collector.timeaware;
+package org.apromore.logman.stats.collector.time;
 
 import java.util.Arrays;
 

@@ -10,6 +10,9 @@ import org.apromore.logman.attribute.DiscreteAttribute;
 import org.apromore.logman.attribute.Indexable;
 import org.apromore.logman.attribute.LiteralAttribute;
 import org.apromore.logman.attribute.TimestampAttribute;
+import org.deckfour.xes.extension.std.XConceptExtension;
+import org.deckfour.xes.extension.std.XLifecycleExtension;
+import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeBoolean;
 import org.deckfour.xes.model.XAttributeContinuous;
@@ -56,7 +59,7 @@ public class AttributeStore {
 	private void registerXAttributes(XAttributeMap attMap, AttributeLevel level) {
 		for (String key : attMap.keySet()) {
 			XAttribute xatt = attMap.get(key);
-			Attribute att = this.find(xatt.getKey(), level);
+			Attribute att = this.getAttribute(xatt.getKey(), level);
 			if (att == null) {
 				if (xatt instanceof XAttributeLiteral) {
 					att = AttributeFactory.createLiteralAttribute(key, level);
@@ -192,7 +195,7 @@ public class AttributeStore {
 	////////////////////////////// Access an attribute using (key, level) /////////////////////
 	
 	// return null if not found.
-	public Attribute find(String key, AttributeLevel level) {
+	public Attribute getAttribute(String key, AttributeLevel level) {
 		return attributes.detect(a -> a.getKey().equals(key) && a.getLevel() == level);
 	}
 	
@@ -204,7 +207,7 @@ public class AttributeStore {
 	
 	// return null if not found or Indexable
 	public IntList getIndexes(String key, AttributeLevel level) {
-		Attribute find = this.find(key, level);
+		Attribute find = this.getAttribute(key, level);
 		if (find != null && find instanceof Indexable) {
 			return ((Indexable)find).getIndexes();
 		}
@@ -254,7 +257,7 @@ public class AttributeStore {
 	
 	// return null if not found
 	public Attribute getAttribute(XAttribute xatt, XElement element) {
-		return this.find(xatt.getKey(), getLevel(element));
+		return this.getAttribute(xatt.getKey(), getLevel(element));
 	}
 	
 	// return -1 if not found
@@ -287,4 +290,33 @@ public class AttributeStore {
 		}
 	}	
 	
+	////////////////////Access a number of standard attributes ////////////////
+	
+	public Attribute getLogConceptName() {
+		return this.getAttribute(XConceptExtension.KEY_NAME, AttributeLevel.LOG);
+	}
+
+	public Attribute getTraceConceptName() {
+		return this.getAttribute(XConceptExtension.KEY_NAME, AttributeLevel.TRACE);
+	}
+	
+	public Attribute getEventConceptName() {
+		return this.getAttribute(XConceptExtension.KEY_NAME, AttributeLevel.EVENT);
+	}
+	
+	public Attribute getEventResource() {
+		return this.getAttribute(XOrganizationalExtension.KEY_RESOURCE, AttributeLevel.EVENT);
+	}
+	
+	public Attribute getEventGroup() {
+		return this.getAttribute(XOrganizationalExtension.KEY_GROUP, AttributeLevel.EVENT);
+	}
+	
+	public Attribute getEventRole() {
+		return this.getAttribute(XOrganizationalExtension.KEY_ROLE, AttributeLevel.EVENT);
+	}
+	
+	public Attribute getEventLifecycleTransition() {
+		return this.getAttribute(XLifecycleExtension.KEY_TRANSITION, AttributeLevel.EVENT);
+	}
 }

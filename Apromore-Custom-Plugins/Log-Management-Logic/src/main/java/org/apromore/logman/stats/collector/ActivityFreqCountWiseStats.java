@@ -2,6 +2,7 @@ package org.apromore.logman.stats.collector;
 
 import java.util.IntSummaryStatistics;
 
+import org.apromore.logman.LogManager;
 import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.log.event.LogFilteredEvent;
 import org.apromore.logman.utils.LogUtils;
@@ -27,6 +28,11 @@ public class ActivityFreqCountWiseStats extends StatsCollector {
 	}
 	
 	///////////////////////// Collect statistics the first time //////////////////////////////
+	
+	@Override
+	public void startVisit(LogManager logManager) {
+		actCountMap.clear();
+	}
 	
     @Override
     public void visitActivity(Activity act) {
