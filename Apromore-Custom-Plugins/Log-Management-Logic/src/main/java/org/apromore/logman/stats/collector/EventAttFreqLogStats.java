@@ -3,14 +3,20 @@ package org.apromore.logman.stats.collector;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.apromore.logman.log.event.LogFilteredEvent;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 
 public class EventAttFreqLogStats extends StatsCollector {
     // attribute name => (attribute value => occurrence count)
     private Map<String, Map<String, Integer>> attributeTotalFreqMap = new HashMap<>();
+    
+    // attribute index => (value index => occurrence count)
+    private UnifiedMap<Integer, IntIntHashMap> attValueCountMap = new UnifiedMap<>();
     
     public Map<String, Integer> getAttributeTotalFrequencies(String attribute) {
         return attributeTotalFreqMap.get(attribute);

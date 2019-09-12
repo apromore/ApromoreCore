@@ -5,8 +5,10 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
- * The attribute can be countable.
- * Two levels to count the number of value occurrences: log and trace
+ * The attribute value can be countable.
+ * Two levels to count the number of value occurrences: log and trace.
+ * The log level counts the total occurrences of attribute values in the whole log.
+ * The trace level counts the number of occurrences of an attribute value in each trace.
  * 
  * @author Bruce Nguyen
  *

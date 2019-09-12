@@ -3,10 +3,9 @@ package org.apromore.logman.attribute;
 import org.deckfour.xes.model.XAttribute;
 
 /**
- * Attribute represents an attribute in the whole log which is different
- * from XAttribute of OpenXES representing an attribute value.
- * So Attribute contains a range of all values of XAttribute of the same key,
- * level and type in the whole log.
+ * Attribute represents an attribute in the whole log and stores all values found in the log
+ * along with value type and attribute level (log, trace or event). 
+ * It is different from XAttribute of OpenXES which represents an attribute value only.
  * 
  * The coordinate of an attribute is: key and level. For example, a log attribute
  * can have key="concept:name" and the level is LOG. a trace attribute can have

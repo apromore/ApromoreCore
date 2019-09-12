@@ -4,6 +4,14 @@ import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 
+/**
+ * This attribute is special as it is neither indexable nor countable
+ * It would be extreme to index or count the timestamp values
+ * It only keeps the start and end timestamp, i.e. an interval.
+ * 
+ * @author Bruce
+ *
+ */
 public class TimestampAttribute extends Attribute {
 	private long start = Long.MAX_VALUE;
 	private long end = Long.MIN_VALUE;

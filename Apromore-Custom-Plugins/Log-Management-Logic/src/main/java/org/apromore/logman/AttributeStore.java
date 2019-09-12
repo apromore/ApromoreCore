@@ -16,6 +16,7 @@ import org.deckfour.xes.model.XAttributeContinuous;
 import org.deckfour.xes.model.XAttributeDiscrete;
 import org.deckfour.xes.model.XAttributeLiteral;
 import org.deckfour.xes.model.XAttributeMap;
+import org.deckfour.xes.model.XElement;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
@@ -116,6 +117,7 @@ public class AttributeStore {
 										});
 	}
 	
+	// return null if not found.
 	public Attribute find(String key, AttributeLevel level) {
 		return attributes.detect(a -> a.getKey().equals(key) && a.getLevel() == level);
 	}
@@ -125,29 +127,6 @@ public class AttributeStore {
 		return attributes.detectIndex(a -> a.getKey().equals(key) && a.getLevel()==level);
 	}
 	
-	public int getValueIndex(XAttribute xatt, AttributeLevel level) {
-		Attribute find = this.find(xatt.getKey(), level);
-		if (find != null && find instanceof Indexable) {
-			if (find instanceof LiteralAttribute && xatt instanceof XAttributeLiteral) {
-				return ((LiteralAttribute)find).getIndex(((XAttributeLiteral)xatt).getValue());
-			}
-			else if (find instanceof DiscreteAttribute && xatt instanceof XAttributeDiscrete) {
-				return ((DiscreteAttribute)find).getIndex(((XAttributeDiscrete)xatt).getValue());
-			}
-			else if (find instanceof ContinuousAttribute && xatt instanceof XAttributeContinuous) {
-				return ((ContinuousAttribute)find).getIndex(((XAttributeContinuous)xatt).getValue());
-			}
-			else if (find instanceof BooleanAttribute && xatt instanceof XAttributeBoolean) {
-				return ((BooleanAttribute)find).getIndex(((XAttributeBoolean)xatt).getValue());
-			}
-			else {
-				return -1;
-			}
-		}
-		else {
-			return -1;
-		}
-	}
 	
 	public IntList getIndexes(String key, AttributeLevel level) {
 		Attribute find = this.find(key, level);
@@ -172,5 +151,57 @@ public class AttributeStore {
 			}
 		}
 	}
+	
+	
+	//////////////////// Mapping from XAttribute (a value) to an Attribute ////////////////
+	
+	public AttributeLevel getLevel(XElement element) {
+		if (element instanceof XLog) {
+			return AttributeLevel.LOG;
+		}
+		else if (element instanceof XTrace) {
+			return AttributeLevel.TRACE;
+		}
+		else if (element instanceof XEvent) {
+			return AttributeLevel.EVENT;
+		}
+		else {
+			return AttributeLevel.UNKNOWN;
+		}
+	}	
+	
+	// return null if not found
+	public Attribute getAttribute(XAttribute xatt, XElement element) {
+		return this.find(xatt.getKey(), getLevel(element));
+	}
+	
+	// return -1 if not found
+	public int getAttributeIndex(XAttribute xatt, XElement element) {
+		return attributes.detectIndex(a -> a.getKey().equals(xatt.getKey()) && a.getLevel()==getLevel(element));
+	}
+	
+	public int getValueIndex(XAttribute xatt, XElement element) {
+		Attribute find = this.getAttribute(xatt, element);
+		if (find != null && find instanceof Indexable) {
+			if (find instanceof LiteralAttribute && xatt instanceof XAttributeLiteral) {
+				return ((LiteralAttribute)find).getIndex(((XAttributeLiteral)xatt).getValue());
+			}
+			else if (find instanceof DiscreteAttribute && xatt instanceof XAttributeDiscrete) {
+				return ((DiscreteAttribute)find).getIndex(((XAttributeDiscrete)xatt).getValue());
+			}
+			else if (find instanceof ContinuousAttribute && xatt instanceof XAttributeContinuous) {
+				return ((ContinuousAttribute)find).getIndex(((XAttributeContinuous)xatt).getValue());
+			}
+			else if (find instanceof BooleanAttribute && xatt instanceof XAttributeBoolean) {
+				return ((BooleanAttribute)find).getIndex(((XAttributeBoolean)xatt).getValue());
+			}
+			else {
+				return -1;
+			}
+		}
+		else {
+			return -1;
+		}
+	}	
 	
 }

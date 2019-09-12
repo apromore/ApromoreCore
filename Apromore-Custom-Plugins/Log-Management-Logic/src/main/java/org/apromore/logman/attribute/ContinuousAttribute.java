@@ -5,12 +5,9 @@ import org.deckfour.xes.model.XAttributeContinuous;
 import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
-import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.list.primitive.IntInterval;
-import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
-public class ContinuousAttribute extends Attribute implements Indexable, Countable {
+public class ContinuousAttribute extends Attribute implements Indexable {
 	private DoubleArrayList values = new DoubleArrayList();
 	
 	public ContinuousAttribute(String key, AttributeLevel level) {
@@ -48,18 +45,6 @@ public class ContinuousAttribute extends Attribute implements Indexable, Countab
 	
 	public double getValue(int index) {
 		return values.get(index);
-	}
-
-	@Override
-	public IntLongHashMap getValueLogCounts() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IntObjectHashMap<IntArrayList> getValueTraceCounts() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 }
