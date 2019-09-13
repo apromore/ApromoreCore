@@ -84,6 +84,20 @@
             overflow: hidden;
             zoom: 1;
             }
+
+            .z-paging {
+            position: absolute;
+            bottom: 2px;
+            width: 98%;
+            }
+
+            .z-paging-info {
+            position: absolute;
+            right: 10px;
+            top: 0px;
+            }
+
+
         </style>
 
         <div id="gridBox" zclass="myGroupBox">
