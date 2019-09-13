@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.apromore.logman.Constants;
 import org.apromore.logman.classifier.SimpleEventClassifier;
-import org.apromore.logman.log.event.LogFilterListener;
-import org.apromore.logman.log.event.LogFilteredEvent;
+import org.apromore.logman.event.LogFilterListener;
+import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.relation.DFSSReader;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;

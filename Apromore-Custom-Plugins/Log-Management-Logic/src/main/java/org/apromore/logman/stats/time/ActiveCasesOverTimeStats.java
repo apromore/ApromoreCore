@@ -3,7 +3,7 @@ package org.apromore.logman.stats.time;
 import java.util.stream.IntStream;
 
 import org.apromore.logman.LogManager;
-import org.apromore.logman.log.event.LogFilteredEvent;
+import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;

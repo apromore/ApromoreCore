@@ -1,7 +1,7 @@
 package org.apromore.logman.stats.attribute;
 
 import org.apromore.logman.LogManager;
-import org.apromore.logman.log.event.LogFilteredEvent;
+import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.stats.StatsCollector;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XLog;

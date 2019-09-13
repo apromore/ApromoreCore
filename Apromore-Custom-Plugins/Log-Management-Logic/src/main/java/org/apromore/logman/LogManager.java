@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logman.classifier.SimpleEventClassifier;
+import org.apromore.logman.event.ClassifierChangeListener;
+import org.apromore.logman.event.ClassifierChangedEvent;
+import org.apromore.logman.event.LogFilterListener;
+import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.log.activityaware.AXLog;
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.log.classifieraware.SimpleLog;
-import org.apromore.logman.log.event.ClassifierChangeListener;
-import org.apromore.logman.log.event.ClassifierChangedEvent;
-import org.apromore.logman.log.event.LogFilterListener;
-import org.apromore.logman.log.event.LogFilteredEvent;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 

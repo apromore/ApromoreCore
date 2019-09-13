@@ -57,12 +57,12 @@
                             org.apromore.logman,
                             org.apromore.logman.attribute,
                             org.apromore.logman.classifier,
-                            org.apromore.logman.log.event,
+                            org.apromore.logman.event,
                             org.apromore.logman.log.activityaware,
                             org.apromore.logman.log.classifieraware,
                             org.apromore.logman.relation,
                             org.apromore.logman.stats,
-                            org.apromore.logman.stats.collector,
+                            org.apromore.logman.stats.attribute,
                             org.apromore.logman.stats.time,
                             org.apromore.logman.stats.relation
                         </Export-Package>

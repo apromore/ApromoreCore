@@ -1,4 +1,4 @@
-package org.apromore.logman.log.event;
+package org.apromore.logman.event;
 
 import java.util.Collections;
 import java.util.HashSet;

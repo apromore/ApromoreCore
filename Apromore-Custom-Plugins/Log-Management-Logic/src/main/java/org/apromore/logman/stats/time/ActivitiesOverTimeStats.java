@@ -3,8 +3,8 @@ package org.apromore.logman.stats.time;
 import java.util.stream.IntStream;
 
 import org.apromore.logman.LogManager;
+import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.log.activityaware.Activity;
-import org.apromore.logman.log.event.LogFilteredEvent;
 import org.deckfour.xes.model.XLog;
 import org.eclipse.collections.api.tuple.Pair;
 

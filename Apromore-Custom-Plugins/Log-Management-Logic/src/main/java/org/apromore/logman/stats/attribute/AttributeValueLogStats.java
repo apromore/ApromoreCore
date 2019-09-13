@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.apromore.logman.AttributeStore;
 import org.apromore.logman.LogManager;
-import org.apromore.logman.log.event.LogFilteredEvent;
+import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.stats.StatsCollector;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeTimestamp;
