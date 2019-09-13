@@ -13,7 +13,7 @@ import org.eclipse.collections.api.map.primitive.ImmutableIntIntMap;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 
-public class AttributeValueLogStats extends StatsCollector {
+public class AttributeValueCountLogStats extends StatsCollector {
 	private AttributeStore attributeStore;
     // attribute index in the attribute store => (value index => occurrence count)
     private UnifiedMap<Integer,IntIntHashMap> attValueCountMap = new UnifiedMap<>();
@@ -22,7 +22,7 @@ public class AttributeValueLogStats extends StatsCollector {
     	return attValueCountMap.keySet();
     }
     
-    public ImmutableIntIntMap getValueOccurrences(int attIndex) {
+    public ImmutableIntIntMap getValueLogCounts(int attIndex) {
         return attValueCountMap.get(attIndex).toImmutable();
     }
     

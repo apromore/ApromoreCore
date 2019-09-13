@@ -16,7 +16,7 @@ import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
-public class AttributeValueTraceStats extends StatsCollector {
+public class AttributeValueCountTraceStats extends StatsCollector {
 	private AttributeStore attributeStore;
 	private XLog originalLog;
 	// attribute index => (value index => count in each trace)
@@ -31,7 +31,7 @@ public class AttributeValueTraceStats extends StatsCollector {
 		return attValueCountMap.get(attIndex).keySet();
 	}
 	
-	public ImmutableLongList getValueTraceOccurrences(int attIndex, int valueIndex) {
+	public ImmutableLongList getValueTraceCounts(int attIndex, int valueIndex) {
 		return attValueCountMap.get(attIndex).get(valueIndex).toImmutable().select(a -> a != -1);
 	}
 	
@@ -51,6 +51,8 @@ public class AttributeValueTraceStats extends StatsCollector {
     }
 
     @Override
+    // If visitActivity() is not used, this visitEvent can be used 
+    // for both activities and events as Activity is also XEvent
     public void visitEvent(XEvent event) {
         for (XAttribute xatt : event.getAttributes().values()) {
             if (!(xatt instanceof XAttributeTimestamp)) {

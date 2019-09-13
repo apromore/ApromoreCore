@@ -8,7 +8,7 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.primitive.MutableObjectDoubleMap;
+import org.eclipse.collections.api.map.primitive.MutableObjectLongMap;
 import org.eclipse.collections.api.tuple.primitive.IntIntPair;
 import org.eclipse.collections.impl.factory.Lists;
 
@@ -24,18 +24,18 @@ public abstract class RelationDurationStats extends StatsCollector {
 	protected AttributeStore attributeStore;
 	protected SimpleEventClassifier classifier;
 	// List of traces in the log, each trace contains a set of mapping: pair of index-based events => occurrence count 
-	protected MutableList<MutableObjectDoubleMap<IntIntPair>> relationLog = Lists.mutable.empty();
+	protected MutableList<MutableObjectLongMap<IntIntPair>> relationLog = Lists.mutable.empty();
 
 	public RelationDurationStats(SimpleEventClassifier classifier) {
 		this.classifier = classifier;
 	}
 	
-	public ImmutableList<MutableObjectDoubleMap<IntIntPair>> getDirectlyFollowTraces() {
+	public ImmutableList<MutableObjectLongMap<IntIntPair>> getDirectlyFollowTraces() {
 		return relationLog.toImmutable();
 	}
 	
 	// Get the list of count for the pair, each element corresponds to its count in the corresponding trace 
-	public ImmutableList<Double> get(IntIntPair pair) {
+	public ImmutableList<Long> get(IntIntPair pair) {
 		return relationLog.select(a -> a.keySet().contains(pair)).collect(b -> b.get(pair)).toImmutable();
 	}
 	
