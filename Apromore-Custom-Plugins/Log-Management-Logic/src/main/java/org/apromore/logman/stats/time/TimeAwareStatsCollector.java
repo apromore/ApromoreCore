@@ -1,9 +1,9 @@
-package org.apromore.logman.stats.collector.time;
+package org.apromore.logman.stats.time;
 
 import java.util.Arrays;
 
 import org.apromore.logman.LogManager;
-import org.apromore.logman.stats.collector.StatsCollector;
+import org.apromore.logman.stats.StatsCollector;
 import org.apromore.logman.utils.LogUtils;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;

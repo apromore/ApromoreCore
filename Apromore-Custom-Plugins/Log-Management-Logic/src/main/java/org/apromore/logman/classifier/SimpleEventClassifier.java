@@ -1,6 +1,7 @@
 package org.apromore.logman.classifier;
 
 import org.deckfour.xes.classification.XEventAttributeClassifier;
+import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XEvent;
 
 public class SimpleEventClassifier extends XEventAttributeClassifier {
@@ -11,6 +12,10 @@ public class SimpleEventClassifier extends XEventAttributeClassifier {
 		super("eventClassifier", attribute);
 		this.attribute = attribute;
 		classifier = new XEventAttributeClassifier(attribute);
+	}
+	
+	public XAttribute getIdentityAttribute(XEvent event) {
+		return event.getAttributes().get(attribute);
 	}
 	
 	@Override

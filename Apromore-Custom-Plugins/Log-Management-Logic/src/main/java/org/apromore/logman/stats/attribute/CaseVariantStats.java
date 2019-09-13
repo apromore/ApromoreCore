@@ -1,4 +1,4 @@
-package org.apromore.logman.stats.collector;
+package org.apromore.logman.stats.attribute;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apromore.logman.LogManager;
-import org.apromore.logman.log.classifieraware.IntLog;
+import org.apromore.logman.log.classifieraware.SimpleLog;
 import org.apromore.logman.log.event.LogFilteredEvent;
+import org.apromore.logman.stats.StatsCollector;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
@@ -21,7 +22,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
  *
  */
 public class CaseVariantStats extends StatsCollector {
-	private IntLog intLog;
+	private SimpleLog intLog;
 	private MutableList<IntArrayList> caseVariants;
 	
 	public CaseVariantStats(LogManager logManager) {

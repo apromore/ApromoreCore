@@ -1,4 +1,4 @@
-package org.apromore.logman.stats.collector.time;
+package org.apromore.logman.stats.time;
 
 import org.apromore.logman.LogManager;
 import org.apromore.logman.log.event.LogFilteredEvent;

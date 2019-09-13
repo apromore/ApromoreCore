@@ -1,4 +1,4 @@
-package org.apromore.logman.stats.collector.time;
+package org.apromore.logman.stats.time;
 
 public class OutOfPeriodException extends Exception {
 	public OutOfPeriodException(String errorMessage) {

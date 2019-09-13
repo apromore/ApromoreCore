@@ -1,4 +1,4 @@
-package org.apromore.logman.stats.collector;
+package org.apromore.logman.stats;
 
 import org.apromore.logman.LogManager;
 import org.apromore.logman.LogVisitor;

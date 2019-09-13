@@ -1,11 +1,6 @@
 package org.apromore.logman.log.classifieraware;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apromore.logman.Constants;
 import org.apromore.logman.classifier.SimpleEventClassifier;
@@ -15,26 +10,26 @@ import org.apromore.logman.relation.DFSSReader;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
-import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
- * An IntLog keeps events as integers and each trace is a list of integers
- * IntLog is created from XLog based on a chosen EventClassifier
+ * An SimpleLog keeps events as integers and each trace is a list of integers
+ * SimpleLog is created from XLog based on a chosen EventClassifier
  * All string-based names are converted to integers
- * An IntLog also allows to compute case variants from the trace 
+ * An SimpleLog also allows to compute case variants from the trace 
+ * 
  * @author Bruce Nguyen
  *
  */
-public class IntLog extends FastList<IntArrayList> implements LogFilterListener {
+public class SimpleLog extends FastList<IntArrayList> implements LogFilterListener {
 	private HashBiMap<String, Integer> nameMap = new HashBiMap<>(); //bi-directiona map between string name and integer name
     private XLog xlog;
     private SimpleEventClassifier classifier;
     
-	public IntLog(XLog xlog, SimpleEventClassifier classifier) {
+	public SimpleLog(XLog xlog, SimpleEventClassifier classifier) {
 		super();
 		this.xlog = xlog;
 		this.classifier = classifier;

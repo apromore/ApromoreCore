@@ -1,10 +1,11 @@
-package org.apromore.logman.stats.collector;
+package org.apromore.logman.stats.attribute;
 
 import java.util.IntSummaryStatistics;
 
 import org.apromore.logman.LogManager;
 import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.log.event.LogFilteredEvent;
+import org.apromore.logman.stats.StatsCollector;
 import org.apromore.logman.utils.LogUtils;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 

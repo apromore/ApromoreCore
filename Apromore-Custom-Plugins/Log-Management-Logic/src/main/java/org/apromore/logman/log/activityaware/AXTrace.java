@@ -48,6 +48,7 @@ public class AXTrace extends XTraceImpl {
 		return Collections.unmodifiableMap(this.eventMapping);
 	}
 	
+	// Get list of activities based on the directly-follow start-to-start relation (DFSS) 
 	public List<Activity> getActivities() {
 	    return activities;
 	}

@@ -9,7 +9,7 @@ import org.apromore.logman.classifier.SimpleEventClassifier;
 import org.apromore.logman.log.activityaware.AXLog;
 import org.apromore.logman.log.activityaware.AXTrace;
 import org.apromore.logman.log.activityaware.Activity;
-import org.apromore.logman.log.classifieraware.IntLog;
+import org.apromore.logman.log.classifieraware.SimpleLog;
 import org.apromore.logman.log.event.ClassifierChangeListener;
 import org.apromore.logman.log.event.ClassifierChangedEvent;
 import org.apromore.logman.log.event.LogFilterListener;
@@ -56,12 +56,12 @@ import org.deckfour.xes.model.XTrace;
 public class LogManager {
     private AXLog log;
     private AttributeStore attributeStore;
-    private IntLog intLog;
+    private SimpleLog intLog;
     private SimpleEventClassifier classifier;
     
     private List<LogFilterCriterion> filterCriteria;
     private AXLog filteredLog;
-    private IntLog filteredIntLog;
+    private SimpleLog filteredIntLog;
     
     private List<LogVisitor> logVisitors;
     private List<LogFilterListener> logFilterListeners;
@@ -87,14 +87,14 @@ public class LogManager {
     	return this.attributeStore;
     }
     
-    public IntLog createIntLog() {
-        intLog = new IntLog(log, classifier);
+    public SimpleLog createIntLog() {
+        intLog = new SimpleLog(log, classifier);
         this.registerLogFilterListener(intLog); // register to keep IntLog in sync with the main log
         return intLog;
     }
     
     //@todo: return an unmodifiable version
-    public IntLog getIntLog() {
+    public SimpleLog getIntLog() {
     	return this.intLog;
     }
     
