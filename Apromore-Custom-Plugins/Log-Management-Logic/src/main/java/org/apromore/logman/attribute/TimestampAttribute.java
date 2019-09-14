@@ -45,5 +45,9 @@ public class TimestampAttribute extends Attribute {
 	public ImmutableLongList getValues() {
 		return LongArrayList.newListWith(start, end).toImmutable();
 	}	
-
+	
+	@Override
+	public int getValueRangeSize() {
+		return -1;
+	}
 }

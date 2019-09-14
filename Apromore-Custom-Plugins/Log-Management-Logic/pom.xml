@@ -56,6 +56,7 @@
                         <Export-Package>
                             org.apromore.logman,
                             org.apromore.logman.attribute,
+                            org.apromore.logman.attribute.exception,
                             org.apromore.logman.classifier,
                             org.apromore.logman.event,
                             org.apromore.logman.log.activityaware,

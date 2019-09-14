@@ -49,6 +49,9 @@ public abstract class Attribute {
 		return this.level;
 	}
 	
+	// Good for the allocation of memory for maps/collections that can boost performance 
+	public abstract int getValueRangeSize();
+	
 	public abstract int registerXAttribute(XAttribute attr);
 	
 }

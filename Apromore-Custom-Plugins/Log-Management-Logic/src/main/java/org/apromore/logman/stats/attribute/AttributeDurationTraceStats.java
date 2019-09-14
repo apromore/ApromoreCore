@@ -21,7 +21,7 @@ import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
-public class AttributeValueCountTraceStats extends StatsCollector {
+public class AttributeDurationTraceStats extends StatsCollector {
 	private AttributeStore attributeStore;
 	private XLog originalLog;
 	// attribute index => (value index => count in each trace)

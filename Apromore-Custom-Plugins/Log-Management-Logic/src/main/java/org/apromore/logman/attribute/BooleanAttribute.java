@@ -48,4 +48,9 @@ public class BooleanAttribute extends Attribute implements Indexable {
 		return values.get(index);
 	}
 
+	@Override
+	public int getValueRangeSize() {
+		return values.size();
+	}
+
 }
