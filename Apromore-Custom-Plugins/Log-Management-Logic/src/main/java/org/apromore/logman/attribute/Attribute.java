@@ -14,11 +14,7 @@ import org.eclipse.collections.impl.list.primitive.IntInterval;
 /**
  * Attribute represents an attribute in the whole log and stores all values found in the log
  * along with value type and attribute level (log, trace or event). 
- * It is different from XAttribute of OpenXES which represents an attribute value only.
- * 
- * The coordinate of an attribute is: key and level. For example, a log attribute
- * can have key="concept:name" and the level is LOG. a trace attribute can have
- * the key "concept:name" and the level is TRACE, and similr to event attributes.
+ * It is different from XAttribute of OpenXES which represents one attribute value only.
  * 
  * @author Bruce Nguyen
  *
@@ -58,10 +54,7 @@ public abstract class Attribute implements Indexable {
 		return this.level;
 	}
 	
-	public int[] getValueIndexes() {
-		return IntInterval.fromTo(0, this.getValueSize()-1).toArray();
-	}
-	
+	// Return null for unknown attribute type or timestamp
 	public Object getObjectValue(int valueIndex) {
 		if (valueIndex <0 || valueIndex > (this.getValueSize()-1)) {
 			return null;
@@ -82,7 +75,20 @@ public abstract class Attribute implements Indexable {
 		}
 	}
 	
-	// Return -1 if not found or not Indexable
+	// Programs calling this method alreay know the type of the attribute being
+	// used, so they should know how to use the returning object values properly.
+	// This method is a generic and convenience way of returning all values of an attribute
+	// but it's not as efficient as getting values from each attribute (e.g. LiteralAttribute).
+	public ImmutableList<Object> getObjectValues() {
+		MutableList<Object> values = Lists.mutable.ofInitialCapacity(this.getValueSize());
+		for (int i=0; i<this.getValueSize()-1; i++) {
+			Object value = this.getObjectValue(i);
+			if (value != null) values.add(value);
+		}
+		return values.toImmutable();
+	}
+	
+	// Return -1 if not found or non-indexable
 	public int getValueIndex(XAttribute xatt, XElement element) {
 		if (this instanceof LiteralAttribute && xatt instanceof XAttributeLiteral) {
 			return this.getValueIndex(((XAttributeLiteral)xatt).getValue());
@@ -120,20 +126,24 @@ public abstract class Attribute implements Indexable {
 	// Return -1 if not found or not Indexable
 	public int getValueIndex(XAttribute xatt) {
 		if (this instanceof LiteralAttribute && xatt instanceof XAttributeLiteral) {
-			return ((LiteralAttribute)this).getValueIndex(((XAttributeLiteral)xatt).getValue());
+			return this.getValueIndex(((XAttributeLiteral)xatt).getValue());
+		}
+		else if (this instanceof ContinuousAttribute && xatt instanceof XAttributeContinuous) {
+			return this.getValueIndex(((XAttributeLiteral)xatt).getValue());
+		}
+		else if (this instanceof DiscreteAttribute && xatt instanceof XAttributeDiscrete) {
+			return this.getValueIndex(((XAttributeDiscrete)xatt).getValue());
+		}
+		else if (this instanceof BooleanAttribute && xatt instanceof XAttributeBoolean) {
+			return this.getValueIndex(((XAttributeBoolean)xatt).getValue());
 		}
 		else {
 			return -1;
 		}
 	}
 	
-	public ImmutableList<Object> getObjectValues() {
-		MutableList<Object> values = Lists.mutable.ofInitialCapacity(this.getValueSize());
-		for (int i=0; i<this.getValueSize()-1; i++) {
-			Object value = this.getObjectValue(i);
-			if (value != null) values.add(value);
-		}
-		return values.toImmutable();
+	public int[] getValueIndexes() {
+		return IntInterval.fromTo(0, this.getValueSize()-1).toArray();
 	}
 	
 	public abstract int getValueSize(); 

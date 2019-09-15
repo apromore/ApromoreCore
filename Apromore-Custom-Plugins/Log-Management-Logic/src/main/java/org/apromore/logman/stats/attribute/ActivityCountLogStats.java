@@ -3,14 +3,13 @@ package org.apromore.logman.stats.attribute;
 import java.util.IntSummaryStatistics;
 
 import org.apromore.logman.AttributeStore;
+import org.apromore.logman.Constants;
 import org.apromore.logman.LogManager;
 import org.apromore.logman.attribute.Attribute;
 import org.apromore.logman.attribute.AttributeLevel;
-import org.apromore.logman.attribute.exception.WrongAttributeTypeException;
 import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.stats.StatsCollector;
-import org.deckfour.xes.extension.std.XConceptExtension;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
@@ -22,12 +21,14 @@ public class ActivityCountLogStats extends StatsCollector {
 	Attribute attribute; 
 	private MutableIntIntMap actCountMap; //value index => count
 	
-	// value => value count
-	public ImmutableObjectIntMap<Object> getActivitiesWithCounts() throws WrongAttributeTypeException {
-		MutableObjectIntMap<Object> activityCounts = ObjectIntMaps.mutable.empty();
+	// string => value count
+	// assume that the event concept:name should always be string, otherwise
+	// all values are converted to string
+	public ImmutableObjectIntMap<String> getActivitiesWithCounts() {
+		MutableObjectIntMap<String> activityCounts = ObjectIntMaps.mutable.empty();
 		actCountMap.each(valueIndex -> {
 			Object value = attribute.getObjectValue(valueIndex);
-			if (value != null) activityCounts.put(value, actCountMap.get(valueIndex));
+			if (value != null) activityCounts.put(value.toString(), actCountMap.get(valueIndex));
 		});
 		return activityCounts.toImmutable();
 	}
@@ -45,7 +46,7 @@ public class ActivityCountLogStats extends StatsCollector {
 	@Override
 	public void startVisit(LogManager logManager) {
 		attributeStore = logManager.getAttributeStore();
-		attribute = attributeStore.getAttribute(XConceptExtension.KEY_NAME, AttributeLevel.LOG);
+		attribute = attributeStore.getAttribute(Constants.ATT_KEY_CONCEPT_NAME, AttributeLevel.EVENT);
 		if (actCountMap == null) {
 			actCountMap = IntIntMaps.mutable.empty();
 		}
@@ -57,7 +58,7 @@ public class ActivityCountLogStats extends StatsCollector {
     @Override
     public void visitActivity(Activity act) {
     	if (attribute != null) {
-	    	int valueIndex = attribute.getValueIndex(act.getAttributes().get(XConceptExtension.KEY_NAME), act);
+	    	int valueIndex = attribute.getValueIndex(act.getAttributes().get(Constants.ATT_KEY_CONCEPT_NAME), act);
 	    	if (valueIndex >0) actCountMap.addToValue(valueIndex, 1);
     	}
     }
@@ -68,7 +69,7 @@ public class ActivityCountLogStats extends StatsCollector {
     public void onLogFiltered(LogFilteredEvent event) {
     	if (attribute != null) {
 	        for (Activity act : event.getAllDeletedActs()) {
-	        	int valueIndex = attribute.getValueIndex(act.getAttributes().get(XConceptExtension.KEY_NAME), act);
+	        	int valueIndex = attribute.getValueIndex(act.getAttributes().get(Constants.ATT_KEY_CONCEPT_NAME), act);
 	        	if (valueIndex >0) actCountMap.addToValue(valueIndex, -1);
 	        }
     	}

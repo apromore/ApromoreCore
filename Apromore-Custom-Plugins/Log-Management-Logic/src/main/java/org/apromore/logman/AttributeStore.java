@@ -9,10 +9,6 @@ import org.apromore.logman.attribute.ContinuousAttribute;
 import org.apromore.logman.attribute.DiscreteAttribute;
 import org.apromore.logman.attribute.LiteralAttribute;
 import org.apromore.logman.attribute.TimestampAttribute;
-import org.apromore.logman.attribute.exception.WrongAttributeTypeException;
-import org.deckfour.xes.extension.std.XConceptExtension;
-import org.deckfour.xes.extension.std.XLifecycleExtension;
-import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeBoolean;
 import org.deckfour.xes.model.XAttributeContinuous;
@@ -36,15 +32,28 @@ import org.eclipse.collections.impl.list.mutable.FastList;
 import org.joda.time.DateTime;
 
 /**
- * This class is used to manage all attributes in a log
- * For example, how many LiteralAttribute, ContinuousAttribute, etc.
- * How many attributes at the log and trace level. 
+ * This class is used to manage all attributes in a log. For example, how many LiteralAttribute, 
+ * ContinuousAttribute, or how many attributes at the log and trace level. 
  * Each attribute carries the range of its domain values
- * It provides a vertical view of attributes in a log.
  * 
- * A coordinate to access an attribute in the AttributeStore is: attribute index and value index
- * Programs using AttributeStore should use this coordinate as 
- * they are primitive integer types which are lightweight and fast.
+ * Attribute in the AttributeStore can be obtained via three ways: 
+ * - Attribute index and value index: these are integers 
+ * - Attribute key and level: e.g. "concept:name" and event level, or "concept:name" and trace level
+ * - XAttribute and XElement: XAttribute contains the key and XElement represents the level
+ * 
+ * Programs using the AttributeStore should use the attribute index and value index for efficient
+ * storage and processing. Other ways provide convenience to get access to attribute.
+ * 
+ * Due to the heterogeneous nature of logs, it is usually unknown beforehand that an attribute can 
+ * be of any type (e.g. string, double, long). Programs using the AttributeStore should not assume
+ * that an attribute is of a certain type, e.g. string, but should check the attribute type 
+ * (Attribute.getType) for proper processing, e.g. for display format or sorting order.
+ * 
+ * When getting the value of an attribute, the returning value must be checked against null for 
+ * unsupported attribute type (e.g. unknown data type). When getting value index from an attribute, 
+ * the rerutning index must be checked agaist -1 for unsupported attribute type. This is usually 
+ * chosen because data processing must keep going for any data types rather than throwing out
+ * exceptions and then stopping (a restrictive view of data). 
  * 
  * @author Bruce Nguyen
  *
@@ -209,99 +218,89 @@ public class AttributeStore {
 										});
 	}
 	
-	public String getLiteralValue(Attribute att, int valueIndex) throws WrongAttributeTypeException {
+	public String getLiteralValue(Attribute att, int valueIndex) {
 		if (att.getType() == AttributeType.LITERAL) {
 			return ((LiteralAttribute)att).getValue(valueIndex);
 		}
 		else {
-			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
-													att.getKey() + ", type: " + att.getLevel());
+			return null;
 		}
 	}
 	
-	public ImmutableList<String> getLiteralValues(Attribute att) throws WrongAttributeTypeException {
+	public ImmutableList<String> getLiteralValues(Attribute att) {
 		if (att.getType() == AttributeType.LITERAL) {
 			return ((LiteralAttribute)att).getValues();
 		}
 		else {
-			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
-													att.getKey() + ", type: " + att.getLevel());
+			return null;
 		}
 	}
 	
-	public double getContinousValue(Attribute att, int valueIndex) throws WrongAttributeTypeException {
+	public Double getContinousValue(Attribute att, int valueIndex) {
 		if (att.getType() == AttributeType.CONTINUOUS) {
 			return ((ContinuousAttribute)att).getValue(valueIndex);
 		}
 		else {
-			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
-													att.getKey() + ", type: " + att.getLevel());
+			return null;
 		}
 	}
 	
-	public ImmutableDoubleList getContinousValues(Attribute att) throws WrongAttributeTypeException {
+	public ImmutableDoubleList getContinousValues(Attribute att) {
 		if (att.getType() == AttributeType.CONTINUOUS) {
 			return ((ContinuousAttribute)att).getValues();
 		}
 		else {
-			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
-													att.getKey() + ", type: " + att.getLevel());
+			return null;
 		}
 	}
 	
-	public double getDiscreteValue(Attribute att, int valueIndex) throws WrongAttributeTypeException {
+	public Long getDiscreteValue(Attribute att, int valueIndex) {
 		if (att.getType() == AttributeType.DISCRETE) {
 			return ((DiscreteAttribute)att).getValue(valueIndex);
 		}
 		else {
-			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
-													att.getKey() + ", type: " + att.getLevel());
+			return null;
 		}
 	}
 	
-	public ImmutableLongList getDiscreteValues(Attribute att) throws WrongAttributeTypeException {
+	public ImmutableLongList getDiscreteValues(Attribute att) {
 		if (att.getType() == AttributeType.DISCRETE) {
 			return ((DiscreteAttribute)att).getValues();
 		}
 		else {
-			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
-													att.getKey() + ", type: " + att.getLevel());
+			return null;
 		}
 	}
 	
-	public boolean getBooleanValue(Attribute att, int valueIndex) throws WrongAttributeTypeException {
+	public Boolean getBooleanValue(Attribute att, int valueIndex) {
 		if (att.getType() == AttributeType.BOOLEAN) {
 			return ((BooleanAttribute)att).getValue(valueIndex);
 		}
 		else {
-			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
-													att.getKey() + ", type: " + att.getLevel());
+			return null;
 		}
 	}
 	
-	public ImmutableBooleanList getBooleanValues(Attribute att) throws WrongAttributeTypeException {
+	public ImmutableBooleanList getBooleanValues(Attribute att) {
 		if (att.getType() == AttributeType.BOOLEAN) {
 			return ((BooleanAttribute)att).getValues();
 		}
 		else {
-			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
-													att.getKey() + ", type: " + att.getLevel());
+			return null;
 		}
 	}
 	
-	public long[] getTimestampValues(Attribute att) throws WrongAttributeTypeException {
+	public long[] getTimestampValues(Attribute att) {
 		if (att.getType() == AttributeType.TIMESTAMP) {
 			TimestampAttribute timeAtt = ((TimestampAttribute)att);
 			return new long[] {timeAtt.getStart(), timeAtt.getEnd()};
 		}
 		else {
-			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
-													att.getKey() + ", type: " + att.getLevel());
+			return null;
 		}
 	}
 	
-	////////////////////////////// Access an attribute using (key, level) /////////////////////
-	
+	// Convenience to get attribute level from an XLog element
 	public AttributeLevel getLevel(XElement element) {
 		if (element instanceof XLog) {
 			return AttributeLevel.LOG;
@@ -317,6 +316,7 @@ public class AttributeStore {
 		}
 	}	
 	
+	// Convenience to get attribute type from an XLog element
 	public AttributeType getType(XAttribute attr) {
 		if (attr instanceof XAttributeLiteral) {
 			return AttributeType.LITERAL;
@@ -343,30 +343,30 @@ public class AttributeStore {
 	////////////////////Access a number of standard attributes ////////////////
 	
 	public Attribute getLogConceptName() {
-		return this.getAttribute(XConceptExtension.KEY_NAME, AttributeLevel.LOG);
+		return this.getAttribute(Constants.ATT_KEY_CONCEPT_NAME, AttributeLevel.LOG);
 	}
 
 	public Attribute getTraceConceptName() {
-		return this.getAttribute(XConceptExtension.KEY_NAME, AttributeLevel.TRACE);
+		return this.getAttribute(Constants.ATT_KEY_CONCEPT_NAME, AttributeLevel.TRACE);
 	}
 	
 	public Attribute getEventConceptName() {
-		return this.getAttribute(XConceptExtension.KEY_NAME, AttributeLevel.EVENT);
+		return this.getAttribute(Constants.ATT_KEY_CONCEPT_NAME, AttributeLevel.EVENT);
 	}
 	
 	public Attribute getEventResource() {
-		return this.getAttribute(XOrganizationalExtension.KEY_RESOURCE, AttributeLevel.EVENT);
+		return this.getAttribute(Constants.ATT_KEY_RESOURCE, AttributeLevel.EVENT);
 	}
 	
 	public Attribute getEventGroup() {
-		return this.getAttribute(XOrganizationalExtension.KEY_GROUP, AttributeLevel.EVENT);
+		return this.getAttribute(Constants.ATT_KEY_GROUP, AttributeLevel.EVENT);
 	}
 	
 	public Attribute getEventRole() {
-		return this.getAttribute(XOrganizationalExtension.KEY_ROLE, AttributeLevel.EVENT);
+		return this.getAttribute(Constants.ATT_KEY_ROLE, AttributeLevel.EVENT);
 	}
 	
 	public Attribute getEventLifecycleTransition() {
-		return this.getAttribute(XLifecycleExtension.KEY_TRANSITION, AttributeLevel.EVENT);
+		return this.getAttribute(Constants.ATT_KEY_LIFECYCLE_TRANSITION, AttributeLevel.EVENT);
 	}
 }

@@ -21,7 +21,9 @@ public class AttributeValueCountLogStats extends StatsCollector {
     // attribute index in the attribute store => (value index => occurrence count)
     private MutableIntObjectMap<MutableIntIntMap> attValueCountMap = IntObjectMaps.mutable.empty();
     
-    // get map value => count for one attribute
+    // get map: value => count for one attribute
+    // the using program should know the type of the attribute being used
+    // and then usign the returning value (Object type) properly
     public ImmutableObjectIntMap<Object> getValueLogCounts(Attribute attribute) {
     	int attIndex = attributeStore.getAttributeIndex(attribute);
     	MutableObjectIntMap<Object> valueCounts = ObjectIntMaps.mutable.empty();

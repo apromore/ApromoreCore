@@ -46,6 +46,18 @@ public class TimestampAttribute extends Attribute {
 		return LongArrayList.newListWith(start, end).toImmutable();
 	}	
 	
+	public Long getValue(int index) {
+		if (index == 0) {
+			return this.start;
+		}
+		else if (index == 1) {
+			return this.end;
+		}
+		else {
+			return null;
+		}
+	}
+	
 	@Override
 	public int getValueSize() {
 		return -1;
