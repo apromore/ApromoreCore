@@ -1,29 +1,37 @@
 package org.apromore.logman.stats.attribute;
 
-import java.util.Set;
-
 import org.apromore.logman.AttributeStore;
 import org.apromore.logman.LogManager;
+import org.apromore.logman.attribute.Attribute;
 import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.stats.StatsCollector;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
-import org.eclipse.collections.api.map.primitive.ImmutableIntIntMap;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.api.map.primitive.ImmutableObjectIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.factory.primitive.IntIntMaps;
+import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
+import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
 
 public class AttributeValueCountLogStats extends StatsCollector {
 	private AttributeStore attributeStore;
     // attribute index in the attribute store => (value index => occurrence count)
-    private UnifiedMap<Integer,IntIntHashMap> attValueCountMap = new UnifiedMap<>();
+    private MutableIntObjectMap<MutableIntIntMap> attValueCountMap = IntObjectMaps.mutable.empty();
     
-    public Set<Integer> getAttributeIndexes() {
-    	return attValueCountMap.keySet();
-    }
-    
-    public ImmutableIntIntMap getValueLogCounts(int attIndex) {
-        return attValueCountMap.get(attIndex).toImmutable();
+    // get map value => count for one attribute
+    public ImmutableObjectIntMap<Object> getValueLogCounts(Attribute attribute) {
+    	int attIndex = attributeStore.getAttributeIndex(attribute);
+    	MutableObjectIntMap<Object> valueCounts = ObjectIntMaps.mutable.empty();
+    	valueCounts.each(valueIndex -> {
+    		Object value = attribute.getObjectValue(valueIndex);
+    		if (value != null) {
+    			valueCounts.put(value, attValueCountMap.get(attIndex).get(valueIndex));
+    		}
+    	});
+    	return valueCounts.toImmutable();
     }
     
     ///////////////////////// Collect statistics the first time //////////////////////////////
@@ -38,10 +46,11 @@ public class AttributeValueCountLogStats extends StatsCollector {
     public void visitEvent(XEvent event) {
         for (XAttribute xatt : event.getAttributes().values()) {
             if (!(xatt instanceof XAttributeTimestamp)) {
-            	int attIndex = attributeStore.getAttributeIndex(xatt, event);
-            	int valueIndex = attributeStore.getValueIndex(xatt, event);
+            	Attribute att = attributeStore.getAttribute(xatt, event);
+            	int attIndex = attributeStore.getAttributeIndex(att);
+            	int valueIndex = att.getValueIndex(xatt, event);
             	if (attIndex >=0 && valueIndex >= 0) {
-            		attValueCountMap.putIfAbsent(attIndex, new IntIntHashMap());
+            		attValueCountMap.getIfAbsentPut(attIndex, IntIntMaps.mutable.empty());
             		attValueCountMap.get(attIndex).addToValue(valueIndex, 1);
             	}
             }
@@ -53,8 +62,9 @@ public class AttributeValueCountLogStats extends StatsCollector {
     public void onLogFiltered(LogFilteredEvent filterEvent) {
         for (XEvent event : filterEvent.getAllDeletedEvents()) {
         	for (XAttribute xatt : event.getAttributes().values()) {
+        		Attribute att = attributeStore.getAttribute(xatt, event);
         		int attIndex = attributeStore.getAttributeIndex(xatt, event);
-            	int valueIndex = attributeStore.getValueIndex(xatt, event);
+            	int valueIndex = att.getValueIndex(xatt, event);
             	if (attIndex >=0 && valueIndex >= 0) {
             		attValueCountMap.get(attIndex).addToValue(valueIndex, -1);
             	}

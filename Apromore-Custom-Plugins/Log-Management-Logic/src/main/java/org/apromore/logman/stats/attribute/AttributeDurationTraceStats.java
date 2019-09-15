@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.apromore.logman.AttributeStore;
 import org.apromore.logman.LogManager;
+import org.apromore.logman.attribute.Attribute;
 import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.stats.StatsCollector;
 import org.deckfour.xes.model.XAttribute;
@@ -67,11 +68,11 @@ public class AttributeDurationTraceStats extends StatsCollector {
     }
     
     private void addToData(XAttribute xatt, XEvent event, int traceIndex, boolean increase) {
-    	int attIndex = attributeStore.getAttributeIndex(xatt, event);
-    	int valueSize = attributeStore.getValueRangeSize(xatt, event);
-    	int valueIndex = attributeStore.getValueIndex(xatt, event);
-    	if (attIndex >=0 && valueIndex >= 0) {
-    		attValueCountMap.putIfAbsent(attIndex, new IntObjectHashMap<>(valueSize));
+    	Attribute att = attributeStore.getAttribute(xatt, event);
+    	if (att != null) {
+    		int attIndex = attributeStore.getAttributeIndex(att);
+    		int valueIndex = att.getValueIndex(xatt, event);
+    		attValueCountMap.putIfAbsent(attIndex, new IntObjectHashMap<>(att.getValueSize()));
     		attValueCountMap.get(attIndex).getIfAbsentPut(valueIndex, LongLists.mutable.with(new long[originalLog.get(traceIndex).size()]));
     		attValueCountMap.get(attIndex).get(valueIndex).addAtIndex(traceIndex, (increase ? 1 : -1));
     	}

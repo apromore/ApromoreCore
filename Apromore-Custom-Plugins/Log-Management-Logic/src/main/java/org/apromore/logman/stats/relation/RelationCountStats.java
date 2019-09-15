@@ -2,6 +2,8 @@ package org.apromore.logman.stats.relation;
 
 import org.apromore.logman.AttributeStore;
 import org.apromore.logman.LogManager;
+import org.apromore.logman.attribute.Attribute;
+import org.apromore.logman.attribute.AttributeLevel;
 import org.apromore.logman.classifier.SimpleEventClassifier;
 import org.apromore.logman.stats.StatsCollector;
 import org.deckfour.xes.model.XLog;
@@ -22,6 +24,7 @@ import org.eclipse.collections.impl.factory.Lists;
 public abstract class RelationCountStats extends StatsCollector {
 	protected XLog log;
 	protected AttributeStore attributeStore;
+	protected Attribute attribute;
 	protected SimpleEventClassifier classifier;
 	// List of traces in the log, each trace contains a set of mapping: pair of index-based events => occurrence count 
 	protected MutableList<MutableObjectIntMap<IntIntPair>> relationLog = Lists.mutable.empty();
@@ -42,6 +45,7 @@ public abstract class RelationCountStats extends StatsCollector {
     @Override
     public void startVisit(LogManager logManager) {
     	attributeStore = logManager.getAttributeStore();
+    	attribute = attributeStore.getAttribute(classifier.getAttribute(), AttributeLevel.LOG);
     	relationLog.clear();
     }
     

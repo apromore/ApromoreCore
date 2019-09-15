@@ -1,9 +1,8 @@
 package org.apromore.logman.stats.attribute;
 
-import java.util.Set;
-
 import org.apromore.logman.AttributeStore;
 import org.apromore.logman.LogManager;
+import org.apromore.logman.attribute.Attribute;
 import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.stats.StatsCollector;
 import org.deckfour.xes.model.XAttribute;
@@ -13,23 +12,21 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.list.primitive.ImmutableLongList;
 import org.eclipse.collections.api.list.primitive.MutableLongList;
-import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.ImmutableIntSet;
 import org.eclipse.collections.api.tuple.Pair;
-import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.impl.factory.primitive.LongLists;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 public class AttributeValueCountTraceStats extends StatsCollector {
 	private AttributeStore attributeStore;
 	private XLog originalLog;
-	// attribute index => (value index => count in each trace)
-	private MutableMap<Integer,MutableIntObjectMap<MutableLongList>> attValueCountMap = Maps.mutable.empty();
+	// attribute index => (value index => occurrence count of the value in each trace index in the log)
+	private MutableIntObjectMap<MutableIntObjectMap<MutableLongList>> attValueCountMap = IntObjectMaps.mutable.empty();
 	private int traceIndex = -1;
 	
-	public Set<Integer> getAttributeIndexes() {
-    	return attValueCountMap.keySet();
+	public ImmutableIntSet getAttributeIndexes() {
+    	return attValueCountMap.keySet().toImmutable();
     }
 	
 	public ImmutableIntSet getValueIndexes(int attIndex) {
@@ -67,12 +64,13 @@ public class AttributeValueCountTraceStats extends StatsCollector {
     }
     
     private void addToData(XAttribute xatt, XEvent event, int traceIndex, boolean increase) {
-    	int attIndex = attributeStore.getAttributeIndex(xatt, event);
-    	int valueSize = attributeStore.getValueRangeSize(xatt, event);
-    	int valueIndex = attributeStore.getValueIndex(xatt, event);
+    	Attribute attribute = attributeStore.getAttribute(xatt, event);
+    	int attIndex = attributeStore.getAttributeIndex(attribute);
+    	int valueSize = attribute.getValueSize();
+    	int valueIndex = attribute.getValueIndex(xatt, event);
     	if (attIndex >=0 && valueIndex >= 0) {
-    		attValueCountMap.putIfAbsent(attIndex, new IntObjectHashMap<>(valueSize));
-    		attValueCountMap.get(attIndex).getIfAbsentPut(valueIndex, LongLists.mutable.with(new long[originalLog.get(traceIndex).size()]));
+    		attValueCountMap.getIfAbsentPut(attIndex, IntObjectMaps.mutable.empty())
+    			.getIfAbsentPut(valueIndex, LongLists.mutable.with(new long[originalLog.get(traceIndex).size()]));
     		attValueCountMap.get(attIndex).get(valueIndex).addAtIndex(traceIndex, (increase ? 1 : -1));
     	}
     }

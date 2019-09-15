@@ -7,7 +7,6 @@ import org.apromore.logman.attribute.AttributeType;
 import org.apromore.logman.attribute.BooleanAttribute;
 import org.apromore.logman.attribute.ContinuousAttribute;
 import org.apromore.logman.attribute.DiscreteAttribute;
-import org.apromore.logman.attribute.Indexable;
 import org.apromore.logman.attribute.LiteralAttribute;
 import org.apromore.logman.attribute.TimestampAttribute;
 import org.apromore.logman.attribute.exception.WrongAttributeTypeException;
@@ -26,8 +25,12 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.primitive.IntList;
+import org.eclipse.collections.api.list.primitive.ImmutableBooleanList;
+import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
+import org.eclipse.collections.api.list.primitive.ImmutableLongList;
+import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.joda.time.DateTime;
@@ -49,6 +52,8 @@ import org.joda.time.DateTime;
 public class AttributeStore {
 	private FastList<Attribute> attributes = new FastList<Attribute>();
 	private MutableObjectIntMap<Attribute> indexMap = ObjectIntMaps.mutable.empty(); //fasten attribute index retrieval
+	private MutableMap<String, Attribute> keyLevelMap = Maps.mutable.empty(); //fasten attribute retrieval based on level+key
+	private final String KEY_SEPARATOR = "@";
 	
 	public AttributeStore(XLog log) {
 		registerXAttributes(log.getAttributes(), AttributeLevel.LOG);
@@ -60,10 +65,15 @@ public class AttributeStore {
 		}
 	}
 	
+	private String getLevelKey(String key, AttributeLevel level) {
+		return level.name() + KEY_SEPARATOR + key;
+	}
+	
 	private void registerXAttributes(XAttributeMap attMap, AttributeLevel level) {
 		for (String key : attMap.keySet()) {
 			XAttribute xatt = attMap.get(key);
-			Attribute att = this.getAttribute(xatt.getKey(), level);
+			String levelKey = getLevelKey(xatt.getKey(), level);
+			Attribute att = keyLevelMap.get(levelKey);
 			if (att == null) {
 				if (xatt instanceof XAttributeLiteral) {
 					att = AttributeFactory.createLiteralAttribute(key, level);
@@ -83,12 +93,51 @@ public class AttributeStore {
 				else {
 					continue; //ignore this attribute value
 				}
+				keyLevelMap.put(levelKey, att);
 			}
 			att.registerXAttribute(xatt);
 			attributes.add(att);
 			indexMap.put(att, attributes.size()-1);
 		}
 	}
+	
+	
+	/////////////////////// Basic methods //////////////////////////////////////////
+	
+	
+	public Attribute getAttribute(int attIndex) {
+		try {
+			return attributes.get(attIndex);
+		}
+		catch (Exception ex) {
+			return null;
+		}
+	}
+	
+	// return null if not found.
+	public Attribute getAttribute(String key, AttributeLevel level) {
+		return keyLevelMap.get(getLevelKey(key, level));
+	}
+	
+	// return null if not found
+	public Attribute getAttribute(XAttribute xatt, XElement element) {
+		return this.getAttribute(xatt.getKey(), getLevel(element));
+	}		
+	
+	// return -1 if not found
+	public int getAttributeIndex(Attribute attribute) {
+		return indexMap.getIfAbsent(attribute, -1);
+	}
+	
+	//return -1 if not found
+	public int getAttributeIndex(String key, AttributeLevel level) {
+		return indexMap.getIfAbsent(getAttribute(key, level),-1);
+	}	
+	
+	// return -1 if not found
+	public int getAttributeIndex(XAttribute xatt, XElement element) {
+		return getAttributeIndex(xatt.getKey(), getLevel(element));
+	}		
 	
 	/////////////////////// Search attributes //////////////////////////////////////////
 	
@@ -160,42 +209,19 @@ public class AttributeStore {
 										});
 	}
 	
-	////////////////////////////// Access attributes using (attIndex, valueIndex) /////////////////////
-	
-	public Attribute getAttribute(int attIndex) {
-		try {
-			return attributes.get(attIndex);
-		}
-		catch (Exception ex) {
-			return null;
-		}
-	}
-	
-	// return null if value type is unrecognized
-	public Object getValue(int attIndex, int valueIndex) {
-		Attribute att = attributes.get(attIndex);
-		switch (att.getType()) {
-			case LITERAL: 
-				LiteralAttribute att2 = (LiteralAttribute)att;
-				return att2.getValue(valueIndex);
-			case CONTINUOUS:
-				ContinuousAttribute att3 = (ContinuousAttribute)att;
-				return att3.getValue(valueIndex);
-			case DISCRETE:
-				DiscreteAttribute att4 = (DiscreteAttribute)att;
-				return att4.getValue(valueIndex);
-			case BOOLEAN:
-				BooleanAttribute att5 = (BooleanAttribute)att;
-				return att5.getValue(valueIndex);
-			default:
-				return null;
-		}
-		
-	}
-	
 	public String getLiteralValue(Attribute att, int valueIndex) throws WrongAttributeTypeException {
 		if (att.getType() == AttributeType.LITERAL) {
 			return ((LiteralAttribute)att).getValue(valueIndex);
+		}
+		else {
+			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
+													att.getKey() + ", type: " + att.getLevel());
+		}
+	}
+	
+	public ImmutableList<String> getLiteralValues(Attribute att) throws WrongAttributeTypeException {
+		if (att.getType() == AttributeType.LITERAL) {
+			return ((LiteralAttribute)att).getValues();
 		}
 		else {
 			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
@@ -213,9 +239,29 @@ public class AttributeStore {
 		}
 	}
 	
+	public ImmutableDoubleList getContinousValues(Attribute att) throws WrongAttributeTypeException {
+		if (att.getType() == AttributeType.CONTINUOUS) {
+			return ((ContinuousAttribute)att).getValues();
+		}
+		else {
+			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
+													att.getKey() + ", type: " + att.getLevel());
+		}
+	}
+	
 	public double getDiscreteValue(Attribute att, int valueIndex) throws WrongAttributeTypeException {
 		if (att.getType() == AttributeType.DISCRETE) {
 			return ((DiscreteAttribute)att).getValue(valueIndex);
+		}
+		else {
+			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
+													att.getKey() + ", type: " + att.getLevel());
+		}
+	}
+	
+	public ImmutableLongList getDiscreteValues(Attribute att) throws WrongAttributeTypeException {
+		if (att.getType() == AttributeType.DISCRETE) {
+			return ((DiscreteAttribute)att).getValues();
 		}
 		else {
 			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
@@ -233,7 +279,17 @@ public class AttributeStore {
 		}
 	}
 	
-	public long[] getTimestampValue(Attribute att, int valueIndex) throws WrongAttributeTypeException {
+	public ImmutableBooleanList getBooleanValues(Attribute att) throws WrongAttributeTypeException {
+		if (att.getType() == AttributeType.BOOLEAN) {
+			return ((BooleanAttribute)att).getValues();
+		}
+		else {
+			throw new WrongAttributeTypeException("Cannot get value of wrong attribute type. Attribute key: " + 
+													att.getKey() + ", type: " + att.getLevel());
+		}
+	}
+	
+	public long[] getTimestampValues(Attribute att) throws WrongAttributeTypeException {
 		if (att.getType() == AttributeType.TIMESTAMP) {
 			TimestampAttribute timeAtt = ((TimestampAttribute)att);
 			return new long[] {timeAtt.getStart(), timeAtt.getEnd()};
@@ -245,31 +301,6 @@ public class AttributeStore {
 	}
 	
 	////////////////////////////// Access an attribute using (key, level) /////////////////////
-	
-	// return null if not found.
-	public Attribute getAttribute(String key, AttributeLevel level) {
-		return attributes.detect(a -> a.getKey().equals(key) && a.getLevel() == level);
-	}
-	
-	//return -1 if not found
-	public int getAttributeIndex(String key, AttributeLevel level) {
-		return attributes.detectIndex(a -> a.getKey().equals(key) && a.getLevel()==level);
-	}
-	
-	
-	// return null if not found or Indexable
-	public IntList getIndexes(String key, AttributeLevel level) {
-		Attribute find = this.getAttribute(key, level);
-		if (find != null && find instanceof Indexable) {
-			return ((Indexable)find).getIndexes();
-		}
-		else {
-			return null;
-		}
-	}
-	
-
-	//////////////////// Access attributes using OpenXES (XAttribute, XElement) ////////////////
 	
 	public AttributeLevel getLevel(XElement element) {
 		if (element instanceof XLog) {
@@ -307,44 +338,7 @@ public class AttributeStore {
 		}
 	}
 	
-	// return null if not found
-	public Attribute getAttribute(XAttribute xatt, XElement element) {
-		return this.getAttribute(xatt.getKey(), getLevel(element));
-	}
 	
-	// return -1 if not found
-	public int getAttributeIndex(XAttribute xatt, XElement element) {
-		return attributes.detectIndex(a -> a.getKey().equals(xatt.getKey()) && a.getLevel()==getLevel(element));
-	}
-	
-	// Return -1 if not found or not Indexable
-	public int getValueIndex(XAttribute xatt, XElement element) {
-		Attribute find = this.getAttribute(xatt, element);
-		if (find != null && find instanceof Indexable) {
-			if (find instanceof LiteralAttribute && xatt instanceof XAttributeLiteral) {
-				return ((LiteralAttribute)find).getIndex(((XAttributeLiteral)xatt).getValue());
-			}
-			else if (find instanceof DiscreteAttribute && xatt instanceof XAttributeDiscrete) {
-				return ((DiscreteAttribute)find).getIndex(((XAttributeDiscrete)xatt).getValue());
-			}
-			else if (find instanceof ContinuousAttribute && xatt instanceof XAttributeContinuous) {
-				return ((ContinuousAttribute)find).getIndex(((XAttributeContinuous)xatt).getValue());
-			}
-			else if (find instanceof BooleanAttribute && xatt instanceof XAttributeBoolean) {
-				return ((BooleanAttribute)find).getIndex(((XAttributeBoolean)xatt).getValue());
-			}
-			else {
-				return -1;
-			}
-		}
-		else {
-			return -1;
-		}
-	}	
-	
-	public int getValueRangeSize(XAttribute xatt, XElement element) {
-		return this.getAttribute(xatt, element).getValueRangeSize();
-	}
 	
 	////////////////////Access a number of standard attributes ////////////////
 	

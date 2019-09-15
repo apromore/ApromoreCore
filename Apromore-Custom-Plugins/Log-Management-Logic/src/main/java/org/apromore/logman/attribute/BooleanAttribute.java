@@ -3,11 +3,9 @@ package org.apromore.logman.attribute;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeBoolean;
 import org.eclipse.collections.api.list.primitive.ImmutableBooleanList;
-import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.impl.list.mutable.primitive.BooleanArrayList;
-import org.eclipse.collections.impl.list.primitive.IntInterval;
 
-public class BooleanAttribute extends Attribute implements Indexable {
+public class BooleanAttribute extends Attribute {
 	private BooleanArrayList values = new BooleanArrayList();
 	
 	public BooleanAttribute(String key, AttributeLevel level) {
@@ -31,16 +29,11 @@ public class BooleanAttribute extends Attribute implements Indexable {
 		}
 	}
 	
-	@Override
-	public IntList getIndexes() {
-		return IntInterval.fromTo(0, values.size()-1).toImmutable();
-	}
-	
 	public ImmutableBooleanList getValues() {
 		return values.toImmutable();
 	}
 	
-	public int getIndex(boolean value) {
+	public int getValueIndex(boolean value) {
 		return values.indexOf(value);
 	}
 	
@@ -49,7 +42,7 @@ public class BooleanAttribute extends Attribute implements Indexable {
 	}
 
 	@Override
-	public int getValueRangeSize() {
+	public int getValueSize() {
 		return values.size();
 	}
 

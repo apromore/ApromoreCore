@@ -47,7 +47,12 @@ public class TimestampAttribute extends Attribute {
 	}	
 	
 	@Override
-	public int getValueRangeSize() {
+	public int getValueSize() {
 		return -1;
+	}
+
+	@Override
+	public int[] getValueIndexes() {
+		return new int[] {};
 	}
 }

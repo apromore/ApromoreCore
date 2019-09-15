@@ -36,10 +36,10 @@ public class DirectFollowDurationStats extends RelationDurationStats {
         		previousEvent = event;
         	}
         	else {
-        		int previousValueIndex = attributeStore.getValueIndex(classifier.getIdentityAttribute(previousEvent), previousEvent);
+        		int previousValueIndex = attribute.getValueIndex(classifier.getIdentityAttribute(previousEvent), previousEvent);
         		long previousTimestamp = LogUtils.getTimestamp(previousEvent);
         		
-        		int currentValueIndex = attributeStore.getValueIndex(classifier.getIdentityAttribute(event), event);
+        		int currentValueIndex = attribute.getValueIndex(classifier.getIdentityAttribute(event), event);
         		long currentTimestamp = LogUtils.getTimestamp(event);
         		long duration = currentTimestamp - previousTimestamp;
         		

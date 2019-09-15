@@ -29,10 +29,12 @@ public class DirectFollowCountStats extends RelationCountStats {
     // Need to loop events here because it needs the DFSSReader to interpret
     // the DFSS relation and the integer-based list representation
     public void visitTrace(XTrace trace) {
+    	if (attribute == null) return;
+    	
     	IntArrayList intTrace = new IntArrayList(trace.size());
     	List<? extends XEvent> events = (trace instanceof AXTrace) ? ((AXTrace)trace).getActivities() : trace;
         for(XEvent event : events) {
-            int valueIndex = attributeStore.getValueIndex(classifier.getIdentityAttribute(event), event);
+            int valueIndex = attribute.getValueIndex(classifier.getIdentityAttribute(event), event);
             intTrace.add(valueIndex);
         }
         relationLog.add(extractPairTrace(intTrace));

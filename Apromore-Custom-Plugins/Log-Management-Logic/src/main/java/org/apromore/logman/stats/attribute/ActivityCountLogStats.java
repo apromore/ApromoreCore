@@ -4,6 +4,7 @@ import java.util.IntSummaryStatistics;
 
 import org.apromore.logman.AttributeStore;
 import org.apromore.logman.LogManager;
+import org.apromore.logman.attribute.Attribute;
 import org.apromore.logman.attribute.AttributeLevel;
 import org.apromore.logman.attribute.exception.WrongAttributeTypeException;
 import org.apromore.logman.event.LogFilteredEvent;
@@ -18,14 +19,14 @@ import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
 
 public class ActivityCountLogStats extends StatsCollector {
 	AttributeStore attributeStore;
-	int attributeIndex = -1; 
+	Attribute attribute; 
 	private MutableIntIntMap actCountMap; //value index => count
 	
 	// value => value count
 	public ImmutableObjectIntMap<Object> getActivitiesWithCounts() throws WrongAttributeTypeException {
 		MutableObjectIntMap<Object> activityCounts = ObjectIntMaps.mutable.empty();
 		actCountMap.each(valueIndex -> {
-			Object value = attributeStore.getValue(attributeIndex, valueIndex);
+			Object value = attribute.getObjectValue(valueIndex);
 			if (value != null) activityCounts.put(value, actCountMap.get(valueIndex));
 		});
 		return activityCounts.toImmutable();
@@ -44,7 +45,7 @@ public class ActivityCountLogStats extends StatsCollector {
 	@Override
 	public void startVisit(LogManager logManager) {
 		attributeStore = logManager.getAttributeStore();
-		attributeIndex = attributeStore.getAttributeIndex(XConceptExtension.KEY_NAME, AttributeLevel.LOG);
+		attribute = attributeStore.getAttribute(XConceptExtension.KEY_NAME, AttributeLevel.LOG);
 		if (actCountMap == null) {
 			actCountMap = IntIntMaps.mutable.empty();
 		}
@@ -55,17 +56,21 @@ public class ActivityCountLogStats extends StatsCollector {
 	
     @Override
     public void visitActivity(Activity act) {
-    	int valueIndex = attributeStore.getValueIndex(act.getAttributes().get(XConceptExtension.KEY_NAME), act);
-    	if (valueIndex >0) actCountMap.addToValue(valueIndex, 1);
+    	if (attribute != null) {
+	    	int valueIndex = attribute.getValueIndex(act.getAttributes().get(XConceptExtension.KEY_NAME), act);
+	    	if (valueIndex >0) actCountMap.addToValue(valueIndex, 1);
+    	}
     }
     
     ///////////////////////// Update statistics //////////////////////////////    
     
     @Override
     public void onLogFiltered(LogFilteredEvent event) {
-        for (Activity act : event.getAllDeletedActs()) {
-        	int valueIndex = attributeStore.getValueIndex(act.getAttributes().get(XConceptExtension.KEY_NAME), act);
-        	if (valueIndex >0) actCountMap.addToValue(valueIndex, -1);
-        }
+    	if (attribute != null) {
+	        for (Activity act : event.getAllDeletedActs()) {
+	        	int valueIndex = attribute.getValueIndex(act.getAttributes().get(XConceptExtension.KEY_NAME), act);
+	        	if (valueIndex >0) actCountMap.addToValue(valueIndex, -1);
+	        }
+    	}
     }
 }

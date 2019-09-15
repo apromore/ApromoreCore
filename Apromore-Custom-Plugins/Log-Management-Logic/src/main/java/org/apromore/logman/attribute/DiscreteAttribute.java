@@ -3,13 +3,11 @@ package org.apromore.logman.attribute;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeDiscrete;
 import org.eclipse.collections.api.list.primitive.ImmutableLongList;
-import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.map.primitive.MutableLongIntMap;
 import org.eclipse.collections.impl.factory.primitive.LongIntMaps;
 import org.eclipse.collections.impl.list.mutable.primitive.LongArrayList;
-import org.eclipse.collections.impl.list.primitive.IntInterval;
 
-public class DiscreteAttribute extends Attribute implements Indexable {
+public class DiscreteAttribute extends Attribute {
 	private LongArrayList values = new LongArrayList();
 	private MutableLongIntMap indexMap = LongIntMaps.mutable.empty(); //to fasten the retrieval of indexes
 	
@@ -35,16 +33,11 @@ public class DiscreteAttribute extends Attribute implements Indexable {
 		}
 	}
 
-	@Override
-	public IntList getIndexes() {
-		return IntInterval.fromTo(0, values.size()-1).toImmutable();
-	}
-	
 	public ImmutableLongList getValues() {
 		return values.toImmutable();
 	}
 	
-	public int getIndex(long value) {
+	public int getValueIndex(long value) {
 		return indexMap.get(value);
 	}
 	
@@ -53,7 +46,7 @@ public class DiscreteAttribute extends Attribute implements Indexable {
 	}
 	
 	@Override
-	public int getValueRangeSize() {
+	public int getValueSize() {
 		return values.size();
 	}
 	

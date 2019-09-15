@@ -3,13 +3,11 @@ package org.apromore.logman.attribute;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeLiteral;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.impl.list.mutable.FastList;
-import org.eclipse.collections.impl.list.primitive.IntInterval;
 
-public class LiteralAttribute extends Attribute implements Indexable {
+public class LiteralAttribute extends Attribute {
 	private FastList<String> values = new FastList<String>();
 	private MutableObjectIntMap<String> indexMap = ObjectIntMaps.mutable.empty(); //to fasten the retrieval of indexes
 	
@@ -35,16 +33,11 @@ public class LiteralAttribute extends Attribute implements Indexable {
 		}
 	}
 	
-	@Override
-	public IntList getIndexes() {
-		return IntInterval.fromTo(0, values.size()-1).toImmutable();
-	}
-	
 	public ImmutableList<String> getValues() {
 		return values.toImmutable();
 	}	
 	
-	public int getIndex(String value) {
+	public int getValueIndex(String value) {
 		return indexMap.get(value);
 	}
 	
@@ -53,7 +46,7 @@ public class LiteralAttribute extends Attribute implements Indexable {
 	}
 	
 	@Override
-	public int getValueRangeSize() {
+	public int getValueSize() {
 		return values.size();
 	}
 }

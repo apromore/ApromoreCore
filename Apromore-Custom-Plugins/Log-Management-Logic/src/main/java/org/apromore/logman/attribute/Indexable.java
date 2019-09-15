@@ -1,7 +1,5 @@
 package org.apromore.logman.attribute;
 
-import org.eclipse.collections.api.list.primitive.IntList;
-
 /**
  * The attribute can be indexed, i.e. assigned an integer
  * 
@@ -9,5 +7,5 @@ import org.eclipse.collections.api.list.primitive.IntList;
  *
  */
 public interface Indexable {
-	IntList getIndexes();
+	int[] getValueIndexes();
 }

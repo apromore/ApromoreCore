@@ -3,13 +3,11 @@ package org.apromore.logman.attribute;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeContinuous;
 import org.eclipse.collections.api.list.primitive.ImmutableDoubleList;
-import org.eclipse.collections.api.list.primitive.IntList;
 import org.eclipse.collections.api.map.primitive.MutableDoubleIntMap;
 import org.eclipse.collections.impl.factory.primitive.DoubleIntMaps;
 import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
-import org.eclipse.collections.impl.list.primitive.IntInterval;
 
-public class ContinuousAttribute extends Attribute implements Indexable {
+public class ContinuousAttribute extends Attribute {
 	private DoubleArrayList values = new DoubleArrayList();
 	private MutableDoubleIntMap indexMap = DoubleIntMaps.mutable.empty(); //to fasten the retrieval of indexes
 	
@@ -35,16 +33,11 @@ public class ContinuousAttribute extends Attribute implements Indexable {
 		}
 	}
 
-	@Override
-	public IntList getIndexes() {
-		return IntInterval.fromTo(0, values.size()-1).toImmutable();
-	}
-	
 	public ImmutableDoubleList getValues() {
 		return values.toImmutable();
 	}
 	
-	public int getIndex(double value) {
+	public int getValueIndex(double value) {
 		return indexMap.get(value);
 	}
 	
@@ -53,7 +46,7 @@ public class ContinuousAttribute extends Attribute implements Indexable {
 	}
 	
 	@Override
-	public int getValueRangeSize() {
+	public int getValueSize() {
 		return values.size();
 	}
 	

@@ -33,8 +33,8 @@ public class EventuallyFollowCountStats extends RelationCountStats {
         for (Pair<? extends XEvent, ?extends XEvent> pair: mapTrace.keyValuePairsView()) {
         	XEvent source = pair.getOne();
         	XEvent target = pair.getTwo();
-            int sourceValue = attributeStore.getValueIndex(classifier.getIdentityAttribute(source), source);
-            int targetValue = attributeStore.getValueIndex(classifier.getIdentityAttribute(target), target);
+            int sourceValue = attribute.getValueIndex(classifier.getIdentityAttribute(source), source);
+            int targetValue = attribute.getValueIndex(classifier.getIdentityAttribute(target), target);
             mapIntTrace.addToValue(PrimitiveTuples.pair(sourceValue, targetValue), 1);
         }
         relationLog.add(mapIntTrace);
