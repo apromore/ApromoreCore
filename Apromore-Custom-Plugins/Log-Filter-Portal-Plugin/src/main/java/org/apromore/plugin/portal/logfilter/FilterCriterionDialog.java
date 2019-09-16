@@ -1302,7 +1302,7 @@ public class FilterCriterionDialog {
 
     private long stringToMilli(String s) {
         if(s.equals("Years")) return new Long("31556952000");
-        if(s.equals("Months")) return new Long("2628000000");
+        if(s.equals("Months")) return new Long("2678400000");
         if(s.equals("Weeks")) return 1000 * 60 * 60 * 24 * 7;
         if(s.equals("Days")) return 1000 * 60 * 60 * 24;
         if(s.equals("Hours")) return 1000 * 60 * 60;
