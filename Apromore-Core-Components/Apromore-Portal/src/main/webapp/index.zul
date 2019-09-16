@@ -152,6 +152,11 @@
         color: grey;
         }
 
+        .z-menu-content:focus {
+        background: #ffe09c;
+        color: grey;
+        }
+
 
     </style>
 
