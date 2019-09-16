@@ -138,6 +138,21 @@
         background: #fff0cf;
         }
 
+
+        .z-menupopup:hover .z-menu-content:hover, .z-menupopup:hover .z-menuitem-content:hover {
+        background: #fff0cf;
+        }
+
+        .z-menu-selected>.z-menu-content {
+        background: orange;
+        }
+
+        .z-menu-content:hover {
+        background: #ffe09c;
+        color: grey;
+        }
+
+
     </style>
 
     <style> body { padding: 0} </style>
