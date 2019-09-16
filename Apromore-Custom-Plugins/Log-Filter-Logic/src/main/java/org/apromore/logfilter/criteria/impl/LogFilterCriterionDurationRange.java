@@ -30,25 +30,28 @@ public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion 
             if(v.startsWith(">")) {
                 int spaceIndex = v.indexOf(" ");
                 String numberString = v.substring(1, spaceIndex);
-                long longValue = new Double(numberString).longValue();
+                BigDecimal doubleValue = new BigDecimal(numberString);
                 String unit = v.substring(spaceIndex + 1);
-                long unitValue = stringToMilli(unit);
-                greaterThan = longValue * unitValue;
+                BigDecimal unitValue = unitStringToBigDecimal(unit);
+                BigDecimal gValue = doubleValue.multiply(unitValue);
+                greaterThan = gValue.longValue();
             }
             if(v.startsWith("<")){
                 int spaceIndex = v.indexOf(" ");
                 String numberString = v.substring(1, spaceIndex);
-                long longValue = new Double(numberString).longValue();
+                BigDecimal doubleValue = new BigDecimal(numberString);
                 String unit = v.substring(spaceIndex + 1);
-                long unitValue = stringToMilli(unit);
-                lesserThan = longValue * unitValue;
+                BigDecimal unitValue = unitStringToBigDecimal(unit);
+                BigDecimal lValue = doubleValue.multiply(unitValue);
+                lesserThan = lValue.longValue();
             }
         }
         long s = epochMilliOf(zonedDateTimeOf(trace.get(0)));
         long e = epochMilliOf(zonedDateTimeOf(trace.get(trace.size()-1)));
         long dur = e - s;
-        if(dur >= greaterThan && dur <= lesserThan) return true;
-        else return false;
+        if(dur < greaterThan) return false;
+        else if(dur > lesserThan) return false;
+        else return true;
     }
 
 
@@ -67,15 +70,15 @@ public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion 
                 ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
         return z;
     }
-
-    private long stringToMilli(String s) {
-        if(s.equals("Years")) return new Long("31556952000");
-        if(s.equals("Months")) return new Long("2628000000");
-        if(s.equals("Weeks")) return 1000 * 60 * 60 * 24 * 7;
-        if(s.equals("Days")) return 1000 * 60 * 60 * 24;
-        if(s.equals("Hours")) return 1000 * 60 * 60;
-        if(s.equals("Minutes")) return 1000 * 60;
-        if(s.equals("Seconds")) return 1000;
-        return 0;
+	
+	private BigDecimal unitStringToBigDecimal(String s) {
+        if(s.equals("Years")) return new BigDecimal("31536000000");
+        if(s.equals("Months")) return new BigDecimal("2678400000");
+        if(s.equals("Weeks")) return new BigDecimal("604800000");
+        if(s.equals("Days")) return new BigDecimal("86400000");
+        if(s.equals("Hours")) return new BigDecimal("3600000");
+        if(s.equals("Minutes")) return new BigDecimal("60000");
+        if(s.equals("Seconds")) return new BigDecimal("1000");
+        return new BigDecimal(0);
     }
 }
