@@ -10,7 +10,7 @@ public class BooleanAttribute extends Attribute {
 	
 	public BooleanAttribute(String key, AttributeLevel level) {
 		super(key, level, AttributeType.BOOLEAN);
-	}
+	} 
 	
 	@Override
 	public int registerXAttribute(XAttribute att) {
