@@ -69,6 +69,8 @@ public abstract class Attribute implements Indexable {
 					return ((DiscreteAttribute)this).getValue(valueIndex);
 				case BOOLEAN:
 					return ((BooleanAttribute)this).getValue(valueIndex);
+				case TIMESTAMP:
+					return ((TimestampAttribute)this).getValue(valueIndex);
 				default:
 					return null;
 			}

@@ -10,29 +10,20 @@ import org.apromore.logman.attribute.AttributeLevel;
 import org.apromore.logman.event.LogFilteredEvent;
 import org.apromore.logman.log.activityaware.Activity;
 import org.apromore.logman.stats.StatsCollector;
-import org.eclipse.collections.api.map.primitive.ImmutableObjectIntMap;
+import org.eclipse.collections.api.map.primitive.ImmutableIntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
-import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.eclipse.collections.impl.factory.primitive.IntIntMaps;
-import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
 
 public class ActivityCountLogStats extends StatsCollector {
 	AttributeStore attributeStore;
 	Attribute attribute; 
 	private MutableIntIntMap actCountMap; //value index => count
 	
-	// string => value count
-	// assume that the event concept:name should always be string, otherwise
-	// all values are converted to string
-	public ImmutableObjectIntMap<String> getActivitiesWithCounts() {
-		MutableObjectIntMap<String> activityCounts = ObjectIntMaps.mutable.empty();
-		actCountMap.each(valueIndex -> {
-			Object value = attribute.getObjectValue(valueIndex);
-			if (value != null) activityCounts.put(value.toString(), actCountMap.get(valueIndex));
-		});
-		return activityCounts.toImmutable();
+	public ImmutableIntIntMap getActivitiesWithCounts() {
+		return actCountMap.toImmutable();
 	}
 	
+	// can be used to calculate relative frequency
 	public long getTotalCountOfValues() {
 		return actCountMap.values().sum();
 	}

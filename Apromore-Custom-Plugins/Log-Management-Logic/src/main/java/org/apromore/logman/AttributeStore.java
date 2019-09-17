@@ -29,6 +29,7 @@ import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.list.primitive.IntInterval;
 import org.joda.time.DateTime;
 
 /**
@@ -121,6 +122,10 @@ public class AttributeStore {
 		catch (Exception ex) {
 			return null;
 		}
+	}
+	
+	public int[] getAttributeIndexes() {
+		return IntInterval.fromTo(0, attributes.size()-1).toArray();
 	}
 	
 	// return null if not found.

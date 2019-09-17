@@ -66,7 +66,6 @@ public class AttributeValueCountTraceStats extends StatsCollector {
     private void addToData(XAttribute xatt, XEvent event, int traceIndex, boolean increase) {
     	Attribute attribute = attributeStore.getAttribute(xatt, event);
     	int attIndex = attributeStore.getAttributeIndex(attribute);
-    	int valueSize = attribute.getValueSize();
     	int valueIndex = attribute.getValueIndex(xatt, event);
     	if (attIndex >=0 && valueIndex >= 0) {
     		attValueCountMap.getIfAbsentPut(attIndex, IntObjectMaps.mutable.empty())
