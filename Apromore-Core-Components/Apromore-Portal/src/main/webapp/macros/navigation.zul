@@ -26,7 +26,7 @@
         }
 
         .z-tree-icon {
-        vertical-align: super;
+        vertical-align: 2px;
         }
 
         .z-toolbarbutton-content>img, .z-toolbarbutton-content>i {
@@ -34,7 +34,13 @@
         max-height: 22px;
         max-width: 22px;
         font-size: 16px;
-        vertical-align: top;
+        }
+        .z-valign-middle>.z-hlayout-inner {
+        vertical-align: -webkit-baseline-middle;
+        }
+
+        .z-treecol-content, .z-treecell-content, .z-treefooter-content {
+        line-height: 18px;
         }
     </style>
     <div class="z-west-header" style="display: -webkit-flex; display: flex">

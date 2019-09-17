@@ -104,7 +104,7 @@
         position: relative;
         white-space: nowrap;
         }
-        .z-window {
+        .custom-window {
         padding: 0;
         margin: 0;
         }
@@ -124,11 +124,12 @@
         }
 
 
+
     </style>
 
     <style> body { padding: 0} </style>
 
-    <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
+    <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController" sclass="custom-window">
 
         <div height="40px" sclass="z-listheader">
             <div style="float:left; margin-top: 5px;">
