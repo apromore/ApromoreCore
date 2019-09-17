@@ -117,44 +117,10 @@
         .z-paging {
         background: unset;
         }
-        .z-listitem-selected .z-listcell-content {
-        background: #fff0cf;
-        border-bottom: 1px solid orange;
-        }
 
         .z-listbox-autopaging .z-listcell-content {
         height: 32px;
         min-height: 10px;
-        }
-        .z-listitem:hover .z-listcell-content {
-        background: #fff0cf;
-        }
-
-        .z-treerow-selected .z-treecell-content {
-        background: #fff0cf;
-        }
-
-        .z-treerow:hover .z-treecell-content {
-        background: #fff0cf;
-        }
-
-
-        .z-menupopup:hover .z-menu-content:hover, .z-menupopup:hover .z-menuitem-content:hover {
-        background: #fff0cf;
-        }
-
-        .z-menu-selected>.z-menu-content {
-        background: orange;
-        }
-
-        .z-menu-content:hover {
-        background: #ffe09c;
-        color: grey;
-        }
-
-        .z-menu-content:focus {
-        background: #ffe09c;
-        color: grey;
         }
 
 
