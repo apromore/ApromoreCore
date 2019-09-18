@@ -147,7 +147,7 @@ public class EventLogServiceImplTest {
         XLog xlog = new XLogImpl(new XAttributeMapImpl());
 
         expect(logRepository.findUniqueByID(logId)).andReturn(log);
-        expect(logRepository.getProcessLog(log)).andReturn(xlog);
+        expect(logRepository.getProcessLog(log, "")).andReturn(xlog);
         replay(logRepository);
 //        XLog expectXlog = eventLogService.getXLog(logId);
 //        verify(logRepository);

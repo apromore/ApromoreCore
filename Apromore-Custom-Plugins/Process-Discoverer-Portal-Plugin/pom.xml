@@ -151,10 +151,15 @@
             <artifactId>portal-plugin-api</artifactId>
         </dependency>
 
-		<dependency>
+        <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>bimp-annotation-logic</artifactId>
             <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.xeslite</groupId>
+            <artifactId>xeslite</artifactId>
         </dependency>
 		
         <dependency>

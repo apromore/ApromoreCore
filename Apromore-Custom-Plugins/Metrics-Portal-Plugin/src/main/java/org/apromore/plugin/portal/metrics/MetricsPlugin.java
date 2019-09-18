@@ -65,6 +65,7 @@ public class MetricsPlugin extends PluginCustomGui {
     @Inject private ProcessService processService;
     @Inject private EventLogService eventLogService;
     @Inject private BPMNDiagramImporter importerService;
+    @Inject private String xesFactoryName;
 
     /* zk gui variables */
     private Window settings;
@@ -237,7 +238,7 @@ public class MetricsPlugin extends PluginCustomGui {
 
         try {
             for (LogSummaryType logSummaryType : logVersion.keySet()) {
-                    XLog log = eventLogService.getXLog(logSummaryType.getId());
+                    XLog log = eventLogService.getXLog(logSummaryType.getId(), xesFactoryName);
                     metrics = metricsService.computeMetrics(log);
 
                     if(metrics == null) LOGGER.info("GOT NULL!");
