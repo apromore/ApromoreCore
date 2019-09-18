@@ -158,8 +158,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.xeslite</groupId>
-            <artifactId>xeslite</artifactId>
+                <groupId>io.github.andreas-solti.xeslite</groupId>
+                <artifactId>xeslite</artifactId>
+                <version>0.0.1</version>
         </dependency>
 		
         <dependency>

@@ -62,7 +62,7 @@ rem ------------------------------
     set DEBUG_FLAG=
     set DEBUG_PORT=8000
     set SUSPEND=n
-    if not defined JMX_PORT set JMX_PORT=9875
+    if not defined JMX_PORT set JMX_PORT=9876
     if not defined KEYSTORE_PASSWORD set KEYSTORE_PASSWORD=changeit
     set ADDITIONAL_ARGS=
 
@@ -167,13 +167,14 @@ rem ------------------------------
       set TMP_DIR="%KERNEL_HOME%\work\tmp"
       if not exist "%TMP_DIR%" mkdir "%TMP_DIR%"
 
-	set JAVA_OPTS=%JAVA_OPTS% -server -Xmx4g -Xmn1g
+	set JAVA_OPTS=%JAVA_OPTS% -server -Xms20g -Xmx20g
     rem Run the server
   
       rem Marshall parameters
       set KERNEL_JAVA_PARMS=%JAVA_OPTS% %DEBUG_OPTS% %JMX_OPTS%
 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -XX:+HeapDumpOnOutOfMemoryError 
+	  set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -XX:+PrintGCDetails -Xloggc:%KERNEL_HOME%\serviceability\gc.log -XX:+PrintGCTimeStamps 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -XX:ErrorFile="%KERNEL_HOME%\serviceability\error.log" 
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -XX:HeapDumpPath="%KERNEL_HOME%\serviceability\heap_dump.hprof"
       set KERNEL_JAVA_PARMS=%KERNEL_JAVA_PARMS% -Djava.security.auth.login.config="%CONFIG_DIR%\org.eclipse.virgo.kernel.authentication.config" 
@@ -212,7 +213,7 @@ rem ------------------------------
   set CONFIG_DIR=%KERNEL_HOME%\configuration
   if not defined TRUSTSTORE_PATH set TRUSTSTORE_PATH=%CONFIG_DIR%\keystore
   if not defined TRUSTSTORE_PASSWORD set TRUSTSTORE_PASSWORD=changeit
-  if not defined JMX_PORT set JMX_PORT=9875
+  if not defined JMX_PORT set JMX_PORT=9876
   set OTHER_ARGS=
 
   rem Loop through options

@@ -89,6 +89,7 @@ import org.zkoss.zul.*;
 import javax.swing.*;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
+import java.lang.management.ManagementFactory;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -258,6 +259,11 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     
     
     public void onCreate() throws InterruptedException {
+
+        // *******  profiling code start here ********
+        long startTime = System.nanoTime();
+        // *******  profiling code end here ********
+
         String id = Executions.getCurrent().getParameter("id");
         if (id == null) {
             throw new AssertionError("No id parameter in URL");
@@ -307,7 +313,18 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         else {
         	throw new AssertionError("Cannot obtain log file for log id = " + logSummary.getId());
         }
-    	
+        // *******  profiling code start here ********
+        long elapsedNanos = System.nanoTime() - startTime;
+        LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
+
+        System.gc();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+        }
+        LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+
+        // *******  profiling code end here ********
     }
 
     private void start() {

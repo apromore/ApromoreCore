@@ -726,7 +726,6 @@ CREATE TABLE `statistic` (
   KEY `idx_logid` (`logid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- Scheduler tables
 
 # CREATE TABLE `qrtz_job_details` (

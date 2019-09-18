@@ -134,7 +134,7 @@ public class EventLogServiceImpl implements EventLogService {
 
         XFactory factory = XFactoryRegistry.instance().currentDefault().getClass().getConstructor().newInstance();
         LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
-        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(factory, inputStreamLog, extension), user.getId(), domain, created, publicModel);
+        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(factory, inputStreamLog, extension), user.getId(), domain, created);
         Log log = new Log();
         log.setFolder(folderRepo.findUniqueByID(folderId));
         log.setDomain(domain);

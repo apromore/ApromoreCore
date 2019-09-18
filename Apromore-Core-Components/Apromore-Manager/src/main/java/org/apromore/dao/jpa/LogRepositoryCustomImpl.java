@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -152,11 +153,27 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
      */
     public XLog getProcessLog(Log log, String factoryName) {
         if (log != null) {
+
+            // *******  profiling code start here ********
+            long startTime = System.nanoTime();
+            // *******  profiling code end here ********
+
             try {
                 String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
-                XFactory factory = getXFactory(factoryName).getClass().getConstructor().newInstance();
-                LOGGER.info("Getting XES log " + name + " using " + factory.getClass());
-                return importFromFile(factory, name);
+                XFactory factory = getXFactory(factoryName);
+                XLog xlog = importFromFile(factory, name);
+
+                long elapsedNanos = System.nanoTime() - startTime;
+                LOGGER.info("Retrieved XES log " + name + " using " + factory.getClass() + "Elapsed time: " + elapsedNanos / 1000000 + " ms");
+
+                System.gc();
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                }
+                LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+
+                return xlog;
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
             }
