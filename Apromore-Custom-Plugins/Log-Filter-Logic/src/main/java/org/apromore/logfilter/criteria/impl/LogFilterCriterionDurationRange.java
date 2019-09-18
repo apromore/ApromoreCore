@@ -7,6 +7,9 @@ import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -26,29 +29,38 @@ public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion 
     public boolean matchesCriterion(XTrace trace) {
         long greaterThan = 0;
         long lesserThan = Long.MAX_VALUE;
+
         for(String v : value) {
             if(v.startsWith(">")) {
                 int spaceIndex = v.indexOf(" ");
                 String numberString = v.substring(1, spaceIndex);
-                long longValue = new Double(numberString).longValue();
+                BigDecimal doubleValue = new BigDecimal(numberString);
                 String unit = v.substring(spaceIndex + 1);
-                long unitValue = stringToMilli(unit);
-                greaterThan = longValue * unitValue;
+                BigDecimal unitValue = unitStringToBigDecimal(unit);
+                BigDecimal gValue = doubleValue.multiply(unitValue);
+                greaterThan = gValue.longValue();
+
             }
             if(v.startsWith("<")){
+
                 int spaceIndex = v.indexOf(" ");
                 String numberString = v.substring(1, spaceIndex);
-                long longValue = new Double(numberString).longValue();
+                BigDecimal doubleValue = new BigDecimal(numberString);
                 String unit = v.substring(spaceIndex + 1);
-                long unitValue = stringToMilli(unit);
-                lesserThan = longValue * unitValue;
+                BigDecimal unitValue = unitStringToBigDecimal(unit);
+                BigDecimal lValue = doubleValue.multiply(unitValue);
+                lesserThan = lValue.longValue();
             }
         }
+
         long s = epochMilliOf(zonedDateTimeOf(trace.get(0)));
         long e = epochMilliOf(zonedDateTimeOf(trace.get(trace.size()-1)));
         long dur = e - s;
-        if(dur >= greaterThan && dur <= lesserThan) return true;
-        else return false;
+
+        if(dur < greaterThan) return false;
+        else if(dur > lesserThan) return false;
+        else return true;
+
     }
 
 
@@ -68,14 +80,61 @@ public class LogFilterCriterionDurationRange extends AbstractLogFilterCriterion 
         return z;
     }
 
-    private long stringToMilli(String s) {
-        if(s.equals("Years")) return new Long("31556952000");
-        if(s.equals("Months")) return new Long("2628000000");
-        if(s.equals("Weeks")) return 1000 * 60 * 60 * 24 * 7;
-        if(s.equals("Days")) return 1000 * 60 * 60 * 24;
-        if(s.equals("Hours")) return 1000 * 60 * 60;
-        if(s.equals("Minutes")) return 1000 * 60;
-        if(s.equals("Seconds")) return 1000;
-        return 0;
+
+    private BigDecimal unitStringToBigDecimal(String s) {
+        if(s.equals("Years")) return new BigDecimal("31536000000");
+        if(s.equals("Months")) return new BigDecimal("2678400000");
+        if(s.equals("Weeks")) return new BigDecimal("604800000");
+        if(s.equals("Days")) return new BigDecimal("86400000");
+        if(s.equals("Hours")) return new BigDecimal("3600000");
+        if(s.equals("Minutes")) return new BigDecimal("60000");
+        if(s.equals("Seconds")) return new BigDecimal("1000");
+        return new BigDecimal(0);
+    }
+
+
+    public static String convertMilliseconds(long milliseconds) {
+        DecimalFormat decimalFormat = new DecimalFormat("##############0.##");
+        double seconds = milliseconds / 1000.0D;
+        double minutes = seconds / 60.0D;
+        double hours = minutes / 60.0D;
+        double days = hours / 24.0D;
+        double weeks = days / 7.0D;
+        double months = days / 31.0D;
+        double years = days / 365.0D;
+
+        if (years > 1.0D) {
+            return decimalFormat.format(years) + " yrs";
+        }
+
+        if (months > 1.0D) {
+            return decimalFormat.format(months) + " mths";
+        }
+
+        if (weeks > 1.0D) {
+            return decimalFormat.format(weeks) + " wks";
+        }
+
+        if (days > 1.0D) {
+            return decimalFormat.format(days) + " d";
+        }
+
+        if (hours > 1.0D) {
+            return decimalFormat.format(hours) + " hrs";
+        }
+
+        if (minutes > 1.0D) {
+            return decimalFormat.format(minutes) + " mins";
+        }
+
+        if (seconds > 1.0D) {
+            return decimalFormat.format(seconds) + " secs";
+        }
+
+        if (milliseconds > 1.0D) {
+            return decimalFormat.format(milliseconds) + " millis";
+        }
+
+        return "instant";
     }
 }

@@ -54,15 +54,7 @@
                             *
                         </Import-Package>
                         <Export-Package>
-                            org.apromore.logman,
-                            org.apromore.logman.classifier,
-                            org.apromore.logman.log,
-                            org.apromore.logman.log.event,
-                            org.apromore.logman.log.activityaware,
-                            org.apromore.logman.log.relation,
-                            org.apromore.logman.log.classifieraware,
-                            org.apromore.logman.stats,
-                            org.apromore.logman.stats.collector
+                            org.apromore.logman.stats
                         </Export-Package>
                     </instructions>
                 </configuration>

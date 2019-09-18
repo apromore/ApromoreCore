@@ -59,17 +59,15 @@
 		div.z-listbox-body .z-listcell {
 		padding: 0;
 		}
-		tr.z-row td.z-row-inner, tr.z-row .z-cell, tr.z-row {
-		background: none repeat scroll 0% 0% white;
-		}
-		tr.z-grid-odd td.z-row-inner, tr.z-grid-odd .z-cell, tr.z-grid-odd, td.z-listcell {
-		background: none repeat scroll 0% 0% rgb(240, 250, 255);
-		}
 
-		tr.z-row-disabled td.z-row-inner {
+		tr.z-row-disabled td.z-row-inner .z-slider-area  {
 		padding: 1px 1px 1px 1px;
 		line-height: 25px;
 		background: none repeat scroll 0% 0% rgb(220,220,220);
+		}
+
+		tr.z-row-disabled .z-slider-button {
+		background-color: #AAA;
 		}
 
 		div.z-listcell-cnt {
@@ -158,6 +156,11 @@
 		right: 0px;
 		font-size: 16px; }
 
+		tr.z-grid-odd td.z-row-inner, tr.z-grid-odd .z-cell, tr.z-grid-odd, td.z-listcell {
+		background: unset;
+		}
+
+
 	</style>
 
 	<window id="win" border="0" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
@@ -185,7 +188,7 @@
 				</button>
 
 				<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
-					<button iconSclass="z-icon-exclamation" style="float: right; min-width: 4em;" height="2em" sclass="helpButton"></button>
+					<button iconSclass="z-icon-question" style="float: right; min-width: 4em;" height="2em" sclass="helpButton"></button>
 				</a>
 			</div>
 		</caption>
@@ -285,7 +288,7 @@
 									<column width="12.5%"/>
 								</columns>
 								<rows>
-									<row height="58px">
+									<row height="64px">
 										<label>Cases</label>
 										<label>Unique Cases</label>
 										<label>Events</label>
@@ -295,7 +298,7 @@
 										<label>Max Duration</label>
 										<label>Min Duration</label>
 									</row>
-									<row height="58px">
+									<row height="64px">
 										<label id="caseNumber">Cases</label>
 										<label id="uniquecaseNumber">Unique Cases</label>
 										<label id="eventNumber">Events</label>
@@ -330,10 +333,10 @@
 						</columns>
 						<rows>
 							<row align="center">
-								<combobutton id="selector" label="Perspective" height="2em" hflex="1">
+								<combobutton id="selector" label="Perspective" hflex="1" height="26px">
 									<menupopup id="selectormenu" />
 								</combobutton>
-								<combobutton id="frequency" label="Frequency" height="2em" hflex="1" onClick="case_frequency.setChecked(true);absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)">
+								<combobutton id="frequency" label="Frequency" height="26px" hflex="1" onClick="case_frequency.setChecked(true);absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)">
 									<menupopup>
 										<menuitem id="case_frequency" label="Case" checked="true" onCheck='absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
 										<menuitem id="absolute_frequency" label="Cumulative" onCheck='case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
@@ -344,7 +347,7 @@
 										<menuitem id="min_frequency" label="Min" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false)' />
 									</menupopup>
 								</combobutton>
-								<combobutton id="duration" label="Duration" height="2em" hflex="1" onClick="total_duration.setChecked(false);median_duration.setChecked(false);mean_duration.setChecked(true);max_duration.setChecked(false);min_duration.setChecked(false)">
+								<combobutton id="duration" label="Duration" height="26px" hflex="1" onClick="total_duration.setChecked(false);median_duration.setChecked(false);mean_duration.setChecked(true);max_duration.setChecked(false);min_duration.setChecked(false)">
 									<menupopup>
 										<menuitem id="total_duration" label="Cumulative" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
 										<menuitem id="mean_duration" label="Average" checked="true" onCheck='median_duration.setChecked(false);total_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
@@ -353,7 +356,7 @@
 										<menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
 									</menupopup>
 								</combobutton>
-								<combobutton id="layout" label="Layout" height="2em" hflex="1" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);'>
+								<combobutton id="layout" label="Layout" height="26px" hflex="1" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);'>
 									<menupopup>
 										<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Hierarchical" checked="true" />
 										<menuitem id="layout_dagre_LR" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(true);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Dagre Left-Right" checked="false" />
@@ -361,8 +364,8 @@
 										<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />
 									</menupopup>
 								</combobutton>
-								<button id="fitScreen" label="Fit to screen" height="2em" hflex="1" />
-								<combobutton id="export" label="Export" height="2em" hflex="1">
+								<button id="fitScreen" label="Fit to screen" height="26px" hflex="1" />
+								<combobutton id="export" label="Export" height="26px" hflex="1">
 									<menupopup>
 										<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>
 										<menuitem id="exportBPMN" label="Save as BPMN Model..." onCheck='exportBPMN.setChecked(false)'/>
@@ -371,11 +374,11 @@
 										<menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
 									</menupopup>
 								</combobutton>
-								<button id="details" label="Activities" height="2em" hflex="1" />
-								<button id="cases" label="Cases" height="2em" hflex="1" />
-								<button id="fitness" label="Fitness" height="2em" hflex="1" />
-								<button id="filter" label="Filter" height="2em" hflex="1" />
-								<button id="animate" height="2em" hflex="1" onClick='Clients.evalJavaScript("animate()")' label="Animate" />
+								<button id="details" label="Activities" height="26px" hflex="1" />
+								<button id="cases" label="Cases" height="26px" hflex="1" />
+								<button id="fitness" label="Fitness" height="26px" hflex="1" />
+								<button id="filter" label="Filter" height="26px" hflex="1" />
+								<button id="animate" height="26px" hflex="1" onClick='Clients.evalJavaScript("animate()")' label="Animate" />
 							</row>
 						</rows>
 					</grid>

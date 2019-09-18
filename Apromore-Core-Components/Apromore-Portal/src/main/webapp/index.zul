@@ -104,7 +104,7 @@
         position: relative;
         white-space: nowrap;
         }
-        .z-window {
+        .custom-window {
         padding: 0;
         margin: 0;
         }
@@ -117,32 +117,19 @@
         .z-paging {
         background: unset;
         }
-        .z-listitem-selected .z-listcell-content {
-        background: #fff0cf;
-        border-bottom: 1px solid orange;
-        }
 
         .z-listbox-autopaging .z-listcell-content {
         height: 32px;
         min-height: 10px;
         }
-        .z-listitem:hover .z-listcell-content {
-        background: #fff0cf;
-        }
 
-        .z-treerow-selected .z-treecell-content {
-        background: #fff0cf;
-        }
 
-        .z-treerow:hover .z-treecell-content {
-        background: #fff0cf;
-        }
 
     </style>
 
     <style> body { padding: 0} </style>
 
-    <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController">
+    <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController" sclass="custom-window">
 
         <div height="40px" sclass="z-listheader">
             <div style="float:left; margin-top: 5px;">
