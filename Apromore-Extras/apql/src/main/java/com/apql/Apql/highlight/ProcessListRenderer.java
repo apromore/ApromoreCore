@@ -32,7 +32,7 @@ import javax.swing.*;
 
 public class ProcessListRenderer extends  DefaultListCellRenderer {
     protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-    private final ImageIcon folderImg = new ImageIcon(getClass().getResource("/icons/folder24.png"));
+    private final ImageIcon folderImg = new ImageIcon(getClass().getResource("/icons/"));
     private final ImageIcon modelImg = new ImageIcon(getClass().getResource("/icons/bpmn_22x22.png"));
 
     @Override
