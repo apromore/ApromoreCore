@@ -23,6 +23,7 @@ package org.apromore.manager;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
+import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.Cluster;
@@ -93,6 +94,7 @@ public class ManagerPortalEndpoint {
     private SecurityService secSrv;
     private WorkspaceService workspaceSrv;
     private UserInterfaceHelper uiHelper;
+    private boolean enableCPF;
 
 
     /**
@@ -121,7 +123,7 @@ public class ManagerPortalEndpoint {
                                  final FragmentService fragmentSrv, final CanoniserService canoniserService, final ProcessService procSrv,
                                  final EventLogService logSrv, final ClusterService clusterService, final FormatService frmSrv, final DomainService domSrv,
                                  final UserService userSrv,
-                                 final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper) {
+                                 final SecurityService secSrv, final WorkspaceService wrkSrv, final UserInterfaceHelper uiHelper, final ConfigBean config) {
 
 
         this.deploymentService = deploymentService;
@@ -143,6 +145,8 @@ public class ManagerPortalEndpoint {
 //        } catch (RepositoryException e) {
 //            e.printStackTrace();
 //        }
+
+        this.enableCPF = config.getEnableCPF();
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "EditLogDataRequest")
@@ -300,8 +304,15 @@ public class ManagerPortalEndpoint {
             Version orignialVersion = new Version(editType.getOriginalVersionNumber());
             Version currentVersion = new Version(editType.getCurrentVersionNumber());
 
-            Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
-            CanonisedProcess canonisedProcess = canoniserService.canonise(editType.getNativeType(), native_is, canoniserProperties);
+            CanonisedProcess canonisedProcess;
+            if (enableCPF) {
+                Set<RequestParameterType<?>> canoniserProperties = new HashSet<>();
+                canonisedProcess = canoniserService.canonise(editType.getNativeType(), native_is, canoniserProperties);
+            } else {
+                canonisedProcess = new CanonisedProcess();
+                canonisedProcess.setOriginal(native_is);
+            }
+            assert canonisedProcess != null;
 
             procSrv.updateProcess(editType.getProcessId(), editType.getProcessName(), editType.getOriginalBranchName(), editType.getNewBranchName(),
                     currentVersion, orignialVersion, secSrv.getUserByName(editType.getUsername()), Constants.LOCKED, natType, canonisedProcess);
@@ -331,6 +342,10 @@ public class ManagerPortalEndpoint {
         Integer fragmentId = payload.getFragmentId();
 
         try {
+            if (!enableCPF) {
+                throw new CanoniserException("Fragments not supported because manager.enableCPF is false");
+            }
+
             CanonicalProcessType cpt = fragmentSrv.getFragmentToCanonicalProcessType(fragmentId);
             DecanonisedProcess dp = canoniserService.deCanonise(defaultFormat, cpt, null, new HashSet<RequestParameterType<?>>());
 
@@ -485,8 +500,15 @@ public class ManagerPortalEndpoint {
 
             LOGGER.info("Importing process: " + processName);
 
-            Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestParameters(xmlCanoniserProperties);
-            CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
+            CanonisedProcess canonisedProcess;
+            if (enableCPF) {
+                Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestParameters(xmlCanoniserProperties);
+                canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
+            } else {
+                canonisedProcess = new CanonisedProcess();
+                canonisedProcess.setOriginal(handler.getInputStream());
+            }
+            assert canonisedProcess != null;
             ProcessModelVersion pmv = procSrv.importProcess(username, folderId, processName, version, nativeType, canonisedProcess,
                     domain, "", creationDate, lastUpdate, publicModel);
             ProcessSummaryType process = uiHelper.createProcessSummary(pmv.getProcessBranch().getProcess(), pmv.getProcessBranch(), pmv,
@@ -495,6 +517,8 @@ public class ManagerPortalEndpoint {
             ImportProcessResultType importResult = new ImportProcessResultType();
             if (canonisedProcess.getMessages() != null) {
                 importResult.setMessage(PluginHelper.convertFromPluginMessages(canonisedProcess.getMessages()));
+            } else {
+                importResult.setMessage(PluginHelper.convertFromPluginMessages(Collections.emptyList()));
             }
             importResult.setProcessSummary(process);
             res.setImportProcessResult(importResult);

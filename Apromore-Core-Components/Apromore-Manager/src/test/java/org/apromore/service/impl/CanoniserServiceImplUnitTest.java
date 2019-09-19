@@ -22,6 +22,7 @@ package org.apromore.service.impl;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.provider.CanoniserProvider;
+import org.apromore.common.ConfigBean;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class CanoniserServiceImplUnitTest {
     public final void setUp() throws Exception {
         mockProvider = createMock(CanoniserProvider.class);
         mockCanoniser = createMock(Canoniser.class);
-        myService = new CanoniserServiceImpl(mockProvider);
+        myService = new CanoniserServiceImpl(mockProvider, new ConfigBean());
     }
     
     @Test

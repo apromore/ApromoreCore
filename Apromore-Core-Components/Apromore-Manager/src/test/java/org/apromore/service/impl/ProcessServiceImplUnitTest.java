@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apromore.common.ConfigBean;
 import org.apromore.dao.AnnotationRepository;
 import org.apromore.dao.FragmentVersionDagRepository;
 import org.apromore.dao.FragmentVersionRepository;
@@ -99,8 +100,9 @@ public class ProcessServiceImplUnitTest {
         UserInterfaceHelper ui = createMock(UserInterfaceHelper.class);
         FragmentService fSrv = createMock(FragmentService.class);
         WorkspaceService workspaceSrv = createMock(WorkspaceService.class);
+        ConfigBean config = new ConfigBean();
 
-        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, convertor, annSrv, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv);
+        service = new ProcessServiceImpl(annDao, natDao, grpDao, branchDao, proDao, fvDao, fvdDao, pmvDao, grpProcDao, convertor, annSrv, canSrv, lSrv, usrSrv, fSrv, fmtSrv, composerSrv, decomposerSrv, ui, workspaceSrv, config);
     }
 
     @Test

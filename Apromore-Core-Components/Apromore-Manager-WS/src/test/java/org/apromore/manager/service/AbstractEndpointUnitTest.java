@@ -22,6 +22,7 @@ package org.apromore.manager.service;
 
 import static org.powermock.api.easymock.PowerMock.createMock;
 
+import org.apromore.common.ConfigBean;
 import org.apromore.manager.ManagerPortalEndpoint;
 import org.apromore.service.*;
 import org.apromore.service.helper.UIHelper;
@@ -65,6 +66,6 @@ public abstract class AbstractEndpointUnitTest {
         uiHelper = createMock(UIHelper.class);
 
         endpoint = new ManagerPortalEndpoint(deploymentService, pluginService, fragmentSrv, canoniserService, procSrv, eventLogSrv,
-                clusterService, frmSrv, domSrv, userSrv, secSrv, wrkSrv, uiHelper);
+                clusterService, frmSrv, domSrv, userSrv, secSrv, wrkSrv, uiHelper, new ConfigBean());
     }
 }

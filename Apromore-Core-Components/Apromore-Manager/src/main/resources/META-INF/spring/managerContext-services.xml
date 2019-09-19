@@ -27,6 +27,10 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd">
 
+    <bean id="config" class="org.apromore.common.ConfigBean">
+        <property name="enableCPF" value="${manager.enableCPF}"/>
+    </bean>
+
     <context:component-scan base-package="org.apromore.security"/>
     <context:component-scan base-package="org.apromore.service"/>
     <context:component-scan base-package="org.apromore.toolbox"/>
