@@ -62,9 +62,16 @@ import org.apromore.portal.dialogController.MainController;
 import org.apromore.portal.dialogController.SaveAsDialogController;
 
 /**
- * Controller for a pair of signavio editor windows.
- *
- * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
+ * Controller for the model to model comparison window
+ * @modifier: Bruce Nguyen
+ * @todo: the Save and SaveAs buttons in the editor only refer to editSession1.
+ * It should be able to differentiate editSession1 and editSession2.
+ * To do that, the ORYX.Plugins.ApromoreSave.apromoreSave and SaveAs function in the zul file
+ * must identify what editor it belongs to. To do that, it should access the editor facade 
+ * javascript object (representing the editor), the facade must add getEditorNode() to the facade
+ * interface. So the plugin object can call facade.getEditorNode().id, and id can be "oryx-canvas1"
+ * and "oryx-canvas2" as defined in the zul file. Then, it will send ZK event to this controller
+ * with differentiating events such as "onSave1" for editor 1 and "onSave2" for editor 2.
  */
 public class ModelsComparisonController extends BaseController {
 
@@ -204,7 +211,6 @@ public class ModelsComparisonController extends BaseController {
             LOGGER.error("",e);
             e.printStackTrace();
         }
-
 
         this.addEventListener("onSave", new EventListener<Event>() {
             @Override

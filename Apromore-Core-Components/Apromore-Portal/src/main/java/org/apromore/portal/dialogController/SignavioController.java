@@ -30,12 +30,14 @@ import javax.xml.transform.stream.StreamSource;
 
 // Third party packages
 import org.apromore.plugin.editor.EditorPlugin;
+import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.context.EditorPluginResolver;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.zhtml.Messagebox;
 import org.zkoss.zk.au.AuResponse;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -78,11 +80,13 @@ public class SignavioController extends BaseController {
     private Set<RequestParameterType<?>> params;
     private int m1PESSize, m2PESSize;
     private JSONObject differences;
-
+    private boolean isNewProcess=false;
+    
     public SignavioController() {
         super();
 
         String id = Executions.getCurrent().getParameter("id");
+        isNewProcess = Boolean.valueOf(Executions.getCurrent().getParameter("newProcess"));
         if (id != null) {
             SignavioSession session = UserSessionManager.getEditSession(id);
             if (session == null) {
@@ -207,23 +211,47 @@ public class SignavioController extends BaseController {
             e.printStackTrace();
         }
 
+      //todo: the exception catching here is not effective as ZK dialogs are asynchronous
         this.addEventListener("onSave", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
+                boolean isNewProcessBackup = isNewProcess;
                 try {
-                    new SaveAsDialogController(process, version, editSession1, true, eventToString(event));
-                } catch (ExceptionFormats exceptionFormats) {
-                    LOGGER.error("Error saving model.", exceptionFormats);
+                    if (isNewProcess) {
+                        new SaveAsDialogController(process, version, editSession1, null, eventToString(event));
+                        isNewProcess = false; // to change to save current after saving as new
+                    }
+                    else {
+                        new SaveAsDialogController(process, version, editSession1, true, eventToString(event));
+                    }
+                } catch (Exception ex) {
+//                    Messagebox.show("Error saving model: " + ex.getMessage());
+                    LOGGER.error("Error saving model.", ex.getStackTrace().toString());
+                    Messagebox.show("Unable to save model! Check if a model with the same name and version number has already existed.");
+                    isNewProcess = isNewProcessBackup; //change the status back in case of saving error
                 }
             }
         });
+        
+        //todo: the exception catching here is not effective as ZK dialogs are asynchronous
         this.addEventListener("onSaveAs", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws InterruptedException {
+                boolean isNewProcessBackup = isNewProcess;
                 try {
-                    new SaveAsDialogController(process, version, editSession1, false, eventToString(event));
-                } catch (ExceptionFormats exceptionFormats) {
-                    LOGGER.error("Error saving model.", exceptionFormats);
+                    // If new model: choose Save As is the same as choose Save 
+                    if (isNewProcess) {
+                        new SaveAsDialogController(process, version, editSession1, null, eventToString(event));
+                        isNewProcess = false; // to change to save current after saving as new
+                    }
+                    else {
+                        new SaveAsDialogController(process, version, editSession1, false, eventToString(event));
+                    }
+                } catch (Exception ex) {
+//                    Messagebox.show("Error saving model: " + ex.getMessage());
+                    LOGGER.error("Error saving model.", ex.getStackTrace().toString());
+                    Messagebox.show("Unable to save model! Check if a model with the same name and version number has already existed.");
+                    isNewProcess = isNewProcessBackup; //change the status back in case of saving error
                 }
             }
         });
