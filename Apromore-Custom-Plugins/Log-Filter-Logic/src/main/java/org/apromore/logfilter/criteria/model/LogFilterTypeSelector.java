@@ -54,7 +54,9 @@ public class LogFilterTypeSelector {
             "org:role",
 //            "time:duration",
             "time:timestamp",
-			"duration:range"
+			"duration:range",
+			"time:startrange",
+			"time:endrange"
     };
     
     // Must be sorted for Arrays.binarySearch
@@ -84,6 +86,8 @@ public class LogFilterTypeSelector {
 //		codeNameMap.put("time:duration", "Duration");
 		codeNameMap.put("time:timestamp", "Timeframe");
 		codeNameMap.put("duration:range", "Duration range");
+		codeNameMap.put("time:startrange", "Start time range");
+		codeNameMap.put("time:endrange", "End time range");
     }
        
     private static Map<String,Type> typeMap = new HashMap<>();
@@ -99,6 +103,8 @@ public class LogFilterTypeSelector {
 //    	typeMap.put("time:duration", Type.TIME_DURATION);
     	typeMap.put("time:timestamp", Type.TIME_TIMESTAMP);
 		typeMap.put("duration:range", Type.DURATION_RANGE);
+		typeMap.put("time:startrange", Type.TIME_STARTRANGE);
+		typeMap.put("time:endrange", Type.TIME_ENDRANGE);
     }
     
     private static Set<String> eventStandardCodes = new HashSet<>(Arrays.asList(
