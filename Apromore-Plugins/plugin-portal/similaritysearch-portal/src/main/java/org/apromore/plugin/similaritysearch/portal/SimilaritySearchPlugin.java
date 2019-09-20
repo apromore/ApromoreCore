@@ -65,7 +65,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Search Similar Models";
+        return "Search similar models";
     }
 
     @Override

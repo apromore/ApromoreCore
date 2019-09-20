@@ -45,7 +45,7 @@
 		
 	<beans:bean id="plugin" class="org.apromore.plugin.portal.logfilter.LogFilterStandardPlugin">
         <beans:property name="groupLabel" value="Discover" />
-        <beans:property name="label" value="Filter Log" />
+        <beans:property name="label" value="Filter log" />
     </beans:bean>
 
     <!-- Exposes the component as OSGi service -->

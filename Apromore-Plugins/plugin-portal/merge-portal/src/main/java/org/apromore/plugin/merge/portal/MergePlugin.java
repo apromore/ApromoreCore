@@ -78,7 +78,7 @@ public class MergePlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Merge";
+        return "Merge models";
     }
 
     @Override

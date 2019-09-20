@@ -24,7 +24,7 @@
         <listheader label="Score"             hflex="1"    visible="true" id="columnScore"/>
         <listheader label="Name"              hflex="5"/>                   <!-- name -->
         <listheader label="Id"                hflex="1"    align="center"/> <!-- id -->
-        <listheader label="Original language" hflex="min"/>                 <!-- originalNativeType -->
+        <listheader label="Format"            hflex="1"/>                 <!-- originalNativeType -->
         <listheader label="Domain"            hflex="1"/>                   <!-- domain -->
         <listheader label="Ranking"           width="90px" align="center"/> <!-- ranking -->
         <listheader label="Latest version"    hflex="min"  align="center"/> <!-- lastVersion -->

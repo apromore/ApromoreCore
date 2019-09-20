@@ -33,7 +33,7 @@ import java.util.Locale;
 @Component("frequencyPlugin")
 public class ProcessDiscovererFrequencyVisualizer extends ProcessDiscovererAbstractPlugin {
 
-    private String label = "Discover process map / BPMN model";
+    private String label = "Discover map/model";
     private String groupLabel = "Discover";
 
     @Override
