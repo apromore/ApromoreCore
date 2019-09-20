@@ -129,19 +129,19 @@
 
 		.optionButton {
 		position: absolute;
-		left: 88%;
+		left: 86.759%;
 		margin-right: 10px;
 		}
 
 		.shortcutButton {
 		position: absolute;
-		left: 92%;
+		left: 91%;
 		margin-right: 10px;
 		}
 
 		.helpButton {
 		position: absolute;
-		left: 96%;
+		left: 95.25%;
 		margin-right: 10px;
 		}
 
