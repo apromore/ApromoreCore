@@ -23,7 +23,12 @@
   -->
 
 <window width="900px" closable="true" title="Manage Security" position="center" id="winSecuritySetup">
+    <style>
+        .z-tree-icon {
+        vertical-align: middle;
+        }
 
+    </style>
     <hbox spacing="0" width="100%" widths="30%,70%" height="670px">
         <borderlayout vflex="true" width="100%">
             <center title="My Workspace" flex="true">
