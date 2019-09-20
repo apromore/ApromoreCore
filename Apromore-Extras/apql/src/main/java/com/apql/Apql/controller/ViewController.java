@@ -64,7 +64,7 @@ public class ViewController {
     private JApplet applet;
 
     public final ImageIcon iconProc = new ImageIcon(getClass().getResource("/img/svg/bpmn_model.svg"));
-    public final ImageIcon iconFold = new ImageIcon(getClass().getResource("/img/icon/svg/folder_icon.svg"));
+    public final ImageIcon iconFold = new ImageIcon(getClass().getResource("/img/icon/svg/folder_icons.svg"));
     public final ImageIcon iconHome = new ImageIcon(getClass().getResource("/img/icon/svg/folder_home.svg"));
     public final ImageIcon iconKeyword = new ImageIcon(getClass().getResource("/img/icons/key.png"));
 

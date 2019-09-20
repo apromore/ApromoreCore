@@ -75,7 +75,7 @@ public class MiscFolderTreeRenderer implements TreeitemRenderer {
             if (folder.getId() == 0) {
                 hl.appendChild(new Image("/img/icon/svg/folder_home.svg"));
             } else {
-                hl.appendChild(new Image("/img/icon/svg/folder_icon.svg"));
+                hl.appendChild(new Image("/img/icon/svg/folder_icons.svg"));
             }
 
             hl.appendChild(new Label(name.length() > 15 ? name.substring(0, 13) + "..." : name));
