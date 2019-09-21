@@ -48,6 +48,10 @@ public class LogFilterCriterionFactoryImpl implements LogFilterCriterionFactory 
                 return new LogFilterCriterionDurationRange(action, containment, level, label, attribute, value);
             case CASE_VARIANT:
                 return new LogFilterCriterionCaseVariant(action, containment, level, label, attribute, value);
+            case TIME_STARTRANGE:
+                return new LogFilterCriterionStartRange(action, containment, level, label, attribute, value);
+            case TIME_ENDRANGE:
+                return new LogFilterCriterionEndRange(action, containment, level, label, attribute, value);
             default:
                 return new LogFilterCriterionAttribute(action, containment, level, label, attribute, value);
         }
