@@ -107,7 +107,7 @@
 
         <include name="Apromore-Custom-Plugins/Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
 
-        <include name="Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
+        <!-- <include name="Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/> -->
 
         <include name="Apromore-Custom-Plugins/StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
