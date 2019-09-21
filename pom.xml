@@ -2234,11 +2234,15 @@
     </reporting>
 
     <profiles>
-        <!-- If you have a license for the ZK Enterprise Edition libraries, you can
-             install the credentials ~/.m2/settings.xml and activate the following
-             profile by passing -Pzkee to the mvn command.  -->
+        <!-- The following profile activates when the ApromoreEE submodule is present.
+             It additionally requires a license for the ZK Enterprise Edition libraries. -->
         <profile>
-            <id>zkee</id>
+            <id>enterprise</id>
+            <activation>
+                <file>
+                    <exists>Apromore-Enterprise-Plugins/README.md</exists>
+                </file>
+            </activation>
             <repositories>
                 <repository>
                     <id>ZK EE</id>
@@ -2246,7 +2250,7 @@
                 </repository>
             </repositories>
             <modules>
-                <module>../Dashboard</module>
+                <module>Apromore-Enterprise-Plugins/Dashboard</module>
                 <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>
                 <!-- <module>Apromore-OSGI-Bundles/zkthemepack-osgi</module> -->
             </modules>
