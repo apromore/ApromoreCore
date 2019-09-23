@@ -305,7 +305,7 @@
 									</row>
 									<row height="64px">
 										<label id="caseNumber">Cases</label>
-										<label id="uniquecaseNumber">Unique Cases</label>
+										<label id="uniquecaseNumber">Case Variants</label>
 										<label id="eventNumber">Events</label>
 										<label id="activityNumber">Activities</label>
 										<label id="meanDuration">Activities</label>
