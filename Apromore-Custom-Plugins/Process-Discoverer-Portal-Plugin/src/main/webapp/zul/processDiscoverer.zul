@@ -132,18 +132,21 @@
 		position: absolute;
 		right: 10px;
 		margin-right: 10px;
+		min-width: 55px;
 		}
 
 		.shortcutButton {
 		position: absolute;
-		right: 70px;
+		right: 75px;
 		margin-right: 10px;
+		min-width: 55px;
 		}
 
 		.helpButton {
 		position: absolute;
-		right: 130px;
+		right: 140px;
 		margin-right: 10px;
+		min-width: 55px;
 		}
 
 		.shortcutPopup {
@@ -172,7 +175,7 @@
 		<caption id="windowcaption" sclass="mainCaption">
 			<div id="utilityTools">
 
-				<button id="optionButton" style="float: right; min-width: 4em;" height="2em" iconSclass="z-icon-caret-up" sclass="optionButton">
+				<button id="optionButton" style="float: right;" height="26px" iconSclass="z-icon-caret-up" sclass="optionButton">
 					<attribute name="onClick">
 						<![CDATA[
               optionButton.setIconSclass(optionbox.isOpen() ? "z-icon-caret-down" : "z-icon-caret-up");
@@ -184,7 +187,7 @@
 					</attribute>
 				</button>
 
-				<button id="shortcutButton" style="float: right; min-width: 4em;" height="2em" iconSclass="z-icon-keyboard-o" sclass="shortcutButton">
+				<button id="shortcutButton" style="float: right;" height="26px" iconSclass="z-icon-keyboard-o" sclass="shortcutButton">
 					<attribute name="onClick">
 						<![CDATA[
               shortcutPopup.open(self,"after_pointer");
@@ -193,7 +196,7 @@
 				</button>
 
 				<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
-					<button iconSclass="z-icon-question" style="float: right; min-width: 4em;" height="2em" sclass="helpButton"></button>
+					<button iconSclass="z-icon-question" style="float: right;" height="26px" sclass="helpButton"></button>
 				</a>
 			</div>
 		</caption>
@@ -305,7 +308,7 @@
 									</row>
 									<row height="64px">
 										<label id="caseNumber">Cases</label>
-										<label id="uniquecaseNumber">Case Variants</label>
+										<label id="uniquecaseNumber">Unique Cases</label>
 										<label id="eventNumber">Events</label>
 										<label id="activityNumber">Activities</label>
 										<label id="meanDuration">Activities</label>
