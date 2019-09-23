@@ -2240,7 +2240,7 @@
             <id>enterprise</id>
             <activation>
                 <file>
-                    <exists>Apromore-Enterprise-Plugins/README.md</exists>
+                    <exists>Apromore-Enterprise-Plugins/pom.xml</exists>
                 </file>
             </activation>
             <repositories>
@@ -2250,8 +2250,7 @@
                 </repository>
             </repositories>
             <modules>
-                <module>Apromore-Enterprise-Plugins/Dashboard</module>
-                <module>Apromore-Enterprise-Plugins/FilterEE</module>
+                <module>Apromore-Enterprise-Plugins</module>
                 <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>
                 <!-- <module>Apromore-OSGI-Bundles/zkthemepack-osgi</module> -->
             </modules>
