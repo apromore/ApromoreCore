@@ -50,7 +50,7 @@
     <property name="dir-osgi" location="${basedir}/Apromore-OSGI-Bundles/"/>
 
     <import file="build-community.xml" as="community"/>
-    <import file="Apromore-Enterprise-Plugins/build-enterprise.xml" as="enterprise"/>
+    <import file="Apromore-Enterprise-Plugins/build-enterprise.xml" as="enterprise" optional="true"/>
     <import file="build-student.xml" as="student"/>
 
     <fileset id="usrRepo" dir=".">
