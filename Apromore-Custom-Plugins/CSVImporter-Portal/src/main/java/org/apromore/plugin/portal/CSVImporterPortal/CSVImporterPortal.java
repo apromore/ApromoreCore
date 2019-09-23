@@ -33,6 +33,7 @@ import javax.xml.datatype.DatatypeFactory;
 
 import com.opencsv.*;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
+import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
@@ -264,7 +265,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             textbox.setWidth("98%");
             textbox.setPlaceholder("Specify timestamp format");
             textbox.addEventListener("onChanging", (InputEvent event) -> {
-                if(event.getValue().trim().length() > 0) {
+                if(StringUtils.isBlank(event.getValue())) {
                     textbox.setPlaceholder("Specify timestamp format");
                 }
                 if(!(event.getValue().isEmpty() || event.getValue().equals(""))){
