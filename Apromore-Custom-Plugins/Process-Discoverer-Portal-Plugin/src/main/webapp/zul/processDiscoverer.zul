@@ -63,12 +63,13 @@
 		tr.z-row-disabled td.z-row-inner .z-slider-area  {
 		padding: 1px 1px 1px 1px;
 		line-height: 25px;
-		background: none repeat scroll 0% 0% rgb(220,220,220);
+		background: none repeat scroll 0% 0% #AAA;
 		}
 
 		tr.z-row-disabled .z-slider-button {
-		background-color: #AAA;
+		background: #AAA;
 		}
+
 
 		div.z-listcell-cnt {
 		line-height: 25px;
@@ -160,6 +161,10 @@
 		background: unset;
 		}
 
+
+		.z-label {
+		color:unset;
+		}
 
 	</style>
 
