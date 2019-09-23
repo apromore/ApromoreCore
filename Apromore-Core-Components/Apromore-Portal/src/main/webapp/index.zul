@@ -132,16 +132,9 @@
     <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController" sclass="custom-window">
 
         <div height="40px" sclass="z-listheader">
-            <div style="float:left; margin-top: 5px;">
-                <!--<toolbarbutton id="releaseNotes"  mode="toggle">-->
-                <!--<attribute name="onCheck">-->
-                <!--<![CDATA[-->
-                <!--event.getTarget().setLabel("Welcome bla. "+event.getTarget().getLabel());-->
-                <!--]]>-->
-                <!--</attribute>-->
-                <!--</toolbarbutton>-->
+            <div style="float:left; margin-left: 5px; margin-top: 5px;">
+                <h:img src="img/apromore_header.png" width="115px"/>
 
-                <!---->
                 <toolbarbutton id="releaseNotes" sclass="z-listheader-content" />
                 <space bar="true" spacing="1px" style="height:100%; background:#323232; position:absolute;" />
                 <toolbarbutton id="moreButton" label="Apromore Initiative" sclass="z-listheader-content" />
