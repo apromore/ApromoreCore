@@ -103,7 +103,7 @@
             <div id="popUPBox" zclass="relativePos"></div>
             <div zclass="banner" />
             <div id="attrBox" style="padding-top: 60px;"></div>
-            <grid id="myGrid" mold="paging" pageSize="32" hflex="min" vflex="1" />
+            <grid id="myGrid" mold="paging" autopaging="true" hflex="min" vflex="1" />
         </div>
         <div style="padding: 5px 0 5px 45%;">
             <hbox align="center">
