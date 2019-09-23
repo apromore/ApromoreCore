@@ -26,6 +26,7 @@
     </description>
 
     <!-- Folders used to build and deploy dependencies for Apromore. -->
+    <property name="dir" location="${basedir}"/>
     <property name="dir-sups" location="${basedir}/Supplements"/>
     <property name="dir-sups-lib" location="${dir-sups}/libraries"/>
     <property name="dir-extras" location="${basedir}/Apromore-Extras"/>
@@ -49,7 +50,7 @@
     <property name="dir-osgi" location="${basedir}/Apromore-OSGI-Bundles/"/>
 
     <import file="build-community.xml" as="community"/>
-    <import file="build-enterprise.xml" as="enterprise"/>
+    <import file="Apromore-Enterprise-Plugins/build-enterprise.xml" as="enterprise"/>
     <import file="build-student.xml" as="student"/>
 
     <fileset id="usrRepo" dir=".">
