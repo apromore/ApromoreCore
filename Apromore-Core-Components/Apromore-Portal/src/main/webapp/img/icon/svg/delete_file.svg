@@ -7,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="13.567567"
-   height="15.999999"
+   width="18.655405"
+   height="21.999998"
    overflow="hidden"
    version="1.1"
    id="svg13"
-   sodipodi:docname="delete.svg"
+   sodipodi:docname="delete2.svg"
    style="overflow:hidden"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
@@ -59,7 +59,7 @@
   </defs>
   <g
      clip-path="url(#clip0)"
-     transform="matrix(0.05405405,0,0,0.05405405,-23.027025,-22.648647)"
+     transform="matrix(0.07432432,0,0,0.07432432,-31.66216,-31.14189)"
      id="g11">
     <path
        d="m 662.235,463.4 h -62.75 v -18.5 c 0,-14.43 -11.442,-25.9 -25.838,-25.9 h -44.294 c -14.396,0 -25.838,11.47 -25.838,25.9 v 18.5 h -62.75 C 432.644,463.4 426,470.06 426,478.2 V 493 h 251 v -14.8 c 0,-8.14 -6.644,-14.8 -14.765,-14.8 z M 525.662,444.9 c 0,-2.22 1.476,-3.7 3.691,-3.7 h 44.294 c 2.215,0 3.691,1.48 3.691,3.7 v 18.5 h -51.676 z"

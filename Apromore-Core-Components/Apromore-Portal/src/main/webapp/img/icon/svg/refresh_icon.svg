@@ -7,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16"
-   height="16"
+   width="22"
+   height="22"
    overflow="hidden"
    version="1.1"
    id="svg11"
-   sodipodi:docname="reload.svg"
+   sodipodi:docname="reload_data.svg"
    style="overflow:hidden"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
@@ -59,7 +59,7 @@
   </defs>
   <g
      clip-path="url(#clip0)"
-     transform="matrix(0.05423729,0,0,0.05423729,-75.498308,-41.383052)"
+     transform="matrix(0.07457627,0,0,0.07457627,-103.81017,-56.901694)"
      id="g9">
     <path
        d="m 1547.93,803.749 c -59,0 -106.75,47.757 -106.75,106.751 0,58.994 47.75,106.75 106.75,106.75 29.49,0 56.18,-12.08 75.57,-31.182 l -23.88,-23.878 c -13.21,13.203 -31.47,21.35 -51.69,21.35 -40.17,0 -73.04,-32.868 -73.04,-73.04 0,-40.172 32.87,-73.04 73.04,-73.04 17.98,0 34.55,6.461 47.19,17.417 l -16.29,16.294 h 58.99 V 812.177 L 1619,830.999 c -18.82,-16.855 -43.82,-27.25 -71.07,-27.25 z M 1539.5,763 c 81.46,0 147.5,66.038 147.5,147.5 0,81.462 -66.04,147.5 -147.5,147.5 -81.46,0 -147.5,-66.038 -147.5,-147.5 0,-81.462 66.04,-147.5 147.5,-147.5 z"
