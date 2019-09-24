@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:xhtml="http://www.w3.org/1999/xhtml"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -8,16 +7,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="22"
+   height="21.951469"
+   overflow="hidden"
    version="1.1"
-   width="21.909294"
-   height="21.889294"
-   viewBox="-0.5 -0.5 21.909294 21.889294"
-   content="&lt;mxfile modified=&quot;2019-08-31T02:52:21.020Z&quot; host=&quot;pebppomjfocnoigkeepgbmcifnnlndla&quot; agent=&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&quot; version=&quot;11.2.1&quot; etag=&quot;B5M9U0tTZm7BepE0wFnY&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;MI1sTLJs2hXxMis8uiM3&quot;&gt;rVVRj6IwEP41PK6hFMR7PHW9fdhNLvGSe660QrOFIaWsur/+pqUoLJK7S8RE229m2pn5vsGAbsrzD83q4g24UEEU8nNAt0EURQlJ8ccilw5JqQdyLXkHkRuwl5/Cg6FHW8lFM3I0AMrIegxmUFUiMyOMaQ2nsdsR1PjWmuViAuwzpqbob8lN4asIwxv+ImRe+JuT3lCy3tcDTcE4nAYQfQ7oRgOYblWeN0LZ3vVt6eJ2M9ZrXlpU5l8Coi7gg6nWl+bzMpe+1sKUClckoOsPoY3ELryyg1A/oZFGQoW2AxgDJTowJXMLZHi90Ago67lm2Xuuoa34BhRodyw9umdw6Hcfa6BGtDEa3q/NxSp6aHBEvLUftBylUgN85x4b0XfXhnPWFIL7DVpqW195zq1CFxKadCFRLs2CQ9aWrn1r3xxMUJxnG0yutKHcBZTC6Au69Fqnq3CRrpKUxJH77g649HqOvfBPNxmR1GPFQEIk9YphXrr59aobvbjwDN9nm07Y3k/oxlJt6QPWtWjkJzs4B9u7GmRlXBbJOkhs/1lrUAxuSMlABUoczTzBNctklf+ym+1TbFmEyvhRJ45wC+xYKZXt1mubSc4w1w2SBDYZZ78rB3uQr4g8hsNvX2ijy0UyJa6f6hFxqwcQF/99TN18OX1bCk6FNGKPLbbWE0p8TOn8KN2Zu7np0mCYfwEQmlhHJeuXXgM681wm4YMmKaZfWVjGUw6Wdzig/08Bbm9vYWcb/JXR5z8=&lt;/diagram&gt;&lt;/mxfile&gt;"
-   id="svg18"
-   sodipodi:docname="edit_in_signavio.svg"
+   id="svg21"
+   sodipodi:docname="edit_model_signavio.svg"
+   style="overflow:hidden"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
-     id="metadata22">
+     id="metadata25">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -38,70 +37,65 @@
      inkscape:pageshadow="2"
      inkscape:window-width="3840"
      inkscape:window-height="1973"
-     id="namedview20"
+     id="namedview23"
      showgrid="false"
-     inkscape:zoom="10.26087"
-     inkscape:cx="11.02"
-     inkscape:cy="11.9"
+     inkscape:zoom="0.7972973"
+     inkscape:cx="147"
+     inkscape:cy="147"
      inkscape:window-x="-18"
      inkscape:window-y="-18"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg18" />
+     inkscape:current-layer="svg21" />
   <defs
-     id="defs2" />
+     id="defs5">
+    <clipPath
+       id="clip0">
+      <path
+         d="M 48,51 H 346 V 347 H 48 Z"
+         id="path2"
+         inkscape:connector-curvature="0"
+         style="clip-rule:evenodd;fill-rule:evenodd" />
+    </clipPath>
+  </defs>
   <g
-     id="g16"
-     transform="translate(-0.48,-1.5107057)">
+     clip-path="url(#clip0)"
+     transform="matrix(0.07457627,0,0,0.07457627,-3.7288135,-3.8519208)"
+     id="g19">
     <path
-       d="m 0.98,4.9 h 12.64 l 5.06,3.4 V 21.9 H 0.98 Z"
-       stroke-miterlimit="10"
-       pointer-events="none"
-       id="path4"
+       d="M 65.5,114 113,66.5 160.5,114 113,161.5 Z"
+       stroke-miterlimit="8"
+       id="path7"
        inkscape:connector-curvature="0"
-       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:2;stroke-miterlimit:10" />
+       style="fill:none;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:21;stroke-miterlimit:8" />
     <path
-       d="m 13.62,4.9 v 3.4 h 5.06"
-       stroke-miterlimit="10"
-       pointer-events="none"
-       id="path6"
+       d="M 200.5,86.3336 C 200.5,78.6935 206.693,72.5 214.334,72.5 h 78.332 c 7.641,0 13.834,6.1935 13.834,13.8336 v 55.3324 c 0,7.641 -6.193,13.834 -13.834,13.834 h -78.332 c -7.641,0 -13.834,-6.193 -13.834,-13.834 z"
+       stroke-miterlimit="8"
+       id="path9"
        inkscape:connector-curvature="0"
-       style="fill:none;stroke:#4d4d4d;stroke-width:2;stroke-miterlimit:10" />
-    <g
-       transform="matrix(0.1,0,0,0.1,1.5,3.5)"
-       id="g12">
-      <switch
-         id="switch10">
-        <foreignObject
-           style="overflow:visible;"
-           pointer-events="all"
-           width="75"
-           height="142"
-           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
-          <xhtml:div
-             style="display: inline-block; font-size: 120px; font-family: &quot;Lucida Console&quot;; color: rgb(77, 77, 77); line-height: 1.2; vertical-align: top; white-space: nowrap; font-weight: bold; text-align: left;">
-            <xhtml:div
-               style="display:inline-block;text-align:inherit;text-decoration:inherit;">S</xhtml:div>
-          </xhtml:div>
-        </foreignObject>
-        <text
-           x="38"
-           y="131"
-           font-size="120px"
-           font-weight="bold"
-           id="text8"
-           style="font-weight:bold;font-size:120px;font-family:'Lucida Console';text-anchor:middle;fill:#4d4d4d">S</text>
-      </switch>
-    </g>
-    <rect
-       x="6.8000002"
-       y="6.5999999"
-       width="16"
-       height="3"
-       rx="1.5"
-       ry="1.5"
-       transform="matrix(0.70710678,-0.70710678,-0.70710678,-0.70710678,10.062385,24.292745)"
-       pointer-events="none"
-       id="rect14"
-       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:2" />
+       style="fill:none;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:21;stroke-miterlimit:8" />
+    <path
+       d="m 60.5,210.334 c 0,-7.641 6.1935,-13.834 13.8336,-13.834 h 78.3324 c 7.641,0 13.834,6.193 13.834,13.834 v 55.332 c 0,7.641 -6.193,13.834 -13.834,13.834 H 74.3336 C 66.6935,279.5 60.5,273.307 60.5,265.666 Z"
+       stroke-miterlimit="8"
+       id="path11"
+       inkscape:connector-curvature="0"
+       style="fill:none;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:21;stroke-miterlimit:8" />
+    <path
+       d="m 160.5,114.5 h 39.862"
+       stroke-miterlimit="8"
+       id="path13"
+       inkscape:connector-curvature="0"
+       style="fill:none;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:21;stroke-miterlimit:8" />
+    <path
+       d="M 0,0 1.64042e-4,35.4331"
+       stroke-miterlimit="8"
+       transform="matrix(1,0,0,-1,113.5,196.933)"
+       id="path15"
+       inkscape:connector-curvature="0"
+       style="fill:none;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:21;stroke-miterlimit:8" />
+    <path
+       d="m 252,226.632 c 14.503,0 26.369,11.865 26.369,26.368 0,14.503 -11.866,26.369 -26.369,26.369 -14.503,0 -26.368,-11.866 -26.368,-26.369 0,-14.503 11.865,-26.368 26.368,-26.368 z m -8.789,-48.343 -7.691,15.382 c -4.834,1.318 -9.449,3.296 -13.624,5.713 l -16.48,-5.493 -12.525,12.525 5.493,16.48 c -2.417,4.395 -4.395,9.009 -5.713,13.843 l -15.382,7.472 v 17.579 l 15.382,7.691 c 1.318,4.834 3.296,9.448 5.713,13.623 l -5.493,16.48 12.525,12.525 16.48,-5.493 c 4.395,2.417 9.009,4.395 13.843,5.713 l 7.691,15.382 h 17.579 l 7.691,-15.382 c 4.834,-1.318 9.449,-3.296 13.624,-5.713 l 16.48,5.493 12.525,-12.525 -5.493,-16.48 c 2.417,-4.395 4.394,-9.009 5.713,-13.843 l 15.382,-7.691 v -17.579 l -15.602,-7.471 c -1.318,-4.834 -3.296,-9.449 -5.713,-13.624 l 5.493,-16.48 -12.525,-12.525 -16.48,5.493 c -4.395,-2.417 -9.009,-4.395 -13.843,-5.713 L 260.79,178.289 Z M 252,160 c 51.362,0 93,41.638 93,93 0,51.362 -41.638,93 -93,93 -51.362,0 -93,-41.638 -93,-93 0,-51.362 41.638,-93 93,-93 z"
+       id="path17"
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d;fill-rule:evenodd" />
   </g>
 </svg>
