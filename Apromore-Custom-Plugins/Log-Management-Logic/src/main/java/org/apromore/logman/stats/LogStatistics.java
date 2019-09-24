@@ -367,8 +367,8 @@ public class LogStatistics {
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
         XAttribute da =
                 xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP);
+        if(da==null) return null;//2019-09-24
         Date d = ((XAttributeTimestamp) da).getValue();
-        if(d==null) return null; //2019-09-24
         ZonedDateTime z =
                 ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());
         return z;
