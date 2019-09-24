@@ -60,6 +60,26 @@
     <fileset id="pickupRepo-dashboard" dir="../Dashboard">
         <include name="target/dashboard-0.1.war"/>
     </fileset>
+
+    <fileset id="plans" dir="plans">
+        <include name="account.plan"/>
+        <include name="annotations.plan"/>
+        <include name="bpmneditor.plan"/>
+        <include name="csvimporter.plan"/>
+        <include name="log-filter-logic.plan"/>
+        <include name="plugin-canonisers.plan"/>
+        <include name="plugin-compare.plan"/>
+        <include name="plugin-log-animation.plan"/>
+        <include name="plugin-log-visualizer.plan"/>
+        <include name="plugin-merge.plan"/>
+        <include name="plugin-perfmining.plan"/>
+        <include name="plugin-process-discoverer.plan"/>
+        <include name="plugin-prodrift.plan"/>
+        <include name="plugin-similaritysearch.plan"/>
+        <include name="plugin-stagemining.plan"/>
+    </fileset>
+
+
     
     <target name="start-virgo-enterprise" depends="set-permissions,copy-virgo-enterprise">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
@@ -130,6 +150,79 @@
                 <exclude name="**/core/**/*.jar"/>
                 <exclude name="sample/target/*.jar"/>
             </fileset>
+        </copy>
+    </target>
+
+
+    <target name="start-virgo-enterprise-cross" depends="set-permissions,copy-virgo-enterprise-cross">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean"/>
+        </exec>
+    </target>
+
+    <target name="copy-virgo-enterprise-cross" depends="clean-virgo">
+        
+        <copy file="plans/apromore-enterprise.plan" tofile="${dir-virgo}/pickup/apromore-enterprise.plan" flatten="true" overwrite="true"/>
+
+        <copy file="Supplements/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
+        <copy file="Supplements/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
+        <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
+        <copy file="Supplements/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
+        <copy file="Supplements/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
+        <copy file="Supplements/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
+        <copy file="Supplements/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
+
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset dir="${dir-osgi}">
+                <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
+                <include name="**/target/bpmntk-osgi-1.1.jar"/>
+                <include name="**/target/similaritysearch-osgi-1.1.jar"/>
+                <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
+                <include name="**/target/apm-verification-osgi-1.1.jar"/>
+                <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
+                <include name="**/target/prom-pnml-osgi-1.1.jar"/>
+                <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+                <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
+                <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
+                <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
+            </fileset>
+
+            <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
+            <fileset dir="Supplements/">
+                <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
+            </fileset>
+
+            <fileset refid="usrRepo"/>
+            <fileset refid="plans"/>
+            <fileset refid="pickupRepo-enterprise"/>
+
+            <fileset dir="${dir-annotation}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-canoniser}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-logic-plugins}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-portal-plugins}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+                <exclude name="sample/target/*.jar"/>
+            </fileset>
+
         </copy>
     </target>
 </project>

@@ -1,0 +1,33 @@
+<plan name="org.apromore.root-enterprise" version="1.1" scoped="false" atomic="false" provisioning="auto"
+        xmlns="http://www.eclipse.org/virgo/schema/plan"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
+
+	
+	<!-- core components-->
+    <artifact type="plan" name="org.apromore.manager" version="[1.1,1.1]" />
+    <artifact type="plan" name="org.apromore.portal" version="[1.1,1.1]" />
+    <artifact type="plan" name="org.apromore.filestore" version="[1.1,1.1]"/>
+    <artifact type="plan" name="org.apromore.editor" version="[1.1,1.2]"/>
+    <artifact type="plan" name="org.apromore.csvimporter" version="[1.0,1.0]"/>
+	
+	<!-- libraries -->
+	<artifact type="plan" name="org.apromore.plugin.canonisers" version="[1.1,1.1]"/>
+	
+	<!-- core plugins -->
+	<artifact type="plan" name="org.apromore.plugin.compare" version="[1.1.0,1.1.0]"/>
+	<artifact type="plan" name="org.apromore.plugin.log-animation" version="[1.0.0,1.0.0]"/>
+	<artifact type="plan" name="org.apromore.plugin.prodrift" version="[1.1.0,1.1.0]"/>
+	<artifact type="plan" name="org.apromore.plugin.process-discoverer" version="[1.0.0,1.0.0]"/>
+	<artifact type="plan" name="org.apromore.plugin.stagemining" version="[1.1.0,1.1.0]"/>
+	
+	<artifact type="plan" name="org.apromore.plugin.perfmining" version="[1.0.0,1.0.0]"/>
+	<artifact type="plan" name="org.apromore.plugin.similaritysearch" version="[1.1.0,1.1.0]"/>
+	<artifact type="plan" name="org.apromore.plugin.merge" version="[1.1.0,1.1.0]"/>
+
+	<artifact type="plan" name="org.apromore.log-filter-logic" version="[1.0,1.0]"/>
+
+	<artifact type="plan" name="org.apromore.annotations" version="[1.0,1.0]"/>	
+	<artifact type="plan" name="org.apromore.bpmneditor" version="[1.0,1.0]"/>
+
+</plan>

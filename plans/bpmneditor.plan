@@ -1,0 +1,10 @@
+<plan name="org.apromore.bpmneditor" version="1.0" scoped="false" atomic="true" provisioning="auto"
+        xmlns="http://www.eclipse.org/virgo/schema/plan"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
+
+    <artifact type="configuration" name="site" version="0" />
+    <artifact type="configuration" name="git" version="0" />
+
+    <artifact type="bundle" name="org.apromore.plugin.apromore-bpmneditor" version="[1.1.0, 2)"/>
+</plan>
