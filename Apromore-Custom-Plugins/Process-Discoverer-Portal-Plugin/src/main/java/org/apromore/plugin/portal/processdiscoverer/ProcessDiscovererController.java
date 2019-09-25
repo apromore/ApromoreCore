@@ -90,6 +90,8 @@ import javax.swing.*;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -313,6 +315,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         else {
         	throw new AssertionError("Cannot obtain log file for log id = " + logSummary.getId());
         }
+
         // *******  profiling code start here ********
         long elapsedNanos = System.nanoTime() - startTime;
         LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
@@ -325,6 +328,11 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
 
         // *******  profiling code end here ********
+    }
+
+    protected MemoryUsage getMemoryUsage() {
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        return memoryMXBean.getHeapMemoryUsage();
     }
 
     private void start() {
