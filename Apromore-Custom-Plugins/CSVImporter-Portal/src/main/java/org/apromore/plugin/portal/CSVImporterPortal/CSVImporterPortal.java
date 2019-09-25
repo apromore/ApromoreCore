@@ -220,7 +220,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                             line = reader.readNext();
                         }
 
-                        myGrid.setHeight();
                         csvImporterLogic.automaticFormat(result, myLine);
                         csvImporterLogic.setOtherTimestamps(result);
                         createPopUpTextBox(newLine.length, popUPBox);
@@ -415,10 +414,5 @@ public class CSVImporterPortal implements FileImporterPlugin {
         }
         return maxchar;
     }
-
-
-    void onClientInfo(ClientInfoEvent evt) {
-        int height = evt.getDesktopHeight();
-        int width = evt.getDesktopWidth();
-    }
+    
 }
