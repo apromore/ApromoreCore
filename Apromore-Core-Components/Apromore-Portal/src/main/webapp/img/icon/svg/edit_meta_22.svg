@@ -8,7 +8,7 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="22"
-   height="21.832197"
+   height="21.904217"
    overflow="hidden"
    version="1.1"
    id="svg15"
@@ -39,9 +39,9 @@
      inkscape:window-height="1973"
      id="namedview17"
      showgrid="false"
-     inkscape:zoom="0.8"
-     inkscape:cx="127"
-     inkscape:cy="146.5"
+     inkscape:zoom="0.79194631"
+     inkscape:cx="139.5"
+     inkscape:cy="147"
      inkscape:window-x="-18"
      inkscape:window-y="-18"
      inkscape:window-maximized="1"
@@ -51,7 +51,7 @@
     <clipPath
        id="clip0">
       <path
-         d="M 382,234 H 720 V 529 H 382 Z"
+         d="m 2154,1490 h 317 v 298 h -317 z"
          id="path2"
          inkscape:connector-curvature="0"
          style="clip-rule:evenodd;fill-rule:evenodd" />
@@ -59,24 +59,24 @@
   </defs>
   <g
      clip-path="url(#clip0)"
-     transform="matrix(0.07451262,0,0,0.07451262,-31.593351,-17.510466)"
+     transform="matrix(0.07425158,0,0,0.07425158,-161.34868,-110.70911)"
      id="g13">
     <path
-       d="M 424,235 H 555.613 L 628,307.6 v 35.885 h -13.776 l -5.966,11.968 V 324.1 H 535.871 V 254.8 H 443.742 V 479.2 H 556.81 l -5.223,15.715 4.073,4.085 H 424 Z m 131.613,28.05 v 41.25 h 41.129 z"
+       d="m 2305.26,1519.05 v 41.25 h 41.33 z M 2173,1491 h 132.26 l 72.74,72.6 v 19.32 h -19.84 v -2.82 h -72.74 v -69.3 h -92.58 v 224.4 h 82.66 V 1755 H 2173 Z"
        id="path7"
-       inkscape:connector-curvature="0"
-       style="fill:#4d4d4d;fill-rule:evenodd" />
-    <path
-       d="m 633.5,473 c -16.597,0 -30.176,-13.5 -30.176,-30 0,-16.5 13.579,-30 30.176,-30 16.597,0 30.176,13.5 30.176,30 0,16.5 -13.579,30 -30.176,30 z m 67.897,-48.75 c -1.509,-5.5 -3.772,-10.75 -6.538,-15.5 L 701.146,390 686.812,375.75 667.952,382 c -5.03,-2.75 -10.311,-5 -15.843,-6.5 l -8.55,-17.5 h -20.118 l -8.801,17.5 c -5.533,1.5 -10.814,3.75 -15.591,6.5 l -18.861,-6.25 -14.333,14.25 6.286,18.75 c -2.766,5 -5.029,10.25 -6.538,15.75 L 548,433 v 20 l 17.603,8.75 c 1.509,5.5 3.772,10.75 6.538,15.5 l -6.286,18.75 14.333,14.25 18.861,-6.25 c 5.029,2.75 10.31,5 15.842,6.5 l 8.802,17.5 h 20.117 l 8.802,-17.5 c 5.532,-1.5 10.813,-3.75 15.591,-6.5 l 18.86,6.25 14.334,-14.25 -6.287,-18.75 c 2.766,-5 5.03,-10.25 6.539,-15.75 l 17.603,-8.75 v -20 z"
-       id="path9"
        inkscape:connector-curvature="0"
        style="fill:#4d4d4d;fill-rule:evenodd" />
     <text
        font-weight="700"
        font-stretch="condensed"
-       font-size="100"
-       transform="translate(443.404,405)"
-       id="text11"
-       style="font-weight:700;font-stretch:condensed;font-size:100px;font-family:'Agency FB', 'Agency FB_MSFontService', sans-serif;fill:#4d4d4d">&lt;/&gt;</text>
+       font-size="75"
+       transform="translate(2200.35,1637)"
+       id="text9"
+       style="font-weight:700;font-stretch:condensed;font-size:75px;font-family:'Agency FB', 'Agency FB_MSFontService', sans-serif;fill:#4d4d4d">&lt;/&gt;</text>
+    <path
+       d="m 2372,1723.24 c -18.83,0 -34.24,-15.41 -34.24,-34.24 0,-18.83 15.41,-34.24 34.24,-34.24 18.83,0 34.24,15.41 34.24,34.24 0,18.83 -15.41,34.24 -34.24,34.24 z m 77.03,-55.64 c -1.71,-6.27 -4.28,-12.26 -7.42,-17.69 l 7.13,-21.39 -16.26,-16.26 -21.39,7.13 c -5.71,-3.14 -11.7,-5.71 -17.98,-7.42 l -9.7,-19.97 h -22.82 l -9.99,19.97 c -6.27,1.71 -12.26,4.28 -17.69,7.42 l -21.39,-7.13 -16.26,16.26 7.13,21.39 c -3.14,5.71 -5.71,11.7 -7.42,17.98 l -19.97,9.7 v 22.82 l 19.97,9.99 c 1.71,6.27 4.28,12.26 7.42,17.69 l -7.13,21.39 16.26,16.26 21.39,-7.13 c 5.71,3.14 11.7,5.71 17.98,7.42 l 9.98,19.97 h 22.83 l 9.98,-19.97 c 6.28,-1.71 12.27,-4.28 17.69,-7.42 l 21.4,7.13 16.26,-16.26 -7.13,-21.39 c 3.14,-5.71 5.7,-11.7 7.41,-17.98 l 19.98,-9.98 v -22.83 z"
+       id="path11"
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d;fill-rule:evenodd" />
   </g>
 </svg>
