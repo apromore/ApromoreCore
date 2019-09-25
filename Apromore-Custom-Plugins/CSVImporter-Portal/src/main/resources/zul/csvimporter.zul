@@ -80,7 +80,7 @@
             position: absolute;
             width: 100%;
             height: 80px;
-            background: linear-gradient(180deg, transparent, #008cfd);
+            background-image: url("/img/apromore_banner.png");
             z-index: -1;
             }
             tr.z-row td.z-row-inner, tr.z-row .z-cell {

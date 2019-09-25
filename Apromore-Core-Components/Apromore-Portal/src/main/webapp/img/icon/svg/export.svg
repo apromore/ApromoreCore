@@ -7,16 +7,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="21.999998"
-   height="14.683601"
+   width="22"
+   height="21.957998"
    overflow="hidden"
    version="1.1"
-   id="svg11"
+   id="svg13"
    sodipodi:docname="export.svg"
    style="overflow:hidden"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
-     id="metadata15">
+     id="metadata17">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -37,21 +37,21 @@
      inkscape:pageshadow="2"
      inkscape:window-width="3840"
      inkscape:window-height="1973"
-     id="namedview13"
+     id="namedview15"
      showgrid="false"
-     inkscape:zoom="0.81099656"
-     inkscape:cx="216.50001"
-     inkscape:cy="144.49999"
+     inkscape:zoom="0.78666667"
+     inkscape:cx="149.50001"
+     inkscape:cy="149"
      inkscape:window-x="-18"
      inkscape:window-y="-18"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg11" />
+     inkscape:current-layer="svg13" />
   <defs
      id="defs5">
     <clipPath
        id="clip0">
       <path
-         d="m 1176,715 h 435 v 291 h -435 z"
+         d="m 2026,1385 h 301 v 300 h -301 z"
          id="path2"
          inkscape:connector-curvature="0"
          style="clip-rule:evenodd;fill-rule:evenodd" />
@@ -59,11 +59,19 @@
   </defs>
   <g
      clip-path="url(#clip0)"
-     transform="matrix(0.05080831,0,0,0.05080831,-59.801381,-36.37875)"
-     id="g9">
+     transform="matrix(0.07368456,0,0,0.07368456,-149.3586,-102.1268)"
+     id="g11">
+    <rect
+       x="2029"
+       y="1387"
+       width="295"
+       height="296"
+       stroke-miterlimit="8"
+       id="rect7"
+       style="fill:none;stroke:#ffffff;stroke-width:2;stroke-miterlimit:8" />
     <path
-       d="M 1526.11,825.098 C 1513.84,762.782 1459.17,716 1393.5,716 c -52.14,0 -97.43,29.622 -119.98,72.972 -54.3,5.781 -96.52,51.84 -96.52,107.653 0,59.787 48.53,108.375 108.25,108.375 h 234.54 c 49.8,0 90.21,-40.46 90.21,-90.312 0,-47.685 -36.99,-86.339 -83.89,-89.59 z m -42.4,53.465 -90.21,90.312 -90.21,-90.312 h 54.13 v -72.25 h 72.16 v 72.25 z"
-       id="path7"
+       d="m 2267.73,1515.23 c -8.46,-42.97 -46.16,-75.23 -91.44,-75.23 -35.96,0 -67.19,20.43 -82.74,50.32 -37.44,3.98 -66.55,35.74 -66.55,74.23 0,41.22 33.46,74.73 74.64,74.73 h 161.73 c 34.34,0 62.2,-27.9 62.2,-62.28 0,-32.88 -25.5,-59.53 -57.84,-61.77 z m -29.24,36.86 -62.2,62.28 -62.21,-62.28 h 37.33 v -49.82 h 49.75 v 49.82 z"
+       id="path9"
        inkscape:connector-curvature="0"
        style="fill:#4d4d4d;fill-rule:evenodd" />
   </g>
