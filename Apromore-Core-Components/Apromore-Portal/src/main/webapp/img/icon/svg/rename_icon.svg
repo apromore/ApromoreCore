@@ -8,15 +8,15 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="22"
-   height="21.981573"
+   height="22.074575"
    overflow="hidden"
    version="1.1"
-   id="svg13"
+   id="svg19"
    sodipodi:docname="rename.svg"
    style="overflow:hidden"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
-     id="metadata17">
+     id="metadata23">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -37,21 +37,21 @@
      inkscape:pageshadow="2"
      inkscape:window-width="3840"
      inkscape:window-height="1973"
-     id="namedview15"
+     id="namedview21"
      showgrid="false"
-     inkscape:zoom="0.80821918"
-     inkscape:cx="145.5"
-     inkscape:cy="145.36201"
+     inkscape:zoom="0.79194631"
+     inkscape:cx="147.5"
+     inkscape:cy="148"
      inkscape:window-x="-18"
      inkscape:window-y="-18"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg13" />
+     inkscape:current-layer="svg19" />
   <defs
      id="defs5">
     <clipPath
        id="clip0">
       <path
-         d="M 145,285 H 438 V 577 H 145 Z"
+         d="m 102,1617 h 297 v 298 H 102 Z"
          id="path2"
          inkscape:connector-curvature="0"
          style="clip-rule:evenodd;fill-rule:evenodd" />
@@ -59,17 +59,38 @@
   </defs>
   <g
      clip-path="url(#clip0)"
-     transform="matrix(0.07570403,0,0,0.07570403,-11.052788,-21.651353)"
-     id="g11">
+     transform="matrix(0.07457627,0,0,0.07457627,-7.6813558,-120.6644)"
+     id="g17">
     <path
-       d="m 207.594,515.13 c 7.247,7.247 7.247,18.479 0,25.725 L 176.797,551 l -5.435,-5.435 10.145,-30.797 c 7.609,-6.884 18.841,-6.884 26.087,0.362 z M 349.986,326 168.826,507.522 146,576.362 215.203,553.536 396.362,372.377"
+       d="m 163.076,1707.41 c -17.553,0 -31.783,14.27 -31.783,31.86 v 61.46 c 0,17.59 14.23,31.86 31.783,31.86 h 174.848 c 17.553,0 31.783,-14.27 31.783,-31.86 v -61.46 c 0,-17.59 -14.23,-31.86 -31.783,-31.86 z M 151.945,1682 h 197.11 c 27.032,0 48.945,21.96 48.945,49.06 v 77.88 c 0,27.1 -21.913,49.06 -48.945,49.06 H 151.945 C 124.913,1858 103,1836.04 103,1808.94 v -77.88 c 0,-27.1 21.913,-49.06 48.945,-49.06 z"
        id="path7"
        inkscape:connector-curvature="0"
        style="fill:#4d4d4d;fill-rule:evenodd" />
     <path
-       d="m 432.27,315.88 -25.915,-25.56 c -5.84,-5.76 -14.965,-5.76 -20.805,0 l -25.55,25.2 46.355,45.72 25.55,-25.2 c 6.205,-5.4 6.205,-14.4 0.365,-20.16 z"
+       d="m 158,1757.96 c 0,-14.89 12.068,-26.96 26.955,-26.96 h 39.09 c 14.887,0 26.955,12.07 26.955,26.96 v 23.08 c 0,14.89 -12.068,26.96 -26.955,26.96 h -39.09 C 170.068,1808 158,1795.93 158,1781.04 Z"
        id="path9"
        inkscape:connector-curvature="0"
        style="fill:#4d4d4d;fill-rule:evenodd" />
+    <rect
+       x="251"
+       y="1618"
+       width="104"
+       height="29"
+       id="rect11"
+       style="fill:#4d4d4d" />
+    <rect
+       x="251"
+       y="1886"
+       width="104"
+       height="28"
+       id="rect13"
+       style="fill:#4d4d4d" />
+    <rect
+       x="289"
+       y="1633"
+       width="28"
+       height="261"
+       id="rect15"
+       style="fill:#4d4d4d" />
   </g>
 </svg>

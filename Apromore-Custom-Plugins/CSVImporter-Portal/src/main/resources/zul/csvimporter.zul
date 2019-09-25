@@ -20,7 +20,17 @@
 <?style src="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"?>
 
 <zk>
-    <window closable="true" height="min" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px">
+    <zscript>
+        void onClientInfo(ClientInfoEvent evt) {
+        int height = evt.getDesktopHeight();
+        int width = evt.getDesktopWidth();
+
+        scrn.setValue(
+        width + "x" + height + "x" + evt.getColorDepth());
+        }
+    </zscript>
+
+    <window closable="true" height="min" maximizable="true" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)">
         <!--<vbox>-->
         <style>
             .greenLabel {
@@ -99,11 +109,26 @@
 
         </style>
 
+
+
+
+        <separator />
+        <separator />
+        <separator />
         <div id="gridBox" zclass="myGroupBox">
             <div id="popUPBox" zclass="relativePos"></div>
             <div zclass="banner" />
             <div id="attrBox" style="padding-top: 60px;"></div>
-            <grid id="myGrid" mold="paging" autopaging="true" hflex="min" vflex="1" />
+            <grid id="myGrid" mold="paging" autopaging="true" hflex="min" onClientInfo="onClientInfo(event)">
+                <zscript>
+                    void onClientInfo(ClientInfoEvent evt) {
+                    int height = evt.getDesktopHeight();
+                    int width = evt.getDesktopWidth();
+
+                    myGrid.setHeight(height/1.3 + "px");
+                    }
+                </zscript>
+            </grid>
         </div>
         <div style="padding: 5px 0 5px 45%;">
             <hbox align="center">

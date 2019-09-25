@@ -45,10 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.event.*;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -115,6 +112,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @SuppressWarnings("null")
     private void displayCSVContent(Media media, ListModelList<String[]> result, Grid myGrid, Div attrBox, Div popUPBox, Window window) {
         String firstLine = null;
+
 
         BufferedReader brReader = new BufferedReader(new InputStreamReader(media.getStreamData()));
 
@@ -222,7 +220,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                             line = reader.readNext();
                         }
 
-
+                        myGrid.setHeight();
                         csvImporterLogic.automaticFormat(result, myLine);
                         csvImporterLogic.setOtherTimestamps(result);
                         createPopUpTextBox(newLine.length, popUPBox);
@@ -416,5 +414,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
             }
         }
         return maxchar;
+    }
+
+
+    void onClientInfo(ClientInfoEvent evt) {
+        int height = evt.getDesktopHeight();
+        int width = evt.getDesktopWidth();
     }
 }
