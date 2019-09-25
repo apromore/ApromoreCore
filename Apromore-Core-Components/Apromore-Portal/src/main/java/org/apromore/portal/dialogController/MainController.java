@@ -159,12 +159,6 @@ public class MainController extends BaseController implements MainControllerInte
                             displayReleaseNotes();
                         }
                     });
-            installedPluginsButton.addEventListener("onClick",
-                    new EventListener<Event>() {
-                        public void onEvent(final Event event) throws Exception {
-                            displayInstalledPlugins();
-                        }
-                    });
             webDavButton.addEventListener("onClick",
                     new EventListener<Event>() {
                         public void onEvent(final Event event) throws Exception {
@@ -773,46 +767,6 @@ public class MainController extends BaseController implements MainControllerInte
                     }
                 }
         );
-    }
-
-    @Command
-    protected void displayInstalledPlugins() throws InterruptedException {
-        final Window pluginWindow = (Window) Executions.createComponents("macros/pluginInfo.zul", this, null);
-        Listbox infoListBox = (Listbox) pluginWindow.getFellow("pluginInfoListBox");
-        try {
-            List<PluginInfo> installedPlugins = new ArrayList<>(getService().readInstalledPlugins(null));
-            infoListBox.setModel(new ListModelList<>(installedPlugins, false));
-            infoListBox.setItemRenderer(new ListitemRenderer() {
-                @Override
-                public void render(final Listitem item, final Object data, final int index) throws Exception {
-                    if (data != null && data instanceof PluginInfo) {
-                        PluginInfo info = (PluginInfo) data;
-                        item.appendChild(new Listcell(info.getName()));
-                        item.appendChild(new Listcell(info.getVersion()));
-                        item.appendChild(new Listcell(info.getType()));
-                        Listcell dCell = new Listcell();
-                        Label dLabel = new Label(info.getDescription());
-                        dLabel.setWidth("100px");
-                        dLabel.setMultiline(true);
-                        dCell.appendChild(dLabel);
-                        item.appendChild(dCell);
-                        item.appendChild(new Listcell(info.getAuthor()));
-                        item.appendChild(new Listcell(info.getEmail()));
-                    }
-                }
-            });
-            Button buttonOk = (Button) pluginWindow.getFellow("ok");
-            buttonOk.addEventListener("onClick", new EventListener<Event>() {
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    pluginWindow.detach();
-                }
-            });
-            pluginWindow.doModal();
-        } catch (Exception e) {
-            Messagebox.show("Error retrieving installed Plugins: "+e.getMessage(), "Error", Messagebox.OK,
-                    Messagebox.ERROR);
-        }
     }
 
     /* Removes the currently displayed listbox, detail and filter view */
