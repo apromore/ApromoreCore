@@ -87,6 +87,7 @@
                             org.apromore.filestore-client;version="[1.0,1.1]"
                         </Import-Bundle>
                         <Import-Package>
+                            org.deckfour.xes.*;version="2.27",
                             com.mysql.jdbc,
                             javax.sql,
                             org.apromore.plugin.provider,
@@ -626,6 +627,7 @@
         <dependency>
             <groupId>org.deckfour</groupId>
             <artifactId>openxes</artifactId>
+            <version>2.27</version>
         </dependency>
 
         <dependency>

@@ -54,7 +54,7 @@
                         <Export-Package>
                             org.apromore.xlog.singletonlog,
                             org.deckfour.spex.*;version="1.0",
-                            org.deckfour.xes.*;version="2.16",
+                            org.deckfour.xes.*;version="2.27",
                             org.xeslite.*;version="0.0.1"
                         </Export-Package>
                     </instructions>

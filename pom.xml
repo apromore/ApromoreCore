@@ -514,7 +514,7 @@
             <dependency>
                 <groupId>org.deckfour</groupId>
                 <artifactId>openxes</artifactId>
-                <version>2.16</version>
+                <version>2.27</version>
             </dependency>
             <dependency>
                 <groupId>org.deckfour</groupId>
