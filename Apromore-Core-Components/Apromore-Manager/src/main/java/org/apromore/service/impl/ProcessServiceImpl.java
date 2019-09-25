@@ -26,6 +26,7 @@ import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.aop.Event;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.common.ConfigBean;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.AnnotationRepository;
@@ -145,6 +146,7 @@ public class ProcessServiceImpl implements ProcessService {
     private DecomposerService decomposerSrv;
     private UserInterfaceHelper ui;
     private WorkspaceService workspaceSrv;
+    private boolean enableCPF;
 
     @javax.annotation.Resource
     private Set<ProcessPlugin> processPlugins;
@@ -180,7 +182,7 @@ public class ProcessServiceImpl implements ProcessService {
             final CanonicalConverter converter, final AnnotationService annotationSrv,
             final CanoniserService canoniserSrv, final LockService lService, final UserService userSrv, final FragmentService fService,
             final FormatService formatSrv, final @Qualifier("composerServiceImpl") ComposerService composerSrv, final DecomposerService decomposerSrv,
-            final UserInterfaceHelper ui, final WorkspaceService workspaceService) {
+            final UserInterfaceHelper ui, final WorkspaceService workspaceService, final ConfigBean config) {
         this.annotationRepo = annotationRepo;
         this.groupRepo = groupRepo;
         this.nativeRepo = nativeRepo;
@@ -201,6 +203,7 @@ public class ProcessServiceImpl implements ProcessService {
         this.decomposerSrv = decomposerSrv;
         this.ui = ui;
         this.workspaceSrv = workspaceService;
+        this.enableCPF = config.getEnableCPF();
     }
 
     /**
@@ -868,25 +871,29 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional(readOnly = false)
     private ProcessModelVersion addProcess(final Process process, final String processName, final Version version, final String branchName,
             final String created, final String lastUpdated, final CanonisedProcess cpf, NativeType nativeType) throws ImportException {
-        Canonical can;
-        OperationContext rootFragment;
         ProcessModelVersion pmv;
-        try {
-            ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
+        ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, branchName);
 
-            can = converter.convert(cpf.getCpt());
+        if (enableCPF) {
+            Canonical can = converter.convert(cpf.getCpt());
             pmv = createProcessModelVersion(branch, version, nativeType, can, cpf.getCpt().getUri());
-            if (can.getEdges().size() > 0 && can.getNodes().size() > 0) {
-                rootFragment = decomposerSrv.decompose(can, pmv);
-                if (rootFragment != null) {
-                    pmv.setRootFragmentVersion(rootFragment.getCurrentFragment());
-                } else {
-                    throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
+
+            try {
+                if (can.getEdges().size() > 0 && can.getNodes().size() > 0) {
+                    OperationContext rootFragment = decomposerSrv.decompose(can, pmv);
+                    if (rootFragment != null) {
+                        pmv.setRootFragmentVersion(rootFragment.getCurrentFragment());
+                    } else {
+                        throw new ImportException("The Root Fragment Version can not be NULL. please check logs for other errors!");
+                    }
                 }
+            } catch (RepositoryException re) {
+                throw new ImportException("Failed to add the process model " + processName, re);
             }
-        } catch (RepositoryException re) {
-            throw new ImportException("Failed to add the process model " + processName, re);
+        } else {
+            pmv = createProcessModelVersion(branch, version, nativeType, null, null);
         }
+
         return pmv;
     }
 
@@ -1066,8 +1073,10 @@ public class ProcessServiceImpl implements ProcessService {
         processModel.setProcessBranch(branch);
         processModel.setOriginalId(netId);
         processModel.setVersionNumber(version.toString());
-        processModel.setNumEdges(proModGrap.countEdges());
-        processModel.setNumVertices(proModGrap.countVertices());
+        if (enableCPF) {
+            processModel.setNumEdges(proModGrap.countEdges());
+            processModel.setNumVertices(proModGrap.countVertices());
+        }
         processModel.setLockStatus(Constants.NO_LOCK);
         processModel.setCreateDate(now);
         processModel.setLastUpdateDate(now);
@@ -1075,10 +1084,12 @@ public class ProcessServiceImpl implements ProcessService {
 
         branch.setCurrentProcessModelVersion(processModel);
 
-        addAttributesToProcessModel(proModGrap, processModel);
-        addObjectsToProcessModel(proModGrap, processModel);
-        addResourcesToProcessModel(proModGrap, processModel);
-        updateResourcesOnProcessModel(proModGrap.getResources(), processModel);
+        if (enableCPF) {
+            addAttributesToProcessModel(proModGrap, processModel);
+            addObjectsToProcessModel(proModGrap, processModel);
+            addResourcesToProcessModel(proModGrap, processModel);
+            updateResourcesOnProcessModel(proModGrap.getResources(), processModel);
+        }
 
         return processModelVersionRepo.save(processModel);
     }

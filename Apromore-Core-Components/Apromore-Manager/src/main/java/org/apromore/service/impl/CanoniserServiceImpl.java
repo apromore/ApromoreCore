@@ -34,6 +34,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.provider.CanoniserProvider;
+import org.apromore.common.ConfigBean;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequestImpl;
@@ -66,14 +67,17 @@ public class CanoniserServiceImpl implements CanoniserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CanoniserServiceImpl.class);
 
     private CanoniserProvider canProvider;
+    private boolean enableCPF;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
      * @param canoniserProvider Canoniser Provider.
      */
     @Inject
-    public CanoniserServiceImpl(final @Qualifier("canoniserProvider") CanoniserProvider canoniserProvider) {
+    public CanoniserServiceImpl(final @Qualifier("canoniserProvider") CanoniserProvider canoniserProvider,
+                                final ConfigBean config) {
         canProvider = canoniserProvider;
+        enableCPF = config.getEnableCPF();
     }
 
 
@@ -110,39 +114,41 @@ public class CanoniserServiceImpl implements CanoniserService {
             throws CanoniserException {
         LOGGER.debug("Canonising process with native type {}", nativeType);
 
-        List<CanonicalProcessType> cpfList = new ArrayList<>();
-        List<AnnotationsType> anfList = new ArrayList<>();
-
-        ByteArrayOutputStream anfXml = new ByteArrayOutputStream();
-        ByteArrayOutputStream cpfXml = new ByteArrayOutputStream();
         CanonisedProcess cp = new CanonisedProcess();
         cp.setOriginal(processXml);
 
-        try {
-            cp.setOriginal(processXml);
-            Canoniser c = canProvider.findByNativeType(nativeType);
-            PluginRequestImpl canoniserRequest = new PluginRequestImpl();
-            canoniserRequest.addRequestProperty(canoniserProperties);
-            PluginResult canoniserResult = c.canonise(processXml, anfList, cpfList, canoniserRequest);
-            cp.setMessages(canoniserResult.getPluginMessage());
+        if (enableCPF) {
+            List<CanonicalProcessType> cpfList = new ArrayList<>();
+            List<AnnotationsType> anfList = new ArrayList<>();
 
-            if (cpfList.size() > 1 || anfList.size() > 1) {
-                throw new CanoniserException("Canonising to multiple CPF, ANF files is not yet supported!");
-            } else {
-                try {
-                    ANFSchema.marshalAnnotationFormat(anfXml, anfList.get(0), false);
-                    cp.setAnf(new ByteArrayInputStream(anfXml.toByteArray()));
-                    cp.setAnt(anfList.get(0));
+            ByteArrayOutputStream anfXml = new ByteArrayOutputStream();
+            ByteArrayOutputStream cpfXml = new ByteArrayOutputStream();
 
-                    CPFSchema.marshalCanonicalFormat(cpfXml, cpfList.get(0), false);
-                    cp.setCpf(new ByteArrayInputStream(cpfXml.toByteArray()));
-                    cp.setCpt(cpfList.get(0));
-                } catch (JAXBException | SAXException e) {
-                    throw new CanoniserException("Error trying to marshal ANF or CPF. This is probably an internal error in a Canoniser.", e);
+            try {
+                Canoniser c = canProvider.findByNativeType(nativeType);
+                PluginRequestImpl canoniserRequest = new PluginRequestImpl();
+                canoniserRequest.addRequestProperty(canoniserProperties);
+                PluginResult canoniserResult = c.canonise(processXml, anfList, cpfList, canoniserRequest);
+                cp.setMessages(canoniserResult.getPluginMessage());
+
+                if (cpfList.size() > 1 || anfList.size() > 1) {
+                    throw new CanoniserException("Canonising to multiple CPF, ANF files is not yet supported!");
+                } else {
+                    try {
+                        ANFSchema.marshalAnnotationFormat(anfXml, anfList.get(0), false);
+                        cp.setAnf(new ByteArrayInputStream(anfXml.toByteArray()));
+                        cp.setAnt(anfList.get(0));
+
+                        CPFSchema.marshalCanonicalFormat(cpfXml, cpfList.get(0), false);
+                        cp.setCpf(new ByteArrayInputStream(cpfXml.toByteArray()));
+                        cp.setCpt(cpfList.get(0));
+                    } catch (JAXBException | SAXException e) {
+                        throw new CanoniserException("Error trying to marshal ANF or CPF. This is probably an internal error in a Canoniser.", e);
+                    }
                 }
+            } catch (CanoniserException | PluginNotFoundException e) {
+                throw new CanoniserException("Could not canonise " + nativeType, e);
             }
-        } catch (CanoniserException | PluginNotFoundException e) {
-            throw new CanoniserException("Could not canonise " + nativeType, e);
         }
 
         return cp;

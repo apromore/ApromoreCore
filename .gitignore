@@ -29,9 +29,6 @@ Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE
 **/.settings/*
 *.project
 *.classpath
-
-*.gitignore
-*.project
 *.checkstyle
 **/.metadata/*
 **/.recommenders/*

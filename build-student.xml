@@ -27,7 +27,7 @@
         <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
         <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor-student.plan"/>
                 
-        <include name="Apromore-Assembly/Custom-Plugins/custom-plugins.plan"/>
+        <include name="Apromore-Assembly/Custom-Plugins/custom-plugins-ce.plan"/>
 
         <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin/target/bimp-editor-plugin-1.0.war"/>
@@ -103,7 +103,7 @@
 
         <include name="Apromore-Custom-Plugins/Quaestio-Portal-Plugin/target/quaestio-portal-plugin-1.1.war"/>
 
-        <include name="Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/>
+        <!-- <include name="Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin/target/similarity-clusters-portal-plugin-1.1.jar"/> -->
 
         <include name="Apromore-Custom-Plugins/StageMining-Logic/target/stagemining-logic-1.1.jar"/>
         <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>

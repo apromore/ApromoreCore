@@ -21,7 +21,12 @@
   -->
 
 <window width="580px" closable="false" position="center" title="Search for similar processes">
+    <style>
+        .z-tree-icon {
+        vertical-align: middle;
+        }
 
+    </style>
     <hbox spacing="0" width="100%" widths="40%,60%" height="360px">
         <borderlayout vflex="true" width="100%">
             <center title="Select Folder" flex="true">

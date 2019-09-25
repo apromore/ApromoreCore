@@ -63,12 +63,13 @@
 		tr.z-row-disabled td.z-row-inner .z-slider-area  {
 		padding: 1px 1px 1px 1px;
 		line-height: 25px;
-		background: none repeat scroll 0% 0% rgb(220,220,220);
+		background: none repeat scroll 0% 0% #AAA;
 		}
 
 		tr.z-row-disabled .z-slider-button {
-		background-color: #AAA;
+		background: #AAA;
 		}
+
 
 		div.z-listcell-cnt {
 		line-height: 25px;
@@ -129,20 +130,23 @@
 
 		.optionButton {
 		position: absolute;
-		left: 88%;
+		right: 10px;
 		margin-right: 10px;
+		min-width: 55px;
 		}
 
 		.shortcutButton {
 		position: absolute;
-		left: 92%;
+		right: 75px;
 		margin-right: 10px;
+		min-width: 55px;
 		}
 
 		.helpButton {
 		position: absolute;
-		left: 96%;
+		right: 140px;
 		margin-right: 10px;
+		min-width: 55px;
 		}
 
 		.shortcutPopup {
@@ -161,13 +165,17 @@
 		}
 
 
+		.z-label {
+		color:unset;
+		}
+
 	</style>
 
 	<window id="win" border="0" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
 		<caption id="windowcaption" sclass="mainCaption">
 			<div id="utilityTools">
 
-				<button id="optionButton" style="float: right; min-width: 4em;" height="2em" iconSclass="z-icon-caret-up" sclass="optionButton">
+				<button id="optionButton" style="float: right;" height="26px" iconSclass="z-icon-caret-up" sclass="optionButton">
 					<attribute name="onClick">
 						<![CDATA[
               optionButton.setIconSclass(optionbox.isOpen() ? "z-icon-caret-down" : "z-icon-caret-up");
@@ -179,7 +187,7 @@
 					</attribute>
 				</button>
 
-				<button id="shortcutButton" style="float: right; min-width: 4em;" height="2em" iconSclass="z-icon-keyboard-o" sclass="shortcutButton">
+				<button id="shortcutButton" style="float: right;" height="26px" iconSclass="z-icon-keyboard-o" sclass="shortcutButton">
 					<attribute name="onClick">
 						<![CDATA[
               shortcutPopup.open(self,"after_pointer");
@@ -188,7 +196,7 @@
 				</button>
 
 				<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
-					<button iconSclass="z-icon-question" style="float: right; min-width: 4em;" height="2em" sclass="helpButton"></button>
+					<button iconSclass="z-icon-question" style="float: right;" height="26px" sclass="helpButton"></button>
 				</a>
 			</div>
 		</caption>
@@ -290,7 +298,7 @@
 								<rows>
 									<row height="64px">
 										<label>Cases</label>
-										<label>Unique Cases</label>
+										<label>Case Variants</label>
 										<label>Events</label>
 										<label>Activities</label>
 										<label>Average Duration</label>

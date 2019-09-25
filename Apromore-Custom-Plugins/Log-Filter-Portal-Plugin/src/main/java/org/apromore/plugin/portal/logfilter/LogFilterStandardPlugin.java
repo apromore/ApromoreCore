@@ -46,7 +46,7 @@ import org.zkoss.zul.Messagebox;
 public class LogFilterStandardPlugin extends GenericLogFilterPlugin {
 	private PortalContext portalContext;
 	private LogSummaryType portalItem;
-	private String label = "Log Filter";
+	private String label = "Filter log";
 	private String groupLabel = "Discoverer";
 	@Inject private EventLogService eventLogService;
 	@Inject private LogFilterService logFilterService;

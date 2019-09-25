@@ -47,7 +47,7 @@ import org.apromore.service.ProcessService;
 @Component("plugin")
 public class BIMPPlugin extends DefaultPortalPlugin {
 
-    private String label = "Simulate with BIMP";
+    private String label = "Simulate model with BIMP";
     private String groupLabel = "Analyze";
 
     @Inject private ProcessService processService;

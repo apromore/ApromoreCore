@@ -28,9 +28,16 @@
             http://www.springframework.org/schema/osgi            http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <!-- Other OSGi services this component consumes -->
+    <osgi:reference id="managerService" interface="org.apromore.manager.client.ManagerService"/>
     <osgi:reference id="securityService" interface="org.apromore.service.SecurityService"/>
 
-    <!-- Expose the component as an OSGi service -->
+    <!-- Expose the components as OSGi services -->
+
+    <beans:bean id="portalPlugin4" class="org.apromore.plugin.portal.account.ActivePluginsPlugin">
+        <beans:constructor-arg ref="managerService"/>
+    </beans:bean>
+    <osgi:service ref="portalPlugin4" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
+
     <beans:bean id="portalPlugin" class="org.apromore.plugin.portal.account.ChangePasswordPlugin">
         <beans:constructor-arg ref="securityService"/>
     </beans:bean>

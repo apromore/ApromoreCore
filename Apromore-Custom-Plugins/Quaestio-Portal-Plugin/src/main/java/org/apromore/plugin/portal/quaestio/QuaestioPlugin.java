@@ -80,7 +80,7 @@ public class QuaestioPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Configure with Questionnaire";
+        return "Configure with questionnaire";
     }
 
     @Override

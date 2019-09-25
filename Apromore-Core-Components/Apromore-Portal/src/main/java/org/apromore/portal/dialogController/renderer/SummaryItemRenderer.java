@@ -207,7 +207,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
     }
 
     protected Listcell renderOpenXES() {
-        return wrapIntoListCell(new Label("OpenXES"));
+        return wrapIntoListCell(new Label("XES"));
     }
 
     protected Listcell renderNA() {

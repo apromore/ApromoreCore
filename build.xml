@@ -26,6 +26,7 @@
     </description>
 
     <!-- Folders used to build and deploy dependencies for Apromore. -->
+    <property name="dir" location="${basedir}"/>
     <property name="dir-sups" location="${basedir}/Supplements"/>
     <property name="dir-sups-lib" location="${dir-sups}/libraries"/>
     <property name="dir-extras" location="${basedir}/Apromore-Extras"/>
@@ -49,7 +50,7 @@
     <property name="dir-osgi" location="${basedir}/Apromore-OSGI-Bundles/"/>
 
     <import file="build-community.xml" as="community"/>
-    <import file="build-enterprise.xml" as="enterprise"/>
+    <import file="Apromore-Enterprise-Plugins/build-enterprise.xml" as="enterprise" optional="true"/>
     <import file="build-student.xml" as="student"/>
 
     <fileset id="usrRepo" dir=".">
@@ -67,7 +68,7 @@
         <include name="Apromore-Custom-Plugins/Log-Filter-Logic/target/log-filter-logic-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Management-Logic/target/log-management-logic-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic/target/log-filter-portal-plugin-generic-1.0.0.jar"/>
-		<include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin/target/log-filter-portal-plugin-1.0.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin/target/log-filter-portal-plugin-1.0.0.jar"/>
     </fileset>
 
     <!-- Virgo Related -->
@@ -205,8 +206,8 @@
         <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
         <copy file="Supplements/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
         <copy file="Supplements/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
-				<copy file="Supplements/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
-				<copy file="Supplements/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
+        <copy file="Supplements/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
+        <copy file="Supplements/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
 
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">

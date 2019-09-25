@@ -63,10 +63,10 @@ public class ViewController {
 
     private JApplet applet;
 
-    public final ImageIcon iconProc = new ImageIcon(getClass().getResource("/icons/bpmn_22x22.png"));
-    public final ImageIcon iconFold = new ImageIcon(getClass().getResource("/icons/folder24.png"));
-    public final ImageIcon iconHome = new ImageIcon(getClass().getResource("/icons/home_folder24.png"));
-    public final ImageIcon iconKeyword = new ImageIcon(getClass().getResource("/icons/key.png"));
+    public final ImageIcon iconProc = new ImageIcon(getClass().getResource("/img/svg/bpmn_model.svg"));
+    public final ImageIcon iconFold = new ImageIcon(getClass().getResource("/img/icon/svg/folder_icons.svg"));
+    public final ImageIcon iconHome = new ImageIcon(getClass().getResource("/img/icon/svg/folder_home.svg"));
+    public final ImageIcon iconKeyword = new ImageIcon(getClass().getResource("/img/icons/key.png"));
 
     public static final String ALLVERSIONS="All versions";
     public static final String LATESTVERSION="Latest version";

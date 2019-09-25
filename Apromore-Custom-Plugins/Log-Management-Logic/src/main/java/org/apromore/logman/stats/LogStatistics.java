@@ -348,10 +348,12 @@ public class LogStatistics {
                     if(jEvent.getAttributes().containsKey(TIMESTAMP_KEY)) {
                         jZdt = zonedDateTimeOf(jEvent);
                     }
-                    if(jActName.equals(iActName) && jLifecycle.equals("complete")) {
-                        markedMap.put(jZdt, 0);
-                        activitySequence.add(iActName);
-                        break;
+                    if(jZdt!= null) {
+                        if(jActName.equals(iActName) && jLifecycle.equals("complete")) {
+                            markedMap.put(jZdt, 0);
+                            activitySequence.add(iActName);
+                            break;
+                        }
                     }
                 }
             }
@@ -365,6 +367,7 @@ public class LogStatistics {
     public static ZonedDateTime zonedDateTimeOf(XEvent xEvent) {
         XAttribute da =
                 xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP);
+        if(da==null) return null;//2019-09-24
         Date d = ((XAttributeTimestamp) da).getValue();
         ZonedDateTime z =
                 ZonedDateTime.ofInstant(d.toInstant(), ZoneId.systemDefault());

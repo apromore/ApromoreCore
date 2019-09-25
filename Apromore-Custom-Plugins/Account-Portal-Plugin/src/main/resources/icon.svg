@@ -7,23 +7,22 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="21.999998"
+   height="21.999998"
+   overflow="hidden"
    version="1.1"
-   width="22"
-   height="22"
-   viewBox="-0.5 -0.5 22 22"
-   content="&lt;mxfile modified=&quot;2019-08-29T02:47:08.441Z&quot; host=&quot;pebppomjfocnoigkeepgbmcifnnlndla&quot; agent=&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&quot; version=&quot;11.2.1&quot; etag=&quot;OPecIDe_ny_nOKJPEUp4&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;OyfprQPECRZ-9fIwfe4z&quot;&gt;zZVNc4IwEIZ/DVcHiKA91q/20M50xkPPEVbINLBMiAX765tIAlJ07LQclIPw7C5J3v3AIcusfhK0SF8xBu74blw7ZOX4vv9ApupPk2NDvOnMkESw2LAObNkXGOgaemAxlD1HicglK/owwjyHSPYYFQKrvtseeX/VgiYwANuI8iF9Z7FMGzpz3Y4/A0tSs3JgDRm1vgaUKY2xOkNk7ZClQJTNXVYvgWvxrCxN3OaKtd2XgFz+JsBvAj4pP5ijmX3Joz2rwEMeg/b3HLKoUiZhW9BIWyuVXsVSmXFjLqXAD1giR6FIjjm00AqlckgWe8a59XJ8Ml3pS3GzHRAS6qtH8lqhVIUBZiDFUbnYADcIJ0ETZerLD11Lqi5dbRLSs1R5xEBqSiRpF+hkVDdGycuqktuq6iMyVVAvdAf8DUsmGebKtEMpMVNKWIdHzhJtkPhT6pQW+mVZnegum+xoyaJJjPlBHWVxajY/uJeU2P62DT+7lBBvHgwT0vb8fxIyvZ0QFaCmB9wucVoWzUjZs1q3xV8F3px+IwnskbBf8fOhvOGFcg9HEDe4jxnS6klFZL4YgTuWvEFfXuKFw3EyjrzqsRv/J9vZR5SsvwE=&lt;/diagram&gt;&lt;/mxfile&gt;"
-   id="svg14"
-   sodipodi:docname="security_22.svg"
+   id="svg13"
+   sodipodi:docname="security.svg"
+   style="overflow:hidden"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
-     id="metadata18">
+     id="metadata17">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -38,52 +37,42 @@
      inkscape:pageshadow="2"
      inkscape:window-width="3840"
      inkscape:window-height="1973"
-     id="namedview16"
+     id="namedview15"
      showgrid="false"
-     inkscape:zoom="1.026087"
-     inkscape:cx="110"
-     inkscape:cy="110"
+     inkscape:zoom="0.78666667"
+     inkscape:cx="149.00001"
+     inkscape:cy="149"
      inkscape:window-x="-18"
      inkscape:window-y="-18"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg14" />
+     inkscape:current-layer="svg13" />
   <defs
-     id="defs2" />
+     id="defs5">
+    <clipPath
+       id="clip0">
+      <path
+         d="m 2136,1126 h 300 v 300 h -300 z"
+         id="path2"
+         inkscape:connector-curvature="0"
+         style="clip-rule:evenodd;fill-rule:evenodd" />
+    </clipPath>
+  </defs>
   <g
-     id="g12"
-     transform="matrix(0.1,0,0,0.1,-0.95,-0.95)">
+     clip-path="url(#clip0)"
+     transform="matrix(0.0738255,0,0,0.0738255,-157.76509,-83.201339)"
+     id="g11">
     <rect
-       x="4.5"
-       y="94.5"
-       width="220"
-       height="130"
-       rx="19.5"
-       ry="19.5"
-       pointer-events="none"
-       id="rect4"
-       style="fill:#4d4d4d;stroke:none" />
+       x="2138"
+       y="1128"
+       width="296"
+       height="296"
+       stroke-miterlimit="8"
+       id="rect7"
+       style="fill:none;stroke:#ffffff;stroke-width:2;stroke-miterlimit:8" />
     <path
-       d="m 22,109.5 c 0,-57.99 41.41,-105 92.5,-105 24.53,0 48.06,11.06 65.41,30.75 17.34,19.7 27.09,46.4 27.09,74.25 0,27.85 -9.75,54.55 -27.09,74.25 -17.35,19.69 -40.88,30.75 -65.41,30.75 -24.53,0 -48.06,-11.06 -65.41,-30.75 C 31.75,164.05 22,137.35 22,109.5 Z m 92.5,-80 c -37.28,0 -67.5,35.82 -67.5,80 0,44.18 30.22,80 67.5,80 37.28,0 67.5,-35.82 67.5,-80 0,-44.18 -30.22,-80 -67.5,-80 z"
-       pointer-events="none"
-       id="path6"
+       d="m 2370,1227 h -14 v -28 c 0,-38.64 -31.36,-70 -70,-70 -38.64,0 -70,31.36 -70,70 v 28 h -14 c -15.4,0 -28,12.6 -28,28 v 140 c 0,15.4 12.6,28 28,28 h 168 c 15.4,0 28,-12.6 28,-28 v -140 c 0,-15.4 -12.6,-28 -28,-28 z m -84,126 c -15.4,0 -28,-12.6 -28,-28 0,-15.4 12.6,-28 28,-28 15.4,0 28,12.6 28,28 0,15.4 -12.6,28 -28,28 z m 43.4,-126 h -86.8 v -28 c 0,-23.94 19.46,-43.4 43.4,-43.4 23.94,0 43.4,19.46 43.4,43.4 z"
+       id="path9"
        inkscape:connector-curvature="0"
-       style="fill:#4d4d4d;stroke:none" />
-    <circle
-       cx="114"
-       cy="149"
-       pointer-events="none"
-       id="ellipse8"
-       r="30"
-       style="fill:#ffffff;stroke:none" />
-    <rect
-       x="104"
-       y="150"
-       width="20"
-       height="60"
-       rx="10"
-       ry="10"
-       pointer-events="none"
-       id="rect10"
-       style="fill:#ffffff;stroke:none" />
+       style="fill:#4d4d4d;fill-rule:evenodd" />
   </g>
 </svg>

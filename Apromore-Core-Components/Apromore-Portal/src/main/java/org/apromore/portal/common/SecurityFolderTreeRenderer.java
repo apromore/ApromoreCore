@@ -104,7 +104,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 treeItem.setOpen(false);
             }
 
-            hl.appendChild(new Image(folder.getId() == 0 ? "/img/home-folder24.png" : "/img/folder24.png"));
+            hl.appendChild(new Image(folder.getId() == 0 ? "/img/icon/svg/folder_home.svg" : "/img/icon/svg/folder_icons.svg"));
             String folderName = folder.getFolderName();
             hl.appendChild(new Label(folderName.length() > 15 ? folderName.substring(0, 13) + "..." : folderName));
             break;
@@ -113,7 +113,7 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
             summaryType = (SummaryType) ctn.getData();
             if(summaryType instanceof ProcessSummaryType) {
                 ProcessSummaryType process = (ProcessSummaryType) summaryType;
-                hl.appendChild(new Image("/img/process24.png"));
+                hl.appendChild(new Image("/img/icon/svg/bpmn_model.svg"));
                 String processName = process.getName();
                 hl.appendChild(new Label(processName.length() > 15 ? processName.substring(0, 13) + "..." : processName));
             }

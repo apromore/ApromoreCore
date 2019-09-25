@@ -51,7 +51,7 @@ public class PortalPlugin() : DefaultPortalPlugin() {
 
     private val LOGGER = LoggerFactory.getLogger("org.apromore.plugin.portal.predictortraining.PortalPlugin")
 
-    private var label      = "Train Predictor with Log"
+    private var label      = "Train predictor with log"
     private var groupLabel = "Monitor"
 
     @Inject private val eventLogService : EventLogService? = null

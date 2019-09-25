@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
+import org.apromore.common.ConfigBean;
 import org.apromore.dao.*;
 import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
@@ -65,7 +66,7 @@ import org.apromore.service.WorkspaceService;
 @Transactional
 public class UIHelper implements UserInterfaceHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserInterfaceHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UIHelper.class);
 
     private AnnotationRepository aRepository;
     private ProcessRepository pRepository;
@@ -74,6 +75,7 @@ public class UIHelper implements UserInterfaceHelper {
     private GroupLogRepository glRepository;
     private ProcessModelVersionRepository pmvRepository;
     private WorkspaceService workspaceService;
+    private boolean enableCPF;
 
 
     /**
@@ -93,7 +95,8 @@ public class UIHelper implements UserInterfaceHelper {
                     final GroupLogRepository groupLogRepository,
                     final ProcessModelVersionRepository processModelVersionRepository,
                     final FolderRepository folderRepository,
-                    final WorkspaceService workspaceService) {
+                    final WorkspaceService workspaceService,
+                    final ConfigBean config) {
 
         this.aRepository = annotationRepository;
         this.pRepository = processRepository;
@@ -102,6 +105,7 @@ public class UIHelper implements UserInterfaceHelper {
         this.glRepository = groupLogRepository;
         this.pmvRepository = processModelVersionRepository;
         this.workspaceService = workspaceService;
+        this.enableCPF = config.getEnableCPF();
     }
 
 
@@ -128,11 +132,7 @@ public class UIHelper implements UserInterfaceHelper {
         verType.setLastUpdate(lastUpdate);
         verType.setVersionNumber(pmv.getVersionNumber());
         verType.setRanking(process.getRanking());
-        if (pmv.getNumEdges() == 0 && pmv.getNumVertices() == 0) {
-            verType.setEmpty(Boolean.TRUE);
-        } else {
-            verType.setEmpty(Boolean.FALSE);
-        }
+        verType.setEmpty(enableCPF && pmv.getNumEdges() == 0 && pmv.getNumVertices() == 0);
 
         if (nativeType != null && !nativeType.equals("")) {
             annType.setNativeType(nativeType);
@@ -378,11 +378,7 @@ public class UIHelper implements UserInterfaceHelper {
                 if (processVersionType != null) {
                     versionSummary.setScore(processVersionType.getScore());
                 }
-                if (processModelVersion.getNumEdges() == 0 && processModelVersion.getNumVertices() == 0) {
-                    versionSummary.setEmpty(Boolean.TRUE);
-                } else {
-                    versionSummary.setEmpty(Boolean.FALSE);
-                }
+                versionSummary.setEmpty(enableCPF && processModelVersion.getNumEdges() == 0 && processModelVersion.getNumVertices() == 0);
 
                 pmVersion = new Version(processModelVersion.getVersionNumber());
                 buildNativeSummaryList(processSummary, versionSummary, branch.getBranchName(), pmVersion);

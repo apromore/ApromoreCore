@@ -68,7 +68,7 @@ public class ActivityFilterPlugin extends PluginCustomGui {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Filter Out Infrequent Activities";
+        return "Filter out infrequent activities";
     }
 
     @Override

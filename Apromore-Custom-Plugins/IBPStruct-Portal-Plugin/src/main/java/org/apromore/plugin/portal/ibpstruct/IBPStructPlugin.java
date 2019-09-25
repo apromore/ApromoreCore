@@ -123,12 +123,12 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Structure Process Model";
+        return "Structure process model";
     }
 
     @Override
     public String getGroupLabel(Locale locale) {
-        return "Discover";
+        return "Redesign";
     }
 
     @Override

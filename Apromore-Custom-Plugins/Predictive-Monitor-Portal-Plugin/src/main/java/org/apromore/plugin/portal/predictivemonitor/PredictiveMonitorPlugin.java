@@ -44,7 +44,7 @@ public class PredictiveMonitorPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(PredictiveMonitorPlugin.class.getCanonicalName());
 
-    private String label = "Predictively Monitor Log";
+    private String label = "Predictively monitor log";
     private String groupLabel = "Monitor";
 
     @Inject private EventLogService eventLogService;

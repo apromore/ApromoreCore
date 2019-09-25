@@ -46,7 +46,7 @@ public class SimilarityClustersPlugin extends PluginCustomGui {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Detect Clones";
+        return "Detect clones";
     }
 
     @Override

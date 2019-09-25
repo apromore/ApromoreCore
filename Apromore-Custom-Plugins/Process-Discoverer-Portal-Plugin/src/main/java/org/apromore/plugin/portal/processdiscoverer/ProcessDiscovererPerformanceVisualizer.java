@@ -33,7 +33,7 @@ import java.util.Locale;
 @Component("performancePlugin")
 public class ProcessDiscovererPerformanceVisualizer extends ProcessDiscovererAbstractPlugin {
 
-    private String label = "Mine process performance on process map / BPMN model";
+    private String label = "Mine performance on map/model";
     private String groupLabel = "Analyze";
     
      @Override

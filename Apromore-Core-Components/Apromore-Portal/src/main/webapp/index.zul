@@ -131,35 +131,19 @@
 
     <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController" sclass="custom-window">
 
-        <div height="40px" sclass="z-listheader">
-            <div style="float:left; margin-top: 5px;">
-                <!--<toolbarbutton id="releaseNotes"  mode="toggle">-->
-                <!--<attribute name="onCheck">-->
-                <!--<![CDATA[-->
-                <!--event.getTarget().setLabel("Welcome bla. "+event.getTarget().getLabel());-->
-                <!--]]>-->
-                <!--</attribute>-->
-                <!--</toolbarbutton>-->
-
-                <!---->
-                <toolbarbutton id="releaseNotes" sclass="z-listheader-content" />
-                <space bar="true" spacing="1px" style="height:100%; background:#323232; position:absolute;" />
-                <toolbarbutton id="moreButton" label="Apromore Initiative" sclass="z-listheader-content" />
-
-                <space bar="true" spacing="1px" style="height:100%; background:#323232; position:absolute;"/>
-                <toolbarbutton id="installedPlugins" label="Active Plugins" sclass="z-listheader-content"/>
-
-                <space bar="true" spacing="1px" style="height:100%; background:#323232; position:absolute;" visible="false"/>
-                <toolbarbutton id="webDav" label="webDav" sclass="z-listheader-content" visible="false"/>
-
-                <toolbarbutton id="developerResources" label="Developer Resources" sclass="z-listheader-content" visible="false"/>
-
-            </div>
-            <div style="float:right; margin-top: 5px; margin-right: 5px" >
-                <toolbarbutton id="featuresButton" label="Help" visible="true" sclass="z-listheader-content"  />
-                <toolbarbutton id="signoutButton" label="Sign out" visible="true" sclass="z-listheader-content" />
-            </div>
-        </div>
+        <toolbar zclass="z-listheader">
+            <h:a href="https://apromore.org">
+                <h:img src="img/apromore_header.png" width="115"/>
+            </h:a>
+            <toolbarbutton id="releaseNotes"                                          visible="false"/>
+            <toolbarbutton id="moreButton"         label="Apromore Initiative"        visible="false"/>
+            <toolbarbutton id="installedPlugins"   label="Active Plugins"             visible="false"/>
+            <toolbarbutton id="webDav"             label="webDav"                     visible="false"/>
+            <toolbarbutton id="developerResources" label="Developer Resources"        visible="false"/>
+            <space hflex="1"/>
+            <toolbarbutton id="featuresButton"     image="img/icon/svg/help-icon.svg" visible="true"/>
+            <toolbarbutton id="signoutButton"      label="Sign out"                   visible="false"/>
+        </toolbar>
 
         <borderlayout vflex="true">
             <west id="leftPanel" title="Key word filter" size="30%" collapsible="true" splittable="true">
