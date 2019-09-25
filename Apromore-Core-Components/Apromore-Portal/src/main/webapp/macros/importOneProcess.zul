@@ -87,7 +87,7 @@
                         <button label="OK for all" iconSclass="z-icon-check-circle" tooltiptext="Default values for process and version name, and given value for domain will apply for all remaining process models to import."></button>
                         <button label="Cancel" iconSclass="z-icon-times-circle"></button>
                         <button label="Cancel all" iconSclass="z-icon-times-circle" tooltiptext="Cancel import of all remaining process models."></button>
-                        <button label="Reset" image="img/reset.png"></button>
+                        <button label="Reset" iconSclass="z-icon-undo"></button>
                     </div>
                 </row>
             </rows>
