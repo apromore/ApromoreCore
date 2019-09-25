@@ -33,6 +33,7 @@ public class LogStatistics {
 //    private Map<String, Set<String>> eventualFollowMap = new HashMap<String, Set<String>>();
     private Set<String> eventNameSet = new HashSet<>();
     private Map<Integer, List<String>> variantEventsMap = new HashMap<Integer, List<String>>();
+    private Map<String, Integer> caseEventMap = new HashMap<>(); //2019-09-25
 
 	public LogStatistics(XLog log) {
 		this.log = log;
@@ -160,7 +161,10 @@ public class LogStatistics {
         for (XTrace trace : log) {
 
             if (attributeStat) {
-	            for (XEvent event : trace) {
+
+                if(trace.getAttributes().containsKey("concept:name")) caseEventMap.put(trace.getAttributes().get("concept:name").toString(), trace.size()); //2019-09-25
+
+                for (XEvent event : trace) {
 	                for (XAttribute attribute : event.getAttributes().values()) {
 	                    String key = attribute.getKey();
 	                    if (!(key.equals("lifecycle:model") || key.equals(TIMESTAMP_KEY))) {
@@ -393,5 +397,9 @@ public class LogStatistics {
 
     public Map<Integer, List<String>> getVariantEventsMap() {
         return variantEventsMap;
+    }
+
+    public Map<String, Integer> getCaseEventMap() { //2019-09-25
+        return caseEventMap;
     }
 }

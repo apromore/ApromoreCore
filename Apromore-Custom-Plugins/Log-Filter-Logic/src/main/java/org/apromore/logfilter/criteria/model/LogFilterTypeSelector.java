@@ -56,7 +56,8 @@ public class LogFilterTypeSelector {
             "time:timestamp",
 			"duration:range",
 			"time:startrange",
-			"time:endrange"
+			"time:endrange",
+			"case:id"
     };
     
     // Must be sorted for Arrays.binarySearch
@@ -88,6 +89,7 @@ public class LogFilterTypeSelector {
 		codeNameMap.put("duration:range", "Duration range");
 		codeNameMap.put("time:startrange", "Start time range");
 		codeNameMap.put("time:endrange", "End time range");
+		codeNameMap.put("case:id", "Case ID");
     }
        
     private static Map<String,Type> typeMap = new HashMap<>();
@@ -105,6 +107,7 @@ public class LogFilterTypeSelector {
 		typeMap.put("duration:range", Type.DURATION_RANGE);
 		typeMap.put("time:startrange", Type.TIME_STARTRANGE);
 		typeMap.put("time:endrange", Type.TIME_ENDRANGE);
+		typeMap.put("case:id", Type.CASE_ID);
     }
     
     private static Set<String> eventStandardCodes = new HashSet<>(Arrays.asList(
@@ -126,7 +129,8 @@ public class LogFilterTypeSelector {
 													            "org:role",
 //													            "time:duration",
 													            "time:timestamp",
-																"duration:range"));
+																"duration:range",
+																"case:id"));
 
 	public static List<String> getStandardCodes() {
 		List<String> codeList = Arrays.asList(codes);
