@@ -20,17 +20,8 @@
 <?style src="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"?>
 
 <zk>
-    <zscript>
-        void onClientInfo(ClientInfoEvent evt) {
-        int height = evt.getDesktopHeight();
-        int width = evt.getDesktopWidth();
 
-        scrn.setValue(
-        width + "x" + height + "x" + evt.getColorDepth());
-        }
-    </zscript>
-
-    <window closable="true" height="min" maximizable="true" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)">
+    <window closable="false" height="min" maximizable="true" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)">
         <!--<vbox>-->
         <style>
             .greenLabel {
