@@ -119,7 +119,7 @@
         <div style="padding: 5px 0 5px 45%;">
             <hbox align="center">
                 <button id="toXESButton" label="Import Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;" width="110px"  />
-                <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" disabled="true" style="position:relative;" width="110px"  />
+                <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;" width="110px"  />
                 <separator />
             </hbox>
         </div>
