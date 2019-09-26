@@ -45,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
@@ -375,7 +376,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                     saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
 //                                    Messagebox.show("Your file has been created!");
                                 }
+                                window.invalidate();
                                 window.detach();
+                                Executions.getCurrent().sendRedirect(null);
                             }
                         } else {
                             Messagebox.show("Upload file first!");
@@ -414,5 +417,5 @@ public class CSVImporterPortal implements FileImporterPlugin {
         }
         return maxchar;
     }
-    
+
 }

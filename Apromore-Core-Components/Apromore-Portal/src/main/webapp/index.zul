@@ -123,6 +123,13 @@
         min-height: 10px;
         }
 
+        .z-treerow .z-treecell {
+            border-top: 0px;
+        }
+
+        .z-window {
+            background-color: white;
+        }
 
 
     </style>
