@@ -7,16 +7,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="21.999998"
+   height="21.999998"
+   overflow="hidden"
    version="1.1"
-   width="22"
-   height="22"
-   viewBox="-0.5 -0.5 22 22"
-   content="&lt;mxfile modified=&quot;2019-09-11T11:13:37.843Z&quot; host=&quot;pebppomjfocnoigkeepgbmcifnnlndla&quot; agent=&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36&quot; version=&quot;11.2.7&quot; etag=&quot;nroXE_gL5ZU45S585nQp&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;dV-dRe053IGGFcx_JPWo&quot;&gt;5ZdPT4MwGMY/DVcDlL9XcerF0w6eGyjQWCgpnTA/vWW0sA6mMxvOOEhIed63tP31yQsYICraJwar/IUmiBi2mbQGeDBs2w88ce2EbS+4QAoZw0kvWaOwxh9IiqZUNzhBtZbIKSUcV7oY07JEMdc0yBht9LSUEn3UCmZoIqxjSKbqK054LpdlmqP+jHCWy5FdFSigypVCncOENnsSWBkgYpTyvlW0ESIdOoWl7/d4JDrMi6GSn9LB7ju8Q7KRS5Pz4lu1VkY3ZYK6fMsA902OOVpXMO6ijdhcoeW8IDJcc0bfBiZicCVFlFC2eyBwHrpTRCCL5db64k7OBDGO2qOrsQZGwlqIFoizrUiRHQLlD2Urz79ze6UZt2mAn+9t0SBCaY1sePqITzQkwXmaYFGa1pRmSUukgXS7nBQTMsd7EcLBqXzPx+v8BK/5Pd5jnGYZLwEvONGcwD0fnvur8L7wrFYB6qovzyluu4EvQtnRKXtOOKHszEB2LlAAvGUhp7vjL0AOzetB9m/FyaF3PcjBrTj5sFz4lj3zzbAU5vBmvGxeE7N68f5/Ox/WjEU5i9vxV2UX2/vdA6tP&lt;/diagram&gt;&lt;/mxfile&gt;"
-   id="svg24"
+   id="svg25"
    sodipodi:docname="change_theme.svg"
-   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+   style="overflow:hidden"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
-     id="metadata28">
+     id="metadata29">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -35,97 +35,80 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1280"
-     inkscape:window-height="711"
-     id="namedview26"
+     inkscape:window-width="3840"
+     inkscape:window-height="1973"
+     id="namedview27"
      showgrid="false"
-     inkscape:zoom="9.8333333"
-     inkscape:cx="11.5"
-     inkscape:cy="12.45"
-     inkscape:window-x="0"
-     inkscape:window-y="1"
+     inkscape:zoom="0.78929766"
+     inkscape:cx="148.50001"
+     inkscape:cy="148.49999"
+     inkscape:window-x="-18"
+     inkscape:window-y="-18"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg24" />
+     inkscape:current-layer="svg25" />
   <defs
-     id="defs2" />
+     id="defs5">
+    <clipPath
+       id="clip0">
+      <path
+         d="m 2484,1859 h 299 v 299 h -299 z"
+         id="path2"
+         inkscape:connector-curvature="0"
+         style="clip-rule:evenodd;fill-rule:evenodd" />
+    </clipPath>
+  </defs>
   <g
-     id="g22"
-     transform="matrix(0.91666667,0,0,0.91666667,-0.5,-0.45416666)">
+     clip-path="url(#clip0)"
+     transform="matrix(0.07407407,0,0,0.07407407,-184.07406,-137.77777)"
+     id="g23">
     <rect
-       x="1"
-       y="0.94999999"
-       width="22"
-       height="22"
-       rx="1.54"
-       ry="1.54"
-       pointer-events="none"
-       id="rect4"
-       style="fill:#ffffff;stroke:#4d4d4d;stroke-width:2" />
+       x="2486"
+       y="1861"
+       width="295"
+       height="295"
+       stroke-miterlimit="8"
+       id="rect7"
+       style="fill:none;stroke:#ffffff;stroke-width:2;stroke-miterlimit:8" />
+    <path
+       d="m 2542.35,1951.09 v 137.95 h 182.15 v -137.95 z m 11.19,-49.09 h 160.92 c 17.42,0 31.54,14.08 31.54,31.44 v 150.12 c 0,17.36 -14.12,31.44 -31.54,31.44 h -160.92 c -17.42,0 -31.54,-14.08 -31.54,-31.44 v -150.12 c 0,-17.36 14.12,-31.44 31.54,-31.44 z"
+       id="path9"
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d;fill-rule:evenodd" />
     <rect
-       x="1"
-       y="1"
-       width="22"
-       height="2.2"
-       rx="1.1"
-       ry="1.1"
-       pointer-events="none"
-       id="rect6"
-       style="fill:#4d4d4d;stroke:none" />
+       x="2557"
+       y="1972"
+       width="42"
+       height="41"
+       id="rect11"
+       style="fill:#4d4d4d" />
+    <path
+       d="m 2566,2033.79 v 23.42 h 24 v -23.42 z m -9,-8.79 h 42 v 41 h -42 z"
+       id="path13"
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d;fill-rule:evenodd" />
     <rect
-       x="1"
-       y="2.7"
-       width="22"
-       height="3.5"
-       pointer-events="none"
-       id="rect8"
-       style="fill:#4d4d4d;stroke:none" />
+       x="2613"
+       y="2025"
+       width="41"
+       height="41"
+       id="rect15"
+       style="fill:#4d4d4d" />
+    <path
+       d="m 2676.79,2033.79 v 23.42 h 23.42 v -23.42 z M 2668,2025 h 41 v 41 h -41 z"
+       id="path17"
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d;fill-rule:evenodd" />
+    <path
+       d="m 2621.79,1980.79 v 23.42 h 23.42 v -23.42 z M 2613,1972 h 41 v 41 h -41 z"
+       id="path19"
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d;fill-rule:evenodd" />
     <rect
-       x="4"
-       y="9.1000004"
-       width="4"
-       height="4"
-       pointer-events="none"
-       id="rect10"
-       style="fill:#4d4d4d;stroke:#4d4d4d" />
-    <rect
-       x="10"
-       y="9.1000004"
-       width="4"
-       height="4"
-       pointer-events="none"
-       id="rect12"
-       style="fill:#ffffff;stroke:#4d4d4d" />
-    <rect
-       x="16"
-       y="9.1000004"
-       width="4"
-       height="4"
-       pointer-events="none"
-       id="rect14"
-       style="fill:#4d4d4d;stroke:#4d4d4d" />
-    <rect
-       x="4"
-       y="15.45"
-       width="4"
-       height="4"
-       pointer-events="none"
-       id="rect16"
-       style="fill:#ffffff;stroke:#4d4d4d" />
-    <rect
-       x="10"
-       y="15.45"
-       width="4"
-       height="4"
-       pointer-events="none"
-       id="rect18"
-       style="fill:#4d4d4d;stroke:#4d4d4d" />
-    <rect
-       x="16"
-       y="15.45"
-       width="4"
-       height="4"
-       pointer-events="none"
-       id="rect20"
-       style="fill:#ffffff;stroke:#4d4d4d" />
+       x="2668"
+       y="1972"
+       width="41"
+       height="41"
+       id="rect21"
+       style="fill:#4d4d4d" />
   </g>
 </svg>

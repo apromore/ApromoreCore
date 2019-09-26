@@ -7,23 +7,22 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="21.999998"
+   height="21.703703"
+   overflow="hidden"
    version="1.1"
-   width="22"
-   height="22.349205"
-   viewBox="-0.5 -0.5 22 22.349205"
-   content="&lt;mxfile modified=&quot;2019-08-29T02:09:58.496Z&quot; host=&quot;pebppomjfocnoigkeepgbmcifnnlndla&quot; agent=&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36&quot; version=&quot;11.2.1&quot; etag=&quot;rAQPvW8w1njCpzzwpmGk&quot; type=&quot;device&quot; pages=&quot;1&quot;&gt;&lt;diagram id=&quot;-rpNk1p7Mt4APzHRVeRv&quot;&gt;5ZjNctsgFIWfxst4QH+Wlq2dtJvOdJpF0yWVsMQUCw/Gsdyn70W62EZKGmfG1UxtZxE4wAW+c0MMk3C+aj5ptq6+qILLSUCKZhIuJkFAozSAX1bZd0pMk04otSiw01F4FL85igTVrSj4xutolJJGrH0xV3XNc+NpTGu187stlfRnXbOSD4THnMmh+l0UpurUGSFH/TMXZYUzx65hxVxfFDYVK9TuRArvJ+FcK2W60qqZc2nZOSzduIdXWg/r0rw25wxAH56Z3OLWcF1m7/YKS1zbIgQ1gslvwJPVpW39uKuE4Y9rltv2HVgNWmVWEmoUij+VMWqFFY04bFnypSsaBYMWBEpLIeVcSaWhXqvaxtdqa0RdzmEzXD+BfkemMegbo9Uv7jpPgjBa2J9Di/MkIG0Qw4xQtR2eWQG3zLXhzavY6MEMSGKuVtzoPXTBAXdBCgtpB2EGpxmS2x3zISBhp1UnuZCg8wxTsDwEP9oEBXTqZdfCm3LtUqZRSgem0fFMi942DcjVBS8Q7Rs++TiRvU+S9h06hX4BomHUBxrFA6ARGfIMLsAzvk6e5OST+HDTYbb+K7jJrcHNgvHgzm4ObpKMBje9PrgBSf2DICbT8c7Z7CqBTsnfDtpkRL7uTnNDgLNgVMD09gDP6JiA33GLXErefLA3cODA6wKLi1yyzUbkLUe4sQzlV/ED2If28z4P2mlczyhzCj410GSaJTYRXAfaLdcbAPVed94I84SrtOUfNp/au4+tLRpMr7ayx0pHihe9B4eN2uqce98XzsiOE7PjF8x2muYSLlfP/owvZQDO8FUJmPiQfLNZ72t/FvdidKvHYafPD71IAemHSuPEDwWulNwMQrU5edj5eWl6xrX5fzsHwrDPz/07GePv/gqvtJAlPaKUuPPt8kihenzr61L6+GAa3v8B&lt;/diagram&gt;&lt;/mxfile&gt;"
-   id="svg32"
-   sodipodi:docname="extract_ctl_rules_22.svg"
+   id="svg13"
+   sodipodi:docname="search_similar_model.svg"
+   style="overflow:hidden"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
-     id="metadata36">
+     id="metadata17">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -38,122 +37,39 @@
      inkscape:pageshadow="2"
      inkscape:window-width="3840"
      inkscape:window-height="1973"
-     id="namedview34"
+     id="namedview15"
      showgrid="false"
-     inkscape:zoom="1.0172414"
-     inkscape:cx="110.5"
-     inkscape:cy="113"
+     inkscape:zoom="0.8"
+     inkscape:cx="148.50001"
+     inkscape:cy="146.5"
      inkscape:window-x="-18"
      inkscape:window-y="-18"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg32" />
+     inkscape:current-layer="svg13" />
   <defs
-     id="defs2" />
+     id="defs5">
+    <clipPath
+       id="clip0">
+      <path
+         d="m 2595,953 h 299 v 295 h -299 z"
+         id="path2"
+         inkscape:connector-curvature="0"
+         style="clip-rule:evenodd;fill-rule:evenodd" />
+    </clipPath>
+  </defs>
   <g
-     id="g30"
-     transform="matrix(0.09977324,0,0,0.09977324,-0.89909296,-0.94897958)">
+     clip-path="url(#clip0)"
+     transform="matrix(0.07407407,0,0,0.07407407,-192.29629,-70.666663)"
+     id="g11">
     <path
-       d="m -57.5,87 m 203,0 v 60 h -203 V 77"
-       stroke-miterlimit="10"
-       transform="rotate(-90,44,117)"
-       pointer-events="none"
-       id="path4"
+       d="m 2646.61,1110.96 -24.5,24.48 24.5,24.48 24.5,-24.48 z m 195.78,-69.88 -24.5,24.48 24.5,24.48 24.5,-24.48 z m 0,-24.87 50.61,50.57 -42.32,42.3 v 55.21 h 18.29 c 12.62,0 22.85,10.23 22.85,22.85 v 37.02 c 0,12.61 -10.23,22.84 -22.85,22.84 h -55.05 c -12.63,0 -22.86,-10.23 -22.86,-22.84 v -33.24 h 18.15 l -0.7,1.04 c -0.65,1.54 -1,3.22 -1,5 v 20.81 c 0,7.09 5.75,12.84 12.85,12.84 h 40.73 c 7.1,0 12.85,-5.75 12.85,-12.84 v -20.81 c 0,-7.1 -5.75,-12.85 -12.85,-12.85 h -26.81 v -92.57 l -8.86,8.86 -33.64,-33.62 z M 2620.03,954 h 55.05 c 12.63,0 22.86,10.228 22.86,22.845 v 35.415 h -19.63 l 2.17,-3.22 c 0.66,-1.54 1.01,-3.22 1.01,-5 v -20.811 c 0,-7.094 -5.75,-12.844 -12.85,-12.844 h -40.73 c -7.1,0 -12.85,5.75 -12.85,12.844 v 20.811 c 0,7.1 5.75,12.85 12.85,12.85 h 27.61 v 94.76 l 9.56,-9.55 32.14,32.12 -50.61,50.57 -50.61,-50.57 42.32,-42.3 v -55.21 h -18.29 c -12.62,0 -22.85,-10.23 -22.85,-22.85 v -37.015 c 0,-12.617 10.23,-22.845 22.85,-22.845 z"
+       id="path7"
        inkscape:connector-curvature="0"
-       style="fill:none;stroke:#4d4d4d;stroke-width:20;stroke-miterlimit:10" />
+       style="fill:#4d4d4d;fill-rule:evenodd" />
     <path
-       d="m 82.5,86 m 203,0 v 60 H 82.5 V 76"
-       stroke-miterlimit="10"
-       transform="rotate(90,184,116)"
-       pointer-events="none"
-       id="path6"
+       d="m 2678.49,1089.95 -1.04,-58.35 58.35,1.04 -20.92,20.92 79.41,79.4 20.92,-20.92 1.04,58.36 -58.35,-1.05 20.92,-20.91 -79.41,-79.41 z"
+       id="path9"
        inkscape:connector-curvature="0"
-       style="fill:none;stroke:#4d4d4d;stroke-width:20;stroke-miterlimit:10" />
-    <rect
-       x="5.5"
-       y="40"
-       width="40"
-       height="20"
-       pointer-events="none"
-       id="rect8"
-       style="fill:#4d4d4d;stroke:none" />
-    <rect
-       x="5.5"
-       y="76"
-       width="40"
-       height="20"
-       pointer-events="none"
-       id="rect10"
-       style="fill:#4d4d4d;stroke:none" />
-    <rect
-       x="5.5"
-       y="116"
-       width="40"
-       height="20"
-       pointer-events="none"
-       id="rect12"
-       style="fill:#4d4d4d;stroke:none" />
-    <rect
-       x="5.5"
-       y="161"
-       width="40"
-       height="20"
-       pointer-events="none"
-       id="rect14"
-       style="fill:#4d4d4d;stroke:none" />
-    <rect
-       x="179"
-       y="45.5"
-       width="40"
-       height="20"
-       pointer-events="none"
-       id="rect16"
-       style="fill:#4d4d4d;stroke:none" />
-    <rect
-       x="179"
-       y="81.5"
-       width="40"
-       height="20"
-       pointer-events="none"
-       id="rect18"
-       style="fill:#4d4d4d;stroke:none" />
-    <rect
-       x="179"
-       y="121.5"
-       width="40"
-       height="20"
-       pointer-events="none"
-       id="rect20"
-       style="fill:#4d4d4d;stroke:none" />
-    <rect
-       x="179"
-       y="166.5"
-       width="40"
-       height="20"
-       pointer-events="none"
-       id="rect22"
-       style="fill:#4d4d4d;stroke:none" />
-    <path
-       d="m 111.16,145.43 19.76,21.9 -81.71,0.32 8.69,-81.25 19.77,21.91 35.17,-31.74 -19.76,-21.9 81.71,-0.32 -8.69,81.25 -19.77,-21.91 z"
-       stroke-miterlimit="10"
-       pointer-events="none"
-       id="path24"
-       inkscape:connector-curvature="0"
-       style="fill:#4d4d4d;stroke:#ffffff;stroke-width:10;stroke-linejoin:round;stroke-miterlimit:10" />
-    <rect
-       x="4.5"
-       y="5"
-       width="40"
-       height="20"
-       pointer-events="none"
-       id="rect26"
-       style="fill:#4d4d4d;stroke:none" />
-    <rect
-       x="184.5"
-       y="207"
-       width="40"
-       height="20"
-       pointer-events="none"
-       id="rect28"
-       style="fill:#4d4d4d;stroke:none" />
+       style="fill:#4d4d4d;fill-rule:evenodd" />
   </g>
 </svg>
