@@ -307,6 +307,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Div attrBox = (Div) window.getFellow("attrBox");
             Div popUPBox = (Div) window.getFellow("popUPBox");
             Button toXESButton = (Button) window.getFellow("toXESButton");
+            Button cancelButton = (Button) window.getFellow("cancelButton");
 
             if(media != null) {
                 window.setWidth("95%");
@@ -378,12 +379,20 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                 }
                                 window.invalidate();
                                 window.detach();
-                                Executions.getCurrent().sendRedirect(null);
                             }
                         } else {
                             Messagebox.show("Upload file first!");
                         }
                     }
+                }
+
+            });
+
+            cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    window.invalidate();
+                    window.detach();
+                    Executions.getCurrent().sendRedirect(null);
                 }
 
             });
