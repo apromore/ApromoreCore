@@ -36,11 +36,9 @@
     xmlns:x="xhtml" xmlns:zk="zk">
 
     <style src="css/cytoscape-context-menus.css"/>
-	
-	<style src="moonstyle.css"/>
 
     <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="js/highstock.js"></script>
+    <!--<script type="text/javascript" src="js/highstock.js"></script>-->
     <script type="text/javascript" src="js/exporting.js" defer="true"></script>
 
     <script src="js/pdf.v1.10.100.js"></script>
