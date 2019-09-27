@@ -61,7 +61,7 @@
         <include name="target/dashboard-0.1.war"/>
     </fileset>
 
-    <fileset id="plans" dir="plans">
+    <fileset id="plans" dir="Supplements/plans">
         <include name="account.plan"/>
         <include name="annotations.plan"/>
         <include name="bpmneditor.plan"/>
@@ -154,7 +154,7 @@
     </target>
 
 
-    <target name="start-virgo-enterprise-cross" depends="set-permissions,copy-virgo-enterprise-cross">
+    <target name="start-virgo-nix" depends="set-permissions,copy-virgo-nix">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -165,9 +165,9 @@
         </exec>
     </target>
 
-    <target name="copy-virgo-enterprise-cross" depends="clean-virgo">
+    <target name="copy-virgo-nix" depends="clean-virgo">
         
-        <copy file="plans/apromore-enterprise.plan" tofile="${dir-virgo}/pickup/apromore-enterprise.plan" flatten="true" overwrite="true"/>
+        <copy file="Supplements/plans/apromore-enterprise.plan" tofile="${dir-virgo}/pickup/apromore-enterprise.plan" flatten="true" overwrite="true"/>
 
         <copy file="Supplements/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
         <copy file="Supplements/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
