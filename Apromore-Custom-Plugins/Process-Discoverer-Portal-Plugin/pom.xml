@@ -46,6 +46,7 @@
                 <configuration>
                     <instructions>
                         <Import-Package>
+                            org.apromore.portal.servlet,
 														com.sun.xml.bind.v2,
 														org.apromore.manager.client.*,
 														org.apromore.portal.*,

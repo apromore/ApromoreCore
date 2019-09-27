@@ -45,6 +45,7 @@
 	<script src="/js/cytoscape-undo-redo.js"></script>
 	<script src="/js/cytoscape-edge-bend-editing.js"></script>
 
+	<style src="../css/moonstyle.css"/>
 
 	<style dynamic="true">
 		tr.z-row td.z-row-inner, tr.z-row td.z-cell, tr.z-group td.z-group-inner, tr.z-groupfoot td.z-groupfoot-inner {

@@ -115,6 +115,17 @@
         <url-pattern>/register/resetPassword/*</url-pattern>
     </servlet-mapping>
 
+    <!-- required for customised font-icon -->
+    <servlet>
+        <servlet-name>portalPluginResource</servlet-name>
+        <servlet-class>org.apromore.portal.servlet.PortalPluginResourceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>portalPluginResource</servlet-name>
+        <url-pattern>/portalPluginResource/*</url-pattern>
+    </servlet-mapping>
+    <!-- ////////////////////////////// -->
+
     <session-config>
         <session-timeout>60</session-timeout>
     </session-config>

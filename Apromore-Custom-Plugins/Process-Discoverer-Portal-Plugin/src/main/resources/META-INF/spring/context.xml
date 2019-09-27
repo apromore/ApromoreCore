@@ -56,6 +56,8 @@
 	<osgi:reference id="logFilterCriterionFactory" interface="org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory"/>
     <osgi:reference id="logFilterPlugin" interface="org.apromore.plugin.portal.logfilter.generic.LogFilterPlugin"/>
 
+    <osgi:list id="portalPlugins" interface="org.apromore.plugin.portal.PortalPlugin" availability="optional"/><!-- required for font-icon -->
+
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.processdiscoverer" />
     <osgi:service ref="frequencyPlugin" interface="org.apromore.plugin.portal.PortalPlugin" />
