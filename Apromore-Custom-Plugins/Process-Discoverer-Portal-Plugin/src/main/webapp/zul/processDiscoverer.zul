@@ -365,12 +365,12 @@
 										<menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
 									</menupopup>
 								</combobutton>
-								<combobutton id="layout" label="Layout" height="26px" hflex="1" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);'>
+								<combobutton id="layout" label="Layout" height="26px" hflex="1" onClick='layout_hiera.setChecked(true);layout_dagre_TB.setChecked(false);'>
 									<menupopup>
-										<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Hierarchical" checked="true" />
-										<menuitem id="layout_dagre_LR" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(true);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Dagre Left-Right" checked="false" />
-										<menuitem id="layout_dagre_TB" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(true);layout_bf.setChecked(false);' label="Dagre Top-Bottom" checked="false" />
-										<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />
+										<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre_TB.setChecked(false);' label="Left-to-right" checked="true" />
+										<!--<menuitem id="layout_dagre_LR" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(true);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Dagre Left-Right" checked="false" />-->
+										<menuitem id="layout_dagre_TB" onClick='layout_hiera.setChecked(false);layout_dagre_TB.setChecked(true);' label="Top-to-bottom" checked="false" />
+										<!--<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />-->
 									</menupopup>
 								</combobutton>
 								<button id="fitScreen" label="Fit to screen" height="26px" hflex="1" />
@@ -600,15 +600,15 @@
 		}
 		
 		function load(json, layout_option, retain) {
-			currentLayout = layout_option;
+		  currentLayout = layout_option;
 			
-			// need to set the current zoom/pan level again as the reset/zoom/pan actions will generate zoom and pan events and change them.
-			var zoom = currentZoomLevel; 
+          // need to set the current zoom/pan level again as the reset/zoom/pan actions will generate zoom and pan events and change them.
+		  var zoom = currentZoomLevel; 
 		  var pan = currentPanPosition;
 			
 		  loadTraceMode = false;
 		  reset();
-			init();
+          init();
 			
 		  //console.log(json);
 		  cy.add($.parseJSON(json)); 
@@ -620,9 +620,9 @@
 			  currentZoomLevel = zoom; 
 			  currentPanPosition = pan;
 		  }
-			else {
-				fitToWindow(layout_option);
-			}
+		  else {
+              fitToWindow(layout_option);
+		  }
       
       if (smallViewportHeight==0) {
         smallViewportHeight = window.cy.height();
@@ -639,12 +639,12 @@
 		}
 		
 		function loadTrace(a) {
-		  loadTraceMode = true;
-		  reset();
+            loadTraceMode = true;
+            reset();
 			init();
-		  cy.add($.parseJSON(a)); 
-		  layout_dagre_LR(false);
-			fitToWindow(1);
+            cy.add($.parseJSON(a)); 
+            layout_dagre_LR(false);
+            fitToWindow(1);
 		}
 		
 		function fitToWindow(layout_option) {
