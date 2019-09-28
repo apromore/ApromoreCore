@@ -5,8 +5,10 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.swing.UIManager;
 import javax.xml.datatype.DatatypeFactory;
+
 import org.apromore.helper.Version;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.plugin.property.RequestParameterType;
@@ -215,7 +217,7 @@ public class ExportBPMNHandler implements EventListener<Event> {
 			"Input", 
 			"Enter a name for the BPMN model (no more than 60 characters)", 
 			defaultProcessName, 
-			"^[a-zA-Z0-9_\\-\\s]{1,60}$",
+			"^[a-zA-Z0-9_\\(\\)\\-\\s]{1,60}$",
 			"a-z, A-Z, 0-9, hyphen, underscore, and space. No more than 60 chars.",
 			new EventListener<Event>() {
 				@Override
