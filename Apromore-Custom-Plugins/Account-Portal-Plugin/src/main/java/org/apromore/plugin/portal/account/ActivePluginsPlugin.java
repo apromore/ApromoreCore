@@ -25,9 +25,11 @@ import org.apromore.manager.client.ManagerService;
 import org.apromore.model.PluginInfo;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
+import org.apromore.portal.ConfigBean;
 import org.apromore.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.spring.SpringUtil;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;
@@ -36,7 +38,7 @@ public class ActivePluginsPlugin extends DefaultPortalPlugin {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ActivePluginsPlugin.class);
 
-    private String label = "Active plugins";
+    private String label = "About Apromore";
     private String groupLabel = "Account";
 
     private ManagerService managerService;
@@ -67,7 +69,11 @@ public class ActivePluginsPlugin extends DefaultPortalPlugin {
         LOGGER.info("Debug");
 
         try {
-            final Window pluginWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/activePlugins.zul", null, null);
+            ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
+            Map args = new HashMap();
+            args.put("version", config.getMajorVersionNumber() + " (commit " + config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate() + ")");
+            final Window pluginWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/activePlugins.zul", null, args);
+            pluginWindow.setAttribute("version", "dummy");
             Listbox infoListBox = (Listbox) pluginWindow.getFellow("pluginInfoListBox");
 
             List<PluginInfo> installedPlugins = new ArrayList<>(managerService.readInstalledPlugins(null));
