@@ -23,6 +23,7 @@
 
     <window closable="false" height="min" maximizable="true" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)">
         <!--<vbox>-->
+        <style src="style.css" />
         <style>
             .greenLabel {
             padding-left: 1px;
@@ -118,7 +119,7 @@
         </div>
         <div style="padding: 5px 0 5px 45%;">
             <hbox align="center">
-                <button id="toXESButton" label="Upload Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;" width="110px"  />
+                <button id="toXESButton" label="Upload Log" iconSclass="icon-checkbox-checked" disabled="true" style="position:relative;" width="110px"  />
                 <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;" width="110px"  />
                 <separator />
             </hbox>
