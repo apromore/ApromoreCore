@@ -42,11 +42,14 @@
         .z-treecol-content, .z-treecell-content, .z-treefooter-content {
         line-height: 18px;
         }
+<<<<<<< HEAD
         .z-tree {
         background: #fff;
         git poverflow: hidden;
         zoom: 1;
         }
+=======
+>>>>>>> parent of e8cb7fea8... border removed from tree and
     </style>
     <div class="z-west-header" style="display: -webkit-flex; display: flex">
         <label style="color: unset; padding-top: 5px; font-weight: bold; -webkit-flex: 1; flex: 1" value="Folders"/>
