@@ -23,6 +23,7 @@
 
     <window closable="false" height="min" maximizable="true" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)">
         <!--<vbox>-->
+
         <style>
             .greenLabel {
             padding-left: 1px;
