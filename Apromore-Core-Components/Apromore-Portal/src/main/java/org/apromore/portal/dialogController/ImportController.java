@@ -300,6 +300,7 @@ public class ImportController extends BaseController {
                         this.ignoredFiles += entryName + ", ";
                     }
                 }
+
                 Messagebox.show(extension);
             } else {
                 // Case of a single file: import it.
