@@ -37,6 +37,7 @@
 
     <style src="css/cytoscape-context-menus.css"/>
 
+
     <script type="text/javascript" src="js/jquery.js"></script>
     <!--<script type="text/javascript" src="js/highstock.js"></script>-->
     <script type="text/javascript" src="js/exporting.js" defer="true"></script>
@@ -131,6 +132,8 @@
 
     <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController" sclass="custom-window">
 
+        <style src="astyle.css"/>
+
         <toolbar zclass="z-listheader">
             <h:a href="https://apromore.org">
                 <h:img src="img/apromore_header.png" width="115"/>
@@ -166,6 +169,12 @@
                     <hbox id="pagingandbuttons" width="100%" style="background-color: unset; border-bottom: 1px solid #CFCFCF;">
                         <paging id="pg" style="border-bottom: 0px solid #F9F9F9;" />
                         <hbox id="buttons" align="center" height="100%" vflex="min">
+                            <toolbarbutton label="" iconSclass="icon-reload"/>
+                            <toolbarbutton label="" iconSclass="icon-add_folder"/>
+                            <toolbarbutton label="" iconSclass="icon-add_model"/>
+                            <toolbarbutton label="" iconSclass="icon-delete"/>
+                            <toolbarbutton label="" iconSclass="icon-rename"/>
+                            <toolbarbutton label="" iconSclass="icon-security"/>
                             <button class="custom-btn" id="refreshB" label="" style="background: transparent; border:none" image="img/icon/svg/refresh_icon.svg" tooltiptext="Reload data" />
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
                             <button class="custom-btn" id="btnAddFolder" label="" image="img/icon/svg/folder_add.svg" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
