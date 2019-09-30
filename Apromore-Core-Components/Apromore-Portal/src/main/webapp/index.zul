@@ -133,8 +133,7 @@
 
         <toolbar zclass="z-listheader">
             <h:a href="https://apromore.org"><h:img src="img/apromore_header.png" width="115"/></h:a>
-            <space hflex="1"/>
-            <toolbarbutton id="featuresButton" image="img/icon/svg/help-icon.svg"/>
+            <toolbarbutton id="featuresButton" image="img/icon/svg/help-icon.svg" style="float: right"/>
         </toolbar>
 
         <borderlayout vflex="true">
