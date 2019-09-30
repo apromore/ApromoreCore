@@ -44,7 +44,7 @@
         }
         .z-tree {
         background: #fff;
-        overflow: hidden;
+        git poverflow: hidden;
         zoom: 1;
         }
     </style>
