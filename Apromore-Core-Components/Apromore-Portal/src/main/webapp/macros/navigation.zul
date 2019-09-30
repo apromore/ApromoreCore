@@ -42,6 +42,11 @@
         .z-treecol-content, .z-treecell-content, .z-treefooter-content {
         line-height: 18px;
         }
+        .z-tree {
+        background: #fff;
+        overflow: hidden;
+        zoom: 1;
+        }
     </style>
     <div class="z-west-header" style="display: -webkit-flex; display: flex">
         <label style="color: unset; padding-top: 5px; font-weight: bold; -webkit-flex: 1; flex: 1" value="Folders"/>
