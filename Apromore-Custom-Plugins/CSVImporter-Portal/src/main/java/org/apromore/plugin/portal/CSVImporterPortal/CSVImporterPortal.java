@@ -296,7 +296,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @Override
     public void importFile(Media media, PortalContext portalContext, boolean isPublic) {
         LOGGER.info("Import file: " + media.getName());
-
+        Messagebox.show("This is a zip file.");
         this.isPublic = isPublic;
 
         try {
@@ -399,7 +399,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 window.doModal();
 
         } catch (IOException e) {
-            LOGGER.warn("Unable to execute sample method", e);
+            LOGGER.warn("Unable to execute csv import method", e);
             Messagebox.show("Unable to import file : " + e, "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
