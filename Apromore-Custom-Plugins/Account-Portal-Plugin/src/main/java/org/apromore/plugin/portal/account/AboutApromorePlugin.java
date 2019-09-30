@@ -34,16 +34,16 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;
 
-public class ActivePluginsPlugin extends DefaultPortalPlugin {
+public class AboutApromorePlugin extends DefaultPortalPlugin {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ActivePluginsPlugin.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(AboutApromorePlugin.class);
 
     private String label = "About Apromore";
     private String groupLabel = "Account";
 
     private ManagerService managerService;
 
-    public ActivePluginsPlugin(ManagerService managerService) {
+    public AboutApromorePlugin(ManagerService managerService) {
         this.managerService = managerService;
     }
 
@@ -71,6 +71,7 @@ public class ActivePluginsPlugin extends DefaultPortalPlugin {
         try {
             ConfigBean config = (ConfigBean) SpringUtil.getBean("portalConfig");
             Map args = new HashMap();
+            args.put("edition", config.getVersionEdition());
             args.put("version", config.getMajorVersionNumber() + " (commit " + config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate() + ")");
             final Window pluginWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/activePlugins.zul", null, args);
             pluginWindow.setAttribute("version", "dummy");

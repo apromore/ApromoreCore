@@ -32,20 +32,12 @@
                 <space vflex="1"/>
                 <hbox width="100%">
                     <space hflex="1"/>
-<vbox>
-<div>
-Apromore Enterprise Edition
-</div>
-<div>
-Copyright 2019, The University of Melbourne. All rights reserved.
-</div>
-<div>
-Version: ${arg.version}
-</div>
-<div>
-This software is licensed under the <a href="">LGPL 3.0 license</a> and <a href="">other open source licenses</a>. It also incorporates some closed source components, licensed by The University of Melbourne.
-</div>
-</vbox>
+                    <vbox>
+                        <div>${arg.edition}</div>
+                        <div>Copyright 2019, The University of Melbourne. All rights reserved.</div>
+                        <div>Version: ${arg.version}</div>
+                        <div>This software is licensed under the <a href="">LGPL 3.0 license</a> and <a href="">other open source licenses</a>. It also incorporates some closed source components, licensed by The University of Melbourne.</div>
+                    </vbox>
                     <space hflex="1"/>
                 </hbox>
                 <space vflex="10"/>

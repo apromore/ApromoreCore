@@ -56,7 +56,6 @@
     <fileset id="usrRepo" dir=".">
         <include name="Apromore-Assembly/**/repository/usr/*.jar"/>
         <include name="Apromore-Assembly/**/repository/usr/*.war"/>
-        <include name="site.properties"/>
         <include name="git.properties"/>
 
         <!-- Free builds won't include the following encumbered components -->
@@ -69,6 +68,10 @@
         <include name="Apromore-Custom-Plugins/Log-Management-Logic/target/log-management-logic-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic/target/log-filter-portal-plugin-generic-1.0.0.jar"/>
         <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin/target/log-filter-portal-plugin-1.0.0.jar"/>
+    </fileset>
+
+    <fileset id="usrRepoText" dir=".">
+        <include name="site.properties"/>
     </fileset>
 
     <!-- Virgo Related -->
@@ -236,6 +239,9 @@
         </copy>
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset refid="usrRepo"/>
+        </copy>
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true" filtering="true">
+            <fileset refid="usrRepoText"/>
         </copy>
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
             <fileset refid="pickupRepo"/>
