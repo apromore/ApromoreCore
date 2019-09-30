@@ -296,7 +296,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @Override
     public void importFile(Media media, PortalContext portalContext, boolean isPublic) {
         LOGGER.info("Import file: " + media.getName());
-        Messagebox.show("This is a zip file.");
+        Messagebox.show("ZIP ZIP: " + media.getName() + ", Exten: " + media.getFormat());
         this.isPublic = isPublic;
 
         try {
