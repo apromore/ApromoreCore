@@ -47,6 +47,7 @@
         background: #fff;
         overflow: hidden;
         zoom: 1;
+        border: unset;
         }
     </style>
     <div class="z-west-header" style="display: -webkit-flex; display: flex">
