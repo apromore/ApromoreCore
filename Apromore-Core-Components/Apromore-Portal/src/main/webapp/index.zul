@@ -160,12 +160,6 @@
                     <hbox id="pagingandbuttons" width="100%" style="background-color: unset;">
                         <paging id="pg" style="border-bottom: 0px solid #F9F9F9;" />
                         <hbox id="buttons" align="center" height="100%" vflex="min">
-                            <toolbarbutton label="" iconSclass="icon-reload"/>
-                            <toolbarbutton label="" iconSclass="icon-add_folder"/>
-                            <toolbarbutton label="" iconSclass="icon-add_model"/>
-                            <toolbarbutton label="" iconSclass="icon-delete"/>
-                            <toolbarbutton label="" iconSclass="icon-rename"/>
-                            <toolbarbutton label="" iconSclass="icon-security"/>
                             <button class="custom-btn" id="refreshB" label="" style="background: transparent; border:none" image="img/icon/svg/refresh_icon.svg" tooltiptext="Reload data" />
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
                             <button class="custom-btn" id="btnAddFolder" label="" image="img/icon/svg/folder_add.svg" style="background: transparent; border:none; cursor: pointer;" tooltiptext="Add Folder"/>
