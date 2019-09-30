@@ -230,6 +230,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     private Label medianDuration;
     private Label maxDuration;
     private Label minDuration;
+    private Label logStartTime;
+    private Label logEndTime;
     
     private Window cases_window = null;
 
@@ -383,6 +385,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
             this.medianDuration = (Label) slidersWindow.getFellow(StringValues.b[39]);
             this.maxDuration = (Label) slidersWindow.getFellow(StringValues.b[40]);
             this.minDuration = (Label) slidersWindow.getFellow(StringValues.b[41]);
+            this.logStartTime = (Label) slidersWindow.getFellow("startTime");
+            this.logEndTime = (Label) slidersWindow.getFellow("endTime");
 
             this.selector = (Menupopup) slidersWindow.getFellow(StringValues.b[42]);
             this.selectorButton = (Combobutton) slidersWindow.getFellow("selector");
@@ -1491,6 +1495,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         Map<String, Integer> labels = new HashMap<>();
         Set<String> resources = new HashSet<>();
         List<Long> durations = new ArrayList<>(log.size());
+        long logStart = Long.MAX_VALUE;
+        long logEnd = Long.MIN_VALUE;
 
         int events = 0;
 
@@ -1502,7 +1508,12 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
         for (XTrace trace : log) {
             StringBuilder traceBuilder = new StringBuilder();
-            durations.add(xte.extractTimestamp(trace.get(trace.size() - 1)).getTime() - xte.extractTimestamp(trace.get(0)).getTime());
+            long traceStart = xte.extractTimestamp(trace.get(0)).getTime();
+            long traceEnd = xte.extractTimestamp(trace.get(trace.size() - 1)).getTime();
+            durations.add(traceEnd - traceStart);
+            if (traceStart < logStart) logStart = traceStart;
+            if (traceEnd > logEnd) logEnd = traceEnd;
+            
             for (XEvent event : trace) {
                 String label = event.getAttributes().get(getLabel()).toString();
                 if (!labels.containsKey(label)) labels.put(label, labels.size());
@@ -1539,6 +1550,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         medianDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(median)));
         maxDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(longhest)));
         minDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(shortest)));
+        logStartTime.setValue(TimeConverter.formatDate(logStart));
+        logEndTime.setValue(TimeConverter.formatDate(logEnd));
     }
 
 

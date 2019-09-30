@@ -33,7 +33,7 @@
 
     <!-- Expose the components as OSGi services -->
 
-    <beans:bean id="portalPlugin4" class="org.apromore.plugin.portal.account.ActivePluginsPlugin">
+    <beans:bean id="portalPlugin4" class="org.apromore.plugin.portal.account.AboutApromorePlugin">
         <beans:constructor-arg ref="managerService"/>
     </beans:bean>
     <osgi:service ref="portalPlugin4" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />

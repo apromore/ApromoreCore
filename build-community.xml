@@ -21,6 +21,7 @@
 
 <project>
     <description>Community distribution</description>
+    <filter token="version.edition" value="Apromore Community Edition"/>
     <fileset id="pickupRepo" dir=".">
         <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
         <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>

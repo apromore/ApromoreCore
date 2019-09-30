@@ -7,16 +7,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="21.999998"
-   height="21.999998"
+   width="22"
+   height="22"
    overflow="hidden"
    version="1.1"
-   id="svg15"
-   sodipodi:docname="puzzle_in_folder.svg"
+   id="svg13"
+   sodipodi:docname="puzz.svg"
    style="overflow:hidden"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
   <metadata
-     id="metadata19">
+     id="metadata17">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -37,21 +37,21 @@
      inkscape:pageshadow="2"
      inkscape:window-width="3840"
      inkscape:window-height="1973"
-     id="namedview17"
+     id="namedview15"
      showgrid="false"
-     inkscape:zoom="0.78929766"
-     inkscape:cx="148.5"
-     inkscape:cy="148.5"
+     inkscape:zoom="0.79461279"
+     inkscape:cx="148"
+     inkscape:cy="147.5"
      inkscape:window-x="-18"
      inkscape:window-y="-18"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg15" />
+     inkscape:current-layer="svg13" />
   <defs
      id="defs5">
     <clipPath
        id="clip0">
       <path
-         d="m 1273,854 h 299 v 299 h -299 z"
+         d="m 1340,143 h 298 v 297 h -298 z"
          id="path2"
          inkscape:connector-curvature="0"
          style="clip-rule:evenodd;fill-rule:evenodd" />
@@ -59,24 +59,18 @@
   </defs>
   <g
      clip-path="url(#clip0)"
-     transform="matrix(0.07407407,0,0,0.07407407,-94.370365,-63.33333)"
-     id="g13">
+     transform="matrix(0.07457627,0,0,0.07457627,-100.00678,-10.738983)"
+     id="g11">
     <rect
-       x="1275"
-       y="856"
+       x="1341"
+       y="144"
        width="295"
        height="295"
-       stroke-miterlimit="8"
        id="rect7"
-       style="fill:none;stroke:#ffffff;stroke-width:2;stroke-miterlimit:8" />
+       style="fill:#000000;fill-opacity:0" />
     <path
-       d="m 1464.1,1011.62 h -7.15 v -19.048 c 0,-5.239 -4.28,-9.524 -9.52,-9.524 h -19.05 v -7.143 c 0,-6.572 -5.33,-11.905 -11.9,-11.905 -6.58,0 -11.91,5.333 -11.91,11.905 v 7.143 h -19.05 c -5.23,0 -9.47,4.285 -9.47,9.524 v 18.098 h 7.09 c 7.1,0 12.86,5.76 12.86,12.85 0,7.1 -5.76,12.86 -12.86,12.86 H 1376 v 18.1 c 0,5.23 4.29,9.52 9.52,9.52 h 18.1 v -7.14 c 0,-7.1 5.76,-12.86 12.86,-12.86 7.09,0 12.85,5.76 12.85,12.86 v 7.14 h 18.1 c 5.24,0 9.52,-4.29 9.52,-9.52 v -19.05 h 7.15 c 6.57,0 11.9,-5.33 11.9,-11.91 0,-6.57 -5.33,-11.9 -11.9,-11.9 z"
+       d="m 1573.57,285.714 h -15.86 v -42.285 c 0,-11.629 -9.51,-21.143 -21.14,-21.143 h -42.28 v -15.857 c 0,-14.589 -11.84,-26.429 -26.43,-26.429 -14.59,0 -26.43,11.84 -26.43,26.429 v 15.857 h -42.29 c -11.63,0 -21.03,9.514 -21.03,21.143 V 283.6 h 15.75 c 15.75,0 28.54,12.791 28.54,28.543 0,15.751 -12.79,28.543 -28.54,28.543 H 1378 v 40.171 c 0,11.629 9.51,21.143 21.14,21.143 h 40.17 v -15.857 c 0,-15.752 12.8,-28.543 28.55,-28.543 15.75,0 28.54,12.791 28.54,28.543 V 402 h 40.17 c 11.63,0 21.14,-9.514 21.14,-21.143 v -42.286 h 15.86 c 14.59,0 26.43,-11.84 26.43,-26.428 0,-14.589 -11.84,-26.429 -26.43,-26.429 z"
        id="path9"
-       inkscape:connector-curvature="0"
-       style="fill:#4d4d4d;fill-rule:evenodd" />
-    <path
-       d="m 1365.46,953.731 c -11.73,0 -21.23,9.544 -21.23,21.316 v 85.263 c 0,11.77 9.5,21.31 21.23,21.31 h 113.08 c 11.73,0 21.23,-9.54 21.23,-21.31 v -85.263 c 0,-11.772 -9.5,-21.316 -21.23,-21.316 z m 74.37,-44.462 v 23.684 h 23.59 v -23.684 z m 48.17,-2.77 -8.26,8.29 6.3,6.322 -6.3,6.322 8.26,8.29 6.3,-6.323 6.3,6.323 8.26,-8.29 -6.3,-6.322 6.3,-6.322 -8.26,-8.29 -6.3,6.322 z M 1347.33,891 h 149.34 c 20.62,0 37.33,16.776 37.33,37.471 v 150.059 c 0,20.69 -16.71,37.47 -37.33,37.47 h -149.34 c -20.62,0 -37.33,-16.78 -37.33,-37.47 V 928.471 C 1310,907.776 1326.71,891 1347.33,891 Z"
-       id="path11"
        inkscape:connector-curvature="0"
        style="fill:#4d4d4d;fill-rule:evenodd" />
   </g>

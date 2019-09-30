@@ -135,17 +135,8 @@
         <style src="astyle.css"/>
 
         <toolbar zclass="z-listheader">
-            <h:a href="https://apromore.org">
-                <h:img src="img/apromore_header.png" width="115"/>
-            </h:a>
-            <toolbarbutton id="releaseNotes"                                          visible="false"/>
-            <toolbarbutton id="moreButton"         label="Apromore Initiative"        visible="false"/>
-            <toolbarbutton id="installedPlugins"   label="Active Plugins"             visible="false"/>
-            <toolbarbutton id="webDav"             label="webDav"                     visible="false"/>
-            <toolbarbutton id="developerResources" label="Developer Resources"        visible="false"/>
-            <space hflex="1"/>
-            <toolbarbutton id="featuresButton"     image="img/icon/svg/help-icon.svg" visible="true"/>
-            <toolbarbutton id="signoutButton"      label="Sign out"                   visible="false"/>
+            <h:a href="https://apromore.org"><h:img src="img/apromore_header.png" width="115"/></h:a>
+            <toolbarbutton id="featuresButton" image="img/icon/svg/help-icon.svg" style="float: right"/>
         </toolbar>
 
         <borderlayout vflex="true">
@@ -166,7 +157,7 @@
             <center id="mainPanel">
                 <div vflex="true">
                     <Menu id="menucomp" style="background-color: unset" width="100%"/>
-                    <hbox id="pagingandbuttons" width="100%" style="background-color: unset; border-bottom: 1px solid #CFCFCF;">
+                    <hbox id="pagingandbuttons" width="100%" style="background-color: unset;">
                         <paging id="pg" style="border-bottom: 0px solid #F9F9F9;" />
                         <hbox id="buttons" align="center" height="100%" vflex="min">
                             <toolbarbutton label="" iconSclass="icon-reload"/>

@@ -261,7 +261,7 @@
 									<checkbox id="inverted_arcs" checked="false" label="Invert Priority Arcs" height="30px" width="100px"/>
 								</vbox>
 							</vbox>
-							<grid>
+							<grid width="450px">
 								<columns>
 									<column width="55px"/>
 									<column width="50%"/>
@@ -285,19 +285,21 @@
 									</row>
 								</rows>
 							</grid>
-							<grid>
+							<grid width="100%">
 								<columns>
-									<column width="12.5%"/>
-									<column width="12.5%"/>
-									<column width="12.5%"/>
-									<column width="12.5%"/>
-									<column width="12.5%"/>
-									<column width="12.5%"/>
-									<column width="12.5%"/>
-									<column width="12.5%"/>
+									<column width="9%"/>
+									<column width="9%"/>
+									<column width="9%"/>
+									<column width="9%"/>
+									<column width="10%"/>
+									<column width="10%"/>
+									<column width="10%"/>
+									<column width="10%"/>
+									<column width="12%"/>
+									<column width="12%"/>                                    
 								</columns>
 								<rows>
-									<row height="64px">
+									<row height="64px" style="vertical-align:top;">
 										<label>Cases</label>
 										<label>Case Variants</label>
 										<label>Events</label>
@@ -306,8 +308,10 @@
 										<label>Median Duration</label>
 										<label>Max Duration</label>
 										<label>Min Duration</label>
+										<label>Start</label>
+										<label>End</label>                                        
 									</row>
-									<row height="64px">
+									<row height="63px" style="vertical-align:top;">
 										<label id="caseNumber">Cases</label>
 										<label id="uniquecaseNumber">Unique Cases</label>
 										<label id="eventNumber">Events</label>
@@ -316,6 +320,8 @@
 										<label id="medianDuration">Activities</label>
 										<label id="maxDuration">Activities</label>
 										<label id="minDuration">Activities</label>
+										<label id="startTime">Start</label>
+										<label id="endTime">End</label>                                        
 									</row>
 								</rows>
 							</grid>

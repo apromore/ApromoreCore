@@ -121,56 +121,19 @@ public class MainController extends BaseController implements MainControllerInte
             this.menu = new MenuController(this);
             this.portalContext = new PluginPortalContext(this);
             this.navigation = new NavigationController(this);
-            Toolbarbutton moreButton = (Toolbarbutton) this.getFellow("moreButton");
-            Toolbarbutton releaseNotes = (Toolbarbutton) this.getFellow("releaseNotes");
             Toolbarbutton featuresButton = (Toolbarbutton) this.getFellow("featuresButton");
-            Toolbarbutton signoutButton = (Toolbarbutton) this.getFellow("signoutButton");
-            Toolbarbutton installedPluginsButton = (Toolbarbutton) this.getFellow("installedPlugins");
-            Toolbarbutton webDavButton = (Toolbarbutton) this.getFellow("webDav");
-//            Toolbarbutton developerResourcesButton = (Toolbarbutton) this.getFellow("developerResources");
 
-
-            setHeaderText(releaseNotes);
             switchToProcessSummaryView();
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
 
-            moreButton.addEventListener("onClick",
-                    new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                            moreInfo();
-                        }
-                    });
-            signoutButton.addEventListener("onClick",
-                    new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                            signout();
-                        }
-                    });
             featuresButton.addEventListener("onClick",
                     new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {
                         	featuresInfo();
                         }
                     });
-            releaseNotes.addEventListener("onClick",
-                    new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                            displayReleaseNotes();
-                        }
-                    });
-            webDavButton.addEventListener("onClick",
-                    new EventListener<Event>() {
-                        public void onEvent(final Event event) throws Exception {
-                            displayWebDav();
-                        }
-                    });
-//            developerResourcesButton.addEventListener("onClick",
-//                    new EventListener<Event>() {
-//                        public void onEvent(final Event event) throws Exception {
-//                            displayDeveloperResources();
-//                        }
-//                    });
+
             qe.subscribe(
                     new EventListener<Event>() {
                         @Override
@@ -181,6 +144,7 @@ public class MainController extends BaseController implements MainControllerInte
                             }
                         }
                     });
+
             qe.subscribe(
                     new EventListener<Event>() {
                         @Override
@@ -225,8 +189,6 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
     private void loadWorkspace(boolean loadTree) {
-        setHeaderText((Toolbarbutton) this.getFellow("releaseNotes"));
-
         String userId = UserSessionManager.getCurrentUser().getId();
         updateTabs(userId);
         updateActions();
@@ -328,23 +290,6 @@ public class MainController extends BaseController implements MainControllerInte
 
         loadWorkspace(false);
     }
-
-//    public void reloadLogSummaries() {
-//        this.simplesearch.clearSearches();
-//        switchToProcessSummaryView();
-//        pg.setActivePage(0);
-//
-//        FolderType currentFolder = UserSessionManager.getCurrentFolder();
-//        List<FolderType> subFolders = getService().getSubFolders(UserSessionManager.getCurrentUser().getId(), currentFolder == null ? 0 : currentFolder.getId());
-//        LogListboxController.LogSummaryListModel model = ((LogListboxController) this.baseListboxControllerLogs).displayLogSummaries(subFolders);
-//
-//        this.displayMessage(
-//                model.getSize() + " out of " + model.getTotalLogCount() +
-//                        (model.getTotalLogCount() > 1 ? " logs." : " log.")
-//        );
-//
-//        loadWorkspace();
-//    }
 
 
     /**
@@ -694,26 +639,6 @@ public class MainController extends BaseController implements MainControllerInte
     }
 
 
-
-    @Command
-    protected void moreInfo() {
-        String instruction;
-        int offsetH = 100, offsetV = 200;
-        instruction = "window.open('" + Constants.MORE_INFO + "','','top=" + offsetH + ",left=" + offsetV
-                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
-        Clients.evalJavaScript(instruction);
-
-    }
-
-    @Command
-    protected void displayReleaseNotes() {
-        String instruction;
-        int offsetH = 100, offsetV = 200;
-        instruction = "window.open('" + Constants.RELEASE_NOTES + "','','top=" + offsetH + ",left=" + offsetV
-                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
-        Clients.evalJavaScript(instruction);
-    }
-    
     @Command
     protected void featuresInfo() {
         String instruction;
@@ -724,50 +649,6 @@ public class MainController extends BaseController implements MainControllerInte
 
     }
 
-
-    @Command
-    protected void displayWebDav() {
-        String instruction;
-        int offsetH = 100, offsetV = 200;
-        instruction = "window.open('" + host + "/filestore/dav" + "','','top=" + offsetH + ",left=" + offsetV
-                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
-        Clients.evalJavaScript(instruction);
-    }
-
-//    @Command
-//    protected void displayDeveloperResources() {
-//        String instruction;
-//        int offsetH = 100, offsetV = 200;
-//        instruction = "window.open('" + Constants.DEVELOPER_RESOURCES + "','','top=" + offsetH + ",left=" + offsetV
-//                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
-//        Clients.evalJavaScript(instruction);
-//    }
-
-
-
-    @Command
-    protected void signout() throws Exception {
-        Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
-                new EventListener<Event>() {
-                    public void onEvent(Event evt) throws Exception {
-                        switch ((Integer) evt.getData()) {
-                            case Messagebox.YES:
-                                UserSessionManager.setCurrentFolder(null);
-                                UserSessionManager.setCurrentSecurityItem(0);
-                                UserSessionManager.setMainController(null);
-                                UserSessionManager.setPreviousFolder(null);
-                                UserSessionManager.setSelectedFolderIds(null);
-                                UserSessionManager.setTree(null);
-                                //getService().writeUser(UserSessionManager.getCurrentUser());
-                                Executions.sendRedirect("/j_spring_security_logout");
-                                break;
-                            case Messagebox.NO:
-                                break;
-                        }
-                    }
-                }
-        );
-    }
 
     /* Removes the currently displayed listbox, detail and filter view */
     private void deattachDynamicUI() {
@@ -832,12 +713,6 @@ public class MainController extends BaseController implements MainControllerInte
         setMajorVersionNumber(config.getMajorVersionNumber() + "." + subversion);
         setMinorVersionNumber(config.getMinorVersionNumber());
         setBuildDate(config.getVersionBuildDate());
-    }
-
-    /* From the data in the properties automagically update the label in the header. */
-    private void setHeaderText(Toolbarbutton releaseNotes) {
-        releaseNotes.setLabel(String.format(WELCOME_TEXT, UserSessionManager.getCurrentUser().getFirstName(), majorVersionNumber));
-        releaseNotes.setTooltiptext("Apromore version: " + majorVersionNumber + "." + minorVersionNumber);
     }
 
     /* From a list of version summary types find the max version number. */
