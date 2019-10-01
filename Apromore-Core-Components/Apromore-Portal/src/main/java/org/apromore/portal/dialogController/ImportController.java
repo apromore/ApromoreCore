@@ -280,6 +280,7 @@ public class ImportController extends BaseController {
                     entryName = zipEntry.getName();
                     if (!zipEntry.isDirectory()) {
                         extension = entryName.split("\\.")[entryName.split("\\.").length - 1];
+        
                         defaultProcessName = entryName.split("\\.")[0];
                         nativeType = this.mainC.getNativeTypes().get(extension);
                         if (nativeType == null) {
@@ -300,6 +301,7 @@ public class ImportController extends BaseController {
                         this.ignoredFiles += entryName + ", ";
                     }
                 }
+
             } else {
                 // Case of a single file: import it.
                 String defaultProcessName = this.fileName.split("\\.")[0];
