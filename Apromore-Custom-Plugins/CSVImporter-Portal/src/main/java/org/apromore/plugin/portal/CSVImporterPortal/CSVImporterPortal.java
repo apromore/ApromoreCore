@@ -261,10 +261,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Textbox textbox = new Textbox();
             textbox.setId(textboxID + i);
             textbox.setWidth("98%");
-            textbox.setPlaceholder("Specify timestamp format");
+            textbox.setPlaceholder("dd-MM-yyyy HH:mm:ss");
             textbox.addEventListener("onChanging", (InputEvent event) -> {
                 if(StringUtils.isBlank(event.getValue()) || event.getValue().length() < 6) {
-                    textbox.setPlaceholder("Specify timestamp format");
+                    textbox.setPlaceholder("dd-MM-yyyy HH:mm:ss");
                 }
                 if(!(event.getValue().isEmpty() || event.getValue().equals(""))){
                     csvImporterLogic.tryParsing(event.getValue(), Integer.parseInt(textbox.getId().replace(textboxID,"")));
