@@ -135,7 +135,7 @@
         <style src="astyle.css"/>
 
         <toolbar zclass="z-listheader">
-            <h:a href="https://apromore.org"><h:img src="img/apromore_header.png" width="115"/></h:a>
+            <h:a href="https://apromore.org"><h:img src="img/apromore_header.png" width="115" style="position: relative; top: 0.8ex"/></h:a>
             <toolbarbutton id="featuresButton" image="img/icon/svg/help-icon.svg" style="float: right"/>
         </toolbar>
 

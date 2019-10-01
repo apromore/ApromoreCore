@@ -73,7 +73,7 @@ public class AboutApromorePlugin extends DefaultPortalPlugin {
             Map args = new HashMap();
             args.put("edition", config.getVersionEdition());
             args.put("version", config.getMajorVersionNumber() + " (commit " + config.getMinorVersionNumber() + " built on " + config.getVersionBuildDate() + ")");
-            final Window pluginWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/activePlugins.zul", null, args);
+            final Window pluginWindow = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/aboutApromore.zul", null, args);
             pluginWindow.setAttribute("version", "dummy");
             Listbox infoListBox = (Listbox) pluginWindow.getFellow("pluginInfoListBox");
 
