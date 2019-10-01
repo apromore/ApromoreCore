@@ -124,7 +124,7 @@ public class ActivityFilterPlugin extends PluginCustomGui {
                 e.printStackTrace();
             }
         }else {
-            portalContext.getMessageHandler().displayInfo("Select one log for process discovery.");
+            Messagebox.show("Select one log for process discovery.");
             return;
         }
     }

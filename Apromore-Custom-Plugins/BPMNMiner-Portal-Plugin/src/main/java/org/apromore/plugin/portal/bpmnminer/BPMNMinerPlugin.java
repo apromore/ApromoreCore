@@ -88,9 +88,6 @@ public class BPMNMinerPlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(PortalContext context) {
-
-        context.getMessageHandler().displayInfo("Executed BPMN miner plug-in!");
-
         new BPMNMinerController(context, bimpAnnotationService, bpmnMinerService, canoniserService, domainService, processService, eventLogService, infrequentBehaviourFilterService, userInterfaceHelper);
     }
 

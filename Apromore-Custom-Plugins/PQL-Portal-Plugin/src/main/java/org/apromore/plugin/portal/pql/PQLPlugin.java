@@ -76,7 +76,7 @@ public class PQLPlugin extends PluginCustomGui {
     @Override
     public void execute(final PortalContext portalContext) {
 
-        portalContext.getMessageHandler().displayInfo("Executed PQL query plug-in!");
+        LOGGER.debug("Executed PQL query plug-in!");
 
         try {
             final Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/pqlQuery.zul", null, null);

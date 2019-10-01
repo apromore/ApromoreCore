@@ -40,6 +40,7 @@ import org.apromore.service.perfmining.models.SPF;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.CategoryModel;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleCategoryModel;
 import org.zkoss.zul.Window;
 
@@ -66,7 +67,7 @@ public class PerfMiningShowResult { //extends SelectorComposer<Window> {
 
 
     public void showError(String error) {
-        portalContext.getMessageHandler().displayError(error, null);
+        Messagebox.show(error, "Error", 0, Messagebox.ERROR);
     }
 
     protected void close() {

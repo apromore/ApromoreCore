@@ -94,7 +94,7 @@ public class InfrequentBehaviourFilterPlugin extends PluginCustomGui {
         }else if (selectedLogSummaryType.size() == 1) {
             runComputation(portalContext, selectedLogSummaryType);
         }else {
-            portalContext.getMessageHandler().displayInfo("Select one log for process discovery.");
+            Messagebox.show("Select one log for process discovery.");
             return;
         }
     }

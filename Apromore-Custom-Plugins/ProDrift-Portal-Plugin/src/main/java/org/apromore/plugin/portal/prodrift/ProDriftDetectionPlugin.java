@@ -30,6 +30,8 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.prodrift.ProDriftDetectionService;
 import org.deckfour.xes.model.XLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zul.Messagebox;
@@ -46,6 +48,8 @@ import java.util.*;
  */
 @Component("plugin")
 public class ProDriftDetectionPlugin extends DefaultPortalPlugin {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProDriftDetectionPlugin.class);
 
     private final ProDriftDetectionService proDriftDetectionService;
     private final EventLogService eventLogService;
@@ -91,7 +95,7 @@ public class ProDriftDetectionPlugin extends DefaultPortalPlugin {
         }
 
 
-        portalContext.getMessageHandler().displayInfo("Executed process drift detection plug-in!");
+        LOGGER.debug("Executed process drift detection plug-in!");
 
         try {
 

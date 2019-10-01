@@ -41,6 +41,8 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.perfmining.PerfMiningService;
 import org.deckfour.xes.model.XLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zul.Messagebox;
@@ -57,6 +59,8 @@ import org.apromore.service.ProcessService;
  */
 @Component("plugin")
 public class PerfMiningPlugin extends DefaultPortalPlugin {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PerfMiningPlugin.class);
 
     private final PerfMiningService perfMiningService;
     private final EventLogService eventLogService;
@@ -107,7 +111,7 @@ public class PerfMiningPlugin extends DefaultPortalPlugin {
             logs.put(eventLogService.getXLog(logType.getId()), logType.getName());
         }
 
-        portalContext.getMessageHandler().displayInfo("Executed process performance mining plug-in!");
+        LOGGER.debug("Executed process performance mining plug-in!");
 
         try {
             new PerfMiningController(portalContext, this.perfMiningService, logs);

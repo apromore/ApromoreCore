@@ -120,7 +120,7 @@ public class StageMiningShowResult { //extends SelectorComposer<Window> {
     }
 
     public void showError(String error) {
-        portalContext.getMessageHandler().displayError(error, null);
+        Messagebox.show(error, "Error", 0, Messagebox.ERROR);
     }
 
     protected void close() {

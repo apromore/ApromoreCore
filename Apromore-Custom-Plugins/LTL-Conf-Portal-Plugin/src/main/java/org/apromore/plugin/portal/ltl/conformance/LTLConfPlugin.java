@@ -50,6 +50,7 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.springframework.stereotype.Component;
+import org.zkoss.zul.Messagebox;
 
 // Local packages
 import org.apromore.plugin.portal.DefaultPortalPlugin;
@@ -167,7 +168,7 @@ public class LTLConfPlugin extends DefaultPortalPlugin {
                 controller.checkConformance(model, procS.get(0), verS.get(0));
                 return;
             }else{
-                context.getMessageHandler().displayInfo("Only 1 BPMN model can be used at a time.");
+                Messagebox.show("Only 1 BPMN model can be used at a time.");
                 return;
             }
         }catch(Exception e){
