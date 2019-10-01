@@ -190,43 +190,43 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 if (line == null || header == null) {
                     Messagebox.show("Could not parse file!");
                 }
-                    String[] myLine = header;
-                    csvImporterLogic.setLine(line);
-                    csvImporterLogic.setHeads(header);
-                    csvImporterLogic.setOtherTimestamps(result);
+                String[] myLine = header;
+                csvImporterLogic.setLine(line);
+                csvImporterLogic.setHeads(header);
+                csvImporterLogic.setOtherTimestamps(result);
 
-                    if (line.length != header.length) {
-                        Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
-                        if(window != null) {
-                            window.detach();
-                        }
-                        reader.close();
-                    } else {
-
-                        attrBox.setWidth(line.length * AttribWidth + "px");
-
-                        csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth + "px");
-
-                        List<Listbox> lists = csvImporterLogic.getLists();
-                        for (Listbox list : lists) {
-                            attrBox.appendChild(list);
-                        }
-                        String[] newLine = line;
-
-                        // display first 1000 rows
-                        int numberOfrows = 1000 - 1;
-                        while (line != null && numberOfrows >= 0) {
-                            result.add(line);
-                            numberOfrows--;
-                            line = reader.readNext();
-                        }
-
-                        csvImporterLogic.automaticFormat(result, myLine);
-                        csvImporterLogic.setOtherTimestamps(result);
-                        createPopUpTextBox(newLine.length, popUPBox);
-                        csvImporterLogic.openPopUp();
-                        reader.close();
+                if (line.length != header.length) {
+                    Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
+                    if(window != null) {
+                        window.detach();
                     }
+                    reader.close();
+                } else {
+
+                    attrBox.setWidth(line.length * AttribWidth + "px");
+
+                    csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth + "px");
+
+                    List<Listbox> lists = csvImporterLogic.getLists();
+                    for (Listbox list : lists) {
+                        attrBox.appendChild(list);
+                    }
+                    String[] newLine = line;
+
+                    // display first 1000 rows
+                    int numberOfrows = 300 - 1;
+                    while (line != null && numberOfrows >= 0) {
+                        result.add(line);
+                        numberOfrows--;
+                        line = reader.readNext();
+                    }
+
+                    csvImporterLogic.automaticFormat(result, myLine);
+                    csvImporterLogic.setOtherTimestamps(result);
+                    createPopUpTextBox(newLine.length, popUPBox);
+                    csvImporterLogic.openPopUp();
+                    reader.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 Messagebox.show(e.getMessage());
@@ -296,7 +296,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @Override
     public void importFile(Media media, PortalContext portalContext, boolean isPublic) {
         LOGGER.info("Import file: " + media.getName());
-        Messagebox.show("ZIP ZIP: " + media.getName() + ", Exten: " + media.getFormat());
+//        Messagebox.show("ZIP ZIP: " + media.getName() + ", Exten: " + media.getFormat());
         this.isPublic = isPublic;
 
         try {
@@ -393,10 +393,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     window.invalidate();
                     window.detach();
                     Executions.getCurrent().sendRedirect(null);
+                    Executions.re
                 }
 
             });
-                window.doModal();
+            window.doModal();
 
         } catch (IOException e) {
             LOGGER.warn("Unable to execute csv import method", e);
