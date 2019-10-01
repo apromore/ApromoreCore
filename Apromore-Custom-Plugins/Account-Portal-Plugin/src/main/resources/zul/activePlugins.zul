@@ -26,8 +26,8 @@
         </tabs>
         <tabpanels>
             <tabpanel hflex="1">
-                <hbox zclass="z-button" width="100%">
-                    <image src="img/apromore_header.png"/>
+                <hbox zclass="z-listheader" width="100%" style="padding: 9px">
+                    <image src="img/apromore_header.png" width="50%" style="position: relative; top: 3px"/>
                 </hbox>
                 <space vflex="1"/>
                 <hbox width="100%">
@@ -36,7 +36,7 @@
                         <div>${arg.edition}</div>
                         <div>Copyright 2019, The University of Melbourne. All rights reserved.</div>
                         <div>Version: ${arg.version}</div>
-                        <div>This software is licensed under the <a href="https://www.gnu.org/licenses/lgpl-3.0.html">LGPL 3.0 license</a> and <a href="">other open source licenses</a>. It also incorporates some closed source components, licensed by The University of Melbourne.</div>
+                        <div>This software is licensed under the <a href="https://www.gnu.org/licenses/lgpl-3.0.html">LGPL 3.0 license</a> and <a href="https://apromore.org/ee/license">other open source licenses</a>. It also incorporates some closed source components, licensed by The University of Melbourne.</div>
                     </vbox>
                     <space hflex="1"/>
                 </hbox>
