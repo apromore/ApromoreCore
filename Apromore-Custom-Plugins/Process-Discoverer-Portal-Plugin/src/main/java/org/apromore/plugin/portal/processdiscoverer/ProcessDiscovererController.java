@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,6 +45,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -709,7 +711,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                         Listcell listcell0 = new Listcell(Integer.toString(i));
                         Listcell listcell1 = new Listcell(key);
                         Listcell listcell2 = new Listcell(classifierValues.get(key).toString());
-                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) classifierValues.get(key) / Double.parseDouble(eventNumber.getValue()))) + "%");
+                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) classifierValues.get(key) / 
+                        									NumberFormat.getNumberInstance(Locale.US).parse(eventNumber.getValue()).longValue())) + "%");
                         
                         Listitem listitem = new Listitem();
                         listitem.appendChild(listcell0);
@@ -731,7 +734,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                             CSVWriter csvWriter = new CSVWriter(writer);
                             csvWriter.writeNext(new String[] {"Activity", "Frequency", "Frequency %"});
                             for (String key : classifierValues.keySet()) {
-                                csvWriter.writeNext(new String[] {key, classifierValues.toString(), decimalFormat.format(100 * ((double) classifierValues.get(key) / Double.parseDouble(eventNumber.getValue()))) + "%"});
+                                csvWriter.writeNext(new String[] {key, classifierValues.get(key).toString(), decimalFormat.format(100 * ((double) classifierValues.get(key) / 
+                                		NumberFormat.getNumberInstance(Locale.US).parse(eventNumber.getValue()).longValue())) + "%"});
                             }
                             csvWriter.flush();
                             csvWriter.close();
@@ -1542,10 +1546,11 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         }
         mean = mean / dur.length;
 
-        caseNumber.setValue(Integer.toString(log.size()));
-        uniquecaseNumber.setValue(Integer.toString(uniqueTraces.size()));
-        activityNumber.setValue(Integer.toString(labels.size()));
-        eventNumber.setValue(Integer.toString(events));
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+        caseNumber.setValue(formatter.format(log.size()));
+        uniquecaseNumber.setValue(formatter.format(uniqueTraces.size()));
+        activityNumber.setValue(formatter.format(labels.size()));
+        eventNumber.setValue(formatter.format(events));
         meanDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(mean)));
         medianDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(median)));
         maxDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(longhest)));

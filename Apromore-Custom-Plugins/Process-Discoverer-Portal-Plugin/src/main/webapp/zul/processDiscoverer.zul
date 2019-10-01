@@ -179,20 +179,20 @@
 				<button id="optionButton" style="float: right;" height="26px" iconSclass="z-icon-caret-up" sclass="optionButton">
 					<attribute name="onClick">
 						<![CDATA[
-              optionButton.setIconSclass(optionbox.isOpen() ? "z-icon-caret-down" : "z-icon-caret-up");
-              optionButton.setLabel(optionbox.isOpen() ? " " : "");
-              optionbox.setOpen(!optionbox.isOpen());
-              Clients.evalJavaScript("resize();");
-              optionbox.invalidate();
-            ]]>
+                          optionButton.setIconSclass(optionbox.isOpen() ? "z-icon-caret-down" : "z-icon-caret-up");
+                          optionButton.setLabel(optionbox.isOpen() ? " " : "");
+                          optionbox.setOpen(!optionbox.isOpen());
+                          Clients.evalJavaScript("resize();");
+                          optionbox.invalidate();
+                        ]]>
 					</attribute>
 				</button>
 
 				<button id="shortcutButton" style="float: right;" height="26px" iconSclass="z-icon-keyboard-o" sclass="shortcutButton">
 					<attribute name="onClick">
 						<![CDATA[
-              shortcutPopup.open(self,"after_pointer");
-            ]]>
+                          shortcutPopup.open(self,"after_pointer");
+                        ]]>
 					</attribute>
 				</button>
 
@@ -205,123 +205,144 @@
 		<popup id="shortcutPopup" width="600px">
 			<html>
 				<![CDATA[
-          <ul>
-            <li><b>Right-click</b> on an arc: remove all traces containing the selected direct-follow relation</li>
-            <li><b>CTRL + Right-click</b> on an arc: retain only traces containing the selected direct-follow relation</li>
-            <li><b>Right-click</b> on a node: remove all traces with an event containing the selected attribute</li>
-            <li><b>CTRL + Right-click</b> on a node: retain only traces with an event containing the selected attribute</li>
-            <li><b>ALT + Right-click</b> on a node: remove all events containing the selected attribute</li>
-            <li><b>ALT + CTRL + Right-click</b> on a node: retain only events containing the selected attribute</li>
-          </ul>
-          ]]>
+                  <ul>
+                    <li><b>Right-click</b> on an arc: remove all traces containing the selected direct-follow relation</li>
+                    <li><b>CTRL + Right-click</b> on an arc: retain only traces containing the selected direct-follow relation</li>
+                    <li><b>Right-click</b> on a node: remove all traces with an event containing the selected attribute</li>
+                    <li><b>CTRL + Right-click</b> on a node: retain only traces with an event containing the selected attribute</li>
+                    <li><b>ALT + Right-click</b> on a node: remove all events containing the selected attribute</li>
+                    <li><b>ALT + CTRL + Right-click</b> on a node: retain only events containing the selected attribute</li>
+                  </ul>
+                  ]]>
 			</html>
 		</popup>
 
 		<n:table style="height:100%;width:100%;border:0px;">
 			<n:tr>
 				<n:td>
-					<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%">
-						<!--
-                                    <attribute name="onOpen">
-                                        <![CDATA[
-                            optionlabel.setIconSclass(self.isOpen() ? "z-icon-chevron-up" : "z-icon-chevron-down");
-                            Clients.evalJavaScript("resize();");
-                            optionbox.invalidate();
-
-                                        ]]>
-                                    </attribute>
-                        -->
-
-						<!--
-                                    <caption id="optionlabel" label="Options" width="100%" sclass="customPosition" iconSclass="z-icon-chevron-up">
-                                    </caption>
-                        -->
-
-
-						<hbox align="center" id="optiondetails">
-							<vbox align="left" pack="center" width="80px">
-								<hbox align="center">
+					<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%" >
+						<hbox align="center" id="optiondetails" vflex="1" hflex="1">
+                        
+                            <!-- Checkboxes -->
+							<vbox align="left" pack="center" hflex="min" vflex="min">
+								<hbox align="center" vflex="min" hflex="min">
+                                    
+                                    <!-- Slider box -->
 									<vbox align="left" pack="center" width="90px">
 										<groupbox closable="false"><caption height="20px">Slider</caption>
 											<radiogroup>
 												<vbox align="left" pack="top">
-													<radio id="use_fixed" label="Locked" selected="true" width="100px"/>
-													<radio id="use_dynamic" label="Unlocked" width="100px"/>
+													<radio id="use_fixed" label="Locked" selected="true"/>
+													<radio id="use_dynamic" label="Unlocked"/>
 												</vbox>
 											</radiogroup>
 										</groupbox>
 									</vbox>
-									<vbox align="left" pack="center" width="80px" height="85px">
+                                    
+                                    <!-- BPMN checkboxes -->
+									<vbox align="left" pack="center" width="80px" vflex="min">
 										<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px" />
 										<checkbox id="secondary" checked="false" label="Dual Info" height="30px" width="100px"/>
 									</vbox>
 								</hbox>
-								<vbox align="left" pack="top">
+                                
+                                <!-- Invert checkboxes -->
+								<vbox align="left" pack="top" vflex="min">
 									<checkbox id="inverted_nodes" checked="false" label="Invert Priority Nodes" height="30px" width="100px"/>
 									<checkbox id="inverted_arcs" checked="false" label="Invert Priority Arcs" height="30px" width="100px"/>
 								</vbox>
 							</vbox>
-							<grid width="450px">
+                            
+                            <!-- Sliders: take the rest of the space -->
+							<grid hflex="1" vflex="1">
+                                <!-- Let ZK calculate the width -->
 								<columns>
-									<column width="55px"/>
-									<column width="50%"/>
-									<column width="40px"/>
+									<column width="70px" />
+									<column hflex="1" />
+									<column width="50px" />
 								</columns>
 								<rows>
-									<row height="21px">
+									<row vflex="min">
 										<label>Activities</label>
-										<slider id="slider1" mold="scale" maxpos="100" width="100%" curpos="100"/>
+										<slider id="slider1" mold="scale" maxpos="100" hflex="1" curpos="100"/>
 										<intbox id="activityText" value="100" width="35px" />
 									</row>
-									<row height="21px">
+									<row vflex="min">
 										<label>Arcs</label>
-										<slider id="slider2" mold="scale" maxpos="100" width="100%" curpos="10"/>
+										<slider id="slider2" mold="scale" maxpos="100" hflex="1" curpos="10"/>
 										<intbox id="arcText" value="10" width="35px" />
 									</row>
-									<row id="parallelismRow" height="21px">
+									<row id="parallelismRow" vflex="min">
 										<label id="parallelismLabel">Parallelism</label>
-										<slider id="parallelismSlider" mold="scale" maxpos="100" width="100%" curpos="40" />
+										<slider id="parallelismSlider" mold="scale" maxpos="100" hflex="1" curpos="40" />
 										<intbox id="parallelismText" value="40" width="35px" />
 									</row>
 								</rows>
 							</grid>
-							<grid width="100%">
+                            
+                            <!-- Overview Statistics -->
+							<grid width="650px" vflex="1">
 								<columns>
-									<column width="9%"/>
-									<column width="9%"/>
-									<column width="9%"/>
+									<column width="10%"/>
+									<column width="10%"/>
+									<column width="11%"/>
 									<column width="9%"/>
 									<column width="10%"/>
 									<column width="10%"/>
-									<column width="10%"/>
-									<column width="10%"/>
+									<column width="9%"/>
+									<column width="9%"/>
 									<column width="12%"/>
 									<column width="12%"/>                                    
 								</columns>
+                                
 								<rows>
-									<row height="64px" style="vertical-align:top;">
+                                    <!-- The (invisible) end of line character is important to make two lines -->
+									<row style="vertical-align:top;" height="30px">
 										<label>Cases</label>
-										<label>Case Variants</label>
+										<label multiline="true">Case
+                                        variants</label>
 										<label>Events</label>
 										<label>Activities</label>
-										<label>Average Duration</label>
-										<label>Median Duration</label>
-										<label>Max Duration</label>
-										<label>Min Duration</label>
-										<label>Start</label>
-										<label>End</label>                                        
+                                        <label>Min
+                                        duration</label>
+										<label multiline="true">Average
+                                        duration</label>
+										<label multiline="true">Median
+                                        duration</label>
+										<label>Max
+                                        duration</label>
+										<label multiline="true">Start 
+                                        time</label>
+										<label multiline="true">End
+                                        time</label>                                        
+									</row>   
+                                    
+                                    <!--
+									<row style="vertical-align:top;">
+										<label>1,000,000</label>
+										<label>1,000,000</label>
+										<label>20,000,000</label>
+										<label>50</label>
+										<label>51 wks</label>
+										<label>51 wks</label>
+										<label>51 wks</label>
+										<label>51 wks</label>
+										<label>Start time</label>
+										<label>End time</label>                                        
 									</row>
-									<row height="63px" style="vertical-align:top;">
+                                    -->
+                                                                
+									<row style="vertical-align:top;">
 										<label id="caseNumber">Cases</label>
-										<label id="uniquecaseNumber">Unique Cases</label>
+										<label id="uniquecaseNumber">Case variants</label>
 										<label id="eventNumber">Events</label>
 										<label id="activityNumber">Activities</label>
+                                        <label id="minDuration">Activities</label>
 										<label id="meanDuration">Activities</label>
 										<label id="medianDuration">Activities</label>
 										<label id="maxDuration">Activities</label>
-										<label id="minDuration">Activities</label>
-										<label id="startTime">Start</label>
-										<label id="endTime">End</label>                                        
+										<label id="startTime">Start time</label>
+										<label id="endTime">End time</label>                                        
 									</row>
 								</rows>
 							</grid>
@@ -416,7 +437,7 @@
 		var currentLayout = 0, ctrlIsPressed = !1, altIsPressed = !1;
 		var currentZoomLevel = 1;
 		var currentPanPosition;
-    var smallViewportHeight=0;
+        var smallViewportHeight=0;
 		var initialLoaded = true; // whether the graph is first open.
 		var loadTraceMode = false; // indidate that the graph is loading a trace, not a full log
 		
@@ -544,7 +565,7 @@
 				if (currentNodeTooltip) currentNodeTooltip.hide();
 			});
 			
-		$(document).keydown(function(a) {
+            $(document).keydown(function(a) {
 				if (a.ctrlKey || 17 == a.keyCode || 17 == a.which) ctrlIsPressed = !0;
 				if (a.altKey || 18 == a.keyCode || 18 == a.which) altIsPressed = !0;
 
@@ -683,8 +704,8 @@
 					break;				
 				case 2:
 					cy.center(cy.nodes().filter(function( ele ){
-																										return ele.data('oriname') == "|>";
-																									}));
+                                                    return ele.data('oriname') == "|>";
+                                                }));
 					cy.pan({x: currentPos.x, y: 0 });
 					break;
 				case 3:
