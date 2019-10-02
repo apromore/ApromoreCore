@@ -257,7 +257,7 @@
 						<groupbox closable="false"><caption height="20px">View</caption>
 							<hlayout>
 								<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px" />
-								<checkbox id="secondary" checked="false" label="Dual starts" height="30px" width="100px" style="margin-left:3px;"/>
+								<checkbox id="secondary" checked="false" label="Dual stats" height="30px" width="100px" style="margin-left:3px;"/>
 							</hlayout>
 						</groupbox>
 						<groupbox closable="false" style="margin-top:3px;"><caption height="20px">Slider</caption>
@@ -306,10 +306,10 @@
 					<vbox hflex="1" vflex="1" style="overflow:auto;">
 						<grid hflex="1" vflex="1" span="true"  >
 							<columns sizable="true">
-								<column sclass="statsHead" label="Cases" align="center" width="12.5%"/>
-								<column sclass="statsHead" label="Case variants" align="center" width="12.5%"/>
-								<column sclass="statsHead" label="Events" align="center" width="12.5%"/>
-								<column sclass="statsHead" label="Activities" align="center" width="12.5%"/>
+								<column sclass="statsHead" label="Cases" align="center" width="12%"/>
+								<column sclass="statsHead" label="Case variants" align="center" width="14%"/>
+								<column sclass="statsHead" label="Events" align="center" width="12%"/>
+								<column sclass="statsHead" label="Activities" align="center" width="12%"/>
 								<column sclass="statsHead" label="Start time" align="center" width="25%"/>
 								<column sclass="statsHead" label="End time" align="center" width="25%"/>
 							</columns>
