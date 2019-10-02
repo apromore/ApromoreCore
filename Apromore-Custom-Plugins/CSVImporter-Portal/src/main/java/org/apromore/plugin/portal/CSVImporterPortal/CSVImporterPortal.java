@@ -76,7 +76,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     private static String textboxID = "txt_";
     private static String labelID = "lbl_";
 
-    private static Integer AttribWidth = 150;
+    private static Integer AttribWidth = 151;
 
     private boolean isPublic;
 
@@ -249,7 +249,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //            sp.setLabel("-");
 //            sp.setImage("img/close-icon.png");
 //            sp.setIconSclass("z-icon-compress");
-            sp.setStyle("margin-right:3px; float: right; line-height: 10px; min-height: 5px; padding:3px;");
+            sp.setStyle("margin-right:3px; float: right; line-height: 10px; min-height: 5px; padding:2px; margin-bottom:4px");
             sp.setIconSclass("z-icon-times");
 //            sp.setZclass("min-height: 16px;");
             A hidelink = new A();
