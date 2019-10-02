@@ -31,7 +31,7 @@
             color: green;
             font-size: 11px;
             font-weight: normal;
-            margin-left: -3px;
+            margin-left: 0px;
             }
 
             .redLabel {
@@ -40,7 +40,7 @@
             color: red;
             font-size: 11px;
             font-weight: normal;
-            margin-left: -3px;
+            margin-left: 0px;
             }
 
             .z-row-content, .z-group-content, .z-groupfoot-content, .z-footer-content {
@@ -100,6 +100,9 @@
             top: 0px;
             }
 
+            .z-window-content {
+            border: unset;
+            }
         </style>
 
         <div id="gridBox" zclass="myGroupBox">

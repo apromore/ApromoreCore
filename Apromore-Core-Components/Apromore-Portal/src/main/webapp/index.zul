@@ -118,11 +118,17 @@
         }
 
         .z-treerow .z-treecell {
-            border-top: 0px;
+        border-top: 0px;
+        }
+        .z-menubar {
+        border-top: unset;
         }
 
+        .z-north-header, .z-south-header, .z-west-header, .z-center-header, .z-east-header {
+        padding: 4px 4px 4px;
+        }
         .z-window {
-            background-color: white;
+        background-color: white;
         }
 
 
