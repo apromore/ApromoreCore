@@ -392,7 +392,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 public void onEvent(Event event) throws Exception {
                     window.invalidate();
                     window.detach();
-                    Executions.getCurrent().sendRedirect(null);
+//                    Executions.getCurrent().sendRedirect(null);
                 }
 
             });
