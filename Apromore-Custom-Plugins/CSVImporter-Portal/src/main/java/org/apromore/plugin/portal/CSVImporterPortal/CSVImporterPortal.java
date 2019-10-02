@@ -40,7 +40,6 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.impl.LogModel;
-import org.apromore.service.csvimporter.impl.gridRendererController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -335,7 +334,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                             Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
                         }
                         //set grid row renderer
-                        gridRendererController rowRenderer = new gridRendererController();
+                        GridRendererController rowRenderer = new GridRendererController();
                         rowRenderer.setAttribWidth(AttribWidth);
 
                         myGrid.setRowRenderer(rowRenderer);
