@@ -178,7 +178,7 @@
 		}
 
 		.z-column{
-		border:0px;
+		border:1px;
 		}
 
 		.z-column-content {
@@ -203,6 +203,12 @@
 		margin-top:15px; padding:10px; border:1px solid #CCC; background:#FFF;
 		}
 
+		/*
+		.z-hbox th, .z-vbox th {
+		border: 1px solid #E0E0E0;
+		border-bottom: 3px solid #E0E0E0;
+		}
+		*/
 	</style>
 
 	<window id="win" border="0" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
@@ -268,8 +274,8 @@
 								</hbox>
 							</radiogroup>
 							<vlayout style="margin-top:5px;">
-								<checkbox id="inverted_nodes" checked="false" label="Invert priority nodes" height="30px" width="100px"/>
-								<checkbox id="inverted_arcs" checked="false" label="Invert priority arcs" height="30px" width="100px"/>
+								<checkbox id="inverted_nodes" checked="false" label="Invert nodes priority" height="30px" width="100px"/>
+								<checkbox id="inverted_arcs" checked="false" label="Invert arcs priority" height="30px" width="100px"/>
 							</vlayout>
 						</groupbox>
 					</vbox>
@@ -279,23 +285,23 @@
 					<grid  vflex="1" hflex="1">
 						<!-- Let ZK calculate the width -->
 						<columns>
-							<column width="70px" />
+							<column width="82px" />
 							<column hflex="1" />
 							<column width="50px" />
 						</columns>
 						<rows>
 							<row vflex="min">
-								<label>Nodes</label>
+								<label style="padding:3px">Nodes</label>
 								<slider id="slider1" mold="scale" maxpos="100"  width="99%" curpos="100"/>
 								<intbox id="activityText" value="100" width="35px" />
 							</row>
 							<row vflex="min">
-								<label>Arcs</label>
+								<label style="padding:3px">Arcs</label>
 								<slider id="slider2" mold="scale" maxpos="100"  width="99%" curpos="10"/>
 								<intbox id="arcText" value="10" width="35px" />
 							</row>
 							<row id="parallelismRow" vflex="min">
-								<label id="parallelismLabel">Parallelism</label>
+								<label id="parallelismLabel" style="padding:3px">Parallelism</label>
 								<slider id="parallelismSlider" mold="scale" maxpos="100"  width="99%" curpos="40" />
 								<intbox id="parallelismText" value="40" width="35px" />
 							</row>
