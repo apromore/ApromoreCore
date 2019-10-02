@@ -211,7 +211,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         attrBox.appendChild(list);
                     }
                     String[] newLine = line;
-
                     // display first 1000 rows
                     int numberOfrows = 300 - 1;
                     while (line != null && numberOfrows >= 0) {
