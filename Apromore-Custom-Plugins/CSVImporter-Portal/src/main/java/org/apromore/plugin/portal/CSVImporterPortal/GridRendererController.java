@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.service.csvimporter.impl;
+package org.apromore.plugin.portal.CSVImporterPortal;
 
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
@@ -26,9 +26,9 @@ import org.zkoss.zul.RowRenderer;
 
 
 /**
- * The Class gridRendererController.
+ * The Class GridRendererController.
  */
-public class gridRendererController implements RowRenderer<String[]> {
+public class GridRendererController implements RowRenderer<String[]> {
 
 	private Integer AttribWidth;
 	/*
