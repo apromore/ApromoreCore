@@ -75,7 +75,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     private static String textboxID = "txt_";
     private static String labelID = "lbl_";
 
-    private static Integer AttribWidth = 151;
+    private static Integer AttribWidth = 150;
 
     private boolean isPublic;
 
@@ -202,7 +202,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     reader.close();
                 } else {
 
-                    attrBox.setWidth(line.length * AttribWidth + "px");
+//                    attrBox.setWidth(line.length * AttribWidth + "px");
 
                     csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth + "px");
 
@@ -238,7 +238,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
         for(int i =0; i<= colNum -1; i++){
             Window item = new Window();
             item.setId(popupID+ i);
-            item.setWidth((AttribWidth) + "px");
+            item.setWidth((AttribWidth + 0.5) + "px");
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
