@@ -170,6 +170,39 @@
 		color:unset;
 		}
 
+		.z-row-content {
+		line-height: 0px;
+		}
+
+		.statsHead {
+		}
+
+		.z-column{
+		border:0px;
+		}
+
+		.z-column-content {
+		border:0px;
+		background:#F0F0F0;
+		color:#555;
+		}
+
+		.z-grid-header-border {
+		border-bottom: 0px solid #FFF;
+		}
+
+		.z-groupbox {
+		padding-top: 0px;
+		}
+
+		.z-groupbox>.z-groupbox-header {
+		height: 8px;
+		}
+
+		.PDSliderContainer {
+		margin-top:15px; padding:10px; border:1px solid #CCC; background:#FFF;
+		}
+
 	</style>
 
 	<window id="win" border="0" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
@@ -217,137 +250,105 @@
 			</html>
 		</popup>
 
+		<hbox width="100%" sclass="PDOptions">
+			<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%" >
+				<hbox align="center" id="optiondetails" vflex="1" hflex="1" style="margin-top:3px;">
+					<vbox width="200px">
+						<groupbox closable="false"><caption height="20px">View</caption>
+							<hlayout>
+								<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px" />
+								<checkbox id="secondary" checked="false" label="Dual starts" height="30px" width="100px" style="margin-left:3px;"/>
+							</hlayout>
+						</groupbox>
+						<groupbox closable="false" style="margin-top:3px;"><caption height="20px">Slider</caption>
+							<radiogroup>
+								<hbox align="left" pack="top">
+									<radio id="use_fixed" label="Locked" selected="true" width="100px"/>
+									<radio id="use_dynamic" label="Unlocked" width="100px"/>
+								</hbox>
+							</radiogroup>
+							<vlayout style="margin-top:5px;">
+								<checkbox id="inverted_nodes" checked="false" label="Invert priority nodes" height="30px" width="100px"/>
+								<checkbox id="inverted_arcs" checked="false" label="Invert priority arcs" height="30px" width="100px"/>
+							</vlayout>
+						</groupbox>
+					</vbox>
+
+
+					<!-- Sliders: take the rest of the space -->
+					<grid  vflex="1" hflex="1">
+						<!-- Let ZK calculate the width -->
+						<columns>
+							<column width="70px" />
+							<column hflex="1" />
+							<column width="50px" />
+						</columns>
+						<rows>
+							<row vflex="min">
+								<label>Nodes</label>
+								<slider id="slider1" mold="scale" maxpos="100"  width="99%" curpos="100"/>
+								<intbox id="activityText" value="100" width="35px" />
+							</row>
+							<row vflex="min">
+								<label>Arcs</label>
+								<slider id="slider2" mold="scale" maxpos="100"  width="99%" curpos="10"/>
+								<intbox id="arcText" value="10" width="35px" />
+							</row>
+							<row id="parallelismRow" vflex="min">
+								<label id="parallelismLabel">Parallelism</label>
+								<slider id="parallelismSlider" mold="scale" maxpos="100"  width="99%" curpos="40" />
+								<intbox id="parallelismText" value="40" width="35px" />
+							</row>
+						</rows>
+					</grid>
+
+					<!-- Overview Statistics -->
+					<vbox hflex="1" vflex="1" style="overflow:auto;">
+						<grid hflex="1" vflex="1" span="true"  >
+							<columns sizable="true">
+								<column sclass="statsHead" label="Cases" align="center" width="12.5%"/>
+								<column sclass="statsHead" label="Case variants" align="center" width="12.5%"/>
+								<column sclass="statsHead" label="Events" align="center" width="12.5%"/>
+								<column sclass="statsHead" label="Activities" align="center" width="12.5%"/>
+								<column sclass="statsHead" label="Start time" align="center" width="25%"/>
+								<column sclass="statsHead" label="End time" align="center" width="25%"/>
+							</columns>
+							<rows>
+								<row style="vertical-align:top;">
+									<label id="caseNumber">Cases</label>
+									<label id="uniquecaseNumber">Case variants</label>
+									<label id="eventNumber">Events</label>
+									<label id="activityNumber">Activities</label>
+									<label id="startTime">Start time</label>
+									<label id="endTime">End time</label>
+								</row>
+							</rows>
+						</grid>
+						<grid hflex="1" vflex="1" span="true"  >
+							<columns sizable="true">
+								<column sclass="statsHead" label="Min duration" align="center" width="25%"/>
+								<column sclass="statsHead" label="Median duration" align="center" width="25%"/>
+								<column sclass="statsHead" label="Average duration" align="center" width="25%"/>
+								<column sclass="statsHead" label="Max duration" align="center" width="25%"/>
+							</columns>
+							<rows>
+								<row style="vertical-align:top;">
+									<label id="minDuration">Activities</label>
+									<label id="medianDuration">Activities</label>
+									<label id="meanDuration">Activities</label>
+									<label id="maxDuration">Activities</label>
+								</row>
+							</rows>
+						</grid>
+					</vbox>
+
+				</hbox>
+			</groupbox>
+		</hbox>
+
 		<n:table style="height:100%;width:100%;border:0px;">
 			<n:tr>
 				<n:td>
-					<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%" >
-						<hbox align="center" id="optiondetails" vflex="1" hflex="1">
-                        
-                            <!-- Checkboxes -->
-							<vbox align="left" pack="center" hflex="min" vflex="min">
-								<hbox align="center" vflex="min" hflex="min">
-                                    
-                                    <!-- Slider box -->
-									<vbox align="left" pack="center" width="90px">
-										<groupbox closable="false"><caption height="20px">Slider</caption>
-											<radiogroup>
-												<vbox align="left" pack="top">
-													<radio id="use_fixed" label="Locked" selected="true"/>
-													<radio id="use_dynamic" label="Unlocked"/>
-												</vbox>
-											</radiogroup>
-										</groupbox>
-									</vbox>
-                                    
-                                    <!-- BPMN checkboxes -->
-									<vbox align="left" pack="center" width="80px" vflex="min">
-										<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px" />
-										<checkbox id="secondary" checked="false" label="Dual Info" height="30px" width="100px"/>
-									</vbox>
-								</hbox>
-                                
-                                <!-- Invert checkboxes -->
-								<vbox align="left" pack="top" vflex="min">
-									<checkbox id="inverted_nodes" checked="false" label="Invert Priority Nodes" height="30px" width="100px"/>
-									<checkbox id="inverted_arcs" checked="false" label="Invert Priority Arcs" height="30px" width="100px"/>
-								</vbox>
-							</vbox>
-                            
-                            <!-- Sliders: take the rest of the space -->
-							<grid hflex="1" vflex="1">
-                                <!-- Let ZK calculate the width -->
-								<columns>
-									<column width="70px" />
-									<column hflex="1" />
-									<column width="50px" />
-								</columns>
-								<rows>
-									<row vflex="min">
-										<label>Activities</label>
-										<slider id="slider1" mold="scale" maxpos="100" hflex="1" curpos="100"/>
-										<intbox id="activityText" value="100" width="35px" />
-									</row>
-									<row vflex="min">
-										<label>Arcs</label>
-										<slider id="slider2" mold="scale" maxpos="100" hflex="1" curpos="10"/>
-										<intbox id="arcText" value="10" width="35px" />
-									</row>
-									<row id="parallelismRow" vflex="min">
-										<label id="parallelismLabel">Parallelism</label>
-										<slider id="parallelismSlider" mold="scale" maxpos="100" hflex="1" curpos="40" />
-										<intbox id="parallelismText" value="40" width="35px" />
-									</row>
-								</rows>
-							</grid>
-                            
-                            <!-- Overview Statistics -->
-							<grid width="650px" vflex="1">
-								<columns>
-									<column width="10%"/>
-									<column width="10%"/>
-									<column width="11%"/>
-									<column width="9%"/>
-									<column width="10%"/>
-									<column width="10%"/>
-									<column width="9%"/>
-									<column width="9%"/>
-									<column width="12%"/>
-									<column width="12%"/>                                    
-								</columns>
-                                
-								<rows>
-                                    <!-- The (invisible) end of line character is important to make two lines -->
-									<row style="vertical-align:top;" height="30px">
-										<label>Cases</label>
-										<label multiline="true">Case
-                                        variants</label>
-										<label>Events</label>
-										<label>Activities</label>
-                                        <label>Min
-                                        duration</label>
-										<label multiline="true">Average
-                                        duration</label>
-										<label multiline="true">Median
-                                        duration</label>
-										<label>Max
-                                        duration</label>
-										<label multiline="true">Start 
-                                        time</label>
-										<label multiline="true">End
-                                        time</label>                                        
-									</row>   
-                                    
-                                    <!--
-									<row style="vertical-align:top;">
-										<label>1,000,000</label>
-										<label>1,000,000</label>
-										<label>20,000,000</label>
-										<label>50</label>
-										<label>51 wks</label>
-										<label>51 wks</label>
-										<label>51 wks</label>
-										<label>51 wks</label>
-										<label>Start time</label>
-										<label>End time</label>                                        
-									</row>
-                                    -->
-                                                                
-									<row style="vertical-align:top;">
-										<label id="caseNumber">Cases</label>
-										<label id="uniquecaseNumber">Case variants</label>
-										<label id="eventNumber">Events</label>
-										<label id="activityNumber">Activities</label>
-                                        <label id="minDuration">Activities</label>
-										<label id="meanDuration">Activities</label>
-										<label id="medianDuration">Activities</label>
-										<label id="maxDuration">Activities</label>
-										<label id="startTime">Start time</label>
-										<label id="endTime">End time</label>                                        
-									</row>
-								</rows>
-							</grid>
-						</hbox>
-					</groupbox>
 				</n:td>
 			</n:tr>
 
