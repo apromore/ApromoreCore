@@ -393,7 +393,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     window.invalidate();
                     window.detach();
                     Executions.getCurrent().sendRedirect(null);
-                    Executions.re
                 }
 
             });
