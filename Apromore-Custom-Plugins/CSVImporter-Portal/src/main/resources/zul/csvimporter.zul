@@ -21,7 +21,7 @@
 
 <zk>
 
-    <window closable="false" height="min" maximizable="true" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)">
+    <window closable="false" height="min" maximizable="false" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)">
         <!--<vbox>-->
 
         <style>
@@ -104,6 +104,27 @@
             border: unset;
             }
         </style>
+
+        <popup id="popUpHelp" style="padding:0px;">
+            <vbox>
+                <html>
+                    <ul style= "margin: 0px;
+    padding-left: 25px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;">
+                        <li><b>dd:</b> Day </li> <separator />
+                        <li><b>MM:</b> Month </li>  <separator />
+                        <li><b>yyyy:</b> Year </li>  <separator />
+                        <li><b>HH:</b> Hour </li> <separator />
+                        <li><b>mm:</b> Minute </li> <separator />
+                        <li><b>ss:</b> Second </li> <separator />
+                        <li><b>SSS:</b> millisecond </li> <separator />
+                    </ul>
+                </html>
+            </vbox>
+
+        </popup>
 
         <div id="gridBox" zclass="myGroupBox">
             <div id="popUPBox" zclass="relativePos"></div>

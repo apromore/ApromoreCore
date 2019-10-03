@@ -219,9 +219,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         line = reader.readNext();
                     }
 
+                    Popup helpP = (Popup) window.getFellow("popUpHelp");
+
                     csvImporterLogic.automaticFormat(result, myLine);
                     csvImporterLogic.setOtherTimestamps(result);
-                    createPopUpTextBox(newLine.length, popUPBox);
+                    createPopUpTextBox(newLine.length, popUPBox, helpP);
                     csvImporterLogic.openPopUp();
                     reader.close();
                 }
@@ -233,7 +235,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     }
 
 
-    private void createPopUpTextBox(int colNum, Div popUPBox){
+    private void createPopUpTextBox(int colNum, Div popUPBox, Popup helpP){
         for(int i =0; i<= colNum -1; i++){
             Window item = new Window();
             item.setId(popupID+ i);
@@ -247,7 +249,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //            sp.setLabel("-");
 //            sp.setImage("img/close-icon.png");
 //            sp.setIconSclass("z-icon-compress");
-            sp.setStyle("margin-right:3px; float: right; line-height: 10px; min-height: 5px; padding:2px; margin-bottom:4px");
+            sp.setStyle("margin-right:3px; float: right; width: 24px; line-height: 10px; min-height: 5px; padding:2px; margin-bottom:4px");
             sp.setIconSclass("z-icon-times");
 //            sp.setZclass("min-height: 16px;");
             A hidelink = new A();
@@ -256,10 +258,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 item.setStyle(item.getStyle().replace("visible", "hidden"));
             });
 
+
             Textbox textbox = new Textbox();
             textbox.setId(textboxID + i);
             textbox.setWidth("98%");
             textbox.setPlaceholder("dd-MM-yyyy HH:mm:ss");
+            textbox.setPopup(helpP);
+            textbox.setPopupAttributes(helpP, "after_start","","","toggle");
             textbox.addEventListener("onChanging", (InputEvent event) -> {
                 if(StringUtils.isBlank(event.getValue()) || event.getValue().length() < 6) {
                     textbox.setPlaceholder("dd-MM-yyyy HH:mm:ss");
