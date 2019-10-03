@@ -62,6 +62,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterLogicImpl.class);
 
+    /** If a CSV log contains more than this many lines, it will be silently truncated. */
+    private static final int MAX_LINE_COUNT = Integer.MAX_VALUE;
+
     /** The case id values. */
     private String[] caseIdValues = {"case", "case id", "case-id", "service id", "event id", "caseid", "serviceid"};
 
@@ -147,7 +150,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //                line = reader.readNext();
             line = reader.readNext();
 
-            while (line != null) {
+            while (line != null && lineCount < MAX_LINE_COUNT) {
                 lineCount++;
  
                 try {
