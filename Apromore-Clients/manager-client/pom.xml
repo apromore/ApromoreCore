@@ -54,6 +54,7 @@
         <dependency>
             <groupId>org.deckfour</groupId>
             <artifactId>openxes</artifactId>
+            <version>2.27</version>
         </dependency>
 
         <!-- Pro Drift Dependancies -->

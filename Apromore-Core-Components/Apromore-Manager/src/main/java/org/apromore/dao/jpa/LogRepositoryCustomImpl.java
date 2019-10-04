@@ -31,9 +31,12 @@ import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.out.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xeslite.dfa.XLogDFABuilder;
+import org.xeslite.dfa.XLogDFAXmlParser;
 import org.xeslite.external.XFactoryExternalStore;
 
 import javax.persistence.EntityManager;
@@ -49,6 +52,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.zip.GZIPInputStream;
 
 /**
  * implementation of the org.apromore.dao.LogRepositoryCustom interface.

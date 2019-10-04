@@ -158,9 +158,9 @@
         </dependency>
 
         <dependency>
-                <groupId>io.github.andreas-solti.xeslite</groupId>
-                <artifactId>xeslite</artifactId>
-                <version>0.0.1</version>
+            <groupId>io.github.andreas-solti.xeslite</groupId>
+            <artifactId>xeslite</artifactId>
+            <version>0.0.1</version>
         </dependency>
 		
         <dependency>
