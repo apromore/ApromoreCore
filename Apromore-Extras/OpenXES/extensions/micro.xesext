@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xesextension name="Micro" prefix="micro" uri="http://www.xes-standard.org/micro.xesext">
+	<!--
+		The micro event extension defines a nesting level, a nesting parent, and the number of 
+		nested children for events within a log. 
+	-->
+	<event>
+		<int key="level">
+			<!--
+				The level in the hierarchy for the event. The top level is 1, the higher the level, the
+				lower down in the hierarchy.
+			-->
+			<alias mapping="EN" name="Micro level of this event"/>
+		</int>
+		<id key="parentId">
+			<!--
+				The identity of the parent of the event in the hierarchy. Requires identity extension.
+				If not present, the level must be 1.
+				If present, the level must be 1 + the level of the parent event.
+			-->
+			<alias mapping="EN" name="Id of parent event of this event"/>
+		</id>
+		<int key="length">
+			<!--
+				The number child events for the even tin the hierarchy.
+				If 0, this attribute may be omitted.
+			-->
+			<alias mapping="EN" name="Number of child events for this event"/>
+		</int>
+	</event>
+</xesextension>
+

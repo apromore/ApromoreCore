@@ -1,0 +1,108 @@
+<extension name="Software Event" prefix="swevent" 
+	uri="http://www.xes-standard.org/swevent.xesext">
+	<log>
+		<boolean key="hasData">
+			<alias mapping="EN" name="Has method data"/>
+		</boolean>
+		<boolean key="hasException">
+			<alias mapping="EN" name="Has exception data"/>
+		</boolean>
+	</log>
+	<event>
+		<string key="type">
+			<alias mapping="EN" name="Event Type"/>
+		</string>
+		<string key="callee-package">
+			<alias mapping="EN" name="Callee - Package"/>
+		</string>
+		<string key="callee-class">
+			<alias mapping="EN" name="Callee - Class"/>
+		</string>
+		<string key="callee-method">
+			<alias mapping="EN" name="Callee - Method"/>
+		</string>
+		<string key="callee-paramSig">
+			<alias mapping="EN" name="Callee - Parameter signature"/>
+		</string>
+		<string key="callee-returnSig">
+			<alias mapping="EN" name="Callee - Return signature"/>
+		</string>
+		<boolean key="callee-isConstructor">
+			<alias mapping="EN" name="Callee - Is a class constructor"/>
+		</boolean>
+		<string key="callee-instanceId">
+			<alias mapping="EN" name="Callee - Instance id of class instance"/>
+		</string>
+		<string key="callee-filename">
+			<alias mapping="EN" name="Callee - File name source code artifact"/>
+		</string>
+		<int key="callee-lineNr">
+			<alias mapping="EN" name="Callee - Line number in source code artifact"/>
+		</int>
+		<string key="caller-package">
+			<alias mapping="EN" name="Caller - Package"/>
+		</string>
+		<string key="caller-class">
+			<alias mapping="EN" name="Caller - Class"/>
+		</string>
+		<string key="caller-method">
+			<alias mapping="EN" name="Caller - Method"/>
+		</string>
+		<string key="caller-paramSig">
+			<alias mapping="EN" name="Caller - Parameter signature"/>
+		</string>
+		<string key="caller-returnSig">
+			<alias mapping="EN" name="Caller - Return signature"/>
+		</string>
+		<boolean key="caller-isConstructor">
+			<alias mapping="EN" name="Caller - Is a class constructor"/>
+		</boolean>
+		<string key="caller-instanceId">
+			<alias mapping="EN" name="Caller - Instance id of class instance"/>
+		</string>
+		<string key="caller-filename">
+			<alias mapping="EN" name="Caller - File name source code artifact"/>
+		</string>
+		<int key="caller-lineNr">
+			<alias mapping="EN" name="Caller - Line number in source code artifact"/>
+		</int>
+		<string key="returnValue">
+			<alias mapping="EN" name="Return value for the returning method"/>
+		</string>
+		<list key="params">
+			<alias mapping="EN" name="List of parameters for the called method"/>
+		</list>
+		<string key="appName">
+			<alias mapping="EN" name="User defined application name"/>
+		</string>
+		<string key="appTier">
+			<alias mapping="EN" name="User defined application tier"/>
+		</string>
+		<string key="appNode">
+			<alias mapping="EN" name="User defined application node"/>
+		</string>
+		<string key="appSession">
+			<alias mapping="EN" name="User defined application session"/>
+		</string>
+		<string key="threadId">
+			<alias mapping="EN" name="Thread id for generated event"/>
+		</string>
+		<int key="nanotime">
+			<alias mapping="EN" name="Elapsed nano time"/>
+		</int>
+		<string key="exThrown">
+			<alias mapping="EN" name="Thrown exception type"/>
+		</string>
+		<string key="exCaught">
+			<alias mapping="EN" name="Caught exception type"/>
+		</string>
+	</event>
+	<meta>
+		<string key="paramValue">
+			<alias mapping="EN" name="A parameter value in the list params"/>
+		</string>
+		<string key="valueType">
+			<alias mapping="EN" name="A runtime value type for a return or parameter value"/>
+		</string>
+	</meta>
+</extension>

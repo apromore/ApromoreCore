@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xesextension name="Identity" prefix="identity" uri="http://www.xes-standard.org/identity.xesext">
+	<!--
+		The Identity extension provides unique identifiers (UUIDs) for elements.
+	-->
+	<log>
+		<string key="id">
+			<!--
+				Unique identifier (UUID) for the log.
+			-->
+			<alias mapping="EN" name="Identity"/>
+			<alias mapping="DE" name="Identität"/>
+			<alias mapping="FR" name="Identité"/>
+			<alias mapping="ES" name="Identidad"/>
+			<alias mapping="PT" name="Identidade"/>
+		</string>
+	</log>
+	<trace>
+		<string key="id">
+			<!--
+				Unique identifier (UUID) for the trace.
+			-->
+			<alias mapping="EN" name="Identity"/>
+			<alias mapping="DE" name="Identität"/>
+			<alias mapping="FR" name="Identité"/>
+			<alias mapping="ES" name="Identidad"/>
+			<alias mapping="PT" name="Identidade"/>
+		</string>
+	</trace>
+	<event>
+		<string key="id">
+			<!--
+				Unique identifier (UUID) for the event.
+			-->
+			<alias mapping="EN" name="Identity"/>
+			<alias mapping="DE" name="Identität"/>
+			<alias mapping="FR" name="Identité"/>
+			<alias mapping="ES" name="Identidad"/>
+			<alias mapping="PT" name="Identidade"/>
+		</string>
+	</event>
+	<meta>
+		<string key="id">
+			<!--
+				Unique identifier (UUID) for the attribute.
+			-->
+			<alias mapping="EN" name="Identity"/>
+			<alias mapping="DE" name="Identität"/>
+			<alias mapping="FR" name="Identité"/>
+			<alias mapping="ES" name="Identidad"/>
+			<alias mapping="PT" name="Identidade"/>
+		</string>
+	</meta>
+</xesextension>

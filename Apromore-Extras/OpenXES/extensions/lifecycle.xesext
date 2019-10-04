@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xesextension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext">
+	<!--
+		The Lifecycle extension specifies for events the lifecycle transition they represent in a transactional model
+		of their generating activity. This transactional model can be arbitrary. However, the Lifecycle extension also
+		specifies two standard transactional models for activities, see the figures that follow. The use of this extension
+		is appropriate in any setting where events denote lifecycle transitions of higher-level activities.
+	-->
+	<log>
+		<string key="model">
+			<!--
+				This attribute refers to the lifecycle transactional model used for all events in the log. If this
+				attribute has a value of "standard", the standard lifecycle transactional model of this extension is
+				assumed. If it is has a value of "bpaf", the Business Process Analytics Format (BPAF) lifecycle transactional
+				model is assumed.
+			-->
+			<alias mapping="EN" name="Lifecycle Model"/>
+			<alias mapping="DE" name="Lebenszyklus-Modell"/>
+			<alias mapping="FR" name="Modèle du Cycle Vital"/>
+			<alias mapping="ES" name="Modelo de Ciclo de Vida"/>
+			<alias mapping="PT" name="Modelo do Ciclo de Vida"/>
+		</string>
+	</log>
+	<event>
+		<string key="transition">
+			<!--
+				The transition attribute is defined for events, and specifies the lifecycle transition of each event.
+			-->
+			<alias mapping="EN" name="Lifecycle Transition"/>
+			<alias mapping="DE" name="Lebenszyklus-Transition"/>
+			<alias mapping="FR" name="Transition en Cycle Vital"/>
+			<alias mapping="ES" name="Transición en Ciclo de Vida"/>
+			<alias mapping="PT" name="Transição do Ciclo de Vida"/>
+		</string>
+		<string key="state">
+			<!--
+				The state attribute is defined for events, and specifies the lifecycle state of each event.
+			-->
+			<alias mapping="EN" name="Lifecycle State"/>
+			<alias mapping="DE" name="Lebenszyklus-Stand"/>
+			<alias mapping="FR" name="Etat en Cycle Vital"/>
+			<alias mapping="ES" name="Estado en Ciclo de Vida"/>
+			<alias mapping="PT" name="Estado do Ciclo de Vida"/>
+		</string>
+	</event>
+</xesextension>

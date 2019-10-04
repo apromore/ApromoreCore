@@ -1,0 +1,34 @@
+<extension name="Software Telemetry" prefix="swtelemetry" uri="http://www.xes-standard.org/swtelemetry.xesext"/>
+	<event>
+		<int key="cpuTotalUser">
+			<alias mapping="EN" name="CPU usage - total time in user space, in milliseconds"/>
+		</int>
+		<int key="cpuTotalKernel">
+			<alias mapping="EN" name="CPU usage - total time in kernel space, in milliseconds"/>
+		</int>
+		<int key="cpuTotalIdle">
+			<alias mapping="EN" name="CPU usage - total time spent idle, in milliseconds"/>
+		</int>
+		<float key="cpuLoadUser">
+			<alias mapping="EN" name="CPU usage - load in user space"/>
+		</float>
+		<float key="cpuLoadKernel">
+			<alias mapping="EN" name="CPU usage - load in kernel space"/>
+		</float>
+		<int key="threadTotal">
+			<alias mapping="EN" name="Total number of threads"/>
+		</int>
+		<int key="threadDaemon">
+			<alias mapping="EN" name="Number of daemon threads"/>
+		</int>
+		<int key="memoryUsed">
+			<alias mapping="EN" name="Total memory used, measured in bytes"/>
+		</int>
+		<int key="memoryTotal">
+			<alias mapping="EN" name="Total memory available, measured in bytes"/>
+		</int>
+		<float key="memoryLoad">
+			<alias mapping="EN" name="Memory usage load"/>
+		</float>
+	</event>
+</extension>

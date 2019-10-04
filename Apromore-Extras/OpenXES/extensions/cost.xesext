@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xesextension name="Cost" prefix="cost" uri="http://www.xes-standard.org/cost.xesext">
+	<!--
+		The cost extension defines a nested element to store information about the cost associated with activities
+		within a log. The objective of this extension is to provide semantics to cost aspects that can be associated with
+		events in a log. The definition associates three data elements with a particular cost element: the amount associated
+		with the cost element as well as the cost driver that is responsible for incurring that cost and the cost type.
+		As it is possible for more than one cost element to be associated with an event, the cost incurred per event is
+		summarized using the total attribute. The currency element is also recorded once per event. Cost information
+		can be recorded at the trace level (for instance, to be able to say that it costs $20 when a case is started). Cost
+		information can also be recorded at the event level (for instance, for certain event types such as complete or
+		canceled events) to capture the cost incurred in undertaking the activity by a resource.
+	-->
+	<trace>
+		<float key="total">
+			<!--
+				Total cost incurred for a trace. The value represents the sum of all the cost amounts within the element.
+			-->
+			<alias mapping="EN" name="Total Cost"/>
+		</float>
+		<string key="currency">
+			<!--
+				The currency (using the ISO 4217:2008 standard) of all costs of this trace.
+			-->
+			<alias mapping="EN" name="Currency of Cost"/>
+		</string>
+		<list key="drivers">
+			<!--
+				A detailed list containing cost driver details.
+			-->
+			<alias mapping="EN" name="Cost Drivers"/>
+		</list>
+	</trace>
+	<event>
+		<float key="total">
+			<!--
+				Total cost incurred for an event. The value represents the sum of all the cost amounts within the element.
+			-->
+			<alias mapping="EN" name="Total Cost"/>
+		</float>
+		<string key="currency">
+			<!--
+				The currency (using the ISO 4217:2008 standard) of all costs of this event.
+			-->
+			<alias mapping="EN" name="Currency of Cost"/>
+		</string>
+		<list key="drivers">
+			<!--
+				A detailed list containing cost driver details. This attribute shall contain any number of driver attributes, 
+				and every driver attribute shall contain the amount and type attribute.
+			-->
+			<alias mapping="EN" name="Cost Drivers"/>
+		</list>
+	</event>                     
+	<meta>
+		<float key="amount">
+			<!--
+				The value contains the cost amount for a cost driver.
+			-->
+			<alias mapping="EN" name="Cost Amount"/>
+		</float>
+		<string key="driver">
+			<!--
+				The value contains the id for the cost driver.
+			-->
+			<alias mapping="EN" name="Cost Driver"/>
+		</string>
+		<string key="type">
+			<!--
+				The value contains the cost type (e.g., Fixed, Overhead, Materials).
+			-->
+			<alias mapping="EN" name="Cost Type"/>
+		</string>
+	</meta>
+</xesextension>
