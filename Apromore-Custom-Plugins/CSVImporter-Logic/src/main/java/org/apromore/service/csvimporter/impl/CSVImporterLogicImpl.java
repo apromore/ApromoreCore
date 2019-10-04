@@ -174,16 +174,21 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         }
                     }
 
-                    for(Map.Entry<Integer, String> entry : otherTimeStampsPos.entrySet()) {
-                        if(entry.getValue() == null) {
+//                    for(Map.Entry<Integer, String> entry : otherTimeStampsPos.entrySet()) {
+//                        if(entry.getValue() == null) {
+//                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Other time stamp field is invalid. ");
+//                            break;
+//                        }
+//                        try {
+//                            parse.parseTimestamp(entry.getValue(),entry.getValue());
+//                        } catch (Exception e) {
+//                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Other time stamp field cannot be parsed as valid timestamp. ");
+//                            break;
+//                        }
+//                    }
+                    for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
+                        if(entry.getValue() == null || entry.getKey() == null) {
                             invalidRows.add("Line: " + (lineCount + 1) + ", Error: Other time stamp field is invalid. ");
-                            break;
-                        }
-                        try {
-                            tryParsing(entry.getValue(), entry.getKey());
-                        } catch (Exception e) {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Other time stamp field cannot be parsed as valid timestamp. ");
-                            break;
                         }
                     }
 

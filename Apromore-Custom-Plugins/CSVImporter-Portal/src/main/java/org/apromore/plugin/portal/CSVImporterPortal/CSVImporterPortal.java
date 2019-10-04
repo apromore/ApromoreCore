@@ -110,7 +110,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
      * read CSV content and create list model to be set as grid model.
      */
     @SuppressWarnings("null")
-    private void displayCSVContent(Media media, ListModelList<String[]> result, Grid myGrid, Div attrBox, Div popUPBox, Window window) {
+    private void displayCSVContent(Media media, ListModelList<String[]> result, Grid myGrid, Div popUPBox, Window window) {
         String firstLine = null;
 
 
@@ -142,10 +142,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 String[] header;
                 String[] line;
 
+
+                Columns headerColumns = new Columns();
+
                 if (myGrid.getColumns() == null) {
-                    new Columns().setParent(myGrid);
+                    headerColumns.setParent(myGrid);
                 } else {
-                    myGrid.getColumns().getChildren().clear();
+                    headerColumns.getChildren().clear();
                 }
 
                 /// display first numberOfrows to user and display drop down lists to set attributes
@@ -156,7 +159,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 header[0] = BomC;
 
                 if(header.length > 9) {
-                    window.setWidth("100%");
+                    window.setWidth("98%");
                 } else {
 //                    Double DynamicWidth = null;
 //                    DynamicWidth = 10.88 * header.length;
@@ -165,25 +168,15 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
 
-                for (int i = 0; i < header.length; i++) {
-                    Column newColumn = new Column();
-                    newColumn.setWidth(AttribWidth + "px");
-                    newColumn.setValue(header[i]);
-                    newColumn.setLabel(header[i]);
-                    newColumn.setAlign("center");
-                    myGrid.getColumns().appendChild(newColumn);
-//                    myGrid.getColumns().setSizable(true);
-                }
-                if (attrBox != null) {
-                    attrBox.getChildren().clear();
-                }
+//                if (attrBox != null) {
+//                    attrBox.getChildren().clear();
+//                }
                 if (popUPBox != null) {
                     popUPBox.getChildren().clear();
                 }
                 if (result != null) {
                     result.clear();
                 }
-
 
                 line = reader.readNext();
                 if (line == null || header == null) {
@@ -204,12 +197,27 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 //                    attrBox.setWidth(line.length * AttribWidth + "px");
 
-                    csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth + "px");
+                    csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
 
                     List<Listbox> lists = csvImporterLogic.getLists();
-                    for (Listbox list : lists) {
-                        attrBox.appendChild(list);
+
+                    Auxhead optionHead = new Auxhead();
+
+//                    listHeader.setColspan(lists.size());
+
+
+                    for (int i=0; i < lists.size(); i++) {
+//                        attrBox.appendChild(lists.get(i));
+                        Auxheader listHeader = new Auxheader();
+
+                        listHeader.appendChild(lists.get(i));
+
+                        optionHead.appendChild(listHeader);
                     }
+
+
+                    myGrid.appendChild(optionHead);
+
                     String[] newLine = line;
                     // display first 1000 rows
                     int numberOfrows = 300 - 1;
@@ -227,6 +235,18 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     csvImporterLogic.openPopUp();
                     reader.close();
                 }
+
+                for (int i = 0; i < header.length; i++) {
+                    Column newColumn = new Column();
+                    newColumn.setWidth(AttribWidth + "px");
+                    newColumn.setValue(header[i]);
+                    newColumn.setLabel(header[i]);
+                    newColumn.setAlign("center");
+                    headerColumns.appendChild(newColumn);
+//                    myGrid.getColumns().setSizable(true);
+                }
+
+                myGrid.appendChild(headerColumns);
             } catch (IOException e) {
                 e.printStackTrace();
                 Messagebox.show(e.getMessage());
@@ -307,7 +327,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //            Label fileNameLabel = (Label) window.getFellow("fileNameLabel");
             ListModelList<String[]> result = new ListModelList<String[]>();
             Grid myGrid  = (Grid) window.getFellow("myGrid");
-            Div attrBox = (Div) window.getFellow("attrBox");
+//            Div attrBox = (Div) window.getFellow("attrBox");
             Div popUPBox = (Div) window.getFellow("popUPBox");
             Button toXESButton = (Button) window.getFellow("toXESButton");
             Button cancelButton = (Button) window.getFellow("cancelButton");
@@ -322,13 +342,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 csvImporterLogic.resetHead();
                 csvImporterLogic.resetList();
 
-                if (attrBox != null) {
-                    attrBox.getChildren().clear();
-                }
+//                if (attrBox != null) {
+//                    attrBox.getChildren().clear();
+//                }
                 String[] allowedExtensions = {"csv", "xls", "xlsx"};
                 if (Arrays.asList(allowedExtensions).contains(media.getFormat())) {
 
-                    displayCSVContent(media, result, myGrid, attrBox, popUPBox, window);
+                    displayCSVContent(media, result, myGrid, popUPBox, window);
 
                     if (window != null) {
                         // set grid model
