@@ -6,6 +6,7 @@ This repository contains source code of [Apromore](https://apromore.org) Communi
 
 
 ## System Requirements
+
 * Windows 7 or newer with at least 8 GB RAM. Mac OS and Linux users can presently run only core Apromore plugins.
 * Java SE 8 ["Server JRE"](https://www.oracle.com/technetwork/java/javase/downloads/server-jre8-downloads-2133154.html) or ["JDK"](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) Edition 1.8. Note newer versions, including Java SE 11, are currently not supported
 * [Apache Maven](https://maven.apache.org/download.cgi) 3.5.2 or newer
