@@ -34,6 +34,8 @@ public class LogStatistics {
     private Set<String> eventNameSet = new HashSet<>();
     private Map<Integer, List<String>> variantEventsMap = new HashMap<Integer, List<String>>();
     private Map<String, Integer> caseEventMap = new HashMap<>(); //2019-09-25
+    private Map<List<String>, Integer> variantFrequencyMap; //2019-10-05
+    private Map<List<String>, Integer> variantIdMap = new HashMap<>(); //2019-10-05
 
 	public LogStatistics(XLog log) {
 		this.log = log;
@@ -142,9 +144,9 @@ public class LogStatistics {
         //key: type of attribute (see LogFilterTypeSelector), value: map (key: attribute value, value: frequency count)
         Map<String, Map<String, Integer>> tmp_options_frequency = new HashMap<>();
 
-        Map<List<String>, Integer> variantFrequencyMap = variantFrequencyMapOf(log);
-        Map<List<String>, Integer> variantIdMap = variantIdMapOf(variantFrequencyMap);
-//        System.out.println(variantIdMap);
+        variantFrequencyMap = variantFrequencyMapOf(log); //2019-10-05
+        if(variantIdMap == null || variantIdMap.size() < 1) variantIdMap = variantIdMapOf(variantFrequencyMap); //2019-10-05
+
 
         Map<String, Integer> variIdFreqMap = new HashMap<String, Integer>();
         for(List<String> list : variantIdMap.keySet()) {
@@ -274,6 +276,9 @@ public class LogStatistics {
                     variFreqMap.put(actSeq, freq);
                 }else{
                     variFreqMap.put(actSeq, 1);
+                }
+                if(trace.getAttributes().containsKey(CASE_VARIANT_KEY)) {
+                    this.variantIdMap.put(actSeq, Integer.valueOf(trace.getAttributes().get(CASE_VARIANT_KEY).toString()));
                 }
             }
         }
