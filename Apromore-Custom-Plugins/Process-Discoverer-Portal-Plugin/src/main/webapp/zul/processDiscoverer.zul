@@ -268,8 +268,8 @@
 								</hbox>
 							</radiogroup>
 							<vlayout style="margin-top:5px;">
-								<checkbox id="inverted_nodes" checked="false" label="Invert priority nodes" height="30px" width="100px"/>
-								<checkbox id="inverted_arcs" checked="false" label="Invert priority arcs" height="30px" width="100px"/>
+								<checkbox id="inverted_nodes" checked="false" label="Invert nodes priority" height="30px" width="100px"/>
+								<checkbox id="inverted_arcs" checked="false" label="Invert arcs priority" height="30px" width="100px"/>
 							</vlayout>
 						</groupbox>
 					</vbox>
