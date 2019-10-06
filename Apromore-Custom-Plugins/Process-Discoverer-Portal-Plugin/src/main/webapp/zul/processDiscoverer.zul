@@ -314,7 +314,7 @@
 								<column sclass="statsHead" label="End time" align="center" width="25%"/>
 							</columns>
 							<rows>
-								<row style="vertical-align:top;">
+								<row valign="middle" style="padding-top:5px;">
 									<label id="caseNumber">Cases</label>
 									<label id="uniquecaseNumber">Case variants</label>
 									<label id="eventNumber">Events</label>
@@ -332,7 +332,7 @@
 								<column sclass="statsHead" label="Max duration" align="center" width="25%"/>
 							</columns>
 							<rows>
-								<row style="vertical-align:top;">
+								<row valign="middle" style="padding-top:5px;">
 									<label id="minDuration">Activities</label>
 									<label id="medianDuration">Activities</label>
 									<label id="meanDuration">Activities</label>
@@ -370,6 +370,24 @@
 						</columns>
 						<rows>
 							<row align="center">
+								<combobutton id="export" label="Save" height="26px" hflex="1">
+									<menupopup>
+										<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>
+										<menuitem id="exportBPMN" label="Save as BPMN Model..." onCheck='exportBPMN.setChecked(false)'/>
+										<menuitem id="exportBPMNAnnotatedForBIMP" visible="false" label="Save as BPMN model annotated for BIMP..." onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>
+										<menuitem id="downloadPDF" label="Print map as PDF" onCheck='downloadPDF.setChecked(false)'/>
+										<menuitem id="downloadPNG" label="Print map as PNG" onCheck='downloadPNG.setChecked(false)'/>
+									</menupopup>
+								</combobutton>
+								<combobutton id="layout" label="Layout" height="26px" hflex="1" onClick='layout_hiera.setChecked(true);layout_dagre_TB.setChecked(false);'>
+									<menupopup>
+										<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre_TB.setChecked(false);' label="Left-to-right" checked="true" />
+										<!--<menuitem id="layout_dagre_LR" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(true);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Dagre Left-Right" checked="false" />-->
+										<menuitem id="layout_dagre_TB" onClick='layout_hiera.setChecked(false);layout_dagre_TB.setChecked(true);' label="Top-to-bottom" checked="false" />
+										<!--<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />-->
+									</menupopup>
+								</combobutton>
+								<button id="fitScreen" label="Fit to screen" height="26px" hflex="1" />
 								<combobutton id="selector" label="Perspective" hflex="1" height="26px">
 									<menupopup id="selectormenu" />
 								</combobutton>
@@ -393,28 +411,10 @@
 										<menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
 									</menupopup>
 								</combobutton>
-								<combobutton id="layout" label="Layout" height="26px" hflex="1" onClick='layout_hiera.setChecked(true);layout_dagre_TB.setChecked(false);'>
-									<menupopup>
-										<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre_TB.setChecked(false);' label="Left-to-right" checked="true" />
-										<!--<menuitem id="layout_dagre_LR" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(true);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Dagre Left-Right" checked="false" />-->
-										<menuitem id="layout_dagre_TB" onClick='layout_hiera.setChecked(false);layout_dagre_TB.setChecked(true);' label="Top-to-bottom" checked="false" />
-										<!--<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />-->
-									</menupopup>
-								</combobutton>
-								<button id="fitScreen" label="Fit to screen" height="26px" hflex="1" />
-								<combobutton id="export" label="Export" height="26px" hflex="1">
-									<menupopup>
-										<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>
-										<menuitem id="exportBPMN" label="Save as BPMN Model..." onCheck='exportBPMN.setChecked(false)'/>
-										<menuitem id="exportBPMNAnnotatedForBIMP" visible="false" label="Save as BPMN model annotated for BIMP..." onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>
-										<menuitem id="downloadPDF" label="Export map as PDF" onCheck='downloadPDF.setChecked(false)'/>
-										<menuitem id="downloadPNG" label="Export map as PNG" onCheck='downloadPNG.setChecked(false)'/>
-									</menupopup>
-								</combobutton>
+								<button id="filter" label="Filter" height="26px" hflex="1" />
 								<button id="details" label="Activities" height="26px" hflex="1" />
 								<button id="cases" label="Cases" height="26px" hflex="1" />
 								<button id="fitness" label="Fitness" height="26px" hflex="1" />
-								<button id="filter" label="Filter" height="26px" hflex="1" />
 								<button id="animate" height="26px" hflex="1" onClick='Clients.evalJavaScript("animate()")' label="Animate" />
 							</row>
 						</rows>
