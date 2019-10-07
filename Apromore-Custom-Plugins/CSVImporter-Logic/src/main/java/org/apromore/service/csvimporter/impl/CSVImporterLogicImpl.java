@@ -215,7 +215,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                     if(rowGTG==true) {
                         logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
-                    }linels
+                    }
                 } catch (Exception e) {
                     errorMessage = ExceptionUtils.getStackTrace(e);
                     e.printStackTrace();
