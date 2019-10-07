@@ -203,7 +203,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             if(entry.getKey() != null && entry.getKey() != null) {
                                     if (entry.getValue() == null) {
                                         invalidRows.add("Line: " + (lineCount + 1) + ", Error: " + entry.getKey() +
-                                                " field is invalid as timestamp. Skipping this row completely.\n");
+                                                " field is invalid. Skipping this row completely.\n");
                                         errorCount++;
                                         rowGTG = false;
                                     }
@@ -257,6 +257,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         notificationMessage = notificationMessage + "\n ..." ;
                     }
                     notificationMessage = notificationMessage + "\n\n Your file has been imported with some problems.";
+
 
                     Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
                     return sortTraces(logData);
