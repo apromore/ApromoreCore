@@ -253,7 +253,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         notificationMessage = notificationMessage + invalidRows.get(i) + "\n";
                     }
 
-                    notificationMessage = notificationMessage + "\n ..." + "\n\n Your file has been imported with some problems.";
+                    if(invalidRows.size() > 5) {
+                        notificationMessage = notificationMessage + "\n ..." ;
+                    }
+                    notificationMessage = notificationMessage + "\n\n Your file has been imported with some problems.";
+
                     Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
                     return sortTraces(logData);
                 }
