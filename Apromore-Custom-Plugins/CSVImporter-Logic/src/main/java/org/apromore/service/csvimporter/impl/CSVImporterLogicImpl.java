@@ -201,15 +201,13 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
                             System.out.println("head of:" + heads.get(entry.getKey()) + "key is:" + entry.getKey() + "  value is:" + entry.getValue());
                             if(entry.getKey() != null && entry.getKey() != null) {
-                                if (heads.get(entry.getKey()) != null && heads.get(entry.getKey()) != -1) {
                                     if (entry.getValue() == null) {
-                                        invalidRows.add("Line: " + (lineCount + 1) + ", Error: " + heads.get(entry.getKey()) +
-                                                " field is invalid. Skipping this row completely.\n");
+                                        invalidRows.add("Line: " + (lineCount + 1) + ", Error: " + entry.getKey() +
+                                                " field is invalid as timestamp. Skipping this row completely.\n");
                                         errorCount++;
                                         rowGTG = false;
                                     }
                                 }
-                            }
                         }
                     }
 
