@@ -123,7 +123,12 @@
                         <li><b>mm:</b> Minute </li> <separator />
                         <li><b>ss:</b> Second </li> <separator />
                         <li><b>SSS:</b> millisecond </li> <separator />
+                        Examples: <separator />
+                        <li>29/10/2010 05:20 </li><separator />
+                        <li>2010-10-29 05:20:10.005 </li><separator />
+                        <li>29.10.19 5:20</li>
                     </ul>
+
                 </html>
             </vbox>
 

@@ -195,20 +195,30 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //                            break;
                     }
 
-                    for(int i=0; i < otherTimeStampsPos.size(); i++) {
-                        if(otherTimeStampsPos.get(i) == null) {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Other time stamp field is invalid. Skipping this row completely.\n");
-                            errorCount++;
-                            rowGTG = false;
-                        }
 
+//                    Messagebox.show(String.valueOf(otherTimestamps.size()));
+                    if(otherTimestamps != null) {
+                        for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
+                            System.out.println("head of:" + heads.get(entry.getKey()) + "key is:" + entry.getKey() + "  value is:" + entry.getValue());
+                            if(entry.getKey() != null && entry.getKey() != null) {
+                                if (heads.get(entry.getKey()) != null && heads.get(entry.getKey()) != -1) {
+                                    if (entry.getValue() == null) {
+                                        invalidRows.add("Line: " + (lineCount + 1) + ", Error: " + heads.get(entry.getKey()) +
+                                                " field is invalid. Skipping this row completely.\n");
+                                        errorCount++;
+                                        rowGTG = false;
+                                    }
+                                }
+                            }
+                        }
                     }
+
                     if(rowGTG==true) {
                         logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
-                    }
+                    }linels
                 } catch (Exception e) {
                     errorMessage = ExceptionUtils.getStackTrace(e);
-//                                e.printStackTrace();
+                    e.printStackTrace();
                     errorCount++;
                     if (line.length > 4) {
                         invalidRows.add("Line: " + (lineCount + 1) + ", Something went wrong. Content: " + line[0] + "," +
