@@ -201,13 +201,13 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
                             System.out.println("head of:" + heads.get(entry.getKey()) + "key is:" + entry.getKey() + "  value is:" + entry.getValue());
                             if(entry.getKey() != null && entry.getKey() != null) {
-                                    if (entry.getValue() == null) {
-                                        invalidRows.add("Line: " + (lineCount + 1) + ", Error: " + entry.getKey() +
-                                                " field is invalid. Skipping this row completely.\n");
-                                        errorCount++;
-                                        rowGTG = false;
-                                    }
+                                if (entry.getValue() == null) {
+                                    invalidRows.add("Line: " + (lineCount + 1) + ", Error: " + entry.getKey() +
+                                            " field is invalid. Skipping this row completely.\n");
+                                    errorCount++;
+                                    rowGTG = false;
                                 }
+                            }
                         }
                     }
 
@@ -410,11 +410,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     timestampFormat = format;
                 }
             } else if ((heads.get(tsStart) == -1) && getPos(StartTsValues, line[i])) {
-                    String format = parse.determineDateFormat(this.line[i]);
-                    if (format != null) {
-                        heads.put(tsStart, i);
-                        startTsFormat = format;
-                    }
+                String format = parse.determineDateFormat(this.line[i]);
+                if (format != null) {
+                    heads.put(tsStart, i);
+                    startTsFormat = format;
+                }
             } else if ((heads.get(resource) == -1) && getPos(resourceValues, line[i])) {
                 heads.put(resource, i);
             }
