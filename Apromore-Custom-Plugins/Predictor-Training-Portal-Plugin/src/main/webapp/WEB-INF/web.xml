@@ -170,7 +170,7 @@
     <!-- /////////// -->
     <!-- [Optional] Session timeout -->
     <session-config>
-        <session-timeout>60</session-timeout>
+        <session-timeout>240</session-timeout>
     </session-config>
 
     <!-- [Optional] MIME mapping -->
