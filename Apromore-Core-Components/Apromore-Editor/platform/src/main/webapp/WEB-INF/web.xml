@@ -150,7 +150,7 @@
 
     <!--SESSION CONFIG-->
     <session-config>
-        <session-timeout>1440</session-timeout>
+        <session-timeout>7000</session-timeout>
     </session-config>
 
     <!--ERROR PAGES-->

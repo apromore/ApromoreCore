@@ -146,7 +146,7 @@
     </welcome-file-list>
 
     <session-config>
-        <session-timeout>60</session-timeout>
+        <session-timeout>240</session-timeout>
     </session-config>
 
     <error-page>
