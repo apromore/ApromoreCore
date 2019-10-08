@@ -218,7 +218,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     myGrid.appendChild(optionHead);
 
-                    String[] newLine = line;
+//                    String[] newLine = line;
                     // display first 1000 rows
                     int numberOfrows = 300 - 1;
                     while (line != null && numberOfrows >= 0) {
@@ -231,7 +231,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     csvImporterLogic.automaticFormat(result, myLine);
                     csvImporterLogic.setOtherTimestamps(result);
-                    createPopUpTextBox(newLine.length, popUPBox, helpP);
+                    createPopUpTextBox(line.length, popUPBox, helpP);
                     csvImporterLogic.openPopUp();
                     reader.close();
                 }

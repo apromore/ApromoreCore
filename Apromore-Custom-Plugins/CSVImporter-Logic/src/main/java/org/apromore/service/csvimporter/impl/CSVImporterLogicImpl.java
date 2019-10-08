@@ -406,11 +406,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     timestampFormat = format;
                 }
             } else if ((heads.get(tsStart) == -1) && getPos(StartTsValues, line[i])) {
-                String format = parse.determineDateFormat(this.line[i]);
-                if (format != null) {
-                    heads.put(tsStart, i);
-                    startTsFormat = format;
-                }
+                    String format = parse.determineDateFormat(this.line[i]);
+                    if (format != null) {
+                        heads.put(tsStart, i);
+                        startTsFormat = format;
+                    }
             } else if ((heads.get(resource) == -1) && getPos(resourceValues, line[i])) {
                 heads.put(resource, i);
             }
