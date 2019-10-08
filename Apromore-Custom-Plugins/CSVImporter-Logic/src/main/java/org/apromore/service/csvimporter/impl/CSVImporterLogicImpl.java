@@ -138,7 +138,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //                line = reader.readNext();
             line = reader.readNext();
 
-            while (line != null) {
+            while (line != null && isValidLineCount(lineCount)) {
                 lineCount++;
 
                 try {
@@ -273,6 +273,10 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //            Messagebox.show(e.getMessage());
         }
         return null;
+    }
+
+    public boolean isValidLineCount(int lineCount) {
+        return true;
     }
 
     public void automaticFormat(ListModelList<String[]> result, String[] myHeader) {
