@@ -153,7 +153,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             others.put(header[p], line[p]);
 
                             if (header.length != line.length) {
-                                invalidRows.add("Line: " + (lineCount + 1) + ", Error: number of columns does not match number of headers. "
+                                invalidRows.add("Row: " + (lineCount + 1) + ", Error: number of columns does not match number of headers. "
                                         + "Number of headers: " + header.length + ", Number of columns: " + line.length + "\n");
                                 errorCount++;
                                 rowGTG = false;
@@ -174,9 +174,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         if (startTimestamp == null) {
                             if(tStamp != null) {
                                 startTimestamp = tStamp;
-                                invalidRows.add("Line: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
+                                invalidRows.add("Row: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
                             } else {
-                                invalidRows.add("Line: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. ");
+                                invalidRows.add("Row: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. ");
                             }
                             errorCount++;
                         }
@@ -184,7 +184,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     if (heads.get(resource) != -1) {
                         resourceCol = line[heads.get(resource)];
                         if (resourceCol == null) {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Resource field is empty. ");
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: Resource field is empty. ");
                             errorCount++;
                         }
                     }
@@ -192,9 +192,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     if (tStamp == null) {
                         if(startTimestamp != null) {
                             tStamp = startTimestamp;
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Copying start timestamp field into end timestamp");
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Copying start timestamp field into end timestamp");
                         } else {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: End time stamp field is invalid. ");
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. ");
                         }
                         errorCount++;
                     }
@@ -204,7 +204,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             System.out.println("head of:" + heads.get(entry.getKey()) + "key is:" + entry.getKey() + "  value is:" + entry.getValue());
                             if(entry.getKey() != null && entry.getKey() != null) {
                                 if (entry.getValue() == null) {
-                                    invalidRows.add("Line: " + (lineCount + 1) + ", Error: " + entry.getKey() +
+                                    invalidRows.add("Row: " + (lineCount + 1) + ", Error: " + entry.getKey() +
                                             " field is invalid timestamp. Skipping this row completely.\n");
                                     errorCount++;
                                     rowGTG = false;
@@ -221,12 +221,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     e.printStackTrace();
                     errorCount++;
                     if (line.length > 4) {
-                        invalidRows.add("Line: " + (lineCount + 1) + ", Something went wrong. Content: " + line[0] + "," +
+                        invalidRows.add("Row: " + (lineCount + 1) + ", Something went wrong. Content: " + line[0] + "," +
                                 line[1] + "," + line[2] + "," + line[3] + " ...");
                         errorCount++;
                         rowGTG = false;
                     } else {
-                        invalidRows.add("Line: " + (lineCount + 1) + ", Content: " + " Empty, or too short for display.");
+                        invalidRows.add("Row: " + (lineCount + 1) + ", Content: " + " Empty, or too short for display.");
                         errorCount++;
                         rowGTG = false;
                     }
@@ -248,7 +248,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 return null;
             } else {
                 if (errorCount > 0) {
-                    String notificationMessage = "Imported: " + lineCount + " lines, skipped " + errorCount + " row(s) that contains invalid values! \n" +
+
+                    String notificationMessage = "Your file has been imported with some problems. \n";
+                    notificationMessage = "Imported: " + lineCount + " row(s), with " + errorCount + " invalid row(s) being amended.  \n\n" +
                             "Invalid rows: \n";
 
                     for (int i = 0; i < Math.min(invalidRows.size(), 5); i++) {
@@ -258,10 +260,10 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     if(invalidRows.size() > 5) {
                         notificationMessage = notificationMessage + "\n ..." ;
                     }
-                    notificationMessage = notificationMessage + "\n\n Your file has been imported with some problems.";
+//                    notificationMessage = notificationMessage + "\n\n Your file has been imported with some problems.";
 
 
-                    Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.EXCLAMATION);
                     return sortTraces(logData);
                 }
 
