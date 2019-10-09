@@ -18,14 +18,9 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.account;
+package org.apromore.plugin.portal.themeselection;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.InputStream;
-import java.io.IOException;
 import java.util.Locale;
-import javax.imageio.ImageIO;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.slf4j.Logger;
@@ -48,23 +43,6 @@ public class ChangeThemePlugin extends DefaultPortalPlugin {
     @Override
     public String getGroupLabel(Locale locale) {
         return groupLabel;
-    }
-
-    @Override
-    public RenderedImage getIcon() {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream("/change-theme-icon.png")) {
-            BufferedImage icon = ImageIO.read(in);
-            return icon;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public String getIconPath() {
-        return "change-theme-icon.svg";
     }
 
     @Override
