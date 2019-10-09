@@ -170,40 +170,42 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     Timestamp tStamp = parse.parseTimestamp(line[heads.get(timestamp)], timestampFormat);
 
                     if (heads.get(tsStart) != -1) {
-
                         startTimestamp = parse.parseTimestamp(line[heads.get(tsStart)], startTsFormat);
-
                         if (startTimestamp == null) {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. ");
+                            if(tStamp != null) {
+                                startTimestamp = tStamp;
+                                invalidRows.add("Line: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
+                            } else {
+                                invalidRows.add("Line: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. ");
+                            }
                             errorCount++;
                         }
                     }
                     if (heads.get(resource) != -1) {
                         resourceCol = line[heads.get(resource)];
-
-                        if (startTimestamp == null) {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Resource field is invalid. ");
+                        if (resourceCol == null) {
+                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Resource field is empty. ");
                             errorCount++;
                         }
                     }
 
                     if (tStamp == null) {
-//                            terminating = true;
-                        invalidRows.add("Line: " + (lineCount + 1) + ", Error: Critical field - End time stamp field is invalid. Skipping this row completely.\n");
+                        if(startTimestamp != null) {
+                            tStamp = startTimestamp;
+                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Copying start timestamp field into end timestamp");
+                        } else {
+                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: End time stamp field is invalid. ");
+                        }
                         errorCount++;
-                        rowGTG = false;
-//                            break;
                     }
 
-
-//                    Messagebox.show(String.valueOf(otherTimestamps.size()));
                     if(otherTimestamps != null) {
                         for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
                             System.out.println("head of:" + heads.get(entry.getKey()) + "key is:" + entry.getKey() + "  value is:" + entry.getValue());
                             if(entry.getKey() != null && entry.getKey() != null) {
                                 if (entry.getValue() == null) {
                                     invalidRows.add("Line: " + (lineCount + 1) + ", Error: " + entry.getKey() +
-                                            " field is invalid. Skipping this row completely.\n");
+                                            " field is invalid timestamp. Skipping this row completely.\n");
                                     errorCount++;
                                     rowGTG = false;
                                 }
