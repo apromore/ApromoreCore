@@ -179,8 +179,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
                 line = reader.readNext();
-                if (line == null || header == null) {
+                if (line == null || header == null || line.length == 0 || header.length == 0) {
                     Messagebox.show("Could not parse file!");
+                    System.out.println("Something is null!");
                 }
                 String[] myLine = header;
                 csvImporterLogic.setLine(line);
@@ -221,19 +222,26 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //                    String[] newLine = line;
                     // display first 1000 rows
                     int numberOfrows = 300 - 1;
-                    while (line != null && numberOfrows >= 0) {
-                        result.add(line);
-                        numberOfrows--;
-                        line = reader.readNext();
+                    while (numberOfrows >= 0) {
+                        if(line != null) {
+                            result.add(line);
+                            numberOfrows--;
+                            line = reader.readNext();
+                        } else {
+                            numberOfrows--;
+                            line = reader.readNext();
+                        }
                     }
 
                     Popup helpP = (Popup) window.getFellow("popUpHelp");
 
-                    csvImporterLogic.automaticFormat(result, myLine);
-                    csvImporterLogic.setOtherTimestamps(result);
-                    createPopUpTextBox(line.length, popUPBox, helpP);
-                    csvImporterLogic.openPopUp();
-                    reader.close();
+                    if(line != null) {
+                        csvImporterLogic.automaticFormat(result, myLine);
+                        csvImporterLogic.setOtherTimestamps(result);
+                        createPopUpTextBox(line.length, popUPBox, helpP);
+                        csvImporterLogic.openPopUp();
+                        reader.close();
+                    }
                 }
 
                 for (int i = 0; i < header.length; i++) {
