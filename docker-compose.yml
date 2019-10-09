@@ -1,9 +1,13 @@
 version: "3.7"
 services:
     apromore:
-        build: .
-        image: apromore/apromore:7.6
+        build: 
+            context: .
+            dockerfile: Dockerfile.dev
+        image: apromore/apromore:test
         ports:
             - "9000:9000"
-
+        volumes:
+            - /opt/apromore/**/target/
+            - .:/opt/apromore
             
