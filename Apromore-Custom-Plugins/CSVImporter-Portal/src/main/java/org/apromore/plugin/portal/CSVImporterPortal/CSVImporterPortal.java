@@ -222,19 +222,23 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     // display first 1000 rows
                     int numberOfrows = 0;
                     while (numberOfrows < 300) {
-                        String[] withIndex = new String [line.length + 1];
-                        withIndex[0] = String.valueOf(numberOfrows+1);
-                        for(int i=0; i < line.length; i ++) {
-                            withIndex[i+1] = line[i];
-                        }
+                        if(line != null) {
+                            String[] withIndex = new String[line.length + 1];
+                            withIndex[0] = String.valueOf(numberOfrows + 1);
+                            for (int i = 0; i < line.length; i++) {
+                                withIndex[i + 1] = line[i];
+                            }
 
-                        if(withIndex != null) {
-                            result.add(withIndex);
-                            numberOfrows++;
-                            line = reader.readNext();
+                            if (withIndex != null) {
+                                result.add(withIndex);
+                                numberOfrows++;
+                                line = reader.readNext();
+                            } else {
+                                numberOfrows++;
+                                line = reader.readNext();
+                            }
                         } else {
                             numberOfrows++;
-                            line = reader.readNext();
                         }
                     }
 
@@ -250,7 +254,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
                     Column index = new Column();
-                    index.setWidth(AttribWidth + "px");
+                    index.setWidth("50px");
                     index.setValue("index");
                     index.setLabel("index");
                     index.setAlign("center");
@@ -284,7 +288,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("margin-left:" + (i==0 ? 0: (i*AttribWidth) )  + "px; position: absolute; z-index: 10; visibility: hidden; top:1px;");
+            item.setStyle("margin-left:" + (i==50 ? 0:  ((i)*AttribWidth) + 50 )  + "px; position: absolute; z-index: 10; visibility: hidden; top:1px;");
 
             Button sp = new Button();
 //            sp.setLabel("-");
