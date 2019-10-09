@@ -22,12 +22,7 @@ package org.apromore.plugin.portal.CSVImporterPortal;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -46,6 +41,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -112,7 +108,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @SuppressWarnings("null")
     private void displayCSVContent(Media media, ListModelList<String[]> result, Grid myGrid, Div popUPBox, Window window) {
         String firstLine = null;
-
 
         BufferedReader brReader = new BufferedReader(new InputStreamReader(media.getStreamData()));
 
@@ -196,6 +191,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     reader.close();
                 } else {
 
+
 //                    attrBox.setWidth(line.length * AttribWidth + "px");
 
                     csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
@@ -206,9 +202,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 //                    listHeader.setColspan(lists.size());
 
-
+                    Auxheader index = new Auxheader();
+                    optionHead.appendChild(index);
+                    
                     for (int i=0; i < lists.size(); i++) {
 //                        attrBox.appendChild(lists.get(i));
+
                         Auxheader listHeader = new Auxheader();
 
                         listHeader.appendChild(lists.get(i));
@@ -221,14 +220,20 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 //                    String[] newLine = line;
                     // display first 1000 rows
-                    int numberOfrows = 300 - 1;
-                    while (numberOfrows >= 0) {
-                        if(line != null) {
-                            result.add(line);
-                            numberOfrows--;
+                    int numberOfrows = 0;
+                    while (numberOfrows < 300) {
+                        String[] withIndex = new String [line.length + 1];
+                        withIndex[0] = String.valueOf(numberOfrows+1);
+                        for(int i=0; i < line.length; i ++) {
+                            withIndex[i+1] = line[i];
+                        }
+
+                        if(withIndex != null) {
+                            result.add(withIndex);
+                            numberOfrows++;
                             line = reader.readNext();
                         } else {
-                            numberOfrows--;
+                            numberOfrows++;
                             line = reader.readNext();
                         }
                     }
@@ -244,6 +249,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     }
                 }
 
+                    Column index = new Column();
+                    index.setWidth(AttribWidth + "px");
+                    index.setValue("index");
+                    index.setLabel("index");
+                    index.setAlign("center");
+                    headerColumns.appendChild(index);
+
                 for (int i = 0; i < header.length; i++) {
                     Column newColumn = new Column();
                     newColumn.setWidth(AttribWidth + "px");
@@ -253,6 +265,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     headerColumns.appendChild(newColumn);
 //                    myGrid.getColumns().setSizable(true);
                 }
+
 
                 myGrid.appendChild(headerColumns);
             } catch (IOException e) {
