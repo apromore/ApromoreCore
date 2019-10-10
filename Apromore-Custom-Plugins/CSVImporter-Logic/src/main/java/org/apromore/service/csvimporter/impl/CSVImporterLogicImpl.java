@@ -201,7 +201,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                     if(otherTimestamps != null) {
                         for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
-                            System.out.println("head of:" + heads.get(entry.getKey()) + "key is:" + entry.getKey() + "  value is:" + entry.getValue());
+//                            System.out.println("head of:" + heads.get(entry.getKey()) + "key is:" + entry.getKey() + "  value is:" + entry.getValue());
                             if(entry.getKey() != null && entry.getKey() != null) {
                                 if (entry.getValue() == null) {
                                     invalidRows.add("Row: " + (lineCount + 1) + ", Error: " + entry.getKey() +

@@ -143,18 +143,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 String[] header;
                 String[] line;
 
-
-                myGrid.addEventListener(Events.ON_CLIENT_INFO, new EventListener<Event>() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        String myHeight = event.getData().toString();
-
-//                        myGrid.setHeight(myHeight);
-                        System.out.println("hahahblablasdsa");
-                        Messagebox.show(myHeight);
-                    }
-                });
-
                 Columns headerColumns = new Columns();
 
                 if (myGrid.getColumns() == null) {
@@ -272,8 +260,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     Column index = new Column();
                     index.setWidth("50px");
-                    index.setValue("index");
-                    index.setLabel("index");
+                    index.setValue("Index");
+                    index.setLabel("Index");
                     index.setAlign("center");
                     headerColumns.appendChild(index);
 
