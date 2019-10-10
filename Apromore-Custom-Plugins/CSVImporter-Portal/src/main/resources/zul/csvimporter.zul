@@ -124,7 +124,7 @@
                         <li><b>ss:</b> Second </li> <separator />
                         <li><b>SSS:</b> millisecond </li> <separator />
                     </ul>
-                        Examples: <separator />
+                    <separator />Examples:
                         <ul>
                         <li>29/10/2010 05:20   [dd/MM/yyyy HH:mm]</li><separator />
                         <li>2010-10-29 05:20:10.005   [yyyy/MM/dd HH:mm:ss.SSS]</li><separator />
