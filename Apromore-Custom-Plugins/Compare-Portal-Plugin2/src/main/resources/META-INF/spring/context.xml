@@ -48,7 +48,7 @@
     
     <beans:bean id="plugin" class="org.apromore.plugin.portal.compareBP2.ComparePlugin">
         <beans:property name="groupLabel" value="Analyze" />
-        <beans:property name="label" value="Compare (β)" />
+        <beans:property name="label" value="Compare (beta)" />
     </beans:bean>
 
 	<!--

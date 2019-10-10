@@ -54,7 +54,7 @@ public class ProDriftDetectionPlugin extends DefaultPortalPlugin {
     private final ProDriftDetectionService proDriftDetectionService;
     private final EventLogService eventLogService;
 
-    private String label = "Detect process drifts (β)";
+    private String label = "Detect process drifts (beta)";
     private String groupLabel = "Analyze";
 
     @Inject

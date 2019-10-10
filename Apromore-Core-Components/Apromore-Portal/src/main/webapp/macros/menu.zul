@@ -25,6 +25,8 @@
             <menuitem id="fileImport" label="Upload" disabled="true" image="/img/icon/svg/import.svg"/>
             <menuitem id="fileExport" label="Download" disabled="true" image="/img/icon/svg/export.svg"/>
 
+            <menuitem id="createFolder" label="Create folder" disabled="true" image="/img/icon/svg/folder_add.svg"/>
+
             <menuitem id="createProcess2" label="Create model" disabled="true" image="/img/icon/svg/create_file.svg"/>
             <menuitem id="createProcess" visible="true" label="Create model in Signavio" disabled="true" image="/img/icon/svg/create_signavio.svg" />
 

@@ -138,7 +138,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //                line = reader.readNext();
             line = reader.readNext();
 
-            while (line != null) {
+            while (line != null && isValidLineCount(lineCount)) {
                 lineCount++;
 
                 try {
@@ -153,7 +153,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             others.put(header[p], line[p]);
 
                             if (header.length != line.length) {
-                                invalidRows.add("Line: " + (lineCount + 1) + ", Error: number of columns does not match number of headers. "
+                                invalidRows.add("Row: " + (lineCount + 1) + ", Error: number of columns does not match number of headers. "
                                         + "Number of headers: " + header.length + ", Number of columns: " + line.length + "\n");
                                 errorCount++;
                                 rowGTG = false;
@@ -170,53 +170,63 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     Timestamp tStamp = parse.parseTimestamp(line[heads.get(timestamp)], timestampFormat);
 
                     if (heads.get(tsStart) != -1) {
-
                         startTimestamp = parse.parseTimestamp(line[heads.get(tsStart)], startTsFormat);
-
                         if (startTimestamp == null) {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. ");
+                            if(tStamp != null) {
+                                startTimestamp = tStamp;
+                                invalidRows.add("Row: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
+                            } else {
+                                invalidRows.add("Row: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. ");
+                            }
                             errorCount++;
                         }
                     }
                     if (heads.get(resource) != -1) {
                         resourceCol = line[heads.get(resource)];
-
-                        if (startTimestamp == null) {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Resource field is invalid. ");
+                        if (resourceCol == null) {
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: Resource field is empty. ");
                             errorCount++;
                         }
                     }
 
                     if (tStamp == null) {
-//                            terminating = true;
-                        invalidRows.add("Line: " + (lineCount + 1) + ", Error: Critical field - End time stamp field is invalid. Skipping this row completely.\n");
-                        errorCount++;
-                        rowGTG = false;
-//                            break;
-                    }
-
-                    for(int i=0; i < otherTimeStampsPos.size(); i++) {
-                        if(otherTimeStampsPos.get(i) == null) {
-                            invalidRows.add("Line: " + (lineCount + 1) + ", Error: Other time stamp field is invalid. Skipping this row completely.\n");
-                            errorCount++;
-                            rowGTG = false;
+                        if(startTimestamp != null) {
+                            tStamp = startTimestamp;
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Copying start timestamp field into end timestamp");
+                        } else {
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. ");
                         }
-
+                        errorCount++;
                     }
+
+                    if(otherTimestamps != null) {
+                        for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
+                            System.out.println("head of:" + heads.get(entry.getKey()) + "key is:" + entry.getKey() + "  value is:" + entry.getValue());
+                            if(entry.getKey() != null && entry.getKey() != null) {
+                                if (entry.getValue() == null) {
+                                    invalidRows.add("Row: " + (lineCount + 1) + ", Error: " + entry.getKey() +
+                                            " field is invalid timestamp. Skipping this row completely.\n");
+                                    errorCount++;
+                                    rowGTG = false;
+                                }
+                            }
+                        }
+                    }
+
                     if(rowGTG==true) {
                         logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
                     }
                 } catch (Exception e) {
                     errorMessage = ExceptionUtils.getStackTrace(e);
-//                                e.printStackTrace();
+                    e.printStackTrace();
                     errorCount++;
                     if (line.length > 4) {
-                        invalidRows.add("Line: " + (lineCount + 1) + ", Something went wrong. Content: " + line[0] + "," +
+                        invalidRows.add("Row: " + (lineCount + 1) + ", Something went wrong. Content: " + line[0] + "," +
                                 line[1] + "," + line[2] + "," + line[3] + " ...");
                         errorCount++;
                         rowGTG = false;
                     } else {
-                        invalidRows.add("Line: " + (lineCount + 1) + ", Content: " + " Empty, or too short for display.");
+                        invalidRows.add("Row: " + (lineCount + 1) + ", Content: " + " Empty, or too short for display.");
                         errorCount++;
                         rowGTG = false;
                     }
@@ -238,15 +248,22 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 return null;
             } else {
                 if (errorCount > 0) {
-                    String notificationMessage = "Imported: " + lineCount + " lines, skipped " + errorCount + " row(s) that contains invalid values! \n" +
+
+                    String notificationMessage = "Your file has been imported with some problems. \n";
+                    notificationMessage = "Imported: " + lineCount + " row(s), with " + errorCount + " invalid row(s) being amended.  \n\n" +
                             "Invalid rows: \n";
 
                     for (int i = 0; i < Math.min(invalidRows.size(), 5); i++) {
                         notificationMessage = notificationMessage + invalidRows.get(i) + "\n";
                     }
 
-                    notificationMessage = notificationMessage + "\n ..." + "\n\n Your file has been imported with some problems.";
-                    Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+                    if(invalidRows.size() > 5) {
+                        notificationMessage = notificationMessage + "\n ..." ;
+                    }
+//                    notificationMessage = notificationMessage + "\n\n Your file has been imported with some problems.";
+
+
+                    Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.EXCLAMATION);
                     return sortTraces(logData);
                 }
 
@@ -260,6 +277,10 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //            Messagebox.show(e.getMessage());
         }
         return null;
+    }
+
+    public boolean isValidLineCount(int lineCount) {
+        return true;
     }
 
     public void automaticFormat(ListModelList<String[]> result, String[] myHeader) {
