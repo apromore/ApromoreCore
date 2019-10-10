@@ -222,7 +222,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 
                     myGrid.appendChild(optionHead);
-
+                    ListModelList<String[]> indexedResult = result;
 //                    String[] newLine = line;
                     // display first 1000 rows
                     int numberOfrows = 0;
@@ -234,8 +234,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                 withIndex[i + 1] = line[i];
                             }
 
-                            if (withIndex != null) {
-                                result.add(withIndex);
+                            if (line != null) {
+                                indexedResult.add(withIndex);
+                                result.add(line);
                                 numberOfrows++;
                                 line = reader.readNext();
                             } else {
