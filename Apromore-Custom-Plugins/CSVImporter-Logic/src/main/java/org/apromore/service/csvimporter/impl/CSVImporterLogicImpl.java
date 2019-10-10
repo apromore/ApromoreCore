@@ -205,7 +205,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             if(entry.getKey() != null && entry.getKey() != null) {
                                 if (entry.getValue() == null) {
                                     invalidRows.add("Row: " + (lineCount + 1) + ", Error: " + entry.getKey() +
-                                            " field is invalid timestamp. Skipping this row completely.\n");
+                                            " field is invalid. Skipping this row completely.\n");
                                     errorCount++;
                                     rowGTG = false;
                                 }
@@ -472,14 +472,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
      * @return the pos: boolean value confirming if the elem is the required element.
      */
     private Boolean getPos(String[] col, String elem) {
-//        return Arrays.stream(col).anyMatch(elem.toLowerCase()::equals);
-        for(int i=0; i < col.length; i++) {
-            if(col[i].contains(elem)) {
-                return true;
-            }
-        }
-
-        return false;
+        return Arrays.stream(col).anyMatch(elem.toLowerCase()::contains);
     }
 
     /**
