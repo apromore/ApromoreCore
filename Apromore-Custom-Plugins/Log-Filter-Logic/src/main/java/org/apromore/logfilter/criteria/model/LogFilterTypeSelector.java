@@ -57,7 +57,14 @@ public class LogFilterTypeSelector {
 			"duration:range",
 			"time:startrange",
 			"time:endrange",
-			"case:id"
+			"case:id",
+			"duration:total_processing",
+			"duration:average_processing",
+			"duration:max_processing",
+			"duration:total_waiting",
+			"duration:average_waiting",
+			"duration:max_waiting",
+			"case:utilization"
     };
     
     // Must be sorted for Arrays.binarySearch
@@ -90,6 +97,13 @@ public class LogFilterTypeSelector {
 		codeNameMap.put("time:startrange", "Start time range");
 		codeNameMap.put("time:endrange", "End time range");
 		codeNameMap.put("case:id", "Case ID");
+		codeNameMap.put("duration:total_processing", "Total processing time");
+		codeNameMap.put("duration:average_processing", "Average processing time");
+		codeNameMap.put("duration:max_processing", "Max processing time");
+		codeNameMap.put("duration:total_waiting", "Total waiting time");
+		codeNameMap.put("duration:average_waiting", "Average waiting time");
+		codeNameMap.put("duration:max_waiting", "Max waiting time");
+		codeNameMap.put("case:Utilization", "Case utilization");
     }
        
     private static Map<String,Type> typeMap = new HashMap<>();
@@ -108,6 +122,13 @@ public class LogFilterTypeSelector {
 		typeMap.put("time:startrange", Type.TIME_STARTRANGE);
 		typeMap.put("time:endrange", Type.TIME_ENDRANGE);
 		typeMap.put("case:id", Type.CASE_ID);
+		typeMap.put("duration:total_processing", Type.DURATION_TOTAL_PROCESSING);
+		typeMap.put("duration:average_processing", Type.DURATION_AVERAGE_PROCESSING);
+		typeMap.put("duration:max_processing", Type.DURATION_MAX_PROCESSING);
+		typeMap.put("duration:total_waiting", Type.DURATION_TOTAL_WAITING);
+		typeMap.put("duration:average_waiting", Type.DURATION_AVERAGE_WAITING);
+		typeMap.put("duration:max_waiting", Type.DURATION_MAX_WAITING);
+		typeMap.put("case:utilization", Type.CASE_UTILIZATION);
     }
     
     private static Set<String> eventStandardCodes = new HashSet<>(Arrays.asList(
@@ -119,18 +140,25 @@ public class LogFilterTypeSelector {
     															"time:timestamp"));
     
     private static Set<String> traceStandardCodes = new HashSet<>(Arrays.asList(
-													    		"concept:name",
-													            "case:variant",
-													            "direct:follow",
-													            "eventually:follow",
-													            "lifecycle:transition",
-													            "org:group",
-													            "org:resource",
-													            "org:role",
+			"concept:name",
+			"case:variant",
+			"direct:follow",
+			"eventually:follow",
+			"lifecycle:transition",
+			"org:group",
+			"org:resource",
+			"org:role",
 //													            "time:duration",
-													            "time:timestamp",
-																"duration:range",
-																"case:id"));
+			"time:timestamp",
+			"duration:range",
+			"case:id",
+			"duration:total_processing",
+			"duration:average_processing",
+			"duration:max_processing",
+			"duration:total_waiting",
+			"duration:average_waiting",
+			"duration:max_waiting",
+			"case:utilization"));
 
 	public static List<String> getStandardCodes() {
 		List<String> codeList = Arrays.asList(codes);

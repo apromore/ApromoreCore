@@ -54,6 +54,21 @@ public class LogFilterCriterionFactoryImpl implements LogFilterCriterionFactory 
                 return new LogFilterCriterionEndRange(action, containment, level, label, attribute, value);
             case CASE_ID: //2019-09-25
                 return new LogFilterCriterionCaseId(action, containment, level, label, attribute, value);
+            case DURATION_TOTAL_PROCESSING:
+                return new LogFilterCriterionDurationTotalProcessing(action, containment, level, label, attribute, value);
+            case DURATION_AVERAGE_PROCESSING:
+                return new LogFilterCriterionDurationAverageProcessing(action, containment, level, label, attribute, value);
+            case DURATION_MAX_PROCESSING:
+                return new LogFilterCriterionDurationMaxProcessing(action, containment, level, label, attribute, value);
+            case DURATION_TOTAL_WAITING:
+                return new LogFilterCriterionDurationTotalWaiting(action, containment, level, label, attribute, value);
+            case DURATION_AVERAGE_WAITING:
+                return new LogFilterCriterionDurationAverageWaiting(action, containment, level, label, attribute, value);
+            case DURATION_MAX_WAITING:
+                return new LogFilterCriterionDurationMaxWaiting(action, containment, level, label, attribute, value);
+            case CASE_UTILIZATION:
+                return new LogFilterCriterionCaseUtilization(action, containment, level, label, attribute, value);
+
             default:
                 return new LogFilterCriterionAttribute(action, containment, level, label, attribute, value);
         }
