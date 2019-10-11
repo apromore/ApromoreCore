@@ -35,6 +35,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -157,7 +158,12 @@ public class ImportController extends BaseController {
         okButton.setDisabled(false);
     }
 
-    private final Pattern FILE_EXTENSION_PATTERN = Pattern.compile(".*\\.(?<extension>[^/\\.]*)");
+    private final Pattern FILE_EXTENSION_PATTERN = Pattern.compile("(?<basename>.*)\\.(?<extension>[^/\\.]*)");
+
+    private String findBasename(String name) {
+        Matcher matcher = FILE_EXTENSION_PATTERN.matcher(name);
+        return matcher.matches() ? matcher.group("basename") : null;
+    }
 
     private String findExtension(String name) {
         Matcher matcher = FILE_EXTENSION_PATTERN.matcher(name);
@@ -177,9 +183,11 @@ public class ImportController extends BaseController {
         }
 
         if (extension.equals("zip")) {
-            extractArchiveOrFile(importedMedia);
+            importZip(importedMedia);
         } else if (name.toLowerCase().endsWith("xes") || name.toLowerCase().endsWith("xes.gz") || name.toLowerCase().endsWith("mxml") || name.toLowerCase().endsWith("mxml.gz")) {
             importLog(importedMedia);
+        } else if (extension.equals("gz")) {
+            importGzip(importedMedia);
         } else {
             importProcess(this.mainC, this, importedMedia.getStreamData(), name.split("\\.")[0], this.nativeType, name);
         }
@@ -233,7 +241,7 @@ public class ImportController extends BaseController {
      * file: import
      * @throws InterruptedException
      */
-    private void extractArchiveOrFile(Media zippedMedia) throws InterruptedException {
+    private void importZip(Media zippedMedia) throws InterruptedException {
         try {
             ZipInputStream in = new ZipInputStream(zippedMedia.getStreamData());
             ZipEntry entry;
@@ -245,6 +253,10 @@ public class ImportController extends BaseController {
         } catch (Exception e) {
             Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
+    }
+
+    private void importGzip(Media gzippedMedia) throws ExceptionAllUsers, ExceptionDomains, IOException, InterruptedException, JAXBException {
+        importFile(new MediaImpl(findBasename(gzippedMedia.getName()), new GZIPInputStream(gzippedMedia.getStreamData()), Charset.forName("UTF-8")));
     }
 
     private void importProcess(MainController mainC, ImportController importC, InputStream xml_is, String processName, String nativeType, String filename) throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
