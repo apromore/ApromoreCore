@@ -112,6 +112,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -325,6 +326,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         primaryAggregation = (primaryType == FREQUENCY) ? VisualizationAggregation.CASES : VisualizationAggregation.MEAN;
         logSummary = (LogSummaryType) selection;
         log_name = logSummary.getName();
+        Sessions.getCurrent().setAttribute("filtered_log_name", log_name); //to provide logName to Filter plugin
+
         initial_log = eventLogService.getXLog(logSummary.getId());
         if (initial_log != null) {
         	XLog initial_log_filtered = filterKeepingStartCompleteEvents(initial_log);
