@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.plugin.portal.CSVImporterPortal;
+package org.apromore.service.csvimporter.impl;
 
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
