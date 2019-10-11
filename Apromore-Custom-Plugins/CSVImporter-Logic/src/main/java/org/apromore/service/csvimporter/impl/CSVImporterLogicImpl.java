@@ -472,7 +472,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
      * @return the pos: boolean value confirming if the elem is the required element.
      */
     private Boolean getPos(String[] col, String elem) {
-        return Arrays.stream(col).anyMatch(elem.toLowerCase()::equals);
+        return Arrays.stream(col).anyMatch(elem.toLowerCase()::contains);
     }
 
     /**

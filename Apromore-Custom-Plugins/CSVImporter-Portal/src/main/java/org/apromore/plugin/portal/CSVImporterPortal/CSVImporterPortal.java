@@ -56,7 +56,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @Inject private CSVImporterLogic csvImporterLogic;
     @Inject private EventLogService eventLogService;
     char separator = Character.UNASSIGNED;
-
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         this.csvImporterLogic = newCSVImporterLogic;
     }
@@ -112,7 +111,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
      * read CSV content and create list model to be set as grid model.
      */
     @SuppressWarnings("null")
-    private void displayCSVContent(Media media, ListModelList<String[]> result, Grid myGrid, Div popUPBox, Window window) {
+    private void displayCSVContent(Media media, ListModelList<String[]> result, ListModelList<String[]> indexedResult, Grid myGrid, Div popUPBox, Window window) {
         String firstLine = null;
 
         BufferedReader brReader = new BufferedReader(new InputStreamReader(media.getStreamData()));
@@ -177,6 +176,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 if (result != null) {
                     result.clear();
                 }
+                if (indexedResult != null) {
+                    indexedResult.clear();
+                }
 
                 line = reader.readNext();
                 if (line == null || header == null || line.length == 0 || header.length == 0) {
@@ -216,13 +218,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         Auxheader listHeader = new Auxheader();
 
                         listHeader.appendChild(lists.get(i));
-
                         optionHead.appendChild(listHeader);
                     }
 
 
                     myGrid.appendChild(optionHead);
-                    ListModelList<String[]> indexedResult = result;
+
 //                    String[] newLine = line;
                     // display first 1000 rows
                     int numberOfrows = 0;
@@ -233,16 +234,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
                             for (int i = 0; i < line.length; i++) {
                                 withIndex[i + 1] = line[i];
                             }
-
-                            if (line != null) {
                                 indexedResult.add(withIndex);
                                 result.add(line);
                                 numberOfrows++;
                                 line = reader.readNext();
-                            } else {
-                                numberOfrows++;
-                                line = reader.readNext();
-                            }
+
                         } else {
                             numberOfrows++;
                         }
@@ -276,7 +272,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     headerColumns.setSizable(true);
 //                    myGrid.getColumns().setSizable(true);
                 }
-
 
                 myGrid.appendChild(headerColumns);
             } catch (IOException e) {
@@ -360,6 +355,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
 //            Label fileNameLabel = (Label) window.getFellow("fileNameLabel");
             ListModelList<String[]> result = new ListModelList<String[]>();
+            ListModelList<String[]> indexedResult = new ListModelList<String[]>();
             Grid myGrid  = (Grid) window.getFellow("myGrid");
 //            Div attrBox = (Div) window.getFellow("attrBox");
             Div popUPBox = (Div) window.getFellow("popUPBox");
@@ -382,12 +378,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 String[] allowedExtensions = {"csv", "xls", "xlsx"};
                 if (Arrays.asList(allowedExtensions).contains(media.getFormat())) {
 
-                    displayCSVContent(media, result, myGrid, popUPBox, window);
+                    displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window);
 
                     if (window != null) {
                         // set grid model
                         if (result != null) {
-                            myGrid.setModel(result);
+                            myGrid.setModel(indexedResult);
                         } else {
                             Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
                         }

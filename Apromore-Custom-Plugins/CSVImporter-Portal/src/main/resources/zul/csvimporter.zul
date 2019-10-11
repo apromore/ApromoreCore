@@ -104,7 +104,18 @@
             }
 
             .z-grid-body {
-                overflow-x: hidden !important;
+            overflow-x: hidden !important;
+            }
+
+            .z-grid-header table th {
+            text-align: -webkit-center;
+            }
+
+            .z-select {
+            font-size: 14px;
+            background: transparent;
+            filter: invert(1);
+            border: 1px solid;
             }
         </style>
 
