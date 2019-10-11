@@ -249,185 +249,190 @@
                   ]]>
 			</html>
 		</popup>
+		<borderlayout hflex="1" vflex="1" style="border:0px; padding:0px;">
+			<north hflex="1" style="border:0px; padding:0px;">
+				<hbox width="100%" sclass="PDOptions">
+					<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%" >
+						<hbox align="center" id="optiondetails" vflex="1" hflex="1" style="margin-top:3px;">
+							<vbox width="200px">
+								<groupbox closable="false"><caption height="20px">View</caption>
+									<hlayout>
+										<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px" />
+										<checkbox id="secondary" checked="false" label="Dual stats" height="30px" width="100px" style="margin-left:3px;"/>
+									</hlayout>
+								</groupbox>
+								<groupbox closable="false" style="margin-top:3px;"><caption height="20px">Slider</caption>
+									<radiogroup>
+										<hbox align="left" pack="top">
+											<radio id="use_fixed" label="Locked" selected="true" width="100px"/>
+											<radio id="use_dynamic" label="Unlocked" width="100px"/>
+										</hbox>
+									</radiogroup>
+									<vlayout style="margin-top:5px;">
+										<checkbox id="inverted_nodes" checked="false" label="Invert nodes priority" height="30px" width="100px"/>
+										<checkbox id="inverted_arcs" checked="false" label="Invert arcs priority" height="30px" width="100px"/>
+									</vlayout>
+								</groupbox>
+							</vbox>
 
-		<hbox width="100%" sclass="PDOptions">
-			<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%" >
-				<hbox align="center" id="optiondetails" vflex="1" hflex="1" style="margin-top:3px;">
-					<vbox width="200px">
-						<groupbox closable="false"><caption height="20px">View</caption>
-							<hlayout>
-								<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px" />
-								<checkbox id="secondary" checked="false" label="Dual stats" height="30px" width="100px" style="margin-left:3px;"/>
-							</hlayout>
-						</groupbox>
-						<groupbox closable="false" style="margin-top:3px;"><caption height="20px">Slider</caption>
-							<radiogroup>
-								<hbox align="left" pack="top">
-									<radio id="use_fixed" label="Locked" selected="true" width="100px"/>
-									<radio id="use_dynamic" label="Unlocked" width="100px"/>
-								</hbox>
-							</radiogroup>
-							<vlayout style="margin-top:5px;">
-								<checkbox id="inverted_nodes" checked="false" label="Invert nodes priority" height="30px" width="100px"/>
-								<checkbox id="inverted_arcs" checked="false" label="Invert arcs priority" height="30px" width="100px"/>
-							</vlayout>
-						</groupbox>
-					</vbox>
 
+							<!-- Sliders: take the rest of the space -->
+							<grid  vflex="1" hflex="1">
+								<!-- Let ZK calculate the width -->
+								<columns>
+									<column width="70px" />
+									<column hflex="1" />
+									<column width="50px" />
+								</columns>
+								<rows>
+									<row vflex="min">
+										<label>Nodes</label>
+										<slider id="slider1" mold="scale" maxpos="100"  width="99%" curpos="100"/>
+										<intbox id="activityText" value="100" width="35px" />
+									</row>
+									<row vflex="min">
+										<label>Arcs</label>
+										<slider id="slider2" mold="scale" maxpos="100"  width="99%" curpos="10"/>
+										<intbox id="arcText" value="10" width="35px" />
+									</row>
+									<row id="parallelismRow" vflex="min">
+										<label id="parallelismLabel">Parallelism</label>
+										<slider id="parallelismSlider" mold="scale" maxpos="100"  width="99%" curpos="40" />
+										<intbox id="parallelismText" value="40" width="35px" />
+									</row>
+								</rows>
+							</grid>
 
-					<!-- Sliders: take the rest of the space -->
-					<grid  vflex="1" hflex="1">
-						<!-- Let ZK calculate the width -->
-						<columns>
-							<column width="70px" />
-							<column hflex="1" />
-							<column width="50px" />
-						</columns>
-						<rows>
-							<row vflex="min">
-								<label>Nodes</label>
-								<slider id="slider1" mold="scale" maxpos="100"  width="99%" curpos="100"/>
-								<intbox id="activityText" value="100" width="35px" />
-							</row>
-							<row vflex="min">
-								<label>Arcs</label>
-								<slider id="slider2" mold="scale" maxpos="100"  width="99%" curpos="10"/>
-								<intbox id="arcText" value="10" width="35px" />
-							</row>
-							<row id="parallelismRow" vflex="min">
-								<label id="parallelismLabel">Parallelism</label>
-								<slider id="parallelismSlider" mold="scale" maxpos="100"  width="99%" curpos="40" />
-								<intbox id="parallelismText" value="40" width="35px" />
-							</row>
-						</rows>
-					</grid>
+							<!-- Overview Statistics -->
+							<vbox hflex="1" vflex="1" style="overflow:auto;">
+								<grid hflex="1" vflex="1" span="true"  >
+									<columns sizable="true">
+										<column sclass="statsHead" label="Cases" align="center" width="12%"/>
+										<column sclass="statsHead" label="Case variants" align="center" width="14%"/>
+										<column sclass="statsHead" label="Events" align="center" width="12%"/>
+										<column sclass="statsHead" label="Activities" align="center" width="12%"/>
+										<column sclass="statsHead" label="Start time" align="center" width="25%"/>
+										<column sclass="statsHead" label="End time" align="center" width="25%"/>
+									</columns>
+									<rows>
+										<row valign="middle" style="padding-top:5px;">
+											<label id="caseNumber">Cases</label>
+											<label id="uniquecaseNumber">Case variants</label>
+											<label id="eventNumber">Events</label>
+											<label id="activityNumber">Activities</label>
+											<label id="startTime">Start time</label>
+											<label id="endTime">End time</label>
+										</row>
+									</rows>
+								</grid>
+								<grid hflex="1" vflex="1" span="true"  >
+									<columns sizable="true">
+										<column sclass="statsHead" label="Min duration" align="center" width="25%"/>
+										<column sclass="statsHead" label="Median duration" align="center" width="25%"/>
+										<column sclass="statsHead" label="Average duration" align="center" width="25%"/>
+										<column sclass="statsHead" label="Max duration" align="center" width="25%"/>
+									</columns>
+									<rows>
+										<row valign="middle" style="padding-top:5px;">
+											<label id="minDuration">Activities</label>
+											<label id="medianDuration">Activities</label>
+											<label id="meanDuration">Activities</label>
+											<label id="maxDuration">Activities</label>
+										</row>
+									</rows>
+								</grid>
+							</vbox>
 
-					<!-- Overview Statistics -->
-					<vbox hflex="1" vflex="1" style="overflow:auto;">
-						<grid hflex="1" vflex="1" span="true"  >
-							<columns sizable="true">
-								<column sclass="statsHead" label="Cases" align="center" width="12%"/>
-								<column sclass="statsHead" label="Case variants" align="center" width="14%"/>
-								<column sclass="statsHead" label="Events" align="center" width="12%"/>
-								<column sclass="statsHead" label="Activities" align="center" width="12%"/>
-								<column sclass="statsHead" label="Start time" align="center" width="25%"/>
-								<column sclass="statsHead" label="End time" align="center" width="25%"/>
-							</columns>
-							<rows>
-								<row valign="middle" style="padding-top:5px;">
-									<label id="caseNumber">Cases</label>
-									<label id="uniquecaseNumber">Case variants</label>
-									<label id="eventNumber">Events</label>
-									<label id="activityNumber">Activities</label>
-									<label id="startTime">Start time</label>
-									<label id="endTime">End time</label>
-								</row>
-							</rows>
-						</grid>
-						<grid hflex="1" vflex="1" span="true"  >
-							<columns sizable="true">
-								<column sclass="statsHead" label="Min duration" align="center" width="25%"/>
-								<column sclass="statsHead" label="Median duration" align="center" width="25%"/>
-								<column sclass="statsHead" label="Average duration" align="center" width="25%"/>
-								<column sclass="statsHead" label="Max duration" align="center" width="25%"/>
-							</columns>
-							<rows>
-								<row valign="middle" style="padding-top:5px;">
-									<label id="minDuration">Activities</label>
-									<label id="medianDuration">Activities</label>
-									<label id="meanDuration">Activities</label>
-									<label id="maxDuration">Activities</label>
-								</row>
-							</rows>
-						</grid>
-					</vbox>
-
+						</hbox>
+					</groupbox>
 				</hbox>
-			</groupbox>
-		</hbox>
+			</north>
+			<center style="border:0px; padding:0px;">
+				<div width="100%" height="100%" style="border:0px solid #00F;">
+					<n:table style="height:100%;width:100%;border:0px solid #F00;">
+						<n:tr>
+							<n:td>
+							</n:td>
+						</n:tr>
+						<n:tr style="background-color:none;">
+							<n:td>
+								<grid id="actionband">
+									<columns>
+										<column width="9%"/>
+										<column width="9%"/>
+										<column width="9%"/>
+										<column width="9%"/>
+										<column width="9%"/>
+										<column width="9%"/>
+										<column width="9%"/>
+										<column width="9%"/>
+										<column width="9%"/>
+										<column width="9%"/>
+										<column width="10%"/>
+									</columns>
+									<rows>
+										<row align="center">
+											<combobutton id="export" label="Save" height="26px" hflex="1">
+												<menupopup>
+													<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>
+													<menuitem id="exportBPMN" label="Save as BPMN Model..." onCheck='exportBPMN.setChecked(false)'/>
+													<menuitem id="exportBPMNAnnotatedForBIMP" visible="false" label="Save as BPMN model annotated for BIMP..." onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>
+													<menuitem id="downloadPDF" label="Print map as PDF" onCheck='downloadPDF.setChecked(false)'/>
+													<menuitem id="downloadPNG" label="Print map as PNG" onCheck='downloadPNG.setChecked(false)'/>
+												</menupopup>
+											</combobutton>
+											<combobutton id="layout" label="Layout" height="26px" hflex="1" onClick='layout_hiera.setChecked(true);layout_dagre_TB.setChecked(false);'>
+												<menupopup>
+													<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre_TB.setChecked(false);' label="Left-to-right" checked="true" />
+													<!--<menuitem id="layout_dagre_LR" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(true);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Dagre Left-Right" checked="false" />-->
+													<menuitem id="layout_dagre_TB" onClick='layout_hiera.setChecked(false);layout_dagre_TB.setChecked(true);' label="Top-to-bottom" checked="false" />
+													<!--<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />-->
+												</menupopup>
+											</combobutton>
+											<button id="fitScreen" label="Fit to screen" height="26px" hflex="1" />
+											<combobutton id="selector" label="Perspective" hflex="1" height="26px">
+												<menupopup id="selectormenu" />
+											</combobutton>
+											<combobutton id="frequency" label="Frequency" height="26px" hflex="1" onClick="case_frequency.setChecked(true);absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)">
+												<menupopup>
+													<menuitem id="case_frequency" label="Case" checked="true" onCheck='absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+													<menuitem id="absolute_frequency" label="Cumulative" onCheck='case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+													<menuitem id="mean_frequency" label="Average" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+													<menuitem id="median_frequency" label="Median" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+													<menuitem id="mode_frequency" label="Mode" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
+													<menuitem id="max_frequency" label="Max" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);min_frequency.setChecked(false)' />
+													<menuitem id="min_frequency" label="Min" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false)' />
+												</menupopup>
+											</combobutton>
+											<combobutton id="duration" label="Duration" height="26px" hflex="1" onClick="total_duration.setChecked(false);median_duration.setChecked(false);mean_duration.setChecked(true);max_duration.setChecked(false);min_duration.setChecked(false)">
+												<menupopup>
+													<menuitem id="total_duration" label="Cumulative" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+													<menuitem id="mean_duration" label="Average" checked="true" onCheck='median_duration.setChecked(false);total_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+													<menuitem id="median_duration" label="Median" onCheck='total_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
+													<menuitem id="max_duration" label="Max" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);total_duration.setChecked(false);min_duration.setChecked(false)' />
+													<menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
+												</menupopup>
+											</combobutton>
+											<button id="filter" label="Filter" height="26px" hflex="1" />
+											<button id="details" label="Activities" height="26px" hflex="1" />
+											<button id="cases" label="Cases" height="26px" hflex="1" />
+											<button id="fitness" label="Fitness" height="26px" hflex="1" />
+											<button id="animate" height="26px" hflex="1" onClick='Clients.evalJavaScript("animate()")' label="Animate" />
+										</row>
+									</rows>
+								</grid>
+							</n:td>
+						</n:tr>
 
-		<n:table style="height:100%;width:100%;border:0px;">
-			<n:tr>
-				<n:td>
-				</n:td>
-			</n:tr>
-
-			<n:tr style="background-color:none;">
-				<n:td>
-					<grid id="actionband">
-						<columns>
-							<column width="9%"/>
-							<column width="9%"/>
-							<column width="9%"/>
-							<column width="9%"/>
-							<column width="9%"/>
-							<column width="9%"/>
-							<column width="9%"/>
-							<column width="9%"/>
-							<column width="9%"/>
-							<column width="9%"/>
-							<column width="10%"/>
-						</columns>
-						<rows>
-							<row align="center">
-								<combobutton id="export" label="Save" height="26px" hflex="1">
-									<menupopup>
-										<menuitem id="exportUnfitted" onClick='Clients.evalJavaScript("exportUnfitted()")' label="Save as filtered log..." onCheck='exportUnfitted.setChecked(false)'/>
-										<menuitem id="exportBPMN" label="Save as BPMN Model..." onCheck='exportBPMN.setChecked(false)'/>
-										<menuitem id="exportBPMNAnnotatedForBIMP" visible="false" label="Save as BPMN model annotated for BIMP..." onCheck='exportBPMNAnnotatedForBIMP.setChecked(false)'/>
-										<menuitem id="downloadPDF" label="Print map as PDF" onCheck='downloadPDF.setChecked(false)'/>
-										<menuitem id="downloadPNG" label="Print map as PNG" onCheck='downloadPNG.setChecked(false)'/>
-									</menupopup>
-								</combobutton>
-								<combobutton id="layout" label="Layout" height="26px" hflex="1" onClick='layout_hiera.setChecked(true);layout_dagre_TB.setChecked(false);'>
-									<menupopup>
-										<menuitem id="layout_hiera" onClick='layout_hiera.setChecked(true);layout_dagre_TB.setChecked(false);' label="Left-to-right" checked="true" />
-										<!--<menuitem id="layout_dagre_LR" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(true);layout_dagre_TB.setChecked(false);layout_bf.setChecked(false);' label="Dagre Left-Right" checked="false" />-->
-										<menuitem id="layout_dagre_TB" onClick='layout_hiera.setChecked(false);layout_dagre_TB.setChecked(true);' label="Top-to-bottom" checked="false" />
-										<!--<menuitem id="layout_bf" onClick='layout_hiera.setChecked(false);layout_dagre_LR.setChecked(false);layout_dagre_TB.setChecked(false);layout_bf.setChecked(true);' label="Breadth-First" checked="false" />-->
-									</menupopup>
-								</combobutton>
-								<button id="fitScreen" label="Fit to screen" height="26px" hflex="1" />
-								<combobutton id="selector" label="Perspective" hflex="1" height="26px">
-									<menupopup id="selectormenu" />
-								</combobutton>
-								<combobutton id="frequency" label="Frequency" height="26px" hflex="1" onClick="case_frequency.setChecked(true);absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)">
-									<menupopup>
-										<menuitem id="case_frequency" label="Case" checked="true" onCheck='absolute_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
-										<menuitem id="absolute_frequency" label="Cumulative" onCheck='case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
-										<menuitem id="mean_frequency" label="Average" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
-										<menuitem id="median_frequency" label="Median" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
-										<menuitem id="mode_frequency" label="Mode" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);max_frequency.setChecked(false);min_frequency.setChecked(false)' />
-										<menuitem id="max_frequency" label="Max" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);min_frequency.setChecked(false)' />
-										<menuitem id="min_frequency" label="Min" onCheck='absolute_frequency.setChecked(false);case_frequency.setChecked(false);mean_frequency.setChecked(false);median_frequency.setChecked(false);mode_frequency.setChecked(false);max_frequency.setChecked(false)' />
-									</menupopup>
-								</combobutton>
-								<combobutton id="duration" label="Duration" height="26px" hflex="1" onClick="total_duration.setChecked(false);median_duration.setChecked(false);mean_duration.setChecked(true);max_duration.setChecked(false);min_duration.setChecked(false)">
-									<menupopup>
-										<menuitem id="total_duration" label="Cumulative" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
-										<menuitem id="mean_duration" label="Average" checked="true" onCheck='median_duration.setChecked(false);total_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
-										<menuitem id="median_duration" label="Median" onCheck='total_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);min_duration.setChecked(false)' />
-										<menuitem id="max_duration" label="Max" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);total_duration.setChecked(false);min_duration.setChecked(false)' />
-										<menuitem id="min_duration" label="Min" onCheck='median_duration.setChecked(false);mean_duration.setChecked(false);max_duration.setChecked(false);total_duration.setChecked(false)' />
-									</menupopup>
-								</combobutton>
-								<button id="filter" label="Filter" height="26px" hflex="1" />
-								<button id="details" label="Activities" height="26px" hflex="1" />
-								<button id="cases" label="Cases" height="26px" hflex="1" />
-								<button id="fitness" label="Fitness" height="26px" hflex="1" />
-								<button id="animate" height="26px" hflex="1" onClick='Clients.evalJavaScript("animate()")' label="Animate" />
-							</row>
-						</rows>
-					</grid>
-				</n:td>
-			</n:tr>
-
-			<n:tr>
-				<n:td style="height:100%;width:100%;">
-					<n:div id="cy" style="height:100%;width:100%;background-color:none;" />
-				</n:td>
-			</n:tr>
-		</n:table>
+						<n:tr>
+							<n:td style="height:100%;width:100%;">
+								<n:div id="cy" style="height:100%;width:100%;background-color:none;" />
+							</n:td>
+						</n:tr>
+					</n:table>
+				</div>
+			</center>
+		</borderlayout>
 
 
 	</window>
