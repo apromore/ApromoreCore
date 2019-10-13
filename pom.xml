@@ -2026,6 +2026,7 @@
                     <archive>
                         <forced>true</forced>
                     </archive>
+                    <niceManifest>true</niceManifest>
                     <supportedProjectTypes>
                         <supportedProjectType>jar</supportedProjectType>
                         <supportedProjectType>bundle</supportedProjectType>
