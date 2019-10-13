@@ -1,4 +1,4 @@
-FROM openjdk:8 as intial
+FROM openjdk:8
 
 RUN groupadd -r apromore && useradd --no-log-init -r -g apromore apromore
 
@@ -9,20 +9,27 @@ RUN apt-get -y update \
 && apt-get -y clean 
 
 
+Copy ./Supplements/liblpsolve55/* /usr/local/lib/
+WORKDIR /usr/local/lib/
+
+RUN ldconfig \
+&& chmod 755 /usr/local/lib/liblpsolve55j.so
+
+ENV LD_LIBRARY_PATH /usr/local/lib
+
+
 WORKDIR /opt/apromore/
 COPY ./ ./
 
 RUN chown -R apromore:apromore /opt/apromore/ \
 && chmod -R 777 /opt/apromore/
 
-Run ant create-h2
-# && mvn clean install \
 
+# RUN mvn clean install
+# RUN ant create-h2
 
 
 USER apromore
 EXPOSE 9000
 
-CMD [ "ant", "start-virgo-nix"]
-
-# for production, add failur policy to always restart the container!
+CMD [ "ant", "start-virgo-nix" ]

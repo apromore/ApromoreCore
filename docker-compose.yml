@@ -1,13 +1,28 @@
 version: "3.7"
 services:
     apromore:
+        # for production, add failur policy to always restart the container!
         build: 
             context: .
             dockerfile: Dockerfile.dev
-        image: apromore/apromore:test
+        image: apromore/apromore:dev
+        volumes:
+            # ignore target folders and virgo deployment directory: check .dockerignore
+            - ".:/opt/apromore"
+        depends_on:
+            - mysql            
         ports:
             - "9000:9000"
-        volumes:
-            - /opt/apromore/**/target/
-            - .:/opt/apromore
             
+    mysql:
+        image: mysql:5.6.45
+        command: --max_allowed_packet=2G
+        environment:
+            MYSQL_ROOT_PASSWORD: MAcri
+            MYSQL_DATABASE: apromore
+            MYSQL_USER: apromore
+            MYSQL_PASSWORD: MAcri
+        volumes:
+            - "./Supplements/database/mysql-datversion:/var/lib/mysql"
+        expose:
+            - "3306"
