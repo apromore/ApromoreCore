@@ -151,13 +151,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     headerColumns.getChildren().clear();
                 }
 
-
-//                if (myGrid.getColumns() == null) {
-//                    new Columns().setParent(myGrid);
-//                } else {
-//                    myGrid.getColumns().getChildren().clear();
-//                }
-
                 /// display first numberOfrows to user and display drop down lists to set attributes
                 header = reader.readNext();   // read first line
 
@@ -172,15 +165,24 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
 
+                    Column indexCol = new Column();
+                indexCol.setWidth("50px");
+                indexCol.setValue("");
+                indexCol.setLabel("");
+                indexCol.setAlign("center");
+                headerColumns.appendChild(indexCol);
+
                 for (int i = 0; i < header.length; i++) {
                     Column newColumn = new Column();
                     newColumn.setWidth(AttribWidth + "px");
                     newColumn.setValue(header[i]);
                     newColumn.setLabel(header[i]);
                     newColumn.setAlign("center");
-                    myGrid.getColumns().appendChild(newColumn);
-//                    myGrid.getColumns().setSizable(true);
+                    headerColumns.appendChild(newColumn);
+                    headerColumns.setSizable(true);
                 }
+
+                myGrid.appendChild(headerColumns);
 //                if (attrBox != null) {
 //                    attrBox.getChildren().clear();
 //                }
@@ -217,7 +219,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     Auxhead optionHead = new Auxhead();
                     Auxheader index = new Auxheader();
-//                    optionHead.appendChild(index);
+                    optionHead.appendChild(index);
 
                     for (int i=0; i < lists.size(); i++) {
 //                        attrBox.appendChild(lists.get(i));
@@ -237,12 +239,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     // display first 1000 rows
                     int numberOfrows = 0;
                     while (line != null && numberOfrows < 300) {
-//                        String[] withIndex = new String[line.length + 1 ];
-//                        withIndex[0] = String.valueOf(numberOfrows + 1);
-//                        for( int i=0; i < line.length; i++) {
-//                            withIndex[i+1] = line[i];
-//                        }
-//                        indexedResult.add(withIndex);
+                        String[] withIndex = new String[line.length + 1 ];
+                        withIndex[0] = String.valueOf(numberOfrows + 1);
+                        for( int i=0; i < line.length; i++) {
+                            withIndex[i+1] = line[i];
+                        }
+                        indexedResult.add(withIndex);
 
                         result.add(line);
                         numberOfrows++;
@@ -274,7 +276,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) )  + "px; position: absolute; z-index: 10; visibility: hidden; top:1px;");
+            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) + 50 )  + "px; position: absolute; z-index: 10; visibility: hidden; top:1px;");
 
             Button sp = new Button();
 //            sp.setLabel("-");
@@ -365,7 +367,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     if (window != null) {
                         // set grid model
                         if (result != null) {
-                            myGrid.setModel(result);
+//                            myGrid.setModel(result);
+                            myGrid.setModel(indexedResult);
                         } else {
                             Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
                         }
@@ -427,7 +430,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 public void onEvent(Event event) throws Exception {
                     window.invalidate();
                     window.detach();
-                    Executions.getCurrent().sendRedirect(null);
+//                    Executions.getCurrent().sendRedirect(null);
                 }
 
             });
