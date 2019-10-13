@@ -249,9 +249,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         line = reader.readNext();
                     }
 
+                    Popup helpP = (Popup) window.getFellow("popUpHelp");
                     csvImporterLogic.automaticFormat(result, myLine);
                     csvImporterLogic.setOtherTimestamps(result);
-                    createPopUpTextBox(newLine.length, popUPBox);
+                    createPopUpTextBox(newLine.length, popUPBox, helpP);
                     csvImporterLogic.openPopUp();
                     reader.close();
                 }
@@ -265,7 +266,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     }
 
 
-    private void createPopUpTextBox(int colNum, Div popUPBox){
+    private void createPopUpTextBox(int colNum, Div popUPBox, Popup helpP){
         for(int i =0; i<= colNum -1; i++){
             Window item = new Window();
             item.setId(popupID+ i);
@@ -291,7 +292,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Textbox textbox = new Textbox();
             textbox.setId(textboxID + i);
             textbox.setWidth("98%");
-            textbox.setPlaceholder("Specify timestamp format");
+            textbox.setPlaceholder("dd-MM-yyyy HH:mm:ss");
+            textbox.setPopup(helpP);
+            textbox.setPopupAttributes(helpP, "after_start","","","toggle");
+
             textbox.addEventListener("onChanging", (InputEvent event) -> {
                 if(StringUtils.isBlank(event.getValue()) || event.getValue().length() < 6) {
                     textbox.setPlaceholder("Specify timestamp format");
