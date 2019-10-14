@@ -55,9 +55,9 @@
                     There is some problem in the bpstruct JAR that causes the newer version to throw an error!
                     So we use the older version as workaround
                 -->
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <niceManifest>true</niceManifest>
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
                         <Embed-Dependency>
@@ -625,7 +625,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.deckfour</groupId>
+            <groupId>org.apromore</groupId>
             <artifactId>openxes</artifactId>
             <version>2.27</version>
         </dependency>

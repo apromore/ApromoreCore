@@ -514,7 +514,7 @@
                 <version>${servlet-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.deckfour</groupId>
+                <groupId>org.apromore</groupId>
                 <artifactId>openxes</artifactId>
             </dependency>
             <dependency>
@@ -2032,6 +2032,7 @@
                     <archive>
                         <forced>true</forced>
                     </archive>
+                    <niceManifest>true</niceManifest>
                     <supportedProjectTypes>
                         <supportedProjectType>jar</supportedProjectType>
                         <supportedProjectType>bundle</supportedProjectType>
