@@ -92,7 +92,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     private HashMap<String, Integer> heads;
     private List<Integer> ignoredPos;
     private HashMap<Integer, String> otherTimeStampsPos;
-    private String[] line;
+    private List<String> line;
     private String timestampFormat;
     private String startTsFormat;
     private Div popUPBox;
@@ -174,7 +174,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         if (startTimestamp == null) {
                             if(tStamp != null) {
                                 startTimestamp = tStamp;
-                                invalidRows.add("Row: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
+                                invalidRows.add("Row: " + (lineCount + 1) + ", Warning: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
                             } else {
                                 invalidRows.add("Row: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. ");
                             }
@@ -184,8 +184,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     if (heads.get(resource) != -1) {
                         resourceCol = line[heads.get(resource)];
                         if (resourceCol == null) {
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: Resource field is empty. ");
-                            errorCount++;
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Warning: Resource field is empty. ");
+//                            errorCount++;
                         }
                     }
 
@@ -194,14 +194,13 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             tStamp = startTimestamp;
                             invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Copying start timestamp field into end timestamp");
                         } else {
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. ");
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Start timestamp is not available.");
                         }
                         errorCount++;
                     }
 
                     if(otherTimestamps != null) {
                         for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
-                            System.out.println("head of:" + heads.get(entry.getKey()) + "key is:" + entry.getKey() + "  value is:" + entry.getValue());
                             if(entry.getKey() != null && entry.getKey() != null) {
                                 if (entry.getValue() == null) {
                                     invalidRows.add("Row: " + (lineCount + 1) + ", Error: " + entry.getKey() +
@@ -283,7 +282,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         return true;
     }
 
-    public void automaticFormat(ListModelList<String[]> result, String[] myHeader) {
+    public void automaticFormat(ListModelList<String[]> result, List<String> myHeader) {
         try {
             String currentFormat = null;
             String startFormat = null;
@@ -303,7 +302,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                 for (int j = 0; j < newLine.length; j++) {
                     // Going row by rowe
-                    if (getPos(timestampValues, myHeader[j].toLowerCase())) {
+                    if (getPos(timestampValues, myHeader.get(j).toLowerCase())) {
                         // if its timestamp field
                         String format = parse.determineDateFormat((newLine[j])); // dd.MM.yyyy //MM.dd.yyyy
                         Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
@@ -337,7 +336,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                     }
 
-                    if (getPos(StartTsValues, myHeader[j])) {
+                    if (getPos(StartTsValues, myHeader.get(j))) {
                         // if its timestamp field
 //                        LOGGER.info("newline is: " + newLine[j]);
                         String format = parse.determineDateFormat((newLine[j]));
@@ -393,7 +392,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
      * @return the hash map: including mandatory field as key and position in the array as the value.
      */
 
-    public void setHeads(String[] line) {
+    public void setHeads(List<String> line) {
         // initialize map
         heads = new HashMap<String, Integer>();
         heads.put(caseid, -1);
@@ -402,30 +401,32 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         heads.put(tsStart, -1);
         heads.put(resource, -1);
 
-        for (int i = 0; i <= line.length - 1; i++) {
-            if ((heads.get(caseid) == -1) && getPos(caseIdValues, line[i])) {
-                heads.put(caseid, i);
-            } else if ((heads.get(activity) == -1) && getPos(activityValues, line[i])) {
-                heads.put(activity, i);
-            } else if ((heads.get(timestamp) == -1) && getPos(timestampValues, line[i].toLowerCase())) {
-                String format = parse.determineDateFormat(this.line[i]);
-                if (format != null) {
-                    heads.put(timestamp, i);
-                    timestampFormat = format;
+        for (int i = 0; i <= line.size() - 1; i++) {
+            if(this.line.get(i) != null) {
+                if ((heads.get(caseid) == -1) && getPos(caseIdValues, line.get(i))) {
+                    heads.put(caseid, i);
+                } else if ((heads.get(activity) == -1) && getPos(activityValues, line.get(i))) {
+                    heads.put(activity, i);
+                } else if ((heads.get(timestamp) == -1) && getPos(timestampValues, line.get(i).toLowerCase())) {
+                    String format = parse.determineDateFormat(this.line.get(i));
+                    if (format != null) {
+                        heads.put(timestamp, i);
+                        timestampFormat = format;
+                    }
+                } else if ((heads.get(tsStart) == -1) && getPos(StartTsValues, line.get(i))) {
+                    String format = parse.determineDateFormat(this.line.get(i));
+                    if (format != null) {
+                        heads.put(tsStart, i);
+                        startTsFormat = format;
+                    }
+                } else if ((heads.get(resource) == -1) && getPos(resourceValues, line.get(i))) {
+                    heads.put(resource, i);
                 }
-            } else if ((heads.get(tsStart) == -1) && getPos(StartTsValues, line[i])) {
-                String format = parse.determineDateFormat(this.line[i]);
-                if (format != null) {
-                    heads.put(tsStart, i);
-                    startTsFormat = format;
-                }
-            } else if ((heads.get(resource) == -1) && getPos(resourceValues, line[i])) {
-                heads.put(resource, i);
             }
         }
     }
 
-    public void setLine(String[] line) {
+    public void setLine(List<String>  line) {
         this.line = line;
     }
 
@@ -453,8 +454,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             Integer timeStampPos = heads.get(timestamp);
             Integer StartTimeStampPos = heads.get(tsStart);
 
-            for (int i = 0; i <= this.line.length - 1; i++) {
-                String detectedFormat = parse.determineDateFormat(this.line[i]);
+            for (int i = 0; i <= this.line.size() - 1; i++) {
+                String detectedFormat = parse.determineDateFormat(this.line.get(i));
                 if ((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)) {
                     otherTimeStampsPos.put(i, detectedFormat);
                 }
@@ -583,7 +584,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     }
 
                     if (new String(selected).equals(timestamp) || new String(selected).equals(tsStart)) {
-                        tryParsing(parse.determineDateFormat(this.line[colPos]), colPos);
+                        tryParsing(parse.determineDateFormat(this.line.get(colPos)), colPos);
                     } else {
                         heads.put(selected, colPos);
                     }
@@ -591,7 +592,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 } else if (new String(selected).equals(ignore)) {
                     ignoredPos.add(colPos);
                 } else if (new String(selected).equals(tsValue)) {
-                    tryParsing(parse.determineDateFormat(this.line[colPos]), colPos);
+                    tryParsing(parse.determineDateFormat(this.line.get(colPos)), colPos);
                 }
             });
 
@@ -630,7 +631,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     public void tryParsing(String format, int colPos) {
 
-        if (format != null && parse.parseTimestamp(this.line[colPos], format) != null) {
+        if (format != null && parse.parseTimestamp(this.line.get(colPos), format) != null) {
             Listbox box = lists.get(colPos);
             String selected = box.getSelectedItem().getValue();
             if (new String(selected).equals(timestamp)) {

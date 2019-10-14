@@ -22,12 +22,7 @@ package org.apromore.plugin.portal.CSVImporterPortal;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import javax.inject.Inject;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -47,6 +42,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -140,8 +136,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 } else {
                     reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 }
-                String[] header;
-                String[] line;
+                List<String> header = new ArrayList<String>();
+                List<String> line = new ArrayList<String>();
+
 
                 Columns headerColumns = new Columns();
 
@@ -152,31 +149,30 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
                 /// display first numberOfrows to user and display drop down lists to set attributes
-                header = reader.readNext();   // read first line
-
+                Collections.addAll(header, reader.readNext());
                 // Deal with UTF-8 with BOM file encoding
-                String BomC = new String(header[0].getBytes(), Charset.forName("UTF-8"));
-                header[0] = BomC;
+                String BomC = new String(header.get(0).getBytes(), Charset.forName("UTF-8"));
+                header.set(0, BomC);
 
-                if(header.length > 9) {
+                if(header.size() > 9) {
                     window.setWidth("97%");
                 } else {
                     window.setWidth("auto");
                 }
 
 
-                    Column indexCol = new Column();
+                Column indexCol = new Column();
                 indexCol.setWidth("50px");
                 indexCol.setValue("");
                 indexCol.setLabel("");
                 indexCol.setAlign("center");
                 headerColumns.appendChild(indexCol);
 
-                for (int i = 0; i < header.length; i++) {
+                for (int i = 0; i < header.size(); i++) {
                     Column newColumn = new Column();
                     newColumn.setWidth(AttribWidth + "px");
-                    newColumn.setValue(header[i]);
-                    newColumn.setLabel(header[i]);
+                    newColumn.setValue(header.get(i));
+                    newColumn.setLabel(header.get(i));
                     newColumn.setAlign("center");
                     headerColumns.appendChild(newColumn);
                     headerColumns.setSizable(true);
@@ -194,16 +190,29 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
 
-                line = reader.readNext();
-                if (line == null || header == null) {
+                line = Arrays.asList(reader.readNext());
+
+                if(line.size() < 2 && line != null) {
+                    while (line.size() < 2 && line != null) {
+                        line = Arrays.asList(reader.readNext());
+                    }
+                }
+
+//                System.out.println("header : " + header.toString() + " ________ line is: " + line.toString());
+
+                List<String> myLine = header;
+
+//                System.out.println("Size is: " + line.size() + "____ is empty is: " + line.isEmpty());
+                if(line != null && header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
+//                    header.removeAll(Arrays.asList("", null));
+                    csvImporterLogic.setLine(line);
+                    csvImporterLogic.setHeads(header);
+                    csvImporterLogic.setOtherTimestamps(result);
+                }else{
                     Messagebox.show("Could not parse file!");
                 }
-                String[] myLine = header;
-                csvImporterLogic.setLine(line);
-                csvImporterLogic.setHeads(header);
-                csvImporterLogic.setOtherTimestamps(result);
 
-                if (line.length != header.length) {
+                if (line.size() != header.size()) {
                     Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
                     if(window != null) {
                         window.detach();
@@ -213,7 +222,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 //                    attrBox.setWidth(line.length * AttribWidth + "px");
 
-                    csvImporterLogic.setLists(line.length, csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
+                    csvImporterLogic.setLists(line.size(), csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
 
                     List<Listbox> lists = csvImporterLogic.getLists();
 
@@ -231,35 +240,34 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     myGrid.appendChild(optionHead);
 
-//                    for (Listbox list : lists) {
-//                        attrBox.appendChild(list);
-//                    }
-                    String[] newLine = line;
+                    List<String>  newLine = line;
 
                     // display first 1000 rows
                     int numberOfrows = 0;
                     while (line != null && numberOfrows < 300) {
-                        String[] withIndex = new String[line.length + 1 ];
-                        withIndex[0] = String.valueOf(numberOfrows + 1);
-                        for( int i=0; i < line.length; i++) {
-                            withIndex[i+1] = line[i];
-                        }
-                        indexedResult.add(withIndex);
 
-                        result.add(line);
+                        List<String> withIndex = new ArrayList<String>();
+                        withIndex.add(String.valueOf(numberOfrows + 1));
+                        withIndex.addAll(line);
+                        indexedResult.add(withIndex.toArray(new String[0]));
+
+                        result.add(line.toArray(new String[0]));
                         numberOfrows++;
-                        line = reader.readNext();
+                        try {
+                            line = Arrays.asList(reader.readNext());
+                        }catch(NullPointerException e) {
+                            break;
+                        }
                     }
 
                     Popup helpP = (Popup) window.getFellow("popUpHelp");
                     csvImporterLogic.automaticFormat(result, myLine);
                     csvImporterLogic.setOtherTimestamps(result);
-                    createPopUpTextBox(newLine.length, popUPBox, helpP);
+                    createPopUpTextBox(newLine.size(), popUPBox, helpP);
                     csvImporterLogic.openPopUp();
                     reader.close();
                 }
 
-                
             } catch (IOException e) {
                 e.printStackTrace();
                 Messagebox.show(e.getMessage());

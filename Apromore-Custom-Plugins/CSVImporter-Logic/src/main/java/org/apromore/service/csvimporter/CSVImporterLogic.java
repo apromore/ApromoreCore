@@ -28,10 +28,10 @@ public interface CSVImporterLogic {
      * @throws SampleException if something goes wrong
      */
     List<LogModel> prepareXesModel(CSVReader r);
-    void setHeads(String[] line);
+    void setHeads(List<String> line);
     HashMap<String, Integer> getHeads();
-    void setLine(String[] line);
-    void automaticFormat(ListModelList<String[]> result, String[] myHeader);
+    void setLine(List<String>  line);
+    void automaticFormat(ListModelList<String[]> result, List<String> myHeader);
      void resetLine();
      void resetHead();
      void resetList() ;
