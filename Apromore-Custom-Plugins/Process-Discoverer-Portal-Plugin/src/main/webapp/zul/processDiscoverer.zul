@@ -45,6 +45,7 @@
 	<script src="/js/cytoscape-undo-redo.js"></script>
 	<script src="/js/cytoscape-edge-bend-editing.js"></script>
 
+        <h:link rel="stylesheet" href="/chiaroscuro.css" type="text/css"/>
 	<style src="../css/moonstyle.css"/>
 
 	<style dynamic="true">

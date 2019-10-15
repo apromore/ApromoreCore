@@ -61,8 +61,9 @@
 
     <!--<script type="text/javascript" src="js/go.js"></script>-->
 
+    <style src="chiaroscuro.css"></style>
 
-    <style dynamic="true">
+    <style>
         .custom-btn {
         font-family: Arial, Sans-Serif;
         font-size: 16px;
@@ -127,11 +128,6 @@
         .z-north-header, .z-south-header, .z-west-header, .z-center-header, .z-east-header {
         padding: 4px 4px 4px;
         }
-        .z-window {
-        background-color: white;
-        }
-
-
     </style>
 
     <style> body { padding: 0} </style>

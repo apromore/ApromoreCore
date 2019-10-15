@@ -1,0 +1,80 @@
+/* ZK 8.5 icons */
+@font-face{
+  font-family: 'ZK85Icons';
+  src:         url('ZK85Icons.eot?v=4.7.0');
+  src:         url('ZK85Icons.eot?#iefix&v=4.7.0')    format('embedded-opentype'),
+               url('ZK85Icons.woff?v=4.7.0')          format('woff'),
+               url('ZK85Icons.ttf?v=4.7.0')           format('truetype'),
+               url('ZK85Icons.svg?v=4.7.0#ZK85Icons') format('svg');
+  font-weight: normal;
+  font-style:  normal
+}
+[class^="z-icon-"], [class*=" z-icon-"] {
+  display: inline-block;
+  font-family: ZK85Icons,FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  font-size: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: auto;
+}
+.z-icon-caret-down:before  { content: "\f0d7"; }
+.z-icon-caret-up:before    { content: "\f0d8"; }
+.z-icon-caret-left:before  { content: "\f0d9"; }
+.z-icon-caret-right:before { content: "\f0da"; }
+
+/* Chiaroscuro theme (Iceblue/Montana) */
+:root {
+  color-scheme: light dark;
+  --text-color-default:      rgba(0, 0, 0, 0.9);
+  --text-color-light:        rgba(0, 0, 0, 0.68);
+  --text-color-lighter:      rgba(0, 0, 0, 0.24);
+  --text-color-default3:     #FFFFFF;
+  --text-color-active:       #0093F9;
+  --color-primary:           #0093F9;
+  --color-primary-dark:      #0064ED; //darken(@colorPrimary, 20%);
+  --color-primary-light:     #4FB7FF; //lighten(@colorPrimary, 20%);
+  --color-primary-lighter:   #E8F5FF; // List hover Bg
+  --color-accent:            #FFA516;
+  --color-accent2:           #FF4051;
+  --color-accent3:           #261429; // Tooltip Bg
+  --color-background1:       #F9FCFF; // Window Bg, Panel Bg
+  --color-background3:       #FFFFFF; // Container Bg
+  --color-grey-dark:         #A8A8A8;
+  --color-grey-light:        #D9D9D9; // Btn disabled Bg
+  --color-grey-lighter:      #F2F2F2; // Field disabled Bg
+  --input-background-color:  var(--color-background3);
+  --mask-background-color:   #E0E1E3;
+  --popup-background-color:  #FFFFFF;  //var(--color-background3);
+  --tooltip-color:           var(--text-color-default3);
+  --loading-animation-defer: '~./zul/img/misc/progress-32.gif';
+  --loading-animation-load:  '~./zul/img/misc/progress-72.gif';
+  --slider-ticks:            '~./zul/img/slider/scale-ticks.png';
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color-default:      rgba(255,255,255,0.9);
+    --text-color-light:        rgba(255,255,255,0.68);
+    --text-color-lighter:      rgba(255,255,255,0.24);
+    --color-primary-lighter:   #314758;
+    --color-accent3:           #D2B3D7;
+    --color-background1:       #42464A;
+    --color-background3:       #2F2F2F;
+    --color-grey-dark:         #767676;
+    --color-grey-light:        #4E4E4E;
+    --color-grey-lighter:      #404040;
+    --input-background-color:  #262626;
+    --mask-background-color:   #151515;
+    --popup-background-color:  #454545;
+    --tooltip-color:           #000000;
+    --loading-animation-defer: '~./zul/img/misc/progress-dark-32.gif';
+    --loading-animation-load:  '~./zul/img/misc/progress-dark-72.gif';
+    --slider-ticks:            '~./zul/img/slider/scale-ticks-dark.png';
+
+    /*
+    select { background: var(--input-background-color) }
+    */
+  }
+}
+
