@@ -473,7 +473,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
      * @return the pos: boolean value confirming if the elem is the required element.
      */
     private Boolean getPos(String[] col, String elem) {
-        return Arrays.stream(col).anyMatch(elem.toLowerCase()::contains);
+        if(col == timestampValues || col == StartTsValues) {
+            return Arrays.stream(col).anyMatch(elem.toLowerCase()::equals);
+        }else{
+            return Arrays.stream(col).anyMatch(elem.toLowerCase()::contains);
+        }
     }
 
     /**
