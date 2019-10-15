@@ -160,28 +160,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     window.setWidth("auto");
                 }
 
-
-                Column indexCol = new Column();
-                indexCol.setWidth("50px");
-                indexCol.setValue("");
-                indexCol.setLabel("");
-                indexCol.setAlign("center");
-                headerColumns.appendChild(indexCol);
-
-                for (int i = 0; i < header.size(); i++) {
-                    Column newColumn = new Column();
-                    newColumn.setWidth(AttribWidth + "px");
-                    newColumn.setValue(header.get(i));
-                    newColumn.setLabel(header.get(i));
-                    newColumn.setAlign("center");
-                    headerColumns.appendChild(newColumn);
-                    headerColumns.setSizable(true);
-                }
-
-                myGrid.appendChild(headerColumns);
-//                if (attrBox != null) {
-//                    attrBox.getChildren().clear();
-//                }
                 if (popUPBox != null) {
                     popUPBox.getChildren().clear();
                 }
@@ -237,9 +215,30 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         listHeader.appendChild(lists.get(i));
                         optionHead.appendChild(listHeader);
                     }
-
                     myGrid.appendChild(optionHead);
 
+
+                    Column indexCol = new Column();
+                    indexCol.setWidth("50px");
+                    indexCol.setValue("");
+                    indexCol.setLabel("");
+                    indexCol.setAlign("center");
+                    headerColumns.appendChild(indexCol);
+
+                    for (int i = 0; i < header.size(); i++) {
+                        Column newColumn = new Column();
+                        newColumn.setWidth(AttribWidth + "px");
+                        newColumn.setValue(header.get(i));
+                        newColumn.setLabel(header.get(i));
+                        newColumn.setAlign("center");
+                        headerColumns.appendChild(newColumn);
+                        headerColumns.setSizable(true);
+                    }
+
+
+                    myGrid.appendChild(headerColumns);
+
+                    
                     List<String>  newLine = line;
 
                     // display first 1000 rows
