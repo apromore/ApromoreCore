@@ -110,15 +110,14 @@ public class Parse {
             if (dateString.toLowerCase().matches(regexp)) {
 //                LOGGER.severe("dateString is: " +  dateString.toLowerCase() + " and regexp is: " + regexp);
                 try{
-
                     SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_REGEXPS.get(regexp));
                     formatter.setLenient(false);
                     Calendar cal = Calendar.getInstance();
                     Date d = formatter.parse(dateString);
 //                    LOGGER.info("FOUND! :" + d);
-                    return DATE_FORMAT_REGEXPS.get(regexp);
-                } catch (ParseException e) {
+                        return DATE_FORMAT_REGEXPS.get(regexp);
 
+                } catch (ParseException e) {
                     LOGGER.severe(e.getMessage() + "Tried: " + DATE_FORMAT_REGEXPS.get(regexp));
                 }
 

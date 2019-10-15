@@ -26,12 +26,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -62,10 +66,6 @@ public class ImportController extends BaseController {
     private String ignoredFiles;
 
     private Media media = null;
-    private byte[] logByteArray = null;
-    private String fileName = null;
-    private String fileType = null;
-    private String extension;
     private Label fileNameLabel;
     private Checkbox isPublicCheckbox;
 
@@ -114,7 +114,7 @@ public class ImportController extends BaseController {
             });
             okButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    importFile();
+                    importFile(ImportController.this.media);
                 }
             });
             cancelButton.addEventListener("onClick", new EventListener<Event>() {
@@ -134,49 +134,11 @@ public class ImportController extends BaseController {
         this.importWindow.detach();
     }
 
-    /**
-     * Upload file: an archive or an xml file
-     * @param event the event to process.
-     * @throws InterruptedException
-     */
-//    private void uploadFile(UploadEvent event) throws InterruptedException {
-//        try {
-//            // derive file type from its extension
-//            String fileType;
-//            this.media = event.getMedia();
-//            this.fileOrArchive = event.getMedia().getName();
-//            String[] list_extensions = this.fileOrArchive.split("\\.");
-//            this.extension = list_extensions[list_extensions.length - 1];
-//            if (this.extension.compareTo("zip") == 0) {
-//                fileType = "zip archive";
-//            } else {
-//                fileType = this.mainC.getNativeTypes().get(this.extension);
-//                if (fileType == null) {
-//                    throw new ExceptionImport("Unsupported extension.");
-//                }
-//                this.nativeType = fileType;
-//            }
-//
-//            this.fileNameLabel.setValue(this.fileOrArchive + " (file/model type is " + fileType + ")");
-//
-//            // Simulate the ok button ?? I don't think this is correct.
-//            Clients.showBusy("Processing...");
-//            Events.echoEvent("onLater", importWindow, null);
-//        } catch (ExceptionImport e) {
-//            Messagebox.show("Upload failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-//        } catch (Exception e) {
-//            Messagebox.show("Repository not available (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-//        }
-//    }
-
     private void uploadFile(UploadEvent event) throws ExceptionFormats, ExceptionImport {
         media = event.getMedia();
         fileNameLabel.setStyle("color: blue");
         fileNameLabel.setValue(media.getName());
-        logByteArray = media.getByteData();
-        fileName = media.getName();
-        String[] list_extensions = fileName.split("\\.");
-        extension = list_extensions[list_extensions.length - 1];
+        String extension = findExtension(media.getName());
 
         List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
         for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
@@ -187,7 +149,7 @@ public class ImportController extends BaseController {
         }
 
         if(!extension.equalsIgnoreCase("zip") && !extension.equalsIgnoreCase("gz") && !extension.equalsIgnoreCase("xes") && !extension.equalsIgnoreCase("mxml")) {
-            fileType = this.mainC.getNativeTypes().get(extension);
+            String fileType = this.mainC.getNativeTypes().get(extension);
             if (fileType == null) {
                 throw new ExceptionImport("Unsupported extension.");
             }
@@ -196,48 +158,61 @@ public class ImportController extends BaseController {
         okButton.setDisabled(false);
     }
 
-    private void importFile() throws InterruptedException, IOException, ExceptionDomains, ExceptionAllUsers, JAXBException {
+    private final Pattern FILE_EXTENSION_PATTERN = Pattern.compile("(?<basename>.*)\\.(?<extension>[^/\\.]*)");
+
+    private String findBasename(String name) {
+        Matcher matcher = FILE_EXTENSION_PATTERN.matcher(name);
+        return matcher.matches() ? matcher.group("basename") : null;
+    }
+
+    private String findExtension(String name) {
+        Matcher matcher = FILE_EXTENSION_PATTERN.matcher(name);
+        return matcher.matches() ? matcher.group("extension") : null;
+    }
+
+    private void importFile(Media importedMedia) throws InterruptedException, IOException, ExceptionDomains, ExceptionAllUsers, JAXBException {
+        String name = importedMedia.getName();
+        String extension = findExtension(name);
         List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
         for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
             if (fileImporterPlugin.getFileExtensions().contains(extension)) {
                 closePopup();
-                fileImporterPlugin.importFile(this.media, new PluginPortalContext(mainC), isPublicCheckbox.isChecked());
+                fileImporterPlugin.importFile(importedMedia, new PluginPortalContext(mainC), isPublicCheckbox.isChecked());
                 return;
             }
         }
 
-        if(extension.equals("zip")) {
-            extractArchiveOrFile();
-        }else if(fileName.toLowerCase().endsWith("xes") || fileName.toLowerCase().endsWith("xes.gz") || fileName.toLowerCase().endsWith("mxml") || fileName.toLowerCase().endsWith("mxml.gz")) {
-            importLog();
-        }else {
-            importProcess(this.mainC, this, this.media.getStreamData(), this.fileName.split("\\.")[0], this.nativeType, this.fileName);
+        if (extension.equals("zip")) {
+            importZip(importedMedia);
+        } else if (name.toLowerCase().endsWith("xes") || name.toLowerCase().endsWith("xes.gz") || name.toLowerCase().endsWith("mxml") || name.toLowerCase().endsWith("mxml.gz")) {
+            importLog(importedMedia);
+        } else if (extension.equals("gz")) {
+            importGzip(importedMedia);
+        } else {
+            importProcess(this.mainC, this, importedMedia.getStreamData(), name.split("\\.")[0], this.nativeType, name);
         }
     }
 
-    private void importLog() {
+    private void importLog(Media logMedia) {
         try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bos.write(logByteArray, 0, logByteArray.length);
-            InputStream inputStream = new ByteArrayInputStream(bos.toByteArray());
-
             Integer folderId = 0;
             if (UserSessionManager.getCurrentFolder() != null) {
                 folderId = UserSessionManager.getCurrentFolder().getId();
             }
 
-            extension = discoverExtension(fileName);
+            String fileName = logMedia.getName();
+            String extension = discoverExtension(fileName);
             System.out.println(fileName);
             System.out.println(extension);
             String logFileName = fileName.substring(0, fileName.indexOf(extension) - 1);
 
-            getService().importLog(UserSessionManager.getCurrentUser().getUsername(), folderId, logFileName, inputStream,
+            getService().importLog(UserSessionManager.getCurrentUser().getUsername(), folderId, logFileName, logMedia.getStreamData(),
                     extension, "", DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()).toString(), isPublicCheckbox.isChecked());
 
             mainC.refresh();
         } catch (Exception e) {
             Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        }finally {
+        } finally {
             closePopup();
         }
     }
@@ -266,51 +241,22 @@ public class ImportController extends BaseController {
      * file: import
      * @throws InterruptedException
      */
-    private void extractArchiveOrFile() throws InterruptedException {
+    private void importZip(Media zippedMedia) throws InterruptedException {
         try {
-            if (this.extension.compareTo("zip") == 0) {
-                String extension;
-                String entryName;
-                String nativeType;
-                this.ignoredFiles = "";
-                String defaultProcessName;
-                ZipInputStream zipIS = new ZipInputStream(this.media.getStreamData());
-                ZipEntry zipEntry;
-                while ((zipEntry = zipIS.getNextEntry()) != null) {
-                    entryName = zipEntry.getName();
-                    if (!zipEntry.isDirectory()) {
-                        extension = entryName.split("\\.")[entryName.split("\\.").length - 1];
-                        defaultProcessName = entryName.split("\\.")[0];
-                        nativeType = this.mainC.getNativeTypes().get(extension);
-                        if (nativeType == null) {
-                            this.ignoredFiles += entryName + ", ";
-                        } else {
-                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                            int size;
-                            byte[] buffer = new byte[2048];
-                            while ((size = zipIS.read(buffer, 0, buffer.length)) != -1) {
-                                bos.write(buffer, 0, size);
-                            }
-                            InputStream zipEntryIS = new ByteArrayInputStream(bos.toByteArray());
-                            importProcess(this.mainC, this, zipEntryIS, defaultProcessName, nativeType, entryName);
-                            bos.flush();
-                            bos.close();
-                        }
-                    } else {
-                        this.ignoredFiles += entryName + ", ";
-                    }
-                }
-            } else {
-                // Case of a single file: import it.
-                String defaultProcessName = this.fileName.split("\\.")[0];
-                importProcess(this.mainC, this, this.media.getStreamData(), defaultProcessName, this.nativeType, this.fileName);
+            ZipInputStream in = new ZipInputStream(zippedMedia.getStreamData());
+            ZipEntry entry;
+            while ((entry = in.getNextEntry()) != null) {
+                importFile(new MediaImpl(entry.getName(), in, Charset.forName("UTF-8")));
             }
-
         } catch (JAXBException e) {
             Messagebox.show("Import failed (File doesn't conform Xschema specification: " + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (Exception e) {
             Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
+    }
+
+    private void importGzip(Media gzippedMedia) throws ExceptionAllUsers, ExceptionDomains, IOException, InterruptedException, JAXBException {
+        importFile(new MediaImpl(findBasename(gzippedMedia.getName()), new GZIPInputStream(gzippedMedia.getStreamData()), Charset.forName("UTF-8")));
     }
 
     private void importProcess(MainController mainC, ImportController importC, InputStream xml_is, String processName, String nativeType, String filename) throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {

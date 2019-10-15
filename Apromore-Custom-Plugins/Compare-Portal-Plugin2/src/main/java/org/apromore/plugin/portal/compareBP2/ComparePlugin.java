@@ -51,6 +51,7 @@ import org.jbpt.petri.NetSystem;
 import org.jbpt.hypergraph.abs.Vertex;
 import org.jbpt.petri.io.PNMLSerializer;
 import org.springframework.stereotype.Component;
+import org.zkoss.zul.Messagebox;
 
 // Local packages
 import org.apromore.plugin.portal.DefaultPortalPlugin;
@@ -180,25 +181,24 @@ public class ComparePlugin extends DefaultPortalPlugin {
                 return;
             }else if(logs.size() == 1 && selectedProcessVersions.size() == 1){
             	String logName = selectedLogSummaryType.iterator().next().getName();
-                context.getMessageHandler().displayInfo("Performing comparison.");
-                System.out.println("Start comparison model-log");
+                LOGGER.debug("Start comparison model-log");
 
                 ModelAbstractions model = toModelAbstractions(procS.get(0), verS.get(0));
-                System.out.println("Getting model");
+                LOGGER.debug("Getting model");
 
                 controller.compareML(model, procS.get(0), verS.get(0), logs.get(0), logName, new HashSet<String>());
                 return;
             }else if(selectedProcessVersions.size() == 2){
-                context.getMessageHandler().displayInfo("Performing comparison.");
+                LOGGER.debug("Performing comparison.");
 
                 ModelAbstractions model1 = toModelAbstractions(procS.get(0), verS.get(0));
                 ModelAbstractions model2 = toModelAbstractions(procS.get(1), verS.get(1));
 
                 controller.compareMM(model1, model2, observable.get(0), observable.get(1), procS.get(0), verS.get(0), procS.get(1), verS.get(1));
-                context.getMessageHandler().displayInfo("Performed comparison.");
+                LOGGER.debug("Performed comparison.");
                 return;
             }else if(logs.size() > 2 || selectedProcessVersions.size() > 2){
-                context.getMessageHandler().displayInfo("There are " + selectedProcessVersions.size() + " process versions selected, but only 2 can be compared at a time.");
+                Messagebox.show("There are " + selectedProcessVersions.size() + " process versions selected, but only 2 can be compared at a time.");
                 return;
             }
 
@@ -208,7 +208,7 @@ public class ComparePlugin extends DefaultPortalPlugin {
             // At least 1 process versions must be selected. Not necessarily of different processes
             if ((selectedProcessVersions.size() == 1 && selectedVersions.next().size() < 1) || selectedProcessVersions.size() < 1) {
                 controller.compareLLPopup();
-                context.getMessageHandler().displayInfo("Log to log comparison.");
+                LOGGER.debug("Log to log comparison.");
                 return;
             }
 
@@ -216,10 +216,10 @@ public class ComparePlugin extends DefaultPortalPlugin {
                 case 1:
                     ModelAbstractions model = toModelAbstractions(procS.get(0), verS.get(0));
                     controller.compareMLPopup(model, observable.get(0), procS.get(0), verS.get(0));
-                    context.getMessageHandler().displayInfo("Performed conformance checker.");
+                    LOGGER.debug("Performed conformance checker.");
                     break;
                 default:
-                    context.getMessageHandler().displayInfo("Comparison method not found. Check the selected elements.");
+                    Messagebox.show("Comparison method not found. Check the selected elements.");
             }
 
         /*try {

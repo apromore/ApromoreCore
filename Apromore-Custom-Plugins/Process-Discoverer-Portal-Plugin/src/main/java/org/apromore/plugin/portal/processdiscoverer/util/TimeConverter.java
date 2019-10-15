@@ -21,6 +21,9 @@
 package org.apromore.plugin.portal.processdiscoverer.util;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class TimeConverter
 {
@@ -107,47 +110,10 @@ public class TimeConverter
 		return value.split(TimeConverter.DURATION_UNIT_MARKER);
 	}
 	
-	/*
-	 * Convert milliseconds to text
-	 */
-//	public static String convertMilliseconds(String milliseconds)
-//	{
-//	  BigDecimal d = new BigDecimal(milliseconds);
-//	  BigDecimal seconds = d.divide(BigDecimal.valueOf(1000.0D), 20, RoundingMode.HALF_UP);
-//	  BigDecimal minutes = seconds.divide(BigDecimal.valueOf(60.0D), 20, RoundingMode.HALF_UP);
-//	  BigDecimal hours = minutes.divide(BigDecimal.valueOf(60.0D), 20, RoundingMode.HALF_UP);
-//	  BigDecimal days = hours.divide(BigDecimal.valueOf(24.0D), 20, RoundingMode.HALF_UP);
-//	  BigDecimal weeks = days.divide(BigDecimal.valueOf(7.0D), 20, RoundingMode.HALF_UP);
-//	  BigDecimal months = days.divide(BigDecimal.valueOf(30.0D), 20, RoundingMode.HALF_UP);
-//	  BigDecimal years = days.divide(BigDecimal.valueOf(365.0D), 20, RoundingMode.HALF_UP);
-//	  
-//	  BigDecimal value1 = BigDecimal.valueOf(1.0D);
-//	  
-//	if (years.compareTo(value1) >= 0) {
-//	  return decimalFormat.format(years) + " yrs";
-//	}
-//	if (months.compareTo(value1) >= 0) {
-//	  return decimalFormat.format(months) + " mths";
-//	}
-//	if (weeks.compareTo(value1) >= 0) {
-//	  return decimalFormat.format(weeks) + " wks";
-//	}
-//	if (days.compareTo(value1) >= 0) {
-//	  return decimalFormat.format(days) + " d";
-//	}
-//	if (hours.compareTo(value1) >= 0) {
-//	  return decimalFormat.format(hours) + " hrs";
-//	}
-//	if (minutes.compareTo(value1) >= 0) {
-//	  return decimalFormat.format(minutes) + " mins";
-//	}
-//	if (seconds.compareTo(value1) >= 0) {
-//	  return decimalFormat.format(seconds) + " secs";
-//	}
-//	if (d.compareTo(value1) >= 0) {
-//	  return decimalFormat.format(milliseconds) + " millis";
-//	}
-//	return "instant";
-//  }	
+	public static String formatDate(long timestamp) {
+		SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+		df.setTimeZone(TimeZone.getDefault());
+		return df.format(new Date(timestamp));
+	}
 
 }

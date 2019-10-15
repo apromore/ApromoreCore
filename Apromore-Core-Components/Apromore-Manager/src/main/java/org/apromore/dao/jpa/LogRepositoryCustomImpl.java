@@ -167,15 +167,17 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 XFactory factory = getXFactory(factoryName);
                 XLog xlog = importFromFile(factory, name);
 
+                // *******  profiling code start here ********
                 long elapsedNanos = System.nanoTime() - startTime;
                 LOGGER.info("Retrieved XES log " + name + " using " + factory.getClass() + "Elapsed time: " + elapsedNanos / 1000000 + " ms");
 
-                System.gc();
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                }
-                LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+//                System.gc();
+//                try {
+//                    Thread.sleep(5000);
+//                } catch (InterruptedException e) {
+//                }
+//                LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+                // *******  profiling code end here ********
 
                 return xlog;
             } catch (Exception e) {

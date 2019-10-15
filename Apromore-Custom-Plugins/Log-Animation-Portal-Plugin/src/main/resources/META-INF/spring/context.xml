@@ -43,7 +43,7 @@
 
     <beans:bean id="plugin" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">
         <beans:property name="groupLabel" value="Analyze" />
-        <beans:property name="label" value="Animate Logs" />
+        <beans:property name="label" value="Animate logs" />
     </beans:bean>		
 	
 	<beans:bean id="plugin2" class="org.apromore.plugin.portal.loganimation.LogAnimationPlugin">

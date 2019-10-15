@@ -43,6 +43,11 @@ public class PortalPluginResourceServlet extends HttpServlet {
     public void init() {
         contentTypeMap.put("png", "image/png");
         contentTypeMap.put("svg", "image/svg+xml");
+        contentTypeMap.put("css", "text/css"); // for customised icon-fonts
+        contentTypeMap.put("eot", "application/vnd.ms-fontobject"); // for customised icon-fonts
+        contentTypeMap.put("svg", "image/svg+xml"); // for customised icon-fonts
+        contentTypeMap.put("ttf", "application/font-sfnt"); // for customised icon-fonts
+        contentTypeMap.put("woff", "application/font-woff"); // for customised icon-fonts
     }
 
     @Override

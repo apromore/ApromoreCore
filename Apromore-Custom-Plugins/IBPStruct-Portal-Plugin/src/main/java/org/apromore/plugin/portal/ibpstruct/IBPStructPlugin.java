@@ -149,7 +149,7 @@ public class IBPStructPlugin extends DefaultPortalPlugin {
         }
 
 
-        portalContext.getMessageHandler().displayInfo("Executing iBPStruct service...");
+        LOGGER.debug("Executing iBPStruct service...");
 
         for (ProcessSummaryType process : processVersions.keySet()) this.psm = process;
         for (VersionSummaryType version : processVersions.get(psm)) this.vst = version;

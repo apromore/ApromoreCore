@@ -37,15 +37,15 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
     @Override
     public boolean matchesCriterion(XTrace trace) {
         if(level == Level.TRACE) {
-            String s = trace.get(0).getAttributes().get(label).toString();
+            String s = trace.get(0).getAttributes().get("concept:name").toString();
 //            if (value.contains("|> => " + s)) return true;
             if (value.contains("[Start] => " + s)) return true;
             for (int i = 0; i < trace.size() - 1; i++) {
-                String event1 = trace.get(i).getAttributes().get(label).toString();
-                String event2 = trace.get(i + 1).getAttributes().get(label).toString();
+                String event1 = trace.get(i).getAttributes().get("concept:name").toString();
+                String event2 = trace.get(i + 1).getAttributes().get("concept:name").toString();
                 if (value.contains(event1 + " => " + event2)) return true;
             }
-            String e = trace.get(trace.size() - 1).getAttributes().get(label).toString();
+            String e = trace.get(trace.size() - 1).getAttributes().get("concept:name").toString();
 //            return (value.contains(e + " => []"));
             return (value.contains(e + " => [End]"));
         }

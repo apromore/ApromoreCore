@@ -34,6 +34,7 @@
 <zk xmlns:h="xhtml" xmlns:n="native" xmlns="http://www.zkoss.org/2005/zul">
 
     <window id="main" title="Apromore" border="none" contentStyle="overflow:auto;">
+
         <h:script type="text/javascript">
             if (zk.ie || zk.ie7 || zk.ie8) {
                 alert("Sorry, we don't support Internet Explorer! some features might not work correctly.");
@@ -154,11 +155,13 @@
                                                     <h:input class="span3" type="password" name="j_password" placeholder="password"/>
                                                     <h:button type="submit" class="span2 btn btn-primary">SIGN IN</h:button>
                                                 </h:div>
-                                                <h:hr class="margin-xm"/>
-                                                <h:label class="checkbox" for="_spring_security_remember_me">
-                                                    <h:input name="_spring_security_remember_me" class="checkbox" type="checkbox"/>
-                                                    Remember me
-                                                </h:label>
+<!--                                                <h:hr class="margin-xm"/>-->
+<!--                                                <h:label class="checkbox" for="_spring_security_remember_me">-->
+<!--                                                    <h:input name="_spring_security_remember_me" class="checkbox" type="checkbox"/>-->
+<!--                                                    Remember me-->
+<!--                                                </h:label>-->
+
+
                                                 <h:hr class="margin-mm "/>
                                                 <h:a href="#forgot" class="btn" data-toggle="tab">Forgot Password?</h:a>
                                                 <h:a href="#register" class="btn" data-toggle="tab">No account yet? Register now for free!</h:a>

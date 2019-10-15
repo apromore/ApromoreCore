@@ -35,6 +35,8 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 
+import org.zkoss.zul.Messagebox;
+
 /**
  *
  * Implementation of your new Plugin API. This class extends the default implementation, that is often provided by APIs.
@@ -59,7 +61,6 @@ public class YAWLDeploymentPortalPlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(PortalContext portalContext) {
-        portalContext.getMessageHandler().displayInfo(null);
         Map<SummaryType, List<VersionSummaryType>> selectedProcessVersions = portalContext.getSelection().getSelectedProcessModelVersions();
         if (selectedProcessVersions.size() == 1 && selectedProcessVersions.keySet().iterator().next() instanceof ProcessSummaryType) {
             Map<ProcessSummaryType, List<VersionSummaryType>> processSummaryVersions = new HashMap<>();
@@ -67,10 +68,11 @@ public class YAWLDeploymentPortalPlugin extends DefaultPortalPlugin {
             try {
                 new DeployProcessModelController(portalContext, processSummaryVersions.entrySet().iterator().next());
             } catch (InterruptedException | IOException e) {
-                portalContext.getMessageHandler().displayError("Unable to deploy process model", e);
+                Messagebox.show("Unable to deploy process model: " + e.getMessage(), "Error", 0, Messagebox.ERROR);
+                LOGGER.error("Unable to deploy process model", e);
             }
         } else {
-            portalContext.getMessageHandler().displayInfo("Please select exactly one process model!");
+            Messagebox.show("Please select exactly one process model!");
         }
     }
 }

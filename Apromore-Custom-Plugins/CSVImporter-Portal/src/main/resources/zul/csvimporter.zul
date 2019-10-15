@@ -20,18 +20,10 @@
 <?style src="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"?>
 
 <zk>
-    <zscript>
-        void onClientInfo(ClientInfoEvent evt) {
-        int height = evt.getDesktopHeight();
-        int width = evt.getDesktopWidth();
 
-        scrn.setValue(
-        width + "x" + height + "x" + evt.getColorDepth());
-        }
-    </zscript>
-
-    <window closable="true" height="min" maximizable="true" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)">
+    <window closable="false" height="min" maximizable="false" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)" >
         <!--<vbox>-->
+
         <style>
             .greenLabel {
             padding-left: 1px;
@@ -39,7 +31,7 @@
             color: green;
             font-size: 11px;
             font-weight: normal;
-            margin-left: -3px;
+            margin-left: 0px;
             }
 
             .redLabel {
@@ -48,7 +40,7 @@
             color: red;
             font-size: 11px;
             font-weight: normal;
-            margin-left: -3px;
+            margin-left: 0px;
             }
 
             .z-row-content, .z-group-content, .z-groupfoot-content, .z-footer-content {
@@ -79,10 +71,9 @@
             .banner{
             position: absolute;
             width: 100%;
-            height: 80px;
             background-image: url("/img/apromore_banner.png");
             background-size: 2000px 100px;
-            z-index: -1;
+            padding-top: 70px;
             }
             tr.z-row td.z-row-inner, tr.z-row .z-cell {
             padding-left: 10px;
@@ -108,32 +99,73 @@
             top: 0px;
             }
 
+            .z-window-content {
+            border: unset;
+            }
+
+            .z-grid-body {
+            overflow-x: hidden !important;
+            }
+
+            .z-grid-header table th {
+            text-align: -webkit-center;
+            }
+
+            .z-select {
+            font-size: 14px;
+            background: transparent;
+            filter: invert(1);
+            border: 1px solid;
+            }
         </style>
 
+        <popup id="popUpHelp" style="padding:0px;">
+            <vbox>
+                <html>
+                    <ul style= "margin: 0px;
+                        padding-left: 25px;
+                        padding-right: 10px;
+                        padding-top: 5px;
+                        padding-bottom: 5px;">
+                        <li><b>dd:</b> Day </li> <separator />
+                        <li><b>MM:</b> Month </li>  <separator />
+                        <li><b>yyyy:</b> Year </li>  <separator />
+                        <li><b>HH:</b> Hour </li> <separator />
+                        <li><b>mm:</b> Minute </li> <separator />
+                        <li><b>ss:</b> Second </li> <separator />
+                        <li><b>SSS:</b> millisecond </li> <separator />
+                    </ul>
+                    <separator />Examples:
+                        <ul>
+                        <li>29/10/2010 05:20   [dd/MM/yyyy HH:mm]</li><separator />
+                        <li>2010-10-29 05:20:10.005   [yyyy/MM/dd HH:mm:ss.SSS]</li><separator />
+                        <li>29.10.19 5:20   [dd/MM/yy HH:mm]</li>
+                        </ul>
 
+                </html>
+            </vbox>
 
+        </popup>
 
-        <separator />
-        <separator />
-        <separator />
         <div id="gridBox" zclass="myGroupBox">
             <div id="popUPBox" zclass="relativePos"></div>
             <div zclass="banner" />
-            <div id="attrBox" style="padding-top: 60px;"></div>
-            <grid id="myGrid" mold="paging" autopaging="true" hflex="min" onClientInfo="onClientInfo(event)">
+            <!--<div id="attrBox" visible="false"></div>-->
+            <grid id="myGrid" mold="default" hflex="min" height="600px" onClientInfo="onClientInfo(event)" style="padding-top: 60px;overflow: hidden;">
                 <zscript>
                     void onClientInfo(ClientInfoEvent evt) {
                     int height = evt.getDesktopHeight();
                     int width = evt.getDesktopWidth();
 
-                    myGrid.setHeight(height/1.3 + "px");
+                    myGrid.setHeight(height/1.15 + "px");
                     }
                 </zscript>
             </grid>
         </div>
         <div style="padding: 5px 0 5px 45%;">
             <hbox align="center">
-                <button id="toXESButton" label="Import Log" iconSclass="z-icon-times-circle fa-lg z-icon-fw" disabled="true" style="position:relative;"  />
+                <button id="toXESButton" label="Upload Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;" width="110px"  />
+                <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;" width="110px"  />
                 <separator />
             </hbox>
         </div>

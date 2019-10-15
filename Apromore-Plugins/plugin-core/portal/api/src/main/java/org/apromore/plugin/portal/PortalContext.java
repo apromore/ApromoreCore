@@ -31,11 +31,6 @@ import org.apromore.model.UserType;
 public interface PortalContext {
 
     /**
-     * @return a MessageHandler that can be used to display messages on the portal
-     */
-    MessageHandler getMessageHandler();
-
-    /**
      * @return a PortalSelection object with information on the currently selected objects (process models) in the portal
      */
     PortalSelection getSelection();

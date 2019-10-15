@@ -20,18 +20,49 @@
 
 package org.apromore.plugin.portal.processdiscoverer;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import static org.apromore.processdiscoverer.VisualizationAggregation.CASES;
+import static org.apromore.processdiscoverer.VisualizationAggregation.MAX;
+import static org.apromore.processdiscoverer.VisualizationAggregation.MEAN;
+import static org.apromore.processdiscoverer.VisualizationAggregation.MEDIAN;
+import static org.apromore.processdiscoverer.VisualizationAggregation.MIN;
+import static org.apromore.processdiscoverer.VisualizationAggregation.MODE;
+import static org.apromore.processdiscoverer.VisualizationAggregation.TOTAL;
+import static org.apromore.processdiscoverer.VisualizationType.DURATION;
+import static org.apromore.processdiscoverer.VisualizationType.FREQUENCY;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.swing.UIManager;
+import javax.xml.datatype.DatatypeFactory;
 
 import org.apromore.logfilter.LogFilterService;
 import org.apromore.logfilter.criteria.LogFilterCriterion;
 import org.apromore.logfilter.criteria.factory.LogFilterCriterionFactory;
+import org.apromore.logfilter.criteria.model.Action;
+import org.apromore.logfilter.criteria.model.Containment;
+import org.apromore.logfilter.criteria.model.Level;
+import org.apromore.logman.stats.LogStatistics;
 import org.apromore.model.LogSummaryType;
 import org.apromore.model.SummaryType;
 import org.apromore.plugin.portal.PortalContext;
-import org.apromore.plugin.portal.PortalPlugin;
 import org.apromore.plugin.portal.loganimation.LogAnimationPluginInterface;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterContext;
 import org.apromore.plugin.portal.logfilter.generic.LogFilterInputParams;
@@ -42,7 +73,6 @@ import org.apromore.plugin.portal.processdiscoverer.json.JSONBuilder;
 import org.apromore.plugin.portal.processdiscoverer.util.StringValues;
 import org.apromore.plugin.portal.processdiscoverer.util.TimeConverter;
 import org.apromore.portal.common.UserSessionManager;
-import org.apromore.portal.context.PortalPluginResolver;
 import org.apromore.portal.dialogController.BaseController;
 import org.apromore.portal.dialogController.dto.SignavioSession;
 import org.apromore.processdiscoverer.AbstractionParams;
@@ -66,7 +96,10 @@ import org.apromore.service.bimp_annotation.BIMPAnnotationService;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
-import org.deckfour.xes.model.*;
+import org.deckfour.xes.model.XAttribute;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.json.JSONArray;
@@ -76,15 +109,34 @@ import org.processmining.models.graphbased.directed.bpmn.BPMNDiagram;
 import org.processmining.plugins.bpmn.BpmnDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.spring.SpringUtil;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobutton;
+import org.zkoss.zul.Filedownload;
+import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listheader;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Slider;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
+
 import org.zkoss.zul.*;
 import javax.swing.*;
 import javax.xml.datatype.DatatypeFactory;
@@ -100,10 +152,7 @@ import static org.apromore.processdiscoverer.VisualizationAggregation.*;
 import static org.apromore.processdiscoverer.VisualizationType.DURATION;
 import static org.apromore.processdiscoverer.VisualizationType.FREQUENCY;
 
-import org.apromore.logfilter.criteria.model.Action;
-import org.apromore.logfilter.criteria.model.Containment;
-import org.apromore.logfilter.criteria.model.Level;
-import org.apromore.logman.stats.LogStatistics;
+import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * Initialization: after the window has been loaded, the ZK client engine will send onLoaded event to the main window 
@@ -178,9 +227,9 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     
     private Combobutton layout;
     private Menuitem layout_hiera;
-    private Menuitem layout_dagre_LR;
+    //private Menuitem layout_dagre_LR;
     private Menuitem layout_dagre_TB;
-    private Menuitem layout_bf;
+    //private Menuitem layout_bf;
 
     private Button filter;
     private Button details;
@@ -199,6 +248,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     private Label medianDuration;
     private Label maxDuration;
     private Label minDuration;
+    private Label logStartTime;
+    private Label logEndTime;
     
     private Window cases_window = null;
 
@@ -295,6 +346,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         primaryAggregation = (primaryType == FREQUENCY) ? VisualizationAggregation.CASES : VisualizationAggregation.MEAN;
         logSummary = (LogSummaryType) selection;
         log_name = logSummary.getName();
+        Sessions.getCurrent().setAttribute("filtered_log_name", log_name); //to provide logName to Filter plugin
+
         initial_log = eventLogService.getXLog(logSummary.getId());
         if (initial_log != null) {
         	XLog initial_log_filtered = filterKeepingStartCompleteEvents(initial_log);
@@ -320,12 +373,12 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         long elapsedNanos = System.nanoTime() - startTime;
         LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
 
-        System.gc();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-        }
-        LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+//        System.gc();
+//        try {
+//            Thread.sleep(5000);
+//        } catch (InterruptedException e) {
+//        }
+//        LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
 
         // *******  profiling code end here ********
     }
@@ -374,6 +427,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
             this.medianDuration = (Label) slidersWindow.getFellow(StringValues.b[39]);
             this.maxDuration = (Label) slidersWindow.getFellow(StringValues.b[40]);
             this.minDuration = (Label) slidersWindow.getFellow(StringValues.b[41]);
+            this.logStartTime = (Label) slidersWindow.getFellow("startTime");
+            this.logEndTime = (Label) slidersWindow.getFellow("endTime");
 
             this.selector = (Menupopup) slidersWindow.getFellow(StringValues.b[42]);
             this.selectorButton = (Combobutton) slidersWindow.getFellow("selector");
@@ -396,9 +451,9 @@ public class ProcessDiscovererController extends BaseController implements LogFi
             
             this.layout = (Combobutton) slidersWindow.getFellow("layout");
             this.layout_hiera = (Menuitem) slidersWindow.getFellow("layout_hiera");
-            this.layout_dagre_LR = (Menuitem) slidersWindow.getFellow("layout_dagre_LR");
+            //this.layout_dagre_LR = (Menuitem) slidersWindow.getFellow("layout_dagre_LR");
             this.layout_dagre_TB = (Menuitem) slidersWindow.getFellow("layout_dagre_TB");
-            this.layout_bf = (Menuitem) slidersWindow.getFellow("layout_bf");
+            //this.layout_bf = (Menuitem) slidersWindow.getFellow("layout_bf");
 
             this.details = (Button) slidersWindow.getFellow(StringValues.b[63]);
             this.cases = (Button) slidersWindow.getFellow(StringValues.b[64]);
@@ -636,16 +691,15 @@ public class ProcessDiscovererController extends BaseController implements LogFi
             
             EventListener<Event> layoutListener = new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-//                	layoutChanged = true;
                     changeLayout();
                 }
             };
             
             this.layout.addEventListener("onClick", layoutListener);
             this.layout_hiera.addEventListener("onClick", layoutListener);
-            this.layout_dagre_LR.addEventListener("onClick", layoutListener);
+            //this.layout_dagre_LR.addEventListener("onClick", layoutListener);
             this.layout_dagre_TB.addEventListener("onClick", layoutListener);
-            this.layout_bf.addEventListener("onClick", layoutListener);
+            //this.layout_bf.addEventListener("onClick", layoutListener);
 
             this.exportFilteredLog.addEventListener("onExport", new EventListener<Event>() {
                 @Override
@@ -654,7 +708,7 @@ public class ProcessDiscovererController extends BaseController implements LogFi
             			"Input", 
 						"Enter a log name (no more than 60 characters)", 
 						logSummary.getName() + "_filtered", 
-						"^[a-zA-Z0-9_\\-\\s]{1,60}$",
+						"^[a-zA-Z0-9_\\(\\)\\-\\s]{1,60}$",
 						"a-z, A-Z, 0-9, hyphen, underscore, and space. No more than 60 chars.",
 						new EventListener<Event>() {
             				@Override
@@ -697,7 +751,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                         Listcell listcell0 = new Listcell(Integer.toString(i));
                         Listcell listcell1 = new Listcell(key);
                         Listcell listcell2 = new Listcell(classifierValues.get(key).toString());
-                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) classifierValues.get(key) / Double.parseDouble(eventNumber.getValue()))) + "%");
+                        Listcell listcell3 = new Listcell(decimalFormat.format(100 * ((double) classifierValues.get(key) / 
+                        									NumberFormat.getNumberInstance(Locale.US).parse(eventNumber.getValue()).longValue())) + "%");
                         
                         Listitem listitem = new Listitem();
                         listitem.appendChild(listcell0);
@@ -719,7 +774,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
                             CSVWriter csvWriter = new CSVWriter(writer);
                             csvWriter.writeNext(new String[] {"Activity", "Frequency", "Frequency %"});
                             for (String key : classifierValues.keySet()) {
-                                csvWriter.writeNext(new String[] {key, classifierValues.toString(), decimalFormat.format(100 * ((double) classifierValues.get(key) / Double.parseDouble(eventNumber.getValue()))) + "%"});
+                                csvWriter.writeNext(new String[] {key, classifierValues.get(key).toString(), decimalFormat.format(100 * ((double) classifierValues.get(key) / 
+                                		NumberFormat.getNumberInstance(Locale.US).parse(eventNumber.getValue()).longValue())) + "%"});
                             }
                             csvWriter.flush();
                             csvWriter.close();
@@ -1483,6 +1539,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         Map<String, Integer> labels = new HashMap<>();
         Set<String> resources = new HashSet<>();
         List<Long> durations = new ArrayList<>(log.size());
+        long logStart = Long.MAX_VALUE;
+        long logEnd = Long.MIN_VALUE;
 
         int events = 0;
 
@@ -1494,7 +1552,12 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 
         for (XTrace trace : log) {
             StringBuilder traceBuilder = new StringBuilder();
-            durations.add(xte.extractTimestamp(trace.get(trace.size() - 1)).getTime() - xte.extractTimestamp(trace.get(0)).getTime());
+            long traceStart = xte.extractTimestamp(trace.get(0)).getTime();
+            long traceEnd = xte.extractTimestamp(trace.get(trace.size() - 1)).getTime();
+            durations.add(traceEnd - traceStart);
+            if (traceStart < logStart) logStart = traceStart;
+            if (traceEnd > logEnd) logEnd = traceEnd;
+            
             for (XEvent event : trace) {
                 String label = event.getAttributes().get(getLabel()).toString();
                 if (!labels.containsKey(label)) labels.put(label, labels.size());
@@ -1523,14 +1586,17 @@ public class ProcessDiscovererController extends BaseController implements LogFi
         }
         mean = mean / dur.length;
 
-        caseNumber.setValue(Integer.toString(log.size()));
-        uniquecaseNumber.setValue(Integer.toString(uniqueTraces.size()));
-        activityNumber.setValue(Integer.toString(labels.size()));
-        eventNumber.setValue(Integer.toString(events));
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+        caseNumber.setValue(formatter.format(log.size()));
+        uniquecaseNumber.setValue(formatter.format(uniqueTraces.size()));
+        activityNumber.setValue(formatter.format(labels.size()));
+        eventNumber.setValue(formatter.format(events));
         meanDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(mean)));
         medianDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(median)));
         maxDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(longhest)));
         minDuration.setValue(TimeConverter.convertMilliseconds(Double.toString(shortest)));
+        logStartTime.setValue(TimeConverter.formatDate(logStart));
+        logEndTime.setValue(TimeConverter.formatDate(logEnd));
     }
 
 
@@ -1638,15 +1704,15 @@ public class ProcessDiscovererController extends BaseController implements LogFi
     	if (layout_hiera.isChecked()) {
     		this.selectedLayout = 0;
     	}
-    	else if (this.layout_dagre_LR.isChecked()) {
-    		this.selectedLayout = 1;
-    	}
+//    	else if (this.layout_dagre_LR.isChecked()) {
+//    		this.selectedLayout = 1;
+//    	}
     	else if (this.layout_dagre_TB.isChecked()) {
     		this.selectedLayout = 2;
     	}    	
-    	else if (this.layout_bf.isChecked()) {
-    		this.selectedLayout = 3;
-    	}
+//    	else if (this.layout_bf.isChecked()) {
+//    		this.selectedLayout = 3;
+//    	}
     	
     	this.display(jsonDiagram);
     }

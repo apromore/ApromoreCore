@@ -138,7 +138,7 @@ public class StageMiningController {
     }
 
     public void showError(String error) {
-        portalContext.getMessageHandler().displayInfo(error);
+        Messagebox.show(error, "Error", 0, Messagebox.ERROR);
 //        Label errorLabel = (Label) this.entryW.getFellow("errorLabel");
 //        errorLabel.setValue(error);
     }

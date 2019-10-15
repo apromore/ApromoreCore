@@ -42,7 +42,7 @@
 
     <beans:bean id="portalPlugin" class="org.apromore.plugin.portal.loganimation2.LogAnimationPlugin">
         <beans:property name="groupLabel" value="Analyze" />
-        <beans:property name="label" value="Animate Logs in Signavio" />
+        <beans:property name="label" value="Animate logs in Signavio" />
     </beans:bean>
     
     <beans:bean id="editorPlugin" class="org.apromore.plugin.editor.loganimation2.LogAnimationPlugin">

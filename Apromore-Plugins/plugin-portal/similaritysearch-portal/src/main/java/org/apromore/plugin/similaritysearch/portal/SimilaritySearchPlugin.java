@@ -28,6 +28,8 @@ import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
 import org.apromore.portal.dialogController.FolderTreeController;
 import org.apromore.portal.exception.DialogException;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zul.*;
@@ -47,6 +49,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
     private SimilarityService similarityService;
 
     private final String GREEDY_ALGORITHM = "Greedy";
+    private final static Logger LOGGER = LoggerFactory.getLogger(SimilaritySearchPlugin.class);
 
     private PortalContext context;
     private Window similaritySearchW;
@@ -87,7 +90,7 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
             // At least 2 process versions must be selected. Not necessarily of different processes
             if (selectedProcessVersions.size() != 1) {
-                context.getMessageHandler().displayInfo("Select one process model for similarity search.");
+                Messagebox.show("Select one process model for similarity search.");
                 return;
             }
 
@@ -95,7 +98,8 @@ public class SimilaritySearchPlugin extends PluginCustomGui {
 
 
         } catch (Exception e) {
-            context.getMessageHandler().displayError("Unable to perform search", e);
+            Messagebox.show("Unable to perform search: " + e.getMessage(), "Error", 0, Messagebox.ERROR);
+            LOGGER.error("Unable to perform search", e);
         }
     }
 

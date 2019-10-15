@@ -23,8 +23,11 @@ package org.apromore.plugin.portal.sample;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.portal.custom.gui.plugin.PluginCustomGui;
 import org.apromore.portal.custom.gui.tab.impl.TabRowValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.zul.Listheader;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import java.io.IOException;
@@ -37,6 +40,8 @@ import java.util.Locale;
  */
 @Component("plugin")
 public class SamplePlugin extends PluginCustomGui {
+
+    private Logger LOGGER = LoggerFactory.getLogger(SamplePlugin.class);
 
     @Override
     public String getLabel(Locale locale) {
@@ -56,7 +61,8 @@ public class SamplePlugin extends PluginCustomGui {
 
         addTab("new tab", "", rows, listheaders, null, context);
 
-        context.getMessageHandler().displayInfo("Executed example plug-in!");
+        LOGGER.info("Executed example plug-in!");
+
         try {
             // Create a window based on the ZUL file, which is controlled by SampleController
             // Please note that it is important to pass a ClassLoader of a class within the plug-in bundle!
@@ -64,7 +70,8 @@ public class SamplePlugin extends PluginCustomGui {
             // Show the windows on top of everything
             window.doModal();
         } catch (IOException e) {
-            context.getMessageHandler().displayError("Could not load component ", e);
+            Messagebox.show("Could not load component: " + e.getMessage(), "Error", 0, Messagebox.ERROR);
+            LOGGER.error("Could not load component", e);
         }
     }
 

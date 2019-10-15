@@ -38,9 +38,9 @@ public class LogFilterCriterionEventuallyFollow extends AbstractLogFilterCriteri
     public boolean matchesCriterion(XTrace trace) {
         if(level == Level.TRACE) {
             for (int i = -1; i < trace.size(); i++) {
-                String event1 = (i == -1) ? "|>" : trace.get(i).getAttributes().get(label).toString();
+                String event1 = (i == -1) ? "|>" : trace.get(i).getAttributes().get("concept:name").toString();
                 for (int j = i + 1; j < trace.size() + 1; j++) {
-                    String event2 = (j == trace.size()) ? "[]" : trace.get(j).getAttributes().get(label).toString();
+                    String event2 = (j == trace.size()) ? "[]" : trace.get(j).getAttributes().get("concept:name").toString();
                     if (value.contains(event1 + " => " + event2)) return true;
                 }
             }

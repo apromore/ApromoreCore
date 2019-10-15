@@ -41,6 +41,8 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.stagemining.StageMiningService;
 import org.deckfour.xes.model.XLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zul.Messagebox;
@@ -57,6 +59,8 @@ import org.apromore.service.ProcessService;
  */
 @Component("plugin")
 public class StageMiningPlugin extends DefaultPortalPlugin {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StageMiningPlugin.class);
 
     private final StageMiningService stageMiningService;
     private final EventLogService eventLogService;
@@ -75,7 +79,7 @@ public class StageMiningPlugin extends DefaultPortalPlugin {
 
     @Override
     public String getLabel(Locale locale) {
-        return "Mine process stages (β)";
+        return "Discover process stages (beta)";
     }
 
     @Override
@@ -101,7 +105,7 @@ public class StageMiningPlugin extends DefaultPortalPlugin {
             logs.put(eventLogService.getXLog(logType.getId()), logType.getName());
         }
 
-        portalContext.getMessageHandler().displayInfo("Executed stage mining plug-in!");
+        LOGGER.debug("Executed stage mining plug-in!");
 
         try {
             new StageMiningController(portalContext, this.stageMiningService, logs);

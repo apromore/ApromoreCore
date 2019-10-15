@@ -38,11 +38,12 @@ public class ConfigBean implements Serializable {
     private String  sitePortal;
     private String  majorVersionNumber;
     private String  minorVersionNumber;
+    private String  versionEdition;
     private String  versionBuildDate;
 
     public ConfigBean() {}
 
-    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber, String versionBuildDate) {
+    public ConfigBean(String siteEditor, String siteExternalHost, int siteExternalPort, String siteFilestore, String siteManager, String sitePortal, String majorVersionNumber, String minorVersionNumber, String versionEdition, String versionBuildDate) {
 
         LoggerFactory.getLogger(getClass()).info("Portal configured with:" +
             " site.editor=" + siteEditor +
@@ -53,6 +54,7 @@ public class ConfigBean implements Serializable {
             " site.portal=" + sitePortal +
             " majorversion.number=" + majorVersionNumber +
             " minorversion.number=" + minorVersionNumber +
+            " version.edition=" + versionEdition +
             " version.builddate=" + versionBuildDate);
 
         this.siteEditor         = siteEditor;
@@ -63,6 +65,7 @@ public class ConfigBean implements Serializable {
         this.sitePortal         = sitePortal;
         this.majorVersionNumber = majorVersionNumber;
         this.minorVersionNumber = minorVersionNumber;
+        this.versionEdition     = versionEdition;
         this.versionBuildDate   = versionBuildDate;
     }
 
@@ -74,5 +77,6 @@ public class ConfigBean implements Serializable {
     public String getSitePortal()           { return sitePortal; }
     public String getMajorVersionNumber()   { return majorVersionNumber; }
     public String getMinorVersionNumber()   { return minorVersionNumber; }
+    public String getVersionEdition()       { return versionEdition; }
     public String getVersionBuildDate()     { return versionBuildDate; }
 }

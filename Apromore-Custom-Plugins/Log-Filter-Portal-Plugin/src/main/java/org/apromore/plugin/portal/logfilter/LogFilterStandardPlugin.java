@@ -79,7 +79,6 @@ public class LogFilterStandardPlugin extends GenericLogFilterPlugin {
      */
     public void execute(PortalContext portalContext) {
     	this.portalContext = portalContext;
-    	portalContext.getMessageHandler().displayInfo("Execute log filer plug-in!");
     	
     	// Get the current portal item
         Map<SummaryType, List<VersionSummaryType>> elements = portalContext.getSelection().getSelectedProcessModelVersions();

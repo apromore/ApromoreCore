@@ -37,3 +37,7 @@ Apromore-Extras/apql/.project
 
 # SVN files
 .svn*
+
+**/.gitignore
+
+zkcharts-3.0.3.jar

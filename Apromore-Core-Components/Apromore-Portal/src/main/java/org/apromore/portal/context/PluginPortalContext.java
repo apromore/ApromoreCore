@@ -54,31 +54,7 @@ public class PluginPortalContext implements PortalContext {
 
     }
 
-    /**
-     * Implementation of the MessageHandler communication interface
-     */
-    private class PortalMessageHandler implements MessageHandler {
-
-        @Override
-        public void displayInfo(String message) {
-            displayMessage(Level.INFO, message);
-        }
-
-        @Override
-        public void displayError(String message, Exception exception) {
-            displayMessage(Level.ERROR, message + " caused by " + exception.toString());
-        }
-
-        @Override
-        public void displayMessage(Level level, String message) {
-            //TODO implement different colors for different message levels
-            mainController.displayMessage(message);
-        }
-
-    }
-
     private final MainController mainController;
-    private final MessageHandler messageHandler;
     private final PortalUI portalUI;
 
     /**
@@ -88,13 +64,7 @@ public class PluginPortalContext implements PortalContext {
      */
     public PluginPortalContext(MainController mainController) {
         this.mainController = mainController;
-        this.messageHandler = new PortalMessageHandler();
         this.portalUI = new PortalUIImpl();
-    }
-
-    @Override
-    public MessageHandler getMessageHandler() {
-        return new PortalMessageHandler();
     }
 
     @Override

@@ -27,6 +27,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 import org.apromore.dao.ProcessRepositoryCustom;
+import static org.apromore.dao.model.Group.Type.PUBLIC;
 import org.apromore.dao.model.Process;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -45,10 +46,8 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
     private JdbcTemplate jdbcTemplate;
 
 
-    private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM Process p ";
-    private static final String GET_ALL_PROCESSES_FOLDER_JPA = "SELECT p FROM Process p JOIN p.folder f ";
-    private static final String GET_ALL_PUBLIC_JPA = "p.publicModel = true ";
-    private static final String GET_ALL_FOLDER_JPA = "f.id = ";
+    private static final String GET_ALL_PROCESSES_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g WHERE g.type = :public ";
+    private static final String GET_ALL_PROCESSES_FOLDER_JPA = "SELECT p FROM GroupProcess gp JOIN gp.process p JOIN gp.group g JOIN p.folder f WHERE g.type = :public AND f.id = ";
     private static final String GET_ALL_SORT_JPA = " ORDER by p.id";
 
 
@@ -64,14 +63,12 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
         StringBuilder strQry = new StringBuilder(0);
         strQry.append(GET_ALL_PROCESSES_JPA);
         if (conditions != null && !conditions.isEmpty()) {
-            strQry.append(" WHERE ").append(conditions);
-            strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);
-        } else {
-            strQry.append(" WHERE ").append(GET_ALL_PUBLIC_JPA);
+            strQry.append(" AND ").append(conditions);
         }
         strQry.append(GET_ALL_SORT_JPA);
 
         Query query = em.createQuery(strQry.toString());
+        query.setParameter("public", PUBLIC);
         return query.getResultList();
     }
 
@@ -82,25 +79,15 @@ public class ProcessRepositoryCustomImpl implements ProcessRepositoryCustom {
     @Override
     @SuppressWarnings("unchecked")
     public List<Process> findAllProcessesByFolder(final Integer folderId, final String conditions) {
-        boolean whereAdded = false;
         StringBuilder strQry = new StringBuilder(0);
-        strQry.append(GET_ALL_PROCESSES_FOLDER_JPA);
+        strQry.append(GET_ALL_PROCESSES_FOLDER_JPA).append(folderId);
         if (conditions != null && !conditions.isEmpty()) {
-            strQry.append(" WHERE ").append(conditions);
-            strQry.append(" AND ").append(GET_ALL_PUBLIC_JPA);
-            whereAdded = true;
-        } //else {
-        //   strQry.append(" WHERE ").append(GET_ALL_PUBLIC_JPA);
-        //}
-        if (whereAdded) {
-            strQry.append(" AND ");
-        } else {
-            strQry.append(" WHERE ");
+            strQry.append(" AND ").append(conditions);
         }
-        strQry.append(GET_ALL_FOLDER_JPA).append(folderId);
         strQry.append(GET_ALL_SORT_JPA);
 
         Query query = em.createQuery(strQry.toString());
+        query.setParameter("public", PUBLIC);
         return query.getResultList();
     }
 

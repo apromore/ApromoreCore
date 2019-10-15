@@ -31,6 +31,7 @@ import org.apromore.portal.common.TabQuery;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.context.PortalPluginResolver;
+import org.apromore.portal.dialogController.workspaceOptions.AddFolderController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -61,6 +62,7 @@ public class MenuController extends Menubar {
         this.portalContext = new PluginPortalContext(mainC);
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
 
+        Menuitem folderMI = (Menuitem) this.menuB.getFellow("createFolder");
         Menuitem createMI = (Menuitem) this.menuB.getFellow("createProcess");
         Menuitem createMI2 = (Menuitem) this.menuB.getFellow("createProcess2");
         Menuitem importMI = (Menuitem) this.menuB.getFellow("fileImport");
@@ -78,6 +80,12 @@ public class MenuController extends Menubar {
         moveMI.setDisabled(true);
         */
 
+        folderMI.addEventListener("onClick", new EventListener<Event>() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                createFolder();
+            }
+        });
         createMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {
@@ -208,6 +216,15 @@ public class MenuController extends Menubar {
         }
     }
 
+
+    protected void createFolder() {
+        this.mainC.eraseMessage();
+        try {
+            new AddFolderController(this.mainC);
+        } catch (DialogException e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
 
     protected void createModel() throws InterruptedException {
         this.mainC.eraseMessage();

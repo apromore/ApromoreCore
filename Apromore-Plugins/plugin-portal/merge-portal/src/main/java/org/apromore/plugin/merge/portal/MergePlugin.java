@@ -102,7 +102,7 @@ public class MergePlugin extends DefaultPortalPlugin {
 
             // At least 2 process versions must be selected. Not necessarily of different processes
             if (selectedProcessVersions.size() == 1 && selectedVersions.next().size() < 2 || selectedProcessVersions.size() < 2) {
-                context.getMessageHandler().displayInfo("Select at least 2 process models for merge.");
+                Messagebox.show("Select at least 2 process models for merge.");
                 return;
             }
 
@@ -257,7 +257,7 @@ public class MergePlugin extends DefaultPortalPlugin {
                 message = "Merge failed (" + e.getMessage() + ")";
             }
 
-            context.getMessageHandler().displayInfo(message);
+            Messagebox.show(message);
             this.processMergeW.detach();
         }
     }
