@@ -82,7 +82,7 @@ class TrainingControllerUnitTest {
       assertNull(reader.readLine())
   }
 
-  @Test
+/*  @Test
   fun testWriteCSV() : Unit {
        val values = Arrays.asList("one", "two,three", "\"four\"", "five\nsix")
        val outputStream = ByteArrayOutputStream()
@@ -91,5 +91,5 @@ class TrainingControllerUnitTest {
        printWriter.close()
 
        assertEquals("one,\"two,three\",\"\"\"four\"\"\",\"five\nsix\"\n", outputStream.toString())
-  }
+  }*/
 }

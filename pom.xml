@@ -1733,6 +1733,7 @@
                         <includeOnlyProperty>git.commit.id.describe</includeOnlyProperty>
                         <includeOnlyProperty>git.commit.time</includeOnlyProperty>
                     </includeOnlyProperties>
+		<failOnNoGitDirectory>false</failOnNoGitDirectory>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <generateGitPropertiesFilename>${gitPropertiesPath}</generateGitPropertiesFilename>
                     <gitDescribe>
