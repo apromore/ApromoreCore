@@ -334,8 +334,8 @@ public class EventLogServiceImplTest {
     public void getOpenXesVersion() {
         XRuntimeUtils xRuntimeUtils = new XRuntimeUtils();
         System.out.println(xRuntimeUtils.OPENXES_VERSION);
-        XFactoryNaiveImpl xFactoryNaive = new XFactoryNaiveImpl();
-        System.out.println(xFactoryNaive.isUseInterner());
+//        XFactoryNaiveImpl xFactoryNaive = new XFactoryNaiveImpl();
+//        System.out.println(xFactoryNaive.isUseInterner());
     }
 
     @Test
