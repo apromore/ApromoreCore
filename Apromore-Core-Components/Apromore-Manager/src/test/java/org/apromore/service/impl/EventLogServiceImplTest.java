@@ -11,11 +11,17 @@ import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.util.StatType;
 import org.apromore.util.UuidAdapter;
+import org.deckfour.xes.factory.XFactory;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.factory.XFactoryRegistry;
+import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeMapImpl;
 import org.deckfour.xes.model.impl.XLogImpl;
+import org.deckfour.xes.util.XRuntimeUtils;
+import org.deckfour.xes.util.XTimer;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,7 +34,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import java.io.FileInputStream;
+import java.lang.management.ManagementFactory;
 import java.util.*;
+import java.util.zip.GZIPInputStream;
 
 import static org.apromore.service.impl.EventLogServiceImpl.PARENT_NODE_FLAG;
 import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
@@ -147,7 +156,7 @@ public class EventLogServiceImplTest {
         XLog xlog = new XLogImpl(new XAttributeMapImpl());
 
         expect(logRepository.findUniqueByID(logId)).andReturn(log);
-        expect(logRepository.getProcessLog(log)).andReturn(xlog);
+        expect(logRepository.getProcessLog(log, "")).andReturn(xlog);
         replay(logRepository);
 //        XLog expectXlog = eventLogService.getXLog(logId);
 //        verify(logRepository);
@@ -319,4 +328,44 @@ public class EventLogServiceImplTest {
 //        assertThat(result, equalTo(stats));
 //
 //    }
+
+
+    @Test
+    public void getOpenXesVersion() {
+        XRuntimeUtils xRuntimeUtils = new XRuntimeUtils();
+        System.out.println(xRuntimeUtils.OPENXES_VERSION);
+        XFactoryNaiveImpl xFactoryNaive = new XFactoryNaiveImpl();
+        System.out.println(xFactoryNaive.isUseInterner());
+    }
+
+    @Test
+    public void getXlog() {
+        XTimer timer = new XTimer();
+        XLog log;
+        List<XLog> parsedLog = null;
+        // create log
+//				XLog log = createLog(20, 3000, 100, 2000);//createLog(150, 151, 500, 1000);
+        // import log
+        XFactory factory = XFactoryRegistry.instance().currentDefault();
+        XesXmlParser parser = new XesXmlParser(factory);
+        try {
+            parsedLog = parser.parse(new GZIPInputStream(new FileInputStream("/Users/frank/Projects/OpenXES 2.26/test/procmin20180612_F2_5M.xes.gz")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        log = parsedLog.iterator().next();
+        timer.stop();
+        System.out.println("Imported log:");
+//				System.out.println("Created log:");
+//				System.out.println("  Traces: " + NUM_TRACES);
+//				System.out.println("  Events: " + NUM_EVENTS);
+//				System.out.println("  Attributes: " + NUM_ATTRIBUTES);
+        System.out.println("Duration: " + timer.getDurationString());
+        System.gc();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+        }
+        System.out.println("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+    }
 }

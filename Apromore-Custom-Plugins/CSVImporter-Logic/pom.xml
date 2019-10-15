@@ -45,6 +45,8 @@
                 <configuration>
                     <instructions>
                         <Import-Package>
+
+                            org.deckfour.xes.*;version="2.27",
 <!--
                             org.springframework.beans.factory.aspectj,
                             javax.inject,
@@ -75,9 +77,9 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.deckfour.xes</groupId>
+            <groupId>org.apromore</groupId>
             <artifactId>OpenXES</artifactId>
-            <version>6.5.20170418</version>
+            <version>2.27</version>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zk</groupId>

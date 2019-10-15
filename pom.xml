@@ -183,14 +183,15 @@
         <module>Apromore-Custom-Plugins/PQL-Logic</module>
         <module>Apromore-Custom-Plugins/PQL-Logic-WS</module>
         <module>Apromore-Custom-Plugins/PQL-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
-        <module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/ProDrift-Logic</module>
         <module>Apromore-Custom-Plugins/ProDrift-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Quaestio-Portal-Plugin</module>
         <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
         <module>Apromore-Custom-Plugins/StageMining-Logic</module>
         <module>Apromore-Custom-Plugins/StageMining-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
+        <module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>
+        <module>Apromore-Custom-Plugins/XES-Selection-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Theme-Selection-Portal-Plugin</module>
 
         <!-- Applets -->
@@ -234,6 +235,8 @@
         <!--<module>Supplements/cpf2pnml</module>-->
         <!--<module>Supplements/epml2cpf</module>-->
         <!--<module>Supplements/pnml2cpf</module>-->
+
+        <module>Apromore-Extras/OpenXES</module>
     </modules>
 
     <properties>
@@ -434,6 +437,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>1.4.8</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-math3</artifactId>
                 <version>3.6</version>
@@ -512,14 +521,18 @@
                 <version>${servlet-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.deckfour</groupId>
+                <groupId>org.apromore</groupId>
                 <artifactId>openxes</artifactId>
-                <version>2.16</version>
             </dependency>
             <dependency>
                 <groupId>org.deckfour</groupId>
                 <artifactId>spex</artifactId>
                 <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.andreas-solti.xeslite</groupId>
+                <artifactId>xeslite</artifactId>
+                <version>0.0.1</version>
             </dependency>
 <!--
             <dependency>

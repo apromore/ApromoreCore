@@ -4,6 +4,10 @@
 **/dependency-reduced-pom.xml
 **/catalina.home_IS_UNDEFINED
 
+**/site.properties
+**/.gitignore
+Supplements/Virgo/dmk.bat
+
 # IntelliJ IDEA artifacts, see https://intellij-support.jetbrains.com/hc/en-us/articles/206544839-How-to-manage-projects-under-Version-Control-Systems
 **/.idea/*
 **/*.iws
@@ -29,4 +33,10 @@ Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE
 **/.recommenders/*
 Apromore-Core-Components/Apromore-BPMNEditor/pom.xml~HEAD
 Apromore-Extras/apql/.project
+
+# SVN files
+.svn*
+
 **/.gitignore
+
+zkcharts-3.0.3.jar

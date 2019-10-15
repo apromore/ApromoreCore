@@ -1,0 +1,16 @@
+<extension name="Software Communication" prefix="swcomm" uri="http://www.xes-standard.org/swcomm.xesext"/>
+	<event>
+		<string key="localHost">
+			<alias mapping="EN" name="Local endpoint - host name"/>
+		</string>
+		<int key="localPort">
+			<alias mapping="EN" name="Local endpoint - port"/>
+		</int>
+		<string key="remoteHost">
+			<alias mapping="EN" name="Remote endpoint - host name"/>
+		</string>
+		<int key="remotePort">
+			<alias mapping="EN" name="Remote endpoint - port"/>
+		</int>
+	</event>
+</extension>

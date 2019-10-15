@@ -28,11 +28,16 @@ import org.apromore.dao.model.Log;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryNaiveImpl;
+import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.out.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xeslite.dfa.XLogDFABuilder;
+import org.xeslite.dfa.XLogDFAXmlParser;
+import org.xeslite.external.XFactoryExternalStore;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -41,10 +46,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.zip.GZIPInputStream;
 
 /**
  * implementation of the org.apromore.dao.LogRepositoryCustom interface.
@@ -142,16 +150,56 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         }
     }
 
-    public XLog getProcessLog(Log log) {
+    /**
+     * Load XES log file from Event Logs Repository
+     * @param log
+     * @return
+     */
+    public XLog getProcessLog(Log log, String factoryName) {
         if (log != null) {
+
+            // *******  profiling code start here ********
+            long startTime = System.nanoTime();
+            // *******  profiling code end here ********
+
             try {
                 String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
-                return importFromFile(new XFactoryNaiveImpl(), name);
+                XFactory factory = getXFactory(factoryName);
+                XLog xlog = importFromFile(factory, name);
+
+                // *******  profiling code start here ********
+                long elapsedNanos = System.nanoTime() - startTime;
+                LOGGER.info("Retrieved XES log " + name + " using " + factory.getClass() + "Elapsed time: " + elapsedNanos / 1000000 + " ms");
+
+//                System.gc();
+//                try {
+//                    Thread.sleep(5000);
+//                } catch (InterruptedException e) {
+//                }
+//                LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+                // *******  profiling code end here ********
+
+                return xlog;
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
             }
         }
         return null;
+    }
+
+    private XFactory getXFactory(String factoryName) {
+
+        if (factoryName != null) {
+            // Look for a registered XFactory with the specified name
+            for (XFactory factory: XFactoryRegistry.instance().getAvailable()) {
+                if (Objects.equals(factory.getName(), factoryName)) {
+                    return factory;
+                }
+            }
+        }
+
+        // If the named factory couldn't be found, fall back to the default
+        return XFactoryRegistry.instance().currentDefault();
     }
 
     /* ************************** Util Methods ******************************* */

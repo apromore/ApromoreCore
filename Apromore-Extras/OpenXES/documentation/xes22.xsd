@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.xes-standard.org/" xmlns="http://www.xes-standard.org/">
+	<!-- This file describes the XML serialization of the XES format for event log data. -->
+	<!-- For more information about XES, visit http://www.xes-standard.org/ -->
+	
+	<!-- (c) 2014 by IEEE Task Force on Process Mining (http://www.win.tue.nl/ieetfpm) -->
+
+	<!-- Date: November 27, 2014 -->
+	<!-- Version 2.2 -->
+	<!-- Author: Eric Verbeek (h.m.w.verbeek@tue.nl) -->
+	<!-- Fixed issue with log attributes having to precede the extensions etc. -->
+	<!-- Also fixed xmlns issue. -->
+
+	<!-- Date: November 26, 2014 -->
+	<!-- Version 2.1 -->
+	<!-- Author: Eric Verbeek (h.m.w.verbeek@tue.nl) -->
+	<!-- Change: Extension names are now of xs:string type instead of xs:NCName type. -->
+	<!-- Change: Classifier names are now of xs:string type instead of xs:NCName type. -->
+	<!-- Change: Classifier keys are now of xs:string type instead of xs:token type. -->
+	<!-- Change: Attribute keys are now of xs:string type instead of xs:Name type. -->
+
+	<!-- Date: August 5, 2014 -->	
+	<!-- Version 2.1a -->
+	<!-- Author: Eric Verbeek (h.m.w.verbeek@tue.nl) -->
+	<!-- Change: Added sequence to prevent xsd.exe tool from overflowing stack. -->
+
+	<!-- Date: March 28, 2014 -->	
+	<!-- Version 2.0 -->
+	<!-- Author: Eric Verbeek (h.m.w.verbeek@tue.nl) -->
+	<!-- Change: Added list and container attribute types -->
+	
+	<!-- Date: June 12, 2012 -->
+	<!-- Version: 1.1 -->
+	<!-- Author: Christian Günther (christian@fluxicom.com) -->
+	<!-- Author: Eric Verbeek (h.m.w.verbeek@tue.nl) -->
+	<!-- Change: Added AttributableType (list of attribute types now occurs only once) -->
+	<!-- Change: Added id type -->
+	<!-- Change: Made xes.features and openxes.version optional -->
+	
+	<!-- Date: November 25, 2009 -->
+	<!-- Version: 1.0 -->
+	<!-- Author: Christian Günther (christian@fluxicom.com) -->
+	
+	<!-- Every XES XML Serialization needs to contain exactly one log element -->
+	<xs:element name="log" type="LogType"/>
+	
+	<!-- Known attributes -->
+	<xs:group name="Attributes">
+		<xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="string" minOccurs="0" maxOccurs="unbounded" type="AttributeStringType"/>
+				<xs:element name="date" minOccurs="0" maxOccurs="unbounded" type="AttributeDateType"/>
+				<xs:element name="int" minOccurs="0" maxOccurs="unbounded" type="AttributeIntType"/>
+				<xs:element name="float" minOccurs="0" maxOccurs="unbounded" type="AttributeFloatType"/>
+				<xs:element name="boolean" minOccurs="0" maxOccurs="unbounded" type="AttributeBooleanType"/>
+				<xs:element name="id" minOccurs="0" maxOccurs="unbounded" type="AttributeIDType"/>
+				<xs:element name="list" minOccurs="0" maxOccurs="unbounded" type="AttributeListType"/>
+				<xs:element name="container" minOccurs="0" maxOccurs="unbounded" type="AttributeContainerType"/>
+			</xs:choice>
+		</xs:sequence> 
+	</xs:group>
+	
+	<!-- String attribute -->
+	<xs:complexType name="AttributeStringType">
+		<xs:group ref="Attributes"/>
+	    <xs:attribute name="key" use="required" type="xs:string"/>
+ 		<xs:attribute name="value" use="required" type="xs:string"/>
+	</xs:complexType>
+
+	<!-- Date attribute -->
+	<xs:complexType name="AttributeDateType">
+		<xs:group ref="Attributes"/>
+	    <xs:attribute name="key" use="required" type="xs:string"/>
+ 		<xs:attribute name="value" use="required" type="xs:dateTime"/>
+	</xs:complexType>
+
+	<!-- Integer attribute -->
+	<xs:complexType name="AttributeIntType">
+		<xs:group ref="Attributes"/>
+	    <xs:attribute name="key" use="required" type="xs:string"/>
+ 		<xs:attribute name="value" use="required" type="xs:long"/>
+	</xs:complexType>
+
+	<!-- Floating-point attribute -->
+	<xs:complexType name="AttributeFloatType">
+		<xs:group ref="Attributes"/>
+	    <xs:attribute name="key" use="required" type="xs:string"/>
+ 		<xs:attribute name="value" use="required" type="xs:double"/>
+	</xs:complexType>
+
+	<!-- Boolean attribute -->
+	<xs:complexType name="AttributeBooleanType">
+		<xs:group ref="Attributes"/>
+	    <xs:attribute name="key" use="required" type="xs:string"/>
+ 		<xs:attribute name="value" use="required" type="xs:boolean"/>
+	</xs:complexType>
+
+	<!-- ID attribute -->
+	<xs:complexType name="AttributeIDType">
+		<xs:group ref="Attributes"/>
+	    <xs:attribute name="key" use="required" type="xs:string"/>
+ 		<xs:attribute name="value" use="required" type="xs:string"/>
+	</xs:complexType>
+	
+	<!-- List attribute -->
+	<xs:complexType name="AttributeListType">
+		<xs:group ref="Attributes"/>
+	    <xs:attribute name="key" use="required" type="xs:string"/>
+ 	</xs:complexType>
+	
+	<!-- Container attribute -->
+	<xs:complexType name="AttributeContainerType">
+		<xs:group ref="Attributes"/>
+	    <xs:attribute name="key" use="required" type="xs:string"/>
+ 	</xs:complexType>
+	
+	<!-- Extension definition -->
+	<xs:complexType name="ExtensionType">
+		<xs:attribute name="name" use="required" type="xs:string"/>
+		<xs:attribute name="prefix" use="required" type="xs:NCName"/>
+		<xs:attribute name="uri" use="required" type="xs:anyURI"/>
+	</xs:complexType>
+
+	<xs:simpleType name="globaltype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="trace"/>
+			<xs:enumeration value="event"/>
+		</xs:restriction>
+	</xs:simpleType>
+		
+	<!-- Globals definition -->
+	<xs:complexType name="GlobalsType">
+		<xs:group ref="Attributes"/>
+		<xs:attribute name="scope" type="globaltype" use="required"/>
+	</xs:complexType>
+	
+	<!-- Classifier definition -->
+	<xs:complexType name="ClassifierType">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="keys" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<!-- Logs are elements that may contain traces -->
+	<xs:complexType name="LogType">
+		<xs:sequence>
+			<xs:element name="extension" minOccurs="0" maxOccurs="unbounded" type="ExtensionType"/>
+			<xs:element name="global" minOccurs="0" maxOccurs="2" type="GlobalsType"/>
+			<xs:element name="classifier" minOccurs="0" maxOccurs="unbounded" type="ClassifierType"/>
+			<xs:group ref="Attributes"/>
+			<xs:element name="trace" minOccurs="0" maxOccurs="unbounded" type="TraceType"/>
+		</xs:sequence>
+		<xs:attribute name="xes.version" type="xs:decimal" use="required"/>
+		<xs:attribute name="xes.features" type="xs:token"/>
+		<xs:attribute name="openxes.version" type="xs:string"/>
+	</xs:complexType>
+
+	<!-- Traces are elements that may contain events -->
+	<xs:complexType name="TraceType">
+		<xs:sequence>
+			<xs:group ref="Attributes"/>
+			<xs:element name="event" minOccurs="0" maxOccurs="unbounded" type="EventType"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Events are elements -->
+	<xs:complexType name="EventType">
+		<xs:sequence>
+			<xs:group ref="Attributes"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

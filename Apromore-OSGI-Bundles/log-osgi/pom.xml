@@ -49,12 +49,13 @@
                         <Bundle-Name>Log OSGI</Bundle-Name>
                         <Import-Package>
                             !sun.nio.ch,
+                            org.deckfour.xes.*;version="2.27",
                             *
                         </Import-Package>
                         <Export-Package>
                             org.apromore.xlog.singletonlog,
                             org.deckfour.spex.*;version="1.0",
-                            org.deckfour.xes.*;version="2.16",
+                            org.deckfour.xes.*;version="2.27",
                             org.xeslite.*;version="0.0.1"
                         </Export-Package>
                     </instructions>
@@ -67,18 +68,17 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.8</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>14.0.1</version>
         </dependency>
 
         <!-- Log-lib -->
         <dependency>
-            <groupId>org.deckfour</groupId>
+            <groupId>org.apromore</groupId>
             <artifactId>openxes</artifactId>
+            <version>2.27</version>
         </dependency>
         <dependency>
             <groupId>org.deckfour</groupId>

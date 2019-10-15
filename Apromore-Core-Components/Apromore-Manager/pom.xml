@@ -55,9 +55,9 @@
                     There is some problem in the bpstruct JAR that causes the newer version to throw an error!
                     So we use the older version as workaround
                 -->
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <niceManifest>true</niceManifest>
                     <unpackBundle>false</unpackBundle> <!-- This is important so that embedded JAR's don't show up twice -->
                     <instructions>
                         <Embed-Dependency>
@@ -87,6 +87,7 @@
                             org.apromore.filestore-client;version="[1.0,1.1]"
                         </Import-Bundle>
                         <Import-Package>
+                            org.deckfour.xes.*;version="2.27",
                             com.mysql.jdbc,
                             javax.sql,
                             org.apromore.plugin.provider,
@@ -109,6 +110,7 @@
                             !edu.sussex.nlp.jws,
                             !junit*,
                             !net.didion.jwnl*,
+                            org.xeslite.external,
                             *
                         </Import-Package>
                         <Export-Package>
@@ -623,8 +625,15 @@
         </dependency>
 
         <dependency>
-            <groupId>org.deckfour</groupId>
+            <groupId>org.apromore</groupId>
             <artifactId>openxes</artifactId>
+            <version>2.27</version>
+        </dependency>
+
+        <dependency>
+                <groupId>io.github.andreas-solti.xeslite</groupId>
+                <artifactId>xeslite</artifactId>
+                <version>0.0.1</version>
         </dependency>
 		
 		<!-- GUI related dependencies -->

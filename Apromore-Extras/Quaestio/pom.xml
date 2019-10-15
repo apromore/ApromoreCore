@@ -212,8 +212,9 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.deckfour</groupId>
+            <groupId>org.apromore</groupId>
             <artifactId>openxes</artifactId>
+            <version>2.27</version>
             <scope>runtime</scope>
         </dependency>
 

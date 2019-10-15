@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xesextension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext">
+	<!--
+		In almost all applications, the exact date and time at which events occur can be precisely recorded. Storing
+		this information is the purpose of the time extension. Recording a UTC time for events is important, since this
+		constitutes crucial information for many event log analysis techniques.
+	-->
+	<event>
+		<date key="timestamp">
+			<!--
+				The UTC time at which the event occurred.
+			-->
+			<alias mapping="EN" name="Timestamp"/>
+			<alias mapping="DE" name="Zeitstempel"/>
+			<alias mapping="FR" name="Horodateur"/>
+			<alias mapping="ES" name="Timestamp"/>
+			<alias mapping="PT" name="Timestamp"/>
+		</date>
+	</event>
+</xesextension>

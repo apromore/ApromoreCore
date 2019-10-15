@@ -56,6 +56,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.xeslite.external.XFactoryExternalStore;
 
 import javax.activation.DataHandler;
 import javax.inject.Inject;
@@ -114,11 +115,26 @@ public class EventLogServiceImpl implements EventLogService {
         return null;
     }
 
+    /**
+     * Import serialisations into Apromore application.
+     * @param username       The user doing the importing.
+     * @param folderId       The folder we are saving the process in.
+     * @param logName        the name of the process being imported.
+     * @param inputStreamLog
+     * @param extension
+     * @param domain         the domain of the model
+     * @param created        the time created
+     * @param publicModel    is this a public model?
+     * @return
+     * @throws Exception
+     */
     @Override
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog, String extension, String domain, String created, boolean publicModel) throws Exception {
         User user = userSrv.findUserByLogin(username);
 
-        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(new XFactoryNaiveImpl(), inputStreamLog, extension), user.getId(), domain, created);
+        XFactory factory = XFactoryRegistry.instance().currentDefault().getClass().getConstructor().newInstance();
+        LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
+        String path = logRepo.storeProcessLog(folderId, logName, importFromStream(factory, inputStreamLog, extension), user.getId(), domain, created);
         Log log = new Log();
         log.setFolder(folderRepo.findUniqueByID(folderId));
         log.setDomain(domain);
@@ -214,7 +230,7 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public ExportLogResultType exportLog(Integer logId) throws Exception {
         Log log = logRepo.findUniqueByID(logId);
-        XLog xlog = logRepo.getProcessLog(log);
+        XLog xlog = logRepo.getProcessLog(log, null);
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         exportToStream(outputStream, xlog);
         ExportLogResultType exportLogResultType = new ExportLogResultType();
@@ -227,8 +243,13 @@ public class EventLogServiceImpl implements EventLogService {
 
     @Override
     public XLog getXLog(Integer logId) {
+        return getXLog(logId, null);
+    }
+
+    @Override
+    public XLog getXLog(Integer logId, String factoryName) {
         Log log = logRepo.findUniqueByID(logId);
-        return logRepo.getProcessLog(log);
+        return logRepo.getProcessLog(log, factoryName);
     }
 
 

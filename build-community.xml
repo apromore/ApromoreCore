@@ -116,6 +116,9 @@
 		<include name="Apromore-Custom-Plugins/Process-Discoverer-Logic/target/process-discoverer-logic-2.0.0.jar"/>
 		<include name="Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/target/process-discoverer-portal-plugin-2.0.0.war"/>
 
+        <!-- XES implementation selector -->
+        <include name="Apromore-Custom-Plugins/XES-Selection-Portal-Plugin/target/xes-selection-portal-plugin-1.0.jar"/>
+
         <!--<include name="Supplements/ow2-bundles-externals-opencsv-1.0.36.jar"/> -->
         <!-- <include name="Supplements/process-discoverer-1.0.20181204.jar"/> -->
 

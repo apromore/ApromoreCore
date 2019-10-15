@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <!-- This file describes the  serialization for extensions of the XES format for event log data. -->
+  <!-- For more information about XES, visit http://www.xes-standard.org/ -->
+  
+  <!-- (c) 2014 IEEE Task Force on Process Mining (http://wwww.win.tue.nl/ieeetfpm)  -->
+  
+  <!-- Date: March 28, 2014 -->  
+  <!--  Version 2.0 -->
+  <!-- Author: Eric Verbeek (h.m.w.verbeek@tue.nl) -->
+  <!-- Change: Added list and container attribute type -->
+  
+  <!-- Date: June 12, 2012 -->
+  <!-- Version: 1.1 -->
+  <!-- Author: Christian Günther (christian@fluxicom.com) -->
+  <!-- Author: Eric Verbeek (h.m.w.verbeek@tue.nl) -->
+  <!-- Change: Added AttributableType (list of attribute types now occurs only once) -->
+  <!-- Change: Added id type -->
+  
+  <!-- Date: November 25, 2009 -->
+  <!-- Version: 1.0 -->
+  <!-- Author: Christian Günther (christian@fluxicom.com) -->
+
+  <!-- Any extension definition has an xesextension root element. -->
+  <!-- Child elements are containers, which define attributes for -->
+  <!-- the log, trace, event, and meta level of the XES -->
+  <!-- type hierarchy. -->
+  <!-- All of these containers are optional. -->
+  <!-- The root element further has attributes, defining: -->
+  <!--  * The name of the extension. -->
+  <!--  * A unique prefix string for  attributes defined by this -->
+  <!--    extension. -->
+  <!--  * A unique URI of this extension, holding the XESEXT -->
+  <!--    definition file. -->
+  <xs:element name="xesextension">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="log" minOccurs="0" maxOccurs="1" type="AttributableType"/>
+        <xs:element name="trace" minOccurs="0" maxOccurs="1" type="AttributableType"/>
+        <xs:element name="event" minOccurs="0" maxOccurs="1" type="AttributableType"/>
+        <xs:element name="meta" minOccurs="0" maxOccurs="1" type="AttributableType"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+      <xs:attribute name="prefix" use="required" type="xs:NCName"/>
+      <xs:attribute name="uri" use="required" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Attributes -->
+  <xs:complexType name="AttributableType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="string" type="AttributeType"/>
+      <xs:element name="date" type="AttributeType"/>
+      <xs:element name="int" type="AttributeType"/>
+      <xs:element name="float" type="AttributeType"/>
+      <xs:element name="boolean" type="AttributeType"/>
+      <xs:element name="id" type="AttributeType"/>
+      <xs:element name="list" type="AttributeType"/>
+      <xs:element name="container" type="AttributeType"/>
+    </xs:choice>
+  </xs:complexType>
+  
+  <!-- Attribute -->
+  <xs:complexType name="AttributeType">
+    <xs:sequence>
+      <xs:element name="alias" minOccurs="0" maxOccurs="unbounded" type="AliasType"/>
+    </xs:sequence>
+    <xs:attribute name="key" use="required" type="xs:Name"/>
+  </xs:complexType>
+  
+  <!--  Alias definition, defining a mapping alias for an attribute -->
+  <xs:complexType name="AliasType">
+  	<xs:attribute name="mapping" use="required" type="xs:NCName"/>
+  	<xs:attribute name="name" use="required" type="xs:string"/>
+  </xs:complexType>
+
+</xs:schema>

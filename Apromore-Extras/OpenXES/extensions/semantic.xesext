@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xesextension name="Semantic" prefix="semantic" uri="http://www.xes-standard.org/semantic.xesext">
+	<!--
+		Depending on the view on a process, type hierarchy artifacts may correspond to different concepts. For example,
+		the name of an event (as specified by the Concept extension) may refer to the activity whose execution has
+		triggered this event. However, this activity may be situated on a low level in the process meta-model, and be a
+		part of higher-level, aggregate activities itself.
+
+		Besides events, also other elements of the XES type hierarchy may refer to a number of concepts at the same
+		time (e.g., a log may refer to different process definitions, on different levels of abstractions). To express the
+		fact, that one type artifact may represent a number of concepts in a process meta-model, the semantic extension
+		has been defined.
+
+		It is assumed that there exists an ontology for the process meta-model, where every concept can be identified
+		by a unique URI. The semantic extension defines an attribute, which allows to store a number of model references,
+		as URIs, in any element of the XES type hierarchy.
+	-->
+	<log>
+		<string key="modelReference">
+			<!--
+				References to model concepts in an ontology. Model References are stored in a
+				literal string, as comma-separated URIs identifying the ontology concepts.
+			-->
+			<alias mapping="EN" name="Ontology Model Reference"/>
+			<alias mapping="DE" name="Ontologie-Modellreferenz"/>
+			<alias mapping="FR" name="Référence au Modèle Ontologique"/>
+			<alias mapping="ES" name="Referencia de Modelo Ontológico"/>
+			<alias mapping="PT" name="Referência de Modelo Ontológico"/>
+		</string>
+	</log>
+	<trace>
+		<string key="modelReference">
+			<!--
+				References to model concepts in an ontology. Model References are stored in a
+				literal string, as comma-separated URIs identifying the ontology concepts.
+			-->
+			<alias mapping="EN" name="Ontology Model Reference"/>
+			<alias mapping="DE" name="Ontologie-Modellreferenz"/>
+			<alias mapping="FR" name="Référence au Modèle Ontologique"/>
+			<alias mapping="ES" name="Referencia de Modelo Ontológico"/>
+			<alias mapping="PT" name="Referência de Modelo Ontológico"/>
+		</string>
+	</trace>
+	<event>
+		<string key="modelReference">
+			<!--
+				References to model concepts in an ontology. Model References are stored in a
+				literal string, as comma-separated URIs identifying the ontology concepts.
+			-->
+			<alias mapping="EN" name="Ontology Model Reference"/>
+			<alias mapping="DE" name="Ontologie-Modellreferenz"/>
+			<alias mapping="FR" name="Référence au Modèle Ontologique"/>
+			<alias mapping="ES" name="Referencia de Modelo Ontológico"/>
+			<alias mapping="PT" name="Referência de Modelo Ontológico"/>
+		</string>
+	</event>
+	<meta>
+		<string key="modelReference">
+			<!--
+				References to model concepts in an ontology. Model References are stored in a
+				literal string, as comma-separated URIs identifying the ontology concepts.
+			-->
+			<alias mapping="EN" name="Ontology Model Reference"/>
+			<alias mapping="DE" name="Ontologie-Modellreferenz"/>
+			<alias mapping="FR" name="Référence au Modèle Ontologique"/>
+			<alias mapping="ES" name="Referencia de Modelo Ontológico"/>
+			<alias mapping="PT" name="Referência de Modelo Ontológico"/>
+		</string>
+	</meta>
+</xesextension>

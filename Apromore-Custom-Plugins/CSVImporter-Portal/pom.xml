@@ -69,9 +69,9 @@
             <!--<version>4.0</version>-->
         <!--</dependency>-->
         <dependency>
-            <groupId>org.deckfour.xes</groupId>
+            <groupId>org.apromore</groupId>
             <artifactId>OpenXES</artifactId>
-            <version>6.5.20170418</version>
+            <version>2.27</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>

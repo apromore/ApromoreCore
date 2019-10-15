@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xesextension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext">
+	<!--
+		The organizational extension is useful for domains, where events can be caused by human actors, who are
+		somewhat part of an organizational structure. This extension specifies three attributes for events, which identify
+		the actor having caused the event, and his position in the organizational structure.
+	-->
+	<event>
+		<string key="resource">
+			<!--
+				The name, or identifier, of the resource that triggered the event.
+			-->
+			<alias mapping="EN" name="Resource"/>
+			<alias mapping="DE" name="Akteur"/>
+			<alias mapping="FR" name="Agent"/>
+			<alias mapping="ES" name="Recurso"/>
+			<alias mapping="PT" name="Recurso"/>
+		</string>
+		<string key="role">
+			<!--
+				The role of the resource that triggered the event, within the organizational structure.
+			-->
+			<alias mapping="EN" name="Role"/>
+			<alias mapping="DE" name="Rolle"/>
+			<alias mapping="FR" name="Rôle"/>
+			<alias mapping="ES" name="Papel"/>
+			<alias mapping="PT" name="Papel"/>
+		</string>
+		<string key="group">
+			<!--
+				The group within the organizational structure, of which the resource that triggered the event is a member.
+			-->
+			<alias mapping="EN" name="Group"/>
+			<alias mapping="DE" name="Gruppe"/>
+			<alias mapping="FR" name="Groupe"/>
+			<alias mapping="ES" name="Grupo"/>
+			<alias mapping="PT" name="Grupo"/>
+		</string>
+	</event>
+</xesextension>
