@@ -1,5 +1,4 @@
 # Don't want to commit object files
-**/git.properties
 **/build/*
 **/target/*
 **/dependency-reduced-pom.xml
