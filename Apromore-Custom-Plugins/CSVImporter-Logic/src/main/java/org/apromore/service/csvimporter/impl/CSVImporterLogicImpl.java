@@ -192,7 +192,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     if (tStamp == null) {
                         if(startTimestamp != null) {
                             tStamp = startTimestamp;
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Copying start timestamp field into end timestamp");
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Warning: End time stamp field is invalid. Copying start timestamp field into end timestamp");
                         } else {
                             invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Start timestamp is not available.");
                         }
@@ -220,12 +220,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     e.printStackTrace();
                     errorCount++;
                     if (line.length > 4) {
-                        invalidRows.add("Row: " + (lineCount + 1) + ", Something went wrong. Content: " + line[0] + "," +
+                        invalidRows.add("Row: " + (lineCount + 1) + ", Error: Something went wrong. Content: " + line[0] + "," +
                                 line[1] + "," + line[2] + "," + line[3] + " ...");
                         errorCount++;
                         rowGTG = false;
                     } else {
-                        invalidRows.add("Row: " + (lineCount + 1) + ", Content: " + " Empty, or too short for display.");
+                        invalidRows.add("Row: " + (lineCount + 1) + ", Error: Content: " + " Empty, or too short for display.");
                         errorCount++;
                         rowGTG = false;
                     }

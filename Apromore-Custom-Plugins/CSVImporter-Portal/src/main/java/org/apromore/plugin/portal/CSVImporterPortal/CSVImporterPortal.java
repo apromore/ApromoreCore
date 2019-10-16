@@ -233,7 +233,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         newColumn.setLabel(header.get(i));
                         newColumn.setAlign("center");
                         headerColumns.appendChild(newColumn);
-                        headerColumns.setSizable(true);
+//                        headerColumns.setSizable(true);
                     }
 
 
