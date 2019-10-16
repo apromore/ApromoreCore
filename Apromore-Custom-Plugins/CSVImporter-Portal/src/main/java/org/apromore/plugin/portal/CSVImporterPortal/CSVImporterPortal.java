@@ -265,13 +265,36 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     createPopUpTextBox(newLine.size(), popUPBox, helpP);
                     csvImporterLogic.openPopUp();
                     reader.close();
+
+
+
+                    Button setOtherAll = (Button) window.getFellow("setOtherAll");
+                    Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
+
+
+                    setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
+                    setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
+                    
+                    setOtherAll.addEventListener("onClick", new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                            csvImporterLogic.setOtherAll(window);
+                        }
+                    });
+
+                    setIgnoreAll.addEventListener("onClick", new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                            csvImporterLogic.setIgnoreAll(window);
+                        }
+                    });
                 }
+
 
             } catch (IOException e) {
                 e.printStackTrace();
                 Messagebox.show(e.getMessage());
             }
         }
+
     }
 
 
@@ -352,6 +375,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Div popUPBox = (Div) window.getFellow("popUPBox");
             Button toXESButton = (Button) window.getFellow("toXESButton");
             Button cancelButton = (Button) window.getFellow("cancelButton");
+
 
             if(media != null) {
                 window.setWidth("95%");

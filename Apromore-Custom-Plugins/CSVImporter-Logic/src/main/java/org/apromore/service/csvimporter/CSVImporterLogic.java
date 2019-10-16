@@ -4,10 +4,7 @@ import com.opencsv.CSVReader;
 import org.apromore.service.csvimporter.impl.LogModel;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.util.media.Media;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Listbox;
+import org.zkoss.zul.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,6 +33,8 @@ public interface CSVImporterLogic {
      void resetHead();
      void resetList() ;
      void setOtherTimestamps(ListModelList<String[]> result);
+    void setOtherAll(Window window);
+    void setIgnoreAll(Window window);
     void setLists(int cols, HashMap<String, Integer> heads, String boxwidth);
      List<Listbox> getLists();
     void tryParsing(String format, int colPos);
