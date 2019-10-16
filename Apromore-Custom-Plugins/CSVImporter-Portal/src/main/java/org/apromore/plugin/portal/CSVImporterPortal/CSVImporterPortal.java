@@ -73,6 +73,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     private static String labelID = "lbl_";
 
     private static Integer AttribWidth = 150;
+    private static Integer IndexColumnWidth = 50;
 
     private boolean isPublic;
 
@@ -219,7 +220,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 
                     Column indexCol = new Column();
-                    indexCol.setWidth("50px");
+                    indexCol.setWidth(IndexColumnWidth + "px");
                     indexCol.setValue("");
                     indexCol.setLabel("");
                     indexCol.setAlign("center");
@@ -306,7 +307,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) + 50 )  + "px; position: absolute; z-index: 10; visibility: hidden; top:1px;");
+            item.setStyle("margin-left:" + (i==0? IndexColumnWidth: (i*AttribWidth) + IndexColumnWidth )  + "px; position: absolute; z-index: 10; visibility: hidden; top:1px;");
 
             Button sp = new Button();
 //            sp.setLabel("-");
