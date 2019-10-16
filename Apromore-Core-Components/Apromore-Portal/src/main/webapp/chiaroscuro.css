@@ -24,7 +24,7 @@
 .z-icon-caret-left:before  { content: "\f0d9"; }
 .z-icon-caret-right:before { content: "\f0da"; }
 
-/* Chiaroscuro theme (Iceblue/Montana) */
+/* Chiaroscuro ZK theme, light palette (Iceblue) */
 :root {
   color-scheme: light dark;
   --text-color-default:      rgba(0, 0, 0, 0.9);
@@ -52,6 +52,8 @@
   --loading-animation-load:  '~./zul/img/misc/progress-72.gif';
   --slider-ticks:            '~./zul/img/slider/scale-ticks.png';
 }
+
+/* Chiaroscuro ZK theme, dark palette (Montana)
 @media (prefers-color-scheme: dark) {
   :root {
     --text-color-default:      rgba(255,255,255,0.9);
@@ -71,10 +73,6 @@
     --loading-animation-defer: '~./zul/img/misc/progress-dark-32.gif';
     --loading-animation-load:  '~./zul/img/misc/progress-dark-72.gif';
     --slider-ticks:            '~./zul/img/slider/scale-ticks-dark.png';
-
-    /*
-    select { background: var(--input-background-color) }
-    */
   }
 }
-
+*/
