@@ -58,6 +58,10 @@
         <constructor-arg type="String" value="${portal.menuorder}"/>
     </bean>
 
+    <bean id="portalShowSignavio" class="java.lang.Boolean">
+        <constructor-arg type="String" value="${portal.showSignavio}"/>
+    </bean>
+
     <import resource="portal-osgi-context.xml" />
     <import resource="portalContext-services.xml" />
     <import resource="portalContext-security.xml" />
