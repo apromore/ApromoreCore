@@ -1786,8 +1786,8 @@ public class ProcessDiscovererController extends BaseController implements LogFi
 	    	this.display(jsonDiagram);
             
         } catch(Exception e) {
-        	e.printStackTrace();
-            Messagebox.show(!e.getMessage().trim().isEmpty() ? e.getMessage() : "Unexpected error has occurred! Check log files.");
+            LOGGER.error("Unable to visualize map", e);
+            Messagebox.show(e.getMessage() != null && !e.getMessage().trim().isEmpty() ? e.getMessage() : "Unexpected error has occurred! Check log files.");
         }
     }
     
