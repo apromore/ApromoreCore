@@ -198,7 +198,7 @@ public class StressTest {
 				XLog log;
 				List<XLog> parsedLog = null;
 				// create log
-//				XLog log = createLog(20, 3000, 100, 2000);//createLog(150, 151, 500, 1000);
+				// XLog log = createLog(20, 3000, 100, 2000);//createLog(150, 151, 500, 1000);
 				// import log
 				XFactory factory = new XFactoryNaiveImpl();
 				XesXmlParser parser = new XesXmlParser(factory);
