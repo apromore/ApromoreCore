@@ -181,13 +181,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             errorCount++;
                         }
                     }
-                    if (heads.get(resource) != -1) {
-                        resourceCol = line[heads.get(resource)];
-                        if (resourceCol == null) {
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Warning: Resource field is empty. ");
-//                            errorCount++;
-                        }
-                    }
 
                     if (tStamp == null) {
                         if(startTimestamp != null) {
@@ -546,8 +539,13 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 return o1.getCaseID().compareTo(o2.getCaseID());
             }
         };
-        Collections.sort(traces, compareCaseID);
-        return traces;
+
+        try {
+            Collections.sort(traces, compareCaseID);
+            return traces;
+        } catch (IllegalArgumentException e) {
+            return traces;
+        }
     }
 
 
