@@ -181,18 +181,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             errorCount++;
                         }
                     }
-                    if (heads.get(resource) != -1) {
-                        resourceCol = line[heads.get(resource)];
-                        if (resourceCol == null) {
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Warning: Resource field is empty. ");
-//                            errorCount++;
-                        }
-                    }
 
                     if (tStamp == null) {
                         if(startTimestamp != null) {
                             tStamp = startTimestamp;
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Copying start timestamp field into end timestamp");
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Warning: End time stamp field is invalid. Copying start timestamp field into end timestamp");
                         } else {
                             invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Start timestamp is not available.");
                         }
@@ -220,12 +213,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     e.printStackTrace();
                     errorCount++;
                     if (line.length > 4) {
-                        invalidRows.add("Row: " + (lineCount + 1) + ", Something went wrong. Content: " + line[0] + "," +
+                        invalidRows.add("Row: " + (lineCount + 1) + ", Error: Something went wrong. Content: " + line[0] + "," +
                                 line[1] + "," + line[2] + "," + line[3] + " ...");
                         errorCount++;
                         rowGTG = false;
                     } else {
-                        invalidRows.add("Row: " + (lineCount + 1) + ", Content: " + " Empty, or too short for display.");
+                        invalidRows.add("Row: " + (lineCount + 1) + ", Error: Content: " + " Empty, or too short for display.");
                         errorCount++;
                         rowGTG = false;
                     }
@@ -546,8 +539,13 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 return o1.getCaseID().compareTo(o2.getCaseID());
             }
         };
-        Collections.sort(traces, compareCaseID);
-        return traces;
+
+        try {
+            Collections.sort(traces, compareCaseID);
+            return traces;
+        } catch (IllegalArgumentException e) {
+            return traces;
+        }
     }
 
 

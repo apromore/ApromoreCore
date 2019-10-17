@@ -159,6 +159,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     window.setWidth("97%");
                 } else {
                     window.setWidth("auto");
+                    int size = IndexColumnWidth + header.size() * AttribWidth + 8;
+                    window.setWidth(size + "px");
                 }
 
                 if (popUPBox != null) {
@@ -233,7 +235,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         newColumn.setLabel(header.get(i));
                         newColumn.setAlign("center");
                         headerColumns.appendChild(newColumn);
-                        headerColumns.setSizable(true);
+//                        headerColumns.setSizable(true);
                     }
 
 
