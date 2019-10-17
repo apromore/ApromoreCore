@@ -145,10 +145,10 @@ public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
             string += "all events where attribute " + attribute + " is equal to " + values;
         }else {
             string += "all traces ";
+
             if(attribute.equals("case:variant")) {
                 string += "where case variant is equal to " + values;
-            }
-            else{
+            }else{
                 if(containment == Containment.CONTAIN_ANY) {
                     string += "containing an event where attribute " + attribute + " is equal to " + values;
                 }else {

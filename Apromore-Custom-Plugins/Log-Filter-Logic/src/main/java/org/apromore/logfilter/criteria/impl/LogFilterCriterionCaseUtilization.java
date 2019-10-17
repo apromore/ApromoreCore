@@ -65,12 +65,12 @@ public class LogFilterCriterionCaseUtilization extends AbstractLogFilterCriterio
             if(v.startsWith(">")){
                 String minString = v.substring(v.indexOf(">") + 1);
                 double minDouble = new Double(minString);
-                minDisplay = decimalFormat.format(minDouble) + "%";
+                minDisplay = decimalFormat.format(minDouble * 100) + "%";
             }
             if(v.startsWith("<")){
                 String maxString = v.substring(v.indexOf("<") + 1);
                 double maxDouble = new Double(maxString);
-                maxDisplay = decimalFormat.format(maxDouble) + "%";
+                maxDisplay = decimalFormat.format(maxDouble * 100) + "%";
             }
         }
         return super.getAction() + " all traces with a case utilization between " +
@@ -192,7 +192,7 @@ public class LogFilterCriterionCaseUtilization extends AbstractLogFilterCriterio
             }
         }
 
-        double cuDouble = (int) 100 * (1 - ((double) totalWaitTime / duration));
+        double cuDouble = (1 - ((double) totalWaitTime / duration));
 
         return cuDouble;
     }
