@@ -9,6 +9,7 @@ Ensure the following software is installed:
 - Maven 3.3.9
 - Ant 1.9.2
 - Git 2.3.5
+- Less 3.9.0 (http://lesscss.org/usage/)
 
 Additional software required for PQL support:
 - MySQL 5.6.x (https://dev.mysql.com/downloads/)

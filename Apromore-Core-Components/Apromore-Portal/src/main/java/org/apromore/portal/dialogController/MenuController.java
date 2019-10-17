@@ -80,6 +80,10 @@ public class MenuController extends Menubar {
         moveMI.setDisabled(true);
         */
 
+        boolean showSignavio = (Boolean) SpringUtil.getBean("portalShowSignavio");
+        createMI.setVisible(showSignavio);
+        editModelMI.setVisible(showSignavio);
+
         folderMI.addEventListener("onClick", new EventListener<Event>() {
             @Override
             public void onEvent(final Event event) throws Exception {

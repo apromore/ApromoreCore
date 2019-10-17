@@ -43,7 +43,7 @@
                 <configuration>
                     <instructions>
                         <Embed-Dependency>
-                            artifactId=atlantic|breeze|iceblue_c|sapphire|silvertail|
+                            artifactId=atlantic|breeze|iceblue_c|sapphire|silvertail|ui-theme-compact|
                             bsh|zk|zcommon|zel|zkbind|zkplus|zsoup
                             |zul|zhtml|zweb|zkspring-core
                         </Embed-Dependency>
@@ -96,6 +96,11 @@
             <version>1.0</version>
         </dependency>
 -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>ui-theme-compact</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- ZK Libraries -->
         <dependency>

@@ -136,11 +136,15 @@
                         <li><b>SSS:</b> millisecond </li> <separator />
                     </ul>
                     <separator />Examples:
-                        <ul>
+                    <ul style= "margin: 0px;
+                        padding-left: 25px;
+                        padding-right: 10px;
+                        padding-top: 5px;
+                        padding-bottom: 5px;">
                         <li>29/10/2010 05:20   [dd/MM/yyyy HH:mm]</li><separator />
                         <li>2010-10-29 05:20:10.005   [yyyy/MM/dd HH:mm:ss.SSS]</li><separator />
                         <li>29.10.19 5:20   [dd/MM/yy HH:mm]</li>
-                        </ul>
+                    </ul>
 
                 </html>
             </vbox>
@@ -162,12 +166,18 @@
                 </zscript>
             </grid>
         </div>
-        <div style="padding: 5px 0 5px 45%;">
-            <hbox align="center">
-                <button id="toXESButton" label="Upload Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;" width="110px"  />
-                <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;" width="110px"  />
+        <div style="padding: 5px 0 5px 5px;">
+            <hlayout>
+                <div hflex="2">
+                    <button id="setOtherAll" label="'Ignore' to 'Other'" style="position:relative;" width="150px"  />
+                    <button id="setIgnoreAll" label="'Other' to 'Ignore'" style="position:relative;" width="150px"  />
+                </div>
+                <div hflex="2">
+                    <button id="toXESButton" label="Upload Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;" width="110px"  />
+                    <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;" width="110px"  />
+                </div>
                 <separator />
-            </hbox>
+            </hlayout>
         </div>
 
     </window>

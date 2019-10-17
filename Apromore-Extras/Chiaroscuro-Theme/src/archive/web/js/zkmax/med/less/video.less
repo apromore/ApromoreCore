@@ -1,0 +1,24 @@
+@import "~./zul/less/_header.less";
+
+.z-video {
+	display: inline-block;
+
+	&-real {
+		width: 100%;
+		height: 100%;
+	}
+
+	&-cover {
+		object-fit: cover;
+	}
+
+	&-light-on-video {
+		position: relative;
+		z-index: 1001;
+	}
+
+	&-dim-background {
+		background: black;
+		opacity: 0.8;
+	}
+}

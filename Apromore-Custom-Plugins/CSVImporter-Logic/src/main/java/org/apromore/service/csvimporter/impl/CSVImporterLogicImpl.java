@@ -181,18 +181,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             errorCount++;
                         }
                     }
-                    if (heads.get(resource) != -1) {
-                        resourceCol = line[heads.get(resource)];
-                        if (resourceCol == null) {
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Warning: Resource field is empty. ");
-//                            errorCount++;
-                        }
-                    }
 
                     if (tStamp == null) {
                         if(startTimestamp != null) {
                             tStamp = startTimestamp;
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Copying start timestamp field into end timestamp");
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Warning: End time stamp field is invalid. Copying start timestamp field into end timestamp");
                         } else {
                             invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Start timestamp is not available.");
                         }
@@ -220,12 +213,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     e.printStackTrace();
                     errorCount++;
                     if (line.length > 4) {
-                        invalidRows.add("Row: " + (lineCount + 1) + ", Something went wrong. Content: " + line[0] + "," +
+                        invalidRows.add("Row: " + (lineCount + 1) + ", Error: Something went wrong. Content: " + line[0] + "," +
                                 line[1] + "," + line[2] + "," + line[3] + " ...");
                         errorCount++;
                         rowGTG = false;
                     } else {
-                        invalidRows.add("Row: " + (lineCount + 1) + ", Content: " + " Empty, or too short for display.");
+                        invalidRows.add("Row: " + (lineCount + 1) + ", Error: Content: " + " Empty, or too short for display.");
                         errorCount++;
                         rowGTG = false;
                     }
@@ -388,9 +381,40 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     /**
      * Header pos.
      *
-     * @param line read line from CSV
+//     * @param line read line from CSV
      * @return the hash map: including mandatory field as key and position in the array as the value.
      */
+
+    public void setOtherAll(Window window) {
+        int otherIndex = 6;
+
+        for (int i = 0; i < line.size(); i++) {
+            Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
+            if(lb.getSelectedIndex() == 7) {
+                removeColPos(i);
+                closePopUp(i);
+                lb.setSelectedIndex(otherIndex);
+                heads.put("other", i);
+            }
+        }
+
+    }
+
+    public void setIgnoreAll(Window window) {
+        int otherIndex = 7;
+
+        for (int i = 0; i < line.size(); i++) {
+            Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
+//            Messagebox.show("Index is: " + lb.getSelectedIndex() + " and target is: " + otherIndex);
+            if(lb.getSelectedIndex() == 6) {
+                removeColPos(i);
+                closePopUp(i);
+                lb.setSelectedIndex(otherIndex);
+                heads.put("ignore", i);
+                ignoredPos.add(i);
+            }
+        }
+    }
 
     public void setHeads(List<String> line) {
         // initialize map
@@ -515,8 +539,13 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 return o1.getCaseID().compareTo(o2.getCaseID());
             }
         };
-        Collections.sort(traces, compareCaseID);
-        return traces;
+
+        try {
+            Collections.sort(traces, compareCaseID);
+            return traces;
+        } catch (IllegalArgumentException e) {
+            return traces;
+        }
     }
 
 
@@ -549,6 +578,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             box.setId(String.valueOf(cl)); // set id of list as column position.
             box.setWidth(boxwidth);
 
+
+//            Messagebox.show("ID is: " + box.getId());
             for (Map.Entry<String, String> dl : menuItems.entrySet()) {
                 Listitem item = new Listitem();
                 item.setValue(dl.getKey());
@@ -718,7 +749,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         XEvent xEvent = null;
         List<XEvent> allEvents = new ArrayList<XEvent>();
 
-        // declare standard extensions of the log
+        // declare standard extensions of thEe log
         XConceptExtension concept = XConceptExtension.instance();
         XLifecycleExtension lifecycle = XLifecycleExtension.instance();
         XTimeExtension timestamp = XTimeExtension.instance();

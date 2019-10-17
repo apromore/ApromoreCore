@@ -73,6 +73,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     private static String labelID = "lbl_";
 
     private static Integer AttribWidth = 150;
+    private static Integer IndexColumnWidth = 50;
 
     private boolean isPublic;
 
@@ -158,6 +159,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     window.setWidth("97%");
                 } else {
                     window.setWidth("auto");
+                    int size = IndexColumnWidth + header.size() * AttribWidth + 8;
+                    window.setWidth(size + "px");
                 }
 
                 if (popUPBox != null) {
@@ -219,7 +222,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 
                     Column indexCol = new Column();
-                    indexCol.setWidth("50px");
+                    indexCol.setWidth(IndexColumnWidth + "px");
                     indexCol.setValue("");
                     indexCol.setLabel("");
                     indexCol.setAlign("center");
@@ -232,7 +235,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         newColumn.setLabel(header.get(i));
                         newColumn.setAlign("center");
                         headerColumns.appendChild(newColumn);
-                        headerColumns.setSizable(true);
+//                        headerColumns.setSizable(true);
                     }
 
 
@@ -265,13 +268,36 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     createPopUpTextBox(newLine.size(), popUPBox, helpP);
                     csvImporterLogic.openPopUp();
                     reader.close();
+
+
+
+                    Button setOtherAll = (Button) window.getFellow("setOtherAll");
+                    Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
+
+
+                    setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
+                    setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
+                    
+                    setOtherAll.addEventListener("onClick", new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                            csvImporterLogic.setOtherAll(window);
+                        }
+                    });
+
+                    setIgnoreAll.addEventListener("onClick", new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                            csvImporterLogic.setIgnoreAll(window);
+                        }
+                    });
                 }
+
 
             } catch (IOException e) {
                 e.printStackTrace();
                 Messagebox.show(e.getMessage());
             }
         }
+
     }
 
 
@@ -283,7 +309,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("margin-left:" + (i==0? 10: (i*AttribWidth) + 50 )  + "px; position: absolute; z-index: 10; visibility: hidden; top:1px;");
+            item.setStyle("margin-left:" + (i==0? IndexColumnWidth: (i*AttribWidth) + IndexColumnWidth )  + "px; position: absolute; z-index: 10; visibility: hidden; top:1px;");
 
             Button sp = new Button();
 //            sp.setLabel("-");
@@ -352,6 +378,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Div popUPBox = (Div) window.getFellow("popUPBox");
             Button toXESButton = (Button) window.getFellow("toXESButton");
             Button cancelButton = (Button) window.getFellow("cancelButton");
+
 
             if(media != null) {
                 window.setWidth("95%");

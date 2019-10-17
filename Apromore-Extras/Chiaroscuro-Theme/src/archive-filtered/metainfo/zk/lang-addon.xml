@@ -1,0 +1,11 @@
+<language-addon>
+	<addon-name>${theme.name}</addon-name>
+	<depends>zul</depends>
+	<language-name>xul/html</language-name>
+	
+	<version>
+		<version-class>org.zkoss.theme.${theme.name}.Version</version-class>
+		<version-uid>${project.version}</version-uid>
+	</version>
+
+</language-addon>

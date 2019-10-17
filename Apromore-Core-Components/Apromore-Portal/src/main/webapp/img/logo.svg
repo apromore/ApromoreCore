@@ -1,0 +1,40 @@
+<svg version="1.1" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">
+      <![CDATA[
+        #bpm-life-cycle {
+          --top-color:    rgb(250,165,36);   /* Orange */
+          --right-color:  rgb(132,199,226);  /* Oceanic Blue */
+          --bottom-color: rgb(248,97,0);     /* Sunset Orange */
+          --left-color:   rgb(199,225,239);  /* Soft Blue */
+          --middle-color: rgb(196,67,90);    /* Maroon */
+          fill: none;
+          stroke-linecap: round;
+          stroke-width: 4;
+        }
+        
+        #middle { fill: var(--middle-color); }
+        #top    { fill: var(--top-color); }
+        #right  { fill: var(--right-color); }
+        #bottom { fill: var(--bottom-color); }
+        #left   { fill: var(--left-color); }
+
+        #top_right    { stroke: var(--top-color) }
+        #right-bottom { stroke: var(--right-color) }
+        #bottom-left  { stroke: var(--bottom-color) }
+        #left-top     { stroke: var(--left-color) }
+      ]]>
+    </style>
+  </defs>
+    <g id="bpm-life-cycle" viewbox="0 0 100 100">
+      <path id="top_right" d="M50,12.5 A37.5,37.5 0 0,1 82.48,31.25"/>
+      <path id="right-bottom" d="M87.5,50 A37.5,37.5 90 0,1 50,87.5"/>
+      <path id="bottom-left" d="M50,87.5 A37.5,37.5 0 0,1 17.25,68.75"/>
+      <path id="left-top" d="M12.5,50 A37.5,37.5 0 0,1 50,12.5"/>
+      <circle id="top" cx="50" cy="12.5" r="12.5"/>
+      <circle id="right" cx="87.5" cy="50" r="12.5"/>
+      <circle id="bottom" cx="50" cy="87.5" r="12.5"/>
+      <circle id="left" cx="12.5" cy="50" r="12.5"/>
+      <circle id="middle" cx="50" cy="50" r="17.5"/>
+    </g>
+</svg>

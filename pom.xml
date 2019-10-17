@@ -63,6 +63,7 @@
 
     <modules>
         <module>Apromore-Extras/Build-Tools</module>
+        <module>Apromore-Extras/Chiaroscuro-Theme</module>
         <module>Apromore-Extras/Test-Tools</module>
 
         <!-- Schema's -->

@@ -121,18 +121,10 @@ public class MainController extends BaseController implements MainControllerInte
             this.menu = new MenuController(this);
             this.portalContext = new PluginPortalContext(this);
             this.navigation = new NavigationController(this);
-            Toolbarbutton featuresButton = (Toolbarbutton) this.getFellow("featuresButton");
 
             switchToProcessSummaryView();
             UserSessionManager.setMainController(this);
             pagingandbuttons.setVisible(true);
-
-            featuresButton.addEventListener("onClick",
-                    new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                        	featuresInfo();
-                        }
-                    });
 
             qe.subscribe(
                     new EventListener<Event>() {
@@ -637,18 +629,6 @@ public class MainController extends BaseController implements MainControllerInte
     public void updateSearchHistory(final List<SearchHistoriesType> searchHist) throws Exception {
         getService().updateSearchHistories(UserSessionManager.getCurrentUser(), searchHist);
     }
-
-
-    @Command
-    protected void featuresInfo() {
-        String instruction;
-        int offsetH = 100, offsetV = 200;
-        instruction = "window.open('" + Constants.FEATURES_INFO + "','','top=" + offsetH + ",left=" + offsetV
-                + ",height=600,width=800,scrollbars=1,resizable=1'); ";
-        Clients.evalJavaScript(instruction);
-
-    }
-
 
     /* Removes the currently displayed listbox, detail and filter view */
     private void deattachDynamicUI() {
