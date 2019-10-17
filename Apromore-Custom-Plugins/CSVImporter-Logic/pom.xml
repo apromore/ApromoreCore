@@ -78,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>OpenXES</artifactId>
+            <artifactId>openxes</artifactId>
             <version>2.27</version>
         </dependency>
         <dependency>
