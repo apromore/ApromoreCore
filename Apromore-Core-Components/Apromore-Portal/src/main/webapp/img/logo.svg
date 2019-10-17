@@ -3,11 +3,11 @@
     <style type="text/css">
       <![CDATA[
         #bpm-life-cycle {
-          --top-color: #EEAA00;
-          --right-color: #88CCEE;
-          --bottom-color: #EE5533;
-          --left-color: #BBDDEE;
-          --middle-color: #CC3355;
+          --top-color:    rgb(250,165,36);   /* Orange */
+          --right-color:  rgb(132,199,226);  /* Oceanic Blue */
+          --bottom-color: rgb(248,97,0);     /* Sunset Orange */
+          --left-color:   rgb(199,225,239);  /* Soft Blue */
+          --middle-color: rgb(196,67,90);    /* Maroon */
           fill: none;
           stroke-linecap: round;
           stroke-width: 4;
