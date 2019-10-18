@@ -196,11 +196,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             tStamp = startTimestamp;
                             invalidRows.add("Row: " + (lineCount + 1) + ", Warning: End time stamp field is invalid. Copying start timestamp field into end timestamp");
                         } else {
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Start timestamp is not available.");
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid.");
                         }
                         errorCount++;
                     }
-    
+
                     if(otherTimestamps != null) {
                         for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
                             if(entry.getKey() != null && entry.getKey() != null) {
