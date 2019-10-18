@@ -84,7 +84,7 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
             String s = trace.get(0).getAttributes().get(attributeOption).toString();
             if (value.contains("[Start] => " + s)) return true;
             String e = trace.get(trace.size() - 1).getAttributes().get(attributeOption).toString();
-            if ((value.contains(e + " => [End]"))) return true;
+            if (value.contains(e + " => [End]")) return true;
             for(int i=0; i<(trace.size() -1); i++) {
                 XEvent event1 = trace.get(i);
                 XEvent event2 = trace.get(i + 1);
