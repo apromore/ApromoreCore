@@ -182,12 +182,21 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         }
                     }
 
+/* Notify if resource field is empty */
+//                    if (heads.get(resource) != -1) {
+//                        resourceCol = line[heads.get(resource)];
+//                        if (resourceCol == null) {
+//                            invalidRows.add("Row: " + (lineCount + 1) + ", Warning: Resource field is empty. ");
+////                            errorCount++;
+//                        }
+//                    }
+                        /* check if end stimestamp field is null */
                     if (tStamp == null) {
                         if(startTimestamp != null) {
                             tStamp = startTimestamp;
                             invalidRows.add("Row: " + (lineCount + 1) + ", Warning: End time stamp field is invalid. Copying start timestamp field into end timestamp");
                         } else {
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid. Start timestamp is not available.");
+                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid.");
                         }
                         errorCount++;
                     }
