@@ -182,6 +182,15 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         }
                     }
 
+/* Notify if resource field is empty */
+//                    if (heads.get(resource) != -1) {
+//                        resourceCol = line[heads.get(resource)];
+//                        if (resourceCol == null) {
+//                            invalidRows.add("Row: " + (lineCount + 1) + ", Warning: Resource field is empty. ");
+////                            errorCount++;
+//                        }
+//                    }
+                        /* check if end stimestamp field is null */
                     if (tStamp == null) {
                         if(startTimestamp != null) {
                             tStamp = startTimestamp;
@@ -191,7 +200,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         }
                         errorCount++;
                     }
-
+    
                     if(otherTimestamps != null) {
                         for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
                             if(entry.getKey() != null && entry.getKey() != null) {
