@@ -537,24 +537,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
 
     private List<LogModel> sortTraces(List<LogModel> traces) {
-        Comparator<LogModel> compareCaseID = (LogModel o1, LogModel o2) -> {
-            try {
-                String c1 = o1.getCaseID().replaceAll("[^0-9]", "");
-                String c2 = o2.getCaseID().replaceAll("[^0-9]", "");
-                Integer case1 = Integer.parseInt(c1);
-                Integer case2 = Integer.parseInt(c2);
-                return case1.compareTo(case2);
-            } catch (NumberFormatException e) {
-                return o1.getCaseID().compareTo(o2.getCaseID());
-            }
-        };
-
-        try {
-            Collections.sort(traces, compareCaseID);
-            return traces;
-        } catch (IllegalArgumentException e) {
-            return traces;
-        }
+        Comparator<String> nameOrder = new NameComparator();
+        Collections.sort(traces, (o1, o2) -> nameOrder.compare(o1.getCaseID(), o2.getCaseID()));
+        return traces;
     }
 
 
