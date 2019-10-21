@@ -16,10 +16,8 @@ RUN chown -R apromore:apromore /opt/apromore/ \
 
 # RUN mvn clean install
 # RUN ant create-h2
-RUN ant start-virgo-nix
-RUN "./Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/bin/shutdown.sh"
 
-CMD [ "./Apromore-Assembly/virgo-tomcat-server-3.6.4.RELEASE/bin/startup.sh", "-clean", "-noStart" ]
+CMD [ "ant", "start-virgo-nix"]
 
 
 FROM openjdk:8
