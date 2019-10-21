@@ -19,17 +19,16 @@ ENV LD_LIBRARY_PATH /usr/local/lib
 
 
 WORKDIR /opt/apromore/
-COPY ./ ./
+# Check .dockerignore
+COPY ./ ./ 
 
 RUN chown -R apromore:apromore /opt/apromore/ \
 && chmod -R 777 /opt/apromore/
 
+USER apromore
+EXPOSE 9000
 
 # RUN mvn clean install
 # RUN ant create-h2
-
-
-USER apromore
-EXPOSE 9000
 
 CMD [ "ant", "start-virgo-nix" ]

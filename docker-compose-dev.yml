@@ -1,13 +1,13 @@
 version: "3.7"
 services:
     apromore:
-        build: .
-        image: apromore/apromore:7.6
+        build:
+            context: .
+            dockerfile: dockerfile.dev
+        image: apromore/apromore:dev
+        container_name: apromore-dev
         volumes:
-            - "./Apromore-Assembly/Editor-Repository:/opt/apromore/Editor-Repository"
-            - "./Apromore-Assembly/Event-Logs-Repository:/opt/apromore/Event-Logs-Repository"
-            - "./Apromore-Assembly/Filestore-Repository:/opt/apromore/Filestore-Repository"
-            - "./Apromore-Assembly/Lucene-Repository:/opt/apromore/Lucene-Repository"
+            - ".:/opt/apromore/"
         depends_on:
             - mysql-db   
         ports:
