@@ -14,7 +14,7 @@ COPY ./ ./
 RUN chown -R apromore:apromore /opt/apromore/ \
 && chmod -R 777 /opt/apromore/
 
-# RUN mvn clean install
+RUN mvn clean install
 # RUN ant create-h2
 
 CMD [ "ant", "start-virgo-nix"]

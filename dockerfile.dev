@@ -28,7 +28,7 @@ RUN chown -R apromore:apromore /opt/apromore/ \
 USER apromore
 EXPOSE 9000
 
-# RUN mvn clean install
+RUN mvn clean install
 # RUN ant create-h2
 
 CMD [ "ant", "start-virgo-nix" ]
