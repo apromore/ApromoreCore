@@ -132,7 +132,7 @@ public class EventLogServiceImpl implements EventLogService {
     public Log importLog(String username, Integer folderId, String logName, InputStream inputStreamLog, String extension, String domain, String created, boolean publicModel) throws Exception {
         User user = userSrv.findUserByLogin(username);
 
-        XFactory factory = XFactoryRegistry.instance().currentDefault().getClass().getConstructor().newInstance();
+        XFactory factory = XFactoryRegistry.instance().currentDefault();
         LOGGER.info("Import XES log " + logName + " using " + factory.getClass());
         String path = logRepo.storeProcessLog(folderId, logName, importFromStream(factory, inputStreamLog, extension), user.getId(), domain, created);
         Log log = new Log();
