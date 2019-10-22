@@ -3,6 +3,7 @@ services:
     apromore:
         build: .
         image: apromore/apromore:7.6
+        container_name: apromore
         volumes:
             - "./Apromore-Assembly/Editor-Repository:/opt/apromore/Editor-Repository"
             - "./Apromore-Assembly/Event-Logs-Repository:/opt/apromore/Event-Logs-Repository"
