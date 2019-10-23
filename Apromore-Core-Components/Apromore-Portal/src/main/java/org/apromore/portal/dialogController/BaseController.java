@@ -49,6 +49,11 @@ public class BaseController extends Window {
         config = (ConfigBean) beanFactory.getBean("portalConfig");
     }
 
+    /** Unit testing constructor. */
+    protected BaseController(ConfigBean configBean) {
+        this.config = configBean;
+    }
+
     public ManagerService getService() {
         if (managerService == null) {
             managerService = (ManagerService) SpringUtil.getBean(MANAGER_SERVICE);
