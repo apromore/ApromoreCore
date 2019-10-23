@@ -379,7 +379,7 @@
         <maven.help.plugin>2.2</maven.help.plugin>
         <maven.install.plugin>2.4</maven.install.plugin>
         <maven.jar.plugin>2.3.2</maven.jar.plugin>
-        <maven.jacoco.version>0.6.2.201302030002</maven.jacoco.version>
+        <maven.jacoco.version>0.8.4</maven.jacoco.version>
         <maven.javacc.plugin>2.6</maven.javacc.plugin>
         <maven.javadoc.plugin>2.9</maven.javadoc.plugin>
         <maven.jaxb2.plugin>0.9.0</maven.jaxb2.plugin>
@@ -1819,7 +1819,7 @@
                     <printSummary>true</printSummary>
                     <runOrder>alphabetical</runOrder>
                     <failIfNoTests>false</failIfNoTests>
-                    <argLine>${surefire.jvm.args}</argLine>
+                    <argLine>${argLine} ${surefire.jvm.args}</argLine>
                     <includes>
                         <include>**/*${unit.test.suffix}</include>
                         <include>**/*${endpoint.test.suffix}</include>
@@ -2009,14 +2009,20 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
-                            <check>
-                                <classRatio>0</classRatio>
-                                <instructionRatio>0</instructionRatio>
-                                <methodRatio>0</methodRatio>
-                                <branchRatio>0</branchRatio>
-                                <complexityRatio>0</complexityRatio>
-                                <lineRatio>0</lineRatio>
-                            </check>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <!-- Uncomment to require 60% test coverage
+                                        <limit>
+                                            <counter>COMPLEXITY</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.60</minimum>
+                                        </limit>
+                                        -->
+                                    </limits>
+                                </rule>
+                            </rules>
                         </configuration>
                     </execution>
                 </executions>
@@ -2094,11 +2100,17 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${maven.jacoco.version}</version>
                 <configuration>
                     <skip>${jacoco.skip}</skip>
                     <check/>
                 </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
