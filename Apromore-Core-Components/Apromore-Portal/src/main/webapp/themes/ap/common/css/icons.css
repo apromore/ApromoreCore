@@ -1,0 +1,22 @@
+.ap-icon {
+    --icon-height: 26px;
+    --bg-height: 20px;
+
+    box-sizing: border-box !important;
+    height: var(--icon-height) !important;
+    border: none !important;
+    margin: 0 4px !important;
+    background-size: auto var(--bg-height) !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-origin: padding-box !important;
+    background-color: transparent !important;
+    border-radius: 3px !important;
+    padding: 0;
+    margin: 0 2px 0 0;
+}
+
+.ap-icon-help {
+    background-image: url('../img/icons/help.svg') !important;
+    width: 26px !important;
+}

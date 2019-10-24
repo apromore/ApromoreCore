@@ -45,7 +45,11 @@
 	<script src="/js/cytoscape-undo-redo.js"></script>
 	<script src="/js/cytoscape-edge-bend-editing.js"></script>
 
-        <h:link rel="stylesheet" href="/chiaroscuro.css" type="text/css"/>
+	<h:link rel="stylesheet" href="/chiaroscuro.css" type="text/css"/>
+	<custom-attributes theme="{labels.ap.theme}"/>
+	<h:link rel="stylesheet" href='/themes/${theme}/common/css/index.css' type="text/css"/>
+	<h:link rel="stylesheet" href="../css/ap/pd.css" type="text/css"/>
+
 	<style src="../css/moonstyle.css"/>
 
 	<style dynamic="true">
@@ -191,11 +195,11 @@
 		.z-grid-header-border {
 		border-bottom: 0px solid #FFF;
 		}
-		/*
+
 		.z-groupbox {
 		padding-top: 0px;
 		}
-		*/
+
 		.z-groupbox>.z-groupbox-header {
 		height: 8px;
 		}
@@ -212,40 +216,46 @@
 		}
 
 	</style>
+	<h:div class="ap-header">
+		<h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
+		<h:div class="ap-header-title">Process Discoverer</h:div>
+		<h:div class="ap-help">
+			<h:a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
+				<h:button class="ap-icon ap-icon-help"/>
+			</h:a>
+		</h:div>
+	</h:div>
 
-	<window id="win" border="0" closable="false" height="100%" width="100%" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
+	<window id="win" border="0" closable="false" height="100%" width="100%" sclass="ap-pd ap-font-base" use="org.apromore.plugin.portal.processdiscoverer.ProcessDiscovererController">
 		<caption id="windowcaption" sclass="mainCaption">
-			<div id="utilityTools">
-
-				<button id="optionButton" style="float: right;" height="26px" iconSclass="z-icon-caret-up" sclass="optionButton">
-					<attribute name="onClick">
-						<![CDATA[
+		</caption>
+		<div id="utilityTools" sclass="ap-pd-tools">
+			<button id="optionButton" iconSclass="z-icon-caret-up" sclass="optionButton">
+				<attribute name="onClick">
+					<![CDATA[
                           optionButton.setIconSclass(optionbox.isOpen() ? "z-icon-caret-down" : "z-icon-caret-up");
                           optionButton.setLabel(optionbox.isOpen() ? " " : "");
                           optionbox.setOpen(!optionbox.isOpen());
                           Clients.evalJavaScript("resize();");
                           optionbox.invalidate();
                         ]]>
-					</attribute>
-				</button>
+				</attribute>
+			</button>
 
-				<button id="shortcutButton" style="float: right;" height="26px" iconSclass="z-icon-keyboard-o" sclass="shortcutButton">
-					<attribute name="onClick">
-						<![CDATA[
+			<button id="shortcutButton" iconSclass="z-icon-keyboard-o" sclass="shortcutButton">
+				<attribute name="onClick">
+					<![CDATA[
                           shortcutPopup.open(self,"after_pointer");
                         ]]>
-					</attribute>
-				</button>
+				</attribute>
+			</button>
 
-				<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
-					<button iconSclass="z-icon-question" style="float: right;" height="26px" sclass="helpButton"></button>
-				</a>
-			</div>
-		</caption>
-
-		<popup id="shortcutPopup" width="600px">
-			<html>
-				<![CDATA[
+			<!--<a href="https://apromore.org/documentation/features/discover-process-map" target="_blank">
+                <button iconSclass="z-icon-question" style="float: right;" height="26px" sclass="helpButton"></button>
+            </a>-->
+			<popup id="shortcutPopup" width="600px">
+				<html>
+					<![CDATA[
                   <ul>
                     <li><b>Right-click</b> on an arc: remove all traces containing the selected direct-follow relation</li>
                     <li><b>CTRL + Right-click</b> on an arc: retain only traces containing the selected direct-follow relation</li>
@@ -255,21 +265,22 @@
                     <li><b>ALT + CTRL + Right-click</b> on a node: retain only events containing the selected attribute</li>
                   </ul>
                   ]]>
-			</html>
-		</popup>
+				</html>
+			</popup>
+		</div>
 		<borderlayout hflex="1" vflex="1" style="border:0px; padding:0px;">
 			<north hflex="1" style="border:0px; padding:0px;">
 				<hbox width="100%" sclass="PDOptions">
-					<groupbox id="optionbox" closable="true" mold="3d" open="true" style="padding-top: 0px; background-color:none;" width="100%" >
+					<groupbox id="optionbox" closable="true" mold="3d" open="true" style="background-color:none;" width="100%" >
 						<hbox align="center" id="optiondetails" vflex="1" hflex="1" style="margin-top:3px;">
 							<vbox width="200px">
-								<groupbox closable="false" style="padding-top: 0px;"><caption height="20px">View</caption>
+								<groupbox closable="false"><caption height="20px">View</caption>
 									<hlayout>
 										<checkbox id="gateways" checked="false" label="BPMN" height="30px" width="100px" />
 										<checkbox id="secondary" checked="false" label="Dual stats" height="30px" width="100px" style="margin-left:3px;"/>
 									</hlayout>
 								</groupbox>
-								<groupbox closable="false" style="margin-top:3px; padding-top: 0px;"><caption height="20px">Slider</caption>
+								<groupbox closable="false" style="margin-top:3px;"><caption height="20px">Slider</caption>
 									<radiogroup>
 										<hbox align="left" pack="top">
 											<radio id="use_fixed" label="Locked" selected="true" width="100px"/>

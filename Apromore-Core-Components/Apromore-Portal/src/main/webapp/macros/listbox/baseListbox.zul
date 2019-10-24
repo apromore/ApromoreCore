@@ -18,5 +18,5 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<vlayout id="tablecomp" height="100%" width="100%">
+<vlayout id="tablecomp" height="100%" width="100%" spacing="0" sclass="ap-wrapper-process">
 </vlayout>

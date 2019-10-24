@@ -1,0 +1,392 @@
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    min-height:100%;
+    overflow: hidden;
+    position:relative;
+    display: flex;
+    flex-direction: row;
+    align-content: stretch;
+    align-items: stretch;
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+body > * {
+    flex-shrink: 0;
+}
+
+/* overwrite default control */
+.ap-login input, button, select, textarea {
+    font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+.z-page {
+    height: auto !important;
+    min-height: 100%;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-content: stretch;
+    align-items: stretch;
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.ap-login.z-window, .ap-login .z-window-content {
+    display: flex;
+    flex-direction: row;
+    align-content: stretch;
+    align-items: stretch;
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.ap-wrapper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    align-content: stretch;
+    flex-grow: 1;
+}
+
+.ap-wrapper > * {
+    flex-shrink: 0;
+}
+
+.ap-logim .tab-content {
+    padding-top: 0;
+}
+
+.ap-login .alert {
+    position: absolute;
+    box-sizing: border-box;
+    top: 15px;
+    left: 15px;
+    width: calc(100% - 60px);
+    z-index: var(--ap-z-alert);
+    padding: 8px 30px 9px 10px;
+    font-size: 14px;
+    line-height: 16px;
+}
+
+.ap-login .alert i {
+    margin-right: 5px;
+}
+
+
+.ap-login .alert button {
+    height: 16px;
+}
+
+.ap-login .alert > * {
+    vertical-align: baseline;
+}
+
+.ap-login a.link-button,
+.ap-login a.link-button:link,
+.ap-login a.link-button:visited,
+.ap-login a.link-button:hover {
+    text-decoration: none !important;
+    color: white;
+}
+
+.ap-login div {
+    box-sizing: border-box;
+}
+
+.ap-logo {
+    width: 78%;
+}
+
+.ap-logo img {
+    width: 100%;
+}
+
+.slant-separator {
+    /* background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><g id="ID"><polygon fill="white" points="100 0 100 100 0 100 100 0"/></g></svg>'); */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31.56 171.98" preserveAspectRatio="none"><g><path fill="white"  d="M31.56,0H22.21a284.87,284.87,0,0,1,4.68,51.44A282.09,282.09,0,0,1,0,172H31.56Z"/></g></svg>');
+    background-size: cover;
+    position: absolute;
+    width: 70px;
+    right: -1px;
+    top: 0;
+    bottom: 0;
+    background-color: transparent;
+}
+
+.ap-login .main {
+    position: absolute;
+    left: 0;
+    right: 80px;
+    top: 60px;
+    bottom: 80px;
+    overflow: auto;
+}
+
+@media(max-width: 767px){
+    .ap-left-panel {
+        width: 100%;
+    }
+    .ap-right-panel {
+        display: none;
+    }
+}
+
+.ap-left-panel {
+    position: absolute;
+    left: 0;
+    right: 40%;
+    top: 0;
+    bottom: 0;
+    padding: 20px 40px 5vh 40px;
+}
+
+@-webkit-keyframes bgcycle {
+    0%{background-position:0% 73%}
+    50%{background-position:100% 28%}
+    100%{background-position:0% 73%}
+}
+@-moz-keyframes bgcycle {
+    0%{background-position:0% 73%}
+    50%{background-position:100% 28%}
+    100%{background-position:0% 73%}
+}
+@-o-keyframes bgcycle {
+    0%{background-position:0% 73%}
+    50%{background-position:100% 28%}
+    100%{background-position:0% 73%}
+}
+
+@keyframes bgcycle {
+    0%{background-position:0% 73%}
+    50%{background-position:100% 28%}
+    100%{background-position:0% 73%}
+}
+
+@keyframes bgcycle {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.ap-left-panel {
+    /* background-color: var(--ap-colour-maroon); */
+    /* background-image: linear-gradient(-30deg, #9DD2E9 0%, #C24C00 30%,  var(--ap-colour-maroon) 40%); */
+    /* background-size: cover; */
+
+    background-image: radial-gradient(farthest-corner at 100% 100%, var(--ap-colour-oceanic) 0%, var(--ap-colour-dark-sunset-1) 50%, var(--ap-colour-maroon) 80%);
+    background-image: linear-gradient(-30deg, var(--ap-colour-oceanic), var(--ap-colour-dark-sunset-1), var(--ap-colour-maroon));
+
+    background-size: 200% 200%;
+
+    -webkit-animation: bgcycle 10s ease infinite;
+    -moz-animation: bgcycle 10s ease infinite;
+    -o-animation: bgcycle 10s ease infinite;
+    animation: bgcycle 10s ease infinite;
+}
+
+#wrapper.palette-1 .ap-left-panel {
+    background-image: radial-gradient(farthest-corner at 100% 100%, var(--ap-colour-oceanic) 0%, var(--ap-colour-dark-sunset-1) 50%, var(--ap-colour-maroon) 80%);
+    background-image: linear-gradient(-30deg, var(--ap-colour-oceanic), var(--ap-colour-dark-sunset-1), var(--ap-colour-maroon));
+}
+
+#wrapper.palette-2 .ap-left-panel {
+    background-image: radial-gradient(farthest-corner at 100% 100%, var(--ap-colour-maroon) 0%, var(--ap-colour-dark-sunset-1) 50%, var(--ap-colour-oceanic) 100%);
+    background-image: linear-gradient(-30deg, var(--ap-colour-maroon), var(--ap-colour-dark-sunset-1), var(--ap-colour-oceanic));
+}
+
+#wrapper.palette-3 .ap-left-panel {
+    background-image: radial-gradient(farthest-corner at 100% 100%, var(--ap-colour-oceanic) 0%, var(--ap-colour-maroon) 40%, var(--ap-colour-dark-sunset-1) 80%);
+    background-image: linear-gradient(-30deg, var(--ap-colour-oceanic), var(--ap-colour-maroon), var(--ap-colour-dark-sunset-1));
+}
+
+.ap-left-panel .z-html {
+    display: block;
+}
+
+.ap-left-panel .left-footer {
+    display: block;
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+}
+
+.ap-left-panel .left-footer .emblem {
+    width: 30px;
+    margin-right: 10px;
+}
+
+.ap-left-panel a,
+.ap-left-panel a:hover,
+.ap-left-panel a:visited {
+    color: white;
+}
+
+.ap-right-panel {
+    position: absolute;
+    left: 60%;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 40px;
+}
+
+.ap-form {
+    width: 300px;
+    margin: auto;
+}
+
+.ap-form-heading {
+    font-family: var(--ap-font-brand);
+    font-weight: 300;
+    font-size: 22px;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.ap-form .controls {
+    width: 100%;
+}
+
+.ap-form input,
+.ap-form textarea,
+.ap-form select {
+    width: 100%;
+    height: 30px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    outline-offset: 0px;
+    outline: none;
+    border-radius: 0;
+    font-size: 14px;
+}
+
+.ap-form input:focus,
+.ap-form textarea:focus,
+.ap-form select:focus {
+    /* border: 1px solid var(--ap-colour-orange) !important; */
+    background-color: var(--ap-colour-light-oceanic-1) !important;
+}
+
+.ap-form .button {
+    height: 34px;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.ap-form .signin-button,
+.ap-form .reset-button,
+.ap-form .register-submit-button {
+    background-color: #DA5500;
+    padding: 3px 10px;
+    box-sizing: border-box;
+    border: none;
+    font-weight: 700;
+    color: white;
+    float: right;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.ap-form .register {
+    /* border-top: 1px dotted #f6a173 !important; */
+}
+
+.ap-form .forgot-link {
+    display: inline-block;
+    margin-top: 6px;
+}
+
+.ap-form .link-button {
+    padding: 6px 10px;
+    display: block;
+    width: 100%;
+    margin-top: 40px;
+    border: none;
+    color: black;
+    text-align: center;
+}
+
+.ap-form .register-button {
+    background-color: #E59721;
+}
+
+.ap-form fieldset {
+    margin-bottom: 5px;
+}
+
+.ap-login legend {
+    color: #EECED3;
+    font-size: 18px;
+    line-height: 20px;
+    font-weight: 200;
+    border: none;
+    margin-bottom: 9px;
+}
+
+/* footer links */
+ul.ap-h-links {
+    color: #fff;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
+
+.ap-h-links li {
+    display: inline;
+    margin: 0 0 0 10px;
+}
+
+.ap-h-links li:first-child {
+    margin: 0 0 0 0;
+}
+
+.ap-h-links li:after {
+    margin-left: 10px;
+    content: '|';
+}
+
+.ap-h-links li:last-child:after {
+    margin-left: 0;
+    content: '';
+}
+
+.ap-h-links li a {
+    color: #fff;
+}
+
+/* Back button */
+.ap-login .ap-back-wrapper {
+    margin-top: 0;
+    color: white;
+}
+
+.ap-login .ap-back {
+    background-image: url('../img/arrow-left-regular.svg');
+    background-repeat: no-repeat;
+    filter: invert(100%) saturate(0%) brightness(100%) contrast(100%);
+    height: 32px;
+    width: 32px;
+    margin-right: 8px;
+    vertical-align: middle;
+}

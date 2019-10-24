@@ -1,0 +1,30 @@
+.ap-pd .mainCaption .z-caption-content {
+    position: absolute;
+    top: 0;
+    left: 260px;
+    padding: 9px 0 0 10px;
+    font-family: var(--ap-font-base);
+    font-weight: normal;
+    font-size: 14px;
+    width: calc(100% - 300px);
+    color: white;
+    z-index: var(--ap-z-header-title);
+}
+
+.ap-pd .mainCaption .z-caption-content:before {
+    content: '>';
+    padding-right: 10px;
+}
+.ap-pd .ap-pd-tools {
+    width: 100%;
+    height: 30px;
+    margin-top: 5px;
+}
+
+.ap-pd .ap-pd-tools button {
+    float: right;
+}
+
+.ap-pd .ap-pd-tools button {
+    height: 26px;
+}

@@ -1,0 +1,142 @@
+.ap-icon {
+    --icon-height: 26px;
+    --bg-height: 20px;
+
+    box-sizing: border-box !important;
+    height: var(--icon-height) !important;
+    border: none !important;
+    margin: 0 4px !important;
+    background-size: auto var(--bg-height) !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-origin: padding-box !important;
+    background-color: transparent !important;
+    border-radius: 3px !important;
+    padding: 0;
+    margin: 0 2px 0 0;
+}
+
+.ap-icon-help {
+    background-image: url('help.svg');
+    width: 26px;
+}
+
+.ap-icon-bpmn-add {
+    background-image: url('bpmn-add.svg');
+    width: 26px;
+}
+
+.ap-icon-bpmn-model {
+    background-image: url('bpmn-model.svg');
+    width: 26px;
+}
+
+.ap-icon-export-bpmn {
+    background-image: url('export-bpmn.svg');
+    width: 26.1953125px;
+}
+
+.ap-icon-export-pdf {
+    background-image: url('export-pdf.svg');
+    width: 26.1953125px;
+}
+
+.ap-icon-export-svg {
+    background-image: url('export-svg.svg');
+    width: 26.1953125px;
+}
+
+.ap-icon-folder-add {
+    background-image: url('folder-add.svg');
+    width: 26.390625px;
+}
+
+.ap-icon-folder-collapse {
+    background-image: url('folder-collapse.svg');
+    width: 26.390625px;
+}
+
+.ap-icon-folder-expand {
+    background-image: url('folder-expand.svg');
+    width: 28.5px;
+}
+
+.ap-icon-folder {
+    background-image: url('folder.svg');
+    width: 26.390625px;
+}
+
+.ap-icon-help {
+    background-image: url('help.svg');
+    width: 26px;
+}
+
+.ap-icon-keyboard {
+    background-image: url('keyboard.svg');
+    width: 28.5390625px;
+}
+
+.ap-icon-log {
+    background-image: url('log.svg');
+    width: 26px;
+}
+
+.ap-icon-redo {
+    background-image: url('redo.svg');
+    width: 26px;
+}
+
+.ap-icon-rename {
+    background-image: url('rename.svg');
+    width: 27.71875px;
+}
+
+.ap-icon-save-as {
+    background-image: url('save-as.svg');
+    width: 27.8359375px;
+}
+
+.ap-icon-save {
+    background-image: url('save.svg');
+    width: 25.0625px;
+}
+
+.ap-icon-search {
+    background-image: url('search.svg');
+    width: 26px;
+}
+
+.ap-icon-trash {
+    background-image: url('trash.svg');
+    width: 26px;
+}
+
+.ap-icon-undo {
+    background-image: url('undo.svg');
+    width: 26px;
+}
+
+.ap-icon-user-lock {
+    background-image: url('user-lock.svg');
+    width: 28.5px;
+}
+
+.ap-icon-user {
+    background-image: url('user.svg');
+    width: 26px;
+}
+
+.ap-icon-zoom-in {
+    background-image: url('zoom-in.svg');
+    width: 26px;
+}
+
+.ap-icon-zoom-out {
+    background-image: url('zoom-out.svg');
+    width: 26px;
+}
+
+.ap-icon-zoom-to-fit {
+    background-image: url('zoom-to-fit.svg');
+    width: 26px;
+}

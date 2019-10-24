@@ -19,7 +19,7 @@
   -->
 
 <!-- Controller is  MenuController-->
-<menubar id="operationMenu" width="100%">
+<menubar id="operationMenu" width="100%" vflex="1">
     <menu id="process" label="File">
         <menupopup>
             <menuitem id="fileImport" label="Upload" disabled="true" image="/img/icon/svg/import.svg"/>

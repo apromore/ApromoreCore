@@ -18,12 +18,17 @@
         <value>iceblue_c</value>  <!-- atlantic, breeze, iceblue, iceblue_c, sapphire, silvertail -->
     </library-property>
 
-    <!-- Uncomment if you turn off the caching of resources loaded from
-            the class path (aka., class Web resources).
-            By default, class Web resources are cached by the browser until
-            you upgraded ZK to a newer version.
-            However, it is better to turn the cache off when you are developing
-            a theme or a component.-->
+  <library-property>
+    <name>org.zkoss.util.label.web.location</name>
+    <value>/WEB-INF/ui.properties</value>
+  </library-property>
+
+  <!-- Uncomment if you turn off the caching of resources loaded from
+          the class path (aka., class Web resources).
+          By default, class Web resources are cached by the browser until
+          you upgraded ZK to a newer version.
+          However, it is better to turn the cache off when you are developing
+          a theme or a component.-->
     <library-property>
             <name>org.zkoss.web.classWebResource.cache</name>
             <value>false</value>

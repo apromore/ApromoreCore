@@ -1,0 +1,258 @@
+.ap-portal th.z-listheader {
+    background: #A6BDC8 !important;
+    border: none !important;
+    border-right: 1px solid white !important;
+}
+
+.ap-portal .z-listhead > th.z-listheader:nth-last-child(2) {
+    border-right: none !important;
+}
+
+.ap-portal .z-listheader-content,
+.ap-portal .z-listcell-content,
+.ap-portal .z-listgroup-content,
+.ap-portal .z-listgroupfoot-content,
+.ap-portal .z-listfooter-content,
+.ap-portal .z-label,
+.ap-portal .z-radio-content,
+.ap-portal .z-menu-text,
+.ap-portal .z-menuitem-text,
+.ap-portal .z-checkbox-content,
+.ap-portal .z-loading,
+.ap-portal .z-north-header,
+.ap-portal .z-south-header,
+.ap-portal .z-west-header,
+.ap-portal .z-center-header,
+.ap-portal .z-east-header,
+.ap-portal .z-listbox-body .z-listbox-emptybody td,
+.z-menupopup .z-menu-text, .z-menuitem-text {
+
+    font-family: var(--ap-font-base) !important;
+    font-size: 12px !important;
+}
+
+.ap-portal .z-listbox-header-border {
+    border-bottom: 1px solid white !important;
+}
+
+.ap-portal input {
+    font-family: var(--ap-font-base) !important;
+}
+
+.ap-portal .z-north-body,
+.ap-portal .z-south-body,
+.ap-portal .z-west-body,
+.ap-portal .z-center-body,
+.ap-portal .z-east-body {
+    /*padding: 0 !important;*/
+}
+
+.ap-portal-menu-buttons {
+    background-color: #f0f0f0;
+    box-shadow: 0 1px 3px 0 rgba(200, 200, 200, .5);
+    border-bottom: 1px solid var(--ap-colour-grey) !important;
+}
+
+.ap-portal-layout > div > .z-west,
+.ap-portal-layout > div > .z-center {
+    border: none !important;
+}
+
+.ap-portal-layout > div > .z-west-splitter {
+    border-right: 1px solid #f0f0f0 !important;
+    box-shadow: 3px 0 3px 0px rgba(200, 200, 200, .1);
+    background-color: transparent;
+}
+
+.ap-portal-layout > div > .z-west-splitter .z-west-icon {
+    left: -5px !important;
+}
+
+.ap-portal-layout > div > .z-west-splitter .z-icon-ellipsis-v {
+    font-family: FontAwesome !important;
+    left: 2px !important;
+    color: black;
+}
+
+.ap-portal .z-west-body .z-borderlayout .z-north,
+.ap-portal .z-west-body .z-borderlayout .z-south,
+.ap-portal .z-west-body .z-borderlayout .z-center,
+.ap-portal .z-west-body .z-borderlayout .z-south-splitter {
+    width: 100% !important;
+    border: none !important;
+}
+
+.ap-portal .z-west-body .z-borderlayout {
+    width: 100% !important;
+}
+
+.ap-portal .z-listheader-content {
+    padding: 4px 7px;
+}
+
+.ap-portal-right-section {
+    background-color: #f7f7f7 !important;
+}
+
+.ap-portal-right-section .z-center-body {
+    width: 100% !important;
+}
+
+.ap-portal-menu-buttons .z-paging-input,
+.ap-portal-menu-buttons .z-paging-text {
+    font-family: var(--ap-font-base) !important;
+    font-size: 16px;
+}
+
+.ap-portal-menu-buttons .z-paging-text {
+    margin-right: 4px;
+}
+
+.ap-portal-menu-buttons .z-paging-button {
+    padding-top: 3px;
+}
+
+.ap-portal-menu-buttons .z-paging-input {
+    text-align: right;
+    width: 32px;
+    height: 22px;
+    padding: 0 4px;
+    margin: 0;
+}
+
+.ap-portal-menu-buttons .z-paging ul > li {
+    margin: 0;
+}
+
+.ap-portal-right-section .z-tabbox,
+.ap-portal-right-section .z-tabs {
+    background-color: transparent !important;
+}
+
+.ap-portal-right-section .z-menubar {
+    background-color: #EECED3 !important;
+}
+
+.ap-portal-right-section .z-tabbox {
+    border: 1px solid transparent !important;
+}
+
+.ap-portal-right-section .z-menubar {
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.ap-portal-right-section .z-menubar ul {
+    padding-top: 2px;
+}
+
+.ap-portal-right-section .z-menubar li {
+    line-height: 18px;
+}
+
+
+.ap-portal-right-section .z-menu-content {
+    background-color: transparent;
+    color: black;
+}
+
+.ap-portal-right-section .z-tab {
+    background-color: transparent !important;
+}
+
+.ap-portal-right-section .z-center-body {
+    background-color: transparent !important;
+}
+
+.ap-portal-layout .z-west-splitter,
+.ap-portal-layout .z-south-splitter {
+    background-color: transparent;
+}
+
+.ap-portal-layout .z-west-splitter:hover,
+.ap-portal-layout .z-south-splitter:hover {
+    background-color: #f9fcff;
+}
+
+.ap-portal-left-section .z-west-header,
+.ap-portal-left-section .z-south-header,
+.ap-portal-right-section .z-tab-text {
+    font-family: 'Source Sans Pro', 'san-serif' !important;
+    font-weight: normal !important;
+    font-size: 14px !important;
+    line-height: 24px !important;
+    color: #0093f9;
+}
+
+.ap-portal-left-section .z-west-header,
+.ap-portal-left-section .z-south-header {
+    padding-left: 10px;
+}
+
+.ap-portal-right-section .z-tab-content  li {
+    padding-bottom: 0 !important;
+}
+
+.ap-wrapper-process .z-window {
+    background-color: transparent;
+}
+
+.ap-listbox-process {
+    padding: 0;
+    border: none !important;
+    border-radius: 6px;
+}
+
+.ap-container-search {
+    background-color: transparent;
+}
+
+.ap-container-search .z-combobox {
+    height: 30px;
+}
+.ap-container-search .z-combobox-input,
+.ap-container-search .z-combobox-button {
+    height: 28px;
+}
+
+.ap-container-search button img {
+    width: 24px;
+    height: 24px;
+}
+
+.ap-navigation {
+    background-color: #f8f8f8;
+    border: 1px solid #f0f0f0 !important;
+    border-radius: 7px;
+}
+
+.ap-navigation > *,
+.ap-navigation > * > *{
+    background-color: #f8f8f8;
+}
+
+.ap-navigation .z-tree {
+    background-color: transparent;
+}
+
+.ap-navigation .z-treerow .z-treecell {
+    background-color: transparent;
+}
+
+.ap-navigation .z-treerow-selected .z-treecell {
+    background-color: rgb(232, 245, 255);
+}
+
+.ap-process-detail {
+    border-radius: 7px;
+}
+
+/*.ap-portal-right-section .z-menubar ul li:last-child {*/
+/*    position: fixed;*/
+/*    right: 30px;*/
+/*    top: 10px;*/
+/*    z-index: 20000;*/
+/*}*/
+
+/*.ap-header {*/
+/*    z-index: 10000;*/
+/*}*/

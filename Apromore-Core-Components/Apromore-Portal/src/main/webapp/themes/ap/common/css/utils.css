@@ -1,0 +1,25 @@
+.ap-font-base {
+    font-family: var(--ap-font-base);
+}
+
+.ap-font-brand {
+    font-family: var(--ap-font-brand);
+}
+
+.ap-font-brand-light {
+    font-family: var(--ap-font-brand);
+    font-weight: 300;
+}
+
+.ap-font-brand-strong {
+    font-family: var(--ap-font-brand);
+    font-weight: 800;
+}
+
+.ap-centered {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}

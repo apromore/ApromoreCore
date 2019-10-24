@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=swap');
+@import url('../fonts/gilroy-free/gilroy-free.css');
+
+:root {
+    --ap-colour-maroon: #BB3A50;
+    --ap-colour-sunset: #F26424;
+    --ap-colour-orange: #FBA525;
+    --ap-colour-oceanic: #84C7E3;
+    --ap-colour-dark-sunset-1: #C24C00;
+    --ap-colour-dark-oceanic-1: #5B889B; /* #9DD2E9 */
+    --ap-colour-light-oceanic-1: #EDF7FB;
+    --ap-colour-light-orange-1: #fcb751;
+    --ap-colour-lightgrey: #eeeeee;
+    --ap-colour-grey: #d9d9d9;
+
+    --ap-colour-menu-bg-hover: rgb(232, 245, 255);
+    --ap-font-base: 'Source Sans Pro', sans-serif;
+    --ap-font-brand: 'Gilroy-Light', sans-serif;
+
+    --ap-header-logo-width: 120px;
+    --ap-header-title-left: 120px;
+
+    --ap-z-alert: 20000;
+
+    --ap-z-header: 10000;
+    --ap-z-header-logo: 10010;
+    --ap-z-header-help: 10020;
+    --ap-z-header-title: 10030;
+
+    --ap-z-editor-window: 9000;
+    --ap-z-editor-toolbar: 9010;
+}
+
+.ap-header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 40px;
+    background-color: var(--ap-colour-maroon);
+    /* background-image: linear-gradient(-30deg, #5B889B 0%, #C24C00 40%,  var(--ap-colour-maroon) 80%); */
+    background-image: url('../img/brand/background.jpg');
+    /* background-size: cover; */
+    background-size: 100% 100%;
+    vertical-align: middle;
+}
+
+.ap-header-logo {
+    display: inline-block;
+    width: var(--ap-header-logo-width);
+    height: 35px;
+    background-image: url('../img/brand/logo.svg');
+    background-repeat: no-repeat;
+    background-size: auto 20px;
+    background-position: 10px 10px;
+    cursor: pointer;
+}
+
+.ap-header-title {
+    display: block;
+    position: absolute;
+    top: 12px;
+    left: var(--ap-header-title-left);
+    font-family: 'Gilroy-Light', 'sans-serif';
+    font-style: normal;
+    font-size: 16px;
+    line-height: 16px;
+    color: var(--ap-colour-light-orange-1);
+}
+
+/* use filter to color svg that is included via img, the fill color should be black */
+.ap-filter-light {
+    filter: invert(100%) saturate(0%) brightness(100%) contrast(100%);
+}
+
+.ap-filter-dark {
+    /* use filter to color svg that is included via img, the fill color should be black */
+    filter: invert(100%) sepia(0%) saturate(5891%) hue-rotate(4deg) brightness(114%) contrast(100%);
+}
+
+.ap-help {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    z-index: var(--ap-z-header-help);
+}
+
+.ap-help .ap-icon-help {
+    filter: invert(100%) saturate(0%) brightness(100%) contrast(100%);
+}
