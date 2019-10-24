@@ -44,13 +44,6 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
 
         if(level == Level.TRACE) {
 
-            UnifiedSet<String> attrVariant = new UnifiedSet<>();
-            for(XEvent event : trace) {
-                if(event.getAttributes().containsKey(attribute)) {
-                    attrVariant.put(event.getAttributes().get(attribute).toString());
-                }
-            }
-
             UnifiedMap<String, Boolean> matchMap = new UnifiedMap<>(); //2019-10-24
 
             for (XEvent event : trace) {
@@ -64,7 +57,7 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
                     }
                 }
             }
-            if(matchMap.size() == value.size() && value.size() == attrVariant.size()) return true;
+            if(matchMap.size() >= value.size()) return true;
             else return false;
         }
 
