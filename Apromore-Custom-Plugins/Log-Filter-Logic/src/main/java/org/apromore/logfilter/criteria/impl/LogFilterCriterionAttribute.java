@@ -29,6 +29,7 @@ import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.util.Set;
 
@@ -37,22 +38,41 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
     public LogFilterCriterionAttribute(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
         super(action, containment, level, label, attribute, value);
     }
-
     @Override
-    public boolean matchesCriterion(XTrace trace) {
+    public boolean matchesCriterion(XTrace trace) {//2019-10-24
         if(level == Level.TRACE) {
+            UnifiedMap<String, Boolean> matchMap = new UnifiedMap<>(); //2019-10-24
             for (XEvent event : trace) {
                 if (containment == Containment.CONTAIN_ANY) {
                     if (isMatching(event)) return true;
                 } else if (containment == Containment.CONTAIN_ALL) {
-                    if (!isMatching(event)) return false;
+                    for(String v : value) {
+                        if(isMatchingEventAttribute(event, attribute, v)) {
+                            matchMap.put(event.getAttributes().get("concept:name").toString(), true);
+                        }
+                    }
                 }
             }
-            if(containment == Containment.CONTAIN_ANY) return false;
-            else return containment == Containment.CONTAIN_ALL;
+            if(matchMap.size() >= value.size()) return true;
+            else return false;
         }
         return false;
     }
+//    @Override
+//    public boolean matchesCriterion(XTrace trace) {
+//        if(level == Level.TRACE) {
+//            for (XEvent event : trace) {
+//                if (containment == Containment.CONTAIN_ANY) {
+//                    if (isMatching(event)) return true;
+//                } else if (containment == Containment.CONTAIN_ALL) {
+//                    if (!isMatching(event)) return false;
+//                }
+//            }
+//            if(containment == Containment.CONTAIN_ANY) return false;
+//            else return containment == Containment.CONTAIN_ALL;
+//        }
+//        return false;
+//    }
 
     @Override
     public boolean matchesCriterion(XEvent event) {
@@ -80,5 +100,15 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
             }
         }
         return false;
+    }
+
+    private boolean isMatchingEventAttribute(XEvent xEvent, String attributeKey, String attributeValue) {//2019-10-24
+        if(xEvent.getAttributes().containsKey(attributeKey)) {
+            if(xEvent.getAttributes().get(attributeKey).toString().equals(attributeValue)){
+                return true;
+            }else{
+                return false;
+            }
+        }else return false;
     }
 }
