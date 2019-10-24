@@ -134,12 +134,14 @@ public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
         int count = value.size() - 1;
         for(String v : value) {
             values += v;
-            if(containment == Containment.CONTAIN_ANY) { //2019-10-24
-                values += " OR ";
-            }else{
-                values += " AND ";
+            if(count > 0) {
+                if(containment == Containment.CONTAIN_ANY) { //2019-10-24
+                    values += " OR ";
+                }else{
+                    values += " AND ";
+                }
+                count--;
             }
-            count--;
         }
         values += "]";
 
