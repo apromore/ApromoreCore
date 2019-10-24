@@ -30,6 +30,7 @@ import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.Set;
 
@@ -40,8 +41,18 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
     }
     @Override
     public boolean matchesCriterion(XTrace trace) {//2019-10-24
+
         if(level == Level.TRACE) {
+
+            UnifiedSet<String> attrVariant = new UnifiedSet<>();
+            for(XEvent event : trace) {
+                if(event.getAttributes().containsKey(attribute)) {
+                    attrVariant.put(event.getAttributes().get(attribute).toString());
+                }
+            }
+
             UnifiedMap<String, Boolean> matchMap = new UnifiedMap<>(); //2019-10-24
+
             for (XEvent event : trace) {
                 if (containment == Containment.CONTAIN_ANY) {
                     if (isMatching(event)) return true;
@@ -53,9 +64,10 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
                     }
                 }
             }
-            if(matchMap.size() >= value.size()) return true;
+            if(matchMap.size() == value.size() && value.size() == attrVariant.size()) return true;
             else return false;
         }
+
         return false;
     }
 //    @Override
