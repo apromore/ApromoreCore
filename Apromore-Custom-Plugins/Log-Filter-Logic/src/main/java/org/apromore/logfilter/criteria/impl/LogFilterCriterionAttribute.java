@@ -25,6 +25,7 @@ import org.apromore.logfilter.criteria.model.Containment;
 import org.apromore.logfilter.criteria.model.Level;
 import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
 import org.apromore.logfilter.criteria.model.Type;
+import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeTimestamp;
 import org.deckfour.xes.model.XEvent;
@@ -32,6 +33,7 @@ import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import java.util.Calendar;
 import java.util.Set;
 
 public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
@@ -43,6 +45,10 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
     public boolean matchesCriterion(XTrace trace) {//2019-10-24
 
         if(level == Level.TRACE) {
+
+            if(LogFilterTypeSelector.getType(attribute) == Type.TIME_TIMESTAMP) {
+                return isMatchingTraceTime(trace);
+            }
 
             UnifiedMap<String, Boolean> matchMap = new UnifiedMap<>(); //2019-10-24
 
@@ -116,4 +122,48 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
             }
         }else return false;
     }
+
+    private boolean isMatchingTraceTime(XTrace xTrace) { //2019-10-24
+        long traceST = getTraceStartTime(xTrace);
+        long traceET = getTraceEndTime(xTrace);
+
+        long start = 0;
+        long end = Long.MAX_VALUE;
+        for(String v : value) {
+            if(v.startsWith(">")) start = Long.parseLong(v.substring(1));
+            if(v.startsWith("<")) end = Long.parseLong(v.substring(1));
+        }
+        if(containment == Containment.CONTAIN_ALL) {
+            return (getTraceStartTime(xTrace) >= start && getTraceEndTime(xTrace) <= end);
+        }else{ //intersecting
+            if(traceST >= start && traceET <= end) return true;
+            if(traceST <= start && traceET >= end) return true;
+            if(traceST <= start && traceET >= start) return true;
+            if(traceST <= end && traceET >= end) return true;
+        }
+        return false;
+    }
+
+    private long getTraceStartTime(XTrace xTrace) {
+        long minTime = 0;
+        for(XEvent xEvent : xTrace) {
+            String timestampString = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
+            Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(timestampString);
+            long t = calendar.getTimeInMillis();
+            if(minTime == 0 || t < minTime) minTime = t;
+        }
+        return  minTime;
+    }
+
+    private long getTraceEndTime(XTrace xTrace) {
+        long maxTime = 0;
+        for(XEvent xEvent : xTrace) {
+            String timestampString = xEvent.getAttributes().get(XTimeExtension.KEY_TIMESTAMP).toString();
+            Calendar calendar = javax.xml.bind.DatatypeConverter.parseDateTime(timestampString);
+            long t = calendar.getTimeInMillis();
+            if(t > maxTime) maxTime = t;
+        }
+        return  maxTime;
+    }
+
 }
