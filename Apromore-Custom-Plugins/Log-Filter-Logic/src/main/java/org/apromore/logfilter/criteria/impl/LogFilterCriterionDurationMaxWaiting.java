@@ -69,7 +69,9 @@ public class LogFilterCriterionDurationMaxWaiting  extends AbstractLogFilterCrit
             if(v.startsWith(">")) minString = v.substring(v.indexOf(">") + 1);
             if(v.startsWith("<"))maxString = v.substring(v.indexOf("<") + 1);
         }
-        return super.getAction() + " all traces with a max waiting time between " +
+        return super.getAction().toString().substring(0,1).toUpperCase() +
+                super.getAction().toString().substring(1).toLowerCase() +
+                " all traces with a max waiting time between " +
                 minString + " to " +
                 maxString;
     }

@@ -40,7 +40,11 @@ public class LogFilterCriterionStartRange extends AbstractLogFilterCriterion {
 
     @Override
     public String toString() {
-        return "Retain traces that contain start event in the timestamp range between " + new Date(start) + " and " + new Date(end);
+        String display = super.getAction().toString().substring(0,1).toUpperCase() +
+                super.getAction().toString().substring(1).toLowerCase() +
+                " traces that contain start event in the timestamp range between " +
+                new Date(start) + " and " + new Date(end);
+        return display;
     }
 
     @Override

@@ -123,7 +123,8 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
 
     @Override
     public String toString() {
-        String displayString = super.getAction() +
+        String displayString = super.getAction().toString().substring(0,1).toUpperCase() +
+                super.getAction().toString().substring(1).toLowerCase() +
                 " all traces where their events contain the Directly-follows relation of the \"" +
                 attributeOption + "\" equal to " + followSet.toString();
         if(!requiredAttributeString.equals("")) displayString += " and " + requiredAttributeString;
