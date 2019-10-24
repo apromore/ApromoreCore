@@ -136,11 +136,10 @@ public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
             values += v;
             if(containment == Containment.CONTAIN_ANY) { //2019-10-24
                 values += " OR ";
-                count--;
             }else{
                 values += " AND ";
-                count--;
             }
+            count--;
         }
         values += "]";
 
