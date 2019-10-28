@@ -73,7 +73,9 @@ public class LogFilterCriterionCaseUtilization extends AbstractLogFilterCriterio
                 maxDisplay = decimalFormat.format(maxDouble * 100) + "%";
             }
         }
-        return super.getAction() + " all traces with a case utilization between " +
+        return super.getAction().toString().substring(0,1).toUpperCase() +
+                super.getAction().toString().substring(1).toLowerCase() +
+                " all traces with a case utilization between " +
                 minDisplay + " to " +
                 maxDisplay;
     }

@@ -41,6 +41,7 @@ import java.util.zip.ZipInputStream;
 
 import org.apromore.model.ImportLogResultType;
 import org.apromore.plugin.portal.FileImporterPlugin;
+import org.apromore.portal.ConfigBean;
 import org.apromore.portal.common.UserSessionManager;
 import org.apromore.portal.context.PluginPortalContext;
 import org.apromore.portal.exception.*;
@@ -73,10 +74,28 @@ public class ImportController extends BaseController {
 
     private List<ImportOneProcessController> toImportList = new ArrayList<>();
     private List<ImportOneProcessController> importedList = new ArrayList<>();
+    private List<FileImporterPlugin> fileImporterPlugins;
+
+    @FunctionalInterface
+    public interface NotificationHandler {
+        public void show(String string);
+    }
+
+    private NotificationHandler note;
+
+    /** Unit testing constructor. */
+    public ImportController(MainController mainC, ConfigBean configBean, List<FileImporterPlugin> fileImporterPlugins, NotificationHandler note) throws DialogException {
+        super(configBean);
+        this.fileImporterPlugins = fileImporterPlugins;
+        this.note = note;
+    }
 
     public ImportController(MainController mainC) throws DialogException {
         this.ignoredFiles = "";
         this.mainC = mainC;
+        this.fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+        //this.note = (message) -> { Messagebox.show(message); };
+        this.note = new NotificationHandler() { public void show(String message) { Messagebox.show(message); } };
 
         try {
             final Window win = (Window) Executions.createComponents("macros/import.zul", null, null);
@@ -114,12 +133,13 @@ public class ImportController extends BaseController {
             });
             okButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
+                    importWindow.detach();
                     importFile(ImportController.this.media);
                 }
             });
             cancelButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    cancel();
+                    importWindow.detach();
                 }
             });
 
@@ -128,10 +148,6 @@ public class ImportController extends BaseController {
             LOGGER.error("Failed to construct ImportController", e);
             throw new DialogException("Error in importProcesses controller: " + e.getMessage());
         }
-    }
-
-    private void cancel() throws IOException {
-        this.importWindow.detach();
     }
 
     private void uploadFile(UploadEvent event) throws ExceptionFormats, ExceptionImport {
@@ -170,26 +186,33 @@ public class ImportController extends BaseController {
         return matcher.matches() ? matcher.group("extension") : null;
     }
 
-    private void importFile(Media importedMedia) throws InterruptedException, IOException, ExceptionDomains, ExceptionAllUsers, JAXBException {
+    void importFile(Media importedMedia) throws InterruptedException, IOException, ExceptionDomains, ExceptionAllUsers, JAXBException {
         String name = importedMedia.getName();
         String extension = findExtension(name);
-        List<FileImporterPlugin> fileImporterPlugins = (List<FileImporterPlugin>) SpringUtil.getBean("fileImporterPlugins");
+
+        // Check whether any of the pluggable file importers can handle this file
         for (FileImporterPlugin fileImporterPlugin: fileImporterPlugins) {
             if (fileImporterPlugin.getFileExtensions().contains(extension)) {
-                closePopup();
                 fileImporterPlugin.importFile(importedMedia, new PluginPortalContext(mainC), isPublicCheckbox.isChecked());
                 return;
             }
         }
 
-        if (extension.equals("zip")) {
+        // Check the hardcoded file importer methods
+        if (extension == null) {
+            //ignoredFiles += (ignoredFiles.isEmpty() ? "" : " ,") + name;
+            note.show("Ignoring file with no extension: " + name);
+        } else if (extension.toLowerCase().equals("zip")) {
             importZip(importedMedia);
         } else if (name.toLowerCase().endsWith("xes") || name.toLowerCase().endsWith("xes.gz") || name.toLowerCase().endsWith("mxml") || name.toLowerCase().endsWith("mxml.gz")) {
             importLog(importedMedia);
-        } else if (extension.equals("gz")) {
+        } else if (extension.toLowerCase().equals("gz")) {
             importGzip(importedMedia);
-        } else {
+        } else if (extension.toLowerCase().equals("bpmn")) {
             importProcess(this.mainC, this, importedMedia.getStreamData(), name.split("\\.")[0], this.nativeType, name);
+        } else {
+            //ignoredFiles += (ignoredFiles.isEmpty() ? "" : " ,") + name;
+            note.show("Ignoring file with unknown extension: " + name);
         }
     }
 
@@ -211,15 +234,20 @@ public class ImportController extends BaseController {
 
             mainC.refresh();
         } catch (Exception e) {
+            LOGGER.warn("Import failed for " + logMedia.getName(), e);
             Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        } finally {
+        } /* finally {
             closePopup();
-        }
+        } */
     }
 
+    /*
     private void closePopup() {
-        importWindow.detach();
+        if (importWindow != null) {
+            importWindow.detach();
+        }
     }
+    */
 
     private String discoverExtension(String logFileName) {
         if(logFileName.endsWith("mxml")) {
@@ -246,11 +274,16 @@ public class ImportController extends BaseController {
             ZipInputStream in = new ZipInputStream(zippedMedia.getStreamData());
             ZipEntry entry;
             while ((entry = in.getNextEntry()) != null) {
-                importFile(new MediaImpl(entry.getName(), in, Charset.forName("UTF-8")));
+                try { 
+                    importFile(new MediaImpl(entry.getName(), in, Charset.forName("UTF-8")));
+                    break;  // TODO: remove this line, making multi-file uploads possible
+
+                } catch (ExceptionAllUsers | ExceptionDomains e) {
+                    note.show("Zip component couldn't be loaded: " + e);
+                }
             }
-        } catch (JAXBException e) {
-            Messagebox.show("Import failed (File doesn't conform Xschema specification: " + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        } catch (Exception e) {
+        } catch (IOException | JAXBException e) {
+            LOGGER.warn("Import failed for " + zippedMedia.getName(), e);
             Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
@@ -276,7 +309,7 @@ public class ImportController extends BaseController {
         }
         this.toImportList.clear();
         reportImport();
-        cancel();
+        importWindow.detach();
     }
 
     public List<ImportOneProcessController> getImportedList() {
@@ -300,7 +333,7 @@ public class ImportController extends BaseController {
 
         if (this.toImportList.size() == 0) {
             reportImport();
-            cancel();
+            importWindow.detach();
         }
     }
 
@@ -332,7 +365,7 @@ public class ImportController extends BaseController {
             try {
                 importOneProcess.importProcess(domain, UserSessionManager.getCurrentUser().getUsername());
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.warn("Import failed in domain " + domain, e);
                 Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
             }
         }

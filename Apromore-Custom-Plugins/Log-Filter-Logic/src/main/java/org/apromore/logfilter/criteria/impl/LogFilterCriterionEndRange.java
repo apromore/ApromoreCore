@@ -41,8 +41,17 @@ public class LogFilterCriterionEndRange extends AbstractLogFilterCriterion {
 
     @Override
     public String toString() {
-        if(start==0) return "Retain traces that contain end event in the timestamp range between " + new Date(traceStart) + " and " + new Date(end);
-        return "Retain traces that contain end event in the timestamp range between " + new Date(start) + " and " + new Date(end);
+        String display = super.getAction().toString().substring(0,1).toUpperCase() +
+                super.getAction().toString().substring(1).toLowerCase() +
+                " traces that contain end event in the timestamp range between " +
+                new Date(start) + " and " + new Date(end);
+        if(start==0) {
+            display = super.getAction().toString().substring(0,1).toUpperCase() +
+                    super.getAction().toString().substring(1).toLowerCase() +
+                    " traces that contain end event in the timestamp range between " +
+                    new Date(traceStart) + " and " + new Date(end);
+        }
+        return display;
     }
 
     @Override

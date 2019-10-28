@@ -81,10 +81,17 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
                 if(s.contains("@>|")) moreTimeString = s.substring(3);
                 if(s.contains("@>=")) moreEqualTimeString = s.substring(3);
             }
-            String s = trace.get(0).getAttributes().get(attributeOption).toString();
+
+
+            XEvent sEvent = trace.get(0);
+            XEvent eEvent = trace.get(trace.size()-1);
+            String s, e;
+            s = sEvent.getAttributes().get(attributeOption).toString();
+            e = eEvent.getAttributes().get(attributeOption).toString();
             if (value.contains("[Start] => " + s)) return true;
-            String e = trace.get(trace.size() - 1).getAttributes().get(attributeOption).toString();
             if (value.contains(e + " => [End]")) return true;
+
+
             for(int i=0; i<(trace.size() -1); i++) {
                 XEvent event1 = trace.get(i);
                 XEvent event2 = trace.get(i + 1);
@@ -123,7 +130,8 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
 
     @Override
     public String toString() {
-        String displayString = super.getAction() +
+        String displayString = super.getAction().toString().substring(0,1).toUpperCase() +
+                super.getAction().toString().substring(1).toLowerCase() +
                 " all traces where their events contain the Directly-follows relation of the \"" +
                 attributeOption + "\" equal to " + followSet.toString();
         if(!requiredAttributeString.equals("")) displayString += " and " + requiredAttributeString;
