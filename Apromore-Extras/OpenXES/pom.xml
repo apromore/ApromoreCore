@@ -74,6 +74,12 @@
             <version>1.1.4c_7</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.1</version>
+        </dependency>
+
 
     </dependencies>
 

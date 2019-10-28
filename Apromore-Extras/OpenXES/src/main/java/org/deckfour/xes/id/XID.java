@@ -105,7 +105,7 @@ public class XID implements Cloneable, Comparable<XID> {
 	}
 
 	/**
-	 * Serializes an XID object binarily to a data output stream.
+	 * Serializes an XID object binarily to a data output.
 	 * 
 	 * @param id
 	 *            XID to be serialized.
