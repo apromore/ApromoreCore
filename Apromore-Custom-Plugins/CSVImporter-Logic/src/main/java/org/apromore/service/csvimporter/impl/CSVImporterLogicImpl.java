@@ -29,6 +29,7 @@ import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
 import org.deckfour.xes.factory.XFactory;
 import org.deckfour.xes.factory.XFactoryBufferedImpl;
+import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.model.*;
 import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.deckfour.xes.model.impl.XAttributeTimestampImpl;
@@ -177,8 +178,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                 invalidRows.add("Row: " + (lineCount + 1) + ", Warning: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
                             } else {
                                 invalidRows.add("Row: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. ");
+                                errorCount++;
                             }
-                            errorCount++;
                         }
                     }
 
@@ -197,8 +198,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             invalidRows.add("Row: " + (lineCount + 1) + ", Warning: End time stamp field is invalid. Copying start timestamp field into end timestamp");
                         } else {
                             invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid.");
+                            errorCount++;
                         }
-                        errorCount++;
                     }
 
                     if(otherTimestamps != null) {
@@ -250,7 +251,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             } else {
                 if (errorCount > 0) {
 
-                    String notificationMessage = "Your file has been imported with some problems. \n";
+                    String notificationMessage;
                     notificationMessage = "Imported: " + lineCount + " row(s), with " + errorCount + " invalid row(s) being amended.  \n\n" +
                             "Invalid rows: \n";
 
@@ -288,8 +289,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         try {
             String currentFormat = null;
             String startFormat = null;
-            String otherFormat = null;
-//            Timestamp validTS;
+
             // do multiple line
             int IncValue = 5;
             // skipping 5 lines is too much for small logs, go through every line when its less than 1000 lines in total.
@@ -308,7 +308,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         // if its timestamp field
                         String format = parse.determineDateFormat((newLine[j])); // dd.MM.yyyy //MM.dd.yyyy
                         Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
-
+//                        Messagebox.show("testing: " + validTS.getYear());
                         if (validTS != null) {
                             try {
                                 if (currentFormat != null) {
@@ -316,9 +316,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                     // hint: use sets to store all the possible formats, then parse them again.
 
                                     if (currentFormat != format) {
-                                        validTS = Parse.parseTimestamp(result.get(i - 1)[j], format);
-                                        if (validTS != null) {
-//                                            Messagebox.show("Current: " + currentFormat + ", Changing to: " + format);
+//                                        validTS = Parse.parseTimestamp(result.get(i - IncValue)[j], format);
+                                        Timestamp validTS2 = Parse.parseTimestamp(result.get(i - IncValue)[j], currentFormat);
+//                                        Messagebox.show("Current is:" + validTS2.getYear() + " , new is:" + validTS.getYear());
+
+                                        if (validTS != null && validTS.getYear() > 0) {
                                             currentFormat = format;
                                             break outerloop;
                                         } else {
@@ -330,7 +332,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                 }
                             } catch (Exception e) {
                                 // automatic parse might be in accurate.
-                                Messagebox.show("Automatic parse of End timestamp might be in accurate. Please validate end timestamp field.");
+                                Messagebox.show("Automatic parse of End timestamp might be inaccurate. Please validate end timestamp field.");
                                 break;
                             }
 
@@ -340,7 +342,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                     if (getPos(StartTsValues, myHeader.get(j))) {
                         // if its timestamp field
-//                        LOGGER.info("newline is: " + newLine[j]);
                         String format = parse.determineDateFormat((newLine[j]));
                         Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
 
@@ -691,6 +692,19 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         }
     }
 
+    public void setTimestampBox(Integer colPos, String format, String message, Window window) {
+        Textbox txt = (Textbox) window.getFellow("newtextbox" + colPos);
+        txt.setValue(format);
+
+        txt.setStyle(txt.getStyle().replace("hidden", "visible"));
+        if (message == parsedCorrectly) {
+            txt.setStyle("background:green;");
+        } else {
+            txt.setStyle("background:red;");
+        }
+
+    }
+
 
     private void openPopUpbox(Integer colPos, String format, String message, String lblClass) {
         Window myPopUp = (Window) popUPBox.getFellow(popupID + colPos);
@@ -737,7 +751,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     public XLog createXLog(List<LogModel> traces) {
         if (traces == null) return null;
 
-        XFactory xFactory = new XFactoryBufferedImpl();
+        XFactory xFactory = new XFactoryNaiveImpl();
         XLog xLog = xFactory.createLog();
         XTrace xTrace = null;
         XEvent xEvent = null;

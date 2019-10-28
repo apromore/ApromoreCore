@@ -158,7 +158,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 if(header.size() > 9) {
                     window.setWidth("97%");
                 } else {
-                    window.setWidth("auto");
                     int size = IndexColumnWidth + header.size() * AttribWidth + 8;
                     window.setWidth(size + "px");
                 }
@@ -179,7 +178,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     }
                 }
 
-//                System.out.println("header : " + header.toString() + " ________ line is: " + line.toString());
+
+                Popup helpP = (Popup) window.getFellow("popUpHelp");
+
 
                 List<String> myLine = header;
 
@@ -211,15 +212,37 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     Auxheader index = new Auxheader();
                     optionHead.appendChild(index);
 
-                    for (int i=0; i < lists.size(); i++) {
-//                        attrBox.appendChild(lists.get(i));
+                    Rows tempRows = new Rows();
 
+                    for (int i=0; i < lists.size(); i++) {
                         Auxheader listHeader = new Auxheader();
+                        Row onlyRow = new Row();
+
+                        onlyRow.appendChild(lists.get(i));
                         listHeader.appendChild(lists.get(i));
+//                        Window test = new Window();
+//                        Button butt = new Button();
+//                        butt.setLabel("");
+//                        butt.setWidth("20px");
+//                        butt.setIconSclass("z-icon-time");
+//                        Textbox textDate = new Textbox();
+//                        textDate.setStyle("display:block;");
+//                        textDate.setValue("Testing 123");
+//                        textDate.setId("textDate" + i);
+
+//                        test.appendChild(butt);
+//                        test.appendChild(textDate);
+//                        listHeader.appendChild(textDate);
+
+                        tempRows.appendChild(onlyRow);
                         optionHead.appendChild(listHeader);
+
+
+
                     }
                     myGrid.appendChild(optionHead);
 
+                    myGrid.appendChild(tempRows);
 
                     Column indexCol = new Column();
                     indexCol.setWidth(IndexColumnWidth + "px");
@@ -234,12 +257,15 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         newColumn.setValue(header.get(i));
                         newColumn.setLabel(header.get(i));
                         newColumn.setAlign("center");
+                        newColumn.setStyle("min-width: 130px;");
                         headerColumns.appendChild(newColumn);
-//                        headerColumns.setSizable(true);
+                        headerColumns.setSizable(true);
                     }
 
 
                     myGrid.appendChild(headerColumns);
+
+
 
                     
                     List<String>  newLine = line;
@@ -262,7 +288,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         }
                     }
 
-                    Popup helpP = (Popup) window.getFellow("popUpHelp");
                     csvImporterLogic.automaticFormat(result, myLine);
                     csvImporterLogic.setOtherTimestamps(result);
                     createPopUpTextBox(newLine.size(), popUPBox, helpP);
@@ -315,7 +340,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //            sp.setLabel("-");
 //            sp.setImage("img/close-icon.png");
 //            sp.setIconSclass("z-icon-compress");
-            sp.setStyle("margin-right:3px; float: right; line-height: 10px; min-height: 5px; padding:3px;");
+            sp.setStyle("margin-right:3px; margin-bottom: 2px; float: right; line-height: 10px; min-height: 5px; padding:3px;");
             sp.setIconSclass("z-icon-times");
 //            sp.setZclass("min-height: 16px;");
             A hidelink = new A();
@@ -381,7 +406,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 
             if(media != null) {
-                window.setWidth("95%");
+//                window.setWidth("95%");
 //                window.setVflex("min");
 //                myGrid.setHeight("99%");
 

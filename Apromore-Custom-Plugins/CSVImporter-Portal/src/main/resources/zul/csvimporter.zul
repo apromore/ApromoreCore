@@ -21,7 +21,7 @@
 
 <zk>
 
-    <window closable="false" height="min" maximizable="false" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)" >
+    <window closable="false" id="mainWindow" height="min" maximizable="false" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)" >
         <!--<vbox>-->
 
         <style>
@@ -142,8 +142,8 @@
                         padding-top: 5px;
                         padding-bottom: 5px;">
                         <li>29/10/2010 05:20   [dd/MM/yyyy HH:mm]</li><separator />
-                        <li>2010-10-29 05:20:10.005   [yyyy/MM/dd HH:mm:ss.SSS]</li><separator />
-                        <li>29.10.19 5:20   [dd/MM/yy HH:mm]</li>
+                        <li>2010-10-29 05:20:10.005   [yyyy-MM-dd HH:mm:ss.SSS]</li><separator />
+                        <li>29.10.19 5:20   [dd.MM.yy HH:mm]</li>
                     </ul>
 
                 </html>
@@ -155,13 +155,14 @@
             <div id="popUPBox" zclass="relativePos"></div>
             <div zclass="banner" />
             <!--<div id="attrBox" visible="false"></div>-->
-            <grid id="myGrid" mold="default" hflex="min" height="600px" onClientInfo="onClientInfo(event)" style="padding-top: 60px;overflow: hidden;">
+            <grid id="myGrid" mold="default" hflex="min" height="600px" onClientInfo="onClientInfo(event)" style="padding-top: 60px;overflow: auto;">
                 <zscript>
                     void onClientInfo(ClientInfoEvent evt) {
                     int height = evt.getDesktopHeight();
                     int width = evt.getDesktopWidth();
 
                     myGrid.setHeight(height/1.15 + "px");
+
                     }
                 </zscript>
             </grid>

@@ -41,7 +41,7 @@ public class GridRendererController implements RowRenderer<String[]> {
 			lbl.setValue(data[i]);
 			lbl.setWidth(this.AttribWidth + "px");
 			lbl.setMultiline(false);
-			lbl.setMaxlength(25);
+//			lbl.setMaxlength(25);
 			lbl.setTooltiptext(data[i]);
 			row.appendChild(lbl);
 
