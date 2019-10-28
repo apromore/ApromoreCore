@@ -11,7 +11,8 @@ import java.util.regex.Pattern;
  *
  * If numerical values are the same, the ordering is alphabetical: "01" &lt; "1".
  *
- * Beware that this differs from floating point ordering: "1.2" &lt; "1.11" and "1.0" &lt; "1.00".
+ * Beware that negative signs and decimal point are not treated as part of the numbers.
+ * This can lead to unexpected behaviors: "-1" &lt; "-2", "1.2" &lt; "1.11", and "1.0" &lt; "1.00".
  */
 public class NameComparator implements Comparator<String> {
 
@@ -30,7 +31,8 @@ public class NameComparator implements Comparator<String> {
     public NameComparator() {
 
         // Extracts the leading token, which is a run of either only digits or only non-digits, or empty
-        Pattern p = Pattern.compile("(?<token>(?<digits>\\d+)|(\\D*))(?<remainder>.*)");
+        // Leading zeroes are ignored by the "digits" capturing group
+        Pattern p = Pattern.compile("(?<token>(0*(?<digits>\\d+))|(\\D*))(?<remainder>.*)");
 
         m1 = p.matcher("");
         m2 = p.matcher("");
@@ -47,13 +49,20 @@ public class NameComparator implements Comparator<String> {
         boolean b2 = m2.matches();
         assert b2;
 
-        // If the leading tokens are both digits, compare them numerically EXCEPT if they're equal.
+        // If the leading tokens are both numerical, compare them numerically EXCEPT if they're equal.
         // This prevents "01" from being treated as identical to "1".
         int result;
         String digits1 = m1.group("digits");
         String digits2 = m2.group("digits");
         if (digits1 != null && digits2 != null) {
-            result = Integer.compare(Integer.parseUnsignedInt(digits1), Integer.parseUnsignedInt(digits2));
+            // Numbers with more digits are larger
+            result = digits1.length() - digits2.length();
+            if (result != 0) {
+                return result;
+            }
+
+            // Alphabetic and numerical ordering is the same if they have the same number of digits
+            result = digits1.compareTo(digits2);
             if (result != 0) {
                 return result; 
             }
