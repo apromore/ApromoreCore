@@ -24,8 +24,13 @@ public class NameComparatorUnitTest {
         assertOrder("", "a");        // empty string
         assertOrder("1.2", "1.12");  // not what you'd expect for floating point numbers
         assertOrder("1.01", "1.1");
+        assertOrder("-1", "-2");     // not what you'd expect for negative numbers
         assertOrder(" ", "1");       // untrimmed spaces matter
         assertOrder("(A)", "65");    // punctuation lexically precedes digits
+        assertOrder("123456789012345678901", "1234567890123456789012");  // larger than 64-bit
+        assertOrder("0", "1");       // zero ordering
+        assertOrder("0", "00");      // different numbers of zeroes ordering
+        assertOrder("", "0");        // zero vs empty string
     }
 
     @Test(expected = NullPointerException.class)
