@@ -21,7 +21,10 @@
 
 <zk>
 
-    <window closable="false" id="mainWindow" height="min" maximizable="false" width="min" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)" >
+
+<!--    <window  closable="true" maximizable="true" height="500px"  width="800px" position="center" title="CSV Importer" style="padding: 0px 0px 0px 4px" onClientInfo="onClientInfo(event)" >-->
+    <window  closable="true" maximizable="true" height="500px"  width="800px" position="center" title="CSV Importer"  >
+
         <!--<vbox>-->
 
         <style>
@@ -68,13 +71,17 @@
             position:relative;
             width: 100%;
             }
+
             .banner{
-            position: absolute;
+            /*position: absolute;*/
             width: 100%;
             background-image: url("/img/apromore_banner.png");
             background-size: 2000px 100px;
-            padding-top: 70px;
+            /*padding-top: 70px;*/
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             }
+
             tr.z-row td.z-row-inner, tr.z-row .z-cell {
             padding-left: 10px;
             }
@@ -103,9 +110,11 @@
             border: unset;
             }
 
+            /*
             .z-grid-body {
             overflow-x: hidden !important;
             }
+            */
 
             .z-grid-header table th {
             text-align: -webkit-center;
@@ -142,8 +151,8 @@
                         padding-top: 5px;
                         padding-bottom: 5px;">
                         <li>29/10/2010 05:20   [dd/MM/yyyy HH:mm]</li><separator />
-                        <li>2010-10-29 05:20:10.005   [yyyy-MM-dd HH:mm:ss.SSS]</li><separator />
-                        <li>29.10.19 5:20   [dd.MM.yy HH:mm]</li>
+                        <li>2010-10-29 05:20:10.005   [yyyy/MM/dd HH:mm:ss.SSS]</li><separator />
+                        <li>29.10.19 5:20   [dd/MM/yy HH:mm]</li>
                     </ul>
 
                 </html>
@@ -151,35 +160,49 @@
 
         </popup>
 
-        <div id="gridBox" zclass="myGroupBox">
-            <div id="popUPBox" zclass="relativePos"></div>
-            <div zclass="banner" />
-            <!--<div id="attrBox" visible="false"></div>-->
-            <grid id="myGrid" mold="default" hflex="min" height="600px" onClientInfo="onClientInfo(event)" style="padding-top: 60px;overflow: auto;">
-                <zscript>
-                    void onClientInfo(ClientInfoEvent evt) {
-                    int height = evt.getDesktopHeight();
-                    int width = evt.getDesktopWidth();
-
-                    myGrid.setHeight(height/1.15 + "px");
-
-                    }
-                </zscript>
-            </grid>
-        </div>
-        <div style="padding: 5px 0 5px 5px;">
-            <hlayout>
-                <div hflex="2">
-                    <button id="setOtherAll" label="'Ignore' to 'Other'" style="position:relative;" width="150px"  />
-                    <button id="setIgnoreAll" label="'Other' to 'Ignore'" style="position:relative;" width="150px"  />
+        <borderlayout vflex="1" hflex="1">
+            <center>
+                <div vflex="1" hflex="1">
+                    <div visible="true" id="popUPBox" zclass="relativePos"></div>
+                    <div visible="false" height="70px"/>
+                    <grid id="myGrid" mold="default" vflex="1" hflex="1"
+                          style="padding-top:60px; border:0px solid #0CD; background-image: url('/img/apromore_banner.png');background-size: 2000px 100px;">
+                    </grid>
                 </div>
-                <div hflex="2">
-                    <button id="toXESButton" label="Upload Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;" width="110px"  />
-                    <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;" width="110px"  />
+<!--                <div id="gridBox" zclass="myGroupBox">-->
+<!--                    <div id="popUPBox" zclass="relativePos"></div>-->
+<!--                    <div zclass="banner" />-->
+<!--                    &lt;!&ndash;<div id="attrBox" visible="false"></div>&ndash;&gt;-->
+<!--                    <grid id="myGrid" mold="default" hflex="min" height="600px" onClientInfo="onClientInfo(event)" style="padding-top: 60px;overflow: auto;">-->
+<!--&lt;!&ndash;                        <zscript>&ndash;&gt;-->
+<!--&lt;!&ndash;                            void onClientInfo(ClientInfoEvent evt) {&ndash;&gt;-->
+<!--&lt;!&ndash;                            int height = evt.getDesktopHeight();&ndash;&gt;-->
+<!--&lt;!&ndash;                            int width = evt.getDesktopWidth();&ndash;&gt;-->
+
+<!--&lt;!&ndash;                            myGrid.setHeight(height/1.15 + "px");&ndash;&gt;-->
+<!--&lt;!&ndash;                            }&ndash;&gt;-->
+<!--&lt;!&ndash;                        </zscript>&ndash;&gt;-->
+<!--                    </grid>-->
+<!--                </div>-->
+            </center>
+            <south height="40px" hflex="1">
+                <div style="padding: 5px 0 5px 5px;">
+                    <hlayout>
+                        <div hflex="2">
+                            <button id="setOtherAll" label="'Ignore' to 'Other'" style="position:relative;" width="150px"  />
+                            <button id="setIgnoreAll" label="'Other' to 'Ignore'" style="position:relative;" width="150px"  />
+                        </div>
+                        <div hflex="2">
+                            <button id="toXESButton" label="Upload Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;" width="110px"  />
+                            <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;" width="110px"  />
+                        </div>
+                        <separator />
+                    </hlayout>
                 </div>
-                <separator />
-            </hlayout>
-        </div>
+            </south>
+        </borderlayout>
+
+
 
     </window>
 </zk>
