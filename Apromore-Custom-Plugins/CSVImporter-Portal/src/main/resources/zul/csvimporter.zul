@@ -151,8 +151,8 @@
                         padding-top: 5px;
                         padding-bottom: 5px;">
                         <li>29/10/2010 05:20   [dd/MM/yyyy HH:mm]</li><separator />
-                        <li>2010-10-29 05:20:10.005   [yyyy/MM/dd HH:mm:ss.SSS]</li><separator />
-                        <li>29.10.19 5:20   [dd/MM/yy HH:mm]</li>
+                        <li>2010-10-29 05:20:10.005   [yyyy-MM-dd HH:mm:ss.SSS]</li><separator />
+                        <li>29.10.19 5:20   [dd.MM.yy HH:mm]</li>
                     </ul>
 
                 </html>

@@ -266,8 +266,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     }
 
                     Popup helpP = (Popup) window.getFellow("popUpHelp");
-                    csvImporterLogic.automaticFormat(result, myLine);
-                    csvImporterLogic.setOtherTimestamps(result);
+
+                    if(result != null && myLine != null) {
+                        csvImporterLogic.automaticFormat(result, myLine);
+                        csvImporterLogic.setOtherTimestamps(result);
+                    }
+
                     createPopUpTextBox(newLine.size(), popUPBox, helpP);
                     csvImporterLogic.openPopUp();
                     reader.close();
