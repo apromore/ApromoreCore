@@ -167,9 +167,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             }
                         }
                         Timestamp tStamp = parse.parseTimestamp(line[heads.get(timestamp)], timestampFormat);
-                        startTimestamp = parse.parseTimestamp(line[heads.get(tsStart)], startTsFormat);
 
                         if (heads.get(tsStart) != -1) {
+                            startTimestamp = parse.parseTimestamp(line[heads.get(tsStart)], startTsFormat);
                             if (startTimestamp == null) {
                                 if (tStamp != null) {
                                     startTimestamp = tStamp;
