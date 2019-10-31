@@ -134,6 +134,11 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
                 super.getAction().toString().substring(1).toLowerCase() +
                 " all traces where their events contain the Directly-follows relation of the \"" +
                 attributeOption + "\" equal to " + followSet.toString();
+        if(attributeOption.equals("")) {
+            displayString = super.getAction().toString().substring(0,1).toUpperCase() +
+                    super.getAction().toString().substring(1).toLowerCase() +
+                    " all traces with the directly-follows relation: " + followSet.toString();
+        }
         if(!requiredAttributeString.equals("")) displayString += " and " + requiredAttributeString;
         if(!intervalString.equals("")) displayString += " and " + intervalString;
         return displayString;
