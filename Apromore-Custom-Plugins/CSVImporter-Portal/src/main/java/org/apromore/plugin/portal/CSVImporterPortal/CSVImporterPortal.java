@@ -141,6 +141,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
                 List<String> header = new ArrayList<String>();
                 List<String> line = new ArrayList<String>();
+                List<Window> popUpWindow = new ArrayList<>();
 
 
                 Columns headerColumns = new Columns();
@@ -244,7 +245,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     myGrid.appendChild(headerColumns);
 
-                    
+
                     List<String>  newLine = line;
 
                     // display first 1000 rows
@@ -278,13 +279,15 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 
 
+
+
                     Button setOtherAll = (Button) window.getFellow("setOtherAll");
                     Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
 
 
                     setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
                     setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
-                    
+
                     setOtherAll.addEventListener("onClick", new EventListener<Event>() {
                         public void onEvent(Event event) throws Exception {
                             csvImporterLogic.setOtherAll(window);
@@ -351,6 +354,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             item.appendChild(check_lbl);
             item.appendChild(hidelink);
             item.appendChild(textbox);
+
             popUPBox.appendChild(item);
         }
         popUPBox.clone();
