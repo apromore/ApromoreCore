@@ -99,7 +99,7 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
                 String event2V = event2.getAttributes().get(attributeOption).toString();
                 if (value.contains(event1V + " => " + event2V)) {
                     if(!sameAttribute.equals("")) {
-                        if (haveSameAttributeValue(event1, event2, sameAttribute)) return false;
+                        if (!haveSameAttributeValue(event1, event2, sameAttribute)) return false;
                     }
                     if(!differentAttribute.equals("")) {
                         if (haveSameAttributeValue(event1, event2, differentAttribute)) return false;
