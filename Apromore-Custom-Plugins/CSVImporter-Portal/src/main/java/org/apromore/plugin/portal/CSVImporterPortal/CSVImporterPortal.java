@@ -60,6 +60,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @Inject private EventLogService eventLogService;
     char separator = Character.UNASSIGNED;
 
+    private Window mainWindow;
+
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         this.csvImporterLogic = newCSVImporterLogic;
     }
@@ -155,13 +157,14 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 String BomC = new String(header.get(0).getBytes(), Charset.forName("UTF-8"));
                 header.set(0, BomC);
 
-                if(header.size() > 9) {
-                    window.setWidth("97%");
-                } else {
-                    window.setWidth("auto");
-                    int size = IndexColumnWidth + header.size() * AttribWidth + 8;
-                    window.setWidth(size + "px");
-                }
+                //2019-10-28
+//                if(header.size() > 9) {
+//                    window.setWidth("97%");
+//                } else {
+//                    window.setWidth("auto");
+//                    int size = IndexColumnWidth + header.size() * AttribWidth + 8;
+//                    window.setWidth(size + "px");
+//                }
 
                 if (popUPBox != null) {
                     popUPBox.getChildren().clear();
@@ -235,7 +238,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         newColumn.setLabel(header.get(i));
                         newColumn.setAlign("center");
                         headerColumns.appendChild(newColumn);
-//                        headerColumns.setSizable(true);
+                        headerColumns.setSizable(true);
                     }
 
 
@@ -263,8 +266,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     }
 
                     Popup helpP = (Popup) window.getFellow("popUpHelp");
-                    csvImporterLogic.automaticFormat(result, myLine);
-                    csvImporterLogic.setOtherTimestamps(result);
+
+                    if(result != null && myLine != null) {
+                        csvImporterLogic.automaticFormat(result, myLine);
+                        csvImporterLogic.setOtherTimestamps(result);
+                    }
+
                     createPopUpTextBox(newLine.size(), popUPBox, helpP);
                     csvImporterLogic.openPopUp();
                     reader.close();
@@ -368,31 +375,28 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
         this.isPublic = isPublic;
 
+
+
+
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
-//            Label fileNameLabel = (Label) window.getFellow("fileNameLabel");
-            ListModelList<String[]> result = new ListModelList<String[]>();
-            ListModelList<String[]> indexedResult = new ListModelList<String[]>();
+
+            ListModelList<String[]> result = new ListModelList<>();
+            ListModelList<String[]> indexedResult = new ListModelList<>();
             Grid myGrid  = (Grid) window.getFellow("myGrid");
-//            Div attrBox = (Div) window.getFellow("attrBox");
+
             Div popUPBox = (Div) window.getFellow("popUPBox");
             Button toXESButton = (Button) window.getFellow("toXESButton");
             Button cancelButton = (Button) window.getFellow("cancelButton");
 
 
             if(media != null) {
-                window.setWidth("95%");
-//                window.setVflex("min");
-//                myGrid.setHeight("99%");
-
+//                window.setWidth("95%");
 
                 csvImporterLogic.resetLine();
                 csvImporterLogic.resetHead();
                 csvImporterLogic.resetList();
-//
-//                if (attrBox != null) {
-//                    attrBox.getChildren().clear();
-//                }
+
                 String[] allowedExtensions = {"csv", "xls", "xlsx"};
                 if (Arrays.asList(allowedExtensions).contains(media.getFormat())) {
 
@@ -401,7 +405,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     if (window != null) {
                         // set grid model
                         if (result != null) {
-//                            myGrid.setModel(result);
                             myGrid.setModel(indexedResult);
                         } else {
                             Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
@@ -413,8 +416,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         myGrid.setRowRenderer(rowRenderer);
                         toXESButton.setDisabled(false);
                         window.setTitle("CSV Importer - " + media.getName());
-//                        fileNameLabel.setValue("Current File: " + media.getName());
-                        window.setPosition("top,left");
+//                        window.setPosition("top,left");
                     }
                 } else {
                     Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
