@@ -35,7 +35,6 @@ import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.impl.LogModel;
-import org.apromore.service.csvimporter.impl.GridRendererController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
