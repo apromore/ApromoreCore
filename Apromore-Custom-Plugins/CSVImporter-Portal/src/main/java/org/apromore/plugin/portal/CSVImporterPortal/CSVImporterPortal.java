@@ -158,13 +158,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 header.set(0, BomC);
 
                 //2019-10-28
-//                if(header.size() > 9) {
-//                    window.setWidth("97%");
-//                } else {
-//                    window.setWidth("auto");
+                if(header.size() > 9) {
+                    window.setWidth("97%");
+                } else {
+                    window.setWidth("auto");
 //                    int size = IndexColumnWidth + header.size() * AttribWidth + 8;
 //                    window.setWidth(size + "px");
-//                }
+                }
 
                 if (popUPBox != null) {
                     popUPBox.getChildren().clear();
@@ -251,11 +251,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     int numberOfrows = 0;
                     while (line != null && numberOfrows < 300) {
 
-                        List<String> withIndex = new ArrayList<String>();
-                        withIndex.add(String.valueOf(numberOfrows + 1));
-                        withIndex.addAll(line);
-                        indexedResult.add(withIndex.toArray(new String[0]));
-
+                        if(line != null && line.size() > 2) {
+                            List<String> withIndex = new ArrayList<String>();
+                            withIndex.add(String.valueOf(numberOfrows + 1));
+                            withIndex.addAll(line);
+                            indexedResult.add(withIndex.toArray(new String[0]));
+                        }
                         result.add(line.toArray(new String[0]));
                         numberOfrows++;
                         try {
@@ -318,7 +319,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("margin-left:" + (i==0? IndexColumnWidth: (i*AttribWidth) + IndexColumnWidth )  + "px; position: absolute; z-index: 10; visibility: hidden; top:1px;");
+            item.setStyle("margin-left:" + (i==0? IndexColumnWidth: (i*AttribWidth) + IndexColumnWidth )  + "px; position: absolute; z-index: 10; visibility: hidden; top:3px;");
 
             Button sp = new Button();
 //            sp.setLabel("-");
