@@ -27,5 +27,6 @@
             <listheader id="detail_ratio" label="Percentage" width="20%"/>
         </listhead>
     </listbox>
-    <button id="save" label="Save" />
+    <separator />
+    <button id="save" label="Download" />
 </window>
