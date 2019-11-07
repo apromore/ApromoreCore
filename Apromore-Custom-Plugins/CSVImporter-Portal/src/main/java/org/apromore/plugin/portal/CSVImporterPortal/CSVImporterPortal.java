@@ -158,13 +158,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 header.set(0, BomC);
 
                 //2019-10-28
-                if(header.size() > 9) {
-                    window.setWidth("97%");
-                } else {
-                    window.setWidth("auto");
-//                    int size = IndexColumnWidth + header.size() * AttribWidth + 8;
-//                    window.setWidth(size + "px");
-                }
+//                if(header.size() > 9) {
+//                    window.setWidth("97%");
+//                } else {
+//                    window.setWidth("auto");
+////                    int size = IndexColumnWidth + header.size() * AttribWidth + 8;
+////                    window.setWidth(size + "px");
+//                }
 
                 if (popUPBox != null) {
                     popUPBox.getChildren().clear();
