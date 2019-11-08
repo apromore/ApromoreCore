@@ -168,7 +168,7 @@
                     <!--<grid id="myGrid" mold="default" vflex="1" hflex="1"-->
                           <!--style="padding-top:60px; border:0px solid #0CD; background-image: url('/img/apromore_banner.png');background-size: 2000px 100px;">-->
                     <!--</grid>-->
-                <!--</div>-->
+                <!--</div>-->e
                 <div id="gridBox" zclass="myGroupBox">
                     <div id="popUPBox" zclass="relativePos"></div>
                     <div zclass="banner" />
