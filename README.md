@@ -1,8 +1,8 @@
-![apromore](http://apromore.org/wp-content/uploads/2018/11/flow.jpg "apromore")
+![apromore](http://apromore.org/wp-content/uploads/2019/11/Apromore-banner_narrow.png "apromore")
 
 # Apromore Community Edition
 
-This repository contains source code of [Apromore](https://apromore.org) Community Edition. It is suitable for developers and advanced users, it allows users to fully configure Apromore (e.g. you can choose to use the H2 or MySQL database, the plugins you want to install, configure LDAP access and Apromore Portal’s URL, etc.). It includes the core platform and all the experimental plugins built by the community. You can either build this edition locally or run it from our pubic nodes in [Australia](http://apromore.cis.unimelb.edu.au/) and [Estonia](http://apromore.cs.ut.ee/).
+This repository contains source code of [Apromore](https://apromore.org) Community Edition. Suitable for developers and advanced users, it allows one to fully configure Apromore (e.g. you can choose to use the H2 or MySQL database, the plugins you want to install, configure LDAP access and Apromore Portal’s URL, etc.). It includes the core platform and all the experimental plugins built by the community. You can either build this edition locally or run it from our pubic nodes in [Australia](http://apromore.cis.unimelb.edu.au/) and [Estonia](http://apromore.cs.ut.ee/).
 
 
 ## System Requirements
