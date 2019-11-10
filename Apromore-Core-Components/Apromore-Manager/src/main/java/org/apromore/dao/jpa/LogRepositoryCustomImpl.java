@@ -23,22 +23,23 @@
  */
 package org.apromore.dao.jpa;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+import org.apromore.cache.ehcache.EhCacheManager;
 import org.apromore.dao.LogRepositoryCustom;
 import org.apromore.dao.model.Log;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.factory.XFactory;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.*;
 import org.deckfour.xes.model.XLog;
-import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.out.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xeslite.dfa.XLogDFABuilder;
-import org.xeslite.dfa.XLogDFAXmlParser;
-import org.xeslite.external.XFactoryExternalStore;
+import org.springframework.cache.annotation.Cacheable;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -52,7 +53,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.zip.GZIPInputStream;
 
 /**
  * implementation of the org.apromore.dao.LogRepositoryCustom interface.
@@ -72,6 +72,24 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
     private static final String GET_ALL_FOLDER_JPA = "f.id = ";
     private static final String GET_ALL_SORT_JPA = " ORDER by l.id";
 
+//    CachingProvider provider = Caching.getCachingProvider();
+//    CacheManager cacheManager = provider.getCacheManager();
+//    MutableConfiguration<Long, String> configuration =
+//            new MutableConfiguration<Long, String>()
+//                    .setTypes(Long.class, String.class)
+//                    .setStoreByValue(false)
+//                    .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
+//    Cache<Long, String> cache = cacheManager.createCache("jCache", configuration);
+//    cache.put(1L, "one");
+//    String value = cache.get(1L);
+
+    /**
+     * Get the CacheManager instance
+     */
+    private CacheManager manager;
+    @Resource
+    private CacheRepositoryCustomImpl cacheRepo;
+//    private EhCacheManager cacheManager;
 
     /* ************************** JPA Methods here ******************************* */
 
@@ -129,6 +147,10 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
             try {
                 final String name = logNameId + "_" + logName + ".xes.gz";
                 exportToFile("../Event-Logs-Repository/", name, log);
+
+//                String key = folderId + logName;
+                cacheRepo.put(logNameId, log);
+                LOGGER.info("Put XLog [hash: " + log.hashCode() + "] into Cache using Key [" + logNameId + "]. ");
                 return logNameId;
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
@@ -138,12 +160,22 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         return null;
     }
 
+//    @CacheEvict(value = "xlog", key="#log.id")
     public void deleteProcessLog(Log log) {
         if (log != null) {
             try {
                 String name = log.getFilePath() + "_" + log.getName() + ".xes.gz";
                 File file = new File("../Event-Logs-Repository/" + name);
                 file.delete();
+
+                // Remove corresponding cache
+//                manager = CacheManager.getCacheManager(CacheManager.DEFAULT_NAME);
+//                Cache cache = manager.getCache("xlog");
+//                cache.remove(log.getId());
+                String key = log.getFilePath();
+                cacheRepo.evict(key);
+                LOGGER.info("Delete XLog [hash: " + log.hashCode() + "] [ KEY: " + key + "] from cache [" + cacheRepo.getCacheName() + "]");
+
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
             }
@@ -155,21 +187,51 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
      * @param log
      * @return
      */
+//    @Cacheable(value="xlog", key="#log.id")
     public XLog getProcessLog(Log log, String factoryName) {
         if (log != null) {
 
+//            CacheManager manager1 = CacheManager.newInstance(LogRepositoryCustomImpl.class.getResource("/ehcache.xml"));
+//            String[] cacheNamesForManager1 = manager1.getCacheNames();
+//            LOGGER.info("**************** Ehcache = " + cacheNamesForManager1);
+//            Cache memoryOnlyCache = new Cache("xlog", 5000, false, false, 5, 2);
+//            manager1.addCache(memoryOnlyCache);
+//
+//            LOGGER.info(memoryOnlyCache.get("key").toString());
+
+//            cacheManager = new EhCacheManager();
+//            cacheManager.init();
+
+//            net.sf.ehcache.CacheManager ehCacheManager = cacheManager.getCacheManager();
+//            org.apromore.cache.Cache<String, String> cache = cacheManager.getCache("xlog");
+
+//            manager = CacheManager.getCacheManager(CacheManager.DEFAULT_NAME);
+//            Cache cache = manager.getCache("xlog");
+
             // *******  profiling code start here ********
             long startTime = System.nanoTime();
+            long elapsedNanos;
             // *******  profiling code end here ********
 
-            try {
-                String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
-                XFactory factory = getXFactory(factoryName);
-                XLog xlog = importFromFile(factory, name);
+            String key = log.getFilePath();
+            XLog element = (XLog) cacheRepo.get(key);
+            LOGGER.info("Getting object [" + element.hashCode() + "] from cache [" + cacheRepo.getCacheName() + "] for key [" + key + "]");
+//            Element element = cache.get(log.getId());
 
-                // *******  profiling code start here ********
-                long elapsedNanos = System.nanoTime() - startTime;
-                LOGGER.info("Retrieved XES log " + name + " using " + factory.getClass() + "Elapsed time: " + elapsedNanos / 1000000 + " ms");
+
+
+            if (element == null) {
+                LOGGER.info("Element for [" + key + "] is null.");
+
+                try {
+                    String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
+                    XFactory factory = getXFactory(factoryName);
+                    XLog xlog = importFromFile(factory, name);
+
+
+                    // *******  profiling code start here ********
+                    elapsedNanos = System.nanoTime() - startTime;
+                    LOGGER.info("Retrieved XES log " + name + " [" + xlog.hashCode() + "]. Elapsed time: " + elapsedNanos / 1000000 + " ms");
 
 //                System.gc();
 //                try {
@@ -177,11 +239,28 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 //                } catch (InterruptedException e) {
 //                }
 //                LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
-                // *******  profiling code end here ********
+                    // *******  profiling code end here ********
 
-                return xlog;
-            } catch (Exception e) {
-                LOGGER.error("Error " + e.getMessage());
+
+                    startTime = System.nanoTime();
+//                    cache.put(new Element(log.getId(), xlog));
+                    // Log POJO has one constraint that span 2 columns (@UniqueConstraint(columnNames = {"name", "folderId"}))
+                    cacheRepo.put(key, xlog);
+                    elapsedNanos = System.nanoTime() - startTime;
+                    LOGGER.info("Put XLog [hash: " + xlog.hashCode() + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 + " ms.");
+//                    LOGGER.info("Current Memory Usage: " + cache.calculateInMemorySize() / 1024 / 1024 + " MB");
+//                    LOGGER.info("Current Memory Store Size: " + cache.getMemoryStoreSize() / 1000 + " MB");
+//                    LOGGER.info("Current Disk Store Size: " + cache.calculateOnDiskSize() / 1024 / 1024 + " MB");
+
+                    return xlog;
+                } catch (Exception e) {
+                    LOGGER.error("Error " + e.getMessage());
+                }
+
+            } else {
+                // If
+//                XLog xlog = (XLog) cache.get(log.getId()).getObjectValue();
+                return element;
             }
         }
         return null;

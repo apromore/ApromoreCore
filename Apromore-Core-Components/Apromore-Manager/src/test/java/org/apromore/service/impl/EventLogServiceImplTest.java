@@ -36,6 +36,8 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.io.FileInputStream;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 
@@ -52,6 +54,7 @@ public class EventLogServiceImplTest {
 
     // inject EntityManager for simple test
     private static EntityManagerFactory emf = null;
+
     public EntityManagerFactory getEntityManagerFactory() {
         if (emf == null) {
             emf = Persistence.createEntityManagerFactory("TESTApromore");
@@ -349,7 +352,9 @@ public class EventLogServiceImplTest {
         XFactory factory = XFactoryRegistry.instance().currentDefault();
         XesXmlParser parser = new XesXmlParser(factory);
         try {
-            parsedLog = parser.parse(new GZIPInputStream(new FileInputStream("/Users/frank/Projects/OpenXES 2.26/test/procmin20180612_F2_5M.xes.gz")));
+            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/SepsisCases.xes.gz").getPath());
+//            Path lgPath = ClassLoader.getSystemResource("XES_logs/SepsisCases.xes").getPath();
+            parsedLog = parser.parse(new GZIPInputStream(new FileInputStream(lgPath.toFile())));
         } catch (Exception e) {
             e.printStackTrace();
         }

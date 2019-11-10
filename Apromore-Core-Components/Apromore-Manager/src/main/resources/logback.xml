@@ -76,8 +76,10 @@
     <logger name="org.eclipse.persistence" level="WARN"/>
     <logger name="javax.xml" level="WARN"/>
     <logger name="com.sun" level="WARN"/>
+    <logger name="org.ehcache" level="DEBUG"/>
+    <logger name="net.sf.ehcache" level="DEBUG"/>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>

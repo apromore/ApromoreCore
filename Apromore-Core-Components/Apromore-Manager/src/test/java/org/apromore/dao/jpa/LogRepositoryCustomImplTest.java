@@ -197,4 +197,9 @@ public class LogRepositoryCustomImplTest {
     @Test
     public void exportToInputStream() {
     }
+
+    @Test
+    public void getProcessLog() {
+
+    }
 }

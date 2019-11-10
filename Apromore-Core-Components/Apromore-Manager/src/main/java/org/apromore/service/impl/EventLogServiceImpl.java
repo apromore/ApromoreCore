@@ -48,6 +48,7 @@ import org.deckfour.xes.out.XesXmlGZIPSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -330,8 +331,9 @@ public class EventLogServiceImpl implements EventLogService {
      * @param logId logID
      * @return list of statistic entities
      */
-//    @Cacheable("log")
+    @Cacheable(value = "stat", key="#logId")
     public List<Statistic> getStats(Integer logId) {
+        LOGGER.info("************* Get statistics by LogID  " + logId);
         return statisticRepository.findByLogid(logId);
     }
 
