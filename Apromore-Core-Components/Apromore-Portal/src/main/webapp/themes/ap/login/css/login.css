@@ -132,10 +132,11 @@ body > * {
     overflow: auto;
 }
 
-@media(max-width: 767px){
+@media(max-width: 767px) {
     .ap-left-panel {
         width: 100%;
     }
+
     .ap-right-panel {
         display: none;
     }

@@ -1,0 +1,10 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.ap-dashboard-menu,
+.ap-dashboard-content,
+.ap-dashboard-content-layout {
+    width:100% !important;
+}

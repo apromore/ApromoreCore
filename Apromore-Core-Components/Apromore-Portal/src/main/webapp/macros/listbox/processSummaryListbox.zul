@@ -20,7 +20,7 @@
 
 <listbox id="processSummariesListbox" hflex="true" vflex="true" span="true" autopaging="true" mold="default" multiple="true" checkmark="false" sclass="ap-listbox-process">
     <listhead sizable="true">
-        <listheader                           width="32px" visible="true" />
+        <listheader                           width="35px" visible="true" />
         <listheader label="Score"             hflex="1"    visible="true" id="columnScore"/>
         <listheader label="Name"              hflex="5"/>                   <!-- name -->
         <listheader label="Id"                hflex="1"    align="center"/> <!-- id -->

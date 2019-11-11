@@ -12,131 +12,144 @@
     background-origin: padding-box !important;
     background-color: transparent !important;
     border-radius: 3px !important;
-    padding: 0;
-    margin: 0 2px 0 0;
+    padding: 0 !important;
+    margin: 0 2px 0 0 !important;
+    cursor: pointer;
+    filter: invert(33%) sepia(0%) saturate(0%) hue-rotate(226deg) brightness(91%) contrast(93%);
+}
+
+/* Do not set filter as important due to light/dark */
+
+.ap-icon img {
+    display: none;
+}
+
+.ap-icon:hover {
+    background-color: var(--ap-colour-menu-bg-hover) !important;
+    filter: none;
 }
 
 .ap-icon-help {
-    background-image: url('help.svg');
-    width: 26px;
+    background-image: url('help.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-bpmn-add {
-    background-image: url('bpmn-add.svg');
-    width: 26px;
+    background-image: url('bpmn-add.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-bpmn-model {
-    background-image: url('bpmn-model.svg');
-    width: 26px;
+    background-image: url('bpmn-model.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-export-bpmn {
-    background-image: url('export-bpmn.svg');
-    width: 26.1953125px;
+    background-image: url('export-bpmn.svg') !important;
+    width: 26.1953125px !important;
 }
 
 .ap-icon-export-pdf {
-    background-image: url('export-pdf.svg');
-    width: 26.1953125px;
+    background-image: url('export-pdf.svg') !important;
+    width: 26.1953125px !important;
 }
 
 .ap-icon-export-svg {
-    background-image: url('export-svg.svg');
-    width: 26.1953125px;
+    background-image: url('export-svg.svg') !important;
+    width: 26.1953125px !important;
 }
 
 .ap-icon-folder-add {
-    background-image: url('folder-add.svg');
-    width: 26.390625px;
+    background-image: url('folder-add.svg') !important;
+    width: 26.390625px !important;
 }
 
 .ap-icon-folder-collapse {
-    background-image: url('folder-collapse.svg');
-    width: 26.390625px;
+    background-image: url('folder-collapse.svg') !important;
+    width: 26.390625px !important;
 }
 
 .ap-icon-folder-expand {
-    background-image: url('folder-expand.svg');
-    width: 28.5px;
+    background-image: url('folder-expand.svg') !important;
+    width: 28.5px !important;
 }
 
 .ap-icon-folder {
-    background-image: url('folder.svg');
-    width: 26.390625px;
+    background-image: url('folder.svg') !important;
+    width: 26.390625px !important;
 }
 
 .ap-icon-help {
-    background-image: url('help.svg');
-    width: 26px;
+    background-image: url('help.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-keyboard {
-    background-image: url('keyboard.svg');
-    width: 28.5390625px;
+    background-image: url('keyboard.svg') !important;
+    width: 28.5390625px !important;
 }
 
 .ap-icon-log {
-    background-image: url('log.svg');
-    width: 26px;
+    background-image: url('log.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-redo {
-    background-image: url('redo.svg');
-    width: 26px;
+    background-image: url('redo.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-rename {
-    background-image: url('rename.svg');
-    width: 27.71875px;
+    background-image: url('rename.svg')!important;
+    width: 27.71875px !important;
 }
 
 .ap-icon-save-as {
-    background-image: url('save-as.svg');
-    width: 27.8359375px;
+    background-image: url('save-as.svg') !important;
+    width: 27.8359375px !important;
 }
 
 .ap-icon-save {
-    background-image: url('save.svg');
-    width: 25.0625px;
+    background-image: url('save.svg') !important;
+    width: 25.0625px !important;
 }
 
 .ap-icon-search {
-    background-image: url('search.svg');
-    width: 26px;
+    background-image: url('search.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-trash {
-    background-image: url('trash.svg');
-    width: 26px;
+    background-image: url('trash.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-undo {
-    background-image: url('undo.svg');
-    width: 26px;
+    background-image: url('undo.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-user-lock {
-    background-image: url('user-lock.svg');
-    width: 28.5px;
+    background-image: url('user-lock.svg') !important;
+    width: 28.5px !important;
 }
 
 .ap-icon-user {
-    background-image: url('user.svg');
-    width: 26px;
+    background-image: url('user.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-zoom-in {
-    background-image: url('zoom-in.svg');
-    width: 26px;
+    background-image: url('zoom-in.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-zoom-out {
-    background-image: url('zoom-out.svg');
-    width: 26px;
+    background-image: url('zoom-out.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-zoom-to-fit {
-    background-image: url('zoom-to-fit.svg');
-    width: 26px;
+    background-image: url('zoom-to-fit.svg') !important;
+    width: 26px !important;
 }

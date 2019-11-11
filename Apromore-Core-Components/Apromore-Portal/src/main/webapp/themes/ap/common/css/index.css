@@ -1,3 +1,44 @@
 @import "base.css";
 @import "../img/icons/icons.css";
 @import "utils.css";
+
+/* ZK override */
+
+.z-button, .z-combobutton-content {
+    background-color: #5b889b;
+}
+
+.z-button:hover, .z-combobutton-content:hover {
+    background-color: #84C7E3;
+}
+
+.z-window-modal {
+    padding: 0;
+    border: 1px solid #b0b0b0;
+
+}
+.z-window-modal .z-window-header {
+    padding: 4px 10px;
+    font-family: var(--ap-font-brand);
+    font-size: 14px;
+    color: black;
+    /*
+    background-color: #a44000;
+    background-image: linear-gradient(30deg, #a44000 0%, #f96100 20%, #c7e6f2 60%);
+     */
+    background-image: linear-gradient(30deg, #fcb88c 0%, #fee8c8 20%, #edf7fb 60%);
+}
+
+.z-window-modal .z-window-content {
+    padding: 7px 10px 7px 7px;
+    font-family: var(--ap-font-base);
+    font-size: 14px;
+    background-color: transparent;
+}
+
+.z-button, .z-label, .z-radio-content, .z-checkbox-content, .z-loading, .z-textbox, .z-decimalbox, .z-intbox, .z-longbox, .z-doublebox,
+.z-combobutton-content, .z-combobox-input, .z-bandbox-input, .z-datebox-input, .z-timebox-input, .z-spinner-input, .z-doublespinner-input {
+    font-family: var(--ap-font-base);
+    font-size: 14px;
+    font-weight: normal;
+}

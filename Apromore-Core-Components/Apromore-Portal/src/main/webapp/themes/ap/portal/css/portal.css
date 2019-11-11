@@ -28,7 +28,7 @@
 .z-menupopup .z-menu-text, .z-menuitem-text {
 
     font-family: var(--ap-font-base) !important;
-    font-size: 12px !important;
+    font-size: 14px !important;
 }
 
 .ap-portal .z-listbox-header-border {
@@ -47,7 +47,7 @@
     /*padding: 0 !important;*/
 }
 
-.ap-portal-menu-buttons {
+.ap-portal-menu-actions {
     background-color: #f0f0f0;
     box-shadow: 0 1px 3px 0 rgba(200, 200, 200, .5);
     border-bottom: 1px solid var(--ap-colour-grey) !important;
@@ -98,21 +98,21 @@
     width: 100% !important;
 }
 
-.ap-portal-menu-buttons .z-paging-input,
-.ap-portal-menu-buttons .z-paging-text {
+.ap-portal-menu-actions .z-paging-input,
+.ap-portal-menu-actions .z-paging-text {
     font-family: var(--ap-font-base) !important;
     font-size: 16px;
 }
 
-.ap-portal-menu-buttons .z-paging-text {
+.ap-portal-menu-actions .z-paging-text {
     margin-right: 4px;
 }
 
-.ap-portal-menu-buttons .z-paging-button {
+.ap-portal-menu-actions .z-paging-button {
     padding-top: 3px;
 }
 
-.ap-portal-menu-buttons .z-paging-input {
+.ap-portal-menu-actions .z-paging-input {
     text-align: right;
     width: 32px;
     height: 22px;
@@ -120,7 +120,7 @@
     margin: 0;
 }
 
-.ap-portal-menu-buttons .z-paging ul > li {
+.ap-portal-menu-actions .z-paging ul > li {
     margin: 0;
 }
 
@@ -149,6 +149,10 @@
     line-height: 18px;
 }
 
+.ap-portal-right-section .z-tabpanel,
+.ap-portal-right-section .z-window {
+    padding: 0;
+}
 
 .ap-portal-right-section .z-menu-content {
     background-color: transparent;
@@ -199,7 +203,7 @@
 .ap-listbox-process {
     padding: 0;
     border: none !important;
-    border-radius: 6px;
+    /*border-radius: 6px;*/
 }
 
 .ap-container-search {
@@ -246,13 +250,45 @@
     border-radius: 7px;
 }
 
-/*.ap-portal-right-section .z-menubar ul li:last-child {*/
-/*    position: fixed;*/
-/*    right: 30px;*/
-/*    top: 10px;*/
-/*    z-index: 20000;*/
-/*}*/
+.ap-portal .ap-navigation .z-tree-icon {
+    vertical-align: top !important;
+    padding-top: 4px !important;
+}
+
+.ap-portal-right-section .z-menubar ul li:last-child {
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    z-index: 20000;
+}
+
+.ap-portal-menu-actions {
+    visibility: visible !important;
+    height: 40px !important;
+}
+
+.ap-container-search {
+    text-align: right;
+}
+
+.ap-portal-paging {
+    margin-top: 4px;
+}
+
+.ap-portal-menu-buttons {
+    margin-top: 6px;
+}
+
+.ap-portal-menu-buttons table td {
+    padding: 0 4px 0 4px;
+}
 
 /*.ap-header {*/
 /*    z-index: 10000;*/
 /*}*/
+
+
+/*.ap-listbox-process .z-listcell-content img {*/
+/*    visibility: hidden;*/
+/*}*/
+

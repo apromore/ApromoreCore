@@ -23,3 +23,16 @@
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
 }
+
+.ap-grid {
+    border: none;
+}
+
+.ap-grid tr.z-row td.z-row-inner,
+.ap-grid tr.z-row,
+.ap-grid div.z-grid-body div.z-cell,
+.ap-grid div.z-grid{
+    zoom: 1;
+    background: transparent;
+    border: none;
+}

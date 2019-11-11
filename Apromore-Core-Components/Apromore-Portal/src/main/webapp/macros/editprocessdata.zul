@@ -26,7 +26,7 @@ and CreateProcessController.java for creating process purpose.
     <window width="500px" closable="false" position="center">
 
         <vbox vflex="1">
-            <grid>
+            <grid sclass="ap-grid">
                 <columns sizable="true">
                     <column width="30%"></column>
                     <column width="70%"></column>
@@ -70,7 +70,7 @@ and CreateProcessController.java for creating process purpose.
                         <label value="*: mandatory fields"/>
                     </row>
                     <row spans="3">
-                        <div align="center">
+                        <div align="right">
                             <button label="OK" iconSclass="z-icon-check-circle" width="85px" />
                             <button label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
                             <button label="Cancel all" iconSclass="z-icon-times-circle" width="85px" visible="false" tooltiptext="Cancel edit of all remaining process models." />
