@@ -23,10 +23,8 @@
  */
 package org.apromore.dao.jpa;
 
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import org.apromore.cache.ehcache.EhCacheManager;
+import org.apromore.dao.CacheRepository;
 import org.apromore.dao.LogRepositoryCustom;
 import org.apromore.dao.model.Log;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -37,7 +35,6 @@ import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -47,7 +44,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -88,7 +84,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
      */
     private CacheManager manager;
     @Resource
-    private CacheRepositoryCustomImpl cacheRepo;
+    private CacheRepository cacheRepo;
 //    private EhCacheManager cacheManager;
 
     /* ************************** JPA Methods here ******************************* */
@@ -211,13 +207,12 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
             String key = log.getFilePath();
             XLog element = (XLog) cacheRepo.get(key);
-            LOGGER.info("Getting object [HASH: " + element.hashCode() + " KEY:" + key + "] from cache [" + cacheRepo.getCacheName() + "]");
+
 //            Element element = cache.get(log.getId());
 
-
-
             if (element == null) {
-                LOGGER.info("Element for [" + key + "] is null.");
+                // If doesn't hit cache
+                LOGGER.info("Cache for [KEY: " + key + "] is null.");
 
                 try {
                     String name = "../Event-Logs-Repository/" + log.getFilePath() + "_" + log.getName() + ".xes.gz";
@@ -243,7 +238,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                     // Log POJO has one constraint that span 2 columns (@UniqueConstraint(columnNames = {"name", "folderId"}))
                     cacheRepo.put(key, xlog);
                     elapsedNanos = System.nanoTime() - startTime;
-                    LOGGER.info("Put object [HASH: " + element.hashCode() + " KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 + " ms.");
+                    LOGGER.info("Put object [KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 + " ms.");
 //                    LOGGER.info("Current Memory Usage: " + cache.calculateInMemorySize() / 1024 / 1024 + " MB");
 //                    LOGGER.info("Current Memory Store Size: " + cache.getMemoryStoreSize() / 1000 + " MB");
 //                    LOGGER.info("Current Disk Store Size: " + cache.calculateOnDiskSize() / 1024 / 1024 + " MB");
@@ -254,8 +249,8 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 }
 
             } else {
-                // If
-//                XLog xlog = (XLog) cache.get(log.getId()).getObjectValue();
+                // If cache hit
+                LOGGER.info("Got object [HASH: " + element.hashCode() + " KEY:" + key + "] from cache [" + cacheRepo.getCacheName() + "]");
                 return element;
             }
         }

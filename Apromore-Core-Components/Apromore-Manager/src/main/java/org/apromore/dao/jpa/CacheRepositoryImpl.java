@@ -1,10 +1,11 @@
 package org.apromore.dao.jpa;
 
+import org.apromore.dao.CacheRepository;
 import org.springframework.cache.Cache;
 import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 
-public class CacheRepositoryCustomImpl {
+public class CacheRepositoryImpl implements CacheRepository {
 
     /**
      *  EhCache Cache Manager
@@ -78,7 +79,7 @@ public class CacheRepositoryCustomImpl {
     /**
      * Get net.sf.ehcache.Cache
      *
-     * @return net.sf.ehcache.Cache对象
+     * @return net.sf.ehcache.Cache
      */
     public Object getNativeCache() {
         return getCache().getNativeCache();
