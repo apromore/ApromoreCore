@@ -1,5 +1,7 @@
 package org.apromore.cache;
 
+import org.apromore.exception.CacheException;
+
 public interface CacheManager {
 
     /**

@@ -147,6 +147,8 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 // Store corresponding object into cache
                 cacheRepo.put(logNameId, log);
                 LOGGER.info("Put XLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() + "] using Key [" + logNameId + "]. ");
+                LOGGER.info("The size that EhCache is using in memory   = " + cacheRepo.getMemoryUsage() / 1024 / 1024 + " MB ");
+                LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
                 return logNameId;
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
@@ -239,6 +241,8 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                     cacheRepo.put(key, xlog);
                     elapsedNanos = System.nanoTime() - startTime;
                     LOGGER.info("Put object [KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 + " ms.");
+                    LOGGER.info("The size that EhCache is using in memory   = " + cacheRepo.getMemoryUsage() / 1024 / 1024 + " MB ");
+                    LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
 //                    LOGGER.info("Current Memory Usage: " + cache.calculateInMemorySize() / 1024 / 1024 + " MB");
 //                    LOGGER.info("Current Memory Store Size: " + cache.getMemoryStoreSize() / 1000 + " MB");
 //                    LOGGER.info("Current Disk Store Size: " + cache.calculateOnDiskSize() / 1024 / 1024 + " MB");

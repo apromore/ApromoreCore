@@ -5,6 +5,11 @@
     <!-- Disk cache path -->
     <diskStore path="java.io.tmpdir/ehcache"/>
 
+    <!--Since XES Log file could be huge, the default limit of 1,000 object references could be reached while
+    attempting to calculate the size of the object graph and severe performance degradation could occur. So manually
+     control how deep the SizeOf engine can go when sizing on-heap elements. -->
+    <sizeOfPolicy maxDepth="100" maxDepthExceededBehavior="abort"/>
+
     <!--Predefined caches.  Add your cache configuration settings here.
         If you do not have a configuration for your cache a WARNING will be issued when the
         CacheManager starts
@@ -40,10 +45,45 @@
             diskExpiryThreadIntervalSeconds="120"
             memoryStoreEvictionPolicy="LRU"/>
 
-    <!-- XES LOG Cache -->
+    <!-- XES LOG Cache
+
+    maxEntriesLocalHeap:
+    Sets the maximum number of objects that will be created in memory.  0 = no limit.
+    In practice no limit means Integer.MAX_SIZE (2147483647) unless the cache is distributed
+    with a Terracotta server in which case it is limited by resources.
+
+    maxEntriesLocalDisk:
+    Sets the maximum number of objects that will be maintained in the DiskStore
+    The default value is zero, meaning unlimited.
+
+    eternal:
+    Sets whether elements are eternal. If eternal,  timeouts are ignored and the
+    element is never expired.
+
+    timeToIdleSeconds:
+    Sets the time to idle for an element before it expires.
+    i.e. The maximum amount of time between accesses before an element expires
+    Is only used if the element is not eternal.
+    Optional attribute. A value of 0 means that an Element can idle for infinity.
+    The default value is 0.
+
+    timeToLiveSeconds:
+    Sets the time to live for an element before it expires.
+    i.e. The maximum time between creation time and when an element expires.
+    Is only used if the element is not eternal.
+    Optional attribute. A value of 0 means that and Element can live for infinity.
+    The default value is 0.
+
+    memoryStoreEvictionPolicy:
+    Policy would be enforced upon reaching the maxEntriesLocalHeap limit. Default
+    policy is Least Recently Used (specified as LRU). Other policies available -
+    First In First Out (specified as FIFO) and Less Frequently Used
+    (specified as LFU)
+
+    -->
     <cache name="xlog"
-           maxElementsInMemory="10000"
-           maxElementsOnDisk="100"
+           maxEntriesLocalHeap="0"
+           eternal="true"
            timeToIdleSeconds="0"
            timeToLiveSeconds="17280000"
            diskSpoolBufferSizeMB="30"

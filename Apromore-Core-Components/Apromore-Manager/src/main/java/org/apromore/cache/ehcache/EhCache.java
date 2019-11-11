@@ -5,7 +5,7 @@ import org.apromore.cache.Cache;
 
 import java.util.*;
 
-import org.apromore.cache.CacheException;
+import org.apromore.exception.CacheException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

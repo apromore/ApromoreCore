@@ -1,7 +1,5 @@
 package org.apromore.util;
 
-import org.apromore.cache.CacheException;
-
 /**
  * Apromore container-agnostic interface that indicates that this object requires initialization.
  *

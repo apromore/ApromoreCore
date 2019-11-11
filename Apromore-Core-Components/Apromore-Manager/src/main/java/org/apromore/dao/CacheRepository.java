@@ -46,4 +46,20 @@ public interface CacheRepository {
      * @return net.sf.ehcache.Cache
      */
     Object getNativeCache();
+
+    /**
+     * Returns the size (in bytes) that this EhCache is using in memory (RAM), or <code>-1</code> if that
+     * number is unknown or cannot be calculated.
+     *
+     * @return the size (in bytes) that this EhCache is using in memory (RAM), or <code>-1</code> if that
+     *         number is unknown or cannot be calculated.
+     */
+    long getMemoryUsage();
+
+    /**
+     * Returns the number of elements in the memory store.
+     *
+     * @return the number of elements in the memory store.
+     */
+    long getMemoryStoreSize();
 }

@@ -1,5 +1,7 @@
 package org.apromore.cache;
 
+import org.apromore.exception.CacheException;
+
 import java.util.Collection;
 import java.util.Set;
 
