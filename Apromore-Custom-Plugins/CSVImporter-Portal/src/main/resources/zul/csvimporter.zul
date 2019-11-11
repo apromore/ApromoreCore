@@ -291,7 +291,7 @@
 
         .banner{
         position: absolute;
-        width: 98%;
+        width: calc(100% - 19px);
         background-image: url("/img/apromore_banner.png");
         background-size: 2000px 100px;
         padding-top: 70px;
