@@ -42,7 +42,7 @@
 
     <!-- XES LOG Cache -->
     <cache name="xlog"
-           maxElementsInMemory="2"
+           maxElementsInMemory="10000"
            maxElementsOnDisk="100"
            timeToIdleSeconds="0"
            timeToLiveSeconds="17280000"
