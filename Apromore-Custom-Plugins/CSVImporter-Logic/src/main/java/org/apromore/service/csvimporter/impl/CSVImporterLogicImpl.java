@@ -112,6 +112,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         int errorCount = 0;
         int lineCount = 0;
         int finishCount = 0;
+        boolean skipColumn = false;
         ArrayList<String> invalidRows = new ArrayList<String>();
         try {
 

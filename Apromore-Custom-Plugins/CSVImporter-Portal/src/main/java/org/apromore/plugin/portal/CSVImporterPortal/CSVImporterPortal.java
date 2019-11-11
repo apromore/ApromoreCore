@@ -158,13 +158,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 header.set(0, BomC);
 
                 //2019-10-28
-                if(header.size() > 9) {
-                    window.setWidth("97%");
+                if(header.size() > 8) {
+                    window.setMaximized(true);
                 } else {
-                    window.setWidth("auto");
-//                    int size = IndexColumnWidth + header.size() * AttribWidth + 8;
-//                    window.setWidth(size + "px");
+                    int size = IndexColumnWidth + header.size() * AttribWidth + 12;
+                    window.setWidth(size + "px");
                 }
+
 
                 if (popUPBox != null) {
                     popUPBox.getChildren().clear();
@@ -249,7 +249,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     // display first 1000 rows
                     int numberOfrows = 0;
-                    while (line != null && numberOfrows < 300) {
+                    while (line != null && numberOfrows < 100) {
 
                         if(line != null && line.size() > 2) {
                             List<String> withIndex = new ArrayList<String>();
