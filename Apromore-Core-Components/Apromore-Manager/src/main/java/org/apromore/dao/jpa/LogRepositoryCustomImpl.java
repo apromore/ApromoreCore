@@ -148,9 +148,9 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 final String name = logNameId + "_" + logName + ".xes.gz";
                 exportToFile("../Event-Logs-Repository/", name, log);
 
-//                String key = folderId + logName;
+                // Store corresponding object into cache
                 cacheRepo.put(logNameId, log);
-                LOGGER.info("Put XLog [hash: " + log.hashCode() + "] into Cache using Key [" + logNameId + "]. ");
+                LOGGER.info("Put XLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() + "] using Key [" + logNameId + "]. ");
                 return logNameId;
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
@@ -160,7 +160,6 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
         return null;
     }
 
-//    @CacheEvict(value = "xlog", key="#log.id")
     public void deleteProcessLog(Log log) {
         if (log != null) {
             try {
@@ -168,13 +167,10 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 File file = new File("../Event-Logs-Repository/" + name);
                 file.delete();
 
-                // Remove corresponding cache
-//                manager = CacheManager.getCacheManager(CacheManager.DEFAULT_NAME);
-//                Cache cache = manager.getCache("xlog");
-//                cache.remove(log.getId());
+                // Remove corresponding object from cache
                 String key = log.getFilePath();
                 cacheRepo.evict(key);
-                LOGGER.info("Delete XLog [hash: " + log.hashCode() + "] [ KEY: " + key + "] from cache [" + cacheRepo.getCacheName() + "]");
+                LOGGER.info("Delete XLog [ KEY: " + key + "] from cache [" + cacheRepo.getCacheName() + "]");
 
             } catch (Exception e) {
                 LOGGER.error("Error " + e.getMessage());
@@ -215,7 +211,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
             String key = log.getFilePath();
             XLog element = (XLog) cacheRepo.get(key);
-            LOGGER.info("Getting object [" + element.hashCode() + "] from cache [" + cacheRepo.getCacheName() + "] for key [" + key + "]");
+            LOGGER.info("Getting object [HASH: " + element.hashCode() + " KEY:" + key + "] from cache [" + cacheRepo.getCacheName() + "]");
 //            Element element = cache.get(log.getId());
 
 
@@ -247,7 +243,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                     // Log POJO has one constraint that span 2 columns (@UniqueConstraint(columnNames = {"name", "folderId"}))
                     cacheRepo.put(key, xlog);
                     elapsedNanos = System.nanoTime() - startTime;
-                    LOGGER.info("Put XLog [hash: " + xlog.hashCode() + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 + " ms.");
+                    LOGGER.info("Put object [HASH: " + element.hashCode() + " KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 + " ms.");
 //                    LOGGER.info("Current Memory Usage: " + cache.calculateInMemorySize() / 1024 / 1024 + " MB");
 //                    LOGGER.info("Current Memory Store Size: " + cache.getMemoryStoreSize() / 1000 + " MB");
 //                    LOGGER.info("Current Disk Store Size: " + cache.calculateOnDiskSize() / 1024 / 1024 + " MB");
