@@ -1,4 +1,4 @@
-package org.apromore.cache;
+package org.apromore.exception;
 
 /**
  * Root exception for all Apromore runtime exceptions.  This class is used as the root instead

@@ -1,7 +1,7 @@
 package org.apromore.cache.ehcache;
 
 import org.apromore.cache.Cache;
-import org.apromore.cache.CacheException;
+import org.apromore.exception.CacheException;
 import org.apromore.cache.CacheManager;
 import org.apromore.util.Destroyable;
 import org.apromore.util.Initializable;
