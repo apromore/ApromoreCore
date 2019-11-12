@@ -245,7 +245,7 @@ public class EventLogServiceImplTest {
     }
 
 
-    /* Below are performance testing which are comment out in production */
+    /* Below are performance testings which are comment out in production */
 
 //    @Test
 //    @Rollback

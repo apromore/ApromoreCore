@@ -25,6 +25,11 @@ public class CacheRepositoryImpl implements CacheRepository {
      */
     private String cacheName;
 
+    public CacheRepositoryImpl(EhCacheCacheManager ehCacheCacheManager, String cacheName) {
+        this.ehCacheCacheManager = ehCacheCacheManager;
+        this.cacheName = cacheName;
+    }
+
     public EhCacheCacheManager getEhCacheCacheManager() {
         return ehCacheCacheManager;
     }

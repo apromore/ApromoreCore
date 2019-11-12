@@ -20,6 +20,7 @@
 
 package org.apromore.dao;
 
+import org.apromore.apmlogmodule.APMLog;
 import org.apromore.dao.model.Log;
 import org.deckfour.xes.model.XLog;
 
@@ -58,5 +59,13 @@ public interface LogRepositoryCustom {
     void deleteProcessLog(Log log);
 
     XLog getProcessLog(Log log, String factoryName);
+
+    /**
+     * Get aggregated log.
+     *
+     * @param log
+     * @return The aggregated log placed into the cache, or generated on the fly if not found or expired
+     */
+    APMLog getAggregatedLog(Log log);
 
 }

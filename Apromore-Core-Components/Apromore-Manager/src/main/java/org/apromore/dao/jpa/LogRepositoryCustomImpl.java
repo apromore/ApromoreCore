@@ -24,6 +24,7 @@
 package org.apromore.dao.jpa;
 
 import net.sf.ehcache.CacheManager;
+import org.apromore.apmlogmodule.APMLog;
 import org.apromore.dao.CacheRepository;
 import org.apromore.dao.LogRepositoryCustom;
 import org.apromore.dao.model.Log;
@@ -58,6 +59,8 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogRepositoryCustomImpl.class);
 
+    private static final String APMLOG_CACHE_KEY_SUFFIX = "APMLog";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -80,12 +83,10 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 //    String value = cache.get(1L);
 
     /**
-     * Get the CacheManager instance
+     * Inject the CacheRepository instance
      */
-    private CacheManager manager;
     @Resource
     private CacheRepository cacheRepo;
-//    private EhCacheManager cacheManager;
 
     /* ************************** JPA Methods here ******************************* */
 
@@ -146,7 +147,10 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
                 // Store corresponding object into cache
                 cacheRepo.put(logNameId, log);
+                cacheRepo.put(logNameId + APMLOG_CACHE_KEY_SUFFIX, new APMLog(log));
                 LOGGER.info("Put XLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() + "] using Key [" + logNameId + "]. ");
+                LOGGER.info("Put APMLog [hash: " + log.hashCode() + "] into Cache [" + cacheRepo.getCacheName() + "] " +
+                        "using Key [" + logNameId + "APMLog]. ");
                 LOGGER.info("The size that EhCache is using in memory   = " + cacheRepo.getMemoryUsage() / 1024 / 1024 + " MB ");
                 LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
                 return logNameId;
@@ -168,6 +172,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 // Remove corresponding object from cache
                 String key = log.getFilePath();
                 cacheRepo.evict(key);
+                cacheRepo.evict(key + APMLOG_CACHE_KEY_SUFFIX);
                 LOGGER.info("Delete XLog [ KEY: " + key + "] from cache [" + cacheRepo.getCacheName() + "]");
 
             } catch (Exception e) {
@@ -177,11 +182,10 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
     }
 
     /**
-     * Load XES log file from Event Logs Repository
+     * Load XES log file from cache, if not found or expired then load from Event Logs Repository
      * @param log
      * @return
      */
-//    @Cacheable(value="xlog", key="#log.id")
     public XLog getProcessLog(Log log, String factoryName) {
         if (log != null) {
 
@@ -248,6 +252,60 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 //                    LOGGER.info("Current Disk Store Size: " + cache.calculateOnDiskSize() / 1024 / 1024 + " MB");
 
                     return xlog;
+                } catch (Exception e) {
+                    LOGGER.error("Error " + e.getMessage());
+                }
+
+            } else {
+                // If cache hit
+                LOGGER.info("Got object [HASH: " + element.hashCode() + " KEY:" + key + "] from cache [" + cacheRepo.getCacheName() + "]");
+                return element;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Load XES log file from Event Logs Repository
+     * @param log
+     * @return
+     */
+    public APMLog getAggregatedLog(Log log) {
+        if (log != null) {
+
+            // *******  profiling code start here ********
+            long startTime = System.nanoTime();
+            long elapsedNanos;
+            // *******  profiling code end here ********
+
+            String key = log.getFilePath() + APMLOG_CACHE_KEY_SUFFIX;
+            APMLog element = (APMLog) cacheRepo.get(key);
+
+            if (element == null) {
+                // If doesn't hit cache
+                LOGGER.info("Cache for [KEY: " + key + "] is null.");
+
+                try {
+                    APMLog apmLog = new APMLog(getProcessLog(log, null));
+
+//                System.gc();
+//                try {
+//                    Thread.sleep(5000);
+//                } catch (InterruptedException e) {
+//                }
+//                LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+                    // *******  profiling code end here ********
+
+                    cacheRepo.put(key, apmLog);
+                    elapsedNanos = System.nanoTime() - startTime;
+                    LOGGER.info("Put object [KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 + " ms.");
+                    LOGGER.info("The size that EhCache is using in memory   = " + cacheRepo.getMemoryUsage() / 1024 / 1024 + " MB ");
+                    LOGGER.info("The number of elements in the memory store = " + cacheRepo.getMemoryStoreSize());
+//                    LOGGER.info("Current Memory Usage: " + cache.calculateInMemorySize() / 1024 / 1024 + " MB");
+//                    LOGGER.info("Current Memory Store Size: " + cache.getMemoryStoreSize() / 1000 + " MB");
+//                    LOGGER.info("Current Disk Store Size: " + cache.calculateOnDiskSize() / 1024 / 1024 + " MB");
+
+                    return apmLog;
                 } catch (Exception e) {
                     LOGGER.error("Error " + e.getMessage());
                 }

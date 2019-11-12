@@ -20,6 +20,7 @@
 
 package org.apromore.service;
 
+import org.apromore.apmlogmodule.APMLog;
 import org.apromore.dao.model.*;
 import org.apromore.exception.*;
 import org.apromore.model.ExportLogResultType;
@@ -117,7 +118,6 @@ public interface EventLogService {
     void storeStatsByType(Map<String, Map<String, String>> map, Integer logId, StatType statType);
 
     /**
-     *
      * Check if this log has this type of statistic in the database.
      *
      * @param logId logID of XES log file
@@ -125,4 +125,12 @@ public interface EventLogService {
      * @return
      */
     boolean isStatsExists(Integer logId, StatType statType);
+
+    /**
+     * Get aggregated log.
+     *
+     * @param logId
+     * @return The aggregated log placed into the cache, or generated on the fly if not found or expired
+     */
+    APMLog getAggregatedLog(Integer logId);
 }

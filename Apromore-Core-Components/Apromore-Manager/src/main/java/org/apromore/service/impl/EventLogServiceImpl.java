@@ -19,6 +19,7 @@
  */
 package org.apromore.service.impl;
 
+import org.apromore.apmlogmodule.APMLog;
 import org.apromore.common.Constants;
 import org.apromore.dao.FolderRepository;
 import org.apromore.dao.GroupLogRepository;
@@ -260,7 +261,7 @@ public class EventLogServiceImpl implements EventLogService {
         XFactory factory = XFactoryRegistry.instance().currentDefault();
         XAttribute parent;
 
-        XLog log = getXLog(logId);
+        XLog log = getXLog(logId, factory.toString());
 
         // TODO: The value of containerAttribute can be used to store the availability of different of statistics by bitwise.
         XAttribute containerAttribute = factory.createAttributeLiteral(STAT_NODE_NAME, "", null);
@@ -331,9 +332,8 @@ public class EventLogServiceImpl implements EventLogService {
      * @param logId logID
      * @return list of statistic entities
      */
-    @Cacheable(value = "stat", key="#logId")
     public List<Statistic> getStats(Integer logId) {
-        LOGGER.info("************* Get statistics by LogID  " + logId);
+        LOGGER.info("Get statistics by LogID  " + logId);
         return statisticRepository.findByLogid(logId);
     }
 
@@ -342,26 +342,26 @@ public class EventLogServiceImpl implements EventLogService {
      * @param statType
      * @return
      */
-//    public List<?> getStatsByType(Integer logId, StatType statType) {
-//        // if flag = pd, if flag = db
-//        List<?> stats;
-//
-//        switch (statType) {
-//
-//            case FILTER:
-//                stats = statisticRepository.findByLogid(logId);
-//                break;
-//            case CASE:
-//            case ACTIVITY:
-//            case RESOURCE:
-//                stats = dashboardRepository.findByLogid(logId);
-//                break;
-//            default:
-//                stats = null;
-//                break;
-//        }
-//        return stats;
-//    }
+    public List<?> getStatsByType(Integer logId, StatType statType) {
+        // if flag = pd, if flag = db
+        List<?> stats;
+
+        switch (statType) {
+
+            case FILTER:
+                stats = statisticRepository.findByLogid(logId);
+                break;
+            case CASE:
+            case ACTIVITY:
+            case RESOURCE:
+                stats = statisticRepository.findByLogid(logId);
+                break;
+            default:
+                stats = null;
+                break;
+        }
+        return stats;
+    }
 
     /**
      * @param logId
@@ -580,6 +580,12 @@ public class EventLogServiceImpl implements EventLogService {
     public void exportToStream(OutputStream outputStream, XLog log) throws Exception {
         XSerializer serializer = new XesXmlGZIPSerializer();
         serializer.serialize(log, outputStream);
+    }
+
+    @Override
+    public APMLog getAggregatedLog(Integer logId) {
+        Log log = logRepo.findUniqueByID(logId);
+        return logRepo.getAggregatedLog(log);
     }
 
 }

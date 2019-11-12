@@ -3,7 +3,6 @@ package org.apromore.cache.ehcache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import org.apromore.util.EhcacheWrapper;
 import org.junit.Test;
 import junit.framework.Assert;
 

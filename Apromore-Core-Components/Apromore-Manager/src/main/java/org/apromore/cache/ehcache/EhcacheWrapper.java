@@ -1,4 +1,4 @@
-package org.apromore.util;
+package org.apromore.cache.ehcache;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
