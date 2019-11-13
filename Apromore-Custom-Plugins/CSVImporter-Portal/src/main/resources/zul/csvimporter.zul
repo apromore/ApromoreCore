@@ -3,17 +3,9 @@
 <zk>
 
 
-    <window  closable="true" id="mainWindow" maximizable="true" height="750px"  width="850px" position="center" title="CSV Importer" onOpen="onClientInfo(event)"  >
+    <window  closable="true" id="mainWindow" maximizable="true" height="750px"  width="850px"  position="center" title="CSV Importer" onClientInfo="onClientInfo(event)"  >
 
         <!--<vbox>-->
-        <zscript>
-            void onClientInfo(ClientInfoEvent evt) {
-            int height = evt.getDesktopHeight();
-            int width = evt.getDesktopWidth();
-            mainWindow.setWidth((width - 100) + "px");
-            mainWindow.setHeight((height - 100) + "px");
-            }
-        </zscript>
         <style>
             .greenLabel {
             padding-left: 1px;
@@ -142,7 +134,7 @@
                         <li>29.10.19 5:20   [dd.MM.yy HH:mm]</li>
                     </ul>
 
-                    e</html>
+                    </html>
             </vbox>
 
         </popup>
@@ -161,7 +153,15 @@
                     <div zclass="banner" />
                     <div id="popUPBox" zclass="relativePos"></div>
                     <!--<div id="attrBox" visible="false"></div>-->
-                    <grid id="myGrid" mold="default" hflex="min" style="padding-top: 60px;overflow: auto;">
+                    <grid id="myGrid" mold="default" hflex="min" onClientInfo="onClientInfo(event)" style="padding-top: 60px;overflow: auto;">
+                        <zscript>
+                            void onClientInfo(ClientInfoEvent evt) {
+                            int height = evt.getDesktopHeight();
+                            int width = evt.getDesktopWidth();
+                            mainWindow.setWidth(width/1.15 + "px");
+                            mainWindow.setHeight(height/1.15 + "px");
+                            }
+                        </zscript>
                     </grid>
                 </div>
             </center>

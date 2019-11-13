@@ -60,8 +60,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @Inject private EventLogService eventLogService;
     char separator = Character.UNASSIGNED;
 
-    private Window mainWindow;
-
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         this.csvImporterLogic = newCSVImporterLogic;
     }
@@ -166,11 +164,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //                    window.setWidth(size + "px");
 //                }
 //                window.setWidth("97%");
-                if(header.size() < 9) {
-                    window.setClosable(false);
-                } else {
-                    window.setClosable(true);
-                }
+
+
 
                 if (popUPBox != null) {
                     popUPBox.getChildren().clear();
@@ -370,13 +365,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     }
 
 
-    // FileImporterPlugin implementation
-    void onClientInfo(ClientInfoEvent evt) {
-        int height = evt.getDesktopHeight();
-        int width = evt.getDesktopWidth();
 
-
-    }
 
 
     @Override
@@ -389,7 +378,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
         LOGGER.info("Import file: " + media.getName());
 
         this.isPublic = isPublic;
-
+        
 
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
@@ -402,9 +391,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Button toXESButton = (Button) window.getFellow("toXESButton");
             Button cancelButton = (Button) window.getFellow("cancelButton");
 
-
             if(media != null) {
-//                window.setWidth("95%");
 
                 csvImporterLogic.resetLine();
                 csvImporterLogic.resetHead();
@@ -415,6 +402,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window);
 
+
+
+                    
                     if (window != null) {
                         // set grid model
                         if (result != null) {
