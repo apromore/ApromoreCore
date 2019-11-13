@@ -24,6 +24,8 @@ var svgDocumentG;  // initialized in Controller.reset
 var lastSliderValue = 11;
 var speedRatio;
 
+var timelineOffset = 5
+
 function switchPlayPause(e) {
     controller.switchPlayPause(e);
 }
@@ -335,7 +337,7 @@ AnimationController = {
         this.svgDocuments.clear();
         this.svgDocuments.push(svgDocument);
         this.svgDocuments.push(this.timelineSVG);
-        this.svgDocuments.push($j("div#progress_display > svg")[0]);
+        this.svgDocuments.push($j("div#progress_display svg")[0]);
 
         var tokenE = svgDocument.getElementById("progressAnimation");
         if (tokenE != null) {
@@ -373,7 +375,7 @@ AnimationController = {
 
         //Recreate progress indicators
         var progressIndicatorE = this.createProgressIndicators(logs, jsonServer.timeline);
-        $j("div#progress_display > svg")[0].append(progressIndicatorE);
+        $j("div#progress_display svg")[0].append(progressIndicatorE);
 
         //Recreate timeline to update date labels
         //$j("#timeline").remove();
@@ -388,9 +390,9 @@ AnimationController = {
             var log = jsonServer.timeline.logs[j];
             var logInterval = document.createElementNS(svgNS,"line");
             logInterval.setAttributeNS(null,"x1",startTopX + 9 * log.startDatePos);  // magic number 10 is slotWidth / slotEngineDur
-            logInterval.setAttributeNS(null,"y1",startTopY + 8 + 7 * j);
+            logInterval.setAttributeNS(null,"y1",startTopY + 8 + 7 * j + timelineOffset);
             logInterval.setAttributeNS(null,"x2",startTopX + 9 * log.endDatePos);
-            logInterval.setAttributeNS(null,"y2",startTopY + 8 + 7 * j);
+            logInterval.setAttributeNS(null,"y2",startTopY + 8 + 7 * j  + timelineOffset);
             logInterval.setAttributeNS(null,"style","stroke: "+log.color +"; stroke-width: 5");
             timelineE.insertBefore(logInterval, timelineE.lastChild);
 
@@ -398,7 +400,7 @@ AnimationController = {
             if (log.startDatePos % 10 != 0) {
                 var logDateTextE = document.createElementNS(svgNS,"text");
                 logDateTextE.setAttributeNS(null,"x", startTopX + 9 * log.startDatePos - 50);
-                logDateTextE.setAttributeNS(null,"y", startTopY + 8 + 7 * j + 5);
+                logDateTextE.setAttributeNS(null,"y", startTopY + 8 + 7 * j + 5  + timelineOffset);
                 logDateTextE.setAttributeNS(null,"text-anchor", "middle");
                 logDateTextE.setAttributeNS(null,"font-size", "11");
                 logDateTextE.innerHTML = log.startDateLabel.substr(0,19);
@@ -747,7 +749,9 @@ AnimationController = {
 
         var pathE = document.createElementNS(svgNS,"path");
         pathE.setAttributeNS(null,"d","M " + x + "," + y + " m 0, 0 a 20,20 0 1,0 0.00001,0");
-        pathE.setAttributeNS(null,"fill","#CCCCCC");
+        // pathE.setAttributeNS(null,"fill","#CCCCCC");
+        pathE.setAttributeNS(null,"fill",log.color);
+        pathE.setAttributeNS(null,"fill-opacity", 0.5);
         pathE.setAttributeNS(null,"stroke",log.color);
         pathE.setAttributeNS(null,"stroke-width","5");
         pathE.setAttributeNS(null,"stroke-dasharray","0 126 126 0");
@@ -803,12 +807,14 @@ AnimationController = {
         function addTimelineBar(lineX, lineY, lineLen, lineColor, textX, textY, text1, text2, parent) {
             var lineElement = document.createElementNS(svgNS,"line");
             lineElement.setAttributeNS(null,"x1", lineX);
-            lineElement.setAttributeNS(null,"y1", lineY);
+            lineElement.setAttributeNS(null,"y1", lineY + 10 );
             lineElement.setAttributeNS(null,"x2", lineX);
             lineElement.setAttributeNS(null,"y2", lineY+lineLen);
-            lineElement.setAttributeNS(null,"stroke", lineColor);
-            if (lineColor == "red") {
-                lineElement.setAttributeNS(null,"stroke-width","1");
+
+            if (lineColor === "red") {
+                lineElement.setAttributeNS(null,"stroke", 'black');
+                lineElement.setAttributeNS(null,"stroke-width","0.5");
+                parent.appendChild(lineElement);
             } else {
                 lineElement.setAttributeNS(null,"stroke-width",".5");
             }
@@ -828,7 +834,7 @@ AnimationController = {
             textElement2.setAttributeNS(null,"font-size", "11");
             textElement2.innerHTML = text2;
 
-            parent.appendChild(lineElement);
+
             parent.appendChild(textElement1);
             parent.appendChild(textElement2);
         }

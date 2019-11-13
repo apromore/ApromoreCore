@@ -3,6 +3,9 @@ body {
     margin: 0;
 }
 
+.ap-dashboard {
+    height: calc(100% - 40px) !important;
+}
 .ap-dashboard-menu,
 .ap-dashboard-content,
 .ap-dashboard-content-layout {

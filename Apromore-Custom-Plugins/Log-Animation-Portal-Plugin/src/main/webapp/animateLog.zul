@@ -20,10 +20,11 @@
 
 <?link rel="shortcut icon" href="favicon.ico" ?>
 <z:window id="win"
-        xmlns="http://www.zkoss.org/2005/zk/native"
-        xmlns:n="http://www.zkoss.org/2005/zk/native"
-        xmlns:z="http://www.zkoss.org/2005/zul"
-        use="org.apromore.plugin.portal.loganimation.LogAnimationController">
+          xmlns="http://www.zkoss.org/2005/zk/native"
+          xmlns:n="http://www.zkoss.org/2005/zk/native"
+          xmlns:z="http://www.zkoss.org/2005/zul"
+          sclass="ap-log-animator"
+          use="org.apromore.plugin.portal.loganimation.LogAnimationController">
 
     <style media="screen" type="text/css">
         @import url("/${arg.editor}/libs/ext-2.0.2/resources/css/ext-all.css");
@@ -47,7 +48,20 @@
     <link rel="stylesheet" href="/loganimation/jquery-ui-slider-pips.css" type="text/css"/>
     <link rel="stylesheet" href="/loganimation/styles.css" type="text/css"/>
 
-	<n:div id="editorwrapper" style="display: none">
+        <n:link rel="stylesheet" type="text/css" href='/themes/ap/common/css/index.css' />
+        <n:link rel="stylesheet" type="text/css" href='/themes/ap/log-animator/css/index.css'  />
+
+        <n:div class="ap-header">
+            <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>
+            <n:div class="ap-header-title">Log Animator</n:div>
+            <n:div class="ap-help">
+                <n:a href="https://apromore.org/documentation/features" target="_blank">
+                    <n:button class="ap-icon ap-icon-help"/>
+                </n:a>
+            </n:div>
+        </n:div>
+
+    <n:div id="editorwrapper" style="display: none">
         <n:script>
             <![CDATA[
                 if (!ORYX) {
@@ -61,7 +75,7 @@
             ]]>
         </n:script>
 
-	    <n:script src="/${arg.editor}/libs/prototype-1.7.3.js" type="text/javascript"/>
+        <n:script src="/${arg.editor}/libs/prototype-1.7.3.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/path_parser.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"/>
         <n:script src="/${arg.editor}/libs/ext-2.0.2/ext-all.js" type="text/javascript"/>
@@ -84,8 +98,8 @@
 
 
         <n:span id="oryxstartupcode">
-	        <n:script>
-	            <![CDATA[
+            <n:script>
+                <![CDATA[
 					//$.noConflict();
                     var editorWrapper = new ORYX.Editor ({
 							xml: '${arg.bpmnXML}',
@@ -96,7 +110,7 @@
                                     namespace : '${arg.url}'
                                 },
                             },
-                            fullscreen : false
+                            fullscreen : true // false
                         });
 
 	                ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(xml, svg) {
@@ -169,92 +183,95 @@
 					});
 
 	            ]]>
-	        </n:script>
+            </n:script>
         </n:span>
     </n:div>
 
     <!-- THIS PAGE USE DIV FLOAT FOR LAYOUTING -->
 
-    <div id="editorcanvas" style="height:72.5vh; background-color:none;"></div>
+    <div id="editorcanvas"></div>
 
-    <n:div id="controls" style="background-color:none;">
+    <n:div id="controls">
         <!-- Relative positioning: relative to its normal position using top, left, right,...-->
         <!-- Its normal position is the top left corner of the containing div -->
         <!-- Relative positioning is used so that the speed control can overlay on top of the others -->
-        <n:div id="playback_controls" style="float:left; background: #EEEEFF; border: 0px solid black; padding: 0px; padding-top: 0px; left: 0; top: 0px; overflow: hidden">
+        <n:div id="playback_controls">
             <!-- SVG for the timeline -->
-            <n:svg id="timeline_svg" xmlns="http://www.w3.org/2000/svg" width="90vw" height="8vh" style="margin-left:5vw; margin-top:2px; background: none;"></n:svg>
+            <n:svg id="timeline_svg" xmlns="http://www.w3.org/2000/svg"></n:svg>
 
-            <div style="float:left;width: 25vw; top: 0px; background-color:none;">
-              <div id="buttons_and_rate" style="float:left; margin-left: 5vw; margin-top: 2px; padding: 0px; top: 0px; width:20vw; overflow: hidden; background-color:none;">
-                  <button id='start' onclick="start(event);" style="border: 1px solid gray; padding: 0">
-                      <img src="images/control_start.png" alt="Start" width="24" height="24" style="border: 0; padding: 0"/>
-                  </button>
-                  <button id='previousTrace' onclick="previousTrace();" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                      <img src="images/control_previoustrace.png" alt="Forward" width="24" height="24" style="padding: 0"/>
-                  </button>
-                  <button id='backward' onclick="fastBackward();" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                      <img src="images/control_rewind.png" alt="Backward" width="24" height="24" style="padding: 0"/>
-                  </button>
-                  <button id="pause" onclick="switchPlayPause();" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                      <img src="images/control_play.png" alt="Play" width="24" height="24" style="padding: 0"/>
-                  </button>
-                  <button id='forward' onclick="fastForward();" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                      <img src="images/control_fastforward.png" alt="Forward" width="24" height="24" style="padding: 0"/>
-                  </button>
-                  <button id='nextTrace' onclick="nextTrace();" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                      <img src="images/control_nexttrace.png" alt="Next Trace" width="24" height="24" style="padding: 0"/>
-                  </button>
-                  <button id='end' onclick="end(event);" disabled="disabled" style="border: 1px solid gray; padding: 0">
-                      <img src="images/control_end.png" alt="End" width="24" height="24" style="padding: 0"/>
-                  </button>
-              </div>
+            <div sclass="ap-animator-panel">
+                <div sclass="ap-animator-controls">
+                    <div id="buttons_and_rate" style="width: 240px; text-align: center">
+                        <button id='start' onclick="start(event);">
+                            <img src="images/control_start.png" alt="Start" />
+                        </button>
+                        <button id='previousTrace' onclick="previousTrace();" disabled="disabled">
+                            <img src="images/control_previoustrace.png" alt="Forward"/>
+                        </button>
+                        <button id='backward' onclick="fastBackward();" disabled="disabled">
+                            <img src="images/control_rewind.png" alt="Backward"/>
+                        </button>
+                        <button id="pause" onclick="switchPlayPause();" disabled="disabled">
+                            <img src="images/control_play.png" alt="Play"/>
+                        </button>
+                        <button id='forward' onclick="fastForward();" disabled="disabled">
+                            <img src="images/control_fastforward.png" alt="Forward"/>
+                        </button>
+                        <button id='nextTrace' onclick="nextTrace();" disabled="disabled">
+                            <img src="images/control_nexttrace.png" alt="Next Trace"/>
+                        </button>
+                        <button id='end' onclick="end(event);" disabled="disabled">
+                            <img src="images/control_end.png" alt="End"/>
+                        </button>
+                    </div>
+    
+                    <!-- Use jQuery-ui-Slider-Pips at github.com/simeydotme/jQuery-ui-Slider-Pips -->
+                    <!-- Use absolute position to place this control on top of the editor -->
+                    <!-- <div id="speed_controls" style="position: absolute; background: #EEE; border: 1px solid black; left: 200px; top: 360px; width: 800px; height: 70px; overflow: hidden"> -->
+                    <div id="speed_controls">
+                        <!-- <center style="font: 1em monospace">Replay Speed</center> -->
+                        <div id="slider2" disabled="disabled" style="margin: auto;"></div>
+                    </div>
+                </div>
 
-              <!-- Use jQuery-ui-Slider-Pips at github.com/simeydotme/jQuery-ui-Slider-Pips -->
-              <!-- Use absolute position to place this control on top of the editor -->
-              <!-- <div id="speed_controls" style="position: absolute; background: #EEE; border: 1px solid black; left: 200px; top: 360px; width: 800px; height: 70px; overflow: hidden"> -->
-              <div id="speed_controls" style="float:left; margin-left: 3vw; margin-top: 0px; top: 0px; width:20vw; height: 7vh; overflow: hidden; background-color:#EEEEFF;">
-                <!-- <center style="font: 1em monospace">Replay Speed</center> -->
-                <div id="slider2" disabled="disabled" style="margin-top: 8px; margin-left:1vw; margin-right:1vw;"></div>
-              </div>
-            </div>
-
-			      <!-- Animation progress -->
-            <div id="progress_display" style="float:left; margin-top: 2px; margin-left:0vw; width: 30vw; top: 0px; overflow: hidden; background-color: none;">
-
-                <!-- Running Clock -->
-                <table style="float: left; vertical-align: top; width:10vw">
-                    <tr><td id="date" style="text-align: center; font: 1em monospace">&#xA0;</td></tr>
-                    <tr><td id="time" style="text-align: center; font: 1.5em monospace">&#x2D;-:&#x2D;-:&#x2D;-</td></tr>
-                    <tr><td id="subtitle" style="text-align: center; font: 1em monospace">&#xA0;</td></tr>
-                </table>
-
-                <!-- SVG for the circular progress bars -->
-                <n:svg id="progressbars_svg" xmlns="http://www.w3.org/2000/svg" width="20vw" height="11vh" style="float:left; background-color: none;" ></n:svg>
-            </div>
-
-
-          <!-- Log Information -->
-            <div id="log_list" style="float:left; margin-top: 2px; top: 0px; width:42vw; overflow-y: scroll; background-color: #EEEEFF;">
-                <table id="metrics_table" style="border-style: solid; border-collapse: collapse; border: 1px solid black; vertical-align: top; background-color: none;" width="100%" border="1">
-                    <tr id="header">
-                        <td style="text-align: center; font: 1em monospace; padding:2px">No.</td>
-                        <td style="text-align: center; font: 1em monospace">Log</td>
-                        <td style="text-align: center; font: 1em monospace; padding:2px">Total Traces</td>
-                        <td style="text-align: center; font: 1em monospace; padding:2px">Replayed</td>
-                        <td style="text-align: center; font: 1em monospace; padding:2px">Reliable</td>
-                        <td style="text-align: center; font: 1em monospace; padding:2px">Fitness</td>
-                        <!--
-                        <td style="text-align: center; font: 1em monospace">Time(s)</td>
-                        <td style="text-align: center; font: 1em monospace">A. Fitness</td>
-                        <td style="text-align: center; font: 1em monospace">A. Time(s)</td>
-                        <td style="text-align: center; font: 1em monospace">Algo Runtime(s)</td>
-                        -->
-                    </tr>
-                    <tr>
-                        <td colspan="6" style="text-align: left; font: 1em monospace"><input id="toggleCaseLabelVisibility" type="checkbox" onchange="toggleCaseLabelVisibility()">Show case labels</input></td>
-                    </tr>
-                </table>
+                <!-- Animation progress -->
+                <div id="progress_display">
+    
+                    <!-- Running Clock -->
+                    <table>
+                        <tr><td id="date">&#xA0;</td></tr>
+                        <tr><td id="time">&#x2D;-:&#x2D;-:&#x2D;-</td></tr>
+                        <tr><td id="subtitle">&#xA0;</td></tr>
+                    </table>
+    
+                    <n:div class="ap-log-animator-progress-pies">
+                        <!-- SVG for the circular progress bars -->
+                        <n:svg id="progressbars_svg" xmlns="http://www.w3.org/2000/svg"></n:svg>
+                    </n:div>
+                </div>
+                
+                <!-- Log Information -->
+                <div id="log_list">
+                    <table id="metrics_table">
+                        <tr id="header">
+                            <td>No.</td>
+                            <td>Log</td>
+                            <td>Total Traces</td>
+                            <td>Replayed</td>
+                            <td>Reliable</td>
+                            <td>Fitness</td>
+                            <!--
+                            <td style="text-align: center; font: 1em monospace">Time(s)</td>
+                            <td style="text-align: center; font: 1em monospace">A. Fitness</td>
+                            <td style="text-align: center; font: 1em monospace">A. Time(s)</td>
+                            <td style="text-align: center; font: 1em monospace">Algo Runtime(s)</td>
+                            -->
+                        </tr>
+                        <tr>
+                            <td colspan="6"><input id="toggleCaseLabelVisibility" type="checkbox" onchange="toggleCaseLabelVisibility()">Show case labels</input></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </n:div>
     </n:div>

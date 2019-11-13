@@ -86,5 +86,10 @@
 }
 
 .ap-help .ap-icon-help {
-    filter: invert(100%) saturate(0%) brightness(100%) contrast(100%);
+    filter: invert(82%) sepia(16%) saturate(924%) hue-rotate(340deg) brightness(106%) contrast(98%);
+}
+
+.ap-help .ap-icon-help:hover {
+    background-color: transparent !important;
+    filter: invert(100%) saturate(0%) brightness(100%) contrast(100%) !important;
 }

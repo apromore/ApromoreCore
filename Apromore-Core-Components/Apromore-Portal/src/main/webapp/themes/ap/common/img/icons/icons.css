@@ -29,6 +29,11 @@
     filter: none;
 }
 
+.ap-icon-dark:hover {
+    background-color: transparent !important;
+    filter: invert(100%) saturate(0%) brightness(100%) contrast(100%); // whitened
+}
+
 .ap-icon-help {
     background-image: url('help.svg') !important;
     width: 26px !important;

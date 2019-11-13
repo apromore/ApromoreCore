@@ -24,6 +24,5 @@
 
 
 /* @import must be at top of file, otherwise CSS will not work */
-@import url("//hello.myfonts.net/count/3a6bad");
 @font-face {font-family: 'Gilroy-Light';src: url('3A6BAD_0_0.eot');src: url('3A6BAD_0_0.eot?#iefix') format('embedded-opentype'),url('3A6BAD_0_0.woff2') format('woff2'),url('3A6BAD_0_0.woff') format('woff'),url('3A6BAD_0_0.ttf') format('truetype');}
 @font-face {font-family: 'Gilroy-ExtraBold';src: url('3A6BAD_1_0.eot');src: url('3A6BAD_1_0.eot?#iefix') format('embedded-opentype'),url('3A6BAD_1_0.woff2') format('woff2'),url('3A6BAD_1_0.woff') format('woff'),url('3A6BAD_1_0.ttf') format('truetype');}

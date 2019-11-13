@@ -18,7 +18,7 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<window id="pluginInfo" height="500px" width="800px" sizable="true">
+<window id="pluginInfo" height="70vh" width="70vw" sizable="false" sclass="ap-about-window">
     <tabbox vflex="1">
         <tabs>
             <tab label="Details"/>
@@ -26,23 +26,22 @@
         </tabs>
         <tabpanels>
             <tabpanel hflex="1">
-                <hbox zclass="z-listheader" width="100%" style="padding: 9px">
-                    <image src="img/apromore_header.png" width="50%" style="position: relative; top: 3px"/>
-                </hbox>
-                <space vflex="1"/>
-                <hbox width="100%">
-                    <space hflex="1"/>
-                    <vbox>
-                        <div>${arg.edition}</div>
-                        <div>Copyright 2019, The University of Melbourne. All rights reserved.</div>
-                        <div>Version: ${arg.version}</div>
-                        <div>This software is licensed under the <a href="https://www.gnu.org/licenses/lgpl-3.0.html">LGPL 3.0 license</a> and <a href="https://apromore.org/ee-licenses">other open source licenses</a>. It also incorporates some closed source components, licensed by The University of Melbourne.</div>
-                    </vbox>
-                    <space hflex="1"/>
-                </hbox>
+                <vlayout sclass="ap-about-details">
+                        <div sclass="ap-about-logo">
+                            <image src="themes/ap/common/img/brand/apromore-logo-white.svg" width="50%" style="position: relative; top: 3px"/>
+                        </div>
+                            <div sclass="ap-edition">${arg.edition}</div>
+                            <div sclass="ap-copyright">Copyright 2019, The University of Melbourne. All rights reserved.</div>
+                            <div sclass="ap-version">Version: ${arg.version}</div>
+                            <div>This software is licensed under the
+                                <a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank">LGPL 3.0 license</a>
+                                and <a href="https://apromore.org/ee-licenses" target="_blank">other open source licenses</a>.
+                                It also incorporates some closed source components, licensed by The University of Melbourne.
+                            </div>
+                </vlayout>
                 <space vflex="10"/>
             </tabpanel>
-            <tabpanel>
+            <tabpanel style="padding:0">
                 <listbox id="pluginInfoListBox" vflex="true" span="true" autopaging="true" mold="paging">
                     <listhead sizable="true">
                         <listheader hflex="min" label="Name" sort="auto(name)"/>
@@ -56,7 +55,7 @@
             </tabpanel>
         </tabpanels>
     </tabbox>
-    <div align="center">
+    <div align="right" style="padding: 10px;">
         <button id="ok" label="OK" iconSclass="z-icon-check-circle"/>
     </div>
 </window>

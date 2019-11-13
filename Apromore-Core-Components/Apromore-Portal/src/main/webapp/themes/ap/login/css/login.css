@@ -130,6 +130,10 @@ body > * {
     top: 60px;
     bottom: 80px;
     overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
 }
 
 @media(max-width: 767px) {

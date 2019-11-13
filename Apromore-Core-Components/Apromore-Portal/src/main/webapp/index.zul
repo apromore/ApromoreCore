@@ -28,13 +28,14 @@
 <?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
 <?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
 <?link rel="shortcut icon" href="img/favicon.ico" ?>
+<?link rel="prefetch" href="themes/ap/common/img/brand/loader.svg" ?>
+<?link rel="stylesheet" type="text/css" href="themes/ap/common/css/overrides.css" ?>
 
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
     xmlns:x="xhtml" xmlns:zk="zk">
-
 
     <style src="css/cytoscape-context-menus.css"/>
 
@@ -158,8 +159,6 @@
     </style>
     <window id="mainW" border="none" height="100%" width="100%" apply="${AccessCodeController}" use="org.apromore.portal.dialogController.MainController" sclass="custom-window ap-portal ap-font-base">
 
-
-
         <!--<div class="z-listheader">-->
             <!--
             <style>
@@ -260,7 +259,6 @@
 
         <ShortMessages id="shortmessagescomp" visible="false" />
     </window>
-
     <!-- Following script improves performance of listbox dropdown display time-->
     <script defer="true">
         <![CDATA[
