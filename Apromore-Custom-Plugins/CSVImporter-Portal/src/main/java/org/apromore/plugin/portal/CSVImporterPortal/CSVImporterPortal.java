@@ -42,6 +42,7 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.metainfo.ZScript;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -157,14 +158,19 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 String BomC = new String(header.get(0).getBytes(), Charset.forName("UTF-8"));
                 header.set(0, BomC);
 
-                //2019-10-28
-                if(header.size() > 8) {
-                    window.setMaximized(true);
+                //2019-11-12
+//                if(header.size() > 8) {
+//                    window.setMaximized(true);
+//                } else {
+//                    int size = IndexColumnWidth + header.size() * AttribWidth + 12;
+//                    window.setWidth(size + "px");
+//                }
+//                window.setWidth("97%");
+                if(header.size() < 9) {
+                    window.setClosable(false);
                 } else {
-                    int size = IndexColumnWidth + header.size() * AttribWidth + 12;
-                    window.setWidth(size + "px");
+                    window.setClosable(true);
                 }
-
 
                 if (popUPBox != null) {
                     popUPBox.getChildren().clear();
@@ -181,8 +187,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         line = Arrays.asList(reader.readNext());
                     }
                 }
-
-//                System.out.println("header : " + header.toString() + " ________ line is: " + line.toString());
 
                 List<String> myLine = header;
 
@@ -367,6 +371,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 
     // FileImporterPlugin implementation
+    void onClientInfo(ClientInfoEvent evt) {
+        int height = evt.getDesktopHeight();
+        int width = evt.getDesktopWidth();
+
+
+    }
+
 
     @Override
     public Set<String> getFileExtensions() {
@@ -378,8 +389,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
         LOGGER.info("Import file: " + media.getName());
 
         this.isPublic = isPublic;
-
-
 
 
         try {
