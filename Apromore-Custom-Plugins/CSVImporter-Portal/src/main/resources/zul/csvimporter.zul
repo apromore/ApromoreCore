@@ -57,6 +57,7 @@
             <!--padding-top: 70px;-->
             background-repeat: no-repeat;
             background-attachment: fixed;
+            padding-top: 75px;
             }
 
             tr.z-row td.z-row-inner, tr.z-row .z-cell {
