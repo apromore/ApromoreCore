@@ -723,6 +723,11 @@
             </dependency>
             <dependency>
                 <groupId>org.apromore.plugin</groupId>
+                <artifactId>event-log-plugin-api</artifactId>
+                <version>${apromore.plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apromore.plugin</groupId>
                 <artifactId>metric-api</artifactId>
                 <version>${apromore.plugin.version}</version>
             </dependency>

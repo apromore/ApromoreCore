@@ -124,6 +124,7 @@
         <module>plugin-editor/metrics</module>
 		<module>plugin-editor/metrics2</module>
 
+        <module>../Event-Log-Plugin-API</module>
         <module>../Process-Plugin-API</module>
 
     </modules>

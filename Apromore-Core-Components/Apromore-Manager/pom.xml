@@ -207,6 +207,10 @@
         </dependency>
         <dependency>
             <groupId>org.apromore.plugin</groupId>
+            <artifactId>event-log-plugin-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
             <artifactId>process-plugin-api</artifactId>
         </dependency>
 
