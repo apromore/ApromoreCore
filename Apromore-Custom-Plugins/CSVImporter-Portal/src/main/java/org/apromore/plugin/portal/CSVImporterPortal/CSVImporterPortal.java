@@ -75,6 +75,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
     private static Integer AttribWidth = 150;
     private static Integer IndexColumnWidth = 50;
 
+    private static Integer screenHeight = null;
+    private static Integer screenWidth = null;
+
     private boolean isPublic;
 
     private void saveLog(XLog xlog, String name, PortalContext portalContext) throws Exception {
@@ -108,6 +111,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
      * read CSV content and create list model to be set as grid model.
      */
     @SuppressWarnings("null")
+
     private void displayCSVContent(Media media, ListModelList<String[]> result,ListModelList<String[]> indexedResult, Grid myGrid, Div popUPBox, Window window) {
         String firstLine = null;
 
@@ -157,12 +161,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 header.set(0, BomC);
 
                 //2019-11-12
-//                if(header.size() > 8) {
-//                    window.setMaximized(true);
-//                } else {
-//                    int size = IndexColumnWidth + header.size() * AttribWidth + 12;
-//                    window.setWidth(size + "px");
-//                }
+                if(header.size() > 8) {
+                    window.setMaximized(true);
+                } else {
+                    int size = IndexColumnWidth + header.size() * AttribWidth + 35;
+                    window.setWidth(size + "px");
+                }
 //                window.setWidth("97%");
 
 
@@ -378,7 +382,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
         LOGGER.info("Import file: " + media.getName());
 
         this.isPublic = isPublic;
-        
+
+
 
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
