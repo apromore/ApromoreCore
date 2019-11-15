@@ -55,8 +55,7 @@
             background-image: url("/img/apromore_banner.png");
             <!--background-size: 2000px 100px;-->
             <!--padding-top: 70px;-->
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background-repeat: round;
             padding-top: 75px;
             }
 
