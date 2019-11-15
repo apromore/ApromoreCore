@@ -4,6 +4,7 @@ import org.apromore.exception.CacheException;
 import org.apromore.dao.CacheRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.Cache.ValueWrapper;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
@@ -24,11 +25,6 @@ public class CacheRepositoryImpl implements CacheRepository {
      * Name of cache
      */
     private String cacheName;
-
-    public CacheRepositoryImpl(EhCacheCacheManager ehCacheCacheManager, String cacheName) {
-        this.ehCacheCacheManager = ehCacheCacheManager;
-        this.cacheName = cacheName;
-    }
 
     public EhCacheCacheManager getEhCacheCacheManager() {
         return ehCacheCacheManager;

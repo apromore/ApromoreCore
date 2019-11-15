@@ -10,11 +10,7 @@ public interface CacheRepository {
 
     EhCacheCacheManager getEhCacheCacheManager();
 
-    void setEhCacheCacheManager(EhCacheCacheManager ehCacheCacheManager);
-
     String getCacheName();
-
-    void setCacheName(String cacheName);
 
     /**
      * Get cached object by key

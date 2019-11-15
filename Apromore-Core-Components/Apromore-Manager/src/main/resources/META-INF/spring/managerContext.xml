@@ -50,38 +50,4 @@
     <import resource="managerContext-services.xml"/>
     <import resource="managerContext-scheduler.xml"/>
 
-    <!-- Enable Spring caching support -->
-    <!--<cache:annotation-driven cache-manager ="ehcacheCacheManager" />-->
-    <!--<bean id = "ehcacheCacheManager" class= "org.springframework.cache.ehcache.EhCacheCacheManager"-->
-          <!--p:cacheManager-ref= "ehcacheManager" />-->
-    <!--<bean id = "ehcacheManager"-->
-          <!--class= "org.springframework.cache.ehcache.EhCacheManagerFactoryBean" >-->
-        <!--<property name = "configLocation" value= "classpath:/ehcache.xml" />-->
-    <!--</bean>-->
-<!--&lt;!&ndash;&ndash;&gt;-->
-    <!--<description>ehcache缓存配置管理文件</description>-->
-
-    <!--<bean id="ehcacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">-->
-        <!--<property name="configLocation" value="classpath:/ehcache.xml"/>-->
-        <!--&lt;!&ndash;<property name="cacheName" value="ehcache"/>&ndash;&gt;-->
-    <!--</bean>-->
-
-    <!--<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheFactoryBean">-->
-        <!--<property name="cacheManager" ref="ehcacheManager"/>-->
-    <!--</bean>-->
-
-
-    <!--<cache:annotation-driven/>-->
-
-    <!--<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">-->
-        <!--<property name="caches">-->
-            <!--<set>-->
-                <!--<bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean">-->
-                    <!--<property name="name" value="xlog"/>-->
-                <!--</bean>-->
-
-            <!--</set>-->
-        <!--</property>-->
-    <!--</bean>-->
-
 </beans>

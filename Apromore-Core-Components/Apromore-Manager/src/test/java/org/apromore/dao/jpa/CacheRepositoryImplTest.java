@@ -3,25 +3,23 @@ package org.apromore.dao.jpa;
 import junit.framework.Assert;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import org.apromore.cache.ehcache.EhcacheWrapper;
 import org.apromore.dao.CacheRepository;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 
-import static org.junit.Assert.*;
-
 public class CacheRepositoryImplTest {
 
-    private String cacheName = "test";
     private static EhCacheCacheManager ehCacheCacheManager = new EhCacheCacheManager();
+    private String cacheName = "test";
     private net.sf.ehcache.CacheManager cacheManager = CacheManager.getInstance();
 
     @Before
     public void setUp() throws Exception {
         ehCacheCacheManager.setCacheManager(cacheManager);
+
     }
 
     @After
@@ -46,7 +44,11 @@ public class CacheRepositoryImplTest {
 
     @Test
     public void get() {
-        CacheRepository cacheRepository = new CacheRepositoryImpl(ehCacheCacheManager, cacheName);
+
+        CacheRepository cacheRepository = new CacheRepositoryImpl();
+        ((CacheRepositoryImpl) cacheRepository).setCacheName(cacheName);
+        ((CacheRepositoryImpl) cacheRepository).setEhCacheCacheManager(ehCacheCacheManager);
+
         String keyPut = "keyGet1";
         String valPut = "valGet1";
         cacheRepository.put(keyPut, valPut);
@@ -55,7 +57,11 @@ public class CacheRepositoryImplTest {
 
     @Test
     public void put() {
-        CacheRepository cacheRepository = new CacheRepositoryImpl(ehCacheCacheManager, cacheName);
+
+        CacheRepository cacheRepository = new CacheRepositoryImpl();
+        ((CacheRepositoryImpl) cacheRepository).setCacheName(cacheName);
+        ((CacheRepositoryImpl) cacheRepository).setEhCacheCacheManager(ehCacheCacheManager);
+
         String keyPut = "keyPut1";
         String valPut = "valPut1";
         cacheRepository.put(keyPut, valPut);
@@ -64,7 +70,11 @@ public class CacheRepositoryImplTest {
 
     @Test
     public void evict() {
-        CacheRepository cacheRepository = new CacheRepositoryImpl(ehCacheCacheManager, cacheName);
+
+        CacheRepository cacheRepository = new CacheRepositoryImpl();
+        ((CacheRepositoryImpl) cacheRepository).setCacheName(cacheName);
+        ((CacheRepositoryImpl) cacheRepository).setEhCacheCacheManager(ehCacheCacheManager);
+
         String keyRemove = "keyRemove1";
         String valRemove = "valRemove1";
         cacheRepository.put(keyRemove, valRemove);
@@ -74,9 +84,9 @@ public class CacheRepositoryImplTest {
 
         cacheRepository.evict(keyRemove);
         System.out.println("2 ->" + cacheRepository.getMemoryStoreSize());
-        Assert.assertEquals("size should reduce by 1", size-1, cacheRepository.getMemoryStoreSize());
+        Assert.assertEquals("size should reduce by 1", size - 1, cacheRepository.getMemoryStoreSize());
         cacheRepository.evict(keyRemove);
-        Assert.assertEquals("Non existing Key removal, size should be the same as last time", size-1,
+        Assert.assertEquals("Non existing Key removal, size should be the same as last time", size - 1,
                 cacheRepository.getMemoryStoreSize());
         System.out.println("3 ->" + cacheRepository.getMemoryStoreSize());
     }
@@ -94,27 +104,30 @@ public class CacheRepositoryImplTest {
     }
 
     @Test
-    public void testSizing()
-    {
-//        EhcacheWrapper<String,Object> ecw = new EhcacheWrapper<String, Object>(cacheName, manager);
-//        Ehcache wraperCache = ecw.getCache();
-////        CacheManager cacheManager = CacheManager.getInstance();
-////        Ehcache ehcache = manager.getEhcache( "testCache" );
+    @Ignore("For pressure testing only")
+    public void testSizing() {
 
-        CacheRepository cacheRepository = new CacheRepositoryImpl(ehCacheCacheManager, cacheName);
+        CacheRepository cacheRepository = new CacheRepositoryImpl();
+        ((CacheRepositoryImpl) cacheRepository).setCacheName(cacheName);
+        ((CacheRepositoryImpl) cacheRepository).setEhCacheCacheManager(ehCacheCacheManager);
 
-        for ( int i = 0; i < 30000; i++ )
-        {
-            if ( ( i % 1000 ) == 0 )
-            {
-                System.out.println( "heatbeat " + i );
-                System.out.println("MemoryStoreSize = " + cacheRepository.getMemoryStoreSize());
-                System.out.println("MemoryUsage = " + cacheRepository.getMemoryUsage() / 1024 / 1024 + "MB");
+        for (int i = 0; i < 3000; i++) {
+            if ((i % 100) == 0) {
+                System.out.println("heatbeat " + i);
+                stats((net.sf.ehcache.Ehcache) cacheRepository.getNativeCache());
             }
-            cacheRepository.put(i, new byte[1024 * 1000]);
+            cacheRepository.put(i, new byte[1024 * 1024]);
         }
-        System.out.println("MemoryStoreSize = " + cacheRepository.getMemoryStoreSize());
-        System.out.println("MemoryUsage = " + cacheRepository.getMemoryUsage() / 1024 / 1024 + "MB");
-        Assert.assertTrue( true );
+        stats((net.sf.ehcache.Ehcache) cacheRepository.getNativeCache());
+        Assert.assertTrue(true);
+    }
+
+    private void stats(Ehcache ehcache) {
+        System.out.println("OnHeapSize=" + ehcache.calculateInMemorySize() / 1024 / 1024 + "MB, OnHeapElements="
+                + ehcache.getMemoryStoreSize());
+        System.out.println("OffHeapSize=" + ehcache.calculateOffHeapSize() / 1024 / 1024 + "MB, OffHeapElements="
+                + ehcache.getOffHeapStoreSize());
+        System.out.println("DiskStoreSize=" + ehcache.calculateOnDiskSize() / 1024 / 1024 + "MB, DiskStoreElements="
+                + ehcache.getDiskStoreSize());
     }
 }

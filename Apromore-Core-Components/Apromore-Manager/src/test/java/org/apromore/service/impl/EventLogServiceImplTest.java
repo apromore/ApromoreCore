@@ -1,10 +1,6 @@
 package org.apromore.service.impl;
 
-import org.apromore.dao.FolderRepository;
-import org.apromore.dao.GroupLogRepository;
-import org.apromore.dao.GroupRepository;
-import org.apromore.dao.LogRepository;
-import org.apromore.dao.StatisticRepository;
+import org.apromore.dao.*;
 import org.apromore.dao.model.Log;
 import org.apromore.dao.model.Statistic;
 import org.apromore.service.UserService;
@@ -12,7 +8,6 @@ import org.apromore.service.helper.UserInterfaceHelper;
 import org.apromore.util.StatType;
 import org.apromore.util.UuidAdapter;
 import org.deckfour.xes.factory.XFactory;
-import org.deckfour.xes.factory.XFactoryNaiveImpl;
 import org.deckfour.xes.factory.XFactoryRegistry;
 import org.deckfour.xes.in.XesXmlParser;
 import org.deckfour.xes.model.XAttribute;
@@ -23,6 +18,7 @@ import org.deckfour.xes.model.impl.XLogImpl;
 import org.deckfour.xes.util.XRuntimeUtils;
 import org.deckfour.xes.util.XTimer;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -30,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -41,7 +38,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 
-import static org.apromore.service.impl.EventLogServiceImpl.PARENT_NODE_FLAG;
 import static org.apromore.service.impl.EventLogServiceImpl.STAT_NODE_NAME;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,16 +47,6 @@ import static org.powermock.api.easymock.PowerMock.*;
 public class EventLogServiceImplTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLogServiceImplTest.class);
-
-    // inject EntityManager for simple test
-    private static EntityManagerFactory emf = null;
-
-    public EntityManagerFactory getEntityManagerFactory() {
-        if (emf == null) {
-            emf = Persistence.createEntityManagerFactory("TESTApromore");
-        }
-        return emf;
-    }
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -72,8 +58,17 @@ public class EventLogServiceImplTest {
     private UserService userSrv;
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
-
     private EventLogServiceImpl eventLogService;
+
+    // inject EntityManager for simple test
+    private static EntityManagerFactory emf;
+
+    public EntityManagerFactory getEntityManagerFactory() {
+        if (emf == null) {
+            emf = Persistence.createEntityManagerFactory("TESTApromore");
+        }
+        return emf;
+    }
 
     @Before
     public final void setUp() throws Exception {
@@ -85,7 +80,8 @@ public class EventLogServiceImplTest {
         ui = createMock(UserInterfaceHelper.class);
         statisticRepository = createMock(StatisticRepository.class);
 
-        eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo, userSrv, ui, statisticRepository);
+        eventLogService = new EventLogServiceImpl(logRepository, groupRepository, groupLogRepository, folderRepo,
+                userSrv, ui, statisticRepository);
     }
 
 
@@ -103,8 +99,6 @@ public class EventLogServiceImplTest {
 
     @Test
     public void getXLogWithStatsTest() {
-
-
 
         List<Statistic> stats = new ArrayList<>();
 
@@ -147,7 +141,6 @@ public class EventLogServiceImplTest {
         stats.add(child1);
 
 
-
         expect(statisticRepository.findByLogid(logId)).andReturn(stats);
         replay(statisticRepository);
 
@@ -159,7 +152,7 @@ public class EventLogServiceImplTest {
         XLog xlog = new XLogImpl(new XAttributeMapImpl());
 
         expect(logRepository.findUniqueByID(logId)).andReturn(log);
-        expect(logRepository.getProcessLog(log, "")).andReturn(xlog);
+        expect(logRepository.getProcessLog(log, null)).andReturn(xlog);
         replay(logRepository);
 //        XLog expectXlog = eventLogService.getXLog(logId);
 //        verify(logRepository);
@@ -172,11 +165,11 @@ public class EventLogServiceImplTest {
 
         assertThat(statsAttribute, equalTo(new XAttributeLiteralImpl(STAT_NODE_NAME, "")));
         assertThat(statsAttribute.getAttributes().size(), equalTo(2));
-        assertThat(statsAttribute.getAttributes().get(parent.getCount().toString()), equalTo(new XAttributeLiteralImpl("parent_key", "01")));
+        assertThat(statsAttribute.getAttributes().get(parent.getCount().toString()),
+                equalTo(new XAttributeLiteralImpl("parent_key", "01")));
         assertThat(statsAttribute.getAttributes().get(parent.getCount().toString()).getAttributes().size(), equalTo(1));
         assertThat(statsAttribute.getAttributes().get(parent.getCount().toString()).getAttributes().get(child.getStat_key()), equalTo(new XAttributeLiteralImpl("child_key", "02")));
     }
-
 
     @Test
     public void flattenNestedMapTest() {
@@ -247,93 +240,96 @@ public class EventLogServiceImplTest {
 
     /* Below are performance testings which are comment out in production */
 
-//    @Test
-//    @Rollback
-//    public void simpleTest() {
-//
-//
-//        EntityManager em = getEntityManagerFactory().createEntityManager();
-//        assert em != null;
-//        Statistic fe = new Statistic();
-//        fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-//        fe.setStat_key("key");
-//        fe.setLogid(88);
-//        fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-//        fe.setStat_value("value");
-//        em.getTransaction().begin();
-//
-//
-//        em.persist(fe);
-//        Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_value=:param2")
-//                .setParameter("param1", 88)
-//                .setParameter("param2", "value");
-//        List<Statistic> stats = query.getResultList();
-//
-//        for (Statistic stat : stats) {
-//            LOGGER.info(stat.getStat_value());
-//        }
-//
-//        em.flush();
-//        em.getTransaction().commit();
+    @Test
+    @Rollback
+    @Ignore("For pressure testing only")
+    public void simpleTest() {
+
+
+        EntityManager em = getEntityManagerFactory().createEntityManager();
+        assert em != null;
+        Statistic fe = new Statistic();
+        fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+        fe.setStat_key("key");
+        fe.setLogid(88);
+        fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+        fe.setStat_value("value");
+        em.getTransaction().begin();
+
+
+        em.persist(fe);
+        Query query = em.createQuery("SELECT s FROM Statistic s WHERE s.logid =:param1 AND s.stat_value=:param2")
+                .setParameter("param1", 88)
+                .setParameter("param2", "value");
+        List<Statistic> stats = query.getResultList();
+
+        for (Statistic stat : stats) {
+            LOGGER.info(stat.getStat_value());
+        }
+
+        em.flush();
+        em.getTransaction().commit();
+        em.close();
+
+    }
+
+    @Test
+    @Rollback
+    @Ignore("For pressure testing only")
+    public void batchInsertTest() {
+
+        // *******  profiling code start here ********
+        long startTime = System.nanoTime();
+        // *******  profiling code end here ********
+
+        EntityManager em = getEntityManagerFactory().createEntityManager();
+        assert em != null;
+        em.getTransaction().begin();
+
+        for (int i = 0; i < 100; i++) {
+
+            Statistic fe = new Statistic();
+            fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+            fe.setStat_key("key");
+            fe.setLogid(88);
+            fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
+            fe.setStat_value(Double.toString(Math.random()));
+
+            em.persist(fe);
+            if ((i % 10000) == 0) {
+                em.getTransaction().commit();
+                em.clear();
+                em.getTransaction().begin();
+            }
+        }
+        em.getTransaction().commit();
 //        em.close();
-//
-//    }
 
-//    @Test
-//    @Rollback
-//    public void batchInsertTest() {
-//
-//        // *******  profiling code start here ********
-//        long startTime = System.nanoTime();
-//        // *******  profiling code end here ********
-//
-//        EntityManager em = getEntityManagerFactory().createEntityManager();
-//        assert em != null;
-//        em.getTransaction().begin();
-//
-//        for (int i = 0; i < 100; i++) {
-//
-//            Statistic fe = new Statistic();
-//            fe.setId(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-//            fe.setStat_key("key");
-//            fe.setLogid(88);
-//            fe.setPid(UuidAdapter.getBytesFromUUID(UUID.randomUUID()));
-//            fe.setStat_value(Double.toString(Math.random()));
-//
-//            em.persist(fe);
-//            if ((i % 10000) == 0) {
-//                em.getTransaction().commit();
-//                em.clear();
-//                em.getTransaction().begin();
-//            }
-//        }
-//        em.getTransaction().commit();
-////        em.close();
-//
-//        // *******  profiling code start here ********
-//        long elapsedNanos = System.nanoTime() - startTime;
-//        LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
-//        LOGGER.info("Insert speed: " + 100000 / ( elapsedNanos / 1000000 /1000 ) + " records/sec");
-//        // *******  profiling code end here ********
-//
-//    }
+        // *******  profiling code start here ********
+        long elapsedNanos = System.nanoTime() - startTime;
+        LOGGER.info("Elapsed time: " + elapsedNanos / 1000000 + " ms");
+        LOGGER.info("Insert speed: " + 100000 / (elapsedNanos / 1000000 / 1000) + " records/sec");
+        // *******  profiling code end here ********
 
-//    @Test
-//    public void getStatsByType() {
-//
-//        List<Statistic> stats = new ArrayList<>();
-//        Integer logId = 001;
-//        expect(statisticRepository.findByLogid(logId)).andReturn(stats);
-//        replay(statisticRepository);
-//
-//        List<Statistic> result = (List<Statistic>) eventLogService.getStatsByType(logId, StatType.FILTER);
-//        verify(statisticRepository);
-//        assertThat(result, equalTo(stats));
-//
-//    }
+    }
+
+    @Test
+    public void getStatsByType() {
+
+        List<Statistic> stats = new ArrayList<>();
+        Integer logId = 001;
+        expect(statisticRepository.findByLogid(logId)).andReturn(stats);
+        replay(statisticRepository);
+
+        List<Statistic> result = (List<Statistic>) eventLogService.getStatsByType(logId, StatType.FILTER);
+        verify(statisticRepository);
+        assertThat(result, equalTo(stats));
+
+    }
 
 
     @Test
+    @Ignore
     public void getOpenXesVersion() {
         XRuntimeUtils xRuntimeUtils = new XRuntimeUtils();
         System.out.println(xRuntimeUtils.OPENXES_VERSION);
@@ -353,7 +349,6 @@ public class EventLogServiceImplTest {
         XesXmlParser parser = new XesXmlParser(factory);
         try {
             Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/SepsisCases.xes.gz").getPath());
-//            Path lgPath = ClassLoader.getSystemResource("XES_logs/SepsisCases.xes").getPath();
             parsedLog = parser.parse(new GZIPInputStream(new FileInputStream(lgPath.toFile())));
         } catch (Exception e) {
             e.printStackTrace();
@@ -366,11 +361,13 @@ public class EventLogServiceImplTest {
 //				System.out.println("  Events: " + NUM_EVENTS);
 //				System.out.println("  Attributes: " + NUM_ATTRIBUTES);
         System.out.println("Duration: " + timer.getDurationString());
-        System.gc();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-        }
-        System.out.println("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
+
+        // Performance profiling
+//        System.gc();
+//        try {
+//            Thread.sleep(5000);
+//        } catch (InterruptedException e) {
+//        }
+//        System.out.println("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024 + " MB ");
     }
 }

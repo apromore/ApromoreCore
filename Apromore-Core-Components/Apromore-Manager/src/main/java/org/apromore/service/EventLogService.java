@@ -20,7 +20,7 @@
 
 package org.apromore.service;
 
-import org.apromore.apmlogmodule.APMLog;
+import org.apromore.apmlog.APMLog;
 import org.apromore.dao.model.*;
 import org.apromore.exception.*;
 import org.apromore.model.ExportLogResultType;

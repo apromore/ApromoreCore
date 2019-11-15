@@ -20,7 +20,7 @@
 
 package org.apromore.dao;
 
-import org.apromore.apmlogmodule.APMLog;
+import org.apromore.apmlog.APMLog;
 import org.apromore.dao.model.Log;
 import org.deckfour.xes.model.XLog;
 
@@ -58,6 +58,11 @@ public interface LogRepositoryCustom {
 
     void deleteProcessLog(Log log);
 
+    /**
+     * Load XES log file from cache, if not found then load from Event Logs Repository
+     * @param log
+     * @return
+     */
     XLog getProcessLog(Log log, String factoryName);
 
     /**

@@ -535,6 +535,12 @@
                 <artifactId>xeslite</artifactId>
                 <version>0.0.1</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apromore</groupId>
+                <artifactId>apmlog</artifactId>
+                <version>0.1</version>
+            </dependency>
 <!--
             <dependency>
                 <groupId>org.deckfour.xes</groupId>
