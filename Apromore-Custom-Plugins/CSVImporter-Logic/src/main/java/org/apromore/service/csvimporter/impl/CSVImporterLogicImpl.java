@@ -126,7 +126,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 return null;
             }
 
-            boolean rowGTG = true;
+
             // create model "LogModel" of the log data
             // We set mandatory fields and other fields are set with hash map
             List<LogModel> logData = new ArrayList<LogModel>();
@@ -138,7 +138,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
             for (Iterator<String[]> it = reader.iterator(); finishCount < 50; ) {
                 String[] line = it.next();
-
+                boolean rowGTG = true;
                 if(line == null) {
                     // if line is empty, more to next iteration, until 50 lines are empty
                     finishCount++;
@@ -196,8 +196,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                 tStamp = startTimestamp;
                                 invalidRows.add("Row: " + (lineCount + 1) + ", Warning: End time stamp field is invalid. Copying start timestamp field into end timestamp");
                             } else {
-                                invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is invalid.");
+                                invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is empty.");
                                 errorCount++;
+                                continue;
                             }
                         }
 
@@ -209,6 +210,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                                 " field is invalid timestamp. Skipping this row completely.\n");
                                         errorCount++;
                                         rowGTG = false;
+                                        continue;
                                     }
                                 }
                             }

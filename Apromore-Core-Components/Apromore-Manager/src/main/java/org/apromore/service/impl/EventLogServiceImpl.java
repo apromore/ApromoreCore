@@ -27,6 +27,7 @@ import org.apromore.exception.NotAuthorizedException;
 import org.apromore.model.ExportLogResultType;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.SummariesType;
+import org.apromore.plugin.eventlog.EventLogPlugin;
 import org.apromore.service.EventLogService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UserInterfaceHelper;
@@ -80,6 +81,9 @@ public class EventLogServiceImpl implements EventLogService {
     private UserService userSrv;
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
+
+    @javax.annotation.Resource
+    private Set<EventLogPlugin> eventLogPlugins;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.

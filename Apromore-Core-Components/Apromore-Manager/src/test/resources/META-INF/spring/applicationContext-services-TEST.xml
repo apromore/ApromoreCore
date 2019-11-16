@@ -123,6 +123,9 @@
         <ref bean="yawlCanoniser" />
     </util:set>
 
+    <util:set id="eventLogPlugins">
+    </util:set>
+
     <util:set id="processPlugins">
     </util:set>
 

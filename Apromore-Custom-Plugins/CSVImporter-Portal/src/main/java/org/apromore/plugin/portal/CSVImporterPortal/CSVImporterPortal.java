@@ -42,6 +42,7 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.metainfo.ZScript;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -59,8 +60,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @Inject private EventLogService eventLogService;
     char separator = Character.UNASSIGNED;
 
-    private Window mainWindow;
-
     public void setCsvImporterLogic(CSVImporterLogic newCSVImporterLogic) {
         this.csvImporterLogic = newCSVImporterLogic;
     }
@@ -75,6 +74,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
     private static Integer AttribWidth = 150;
     private static Integer IndexColumnWidth = 50;
+
+    private static Integer screenHeight = null;
+    private static Integer screenWidth = null;
 
     private boolean isPublic;
 
@@ -109,6 +111,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
      * read CSV content and create list model to be set as grid model.
      */
     @SuppressWarnings("null")
+
     private void displayCSVContent(Media media, ListModelList<String[]> result,ListModelList<String[]> indexedResult, Grid myGrid, Div popUPBox, Window window) {
         String firstLine = null;
 
@@ -157,13 +160,15 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 String BomC = new String(header.get(0).getBytes(), Charset.forName("UTF-8"));
                 header.set(0, BomC);
 
-                //2019-10-28
+                //2019-11-12
                 if(header.size() > 8) {
                     window.setMaximized(true);
                 } else {
-                    int size = IndexColumnWidth + header.size() * AttribWidth + 12;
+                    int size = IndexColumnWidth + header.size() * AttribWidth + 35;
                     window.setWidth(size + "px");
                 }
+//                window.setWidth("97%");
+
 
 
                 if (popUPBox != null) {
@@ -181,8 +186,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         line = Arrays.asList(reader.readNext());
                     }
                 }
-
-//                System.out.println("header : " + header.toString() + " ________ line is: " + line.toString());
 
                 List<String> myLine = header;
 
@@ -366,7 +369,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
     }
 
 
-    // FileImporterPlugin implementation
+
+
 
     @Override
     public Set<String> getFileExtensions() {
@@ -381,7 +385,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 
 
-
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
 
@@ -393,9 +396,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Button toXESButton = (Button) window.getFellow("toXESButton");
             Button cancelButton = (Button) window.getFellow("cancelButton");
 
-
             if(media != null) {
-//                window.setWidth("95%");
 
                 csvImporterLogic.resetLine();
                 csvImporterLogic.resetHead();
@@ -406,6 +407,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window);
 
+
+
+                    
                     if (window != null) {
                         // set grid model
                         if (result != null) {

@@ -32,7 +32,14 @@
     <osgi:reference id="annotationProcessorProvider" interface="org.apromore.annotation.provider.AnnotationProcessorProvider"/>
     <osgi:reference id="deploymentProvider" interface="org.apromore.plugin.deployment.provider.DeploymentPluginProvider"/>
 
+
     <osgi:reference id="apmLogService" interface="org.apromore.apmlog.APMLogService"/>
+
+    <!--<osgi:set id="eventLogPlugins" interface="org.apromore.plugin.eventlog.EventLogPlugin" availability="optional">-->
+        <!--<osgi:reference-listener bind-method="onEventLogPluginBind" unbind-method="onEventLogPluginUnbind">-->
+            <!--<beans:bean class="org.apromore.service.impl.EventLogPluginListener"/>-->
+        <!--</osgi:reference-listener>-->
+    <!--</osgi:set>-->
 
     <osgi:set id="processPlugins" interface="org.apromore.plugin.process.ProcessPlugin" availability="optional">
         <osgi:reference-listener bind-method="onProcessPluginBind" unbind-method="onProcessPluginUnbind">
