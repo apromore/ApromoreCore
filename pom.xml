@@ -238,6 +238,7 @@
         <!--<module>Supplements/pnml2cpf</module>-->
 
         <module>Apromore-Extras/OpenXES</module>
+        <module>Apromore-Extras/APMLogModule</module>
     </modules>
 
     <properties>

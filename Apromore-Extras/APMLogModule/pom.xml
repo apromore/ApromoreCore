@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>apmlog</artifactId>
+    <version>0.1</version>
+
+<!--    <properties>-->
+<!--        <commons-io>2.4</commons-io>-->
+<!--        <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>-->
+<!--        <maven.compiler.source>1.8</maven.compiler.source>-->
+<!--        <maven.compiler.target>1.8</maven.compiler.target>-->
+<!--        <embedded.jars>dummy</embedded.jars>-->
+<!--    </properties>-->
+    <packaging>jar</packaging>
+    <name>The APMLogModule Project</name>
+    <description>The APMLogModule Project</description>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>enterprise</artifactId>
+        <version>1.1</version>
+    </parent>
+    <licenses>
+        <license>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE, Version 3</name>
+            <url>http://www.gnu.org/licenses/lgpl.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>ApromoreDev.mvn-repo</id>-->
+<!--            <name>Maven repository for JARs specific to the Apromore project</name>-->
+<!--            <url>https://raw.github.com/apromore/ApromoreDev/master/mvn-repo/</url>-->
+<!--        </repository>-->
+<!--    </repositories>-->
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>event-log-plugin-api</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>log-filter-logic</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>commons-io</groupId>-->
+<!--            <artifactId>commons-io</artifactId>-->
+<!--            <version>${commons-io}</version>-->
+<!--        </dependency>-->
+
+        <!-- Eclipse Collections -->
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections-api</artifactId>
+            <version>10.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+            <version>10.0.0</version>
+        </dependency>
+
+
+        <!-- Open XES -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>openxes</artifactId>
+            <version>2.27</version>
+        </dependency>
+
+    </dependencies>
+    <build>
+
+        <plugins>
+            <!-- Run with Jetty -->
+<!--            <plugin>-->
+<!--                <groupId>org.mortbay.jetty</groupId>-->
+<!--                <artifactId>jetty-maven-plugin</artifactId>-->
+<!--                <version>7.6.8.v20121106</version>-->
+<!--                <configuration>-->
+<!--                    <webAppConfig>-->
+<!--                        <contextPath>/${project.artifactId}</contextPath>-->
+<!--                        <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>-->
+<!--                    </webAppConfig>-->
+<!--                    <scanIntervalSeconds>5</scanIntervalSeconds>-->
+<!--                    <stopKey/>-->
+<!--                    <stopPort/>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+            <!-- Compile java -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            org.springframework.beans.factory.aspectj,
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            org.apromore.apmlog,
+                            org.apromore.apmlog.impl,
+                            org.apromore.apmlog.util
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+            <!-- Build war -->
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>2.6</version>
+                <configuration>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                    <packagingExcludes>%regex[WEB-INF/lib/(?!(${embedded.jars})).*jar]</packagingExcludes>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!-- ******************************** -->
+
+
+        </plugins>
+    </build>
+</project>
