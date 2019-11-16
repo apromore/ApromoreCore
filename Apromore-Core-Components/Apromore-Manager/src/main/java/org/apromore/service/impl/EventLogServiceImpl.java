@@ -303,7 +303,9 @@ public class EventLogServiceImpl implements EventLogService {
     @Override
     public XLog getXLog(Integer logId, String factoryName) {
         Log log = logRepo.findUniqueByID(logId);
-        return logRepo.getProcessLog(log, factoryName);
+        XLog xLog = logRepo.getProcessLog(log, factoryName);
+        LOGGER.info("[--IMPORTANT--] Plugin take over control ");
+        return xLog;
     }
 
     @Override
