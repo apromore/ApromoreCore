@@ -82,8 +82,8 @@ public class EventLogServiceImpl implements EventLogService {
     private UserInterfaceHelper ui;
     private StatisticRepository statisticRepository;
 
-    @javax.annotation.Resource
-    private Set<EventLogPlugin> eventLogPlugins;
+//    @javax.annotation.Resource
+//    private Set<EventLogPlugin> eventLogPlugins;
 
     /**
      * Default Constructor allowing Spring to Autowire for testing and normal use.
