@@ -43,6 +43,8 @@
             padding: 0px;
             overflow: auto;
             zoom: 1;
+            background-image: url("/img/apromore_banner.png");
+            background-repeat: round;
             }
             .relativePos{
             position:relative;
@@ -53,8 +55,6 @@
             position: absolute;
             width: calc(100% - 19px);
             background-image: url("/img/apromore_banner.png");
-            <!--background-size: 2000px 100px;-->
-            <!--padding-top: 70px;-->
             background-repeat: round;
             padding-top: 75px;
             }
