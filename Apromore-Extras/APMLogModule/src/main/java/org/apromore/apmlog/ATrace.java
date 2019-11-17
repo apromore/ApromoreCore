@@ -14,8 +14,8 @@ public class ATrace {
 
     private String caseId = "";
     private int caseVariantId = 0;
-    private long startTimeMilli = 0;
-    private long endTimeMilli = 0;
+    private long startTimeMilli = -1;
+    private long endTimeMilli = -1;
     private long duration = 0;
     private boolean hasActivity = false;
     private long totalProcessingTime = 0;
@@ -51,6 +51,25 @@ public class ATrace {
     private List<String> originalActivityNameList;
     private UnifiedSet<String> originalEventNameSet;
 
+    private BitSet previousValidEventIndex;
+    private long previousStartTimeMilli;
+    private long previousEndTimeMilli;
+    private long previousDuration = 0;
+    private boolean previousHasActivity = false;
+    private long previousTotalProcessingTime = 0;
+    private long previousAverageProcessingTime = 0;
+    private long previousMaxProcessingTime = 0;
+    private long previousTotalWaitingTime = 0;
+    private long previousAverageWaitingTime = 0;
+    private long previousMaxWaitingTime = 0;
+    private double previousCaseUtilization = 0;
+    private List<AActivity> previousActivityList;
+    private List<AEvent> previousEventList;
+    private UnifiedMap<String, UnifiedMap<String, Integer>> previousEventAttributeValueFreqMap;
+    private UnifiedMap<String, String> previousAttributeMap;
+    private List<String> previousActivityNameList;
+    private UnifiedSet<String> previousEventNameSet;
+
     public ATrace(XTrace xTrace) {
 
         activityList = new ArrayList<>();
@@ -70,7 +89,11 @@ public class ATrace {
         initStats(xTrace);
     }
 
+
+
     private void initStats(XTrace xTrace) {
+
+
 
         activityNameList = new ArrayList<>();
         eventNameSet = new UnifiedSet<>();
@@ -79,6 +102,7 @@ public class ATrace {
         validEventIndex = new BitSet(xTrace.size());
 
         if(containsActivity(xTrace)) {
+            this.hasActivity = true;
             long waitCount = 0;
             long processCount = 0;
 
@@ -91,10 +115,10 @@ public class ATrace {
                 validEventIndex.set(i, true);
 
                 long eventTime = iAEvent.getTimestampMilli();
-                if(startTimeMilli == 0 || startTimeMilli > eventTime) {
+                if(startTimeMilli == -1 || startTimeMilli > eventTime) {
                     startTimeMilli = eventTime;
                 }
-                if(endTimeMilli == 0 || endTimeMilli < eventTime) {
+                if(endTimeMilli == -1 || endTimeMilli < eventTime) {
                     endTimeMilli = eventTime;
                 }
 
@@ -105,7 +129,12 @@ public class ATrace {
 
                 fillEventAttributeValueFreqMap(iAEvent);
 
+
+
                 if(iAEvent.getLifecycle().equals("start")) {
+
+                    markedXEvent.put(xEvent);
+
                     String startEventName = iAEvent.getName();
 
                     /**
@@ -174,7 +203,7 @@ public class ATrace {
                 }
 
 
-                if(iAEvent.getLifecycle().equals("complete") && !markedXEvent.contains(xEvent)) {
+                if( !markedXEvent.contains(xEvent)) {
                     List<AEvent> aEventList = new ArrayList<>();
                     aEventList.add(iAEvent);
                     AActivity aActivity = new AActivity(aEventList);
@@ -192,22 +221,19 @@ public class ATrace {
                 validEventIndex.set(i, true);
 
                 long eventTime = iAEvent.getTimestampMilli();
-                if(startTimeMilli == 0 || startTimeMilli > eventTime) startTimeMilli = eventTime;
-                if(endTimeMilli == 0 || endTimeMilli < eventTime) endTimeMilli = eventTime;
+                if(startTimeMilli == -1 || startTimeMilli > eventTime) startTimeMilli = eventTime;
+                if(endTimeMilli == -1 || endTimeMilli < eventTime) endTimeMilli = eventTime;
 
                 this.eventList.add(iAEvent);
                 this.eventNameSet.put(iAEvent.getName());
 
                 fillEventAttributeValueFreqMap(iAEvent);
 
-                if(!iAEvent.getLifecycle().equals("")) {
-                    List<AEvent> aEventList = new ArrayList<>();
-                    aEventList.add(iAEvent);
-                    AActivity aActivity = new AActivity(aEventList);
-                    this.activityList.add(aActivity);
-                    this.activityNameList.add(aActivity.getName());
-                }
-
+                List<AEvent> aEventList = new ArrayList<>();
+                aEventList.add(iAEvent);
+                AActivity aActivity = new AActivity(aEventList);
+                this.activityList.add(aActivity);
+                this.activityNameList.add(aActivity.getName());
             }
         }
 
@@ -267,7 +293,63 @@ public class ATrace {
         this.eventNameSet = originalEventNameSet;
     }
 
+    public void resetPrevious() {
+
+        if(previousValidEventIndex != null) {
+            for (int i = 0; i < validEventIndex.size(); i++) {
+                validEventIndex.set(i, previousValidEventIndex.get(i));
+            }
+
+            startTimeMilli = previousStartTimeMilli;
+            endTimeMilli = previousEndTimeMilli;
+            duration = previousDuration;
+            hasActivity = previousHasActivity;
+            totalProcessingTime = previousTotalProcessingTime;
+            averageProcessingTime = previousAverageProcessingTime;
+            maxProcessingTime = previousMaxProcessingTime;
+            totalWaitingTime = previousTotalWaitingTime;
+            averageWaitingTime = previousAverageWaitingTime;
+            maxWaitingTime = previousMaxWaitingTime;
+            caseUtilization = previousCaseUtilization;
+
+            this.activityList = previousActivityList;
+            this.eventList = previousEventList;
+            this.eventAttributeValueFreqMap = previousEventAttributeValueFreqMap;
+            this.attributeMap = previousAttributeMap;
+            this.activityNameList = previousActivityNameList;
+            this.eventNameSet = previousEventNameSet;
+        } else {
+            reset();
+        }
+    }
+
     public void update() {
+        previousValidEventIndex = new BitSet(originalEventList.size());
+
+        for(int i=0; i<validEventIndex.size(); i++) {
+            previousValidEventIndex.set(i, validEventIndex.get(i));
+        }
+
+        previousStartTimeMilli = startTimeMilli;
+        previousEndTimeMilli = endTimeMilli;
+        previousDuration = duration;
+        previousHasActivity = hasActivity;
+        previousTotalProcessingTime = totalProcessingTime;
+        previousAverageProcessingTime = averageProcessingTime;
+        previousMaxProcessingTime = maxProcessingTime;
+        previousTotalWaitingTime = totalWaitingTime;
+        previousAverageWaitingTime = averageWaitingTime;
+        previousMaxWaitingTime = maxWaitingTime;
+        previousCaseUtilization = caseUtilization;
+        previousActivityList = activityList;
+        previousEventList = eventList;
+        previousEventAttributeValueFreqMap = eventAttributeValueFreqMap;
+        previousAttributeMap = attributeMap;
+        previousActivityNameList = activityNameList;
+        previousEventNameSet = eventNameSet;
+
+
+
         this.eventList = new ArrayList<>();
         for(int i=0; i < this.originalEventList.size(); i++) {
             if(validEventIndex.get(i) == true) eventList.add(this.originalEventList.get(i));
@@ -282,6 +364,9 @@ public class ATrace {
         this.activityNameList = new ArrayList<>();
         this.eventNameSet = new UnifiedSet<>();
 
+        startTimeMilli = -1;
+        endTimeMilli = -1;
+
         UnifiedSet<AEvent> markedEvent = new UnifiedSet<>();
 
         for(int i=0; i<this.eventList.size(); i++) {
@@ -289,10 +374,10 @@ public class ATrace {
             AEvent iAEvent = this.eventList.get(i);
 
             long eventTime = iAEvent.getTimestampMilli();
-            if(startTimeMilli == 0 || startTimeMilli > eventTime) {
+            if(startTimeMilli == -1 || startTimeMilli > eventTime) {
                 startTimeMilli = eventTime;
             }
-            if(endTimeMilli == 0 || endTimeMilli < eventTime) {
+            if(endTimeMilli == -1 || endTimeMilli < eventTime) {
                 endTimeMilli = eventTime;
             }
 
@@ -301,6 +386,9 @@ public class ATrace {
             fillEventAttributeValueFreqMap(iAEvent);
 
             if(iAEvent.getLifecycle().equals("start")) {
+
+                markedEvent.put(iAEvent);
+
                 String startEventName = iAEvent.getName();
 
                 /**
@@ -367,7 +455,7 @@ public class ATrace {
             }
 
 
-            if(iAEvent.getLifecycle().equals("complete") && !markedEvent.contains(iAEvent)) {
+            if( !markedEvent.contains(iAEvent)) {
                 List<AEvent> aEventListForAct = new ArrayList<>();
                 aEventListForAct.add(iAEvent);
                 AActivity aActivity = new AActivity(aEventListForAct);

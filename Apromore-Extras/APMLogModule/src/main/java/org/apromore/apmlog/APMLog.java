@@ -1,8 +1,10 @@
 package org.apromore.apmlog;
 
+import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.impl.XAttributeLiteralImpl;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
@@ -21,10 +23,10 @@ public class APMLog  {
     private long minDuration = 0;
     private long maxDuration = 0;
     private String timeZone = "";
-    private long startTime = 0;
-    private long endTime = 0;
-    private int caseVariantSize = 0;
-    private int eventSize = 0;
+    private long startTime = -1;
+    private long endTime = -1;
+    private long caseVariantSize = 0;
+    private long eventSize = 0;
 
     private long originalMinDuration = 0;
     private long originalMaxDuration = 0;
@@ -32,11 +34,22 @@ public class APMLog  {
     private long originalEndTime = 0;
     private BitSet validTraceIndexBS;
 
-    private int originalCaseVariantSize = 0;
-    private int originalEventSize = 0;
+    private long originalCaseVariantSize = 0;
+    private long originalEventSize = 0;
 
     private List<ATrace> originalTraceList;
     private UnifiedMap<Integer, Integer> originalVariantIdFreqMap;
+
+    public UnifiedMap<Integer, Integer> previousVariantIdFreqMap;
+    public List<ATrace> previousTraceList;
+    public BitSet previousValidTraceIndexBS;
+    public long previousCaseVariantSize;
+    public long previousEventSize;
+    public long previousMinDuration;
+    public long previousMaxDuration;
+    public long previousStartTime;
+    public long previousEndTime;
+
 
     public APMLog(XLog xLog) {
         traceList = new ArrayList<>();
@@ -45,6 +58,7 @@ public class APMLog  {
 
         initData(xLog);
     }
+
 
     private void initData(XLog xLog) {
         originalTraceList = new ArrayList<>();
@@ -66,7 +80,10 @@ public class APMLog  {
         for(XTrace xTrace : xLog) {
             for(int i=0; i < xTrace.size(); i++) {
                 XEvent xEvent = xTrace.get(i);
-                String conceptName = xEvent.getAttributes().get("concept:name").toString();
+                String conceptName = "";
+                if(xEvent.getAttributes().get("concept:name") != null) {
+                    conceptName = xEvent.getAttributes().get("concept:name").toString();
+                }
                 if(!actIdNameMap.containsValue(conceptName)) {
                     actIdNameMap.put(actIdCount, conceptName);
                     actIdCount += 1;
@@ -81,14 +98,16 @@ public class APMLog  {
         for(int i=0; i<xLog.size(); i++) {
             ATrace aTrace = new ATrace(xLog.get(i));
 
+
+
             originalEventSize += aTrace.getEventSize();
             eventSize += aTrace.getEventSize();
 
-            if(startTime==0 || aTrace.getStartTimeMilli() < startTime) {
+            if(startTime == -1 || aTrace.getStartTimeMilli() < startTime) {
                 startTime = aTrace.getStartTimeMilli();
                 originalStartTime = startTime;
             }
-            if(endTime == 0 || aTrace.getEndTimeMilli() > endTime) {
+            if(endTime == -1 || aTrace.getEndTimeMilli() > endTime) {
                 endTime = aTrace.getEndTimeMilli();
                 originalEndTime = endTime;
             }
@@ -152,6 +171,8 @@ public class APMLog  {
         }
 
 
+
+
         UnifiedMap<Integer, Integer> initVIdToFinalVIdMap = new UnifiedMap<>();
 
         if(variantIdFreqMap.size() < 1 && actIdListFreqMap.size() > 0) {
@@ -178,6 +199,14 @@ public class APMLog  {
                 int finalVId = initVIdToFinalVIdMap.get(iVId);
                 aTrace.setCaseVariantId(finalVId);
             }
+        }
+
+        for(int i=0; i < xLog.size(); i++) {
+            XTrace xTrace = xLog.get(i);
+            ATrace aTrace = traceList.get(i);
+            int variId = aTrace.getCaseVariantId();
+            XAttribute attribute = new XAttributeLiteralImpl("case:variant", Integer.toString(variId));
+            xTrace.getAttributes().put("case:variant", attribute);
         }
 
         originalCaseVariantSize = variantIdFreqMap.size();
@@ -272,8 +301,8 @@ public class APMLog  {
         return nameList;
     }
 
-    public long getEventSize() {
-        long size = 0;
+    public int getEventSize() {
+        int size = 0;
         for(ATrace aTrace : traceList) {
             size += aTrace.getEventSize();
         }
@@ -284,7 +313,7 @@ public class APMLog  {
         this.eventSize = eventSize;
     }
 
-    public long getCaseVariantSize() {
+    public int getCaseVariantSize() {
         UnifiedSet<Integer> variSet = new UnifiedSet<>();
         for(ATrace aTrace : traceList) {
             if(!variSet.contains(aTrace.getCaseVariantId())) variSet.put(aTrace.getCaseVariantId());
@@ -386,46 +415,26 @@ public class APMLog  {
     }
 
     private void resetDuration() {
-        this.minDuration = 0;
-        this.maxDuration = 0;
+        this.minDuration = -1;
+        this.maxDuration = -1;
         for(int i=0; i<traceList.size(); i++) {
             ATrace aTrace = traceList.get(i);
-            if(this.minDuration == 0 || aTrace.getDuration() < minDuration) minDuration = aTrace.getDuration();
-            if(this.maxDuration == 0 || aTrace.getDuration() > maxDuration) maxDuration = aTrace.getDuration();
+            if(this.minDuration == -1 || aTrace.getDuration() < minDuration) minDuration = aTrace.getDuration();
+            if(this.maxDuration == -1 || aTrace.getDuration() > maxDuration) maxDuration = aTrace.getDuration();
         }
         System.out.println(maxDuration);
     }
 
 
-    private void updateCaseVariants() { //2019-11-10
-
-        UnifiedSet<Integer> existVariants = new UnifiedSet<>();
-
-        for(ATrace aTrace : traceList) {
-            existVariants.put(aTrace.getCaseVariantId());
-        }
-
-        IntArrayList removeVIdList = new IntArrayList();
-
-        variantIdFreqMap = new UnifiedMap<>();
-
-        for(int key : originalVariantIdFreqMap.keySet()) {
-            if(existVariants.contains(key)) {
-                variantIdFreqMap.put(key, originalVariantIdFreqMap.get(key));
-            }
-        }
-
-    }
-
     public List<ATrace> getOriginalTraceList() {
         return originalTraceList;
     }
 
-    public int getOriginalCaseVariantSize() {
+    public long getOriginalCaseVariantSize() {
         return originalCaseVariantSize;
     }
 
-    public int getOriginalEventSize() {
+    public long getOriginalEventSize() {
         return originalEventSize;
     }
 
@@ -462,5 +471,31 @@ public class APMLog  {
         startTime = originalStartTime;
         endTime = originalEndTime;
         variantIdFreqMap = originalVariantIdFreqMap;
+        for(int i=0; i<validTraceIndexBS.size(); i++) {
+            validTraceIndexBS.set(i, true);
+        }
+    }
+
+    public void resetPrevious() {
+
+        if(previousTraceList != null) {
+            traceList = previousTraceList;
+            for (int i = 0; i < traceList.size(); i++) {
+                traceList.get(i).resetPrevious();
+            }
+
+            caseVariantSize = previousCaseVariantSize;
+            eventSize = previousEventSize;
+            minDuration = previousMinDuration;
+            maxDuration = previousMaxDuration;
+            startTime = previousStartTime;
+            endTime = previousEndTime;
+            variantIdFreqMap = previousVariantIdFreqMap;
+            for (int i = 0; i < validTraceIndexBS.size(); i++) {
+                validTraceIndexBS.set(i, previousValidTraceIndexBS.get(i));
+            }
+        } else {
+            reset();
+        }
     }
 }
