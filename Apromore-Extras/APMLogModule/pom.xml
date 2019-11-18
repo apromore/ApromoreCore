@@ -20,8 +20,9 @@
     <description>The APMLogModule Project</description>
     <parent>
         <groupId>org.apromore</groupId>
-        <artifactId>enterprise</artifactId>
+        <artifactId>apromore</artifactId>
         <version>1.1</version>
+        <relativePath>../../</relativePath>
     </parent>
     <licenses>
         <license>
