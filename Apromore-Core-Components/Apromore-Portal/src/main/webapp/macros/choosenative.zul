@@ -24,7 +24,7 @@
 
 <window width="500px" closable="false" position="center">
     <vbox vflex="1">
-        <grid>
+        <grid sclass="ap-grid">
             <columns sizable="true">
                 <column width="40%"/>
                 <column width="60%"/>
@@ -67,7 +67,7 @@
                     <label value="*: mandatory fields." />
                 </row>
                 <row spans="3">
-                    <div align="center">
+                    <div align="center" sclass="ap-window-modal-actions">
                         <button label="OK" iconSclass="z-icon-check-circle" />
                         <button label="Cancel" iconSclass="z-icon-times-circle" />
                         <button label="Cancel all" iconSclass="z-icon-times-circle" tooltiptext="Cancel edit of all remaining process models."/>

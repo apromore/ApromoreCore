@@ -48,8 +48,8 @@
                         <listheader hflex="min" label="Version" sort="auto(version)"/>
                         <listheader hflex="min" label="Type" sort="auto(type)"/>
                         <listheader hflex="min" label="Description" sort="auto(description)"/>
-                        <listheader hflex="min" label="Author" sort="auto(author)"/>
-                        <listheader hflex="min" label="Email" sort="auto(email)"/>
+                        <!-- <listheader hflex="min" label="Author" sort="auto(author)"/>
+                        <listheader hflex="min" label="Email" sort="auto(email)"/> -->
                     </listhead>
                 </listbox>
             </tabpanel>

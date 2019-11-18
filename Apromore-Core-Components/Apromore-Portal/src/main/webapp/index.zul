@@ -27,7 +27,9 @@
 <!--<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>-->
 <?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
 <?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
-<?link rel="shortcut icon" href="img/favicon.ico" ?>
+
+<!-- must call this in the head -->
+<?link rel="shortcut icon" href="/themes/ap/common/img/brand/favicon.ico" ?>
 <?link rel="prefetch" href="themes/ap/common/img/brand/loader.svg" ?>
 <?link rel="stylesheet" type="text/css" href="themes/ap/common/css/overrides.css" ?>
 

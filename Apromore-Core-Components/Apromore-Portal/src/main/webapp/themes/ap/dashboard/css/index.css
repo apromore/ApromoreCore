@@ -4,6 +4,10 @@ body {
 }
 
 .ap-dashboard {
+    position: absolute;
+    left: 0;
+    top: 40px;
+    right: 0;
     height: calc(100% - 40px) !important;
 }
 .ap-dashboard-menu,

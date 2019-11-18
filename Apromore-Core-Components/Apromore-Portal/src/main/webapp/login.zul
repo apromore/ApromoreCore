@@ -28,11 +28,12 @@
 <?script type="text/javascript" src="js/jquery.js"?>
 <?script type="text/javascript" src="js/bootstrap.js"?>
 
-<?link rel="shortcut icon" href="img/favicon.ico" ?>
+<!--<?link rel="shortcut icon" href="img/favicon.ico" ?>-->
 
 <zk xmlns:h="xhtml" xmlns:n="native" xmlns="http://www.zkoss.org/2005/zul">
     <custom-attributes theme="${labels.ap.theme}"/>
     <!--    <custom-attributes theme="ap"/>-->
+    <h:link rel="shortcut icon" href="/themes/${theme}/common/img/brand/favicon.ico" />
 
     <h:link rel="stylesheet" type="text/css" href='/themes/${theme}/common/css/index.css' />
     <h:link rel="stylesheet" type="text/css" href='/themes/${theme}/login/css/login.css'  />

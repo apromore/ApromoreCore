@@ -18,7 +18,8 @@
   ~ If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
   -->
 
-<?link rel="shortcut icon" href="favicon.ico" ?>
+<!--<?link rel="shortcut icon" href="favicon.ico" ?>-->
+<?link rel="shortcut icon" href="../themes/ap/common/img/brand/favicon.ico" ?>
 <z:window id="win"
           xmlns="http://www.zkoss.org/2005/zk/native"
           xmlns:n="http://www.zkoss.org/2005/zk/native"

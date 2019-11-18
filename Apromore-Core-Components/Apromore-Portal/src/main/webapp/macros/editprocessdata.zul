@@ -70,7 +70,7 @@ and CreateProcessController.java for creating process purpose.
                         <label value="*: mandatory fields"/>
                     </row>
                     <row spans="3">
-                        <div align="right">
+                        <div align="right" sclass="ap-window-modal-actions">
                             <button label="OK" iconSclass="z-icon-check-circle" width="85px" />
                             <button label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
                             <button label="Cancel all" iconSclass="z-icon-times-circle" width="85px" visible="false" tooltiptext="Cancel edit of all remaining process models." />

@@ -38,7 +38,7 @@
         buttonVisible="true"
         hflex="1"
         tooltip="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed."
-        placeholder="Keyword filter"/>
+        placeholder="Search"/>
     <button id="previoussearchesbutton"
             width="34px"
             sclass="ap-icon ap-icon-search"

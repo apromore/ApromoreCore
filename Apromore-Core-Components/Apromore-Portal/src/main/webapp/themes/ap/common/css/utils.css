@@ -36,3 +36,12 @@
     background: transparent;
     border: none;
 }
+
+.ap-window-modal-actions {
+    margin-top: 7px;
+    text-align: right;
+}
+
+.ap-window-modal-actions button {
+    margin-left: 4px;
+}
