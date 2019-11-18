@@ -130,7 +130,7 @@
         <!-- <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/> -->
     </fileset>
     
-    <target name="start-virgo-student" depends="set-permissions,copy-virgo-student">
+    <target name="start-virgo-student" depends="configure-virgo, copy-virgo-student">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
@@ -141,7 +141,7 @@
         </exec>
     </target>
     
-       <target name="copy-virgo-student" depends="clean-virgo">
+       <target name="copy-virgo-student" depends="clean-virgo, create-repository-dirs">
             <copy file="Supplements/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
             <copy file="Supplements/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
             <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
