@@ -1,5 +1,6 @@
 package org.apromore.apmlog;
 
+import org.apromore.apmlog.util.Util;
 import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XLog;
@@ -15,6 +16,15 @@ import static java.util.Map.Entry.comparingByValue;
 
 public class APMLog  {
 
+    public UnifiedMap<Integer, Integer> previousVariantIdFreqMap;
+    public List<ATrace> previousTraceList;
+    public BitSet previousValidTraceIndexBS;
+    public long previousCaseVariantSize;
+    public long previousEventSize;
+    public long previousMinDuration;
+    public long previousMaxDuration;
+    public long previousStartTime;
+    public long previousEndTime;
     private List<ATrace> traceList;
     private UnifiedMap<Integer, Integer> variantIdFreqMap;
     private HashBiMap<Integer, String> actIdNameMap;
@@ -27,28 +37,15 @@ public class APMLog  {
     private long endTime = -1;
     private long caseVariantSize = 0;
     private long eventSize = 0;
-
     private long originalMinDuration = 0;
     private long originalMaxDuration = 0;
     private long originalStartTime = 0;
     private long originalEndTime = 0;
     private BitSet validTraceIndexBS;
-
     private long originalCaseVariantSize = 0;
     private long originalEventSize = 0;
-
     private List<ATrace> originalTraceList;
     private UnifiedMap<Integer, Integer> originalVariantIdFreqMap;
-
-    public UnifiedMap<Integer, Integer> previousVariantIdFreqMap;
-    public List<ATrace> previousTraceList;
-    public BitSet previousValidTraceIndexBS;
-    public long previousCaseVariantSize;
-    public long previousEventSize;
-    public long previousMinDuration;
-    public long previousMaxDuration;
-    public long previousStartTime;
-    public long previousEndTime;
 
 
     public APMLog(XLog xLog) {
@@ -425,6 +422,40 @@ public class APMLog  {
         System.out.println(maxDuration);
     }
 
+    public String getMinDurationString() {
+        return Util.durationShortStringOf(this.minDuration);
+    }
+
+    public String getMaxDurationString() {
+        return Util.durationShortStringOf(this.maxDuration);
+    }
+
+    public String getAverageDurationString() {
+        long durSum = 0;
+        for(int i=0; i < traceList.size(); i++) {
+            durSum += traceList.get(i).getDuration();
+        }
+        long avgDur = durSum / traceList.size();
+        return Util.durationShortStringOf(avgDur);
+    }
+
+    public String getMedianDurationString() {
+        List<Long> durList = new ArrayList<>();
+        for (int i=0; i<traceList.size(); i++) {
+            durList.add(traceList.get(i).getDuration());
+        }
+        Collections.sort(durList);
+        int medianIndex = traceList.size() / 2;
+        return Util.durationShortStringOf(durList.get(medianIndex));
+    }
+
+    public String getStartTimeString() {
+        return Util.timestampStringOf(Util.millisecondToZonedDateTime(this.startTime));
+    }
+
+    public String getEndTimeString() {
+        return Util.timestampStringOf(Util.millisecondToZonedDateTime(this.endTime));
+    }
 
     public List<ATrace> getOriginalTraceList() {
         return originalTraceList;

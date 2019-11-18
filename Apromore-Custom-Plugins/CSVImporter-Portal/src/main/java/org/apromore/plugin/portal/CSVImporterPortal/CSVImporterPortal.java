@@ -262,12 +262,21 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         }
                         result.add(line.toArray(new String[0]));
                         numberOfrows++;
+
+                        if(numberOfrows == 100) {
+                            String[] continued = {"...",""};
+
+                            indexedResult.add(continued);
+                        }
+
                         try {
                             line = Arrays.asList(reader.readNext());
                         }catch(NullPointerException e) {
                             break;
                         }
                     }
+
+
 
                     Popup helpP = (Popup) window.getFellow("popUpHelp");
 
