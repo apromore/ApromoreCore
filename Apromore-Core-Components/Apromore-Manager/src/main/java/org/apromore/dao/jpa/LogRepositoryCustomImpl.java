@@ -76,7 +76,8 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
     @Resource
     private CacheRepository cacheRepo;
 
-    private APMLogService apmLogService = new APMLogServiceImpl();
+    @Resource
+    private APMLogService apmLogService;
 
 
     /* ************************** JPA Methods here ******************************* */
@@ -183,24 +184,6 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
         if (log != null) {
 
-//            CacheManager manager1 = CacheManager.newInstance(LogRepositoryCustomImpl.class.getResource("/ehcache
-//            .xml"));
-//            String[] cacheNamesForManager1 = manager1.getCacheNames();
-//            LOGGER.info("**************** Ehcache = " + cacheNamesForManager1);
-//            Cache memoryOnlyCache = new Cache("xlog", 5000, false, false, 5, 2);
-//            manager1.addCache(memoryOnlyCache);
-//
-//            LOGGER.info(memoryOnlyCache.get("key").toString());
-
-//            cacheManager = new EhCacheManager();
-//            cacheManager.init();
-
-//            net.sf.ehcache.CacheManager ehCacheManager = cacheManager.getCacheManager();
-//            org.apromore.cache.Cache<String, String> cache = cacheManager.getCache("xlog");
-
-//            manager = CacheManager.getCacheManager(CacheManager.DEFAULT_NAME);
-//            Cache cache = manager.getCache("xlog");
-
             // *******  profiling code start here ********
             long startTime = System.nanoTime();
             long elapsedNanos;
@@ -208,8 +191,6 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
             String key = log.getFilePath();
             XLog element = (XLog) cacheRepo.get(key);
-
-//            Element element = cache.get(log.getId());
 
             if (element == null) {
                 // If doesn't hit cache
@@ -224,19 +205,9 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                     // *******  profiling code start here ********
                     elapsedNanos = System.nanoTime() - startTime;
                     LOGGER.info("Retrieved XES log " + name + " [" + xlog.hashCode() + "]. Elapsed time: " + elapsedNanos / 1000000 + " ms");
-
-//                System.gc();
-//                try {
-//                    Thread.sleep(5000);
-//                } catch (InterruptedException e) {
-//                }
-//                LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() /
-//                1024 / 1024 + " MB ");
+                    startTime = System.nanoTime();
                     // *******  profiling code end here ********
 
-
-                    startTime = System.nanoTime();
-//                    cache.put(new Element(log.getId(), xlog));
                     // Log POJO has one constraint that span 2 columns (@UniqueConstraint(columnNames = {"name",
                     // "folderId"}))
                     cacheRepo.put(key, xlog);
@@ -287,15 +258,6 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
                 try {
                     APMLog apmLog = apmLogService.findAPMLogForXLog(getProcessLog(log, null));
 
-//                System.gc();
-//                try {
-//                    Thread.sleep(5000);
-//                } catch (InterruptedException e) {
-//                }
-//                LOGGER.info("Memory Used: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() /
-//                1024 / 1024 + " MB ");
-                    // *******  profiling code end here ********
-
                     cacheRepo.put(key, apmLog);
                     elapsedNanos = System.nanoTime() - startTime;
                     LOGGER.info("Put object [KEY:" + key + "] into Cache. Elapsed time: " + elapsedNanos / 1000000 +
@@ -313,7 +275,7 @@ public class LogRepositoryCustomImpl implements LogRepositoryCustom {
 
             } else {
                 // If cache hit
-                LOGGER.info("Got object [HASH: " + element.hashCode() + " KEY:" + key + "] from cache [" + cacheRepo.getCacheName() + "]");
+                LOGGER.info("Get object [HASH: " + element.hashCode() + " KEY:" + key + "] from cache [" + cacheRepo.getCacheName() + "]");
                 return element;
             }
         }
