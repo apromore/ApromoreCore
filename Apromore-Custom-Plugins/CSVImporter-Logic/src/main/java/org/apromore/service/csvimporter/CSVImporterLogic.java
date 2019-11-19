@@ -33,7 +33,7 @@ public interface CSVImporterLogic {
     void tryParsing(String format, int colPos);
     void openPopUp();
     void setPopUPBox(Div popUPBox);
-
+    Boolean getErrorCheck();
     void setPopupID(String popupID);
 
     void setTextboxID(String textboxID);

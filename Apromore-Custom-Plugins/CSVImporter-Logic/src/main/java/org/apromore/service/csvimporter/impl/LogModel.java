@@ -30,7 +30,6 @@ public class LogModel {
 	private Timestamp timestamp;
 	private Timestamp startTimestamp;
 	private String resource;
-
 	private HashMap<String, Timestamp> otherTimestamps;
 	private HashMap<String, String> others;
 
