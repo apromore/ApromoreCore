@@ -29,12 +29,11 @@
 <?script type="text/javascript" src="js/bootstrap.js"?>
 
 <!--<?link rel="shortcut icon" href="img/favicon.ico" ?>-->
+<?link rel="shortcut icon" href="/themes/ap/common/img/brand/favicon.ico" ?>
 
 <zk xmlns:h="xhtml" xmlns:n="native" xmlns="http://www.zkoss.org/2005/zul">
     <custom-attributes theme="${labels.ap.theme}"/>
     <!--    <custom-attributes theme="ap"/>-->
-    <h:link rel="shortcut icon" href="/themes/${theme}/common/img/brand/favicon.ico" />
-
     <h:link rel="stylesheet" type="text/css" href='/themes/${theme}/common/css/index.css' />
     <h:link rel="stylesheet" type="text/css" href='/themes/${theme}/login/css/login.css'  />
     <!--<h:script type="text/javascript" src="/themes/${theme}/login/js/login.js" />-->
@@ -100,53 +99,6 @@
                                         <i class="icon-remove-circle"></i> Password Reset. Please check your email account for a new password.
                                     </div>
                             ]]>
-<<<<<<< HEAD
-                        </h:div>
-
-                        <h:div class="row">
-                            <h:div class="tab-content overflow form-dark">
-
-                                <h:div class="tab-pane fade in active" id="login">
-                                    <h:div class="span5">
-                                        <h:h4 class="welcome">
-                                            <h:small>
-                                                <h:i class="icon-user" />
-                                                Login
-                                            </h:small>
-                                        </h:h4>
-                                        <h:form method="post" action="j_spring_security_check" name="login_form">
-                                            <h:fieldset>
-                                                <h:div class="controls">
-                                                    <h:input class="span5" type="text" name="j_username" placeholder="Your Login or Email"/>
-                                                </h:div>
-                                                <h:div class="controls controls-row">
-                                                    <h:input class="span3" type="password" name="j_password" placeholder="password"/>
-                                                    <h:button type="submit" class="span2 btn btn-primary">SIGN IN</h:button>
-                                                </h:div>
-<!--                                                <h:hr class="margin-xm"/>-->
-<!--                                                <h:label class="checkbox" for="_spring_security_remember_me">-->
-<!--                                                    <h:input name="_spring_security_remember_me" class="checkbox" type="checkbox"/>-->
-<!--                                                    Remember me-->
-<!--                                                </h:label>-->
-
-
-                                                <h:hr class="margin-mm "/>
-                                                <h:a href="#forgot" class="btn" data-toggle="tab">Forgot Password?</h:a>
-                                                <h:a href="#register" class="btn" data-toggle="tab">Create a new account</h:a>
-                                            </h:fieldset>
-                                        </h:form>
-                                    </h:div>
-
-                                    <h:div class="span7">
-                                        <h:h4 class="welcome">
-                                            <h:small>Welcome to Apromore!</h:small>
-                                        </h:h4>
-                                        <h:p align="center">
-                                            <h:img src="img/apromore_logo.png"/>
-                                        </h:p>
-                                        <h:p>For further information, visit <a href="https://apromore.org/">http://apromore.org</a>.</h:p>
-                                    </h:div>
-=======
                     </h:div>
                 </html>
                 <html>
@@ -180,7 +132,6 @@
                                             </h:div>
                                         </h:fieldset>
                                     </h:form>
->>>>>>> AP-652 Refactoring styles and assets
                                 </h:div>
                             </h:div>
                             <h:div class="tab-pane fade" id="forgot">

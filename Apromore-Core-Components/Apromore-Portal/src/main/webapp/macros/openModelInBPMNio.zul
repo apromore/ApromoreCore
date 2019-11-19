@@ -47,7 +47,7 @@
     <n:div class="ap-header">
         <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>
         <n:div class="ap-header-title">BPMN Editor</n:div>
-        <n:div class="ap-help">
+        <n:div class="ap-header-actions">
             <n:a href="https://apromore.org/documentation/features" target="_blank">
               <n:button class="ap-icon ap-icon-help"/>
             </n:a>

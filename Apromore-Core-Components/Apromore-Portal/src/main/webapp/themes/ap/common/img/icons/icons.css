@@ -1,11 +1,9 @@
 .ap-icon {
     --icon-height: 26px;
     --bg-height: 20px;
-
     box-sizing: border-box !important;
     height: var(--icon-height) !important;
     border: none !important;
-    margin: 0 4px !important;
     background-size: auto var(--bg-height) !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -15,7 +13,7 @@
     padding: 0 !important;
     margin: 0 2px 0 0 !important;
     cursor: pointer;
-    filter: invert(33%) sepia(0%) saturate(0%) hue-rotate(226deg) brightness(91%) contrast(93%);
+    filter: var(--ap-filter-ico-normal-dark);
 }
 
 /* Do not set filter as important due to light/dark */
@@ -25,28 +23,63 @@
 }
 
 .ap-icon:hover {
-    background-color: var(--ap-colour-menu-bg-hover) !important;
+    background-color: var(--ap-c-action-bg-hover) !important;
     filter: none;
 }
 
-.ap-icon-dark:hover {
-    background-color: transparent !important;
-    filter: invert(100%) saturate(0%) brightness(100%) contrast(100%); // whitened
+.ap-icon-activity {
+    background-image: url('activity.svg') !important;
+    width: 26px !important;
 }
 
-.ap-icon-help {
-    background-image: url('help.svg') !important;
+.ap-icon-attribute {
+    background-image: url('attribute.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-binocular {
+    background-image: url('binocular.svg') !important;
     width: 26px !important;
 }
 
 .ap-icon-bpmn-add {
     background-image: url('bpmn-add.svg') !important;
-    width: 26px !important;
+    width: 28.65625px !important;
 }
 
 .ap-icon-bpmn-model {
     background-image: url('bpmn-model.svg') !important;
     width: 26px !important;
+}
+
+.ap-icon-calendar {
+    background-image: url('calendar.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-chart-bar {
+    background-image: url('chart-bar.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-chart-fill {
+    background-image: url('chart-fill.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-cog-solid {
+    background-image: url('cog-solid.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-cog {
+    background-image: url('cog.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-download {
+    background-image: url('download.svg') !important;
+    width: 28.5px !important;
 }
 
 .ap-icon-export-bpmn {
@@ -66,7 +99,7 @@
 
 .ap-icon-folder-add {
     background-image: url('folder-add.svg') !important;
-    width: 26.390625px !important;
+    width: 28.7734375px !important;
 }
 
 .ap-icon-folder-collapse {
@@ -79,6 +112,11 @@
     width: 28.5px !important;
 }
 
+.ap-icon-folder-home {
+    background-image: url('folder-home.svg') !important;
+    width: 26.390625px !important;
+}
+
 .ap-icon-folder {
     background-image: url('folder.svg') !important;
     width: 26.390625px !important;
@@ -86,6 +124,16 @@
 
 .ap-icon-help {
     background-image: url('help.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-hourglass {
+    background-image: url('hourglass.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-key {
+    background-image: url('key.svg') !important;
     width: 26px !important;
 }
 
@@ -99,14 +147,34 @@
     width: 26px !important;
 }
 
+.ap-icon-percent {
+    background-image: url('percent.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-puzzle {
+    background-image: url('puzzle.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-random {
+    background-image: url('random.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-redo {
     background-image: url('redo.svg') !important;
     width: 26px !important;
 }
 
 .ap-icon-rename {
-    background-image: url('rename.svg')!important;
+    background-image: url('rename.svg') !important;
     width: 27.71875px !important;
+}
+
+.ap-icon-resource {
+    background-image: url('resource.svg') !important;
+    width: 28.5px !important;
 }
 
 .ap-icon-save-as {
@@ -124,6 +192,26 @@
     width: 26px !important;
 }
 
+.ap-icon-sign-out {
+    background-image: url('sign-out.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-speed {
+    background-image: url('speed.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-sync {
+    background-image: url('sync.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-table {
+    background-image: url('table.svg') !important;
+    width: 28.857142857142854px !important;
+}
+
 .ap-icon-trash {
     background-image: url('trash.svg') !important;
     width: 26px !important;
@@ -134,6 +222,11 @@
     width: 26px !important;
 }
 
+.ap-icon-upload {
+    background-image: url('upload.svg') !important;
+    width: 28.5px !important;
+}
+
 .ap-icon-user-lock {
     background-image: url('user-lock.svg') !important;
     width: 28.5px !important;
@@ -141,6 +234,11 @@
 
 .ap-icon-user {
     background-image: url('user.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-wave {
+    background-image: url('wave.svg') !important;
     width: 26px !important;
 }
 

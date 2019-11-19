@@ -31,8 +31,8 @@
   --text-color-light:        rgba(0, 0, 0, 0.68);
   --text-color-lighter:      rgba(0, 0, 0, 0.24);
   --text-color-default3:     #FFFFFF;
-  --text-color-active:       #0093F9;
-  --color-primary:           #0093F9;
+  --text-color-active:       #78b7d1; // #0093F9;
+  --color-primary:           #5b889b; // #0093F9;
   --color-primary-dark:      #0064ED; //darken(@colorPrimary, 20%);
   --color-primary-light:     #4FB7FF; //lighten(@colorPrimary, 20%);
   --color-primary-lighter:   #E8F5FF; // List hover Bg

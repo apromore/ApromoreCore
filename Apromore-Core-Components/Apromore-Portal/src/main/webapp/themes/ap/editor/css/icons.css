@@ -1,49 +1,49 @@
 .x-panel-editor-north .x-toolbar button[title='Save'] {
     background-image: url('../../common/img/icons/save.svg') !important;
-    width: 27px !important;
+    width: 25.0625px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Save a copy...'] {
     background-image: url('../../common/img/icons/save-as.svg') !important;
-    width: 24px !important;
+    width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Zoom into the model'] {
     background-image: url('../../common/img/icons/zoom-in.svg') !important;
-    width: 24px !important;
+    width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Zoom out of the model'] {
     background-image: url('../../common/img/icons/zoom-out.svg') !important;
-    width: 24px !important;
+    width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Zoom to fit the model size'] {
     background-image: url('../../common/img/icons/zoom-to-fit.svg') !important;
-    width: 24px !important;
+    width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Undo the last action'] {
     background-image: url('../../common/img/icons/undo.svg') !important;
-    width: 24px !important;
+    width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Redo the last undone action'] {
     background-image: url('../../common/img/icons/redo.svg') !important;
-    width: 24px !important;
+    width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Export as .SVG'] {
     background-image: url('../../common/img/icons/export-svg.svg') !important;
-    width: 24px !important;
+    width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Export as .BPMN'] {
     background-image: url('../../common/img/icons/export-bpmn.svg') !important;
-    width: 24px !important;
+    width: 26px !important;
 }
 
 .x-panel-editor-north .x-toolbar button[title='Export as PDF'] {
     background-image: url('../../common/img/icons/export-pdf.svg') !important;
-    width: 24px !important;
+    width: 26px !important;
 }

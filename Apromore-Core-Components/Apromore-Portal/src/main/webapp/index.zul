@@ -31,7 +31,7 @@
 <!-- must call this in the head -->
 <?link rel="shortcut icon" href="/themes/ap/common/img/brand/favicon.ico" ?>
 <?link rel="prefetch" href="themes/ap/common/img/brand/loader.svg" ?>
-<?link rel="stylesheet" type="text/css" href="themes/ap/common/css/overrides.css" ?>
+<?link rel="stylesheet" type="text/css" href="themes/ap/common/css/headload.css" ?>
 
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
@@ -66,12 +66,20 @@
 
     <style src="chiaroscuro.css"></style>
     <style>
+        /* must be embedded here */
         .ap-portal .z-north-body,
         .ap-portal .z-south-body,
         .ap-portal .z-west-body,
         .ap-portal .z-center-body,
         .ap-portal .z-east-body {
         padding: 0 !important;
+        }
+
+        .ap-wrapper-process .z-vlayout-inner,
+        .ap-wrapper-process .z-window {
+        background-color: transparent;
+        width: 100% !important;
+        height: 100% !important;
         }
     </style>
     <custom-attributes theme="${labels.ap.theme}"/>
@@ -180,11 +188,11 @@
         <!--</div>-->
 
         <borderlayout vflex="true" sclass="ap-portal-layout">
-            <north height="40px" border="0" sclass="ap-header-region">
+            <north height="34px" border="0" sclass="ap-header-region">
                 <h:div class="ap-header">
                     <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
                     <h:div class="ap-header-title">Portal</h:div>
-                    <h:div class="ap-help">
+                    <h:div class="ap-header-actions">
                         <h:a href="https://apromore.org/documentation/features" target="_blank">
                             <h:button class="ap-icon ap-icon-help"/>
                         </h:a>
@@ -204,10 +212,10 @@
             </west>
             <center id="mainPanel" sclass="ap-portal-right-section" vflex="1" border="0">
                 <vlayout vflex="1" sclass="ap-portal-right-content" spacing="0">
-                    <Menu id="menucomp" style="background-color: unset" height="34px" width="100%"  />
-                    <hbox id="pagingandbuttons" width="100%" spacing="0" sclass="ap-portal-menu-actions">
-                        <paging sclass="ap-portal-paging" id="pg" width="150px" style="border: 0" visible="false" />
-                        <hbox sclass="ap-portal-menu-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0">
+                    <Menu id="menucomp" sclass="ap-portal-menu" height="32px" width="100%"  />
+                    <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
+                        <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
+                        <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0">
                             <button sclass="ap-icon ap-icon-redo" id="refreshB" label="" image="img/icon/svg/refresh_icon.svg" tooltiptext="Reload data" />
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
                             <button sclass="ap-icon ap-icon-folder-add" id="btnAddFolder" label="" image="img/icon/svg/folder_add.svg" tooltiptext="Create folder"/>
@@ -219,14 +227,14 @@
                         </hbox>
                         <SimpleSearch id="simplesearchcomp" hflex="1" border="0" />
                     </hbox>
-                    <html id="folders" width="100%" visible="false" />
-                    <tabbox id="tabbox" vflex="1">
-                        <tabs id="tabs">
+                    <html id="folders" width="0px" height="0px" visible="false" />
+                    <tabbox id="tabbox" vflex="1" hflex="1">
+                        <tabs id="tabs" vflex="1" hflex="1">
                             <tab label="Processes"/>
                         </tabs>
-                        <tabpanels id="tabpanels">
-                            <tabpanel vflex="1">
-                                <BaseListbox id="baseListboxProcesses" vflex="1" width="100%" border="0"/>
+                        <tabpanels id="tabpanels" vflex="1" hflex="1">
+                            <tabpanel vflex="1" hflex="1">
+                                <BaseListbox id="baseListboxProcesses" height="100%" width="100%" border="0"/>
                             </tabpanel>
                         </tabpanels>
                     </tabbox>

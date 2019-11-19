@@ -2,43 +2,96 @@
 @import url('../fonts/gilroy-free/gilroy-free.css');
 
 :root {
-    --ap-colour-maroon: #BB3A50;
-    --ap-colour-sunset: #F26424;
-    --ap-colour-orange: #FBA525;
-    --ap-colour-oceanic: #84C7E3;
-    --ap-colour-dark-sunset-1: #C24C00;
-    --ap-colour-dark-oceanic-1: #5B889B; /* #9DD2E9 */
-    --ap-colour-light-oceanic-1: #EDF7FB;
-    --ap-colour-light-orange-1: #fcb751;
-    --ap-colour-lightgrey: #eeeeee;
-    --ap-colour-grey: #d9d9d9;
+    /* High-level structure colours */
+    --ap-c-line-sep: #f3f3f3;
+    --ap-c-line-sep-selected: var(--ap-c-grey-light-5);
 
-    --ap-colour-menu-bg-hover: rgb(232, 245, 255);
+    --ap-c-text-normal: var(--ap-c-grey-dark-3);
+    --ap-c-text-minor: var(--ap-c-grey-light-2);
+
+    --ap-c-widget: var(--ap-c-oceanic-dark-1);
+    --ap-c-bg-lighter: #f7f7f7;
+    --ap-c-bg-lightest: #f9fcff;
+
+    --ap-c-button: var(--ap-c-soft-blue-dark-3);
+    --ap-c-button-hover: var(--ap-c-oceanic-dark-1);
+    --ap-c-button-sep: var(--ap-c-oceanic-light-1);
+
+    --ap-c-action-bg-normal: var(--ap-c-grey-light-5);
+    --ap-c-action-bg-hover: #f3f3f3;
+
+    --ap-c-tab-bg-normal: #f3f3f3;
+    --ap-c-tab-text-normal: var(--ap-c-grey);
+    --ap-c-tab-text-selected: var(--ap-c-sunset);
+    --ap-c-tab-bar-normal: transparent;
+    --ap-c-tab-bar-selected: var(--ap-c-maroon);
+
+    --ap-c-menu-bg-hover: var(--ap-c-maroon-light-3);
+    --ap-c-menu-bg-normal: var(--ap-c-maroon-light-4);
+    --ap-c-menu-bg-selected: var(--ap-c-maroon-dark-1);
+    --ap-c-menu-text-normal: var(--ap-c-grey);
+    --ap-c-menu-text-selected: var(--ap-c-oceanic-light-5);
+
+    --ap-c-grid-head-bg: var(--ap-c-soft-blue-dark-2);
+
+    --ap-c-grid-row-bg-normal: transparent;
+    --ap-c-grid-row-bg-selected: var(--ap-c-oceanic-light-5);
+    --ap-c-grid-row-bg-hover: var(--ap-c-oceanic-light-5);
+
+    /* Typography */
     --ap-font-base: 'Source Sans Pro', sans-serif;
     --ap-font-brand: 'Gilroy-Light', sans-serif;
 
+    /* Shadow */
+    --ap-box-shadow: 0 1px 3px 0 rgba(127, 127, 127, 0.5);
+
+    /* Size and position */
+    --ap-icon-height: 26px;
+    --ap-header-height: 34px;
+    --ap-menu-height: 32px;
+    --ap-offset-doc-title: 4px;
     --ap-header-logo-width: 120px;
     --ap-header-title-left: 120px;
 
+    /* Z-indexing */
     --ap-z-alert: 20000;
-
     --ap-z-header: 10000;
     --ap-z-header-logo: 10010;
     --ap-z-header-help: 10020;
     --ap-z-header-title: 10030;
-
     --ap-z-editor-window: 9000;
     --ap-z-editor-toolbar: 9010;
+
+    /* Filter */
+    /* ---ap-c-grey */
+    --ap-filter-ico-normal-dark: invert(27%) sepia(0%) saturate(0%) hue-rotate(56deg) brightness(95%) contrast(81%);
+    /* --ap-c-orange-light-3: #fdd69d; */
+    --ap-filter-ico-normal-light: invert(82%) sepia(16%) saturate(924%) hue-rotate(340deg) brightness(106%) contrast(98%);
+    --ap-filter-ico-black: none; /* keep black */
+    --ap-filter-ico-white: invert(100%) sepia(100%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%); /* white */
+    --ap-filter-ico-static: invert(27%) sepia(0%) saturate(0%) hue-rotate(56deg) brightness(95%) contrast(81%);; /* ---ap-c-grey */
 }
 
+/* Filter classes */
+/* use filter to color svg that is included via img, the fill color should be black */
+.ap-filter-light {
+    filter: invert(100%) saturate(0%) brightness(100%) contrast(100%);
+}
+
+.ap-filter-dark {
+    /* use filter to color svg that is included via img, the fill color should be black */
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+}
+
+/* Common headers */
 .ap-header {
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
-    height: 40px;
-    background-color: var(--ap-colour-maroon);
-    /* background-image: linear-gradient(-30deg, #5B889B 0%, #C24C00 40%,  var(--ap-colour-maroon) 80%); */
+    height: var(--ap-header-height);
+    background-color: var(--ap-c-maroon);
+    /* background-image: linear-gradient(-30deg, #5B889B 0%, #C24C00 40%,  var(--ap-c-maroon) 80%); */
     background-image: url('../img/brand/background.jpg');
     /* background-size: cover; */
     background-size: 100% 100%;
@@ -48,48 +101,47 @@
 .ap-header-logo {
     display: inline-block;
     width: var(--ap-header-logo-width);
-    height: 35px;
+    height: var(--ap-header-height);;
     background-image: url('../img/brand/logo.svg');
     background-repeat: no-repeat;
     background-size: auto 20px;
-    background-position: 10px 10px;
+    background-position: center center;
     cursor: pointer;
 }
 
 .ap-header-title {
     display: block;
     position: absolute;
-    top: 12px;
+    top: 9px;
     left: var(--ap-header-title-left);
-    font-family: 'Gilroy-Light', 'sans-serif';
+    font-family: var(--ap-font-brand);
     font-style: normal;
     font-size: 16px;
     line-height: 16px;
-    color: var(--ap-colour-light-orange-1);
+    color: var(--ap-c-orange-light-3);
 }
 
-/* use filter to color svg that is included via img, the fill color should be black */
-.ap-filter-light {
-    filter: invert(100%) saturate(0%) brightness(100%) contrast(100%);
-}
-
-.ap-filter-dark {
-    /* use filter to color svg that is included via img, the fill color should be black */
-    filter: invert(100%) sepia(0%) saturate(5891%) hue-rotate(4deg) brightness(114%) contrast(100%);
-}
-
-.ap-help {
+.ap-header-actions {
     position: absolute;
-    top: 5px;
+    top: 4px;
     right: 10px;
     z-index: var(--ap-z-header-help);
 }
 
-.ap-help .ap-icon-help {
-    filter: invert(82%) sepia(16%) saturate(924%) hue-rotate(340deg) brightness(106%) contrast(98%);
+.ap-header-actions .ap-icon {
+    filter: var(--ap-filter-ico-normal-light);
 }
 
-.ap-help .ap-icon-help:hover {
+.ap-header-actions .ap-icon:hover {
     background-color: transparent !important;
-    filter: invert(100%) saturate(0%) brightness(100%) contrast(100%) !important;
+    filter: var(--ap-filter-ico-white) !important;
+}
+
+/* Common third-party overriders */
+.bjs-powered-by {
+    z-index: 3020 !important;
+}
+
+.bjs-powered-by img {
+    width: 30px !important;
 }

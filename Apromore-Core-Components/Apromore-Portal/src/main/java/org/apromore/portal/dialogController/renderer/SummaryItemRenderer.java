@@ -34,6 +34,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
@@ -176,6 +177,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         Listcell lc = new Listcell();
         lc.appendChild(new Image(Constants.FOLDER_ICON));
         lc.setStyle(CENTRE_ALIGN);
+        lc.setSclass(Constants.FOLDER_ICOCLS);
         return lc;
     }
 
@@ -196,6 +198,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         Listcell lc = new Listcell();
         lc.appendChild(new Image(Constants.LOG_ICON));
         lc.setStyle(CENTRE_ALIGN);
+        lc.setSclass(Constants.LOG_ICOCLS);
         return lc;
     }
 
@@ -203,6 +206,7 @@ public class SummaryItemRenderer implements ListitemRenderer {
         Listcell lc = new Listcell();
         lc.appendChild(new Image(Constants.PROCESS_ICON));
         lc.setStyle(CENTRE_ALIGN);
+        lc.setSclass(Constants.PROCESS_ICOCLS);
         return lc;
     }
 
@@ -237,9 +241,11 @@ public class SummaryItemRenderer implements ListitemRenderer {
     private Component renderVersionRanking(final ProcessSummaryType process) {
         Hbox processRanking = new Hbox();
         if (process.getRanking() != null && process.getRanking().compareTo("") != 0) {
-            displayRanking(processRanking, process.getRanking());
+            // displayRanking(processRanking, process.getRanking());
+            displayRating(processRanking, process.getRanking());
         } else {
-            displayRanking(processRanking, "0");
+            // displayRanking(processRanking, "0");
+            displayRating(processRanking, "0");
         }
         processRanking.setStyle(CENTRE_ALIGN);
         return wrapIntoListCell(processRanking);
@@ -311,6 +317,37 @@ public class SummaryItemRenderer implements ListitemRenderer {
                 star = new Image();
                 star.setStyle(VERTICAL_ALIGN);
                 star.setSrc(imgBlank);
+                rankingHb.appendChild(star);
+            }
+        }
+    }
+
+    /**
+     * Display in hbox versionRanking, 5 stars according to ranking (0...5).
+     * Pre-condition: ranking is a non empty string.
+     * @param rankingHb the Horizontal box to display it
+     * @param ranking the ranking to display
+     */
+    private void displayRating(Hbox rankingHb, String ranking) {
+        Button star;
+        Float rankingF = Float.parseFloat(ranking);
+        int fullStars = rankingF.intValue();
+        int i;
+        for (i = 1; i <= fullStars; i++) {
+            star = new Button();
+            star.setSclass(Constants.STAR_FULL_CLS + " ap-star-" + i);
+            rankingHb.appendChild(star);
+        }
+        if (i <= 5) {
+            if (Math.floor(rankingF) != rankingF) {
+                star = new Button();
+                star.setSclass(Constants.STAR_HALF_CLS + " ap-star-" + i);
+                rankingHb.appendChild(star);
+                i = i + 1;
+            }
+            for (int j = i; j <= 5; j++) {
+                star = new Button();
+                star.setSclass(Constants.STAR_NONE_CLS);
                 rankingHb.appendChild(star);
             }
         }

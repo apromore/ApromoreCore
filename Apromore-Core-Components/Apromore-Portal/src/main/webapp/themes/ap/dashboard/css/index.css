@@ -6,12 +6,300 @@ body {
 .ap-dashboard {
     position: absolute;
     left: 0;
-    top: 40px;
+    top: 34px;
     right: 0;
-    height: calc(100% - 40px) !important;
+    height: calc(100% - 34px) !important;
 }
+
+/* SVG Chart */
+.ap-dashboard svg,
+.ap-dashboard .highcharts-contextmenu {
+    font-family: var(--ap-font-base) !important;
+}
+
 .ap-dashboard-menu,
 .ap-dashboard-content,
 .ap-dashboard-content-layout {
     width:100% !important;
+}
+
+.ap-dashboard-menu {
+    border: none;
+    background-image: linear-gradient(90deg, var(--ap-c-tab-bg-normal), var(--ap-c-menu-bg-normal)) !important;
+    box-shadow: 0 1px 3px 0 rgba(200, 200, 200, .5);
+    height: var(--ap-menu-height);
+}
+
+.ap-dashboard .ap-slide-menu {
+    border: none;
+    padding: 3px 0 0 10px;
+    height: var(--ap-menu-height);
+}
+
+.ap-dashboard-right-menu-c {
+    padding: 3px 0 0 0;
+    text-align: right;
+}
+
+.ap-dashboard-right-menu {
+    border: 0;
+    display: inline-block;
+}
+
+/* HACK */
+.ap-dashboard-right-menu .myMenu:last-child {
+    display: none;
+}
+
+.nStyleblue ~ .z-north-splitter {
+    background-image: none !important;
+}
+/* HACK */
+
+.ap-dashboard-case-hint-c {
+    padding-top: 3px;
+}
+
+.ap-dashboard-case-hint-c .z-label {
+    font-size: 12px !important;
+    color: var(--ap-c-text-minor) !important;
+}
+
+/*.ap-dashboard .ap-slide-menu .z-radio-content {*/
+/*}*/
+
+.ap-radio-c input[type="radio"] {
+    display: none;
+}
+
+.ap-radio-c input + .z-radio-content {
+    display: block;
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 26px;
+    height: 29px;
+    border-bottom-width: 2px;
+    color: var(--ap-c-tab-text-normal);
+    border-bottom: 2px solid var(--ap-c-tab-bar-normal);
+}
+
+.ap-radio-c input[checked="checked"] + .z-radio-content {
+    color: var(--ap-c-tab-text-selected);
+    border-bottom: 2px solid var(--ap-c-tab-bar-selected);
+}
+
+.ap-slide-menu-c .slider {
+    display: none;
+}
+
+/*.ap-radio-c input[type="radio"]:checked ~ .z-radio-content,*/
+/*.ap-radio-c input[type="radio"]:checked ~ .z-radio-content .ap-icon-binocular {*/
+/*    color:#09E;*/
+/*}*/
+
+.ap-dashboard .ap-slide-menu .bar {
+    border-radius: 0;
+}
+
+.ap-dashboard .ap-slide-menu .ap-radio-c {
+    vertical-align: top !important;
+}
+
+.ap-dashboard .ap-slide-menu .ap-radio-c > span {
+    display: inline-block;
+}
+
+.ap-dashboard i.ap-icon {
+    display: inline-block;
+    vertical-align: top !important;
+    margin-bottom: 2px;
+}
+
+.ap-chart-options .z-label,
+.ap-dashboard-right-menu .z-menu-text {
+    color: var(--ap-c-menu-text-normal);
+}
+
+.ap-chart-options .itemMainTitle {
+
+}
+
+.ap-chart-options .itemSubTitle {
+    font-size: 10px !important;
+}
+
+.ap-dashboard .z-menubar {
+    background-color: transparent;
+}
+
+/*.ap-dashboard-right-menu .z-menu-content {*/
+/*    background-color: var(--ap-c-menu-bg-normal);*/
+/*}*/
+
+/*.ap-dashboard-right-menu .z-menu-selected .z-menu-content {*/
+/*    background-color: var(--ap-c-menu-bg-selected);*/
+/*}*/
+
+/*.ap-dashboard-right-menu .z-menu-selected .z-menu-text {*/
+/*    color: var(--ap-c-menu-text-selected);*/
+/*}*/
+
+/* Icons */
+
+.ap-chart-options .icoContainer {
+    width: 30px !important;
+}
+
+.ap-chart-options .z-hbox {
+    padding: 0 !important;
+}
+
+.ap-chart-options .z-label {
+    padding-top: 6px !important;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 14px;
+}
+
+.ap-chart-options button {
+    height: var(--ap-icon-height) !important;
+    width: var(--ap-icon-height) !important;
+    padding: 0;
+    margin: 0;
+}
+
+.ap-chart-options button i {
+    /* copy of ap-icon */
+    --icon-height: 26px;
+    --bg-height: 20px;
+    box-sizing: border-box !important;
+    height: var(--icon-height) !important;
+    border: none !important;
+    margin: 0 4px !important;
+    background-size: auto var(--bg-height) !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-origin: padding-box !important;
+    background-color: transparent !important;
+    border-radius: 3px !important;
+    padding: 0 !important;
+    margin: 0 2px 0 0 !important;
+    cursor: pointer;
+    /* */
+    display: block
+}
+
+.icon-asc:before {
+    content: "\ec815";
+}
+.icon-log:before {
+    content: "\ec816";
+}
+
+.icon-activities:before {
+    content: "";
+}
+
+.icon-attribute:before {
+    content: "\e38ad";
+}
+
+.icon-variant:before {
+    content: "";
+}
+
+.icon-variant {
+    background-image: url('../../common/img/icons/random.svg') !important;
+    width: 26px !important;
+}
+
+.icon-event_attribute:before {
+    content: "";
+}
+
+.icon-event_attribute {
+    background-image: url('../../common/img/icons/attribute.svg') !important;
+    width: 26px !important;
+}
+
+.icon-wait_time:before {
+    content: "\ec931";
+}
+
+.icon-resources:before {
+    content: "\ec900";
+}
+
+.icon-frequency:before {
+    content: "";
+}
+
+.icon-frequency {
+    background-image: url('../../common/img/icons/wave.svg') !important;
+    width: 26px !important;
+}
+
+.icon-case_overtime:before {
+    content: "";
+}
+
+.icon-case_overtime {
+    background-image: url('../../common/img/icons/chart-fill.svg') !important;
+    width: 26px !important;
+}
+
+.icon-overview:before {
+    content: "\ec803";
+}
+
+.icon-total_duration:before {
+    content: "\ec810";
+}
+
+.icon-average_duration:before {
+    content: "";
+}
+
+.icon-average_duration {
+    background-image: url('../../common/img/icons/hourglass.svg') !important;
+    width: 26px !important;
+}
+
+.icon-median:before {
+    content: "\ec812";
+}
+
+.icon-range:before {
+    content: "\ec814";
+}
+
+.icon-case_utilisation:before {
+    content: "";
+}
+
+.icon-case_utilisation {
+    background-image: url('../../common/img/icons/percent.svg') !important;
+    width: 26px !important;
+}
+
+.icon-events_case:before {
+    content: "";
+}
+
+.icon-events_case {
+    background-image: url('../../common/img/icons/calendar.svg') !important;
+    width: 26px !important;
+}
+
+.icon-events_overtime:before {
+    content: "";
+}
+
+.icon-events_overtime {
+    background-image: url('../../common/img/icons/chart-bar.svg') !important;
+    width: 26px !important;
+}
+
+.icon-process_time:before {
+    content: "\ec806";
 }

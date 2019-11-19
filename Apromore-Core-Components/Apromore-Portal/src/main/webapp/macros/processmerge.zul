@@ -20,7 +20,7 @@
 
 <window width="300px" closable="false" position="center" title="Merge process models">
     <vbox>
-        <grid>
+        <grid sclass="ap-grid">
             <columns sizable="true">
                 <column width="60%"></column>
                 <column width="40%"></column>

@@ -15,7 +15,7 @@
 
     <library-property>
         <name>org.zkoss.theme.preferred</name>
-        <value>iceblue_c</value>  <!-- atlantic, breeze, iceblue, iceblue_c, sapphire, silvertail -->
+        <value>iceblue_c</value>  <!-- atlantic, breeze, iceblue, iceblue_c, sapphire, silvertail, chiaroscuro_c -->
     </library-property>
 
   <library-property>

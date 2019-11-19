@@ -22,7 +22,7 @@
 <window id="importWindow" position="center" title="Import process models or logs"
         visible="true" sizable="true" width="550px">
     <vbox vflex="1">
-        <grid>
+        <grid sclass="ap-grid">
             <columns sizable="true">
                 <column width="25%"></column>
                 <column width="15%"></column>

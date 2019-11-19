@@ -25,7 +25,7 @@
 <window position="center" title="Process model details" visible="true"
         sizable="true" width="550px">
     <vbox vflex="1">
-        <grid>
+        <grid sclass="ap-grid">
             <columns sizable="true">
                 <column width="25%"></column>
                 <column width="35%"></column>

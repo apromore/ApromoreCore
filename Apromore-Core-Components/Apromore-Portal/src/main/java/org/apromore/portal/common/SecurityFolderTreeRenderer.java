@@ -104,7 +104,14 @@ public class SecurityFolderTreeRenderer implements TreeitemRenderer {
                 treeItem.setOpen(false);
             }
 
-            hl.appendChild(new Image(folder.getId() == 0 ? "/img/icon/svg/folder_home.svg" : "/img/icon/svg/folder_icons.svg"));
+            if (folder.getId() == 0) {
+                hl.appendChild(new Image("/img/icon/svg/folder_home.svg"));
+                hl.setSclass("ap-ico-home");
+            } else {
+                hl.appendChild(new Image("/img/icon/svg/folder_icons.svg"));
+                hl.setSclass("ap-ico-folder");
+            }
+
             String folderName = folder.getFolderName();
             hl.appendChild(new Label(folderName.length() > 15 ? folderName.substring(0, 13) + "..." : folderName));
             break;

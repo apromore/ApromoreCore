@@ -20,7 +20,7 @@
 
 <window width="400px" closable="false" position="center" id="inputDialog">
     <vbox vflex="1">
-        <grid>
+        <grid sclass="ap-grid">
             <columns sizable="true">
                 <!--<column width="30%"></column>-->
                 <column width="100%"></column>

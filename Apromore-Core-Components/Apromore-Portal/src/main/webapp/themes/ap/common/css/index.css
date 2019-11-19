@@ -1,58 +1,126 @@
+@import "palette.css";
 @import "base.css";
 @import "../img/icons/icons.css";
 @import "utils.css";
-@import "overrides.css";
+@import "headload.css";
 
-/* ZK override */
+/* ZK overrides
+ We put them here (not as a separate import) for faster loading
+ */
+
+/* Typography */
+.z-a,
+.z-bandbox-input,
+.z-button,
+.z-center-header,
+.z-checkbox-content,
+.z-combobox-input,
+.z-combobutton-content,
+.z-datebox-input,
+.z-decimalbox,
+.z-doublebox,
+.z-doublespinner-input .z-listheader-content,
+.z-east-header,
+.z-intbox,
+.z-label,
+.z-listbox-body .z-listbox-emptybody td,
+.z-listcell-content,
+.z-listfooter-content,
+.z-listgroup-content,
+.z-listgroupfoot-content,
+.z-listheader-content,
+.z-loading,
+.z-longbox,
+.z-menu-text,
+.z-menuitem-text,
+.z-menupopup .z-menu-text,
+.z-messagebox .z-label,
+.z-messagebox,
+.z-north-header,
+.z-radio-content,
+.z-select,
+.z-south-header,
+.z-spinner-input,
+.z-tab-text,
+.z-textbox,
+.z-timebox-input,
+.z-west-header,
+input {
+  font-family: var(--ap-font-base);
+  font-size: 14px;
+  font-weight: normal;
+}
+
+/* Buttons */
 
 .z-button,
 .z-combobutton-content {
-  background-color: #5b889b;
-}
-
-.z-a {
-  font-family: var(--ap-font-base);
+  background-color: var(--ap-c-button);
 }
 
 .z-button:hover,
-.z-combobutton-content:hover {
-  background-color: #84c7e3;
+.z-combobutton:hover .z-combobutton-content {
+  background-color: var(--ap-c-button-hover);
 }
 
+.z-combobutton-button {
+  border-left: 1px solid var(--ap-c-button-sep);
+}
+
+/* Checkbox */
+input[type="checkbox"]:checked {
+  background-color: var(--ap-c-widget);
+  color: #fff;
+}
+
+/* Radio */
+input[type="radio"]:checked:before {
+  background-color: var(--ap-c-widget);
+}
+
+/* Tab */
 .z-tabpanel {
-    border-top: 1px solid #78b7d1;
+  border-top: 1px solid var(--ap-c-grey-light-3);
 }
 
 .z-tab-selected {
-    border-bottom-color: #78b7d1;
-}
-
-.z-tab-selected .z-tab-text {
-    color: #bb3a50  ;
+  border-bottom-color: var(--ap-c-tab-bar-selected);
 }
 
 .z-tab-text {
-    font-family: var(--ap-font-base);
-    font-size: 14px;
-    font-weight: normal;
-    line-height: 24px !important;
+  font-family: var(--ap-font-base);
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 24px !important;
+  color: var(--ap-c-tab-text-normal);
 }
 
+.z-tab-selected .z-tab-text {
+  color: var(--ap-c-tab-text-selected);
+}
+
+/* Windows */
+
+.z-window {
+  background-color: var(--ap-c-bg-lighter);
+}
 
 .z-window-modal,
 .z-messagebox-window {
-    padding: 0;
-    border: 1px solid #b0b0b0;
-    background-color: white;
-    border-radius: 2px;
+  padding: 0;
+  border: 1px solid #b0b0b0;
+  background-color: white;
+  border-radius: 2px;
 }
 
 .z-messagebox-window {
-    background-image: linear-gradient(
-            130deg, #FBA522 0%, #f5e2e5 38%, #c7e6f2 100%
-            /*170deg, #FBA522 0%, #A6E3BD 38%, #84c7e3 100%*/
-    );
-    background-position: top left;
+  background-image: linear-gradient(
+    130deg,
+    #fba522 0%,
+    #f5e2e5 38%,
+    #c7e6f2 100% /*170deg, #FBA522 0%, #A6E3BD 38%, #84c7e3 100%*/
+  );
+  background-position: top left;
 }
 
 .z-window-modal .z-window-header {
@@ -63,7 +131,7 @@
   /*
     background-color: #a44000;
     background-image: linear-gradient(30deg, #a44000 0%, #f96100 20%, #c7e6f2 60%);
-     */
+  */
   background-image: linear-gradient(
     30deg,
     #fcb88c 0%,
@@ -73,12 +141,11 @@
 }
 
 .z-messagebox-window .z-window-header {
-    padding: 7px 5px 4px 10px;
-    font-family: var(--ap-font-brand);
-    font-size: 14px;
-    color: black;
+  padding: 7px 5px 4px 10px;
+  font-family: var(--ap-font-brand);
+  font-size: 14px;
+  color: black;
 }
-
 
 .z-window-modal .z-window-content {
   padding: 7px 10px 7px 7px;
@@ -88,75 +155,57 @@
 }
 
 .z-messagebox-window .z-window-content {
-    padding: 10px !important;
-    font-family: var(--ap-font-base);
-    font-size: 14px;
-    background-color: rgba(255, 255, 255, 0.7);
+  padding: 10px !important;
+  font-family: var(--ap-font-base);
+  font-size: 14px;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
-th.z-listheader {
-  background: #a6bdc8 !important;
+/* Grid and listbox */
+.z-listbox-header-border {
+  border-bottom: 1px solid white !important;
+}
+
+.z-listheader {
+  background-color: var(--ap-c-soft-blue-dark-4) !important;
   border: none !important;
   border-right: 1px solid white !important;
 }
 
+.z-listheader-content {
+  text-align: center;
+}
+
 .z-listbox-header {
-    background-color: #a6bdc8 !important;
+  background-color: var(--ap-c-grid-head-bg) !important;
 }
 
 .z-listbox-header-border {
-    border-bottom-color: #5B889B;
+  border-bottom-color: var(--ap-c-soft-blue-dark-5);
 }
 
-.z-button,
-.z-label,
-.z-radio-content,
-.z-checkbox-content,
-.z-loading,
-.z-select,
-.z-textbox,
-.z-decimalbox,
-.z-intbox,
-.z-longbox,
-.z-doublebox,
-.z-combobutton-content,
-.z-combobox-input,
-.z-bandbox-input,
-.z-datebox-input,
-.z-timebox-input,
-.z-spinner-input,
-.z-doublespinner-input .z-listheader-content,
-.z-listcell-content,
-.z-listgroup-content,
-.z-listgroupfoot-content,
-.z-listfooter-content,
 .z-listheader-content,
 .z-listcell-content,
 .z-listgroup-content,
 .z-listgroupfoot-content,
-.z-listfooter-content,
-.z-label,
-.z-radio-content,
-.z-menu-text,
-.z-menuitem-text,
-.z-checkbox-content,
-.z-north-header,
-.z-south-header,
-.z-west-header,
-.z-center-header,
-.z-east-header,
-.z-listbox-body .z-listbox-emptybody td,
-.z-menupopup .z-menu-text,
-.z-menuitem-text,
-.z-tab-text,
-.z-messagebox,
-.z-messagebox .z-label,
-input {
-  font-family: var(--ap-font-base);
-  font-size: 14px;
-  font-weight: normal;
+.z-listfooter-content {
+  padding: 4px 5px;
+  line-height: 20px;
+  min-height: 32px;
 }
 
+.z-listitem.z-listitem-selected > .z-listcell {
+  background-color: var(--ap-c-grid-row-bg-selected);
+  border-top: 0;
+  border-bottom: 1px solid var(--ap-c-line-sep-selected);
+}
+
+.z-listitem .z-listcell {
+  border-top: 0;
+  border-bottom: 1px solid var(--ap-c-line-sep);
+}
+
+/* Fixes for CSV importer list */
 .myGroupBox .z-window-content {
   padding: 0 !important;
 }
@@ -165,9 +214,48 @@ input {
   font-size: 12px !important;
 }
 
-button > [class^="z-icon-"], button > [class*=" z-icon-"] {
-    font-family: FontAwesome, ZK85Icons;
-    font-size: 14px;
-    line-height: 1;
-    margin: 2px 2px 2px 0;
+/* ZK Icons */
+
+button > [class^="z-icon-"],
+button > [class*=" z-icon-"] {
+  font-family: FontAwesome, ZK85Icons;
+  font-size: 14px;
+  line-height: 1;
+  margin: 2px 2px 2px 0;
+}
+
+/* Slider overrides */
+.z-slider-area,
+.z-slider-button {
+  background-color: var(--ap-c-widget);
+}
+
+.z-slider-center {
+  background-color: var(--ap-c-grey-light-5);
+}
+
+tr.z-row-disabled td.z-row-inner .z-slider-area {
+  background-color: var(--ap-c-grey-light-3);
+}
+
+/* Menu */
+.z-menu-content,
+.z-menuitem-content {
+  background-color: var(--ap-c-grey-light-3);
+}
+
+.z-menu-content {
+  background-color: transparent;
+}
+
+.z-menu-selected .z-menu-content {
+  background-color: var(--ap-c-menu-bg-selected);
+}
+
+.z-menu-hover .z-menu-content {
+  background-color: var(--ap-c-menu-bg-hover);
+}
+
+.z-menu-selected .z-menu-text {
+  color: var(--ap-c-menu-text-selected);
 }

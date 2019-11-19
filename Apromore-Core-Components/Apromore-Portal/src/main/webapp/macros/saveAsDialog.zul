@@ -24,7 +24,7 @@
 
 <window width="500px" closable="false" position="center">
     <vbox vflex="1">
-        <grid id="saveAsGrid" >
+        <grid id="saveAsGrid" sclass="ap-grid">
             <columns sizable="true">
                 <column width="40%"></column>
                 <column width="60%"></column>
