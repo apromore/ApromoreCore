@@ -43,6 +43,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 //import org.deckfour.xes.*;
 // TODO: Auto-generated Javadoc
@@ -99,7 +101,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     private String popupID;
     private String textboxID;
     private String labelID;
-
+    private boolean errorCheck = false;
     /**
      * Prepare xes model.
      * <p>
@@ -108,11 +110,16 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
      * @return the list
      */
     @SuppressWarnings("resource")
+
+    public Boolean getErrorCheck() {
+        return errorCheck;
+    }
     public List<LogModel> prepareXesModel(CSVReader reader) {
         int errorCount = 0;
         int lineCount = 0;
         int finishCount = 0;
-        boolean skipColumn = false;
+        errorCheck = false;
+
         ArrayList<String> invalidRows = new ArrayList<String>();
         try {
 
@@ -157,7 +164,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                 others.put(header[p], line[p]);
 
                                 if (header.length != line.length) {
-                                    invalidRows.add("Row: " + (lineCount + 1) + ", Error: number of columns does not match number of headers. "
+                                    invalidRows.add("Row: " + (lineCount) + ", Error: number of columns does not match number of headers. "
                                             + "Number of headers: " + header.length + ", Number of columns: " + line.length + "\n");
                                     errorCount++;
                                     rowGTG = false;
@@ -174,9 +181,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             if (startTimestamp == null) {
                                 if (tStamp != null) {
                                     startTimestamp = tStamp;
-                                    invalidRows.add("Row: " + (lineCount + 1) + ", Warning: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
+                                    invalidRows.add("Row: " + (lineCount) + ", Warning: Start time stamp field is invalid. Copying end timestamp field into start timestamp");
                                 } else {
-                                    invalidRows.add("Row: " + (lineCount + 1) + ", Error: Start time stamp field is invalid. ");
+                                    invalidRows.add("Row: " + (lineCount) + ", Error: Start time stamp field is invalid. ");
                                     errorCount++;
                                 }
                             }
@@ -194,9 +201,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         if (tStamp == null) {
                             if (startTimestamp != null) {
                                 tStamp = startTimestamp;
-                                invalidRows.add("Row: " + (lineCount + 1) + ", Warning: End time stamp field is invalid. Copying start timestamp field into end timestamp");
+                                invalidRows.add("Row: " + (lineCount) + ", Warning: End time stamp field is invalid. Copying start timestamp field into end timestamp");
                             } else {
-                                invalidRows.add("Row: " + (lineCount + 1) + ", Error: End time stamp field is empty.");
+                                invalidRows.add("Row: " + (lineCount) + ", Error: End time stamp field is empty.");
                                 errorCount++;
                                 continue;
                             }
@@ -204,12 +211,18 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                         if (otherTimestamps != null) {
                             for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
-                                if (entry.getKey() != null && entry.getKey() != null) {
+                                if (entry.getKey() != null) {
                                     if (entry.getValue() == null) {
-                                        invalidRows.add("Row: " + (lineCount + 1) + ", Error: " + entry.getKey() +
-                                                " field is invalid timestamp. Skipping this row completely.\n");
+                                        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                        Date date = dateFormat.parse("01/01/1900");
+                                        long time = date.getTime();
+                                        Timestamp tempTime = new Timestamp(time);
+                                        entry.setValue(tempTime);
+//                                        Messagebox.show("It is: "  + entry.getValue().toString());
+                                        invalidRows.add("Row: " + (lineCount) + ", Error: " + entry.getKey() +
+                                                " field is invalid timestamp.\n");
                                         errorCount++;
-                                        rowGTG = false;
+                                        errorCheck = true;
                                         continue;
                                     }
                                 }
@@ -224,14 +237,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         e.printStackTrace();
                         errorCount++;
                         if (line.length > 4) {
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: Something went wrong. Content: " + line[0] + "," +
+                            invalidRows.add("Row: " + (lineCount) + ", Error: Something went wrong. Content: " + line[0] + "," +
                                     line[1] + "," + line[2] + "," + line[3] + " ...");
                             errorCount++;
-                            rowGTG = false;
                         } else {
-                            invalidRows.add("Row: " + (lineCount + 1) + ", Error: Content: " + " Empty, or too short for display.");
+                            invalidRows.add("Row: " + (lineCount ) + ", Error: Content: " + " Empty, or too short for display.");
                             errorCount++;
-                            rowGTG = false;
                         }
                     }
                 }
@@ -250,11 +261,22 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 return null;
             } else {
                 if (errorCount > 0) {
-
                     String notificationMessage;
                     notificationMessage = "Imported: " + lineCount + " row(s), with " + errorCount + " invalid row(s) being amended.  \n\n" +
                             "Invalid rows: \n";
 
+
+//                    Messagebox.show("Press OK to skip empty/invalid rows, or press IGNORE to ignore whole column.", "Confirm Dialog", Messagebox.OK | Messagebox.IGNORE  | Messagebox.CANCEL, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+//                        public void onEvent(Event evt) throws InterruptedException {
+//                            if (evt.getName().equals("onOK")) {
+//                                System.out.println("OK!");
+//                            } else if (evt.getName().equals("onIgnore")) {
+//                                System.out.println("IGNORE!");
+//                            } else {
+//                                System.out.println("NO!");
+//                            }
+//                        }
+//                    });
                     for (int i = 0; i < Math.min(invalidRows.size(), 5); i++) {
                         notificationMessage = notificationMessage + invalidRows.get(i) + "\n";
                     }
@@ -262,6 +284,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     if (invalidRows.size() > 5) {
                         notificationMessage = notificationMessage + "\n ...";
                     }
+
                     Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.EXCLAMATION);
                     return sortTraces(logData);
                 }
@@ -863,12 +886,13 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         }
 
         XAttribute attribute;
-        HashMap<String, Timestamp> otherTimestamps = theTrace.getOtherTimestamps();
-        for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
-            attribute = new XAttributeTimestampImpl(entry.getKey(), entry.getValue());
-            xEvent.getAttributes().put(entry.getKey(), attribute);
+        if(theTrace.getOtherTimestamps() != null) {
+            HashMap<String, Timestamp> otherTimestamps = theTrace.getOtherTimestamps();
+            for (Map.Entry<String, Timestamp> entry : otherTimestamps.entrySet()) {
+                attribute = new XAttributeTimestampImpl(entry.getKey(), entry.getValue());
+                xEvent.getAttributes().put(entry.getKey(), attribute);
+            }
         }
-
         HashMap<String, String> others = theTrace.getOthers();
         for (Map.Entry<String, String> entry : others.entrySet()) {
             if (entry.getValue() != null && entry.getValue().trim().length() != 0) {

@@ -134,6 +134,7 @@
     <bean id="canoniserProvider" class="org.apromore.canoniser.provider.impl.CanoniserProviderImpl" p:canoniserSet-ref="canonisers"/>
     <bean id="deploymentProvider" class="org.apromore.plugin.deployment.provider.impl.DeploymentPluginProviderImpl"/>
     <bean id="annotationProcessorProvider" class="org.apromore.annotation.provider.impl.AnnotationProcessorProviderImpl"/>
+    <bean id="apmLogService" class="org.apromore.apmlog.impl.APMLogServiceImpl"/>
 
     <!-- Mock Providers -->
     <bean id="mockDeploymentProvider" class="org.apromore.plugin.deployment.MockDeploymentPluginProvider" />

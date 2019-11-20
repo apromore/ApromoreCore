@@ -360,7 +360,7 @@ public class ATrace {
 
         this.activityList = new ArrayList<>();
         this.eventAttributeValueFreqMap = new UnifiedMap<>();
-        this.attributeMap = new UnifiedMap<>();
+//        this.attributeMap = new UnifiedMap<>();
         this.activityNameList = new ArrayList<>();
         this.eventNameSet = new UnifiedSet<>();
 
@@ -594,4 +594,38 @@ public class ATrace {
     public BitSet getValidEventIndex() {
         return validEventIndex;
     }
+
+    public ATrace(String caseId, int caseVariantId,
+                  long startTimeMilli, long endTimeMilli,
+                  boolean hasActivity, long duration,
+                  long totalProcessingTime, long averageProcessingTime, long maxProcessingTime,
+                  long totalWaitingTime, long averageWaitingTime, long maxWaitingTime,
+                  double caseUtilization,
+                  List<AActivity> activityList,
+                  List<AEvent> eventList,
+                  UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
+                  UnifiedMap<String, String> attributeMap,
+                  List<String> activityNameList,
+                  UnifiedSet<String> eventNameSet) {
+        this.caseId = caseId;
+        this.caseVariantId = caseVariantId;
+        this.startTimeMilli = startTimeMilli;
+        this.endTimeMilli = endTimeMilli;
+        this.hasActivity = hasActivity;
+        this.duration = duration;
+        this.totalProcessingTime = totalProcessingTime;
+        this.averageProcessingTime = averageProcessingTime;
+        this.maxProcessingTime = maxProcessingTime;
+        this.totalWaitingTime = totalWaitingTime;
+        this.averageWaitingTime = averageWaitingTime;
+        this.maxWaitingTime = maxWaitingTime;
+        this.caseUtilization = caseUtilization;
+        this.activityList = activityList;
+        this.eventList = eventList;
+        this.eventAttributeValueFreqMap = eventAttributeValueFreqMap;
+        this.attributeMap = attributeMap;
+        this.activityNameList = activityNameList;
+        this.eventNameSet = eventNameSet;
+    }
+
 }
