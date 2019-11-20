@@ -478,9 +478,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //                                    Messagebox.INFORMATION, null, null);
 
                             if(csvImporterLogic.getErrorCheck()) {
-                                Messagebox.show("Press OK to import by skipping invalid/empty rows.\n " +
-                                                "Press IGNORE to import by skipping invalid/empty columns.\n " +
-                                                "Press CANCEL to go back.", "Confirm Dialog",
+                                Messagebox.show("Invalid fields detected, Please choose how to deal with them:\n " +
+                                                "Skip rows: ignore invalid rows and upload the file without them.\n " +
+                                                "Skip columns: ignore columns(Other timestamp fields) and keep the record.\n", "Confirm Dialog",
                                         new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
                                         new String[] {"Skip row", "Skip columns", "Cancel"}, Messagebox.QUESTION,null, new org.zkoss.zk.ui.event.EventListener() {
                                     public void onEvent(Event evt) throws Exception {
