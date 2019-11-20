@@ -435,6 +435,10 @@ public class APMLog  {
         return timeZone;
     }
 
+    public HashBiMap<Integer, String> getActIdNameMap() {
+        return actIdNameMap;
+    }
+
     private void resetDuration() {
         this.minDuration = -1;
         this.maxDuration = -1;
