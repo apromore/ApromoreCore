@@ -360,7 +360,7 @@ public class ATrace {
 
         this.activityList = new ArrayList<>();
         this.eventAttributeValueFreqMap = new UnifiedMap<>();
-        this.attributeMap = new UnifiedMap<>();
+//        this.attributeMap = new UnifiedMap<>();
         this.activityNameList = new ArrayList<>();
         this.eventNameSet = new UnifiedSet<>();
 

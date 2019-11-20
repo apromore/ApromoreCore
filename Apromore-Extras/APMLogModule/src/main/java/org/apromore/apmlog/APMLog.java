@@ -37,15 +37,16 @@ public class APMLog  {
     private long endTime = -1;
     private long caseVariantSize = 0;
     private long eventSize = 0;
-    private long originalMinDuration = 0;
-    private long originalMaxDuration = 0;
-    private long originalStartTime = 0;
-    private long originalEndTime = 0;
-    private BitSet validTraceIndexBS;
-    private long originalCaseVariantSize = 0;
-    private long originalEventSize = 0;
-    private List<ATrace> originalTraceList;
-    private UnifiedMap<Integer, Integer> originalVariantIdFreqMap;
+
+//    private long originalMinDuration = 0;
+//    private long originalMaxDuration = 0;
+//    private long originalStartTime = 0;
+//    private long originalEndTime = 0;
+//    private BitSet validTraceIndexBS;
+//    private long originalCaseVariantSize = 0;
+//    private long originalEventSize = 0;
+//    private List<ATrace> originalTraceList;
+//    private UnifiedMap<Integer, Integer> originalVariantIdFreqMap;
 
 
     public APMLog(XLog xLog) {
@@ -58,10 +59,10 @@ public class APMLog  {
 
 
     private void initData(XLog xLog) {
-        originalTraceList = new ArrayList<>();
-        validTraceIndexBS = new BitSet(xLog.size());
-
-        originalVariantIdFreqMap = new UnifiedMap<>();//2019-11-10
+//        originalTraceList = new ArrayList<>();
+//        validTraceIndexBS = new BitSet(xLog.size());
+//
+//        originalVariantIdFreqMap = new UnifiedMap<>();//2019-11-10
 
         UnifiedMap<IntArrayList, Integer> actIdListFreqMap = new UnifiedMap<>();
         actIdNameMap = new HashBiMap<>();
@@ -97,16 +98,16 @@ public class APMLog  {
 
 
 
-            originalEventSize += aTrace.getEventSize();
+//            originalEventSize += aTrace.getEventSize();
             eventSize += aTrace.getEventSize();
 
             if(startTime == -1 || aTrace.getStartTimeMilli() < startTime) {
                 startTime = aTrace.getStartTimeMilli();
-                originalStartTime = startTime;
+//                originalStartTime = startTime;
             }
             if(endTime == -1 || aTrace.getEndTimeMilli() > endTime) {
                 endTime = aTrace.getEndTimeMilli();
-                originalEndTime = endTime;
+//                originalEndTime = endTime;
             }
             if(this.timeZone.equals("")) this.timeZone = aTrace.get(0).getTimeZone();
 
@@ -122,16 +123,16 @@ public class APMLog  {
 
             if(this.minDuration == 0 || aTrace.getDuration() < minDuration) {
                 minDuration = aTrace.getDuration();
-                originalMinDuration = minDuration;
+//                originalMinDuration = minDuration;
             }
             if(this.maxDuration == 0 || aTrace.getDuration() > maxDuration) {
                 maxDuration = aTrace.getDuration();
-                originalMaxDuration = maxDuration;
+//                originalMaxDuration = maxDuration;
             }
 
 
             this.traceList.add(aTrace);
-            originalTraceList.add(aTrace);
+//            originalTraceList.add(aTrace);
 
             int variId = aTrace.getCaseVariantId();
             List<String> actNameList = aTrace.getActivityNameList();
@@ -141,10 +142,10 @@ public class APMLog  {
                 if (variantIdFreqMap.containsKey(variId)) {
                     int freq = variantIdFreqMap.get(variId) + 1;
                     variantIdFreqMap.put(variId, freq);
-                    originalVariantIdFreqMap.put(variId, freq);//2019-11-10
+//                    originalVariantIdFreqMap.put(variId, freq);//2019-11-10
                 } else {
                     variantIdFreqMap.put(variId, 1);
-                    originalVariantIdFreqMap.put(variId, 1);//2019-11-10
+//                    originalVariantIdFreqMap.put(variId, 1);//2019-11-10
                 }
                 if(!variantIdActIdListMap.containsKey(variId)) {
                     variantIdActIdListMap.put(variId, idList);
@@ -179,7 +180,7 @@ public class APMLog  {
             int idNum = 1;
             for(int i=(list.size()-1); i>=0; i--) {
                 variantIdFreqMap.put(idNum, list.get(i).getValue());
-                originalVariantIdFreqMap.put(idNum, list.get(i).getValue());//2019-11-10
+//                originalVariantIdFreqMap.put(idNum, list.get(i).getValue());//2019-11-10
                 if(!variantIdActIdListMap.containsKey(idNum)) {
                     variantIdActIdListMap.put(idNum, list.get(i).getKey());
                     int initVId = tempActIdListToVIdMap.get(list.get(i).getKey());
@@ -206,7 +207,7 @@ public class APMLog  {
             xTrace.getAttributes().put("case:variant", attribute);
         }
 
-        originalCaseVariantSize = variantIdFreqMap.size();
+//        originalCaseVariantSize = variantIdFreqMap.size();
         caseVariantSize = variantIdFreqMap.size();
 
     }
@@ -292,6 +293,10 @@ public class APMLog  {
         return caseAttributeValueFreqMap;
     }
 
+    public UnifiedMap<String, UnifiedMap<String, Integer>> getEventAttributeValueFreqMap() {
+        return eventAttributeValueFreqMap;
+    }
+
     public List<String> getCaseAttributeNameList() {
         List<String> nameList = new ArrayList<>(caseAttributeValueFreqMap.keySet());
         Collections.sort(nameList);
@@ -329,17 +334,17 @@ public class APMLog  {
         return null;
     }
 
-    public UnifiedMap<Integer, Integer> getOriginalVariantIdFreqMap() {
-        return originalVariantIdFreqMap;
-    }
+//    public UnifiedMap<Integer, Integer> getOriginalVariantIdFreqMap() {
+//        return originalVariantIdFreqMap;
+//    }
 
     public void setVariantIdFreqMap(UnifiedMap<Integer, Integer> variantIdFreqMap) {
         this.variantIdFreqMap = variantIdFreqMap;
     }
 
-    public BitSet getValidTraceIndexBS() {
-        return validTraceIndexBS;
-    }
+//    public BitSet getValidTraceIndexBS() {
+//        return validTraceIndexBS;
+//    }
 
     public long getMinDuration() { //2019-10-16
         return minDuration;
@@ -355,6 +360,25 @@ public class APMLog  {
 
     public void setMaxDuration(long maxDuration) {
         this.maxDuration = maxDuration;
+    }
+
+    public long getAverageDuration() {
+        long durSum = 0;
+        for(int i=0; i < traceList.size(); i++) {
+            durSum += traceList.get(i).getDuration();
+        }
+        long avgDur = durSum / traceList.size();
+        return avgDur;
+    }
+
+    public long getMedianDuration() {
+        List<Long> durList = new ArrayList<>();
+        for (int i=0; i<traceList.size(); i++) {
+            durList.add(traceList.get(i).getDuration());
+        }
+        Collections.sort(durList);
+        int medianIndex = traceList.size() / 2;
+        return durList.get(medianIndex);
     }
 
     public List<ATrace> getTraceList() {
@@ -457,76 +481,102 @@ public class APMLog  {
         return Util.timestampStringOf(Util.millisecondToZonedDateTime(this.endTime));
     }
 
-    public List<ATrace> getOriginalTraceList() {
-        return originalTraceList;
-    }
+//    public List<ATrace> getOriginalTraceList() {
+//        return originalTraceList;
+//    }
+//
+//    public long getOriginalCaseVariantSize() {
+//        return originalCaseVariantSize;
+//    }
+//
+//    public long getOriginalEventSize() {
+//        return originalEventSize;
+//    }
+//
+//    public long getOriginalStartTime() {
+//        return originalStartTime;
+//    }
+//
+//    public long getOriginalEndTime() {
+//        return originalEndTime;
+//    }
+//
+//    public long getOriginalMinDuration() {
+//        return originalMinDuration;
+//    }
+//
+//    public long getOriginalMaxDuration() {
+//        return originalMaxDuration;
+//    }
+//
+//    public int originalSize() {
+//        return this.originalTraceList.size();
+//    }
+//
+//    public void reset() {
+//        //Reset
+//        for(int i=0; i<this.originalTraceList.size(); i++) {
+//            this.originalTraceList.get(i).reset();
+//        }
+//        traceList = originalTraceList;
+//        caseVariantSize = originalCaseVariantSize;
+//        eventSize = originalEventSize;
+//        minDuration = originalMinDuration;
+//        maxDuration = originalMaxDuration;
+//        startTime = originalStartTime;
+//        endTime = originalEndTime;
+//        variantIdFreqMap = originalVariantIdFreqMap;
+//        for(int i=0; i<validTraceIndexBS.size(); i++) {
+//            validTraceIndexBS.set(i, true);
+//        }
+//    }
 
-    public long getOriginalCaseVariantSize() {
-        return originalCaseVariantSize;
-    }
+//    public void resetPrevious() {
+//
+//        if(previousTraceList != null) {
+//            traceList = previousTraceList;
+//            for (int i = 0; i < traceList.size(); i++) {
+//                traceList.get(i).resetPrevious();
+//            }
+//
+//            caseVariantSize = previousCaseVariantSize;
+//            eventSize = previousEventSize;
+//            minDuration = previousMinDuration;
+//            maxDuration = previousMaxDuration;
+//            startTime = previousStartTime;
+//            endTime = previousEndTime;
+//            variantIdFreqMap = previousVariantIdFreqMap;
+//            for (int i = 0; i < validTraceIndexBS.size(); i++) {
+//                validTraceIndexBS.set(i, previousValidTraceIndexBS.get(i));
+//            }
+//        } else {
+//            reset();
+//        }
+//    }
 
-    public long getOriginalEventSize() {
-        return originalEventSize;
-    }
-
-    public long getOriginalStartTime() {
-        return originalStartTime;
-    }
-
-    public long getOriginalEndTime() {
-        return originalEndTime;
-    }
-
-    public long getOriginalMinDuration() {
-        return originalMinDuration;
-    }
-
-    public long getOriginalMaxDuration() {
-        return originalMaxDuration;
-    }
-
-    public int originalSize() {
-        return this.originalTraceList.size();
-    }
-
-    public void reset() {
-        //Reset
-        for(int i=0; i<this.originalTraceList.size(); i++) {
-            this.originalTraceList.get(i).reset();
-        }
-        traceList = originalTraceList;
-        caseVariantSize = originalCaseVariantSize;
-        eventSize = originalEventSize;
-        minDuration = originalMinDuration;
-        maxDuration = originalMaxDuration;
-        startTime = originalStartTime;
-        endTime = originalEndTime;
-        variantIdFreqMap = originalVariantIdFreqMap;
-        for(int i=0; i<validTraceIndexBS.size(); i++) {
-            validTraceIndexBS.set(i, true);
-        }
-    }
-
-    public void resetPrevious() {
-
-        if(previousTraceList != null) {
-            traceList = previousTraceList;
-            for (int i = 0; i < traceList.size(); i++) {
-                traceList.get(i).resetPrevious();
-            }
-
-            caseVariantSize = previousCaseVariantSize;
-            eventSize = previousEventSize;
-            minDuration = previousMinDuration;
-            maxDuration = previousMaxDuration;
-            startTime = previousStartTime;
-            endTime = previousEndTime;
-            variantIdFreqMap = previousVariantIdFreqMap;
-            for (int i = 0; i < validTraceIndexBS.size(); i++) {
-                validTraceIndexBS.set(i, previousValidTraceIndexBS.get(i));
-            }
-        } else {
-            reset();
-        }
+    public APMLog(List<ATrace> traceList,
+                  UnifiedMap<Integer, Integer> variantIdFreqMap,
+                  HashBiMap<Integer, String> actIdNameMap,
+                  UnifiedMap<String, UnifiedMap<String, Integer>> eventAttributeValueFreqMap,
+                  UnifiedMap<String, UnifiedMap<String, Integer>> caseAttributeValueFreqMap,
+                  long minDuration,
+                  long maxDuration,
+                  String timeZone,
+                  long startTime,
+                  long endTime,
+                  long caseVariantSize,
+                  long eventSize) {
+        this.traceList = traceList;
+        this.variantIdFreqMap = variantIdFreqMap;
+        this.actIdNameMap = actIdNameMap;
+        this.eventAttributeValueFreqMap = eventAttributeValueFreqMap;
+        this.caseAttributeValueFreqMap = caseAttributeValueFreqMap;
+        this.minDuration = minDuration;
+        this.maxDuration = maxDuration;
+        this.timeZone = timeZone;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.caseVariantSize = caseVariantSize;
+        this.eventSize = eventSize;
     }
 }
