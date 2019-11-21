@@ -138,7 +138,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                 RFC4180ParserBuilder builder = new RFC4180ParserBuilder();
                 RFC4180Parser parser = builder.withSeparator(separator).build();
-//                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
                 // check file format to choose correct file reader.
                 if (media.isBinary()) {
                     reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
@@ -171,10 +170,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     int size = IndexColumnWidth + header.size() * AttribWidth + 35;
                     window.setWidth(size + "px");
                 }
-//                window.setWidth("97%");
-
-
-
                 if (popUPBox != null) {
                     popUPBox.getChildren().clear();
                 }
@@ -195,9 +190,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                 List<String> myLine = header;
 
-//                System.out.println("Size is: " + line.size() + "____ is empty is: " + line.isEmpty());
                 if(line != null && header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
-//                    header.removeAll(Arrays.asList("", null));
                     csvImporterLogic.setLine(line);
                     csvImporterLogic.setHeads(header);
                     csvImporterLogic.setOtherTimestamps(result);
@@ -212,9 +205,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     }
                     reader.close();
                 } else {
-
-//                    attrBox.setWidth(line.length * AttribWidth + "px");
-
                     csvImporterLogic.setLists(line.size(), csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
 
                     List<Listbox> lists = csvImporterLogic.getLists();
@@ -439,7 +429,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         myGrid.setRowRenderer(rowRenderer);
                         toXESButton.setDisabled(false);
                         window.setTitle("CSV Importer - " + media.getName());
-//                        window.setPosition("top,left");
                     }
                 } else {
                     Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
@@ -455,8 +444,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                 RFC4180ParserBuilder builder = new RFC4180ParserBuilder();
                                 RFC4180Parser parser = builder.withSeparator(separator).build();
 
-
-//                                CSVParser parser = new CSVParserBuilder().withSeparator(separator).withIgnoreQuotations(true).build();
                                 // check file format to choose correct file reader.
                                 if (media.isBinary()) {
                                     reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
@@ -466,16 +453,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                             }catch (Exception e) {
                                 LOGGER.error("Failed to read");
                             }
-//                            System.out.println("before: " + csvImporterLogic.getErrorCheck());
-
                             List<LogModel> xesModel = csvImporterLogic.prepareXesModel(reader);
 
-//                            System.out.println("after: " + csvImporterLogic.getErrorCheck());
-
-//                            Messagebox.show("Yes and No", "Custom Labels",
-//                                    new Messagebox.Button[] {Messagebox.Button.YES,Messagebox.Button.NO,Messagebox.Button.CANCEL},
-//                                    new String[] {"Yes, it is correct", "No, dont skip", "Cancel"},
-//                                    Messagebox.INFORMATION, null, null);
                             if(xesModel != null) {
                                 if (csvImporterLogic.getErrorCheck()) {
                                     Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload log by skipping all rows " +
@@ -486,7 +465,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                             new String[]{"Skip rows", "Skip columns", "Cancel"}, Messagebox.QUESTION, null, new org.zkoss.zk.ui.event.EventListener() {
                                                 public void onEvent(Event evt) throws Exception {
                                                     if (evt.getName().equals("onOK")) {
-//                                                        System.out.println("Selected OK button");
                                                         if (xesModel != null) {
                                                             // create XES file
                                                             for (int i = 0; i < xesModel.size(); i++) {
@@ -498,7 +476,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                                                         long tempLong = entry.getValue().getTime();
                                                                         Calendar cal = Calendar.getInstance();
                                                                         cal.setTimeInMillis(tempLong);
-//                                                            System.out.println("temp time stamp is: " + cal.get(Calendar.YEAR));
                                                                         if (cal.get(Calendar.YEAR) == 1900) {
                                                                             System.out.println("Invalid timestamp. Entry Removed.");
                                                                             xesModel.remove(i);
@@ -515,8 +492,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                                             window.detach();
                                                         }
                                                     } else if (evt.getName().equals("onIgnore")) {
-
-//                                                        System.out.println("Selected Ignore button");
 
                                                         for (int i = 0; i < xesModel.size(); i++) {
                                                             xesModel.get(i).setOtherTimestamps(null);
@@ -541,27 +516,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                         XLog xlog = csvImporterLogic.createXLog(xesModel);
                                         if (xlog != null) {
                                             saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-//                                    Messagebox.show("Your file has been created!");
                                         }
                                         window.invalidate();
                                         window.detach();
                                 }
                             }
-//                            Messagebox.show("It is: " + xesModel.get(1).getCaseID());
 
-
-
-
-                            //                            if (xesModel != null) {
-//                                // create XES file
-//                                XLog xlog = csvImporterLogic.createXLog(xesModel);
-//                                if (xlog != null) {
-//                                    saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-////                                    Messagebox.show("Your file has been created!");
-//                                }
-//                                window.invalidate();
-//                                window.detach();
-//                            }
                         } else {
                             Messagebox.show("Upload file first!");
                         }
@@ -574,8 +534,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 public void onEvent(Event event) throws Exception {
                     window.invalidate();
                     window.detach();
-//                    Executions.getCurrent().sendRedirect(null);
-                }
+               }
 
             });
             window.doModal();
