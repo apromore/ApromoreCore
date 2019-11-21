@@ -38,10 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -165,7 +162,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                                 if (header.length != line.length) {
                                     invalidRows.add("Row: " + (lineCount) + ", Error: number of columns does not match number of headers. "
-                                            + "Number of headers: " + header.length + ", Number of columns: " + line.length + "\n");
+                                            + "Number of headers: " + header.length + ", Number of columns: " + line.length + ".\n");
                                     errorCount++;
                                     rowGTG = false;
                                     break;
@@ -220,8 +217,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                         entry.setValue(tempTime);
 //                                        Messagebox.show("It is: "  + entry.getValue().toString());
                                         invalidRows.add("Row: " + (lineCount) + ", Error: " + entry.getKey() +
-                                                " field is invalid timestamp.\n");
-                                        errorCount++;
+                                                " field is invalid timestamp.");
+//                                        errorCount++;
                                         errorCheck = true;
                                         continue;
                                     }
@@ -256,8 +253,27 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     notificationMessage = notificationMessage + invalidRows.get(i) + "\n";
                 }
                 LOGGER.error(errorMessage);
-                Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+//                Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
 
+
+
+
+                Messagebox.show(notificationMessage
+                        , "Invalid CSV File",
+                        new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                        new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null, new org.zkoss.zk.ui.event.EventListener() {
+                            public void onEvent(Event evt) throws Exception {
+                                if (evt.getName().equals("onOK")) {
+                                    File tempFile = File.createTempFile("Error_Report", ".txt");
+                                    FileWriter writer = new FileWriter(tempFile);
+                                    for(String str: invalidRows) {
+                                        writer.write(str + System.lineSeparator());
+                                    }
+                                    writer.close();
+                                    Filedownload.save(new FileInputStream(tempFile), "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+                                }
+                            }
+                        });
                 return null;
             } else {
                 if (errorCount > 0) {
@@ -285,7 +301,23 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         notificationMessage = notificationMessage + "\n ...";
                     }
 
-                    Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.EXCLAMATION);
+//                    Messagebox.show(notificationMessage, "Invalid CSV File", Messagebox.OK, Messagebox.EXCLAMATION);
+                    Messagebox.show(notificationMessage
+                            , "Invalid CSV File",
+                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null, new org.zkoss.zk.ui.event.EventListener() {
+                                public void onEvent(Event evt) throws Exception {
+                                    if (evt.getName().equals("onOK")) {
+                                        File tempFile = File.createTempFile("Error_Report", ".txt");
+                                        FileWriter writer = new FileWriter(tempFile);
+                                        for(String str: invalidRows) {
+                                            writer.write(str + System.lineSeparator());
+                                        }
+                                        writer.close();
+                                        Filedownload.save(new FileInputStream(tempFile), "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+                                    }
+                                }
+                            });
                     return sortTraces(logData);
                 }
 

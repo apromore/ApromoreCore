@@ -476,75 +476,75 @@ public class CSVImporterPortal implements FileImporterPlugin {
 //                                    new Messagebox.Button[] {Messagebox.Button.YES,Messagebox.Button.NO,Messagebox.Button.CANCEL},
 //                                    new String[] {"Yes, it is correct", "No, dont skip", "Cancel"},
 //                                    Messagebox.INFORMATION, null, null);
+                            if(xesModel != null) {
+                                if (csvImporterLogic.getErrorCheck()) {
+                                    Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload log by skipping all rows " +
+                                                    "containing invalid fields.\n Select Skip columns up load log by skipping the entire columns " +
+                                                    "containing invalid fields.\n "
+                                                    , "Confirm Dialog",
+                                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
+                                            new String[]{"Skip rows", "Skip columns", "Cancel"}, Messagebox.QUESTION, null, new org.zkoss.zk.ui.event.EventListener() {
+                                                public void onEvent(Event evt) throws Exception {
+                                                    if (evt.getName().equals("onOK")) {
+//                                                        System.out.println("Selected OK button");
+                                                        if (xesModel != null) {
+                                                            // create XES file
+                                                            for (int i = 0; i < xesModel.size(); i++) {
+                                                                xesModel.get(i).getOtherTimestamps();
 
-                            if(csvImporterLogic.getErrorCheck()) {
-                                Messagebox.show("Invalid fields detected, Please choose how to deal with them:\n " +
-                                                "Skip rows: ignore invalid rows and upload the file without them.\n " +
-                                                "Skip columns: ignore columns(Other timestamp fields) and keep the record.\n", "Confirm Dialog",
-                                        new Messagebox.Button[] {Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
-                                        new String[] {"Skip row", "Skip columns", "Cancel"}, Messagebox.QUESTION,null, new org.zkoss.zk.ui.event.EventListener() {
-                                    public void onEvent(Event evt) throws Exception {
-                                        if (evt.getName().equals("onOK")) {
-                                            System.out.println("Selected OK button");
-                                            if (xesModel != null) {
-                                                // create XES file
-                                                for (int i = 0; i < xesModel.size(); i++) {
-                                                    xesModel.get(i).getOtherTimestamps();
 
-
-                                                    for (Map.Entry<String, Timestamp> entry : xesModel.get(i).getOtherTimestamps().entrySet()) {
-                                                        if (entry.getKey() != null) {
-                                                            long tempLong = entry.getValue().getTime();
-                                                            Calendar cal = Calendar.getInstance();
-                                                            cal.setTimeInMillis(tempLong);
+                                                                for (Map.Entry<String, Timestamp> entry : xesModel.get(i).getOtherTimestamps().entrySet()) {
+                                                                    if (entry.getKey() != null) {
+                                                                        long tempLong = entry.getValue().getTime();
+                                                                        Calendar cal = Calendar.getInstance();
+                                                                        cal.setTimeInMillis(tempLong);
 //                                                            System.out.println("temp time stamp is: " + cal.get(Calendar.YEAR));
-                                                            if(cal.get(Calendar.YEAR) == 1900) {
-                                                                System.out.println("Invalid timestamp. Entry Removed.");
-                                                                xesModel.remove(i);
+                                                                        if (cal.get(Calendar.YEAR) == 1900) {
+                                                                            System.out.println("Invalid timestamp. Entry Removed.");
+                                                                            xesModel.remove(i);
+                                                                        }
+                                                                    }
+                                                                }
                                                             }
+
+                                                            XLog xlog = csvImporterLogic.createXLog(xesModel);
+                                                            if (xlog != null) {
+                                                                saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                                            }
+                                                            window.invalidate();
+                                                            window.detach();
                                                         }
+                                                    } else if (evt.getName().equals("onIgnore")) {
+
+//                                                        System.out.println("Selected Ignore button");
+
+                                                        for (int i = 0; i < xesModel.size(); i++) {
+                                                            xesModel.get(i).setOtherTimestamps(null);
+                                                        }
+                                                        if (xesModel != null) {
+                                                            // create XES file
+                                                            XLog xlog = csvImporterLogic.createXLog(xesModel);
+                                                            if (xlog != null) {
+                                                                saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                                            }
+                                                            window.invalidate();
+                                                            window.detach();
+                                                        }
+                                                    } else {
+                                                        // nothing
                                                     }
                                                 }
+                                            });
+                                } else {
 
-                                                XLog xlog = csvImporterLogic.createXLog(xesModel);
-                                                if (xlog != null) {
-                                                    saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-                                                }
-                                                window.invalidate();
-                                                window.detach();
-                                            }
-                                        } else if (evt.getName().equals("onIgnore")) {
-
-                                            System.out.println("Selected Ignore button");
-
-                                            for (int i = 0; i < xesModel.size(); i++) {
-                                                xesModel.get(i).setOtherTimestamps(null);
-                                            }
-                                            if (xesModel != null) {
-                                                // create XES file
-                                                XLog xlog = csvImporterLogic.createXLog(xesModel);
-                                                if (xlog != null) {
-                                                    saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-                                                }
-                                                window.invalidate();
-                                                window.detach();
-                                            }
-                                        } else {
-                                            // nothing
-                                        }
-                                    }
-                                });
-
-                            } else {
-                                if (xesModel != null) {
-                                    // create XES file
-                                    XLog xlog = csvImporterLogic.createXLog(xesModel);
-                                    if (xlog != null) {
-                                        saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                        // create XES file
+                                        XLog xlog = csvImporterLogic.createXLog(xesModel);
+                                        if (xlog != null) {
+                                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
 //                                    Messagebox.show("Your file has been created!");
-                                    }
-                                    window.invalidate();
-                                    window.detach();
+                                        }
+                                        window.invalidate();
+                                        window.detach();
                                 }
                             }
 //                            Messagebox.show("It is: " + xesModel.get(1).getCaseID());
