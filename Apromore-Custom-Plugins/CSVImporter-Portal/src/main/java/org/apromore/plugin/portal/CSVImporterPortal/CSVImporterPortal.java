@@ -140,7 +140,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 RFC4180Parser parser = builder.withSeparator(separator).build();
                 // check file format to choose correct file reader.
                 if (media.isBinary()) {
-                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
+                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData(), "UTF-8")).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 } else {
                     reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 }
@@ -446,7 +446,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                                 // check file format to choose correct file reader.
                                 if (media.isBinary()) {
-                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
+                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData(),"UTF-8")).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 } else {
                                     reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 }
