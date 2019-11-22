@@ -203,7 +203,7 @@ public class ATrace {
                 }
 
 
-                if( !markedXEvent.contains(xEvent)) {
+                if( !markedXEvent.contains(xEvent) && iAEvent.getLifecycle().toLowerCase().equals("complete")) {
                     List<AEvent> aEventList = new ArrayList<>();
                     aEventList.add(iAEvent);
                     AActivity aActivity = new AActivity(aEventList);
