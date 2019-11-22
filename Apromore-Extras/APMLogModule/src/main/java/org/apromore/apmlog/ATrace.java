@@ -193,13 +193,13 @@ public class ATrace {
                         }
                     }
 
-                    if(!hasComplete) { //consider as instant event
-                        List<AEvent> aEventList = new ArrayList<>();
-                        aEventList.add(iAEvent);
-                        AActivity aActivity = new AActivity(aEventList);
-                        this.activityList.add(aActivity);
-                        this.activityNameList.add(aActivity.getName());
-                    }
+//                    if(!hasComplete) { //consider as instant event
+//                        List<AEvent> aEventList = new ArrayList<>();
+//                        aEventList.add(iAEvent);
+//                        AActivity aActivity = new AActivity(aEventList);
+//                        this.activityList.add(aActivity);
+//                        this.activityNameList.add(aActivity.getName());
+//                    }
                 }
 
 
