@@ -21,7 +21,6 @@
 package org.apromore.service.csvimporter.impl;
 
 import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.deckfour.xes.extension.std.XConceptExtension;
@@ -122,12 +121,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         try {
 
             // read first line from CSV as header
-            String[] header = new String[0];
-            try {
-                header = reader.readNext();
-            } catch (CsvValidationException e) {
-                e.printStackTrace();
-            }
+            String[] header = reader.readNext();
 
             // If any of the mandatory fields are missing show alert message to the user and return
             StringBuilder headNOTDefined = checkFields(heads);

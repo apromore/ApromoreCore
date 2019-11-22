@@ -32,7 +32,6 @@ import javax.xml.datatype.DatatypeFactory;
 
 import com.opencsv.*;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
-import com.opencsv.exceptions.CsvValidationException;
 import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.FileImporterPlugin;
@@ -141,7 +140,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 RFC4180Parser parser = builder.withSeparator(separator).build();
                 // check file format to choose correct file reader.
                 if (media.isBinary()) {
-                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData(), "UTF-8")).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
+                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 } else {
                     reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 }
@@ -159,11 +158,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
                 /// display first numberOfrows to user and display drop down lists to set attributes
-                try {
-                    Collections.addAll(header, reader.readNext());
-                } catch (CsvValidationException e) {
-                    e.printStackTrace();
-                }
+                Collections.addAll(header, reader.readNext());
                 // Deal with UTF-8 with BOM file encoding
                 String BomC = new String(header.get(0).getBytes(), Charset.forName("UTF-8"));
                 header.set(0, BomC);
@@ -183,20 +178,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
 
-                try {
-                    line = Arrays.asList(reader.readNext());
-                } catch (CsvValidationException e) {
-                    e.printStackTrace();
-                }
+                line = Arrays.asList(reader.readNext());
+
 
 
                 if(line.size() < 2 && line != null) {
                     while (line.size() < 2 && line != null) {
-                        try {
-                            line = Arrays.asList(reader.readNext());
-                        } catch (CsvValidationException e) {
-                            e.printStackTrace();
-                        }
+                        line = Arrays.asList(reader.readNext());
                     }
                 }
 
@@ -278,11 +266,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         }
 
                         try {
-                            try {
-                                line = Arrays.asList(reader.readNext());
-                            } catch (CsvValidationException e) {
-                                e.printStackTrace();
-                            }
+                            line = Arrays.asList(reader.readNext());
                         }catch(NullPointerException e) {
                             break;
                         }
@@ -462,7 +446,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                                 // check file format to choose correct file reader.
                                 if (media.isBinary()) {
-                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData(),"UTF-8")).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
+                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 } else {
                                     reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 }
