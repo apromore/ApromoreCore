@@ -32,6 +32,7 @@ import javax.xml.datatype.DatatypeFactory;
 
 import com.opencsv.*;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
+import com.opencsv.exceptions.CsvValidationException;
 import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.FileImporterPlugin;
@@ -158,7 +159,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
                 /// display first numberOfrows to user and display drop down lists to set attributes
-                Collections.addAll(header, reader.readNext());
+                try {
+                    Collections.addAll(header, reader.readNext());
+                } catch (CsvValidationException e) {
+                    e.printStackTrace();
+                }
                 // Deal with UTF-8 with BOM file encoding
                 String BomC = new String(header.get(0).getBytes(), Charset.forName("UTF-8"));
                 header.set(0, BomC);
@@ -178,13 +183,20 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
 
-                line = Arrays.asList(reader.readNext());
-
+                try {
+                    line = Arrays.asList(reader.readNext());
+                } catch (CsvValidationException e) {
+                    e.printStackTrace();
+                }
 
 
                 if(line.size() < 2 && line != null) {
                     while (line.size() < 2 && line != null) {
-                        line = Arrays.asList(reader.readNext());
+                        try {
+                            line = Arrays.asList(reader.readNext());
+                        } catch (CsvValidationException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -266,7 +278,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         }
 
                         try {
-                            line = Arrays.asList(reader.readNext());
+                            try {
+                                line = Arrays.asList(reader.readNext());
+                            } catch (CsvValidationException e) {
+                                e.printStackTrace();
+                            }
                         }catch(NullPointerException e) {
                             break;
                         }
