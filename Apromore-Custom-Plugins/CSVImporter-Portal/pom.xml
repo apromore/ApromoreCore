@@ -94,7 +94,7 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
-            <version>5.0</version>
+            <version>4.0</version>
         </dependency>
 
         <dependency>
