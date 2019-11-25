@@ -147,6 +147,10 @@ public class MenuController extends Menubar {
 
             SortedMap<String, Menu> menuMap = new TreeMap<>(ordering);
             for (final PortalPlugin plugin: PortalPluginResolver.resolve()) {
+                if (plugin.getAvailability(portalContext) == PortalPlugin.Availability.UNAVAILABLE) {
+                    continue;
+                }
+
                 String menuName = plugin.getGroupLabel(Locale.getDefault());
 
                 // Create a new menu if this is the first menu item within it
@@ -174,6 +178,7 @@ public class MenuController extends Menubar {
                     menuitem.setImageContent(plugin.getIcon());
                 }
                 menuitem.setLabel(plugin.getLabel(Locale.getDefault()));
+                menuitem.setDisabled(plugin.getAvailability(portalContext) == PortalPlugin.Availability.DISABLED);
 
                 // Insert the menu item alphabetically into the menu
                 Menuitem precedingMenuitem = null;

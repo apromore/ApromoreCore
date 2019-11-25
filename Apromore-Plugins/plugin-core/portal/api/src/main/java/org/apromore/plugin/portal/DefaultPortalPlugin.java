@@ -80,4 +80,13 @@ public class DefaultPortalPlugin extends DefaultParameterAwarePlugin implements 
     public void execute(PortalContext context) {
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@link PortalPlugin$Availability#AVAILABLE} always
+     */
+    @Override
+    public Availability getAvailability(PortalContext context) {
+        return Availability.AVAILABLE;
+    }
 }

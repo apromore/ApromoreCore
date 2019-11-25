@@ -62,4 +62,9 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
             Messagebox.show("Unable to create user administration dialog");
         }
     }
+
+    @Override
+    public Availability getAvailability(PortalContext portalContext) {
+        return Availability.UNAVAILABLE;
+    }
 }
