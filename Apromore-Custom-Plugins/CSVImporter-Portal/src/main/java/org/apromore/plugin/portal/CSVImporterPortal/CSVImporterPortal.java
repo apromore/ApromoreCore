@@ -131,6 +131,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
         separator = getMaxOccuringChar(firstLine);
         CSVReader reader = null;
+
+
         if(separator == Character.UNASSIGNED) {
             Messagebox.show("Separator is not supported.", "Error", Messagebox.OK, Messagebox.ERROR);
         } else {
@@ -140,7 +142,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 RFC4180Parser parser = builder.withSeparator(separator).build();
                 // check file format to choose correct file reader.
                 if (media.isBinary()) {
-                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
+                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData(), "UTF-8")).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 } else {
                     reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                 }
@@ -160,8 +162,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 /// display first numberOfrows to user and display drop down lists to set attributes
                 Collections.addAll(header, reader.readNext());
                 // Deal with UTF-8 with BOM file encoding
-                String BomC = new String(header.get(0).getBytes(), Charset.forName("UTF-8"));
-                header.set(0, BomC);
+//                String BomC = new String(header.get(0).getBytes(), Charset.forName("UTF-8"));
+//                header.set(0, BomC);
 
                 //2019-11-12
                 if(header.size() > 8) {
@@ -388,8 +390,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
         this.isPublic = isPublic;
 
-
-
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
 
@@ -446,7 +446,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                                 // check file format to choose correct file reader.
                                 if (media.isBinary()) {
-                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData())).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
+                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData(), "UTF-8")).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 } else {
                                     reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 }

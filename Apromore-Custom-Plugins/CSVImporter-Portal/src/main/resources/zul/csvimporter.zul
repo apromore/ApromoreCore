@@ -1,8 +1,5 @@
-
-
+<?xml version="1.0" encoding="UTF-8"?>
 <zk>
-
-
     <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh"  width="85vw"  position="center" title="CSV Importer" onClientInfo="onClientInfo(event)"  >
 
         <!--<vbox>-->
@@ -43,8 +40,6 @@
             padding: 0px;
             overflow: auto;
             zoom: 1;
-            background-image: url("/img/apromore_banner.png");
-            background-repeat: round;
             }
             .relativePos{
             position:relative;
