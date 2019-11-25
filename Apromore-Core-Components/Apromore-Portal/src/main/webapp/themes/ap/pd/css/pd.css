@@ -33,3 +33,13 @@
 .ap-pd .ap-pd-tools button {
     height: 26px;
 }
+
+.statsHead {
+    background-color: var(--ap-c-soft-blue-dark-4) !important;
+    border-color: white !important;
+}
+
+.ap-pd-stats .z-grid-header-border {
+    border: none !important;
+}
+

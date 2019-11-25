@@ -26,7 +26,7 @@ and CreateProcessController.java for creating process purpose.
     <window width="500px" closable="false" position="center">
 
         <vbox vflex="1">
-            <grid sclass="ap-grid">
+            <grid sclass="ap-grid ap-form">
                 <columns sizable="true">
                     <column width="30%"></column>
                     <column width="70%"></column>

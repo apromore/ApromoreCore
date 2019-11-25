@@ -51,6 +51,8 @@
 
         <n:link rel="stylesheet" type="text/css" href='/themes/ap/common/css/index.css' />
         <n:link rel="stylesheet" type="text/css" href='/themes/ap/log-animator/css/index.css'  />
+        <!-- local -->
+        <n:link rel="stylesheet" type="text/css" href='themes/ap/css/index.css'  />
 
         <n:div class="ap-header">
             <n:a href="/"><n:div class="ap-header-logo"></n:div></n:a>
@@ -97,7 +99,9 @@
             <n:script src="${each.getJavaScriptURI()}" type="text/javascript"/>
         </z:zk>
 
+        <style>
 
+        </style>
         <n:span id="oryxstartupcode">
             <n:script>
                 <![CDATA[
@@ -172,10 +176,20 @@
 							min: 1,
 							max: 20,
 							value: 10
-						});
+						})
 
-						$jslider2.slider('pips',{first: 'pip', last: 'pip'}).slider("float");
+						$jslider2.slider("float",{
+
+    	          handle: true,
+    	          pips: true,
+    	          labels: true,
+    	          prefix: "",
+    	          suffix: ""
+    	      });
+						// $jslider2.slider('pips',{first: false, last: false, rest: false}).slider("float");
+
 						var lastSliderValue = $jslider2.slider("value");
+
 						$j("#slider2").on( "slidechange", function(event,ui) {
 							speedRatio = (resStepValues[ui.value-1]/resStepValues[lastSliderValue-1]);
 							controller.changeSpeed(speedRatio);
@@ -191,38 +205,42 @@
     <!-- THIS PAGE USE DIV FLOAT FOR LAYOUTING -->
 
     <div id="editorcanvas"></div>
-
     <n:div id="controls">
         <!-- Relative positioning: relative to its normal position using top, left, right,...-->
         <!-- Its normal position is the top left corner of the containing div -->
         <!-- Relative positioning is used so that the speed control can overlay on top of the others -->
         <n:div id="playback_controls">
             <!-- SVG for the timeline -->
-            <n:svg id="timeline_svg" xmlns="http://www.w3.org/2000/svg"></n:svg>
 
-            <div sclass="ap-animator-panel">
+            <div sclass="ap-animator-left-container">
                 <div sclass="ap-animator-controls">
-                    <div id="buttons_and_rate" style="width: 240px; text-align: center">
-                        <button id='start' onclick="start(event);">
-                            <img src="images/control_start.png" alt="Start" />
+                    <div sclass="ap-animator-timer">
+                        <span id="date">&#xA0;</span>
+                        <span id="time">&#x2D;-:&#x2D;-:&#x2D;-</span>
+                        <span id="subtitle">&#xA0;</span>
+                    </div>
+
+                    <div id="buttons_and_rate">
+                        <button id='start' onclick="start(event);" title="Start" sclass="ap-mc-icon ap-mc-icon-begin">
+                            <img></img>
                         </button>
-                        <button id='previousTrace' onclick="previousTrace();" disabled="disabled">
-                            <img src="images/control_previoustrace.png" alt="Forward"/>
+                        <button id='previousTrace' onclick="previousTrace();" disabled="disabled" title="Previous Segment" sclass="ap-mc-icon ap-mc-icon-step-backward">
+                            <img></img>
                         </button>
-                        <button id='backward' onclick="fastBackward();" disabled="disabled">
-                            <img src="images/control_rewind.png" alt="Backward"/>
+                        <button id='backward' onclick="fastBackward();" disabled="disabled" title="Backward" sclass="ap-mc-icon ap-mc-icon-fast-backward">
+                            <img></img>
                         </button>
-                        <button id="pause" onclick="switchPlayPause();" disabled="disabled">
-                            <img src="images/control_play.png" alt="Play"/>
+                        <button id="pause" onclick="switchPlayPause();" disabled="disabled" title="Play" sclass="ap-mc-icon ap-mc-icon-play">
+                            <img></img>
                         </button>
-                        <button id='forward' onclick="fastForward();" disabled="disabled">
-                            <img src="images/control_fastforward.png" alt="Forward"/>
+                        <button id='forward' onclick="fastForward();" disabled="disabled" title="Forward" sclass="ap-mc-icon ap-mc-icon-fast-forward">
+                            <img></img>
                         </button>
-                        <button id='nextTrace' onclick="nextTrace();" disabled="disabled">
-                            <img src="images/control_nexttrace.png" alt="Next Trace"/>
+                        <button id='nextTrace' onclick="nextTrace();" disabled="disabled" title="Next Segment" sclass="ap-mc-icon ap-mc-icon-step-forward">
+                            <img></img>
                         </button>
-                        <button id='end' onclick="end(event);" disabled="disabled">
-                            <img src="images/control_end.png" alt="End"/>
+                        <button id='end' onclick="end(event);" disabled="disabled" title="End" sclass="ap-mc-icon ap-mc-icon-end">
+                            <img></img>
                         </button>
                     </div>
     
@@ -231,26 +249,16 @@
                     <!-- <div id="speed_controls" style="position: absolute; background: #EEE; border: 1px solid black; left: 200px; top: 360px; width: 800px; height: 70px; overflow: hidden"> -->
                     <div id="speed_controls">
                         <!-- <center style="font: 1em monospace">Replay Speed</center> -->
-                        <div id="slider2" disabled="disabled" style="margin: auto;"></div>
+                        <div id="slider2" disabled="disabled" style="margin: auto;">
+                            <n:div class="speed-control-tip">Speed Control</n:div>
+                        </div>
                     </div>
+                    <div sclass="ap-la-show-case-id">
+                        <input id="toggleCaseLabelVisibility" type="checkbox" onchange="toggleCaseLabelVisibility()">Show Case IDs</input>
+                    </div>
+
                 </div>
 
-                <!-- Animation progress -->
-                <div id="progress_display">
-    
-                    <!-- Running Clock -->
-                    <table>
-                        <tr><td id="date">&#xA0;</td></tr>
-                        <tr><td id="time">&#x2D;-:&#x2D;-:&#x2D;-</td></tr>
-                        <tr><td id="subtitle">&#xA0;</td></tr>
-                    </table>
-    
-                    <n:div class="ap-log-animator-progress-pies">
-                        <!-- SVG for the circular progress bars -->
-                        <n:svg id="progressbars_svg" xmlns="http://www.w3.org/2000/svg"></n:svg>
-                    </n:div>
-                </div>
-                
                 <!-- Log Information -->
                 <div id="log_list">
                     <table id="metrics_table">
@@ -268,12 +276,58 @@
                             <td style="text-align: center; font: 1em monospace">Algo Runtime(s)</td>
                             -->
                         </tr>
+                        <!--
                         <tr>
                             <td colspan="6"><input id="toggleCaseLabelVisibility" type="checkbox" onchange="toggleCaseLabelVisibility()">Show case labels</input></td>
-                        </tr>
+                        </tr>-->
                     </table>
                 </div>
             </div>
+            <div sclass="ap-animator-right-container">
+                <!-- Animation progress -->
+                <div id="progress_display">
+                    <!-- Running Clock -->
+                    <!--                    <table>-->
+                    <!--                        <tr><td id="date">&#xA0;</td></tr>-->
+                    <!--                        <tr><td id="time">&#x2D;-:&#x2D;-:&#x2D;-</td></tr>-->
+                    <!--                        <tr><td id="subtitle">&#xA0;</td></tr>-->
+                    <!--                    </table>-->
+                    <!-- SVG for the circular progress bars -->
+                    <n:svg id="progressbars_svg" xmlns="http://www.w3.org/2000/svg"></n:svg>
+                </div>
+                <div sclass="ap-animator-timeline">
+                    <n:svg id="timeline_svg" xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 1140 80"></n:svg>
+                </div>
+            </div>
         </n:div>
+    </n:div>
+    <n:div id="ap-animator-info-tip">
+        <n:table>
+            <n:tr>
+                <n:td>No</n:td>
+                <n:td id="info-no"></n:td>
+            </n:tr>
+            <n:tr>
+                <n:td>Log</n:td>
+                <n:td id="info-log"></n:td>
+            </n:tr>
+            <n:tr>
+                <n:td>Total Traces</n:td>
+                <n:td id="info-traces"></n:td>
+            </n:tr>
+            <n:tr>
+                <n:td>Replayed</n:td>
+                <n:td id="info-relayed"></n:td>
+            </n:tr>
+            <n:tr>
+                <td>Reliable</td>
+                <n:td id="info-reliable"></n:td>
+            </n:tr>
+            <n:tr>
+                <td>Fitness</td>
+                <n:td id="info-fitness"></n:td>
+            </n:tr>
+        </n:table>
+        <n:div class="tip-arrow"></n:div>
     </n:div>
 </z:window>

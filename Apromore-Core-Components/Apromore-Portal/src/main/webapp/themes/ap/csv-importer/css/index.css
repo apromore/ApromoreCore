@@ -1,0 +1,55 @@
+.ap-csv-importer .z-window-content {
+    padding: 0;
+}
+
+.ap-csv-importer-main .z-center-body {
+    padding: 0;
+}
+
+.ap-csv-importer .greenLabel {
+    font-family: var(--ap-font-base);
+}
+
+.ap-csv-importer .p-1 {
+    top: 0 !important;
+    height: 60px;
+    box-sizing: border-box;
+}
+
+.ap-csv-importer .p-1 .z-textbox {
+    margin-top: 5px;
+    width: 100% !important;
+}
+
+.ap-csv-importer .p-1 .z-a {
+    display: none !important;
+}
+
+.ap-csv-importer .myGroupBox {
+    background-image: linear-gradient(
+            270deg,
+            var(--ap-c-soft-blue-light-5) 0%,
+            var(--ap-c-sunset-light-5) 100%
+    );
+    background-size: cover;
+}
+
+
+.ap-csv-importer-grid-wrapper .z-column {
+    border: 0;
+}
+
+.ap-csv-importer-grid-wrapper {
+    background-image: linear-gradient(
+            0deg,
+            var(--ap-c-soft-blue-dark-4),
+            var(--ap-c-soft-blue-dark-4)
+    );
+    background-size: 100% 64px;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+}
+
+.ap-csv-importer-footer button {
+    font-family: 'Source Sans Pro', FontAwesome, sans-serif !important;
+}

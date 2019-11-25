@@ -1,10 +1,11 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&display=swap');
 @import url('../fonts/gilroy-free/gilroy-free.css');
 
 :root {
     /* High-level structure colours */
     --ap-c-line-sep: #f3f3f3;
     --ap-c-line-sep-selected: var(--ap-c-grey-light-5);
+    --ap-c-grey-minor: var(--ap-c-grey-light-3);
 
     --ap-c-text-normal: var(--ap-c-grey-dark-3);
     --ap-c-text-minor: var(--ap-c-grey-light-2);
@@ -15,6 +16,7 @@
 
     --ap-c-button: var(--ap-c-soft-blue-dark-3);
     --ap-c-button-hover: var(--ap-c-oceanic-dark-1);
+    --ap-c-button-active: var(--ap-c-soft-blue-dark-3);
     --ap-c-button-sep: var(--ap-c-oceanic-light-1);
 
     --ap-c-action-bg-normal: var(--ap-c-grey-light-5);

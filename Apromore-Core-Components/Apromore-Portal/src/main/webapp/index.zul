@@ -205,7 +205,7 @@
                     <center id="leftInnerCenterPanel" border="0" vflex="true" hflex="true" style="padding: 10px 3px 10px 10px;">
                         <Navigation id="navigationcomp" vflex="true" hflex="true" border="0" />
                     </center>
-                    <south title="Process Details" size="25%" hflex="true" splittable="true" border="0">
+                    <south title="Process Details" size="25%" hflex="true" splittable="true" border="0" sclass="ap-process-detail-wrapper">
                         <DetailView id="baseDetail" vflex="true" hflex="true" border="0" style="margin-left: 5px; margin-top: 5px"/>
                     </south>
                 </borderlayout>

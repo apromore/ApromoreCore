@@ -45,13 +45,21 @@
 .z-textbox,
 .z-timebox-input,
 .z-west-header,
+.z-column-content, .z-row-content, .z-group-content, .z-groupfoot-content, .z-footer-content
 input {
   font-family: var(--ap-font-base);
   font-size: 14px;
-  font-weight: normal;
+}
+
+.z-label {
+  line-height: 15px;
 }
 
 /* Buttons */
+
+.z-messagebox-buttons {
+  overflow: visible;
+}
 
 .z-button,
 .z-combobutton-content {
@@ -61,6 +69,17 @@ input {
 .z-button:hover,
 .z-combobutton:hover .z-combobutton-content {
   background-color: var(--ap-c-button-hover);
+}
+
+.z-button:active,
+.z-combobutton:active .z-combobutton-content {
+  background-color: var(--ap-c-button-active);
+}
+
+.z-button:focus {
+  border-color: transparent;
+  box-shadow: 0 0 4px var(--ap-c-orange);
+  background-color: var(--ap-c-button-active);
 }
 
 .z-combobutton-button {
@@ -114,20 +133,29 @@ input[type="radio"]:checked:before {
 }
 
 .z-messagebox-window {
+  /*
   background-image: linear-gradient(
     130deg,
     #fba522 0%,
     #f5e2e5 38%,
-    #c7e6f2 100% /*170deg, #FBA522 0%, #A6E3BD 38%, #84c7e3 100%*/
+    #c7e6f2 100%
+  );*/
+  background-image: linear-gradient(
+          130deg,
+          var(--ap-c-maroon) 0%,
+          var(--ap-c-grey-light-2) 38%,
+          var(--ap-c-oceanic-dark-1) 100%
   );
   background-position: top left;
 }
 
 .z-window-modal .z-window-header {
-  padding: 7px 5px 4px 10px;
+  padding: 7px 7px 0 10px;
   font-family: var(--ap-font-brand);
   font-size: 14px;
   color: black;
+  line-height: 16px;
+  height: 32px;
   /*
     background-color: #a44000;
     background-image: linear-gradient(30deg, #a44000 0%, #f96100 20%, #c7e6f2 60%);
@@ -141,10 +169,12 @@ input[type="radio"]:checked:before {
 }
 
 .z-messagebox-window .z-window-header {
-  padding: 7px 5px 4px 10px;
+  padding: 7px 7px 0 10px;
   font-family: var(--ap-font-brand);
   font-size: 14px;
-  color: black;
+  color: white;
+  line-height: 16px;
+  height: 32px;
 }
 
 .z-window-modal .z-window-content {
@@ -158,7 +188,34 @@ input[type="radio"]:checked:before {
   padding: 10px !important;
   font-family: var(--ap-font-base);
   font-size: 14px;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Window icons */
+
+/*
+.z-messagebox-question {
+  background-image: url(/dashboard/zkau/web/a60ebe8b/iceblue_c/zul/img/msgbox/question-btn.png)
+}
+
+.z-messagebox-exclamation {
+  background-image: url(/dashboard/zkau/web/a60ebe8b/iceblue_c/zul/img/msgbox/warning-btn.png)
+}
+
+.z-messagebox-information {
+  background-image: url(/dashboard/zkau/web/a60ebe8b/iceblue_c/zul/img/msgbox/info-btn.png)
+}
+
+.z-messagebox-error {
+  background-image: url(/dashboard/zkau/web/a60ebe8b/iceblue_c/zul/img/msgbox/stop-btn.png)
+}*/
+
+/* Window action icons */
+
+.z-window-icon {
+  font-size: 14px;
+  margin: 2px 0 0 7px;
+  padding: 0;
 }
 
 /* Grid and listbox */
@@ -203,6 +260,13 @@ input[type="radio"]:checked:before {
 .z-listitem .z-listcell {
   border-top: 0;
   border-bottom: 1px solid var(--ap-c-line-sep);
+}
+
+.z-grid-header,
+.z-auxheader,
+.z-column {
+  background-color: var(--ap-c-soft-blue-dark-4) !important;
+  border: 0;
 }
 
 /* Fixes for CSV importer list */
@@ -259,3 +323,17 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
 .z-menu-selected .z-menu-text {
   color: var(--ap-c-menu-text-selected);
 }
+
+/* */
+
+.z-west-icon.z-icon-caret-left {
+  left: -6px;
+  color: var(--ap-c-grey-minor);
+}
+
+.z-west-icon.z-icon-ellipsis-v {
+  left: -4px;
+  color: var(--ap-c-grey-minor);
+  visibility: visible;
+}
+

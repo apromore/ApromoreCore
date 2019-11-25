@@ -1,5 +1,7 @@
-<zk>
-    <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh"  width="85vw"  position="center" title="CSV Importer" onClientInfo="onClientInfo(event)"  >
+<zk xmlns:h="http://www.w3.org/1999/xhtml">
+    <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh"  width="85vw"  position="center" title="CSV Importer" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer" >
+        <custom-attributes theme="${labels.ap.theme}"/>
+        <style src="/themes/${theme}/csv-importer/css/index.css" />
 
         <!--<vbox>-->
         <style>
@@ -100,6 +102,7 @@
             filter: invert(1);
             border: 1px solid;
             }
+
         </style>
 
         <popup id="popUpHelp" style="padding:0px;">
@@ -134,9 +137,8 @@
 
         </popup>
 
-        <borderlayout id="blayout" >
-
-            <center>
+        <borderlayout id="blayout">
+            <center sclass="ap-csv-importer-main" style="border:0">
                 <!--<div vflex="1" hflex="1">-->
                 <!--<div visible="true" id="popUPBox" zclass="relativePos"></div>-->
                 <!--<div visible="false" height="70px"/>-->
@@ -145,28 +147,33 @@
                 <!--</grid>-->
                 <!--</div>-->
                 <div id="gridBox" zclass="myGroupBox">
-                    <div zclass="banner" />
+                    <!--<div zclass="banner" /> -->
                     <div id="popUPBox" zclass="relativePos"></div>
                     <!--<div id="attrBox" visible="false"></div>-->
-                    <grid id="myGrid" mold="default" hflex="min" vflex="min" onClientInfo="onClientInfo(event)" height="100%" width="100%" style="overflow-y:hidden">
-                        <zscript>
-                            void onClientInfo(ClientInfoEvent evt) {
-                            int height = evt.getDesktopHeight();
-                            int width = evt.getDesktopWidth();
-                            mainWindow.setWidth(width/1.15 + "px");
-                            mainWindow.setHeight(height/1.15 + "px");
-                            }
-                        </zscript>
-                    </grid>
+                    <div sclass="ap-csv-importer-grid-wrapper">
+                        <grid id="myGrid" mold="default" hflex="min" vflex="min" onClientInfo="onClientInfo(event)" height="100%" width="100%" sclass="ap-grid">
+                            <zscript>
+                                void onClientInfo(ClientInfoEvent evt) {
+                                int height = evt.getDesktopHeight();
+                                int width = evt.getDesktopWidth();
+                                mainWindow.setWidth(width/1.15 + "px");
+                                mainWindow.setHeight(height/1.15 + "px");
+                                }
+                            </zscript>
+                        </grid>
+                    </div>
                 </div>
             </center>
-
-            <south>
+            <south sclass="ap-csv-importer-footer" style="border:0; border-top-width: 1px">
                 <div style="padding: 5px 0 5px 5px;">
                     <hlayout>
                         <div hflex="4">
-                            <button id="setOtherAll" label="'Ignore' to 'Event Attribute'" style="position:relative;padding-left:2px;" width="150px"  />
-                            <button id="setIgnoreAll" label="'Event Attribute' to 'Ignore'" style="position:relative;padding-left:2px;" width="150px"  />
+                            <button id="setOtherAll" style="position:relative;" width="180px">
+                                Ignore&#x2002;&#xf061;&#x2002;Event Attribute
+                            </button>
+                            <button id="setIgnoreAll" style="position:relative;" width="180px">
+                                Event Attribute&#x2002;&#xf061;&#x2002;Ignore
+                            </button>
                             <space spacing="10px" />
                             Encoding:
                             <combobox id="setEncoding" autodrop="true" value="UTF-8" width="100px" readonly="true">

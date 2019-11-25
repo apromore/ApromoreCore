@@ -45,3 +45,11 @@
 .ap-window-modal-actions button {
     margin-left: 4px;
 }
+
+.ap-form table td:first-child .z-row-content {
+    text-align: right;
+}
+
+.ap-form table td:first-child .z-label {
+    font-weight: 600;
+}

@@ -31,16 +31,6 @@
   background-color: transparent;
 }
 
-.ap-portal-layout > div > .z-west-splitter .z-west-icon {
-  left: -5px !important;
-}
-
-.ap-portal-layout > div > .z-west-splitter .z-icon-ellipsis-v {
-  font-family: FontAwesome, ZK85Icons !important;
-  left: 2px !important;
-  color: black;
-}
-
 .ap-portal .z-west-body .z-borderlayout .z-north,
 .ap-portal .z-west-body .z-borderlayout .z-south,
 .ap-portal .z-west-body .z-borderlayout .z-center,
@@ -312,13 +302,9 @@
   color: var(--ap-c-grey-light-5) !important;
 }
 
-/*.ap-header {*/
-/*    z-index: 10000;*/
-/*}*/
-
-/*.ap-listbox-process .z-listcell-content img {*/
-/*    visibility: hidden;*/
-/*}*/
+.ap-process-detail-wrapper .z-window {
+  background-color: transparent !important;
+}
 
 .ap-about-window .z-window-content {
   padding: 0;

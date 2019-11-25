@@ -20,9 +20,9 @@
 
 <!-- importProcessesWindow window has ImportProcessesController as a controller -->
 <window id="importWindow" position="center" title="Import process models or logs"
-        visible="true" sizable="true" width="550px">
+        visible="true" sizable="true" width="600px">
     <vbox vflex="1">
-        <grid sclass="ap-grid">
+        <grid sclass="ap-grid ap-form">
             <columns sizable="true">
                 <column width="25%"></column>
                 <column width="15%"></column>
