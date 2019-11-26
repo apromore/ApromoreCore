@@ -22,6 +22,7 @@ package org.apromore.plugin.portal.useradmin;
 
 import java.util.Locale;
 import javax.inject.Inject;
+import org.apromore.model.PermissionType;
 import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.UserService;
@@ -65,6 +66,15 @@ public class UserAdminPlugin extends DefaultPortalPlugin {
 
     @Override
     public Availability getAvailability(PortalContext portalContext) {
+
+        // Require that the caller has the "Manage users" permission
+        for (PermissionType permission: portalContext.getCurrentUser().getPermissions()) {
+            if ("Manage users".equals(permission.getName())) {
+                return Availability.AVAILABLE;
+            }
+        }
+
+        // Otherwise, this UI is unavailable
         return Availability.UNAVAILABLE;
     }
 }
