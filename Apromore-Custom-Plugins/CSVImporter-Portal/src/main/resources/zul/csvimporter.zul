@@ -44,14 +44,17 @@
             .relativePos{
             position:relative;
             width: 100%;
+            padding-top:60px;
             }
 
             .banner{
             position: absolute;
-            width: calc(100% - 19px);
+            width: 100%;
+            height: 60px;
             background-image: url("/img/apromore_banner.png");
             background-repeat: round;
             padding-top: 75px;
+            z-index: -100;
             }
 
             tr.z-row td.z-row-inner, tr.z-row .z-cell {
@@ -127,7 +130,7 @@
                         <li>29.10.19 5:20   [dd.MM.yy HH:mm]</li>
                     </ul>
 
-                    </html>
+                </html>
             </vbox>
 
         </popup>
@@ -146,7 +149,7 @@
                     <div zclass="banner" />
                     <div id="popUPBox" zclass="relativePos"></div>
                     <!--<div id="attrBox" visible="false"></div>-->
-                    <grid id="myGrid" mold="default" hflex="min" onClientInfo="onClientInfo(event)" style="padding-top: 60px;" height="100%">
+                    <grid id="myGrid" mold="default" hflex="min" vflex="min" onClientInfo="onClientInfo(event)" height="100%" width="100%">
                         <zscript>
                             void onClientInfo(ClientInfoEvent evt) {
                             int height = evt.getDesktopHeight();
@@ -163,8 +166,8 @@
                 <div style="padding: 5px 0 5px 5px;">
                     <hlayout>
                         <div hflex="2">
-                            <button id="setOtherAll" label="'Ignore' to 'Other'" style="position:relative;" width="150px"  />
-                            <button id="setIgnoreAll" label="'Other' to 'Ignore'" style="position:relative;" width="150px"  />
+                            <button id="setOtherAll" label="'Ignore' to 'Event Attribute'" style="position:relative;" width="170px"  />
+                            <button id="setIgnoreAll" label="'Event Attribute' to 'Ignore'" style="position:relative;" width="170px"  />
                         </div>
                         <div hflex="2" style="text-align: right; padding-right: 10px;">
                             <button id="toXESButton" label="Upload Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;" width="110px"  />

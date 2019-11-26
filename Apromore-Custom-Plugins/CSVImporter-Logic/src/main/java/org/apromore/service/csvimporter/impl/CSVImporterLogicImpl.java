@@ -426,7 +426,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 removeColPos(i);
                 closePopUp(i);
                 lb.setSelectedIndex(otherIndex);
-                heads.put("other", i);
+                heads.put("Event Attribute", i);
             }
         }
 
@@ -572,7 +572,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
 
         LinkedHashMap<String, String> menuItems = new LinkedHashMap<String, String>();
-        String other = "other";
+        String other = "Event Attribute";
         String ignore = "ignore";
 
         menuItems.put(caseid, "Case ID");
@@ -581,7 +581,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         menuItems.put(tsStart, "Start timestamp");
         menuItems.put(tsValue, "Other timestamp");
         menuItems.put(resource, "Resource");
-        menuItems.put(other, "Other");
+        menuItems.put(other, "Event Attribute");
         menuItems.put(ignore, "Ignore column");
 
         // get index of "other" item and select it.
