@@ -146,7 +146,7 @@
                     <div zclass="banner" />
                     <div id="popUPBox" zclass="relativePos"></div>
                     <!--<div id="attrBox" visible="false"></div>-->
-                    <grid id="myGrid" mold="default" hflex="min" onClientInfo="onClientInfo(event)" style="padding-top: 60px;">
+                    <grid id="myGrid" mold="default" hflex="min" onClientInfo="onClientInfo(event)" style="padding-top: 60px;" height="100%">
                         <zscript>
                             void onClientInfo(ClientInfoEvent evt) {
                             int height = evt.getDesktopHeight();
