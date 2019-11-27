@@ -24,6 +24,7 @@ import com.opencsv.CSVReader;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.LogEventModel;
+import org.apromore.service.csvimporter.LogModel;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
@@ -112,7 +113,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     public Boolean getErrorCheck() {
         return errorCheck;
     }
-    public List<LogEventModel> prepareXesModel(CSVReader reader) {
+    public LogModel prepareXesModel(CSVReader reader) {
         int errorCount = 0;
         int lineCount = 0;
         int finishCount = 0;
@@ -295,11 +296,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                     }
                                 }
                             });
-                    return sortTraces(logData);
+                    return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows);
                 }
 
                 Messagebox.show("Total number of lines processed: " + lineCount + "\n Your file has been imported.");
-                return sortTraces(logData);
+                return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows);
             }
         } catch (IOException e) {
             e.printStackTrace();

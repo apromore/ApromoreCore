@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface CSVImporterLogic {
 
-    List<LogEventModel> prepareXesModel(CSVReader r);
+    LogModel prepareXesModel(CSVReader r) throws InvalidCSVException, IOException;
     void setHeads(List<String> line);
     HashMap<String, Integer> getHeads();
     void setLine(List<String>  line);
@@ -40,4 +40,9 @@ public interface CSVImporterLogic {
     void setLabelID(String labelID);
     XLog createXLog(List<LogEventModel> traces);
     void toXESfile(XLog xLog, String FileName) throws FileNotFoundException, IOException;
+
+    /** Thrown by {@link #prepareXesModel} if the input CSV file lacks a mandatory field or has too many invalid rows. */
+    static public class InvalidCSVException extends Exception {
+        public InvalidCSVException(String message) { super(message); }
+    };
 }

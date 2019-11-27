@@ -38,7 +38,7 @@ import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
-import org.apromore.service.csvimporter.LogEventModel;
+import org.apromore.service.csvimporter.LogModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -453,7 +453,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                             }catch (Exception e) {
                                 LOGGER.error("Failed to read");
                             }
-                            List<LogEventModel> xesModel = csvImporterLogic.prepareXesModel(reader);
+                            LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
 
                             if(xesModel != null) {
                                 if (csvImporterLogic.getErrorCheck()) {
@@ -467,24 +467,24 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                                     if (evt.getName().equals("onOK")) {
                                                         if (xesModel != null) {
                                                             // create XES file
-                                                            for (int i = 0; i < xesModel.size(); i++) {
-                                                                xesModel.get(i).getOtherTimestamps();
+                                                            for (int i = 0; i < xesModel.getRows().size(); i++) {
+                                                                xesModel.getRows().get(i).getOtherTimestamps();
 
 
-                                                                for (Map.Entry<String, Timestamp> entry : xesModel.get(i).getOtherTimestamps().entrySet()) {
+                                                                for (Map.Entry<String, Timestamp> entry : xesModel.getRows().get(i).getOtherTimestamps().entrySet()) {
                                                                     if (entry.getKey() != null) {
                                                                         long tempLong = entry.getValue().getTime();
                                                                         Calendar cal = Calendar.getInstance();
                                                                         cal.setTimeInMillis(tempLong);
                                                                         if (cal.get(Calendar.YEAR) == 1900) {
                                                                             System.out.println("Invalid timestamp. Entry Removed.");
-                                                                            xesModel.remove(i);
+                                                                            xesModel.getRows().remove(i);
                                                                         }
                                                                     }
                                                                 }
                                                             }
 
-                                                            XLog xlog = csvImporterLogic.createXLog(xesModel);
+                                                            XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
                                                             if (xlog != null) {
                                                                 saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
                                                             }
@@ -493,12 +493,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                                         }
                                                     } else if (evt.getName().equals("onIgnore")) {
 
-                                                        for (int i = 0; i < xesModel.size(); i++) {
-                                                            xesModel.get(i).setOtherTimestamps(null);
+                                                        for (int i = 0; i < xesModel.getRows().size(); i++) {
+                                                            xesModel.getRows().get(i).setOtherTimestamps(null);
                                                         }
                                                         if (xesModel != null) {
                                                             // create XES file
-                                                            XLog xlog = csvImporterLogic.createXLog(xesModel);
+                                                            XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
                                                             if (xlog != null) {
                                                                 saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
                                                             }
@@ -513,7 +513,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                 } else {
 
                                         // create XES file
-                                        XLog xlog = csvImporterLogic.createXLog(xesModel);
+                                        XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
                                         if (xlog != null) {
                                             saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
                                         }
