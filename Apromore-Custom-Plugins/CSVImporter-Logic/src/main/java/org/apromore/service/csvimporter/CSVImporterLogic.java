@@ -1,7 +1,6 @@
 package org.apromore.service.csvimporter;
 
 import com.opencsv.CSVReader;
-import org.apromore.service.csvimporter.impl.LogModel;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.util.media.Media;
 import org.zkoss.zul.*;
@@ -17,7 +16,7 @@ import java.util.List;
  */
 public interface CSVImporterLogic {
 
-    List<LogModel> prepareXesModel(CSVReader r);
+    List<LogEventModel> prepareXesModel(CSVReader r);
     void setHeads(List<String> line);
     HashMap<String, Integer> getHeads();
     void setLine(List<String>  line);
@@ -39,6 +38,6 @@ public interface CSVImporterLogic {
     void setTextboxID(String textboxID);
 
     void setLabelID(String labelID);
-    XLog createXLog(List<LogModel> traces);
+    XLog createXLog(List<LogEventModel> traces);
     void toXESfile(XLog xLog, String FileName) throws FileNotFoundException, IOException;
 }

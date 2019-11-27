@@ -18,12 +18,12 @@
  * If not, see <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-package org.apromore.service.csvimporter.impl;
+package org.apromore.service.csvimporter;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
 
-public class LogModel {
+public class LogEventModel {
 
 	private String caseID;
 	private String concept;
@@ -35,7 +35,7 @@ public class LogModel {
 
 
 
-	public LogModel(String caseID, String concept, Timestamp timestamp,Timestamp startTimestamp,  HashMap<String, Timestamp> otherTimestamps, String resource, HashMap<String, String> others) {
+	public LogEventModel(String caseID, String concept, Timestamp timestamp, Timestamp startTimestamp, HashMap<String, Timestamp> otherTimestamps, String resource, HashMap<String, String> others) {
 		setCaseID(caseID);
 		setConcept(concept);
 		setTimestamp(timestamp);

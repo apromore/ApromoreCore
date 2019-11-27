@@ -38,7 +38,7 @@ import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
-import org.apromore.service.csvimporter.impl.LogModel;
+import org.apromore.service.csvimporter.LogEventModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -453,7 +453,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                             }catch (Exception e) {
                                 LOGGER.error("Failed to read");
                             }
-                            List<LogModel> xesModel = csvImporterLogic.prepareXesModel(reader);
+                            List<LogEventModel> xesModel = csvImporterLogic.prepareXesModel(reader);
 
                             if(xesModel != null) {
                                 if (csvImporterLogic.getErrorCheck()) {

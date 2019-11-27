@@ -23,6 +23,7 @@ package org.apromore.service.csvimporter.impl;
 import com.opencsv.CSVReader;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.apromore.service.csvimporter.LogEventModel;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
@@ -111,7 +112,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     public Boolean getErrorCheck() {
         return errorCheck;
     }
-    public List<LogModel> prepareXesModel(CSVReader reader) {
+    public List<LogEventModel> prepareXesModel(CSVReader reader) {
         int errorCount = 0;
         int lineCount = 0;
         int finishCount = 0;
@@ -131,9 +132,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             }
 
 
-            // create model "LogModel" of the log data
+            // create model "LogEventModel" of the log data
             // We set mandatory fields and other fields are set with hash map
-            List<LogModel> logData = new ArrayList<LogModel>();
+            List<LogEventModel> logData = new ArrayList<>();
             HashMap<String, Timestamp> otherTimestamps;
             HashMap<String, String> others;
             Timestamp startTimestamp = null;
@@ -221,7 +222,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                             }
                         }
                         if (rowGTG == true) {
-                            logData.add(new LogModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
+                            logData.add(new LogEventModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
                         }
                     } catch (Exception e) {
                         errorMessage = ExceptionUtils.getStackTrace(e);
@@ -558,7 +559,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
 
-    private List<LogModel> sortTraces(List<LogModel> traces) {
+    private List<LogEventModel> sortTraces(List<LogEventModel> traces) {
         Comparator<String> nameOrder = new NameComparator();
         Collections.sort(traces, (o1, o2) -> nameOrder.compare(o1.getCaseID(), o2.getCaseID()));
         return traces;
@@ -767,7 +768,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
      * @param traces the traces
      * @return the x log
      */
-    public XLog createXLog(List<LogModel> traces) {
+    public XLog createXLog(List<LogEventModel> traces) {
         if (traces == null) return null;
 
         XFactory xFactory = new XFactoryNaiveImpl();
@@ -830,7 +831,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         };
 //        Comparator<XEvent> compareTimestamp = Comparator.comparing((XEvent o) -> ((XAttributeTimestampImpl) o.getAttributes().get("time:timestamp")).getValue());
 
-        for (LogModel trace : traces) {
+        for (LogEventModel trace : traces) {
             String caseID = trace.getCaseID();
 
             if (newTraceID == null || !newTraceID.equals(caseID)) {    // This could be new trace
@@ -871,7 +872,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
 
-    private XEvent createEvent(LogModel theTrace, XFactory xFactory, XConceptExtension concept, XLifecycleExtension lifecycle, XTimeExtension timestamp, XOrganizationalExtension resource, Boolean isEndTimestamp) {
+    private XEvent createEvent(LogEventModel theTrace, XFactory xFactory, XConceptExtension concept, XLifecycleExtension lifecycle, XTimeExtension timestamp, XOrganizationalExtension resource, Boolean isEndTimestamp) {
 
         XEvent xEvent = xFactory.createEvent();
         concept.assignName(xEvent, theTrace.getConcept());
