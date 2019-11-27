@@ -84,7 +84,11 @@ public class ATrace {
                 this.attributeMap.put(key, xAttributeMap.get(key).toString());
             }
         }
-        if(xTrace.getAttributes().containsKey("case:variant")) caseVariantId = new Integer(xTrace.getAttributes().get("case:variant").toString());
+
+        /**
+         * Do not take the case:variant from the original XLog because it will cause problem
+         */
+//        if(xTrace.getAttributes().containsKey("case:variant")) caseVariantId = new Integer(xTrace.getAttributes().get("case:variant").toString());
         // ELSE SET THE VARIANT ID from APMLog
         initStats(xTrace);
     }
