@@ -1,5 +1,6 @@
 package org.apromore.service.csvimporter.impl;
 
+import com.google.common.io.ByteStreams;
 import com.opencsv.*;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;;
 import java.io.InputStreamReader;
@@ -8,10 +9,13 @@ import java.nio.charset.Charset;
 import org.apromore.service.csvimporter.*;
 import org.apromore.service.csvimporter.CSVImporterLogic.InvalidCSVException;
 import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.out.XesXmlSerializer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -63,9 +67,12 @@ public class CSVImporterLogicImplUnitTest {
     @Test
     public void testPrepareXesModel_test1() throws Exception {
 
+        // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test1.csv");
         setup(csvReader);
+        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test1.xes")), Charset.forName("utf-8"));
 
+        // Perform the test
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
         // Validate result
@@ -78,6 +85,7 @@ public class CSVImporterLogicImplUnitTest {
 
         // Validate result
         assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
     }
 
 
@@ -91,5 +99,11 @@ public class CSVImporterLogicImplUnitTest {
                                .build())
             .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
             .build();
+    }
+
+    private static String toString(XLog xlog) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        (new XesXmlSerializer()).serialize(xlog, baos);
+        return baos.toString();
     }
 }
