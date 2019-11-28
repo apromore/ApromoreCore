@@ -12,115 +12,43 @@
 	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/>
 	<string key="lifecycle:model" value="standard"/>
 	<trace>
-		<string key="concept:name" value="13271501501"/>
+		<string key="concept:name" value="case1"/>
 		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="populateInvoiceItem"/>
+			<string key="process type" value="1"/>
+			<string key="concept:name" value="activity1"/>
 			<string key="lifecycle:transition" value="start"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.032+10:00"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.114+10:00"/>
 		</event>
 		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="populateInvoiceItem"/>
+			<string key="process type" value="1"/>
+			<string key="concept:name" value="activity1"/>
 			<string key="lifecycle:transition" value="complete"/>
 			<date key="time:timestamp" value="2019-09-23T15:13:05.132+10:00"/>
 		</event>
 	</trace>
 	<trace>
-		<string key="concept:name" value="13278798301"/>
+		<string key="concept:name" value="case2"/>
 		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="populateInvoiceItem"/>
+			<string key="process type" value="1"/>
+			<string key="concept:name" value="activity1"/>
 			<string key="lifecycle:transition" value="start"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.039+10:00"/>
+			<date key="time:timestamp" value="2019-09-23T15:13:05.071+10:00"/>
 		</event>
 		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="populateInvoiceItem"/>
-			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.132+10:00"/>
-		</event>
-	</trace>
-	<trace>
-		<string key="concept:name" value="13289560001"/>
-		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="populateInvoiceItem"/>
-			<string key="lifecycle:transition" value="start"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.032+10:00"/>
-		</event>
-		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="populateInvoiceItem"/>
+			<string key="process type" value="1"/>
+			<string key="concept:name" value="activity1"/>
 			<string key="lifecycle:transition" value="complete"/>
 			<date key="time:timestamp" value="2019-09-23T15:13:05.132+10:00"/>
 		</event>
 		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="init"/>
+			<string key="process type" value="1"/>
+			<string key="concept:name" value="activity2"/>
 			<string key="lifecycle:transition" value="start"/>
 			<date key="time:timestamp" value="2019-09-23T15:13:05.133+10:00"/>
 		</event>
 		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="init"/>
-			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.133+10:00"/>
-		</event>
-	</trace>
-	<trace>
-		<string key="concept:name" value="13299803901"/>
-		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="populateInvoiceItem"/>
-			<string key="lifecycle:transition" value="start"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.039+10:00"/>
-		</event>
-		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="populateInvoiceItem"/>
-			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.132+10:00"/>
-		</event>
-		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="init"/>
-			<string key="lifecycle:transition" value="start"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.133+10:00"/>
-		</event>
-		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="init"/>
-			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.133+10:00"/>
-		</event>
-	</trace>
-	<trace>
-		<string key="concept:name" value="13305993301"/>
-		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="populateInvoiceItem"/>
-			<string key="lifecycle:transition" value="start"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.032+10:00"/>
-		</event>
-		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="populateInvoiceItem"/>
-			<string key="lifecycle:transition" value="complete"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.133+10:00"/>
-		</event>
-	</trace>
-	<trace>
-		<string key="concept:name" value="13312176701"/>
-		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="init"/>
-			<string key="lifecycle:transition" value="start"/>
-			<date key="time:timestamp" value="2019-09-23T15:13:05.133+10:00"/>
-		</event>
-		<event>
-			<string key="1" value="1"/>
-			<string key="concept:name" value="init"/>
+			<string key="process type" value="1"/>
+			<string key="concept:name" value="activity2"/>
 			<string key="lifecycle:transition" value="complete"/>
 			<date key="time:timestamp" value="2019-09-23T15:13:05.133+10:00"/>
 		</event>

@@ -70,15 +70,17 @@ public class CSVImporterLogicImplUnitTest {
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test1.csv");
         setup(csvReader);
+        csvReader = newCSVReader("/test1.csv");
         String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test1.xes")), Charset.forName("utf-8"));
 
         // Perform the test
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
         // Validate result
-        assertEquals(8, logModel.getLineCount());
-        assertEquals(8, logModel.getRows().size());
+        assertEquals(3, logModel.getLineCount());
+        assertEquals(3, logModel.getRows().size());
         assertEquals(0, logModel.getErrorCount());
+        assert logModel.getInvalidRows().isEmpty();
 
         // Continue with the XES conversion
         XLog xlog = csvImporterLogic.createXLog(logModel.getRows());
