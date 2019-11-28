@@ -450,10 +450,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                 } else {
                                     reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
                                 }
-                            }catch (Exception e) {
+                            } catch (IOException e) {
                                 LOGGER.error("Failed to read");
                             }
+
                             LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
+                            Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported.");
 
                             if(xesModel != null) {
                                 if (csvImporterLogic.getErrorCheck()) {

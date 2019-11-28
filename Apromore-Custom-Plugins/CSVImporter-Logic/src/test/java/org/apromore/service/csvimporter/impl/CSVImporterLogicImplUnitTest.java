@@ -3,13 +3,13 @@ package org.apromore.service.csvimporter.impl;
 import com.opencsv.*;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import org.apromore.service.csvimporter.*;
 import org.apromore.service.csvimporter.CSVImporterLogic.InvalidCSVException;
 import org.deckfour.xes.model.XLog;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -26,14 +26,47 @@ public class CSVImporterLogicImplUnitTest {
     /** Test instance. */
     private CSVImporterLogic csvImporterLogic = new CSVImporterLogicImpl();
 
+    void setup(CSVReader reader) throws InvalidCSVException, IOException {
+        List<String> header = new ArrayList<String>();
+        List<String> line = new ArrayList<String>();
+        ListModelList<String[]> result = new ListModelList<>();
+
+        Collections.addAll(header, reader.readNext());
+
+        line = Arrays.asList(reader.readNext());
+        if (line.size() < 2 && line != null) {
+            while (line.size() < 2 && line != null) {
+                line = Arrays.asList(reader.readNext());
+            }
+        }
+
+        if (line != null && header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
+            csvImporterLogic.setLine(line);
+            csvImporterLogic.setHeads(header);
+            csvImporterLogic.setOtherTimestamps(result);
+        } else {
+            throw new InvalidCSVException("Could not parse file!");
+        }
+
+        if (line.size() != header.size()) {
+            reader.close();
+            throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
+        } else {
+            csvImporterLogic.setLists(line.size(), csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
+        }
+    }
+
 
     // Test cases
 
+    /** Test {@link CSVImporterLogic.prepareXesModel} against <code>test1.csv</code>. */
     @Test
-    @Ignore("CSVImporterLogic setup not yet implemented")
     public void testPrepareXesModel_test1() throws Exception {
 
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader("/test1.csv"));
+        CSVReader csvReader = newCSVReader("/test1.csv");
+        setup(csvReader);
+
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
         // Validate result
         assertEquals(8, logModel.getLineCount());
@@ -50,7 +83,7 @@ public class CSVImporterLogicImplUnitTest {
 
     // Internal methods
 
-    private static CSVReader csvReader(String filename) {
+    private static CSVReader newCSVReader(String filename) {
         return new CSVReaderBuilder(new InputStreamReader(CSVImporterLogicImplUnitTest.class.getResourceAsStream(filename), Charset.forName("utf-8")))
             .withSkipLines(0)
             .withCSVParser((new RFC4180ParserBuilder())

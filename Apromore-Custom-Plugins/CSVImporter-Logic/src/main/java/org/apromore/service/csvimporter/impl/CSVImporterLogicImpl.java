@@ -299,7 +299,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows);
                 }
 
-                Messagebox.show("Total number of lines processed: " + lineCount + "\n Your file has been imported.");
+                //Messagebox.show("Total number of lines processed: " + lineCount + "\n Your file has been imported.");
                 return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows);
             }
         } catch (IOException e) {
