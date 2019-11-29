@@ -43,6 +43,15 @@ public interface CSVImporterLogic {
 
     /** Thrown by {@link #prepareXesModel} if the input CSV file lacks a mandatory field or has too many invalid rows. */
     static public class InvalidCSVException extends Exception {
+        private List<String> invalidRows;
+
         public InvalidCSVException(String message) { super(message); }
+
+        public InvalidCSVException(String message, List<String> invalidRows) {
+            super(message);
+            this.invalidRows = invalidRows;
+        }
+
+        public List<String> getInvalidRows() { return invalidRows; }
     };
 }

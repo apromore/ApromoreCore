@@ -113,7 +113,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     public Boolean getErrorCheck() {
         return errorCheck;
     }
-    public LogModel prepareXesModel(CSVReader reader) {
+    public LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException {
         int errorCount = 0;
         int lineCount = 0;
         int finishCount = 0;
@@ -128,8 +128,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             // If any of the mandatory fields are missing show alert message to the user and return
             StringBuilder headNOTDefined = checkFields(heads);
             if (headNOTDefined.length() != 0) {
-                Messagebox.show(headNOTDefined.toString());
-                return null;
+                throw new InvalidCSVException(headNOTDefined.toString());
             }
 
 
@@ -249,24 +248,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     notificationMessage = notificationMessage + invalidRows.get(i) + "\n";
                 }
                 LOGGER.error(errorMessage);
+                throw new InvalidCSVException(notificationMessage, invalidRows);
 
-                Messagebox.show(notificationMessage
-                        , "Invalid CSV File",
-                        new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                        new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null, new org.zkoss.zk.ui.event.EventListener() {
-                            public void onEvent(Event evt) throws Exception {
-                                if (evt.getName().equals("onOK")) {
-                                    File tempFile = File.createTempFile("Error_Report", ".txt");
-                                    FileWriter writer = new FileWriter(tempFile);
-                                    for(String str: invalidRows) {
-                                        writer.write(str + System.lineSeparator());
-                                    }
-                                    writer.close();
-                                    Filedownload.save(new FileInputStream(tempFile), "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
-                                }
-                            }
-                        });
-                return null;
             } else {
                 if (errorCount > 0) {
                     String notificationMessage;
@@ -299,7 +282,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows);
                 }
 
-                //Messagebox.show("Total number of lines processed: " + lineCount + "\n Your file has been imported.");
                 return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows);
             }
         } catch (IOException e) {

@@ -454,10 +454,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                 LOGGER.error("Failed to read");
                             }
 
-                            LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
-                            Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported.");
+                            try {
+                                LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
+                                Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported.");
 
-                            if(xesModel != null) {
                                 if (csvImporterLogic.getErrorCheck()) {
                                     Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload log by skipping all rows " +
                                                     "containing invalid fields.\n Select Skip columns up load log by skipping the entire columns " +
@@ -521,6 +521,31 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                         }
                                         window.invalidate();
                                         window.detach();
+                                }
+                            } catch (CSVImporterLogic.InvalidCSVException e) {
+                                if (e.getInvalidRows() == null) {
+                                    Messagebox.show(e.getMessage() , "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
+
+                                } else {
+                                    Messagebox.show(e.getMessage() , "Invalid CSV File",
+                                        new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                                        new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null, new EventListener() {
+                                            public void onEvent(Event evt) throws Exception {
+                                                if (evt.getName().equals("onOK")) {
+                                                    File tempFile = File.createTempFile("Error_Report", ".txt");
+                                                    try (FileWriter writer = new FileWriter(tempFile)) {
+                                                        for(String str: e.getInvalidRows()) {
+                                                            writer.write(str + System.lineSeparator());
+                                                        }
+                                                        Filedownload.save(new FileInputStream(tempFile), "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+
+                                                    } finally {
+                                                        tempFile.delete();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    );
                                 }
                             }
 

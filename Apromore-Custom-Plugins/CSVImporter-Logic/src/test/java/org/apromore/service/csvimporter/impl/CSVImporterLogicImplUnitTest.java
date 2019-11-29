@@ -63,22 +63,51 @@ public class CSVImporterLogicImplUnitTest {
 
     // Test cases
 
-    /** Test {@link CSVImporterLogic.prepareXesModel} against <code>test1.csv</code>. */
+    /** Test {@link CSVImporterLogic.prepareXesModel} against a valid CSV log <code>test1-valid.csv</code>. */
     @Test
-    public void testPrepareXesModel_test1() throws Exception {
+    public void testPrepareXesModel_test1_valid() throws Exception {
 
         // Set up inputs and expected outputs
-        CSVReader csvReader = newCSVReader("/test1.csv");
+        CSVReader csvReader = newCSVReader("/test1-valid.csv", "utf-8");
         setup(csvReader);
-        csvReader = newCSVReader("/test1.csv");
-        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test1.xes")), Charset.forName("utf-8"));
+        csvReader = newCSVReader("/test1-valid.csv", "utf-8");
+        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8"));
 
         // Perform the test
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
         // Validate result
+        assertNotNull(logModel);
         assertEquals(3, logModel.getLineCount());
         assertEquals(3, logModel.getRows().size());
+        assertEquals(0, logModel.getErrorCount());
+        assert logModel.getInvalidRows().isEmpty();
+
+        // Continue with the XES conversion
+        XLog xlog = csvImporterLogic.createXLog(logModel.getRows());
+
+        // Validate result
+        assertNotNull(xlog);
+        assertEquals(expectedXES, toString(xlog));
+    }
+
+    /** Test {@link CSVImporterLogic.prepareXesModel} against an invalid CSV log <code>test2-missing-columns.csv</code>. */
+    @Test
+    public void testPrepareXesModel_test2_missing_columns() throws Exception {
+
+        // Set up inputs and expected outputs
+        CSVReader csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8");
+        setup(csvReader);
+        csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8");
+        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8"));
+
+        // Perform the test
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
+
+        // Validate result
+        assertNotNull(logModel);
+        assertEquals(3, logModel.getLineCount());
+        assertEquals(2, logModel.getRows().size());
         assertEquals(0, logModel.getErrorCount());
         assert logModel.getInvalidRows().isEmpty();
 
@@ -93,8 +122,8 @@ public class CSVImporterLogicImplUnitTest {
 
     // Internal methods
 
-    private static CSVReader newCSVReader(String filename) {
-        return new CSVReaderBuilder(new InputStreamReader(CSVImporterLogicImplUnitTest.class.getResourceAsStream(filename), Charset.forName("utf-8")))
+    private static CSVReader newCSVReader(String filename, String charset) {
+        return new CSVReaderBuilder(new InputStreamReader(CSVImporterLogicImplUnitTest.class.getResourceAsStream(filename), Charset.forName(charset)))
             .withSkipLines(0)
             .withCSVParser((new RFC4180ParserBuilder())
                                .withSeparator(',')
