@@ -544,14 +544,11 @@ public class ATrace {
     }
 
     public List<String> getActivityNameList() {
-        if(this.activityNameList.size() > 0) return this.activityNameList;
-        else {
-            List<String> actNameList = new ArrayList<>();
-            for(int i=0; i < this.activityList.size(); i++) {
-                actNameList.add(this.activityList.get(i).getName());
-            }
-            return actNameList;
+        List<String> actNameList = new ArrayList<>();
+        for(int i=0; i < this.activityList.size(); i++) {
+            actNameList.add(this.activityList.get(i).getName());
         }
+        return actNameList;
     }
 
     public UnifiedSet<String> getEventNameSet() {
