@@ -164,7 +164,7 @@
 
                                                 <h:hr class="margin-mm "/>
                                                 <h:a href="#forgot" class="btn" data-toggle="tab">Forgot Password?</h:a>
-                                                <h:a href="#register" class="btn" data-toggle="tab">No account yet? Register now for free!</h:a>
+                                                <h:a href="#register" class="btn" data-toggle="tab">Create a new account</h:a>
                                             </h:fieldset>
                                         </h:form>
                                     </h:div>
@@ -295,7 +295,7 @@
 
             <h:footer class="footer">
                 <h:div class="web-description span12">
-                    <h:h5><![CDATA[ &copy; ]]> 2019, The University of Melbourne.  Contact us at <a href="mailto:apromore@lists.unimelb.edu.au.">apromore@lists.unimelb.edu.au</a>.</h:h5>
+                    <h:h5><![CDATA[ &copy; ]]> 2019, The University of Melbourne.  Contact us at <a href="mailto:info@apromore.com">info@apromore.com</a>.</h:h5>
                     <h:p>Except where otherwise noted, content on this site is licensed under a <h:a href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Licence</h:a></h:p>
                     <h:p class="cc-logo"/>
                     <h:p>All models, logs and other information stored in the repository are third-party materials that have been uploaded by other users, unless expressly indicated otherwise by the Hosting University. The Hosting University makes the repository material available ‘as is’ and does not check the currency, accuracy, reliability, performance, completeness, suitability or workability of the repository material or whether repository materials uploaded by other users infringe anyone’s intellectual property rights. You use the repository material at your own risk.</h:p>
