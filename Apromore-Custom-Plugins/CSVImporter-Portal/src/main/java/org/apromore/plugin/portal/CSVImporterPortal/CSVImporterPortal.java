@@ -393,6 +393,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
 
+            if (media == null || window == null) {
+                return;
+            }
+
             ListModelList<String[]> result = new ListModelList<>();
             ListModelList<String[]> indexedResult = new ListModelList<>();
             Grid myGrid  = (Grid) window.getFellow("myGrid");
@@ -401,39 +405,32 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Button toXESButton = (Button) window.getFellow("toXESButton");
             Button cancelButton = (Button) window.getFellow("cancelButton");
 
-            if(media != null) {
+            csvImporterLogic.resetLine();
+            csvImporterLogic.resetHead();
+            csvImporterLogic.resetList();
 
-                csvImporterLogic.resetLine();
-                csvImporterLogic.resetHead();
-                csvImporterLogic.resetList();
+            String[] allowedExtensions = {"csv", "xls", "xlsx"};
+            if (!Arrays.asList(allowedExtensions).contains(media.getFormat())) {
+                Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
 
-                String[] allowedExtensions = {"csv", "xls", "xlsx"};
-                if (Arrays.asList(allowedExtensions).contains(media.getFormat())) {
+            } else {
+                displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window);
 
-                    displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window);
-
-
-
-                    
-                    if (window != null) {
-                        // set grid model
-                        if (result != null) {
-                            myGrid.setModel(indexedResult);
-                        } else {
-                            Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
-                        }
-                        //set grid row renderer
-                        GridRendererController rowRenderer = new GridRendererController();
-                        rowRenderer.setAttribWidth(AttribWidth);
-
-                        myGrid.setRowRenderer(rowRenderer);
-                        toXESButton.setDisabled(false);
-                        window.setTitle("CSV Importer - " + media.getName());
-                    }
+                // set grid model
+                if (result != null) {
+                    myGrid.setModel(indexedResult);
                 } else {
-                    Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
                 }
+                //set grid row renderer
+                GridRendererController rowRenderer = new GridRendererController();
+                rowRenderer.setAttribWidth(AttribWidth);
+
+                myGrid.setRowRenderer(rowRenderer);
+                toXESButton.setDisabled(false);
+                window.setTitle("CSV Importer - " + media.getName());
             }
+
             toXESButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
                     if (window == null) {
