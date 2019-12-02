@@ -16,7 +16,8 @@ import java.util.List;
  */
 public interface CSVImporterLogic {
 
-    LogModel prepareXesModel(CSVReader r) throws InvalidCSVException, IOException;
+    // Accessors
+
     void setHeads(List<String> line);
     HashMap<String, Integer> getHeads();
     void setLine(List<String>  line);
@@ -34,10 +35,14 @@ public interface CSVImporterLogic {
     void setPopUPBox(Div popUPBox);
     Boolean getErrorCheck();
     void setPopupID(String popupID);
-
     void setTextboxID(String textboxID);
-
     void setLabelID(String labelID);
+
+
+    // Business logic methods
+
+    void sampleCSV(CSVReader reader) throws InvalidCSVException, IOException;
+    LogModel prepareXesModel(CSVReader r) throws InvalidCSVException, IOException;
     XLog createXLog(List<LogEventModel> traces);
     void toXESfile(XLog xLog, String FileName) throws FileNotFoundException, IOException;
 

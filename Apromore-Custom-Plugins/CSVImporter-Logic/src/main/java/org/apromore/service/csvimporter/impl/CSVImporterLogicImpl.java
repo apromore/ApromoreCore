@@ -113,6 +113,39 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     public Boolean getErrorCheck() {
         return errorCheck;
     }
+
+    private static Integer AttribWidth = 150;
+
+    public void sampleCSV(CSVReader reader) throws InvalidCSVException, IOException {
+        List<String> header = new ArrayList<String>();
+        List<String> line = new ArrayList<String>();
+        ListModelList<String[]> result = new ListModelList<>();
+
+        Collections.addAll(header, reader.readNext());
+
+        line = Arrays.asList(reader.readNext());
+        if (line.size() < 2 && line != null) {
+            while (line.size() < 2 && line != null) {
+                line = Arrays.asList(reader.readNext());
+            }
+        }
+
+        if (line != null && header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
+            setLine(line);
+            setHeads(header);
+            setOtherTimestamps(result);
+        } else {
+            throw new InvalidCSVException("Could not parse file!");
+        }
+
+        if (line.size() != header.size()) {
+            reader.close();
+            throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
+        } else {
+            setLists(line.size(), getHeads(), AttribWidth - 20 + "px");
+        }
+    }
+
     public LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException {
         int errorCount = 0;
         int lineCount = 0;
