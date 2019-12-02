@@ -1,0 +1,123 @@
+body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.ap-pd-2 {
+    padding: 0;
+}
+
+.ap-pd-2 .mainCaption .z-caption-content {
+    position: absolute;
+    top: 0;
+    left: 260px;
+    padding: 6px 0 0 10px;
+    font-family: var(--ap-font-base);
+    font-weight: normal;
+    font-size: 14px;
+    width: calc(100% - 340px);
+    color: white;
+    z-index: var(--ap-z-header-title);
+}
+
+.ap-pd-2 .mainCaption .z-caption-content:before {
+    content: '>';
+    padding-right: 10px;
+}
+
+.ap-pd-2 .z-window-header {
+    padding: 0;
+}
+
+.ap-pd-2 .z-window-content {
+    padding: 0;
+}
+
+.ap-pd-2 .ap-pd-tools {
+    width: 100%;
+    height: 30px;
+    margin-top: 5px;
+    display: none !important;
+}
+
+.ap-pd-2 .ap-pd-tools button {
+    float: right;
+}
+
+.ap-pd-2 .ap-pd-tools button {
+    height: 26px;
+}
+
+.ap-pd-action-buttons {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 34px;
+    height: 32px;
+    padding: 5px 0 0 8px;
+    background-color: var(--ap-c-action-bg-normal);
+}
+
+.ap-pd-stats-c {
+}
+
+.ap-pd-action-buttons .ap-icon {
+    display: inline-block;
+    vertical-align: middle;
+    box-shadow: none;
+}
+
+.ap-pd-action-buttons .ap-icon-dir-lr input {
+    display: none;
+}
+
+.ap-pd-action-buttons .ap-icon-dir-tb input {
+    display: none;
+}
+
+.ap-pd-main-c {
+    display: flex;
+    position:absolute;
+    right: 0;left: 0;top: 70px;bottom: 5px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+.ap-pd-main-c > div.ap-pd-options {
+    flex: 0 0 auto;
+}
+
+.ap-pd-main-c > div#cy {
+    flex: 1 1 auto;
+}
+
+.statsHead {
+    background-color: var(--ap-c-soft-blue-dark-4) !important;
+    border-color: white !important;
+}
+
+.ap-pd-stats-c .z-grid-header-border {
+    border: none !important;
+}
+
+.ap-pd-keys + .z-html {
+    display: none !important;
+    position: absolute;
+    right: 40px;
+    top: 27px;
+    padding: 5px 2px 5px 0;
+    font-family: var(--ap-font-base);
+    font-size: 12px;
+    line-height: 14px;
+    width: 550px;
+    border: 1px solid var(--ap-c-grey-minor);
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.9);
+    filter: none;
+}
+
+.ap-pd-keys:hover + .z-html {
+    display: block !important;
+}

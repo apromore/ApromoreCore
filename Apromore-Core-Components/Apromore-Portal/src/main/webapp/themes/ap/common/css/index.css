@@ -118,6 +118,35 @@ input[type="radio"]:checked:before {
   color: var(--ap-c-tab-text-selected);
 }
 
+.z-tab-selected .ap-icon {
+  filter: var(--ap-c-tab-text-selected-filter);
+}
+
+.z-tab-selected .ap-icon {
+  filter: var(--ap-c-tab-text-selected-filter);
+}
+
+.z-tab:hover .z.tab-text {
+  color: var(--ap-c-tab-text-hover);
+}
+
+.z-tab:hover {
+  background-color: transparent;
+}
+
+.z-tab-selected .z-tab-text:hover {
+  color: var(--ap-c-tab-text-hover);
+}
+
+.z-tab-text:hover {
+  color: var(--ap-c-tab-text-hover);
+}
+
+.z-tab:hover .ap-icon {
+  background-color: transparent;
+  filter: var(--ap-c-tab-text-hover-filter);
+}
+
 /* Windows */
 
 .z-window {
@@ -125,6 +154,7 @@ input[type="radio"]:checked:before {
 }
 
 .z-window-modal,
+.z-window-overlapped,
 .z-messagebox-window {
   padding: 0;
   border: 1px solid #b0b0b0;
@@ -149,6 +179,7 @@ input[type="radio"]:checked:before {
   background-position: top left;
 }
 
+.z-window-overlapped .z-window-header,
 .z-window-modal .z-window-header {
   padding: 7px 7px 0 10px;
   font-family: var(--ap-font-brand);
@@ -224,7 +255,7 @@ input[type="radio"]:checked:before {
 }
 
 .z-listheader {
-  background-color: var(--ap-c-soft-blue-dark-4) !important;
+  background-color: var(--ap-c-grid-head-bg) !important;
   border: none !important;
   border-right: 1px solid white !important;
 }
@@ -238,7 +269,7 @@ input[type="radio"]:checked:before {
 }
 
 .z-listbox-header-border {
-  border-bottom-color: var(--ap-c-soft-blue-dark-5);
+  border-bottom-color: var(--ap-c-grid-head-bg);
 }
 
 .z-listheader-content,
@@ -266,7 +297,6 @@ input[type="radio"]:checked:before {
 .z-auxheader,
 .z-column {
   background-color: var(--ap-c-soft-blue-dark-4) !important;
-  border: 0;
 }
 
 /* Fixes for CSV importer list */
@@ -337,3 +367,30 @@ tr.z-row-disabled td.z-row-inner .z-slider-area {
   visibility: visible;
 }
 
+.z-south-icon.z-icon-caret-down {
+  top: -4px;
+  color: var(--ap-c-grey-minor);
+}
+
+.z-south-icon.z-icon-ellipsis-h {
+  top: -4px;
+  color: var(--ap-c-grey-minor);
+  visibility: visible;
+}
+
+/* Messagebox icons */
+.z-messagebox-question {
+  background-image: url(../img/msgbox/question.svg);
+}
+
+.z-messagebox-exclamation {
+  background-image: url(../img/msgbox/warning.svg);
+}
+
+.z-messagebox-information {
+  background-image: url(../img/msgbox/info.svg);
+}
+
+.z-messagebox-error {
+  background-image: url(../img/msgbox/stop.svg);
+}

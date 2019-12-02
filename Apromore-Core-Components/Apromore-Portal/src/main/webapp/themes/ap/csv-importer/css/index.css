@@ -25,6 +25,15 @@
     display: none !important;
 }
 
+.ap-csv-importer-main {
+    border: 0;
+    border-bottom: 1px solid var(--ap-c-line-sep);
+}
+
+.ap-csv-importer-main .z-grid-header-border {
+    display: none;
+}
+
 .ap-csv-importer .myGroupBox {
     background-image: linear-gradient(
             270deg,
@@ -35,8 +44,12 @@
 }
 
 
+.ap-csv-importer-grid-wrapper .z-grid-header,
+.ap-csv-importer-grid-wrapper .z-auxheader,
+.ap-csv-importer-grid-wrapper .z-grid-header-border,
 .ap-csv-importer-grid-wrapper .z-column {
-    border: 0;
+    /*border: 0;*/
+    border-color: var(--ap-c-column-sep);
 }
 
 .ap-csv-importer-grid-wrapper {
@@ -45,9 +58,10 @@
             var(--ap-c-soft-blue-dark-4),
             var(--ap-c-soft-blue-dark-4)
     );
-    background-size: 100% 64px;
+    background-size: 100% 66px;
     background-position: 0 0;
     background-repeat: no-repeat;
+    background-color: white;
 }
 
 .ap-csv-importer-footer button {

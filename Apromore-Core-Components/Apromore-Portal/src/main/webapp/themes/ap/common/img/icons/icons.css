@@ -23,21 +23,45 @@
 }
 
 .ap-icon:hover {
-    background-color: var(--ap-c-action-bg-hover) !important;
+    background-color: var(--ap-c-action-bg-hover);
     filter: none;
 }
 
 .ap-icon:focus {
     box-shadow: none !important;
 }
-
 .ap-icon-activity {
     background-image: url('activity.svg') !important;
     width: 26px !important;
 }
 
+.ap-icon-arrow-down {
+    background-image: url('arrow-down.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-arrow-right-3 {
+    background-image: url('arrow-right-3.svg') !important;
+    width: 26.9765625px !important;
+}
+
+.ap-icon-arrow-right {
+    background-image: url('arrow-right.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-arrow-up {
+    background-image: url('arrow-up.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-attribute {
     background-image: url('attribute.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-begin {
+    background-image: url('begin.svg') !important;
     width: 26px !important;
 }
 
@@ -71,6 +95,11 @@
     width: 26px !important;
 }
 
+.ap-icon-clock {
+    background-image: url('clock.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-cog-solid {
     background-image: url('cog-solid.svg') !important;
     width: 26px !important;
@@ -81,13 +110,38 @@
     width: 26px !important;
 }
 
+.ap-icon-dir-lr {
+    background-image: url('dir-lr.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-dir-tb {
+    background-image: url('dir-tb.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-download {
     background-image: url('download.svg') !important;
     width: 28.5px !important;
 }
 
+.ap-icon-end {
+    background-image: url('end.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-export-bpmn {
     background-image: url('export-bpmn.svg') !important;
+    width: 26.1953125px !important;
+}
+
+.ap-icon-export-image {
+    background-image: url('export-image.svg') !important;
+    width: 26.171484375px !important;
+}
+
+.ap-icon-export-log {
+    background-image: url('export-log.svg') !important;
     width: 26.1953125px !important;
 }
 
@@ -99,6 +153,26 @@
 .ap-icon-export-svg {
     background-image: url('export-svg.svg') !important;
     width: 26.1953125px !important;
+}
+
+.ap-icon-fast-backward {
+    background-image: url('fast-backward.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-fast-forward {
+    background-image: url('fast-forward.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-filter {
+    background-image: url('filter.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-flag {
+    background-image: url('flag.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-folder-add {
@@ -121,6 +195,11 @@
     width: 26.390625px !important;
 }
 
+.ap-icon-folder-open {
+    background-image: url('folder-open.svg') !important;
+    width: 28.5px !important;
+}
+
 .ap-icon-folder {
     background-image: url('folder.svg') !important;
     width: 26.390625px !important;
@@ -131,9 +210,19 @@
     width: 26px !important;
 }
 
+.ap-icon-history {
+    background-image: url('history.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-hourglass {
     background-image: url('hourglass.svg') !important;
     width: 26px !important;
+}
+
+.ap-icon-id-label {
+    background-image: url('id-label.svg') !important;
+    width: 28.5px !important;
 }
 
 .ap-icon-key {
@@ -151,8 +240,23 @@
     width: 26px !important;
 }
 
+.ap-icon-pause {
+    background-image: url('pause.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-pennant {
+    background-image: url('pennant.svg') !important;
+    width: 28.5px !important;
+}
+
 .ap-icon-percent {
     background-image: url('percent.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-play {
+    background-image: url('play.svg') !important;
     width: 26px !important;
 }
 
@@ -181,6 +285,16 @@
     width: 28.5px !important;
 }
 
+.ap-icon-road {
+    background-image: url('road.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-route {
+    background-image: url('route.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-save-as {
     background-image: url('save-as.svg') !important;
     width: 27.8359375px !important;
@@ -206,6 +320,16 @@
     width: 28.5px !important;
 }
 
+.ap-icon-step-backward {
+    background-image: url('step-backward.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-step-forward {
+    background-image: url('step-forward.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-sync {
     background-image: url('sync.svg') !important;
     width: 26px !important;
@@ -213,7 +337,22 @@
 
 .ap-icon-table {
     background-image: url('table.svg') !important;
-    width: 28.857142857142854px !important;
+    width: 26px !important;
+}
+
+.ap-icon-timer {
+    background-image: url('timer.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-times {
+    background-image: url('times.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-trash-all {
+    background-image: url('trash-all.svg') !important;
+    width: 27.7578125px !important;
 }
 
 .ap-icon-trash {

@@ -127,7 +127,7 @@
                                             <h:div class="controls controls-row register">
                                                 <h:a href="#register" class="register-button button link-button"
                                                      data-toggle="tab">
-                                                    No account yet? Register now for free!
+                                                    Create a new account
                                                 </h:a>
                                             </h:div>
                                         </h:fieldset>

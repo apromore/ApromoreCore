@@ -20,7 +20,10 @@
 
 <!-- importProcessesWindow window has ImportProcessesController as a controller -->
 <window id="importWindow" position="center" title="Import process models or logs"
-        visible="true" sizable="true" width="600px">
+        visible="true" sizable="true" width="600px"
+        sclass="ap-csv-import-chooser"
+        xmlns:w="http://www.zkoss.org/2005/zk/client"
+        xmlns:h="http://www.w3.org/1999/xhtml">
     <vbox vflex="1">
         <grid sclass="ap-grid ap-form">
             <columns sizable="true">
@@ -31,7 +34,7 @@
             <rows>
                 <row>
                     <label value="File to upload"/>
-                    <button id="uploadButton" label="Browse" upload="true,maxsize=-1,multiple=false,native"/>
+                    <button id="uploadButton" label="Browse" upload="true,maxsize=-1,multiple=false,native" w:onClick="Ap.uploadBtnClick()"/>
                     <label id="fileNameLabel" value="File Name - Please consider uploading logs in gz format" width="100%"/>
                 </row>
                 <row spans="1,2">
@@ -52,4 +55,5 @@
             </rows>
         </grid>
     </vbox>
+    <h:script type="text/javascript" src="themes/ap/common/js/upload.js" defer="defer"></h:script>
 </window>

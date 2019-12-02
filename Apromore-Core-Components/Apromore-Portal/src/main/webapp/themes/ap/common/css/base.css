@@ -2,6 +2,18 @@
 @import url('../fonts/gilroy-free/gilroy-free.css');
 
 :root {
+    /* Filter */
+    --ap-filter-ico-orange: invert(82%) sepia(12%) saturate(7033%) hue-rotate(338deg) brightness(98%) contrast(101%);
+    --ap-filter-ico-sunset: invert(50%) sepia(96%) saturate(3596%) hue-rotate(1deg) brightness(98%) contrast(101%);
+    --ap-filter-ico-maroon: invert(27%) sepia(95%) saturate(1140%) hue-rotate(319deg) brightness(88%) contrast(87%);
+    /* ---ap-c-grey */
+    --ap-filter-ico-normal-dark: invert(27%) sepia(0%) saturate(0%) hue-rotate(56deg) brightness(95%) contrast(81%);
+    /* --ap-c-orange-light-3: #fdd69d; */
+    --ap-filter-ico-normal-light: invert(82%) sepia(16%) saturate(924%) hue-rotate(340deg) brightness(106%) contrast(98%);
+    --ap-filter-ico-black: none; /* keep black */
+    --ap-filter-ico-white: invert(100%) sepia(100%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%); /* white */
+    --ap-filter-ico-static: invert(27%) sepia(0%) saturate(0%) hue-rotate(56deg) brightness(95%) contrast(81%);; /* ---ap-c-grey */
+
     /* High-level structure colours */
     --ap-c-line-sep: #f3f3f3;
     --ap-c-line-sep-selected: var(--ap-c-grey-light-5);
@@ -23,8 +35,13 @@
     --ap-c-action-bg-hover: #f3f3f3;
 
     --ap-c-tab-bg-normal: #f3f3f3;
+    --ap-c-tab-bg-hover: var(--ap-c-oceanic-light-5);
+    --ap-c-tab-bg-selected: #f3f3f3;
     --ap-c-tab-text-normal: var(--ap-c-grey);
-    --ap-c-tab-text-selected: var(--ap-c-sunset);
+    --ap-c-tab-text-hover: var(--ap-c-sunset);
+    --ap-c-tab-text-hover-filter: var(--ap-filter-ico-sunset);
+    --ap-c-tab-text-selected: var(--ap-c-maroon);
+    --ap-c-tab-text-selected-filter: var(--ap-filter-ico-maroon);
     --ap-c-tab-bar-normal: transparent;
     --ap-c-tab-bar-selected: var(--ap-c-maroon);
 
@@ -32,12 +49,14 @@
     --ap-c-menu-bg-normal: var(--ap-c-maroon-light-4);
     --ap-c-menu-bg-selected: var(--ap-c-maroon-dark-1);
     --ap-c-menu-text-normal: var(--ap-c-grey);
+    --ap-c-menu-text-hover: var(--ap-c-grey);
     --ap-c-menu-text-selected: var(--ap-c-oceanic-light-5);
 
-    --ap-c-grid-head-bg: var(--ap-c-soft-blue-dark-2);
+    --ap-c-grid-head-bg: var(--ap-c-soft-blue-dark-3);
+    --ap-c-column-sep: var(--ap-c-soft-blue-dark-1);
 
     --ap-c-grid-row-bg-normal: transparent;
-    --ap-c-grid-row-bg-selected: var(--ap-c-oceanic-light-5);
+    --ap-c-grid-row-bg-selected: var(--ap-c-oceanic-light-3);
     --ap-c-grid-row-bg-hover: var(--ap-c-oceanic-light-5);
 
     /* Typography */
@@ -55,23 +74,17 @@
     --ap-header-logo-width: 120px;
     --ap-header-title-left: 120px;
 
+    /*
+    ZK Windows z-index start at 1800
+     */
     /* Z-indexing */
-    --ap-z-alert: 20000;
-    --ap-z-header: 10000;
-    --ap-z-header-logo: 10010;
-    --ap-z-header-help: 10020;
-    --ap-z-header-title: 10030;
-    --ap-z-editor-window: 9000;
-    --ap-z-editor-toolbar: 9010;
-
-    /* Filter */
-    /* ---ap-c-grey */
-    --ap-filter-ico-normal-dark: invert(27%) sepia(0%) saturate(0%) hue-rotate(56deg) brightness(95%) contrast(81%);
-    /* --ap-c-orange-light-3: #fdd69d; */
-    --ap-filter-ico-normal-light: invert(82%) sepia(16%) saturate(924%) hue-rotate(340deg) brightness(106%) contrast(98%);
-    --ap-filter-ico-black: none; /* keep black */
-    --ap-filter-ico-white: invert(100%) sepia(100%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%); /* white */
-    --ap-filter-ico-static: invert(27%) sepia(0%) saturate(0%) hue-rotate(56deg) brightness(95%) contrast(81%);; /* ---ap-c-grey */
+    --ap-z-alert: 2000;
+    --ap-z-header: 1000;
+    --ap-z-header-logo: 1010;
+    --ap-z-header-help: 1020;
+    --ap-z-header-title: 1030;
+    --ap-z-editor-window: 900;
+    --ap-z-editor-toolbar: 910;
 }
 
 /* Filter classes */
@@ -128,6 +141,12 @@
     top: 4px;
     right: 10px;
     z-index: var(--ap-z-header-help);
+}
+
+.ap-header-actions a,
+.ap-header-actions a:hover,
+.ap-header-actions a:visited {
+    text-decoration: none;
 }
 
 .ap-header-actions .ap-icon {

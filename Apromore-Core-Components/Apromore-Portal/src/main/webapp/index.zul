@@ -32,7 +32,7 @@
 <?link rel="shortcut icon" href="/themes/ap/common/img/brand/favicon.ico" ?>
 <?link rel="prefetch" href="themes/ap/common/img/brand/loader.svg" ?>
 <?link rel="stylesheet" type="text/css" href="themes/ap/common/css/headload.css" ?>
-
+<?script src="/themes/ap/common/js/index.js"?>
 <zk xmlns="http://www.zkoss.org/2005/zul"
     xmlns:h="http://www.w3.org/1999/xhtml"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -44,6 +44,7 @@
     <script type="text/javascript" src="js/jquery.js"></script>
     <!--<script type="text/javascript" src="js/highstock.js"></script>-->
     <script type="text/javascript" src="js/exporting.js" defer="true"></script>
+
 
     <script src="js/pdf.v1.10.100.js"></script>
     <script src="js/jspdf.v1.4.1.debug.js"></script>
@@ -205,7 +206,7 @@
                     <center id="leftInnerCenterPanel" border="0" vflex="true" hflex="true" style="padding: 10px 3px 10px 10px;">
                         <Navigation id="navigationcomp" vflex="true" hflex="true" border="0" />
                     </center>
-                    <south title="Process Details" size="25%" hflex="true" splittable="true" border="0" sclass="ap-process-detail-wrapper">
+                    <south title="Details" size="25%" hflex="true" splittable="true" border="0" sclass="ap-process-detail-wrapper">
                         <DetailView id="baseDetail" vflex="true" hflex="true" border="0" style="margin-left: 5px; margin-top: 5px"/>
                     </south>
                 </borderlayout>
@@ -277,6 +278,8 @@
                 pp.style.display = "block";
             };
             zul.inp.Bandbox.prototype.slideDown_ = zul.inp.Combobox.prototype.slideDown_;
+            window.__AP__ = {};
         ]]>
     </script>
+    <h:script type="text/javascript" defer="defer" src="themes/ap/common/js/jschardet.min.js"></h:script>
 </zk>

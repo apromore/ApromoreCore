@@ -1,5 +1,5 @@
-<zk xmlns:h="http://www.w3.org/1999/xhtml">
-    <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh"  width="85vw"  position="center" title="CSV Importer" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer" >
+<zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:w="http://www.zkoss.org/2005/zk/client">
+    <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="CSV Importer" style="min-width: 940px" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer" >
         <custom-attributes theme="${labels.ap.theme}"/>
         <style src="/themes/${theme}/csv-importer/css/index.css" />
 
@@ -138,7 +138,7 @@
         </popup>
 
         <borderlayout id="blayout">
-            <center sclass="ap-csv-importer-main" style="border:0">
+            <center sclass="ap-csv-importer-main">
                 <!--<div vflex="1" hflex="1">-->
                 <!--<div visible="true" id="popUPBox" zclass="relativePos"></div>-->
                 <!--<div visible="false" height="70px"/>-->
@@ -164,10 +164,10 @@
                     </div>
                 </div>
             </center>
-            <south sclass="ap-csv-importer-footer" style="border:0; border-top-width: 1px">
+            <south sclass="ap-csv-importer-footer" hflex="min" style="border:0; border-top-width: 1px">
                 <div style="padding: 5px 0 5px 5px;">
                     <hlayout>
-                        <div hflex="4">
+                        <div hflex="1">
                             <button id="setOtherAll" style="position:relative;" width="180px">
                                 Ignore&#x2002;&#xf061;&#x2002;Event Attribute
                             </button>
@@ -176,19 +176,31 @@
                             </button>
                             <space spacing="10px" />
                             Encoding:
-                            <combobox id="setEncoding" autodrop="true" value="UTF-8" width="100px" readonly="true">
+                            <combobox id="setEncoding" autodrop="true" value="UTF-8" width="160px" readonly="true">
                                 <template name="model">
                                     <comboitem label="${each}" />
                                 </template>
                             </combobox>
+                            <span sclass="ap-csv-encoding" width="150px">
+                                <button w:onClick="Ap.encodingDetect()">
+                                    Detect
+                                </button>
+                                <textbox id="ap-encoding-idx" value="0" style="display:none;">
+                                    <attribute name="onChange">
+                                        Integer idx = Integer.parseInt(self.getValue());
+                                        // Messagebox.show(self.getValue());
+                                        if (idx >= 0) {
+                                        setEncoding.setSelectedIndex(idx);
+                                        Events.postEvent("onSelect", setEncoding, null);
+                                        }
+                                    </attribute>
+                                </textbox>
+                            </span>
                         </div>
-
-
-                        <div hflex="2" style="text-align: right; padding-right: 10px;">
+                        <div width="230px" style="text-align: right;">
                             <button id="toXESButton" label="Upload Log" iconSclass="z-icon-check-circle fa-lg z-icon-fw" disabled="true" style="position:relative;padding-left:2px;" width="100px"  />
                             <button id="cancelButton" label="Cancel" iconSclass="z-icon-times-circle fa-lg z-icon-fw" style="position:relative;padding-left:2px;" width="100px"  />
                         </div>
-
 
                         <separator />
                     </hlayout>

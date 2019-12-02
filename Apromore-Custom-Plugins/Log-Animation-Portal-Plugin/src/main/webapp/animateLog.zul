@@ -250,7 +250,7 @@
                     <div id="speed_controls">
                         <!-- <center style="font: 1em monospace">Replay Speed</center> -->
                         <div id="slider2" disabled="disabled" style="margin: auto;">
-                            <n:div class="speed-control-tip">Speed Control</n:div>
+                            <n:div class="speed-control-tip">Speed control</n:div>
                         </div>
                     </div>
                     <div sclass="ap-la-show-case-id">

@@ -87,3 +87,9 @@
 #slider2.ui-slider-float .ui-slider-tip:after {
     display: none !important;
 }
+
+#slider2.ui-slider-float .ui-slider-tip,
+#slider2.ui-slider-float .ui-slider-tip-label {
+    visibility: visible;
+    opacity: 1;
+}

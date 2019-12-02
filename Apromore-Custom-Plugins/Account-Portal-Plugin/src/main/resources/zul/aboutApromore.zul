@@ -33,10 +33,12 @@
                             <div sclass="ap-edition">${arg.edition}</div>
                             <div sclass="ap-copyright">Copyright 2019, The University of Melbourne. All rights reserved.</div>
                             <div sclass="ap-version">Version: ${arg.version}</div>
-                            <div>This software is licensed under the
-                                <a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank">LGPL 3.0 license</a>
-                                and <a href="https://apromore.org/ee-licenses" target="_blank">other open source licenses</a>.
-                                It also incorporates some closed source components, licensed by The University of Melbourne.
+                            <div>
+                                Apromore Enterprise Edition is licensed under a commercial license.
+                                It uses open-source libraries from Apromore Community Edition, which is licensed under the
+                                <a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank">GNU Lesser General Public License, Version 3.0.</a>
+                                It also uses third-party libraries, whose open-source licenses are listed
+                                <a href="https://apromore.org/ee-licenses" target="_blank">here</a>.
                             </div>
                 </vlayout>
                 <space vflex="10"/>

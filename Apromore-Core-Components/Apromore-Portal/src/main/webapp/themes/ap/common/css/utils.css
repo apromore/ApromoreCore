@@ -53,3 +53,7 @@
 .ap-form table td:first-child .z-label {
     font-weight: 600;
 }
+
+.ap-stateful-button input {
+    display: none;
+}
