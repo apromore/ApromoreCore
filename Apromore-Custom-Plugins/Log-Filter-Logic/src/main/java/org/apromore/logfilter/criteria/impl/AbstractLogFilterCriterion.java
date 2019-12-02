@@ -150,15 +150,17 @@ public abstract class AbstractLogFilterCriterion implements LogFilterCriterion {
         }else {
             string += "all traces ";
 
-            if(attribute.equals("case:variant")) {
-                string += "where case variant is equal to " + values;
-            }else{
-                if(containment == Containment.CONTAIN_ANY) {
-                    string += "containing an event where attribute " + attribute + " is equal to " + values;
-                }else {
-//                    string += "where attribute " + attribute + " is equal to " + values + " for all events";
-                    //2019-08-20 : Chii
-                    string += "where all events have attribute " + attribute + " equal to " + values + " for all events";
+            if(this.label.equals("case:attribute")) {
+                string += "where attribute " + this.attribute + " is equal to " + values;
+            } else {
+                if (attribute.equals("case:variant")) {
+                    string += "where case variant is equal to " + values;
+                } else {
+                    if (containment == Containment.CONTAIN_ANY) {
+                        string += "containing an event where attribute " + attribute + " is equal to " + values;
+                    } else {
+                        string += "where all events have attribute " + attribute + " equal to " + values + " for all events";
+                    }
                 }
             }
         }

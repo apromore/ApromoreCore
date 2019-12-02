@@ -26,10 +26,7 @@ import org.apromore.logfilter.criteria.model.Level;
 import org.apromore.logfilter.criteria.model.LogFilterTypeSelector;
 import org.apromore.logfilter.criteria.model.Type;
 import org.deckfour.xes.extension.std.XTimeExtension;
-import org.deckfour.xes.model.XAttribute;
-import org.deckfour.xes.model.XAttributeTimestamp;
-import org.deckfour.xes.model.XEvent;
-import org.deckfour.xes.model.XTrace;
+import org.deckfour.xes.model.*;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
@@ -46,25 +43,36 @@ public class LogFilterCriterionAttribute extends AbstractLogFilterCriterion {
 
         if(level == Level.TRACE) {
 
-            if(LogFilterTypeSelector.getType(attribute) == Type.TIME_TIMESTAMP) {
-                return isMatchingTraceTime(trace);
-            }
+            if (this.label.toLowerCase().equals("case:attribute")) { // case attribute of the case
+                String attributeKey = this.attribute;
 
-            UnifiedMap<String, Boolean> matchMap = new UnifiedMap<>(); //2019-10-24
+                XAttributeMap attrMap = trace.getAttributes();
+                if(attrMap.containsKey(attributeKey)) {
+                    String value = attrMap.get(attributeKey).toString();
+                    if(this.value.contains(value)) return true;
+                    else return false;
+                }
+            } else {
+                if (LogFilterTypeSelector.getType(attribute) == Type.TIME_TIMESTAMP) {
+                    return isMatchingTraceTime(trace);
+                }
 
-            for (XEvent event : trace) {
-                if (containment == Containment.CONTAIN_ANY) {
-                    if (isMatching(event)) return true;
-                } else if (containment == Containment.CONTAIN_ALL) {
-                    for(String v : value) {
-                        if(isMatchingEventAttribute(event, attribute, v)) {
-                            matchMap.put(event.getAttributes().get("concept:name").toString(), true);
+                UnifiedMap<String, Boolean> matchMap = new UnifiedMap<>(); //2019-10-24
+
+                for (XEvent event : trace) {
+                    if (containment == Containment.CONTAIN_ANY) {
+                        if (isMatching(event)) return true;
+                    } else if (containment == Containment.CONTAIN_ALL) {
+                        for (String v : value) {
+                            if (isMatchingEventAttribute(event, attribute, v)) {
+                                matchMap.put(event.getAttributes().get("concept:name").toString(), true);
+                            }
                         }
                     }
                 }
+                if (matchMap.size() >= value.size()) return true;
+                else return false;
             }
-            if(matchMap.size() >= value.size()) return true;
-            else return false;
         }
 
         return false;
