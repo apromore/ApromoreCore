@@ -1,7 +1,6 @@
 package org.apromore.service.csvimporter;
 
 import com.opencsv.CSVReader;
-import org.apromore.service.csvimporter.impl.LogModel;
 import org.deckfour.xes.model.XLog;
 import org.zkoss.util.media.Media;
 import org.zkoss.zul.*;
@@ -13,11 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Sample service API.
+ * Service which converts event logs in CSV format to XES format.
+ *
+ * Conversion is currently stateful, requiring the methods {@link #sampleCSV},
+ * {@link #prepareXesModel} and {@link #createXLog} to be invoked in series.
  */
 public interface CSVImporterLogic {
 
-    List<LogModel> prepareXesModel(CSVReader r);
+    // Accessors
+
     void setHeads(List<String> line);
     HashMap<String, Integer> getHeads();
     void setLine(List<String>  line);
@@ -35,10 +38,14 @@ public interface CSVImporterLogic {
     void setPopUPBox(Div popUPBox);
     Boolean getErrorCheck();
     void setPopupID(String popupID);
-
     void setTextboxID(String textboxID);
-
     void setLabelID(String labelID);
-    XLog createXLog(List<LogModel> traces);
+
+
+    // Business logic methods
+
+    LogSample sampleCSV(CSVReader reader) throws InvalidCSVException, IOException;
+    LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException, IOException;
+    XLog createXLog(List<LogEventModel> traces);
     void toXESfile(XLog xLog, String FileName) throws FileNotFoundException, IOException;
 }

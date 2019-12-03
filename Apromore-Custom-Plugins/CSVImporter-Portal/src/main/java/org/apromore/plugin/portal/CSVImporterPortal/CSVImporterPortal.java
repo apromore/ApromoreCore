@@ -38,7 +38,9 @@ import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
-import org.apromore.service.csvimporter.impl.LogModel;
+import org.apromore.service.csvimporter.InvalidCSVException;
+import org.apromore.service.csvimporter.LogModel;
+import org.apromore.service.csvimporter.LogSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -105,6 +107,37 @@ public class CSVImporterPortal implements FileImporterPlugin {
         portalContext.refreshContent();
     }
 
+    private CSVReader newCSVReader(Media media, char separator, String charset) throws InvalidCSVException, UnsupportedEncodingException {
+        Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
+        return (new CSVReaderBuilder(reader))
+                    .withSkipLines(0)
+                    .withCSVParser((new RFC4180ParserBuilder()).withSeparator(separator).build())
+                    .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
+                    .build();
+    }
+
+    private char getMaxOccuringChar(String str) {
+        if (str == null || str.isEmpty()) {
+            throw new IllegalArgumentException("input word must have non-empty value.");
+        }
+        char maxchar = ' ';
+        int maxcnt = 0;
+        int[] charcnt = new int[Character.MAX_VALUE + 1];
+        for (int i = str.length() - 1; i >= 0; i--) {
+            if(!Character.isLetter(str.charAt(i))) {
+                for(int j =0; j < supportedSeparators.length; j++) {
+                    if(str.charAt(i) == supportedSeparators[j]) {
+                        char ch = str.charAt(i);
+                        if (++charcnt[ch] >= maxcnt) {
+                            maxcnt = charcnt[ch];
+                            maxchar = ch;
+                        }
+                    }
+                }
+            }
+        }
+        return maxchar;
+    }
 
     /**
      * Gets the Content.
@@ -115,7 +148,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
      * read CSV content and create list model to be set as grid model.
      */
     @SuppressWarnings("null")
-
     private void displayCSVContent(Media media, ListModelList<String[]> result,ListModelList<String[]> indexedResult, Grid myGrid, Div popUPBox, Window window) {
         String firstLine = null;
 
@@ -130,194 +162,186 @@ public class CSVImporterPortal implements FileImporterPlugin {
         }
 
         separator = getMaxOccuringChar(firstLine);
-        CSVReader reader = null;
-
 
         if(separator == Character.UNASSIGNED) {
             Messagebox.show("Separator is not supported.", "Error", Messagebox.OK, Messagebox.ERROR);
-        } else {
-            try {
+            return;
+        }
 
-                RFC4180ParserBuilder builder = new RFC4180ParserBuilder();
-                RFC4180Parser parser = builder.withSeparator(separator).build();
-                // check file format to choose correct file reader.
-                if (media.isBinary()) {
-                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData(), "UTF-8")).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
-                } else {
-                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
-                }
-                List<String> header = new ArrayList<String>();
-                List<String> line = new ArrayList<String>();
-                List<Window> popUpWindow = new ArrayList<>();
+        try {
+            CSVReader csvReader = newCSVReader(media, separator, "utf-8");
+            //LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+
+            List<String> header = new ArrayList<String>();
+            List<String> line = new ArrayList<String>();
+            List<Window> popUpWindow = new ArrayList<>();
 
 
-                Columns headerColumns = new Columns();
+            Columns headerColumns = new Columns();
 
-                if (myGrid.getColumns() == null) {
-                    headerColumns.setParent(myGrid);
-                } else {
-                    headerColumns.getChildren().clear();
-                }
+            if (myGrid.getColumns() == null) {
+                headerColumns.setParent(myGrid);
+            } else {
+                headerColumns.getChildren().clear();
+            }
 
-                /// display first numberOfrows to user and display drop down lists to set attributes
-                Collections.addAll(header, reader.readNext());
-                // Deal with UTF-8 with BOM file encoding
+            /// display first numberOfrows to user and display drop down lists to set attributes
+            Collections.addAll(header, csvReader.readNext());
+            // Deal with UTF-8 with BOM file encoding
 //                String BomC = new String(header.get(0).getBytes(), Charset.forName("UTF-8"));
 //                header.set(0, BomC);
 
-                //2019-11-12
-                if(header.size() > 8) {
-                    window.setMaximized(true);
-                } else {
-                    int size = IndexColumnWidth + header.size() * AttribWidth + 35;
-                    window.setWidth(size + "px");
-                }
-                if (popUPBox != null) {
-                    popUPBox.getChildren().clear();
-                }
-                if (result != null) {
-                    result.clear();
-                }
-
-
-                line = Arrays.asList(reader.readNext());
-
-
-
-                if(line.size() < 2 && line != null) {
-                    while (line.size() < 2 && line != null) {
-                        line = Arrays.asList(reader.readNext());
-                    }
-                }
-
-                List<String> myLine = header;
-
-                if(line != null && header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
-                    csvImporterLogic.setLine(line);
-                    csvImporterLogic.setHeads(header);
-                    csvImporterLogic.setOtherTimestamps(result);
-                }else{
-                    Messagebox.show("Could not parse file!");
-                }
-
-                if (line.size() != header.size()) {
-                    Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
-                    if(window != null) {
-                        window.detach();
-                    }
-                    reader.close();
-                } else {
-                    csvImporterLogic.setLists(line.size(), csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
-
-                    List<Listbox> lists = csvImporterLogic.getLists();
-
-                    Auxhead optionHead = new Auxhead();
-                    Auxheader index = new Auxheader();
-                    optionHead.appendChild(index);
-
-                    for (int i=0; i < lists.size(); i++) {
-//                        attrBox.appendChild(lists.get(i));
-
-                        Auxheader listHeader = new Auxheader();
-                        listHeader.appendChild(lists.get(i));
-                        optionHead.appendChild(listHeader);
-                    }
-                    myGrid.appendChild(optionHead);
-
-
-                    Column indexCol = new Column();
-                    indexCol.setWidth(IndexColumnWidth + "px");
-                    indexCol.setValue("");
-                    indexCol.setLabel("");
-                    indexCol.setAlign("center");
-                    headerColumns.appendChild(indexCol);
-
-                    for (int i = 0; i < header.size(); i++) {
-                        Column newColumn = new Column();
-                        newColumn.setWidth(AttribWidth + "px");
-                        newColumn.setValue(header.get(i));
-                        newColumn.setLabel(header.get(i));
-                        newColumn.setAlign("center");
-                        headerColumns.appendChild(newColumn);
-                        headerColumns.setSizable(true);
-                    }
-
-
-                    myGrid.appendChild(headerColumns);
-
-
-                    List<String>  newLine = line;
-
-                    // display first 1000 rows
-                    int numberOfrows = 0;
-                    while (line != null && numberOfrows < 100) {
-
-                        if(line != null && line.size() > 2) {
-                            List<String> withIndex = new ArrayList<String>();
-                            withIndex.add(String.valueOf(numberOfrows + 1));
-                            withIndex.addAll(line);
-                            indexedResult.add(withIndex.toArray(new String[0]));
-                        }
-                        result.add(line.toArray(new String[0]));
-                        numberOfrows++;
-
-                        if(numberOfrows == 100) {
-                            String[] continued = {"...",""};
-
-                            indexedResult.add(continued);
-                        }
-
-                        try {
-                            line = Arrays.asList(reader.readNext());
-                        }catch(NullPointerException e) {
-                            break;
-                        }
-                    }
-
-
-
-                    Popup helpP = (Popup) window.getFellow("popUpHelp");
-
-                    if(result != null && myLine != null) {
-                        csvImporterLogic.automaticFormat(result, myLine);
-                        csvImporterLogic.setOtherTimestamps(result);
-                    }
-
-                    createPopUpTextBox(newLine.size(), popUPBox, helpP);
-                    csvImporterLogic.openPopUp();
-                    reader.close();
-
-
-
-
-
-                    Button setOtherAll = (Button) window.getFellow("setOtherAll");
-                    Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
-
-
-                    setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
-                    setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
-
-                    setOtherAll.addEventListener("onClick", new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                            csvImporterLogic.setOtherAll(window);
-                        }
-                    });
-
-                    setIgnoreAll.addEventListener("onClick", new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                            csvImporterLogic.setIgnoreAll(window);
-                        }
-                    });
-                }
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                Messagebox.show(e.getMessage());
+            //2019-11-12
+            if(header.size() > 8) {
+                window.setMaximized(true);
+            } else {
+                int size = IndexColumnWidth + header.size() * AttribWidth + 35;
+                window.setWidth(size + "px");
             }
-        }
+            if (popUPBox != null) {
+                popUPBox.getChildren().clear();
+            }
+            if (result != null) {
+                result.clear();
+            }
 
+
+            line = Arrays.asList(csvReader.readNext());
+
+
+
+            if(line.size() < 2 && line != null) {
+                while (line.size() < 2 && line != null) {
+                    line = Arrays.asList(csvReader.readNext());
+                }
+            }
+
+            List<String> myLine = header;
+
+            if(line != null && header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
+                csvImporterLogic.setLine(line);
+                csvImporterLogic.setHeads(header);
+                csvImporterLogic.setOtherTimestamps(result);
+            }else{
+                Messagebox.show("Could not parse file!");
+            }
+
+            if (line.size() != header.size()) {
+                Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
+                if(window != null) {
+                    window.detach();
+                }
+                csvReader.close();
+            } else {
+                csvImporterLogic.setLists(line.size(), csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
+
+                List<Listbox> lists = csvImporterLogic.getLists();
+
+                Auxhead optionHead = new Auxhead();
+                Auxheader index = new Auxheader();
+                optionHead.appendChild(index);
+
+                for (int i=0; i < lists.size(); i++) {
+//                    attrBox.appendChild(lists.get(i));
+
+                    Auxheader listHeader = new Auxheader();
+                    listHeader.appendChild(lists.get(i));
+                    optionHead.appendChild(listHeader);
+                }
+                myGrid.appendChild(optionHead);
+
+
+                Column indexCol = new Column();
+                indexCol.setWidth(IndexColumnWidth + "px");
+                indexCol.setValue("");
+                indexCol.setLabel("");
+                indexCol.setAlign("center");
+                headerColumns.appendChild(indexCol);
+
+                for (int i = 0; i < header.size(); i++) {
+                    Column newColumn = new Column();
+                    newColumn.setWidth(AttribWidth + "px");
+                    newColumn.setValue(header.get(i));
+                    newColumn.setLabel(header.get(i));
+                    newColumn.setAlign("center");
+                    headerColumns.appendChild(newColumn);
+                    headerColumns.setSizable(true);
+                }
+
+
+                myGrid.appendChild(headerColumns);
+
+
+                List<String>  newLine = line;
+
+                // display first 1000 rows
+                int numberOfrows = 0;
+                while (line != null && numberOfrows < 100) {
+
+                    if(line != null && line.size() > 2) {
+                        List<String> withIndex = new ArrayList<String>();
+                        withIndex.add(String.valueOf(numberOfrows + 1));
+                        withIndex.addAll(line);
+                        indexedResult.add(withIndex.toArray(new String[0]));
+                    }
+                    result.add(line.toArray(new String[0]));
+                    numberOfrows++;
+
+                    if(numberOfrows == 100) {
+                        String[] continued = {"...",""};
+
+                        indexedResult.add(continued);
+                    }
+
+                    try {
+                        line = Arrays.asList(csvReader.readNext());
+                    }catch(NullPointerException e) {
+                        break;
+                    }
+                }
+
+
+
+                Popup helpP = (Popup) window.getFellow("popUpHelp");
+
+                if(result != null && myLine != null) {
+                    csvImporterLogic.automaticFormat(result, myLine);
+                    csvImporterLogic.setOtherTimestamps(result);
+                }
+
+                createPopUpTextBox(newLine.size(), popUPBox, helpP);
+                csvImporterLogic.openPopUp();
+                csvReader.close();
+
+
+
+
+
+                Button setOtherAll = (Button) window.getFellow("setOtherAll");
+                Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
+
+
+                setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
+                setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
+
+                setOtherAll.addEventListener("onClick", new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        csvImporterLogic.setOtherAll(window);
+                    }
+                });
+
+                setIgnoreAll.addEventListener("onClick", new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        csvImporterLogic.setIgnoreAll(window);
+                    }
+                });
+            }
+
+
+        } catch (InvalidCSVException | IOException e) {
+            e.printStackTrace();
+            Messagebox.show(e.getMessage());
+        }
     }
 
 
@@ -377,7 +401,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 
 
-
+    // FileImporterPlugin implementation
 
     @Override
     public Set<String> getFileExtensions() {
@@ -393,6 +417,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
         try {
             Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
 
+            if (media == null || window == null) {
+                return;
+            }
+
             ListModelList<String[]> result = new ListModelList<>();
             ListModelList<String[]> indexedResult = new ListModelList<>();
             Grid myGrid  = (Grid) window.getFellow("myGrid");
@@ -401,133 +429,121 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Button toXESButton = (Button) window.getFellow("toXESButton");
             Button cancelButton = (Button) window.getFellow("cancelButton");
 
-            if(media != null) {
+            csvImporterLogic.resetLine();
+            csvImporterLogic.resetHead();
+            csvImporterLogic.resetList();
 
-                csvImporterLogic.resetLine();
-                csvImporterLogic.resetHead();
-                csvImporterLogic.resetList();
+            String[] allowedExtensions = {"csv", "xls", "xlsx"};
+            if (!Arrays.asList(allowedExtensions).contains(media.getFormat())) {
+                Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
 
-                String[] allowedExtensions = {"csv", "xls", "xlsx"};
-                if (Arrays.asList(allowedExtensions).contains(media.getFormat())) {
+            } else {
+                displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window);
 
-                    displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window);
-
-
-
-                    
-                    if (window != null) {
-                        // set grid model
-                        if (result != null) {
-                            myGrid.setModel(indexedResult);
-                        } else {
-                            Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
-                        }
-                        //set grid row renderer
-                        GridRendererController rowRenderer = new GridRendererController();
-                        rowRenderer.setAttribWidth(AttribWidth);
-
-                        myGrid.setRowRenderer(rowRenderer);
-                        toXESButton.setDisabled(false);
-                        window.setTitle("CSV Importer - " + media.getName());
-                    }
+                // set grid model
+                if (result != null) {
+                    myGrid.setModel(indexedResult);
                 } else {
-                    Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
+                    Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
                 }
+                //set grid row renderer
+                GridRendererController rowRenderer = new GridRendererController();
+                rowRenderer.setAttribWidth(AttribWidth);
+
+                myGrid.setRowRenderer(rowRenderer);
+                toXESButton.setDisabled(false);
+                window.setTitle("CSV Importer - " + media.getName());
             }
+
             toXESButton.addEventListener("onClick", new EventListener<Event>() {
                 public void onEvent(Event event) throws Exception {
-                    CSVReader reader = null;
-                    if(window != null) {
-                        // on clicking the button: CONVERT TO XES
-                        if (media != null) {
-                            try {
-                                RFC4180ParserBuilder builder = new RFC4180ParserBuilder();
-                                RFC4180Parser parser = builder.withSeparator(separator).build();
+                    if (window == null) {
+                        return;
+                    }
 
-                                // check file format to choose correct file reader.
-                                if (media.isBinary()) {
-                                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData(), "UTF-8")).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
-                                } else {
-                                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
-                                }
-                            }catch (Exception e) {
-                                LOGGER.error("Failed to read");
-                            }
-                            List<LogModel> xesModel = csvImporterLogic.prepareXesModel(reader);
+                    // on clicking the button: CONVERT TO XES
+                    if (media == null) {
+                        Messagebox.show("Upload file first!");
+                        return;
+                    }
 
-                            if(xesModel != null) {
-                                if (csvImporterLogic.getErrorCheck()) {
-                                    Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload log by skipping all rows " +
-                                                    "containing invalid fields.\n Select Skip columns up load log by skipping the entire columns " +
-                                                    "containing invalid fields.\n "
-                                                    , "Confirm Dialog",
-                                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
-                                            new String[]{"Skip rows", "Skip columns", "Cancel"}, Messagebox.QUESTION, null, new org.zkoss.zk.ui.event.EventListener() {
-                                                public void onEvent(Event evt) throws Exception {
-                                                    if (evt.getName().equals("onOK")) {
-                                                        if (xesModel != null) {
-                                                            // create XES file
-                                                            for (int i = 0; i < xesModel.size(); i++) {
-                                                                xesModel.get(i).getOtherTimestamps();
+                    try (CSVReader reader = newCSVReader(media, separator, "utf-8")) {
+                        LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
+                        Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported.");
 
+                        if (csvImporterLogic.getErrorCheck()) {
+                            switch (Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload log by skipping all rows " +
+                                            "containing invalid fields.\n Select Skip columns upload log by skipping the entire columns " +
+                                            "containing invalid fields.\n ",
+                                        "Confirm Dialog",
+                                        new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
+                                        new String[]{"Skip rows", "Skip columns", "Cancel"},
+                                        Messagebox.QUESTION, null, null)) {
 
-                                                                for (Map.Entry<String, Timestamp> entry : xesModel.get(i).getOtherTimestamps().entrySet()) {
-                                                                    if (entry.getKey() != null) {
-                                                                        long tempLong = entry.getValue().getTime();
-                                                                        Calendar cal = Calendar.getInstance();
-                                                                        cal.setTimeInMillis(tempLong);
-                                                                        if (cal.get(Calendar.YEAR) == 1900) {
-                                                                            System.out.println("Invalid timestamp. Entry Removed.");
-                                                                            xesModel.remove(i);
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            XLog xlog = csvImporterLogic.createXLog(xesModel);
-                                                            if (xlog != null) {
-                                                                saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-                                                            }
-                                                            window.invalidate();
-                                                            window.detach();
-                                                        }
-                                                    } else if (evt.getName().equals("onIgnore")) {
-
-                                                        for (int i = 0; i < xesModel.size(); i++) {
-                                                            xesModel.get(i).setOtherTimestamps(null);
-                                                        }
-                                                        if (xesModel != null) {
-                                                            // create XES file
-                                                            XLog xlog = csvImporterLogic.createXLog(xesModel);
-                                                            if (xlog != null) {
-                                                                saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-                                                            }
-                                                            window.invalidate();
-                                                            window.detach();
-                                                        }
-                                                    } else {
-                                                        // nothing
-                                                    }
-                                                }
-                                            });
-                                } else {
-
-                                        // create XES file
-                                        XLog xlog = csvImporterLogic.createXLog(xesModel);
-                                        if (xlog != null) {
-                                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                            case OK:  // Skip rows
+                                for (int i = 0; i < xesModel.getRows().size(); i++) {
+                                    for (Map.Entry<String, Timestamp> entry : xesModel.getRows().get(i).getOtherTimestamps().entrySet()) {
+                                        if (entry.getKey() == null) { continue; }
+                                        long tempLong = entry.getValue().getTime();
+                                        Calendar cal = Calendar.getInstance();
+                                        cal.setTimeInMillis(tempLong);
+                                        if (cal.get(Calendar.YEAR) == 1900) {
+                                            System.out.println("Invalid timestamp. Entry Removed.");
+                                            xesModel.getRows().remove(i);
                                         }
-                                        window.invalidate();
-                                        window.detach();
+                                    }
                                 }
+                                break;
+
+                            case IGNORE:  // Skip columns
+                                for (int i = 0; i < xesModel.getRows().size(); i++) {
+                                    xesModel.getRows().get(i).setOtherTimestamps(null);
+                                }
+                                break;
+
+                            case CANCEL:  // Cancel
+                                return;
                             }
+                        }
+
+                        // create XES file
+                        XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
+                        if (xlog != null) {
+                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                        }
+
+                        window.invalidate();
+                        window.detach();
+
+                    } catch (InvalidCSVException e) {
+                        if (e.getInvalidRows() == null) {
+                            Messagebox.show(e.getMessage() , "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
 
                         } else {
-                            Messagebox.show("Upload file first!");
+                            Messagebox.show(e.getMessage() , "Invalid CSV File",
+                                new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                                new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null, new EventListener() {
+                                    public void onEvent(Event evt) throws Exception {
+                                        if (evt.getName().equals("onOK")) {
+                                            File tempFile = File.createTempFile("Error_Report", ".txt");
+                                            try (FileWriter writer = new FileWriter(tempFile)) {
+                                                for(String str: e.getInvalidRows()) {
+                                                    writer.write(str + System.lineSeparator());
+                                                }
+                                                Filedownload.save(new FileInputStream(tempFile), "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+
+                                            } finally {
+                                                tempFile.delete();
+                                            }
+                                        }
+                                    }
+                                }
+                            );
                         }
+                    } catch (IOException e) {
+                        LOGGER.error("Failed to read");
                     }
                 }
-
             });
 
             cancelButton.addEventListener("onClick", new EventListener<Event>() {
@@ -537,6 +553,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                }
 
             });
+
             window.doModal();
 
         } catch (IOException e) {
@@ -544,28 +561,4 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Messagebox.show("Unable to import file : " + e, "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
-    private char getMaxOccuringChar(String str)
-    {
-        if (str == null || str.isEmpty()) {
-            throw new IllegalArgumentException("input word must have non-empty value.");
-        }
-        char maxchar = ' ';
-        int maxcnt = 0;
-        int[] charcnt = new int[Character.MAX_VALUE + 1];
-        for (int i = str.length() - 1; i >= 0; i--) {
-            if(!Character.isLetter(str.charAt(i))) {
-                for(int j =0; j < supportedSeparators.length; j++) {
-                    if(str.charAt(i) == supportedSeparators[j]) {
-                        char ch = str.charAt(i);
-                        if (++charcnt[ch] >= maxcnt) {
-                            maxcnt = charcnt[ch];
-                            maxchar = ch;
-                        }
-                    }
-                }
-            }
-        }
-        return maxchar;
-    }
-
 }
