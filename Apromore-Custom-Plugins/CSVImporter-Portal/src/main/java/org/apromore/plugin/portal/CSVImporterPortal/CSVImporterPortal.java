@@ -38,7 +38,9 @@ import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
 import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogModel;
+import org.apromore.service.csvimporter.LogSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -105,6 +107,37 @@ public class CSVImporterPortal implements FileImporterPlugin {
         portalContext.refreshContent();
     }
 
+    private CSVReader newCSVReader(Media media, char separator, String charset) throws InvalidCSVException, UnsupportedEncodingException {
+        Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
+        return (new CSVReaderBuilder(reader))
+                    .withSkipLines(0)
+                    .withCSVParser((new RFC4180ParserBuilder()).withSeparator(separator).build())
+                    .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
+                    .build();
+    }
+
+    private char getMaxOccuringChar(String str) {
+        if (str == null || str.isEmpty()) {
+            throw new IllegalArgumentException("input word must have non-empty value.");
+        }
+        char maxchar = ' ';
+        int maxcnt = 0;
+        int[] charcnt = new int[Character.MAX_VALUE + 1];
+        for (int i = str.length() - 1; i >= 0; i--) {
+            if(!Character.isLetter(str.charAt(i))) {
+                for(int j =0; j < supportedSeparators.length; j++) {
+                    if(str.charAt(i) == supportedSeparators[j]) {
+                        char ch = str.charAt(i);
+                        if (++charcnt[ch] >= maxcnt) {
+                            maxcnt = charcnt[ch];
+                            maxchar = ch;
+                        }
+                    }
+                }
+            }
+        }
+        return maxchar;
+    }
 
     /**
      * Gets the Content.
@@ -115,7 +148,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
      * read CSV content and create list model to be set as grid model.
      */
     @SuppressWarnings("null")
-
     private void displayCSVContent(Media media, ListModelList<String[]> result,ListModelList<String[]> indexedResult, Grid myGrid, Div popUPBox, Window window) {
         String firstLine = null;
 
@@ -130,194 +162,186 @@ public class CSVImporterPortal implements FileImporterPlugin {
         }
 
         separator = getMaxOccuringChar(firstLine);
-        CSVReader reader = null;
-
 
         if(separator == Character.UNASSIGNED) {
             Messagebox.show("Separator is not supported.", "Error", Messagebox.OK, Messagebox.ERROR);
-        } else {
-            try {
+            return;
+        }
 
-                RFC4180ParserBuilder builder = new RFC4180ParserBuilder();
-                RFC4180Parser parser = builder.withSeparator(separator).build();
-                // check file format to choose correct file reader.
-                if (media.isBinary()) {
-                    reader = new CSVReaderBuilder(new InputStreamReader(media.getStreamData(), "UTF-8")).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
-                } else {
-                    reader = new CSVReaderBuilder(media.getReaderData()).withSkipLines(0).withCSVParser(parser).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build();
-                }
-                List<String> header = new ArrayList<String>();
-                List<String> line = new ArrayList<String>();
-                List<Window> popUpWindow = new ArrayList<>();
+        try {
+            CSVReader csvReader = newCSVReader(media, separator, "utf-8");
+            //LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+
+            List<String> header = new ArrayList<String>();
+            List<String> line = new ArrayList<String>();
+            List<Window> popUpWindow = new ArrayList<>();
 
 
-                Columns headerColumns = new Columns();
+            Columns headerColumns = new Columns();
 
-                if (myGrid.getColumns() == null) {
-                    headerColumns.setParent(myGrid);
-                } else {
-                    headerColumns.getChildren().clear();
-                }
+            if (myGrid.getColumns() == null) {
+                headerColumns.setParent(myGrid);
+            } else {
+                headerColumns.getChildren().clear();
+            }
 
-                /// display first numberOfrows to user and display drop down lists to set attributes
-                Collections.addAll(header, reader.readNext());
-                // Deal with UTF-8 with BOM file encoding
+            /// display first numberOfrows to user and display drop down lists to set attributes
+            Collections.addAll(header, csvReader.readNext());
+            // Deal with UTF-8 with BOM file encoding
 //                String BomC = new String(header.get(0).getBytes(), Charset.forName("UTF-8"));
 //                header.set(0, BomC);
 
-                //2019-11-12
-                if(header.size() > 8) {
-                    window.setMaximized(true);
-                } else {
-                    int size = IndexColumnWidth + header.size() * AttribWidth + 35;
-                    window.setWidth(size + "px");
-                }
-                if (popUPBox != null) {
-                    popUPBox.getChildren().clear();
-                }
-                if (result != null) {
-                    result.clear();
-                }
-
-
-                line = Arrays.asList(reader.readNext());
-
-
-
-                if(line.size() < 2 && line != null) {
-                    while (line.size() < 2 && line != null) {
-                        line = Arrays.asList(reader.readNext());
-                    }
-                }
-
-                List<String> myLine = header;
-
-                if(line != null && header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
-                    csvImporterLogic.setLine(line);
-                    csvImporterLogic.setHeads(header);
-                    csvImporterLogic.setOtherTimestamps(result);
-                }else{
-                    Messagebox.show("Could not parse file!");
-                }
-
-                if (line.size() != header.size()) {
-                    Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
-                    if(window != null) {
-                        window.detach();
-                    }
-                    reader.close();
-                } else {
-                    csvImporterLogic.setLists(line.size(), csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
-
-                    List<Listbox> lists = csvImporterLogic.getLists();
-
-                    Auxhead optionHead = new Auxhead();
-                    Auxheader index = new Auxheader();
-                    optionHead.appendChild(index);
-
-                    for (int i=0; i < lists.size(); i++) {
-//                        attrBox.appendChild(lists.get(i));
-
-                        Auxheader listHeader = new Auxheader();
-                        listHeader.appendChild(lists.get(i));
-                        optionHead.appendChild(listHeader);
-                    }
-                    myGrid.appendChild(optionHead);
-
-
-                    Column indexCol = new Column();
-                    indexCol.setWidth(IndexColumnWidth + "px");
-                    indexCol.setValue("");
-                    indexCol.setLabel("");
-                    indexCol.setAlign("center");
-                    headerColumns.appendChild(indexCol);
-
-                    for (int i = 0; i < header.size(); i++) {
-                        Column newColumn = new Column();
-                        newColumn.setWidth(AttribWidth + "px");
-                        newColumn.setValue(header.get(i));
-                        newColumn.setLabel(header.get(i));
-                        newColumn.setAlign("center");
-                        headerColumns.appendChild(newColumn);
-                        headerColumns.setSizable(true);
-                    }
-
-
-                    myGrid.appendChild(headerColumns);
-
-
-                    List<String>  newLine = line;
-
-                    // display first 1000 rows
-                    int numberOfrows = 0;
-                    while (line != null && numberOfrows < 100) {
-
-                        if(line != null && line.size() > 2) {
-                            List<String> withIndex = new ArrayList<String>();
-                            withIndex.add(String.valueOf(numberOfrows + 1));
-                            withIndex.addAll(line);
-                            indexedResult.add(withIndex.toArray(new String[0]));
-                        }
-                        result.add(line.toArray(new String[0]));
-                        numberOfrows++;
-
-                        if(numberOfrows == 100) {
-                            String[] continued = {"...",""};
-
-                            indexedResult.add(continued);
-                        }
-
-                        try {
-                            line = Arrays.asList(reader.readNext());
-                        }catch(NullPointerException e) {
-                            break;
-                        }
-                    }
-
-
-
-                    Popup helpP = (Popup) window.getFellow("popUpHelp");
-
-                    if(result != null && myLine != null) {
-                        csvImporterLogic.automaticFormat(result, myLine);
-                        csvImporterLogic.setOtherTimestamps(result);
-                    }
-
-                    createPopUpTextBox(newLine.size(), popUPBox, helpP);
-                    csvImporterLogic.openPopUp();
-                    reader.close();
-
-
-
-
-
-                    Button setOtherAll = (Button) window.getFellow("setOtherAll");
-                    Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
-
-
-                    setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
-                    setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
-
-                    setOtherAll.addEventListener("onClick", new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                            csvImporterLogic.setOtherAll(window);
-                        }
-                    });
-
-                    setIgnoreAll.addEventListener("onClick", new EventListener<Event>() {
-                        public void onEvent(Event event) throws Exception {
-                            csvImporterLogic.setIgnoreAll(window);
-                        }
-                    });
-                }
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                Messagebox.show(e.getMessage());
+            //2019-11-12
+            if(header.size() > 8) {
+                window.setMaximized(true);
+            } else {
+                int size = IndexColumnWidth + header.size() * AttribWidth + 35;
+                window.setWidth(size + "px");
             }
-        }
+            if (popUPBox != null) {
+                popUPBox.getChildren().clear();
+            }
+            if (result != null) {
+                result.clear();
+            }
 
+
+            line = Arrays.asList(csvReader.readNext());
+
+
+
+            if(line.size() < 2 && line != null) {
+                while (line.size() < 2 && line != null) {
+                    line = Arrays.asList(csvReader.readNext());
+                }
+            }
+
+            List<String> myLine = header;
+
+            if(line != null && header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
+                csvImporterLogic.setLine(line);
+                csvImporterLogic.setHeads(header);
+                csvImporterLogic.setOtherTimestamps(result);
+            }else{
+                Messagebox.show("Could not parse file!");
+            }
+
+            if (line.size() != header.size()) {
+                Messagebox.show("Number of columns in the header does not match number of columns in the data", "Invalid CSV file", Messagebox.OK, Messagebox.ERROR);
+                if(window != null) {
+                    window.detach();
+                }
+                csvReader.close();
+            } else {
+                csvImporterLogic.setLists(line.size(), csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
+
+                List<Listbox> lists = csvImporterLogic.getLists();
+
+                Auxhead optionHead = new Auxhead();
+                Auxheader index = new Auxheader();
+                optionHead.appendChild(index);
+
+                for (int i=0; i < lists.size(); i++) {
+//                    attrBox.appendChild(lists.get(i));
+
+                    Auxheader listHeader = new Auxheader();
+                    listHeader.appendChild(lists.get(i));
+                    optionHead.appendChild(listHeader);
+                }
+                myGrid.appendChild(optionHead);
+
+
+                Column indexCol = new Column();
+                indexCol.setWidth(IndexColumnWidth + "px");
+                indexCol.setValue("");
+                indexCol.setLabel("");
+                indexCol.setAlign("center");
+                headerColumns.appendChild(indexCol);
+
+                for (int i = 0; i < header.size(); i++) {
+                    Column newColumn = new Column();
+                    newColumn.setWidth(AttribWidth + "px");
+                    newColumn.setValue(header.get(i));
+                    newColumn.setLabel(header.get(i));
+                    newColumn.setAlign("center");
+                    headerColumns.appendChild(newColumn);
+                    headerColumns.setSizable(true);
+                }
+
+
+                myGrid.appendChild(headerColumns);
+
+
+                List<String>  newLine = line;
+
+                // display first 1000 rows
+                int numberOfrows = 0;
+                while (line != null && numberOfrows < 100) {
+
+                    if(line != null && line.size() > 2) {
+                        List<String> withIndex = new ArrayList<String>();
+                        withIndex.add(String.valueOf(numberOfrows + 1));
+                        withIndex.addAll(line);
+                        indexedResult.add(withIndex.toArray(new String[0]));
+                    }
+                    result.add(line.toArray(new String[0]));
+                    numberOfrows++;
+
+                    if(numberOfrows == 100) {
+                        String[] continued = {"...",""};
+
+                        indexedResult.add(continued);
+                    }
+
+                    try {
+                        line = Arrays.asList(csvReader.readNext());
+                    }catch(NullPointerException e) {
+                        break;
+                    }
+                }
+
+
+
+                Popup helpP = (Popup) window.getFellow("popUpHelp");
+
+                if(result != null && myLine != null) {
+                    csvImporterLogic.automaticFormat(result, myLine);
+                    csvImporterLogic.setOtherTimestamps(result);
+                }
+
+                createPopUpTextBox(newLine.size(), popUPBox, helpP);
+                csvImporterLogic.openPopUp();
+                csvReader.close();
+
+
+
+
+
+                Button setOtherAll = (Button) window.getFellow("setOtherAll");
+                Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
+
+
+                setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
+                setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
+
+                setOtherAll.addEventListener("onClick", new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        csvImporterLogic.setOtherAll(window);
+                    }
+                });
+
+                setIgnoreAll.addEventListener("onClick", new EventListener<Event>() {
+                    public void onEvent(Event event) throws Exception {
+                        csvImporterLogic.setIgnoreAll(window);
+                    }
+                });
+            }
+
+
+        } catch (InvalidCSVException | IOException e) {
+            e.printStackTrace();
+            Messagebox.show(e.getMessage());
+        }
     }
 
 
@@ -377,7 +401,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 
 
-
+    // FileImporterPlugin implementation
 
     @Override
     public Set<String> getFileExtensions() {
@@ -443,18 +467,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         return;
                     }
 
-                    CSVReaderBuilder readerBuilder = media.isBinary()
-                        ? new CSVReaderBuilder(new InputStreamReader(media.getStreamData(), "UTF-8"))
-                        : new CSVReaderBuilder(media.getReaderData());
-
-                    RFC4180Parser parser = (new RFC4180ParserBuilder()).withSeparator(separator)
-                                                                       .build();
-
-                    try (CSVReader reader = readerBuilder.withSkipLines(0)
-                                                         .withCSVParser(parser)
-                                                         .withFieldAsNull(CSVReaderNullFieldIndicator.BOTH)
-                                                         .build()) {
-
+                    try (CSVReader reader = newCSVReader(media, separator, "utf-8")) {
                         LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
                         Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported.");
 
@@ -502,7 +515,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         window.invalidate();
                         window.detach();
 
-                    } catch (CSVImporterLogic.InvalidCSVException e) {
+                    } catch (InvalidCSVException e) {
                         if (e.getInvalidRows() == null) {
                             Messagebox.show(e.getMessage() , "Invalid CSV File", Messagebox.OK, Messagebox.ERROR);
 
@@ -548,28 +561,4 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Messagebox.show("Unable to import file : " + e, "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
-    private char getMaxOccuringChar(String str)
-    {
-        if (str == null || str.isEmpty()) {
-            throw new IllegalArgumentException("input word must have non-empty value.");
-        }
-        char maxchar = ' ';
-        int maxcnt = 0;
-        int[] charcnt = new int[Character.MAX_VALUE + 1];
-        for (int i = str.length() - 1; i >= 0; i--) {
-            if(!Character.isLetter(str.charAt(i))) {
-                for(int j =0; j < supportedSeparators.length; j++) {
-                    if(str.charAt(i) == supportedSeparators[j]) {
-                        char ch = str.charAt(i);
-                        if (++charcnt[ch] >= maxcnt) {
-                            maxcnt = charcnt[ch];
-                            maxchar = ch;
-                        }
-                    }
-                }
-            }
-        }
-        return maxchar;
-    }
-
 }

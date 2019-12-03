@@ -23,8 +23,10 @@ package org.apromore.service.csvimporter.impl;
 import com.opencsv.CSVReader;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.service.csvimporter.CSVImporterLogic;
+import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogEventModel;
 import org.apromore.service.csvimporter.LogModel;
+import org.apromore.service.csvimporter.LogSample;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XLifecycleExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
@@ -116,7 +118,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     private static Integer AttribWidth = 150;
 
-    public void sampleCSV(CSVReader reader) throws InvalidCSVException, IOException {
+    public LogSample sampleCSV(CSVReader reader) throws InvalidCSVException, IOException {
         List<String> header = new ArrayList<String>();
         List<String> line = new ArrayList<String>();
         ListModelList<String[]> result = new ListModelList<>();
@@ -144,6 +146,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         } else {
             setLists(line.size(), getHeads(), AttribWidth - 20 + "px");
         }
+
+        return new LogSample();
     }
 
     public LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException {

@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import org.apromore.service.csvimporter.*;
-import org.apromore.service.csvimporter.CSVImporterLogic.InvalidCSVException;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
 import static org.junit.Assert.assertEquals;
@@ -36,11 +35,11 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test1-valid.csv", "utf-8");
-        csvImporterLogic.sampleCSV(csvReader);
-        csvReader = newCSVReader("/test1-valid.csv", "utf-8");
         String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8"));
 
         // Perform the test
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+        csvReader = newCSVReader("/test1-valid.csv", "utf-8");
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
         // Validate result
@@ -64,11 +63,11 @@ public class CSVImporterLogicImplUnitTest {
 
         // Set up inputs and expected outputs
         CSVReader csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8");
-        csvImporterLogic.sampleCSV(csvReader);
-        csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8");
         String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8"));
 
         // Perform the test
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+        csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8");
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
         // Validate result

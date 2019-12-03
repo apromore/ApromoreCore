@@ -12,7 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Sample service API.
+ * Service which converts event logs in CSV format to XES format.
+ *
+ * Conversion is currently stateful, requiring the methods {@link #sampleCSV},
+ * {@link #prepareXesModel} and {@link #createXLog} to be invoked in series.
  */
 public interface CSVImporterLogic {
 
@@ -41,22 +44,8 @@ public interface CSVImporterLogic {
 
     // Business logic methods
 
-    void sampleCSV(CSVReader reader) throws InvalidCSVException, IOException;
-    LogModel prepareXesModel(CSVReader r) throws InvalidCSVException, IOException;
+    LogSample sampleCSV(CSVReader reader) throws InvalidCSVException, IOException;
+    LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException, IOException;
     XLog createXLog(List<LogEventModel> traces);
     void toXESfile(XLog xLog, String FileName) throws FileNotFoundException, IOException;
-
-    /** Thrown by {@link #prepareXesModel} if the input CSV file lacks a mandatory field or has too many invalid rows. */
-    static public class InvalidCSVException extends Exception {
-        private List<String> invalidRows;
-
-        public InvalidCSVException(String message) { super(message); }
-
-        public InvalidCSVException(String message, List<String> invalidRows) {
-            super(message);
-            this.invalidRows = invalidRows;
-        }
-
-        public List<String> getInvalidRows() { return invalidRows; }
-    };
 }
