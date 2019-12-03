@@ -202,8 +202,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                     invalidRows.add("Row: " + (lineCount) + ", Error: number of columns does not match number of headers. "
                                             + "Number of headers: " + header.length + ", Number of columns: " + line.length + ".\n");
                                     errorCount++;
-                                    rowGTG = false;
-                                    break;
+                                    continue;
 
                                 }
 
@@ -258,9 +257,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                 }
                             }
                         }
-                        if (rowGTG == true) {
                             logData.add(new LogEventModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
-                        }
+
                     } catch (Exception e) {
                         errorMessage = ExceptionUtils.getStackTrace(e);
                         e.printStackTrace();
@@ -950,4 +948,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //        Messagebox.show("Your file has been created!");
 
     }
+
+    public List<String> getEncoding() {
+        return Arrays.asList(new String[]{"UTF-8", "UTF-16", "windows-1250 (Eastern European)", "windows-1251 (Cyrillic)",
+                "windows-1252 (Latin)", "windows-1253 (Greek)", "windows-1254 (Turkish)",
+                "windows-1255 (Hebrew)", "windows-1256 (Arabic)", "windows-1258 (Vietnamese)", "windows-31j (Japanese)",
+                "ISO-2022-CN (Chinese)"});
+    }
+
 }
