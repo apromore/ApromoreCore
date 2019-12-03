@@ -41,7 +41,7 @@ public interface CSVImporterLogic {
     void setTextboxID(String textboxID);
     void setLabelID(String labelID);
 
-
+    List<String> getEncoding();
     // Business logic methods
 
     LogSample sampleCSV(CSVReader reader) throws InvalidCSVException, IOException;
