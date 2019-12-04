@@ -180,7 +180,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
             for (Iterator<String[]> it = reader.iterator(); finishCount < 50; ) {
                 String[] line = it.next();
-                boolean rowGTG = true;
                 if(line == null) {
                     // if line is empty, more to next iteration, until 50 lines are empty
                     finishCount++;

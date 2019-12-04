@@ -510,51 +510,70 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     try (CSVReader reader = newCSVReader(media, separator, clearEncoding)) {
                         LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
-                        Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported.");
-
+                        XLog xlog = null;
                         if (csvImporterLogic.getErrorCheck()) {
-                            switch (Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload log by skipping all rows " +
+                            Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload log by skipping all rows " +
                                             "containing invalid fields.\n Select Skip columns upload log by skipping the entire columns " +
                                             "containing invalid fields.\n ",
                                         "Confirm Dialog",
                                         new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
                                         new String[]{"Skip rows", "Skip columns", "Cancel"},
-                                        Messagebox.QUESTION, null, null)) {
+                                        Messagebox.EXCLAMATION, null, new org.zkoss.zk.ui.event.EventListener() {
+                                        public void onEvent(Event evt) throws Exception {
+                                            if (evt.getName().equals("onOK")) {
+                                                if (xesModel != null) {
+                                                    // create XES file
+                                                    for (int i = 0; i < xesModel.getRows().size(); i++) {
+                                                        for (Map.Entry<String, Timestamp> entry : xesModel.getRows().get(i).getOtherTimestamps().entrySet()) {
+                                                            if (entry.getKey() == null) { continue; }
+                                                            long tempLong = entry.getValue().getTime();
+                                                            Calendar cal = Calendar.getInstance();
+                                                            cal.setTimeInMillis(tempLong);
+                                                            if (cal.get(Calendar.YEAR) == 1900) {
+                                                                System.out.println("Invalid timestamp. Entry Removed.");
+                                                                xesModel.getRows().remove(i);
+                                                            }
+                                                        }
+                                                    }
 
-                            case OK:  // Skip rows
-                                for (int i = 0; i < xesModel.getRows().size(); i++) {
-                                    for (Map.Entry<String, Timestamp> entry : xesModel.getRows().get(i).getOtherTimestamps().entrySet()) {
-                                        if (entry.getKey() == null) { continue; }
-                                        long tempLong = entry.getValue().getTime();
-                                        Calendar cal = Calendar.getInstance();
-                                        cal.setTimeInMillis(tempLong);
-                                        if (cal.get(Calendar.YEAR) == 1900) {
-                                            System.out.println("Invalid timestamp. Entry Removed.");
-                                            xesModel.getRows().remove(i);
+                                                    XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
+                                                    if (xlog != null) {
+                                                        saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                                    }
+                                                    window.invalidate();
+                                                    window.detach();
+                                                }
+                                            } else if (evt.getName().equals("onIgnore")) {
+
+                                                for (int i = 0; i < xesModel.getRows().size(); i++) {
+                                                    xesModel.getRows().get(i).setOtherTimestamps(null);
+                                                }
+                                                if (xesModel != null) {
+                                                    // create XES file
+                                                    XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
+                                                    if (xlog != null) {
+                                                        saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                                    }
+                                                    window.invalidate();
+                                                    window.detach();
+                                                }
+                                            } else {
+                                                // nothing
+                                            }
                                         }
-                                    }
-                                }
-                                break;
-
-                            case IGNORE:  // Skip columns
-                                for (int i = 0; i < xesModel.getRows().size(); i++) {
-                                    xesModel.getRows().get(i).setOtherTimestamps(null);
-                                }
-                                break;
-
-                            case CANCEL:  // Cancel
-                                return;
+                                    });
+                        } else {
+                            Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported.");
+                            // create XES file
+                            xlog = csvImporterLogic.createXLog(xesModel.getRows());
+                            if (xlog != null) {
+                                saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
                             }
+
+                            window.invalidate();
+                            window.detach();
                         }
 
-                        // create XES file
-                        XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
-                        if (xlog != null) {
-                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-                        }
-
-                        window.invalidate();
-                        window.detach();
 
                     } catch (InvalidCSVException e) {
                         if (e.getInvalidRows() == null) {
