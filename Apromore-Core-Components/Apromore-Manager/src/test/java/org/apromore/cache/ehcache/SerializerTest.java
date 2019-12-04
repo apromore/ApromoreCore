@@ -67,57 +67,6 @@ public class SerializerTest {
         // end::persistentKryoSerializer[]
     }
 
-
-    @Test
-    public void testTransientSerializer() throws Exception {
-        // tag::transientSerializerGoodSample[]
-        CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build(true);
-        CacheConfiguration<Long, String> cacheConfig =
-                CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                        Long.class, String.class, ResourcePoolsBuilder.heap(10).offheap(5, MemoryUnit.MB))  // <1>
-                        .withValueSerializer(SimpleTransientStringSerializer.class)   // <2>
-                        .build();
-
-        Cache<Long, String> fruitsCache = cacheManager.createCache("fruitsCache", cacheConfig);
-        fruitsCache.put(1L, "apple");
-        fruitsCache.put(2L, "orange");
-        fruitsCache.put(3L, "mango");
-        assertThat(fruitsCache.get(1L), is("apple"));   // <3>
-        assertThat(fruitsCache.get(3L), is("mango"));
-        assertThat(fruitsCache.get(2L), is("orange"));
-        assertThat(fruitsCache.get(1L), is("apple"));
-        // end::transientSerializerGoodSample[]
-    }
-
-    @Ignore
-    @Test
-    public void testTransientSerializerWithPersistentCache() throws Exception {
-        // tag::transientSerializerBadSample[]
-        CacheConfiguration<Long, String> cacheConfig =
-                CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                        Long.class, String.class,
-                        ResourcePoolsBuilder.heap(10).disk(10, MemoryUnit.MB, true))  // <1>
-                        .withValueSerializer(SimpleTransientStringSerializer.class)
-                        .build();
-
-        CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
-                .with(new CacheManagerPersistenceConfiguration(new File(PERSISTENCE_PATH)))   // <2>
-                .withCache("fruitsCache", cacheConfig)
-                .build(true);
-
-        Cache<Long, String> fruitsCache = cacheManager.getCache("fruitsCache", Long.class, String.class);   // <3>
-        fruitsCache.put(1L, "apple");
-        fruitsCache.put(2L, "mango");
-        fruitsCache.put(3L, "orange");   // <4>
-        assertThat(fruitsCache.get(1L), is("apple"));   // <5>
-
-        cacheManager.close();   // <6>
-        cacheManager.init();    // <7>
-        fruitsCache = cacheManager.getCache("fruitsCache", Long.class, String.class);   // <8>
-        assertThat(fruitsCache.get(1L), is("apple"));   // <9>
-        // end::transientSerializerBadSample[]
-    }
-
     @Test
     public void testPersistentSerializer() throws Exception {
         // tag::persistentSerializerGoodSample[]
@@ -255,7 +204,7 @@ public class SerializerTest {
                 .using(statisticsService)
                 .build(true);
 
-        Cache<Long, XLog> employeeCache = cacheManager.getCache("xLogCache", Long.class, XLog.class);
+        Cache<Long, XLog> xLogCache = cacheManager.getCache("xLogCache", Long.class, XLog.class);
 
         XTimer timer = new XTimer();
         List<XLog> parsedLog = null;
@@ -263,10 +212,7 @@ public class SerializerTest {
         XFactory factory = XFactoryRegistry.instance().currentDefault();
         XesXmlParser parser = new XesXmlParser(factory);
         try {
-//            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/SepsisCases.xes").getPath());
-//            parsedLog = parser.parse(new FileInputStream(lgPath.toFile()));
-//            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/Hospital_Billing.xes.gz").getPath());
-            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/procmin20180612_F2_5M.xes.gz").getPath());
+            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/SepsisCases.xes.gz").getPath());
             parsedLog = parser.parse(new GZIPInputStream(new FileInputStream(lgPath.toFile())));
         } catch (Exception e) {
             e.printStackTrace();
@@ -278,22 +224,22 @@ public class SerializerTest {
         System.out.println("Duration: " + timer.getDurationString());
 
         timer.start();
-        employeeCache.put(1L, xLog);
+        xLogCache.put(1L, xLog);
         timer.stop();
         System.out.println("Cached log:");
         System.out.println("Duration: " + timer.getDurationString());
 
-        XLog newEmp = employeeCache.get(1L);
+        XLog newEmp = xLogCache.get(1L);
         assertThat(newEmp, is(xLog));
 
         cacheManager.close();
         cacheManager.init();
-        employeeCache = cacheManager.getCache("xLogCache", Long.class, XLog.class);
+        xLogCache = cacheManager.getCache("xLogCache", Long.class, XLog.class);
         CacheStatistics ehCacheStat = statisticsService.getCacheStatistics("xLogCache");
 
 
         timer.start();
-        XLog recoveredXLog = employeeCache.get(1L);
+        XLog recoveredXLog = xLogCache.get(1L);
         System.out.println("Recovered log:");
         System.out.println("Duration: " + timer.getDurationString());
 
