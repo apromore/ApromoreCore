@@ -13,6 +13,7 @@ import org.deckfour.xes.model.impl.*;
 import org.ehcache.spi.serialization.Serializer;
 import org.ehcache.spi.serialization.SerializerException;
 import org.objenesis.strategy.StdInstantiatorStrategy;
+import org.xerial.snappy.Snappy;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -261,52 +262,84 @@ public class TransientXLogKryoSerializer implements Serializer<XLog>, Closeable{
         Output output = new Output(byteArrayOutputStream);
 
         kryo.writeObject(output, object);
-        System.out.println("**************** Kryo serialisation size: " + output.toBytes().length / 1024 / 1024 + " " +
-                "MB");
+        System.out.println("**************** Kryo serialisation size: " + output.toBytes().length);
 //        output.flush();
         output.close();
 
-
+        //compression off
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return ByteBuffer.wrap(bytes);
+
+        // compression on
+//        byte[] bytes = byteArrayOutputStream.toByteArray();
+//        try {
+//            byte[] compressBytes = Snappy.compress(bytes);
+//            return ByteBuffer.wrap(compressBytes);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
     }
 
     @Override
-    public XLog read(final ByteBuffer binary) throws ClassNotFoundException, SerializerException {
+    public XLog read(final ByteBuffer byteBuffer) throws ClassNotFoundException, SerializerException {
 
-//        kryo.setReferences(false);
+        kryo.setWarnUnregisteredClasses(true);
+        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
 
-//        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+        // Register XLog model classes
+        kryo.register(org.eclipse.collections.impl.set.mutable.UnifiedSet.class);
+        kryo.register(UUID.class, new UUIDSerializer());
+        kryo.register(XAttributeMapImpl.class);
+        kryo.register(java.net.URI.class);
+        kryo.register(java.util.Date.class);
 
-//        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+        kryo.register(org.deckfour.xes.model.impl.XLogImpl.class);
+        kryo.register(org.deckfour.xes.model.impl.XTraceImpl.class);
+        kryo.register(org.deckfour.xes.model.impl.XEventImpl.class);
+        kryo.register(org.deckfour.xes.model.impl.XAttributeContinuousImpl.class);
+        kryo.register(org.deckfour.xes.model.impl.XAttributeLiteralImpl.class);
+        kryo.register(org.deckfour.xes.extension.std.XOrganizationalExtension.class);
+        kryo.register(org.eclipse.collections.impl.set.mutable.UnifiedSet.class);
+        kryo.register(org.deckfour.xes.extension.std.XLifecycleExtension.class);
+        kryo.register(org.deckfour.xes.id.XID.class);
 
-//        ((Kryo.DefaultInstantiatorStrategy) kryo.getInstantiatorStrategy()).setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
 
-//        kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
+        kryo.register(XLogImpl.class);
+        kryo.register(XTraceImpl.class);
+        kryo.register(XEventImpl.class);
+        kryo.register(XAttributeBooleanImpl.class);
+        kryo.register(XAttributeCollectionImpl.class);
+        kryo.register(XAttributeContainerImpl.class);
+        kryo.register(XAttributeDiscreteImpl.class);
+        kryo.register(XAttributeIDImpl.class);
+        kryo.register(XAttributeListImpl.class);
+        kryo.register(XAttributeLiteralImpl.class);
+        kryo.register(XAttributeTimestampImpl.class);
+        kryo.register(XAttributeImpl.class);
+        kryo.register(XsDateTimeFormat.class);
+        kryo.register(XExtension.class);
+        kryo.register(XLifecycleExtension.class);
 
-//        kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+        kryo.register(org.deckfour.xes.extension.std.XConceptExtension.class);
+        kryo.register(org.deckfour.xes.extension.std.XTimeExtension.class);
 
-//        kryo.setReferences(false);
-
-//        kryo.register(UUID.class, new UUIDSerializer());
-//        kryo.register(XAttributeMap.class, new XAttributeMapSerializer());
-//        kryo.register(XAttributeMapImpl.class, new XAttributeMapSerializer());
-//        kryo.register(XAttributeMapLazyImpl.class, new XAttributeMapSerializer());
-//        kryo.register(java.net.URI.class);
-//        kryo.register(java.util.Date.class);
-//
-//        kryo.register(org.deckfour.xes.model.impl.XLogImpl.class);
-//        kryo.register(org.deckfour.xes.model.impl.XTraceImpl.class);
-//        kryo.register(org.deckfour.xes.model.impl.XEventImpl.class);
-//        kryo.register(org.deckfour.xes.model.impl.XAttributeContinuousImpl.class);
-//        kryo.register(org.deckfour.xes.model.impl.XAttributeLiteralImpl.class);
-//        kryo.register(org.deckfour.xes.extension.std.XOrganizationalExtension.class);
-//        kryo.register(org.eclipse.collections.impl.set.mutable.UnifiedSet.class);
-//        kryo.register(org.deckfour.xes.extension.std.XLifecycleExtension.class);
-//        kryo.register(org.deckfour.xes.id.XID.class);
-
-        Input input =  new Input(new ByteBufferInputStream(binary)) ;
+        //compression off
+        Input input =  new Input(new ByteBufferInputStream(byteBuffer)) ;
         return kryo.readObject(input, XLogImpl.class);
+
+        // compression on
+//        byte[] bytes = new byte[byteBuffer.remaining()];
+//        byteBuffer.get(bytes);
+//        try {
+//            byte[] srcBytes = Snappy.uncompress(bytes);
+//
+//            Input input =  new Input(new ByteBufferInputStream(ByteBuffer.wrap(srcBytes))) ;
+//            return kryo.readObject(input, XLogImpl.class);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
     }
 
     @Override

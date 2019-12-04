@@ -16,6 +16,9 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
+import org.ehcache.core.spi.service.StatisticsService;
+import org.ehcache.core.statistics.CacheStatistics;
+import org.ehcache.core.statistics.DefaultStatisticsService;
 import org.ehcache.impl.config.persistence.CacheManagerPersistenceConfiguration;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -237,17 +240,19 @@ public class SerializerTest {
 
     @Test
     public void testPersistentXLogKryoSerializer() throws Exception {
-        // tag::persistentKryoSerializer[]
         CacheConfiguration<Long, XLog> cacheConfig =
                 CacheConfigurationBuilder.newCacheConfigurationBuilder(
                         Long.class, XLog.class,
-                        ResourcePoolsBuilder.heap(100000).disk(1000, MemoryUnit.MB, true))
+                        ResourcePoolsBuilder.heap(1).disk(10000, MemoryUnit.MB, true))
                         .withValueSerializer(PersistentXLogKryoSerializer.class)
                         .build();
+
+        StatisticsService statisticsService = new DefaultStatisticsService();
 
         CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
                 .with(new CacheManagerPersistenceConfiguration(new File(PERSISTENCE_PATH)))
                 .withCache("xLogCache", cacheConfig)
+                .using(statisticsService)
                 .build(true);
 
         Cache<Long, XLog> employeeCache = cacheManager.getCache("xLogCache", Long.class, XLog.class);
@@ -260,8 +265,8 @@ public class SerializerTest {
         try {
 //            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/SepsisCases.xes").getPath());
 //            parsedLog = parser.parse(new FileInputStream(lgPath.toFile()));
-            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/Hospital_Billing.xes.gz").getPath());
-//            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/procmin20180612_F2_5M.xes.gz").getPath());
+//            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/Hospital_Billing.xes.gz").getPath());
+            Path lgPath = Paths.get(ClassLoader.getSystemResource("XES_logs/procmin20180612_F2_5M.xes.gz").getPath());
             parsedLog = parser.parse(new GZIPInputStream(new FileInputStream(lgPath.toFile())));
         } catch (Exception e) {
             e.printStackTrace();
@@ -284,14 +289,20 @@ public class SerializerTest {
         cacheManager.close();
         cacheManager.init();
         employeeCache = cacheManager.getCache("xLogCache", Long.class, XLog.class);
+        CacheStatistics ehCacheStat = statisticsService.getCacheStatistics("xLogCache");
+
 
         timer.start();
         XLog recoveredXLog = employeeCache.get(1L);
         System.out.println("Recovered log:");
         System.out.println("Duration: " + timer.getDurationString());
 
+        // We rely here on the alphabetical order matching the depth order so from highest to lowest we have
+        // OnHeap, OffHeap, Disk, Clustered
+        System.out.println("OnHeap cache size: " + ehCacheStat.getTierStatistics().get("OnHeap").getOccupiedByteSize());
+        System.out.println("OnDisk cache size: " + ehCacheStat.getTierStatistics().get("Disk").getOccupiedByteSize());
+
         assertThat(recoveredXLog, is(xLog));
-        // end::persistentKryoSerializer[]
     }
 
 }
