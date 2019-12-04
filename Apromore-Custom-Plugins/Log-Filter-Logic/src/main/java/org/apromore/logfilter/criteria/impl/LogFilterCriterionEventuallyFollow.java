@@ -41,6 +41,11 @@ public class LogFilterCriterionEventuallyFollow extends AbstractLogFilterCriteri
     public LogFilterCriterionEventuallyFollow(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
         super(action, containment, level, label, attribute, value);
 
+        String greaterString = "";
+        String greaterEqualString = "";
+        String lessString = "";
+        String lessEqualString = "";
+
         for (String s : value) {
             if(s.contains("=>")) {
                 followSet.put(s);
@@ -50,15 +55,33 @@ public class LogFilterCriterionEventuallyFollow extends AbstractLogFilterCriteri
                 requiredAttributeString = "have the different \"" + s.substring(2) + "\"";
             }else if(s.contains("@$")) {
                 attributeOption = s.substring(2);
-            }else if(s.contains("@<|")) {
-                intervalString = " time interval is less than " + s.substring(3);
-            }else if(s.contains("@<=")) {
-                intervalString = " time interval is up to " + s.substring(3);
-            }else if(s.contains("@>|")) {
-                intervalString = " time interval is greater than " + s.substring(3);
-            }else if(s.contains("@>=")) {
-                intervalString = " time interval is at least " + s.substring(2);
             }
+
+            if(s.contains("@>|")) {
+                greaterString = s.substring(3);
+            }
+            if(s.contains("@>=")) {
+                greaterEqualString = s.substring(2);
+            }
+
+            if(s.contains("@<|")) {
+                lessString = s.substring(3);
+            }
+            if(s.contains("@<=")) {
+                lessEqualString = s.substring(3);
+            }
+        }
+
+        if(!greaterString.equals("") || !greaterEqualString.equals("") ||
+                !lessString.equals("") || !lessEqualString.equals("")) {
+            intervalString += " and time interval";
+            if(!greaterString.equals("")) intervalString += " is greater than " + greaterString;
+            if(!greaterEqualString.equals("")) intervalString += " is at least " + greaterEqualString;
+
+            if(!greaterString.equals("") || !greaterEqualString.equals("")) intervalString += " and";
+
+            if(!lessString.equals("")) intervalString += " is less than " + lessString;
+            if(!lessEqualString.equals("")) intervalString += " is up to " + lessEqualString;
         }
     }
 
