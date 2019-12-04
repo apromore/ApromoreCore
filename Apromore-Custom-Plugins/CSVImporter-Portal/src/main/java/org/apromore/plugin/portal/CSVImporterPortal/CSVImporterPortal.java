@@ -542,6 +542,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                                     }
                                                     window.invalidate();
                                                     window.detach();
+                                                    Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported. Invalid rows are skipped.");
                                                 }
                                             } else if (evt.getName().equals("onIgnore")) {
 
@@ -557,6 +558,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                                     window.invalidate();
                                                     window.detach();
                                                 }
+
+                                                Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported. Invalid columns are ignored.");
                                             } else {
                                                 // nothing
                                             }
