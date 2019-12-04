@@ -74,6 +74,10 @@ public class XAttributeContinuousImpl extends XAttributeImpl implements
 		this(key, value, null);
 	}
 
+	public XAttributeContinuousImpl() {
+		this("", 0, null);
+	}
+
 	/**
 	 * Creates a new instance.
 	 * 
@@ -93,7 +97,7 @@ public class XAttributeContinuousImpl extends XAttributeImpl implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.XAttributeContinuous#getValue()
+	 * @see XAttributeContinuous#getValue()
 	 */
 	public double getValue() {
 		return value;
@@ -102,7 +106,7 @@ public class XAttributeContinuousImpl extends XAttributeImpl implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.XAttributeContinuous#setValue(boolean)
+	 * @see XAttributeContinuous#setValue(boolean)
 	 */
 	public void setValue(double value) {
 		this.value = value;
