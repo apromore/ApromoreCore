@@ -297,22 +297,22 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     if (invalidRows.size() > 5) {
                         notificationMessage = notificationMessage + "\n ...";
                     }
-                    Messagebox.show(notificationMessage
-                            , "Invalid CSV File",
-                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null, new org.zkoss.zk.ui.event.EventListener() {
-                                public void onEvent(Event evt) throws Exception {
-                                    if (evt.getName().equals("onOK")) {
-                                        File tempFile = File.createTempFile("Error_Report", ".txt");
-                                        FileWriter writer = new FileWriter(tempFile);
-                                        for(String str: invalidRows) {
-                                            writer.write(str + System.lineSeparator());
-                                        }
-                                        writer.close();
-                                        Filedownload.save(new FileInputStream(tempFile), "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
-                                    }
-                                }
-                            });
+//                    Messagebox.show(notificationMessage
+//                            , "Invalid CSV File",
+//                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
+//                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null, new org.zkoss.zk.ui.event.EventListener() {
+//                                public void onEvent(Event evt) throws Exception {
+//                                    if (evt.getName().equals("onOK")) {
+//                                        File tempFile = File.createTempFile("Error_Report", ".txt");
+//                                        FileWriter writer = new FileWriter(tempFile);
+//                                        for(String str: invalidRows) {
+//                                            writer.write(str + System.lineSeparator());
+//                                        }
+//                                        writer.close();
+//                                        Filedownload.save(new FileInputStream(tempFile), "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+//                                    }
+//                                }
+//                            });
                     return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows);
                 }
 
