@@ -39,18 +39,18 @@
 package org.deckfour.xes.model.impl;
 
 import java.util.ArrayList;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import java.util.List;
-import java.util.Set;
 
-import org.deckfour.xes.classification.XEventClassifier;
-import org.deckfour.xes.extension.XExtension;
 import org.deckfour.xes.info.XLogInfo;
-import org.deckfour.xes.model.XAttribute;
 import org.deckfour.xes.model.XAttributeMap;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.model.XTrace;
 import org.deckfour.xes.model.XVisitor;
+import org.deckfour.xes.classification.XEventClassifier;
+import org.deckfour.xes.extension.XExtension;
+import org.deckfour.xes.model.XAttribute;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation for the XLog interface.
@@ -126,22 +126,31 @@ public class XLogImpl extends ArrayList<XTrace> implements XLog {
 		this.cachedInfo = null;
 	}
 
+	public XLogImpl() {
+		this.extensions = new UnifiedSet<XExtension>();
+		this.classifiers = new ArrayList<XEventClassifier>();
+		this.globalTraceAttributes = new ArrayList<XAttribute>();
+		this.globalEventAttributes = new ArrayList<XAttribute>();
+		this.cachedClassifier = null;
+		this.cachedInfo = null;
+	}
+
 	/* (non-Javadoc)
-	 * @see org.deckfour.xes.model.XAttributable#getAttributes()
+	 * @see XAttributable#getAttributes()
 	 */
 	public XAttributeMap getAttributes() {
 		return attributes;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.deckfour.xes.model.XAttributable#setAttributes(java.util.Map)
+	 * @see XAttributable#setAttributes(java.util.Map)
 	 */
 	public void setAttributes(XAttributeMap attributes) {
 		this.attributes = attributes;
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.deckfour.xes.model.XAttributable#hasAttributes()
+	 * @see XAttributable#hasAttributes()
 	 */
 	@Override
 	public boolean hasAttributes() {
@@ -149,7 +158,7 @@ public class XLogImpl extends ArrayList<XTrace> implements XLog {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.deckfour.xes.model.XAttributable#getExtensions()
+	 * @see XAttributable#getExtensions()
 	 */
 	public Set<XExtension> getExtensions() {
 		return extensions;
@@ -173,21 +182,21 @@ public class XLogImpl extends ArrayList<XTrace> implements XLog {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.deckfour.xes.model.XLog#getClassifiers()
+	 * @see XLog#getClassifiers()
 	 */
 	public List<XEventClassifier> getClassifiers() {
 		return classifiers;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.deckfour.xes.model.XLog#getGlobalEventAttributes()
+	 * @see XLog#getGlobalEventAttributes()
 	 */
 	public List<XAttribute> getGlobalEventAttributes() {
 		return globalEventAttributes;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.deckfour.xes.model.XLog#getGlobalTraceAttributes()
+	 * @see XLog#getGlobalTraceAttributes()
 	 */
 	public List<XAttribute> getGlobalTraceAttributes() {
 		return globalTraceAttributes;
@@ -197,7 +206,7 @@ public class XLogImpl extends ArrayList<XTrace> implements XLog {
 	 * Runs the given visitor on this log.
 	 * 
 	 * (non-Javadoc)
-	 * @see org.deckfour.xes.model.XLog#accept(org.deckfour.xes.model.XVisitor)
+	 * @see XLog#accept(XVisitor)
 	 */
 	public boolean accept(XVisitor visitor) {
 		/*

@@ -56,7 +56,7 @@ public class XAttributeLiteralImpl extends XAttributeImpl implements
 	 * 
 	 */
 	private static final long serialVersionUID = -1844032762689490775L;
-	
+
 	/**
 	 * Value of the attribute.
 	 */
@@ -72,6 +72,9 @@ public class XAttributeLiteralImpl extends XAttributeImpl implements
 	 */
 	public XAttributeLiteralImpl(String key, String value) {
 		this(key, value, null);
+	}
+	public XAttributeLiteralImpl() {
+		this("", "", null);
 	}
 
 	/**
@@ -92,7 +95,7 @@ public class XAttributeLiteralImpl extends XAttributeImpl implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.XAttributeLiteral#getValue()
+	 * @see XAttributeLiteral#getValue()
 	 */
 	public String getValue() {
 		return this.value;
@@ -101,7 +104,7 @@ public class XAttributeLiteralImpl extends XAttributeImpl implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.XAttributeLiteral#setValue(java.lang.String)
+	 * @see XAttributeLiteral#setValue(java.lang.String)
 	 */
 	public void setValue(String value) {
 		//#251 An empty trimmed string should not be treated as a null value.

@@ -118,7 +118,7 @@ public class XAttributeTimestampImpl extends XAttributeImpl implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.XAttributeTimestamp#getValue()
+	 * @see XAttributeTimestamp#getValue()
 	 */
 	public Date getValue() {
 		return this.value;
@@ -127,7 +127,7 @@ public class XAttributeTimestampImpl extends XAttributeImpl implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.XAttributeTimestamp#getValueMillis()
+	 * @see XAttributeTimestamp#getValueMillis()
 	 */
 	public long getValueMillis() {
 		return this.value.getTime();
@@ -136,7 +136,7 @@ public class XAttributeTimestampImpl extends XAttributeImpl implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.XAttributeTimestamp#setValue(java.util.Date)
+	 * @see XAttributeTimestamp#setValue(java.util.Date)
 	 */
 	public void setValue(Date value) {
 		if (value == null) {
@@ -149,7 +149,7 @@ public class XAttributeTimestampImpl extends XAttributeImpl implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.deckfour.xes.model.XAttributeTimestamp#setValueMillis(long)
+	 * @see XAttributeTimestamp#setValueMillis(long)
 	 */
 	public void setValueMillis(long value) {
 		this.value.setTime(value);

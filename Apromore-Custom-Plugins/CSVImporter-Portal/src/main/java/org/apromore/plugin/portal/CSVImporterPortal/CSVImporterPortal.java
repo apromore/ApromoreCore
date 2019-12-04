@@ -148,7 +148,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
      * read CSV content and create list model to be set as grid model.
      */
     @SuppressWarnings("null")
-    private void displayCSVContent(Media media, ListModelList<String[]> result,ListModelList<String[]> indexedResult, Grid myGrid, Div popUPBox, Window window) {
+    private void displayCSVContent(Media media, ListModelList<String[]> result,ListModelList<String[]> indexedResult, Grid myGrid, Div popUPBox, Window window, String setEncoding) {
         String firstLine = null;
 
 
@@ -169,7 +169,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
         }
 
         try {
-            CSVReader csvReader = newCSVReader(media, separator, "utf-8");
+            CSVReader csvReader = newCSVReader(media, separator, setEncoding);
             //LogSample sample = csvImporterLogic.sampleCSV(csvReader);
 
             List<String> header = new ArrayList<String>();
@@ -184,7 +184,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
             } else {
                 headerColumns.getChildren().clear();
             }
+            if (myGrid.getChildren() != null) {
+                myGrid.getChildren().clear();
+            }
 
+            if (indexedResult != null) {
+                indexedResult.clear();
+            }
             /// display first numberOfrows to user and display drop down lists to set attributes
             Collections.addAll(header, csvReader.readNext());
             // Deal with UTF-8 with BOM file encoding
@@ -193,8 +199,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             //2019-11-12
             if(header.size() > 8) {
+                window.setMaximizable(true);
                 window.setMaximized(true);
             } else {
+                window.setMaximizable(false);
                 int size = IndexColumnWidth + header.size() * AttribWidth + 35;
                 window.setWidth(size + "px");
             }
@@ -428,6 +436,29 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Div popUPBox = (Div) window.getFellow("popUPBox");
             Button toXESButton = (Button) window.getFellow("toXESButton");
             Button cancelButton = (Button) window.getFellow("cancelButton");
+            Combobox setEncoding = (Combobox) window.getFellow("setEncoding");
+
+            ListModel<String> allEncoding = new ListModelList<String>(csvImporterLogic.getEncoding());
+
+            setEncoding.setModel(allEncoding);
+//            setEncoding.setValue(new InputStreamReader(media.getStreamData()).getEncoding());
+            setEncoding.addEventListener("onSelect", new EventListener<Event>() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+
+
+                    String clearEncoding;
+
+                    if(setEncoding.getValue().contains(" ")) {
+                        clearEncoding = setEncoding.getValue().substring(0, setEncoding.getValue().indexOf(' '));
+                    } else {
+                        clearEncoding = setEncoding.getValue();
+                    }
+
+                    displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window, clearEncoding);
+                }
+            });
+
 
             csvImporterLogic.resetLine();
             csvImporterLogic.resetHead();
@@ -438,7 +469,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
 
             } else {
-                displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window);
+                displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window, setEncoding.getValue());
 
                 // set grid model
                 if (result != null) {
@@ -467,53 +498,82 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         return;
                     }
 
-                    try (CSVReader reader = newCSVReader(media, separator, "utf-8")) {
-                        LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
-                        Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported.");
+                    String clearEncoding;
 
+                    if(setEncoding.getValue().contains(" ")) {
+                        clearEncoding = setEncoding.getValue().substring(0, setEncoding.getValue().indexOf(' '));
+                    } else {
+                        clearEncoding = setEncoding.getValue();
+                    }
+
+
+
+                    try (CSVReader reader = newCSVReader(media, separator, clearEncoding)) {
+                        LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
+                        XLog xlog = null;
                         if (csvImporterLogic.getErrorCheck()) {
-                            switch (Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload log by skipping all rows " +
+                            Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload log by skipping all rows " +
                                             "containing invalid fields.\n Select Skip columns upload log by skipping the entire columns " +
                                             "containing invalid fields.\n ",
                                         "Confirm Dialog",
                                         new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
                                         new String[]{"Skip rows", "Skip columns", "Cancel"},
-                                        Messagebox.QUESTION, null, null)) {
+                                        Messagebox.EXCLAMATION, null, new org.zkoss.zk.ui.event.EventListener() {
+                                        public void onEvent(Event evt) throws Exception {
+                                            if (evt.getName().equals("onOK")) {
+                                                if (xesModel != null) {
+                                                    // create XES file
+                                                    for (int i = 0; i < xesModel.getRows().size(); i++) {
+                                                        for (Map.Entry<String, Timestamp> entry : xesModel.getRows().get(i).getOtherTimestamps().entrySet()) {
+                                                            if (entry.getKey() == null) { continue; }
+                                                            long tempLong = entry.getValue().getTime();
+                                                            Calendar cal = Calendar.getInstance();
+                                                            cal.setTimeInMillis(tempLong);
+                                                            if (cal.get(Calendar.YEAR) == 1900) {
+                                                                System.out.println("Invalid timestamp. Entry Removed.");
+                                                                xesModel.getRows().remove(i);
+                                                            }
+                                                        }
+                                                    }
 
-                            case OK:  // Skip rows
-                                for (int i = 0; i < xesModel.getRows().size(); i++) {
-                                    for (Map.Entry<String, Timestamp> entry : xesModel.getRows().get(i).getOtherTimestamps().entrySet()) {
-                                        if (entry.getKey() == null) { continue; }
-                                        long tempLong = entry.getValue().getTime();
-                                        Calendar cal = Calendar.getInstance();
-                                        cal.setTimeInMillis(tempLong);
-                                        if (cal.get(Calendar.YEAR) == 1900) {
-                                            System.out.println("Invalid timestamp. Entry Removed.");
-                                            xesModel.getRows().remove(i);
+                                                    XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
+                                                    if (xlog != null) {
+                                                        saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                                    }
+                                                    window.invalidate();
+                                                    window.detach();
+                                                }
+                                            } else if (evt.getName().equals("onIgnore")) {
+
+                                                for (int i = 0; i < xesModel.getRows().size(); i++) {
+                                                    xesModel.getRows().get(i).setOtherTimestamps(null);
+                                                }
+                                                if (xesModel != null) {
+                                                    // create XES file
+                                                    XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
+                                                    if (xlog != null) {
+                                                        saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
+                                                    }
+                                                    window.invalidate();
+                                                    window.detach();
+                                                }
+                                            } else {
+                                                // nothing
+                                            }
                                         }
-                                    }
-                                }
-                                break;
-
-                            case IGNORE:  // Skip columns
-                                for (int i = 0; i < xesModel.getRows().size(); i++) {
-                                    xesModel.getRows().get(i).setOtherTimestamps(null);
-                                }
-                                break;
-
-                            case CANCEL:  // Cancel
-                                return;
+                                    });
+                        } else {
+                            Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported.");
+                            // create XES file
+                            xlog = csvImporterLogic.createXLog(xesModel.getRows());
+                            if (xlog != null) {
+                                saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
                             }
+
+                            window.invalidate();
+                            window.detach();
                         }
 
-                        // create XES file
-                        XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
-                        if (xlog != null) {
-                            saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
-                        }
-
-                        window.invalidate();
-                        window.detach();
 
                     } catch (InvalidCSVException e) {
                         if (e.getInvalidRows() == null) {
