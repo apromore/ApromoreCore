@@ -76,8 +76,6 @@
     </fileset>
 
     <!-- Virgo Related -->
-    <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
-
     <target name="check-virgo">
         <condition property="virgo.installed">
             <available file="${dir-virgo}" type="dir"/>
@@ -91,7 +89,7 @@
         <delete file="${dir-deployment}/virgo.zip"/>
     </target>
 
-    <target name="configure-virgo" depends="check-virgo">
+    <target name="configure-virgo">
         <copy todir="${dir-virgo}/bin" overwrite="true">
             <fileset dir="Supplements/Virgo">
                 <filename name="dmk.sh"/>
@@ -118,6 +116,8 @@
         <chmod file="${dir-virgo}/bin/*.sh" perm="ugo+rx" osfamily="unix"/>
     </target>
 
+    <target name="setup-virgo" depends="download-virgo, configure-virgo"/>
+
     <target name="clean-virgo" depends="check-virgo" if="virgo.installed">
         <delete includeemptydirs="true">
             <fileset dir="${dir-virgo}">
@@ -141,7 +141,7 @@
         </delete>
     </target>
 
-    <target name="dist-virgo" depends="clean-virgo, setup-virgo, copy-virgo, deploy-virgo">
+    <target name="dist-virgo" depends="deploy-virgo">
         <zip destfile="Apromore.zip" includes="${dir-virgo}/*"/>
     </target>
 
@@ -165,7 +165,7 @@
         </exec>
     </target>
 
-    <target name="start-virgo" depends="configure-virgo, copy-virgo">
+    <target name="start-virgo" depends="deploy-virgo">
         <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
             <arg value="/c"/>
             <arg value="startup.bat"/>
