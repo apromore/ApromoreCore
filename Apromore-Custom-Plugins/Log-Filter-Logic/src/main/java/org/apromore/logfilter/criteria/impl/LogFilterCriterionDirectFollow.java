@@ -58,16 +58,17 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
             }
 
             if(s.contains("@>|")) {
-                greaterString =  s.substring(3);
+                greaterString = s.substring(3);
             }
             if(s.contains("@>=")) {
                 greaterEqualString = s.substring(2);
             }
+
             if(s.contains("@<|")) {
-                lessString = " time interval is less than " + s.substring(3);
+                lessString = s.substring(3);
             }
             if(s.contains("@<=")) {
-                lessEqualString = " time interval is up to " + s.substring(3);
+                lessEqualString = s.substring(3);
             }
         }
 
