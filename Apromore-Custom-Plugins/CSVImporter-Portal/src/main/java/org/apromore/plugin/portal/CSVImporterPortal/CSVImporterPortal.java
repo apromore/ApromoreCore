@@ -219,8 +219,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
             }
 
 
-            line = Arrays.asList(csvReader.readNext());
-
+            try {
+                line = Arrays.asList(csvReader.readNext());
+            } catch (CsvValidationException e) {
+                e.printStackTrace();
+            }
 
 
             if(line.size() < 2 && line != null) {
