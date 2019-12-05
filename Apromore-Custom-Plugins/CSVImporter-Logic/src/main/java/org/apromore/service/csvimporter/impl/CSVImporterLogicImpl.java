@@ -21,6 +21,7 @@
 package org.apromore.service.csvimporter.impl;
 
 import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.InvalidCSVException;
@@ -123,12 +124,24 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         List<String> line = new ArrayList<String>();
         ListModelList<String[]> result = new ListModelList<>();
 
-        Collections.addAll(header, reader.readNext());
+        try {
+            Collections.addAll(header, reader.readNext());
+        } catch (CsvValidationException e) {
+            e.printStackTrace();
+        }
 
-        line = Arrays.asList(reader.readNext());
+        try {
+            line = Arrays.asList(reader.readNext());
+        } catch (CsvValidationException e) {
+            e.printStackTrace();
+        }
         if (line.size() < 2 && line != null) {
             while (line.size() < 2 && line != null) {
-                line = Arrays.asList(reader.readNext());
+                try {
+                    line = Arrays.asList(reader.readNext());
+                } catch (CsvValidationException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -160,7 +173,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         try {
 
             // read first line from CSV as header
-            String[] header = reader.readNext();
+            String[] header = new String[0];
+            try {
+                header = reader.readNext();
+            } catch (CsvValidationException e) {
+                e.printStackTrace();
+            }
 
             // If any of the mandatory fields are missing show alert message to the user and return
             StringBuilder headNOTDefined = checkFields(heads);
