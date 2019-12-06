@@ -169,7 +169,7 @@
                             <button id="setIgnoreAll" label="'Event Attribute' to 'Ignore'" style="position:relative;padding-left:2px;" width="150px"  />
                             <space spacing="10px" />
                             Encoding:
-                            <combobox id="setEncoding" autodrop="true" value="UTF-8" width="80px" readonly="true">
+                            <combobox id="setEncoding" autodrop="true" value="UTF-8" width="100px" readonly="true">
                                 <template name="model">
                                     <comboitem label="${each}" />
                                 </template>

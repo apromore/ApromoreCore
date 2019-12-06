@@ -148,7 +148,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
      * read CSV content and create list model to be set as grid model.
      */
     @SuppressWarnings("null")
-    private void displayCSVContent(Media media, ListModelList<String[]> result,ListModelList<String[]> indexedResult, Grid myGrid, Div popUPBox, Window window, String setEncoding) {
+    private void displayCSVContent(Media media, ListModelList<String[]> result,ListModelList<String[]> indexedResult,
+                                   Grid myGrid, Div popUPBox, Window window, String setEncoding) {
         String firstLine = null;
 
 
@@ -179,6 +180,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             Columns headerColumns = new Columns();
 
+
             if (myGrid.getColumns() == null) {
                 headerColumns.setParent(myGrid);
             } else {
@@ -188,8 +190,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 myGrid.getChildren().clear();
             }
 
-            if (indexedResult != null) {
+            if (indexedResult != null || indexedResult.size() > 0) {
                 indexedResult.clear();
+            }
+            if(result != null || result.size() > 0) {
+                result.clear();
             }
             /// display first numberOfrows to user and display drop down lists to set attributes
             Collections.addAll(header, csvReader.readNext());
@@ -251,7 +256,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                 for (int i=0; i < lists.size(); i++) {
 //                    attrBox.appendChild(lists.get(i));
-
                     Auxheader listHeader = new Auxheader();
                     listHeader.appendChild(lists.get(i));
                     optionHead.appendChild(listHeader);
@@ -269,8 +273,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 for (int i = 0; i < header.size(); i++) {
                     Column newColumn = new Column();
                     newColumn.setWidth(AttribWidth + "px");
-                    newColumn.setValue(header.get(i));
-                    newColumn.setLabel(header.get(i));
+                    newColumn.setValue(header.get(0));
+                    newColumn.setLabel(header.get(0));
                     newColumn.setAlign("center");
                     headerColumns.appendChild(newColumn);
                     headerColumns.setSizable(true);
@@ -281,7 +285,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
 
                 List<String>  newLine = line;
-
                 // display first 1000 rows
                 int numberOfrows = 0;
                 while (line != null && numberOfrows < 100) {
@@ -320,8 +323,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 createPopUpTextBox(newLine.size(), popUPBox, helpP);
                 csvImporterLogic.openPopUp();
                 csvReader.close();
-
-
 
 
 
@@ -438,6 +439,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Button cancelButton = (Button) window.getFellow("cancelButton");
             Combobox setEncoding = (Combobox) window.getFellow("setEncoding");
 
+
+            csvImporterLogic.resetLine();
+            csvImporterLogic.resetHead();
+            csvImporterLogic.resetList();
+
+
             ListModel<String> allEncoding = new ListModelList<String>(csvImporterLogic.getEncoding());
 
             setEncoding.setModel(allEncoding);
@@ -446,8 +453,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 @Override
                 public void onEvent(Event event) throws Exception {
 
-
                     String clearEncoding;
+                    ListModelList<String[]> indexedResult = new ListModelList<>();
+                    ListModelList<String[]> result = new ListModelList<>();
 
                     if(setEncoding.getValue().contains(" ")) {
                         clearEncoding = setEncoding.getValue().substring(0, setEncoding.getValue().indexOf(' '));
@@ -456,19 +464,27 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     }
 
                     displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window, clearEncoding);
+
+                    // set grid model
+                    if (result != null) {
+                        myGrid.setModel(indexedResult);
+                    } else {
+                        Messagebox.show("Result is NULL!", "Attention", Messagebox.OK, Messagebox.ERROR);
+                    }
+                    //set grid row renderer
+                    GridRendererController rowRenderer = new GridRendererController();
+                    rowRenderer.setAttribWidth(AttribWidth);
                 }
             });
 
 
-            csvImporterLogic.resetLine();
-            csvImporterLogic.resetHead();
-            csvImporterLogic.resetList();
 
             String[] allowedExtensions = {"csv", "xls", "xlsx"};
             if (!Arrays.asList(allowedExtensions).contains(media.getFormat())) {
                 Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
 
             } else {
+
                 displayCSVContent(media, result,indexedResult, myGrid, popUPBox, window, setEncoding.getValue());
 
                 // set grid model
