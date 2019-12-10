@@ -64,7 +64,14 @@
     --ap-font-brand: 'Gilroy-Light', sans-serif;
 
     /* Shadow */
-    --ap-box-shadow: 0 1px 3px 0 rgba(127, 127, 127, 0.5);
+    /* --ap-box-shadow: 0 1px 3px 0 rgba(127, 127, 127, 0.5); */
+    --ap-box-shadow: 0 2px 2px 0 rgba(127, 127, 127, 0.2);
+
+
+    /* Border */
+    --ap-border-default: 1px solid var(--ap-c-grey-light-5);
+    --ap-border-color-default: var(--ap-c-grey-light-5);
+    --ap-border-color-light: rgba(200, 200, 200, 0.3);
 
     /* Size and position */
     --ap-icon-height: 26px;

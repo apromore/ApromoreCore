@@ -50,13 +50,18 @@ body {
 }
 
 .ap-pd-action-buttons {
+    box-sizing: border-box;
     position: absolute;
     right: 0;
     left: 0;
     top: 34px;
     height: 32px;
-    padding: 5px 0 0 8px;
+    padding: 3px 0 0 8px;
     background-color: var(--ap-c-action-bg-normal);
+}
+
+.ap-pd-options-splitter {
+
 }
 
 .ap-pd-stats-c {
@@ -79,18 +84,75 @@ body {
 .ap-pd-main-c {
     display: flex;
     position:absolute;
-    right: 0;left: 0;top: 70px;bottom: 5px;
+    right: 0;
+    left: 0;
+    top: 66px;
+    bottom: 5px;
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
 }
 
-.ap-pd-main-c > div.ap-pd-options {
+.ap-pd-main-c > div.ap-pd-options-splitter {
     flex: 0 0 auto;
+    width: 100%;
+    height: 10px;
+    line-height: 10px;
+    text-align: center;
+    color: var(--ap-c-text-minor);
+    box-shadow: var(--ap-box-shadow);
+    background-color: var(--ap-c-soft-blue-light-5);
+    vertical-align: top;
+    cursor: pointer;
+    justify-content: stretch;
+}
+
+.ap-pd-main-c > div.ap-pd-options-splitter:hover {
+    background-color: var(--ap-c-soft-blue-light-4);
+}
+
+div.ap-pd-options {
+    flex: 0 0 auto;
+}
+
+.ap-pd-options-c {
+    padding: 0;
+    background-color: var(--ap-c-bg-lightest);
+}
+
+.ap-pd-options-c > .z-groupbox-content {
+    padding: 10px 10px 8px 10px;
+    border: none;
+}
+
+.ap-pd-options-c .z-groupbox-header .z-caption {
+    background-color: var(--ap-c-bg-lightest);
+}
+
+.ap-pd-options-c .z-groupbox > .z-groupbox-header {
+    height: 12px;
 }
 
 .ap-pd-main-c > div#cy {
     flex: 1 1 auto;
+}
+
+.ap-pd-sliders {
+    background-color: white;
+    border: 1px solid  var(--ap-border-color-light);
+}
+
+.ap-pd-sliders .z-row-content {
+    padding: 0 5px;
+}
+
+.ap-pd-sliders .z-row-inner:first-child .z-row-content {
+    text-align: right;
+}
+
+.ap-pd-options-c .z-groupbox > div {
+    background-color: white;
+    border-color: var(--ap-border-color-light);
 }
 
 .statsHead {
@@ -120,4 +182,143 @@ body {
 
 .ap-pd-keys:hover + .z-html {
     display: block !important;
+}
+
+.ap-pd-action-buttons .z-combobox-input,
+.ap-pd-action-buttons .z-combobox-button {
+    color: var(--text-color-default);
+    background: white;
+}
+
+.ap-pd-action-buttons .sublabel {
+    margin: 0 3px 0 5px;
+}
+
+
+.tippy-popper {
+    font-family: var(--ap-font-base);
+}
+
+.ap-pd-stats-duration {
+    display: flex;
+    flex-direction: column;
+}
+
+.ap-pd-stats-duration > div {
+    flex: 1 1 auto;
+}
+
+.ap-pd-stats-duration > div > span {
+    display: inline-block;
+}
+
+.ap-pd-stats-duration > div > span:first-child {
+    width: 100px;
+    text-align: right;
+}
+
+.ap-pd-stats-main,
+.ap-pd-stats-time {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: stretch;
+    padding: 8px;
+    background-color: white;
+    border: 1px solid  var(--ap-border-color-light);
+}
+
+.ap-pd-stats-duration {
+    padding: 8px;
+    background-color: white;
+    border: 1px solid  var(--ap-border-color-light);
+}
+
+.ap-pd-stats-time > div,
+.ap-pd-stats-main > div {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    flex: 0 0 auto;
+    padding: 3px 0 2px 0;
+}
+
+.ap-pd-stats-main > div > * {
+    width: 70px;
+    flex: 1 1 auto;
+    display: block;
+    text-align: center;
+}
+
+.ap-pd-stats-time > div > * {
+    width: 140px;
+    flex: 1 1 auto;
+    display: block;
+    text-align: center;
+}
+
+.ap-pd-stats-main .ap-icon {
+    box-shadow: none;
+}
+
+.ap-pd-stats-main .ap-stat-val {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.ap-stat-val.z-label {
+    color: var(--ap-c-maroon);
+}
+
+.ap-stat-action {
+    padding: 0 !important;
+}
+
+.ap-pd-stats-duration > div {
+    padding: 2px 0 3px 0;
+}
+
+.ap-pd-stats-duration > div > span .z-label {
+    padding-right: 4px;
+}
+
+.ap-pd-stats-duration .ap-stat-head {
+    padding-bottom: 3px;
+}
+
+.ap-pd-stats-duration .ap-stat-head .z-label {
+    font-size: 18px !important;
+    color: var(--ap-c-grey-minor);
+}
+
+.ap-pd-stats-time .start-time > span:last-child {
+    height: 1px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--ap-c-grey-minor);
+}
+
+.ap-pd-stats-time .end-time > span:first-child {
+    height: 1px;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--ap-c-grey-minor);
+}
+
+.ap-pd-stats-time .start-time > *,
+.ap-pd-stats-time .end-time > * {
+    display: inline-block;
+    width: 50px;
+    flex: 1 1 auto;
+}
+
+.ap-pd-stats-time .start-time > span:nth-child(2),
+.ap-pd-stats-time .end-time > span:nth-child(2) {
+    width: 70px !important;
+    flex: 0 0 auto !important;
+}
+
+.ap-pd-stats-time .start-time,
+.ap-pd-stats-time .end-time {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }

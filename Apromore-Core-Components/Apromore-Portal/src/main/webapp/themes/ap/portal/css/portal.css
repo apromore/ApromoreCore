@@ -4,10 +4,6 @@
   border-right: none !important;
 }
 
-.ap-portal-menu .z-menubar {
-  padding-left: 7px;
-}
-
 .ap-portal-menu-actions {
   background-color: var(--ap-c-action-bg-normal);
   box-shadow: var(--ap-box-shadow);
@@ -86,11 +82,33 @@
   background-color: transparent !important;
 }
 
-.ap-portal-right-section .z-menubar {
+.ap-portal-menu .z-menubar {
   background-color: var(--ap-c-menu-bg-normal) !important;
   border: 0;
   box-shadow: var(--ap-box-shadow);
+  padding-top: 2px;
 }
+
+/*
+.ap-portal-menu .z-menubar > ul {
+  display: flex;
+  flex-direction: row;
+}
+
+.ap-portal-menu .z-menubar > ul > li {
+  flex: 0 0 auto;
+}
+*/
+
+.ap-portal-menu .z-menubar-horizontal li {
+  margin: 2px 0 0 0 !important;
+}
+
+.ap-portal-menu .z-menubar > ul > li.z-menuseparator {
+  /*flex: 1 1 auto;*/
+
+}
+
 
 .ap-portal-right-section .z-tabbox {
   /*border: 1px solid transparent !important;*/
@@ -148,6 +166,7 @@
 }
 
 .ap-listbox-process {
+  height: 100% !important;
   padding: 0;
   margin: 0;
   border: none !important;
@@ -254,6 +273,15 @@
   padding: 0 4px 0 4px;
 }
 
+.ap-wrapper-process .z-window-content {
+  height: 100% !important;
+}
+
+.ap-listbox-process .z-listbox-header,
+.ap-listbox-process .z-listbox-body {
+  width: 100% !important;
+}
+
 .ap-listbox-process button[class^="ap-star-"] {
   width: 15px;
   padding: 0;
@@ -304,6 +332,14 @@
 
 .ap-process-detail-wrapper .z-window {
   background-color: transparent !important;
+}
+
+.ap-left-layout .z-south-splitter-button .z-icon-ellipsis-h:nth-child(1) {
+  left: 0 !important;
+}
+
+.ap-left-layout .z-south-splitter-button .z-icon-ellipsis-h:nth-child(3) {
+  left: 20px !important;
 }
 
 .ap-about-window .z-window-content {

@@ -15,13 +15,19 @@
 
     <library-property>
         <name>org.zkoss.theme.preferred</name>
-        <value>iceblue_c</value>  <!-- atlantic, breeze, iceblue, iceblue_c, sapphire, silvertail, chiaroscuro_c -->
+        <value>chiaroscuro_c</value>  <!-- atlantic, breeze, iceblue, iceblue_c, sapphire, silvertail, chiaroscuro_c -->
     </library-property>
 
   <library-property>
     <name>org.zkoss.util.label.web.location</name>
     <value>/WEB-INF/ui.properties</value>
   </library-property>
+
+  <library-property>
+    <name>org.zkoss.theme.atlantic.useGoogleFont.disabled</name>
+    <value>true</value>
+  </library-property>
+
 
   <!-- Uncomment if you turn off the caching of resources loaded from
           the class path (aka., class Web resources).
@@ -33,7 +39,6 @@
             <name>org.zkoss.web.classWebResource.cache</name>
             <value>false</value>
     </library-property>
-
 
     <!-- Turn on if you want to cache by etag for dynamic resource.
     <library-property>

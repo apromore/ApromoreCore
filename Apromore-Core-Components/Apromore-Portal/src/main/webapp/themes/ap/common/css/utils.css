@@ -57,3 +57,14 @@
 .ap-stateful-button input {
     display: none;
 }
+
+.ap-action-sep {
+    box-sizing: border-box;
+    display: inline-block;
+    margin: 0 3px;
+    width: 2px;
+    height: 22px;
+    border-right: 1px solid var(--ap-c-grey-minor);
+    border-left: 1px solid white;
+    vertical-align: middle;
+}

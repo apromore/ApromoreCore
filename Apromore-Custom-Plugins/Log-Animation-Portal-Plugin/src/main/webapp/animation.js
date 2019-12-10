@@ -814,7 +814,7 @@ AnimationController = {
         var y = 20;
         for(var i=0;i<logs.length;i++) {
             progressE.appendChild(this.createProgressIndicatorsForLog(i+1, logs[i], timeline, x, y));
-            x += 60;
+            x += 150;
         }
         return progressE;
     },
@@ -858,7 +858,7 @@ AnimationController = {
         textE.setAttributeNS(null,"x", x);
         textE.setAttributeNS(null,"y", y - 10);
         textE.setAttributeNS(null,"text-anchor","middle");
-        var textNode = document.createTextNode('Log#' + logNo);
+        var textNode = document.createTextNode(log.name);
         textE.appendChild(textNode);
 
         var tooltip = document.createElementNS(svgNS,"title");

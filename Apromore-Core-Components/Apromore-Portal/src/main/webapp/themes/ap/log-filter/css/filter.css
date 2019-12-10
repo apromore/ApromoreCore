@@ -19,3 +19,13 @@
     background-color: transparent;
     margin-left: 0 !important;
 }
+
+
+.ap-lfee .ap-tab-vertical ul {
+    display: flex !important;
+    flex-direction: column;
+}
+
+.ap-lfee .ap-tab-vertical ul li {
+    flex: 0 0 auto !important;
+}

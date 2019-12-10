@@ -1,5 +1,5 @@
 <zk xmlns:h="http://www.w3.org/1999/xhtml" xmlns:w="http://www.zkoss.org/2005/zk/client">
-    <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="CSV Importer" style="min-width: 940px" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer" >
+    <window  closable="true" id="mainWindow" maximizable="true" hflex="min" vflex="min" height="85vh" width="95vw"  position="center" title="CSV Importer" style="min-width: 1024px" onClientInfo="onClientInfo(event)" sclass="ap-csv-importer" >
         <custom-attributes theme="${labels.ap.theme}"/>
         <style src="/themes/${theme}/csv-importer/css/index.css" />
 
@@ -148,10 +148,12 @@
                 <!--</div>-->
                 <div id="gridBox" zclass="myGroupBox">
                     <!--<div zclass="banner" /> -->
-                    <div id="popUPBox" zclass="relativePos"></div>
+                    <div id="popUPBox" zclass="relativePos" style="padding-top:0px;"></div>
                     <!--<div id="attrBox" visible="false"></div>-->
                     <div sclass="ap-csv-importer-grid-wrapper">
-                        <grid id="myGrid" mold="default" hflex="min" vflex="min" onClientInfo="onClientInfo(event)" height="100%" width="100%" sclass="ap-grid">
+                        <grid id="myGrid" mold="default" hflex="min" vflex="min"
+                              onClientInfo="onClientInfo(event)" height="100%" width="100%" sclass="ap-grid"
+                            w:onAfterRender="testxx">
                             <zscript>
                                 void onClientInfo(ClientInfoEvent evt) {
                                 int height = evt.getDesktopHeight();
@@ -176,12 +178,12 @@
                             </button>
                             <space spacing="10px" />
                             Encoding:
-                            <combobox id="setEncoding" autodrop="true" value="UTF-8" width="160px" readonly="true">
+                            <combobox id="setEncoding" autodrop="true" value="UTF-8" width="200px" readonly="true">
                                 <template name="model">
                                     <comboitem label="${each}" />
                                 </template>
                             </combobox>
-                            <span sclass="ap-csv-encoding" width="150px">
+                            <span sclass="ap-csv-encoding" width="170px">
                                 <button w:onClick="Ap.encodingDetect()">
                                     Detect
                                 </button>
@@ -208,6 +210,48 @@
             </south>
         </borderlayout>
 
+        <script defer="true" type="text/javascript"><![CDATA[
+
+          function setupFormat () {
+          let all = $('.relativePos > div')
+          for (i = 0; i < all.length; i++) {
+            let hasWindow = all[i].querySelector('input:not([value=""])')
+
+            if (hasWindow) {
+              let closeButton = all[i].querySelector('button')
+              closeButton.addEventListener(
+                'click',
+                (function(i) {
+                  return function () {
+                    $(all[i]).hide()
+                    $(all[i]).css('visibility', 'hidden')
+                  }
+                })(i)
+              )
+              let target = $('.ap-csv-importer-grid-wrapper .z-grid-header .z-auxhead th:nth-child('+ (i + 2) + ')')
+              let btn = $('<button class="ap-csv-importer-format-icon"><i class="z-icon-wrench"></i></button>')
+                .click(
+                  (function(i) {
+                    return function () {
+                      console.log(i, all[i])
+                      $(all[i]).show()
+                      $(all[i]).css('visibility', 'visible')
+                    }
+                  })(i)
+                )
+              target.append(btn)
+            }
+          }
+
+          }
+
+
+          function testxx() {
+            console.log('testxx')
+          }
+          setupFormat();
+          ]]>
+        </script>
 
 
     </window>

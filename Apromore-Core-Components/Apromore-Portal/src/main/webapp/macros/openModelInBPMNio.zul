@@ -124,6 +124,8 @@
 					  //console.log($$("div.ORYX_Editor div.bjs-container div.djs-container svg g.viewport")[0]);
 					  //console.log(editorWrapper.getCanvas()._editor.getDefinitions());
 					//}, 1000);
+
+					document.title = 'Apromore - BPMN Editor';
                 ]]>
             </n:script>
         </n:span>

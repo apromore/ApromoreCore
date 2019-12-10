@@ -340,6 +340,11 @@
     width: 26px !important;
 }
 
+.ap-icon-table-list {
+    background-image: url('table-list.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-timer {
     background-image: url('timer.svg') !important;
     width: 26px !important;

@@ -189,16 +189,19 @@
         <!--</div>-->
 
         <borderlayout vflex="true" sclass="ap-portal-layout">
-            <north height="34px" border="0" sclass="ap-header-region">
-                <h:div class="ap-header">
-                    <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
-                    <h:div class="ap-header-title">Portal</h:div>
-                    <h:div class="ap-header-actions">
-                        <h:a href="https://apromore.org/documentation/features" target="_blank">
-                            <h:button class="ap-icon ap-icon-help"/>
-                        </h:a>
+            <north height="66px" border="0" sclass="ap-header-region" >
+                <div height="66px" hflex="1">
+                    <h:div class="ap-header">
+                        <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
+                        <h:div class="ap-header-title">Portal</h:div>
+                        <h:div class="ap-header-actions">
+                            <h:a href="https://apromore.org/documentation/features" target="_blank">
+                                <h:button class="ap-icon ap-icon-help"/>
+                            </h:a>
+                        </h:div>
                     </h:div>
-                </h:div>
+                    <Menu id="menucomp" sclass="ap-portal-menu" style="margin-top: 34px;" height="32px" width="100%"  />
+                </div>
             </north>
             <west id="leftPanel" title="Navigation" size="30%" collapsible="true" splittable="true" sclass="ap-portal-left-section" border="0">
                 <borderlayout sclass="ap-left-layout">
@@ -213,20 +216,20 @@
             </west>
             <center id="mainPanel" sclass="ap-portal-right-section" vflex="1" border="0">
                 <vlayout vflex="1" sclass="ap-portal-right-content" spacing="0">
-                    <Menu id="menucomp" sclass="ap-portal-menu" height="32px" width="100%"  />
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
                         <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
                         <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0">
-                            <button sclass="ap-icon ap-icon-redo" id="refreshB" label="" image="img/icon/svg/refresh_icon.svg" tooltiptext="Reload data" />
+                            <button sclass="ap-icon ap-icon-redo" id="refreshB" tooltiptext="Reload data" />
                             <!--<button id="showVisualisation" label="" style="background: transparent; border:none" image="img/clustering.png" tooltiptext="Show Clustering" />-->
-                            <button sclass="ap-icon ap-icon-folder-add" id="btnAddFolder" label="" image="img/icon/svg/folder_add.svg" tooltiptext="Create folder"/>
-                            <button sclass="ap-icon ap-icon-bpmn-add" id="btnAddProcess" label="" image="img/icon/svg/add_process.svg" tooltiptext="Create model"/>
-                            <button sclass="ap-icon ap-icon-trash" id="btnRemoveFolder" label="" image="img/icon/svg/delete_file.svg" tooltiptext="Delete" visible="true"/>
-                            <button sclass="ap-icon ap-icon-rename" id="btnRenameFolder" label="" image="img/icon/svg/rename_icon.svg" tooltiptext="Rename" visible="true"/>
+                            <button sclass="ap-icon ap-icon-folder-add" id="btnAddFolder" tooltiptext="Create folder"/>
+                            <button sclass="ap-icon ap-icon-bpmn-add" id="btnAddProcess" tooltiptext="Create model"/>
+                            <button sclass="ap-icon ap-icon-trash" id="btnRemoveFolder" tooltiptext="Delete" visible="true"/>
+                            <button sclass="ap-icon ap-icon-rename" id="btnRenameFolder" tooltiptext="Rename" visible="true"/>
                             <!--<button id="btnGEDFolder" label="" style="background: transparent; border:none; cursor: pointer;" image="img/rename.png" tooltiptext="GED" visible="true"/>-->
-                            <button sclass="ap-icon ap-icon-user-lock" id="btnSecurity" label="" image="img/icon/svg/security_icon.svg" tooltiptext="Access rights"/>
+                            <button sclass="ap-icon ap-icon-user-lock" id="btnSecurity" tooltiptext="Access rights"/>
                         </hbox>
-                        <SimpleSearch id="simplesearchcomp" hflex="1" border="0" />
+                        <div hflex="1"></div>
+                        <SimpleSearch id="simplesearchcomp" border="0" width="400px"/>
                     </hbox>
                     <html id="folders" width="0px" height="0px" visible="false" />
                     <tabbox id="tabbox" vflex="1" hflex="1">
