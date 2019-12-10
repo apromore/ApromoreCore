@@ -21,10 +21,7 @@
 package org.apromore.plugin.portal.CSVImporterPortal;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Calendar;
 import javax.inject.Inject;
@@ -33,7 +30,6 @@ import javax.xml.datatype.DatatypeFactory;
 import com.opencsv.*;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import org.apache.commons.lang.StringUtils;
-import org.apromore.plugin.portal.DefaultPortalPlugin;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
@@ -45,10 +41,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.*;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.metainfo.ZScript;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -107,13 +101,14 @@ public class CSVImporterPortal implements FileImporterPlugin {
         portalContext.refreshContent();
     }
 
-    private static CSVReader newCSVReader(Media media, String charset) throws InvalidCSVException, IOException, UnsupportedEncodingException {
+    private static CSVReader newCSVReader(Media media, String charset) throws InvalidCSVException, IOException,
+            UnsupportedEncodingException {
 
-        // Guess at the separator character
+        // Guess at ethe separator character
         Reader reader = media.isBinary() ? new InputStreamReader(media.getStreamData(), charset) : media.getReaderData();
         BufferedReader brReader = new BufferedReader(reader);
         String firstLine = brReader.readLine();
-        char separator = getMaxOccuringChar(firstLine);
+        char separator = getMaxOccurringChar(firstLine);
         if(separator == Character.UNASSIGNED) {
             throw new InvalidCSVException("Separator is not supported.");
         }
@@ -127,7 +122,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     .build();
     }
 
-    private static char getMaxOccuringChar(String str) {
+    private static char getMaxOccurringChar(String str) {
         if (str == null || str.isEmpty()) {
             throw new IllegalArgumentException("input word must have non-empty value.");
         }
@@ -197,8 +192,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if (popUPBox != null) {
                 popUPBox.getChildren().clear();
             }
-            if (result != null) {
+            if (result != null || result.size() > 0) {
                 result.clear();
+            }
+            if(indexedResult != null || result.size() > 0) {
+                indexedResult.clear();
             }
 
 
@@ -210,7 +208,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
             }
 
-            if(line != null && sample.getHeader() != null && !line.isEmpty() && !sample.getHeader().isEmpty() && line.size() > 1) {
+            if(line != null && sample.getHeader() != null && !line.isEmpty() &&
+                    !sample.getHeader().isEmpty() && line.size() > 1) {
                 csvImporterLogic.setLine(line);
                 csvImporterLogic.setHeads(sample.getHeader());
                 csvImporterLogic.setOtherTimestamps(result);
@@ -219,7 +218,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
             }
 
             if (line.size() != sample.getHeader().size()) {
-                throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
+                throw new InvalidCSVException("Number of columns in the header does not match " +
+                        "number of columns in the data");
             }
 
             csvImporterLogic.setLists(line.size(), csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
@@ -329,9 +329,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
             toXESButton.setDisabled(false);
             window.setTitle("CSV Importer - " + media.getName());
 
-        } catch (InvalidCSVException | IOException e) {
-            e.printStackTrace();
-            Messagebox.show(e.getMessage());
+        } catch (InvalidCSVException | IOException | NullPointerException e ) {
+//            e.printStackTrace();
+            Messagebox.show("Failed to display the log. Try different encoding.",
+                    "Error", Messagebox.OK,Messagebox.ERROR);
         }
     }
 
@@ -344,7 +345,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
             item.setMinheight(100);
             item.setClass("p-1");
             item.setBorder("normal");
-            item.setStyle("margin-left:" + (i==0? IndexColumnWidth: (i*AttribWidth) + IndexColumnWidth )  + "px; position: absolute; z-index: 10; visibility: hidden; top:3px;");
+            item.setStyle("margin-left:" + (i==0? IndexColumnWidth: (i*AttribWidth) + IndexColumnWidth )  +
+                    "px; position: absolute; z-index: 10; visibility: hidden; top:3px;");
 
             Button sp = new Button();
 //            sp.setLabel("-");
@@ -406,7 +408,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
         this.isPublic = isPublic;
 
         try {
-            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/csvimporter.zul", null, null);
+            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(),
+                    "zul/csvimporter.zul", null, null);
 
             if (media == null || window == null) {
                 return;
@@ -460,12 +463,13 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     try (CSVReader reader = newCSVReader(media, clearEncoding)) {
                         LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
-                        Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file has been imported.");
+                        Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file " +
+                                "has been imported.");
 
                         if (csvImporterLogic.getErrorCheck()) {
-                            switch (Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload log by skipping all rows " +
-                                            "containing invalid fields.\n Select Skip columns upload log by skipping the entire columns " +
-                                            "containing invalid fields.\n ",
+                            switch (Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload" +
+                                            " log by skipping all rows " +"containing invalid fields.\n Select Skip " +
+                                            "columns upload log by skipping the entire columns " + "containing invalid fields.\n ",
                                         "Confirm Dialog",
                                         new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.IGNORE, Messagebox.Button.CANCEL},
                                         new String[]{"Skip rows", "Skip columns", "Cancel"},
@@ -513,7 +517,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                         } else {
                             Messagebox.show(e.getMessage() , "Invalid CSV File",
                                 new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                                new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null, new EventListener() {
+                                new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
+                                    new EventListener() {
                                     public void onEvent(Event evt) throws Exception {
                                         if (evt.getName().equals("onOK")) {
                                             File tempFile = File.createTempFile("Error_Report", ".txt");
@@ -521,7 +526,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                                 for(String str: e.getInvalidRows()) {
                                                     writer.write(str + System.lineSeparator());
                                                 }
-                                                Filedownload.save(new FileInputStream(tempFile), "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+                                                Filedownload.save(new FileInputStream(tempFile),
+                                                        "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
 
                                             } finally {
                                                 tempFile.delete();
