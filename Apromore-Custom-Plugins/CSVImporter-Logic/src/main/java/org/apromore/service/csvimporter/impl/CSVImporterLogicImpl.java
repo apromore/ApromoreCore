@@ -119,11 +119,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     private static Integer AttribWidth = 150;
 
     public LogSample sampleCSV(CSVReader reader) throws InvalidCSVException, IOException {
-        List<String> header = new ArrayList<String>();
+        LogSample sample = new LogSample();
+
         List<String> line = new ArrayList<String>();
         ListModelList<String[]> result = new ListModelList<>();
 
-        Collections.addAll(header, reader.readNext());
+        Collections.addAll(sample.getHeader(), reader.readNext());
 
         line = Arrays.asList(reader.readNext());
         if (line.size() < 2 && line != null) {
@@ -132,22 +133,22 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             }
         }
 
-        if (line != null && header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
+        if (line != null && sample.getHeader() != null && !line.isEmpty() && !sample.getHeader().isEmpty() && line.size() > 1) {
             setLine(line);
-            setHeads(header);
+            setHeads(sample.getHeader());
             setOtherTimestamps(result);
         } else {
             throw new InvalidCSVException("Could not parse file!");
         }
 
-        if (line.size() != header.size()) {
+        if (line.size() != sample.getHeader().size()) {
             reader.close();
             throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
         } else {
             setLists(line.size(), getHeads(), AttribWidth - 20 + "px");
         }
 
-        return new LogSample();
+        return sample;
     }
 
     public LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException {
@@ -180,6 +181,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
             for (Iterator<String[]> it = reader.iterator(); finishCount < 50; ) {
                 String[] line = it.next();
+                boolean rowGTG = true;
                 if(line == null) {
                     // if line is empty, more to next iteration, until 50 lines are empty
                     finishCount++;
@@ -201,7 +203,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                     invalidRows.add("Row: " + (lineCount) + ", Error: number of columns does not match number of headers. "
                                             + "Number of headers: " + header.length + ", Number of columns: " + line.length + ".\n");
                                     errorCount++;
-                                    continue;
+                                    rowGTG = false;
+                                    break;
 
                                 }
 
@@ -256,8 +259,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                 }
                             }
                         }
+                        if (rowGTG == true) {
                             logData.add(new LogEventModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
-
+                        }
                     } catch (Exception e) {
                         errorMessage = ExceptionUtils.getStackTrace(e);
                         e.printStackTrace();
@@ -949,10 +953,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
     public List<String> getEncoding() {
-        return Arrays.asList(new String[]{"UTF-8", "UTF-16", "windows-1250 (Eastern European)", "windows-1251 (Cyrillic)",
+        return Arrays.asList(new String[]{"UTF-8", "windows-1250 (Eastern European)", "windows-1251 (Cyrillic)",
                 "windows-1252 (Latin)", "windows-1253 (Greek)", "windows-1254 (Turkish)",
                 "windows-1255 (Hebrew)", "windows-1256 (Arabic)", "windows-1258 (Vietnamese)", "windows-31j (Japanese)",
                 "ISO-2022-CN (Chinese)"});
     }
-
 }
