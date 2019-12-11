@@ -20,6 +20,10 @@
 
 package org.apromore.plugin.portal.csvexporter;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -35,8 +39,9 @@ import org.deckfour.xes.model.XLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Messagebox;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.*;
 
 @Component("csvExporterPlugin")
 public class CSVExporterPlugin extends DefaultPortalPlugin {
@@ -73,13 +78,34 @@ public class CSVExporterPlugin extends DefaultPortalPlugin {
     public void execute(PortalContext portalContext) {
         try {
             LogSummaryType logSummary = findSelectedLog(portalContext);
-            String filename = logSummary.getName();
-            XLog xlog = eventLogService.getXLog(logSummary.getId());
-            String csvLog = csvExporterLogic.exportCSV(xlog);
+            Window window = (Window) portalContext.getUI().createComponent(getClass().getClassLoader(), "zul/encodingList.zul", null, null);
 
-            Filedownload.save(csvLog, "text/csv", logSummary.getName());
+            Button downloadButton = (Button) window.getFellow("downloadButton");
+            Listbox selectEncoding = (Listbox) window.getFellow("selectEncoding");
+            downloadButton.addEventListener("onClick", new EventListener<Event>() {
+                        public void onEvent(Event event) throws Exception {
+                            String filename = logSummary.getName().replace('.','-');
+                            XLog xlog = eventLogService.getXLog(logSummary.getId());
+                            String csvLog = csvExporterLogic.exportCSV(xlog);
 
-        } catch (NoUniqueSelectedLogException e) {
+                            InputStream csvLogStream = new ByteArrayInputStream(csvLog.getBytes(Charset.forName(selectEncoding.getSelectedItem().getValue().toString())));
+                            Filedownload.save(csvLogStream, "text/csv", filename);
+                        }
+            });
+
+            Button cancelButton = (Button) window.getFellow("cancelButton");
+            cancelButton.addEventListener("onClick", new EventListener<Event>() {
+                public void onEvent(Event event) throws Exception {
+                    window.invalidate();
+                    window.detach();
+                }
+
+            });
+
+            window.doModal();
+        } catch (IOException e) {
+            LOGGER.error("Failed to read");
+        }  catch (NoUniqueSelectedLogException e) {
             Messagebox.show("Please, select exactly one log.", "Wrong Log Selection", Messagebox.OK, Messagebox.INFORMATION);
 
         } catch (RuntimeException e) {
