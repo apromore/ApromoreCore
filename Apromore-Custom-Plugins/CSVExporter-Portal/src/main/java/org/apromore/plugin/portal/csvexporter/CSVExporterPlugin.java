@@ -90,6 +90,8 @@ public class CSVExporterPlugin extends DefaultPortalPlugin {
 
                             InputStream csvLogStream = new ByteArrayInputStream(csvLog.getBytes(Charset.forName(selectEncoding.getSelectedItem().getValue().toString())));
                             Filedownload.save(csvLogStream, "text/csv", filename);
+                            window.invalidate();
+                            window.detach();
                         }
             });
 
