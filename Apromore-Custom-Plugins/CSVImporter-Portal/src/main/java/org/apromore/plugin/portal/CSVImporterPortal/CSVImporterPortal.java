@@ -184,8 +184,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             //2019-11-12
             if(sample.getHeader().size() > 8) {
+                window.setMaximizable(true);
                 window.setMaximized(true);
             } else {
+                window.setMaximizable(false);
                 int size = IndexColumnWidth + sample.getHeader().size() * AttribWidth + 35;
                 window.setWidth(size + "px");
             }
