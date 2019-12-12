@@ -6,6 +6,8 @@ import com.opencsv.enums.CSVReaderNullFieldIndicator;;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
 import org.apromore.service.csvimporter.*;
 import org.deckfour.xes.model.XLog;
 import org.deckfour.xes.out.XesXmlSerializer;
@@ -17,6 +19,9 @@ import java.io.ByteArrayOutputStream;
 
 /** Test suite for {@link CSVImporterLogicImpl}. */
 public class CSVImporterLogicImplUnitTest {
+
+    /** Expected headers for <code>test1-valid.csv</code>. */
+    private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", " process type");
 
     /** Test instance. */
     private CSVImporterLogic csvImporterLogic = new CSVImporterLogicImpl();
@@ -44,6 +49,28 @@ public class CSVImporterLogicImplUnitTest {
 
     // Test cases
 
+    /** Test {@link CSVImporterLogic.sampleCSV} sampling fewer lines than contained in <code>test1-valid.csv</code>. */
+    @Test
+    public void testSampleCSV_undersample() throws Exception {
+        CSVReader csvReader = newCSVReader("/test1-valid.csv", "utf-8", ',');
+        LogSample logSample = csvImporterLogic.sampleCSV(csvReader, 2);
+
+        // Validate result
+        assertEquals(TEST1_EXPECTED_HEADER, logSample.getHeader());
+        assertEquals(2, logSample.getLines().size());
+    }
+
+    /** Test {@link CSVImporterLogic.sampleCSV} sampling more lines than contained in <code>test1-valid.csv</code>. */
+    @Test
+    public void testSampleCSV_oversample() throws Exception {
+        CSVReader csvReader = newCSVReader("/test1-valid.csv", "utf-8", ',');
+        LogSample logSample = csvImporterLogic.sampleCSV(csvReader, 5);
+
+        // Validate result
+        assertEquals(TEST1_EXPECTED_HEADER, logSample.getHeader());
+        assertEquals(3, logSample.getLines().size());
+    }
+
     /** Test {@link CSVImporterLogic.prepareXesModel} against a valid CSV log <code>test1-valid.csv</code>. */
     @Test
     public void testPrepareXesModel_test1_valid() throws Exception {
@@ -55,7 +82,7 @@ public class CSVImporterLogicImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test1-expected.xes")), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test1-valid.csv", "utf-8", ',');
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
@@ -89,7 +116,7 @@ public class CSVImporterLogicImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test2-expected.xes")), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8", ',');
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
@@ -124,7 +151,7 @@ public class CSVImporterLogicImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test3-expected.xes")), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test3-invalid-end-timestamp.csv", "utf-8", ',');
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
@@ -156,7 +183,7 @@ public class CSVImporterLogicImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test4-expected.xes")), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test4-invalid-start-timestamp.csv", "utf-8", ',');
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
@@ -189,7 +216,7 @@ public class CSVImporterLogicImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test5-expected.xes")), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test5-empty-caseID.csv", "utf-8", ',');
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 
@@ -221,7 +248,7 @@ public class CSVImporterLogicImplUnitTest {
         String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test6-expected.xes")), Charset.forName("utf-8"));
 
         // Perform the test
-        LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test6-different-delimiters.csv", "utf-8", ';');
         LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
 

@@ -118,7 +118,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     private static Integer AttribWidth = 150;
 
-    public LogSample sampleCSV(CSVReader reader) throws InvalidCSVException, IOException {
+    public LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException {
         LogSample sample = new LogSample();
 
         List<String> line = new ArrayList<String>();
@@ -148,6 +148,18 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             setLists(line.size(), getHeads(), AttribWidth - 20 + "px");
         }
 
+
+        int numberOfRows = 0;
+        while (line != null && numberOfRows < sampleSize) {
+
+            sample.getLines().add(line);
+            numberOfRows++;
+
+            // Try to read another row
+            String[] s = reader.readNext();
+            line = (s == null) ? null : Arrays.asList(s);
+        }
+        
         return sample;
     }
 

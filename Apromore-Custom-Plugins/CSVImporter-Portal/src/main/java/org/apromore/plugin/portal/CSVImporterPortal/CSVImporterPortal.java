@@ -155,6 +155,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @SuppressWarnings("null")
     private static void displayCSVContent(CSVImporterLogic csvImporterLogic, Media media, Window window) {
 
+        final int SAMPLE_SIZE = 100;
+
         ListModelList<String[]> result = new ListModelList<>();
         ListModelList<String[]> indexedResult = new ListModelList<>();
         Grid myGrid  = (Grid) window.getFellow("myGrid");
@@ -168,7 +170,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
         try (CSVReader csvReader = newCSVReader(media, charset)) {
 
             // Sample the beginning of the log
-            LogSample sample = csvImporterLogic.sampleCSV(csvReader);
+            LogSample sample = csvImporterLogic.sampleCSV(csvReader, SAMPLE_SIZE);
 
             // Present the beginning of the log to the user so that they can confirm/add configuration
 
@@ -200,31 +202,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if(indexedResult != null || result.size() > 0) {
                 indexedResult.clear();
             }
-
-
-            List<String> line = Arrays.asList(csvReader.readNext());
-
-            if(line.size() < 2 && line != null) {
-                while (line.size() < 2 && line != null) {
-                    line = Arrays.asList(csvReader.readNext());
-                }
-            }
-
-            if(line != null && sample.getHeader() != null && !line.isEmpty() &&
-                    !sample.getHeader().isEmpty() && line.size() > 1) {
-                csvImporterLogic.setLine(line);
-                csvImporterLogic.setHeads(sample.getHeader());
-                csvImporterLogic.setOtherTimestamps(result);
-            }else{
-                Messagebox.show("Could not parse file!");
-            }
-
-            if (line.size() != sample.getHeader().size()) {
-                throw new InvalidCSVException("Number of columns in the header does not match " +
-                        "number of columns in the data");
-            }
-
-            csvImporterLogic.setLists(line.size(), csvImporterLogic.getHeads(), AttribWidth - 20 + "px");
 
             List<Listbox> lists = csvImporterLogic.getLists();
 
@@ -260,33 +237,17 @@ public class CSVImporterPortal implements FileImporterPlugin {
             }
 
             // display first 100 rows
-            int numberOfrows = 0;
-            while (line != null && numberOfrows < 100) {
-
-                if(line != null && line.size() > 2) {
-                    List<String> withIndex = new ArrayList<String>();
-                    withIndex.add(String.valueOf(numberOfrows + 1));
-                    withIndex.addAll(line);
-                    String[] s = withIndex.toArray(new String[0]);
-                    indexedResult.add(s);
-                }
-                result.add(line.toArray(new String[0]));
-                numberOfrows++;
-
-                if(numberOfrows == 100) {
-                    String[] continued = {"...",""};
-
-                    indexedResult.add(continued);
-                }
-
-                // Read the next line
-                String[] s = csvReader.readNext();
-                if (s == null) {
-                    break;
-                }
-                line = Arrays.asList(s);
+            for (int i = 0; i < sample.getLines().size(); i++) {
+                List<String> withIndex = new ArrayList<String>();
+                withIndex.add(String.valueOf(i+1));
+                withIndex.addAll(sample.getLines().get(i));
+                String[] s = withIndex.toArray(new String[0]);
+                indexedResult.add(s);
             }
-
+            if (sample.getHeader().size() == SAMPLE_SIZE) {
+                String[] continued = {"...",""};
+                indexedResult.add(continued);
+            }
 
 
             Popup helpP = (Popup) window.getFellow("popUpHelp");
