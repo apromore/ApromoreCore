@@ -44,7 +44,7 @@ public interface CSVImporterLogic {
     List<String> getEncoding();
     // Business logic methods
 
-    LogSample sampleCSV(CSVReader reader) throws InvalidCSVException, IOException;
+    LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException;
     LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException, IOException;
     XLog createXLog(List<LogEventModel> traces);
     void toXESfile(XLog xLog, String FileName) throws FileNotFoundException, IOException;

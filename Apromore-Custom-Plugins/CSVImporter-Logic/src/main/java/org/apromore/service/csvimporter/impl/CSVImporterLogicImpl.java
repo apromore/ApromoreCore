@@ -118,7 +118,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     private static Integer AttribWidth = 150;
 
-    public LogSample sampleCSV(CSVReader reader) throws InvalidCSVException, IOException {
+
+    public LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException {
+
         LogSample sample = new LogSample();
 
         List<String> line = new ArrayList<String>();
@@ -148,6 +150,19 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             setLists(line.size(), getHeads(), AttribWidth - 20 + "px");
         }
 
+
+
+        int numberOfRows = 0;
+        while (line != null && numberOfRows < sampleSize) {
+
+            sample.getLines().add(line);
+            numberOfRows++;
+
+            // Try to read another row
+            String[] s = reader.readNext();
+            line = (s == null) ? null : Arrays.asList(s);
+        }
+        
         return sample;
     }
 
@@ -953,7 +968,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
     public List<String> getEncoding() {
-        return Arrays.asList(new String[]{"UTF-8", "windows-1250 (Eastern European)", "windows-1251 (Cyrillic)",
+
+        return Arrays.asList(new String[]{"UTF-8", "UTF-16","windows-1250 (Eastern European)", "windows-1251 (Cyrillic)",
                 "windows-1252 (Latin)", "windows-1253 (Greek)", "windows-1254 (Turkish)",
                 "windows-1255 (Hebrew)", "windows-1256 (Arabic)", "windows-1258 (Vietnamese)", "windows-31j (Japanese)",
                 "ISO-2022-CN (Chinese)"});

@@ -1,5 +1,5 @@
 {
-	"dynamic_cat_cols":	["activity_name","last","Resource","label","elapsed","org:resource","AMOUNT_REQ","event_nr","lifecycle:transition","proctime"],
+	"dynamic_cat_cols":	["Resource","org:resource","last","activity_name","label","elapsed","proctime","event_nr","lifecycle:transition","AMOUNT_REQ"],
 	"static_cat_cols":	["creator"],
 	"timestamp_col":		"time:timestamp",
 	"activity_col":			"concept:name",
