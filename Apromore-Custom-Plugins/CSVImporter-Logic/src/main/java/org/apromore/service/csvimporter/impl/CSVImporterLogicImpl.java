@@ -40,6 +40,7 @@ import org.deckfour.xes.out.XesXmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.*;
 
 import java.io.*;
@@ -123,19 +124,19 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
         LogSample sample = new LogSample();
 
-        List<String> line = new ArrayList<String>();
+        List<String> line;
         ListModelList<String[]> result = new ListModelList<>();
 
         Collections.addAll(sample.getHeader(), reader.readNext());
 
         line = Arrays.asList(reader.readNext());
-        if (line.size() < 2 && line != null) {
-            while (line.size() < 2 && line != null) {
+        if (line.size() < 2) {
+            while (line.size() < 2) {
                 line = Arrays.asList(reader.readNext());
             }
         }
 
-        if (line != null && sample.getHeader() != null && !line.isEmpty() && !sample.getHeader().isEmpty() && line.size() > 1) {
+        if (sample.getHeader() != null && !line.isEmpty() && !sample.getHeader().isEmpty() && line.size() > 1) {
             setLine(line);
             setHeads(sample.getHeader());
             setOtherTimestamps(result);
@@ -172,7 +173,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         int finishCount = 0;
         errorCheck = false;
 
-        ArrayList<String> invalidRows = new ArrayList<String>();
+        ArrayList<String> invalidRows = new ArrayList<>();
         try {
 
             // read first line from CSV as header
@@ -269,12 +270,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                                 " field is invalid timestamp.");
 //                                        errorCount++;
                                         errorCheck = true;
-                                        continue;
                                     }
                                 }
                             }
                         }
-                        if (rowGTG == true) {
+                        if (rowGTG) {
                             logData.add(new LogEventModel(line[heads.get(caseid)], line[heads.get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
                         }
                     } catch (Exception e) {
@@ -319,17 +319,17 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     Messagebox.show(notificationMessage
                             , "Invalid CSV File",
                             new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null, new org.zkoss.zk.ui.event.EventListener() {
-                                public void onEvent(Event evt) throws Exception {
-                                    if (evt.getName().equals("onOK")) {
-                                        File tempFile = File.createTempFile("Error_Report", ".txt");
-                                        FileWriter writer = new FileWriter(tempFile);
-                                        for(String str: invalidRows) {
-                                            writer.write(str + System.lineSeparator());
-                                        }
-                                        writer.close();
-                                        Filedownload.save(new FileInputStream(tempFile), "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
+                            (EventListener) evt -> {
+                                if (evt.getName().equals("onOK")) {
+                                    File tempFile = File.createTempFile("Error_Report", ".txt");
+                                    FileWriter writer = new FileWriter(tempFile);
+                                    for(String str: invalidRows) {
+                                        writer.write(str + System.lineSeparator());
                                     }
+                                    writer.close();
+                                    Filedownload.save(new FileInputStream(tempFile),
+                                            "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
                                 }
                             });
                     return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows);
@@ -343,9 +343,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         return null;
     }
 
-    public boolean isValidLineCount(int lineCount) {
-        return true;
-    }
     public void automaticFormat(ListModelList<String[]> result, List<String> myHeader) {
         try {
             String currentFormat = null;
@@ -380,7 +377,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                     if (currentFormat != format) {
                                         Timestamp validTS2 = Parse.parseTimestamp(result.get(i - IncValue)[j], currentFormat);
 
-                                        if (validTS != null && validTS.getYear() > 0) {
+                                        if (validTS.getYear() > 0) {
                                             currentFormat = format;
                                             break outerloop;
                                         } else {
@@ -418,8 +415,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //                                            Messagebox.show("Current: " + startFormat + ", Changing to: " + format);
                                             startFormat = format;
                                             break outerloop;
-                                        } else {
-                                            continue;
                                         }
                                     }
                                 } else {
@@ -486,7 +481,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     public void setHeads(List<String> line) {
         // initialize map
-        heads = new HashMap<String, Integer>();
+        heads = new HashMap<>();
         heads.put(caseid, -1);
         heads.put(activity, -1);
         heads.put(timestamp, -1);
@@ -542,7 +537,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     public void setOtherTimestamps(ListModelList<String[]> result) {
         if (result == null || result.size() == 0) {
-            otherTimeStampsPos = new HashMap<Integer, String>();
+            otherTimeStampsPos = new HashMap<>();
             Integer timeStampPos = heads.get(timestamp);
             Integer StartTimeStampPos = heads.get(tsStart);
 
@@ -552,9 +547,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     otherTimeStampsPos.put(i, detectedFormat);
                 }
             }
-        } else {
-            // do multiple line
-        }
+        }  // do multiple line
+
     }
 
     /**
@@ -597,7 +591,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     private List<LogEventModel> sortTraces(List<LogEventModel> traces) {
         Comparator<String> nameOrder = new NameComparator();
-        Collections.sort(traces, (o1, o2) -> nameOrder.compare(o1.getCaseID(), o2.getCaseID()));
+        traces.sort((o1, o2) -> nameOrder.compare(o1.getCaseID(), o2.getCaseID()));
         return traces;
     }
 
@@ -637,13 +631,13 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 item.setLabel(dl.getValue());
 
                 if ((box.getSelectedItem() == null) && (
-                        (new String(dl.getKey()).equals(caseid) && cl == heads.get(caseid)) ||
-                                (new String(dl.getKey()).equals(activity) && cl == heads.get(activity)) ||
-                                (new String(dl.getKey()).equals(timestamp) && cl == heads.get(timestamp)) ||
-                                (new String(dl.getKey()).equals(tsStart) && cl == heads.get(tsStart)) ||
-                                (new String(dl.getKey()).equals(resource) && cl == heads.get(resource)) ||
-                                (new String(dl.getKey()).equals(tsValue) && otherTimeStampsPos.get(cl) != null) ||
-                                (new String(dl.getKey()).equals(other)))
+                        (dl.getKey().equals(caseid) && (cl == heads.get(caseid))) ||
+                                (dl.getKey().equals(activity) && (cl == heads.get(activity))) ||
+                                (dl.getKey().equals(timestamp) && (cl == heads.get(timestamp))) ||
+                                (dl.getKey().equals(tsStart) && (cl == heads.get(tsStart))) ||
+                                (dl.getKey().equals(resource) && (cl == heads.get(resource))) ||
+                                (dl.getKey().equals(tsValue) && (otherTimeStampsPos.get(cl) != null)) ||
+                                (dl.getKey().equals(other)))
                         ) {
                     item.setSelected(true);
                 }
@@ -659,7 +653,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 removeColPos(colPos);
                 closePopUp(colPos);
 
-                if (new String(selected).equals(caseid) || new String(selected).equals(activity) || new String(selected).equals(timestamp) || new String(selected).equals(tsStart) || new String(selected).equals(resource)) {
+                if (selected.equals(caseid) || selected.equals(activity) || selected.equals(timestamp) || selected.equals(tsStart) || new String(selected).equals(resource)) {
 
                     int oldColPos = heads.get(selected);
                     if (oldColPos != -1) {
@@ -669,15 +663,15 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                         closePopUp(oldColPos);
                     }
 
-                    if (new String(selected).equals(timestamp) || new String(selected).equals(tsStart)) {
+                    if (selected.equals(timestamp) || selected.equals(tsStart)) {
                         tryParsing(parse.determineDateFormat(this.line.get(colPos)), colPos);
                     } else {
                         heads.put(selected, colPos);
                     }
 
-                } else if (new String(selected).equals(ignore)) {
+                } else if (selected.equals(ignore)) {
                     ignoredPos.add(colPos);
-                } else if (new String(selected).equals(tsValue)) {
+                } else if (selected.equals(tsValue)) {
                     tryParsing(parse.determineDateFormat(this.line.get(colPos)), colPos);
                 }
             });
@@ -693,7 +687,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     private void removeColPos(int colPos) {
 
         if (otherTimeStampsPos.get(colPos) != null) {
-            otherTimeStampsPos.remove(Integer.valueOf(colPos));
+            otherTimeStampsPos.remove(colPos);
 
         } else if (ignoredPos.contains(colPos)) {
             ignoredPos.remove(Integer.valueOf(colPos));
