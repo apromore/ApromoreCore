@@ -9,8 +9,10 @@ import java.util.List;
 public class LogSample {
 
     private List<String> header = new ArrayList<>();
+
     private List<List<String>> lines = new ArrayList<>();
 
     public List<String> getHeader() { return header; }
     public List<List<String>> getLines() { return lines; }
+
 };

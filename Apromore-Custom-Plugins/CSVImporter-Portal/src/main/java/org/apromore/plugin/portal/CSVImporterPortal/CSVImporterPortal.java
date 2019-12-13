@@ -101,6 +101,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
         portalContext.refreshContent();
     }
 
+
     private static CSVReader newCSVReader(Media media, String charset) throws InvalidCSVException, IOException,
             UnsupportedEncodingException {
 
@@ -109,6 +110,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
         BufferedReader brReader = new BufferedReader(reader);
         String firstLine = brReader.readLine();
         char separator = getMaxOccurringChar(firstLine);
+
         if(separator == Character.UNASSIGNED) {
             throw new InvalidCSVException("Separator is not supported.");
         }
@@ -122,7 +124,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     .build();
     }
 
+
     private static char getMaxOccurringChar(String str) {
+
         if (str == null || str.isEmpty()) {
             throw new IllegalArgumentException("input word must have non-empty value.");
         }
@@ -155,6 +159,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @SuppressWarnings("null")
     private static void displayCSVContent(CSVImporterLogic csvImporterLogic, Media media, Window window) {
 
+
         final int SAMPLE_SIZE = 100;
 
         ListModelList<String[]> result = new ListModelList<>();
@@ -170,6 +175,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
         try (CSVReader csvReader = newCSVReader(media, charset)) {
 
             // Sample the beginning of the log
+
             LogSample sample = csvImporterLogic.sampleCSV(csvReader, SAMPLE_SIZE);
 
             // Present the beginning of the log to the user so that they can confirm/add configuration
@@ -199,6 +205,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if (result != null || result.size() > 0) {
                 result.clear();
             }
+
             if(indexedResult != null || result.size() > 0) {
                 indexedResult.clear();
             }
@@ -275,7 +282,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     csvImporterLogic.setIgnoreAll(window);
                 }
             });
-
 
             // set grid model
             if (result != null) {
@@ -426,6 +432,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                     try (CSVReader reader = newCSVReader(media, clearEncoding)) {
                         LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
+
                         Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file " +
                                 "has been imported.");
 
