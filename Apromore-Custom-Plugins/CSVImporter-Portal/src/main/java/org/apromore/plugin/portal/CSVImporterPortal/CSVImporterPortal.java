@@ -399,7 +399,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 try (CSVReader reader = newCSVReader(media, clearEncoding)) {
                     LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
 
-                    if (csvImporterLogic.getErrorCheck()) {
+                    if (xesModel.getErrorCheck()) {
                        Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload" +
                                         " log by skipping all rows " + "containing invalid fields.\n Select Skip " +
                                         "columns upload log by skipping the entire columns " + "containing invalid fields.\n ",
