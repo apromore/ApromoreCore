@@ -909,25 +909,4 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
         return xEvent;
     }
-
-
-    /**
-     * To XES file.
-     * <p>
-     * Serialize xLog to XES file.
-     *
-     * @param xLog the x log
-     * @throws FileNotFoundException the file not found exception
-     * @throws IOException           Signals that an I/O exception has occurred.
-     */
-    public void toXESfile(XLog xLog, String FileName) throws FileNotFoundException, IOException {
-        if (xLog == null) return;
-
-
-        String FileNameWithoutExtention = FileName.replaceFirst("[.][^.]+$", "");
-        XesXmlSerializer serializer = new XesXmlSerializer();
-        serializer.serialize(xLog, new FileOutputStream(new File(FileNameWithoutExtention + ".xes")));
-//        Messagebox.show("Your file has been created!");
-
-    }
 }
