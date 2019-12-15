@@ -129,7 +129,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         }
 
         if (sample.getHeader() != null && !line.isEmpty() && !sample.getHeader().isEmpty() && line.size() > 1) {
-            setLine(line);
+            this.line = line;
             this.heads = toHeads(sample.getHeader());
             setOtherTimestamps(result);
         } else {
@@ -140,7 +140,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             reader.close();
             throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
         } else {
-            setLists(line.size(), this.heads, AttribWidth - 20 + "px");
+            this.lists = toLists(line.size(), this.heads, AttribWidth - 20 + "px");
         }
 
 
@@ -473,6 +473,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         return heads;
     }
 
+    /*
     public void setLine(List<String> line) {
         this.line = line;
     }
@@ -494,6 +495,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
     ;
+    */
 
     public void setOtherTimestamps(ListModelList<String[]> result) {
         if (result == null || result.size() == 0) {
@@ -549,16 +551,16 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
 
-    private List<LogEventModel> sortTraces(List<LogEventModel> traces) {
+    private static List<LogEventModel> sortTraces(List<LogEventModel> traces) {
         Comparator<String> nameOrder = new NameComparator();
         traces.sort((o1, o2) -> nameOrder.compare(o1.getCaseID(), o2.getCaseID()));
         return traces;
     }
 
 
-    public void setLists(int cols, Map<String, Integer> heads, String boxwidth) {
+    private List<Listbox> toLists(int cols, Map<String, Integer> heads, String boxwidth) {
 
-        lists = new ArrayList<Listbox>();
+        List<Listbox> lists = new ArrayList<Listbox>();
         ignoredPos = new ArrayList<Integer>();
 
 
@@ -638,6 +640,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
             lists.add(box);
         }
+
+        return lists;
     }
 
     public List<Listbox> getLists() {

@@ -384,11 +384,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
             }));
             setEncoding.addEventListener("onSelect", event -> displayCSVContent(csvImporterLogic, media, window));
 
-
-            csvImporterLogic.resetLine();
-            csvImporterLogic.resetHead();
-            csvImporterLogic.resetList();
-
             String[] allowedExtensions = {"csv", "xls", "xlsx"};
             if (!Arrays.asList(allowedExtensions).contains(media.getFormat())) {
                 Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);

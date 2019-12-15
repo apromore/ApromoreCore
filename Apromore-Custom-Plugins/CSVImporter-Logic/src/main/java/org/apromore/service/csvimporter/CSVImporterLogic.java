@@ -24,15 +24,10 @@ public interface CSVImporterLogic {
 
     // Accessors
 
-    void setLine(List<String>  line);
     void automaticFormat(ListModelList<String[]> result, List<String> myHeader);
-    void resetLine();
-    void resetHead();
-    void resetList() ;
     void setOtherTimestamps(ListModelList<String[]> result);
     void setOtherAll(Window window);
     void setIgnoreAll(Window window);
-    void setLists(int cols, Map<String, Integer> heads, String boxwidth);
     List<Listbox> getLists();
     void tryParsing(String format, int colPos);
     void openPopUp();
