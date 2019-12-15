@@ -94,7 +94,7 @@ public class CSVImporterLogicImplUnitTest {
         assert logModel.getInvalidRows().isEmpty();
 
         // Continue with the XES conversion
-        XLog xlog = csvImporterLogic.createXLog(logModel.getRows());
+        XLog xlog = logModel.getXLog();
 
         // Validate result
         assertNotNull(xlog);
@@ -128,7 +128,7 @@ public class CSVImporterLogicImplUnitTest {
         assert logModel.getInvalidRows().isEmpty();
 
         // Continue with the XES conversion
-        XLog xlog = csvImporterLogic.createXLog(logModel.getRows());
+        XLog xlog = logModel.getXLog();
 
         // Validate result
         assertNotNull(xlog);
@@ -163,7 +163,7 @@ public class CSVImporterLogicImplUnitTest {
         assertEquals(1, logModel.getInvalidRows().size());
 
         // Continue with the XES conversion
-        XLog xlog = csvImporterLogic.createXLog(logModel.getRows());
+        XLog xlog = logModel.getXLog();
 
         // Validate result
         assertNotNull(xlog);
@@ -195,7 +195,7 @@ public class CSVImporterLogicImplUnitTest {
         assertEquals(1, logModel.getInvalidRows().size());
 
         // Continue with the XES conversion
-        XLog xlog = csvImporterLogic.createXLog(logModel.getRows());
+        XLog xlog = logModel.getXLog();
 
         // Validate result
         assertNotNull(xlog);
@@ -228,7 +228,7 @@ public class CSVImporterLogicImplUnitTest {
         assertEquals(0, logModel.getInvalidRows().size());
 
         // Continue with the XES conversion
-        XLog xlog = csvImporterLogic.createXLog(logModel.getRows());
+        XLog xlog = logModel.getXLog();
 
         // Validate result
         assertNotNull(xlog);
@@ -260,7 +260,7 @@ public class CSVImporterLogicImplUnitTest {
         assertEquals(0, logModel.getInvalidRows().size());
 
         // Continue with the XES conversion
-        XLog xlog = csvImporterLogic.createXLog(logModel.getRows());
+        XLog xlog = logModel.getXLog();
 
         // Validate result
         assertNotNull(xlog);

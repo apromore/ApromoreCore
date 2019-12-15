@@ -467,7 +467,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
                                         Messagebox.show("Hello Ok!");
                                         // create XES file
-                                        XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
+                                        XLog xlog = xesModel.getXLog();
                                         if (xlog != null) {
                                             saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
                                         }
@@ -481,7 +481,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                                         }
                                         Messagebox.show("Hello Ignore!");
                                         // create XES file
-                                        XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
+                                        XLog xlog = xesModel.getXLog();
                                         if (xlog != null) {
                                             saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
                                         }
@@ -495,7 +495,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     } else {
                         Messagebox.show("Total number of lines processed: " + xesModel.getLineCount() + "\n Your file " +
                                 "has been imported.");
-                        XLog xlog = csvImporterLogic.createXLog(xesModel.getRows());
+                        XLog xlog = xesModel.getXLog();
                         if (xlog != null) {
                             saveLog(xlog, media.getName().replaceFirst("[.][^.]+$", ""), portalContext);
                         }

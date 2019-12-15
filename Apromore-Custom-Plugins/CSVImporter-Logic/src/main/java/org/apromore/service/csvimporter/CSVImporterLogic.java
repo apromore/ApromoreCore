@@ -45,5 +45,4 @@ public interface CSVImporterLogic {
 
     LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException;
     LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException, IOException;
-    XLog createXLog(List<LogEventModel> traces);
 }
