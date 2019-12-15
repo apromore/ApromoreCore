@@ -93,7 +93,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     private String[] StartTsValues = {"start date", "start timestamp", "start time"};
     private String[] resourceValues = {"resource", "agent", "employee", "group"};
     private List<Listbox> lists;
-    private HashMap<String, Integer> heads;
+    private Map<String, Integer> heads;
     private List<Integer> ignoredPos;
     private HashMap<Integer, String> otherTimeStampsPos;
     private List<String> line;
@@ -133,7 +133,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
         if (sample.getHeader() != null && !line.isEmpty() && !sample.getHeader().isEmpty() && line.size() > 1) {
             setLine(line);
-            setHeads(sample.getHeader());
+            this.heads = toHeads(sample.getHeader());
             setOtherTimestamps(result);
         } else {
             throw new InvalidCSVException("Could not parse file!");
@@ -143,7 +143,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             reader.close();
             throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
         } else {
-            setLists(line.size(), getHeads(), AttribWidth - 20 + "px");
+            setLists(line.size(), this.heads, AttribWidth - 20 + "px");
         }
 
 
@@ -433,10 +433,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         }
     }
 
-    public HashMap<String, Integer> getHeads() {
-        return this.heads;
-    }
-
     /**
      * Header pos.
      * <p>
@@ -475,7 +471,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         }
     }
 
-    public void setHeads(List<String> line) {
+    private Map<String, Integer> toHeads(List<String> line) {
         // initialize map
         heads = new HashMap<>();
         heads.put(caseid, -1);
@@ -507,6 +503,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 }
             }
         }
+
+        return heads;
     }
 
     public void setLine(List<String> line) {
@@ -570,7 +568,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
      * @param posMap the pos map
      * @return the string builder
      */
-    private StringBuilder checkFields(HashMap<String, Integer> posMap) {
+    private StringBuilder checkFields(Map<String, Integer> posMap) {
         String[] fieldsToCheck = {caseid, activity, timestamp};
         StringBuilder importMessage = new StringBuilder();
 
@@ -592,7 +590,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
 
-    public void setLists(int cols, HashMap<String, Integer> heads, String boxwidth) {
+    public void setLists(int cols, Map<String, Integer> heads, String boxwidth) {
 
         lists = new ArrayList<Listbox>();
         ignoredPos = new ArrayList<Integer>();

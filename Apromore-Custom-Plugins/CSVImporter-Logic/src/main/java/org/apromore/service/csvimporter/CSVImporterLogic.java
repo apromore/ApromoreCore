@@ -8,8 +8,8 @@ import org.zkoss.zul.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service which converts event logs in CSV format to XES format.
@@ -21,8 +21,6 @@ public interface CSVImporterLogic {
 
     // Accessors
 
-    void setHeads(List<String> line);
-    HashMap<String, Integer> getHeads();
     void setLine(List<String>  line);
     void automaticFormat(ListModelList<String[]> result, List<String> myHeader);
     void resetLine();
@@ -31,7 +29,7 @@ public interface CSVImporterLogic {
     void setOtherTimestamps(ListModelList<String[]> result);
     void setOtherAll(Window window);
     void setIgnoreAll(Window window);
-    void setLists(int cols, HashMap<String, Integer> heads, String boxwidth);
+    void setLists(int cols, Map<String, Integer> heads, String boxwidth);
     List<Listbox> getLists();
     void tryParsing(String format, int colPos);
     void openPopUp();
