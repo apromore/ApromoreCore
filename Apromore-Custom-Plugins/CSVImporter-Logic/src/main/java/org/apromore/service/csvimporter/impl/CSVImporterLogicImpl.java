@@ -930,12 +930,4 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 //        Messagebox.show("Your file has been created!");
 
     }
-
-    public List<String> getEncoding() {
-
-        return Arrays.asList(new String[]{"UTF-8", "UTF-16","windows-1250 (Eastern European)", "windows-1251 (Cyrillic)",
-                "windows-1252 (Latin)", "windows-1253 (Greek)", "windows-1254 (Turkish)",
-                "windows-1255 (Hebrew)", "windows-1256 (Arabic)", "windows-1258 (Vietnamese)", "windows-31j (Japanese)",
-                "ISO-2022-CN (Chinese)"});
-    }
 }

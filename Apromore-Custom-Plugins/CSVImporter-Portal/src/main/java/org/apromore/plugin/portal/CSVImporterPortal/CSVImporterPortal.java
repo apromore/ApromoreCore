@@ -368,8 +368,20 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             // Initialize the character encoding drop-down menu
             Combobox setEncoding = (Combobox) window.getFellow("setEncoding");
-            ListModel<String> allEncoding = new ListModelList<>(csvImporterLogic.getEncoding());
-            setEncoding.setModel(allEncoding);
+            setEncoding.setModel(new ListModelList<>(new String[]{
+                "UTF-8",
+                "UTF-16",
+                "windows-1250 (Eastern European)",
+                "windows-1251 (Cyrillic)",
+                "windows-1252 (Latin)",
+                "windows-1253 (Greek)",
+                "windows-1254 (Turkish)",
+                "windows-1255 (Hebrew)",
+                "windows-1256 (Arabic)",
+                "windows-1258 (Vietnamese)",
+                "windows-31j (Japanese)",
+                "ISO-2022-CN (Chinese)"
+            }));
             setEncoding.addEventListener("onSelect", event -> displayCSVContent(csvImporterLogic, media, window));
 
 
