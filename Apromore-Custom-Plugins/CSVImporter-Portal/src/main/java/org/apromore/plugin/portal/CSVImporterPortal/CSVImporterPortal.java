@@ -255,19 +255,19 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if(sample.getHeader() != null) {
                 System.out.println("Automatic formatting here! " + Arrays.toString(result.get(0)));
                 csvImporterLogic.automaticFormat(result, sample.getHeader());
-                csvImporterLogic.setOtherTimestamps(result);
+                csvImporterLogic.setOtherTimestamps(result, sample.getLines().get(0));
             }
 
-            createPopUpTextBox(csvImporterLogic, sample.getHeader().size(), popUPBox, helpP);
+            createPopUpTextBox(csvImporterLogic, sample.getHeader().size(), popUPBox, helpP, sample.getLines().get(0));
             csvImporterLogic.openPopUp();
 
             Button setOtherAll = (Button) window.getFellow("setOtherAll");
             setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
-            setOtherAll.addEventListener("onClick", event -> csvImporterLogic.setOtherAll(window));
+            setOtherAll.addEventListener("onClick", event -> csvImporterLogic.setOtherAll(window, sample.getLines().get(0)));
 
             Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
             setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
-            setIgnoreAll.addEventListener("onClick", event -> csvImporterLogic.setIgnoreAll(window));
+            setIgnoreAll.addEventListener("onClick", event -> csvImporterLogic.setIgnoreAll(window, sample.getLines().get(0)));
 
             // set grid model
             myGrid.setModel(indexedResult);
@@ -287,8 +287,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
         }
     }
 
-
-    private static void createPopUpTextBox(CSVImporterLogic csvImporterLogic, int colNum, Div popUPBox, Popup helpP){
+    private static void createPopUpTextBox(CSVImporterLogic csvImporterLogic, int colNum, Div popUPBox, Popup helpP, List<String> sampleLine){
         for(int i =0; i<= colNum -1; i++){
             Window item = new Window();
             item.setId(popupID+ i);
@@ -323,8 +322,9 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     textbox.setPlaceholder("Specify timestamp format");
                 }
                 if(!event.getValue().isEmpty()){
-                    csvImporterLogic.tryParsing(event.getValue(), Integer.parseInt(textbox.getId().
-                            replace(textboxID,"")));
+                    csvImporterLogic.tryParsing(event.getValue(),
+                                                Integer.parseInt(textbox.getId().replace(textboxID,"")),
+                                                sampleLine);
                 }
             });
             Label check_lbl = new Label();

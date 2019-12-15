@@ -94,7 +94,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     private Map<String, Integer> heads;
     private List<Integer> ignoredPos;
     private HashMap<Integer, String> otherTimeStampsPos;
-    private List<String> line;
     private String timestampFormat;
     private String startTsFormat;
     private Div popUPBox;
@@ -128,9 +127,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         }
 
         if (header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
-            this.line = line;
-            this.heads = toHeads(header);
-            setOtherTimestamps(result);
+            this.heads = toHeads(header, line);
+            setOtherTimestamps(result, line);
         } else {
             throw new InvalidCSVException("Could not parse file!");
         }
@@ -139,7 +137,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             reader.close();
             throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
         } else {
-            this.lists = toLists(line.size(), this.heads, AttribWidth - 20 + "px");
+            this.lists = toLists(line.size(), this.heads, AttribWidth - 20 + "px", line);
         }
 
         List<List<String>> lines = new ArrayList<>();
@@ -405,7 +403,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
      * @return the hash map: including mandatory field as key and position in the array as the value.
      */
 
-    public void setOtherAll(Window window) {
+    public void setOtherAll(Window window, List<String> line) {
         int otherIndex = 6;
 
         for (int i = 0; i < line.size(); i++) {
@@ -420,10 +418,10 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     }
 
-    public void setIgnoreAll(Window window) {
+    public void setIgnoreAll(Window window, List<String> sampleLine) {
         int otherIndex = 7;
 
-        for (int i = 0; i < line.size(); i++) {
+        for (int i = 0; i < sampleLine.size(); i++) {
             Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
             if (lb.getSelectedIndex() == 6) {
                 removeColPos(i);
@@ -435,9 +433,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         }
     }
 
-    private Map<String, Integer> toHeads(List<String> line) {
+    private Map<String, Integer> toHeads(List<String> line, List<String> sampleLine) {
         // initialize map
-        heads = new HashMap<>();
+        Map<String, Integer> heads = new HashMap<>();
         heads.put(caseid, -1);
         heads.put(activity, -1);
         heads.put(timestamp, -1);
@@ -445,19 +443,19 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         heads.put(resource, -1);
 
         for (int i = 0; i <= line.size() - 1; i++) {
-            if (this.line.get(i) != null) {
+            if (sampleLine.get(i) != null) {
                 if ((heads.get(caseid) == -1) && getPos(caseIdValues, line.get(i))) {
                     heads.put(caseid, i);
                 } else if ((heads.get(activity) == -1) && getPos(activityValues, line.get(i))) {
                     heads.put(activity, i);
                 } else if ((heads.get(timestamp) == -1) && getPos(timestampValues, line.get(i).toLowerCase())) {
-                    String format = parse.determineDateFormat(this.line.get(i));
+                    String format = parse.determineDateFormat(sampleLine.get(i));
                     if (format != null) {
                         heads.put(timestamp, i);
                         timestampFormat = format;
                     }
                 } else if ((heads.get(tsStart) == -1) && getPos(StartTsValues, line.get(i))) {
-                    String format = parse.determineDateFormat(this.line.get(i));
+                    String format = parse.determineDateFormat(sampleLine.get(i));
                     if (format != null) {
                         heads.put(tsStart, i);
                         startTsFormat = format;
@@ -471,38 +469,14 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         return heads;
     }
 
-    /*
-    public void setLine(List<String> line) {
-        this.line = line;
-    }
-
-    public void resetLine() {
-        this.line = null;
-    }
-
-    ;
-
-    public void resetHead() {
-        this.heads = null;
-    }
-
-    ;
-
-    public void resetList() {
-        this.lists = null;
-    }
-
-    ;
-    */
-
-    public void setOtherTimestamps(ListModelList<String[]> result) {
+    public void setOtherTimestamps(ListModelList<String[]> result, List<String> sampleLine) {
         if (result == null || result.size() == 0) {
             otherTimeStampsPos = new HashMap<>();
             Integer timeStampPos = heads.get(timestamp);
             Integer StartTimeStampPos = heads.get(tsStart);
 
-            for (int i = 0; i <= this.line.size() - 1; i++) {
-                String detectedFormat = parse.determineDateFormat(this.line.get(i));
+            for (int i = 0; i <= sampleLine.size() - 1; i++) {
+                String detectedFormat = parse.determineDateFormat(sampleLine.get(i));
                 if ((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)) {
                     otherTimeStampsPos.put(i, detectedFormat);
                 }
@@ -518,7 +492,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
      * @param elem the elem: one item of the CSV line array
      * @return the pos: boolean value confirming if the elem is the required element.
      */
-    private Boolean getPos(String[] col, String elem) {
+    private static boolean getPos(String[] col, String elem) {
         if (col == timestampValues || col == StartTsValues) {
             return Arrays.stream(col).anyMatch(elem.toLowerCase()::equals);
         } else {
@@ -556,7 +530,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
 
-    private List<Listbox> toLists(int cols, Map<String, Integer> heads, String boxwidth) {
+    private List<Listbox> toLists(int cols, Map<String, Integer> heads, String boxwidth, List<String> sampleLine) {
 
         List<Listbox> lists = new ArrayList<Listbox>();
         ignoredPos = new ArrayList<Integer>();
@@ -624,7 +598,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     }
 
                     if (selected.equals(timestamp) || selected.equals(tsStart)) {
-                        tryParsing(parse.determineDateFormat(this.line.get(colPos)), colPos);
+                        tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine);
                     } else {
                         heads.put(selected, colPos);
                     }
@@ -632,7 +606,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 } else if (selected.equals(ignore)) {
                     ignoredPos.add(colPos);
                 } else if (selected.equals(tsValue)) {
-                    tryParsing(parse.determineDateFormat(this.line.get(colPos)), colPos);
+                    tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine);
                 }
             });
 
@@ -671,9 +645,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
 
-    public void tryParsing(String format, int colPos) {
+    public void tryParsing(String format, int colPos, List<String> sampleLine) {
 
-        if (format != null && parse.parseTimestamp(this.line.get(colPos), format) != null) {
+        if (format != null && parse.parseTimestamp(sampleLine.get(colPos), format) != null) {
             Listbox box = lists.get(colPos);
             String selected = box.getSelectedItem().getValue();
             if (new String(selected).equals(timestamp)) {

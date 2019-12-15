@@ -21,11 +21,11 @@ public interface CSVImporterLogic {
     // Accessors
 
     void automaticFormat(ListModelList<String[]> result, List<String> myHeader);
-    void setOtherTimestamps(ListModelList<String[]> result);
-    void setOtherAll(Window window);
-    void setIgnoreAll(Window window);
+    void setOtherTimestamps(ListModelList<String[]> result, List<String> sampleLine);
+    void setOtherAll(Window window, List<String> sampleLine);
+    void setIgnoreAll(Window window, List<String> sampleLine);
     List<Listbox> getLists();
-    void tryParsing(String format, int colPos);
+    void tryParsing(String format, int colPos, List<String> sampleLine);
     void openPopUp();
     void setPopUPBox(Div popUPBox);
     void setPopupID(String popupID);
