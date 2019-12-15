@@ -44,3 +44,4 @@ Apromore-Extras/apql/.project
 zkcharts-3.0.3.jar
 
 # vi editor artifacts
+**/*.swp

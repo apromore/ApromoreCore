@@ -1,24 +1,20 @@
 package org.apromore.service.csvimporter;
 
 import com.opencsv.CSVReader;
-import org.deckfour.xes.model.XLog;
-import org.zkoss.util.media.Media;
+import java.io.IOException;
+import java.util.List;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Window;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Service which converts event logs in CSV format to XES format.
  *
- * Conversion is currently stateful, requiring the methods {@link #sampleCSV},
- * {@link #prepareXesModel} and {@link #createXLog} to be invoked in series.
+ * Conversion is currently stateful, requiring the methods {@link #sampleCSV}
+ * and {@link #prepareXesModel} to be invoked in series.
+ * The converted XES model is obtained using {@link LogModel#getXLog}.
  */
 public interface CSVImporterLogic {
 
