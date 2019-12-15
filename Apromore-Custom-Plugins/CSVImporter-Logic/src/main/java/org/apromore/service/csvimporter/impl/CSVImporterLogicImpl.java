@@ -298,40 +298,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 LOGGER.error(errorMessage);
                 throw new InvalidCSVException(notificationMessage, invalidRows);
 
-            } else {
-                if (errorCount > 0) {
-                    String notificationMessage;
-                    notificationMessage = "Imported: " + lineCount + " row(s), with " + errorCount + " invalid row(s) being amended.  \n\n" +
-                            "Invalid rows: \n";
-
-                    for (int i = 0; i < Math.min(invalidRows.size(), 5); i++) {
-                        notificationMessage = notificationMessage + invalidRows.get(i) + "\n";
-                    }
-
-                    if (invalidRows.size() > 5) {
-                        notificationMessage = notificationMessage + "\n ...";
-                    }
-                    Messagebox.show(notificationMessage
-                            , "Invalid CSV File",
-                            new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
-                            new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
-                            (EventListener) evt -> {
-                                if (evt.getName().equals("onOK")) {
-                                    File tempFile = File.createTempFile("Error_Report", ".txt");
-                                    FileWriter writer = new FileWriter(tempFile);
-                                    for(String str: invalidRows) {
-                                        writer.write(str + System.lineSeparator());
-                                    }
-                                    writer.close();
-                                    Filedownload.save(new FileInputStream(tempFile),
-                                            "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
-                                }
-                            });
-                    return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows, errorCheck);
-                }
-
-                return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows, errorCheck);
             }
+
+            return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows, errorCheck);
 
         } catch (IOException e) {
             e.printStackTrace();

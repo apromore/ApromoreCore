@@ -399,6 +399,36 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 try (CSVReader reader = newCSVReader(media, clearEncoding)) {
                     LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
 
+                    if (xesModel.getErrorCount() > 0) {
+                        String notificationMessage;
+                        notificationMessage = "Imported: " + xesModel.getLineCount() + " row(s), with " + xesModel.getErrorCount() + " invalid row(s) being amended.  \n\n" +
+                                "Invalid rows: \n";
+
+                        for (int i = 0; i < Math.min(xesModel.getInvalidRows().size(), 5); i++) {
+                            notificationMessage = notificationMessage + xesModel.getInvalidRows().get(i) + "\n";
+                        }
+
+                        if (xesModel.getInvalidRows().size() > 5) {
+                            notificationMessage = notificationMessage + "\n ...";
+                        }
+                        Messagebox.show(notificationMessage
+                                , "Invalid CSV File",
+                                new Messagebox.Button[]{Messagebox.Button.OK, Messagebox.Button.CANCEL},
+                                new String[]{"Download Error Report", "Cancel"}, Messagebox.ERROR, null,
+                                (EventListener) evt -> {
+                                    if (evt.getName().equals("onOK")) {
+                                        File tempFile = File.createTempFile("Error_Report", ".txt");
+                                        FileWriter writer = new FileWriter(tempFile);
+                                        for(String str: xesModel.getInvalidRows()) {
+                                            writer.write(str + System.lineSeparator());
+                                        }
+                                        writer.close();
+                                        Filedownload.save(new FileInputStream(tempFile),
+                                                "text/plain; charset-UTF-8", "Error_Report_CSV.txt");
+                                    }
+                                });
+                    }
+
                     if (xesModel.getErrorCheck()) {
                        Messagebox.show("Invalid fields detected. \nSelect Skip rows to upload" +
                                         " log by skipping all rows " + "containing invalid fields.\n Select Skip " +
