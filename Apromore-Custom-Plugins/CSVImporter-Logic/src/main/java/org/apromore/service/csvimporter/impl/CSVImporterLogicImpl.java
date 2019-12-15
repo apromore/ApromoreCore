@@ -169,7 +169,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         return sample;
     }
 
-    public LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException {
+    public LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException, IOException {
         int errorCount = 0;
         int lineCount = 0;
         int finishCount = 0;
@@ -311,8 +311,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
-        return null;
     }
 
     public void automaticFormat(ListModelList<String[]> result, List<String> myHeader) {
