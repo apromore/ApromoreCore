@@ -1,6 +1,5 @@
 package org.apromore.service.csvimporter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,11 +7,16 @@ import java.util.List;
  */
 public class LogSample {
 
-    private List<String> header = new ArrayList<>();
+    private List<String> header;
 
-    private List<List<String>> lines = new ArrayList<>();
+    private List<List<String>> lines;
+
+    public LogSample(List<String> header, List<List<String>> lines) {
+        this.header = header;
+        this.lines = lines;
+    }
 
     public List<String> getHeader() { return header; }
-    public List<List<String>> getLines() { return lines; }
 
+    public List<List<String>> getLines() { return lines; }
 };

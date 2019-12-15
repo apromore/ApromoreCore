@@ -74,21 +74,22 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     private static final String couldnotParse = "Could not parse!";
     private static final String parsedClass = "text-success";
     private static final String failedClass = "text-danger";
-    private static Parse parse = new Parse();
+    private static final Parse parse = new Parse();
     /**
      * The case id values.
      */
-    private String[] caseIdValues = {"case", "case id", "case-id", "service id", "event id", "caseid", "serviceid"};
+    private static final String[] caseIdValues = {"case", "case id", "case-id", "service id", "event id", "caseid", "serviceid"};
     /**
      * The activity values.
      */
-    private String[] activityValues = {"activity", "activity id", "activity-id", "operation", "event"};
+    private static final String[] activityValues = {"activity", "activity id", "activity-id", "operation", "event"};
     /**
      * The timestamp Values.
      */
-    private String[] timestampValues = {"timestamp", "end date", "complete timestamp", "time:timestamp", "completion time"};
-    private String[] StartTsValues = {"start date", "start timestamp", "start time"};
-    private String[] resourceValues = {"resource", "agent", "employee", "group"};
+    private static final String[] timestampValues = {"timestamp", "end date", "complete timestamp", "time:timestamp", "completion time"};
+    private static final String[] StartTsValues = {"start date", "start timestamp", "start time"};
+    private static final String[] resourceValues = {"resource", "agent", "employee", "group"};
+
     private List<Listbox> lists;
     private Map<String, Integer> heads;
     private List<Integer> ignoredPos;
@@ -114,41 +115,38 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     public LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException {
 
-        LogSample sample = new LogSample();
-
-        List<String> line;
         ListModelList<String[]> result = new ListModelList<>();
 
-        Collections.addAll(sample.getHeader(), reader.readNext());
+        List<String> header = new ArrayList<>();
+        Collections.addAll(header, reader.readNext());
 
-        line = Arrays.asList(reader.readNext());
+        List<String> line = Arrays.asList(reader.readNext());
         if (line.size() < 2) {
             while (line.size() < 2) {
                 line = Arrays.asList(reader.readNext());
             }
         }
 
-        if (sample.getHeader() != null && !line.isEmpty() && !sample.getHeader().isEmpty() && line.size() > 1) {
+        if (header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
             this.line = line;
-            this.heads = toHeads(sample.getHeader());
+            this.heads = toHeads(header);
             setOtherTimestamps(result);
         } else {
             throw new InvalidCSVException("Could not parse file!");
         }
 
-        if (line.size() != sample.getHeader().size()) {
+        if (line.size() != header.size()) {
             reader.close();
             throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
         } else {
             this.lists = toLists(line.size(), this.heads, AttribWidth - 20 + "px");
         }
 
-
-
+        List<List<String>> lines = new ArrayList<>();
         int numberOfRows = 0;
         while (line != null && numberOfRows < sampleSize) {
 
-            sample.getLines().add(line);
+            lines.add(line);
             numberOfRows++;
 
             // Try to read another row
@@ -156,7 +154,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
             line = (s == null) ? null : Arrays.asList(s);
         }
         
-        return sample;
+        return new LogSample(header, lines);
     }
 
     public LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException, IOException {
