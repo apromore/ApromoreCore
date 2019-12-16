@@ -2,9 +2,11 @@ package org.apromore.service.csvimporter;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apromore.service.csvimporter.impl.Parse;
+import org.zkoss.zul.Listbox;
 
 /**
  * A sample of a CSV log.
@@ -20,6 +22,9 @@ public class LogSample implements Constants {
     private Map<String, Integer> heads;
     private String timestampFormat;
     private String startTsFormat;
+    private List<Listbox> lists;
+    private List<Integer> ignoredPos;
+    private HashMap<Integer, String> otherTimeStampsPos;
 
 
     // Constructor
@@ -28,6 +33,9 @@ public class LogSample implements Constants {
         this.header = header;
         this.lines = lines;
         this.heads = toHeads(header, lines.get(0));
+        this.lists = new ArrayList<>();
+        this.ignoredPos = new ArrayList<>();
+        this.otherTimeStampsPos = new HashMap<>();
     }
 
 
@@ -46,6 +54,12 @@ public class LogSample implements Constants {
     public String getStartTsFormat() { return startTsFormat; }
 
     public void setStartTsFormat(String s) { startTsFormat = s; }
+
+    public List<Listbox> getLists() { return lists; }
+
+    public List<Integer> getIgnoredPos() { return ignoredPos; }
+
+    public HashMap<Integer, String> getOtherTimeStampsPos() { return otherTimeStampsPos; }
 
 
     // Internal methods

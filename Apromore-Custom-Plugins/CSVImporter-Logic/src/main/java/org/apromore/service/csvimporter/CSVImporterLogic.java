@@ -4,7 +4,6 @@ import com.opencsv.CSVReader;
 import java.io.IOException;
 import java.util.List;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Window;
 
@@ -24,7 +23,6 @@ public interface CSVImporterLogic {
     void setOtherTimestamps(ListModelList<String[]> result, List<String> sampleLine, LogSample sample);
     void setOtherAll(Window window, List<String> sampleLine, LogSample sample);
     void setIgnoreAll(Window window, List<String> sampleLine, LogSample sample);
-    List<Listbox> getLists();
     void tryParsing(String format, int colPos, List<String> sampleLine, LogSample sample);
     void openPopUp(LogSample sample);
     void setPopUPBox(Div popUPBox);

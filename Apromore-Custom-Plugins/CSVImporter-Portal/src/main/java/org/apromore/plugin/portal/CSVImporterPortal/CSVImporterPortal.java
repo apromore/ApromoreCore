@@ -205,7 +205,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             indexedResult.clear();
 
-            List<Listbox> lists = csvImporterLogic.getLists();
+            List<Listbox> lists = sample.getLists();
 
             Auxhead optionHead = new Auxhead();
             Auxheader index = new Auxheader();

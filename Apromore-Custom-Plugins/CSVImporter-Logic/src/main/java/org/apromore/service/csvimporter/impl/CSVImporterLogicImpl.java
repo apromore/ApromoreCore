@@ -62,9 +62,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     private static final String failedClass = "text-danger";
     private static final Parse parse = new Parse();
 
-    private List<Listbox> lists;
-    private List<Integer> ignoredPos;
-    private HashMap<Integer, String> otherTimeStampsPos;
     private Div popUPBox;
     private String popupID;
     private String textboxID;
@@ -112,7 +109,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         ListModelList<String[]> result = new ListModelList<>();
         setOtherTimestamps(result, line, sample);
 
-        this.lists = toLists(line.size(), AttribWidth - 20 + "px", line, sample);
+        toLists(line.size(), AttribWidth - 20 + "px", line, sample);
         
         return sample;
     }
@@ -160,9 +157,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                         others = new HashMap<String, String>();
 
                         for (int p = 0; p <= line.length - 1; p++) {
-                            if (otherTimeStampsPos.get(p) != null) {
-                                otherTimestamps.put(header[p], parse.parseTimestamp(line[p], otherTimeStampsPos.get(p)));
-                            } else if (p != sample.getHeads().get(caseid) && p != sample.getHeads().get(activity) && p != sample.getHeads().get(timestamp) && p != sample.getHeads().get(tsStart) && p != sample.getHeads().get(resource) && (ignoredPos.isEmpty() || !ignoredPos.contains(p))) {
+                            if (sample.getOtherTimeStampsPos().get(p) != null) {
+                                otherTimestamps.put(header[p], parse.parseTimestamp(line[p], sample.getOtherTimeStampsPos().get(p)));
+                            } else if (p != sample.getHeads().get(caseid) && p != sample.getHeads().get(activity) && p != sample.getHeads().get(timestamp) && p != sample.getHeads().get(tsStart) && p != sample.getHeads().get(resource) && (sample.getIgnoredPos().isEmpty() || !sample.getIgnoredPos().contains(p))) {
                                 others.put(header[p], line[p]);
 
                                 if (header.length != line.length) {
@@ -390,21 +387,21 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                 closePopUp(i);
                 lb.setSelectedIndex(otherIndex);
                 sample.getHeads().put("ignore", i);
-                ignoredPos.add(i);
+                sample.getIgnoredPos().add(i);
             }
         }
     }
 
     public void setOtherTimestamps(ListModelList<String[]> result, List<String> sampleLine, LogSample sample) {
         if (result == null || result.size() == 0) {
-            otherTimeStampsPos = new HashMap<>();
+            sample.getOtherTimeStampsPos().clear();
             Integer timeStampPos = sample.getHeads().get(timestamp);
             Integer StartTimeStampPos = sample.getHeads().get(tsStart);
 
             for (int i = 0; i <= sampleLine.size() - 1; i++) {
                 String detectedFormat = parse.determineDateFormat(sampleLine.get(i));
                 if ((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)) {
-                    otherTimeStampsPos.put(i, detectedFormat);
+                    sample.getOtherTimeStampsPos().put(i, detectedFormat);
                 }
             }
         }  // do multiple line
@@ -456,11 +453,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     }
 
 
-    private List<Listbox> toLists(int cols, String boxwidth, List<String> sampleLine, LogSample sample) {
-
-        List<Listbox> lists = new ArrayList<Listbox>();
-        ignoredPos = new ArrayList<Integer>();
-
+    private void toLists(int cols, String boxwidth, List<String> sampleLine, LogSample sample) {
 
         LinkedHashMap<String, String> menuItems = new LinkedHashMap<String, String>();
         String other = "Event Attribute";
@@ -496,7 +489,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                                 (dl.getKey().equals(timestamp) && (cl == sample.getHeads().get(timestamp))) ||
                                 (dl.getKey().equals(tsStart) && (cl == sample.getHeads().get(tsStart))) ||
                                 (dl.getKey().equals(resource) && (cl == sample.getHeads().get(resource))) ||
-                                (dl.getKey().equals(tsValue) && (otherTimeStampsPos.get(cl) != null)) ||
+                                (dl.getKey().equals(tsValue) && (sample.getOtherTimeStampsPos().get(cl) != null)) ||
                                 (dl.getKey().equals(other)))
                         ) {
                     item.setSelected(true);
@@ -517,7 +510,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
                     int oldColPos = sample.getHeads().get(selected);
                     if (oldColPos != -1) {
-                        Listbox oldBox = lists.get(oldColPos);
+                        Listbox oldBox = sample.getLists().get(oldColPos);
                         oldBox.setSelectedIndex(otherIndex);
                         removeColPos(oldColPos, sample);
                         closePopUp(oldColPos);
@@ -530,29 +523,23 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                     }
 
                 } else if (selected.equals(ignore)) {
-                    ignoredPos.add(colPos);
+                    sample.getIgnoredPos().add(colPos);
                 } else if (selected.equals(tsValue)) {
                     tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine, sample);
                 }
             });
 
-            lists.add(box);
+            sample.getLists().add(box);
         }
-
-        return lists;
-    }
-
-    public List<Listbox> getLists() {
-        return lists;
     }
 
     private void removeColPos(int colPos, LogSample sample) {
 
-        if (otherTimeStampsPos.get(colPos) != null) {
-            otherTimeStampsPos.remove(colPos);
+        if (sample.getOtherTimeStampsPos().get(colPos) != null) {
+            sample.getOtherTimeStampsPos().remove(colPos);
 
-        } else if (ignoredPos.contains(colPos)) {
-            ignoredPos.remove(Integer.valueOf(colPos));
+        } else if (sample.getIgnoredPos().contains(colPos)) {
+            sample.getIgnoredPos().remove(Integer.valueOf(colPos));
         } else {
 
             for (Map.Entry<String, Integer> entry : sample.getHeads().entrySet()) {
@@ -574,7 +561,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     public void tryParsing(String format, int colPos, List<String> sampleLine, LogSample sample) {
 
         if (format != null && parse.parseTimestamp(sampleLine.get(colPos), format) != null) {
-            Listbox box = lists.get(colPos);
+            Listbox box = sample.getLists().get(colPos);
             String selected = box.getSelectedItem().getValue();
             if (new String(selected).equals(timestamp)) {
                 sample.getHeads().put(selected, colPos);
@@ -583,7 +570,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                 sample.getHeads().put(selected, colPos);
                 sample.setStartTsFormat(format);
             } else if (new String(selected).equals(tsValue)) {
-                otherTimeStampsPos.put(colPos, format);
+                sample.getOtherTimeStampsPos().put(colPos, format);
             }
             openPopUpbox(colPos, format, parsedCorrectly, parsedClass);
         } else {
@@ -599,7 +586,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         Integer startTimeStampPos = sample.getHeads().get(tsStart);
         if (startTimeStampPos != -1) openPopUpbox(sample.getHeads().get(tsStart), sample.getStartTsFormat(), parsedCorrectly, parsedClass);
 
-        for (Map.Entry<Integer, String> entry : otherTimeStampsPos.entrySet()) {
+        for (Map.Entry<Integer, String> entry : sample.getOtherTimeStampsPos().entrySet()) {
             openPopUpbox(entry.getKey(), entry.getValue(), parsedCorrectly, parsedClass);
         }
     }
