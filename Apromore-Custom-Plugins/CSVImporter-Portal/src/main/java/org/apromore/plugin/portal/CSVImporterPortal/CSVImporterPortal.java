@@ -33,7 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
-import org.apromore.service.csvimporter.Constants;
+import org.apromore.service.csvimporter.impl.Constants;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogModel;

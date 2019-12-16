@@ -27,7 +27,6 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import org.apromore.service.csvimporter.Constants;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogEventModel;
@@ -59,7 +58,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         }
 
         // Construct the sample (no mutation expected after this point, although this isn't enforced by the code))
-        return new LogSample(header, lines);
+        return new LogSampleImpl(header, lines);
     }
 
     @Override

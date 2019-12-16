@@ -1,4 +1,4 @@
-package org.apromore.service.csvimporter;
+package org.apromore.service.csvimporter.impl;
 
 public interface Constants {
 
