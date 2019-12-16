@@ -84,7 +84,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test1-valid.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
@@ -118,7 +118,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
@@ -153,7 +153,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test3-invalid-end-timestamp.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
@@ -185,7 +185,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test4-invalid-start-timestamp.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
@@ -218,7 +218,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test5-empty-caseID.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);
@@ -250,7 +250,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test6-different-delimiters.csv", "utf-8", ';');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
 
         // Validate result
         assertNotNull(logModel);

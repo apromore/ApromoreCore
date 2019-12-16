@@ -76,6 +76,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
     private static Integer IndexColumnWidth = 50;
 
 
+    private LogSample sample = null;
+
     private boolean isPublic;
 
     private void saveLog(XLog xlog, String name, PortalContext portalContext) throws Exception {
@@ -154,7 +156,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
      * @param media the imported CSV file
      */
     @SuppressWarnings("null")
-    private static void displayCSVContent(CSVImporterLogic csvImporterLogic, Media media, Window window) {
+    private static LogSample displayCSVContent(CSVImporterLogic csvImporterLogic, Media media, Window window) {
 
 
         final int SAMPLE_SIZE = 100;
@@ -254,20 +256,22 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             if(sample.getHeader() != null) {
                 System.out.println("Automatic formatting here! " + Arrays.toString(result.get(0)));
-                csvImporterLogic.automaticFormat(result, sample.getHeader());
+                csvImporterLogic.automaticFormat(result, sample.getHeader(), sample);
                 csvImporterLogic.setOtherTimestamps(result, sample.getLines().get(0));
             }
 
-            createPopUpTextBox(csvImporterLogic, sample.getHeader().size(), popUPBox, helpP, sample.getLines().get(0));
-            csvImporterLogic.openPopUp();
+            createPopUpTextBox(csvImporterLogic, sample.getHeader().size(), popUPBox, helpP, sample.getLines().get(0), sample);
+            csvImporterLogic.openPopUp(sample);
+
+            final LogSample finalSample = sample;
 
             Button setOtherAll = (Button) window.getFellow("setOtherAll");
             setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
-            setOtherAll.addEventListener("onClick", event -> csvImporterLogic.setOtherAll(window, sample.getLines().get(0)));
+            setOtherAll.addEventListener("onClick", event -> csvImporterLogic.setOtherAll(window, finalSample.getLines().get(0)));
 
             Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
             setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
-            setIgnoreAll.addEventListener("onClick", event -> csvImporterLogic.setIgnoreAll(window, sample.getLines().get(0)));
+            setIgnoreAll.addEventListener("onClick", event -> csvImporterLogic.setIgnoreAll(window, finalSample.getLines().get(0)));
 
             // set grid model
             myGrid.setModel(indexedResult);
@@ -280,14 +284,17 @@ public class CSVImporterPortal implements FileImporterPlugin {
             toXESButton.setDisabled(false);
             window.setTitle("CSV Importer - " + media.getName());
 
+            return sample;
+
         } catch (InvalidCSVException | IOException | NullPointerException e ) {
 //            e.printStackTrace();
             Messagebox.show("Failed to display the log. Try different encoding.",
                     "Error", Messagebox.OK,Messagebox.ERROR);
+            return null;
         }
     }
 
-    private static void createPopUpTextBox(CSVImporterLogic csvImporterLogic, int colNum, Div popUPBox, Popup helpP, List<String> sampleLine){
+    private static void createPopUpTextBox(CSVImporterLogic csvImporterLogic, int colNum, Div popUPBox, Popup helpP, List<String> sampleLine, LogSample sample){
         for(int i =0; i<= colNum -1; i++){
             Window item = new Window();
             item.setId(popupID+ i);
@@ -324,7 +331,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 if(!event.getValue().isEmpty()){
                     csvImporterLogic.tryParsing(event.getValue(),
                                                 Integer.parseInt(textbox.getId().replace(textboxID,"")),
-                                                sampleLine);
+                                                sampleLine,
+                                                sample);
                 }
             });
             Label check_lbl = new Label();
@@ -382,15 +390,16 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 "windows-31j (Japanese)",
                 "ISO-2022-CN (Chinese)"
             }));
-            setEncoding.addEventListener("onSelect", event -> displayCSVContent(csvImporterLogic, media, window));
+
+            setEncoding.addEventListener("onSelect", event -> { sample = displayCSVContent(csvImporterLogic, media, window); });
 
             String[] allowedExtensions = {"csv", "xls", "xlsx"};
             if (!Arrays.asList(allowedExtensions).contains(media.getFormat())) {
                 Messagebox.show("Please select CSV file!", "Error", Messagebox.OK, Messagebox.ERROR);
-
-            } else {
-                displayCSVContent(csvImporterLogic, media, window);
+                return;
             }
+
+            sample = displayCSVContent(csvImporterLogic, media, window);
 
             Button toXESButton = (Button) window.getFellow("toXESButton");
             toXESButton.addEventListener("onClick", event -> {
@@ -404,7 +413,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 }
 
                 try (CSVReader reader = newCSVReader(media, clearEncoding)) {
-                    LogModel xesModel = csvImporterLogic.prepareXesModel(reader);
+                    LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample);
 
                     if (xesModel.getErrorCount() > 0) {
                         String notificationMessage;

@@ -22,6 +22,7 @@ package org.apromore.service.csvimporter.impl;
 
 import com.opencsv.CSVReader;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apromore.service.csvimporter.Constants;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogEventModel;
@@ -51,51 +52,20 @@ import java.util.*;
 /**
  * The Class CsvToXes.
  */
-public class CSVImporterLogicImpl implements CSVImporterLogic {
+public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterLogicImpl.class);
-    /**
-     * The Constant caseid.
-     */
-    private static final String caseid = "caseid";
-    /**
-     * The Constant activity.
-     */
-    private static final String activity = "activity";
-    /**
-     * The Constant timestamp.
-     */
-    private static final String timestamp = "timestamp";
     private static final double errorAcceptance = 0.2;
-    private static final String tsStart = "startTimestamp";
-    private static final String resource = "resource";
-    private static final String tsValue = "otherTimestamp";
     private static final String parsedCorrectly = "Format parsed! ";
     private static final String couldnotParse = "Could not parse!";
     private static final String parsedClass = "text-success";
     private static final String failedClass = "text-danger";
     private static final Parse parse = new Parse();
-    /**
-     * The case id values.
-     */
-    private static final String[] caseIdValues = {"case", "case id", "case-id", "service id", "event id", "caseid", "serviceid"};
-    /**
-     * The activity values.
-     */
-    private static final String[] activityValues = {"activity", "activity id", "activity-id", "operation", "event"};
-    /**
-     * The timestamp Values.
-     */
-    private static final String[] timestampValues = {"timestamp", "end date", "complete timestamp", "time:timestamp", "completion time"};
-    private static final String[] StartTsValues = {"start date", "start timestamp", "start time"};
-    private static final String[] resourceValues = {"resource", "agent", "employee", "group"};
 
     private List<Listbox> lists;
     private Map<String, Integer> heads;
     private List<Integer> ignoredPos;
     private HashMap<Integer, String> otherTimeStampsPos;
-    private String timestampFormat;
-    private String startTsFormat;
     private Div popUPBox;
     private String popupID;
     private String textboxID;
@@ -114,48 +84,43 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
     public LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException {
 
-        ListModelList<String[]> result = new ListModelList<>();
-
+        // Obtain the header
         List<String> header = new ArrayList<>();
         Collections.addAll(header, reader.readNext());
-
-        List<String> line = Arrays.asList(reader.readNext());
-        if (line.size() < 2) {
-            while (line.size() < 2) {
-                line = Arrays.asList(reader.readNext());
-            }
-        }
-
-        if (header != null && !line.isEmpty() && !header.isEmpty() && line.size() > 1) {
-            this.heads = toHeads(header, line);
-            setOtherTimestamps(result, line);
-        } else {
+        if (header.isEmpty()) {
             throw new InvalidCSVException("Could not parse file!");
         }
+
+        // Obtain the sample of lines
+        List<List<String>> lines = new ArrayList<>();
+        for (String[] s = reader.readNext(); s != null && lines.size() < sampleSize; s = reader.readNext()) {
+            lines.add(Arrays.asList(s));
+        }
+
+        // Construct the sample (no mutation expected after this point, although this isn't enforced by the code))
+        LogSample sample = new LogSample(header, lines);
+
+
+        // TODO: derived property calculations from the sample below this point should be migrated to the LogSample class
+
+        List<String> line = lines.get(0);
 
         if (line.size() != header.size()) {
             reader.close();
             throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
-        } else {
-            this.lists = toLists(line.size(), this.heads, AttribWidth - 20 + "px", line);
         }
 
-        List<List<String>> lines = new ArrayList<>();
-        int numberOfRows = 0;
-        while (line != null && numberOfRows < sampleSize) {
+        this.heads = sample.getHeads();
 
-            lines.add(line);
-            numberOfRows++;
+        ListModelList<String[]> result = new ListModelList<>();
+        setOtherTimestamps(result, line);
 
-            // Try to read another row
-            String[] s = reader.readNext();
-            line = (s == null) ? null : Arrays.asList(s);
-        }
+        this.lists = toLists(line.size(), this.heads, AttribWidth - 20 + "px", line, sample);
         
-        return new LogSample(header, lines);
+        return sample;
     }
 
-    public LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException, IOException {
+    public LogModel prepareXesModel(CSVReader reader, LogSample sample) throws InvalidCSVException, IOException {
         int errorCount = 0;
         int lineCount = 0;
         int finishCount = 0;
@@ -214,10 +179,10 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
 
                             }
                         }
-                        Timestamp tStamp = parse.parseTimestamp(line[heads.get(timestamp)], timestampFormat);
+                        Timestamp tStamp = parse.parseTimestamp(line[heads.get(timestamp)], sample.getTimestampFormat());
 
                         if (heads.get(tsStart) != -1) {
-                            startTimestamp = parse.parseTimestamp(line[heads.get(tsStart)], startTsFormat);
+                            startTimestamp = parse.parseTimestamp(line[heads.get(tsStart)], sample.getStartTsFormat());
                             if (startTimestamp == null) {
                                 if (tStamp != null) {
                                     startTimestamp = tStamp;
@@ -301,7 +266,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
         }
     }
 
-    public void automaticFormat(ListModelList<String[]> result, List<String> myHeader) {
+    public void automaticFormat(ListModelList<String[]> result, List<String> myHeader, LogSample sample) {
         try {
             String currentFormat = null;
             String startFormat = null;
@@ -346,7 +311,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                     currentFormat = format;
                                 }
                             } catch (Exception e) {
-                                // automatic parse might be in accurate.
+                                // automatic parse might be inaccurate.
                                 Messagebox.show("Automatic parse of End timestamp might be inaccurate. Please validate end timestamp field.");
                                 break;
                             }
@@ -379,16 +344,16 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                                     startFormat = format;
                                 }
                             } catch (Exception e) {
-                                // automatic parse might be in accurate.
-                                Messagebox.show("Automatic parse of start timestamp might be in accurate. Please validate end timestamp field.");
+                                // automatic parse might be inaccurate.
+                                Messagebox.show("Automatic parse of start timestamp might be in accurate. Please validate start timestamp field.");
                                 break;
                             }
                         }
                     }
                 }
             }
-            timestampFormat = currentFormat;
-            startTsFormat = startFormat;
+            sample.setTimestampFormat(currentFormat);
+            sample.setStartTsFormat(startFormat);
         } catch (Exception e) {
             // automatic detection failed.
             e.printStackTrace();
@@ -431,42 +396,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 ignoredPos.add(i);
             }
         }
-    }
-
-    private Map<String, Integer> toHeads(List<String> line, List<String> sampleLine) {
-        // initialize map
-        Map<String, Integer> heads = new HashMap<>();
-        heads.put(caseid, -1);
-        heads.put(activity, -1);
-        heads.put(timestamp, -1);
-        heads.put(tsStart, -1);
-        heads.put(resource, -1);
-
-        for (int i = 0; i <= line.size() - 1; i++) {
-            if (sampleLine.get(i) != null) {
-                if ((heads.get(caseid) == -1) && getPos(caseIdValues, line.get(i))) {
-                    heads.put(caseid, i);
-                } else if ((heads.get(activity) == -1) && getPos(activityValues, line.get(i))) {
-                    heads.put(activity, i);
-                } else if ((heads.get(timestamp) == -1) && getPos(timestampValues, line.get(i).toLowerCase())) {
-                    String format = parse.determineDateFormat(sampleLine.get(i));
-                    if (format != null) {
-                        heads.put(timestamp, i);
-                        timestampFormat = format;
-                    }
-                } else if ((heads.get(tsStart) == -1) && getPos(StartTsValues, line.get(i))) {
-                    String format = parse.determineDateFormat(sampleLine.get(i));
-                    if (format != null) {
-                        heads.put(tsStart, i);
-                        startTsFormat = format;
-                    }
-                } else if ((heads.get(resource) == -1) && getPos(resourceValues, line.get(i))) {
-                    heads.put(resource, i);
-                }
-            }
-        }
-
-        return heads;
     }
 
     public void setOtherTimestamps(ListModelList<String[]> result, List<String> sampleLine) {
@@ -530,7 +459,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
 
-    private List<Listbox> toLists(int cols, Map<String, Integer> heads, String boxwidth, List<String> sampleLine) {
+    private List<Listbox> toLists(int cols, Map<String, Integer> heads, String boxwidth, List<String> sampleLine, LogSample sample) {
 
         List<Listbox> lists = new ArrayList<Listbox>();
         ignoredPos = new ArrayList<Integer>();
@@ -598,7 +527,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                     }
 
                     if (selected.equals(timestamp) || selected.equals(tsStart)) {
-                        tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine);
+                        tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine, sample);
                     } else {
                         heads.put(selected, colPos);
                     }
@@ -606,7 +535,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
                 } else if (selected.equals(ignore)) {
                     ignoredPos.add(colPos);
                 } else if (selected.equals(tsValue)) {
-                    tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine);
+                    tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine, sample);
                 }
             });
 
@@ -645,17 +574,17 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
 
-    public void tryParsing(String format, int colPos, List<String> sampleLine) {
+    public void tryParsing(String format, int colPos, List<String> sampleLine, LogSample sample) {
 
         if (format != null && parse.parseTimestamp(sampleLine.get(colPos), format) != null) {
             Listbox box = lists.get(colPos);
             String selected = box.getSelectedItem().getValue();
             if (new String(selected).equals(timestamp)) {
                 heads.put(selected, colPos);
-                timestampFormat = format;
+                sample.setTimestampFormat(format);
             } else if (new String(selected).equals(tsStart)) {
                 heads.put(selected, colPos);
-                startTsFormat = format;
+                sample.setStartTsFormat(format);
             } else if (new String(selected).equals(tsValue)) {
                 otherTimeStampsPos.put(colPos, format);
             }
@@ -666,12 +595,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic {
     }
 
 
-    public void openPopUp() {
-        Integer timeStampPos = heads.get(timestamp);
-        if (timeStampPos != -1) openPopUpbox(heads.get(timestamp), timestampFormat, parsedCorrectly, parsedClass);
+    public void openPopUp(LogSample sample) {
+        Integer timeStampPos = sample.getHeads().get(timestamp);
+        if (timeStampPos != -1) openPopUpbox(heads.get(timestamp), sample.getTimestampFormat(), parsedCorrectly, parsedClass);
 
-        Integer startTimeStampPos = heads.get(tsStart);
-        if (startTimeStampPos != -1) openPopUpbox(heads.get(tsStart), startTsFormat, parsedCorrectly, parsedClass);
+        Integer startTimeStampPos = sample.getHeads().get(tsStart);
+        if (startTimeStampPos != -1) openPopUpbox(heads.get(tsStart), sample.getStartTsFormat(), parsedCorrectly, parsedClass);
 
         for (Map.Entry<Integer, String> entry : otherTimeStampsPos.entrySet()) {
             openPopUpbox(entry.getKey(), entry.getValue(), parsedCorrectly, parsedClass);

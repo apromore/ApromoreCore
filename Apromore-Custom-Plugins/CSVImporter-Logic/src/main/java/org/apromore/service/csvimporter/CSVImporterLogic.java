@@ -20,13 +20,13 @@ public interface CSVImporterLogic {
 
     // Accessors
 
-    void automaticFormat(ListModelList<String[]> result, List<String> myHeader);
+    void automaticFormat(ListModelList<String[]> result, List<String> myHeader, LogSample sample);
     void setOtherTimestamps(ListModelList<String[]> result, List<String> sampleLine);
     void setOtherAll(Window window, List<String> sampleLine);
     void setIgnoreAll(Window window, List<String> sampleLine);
     List<Listbox> getLists();
-    void tryParsing(String format, int colPos, List<String> sampleLine);
-    void openPopUp();
+    void tryParsing(String format, int colPos, List<String> sampleLine, LogSample sample);
+    void openPopUp(LogSample sample);
     void setPopUPBox(Div popUPBox);
     void setPopupID(String popupID);
     void setTextboxID(String textboxID);
@@ -35,5 +35,5 @@ public interface CSVImporterLogic {
     // Business logic methods
 
     LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException;
-    LogModel prepareXesModel(CSVReader reader) throws InvalidCSVException, IOException;
+    LogModel prepareXesModel(CSVReader reader, LogSample sample) throws InvalidCSVException, IOException;
 }
