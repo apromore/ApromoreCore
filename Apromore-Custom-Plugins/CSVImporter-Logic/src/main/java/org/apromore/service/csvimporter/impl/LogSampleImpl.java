@@ -52,11 +52,46 @@ class LogSampleImpl implements LogSample, Constants {
         this.header = header;
         this.lines = lines;
 
-        if (lines.get(0).size() != header.size()) {
+        // Choose the first non-header line to use for all our format-sniffing
+        List<String> sampleLine = lines.get(0);
+
+        if (sampleLine.size() != header.size()) {
             throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
         }
 
-        this.heads = toHeads(header, lines.get(0));
+        // Empty header permutation map (heads)
+        heads = new HashMap<>();
+        heads.put(caseid, -1);
+        heads.put(activity, -1);
+        heads.put(timestamp, -1);
+        heads.put(tsStart, -1);
+        heads.put(resource, -1);
+
+        // Populate heads, timestampFormat, startTsFormat
+        for (int i = 0; i < header.size(); i++) {
+            if (sampleLine.get(i) != null) {
+                if ((heads.get(caseid) == -1) && getPos(caseIdValues, header.get(i))) {
+                    heads.put(caseid, i);
+                } else if ((heads.get(activity) == -1) && getPos(activityValues, header.get(i))) {
+                    heads.put(activity, i);
+                } else if ((heads.get(timestamp) == -1) && getPos(timestampValues, header.get(i).toLowerCase())) {
+                    String format = parse.determineDateFormat(sampleLine.get(i));
+                    if (format != null) {
+                        heads.put(timestamp, i);
+                        timestampFormat = format;
+                    }
+                } else if ((heads.get(tsStart) == -1) && getPos(StartTsValues, header.get(i))) {
+                    String format = parse.determineDateFormat(sampleLine.get(i));
+                    if (format != null) {
+                        heads.put(tsStart, i);
+                        startTsFormat = format;
+                    }
+                } else if ((heads.get(resource) == -1) && getPos(resourceValues, header.get(i))) {
+                    heads.put(resource, i);
+                }
+            }
+        }
+
         this.lists = new ArrayList<>();
         this.ignoredPos = new ArrayList<>();
         this.otherTimeStampsPos = new HashMap<>();
@@ -288,45 +323,6 @@ class LogSampleImpl implements LogSample, Constants {
 
 
     // Internal methods
-
-    private Map<String, Integer> toHeads(List<String> line, List<String> sampleLine) {
-
-        final Parse parse = new Parse();
-
-        // initialize map
-        Map<String, Integer> heads = new HashMap<>();
-        heads.put(caseid, -1);
-        heads.put(activity, -1);
-        heads.put(timestamp, -1);
-        heads.put(tsStart, -1);
-        heads.put(resource, -1);
-
-        for (int i = 0; i <= line.size() - 1; i++) {
-            if (sampleLine.get(i) != null) {
-                if ((heads.get(caseid) == -1) && getPos(caseIdValues, line.get(i))) {
-                    heads.put(caseid, i);
-                } else if ((heads.get(activity) == -1) && getPos(activityValues, line.get(i))) {
-                    heads.put(activity, i);
-                } else if ((heads.get(timestamp) == -1) && getPos(timestampValues, line.get(i).toLowerCase())) {
-                    String format = parse.determineDateFormat(sampleLine.get(i));
-                    if (format != null) {
-                        heads.put(timestamp, i);
-                        timestampFormat = format;
-                    }
-                } else if ((heads.get(tsStart) == -1) && getPos(StartTsValues, line.get(i))) {
-                    String format = parse.determineDateFormat(sampleLine.get(i));
-                    if (format != null) {
-                        heads.put(tsStart, i);
-                        startTsFormat = format;
-                    }
-                } else if ((heads.get(resource) == -1) && getPos(resourceValues, line.get(i))) {
-                    heads.put(resource, i);
-                }
-            }
-        }
-
-        return heads;
-    }
 
     public static void toLists(LogSample sample) {
 
