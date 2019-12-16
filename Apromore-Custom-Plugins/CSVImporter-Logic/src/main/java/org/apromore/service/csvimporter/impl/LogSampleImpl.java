@@ -52,17 +52,17 @@ class LogSampleImpl implements LogSample, Constants {
         this.header = header;
         this.lines = lines;
 
+        if (lines.get(0).size() != header.size()) {
+            throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
+        }
+
         this.heads = toHeads(header, lines.get(0));
         this.lists = new ArrayList<>();
         this.ignoredPos = new ArrayList<>();
         this.otherTimeStampsPos = new HashMap<>();
 
-        List<String> line = lines.get(0);
-        if (line.size() != header.size()) {
-            throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
-        }
         setOtherTimestamps(new ArrayList<>(), this);
-        toLists(line.size(), AttribWidth - 20 + "px", this);
+        toLists(this);
     }
 
 
@@ -328,7 +328,7 @@ class LogSampleImpl implements LogSample, Constants {
         return heads;
     }
 
-    public static void toLists(int cols, String boxwidth, LogSample sample) {
+    public static void toLists(LogSample sample) {
 
         LinkedHashMap<String, String> menuItems = new LinkedHashMap<String, String>();
         String other = "Event Attribute";
@@ -346,12 +346,12 @@ class LogSampleImpl implements LogSample, Constants {
         // get index of "other" item and select it.
         int otherIndex = new ArrayList<String>(menuItems.keySet()).indexOf(other);
 
-        for (int cl = 0; cl <= cols - 1; cl++) {
+        for (int cl = 0; cl < sample.getLines().get(0).size(); cl++) {
 
             Listbox box = new Listbox();
             box.setMold("select"); // set listBox to select mode
             box.setId(String.valueOf(cl)); // set id of list as column position.
-            box.setWidth(boxwidth);
+            box.setWidth(AttribWidth - 20 + "px");
 
             for (Map.Entry<String, String> dl : menuItems.entrySet()) {
                 Listitem item = new Listitem();
