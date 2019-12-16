@@ -14,7 +14,6 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -96,7 +95,7 @@ class LogSampleImpl implements LogSample, Constants {
         this.ignoredPos = new ArrayList<>();
         this.otherTimeStampsPos = new HashMap<>();
 
-        setOtherTimestamps(this);
+        setOtherTimestamps();
         toLists(this);
     }
 
@@ -211,7 +210,6 @@ class LogSampleImpl implements LogSample, Constants {
                                     if (startFormat != format) {
                                         validTS = Parse.parseTimestamp(this.lines.get(i - 1).get(j), format);
                                         if (validTS != null) {
-//                                            Messagebox.show("Current: " + startFormat + ", Changing to: " + format);
                                             startFormat = format;
                                             break outerloop;
                                         }
@@ -240,90 +238,90 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public void openPopUp(LogSample sample) {
-        Integer timeStampPos = sample.getHeads().get(timestamp);
-        if (timeStampPos != -1) openPopUpbox(sample.getHeads().get(timestamp), sample.getTimestampFormat(), parsedCorrectly, parsedClass, sample);
+    public void openPopUp() {
+        Integer timeStampPos = this.getHeads().get(timestamp);
+        if (timeStampPos != -1) openPopUpbox(this.getHeads().get(timestamp), this.getTimestampFormat(), parsedCorrectly, parsedClass, this);
 
-        Integer startTimeStampPos = sample.getHeads().get(tsStart);
-        if (startTimeStampPos != -1) openPopUpbox(sample.getHeads().get(tsStart), sample.getStartTsFormat(), parsedCorrectly, parsedClass, sample);
+        Integer startTimeStampPos = this.getHeads().get(tsStart);
+        if (startTimeStampPos != -1) openPopUpbox(this.getHeads().get(tsStart), this.getStartTsFormat(), parsedCorrectly, parsedClass, this);
 
-        for (Map.Entry<Integer, String> entry : sample.getOtherTimeStampsPos().entrySet()) {
-            openPopUpbox(entry.getKey(), entry.getValue(), parsedCorrectly, parsedClass, sample);
+        for (Map.Entry<Integer, String> entry : this.getOtherTimeStampsPos().entrySet()) {
+            openPopUpbox(entry.getKey(), entry.getValue(), parsedCorrectly, parsedClass, this);
         }
     }
 
     @Override
-    public void setOtherAll(Window window, LogSample sample) {
+    public void setOtherAll(Window window) {
         int otherIndex = 6;
 
-        for (int i = 0; i < sample.getLines().get(0).size(); i++) {
+        for (int i = 0; i < this.getLines().get(0).size(); i++) {
             Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
             if (lb.getSelectedIndex() == 7) {
-                removeColPos(i, sample);
-                closePopUp(i, sample);
+                removeColPos(i, this);
+                closePopUp(i, this);
                 lb.setSelectedIndex(otherIndex);
-                sample.getHeads().put("Event Attribute", i);
+                this.getHeads().put("Event Attribute", i);
             }
         }
 
     }
 
     @Override
-    public void setIgnoreAll(Window window, LogSample sample) {
+    public void setIgnoreAll(Window window) {
         int otherIndex = 7;
 
-        for (int i = 0; i < sample.getLines().get(0).size(); i++) {
+        for (int i = 0; i < this.getLines().get(0).size(); i++) {
             Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
             if (lb.getSelectedIndex() == 6) {
-                removeColPos(i, sample);
-                closePopUp(i, sample);
+                removeColPos(i, this);
+                closePopUp(i, this);
                 lb.setSelectedIndex(otherIndex);
-                sample.getHeads().put("ignore", i);
-                sample.getIgnoredPos().add(i);
+                this.getHeads().put("ignore", i);
+                this.getIgnoredPos().add(i);
             }
         }
     }
 
     @Override
-    public void setOtherTimestamps(LogSample sample) {
-        sample.getOtherTimeStampsPos().clear();
-        Integer timeStampPos = sample.getHeads().get(timestamp);
-        Integer StartTimeStampPos = sample.getHeads().get(tsStart);
+    public void setOtherTimestamps() {
+        this.getOtherTimeStampsPos().clear();
+        Integer timeStampPos = this.getHeads().get(timestamp);
+        Integer StartTimeStampPos = this.getHeads().get(tsStart);
 
-        for (int i = 0; i < sample.getLines().get(0).size(); i++) {
-            String detectedFormat = parse.determineDateFormat(sample.getLines().get(0).get(i));
+        for (int i = 0; i < this.getLines().get(0).size(); i++) {
+            String detectedFormat = parse.determineDateFormat(this.getLines().get(0).get(i));
             if ((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)) {
-                sample.getOtherTimeStampsPos().put(i, detectedFormat);
+                this.getOtherTimeStampsPos().put(i, detectedFormat);
             }
         }
     }
 
     @Override
-    public void tryParsing(String format, int colPos, LogSample sample) {
+    public void tryParsing(String format, int colPos) {
 
-        if (format == null || parse.parseTimestamp(sample.getLines().get(0).get(colPos), format) == null) {
-            openPopUpbox(colPos, format, couldnotParse, failedClass, sample);
+        if (format == null || parse.parseTimestamp(this.getLines().get(0).get(colPos), format) == null) {
+            openPopUpbox(colPos, format, couldnotParse, failedClass, this);
             return;
         }
 
-        Listbox box = sample.getLists().get(colPos);
+        Listbox box = this.getLists().get(colPos);
         String selected = box.getSelectedItem().getValue();
         if (new String(selected).equals(timestamp)) {
-            sample.getHeads().put(selected, colPos);
-            sample.setTimestampFormat(format);
+            this.getHeads().put(selected, colPos);
+            this.setTimestampFormat(format);
         } else if (new String(selected).equals(tsStart)) {
-            sample.getHeads().put(selected, colPos);
-            sample.setStartTsFormat(format);
+            this.getHeads().put(selected, colPos);
+            this.setStartTsFormat(format);
         } else if (new String(selected).equals(tsValue)) {
-            sample.getOtherTimeStampsPos().put(colPos, format);
+            this.getOtherTimeStampsPos().put(colPos, format);
         }
-        openPopUpbox(colPos, format, parsedCorrectly, parsedClass, sample);
+        openPopUpbox(colPos, format, parsedCorrectly, parsedClass, this);
     }
 
 
     // Internal methods
 
-    public static void toLists(LogSample sample) {
+    private static void toLists(LogSample sample) {
 
         LinkedHashMap<String, String> menuItems = new LinkedHashMap<String, String>();
         String other = "Event Attribute";
@@ -387,7 +385,7 @@ class LogSampleImpl implements LogSample, Constants {
                     }
 
                     if (selected.equals(timestamp) || selected.equals(tsStart)) {
-                        sample.tryParsing(parse.determineDateFormat(sample.getLines().get(0).get(colPos)), colPos, sample);
+                        sample.tryParsing(parse.determineDateFormat(sample.getLines().get(0).get(colPos)), colPos);
                     } else {
                         sample.getHeads().put(selected, colPos);
                     }
@@ -395,7 +393,7 @@ class LogSampleImpl implements LogSample, Constants {
                 } else if (selected.equals(ignore)) {
                     sample.getIgnoredPos().add(colPos);
                 } else if (selected.equals(tsValue)) {
-                    sample.tryParsing(parse.determineDateFormat(sample.getLines().get(0).get(colPos)), colPos, sample);
+                    sample.tryParsing(parse.determineDateFormat(sample.getLines().get(0).get(colPos)), colPos);
                 }
             });
 

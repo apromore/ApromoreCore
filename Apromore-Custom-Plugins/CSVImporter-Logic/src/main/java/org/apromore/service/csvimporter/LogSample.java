@@ -50,13 +50,13 @@ public interface LogSample {
     /**
      * Based on the sampled CSV lines, try to set the <var>timestampFormat</var> and <var>startTsFormat</var> properties.
      *
-     * @return a non-null list of nonfatal error messages; an empty list indicates error-free executation
+     * @return a non-null list of warning messages; an empty list suggests (but doesn't guarantee) correct guesses
      */
     List<String> automaticFormat();
 
-    void openPopUp(LogSample sample);
-    void setIgnoreAll(Window window, LogSample sample);
-    void setOtherAll(Window window, LogSample sample);
-    void setOtherTimestamps(LogSample sample);
-    void tryParsing(String format, int colPos, LogSample sample);
+    void openPopUp();
+    void setIgnoreAll(Window window);
+    void setOtherAll(Window window);
+    void setOtherTimestamps();
+    void tryParsing(String format, int colPos);
 }

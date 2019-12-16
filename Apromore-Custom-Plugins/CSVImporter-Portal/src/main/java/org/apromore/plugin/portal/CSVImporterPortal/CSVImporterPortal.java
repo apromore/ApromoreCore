@@ -155,10 +155,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
     @SuppressWarnings("null")
     private static LogSample displayCSVContent(CSVImporterLogic csvImporterLogic, Media media, Window window) {
 
-
         final int SAMPLE_SIZE = 100;
 
-        ListModelList<String[]> indexedResult = new ListModelList<>();
         Grid myGrid  = (Grid) window.getFellow("myGrid");
         Div popUPBox = (Div) window.getFellow("popUPBox");
 
@@ -169,8 +167,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
         try (CSVReader csvReader = newCSVReader(media, charset)) {
 
-            // Sample the beginning of the log
-
+            // Sample the first SAMPLE_SIZE events from the log
             LogSample sample = csvImporterLogic.sampleCSV(csvReader, SAMPLE_SIZE);
 
             // Present the beginning of the log to the user so that they can confirm/add configuration
@@ -198,23 +195,15 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 popUPBox.getChildren().clear();
             }
 
-            indexedResult.clear();
-
-            List<Listbox> lists = sample.getLists();
-
             Auxhead optionHead = new Auxhead();
             Auxheader index = new Auxheader();
             optionHead.appendChild(index);
-
-            for (Listbox list : lists) {
-//                    attrBox.appendChild(lists.get(i));
-
+            for (Listbox list : sample.getLists()) {
                 Auxheader listHeader = new Auxheader();
                 listHeader.appendChild(list);
                 optionHead.appendChild(listHeader);
             }
             myGrid.appendChild(optionHead);
-
 
             Column indexCol = new Column();
             indexCol.setWidth(IndexColumnWidth + "px");
@@ -233,7 +222,30 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 myGrid.getColumns().setSizable(true);  // TODO: this looks fishy
             }
 
-            // display first 100 rows
+            Popup helpP = (Popup) window.getFellow("popUpHelp");
+
+            if(sample.getHeader() != null) {
+                System.out.println("Automatic formatting here! " + sample.getLines().get(0));
+                List<String> errorMessages = sample.automaticFormat();
+                for (String errorMessage: errorMessages) {
+                    Messagebox.show(errorMessage);
+                }
+                sample.setOtherTimestamps();
+            }
+
+            createPopUpTextBox(csvImporterLogic, sample.getHeader().size(), popUPBox, helpP, sample.getLines().get(0), sample);
+            sample.openPopUp();
+
+            Button setOtherAll = (Button) window.getFellow("setOtherAll");
+            setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
+            setOtherAll.addEventListener("onClick", event -> sample.setOtherAll(window));
+
+            Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
+            setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
+            setIgnoreAll.addEventListener("onClick", event -> sample.setIgnoreAll(window));
+
+            // set grid model; display the first SAMPLE_SIZE rows
+            ListModelList<String[]> indexedResult = new ListModelList<>();
             for (int i = 0; i < sample.getLines().size(); i++) {
                 List<String> withIndex = new ArrayList<>();
                 withIndex.add(String.valueOf(i+1));
@@ -245,38 +257,16 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 String[] continued = {"...",""};
                 indexedResult.add(continued);
             }
-
-            Popup helpP = (Popup) window.getFellow("popUpHelp");
-
-            if(sample.getHeader() != null) {
-                System.out.println("Automatic formatting here! " + sample.getLines().get(0));
-                List<String> errorMessages = sample.automaticFormat();
-                for (String errorMessage: errorMessages) {
-                    Messagebox.show(errorMessage);
-                }
-                sample.setOtherTimestamps(sample);
-            }
-
-            createPopUpTextBox(csvImporterLogic, sample.getHeader().size(), popUPBox, helpP, sample.getLines().get(0), sample);
-            sample.openPopUp(sample);
-
-            Button setOtherAll = (Button) window.getFellow("setOtherAll");
-            setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
-            setOtherAll.addEventListener("onClick", event -> sample.setOtherAll(window, sample));
-
-            Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
-            setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
-            setIgnoreAll.addEventListener("onClick", event -> sample.setIgnoreAll(window, sample));
-
-            // set grid model
             myGrid.setModel(indexedResult);
+
             //set grid row renderer
             GridRendererController rowRenderer = new GridRendererController();
             rowRenderer.setAttribWidth(AttribWidth);
-
             myGrid.setRowRenderer(rowRenderer);
+
             Button toXESButton = (Button) window.getFellow("toXESButton");
             toXESButton.setDisabled(false);
+
             window.setTitle("CSV Importer - " + media.getName());
 
             return sample;
@@ -324,9 +314,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                     textbox.setPlaceholder("Specify timestamp format");
                 }
                 if(!event.getValue().isEmpty()){
-                    sample.tryParsing(event.getValue(),
-                                      Integer.parseInt(textbox.getId().replace(LogSample.textboxID,"")),
-                                      sample);
+                    sample.tryParsing(event.getValue(), Integer.parseInt(textbox.getId().replace(LogSample.textboxID,"")));
                 }
             });
             Label check_lbl = new Label();
