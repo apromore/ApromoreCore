@@ -257,21 +257,19 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if(sample.getHeader() != null) {
                 System.out.println("Automatic formatting here! " + Arrays.toString(result.get(0)));
                 csvImporterLogic.automaticFormat(result, sample.getHeader(), sample);
-                csvImporterLogic.setOtherTimestamps(result, sample.getLines().get(0));
+                csvImporterLogic.setOtherTimestamps(result, sample.getLines().get(0), sample);
             }
 
             createPopUpTextBox(csvImporterLogic, sample.getHeader().size(), popUPBox, helpP, sample.getLines().get(0), sample);
             csvImporterLogic.openPopUp(sample);
 
-            final LogSample finalSample = sample;
-
             Button setOtherAll = (Button) window.getFellow("setOtherAll");
             setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
-            setOtherAll.addEventListener("onClick", event -> csvImporterLogic.setOtherAll(window, finalSample.getLines().get(0)));
+            setOtherAll.addEventListener("onClick", event -> csvImporterLogic.setOtherAll(window, sample.getLines().get(0), sample));
 
             Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
             setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
-            setIgnoreAll.addEventListener("onClick", event -> csvImporterLogic.setIgnoreAll(window, finalSample.getLines().get(0)));
+            setIgnoreAll.addEventListener("onClick", event -> csvImporterLogic.setIgnoreAll(window, sample.getLines().get(0), sample));
 
             // set grid model
             myGrid.setModel(indexedResult);
