@@ -46,8 +46,6 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-//import org.deckfour.xes.*;
-// TODO: Auto-generated Javadoc
 
 /**
  * The Class CsvToXes.
@@ -56,23 +54,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterLogicImpl.class);
     private static final double errorAcceptance = 0.2;
-    private static final String parsedCorrectly = "Format parsed! ";
-    private static final String couldnotParse = "Could not parse!";
-    private static final String parsedClass = "text-success";
-    private static final String failedClass = "text-danger";
     private static final Parse parse = new Parse();
-
-    private Div popUPBox;
-    /**
-     * Prepare xes model.
-     * <p>
-     * //	 * @param media the media
-     *
-     * @return the list
-     */
-    @SuppressWarnings("resource")
-
-    private static Integer AttribWidth = 150;
+    private static final Integer AttribWidth = 150;
 
 
     public LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException {
@@ -103,10 +86,9 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
         }
 
-        ListModelList<String[]> result = new ListModelList<>();
-        setOtherTimestamps(result, line, sample);
+        sample.setOtherTimestamps(new ListModelList<>(), line, sample);
 
-        toLists(line.size(), AttribWidth - 20 + "px", line, sample);
+        sample.toLists(line.size(), AttribWidth - 20 + "px", line, sample);
         
         return sample;
     }
@@ -257,154 +239,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         }
     }
 
-    public void automaticFormat(ListModelList<String[]> result, List<String> myHeader, LogSample sample) {
-        try {
-            String currentFormat = null;
-            String startFormat = null;
-
-            // do multiple line
-            int IncValue = 5;
-            // skipping 5 lines is too much for small logs, go through every line when its less than 1000 lines in total.
-            if (result.size() < 1000) {
-                IncValue = 1;
-            }
-            outerloop:
-            // naming the outer loop so we can break out from this loop within nested loops.
-            for (int i = 0; i < Math.min(1000, result.size()); i += IncValue) {
-                String[] newLine = result.get(i);
-
-                for (int j = 0; j < newLine.length; j++) {
-                    // Going row by row
-                    if(newLine.length != myHeader.size()) {
-                        continue;
-                    }
-                    if (getPos(timestampValues, myHeader.get(j).toLowerCase())) {
-                        // if its timestamp field
-                        String format = parse.determineDateFormat((newLine[j])); // dd.MM.yyyy //MM.dd.yyyy
-                        Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
-                        if (validTS != null) {
-                            try {
-                                if (currentFormat != null) {
-                                    // determine which one is right which one is wrong
-                                    // hint: use sets to store all the possible formats, then parse them again.
-
-                                    if (currentFormat != format) {
-                                        Timestamp validTS2 = Parse.parseTimestamp(result.get(i - IncValue)[j], currentFormat);
-
-                                        if (validTS.getYear() > 0) {
-                                            currentFormat = format;
-                                            break outerloop;
-                                        } else {
-                                            continue;
-                                        }
-                                    }
-                                } else {
-                                    currentFormat = format;
-                                }
-                            } catch (Exception e) {
-                                // automatic parse might be inaccurate.
-                                Messagebox.show("Automatic parse of End timestamp might be inaccurate. Please validate end timestamp field.");
-                                break;
-                            }
-
-                        }
-
-                    }
-
-                    if (getPos(StartTsValues, myHeader.get(j))) {
-                        // if its timestamp field
-                        String format = parse.determineDateFormat((newLine[j]));
-                        Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
-
-
-                        if (validTS != null) {
-                            try {
-                                if (startFormat != null) {
-
-                                    // determine which one is right which one is wrong
-                                    // hint: use sets to store all the possible formats, then parse them again.
-                                    if (startFormat != format) {
-                                        validTS = Parse.parseTimestamp(result.get(i - 1)[j], format);
-                                        if (validTS != null) {
-//                                            Messagebox.show("Current: " + startFormat + ", Changing to: " + format);
-                                            startFormat = format;
-                                            break outerloop;
-                                        }
-                                    }
-                                } else {
-                                    startFormat = format;
-                                }
-                            } catch (Exception e) {
-                                // automatic parse might be inaccurate.
-                                Messagebox.show("Automatic parse of start timestamp might be in accurate. Please validate start timestamp field.");
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            sample.setTimestampFormat(currentFormat);
-            sample.setStartTsFormat(startFormat);
-        } catch (Exception e) {
-            // automatic detection failed.
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Header pos.
-     * <p>
-     * //     * @param line read line from CSV
-     *
-     * @return the hash map: including mandatory field as key and position in the array as the value.
-     */
-
-    public void setOtherAll(Window window, List<String> line, LogSample sample) {
-        int otherIndex = 6;
-
-        for (int i = 0; i < line.size(); i++) {
-            Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
-            if (lb.getSelectedIndex() == 7) {
-                removeColPos(i, sample);
-                closePopUp(i);
-                lb.setSelectedIndex(otherIndex);
-                sample.getHeads().put("Event Attribute", i);
-            }
-        }
-
-    }
-
-    public void setIgnoreAll(Window window, List<String> sampleLine, LogSample sample) {
-        int otherIndex = 7;
-
-        for (int i = 0; i < sampleLine.size(); i++) {
-            Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
-            if (lb.getSelectedIndex() == 6) {
-                removeColPos(i, sample);
-                closePopUp(i);
-                lb.setSelectedIndex(otherIndex);
-                sample.getHeads().put("ignore", i);
-                sample.getIgnoredPos().add(i);
-            }
-        }
-    }
-
-    public void setOtherTimestamps(ListModelList<String[]> result, List<String> sampleLine, LogSample sample) {
-        if (result == null || result.size() == 0) {
-            sample.getOtherTimeStampsPos().clear();
-            Integer timeStampPos = sample.getHeads().get(timestamp);
-            Integer StartTimeStampPos = sample.getHeads().get(tsStart);
-
-            for (int i = 0; i <= sampleLine.size() - 1; i++) {
-                String detectedFormat = parse.determineDateFormat(sampleLine.get(i));
-                if ((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)) {
-                    sample.getOtherTimeStampsPos().put(i, detectedFormat);
-                }
-            }
-        }  // do multiple line
-
-    }
-
     /**
      * Gets the pos.
      *
@@ -447,179 +281,5 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         Comparator<String> nameOrder = new NameComparator();
         traces.sort((o1, o2) -> nameOrder.compare(o1.getCaseID(), o2.getCaseID()));
         return traces;
-    }
-
-
-    private void toLists(int cols, String boxwidth, List<String> sampleLine, LogSample sample) {
-
-        LinkedHashMap<String, String> menuItems = new LinkedHashMap<String, String>();
-        String other = "Event Attribute";
-        String ignore = "ignore";
-
-        menuItems.put(caseid, "Case ID");
-        menuItems.put(activity, "Activity");
-        menuItems.put(timestamp, "End timestamp");
-        menuItems.put(tsStart, "Start timestamp");
-        menuItems.put(tsValue, "Other timestamp");
-        menuItems.put(resource, "Resource");
-        menuItems.put(other, "Event Attribute");
-        menuItems.put(ignore, "Ignore column");
-
-        // get index of "other" item and select it.
-        int otherIndex = new ArrayList<String>(menuItems.keySet()).indexOf(other);
-
-        for (int cl = 0; cl <= cols - 1; cl++) {
-
-            Listbox box = new Listbox();
-            box.setMold("select"); // set listBox to select mode
-            box.setId(String.valueOf(cl)); // set id of list as column position.
-            box.setWidth(boxwidth);
-
-            for (Map.Entry<String, String> dl : menuItems.entrySet()) {
-                Listitem item = new Listitem();
-                item.setValue(dl.getKey());
-                item.setLabel(dl.getValue());
-
-                if ((box.getSelectedItem() == null) && (
-                        (dl.getKey().equals(caseid) && (cl == sample.getHeads().get(caseid))) ||
-                                (dl.getKey().equals(activity) && (cl == sample.getHeads().get(activity))) ||
-                                (dl.getKey().equals(timestamp) && (cl == sample.getHeads().get(timestamp))) ||
-                                (dl.getKey().equals(tsStart) && (cl == sample.getHeads().get(tsStart))) ||
-                                (dl.getKey().equals(resource) && (cl == sample.getHeads().get(resource))) ||
-                                (dl.getKey().equals(tsValue) && (sample.getOtherTimeStampsPos().get(cl) != null)) ||
-                                (dl.getKey().equals(other)))
-                        ) {
-                    item.setSelected(true);
-                }
-
-                box.appendChild(item);
-            }
-
-
-            box.addEventListener("onSelect", (Event event) -> {
-                // get selected index, and check if it is caseid, activity or time stamp
-                String selected = box.getSelectedItem().getValue();
-                int colPos = Integer.parseInt(box.getId());
-                removeColPos(colPos, sample);
-                closePopUp(colPos);
-
-                if (selected.equals(caseid) || selected.equals(activity) || selected.equals(timestamp) || selected.equals(tsStart) || new String(selected).equals(resource)) {
-
-                    int oldColPos = sample.getHeads().get(selected);
-                    if (oldColPos != -1) {
-                        Listbox oldBox = sample.getLists().get(oldColPos);
-                        oldBox.setSelectedIndex(otherIndex);
-                        removeColPos(oldColPos, sample);
-                        closePopUp(oldColPos);
-                    }
-
-                    if (selected.equals(timestamp) || selected.equals(tsStart)) {
-                        tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine, sample);
-                    } else {
-                        sample.getHeads().put(selected, colPos);
-                    }
-
-                } else if (selected.equals(ignore)) {
-                    sample.getIgnoredPos().add(colPos);
-                } else if (selected.equals(tsValue)) {
-                    tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine, sample);
-                }
-            });
-
-            sample.getLists().add(box);
-        }
-    }
-
-    private void removeColPos(int colPos, LogSample sample) {
-
-        if (sample.getOtherTimeStampsPos().get(colPos) != null) {
-            sample.getOtherTimeStampsPos().remove(colPos);
-
-        } else if (sample.getIgnoredPos().contains(colPos)) {
-            sample.getIgnoredPos().remove(Integer.valueOf(colPos));
-        } else {
-
-            for (Map.Entry<String, Integer> entry : sample.getHeads().entrySet()) {
-                if (entry.getValue() == colPos) {
-                    sample.getHeads().put(entry.getKey(), -1);
-                    break;
-                }
-            }
-        }
-    }
-
-
-    private void closePopUp(int colPos) {
-        Window myPopUp = (Window) popUPBox.getFellow(popupID + colPos);
-        myPopUp.setStyle(myPopUp.getStyle().replace("visible", "hidden"));
-    }
-
-
-    public void tryParsing(String format, int colPos, List<String> sampleLine, LogSample sample) {
-
-        if (format != null && parse.parseTimestamp(sampleLine.get(colPos), format) != null) {
-            Listbox box = sample.getLists().get(colPos);
-            String selected = box.getSelectedItem().getValue();
-            if (new String(selected).equals(timestamp)) {
-                sample.getHeads().put(selected, colPos);
-                sample.setTimestampFormat(format);
-            } else if (new String(selected).equals(tsStart)) {
-                sample.getHeads().put(selected, colPos);
-                sample.setStartTsFormat(format);
-            } else if (new String(selected).equals(tsValue)) {
-                sample.getOtherTimeStampsPos().put(colPos, format);
-            }
-            openPopUpbox(colPos, format, parsedCorrectly, parsedClass);
-        } else {
-            openPopUpbox(colPos, format, couldnotParse, failedClass);
-        }
-    }
-
-
-    public void openPopUp(LogSample sample) {
-        Integer timeStampPos = sample.getHeads().get(timestamp);
-        if (timeStampPos != -1) openPopUpbox(sample.getHeads().get(timestamp), sample.getTimestampFormat(), parsedCorrectly, parsedClass);
-
-        Integer startTimeStampPos = sample.getHeads().get(tsStart);
-        if (startTimeStampPos != -1) openPopUpbox(sample.getHeads().get(tsStart), sample.getStartTsFormat(), parsedCorrectly, parsedClass);
-
-        for (Map.Entry<Integer, String> entry : sample.getOtherTimeStampsPos().entrySet()) {
-            openPopUpbox(entry.getKey(), entry.getValue(), parsedCorrectly, parsedClass);
-        }
-    }
-
-    public void setTimestampBox(Integer colPos, String format, String message, Window window) {
-        Textbox txt = (Textbox) window.getFellow("newtextbox" + colPos);
-        txt.setValue(format);
-
-        txt.setStyle(txt.getStyle().replace("hidden", "visible"));
-        if (message == parsedCorrectly) {
-            txt.setStyle("background:green;");
-        } else {
-            txt.setStyle("background:red;");
-        }
-
-    }
-
-
-    private void openPopUpbox(Integer colPos, String format, String message, String lblClass) {
-        Window myPopUp = (Window) popUPBox.getFellow(popupID + colPos);
-        myPopUp.setStyle(myPopUp.getStyle().replace("hidden", "visible"));
-        Label check_lbl = (Label) myPopUp.getFellow(labelID + colPos);
-
-        Textbox txt = (Textbox) myPopUp.getFellow(textboxID + colPos);
-        txt.setValue(format);
-        if (message == parsedCorrectly) {
-            check_lbl.setZclass("greenLabel");
-            check_lbl.setValue(message);
-        } else {
-            check_lbl.setZclass("redLabel");
-            check_lbl.setValue(message);
-        }
-        check_lbl.setClass(lblClass);
-    }
-
-    public void setPopUPBox(Div popUPBox) {
-        this.popUPBox = popUPBox;
     }
 }
