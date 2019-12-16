@@ -158,7 +158,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
         final int SAMPLE_SIZE = 100;
 
-        ListModelList<String[]> result = new ListModelList<>();
         ListModelList<String[]> indexedResult = new ListModelList<>();
         Grid myGrid  = (Grid) window.getFellow("myGrid");
         Div popUPBox = (Div) window.getFellow("popUPBox");
@@ -198,7 +197,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
             if (popUPBox != null) {
                 popUPBox.getChildren().clear();
             }
-            result.clear();
 
             indexedResult.clear();
 
@@ -242,7 +240,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 withIndex.addAll(sample.getLines().get(i));
                 String[] s = withIndex.toArray(new String[0]);
                 indexedResult.add(s);
-                result.add(sample.getLines().get(i).toArray(new String[0]));
             }
             if (sample.getHeader().size() == SAMPLE_SIZE) {
                 String[] continued = {"...",""};
@@ -252,9 +249,12 @@ public class CSVImporterPortal implements FileImporterPlugin {
             Popup helpP = (Popup) window.getFellow("popUpHelp");
 
             if(sample.getHeader() != null) {
-                System.out.println("Automatic formatting here! " + Arrays.toString(result.get(0)));
-                sample.automaticFormat(result, sample);
-                sample.setOtherTimestamps(result, sample);
+                System.out.println("Automatic formatting here! " + sample.getLines().get(0));
+                List<String> errorMessages = sample.automaticFormat();
+                for (String errorMessage: errorMessages) {
+                    Messagebox.show(errorMessage);
+                }
+                sample.setOtherTimestamps(sample);
             }
 
             createPopUpTextBox(csvImporterLogic, sample.getHeader().size(), popUPBox, helpP, sample.getLines().get(0), sample);

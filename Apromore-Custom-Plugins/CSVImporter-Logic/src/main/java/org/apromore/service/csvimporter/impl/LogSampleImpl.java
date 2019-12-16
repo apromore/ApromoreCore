@@ -96,7 +96,7 @@ class LogSampleImpl implements LogSample, Constants {
         this.ignoredPos = new ArrayList<>();
         this.otherTimeStampsPos = new HashMap<>();
 
-        setOtherTimestamps(new ArrayList<>(), this);
+        setOtherTimestamps(this);
         toLists(this);
     }
 
@@ -143,31 +143,30 @@ class LogSampleImpl implements LogSample, Constants {
     // Public methods
 
     @Override
-    public void automaticFormat(List<String[]> result, LogSample sample) {
+    public List<String> automaticFormat() {
+        List<String> errorMessages = new ArrayList<>();
+
         try {
             String currentFormat = null;
             String startFormat = null;
 
-            // do multiple line
-            int IncValue = 5;
-            // skipping 5 lines is too much for small logs, go through every line when its less than 1000 lines in total.
-            if (result.size() < 1000) {
-                IncValue = 1;
-            }
+            // skipping 5 lines is too much for small logs, go through every line when it's less than 1000 lines in total.
+            int IncValue = (this.lines.size() < 1000) ? 1 : 5;
+
             outerloop:
             // naming the outer loop so we can break out from this loop within nested loops.
-            for (int i = 0; i < Math.min(1000, result.size()); i += IncValue) {
-                String[] newLine = result.get(i);
+            for (int i = 0; i < Math.min(1000, this.lines.size()); i += IncValue) {
+                List<String> newLine = this.lines.get(i);
 
-                for (int j = 0; j < newLine.length; j++) {
+                for (int j = 0; j < newLine.size(); j++) {
                     // Going row by row
-                    if(newLine.length != sample.getHeader().size()) {
+                    if(newLine.size() != getHeader().size()) {
                         continue;
                     }
-                    if (getPos(timestampValues, sample.getHeader().get(j).toLowerCase())) {
+                    if (getPos(timestampValues, getHeader().get(j).toLowerCase())) {
                         // if its timestamp field
-                        String format = parse.determineDateFormat((newLine[j])); // dd.MM.yyyy //MM.dd.yyyy
-                        Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
+                        String format = parse.determineDateFormat((newLine.get(j))); // dd.MM.yyyy //MM.dd.yyyy
+                        Timestamp validTS = Parse.parseTimestamp(newLine.get(j), format);
                         if (validTS != null) {
                             try {
                                 if (currentFormat != null) {
@@ -175,7 +174,7 @@ class LogSampleImpl implements LogSample, Constants {
                                     // hint: use sets to store all the possible formats, then parse them again.
 
                                     if (currentFormat != format) {
-                                        Timestamp validTS2 = Parse.parseTimestamp(result.get(i - IncValue)[j], currentFormat);
+                                        Timestamp validTS2 = Parse.parseTimestamp(this.lines.get(i - IncValue).get(j), currentFormat);
 
                                         if (validTS.getYear() > 0) {
                                             currentFormat = format;
@@ -189,7 +188,7 @@ class LogSampleImpl implements LogSample, Constants {
                                 }
                             } catch (Exception e) {
                                 // automatic parse might be inaccurate.
-                                Messagebox.show("Automatic parse of End timestamp might be inaccurate. Please validate end timestamp field.");
+                                errorMessages.add("Automatic parse of End timestamp might be inaccurate. Please validate end timestamp field.");
                                 break;
                             }
 
@@ -197,10 +196,10 @@ class LogSampleImpl implements LogSample, Constants {
 
                     }
 
-                    if (getPos(StartTsValues, sample.getHeader().get(j))) {
+                    if (getPos(StartTsValues, getHeader().get(j))) {
                         // if its timestamp field
-                        String format = parse.determineDateFormat((newLine[j]));
-                        Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
+                        String format = parse.determineDateFormat((newLine.get(j)));
+                        Timestamp validTS = Parse.parseTimestamp(newLine.get(j), format);
 
 
                         if (validTS != null) {
@@ -210,7 +209,7 @@ class LogSampleImpl implements LogSample, Constants {
                                     // determine which one is right which one is wrong
                                     // hint: use sets to store all the possible formats, then parse them again.
                                     if (startFormat != format) {
-                                        validTS = Parse.parseTimestamp(result.get(i - 1)[j], format);
+                                        validTS = Parse.parseTimestamp(this.lines.get(i - 1).get(j), format);
                                         if (validTS != null) {
 //                                            Messagebox.show("Current: " + startFormat + ", Changing to: " + format);
                                             startFormat = format;
@@ -222,19 +221,22 @@ class LogSampleImpl implements LogSample, Constants {
                                 }
                             } catch (Exception e) {
                                 // automatic parse might be inaccurate.
-                                Messagebox.show("Automatic parse of start timestamp might be in accurate. Please validate start timestamp field.");
+                                errorMessages.add("Automatic parse of start timestamp might be inaccurate. Please validate start timestamp field.");
                                 break;
                             }
                         }
                     }
                 }
             }
-            sample.setTimestampFormat(currentFormat);
-            sample.setStartTsFormat(startFormat);
+            setTimestampFormat(currentFormat);
+            setStartTsFormat(startFormat);
         } catch (Exception e) {
             // automatic detection failed.
             e.printStackTrace();
+            errorMessages.add("Automatic detection failed.");
         }
+
+        return errorMessages;
     }
 
     @Override
@@ -283,20 +285,17 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public void setOtherTimestamps(List<String[]> result, LogSample sample) {
-        if (result == null || result.size() == 0) {
-            sample.getOtherTimeStampsPos().clear();
-            Integer timeStampPos = sample.getHeads().get(timestamp);
-            Integer StartTimeStampPos = sample.getHeads().get(tsStart);
+    public void setOtherTimestamps(LogSample sample) {
+        sample.getOtherTimeStampsPos().clear();
+        Integer timeStampPos = sample.getHeads().get(timestamp);
+        Integer StartTimeStampPos = sample.getHeads().get(tsStart);
 
-            for (int i = 0; i < sample.getLines().get(0).size(); i++) {
-                String detectedFormat = parse.determineDateFormat(sample.getLines().get(0).get(i));
-                if ((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)) {
-                    sample.getOtherTimeStampsPos().put(i, detectedFormat);
-                }
+        for (int i = 0; i < sample.getLines().get(0).size(); i++) {
+            String detectedFormat = parse.determineDateFormat(sample.getLines().get(0).get(i));
+            if ((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)) {
+                sample.getOtherTimeStampsPos().put(i, detectedFormat);
             }
-        }  // do multiple line
-
+        }
     }
 
     @Override
