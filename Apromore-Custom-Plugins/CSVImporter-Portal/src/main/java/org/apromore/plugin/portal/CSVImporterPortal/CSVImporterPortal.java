@@ -253,8 +253,8 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             if(sample.getHeader() != null) {
                 System.out.println("Automatic formatting here! " + Arrays.toString(result.get(0)));
-                sample.automaticFormat(result, sample.getHeader(), sample);
-                sample.setOtherTimestamps(result, sample.getLines().get(0), sample);
+                sample.automaticFormat(result, sample);
+                sample.setOtherTimestamps(result, sample);
             }
 
             createPopUpTextBox(csvImporterLogic, sample.getHeader().size(), popUPBox, helpP, sample.getLines().get(0), sample);
@@ -262,11 +262,11 @@ public class CSVImporterPortal implements FileImporterPlugin {
 
             Button setOtherAll = (Button) window.getFellow("setOtherAll");
             setOtherAll.setTooltiptext("Change all Ignore columns to Other.");
-            setOtherAll.addEventListener("onClick", event -> sample.setOtherAll(window, sample.getLines().get(0), sample));
+            setOtherAll.addEventListener("onClick", event -> sample.setOtherAll(window, sample));
 
             Button setIgnoreAll = (Button) window.getFellow("setIgnoreAll");
             setIgnoreAll.setTooltiptext("Change all Other columns to Ignore.");
-            setIgnoreAll.addEventListener("onClick", event -> sample.setIgnoreAll(window, sample.getLines().get(0), sample));
+            setIgnoreAll.addEventListener("onClick", event -> sample.setIgnoreAll(window, sample));
 
             // set grid model
             myGrid.setModel(indexedResult);
@@ -326,7 +326,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 if(!event.getValue().isEmpty()){
                     sample.tryParsing(event.getValue(),
                                       Integer.parseInt(textbox.getId().replace(LogSample.textboxID,"")),
-                                      sampleLine,
                                       sample);
                 }
             });

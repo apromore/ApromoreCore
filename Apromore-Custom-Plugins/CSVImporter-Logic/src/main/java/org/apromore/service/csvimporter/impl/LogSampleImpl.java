@@ -61,8 +61,8 @@ class LogSampleImpl implements LogSample, Constants {
         if (line.size() != header.size()) {
             throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
         }
-        setOtherTimestamps(new ArrayList<>(), line, this);
-        toLists(line.size(), AttribWidth - 20 + "px", line, this);
+        setOtherTimestamps(new ArrayList<>(), this);
+        toLists(line.size(), AttribWidth - 20 + "px", this);
     }
 
 
@@ -108,7 +108,7 @@ class LogSampleImpl implements LogSample, Constants {
     // Public methods
 
     @Override
-    public void automaticFormat(List<String[]> result, List<String> myHeader, LogSample sample) {
+    public void automaticFormat(List<String[]> result, LogSample sample) {
         try {
             String currentFormat = null;
             String startFormat = null;
@@ -126,10 +126,10 @@ class LogSampleImpl implements LogSample, Constants {
 
                 for (int j = 0; j < newLine.length; j++) {
                     // Going row by row
-                    if(newLine.length != myHeader.size()) {
+                    if(newLine.length != sample.getHeader().size()) {
                         continue;
                     }
-                    if (getPos(timestampValues, myHeader.get(j).toLowerCase())) {
+                    if (getPos(timestampValues, sample.getHeader().get(j).toLowerCase())) {
                         // if its timestamp field
                         String format = parse.determineDateFormat((newLine[j])); // dd.MM.yyyy //MM.dd.yyyy
                         Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
@@ -162,7 +162,7 @@ class LogSampleImpl implements LogSample, Constants {
 
                     }
 
-                    if (getPos(StartTsValues, myHeader.get(j))) {
+                    if (getPos(StartTsValues, sample.getHeader().get(j))) {
                         // if its timestamp field
                         String format = parse.determineDateFormat((newLine[j]));
                         Timestamp validTS = Parse.parseTimestamp(newLine[j], format);
@@ -216,10 +216,10 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public void setOtherAll(Window window, List<String> line, LogSample sample) {
+    public void setOtherAll(Window window, LogSample sample) {
         int otherIndex = 6;
 
-        for (int i = 0; i < line.size(); i++) {
+        for (int i = 0; i < sample.getLines().get(0).size(); i++) {
             Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
             if (lb.getSelectedIndex() == 7) {
                 removeColPos(i, sample);
@@ -232,10 +232,10 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public void setIgnoreAll(Window window, List<String> sampleLine, LogSample sample) {
+    public void setIgnoreAll(Window window, LogSample sample) {
         int otherIndex = 7;
 
-        for (int i = 0; i < sampleLine.size(); i++) {
+        for (int i = 0; i < sample.getLines().get(0).size(); i++) {
             Listbox lb = (Listbox) window.getFellow(String.valueOf(i));
             if (lb.getSelectedIndex() == 6) {
                 removeColPos(i, sample);
@@ -248,14 +248,14 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public void setOtherTimestamps(List<String[]> result, List<String> sampleLine, LogSample sample) {
+    public void setOtherTimestamps(List<String[]> result, LogSample sample) {
         if (result == null || result.size() == 0) {
             sample.getOtherTimeStampsPos().clear();
             Integer timeStampPos = sample.getHeads().get(timestamp);
             Integer StartTimeStampPos = sample.getHeads().get(tsStart);
 
-            for (int i = 0; i <= sampleLine.size() - 1; i++) {
-                String detectedFormat = parse.determineDateFormat(sampleLine.get(i));
+            for (int i = 0; i < sample.getLines().get(0).size(); i++) {
+                String detectedFormat = parse.determineDateFormat(sample.getLines().get(0).get(i));
                 if ((i != timeStampPos) && (i != StartTimeStampPos) && (detectedFormat != null)) {
                     sample.getOtherTimeStampsPos().put(i, detectedFormat);
                 }
@@ -265,24 +265,25 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public void tryParsing(String format, int colPos, List<String> sampleLine, LogSample sample) {
+    public void tryParsing(String format, int colPos, LogSample sample) {
 
-        if (format != null && parse.parseTimestamp(sampleLine.get(colPos), format) != null) {
-            Listbox box = sample.getLists().get(colPos);
-            String selected = box.getSelectedItem().getValue();
-            if (new String(selected).equals(timestamp)) {
-                sample.getHeads().put(selected, colPos);
-                sample.setTimestampFormat(format);
-            } else if (new String(selected).equals(tsStart)) {
-                sample.getHeads().put(selected, colPos);
-                sample.setStartTsFormat(format);
-            } else if (new String(selected).equals(tsValue)) {
-                sample.getOtherTimeStampsPos().put(colPos, format);
-            }
-            openPopUpbox(colPos, format, parsedCorrectly, parsedClass, sample);
-        } else {
+        if (format == null || parse.parseTimestamp(sample.getLines().get(0).get(colPos), format) == null) {
             openPopUpbox(colPos, format, couldnotParse, failedClass, sample);
+            return;
         }
+
+        Listbox box = sample.getLists().get(colPos);
+        String selected = box.getSelectedItem().getValue();
+        if (new String(selected).equals(timestamp)) {
+            sample.getHeads().put(selected, colPos);
+            sample.setTimestampFormat(format);
+        } else if (new String(selected).equals(tsStart)) {
+            sample.getHeads().put(selected, colPos);
+            sample.setStartTsFormat(format);
+        } else if (new String(selected).equals(tsValue)) {
+            sample.getOtherTimeStampsPos().put(colPos, format);
+        }
+        openPopUpbox(colPos, format, parsedCorrectly, parsedClass, sample);
     }
 
 
@@ -327,7 +328,7 @@ class LogSampleImpl implements LogSample, Constants {
         return heads;
     }
 
-    public static void toLists(int cols, String boxwidth, List<String> sampleLine, LogSample sample) {
+    public static void toLists(int cols, String boxwidth, LogSample sample) {
 
         LinkedHashMap<String, String> menuItems = new LinkedHashMap<String, String>();
         String other = "Event Attribute";
@@ -391,7 +392,7 @@ class LogSampleImpl implements LogSample, Constants {
                     }
 
                     if (selected.equals(timestamp) || selected.equals(tsStart)) {
-                        sample.tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine, sample);
+                        sample.tryParsing(parse.determineDateFormat(sample.getLines().get(0).get(colPos)), colPos, sample);
                     } else {
                         sample.getHeads().put(selected, colPos);
                     }
@@ -399,7 +400,7 @@ class LogSampleImpl implements LogSample, Constants {
                 } else if (selected.equals(ignore)) {
                     sample.getIgnoredPos().add(colPos);
                 } else if (selected.equals(tsValue)) {
-                    sample.tryParsing(parse.determineDateFormat(sampleLine.get(colPos)), colPos, sampleLine, sample);
+                    sample.tryParsing(parse.determineDateFormat(sample.getLines().get(0).get(colPos)), colPos, sample);
                 }
             });
 
