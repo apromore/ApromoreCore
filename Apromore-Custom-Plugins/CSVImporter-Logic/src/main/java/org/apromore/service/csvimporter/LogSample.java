@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Window;
 
 /**
@@ -48,10 +47,10 @@ public interface LogSample {
 
     // Public methods
 
-    void automaticFormat(ListModelList<String[]> result, List<String> myHeader, LogSample sample);
+    void automaticFormat(List<String[]> result, List<String> myHeader, LogSample sample);
     void openPopUp(LogSample sample);
     void setIgnoreAll(Window window, List<String> sampleLine, LogSample sample);
     void setOtherAll(Window window, List<String> line, LogSample sample);
-    void setOtherTimestamps(ListModelList<String[]> result, List<String> sampleLine, LogSample sample);
+    void setOtherTimestamps(List<String[]> result, List<String> sampleLine, LogSample sample);
     void tryParsing(String format, int colPos, List<String> sampleLine, LogSample sample);
 }

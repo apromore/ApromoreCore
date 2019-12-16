@@ -1,9 +1,9 @@
 package org.apromore.service.csvimporter.impl;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +14,6 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
@@ -62,7 +61,7 @@ class LogSampleImpl implements LogSample, Constants {
         if (line.size() != header.size()) {
             throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
         }
-        setOtherTimestamps(new ListModelList<>(), line, this);
+        setOtherTimestamps(new ArrayList<>(), line, this);
         toLists(line.size(), AttribWidth - 20 + "px", line, this);
     }
 
@@ -109,7 +108,7 @@ class LogSampleImpl implements LogSample, Constants {
     // Public methods
 
     @Override
-    public void automaticFormat(ListModelList<String[]> result, List<String> myHeader, LogSample sample) {
+    public void automaticFormat(List<String[]> result, List<String> myHeader, LogSample sample) {
         try {
             String currentFormat = null;
             String startFormat = null;
@@ -249,7 +248,7 @@ class LogSampleImpl implements LogSample, Constants {
     }
 
     @Override
-    public void setOtherTimestamps(ListModelList<String[]> result, List<String> sampleLine, LogSample sample) {
+    public void setOtherTimestamps(List<String[]> result, List<String> sampleLine, LogSample sample) {
         if (result == null || result.size() == 0) {
             sample.getOtherTimeStampsPos().clear();
             Integer timeStampPos = sample.getHeads().get(timestamp);

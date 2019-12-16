@@ -34,7 +34,6 @@ import org.apromore.service.csvimporter.LogModel;
 import org.apromore.service.csvimporter.LogSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zul.ListModelList;
 
 public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
