@@ -56,6 +56,7 @@ import org.deckfour.xes.model.XLog;
 public class CSVImporterPortal implements Constants, FileImporterPlugin {
     private static char[] supportedSeparators = {',','|',';','\t'};
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterPortal.class);
+    private static final double MAX_ERROR_FRACTION = 0.2;  // Accept up to 20% error rate
 
     @Inject private CSVImporterLogic csvImporterLogic;
     @Inject private EventLogService eventLogService;
@@ -405,7 +406,7 @@ public class CSVImporterPortal implements Constants, FileImporterPlugin {
                 }
 
                 try (CSVReader reader = newCSVReader(media, clearEncoding)) {
-                    LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample);
+                    LogModel xesModel = csvImporterLogic.prepareXesModel(reader, sample, MAX_ERROR_FRACTION);
 
                     if (xesModel.getErrorCount() > 0) {
                         String notificationMessage;

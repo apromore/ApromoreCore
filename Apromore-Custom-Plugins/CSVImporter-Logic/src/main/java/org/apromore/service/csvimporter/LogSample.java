@@ -23,6 +23,7 @@ import org.zkoss.zul.Window;
  */
 public class LogSample implements Constants {
 
+    private static final Integer AttribWidth = 150;
     private static final String parsedCorrectly = "Format parsed! ";
     private static final String couldnotParse = "Could not parse!";
     private static final String parsedClass = "text-success";
@@ -48,13 +49,21 @@ public class LogSample implements Constants {
 
     // Constructor
 
-    public LogSample(List<String> header, List<List<String>> lines) {
+    public LogSample(List<String> header, List<List<String>> lines) throws InvalidCSVException {
         this.header = header;
         this.lines = lines;
+
         this.heads = toHeads(header, lines.get(0));
         this.lists = new ArrayList<>();
         this.ignoredPos = new ArrayList<>();
         this.otherTimeStampsPos = new HashMap<>();
+
+        List<String> line = lines.get(0);
+        if (line.size() != header.size()) {
+            throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
+        }
+        setOtherTimestamps(new ListModelList<>(), line, this);
+        toLists(line.size(), AttribWidth - 20 + "px", line, this);
     }
 
 

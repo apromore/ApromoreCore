@@ -22,6 +22,11 @@ package org.apromore.service.csvimporter.impl;
 
 import com.opencsv.CSVReader;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import java.io.*;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import org.apromore.service.csvimporter.Constants;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.InvalidCSVException;
@@ -30,34 +35,14 @@ import org.apromore.service.csvimporter.LogModel;
 import org.apromore.service.csvimporter.LogSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
 
-import java.io.*;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-/**
- * The Class CsvToXes.
- */
 public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterLogicImpl.class);
-    private static final double errorAcceptance = 0.2;
     private static final Parse parse = new Parse();
-    private static final Integer AttribWidth = 150;
 
-
+    @Override
     public LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException {
 
         // Obtain the header
@@ -74,26 +59,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         }
 
         // Construct the sample (no mutation expected after this point, although this isn't enforced by the code))
-        LogSample sample = new LogSample(header, lines);
-
-
-        // TODO: derived property calculations from the sample below this point should be migrated to the LogSample class
-
-        List<String> line = lines.get(0);
-
-        if (line.size() != header.size()) {
-            reader.close();
-            throw new InvalidCSVException("Number of columns in the header does not match number of columns in the data");
-        }
-
-        sample.setOtherTimestamps(new ListModelList<>(), line, sample);
-
-        sample.toLists(line.size(), AttribWidth - 20 + "px", line, sample);
-        
-        return sample;
+        return new LogSample(header, lines);
     }
 
-    public LogModel prepareXesModel(CSVReader reader, LogSample sample) throws InvalidCSVException, IOException {
+    @Override
+    public LogModel prepareXesModel(CSVReader reader, LogSample sample, double errorAcceptance) throws InvalidCSVException, IOException {
         int errorCount = 0;
         int lineCount = 0;
         int finishCount = 0;
@@ -167,11 +137,11 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                             }
                         }
 
-                        /* Notify if resource field is empty */
+                        // Notify if resource field is empty
                         if (sample.getHeads().get(resource) != -1) {
                             resourceCol = line[sample.getHeads().get(resource)];
                         }
-                        /* check if end stimestamp field is null */
+                        // check if end stimestamp field is null
                         if (tStamp == null) {
                             if (startTimestamp != null) {
                                 tStamp = startTimestamp;
@@ -191,10 +161,8 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                                         long time = date.getTime();
                                         Timestamp tempTime = new Timestamp(time);
                                         entry.setValue(tempTime);
-//                                        Messagebox.show("It is: "  + entry.getValue().toString());
                                         invalidRows.add("Row: " + (lineCount) + ", Error: " + entry.getKey() +
                                                 " field is invalid timestamp.");
-//                                        errorCount++;
                                         errorCheck = true;
                                     }
                                 }

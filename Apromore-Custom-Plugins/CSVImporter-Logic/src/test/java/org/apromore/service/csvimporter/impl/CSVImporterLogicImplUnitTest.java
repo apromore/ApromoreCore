@@ -20,6 +20,9 @@ import java.io.ByteArrayOutputStream;
 /** Test suite for {@link CSVImporterLogicImpl}. */
 public class CSVImporterLogicImplUnitTest {
 
+    /** Accept a 20% error rate as nonfatal. */
+    private static final double MAX_ERROR_FRACTION = 0.2;
+
     /** Expected headers for <code>test1-valid.csv</code>. */
     private List<String> TEST1_EXPECTED_HEADER = Arrays.asList("case id", "activity", "start date", "completion time", " process type");
 
@@ -84,7 +87,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test1-valid.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
 
         // Validate result
         assertNotNull(logModel);
@@ -118,7 +121,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test2-missing-columns.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
 
         // Validate result
         assertNotNull(logModel);
@@ -153,7 +156,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test3-invalid-end-timestamp.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
 
         // Validate result
         assertNotNull(logModel);
@@ -185,7 +188,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test4-invalid-start-timestamp.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
 
         // Validate result
         assertNotNull(logModel);
@@ -218,7 +221,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test5-empty-caseID.csv", "utf-8", ',');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
 
         // Validate result
         assertNotNull(logModel);
@@ -250,7 +253,7 @@ public class CSVImporterLogicImplUnitTest {
         // Perform the test
         LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
         csvReader = newCSVReader("/test6-different-delimiters.csv", "utf-8", ';');
-        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample);
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
 
         // Validate result
         assertNotNull(logModel);
