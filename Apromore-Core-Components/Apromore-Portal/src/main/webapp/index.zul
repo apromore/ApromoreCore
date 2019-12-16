@@ -189,7 +189,7 @@
         <!--</div>-->
 
         <borderlayout vflex="true" sclass="ap-portal-layout">
-            <north height="66px" border="0" sclass="ap-header-region" >
+            <north height="32px" border="0" sclass="ap-header-region" >
                 <div height="66px" hflex="1">
                     <h:div class="ap-header">
                         <h:a href="/"><h:div class="ap-header-logo"></h:div></h:a>
@@ -200,10 +200,9 @@
                             </h:a>
                         </h:div>
                     </h:div>
-                    <Menu id="menucomp" sclass="ap-portal-menu" style="margin-top: 34px;" height="32px" width="100%"  />
                 </div>
             </north>
-            <west id="leftPanel" title="Navigation" size="30%" collapsible="true" splittable="true" sclass="ap-portal-left-section" border="0">
+            <west id="leftPanel" title="Navigation" width="400px" collapsible="true" splittable="true" sclass="ap-portal-left-section" border="0">
                 <borderlayout sclass="ap-left-layout">
                     <!--<north id="leftNorthPanel" sclass="ap-wrapper-search" height="0px" border="0"></north>-->
                     <center id="leftInnerCenterPanel" border="0" vflex="true" hflex="true" style="padding: 10px 3px 10px 10px;">
@@ -216,6 +215,7 @@
             </west>
             <center id="mainPanel" sclass="ap-portal-right-section" vflex="1" border="0">
                 <vlayout vflex="1" sclass="ap-portal-right-content" spacing="0">
+                    <Menu id="menucomp" sclass="ap-portal-menu" height="32px" width="100%"  />
                     <hbox id="pagingandbuttons" sclass="ap-portal-menu-actions" height="32px" width="100%" spacing="0"  >
                         <paging sclass="ap-portal-paging" id="pg" width="140px" style="border: 0" visible="false" />
                         <hbox sclass="ap-portal-action-buttons" id="buttons" align="start" pack="start" width="300px" spacing="0">

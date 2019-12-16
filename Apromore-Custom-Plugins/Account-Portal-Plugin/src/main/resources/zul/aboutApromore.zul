@@ -36,7 +36,7 @@
                             <div>
                                 Apromore Enterprise Edition is licensed under a commercial license.
                                 It uses open-source libraries from Apromore Community Edition, which is licensed under the
-                                <a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank">GNU Lesser General Public License, Version 3.0.</a>
+                                <a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank">GNU Lesser General Public License, Version 3.0</a>.
                                 It also uses third-party libraries, whose open-source licenses are listed
                                 <a href="https://apromore.org/ee-licenses" target="_blank">here</a>.
                             </div>
@@ -44,7 +44,7 @@
                 <space vflex="10"/>
             </tabpanel>
             <tabpanel style="padding:0">
-                <listbox id="pluginInfoListBox" vflex="true" span="true" autopaging="true" mold="paging">
+                <listbox id="pluginInfoListBox" vflex="true" span="true" autopaging="false" mold="default">
                     <listhead sizable="true">
                         <listheader hflex="min" label="Name" sort="auto(name)"/>
                         <listheader hflex="min" label="Version" sort="auto(version)"/>

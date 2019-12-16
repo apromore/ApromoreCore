@@ -28,6 +28,10 @@
     <value>true</value>
   </library-property>
 
+  <library-property>
+    <name>org.zkoss.zk.ui.WebApp.name</name>
+    <value>Apromore</value>
+  </library-property>
 
   <!-- Uncomment if you turn off the caching of resources loaded from
           the class path (aka., class Web resources).

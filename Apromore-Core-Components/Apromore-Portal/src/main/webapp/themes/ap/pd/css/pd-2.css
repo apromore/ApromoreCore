@@ -1,3 +1,5 @@
+@import "viz.css";
+
 body {
     padding: 0;
     margin: 0;
@@ -7,6 +9,12 @@ body {
 .ap-pd-2 {
     padding: 0;
 }
+
+.ap-pd-2,
+.ap-pd-2 .z-window-content {
+    background-color: white;
+}
+
 
 .ap-pd-2 .mainCaption .z-caption-content {
     position: absolute;
@@ -194,10 +202,6 @@ div.ap-pd-options {
     margin: 0 3px 0 5px;
 }
 
-
-.tippy-popper {
-    font-family: var(--ap-font-base);
-}
 
 .ap-pd-stats-duration {
     display: flex;

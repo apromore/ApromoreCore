@@ -23,6 +23,9 @@
     --ap-c-text-minor: var(--ap-c-grey-light-2);
 
     --ap-c-widget: var(--ap-c-oceanic-dark-1);
+    --ap-c-widget-hover: var(--ap-c-oceanic-light-1);
+    --ap-c-widget-active: var(--ap-c-oceanic-light-2);
+
     --ap-c-bg-lighter: #f7f7f7;
     --ap-c-bg-lightest: #f9fcff;
 
@@ -51,6 +54,8 @@
     --ap-c-menu-text-normal: var(--ap-c-grey);
     --ap-c-menu-text-hover: var(--ap-c-grey);
     --ap-c-menu-text-selected: var(--ap-c-oceanic-light-5);
+
+    --ap-c-scroll: var(--ap-c-grey-light-3);
 
     --ap-c-grid-head-bg: var(--ap-c-soft-blue-dark-3);
     --ap-c-column-sep: var(--ap-c-soft-blue-dark-1);

@@ -72,7 +72,7 @@ body {
     display: none;
 }
 
-.ap-dashboard-menu .ap-radio-c input + .z-radio-content {
+.ap-dashboard .ap-radio-c input + .z-radio-content {
     display: block;
     box-sizing: border-box;
     font-size: 14px;
@@ -83,21 +83,21 @@ body {
     border-bottom: 2px solid var(--ap-c-tab-bar-normal);
 }
 
-.ap-dashboard-menu .ap-radio-c input[checked="checked"] + .z-radio-content {
+.ap-dashboard .ap-radio-c input[checked="checked"] + .z-radio-content {
     color: var(--ap-c-tab-text-selected);
     border-bottom: 2px solid var(--ap-c-tab-bar-selected);
 }
 
-.ap-dashboard-menu .ap-radio-c input[checked="checked"] + .z-radio-content .ap-icon {
+.ap-dashboard .ap-radio-c input[checked="checked"] + .z-radio-content .ap-icon {
     filter: var(--ap-c-tab-text-selected-filter);
 }
 
-.ap-dashboard-menu .z-radio:hover .z-radio-content {
+.ap-dashboard .ap-radio-c .z-radio:hover .z-radio-content {
     color: var(--ap-c-tab-text-hover);
 }
 
-.ap-dashboard-menu .z-radio:hover .ap-icon {
-    filter: var(--ap-c-tab-text-hover-filter);
+.ap-dashboard .ap-radio-c .z-radio:hover .ap-icon {
+    filter: var(--ap-c-tab-text-hover-filter) !important;
 }
 
 .ap-slide-menu-c .slider {
@@ -108,6 +108,10 @@ body {
 /*.ap-radio-c input[type="radio"]:checked ~ .z-radio-content .ap-icon-binocular {*/
 /*    color:#09E;*/
 /*}*/
+
+.mySouth-collapsed i {
+    display: none;
+}
 
 .ap-dashboard .ap-slide-menu .bar {
     border-radius: 0;
@@ -188,6 +192,24 @@ body {
     margin: 0;
 }
 
+.myCbxContainer input[type="checkbox"]:checked ~ .z-checkbox-content .icon-log_scale,
+.myCbxContainer input[type="checkbox"]:checked ~ .z-checkbox-content .icon-asc,
+.myCbxContainer input[type="checkbox"]:checked ~ .z-checkbox-content .icon-relative_frequency {
+    color: var(--ap-c-tab-text-selected) !important;
+}
+
+.myCbxContainer input[type="checkbox"]:hover ~ .z-checkbox-content .icon-log_scale,
+.myCbxContainer input[type="checkbox"]:hover ~ .z-checkbox-content .icon-asc,
+.myCbxContainer input[type="checkbox"]:hover ~ .z-checkbox-content .icon-relative_frequency {
+    color: var(--ap-c-tab-text-hover) !important;
+}
+
+.myCbxContainer input[type="checkbox"]:active ~ .z-checkbox-content .icon-log_scale,
+.myCbxContainer input[type="checkbox"]:active ~ .z-checkbox-content .icon-asc,
+.myCbxContainer input[type="checkbox"]:hover ~ .z-checkbox-content .icon-relative_frequency {
+    color: var(--ap-c-tab-text-selected) !important;
+}
+
 .ap-chart-options button i {
     /* copy of ap-icon */
     --icon-height: 26px;
@@ -205,8 +227,8 @@ body {
     padding: 0 !important;
     margin: 0 2px 0 0 !important;
     cursor: pointer;
-    /* */
-    display: block
+    display: block;
+    filter: var(--ap-filter-ico-normal-dark);
 }
 
 .ap-chart-options .z-cell {
@@ -231,7 +253,7 @@ body {
 }
 
 .ap-chart-options .z-cell:hover button i {
-    filter: var(--ap-c-tab-text-hover-filter);
+    filter: var(--ap-c-tab-text-hover-filter) !important;
 }
 
 .icon-variant:before {
@@ -280,11 +302,11 @@ body {
 }
 
 .icon-case_utilisation:before {
-    content: "";
-}
+     content: "";
+ }
 
 .icon-case_utilisation {
-    background-image: url('../../common/img/icons/percent.svg') !important;
+    background-image: url('../../common/img/icons/util-avg.svg') !important;
     width: 26px !important;
 }
 
@@ -303,5 +325,74 @@ body {
 
 .icon-events_overtime {
     background-image: url('../../common/img/icons/chart-bar.svg') !important;
+    width: 26px !important;
+}
+
+.icon-process_time:before {
+    content: "";
+}
+
+.icon-process_time {
+    background-image: url('../../common/img/icons/processing-avg.svg') !important;
+    width: 26px !important;
+}
+
+.icon-range:before {
+    content: "";
+}
+
+.icon-range {
+    background-image: url('../../common/img/icons/duration-range.svg') !important;
+    width: 26px !important;
+}
+
+.icon-median:before {
+    content: "";
+}
+
+.icon-median {
+    background-image: url('../../common/img/icons/duration-median.svg') !important;
+    width: 26px !important;
+}
+
+.icon-average_duration:before {
+    content: "";
+}
+
+.icon-average_duration {
+    background-image: url('../../common/img/icons/duration-avg.svg') !important;
+    width: 26px !important;
+}
+
+/* HACK */
+.ap-chart-options tr:nth-child(5) i.icon-average_duration {
+    background-image: url('../../common/img/icons/hourglass.svg') !important;
+}
+
+.icon-total_duration:before {
+    content: "";
+}
+
+.icon-total_duration {
+    background-image: url('../../common/img/icons/duration-total.svg') !important;
+    width: 26.625px !important;
+}
+
+.icon-wait_time:before {
+    content: "";
+}
+
+.icon-wait_time {
+    background-image: url('../../common/img/icons/waiting-avg.svg') !important;
+    width: 26px !important;
+}
+
+
+.icon-total_duration:before {
+    content: "";
+}
+
+.icon-total_duration {
+    background-image: url('../../common/img/icons/duration-total.svg') !important;
     width: 26px !important;
 }

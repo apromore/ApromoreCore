@@ -125,6 +125,26 @@
     width: 28.5px !important;
 }
 
+.ap-icon-duration-avg {
+    background-image: url('duration-avg.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-duration-median {
+    background-image: url('duration-median.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-duration-range {
+    background-image: url('duration-range.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-duration-total {
+    background-image: url('duration-total.svg') !important;
+    width: 26.625px !important;
+}
+
 .ap-icon-end {
     background-image: url('end.svg') !important;
     width: 26px !important;
@@ -260,6 +280,11 @@
     width: 26px !important;
 }
 
+.ap-icon-processing-avg {
+    background-image: url('processing-avg.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-puzzle {
     background-image: url('puzzle.svg') !important;
     width: 26px !important;
@@ -382,6 +407,16 @@
 
 .ap-icon-user {
     background-image: url('user.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-util-avg {
+    background-image: url('util-avg.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-waiting-avg {
+    background-image: url('waiting-avg.svg') !important;
     width: 26px !important;
 }
 

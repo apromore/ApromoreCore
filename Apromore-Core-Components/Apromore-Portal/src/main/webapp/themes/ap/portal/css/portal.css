@@ -43,6 +43,23 @@
   padding: 4px 7px;
 }
 
+
+.ap-portal-layout .z-west-icon.z-icon-caret-left {
+  left: -6px;
+}
+
+.ap-portal-layout .z-west-icon.z-icon-ellipsis-v {
+  left: -4px;
+}
+
+.ap-portal-layout .z-south-icon.z-icon-caret-down {
+  top: -4px;
+}
+
+.ap-portal-layout .z-south-icon.z-icon-ellipsis-h {
+  top: -4px;
+}
+
 .ap-portal-right-section {
   background-color: var(--ap-c-bg-lighter) !important;
 }
@@ -86,7 +103,7 @@
   background-color: var(--ap-c-menu-bg-normal) !important;
   border: 0;
   box-shadow: var(--ap-box-shadow);
-  padding-top: 2px;
+  padding-left: 8px;
 }
 
 /*
@@ -493,6 +510,16 @@
   animation: ap-about-bg-anim-2 20s ease infinite;
 }
 
+.ap-about-window .z-listbox-body::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+.ap-about-window .z-listbox-body::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: var(--ap-c-scroll);
+}
+
 /* Portal Icons */
 
 .ap-portal [class^="ap-ico-"] > div:first-child {
@@ -548,5 +575,7 @@
   width: 26px !important;
 }
 
-
-
+img[src="img/icon/bpmn-22x22.png"] {
+  background-image: url('../../common/img/icons/bpmn-model.svg') !important;
+  width: 26px !important;
+}

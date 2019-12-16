@@ -213,42 +213,38 @@
         <script defer="true" type="text/javascript"><![CDATA[
 
           function setupFormat () {
-          let all = $('.relativePos > div')
-          for (i = 0; i < all.length; i++) {
-            let hasWindow = all[i].querySelector('input:not([value=""])')
-
-            if (hasWindow) {
-              let closeButton = all[i].querySelector('button')
-              closeButton.addEventListener(
-                'click',
-                (function(i) {
-                  return function () {
-                    $(all[i]).hide()
-                    $(all[i]).css('visibility', 'hidden')
-                  }
-                })(i)
-              )
-              let target = $('.ap-csv-importer-grid-wrapper .z-grid-header .z-auxhead th:nth-child('+ (i + 2) + ')')
-              let btn = $('<button class="ap-csv-importer-format-icon"><i class="z-icon-wrench"></i></button>')
-                .click(
-                  (function(i) {
-                    return function () {
-                      console.log(i, all[i])
-                      $(all[i]).show()
-                      $(all[i]).css('visibility', 'visible')
-                    }
-                  })(i)
-                )
-              target.append(btn)
-            }
+            console.log("setupformat")
+              let all = $('.relativePos > div')
+              for (i = 0; i < all.length; i++) {
+                let hasWindow = all[i].querySelector('input:not([value=""])')
+                if (hasWindow) {
+                  console.log("test", i)
+                  let closeButton = all[i].querySelector('button')
+                  closeButton.addEventListener(
+                    'click',
+                    (function(i) {
+                      return function () {
+                        $(all[i]).hide()
+                        $(all[i]).css('visibility', 'hidden')
+                      }
+                    })(i)
+                  )
+                  let target = $('.ap-csv-importer-grid-wrapper .z-grid-header .z-auxhead th:nth-child('+ (i + 2) + ')')
+                  let btn = $('<button class="ap-csv-importer-format-icon"><i class="z-icon-wrench"></i></button>')
+                    .click(
+                      (function(i) {
+                        return function () {
+                          console.log(i, all[i])
+                          $(all[i]).show()
+                          $(all[i]).css('visibility', 'visible')
+                        }
+                      })(i)
+                    )
+                  target.append(btn)
+                }
+              }
           }
 
-          }
-
-
-          function testxx() {
-            console.log('testxx')
-          }
           setupFormat();
           ]]>
         </script>

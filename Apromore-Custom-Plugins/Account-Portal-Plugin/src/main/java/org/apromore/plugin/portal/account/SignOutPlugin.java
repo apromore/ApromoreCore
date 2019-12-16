@@ -74,7 +74,7 @@ public class SignOutPlugin extends DefaultPortalPlugin {
 
     @Override
     public void execute(PortalContext portalContext) {
-        Messagebox.show("Are you sure you want to logout?", "Prompt", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
+        Messagebox.show("Are you sure you want to logout?", "Logout", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                 new EventListener<Event>() {
                     public void onEvent(Event evt) throws Exception {
                         switch ((Integer) evt.getData()) {

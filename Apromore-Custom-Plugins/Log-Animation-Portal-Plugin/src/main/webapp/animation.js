@@ -26,7 +26,12 @@ var speedRatio;
 
 var timelineOffset = 5
 
-
+var apPalette = [
+    "#84c7e3",
+    "#bb3a50",
+    "#3ac16d",
+    "#f96100"
+]
 
 function switchPlayPause(e) {
     controller.switchPlayPause(e);
@@ -364,7 +369,8 @@ AnimationController = {
             this.logCases[log_index] = [];
             for (var tokenAnimation_index = 0; tokenAnimation_index < log.tokenAnimations.length; tokenAnimation_index++) {
                 var tokenAnimation = log.tokenAnimations[tokenAnimation_index];
-                this.logCases[log_index][tokenAnimation_index] = new LogCase(tokenAnimation, log.color, tokenAnimation.caseId, offsets[log_index]);
+                var color = apPalette[log_index] || log.color;
+                this.logCases[log_index][tokenAnimation_index] = new LogCase(tokenAnimation, color, tokenAnimation.caseId, offsets[log_index]);
             }
         }
 
@@ -440,7 +446,7 @@ AnimationController = {
 
         //Recreate timeline to update date labels
         //$j("#timeline").remove();
-        var timelineE = this.createTimeline();
+        var timelineE = this.createTimeline(jsonServer.timeline.logs.length);
         this.timelineSVG.append(timelineE);
 
         // Add log intervals to timeline: must be after the timeline creation
@@ -454,7 +460,7 @@ AnimationController = {
             logInterval.setAttributeNS(null,"y1",startTopY + 8 + 7 * j + timelineOffset);
             logInterval.setAttributeNS(null,"x2",startTopX + 9 * log.endDatePos);
             logInterval.setAttributeNS(null,"y2",startTopY + 8 + 7 * j  + timelineOffset);
-            logInterval.setAttributeNS(null,"style","stroke: "+log.color +"; stroke-width: 5");
+            logInterval.setAttributeNS(null,"style","stroke: "+ (apPalette[j] || log.color) +"; stroke-width: 5");
             timelineE.insertBefore(logInterval, timelineE.lastChild);
 
             //display date label at the two ends
@@ -829,12 +835,13 @@ AnimationController = {
         pieE.setAttributeNS(null,"id","ap-la-progress-" + logNo);
         pieE.setAttributeNS(null,"class","progress");
 
+        var color = apPalette[logNo - 1] || log.color
         var pathE = document.createElementNS(svgNS,"path");
         pathE.setAttributeNS(null,"d","M " + x + "," + y + " m 0, 0 a 20,20 0 1,0 0.00001,0");
         // pathE.setAttributeNS(null,"fill","#CCCCCC");
-        pathE.setAttributeNS(null,"fill",log.color);
+        pathE.setAttributeNS(null,"fill",color);
         pathE.setAttributeNS(null,"fill-opacity", 0.5);
-        pathE.setAttributeNS(null,"stroke",log.color);
+        pathE.setAttributeNS(null,"stroke", color);
         pathE.setAttributeNS(null,"stroke-width","5");
         pathE.setAttributeNS(null,"stroke-dasharray","0 126 126 0");
         pathE.setAttributeNS(null,"stroke-dashoffset","1");
@@ -884,7 +891,7 @@ AnimationController = {
      *          <animationMotion>
      * Use: this.timelineSlots, this.slotEngineUnit.
      */
-    createTimeline: function() {
+    createTimeline: function(logNum) {
 
         function addTimelineBar(lineX, lineY, lineLen, lineColor, textX, textY, text1, text2, parent) {
             var lineElement = document.createElementNS(svgNS,"line");
@@ -965,7 +972,7 @@ AnimationController = {
         ---------------------------*/
         var indicatorE = document.createElementNS(svgNS,"rect");
         indicatorE.setAttributeNS(null,"fill","#FAF0E6");
-        indicatorE.setAttributeNS(null,"height",lineLen-10);
+        indicatorE.setAttributeNS(null,"height", 8 * logNum + 10);
         indicatorE.setAttributeNS(null,"width","12");
         indicatorE.setAttributeNS(null,"stroke","grey");
         indicatorE.setAttributeNS(null,"rx","2");

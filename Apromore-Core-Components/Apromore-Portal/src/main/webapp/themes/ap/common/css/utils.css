@@ -68,3 +68,13 @@
     border-left: 1px solid white;
     vertical-align: middle;
 }
+
+.ap-forced-scroll .z-listbox-body::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+
+.ap-forced-scroll .z-listbox-body::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: var(--ap-c-scroll);
+}

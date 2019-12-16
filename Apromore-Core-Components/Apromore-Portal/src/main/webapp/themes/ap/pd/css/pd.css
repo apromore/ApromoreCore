@@ -1,8 +1,15 @@
+@import "viz.css";
+
+.ap-pd,
+.ap-pd .z-window-content {
+    background-color: white;
+}
+
 .ap-pd .mainCaption .z-caption-content {
     position: absolute;
     top: 0;
     left: 260px;
-    padding: 5px 0 0 10px;
+    padding: 6px 0 0 10px;
     font-family: var(--ap-font-base);
     font-weight: normal;
     font-size: 14px;
@@ -26,14 +33,34 @@
     height: 30px;
     right: 5px;
     top: 3px;
+    text-align: right;
+}
+
+.ap-pd-options-c .z-groupbox-header .z-caption {
+    background-color: #f7f7f7;
 }
 
 .ap-pd .ap-pd-tools button {
-    float: right;
-}
-
-.ap-pd .ap-pd-tools button {
+    display: inline-block;
     height: 26px;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    width: 30px !important;
+    min-width: 30px !important;
+    position: static !important;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border: none;
+}
+
+.ap-pd-tools .ap-icon {
+    display: inline-block;
+    filter: var(--ap-filter-ico-normal-light);
+}
+
+.ap-pd-tools .ap-icon:hover {
+    background-color: transparent !important;
+    filter: var(--ap-filter-ico-white) !important;
 }
 
 .ap-pd-stats-c {
@@ -64,6 +91,10 @@
     border-radius: 2px;
     background-color: rgba(255, 255, 255, 0.9);
     filter: none;
+}
+
+.ap-pd-log-charts {
+
 }
 
 .ap-pd-keys:hover + .z-html {
