@@ -12,6 +12,13 @@ import org.zkoss.zul.Window;
  */
 public interface LogSample {
 
+    // Constants (TODO: remove these, as they are UI-related)
+
+    final String popupID = "pop_";
+    final String textboxID = "txt_";
+    final String labelID = "lbl_";
+
+
     // Accessors
 
     List<String> getHeader();

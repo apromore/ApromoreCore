@@ -168,7 +168,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                             }
                         }
                         if (rowGTG) {
-                            logData.add(new LogEventModel(line[sample.getHeads().get(caseid)], line[sample.getHeads().get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
+                            logData.add(new LogEventModelImpl(line[sample.getHeads().get(caseid)], line[sample.getHeads().get(activity)], tStamp, startTimestamp, otherTimestamps, resourceCol, others));
                         }
                     } catch (Exception e) {
                         errorMessage = ExceptionUtils.getStackTrace(e);
@@ -198,7 +198,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
             }
 
-            return new LogModel(sortTraces(logData), lineCount, errorCount, invalidRows, errorCheck);
+            return new LogModelImpl(sortTraces(logData), lineCount, errorCount, invalidRows, errorCheck);
 
         } catch (IOException e) {
             e.printStackTrace();

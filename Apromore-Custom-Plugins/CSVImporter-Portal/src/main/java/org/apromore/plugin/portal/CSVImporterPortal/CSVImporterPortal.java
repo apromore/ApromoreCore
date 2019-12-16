@@ -33,7 +33,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
-import org.apromore.service.csvimporter.impl.Constants;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogModel;
@@ -53,7 +52,7 @@ import org.deckfour.xes.model.XLog;
 
 
 @Component("csvImporterPortalPlugin")
-public class CSVImporterPortal implements Constants, FileImporterPlugin {
+public class CSVImporterPortal implements FileImporterPlugin {
     private static char[] supportedSeparators = {',','|',';','\t'};
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterPortal.class);
     private static final double MAX_ERROR_FRACTION = 0.2;  // Accept up to 20% error rate
@@ -291,9 +290,9 @@ public class CSVImporterPortal implements Constants, FileImporterPlugin {
     }
 
     private static void createPopUpTextBox(CSVImporterLogic csvImporterLogic, int colNum, Div popUPBox, Popup helpP, List<String> sampleLine, LogSample sample){
-        for(int i =0; i<= colNum -1; i++){
+        for(int i = 0; i < colNum; i++){
             Window item = new Window();
-            item.setId(popupID+ i);
+            item.setId(LogSample.popupID + i);
             item.setWidth((AttribWidth) + "px");
             item.setMinheight(100);
             item.setClass("p-1");
@@ -314,7 +313,7 @@ public class CSVImporterPortal implements Constants, FileImporterPlugin {
                     replace("visible", "hidden")));
 
             Textbox textbox = new Textbox();
-            textbox.setId(textboxID + i);
+            textbox.setId(LogSample.textboxID + i);
             textbox.setWidth("98%");
             textbox.setPlaceholder("dd-MM-yyyy HH:mm:ss");
             textbox.setPopup(helpP);
@@ -326,13 +325,13 @@ public class CSVImporterPortal implements Constants, FileImporterPlugin {
                 }
                 if(!event.getValue().isEmpty()){
                     sample.tryParsing(event.getValue(),
-                                      Integer.parseInt(textbox.getId().replace(textboxID,"")),
+                                      Integer.parseInt(textbox.getId().replace(LogSample.textboxID,"")),
                                       sampleLine,
                                       sample);
                 }
             });
             Label check_lbl = new Label();
-            check_lbl.setId(labelID + i);
+            check_lbl.setId(LogSample.labelID + i);
             item.appendChild(check_lbl);
             item.appendChild(hidelink);
             item.appendChild(textbox);
