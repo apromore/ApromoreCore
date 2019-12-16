@@ -63,9 +63,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
     private static final Parse parse = new Parse();
 
     private Div popUPBox;
-    private String popupID;
-    private String textboxID;
-    private String labelID;
     /**
      * Prepare xes model.
      * <p>
@@ -624,17 +621,5 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
     public void setPopUPBox(Div popUPBox) {
         this.popUPBox = popUPBox;
-    }
-
-    public void setPopupID(String popupID) {
-        this.popupID = popupID;
-    }
-
-    public void setTextboxID(String textboxID) {
-        this.textboxID = textboxID;
-    }
-
-    public void setLabelID(String labelID) {
-        this.labelID = labelID;
     }
 }

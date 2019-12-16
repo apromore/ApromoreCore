@@ -33,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apromore.plugin.portal.FileImporterPlugin;
 import org.apromore.plugin.portal.PortalContext;
 import org.apromore.service.EventLogService;
+import org.apromore.service.csvimporter.Constants;
 import org.apromore.service.csvimporter.CSVImporterLogic;
 import org.apromore.service.csvimporter.InvalidCSVException;
 import org.apromore.service.csvimporter.LogModel;
@@ -52,7 +53,7 @@ import org.deckfour.xes.model.XLog;
 
 
 @Component("csvImporterPortalPlugin")
-public class CSVImporterPortal implements FileImporterPlugin {
+public class CSVImporterPortal implements Constants, FileImporterPlugin {
     private static char[] supportedSeparators = {',','|',';','\t'};
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterPortal.class);
 
@@ -67,10 +68,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
     public void setEventLogService(EventLogService newEventLogService) {
         this.eventLogService = newEventLogService;
     }
-
-    private static String popupID = "pop_";
-    private static String textboxID = "txt_";
-    private static String labelID = "lbl_";
 
     private static Integer AttribWidth = 150;
     private static Integer IndexColumnWidth = 50;
@@ -344,9 +341,6 @@ public class CSVImporterPortal implements FileImporterPlugin {
         popUPBox.clone();
 
         csvImporterLogic.setPopUPBox(popUPBox);
-        csvImporterLogic.setPopupID(popupID);
-        csvImporterLogic.setTextboxID(textboxID);
-        csvImporterLogic.setLabelID(labelID);
     }
 
 

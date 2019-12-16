@@ -26,9 +26,6 @@ public interface CSVImporterLogic {
     void tryParsing(String format, int colPos, List<String> sampleLine, LogSample sample);
     void openPopUp(LogSample sample);
     void setPopUPBox(Div popUPBox);
-    void setPopupID(String popupID);
-    void setTextboxID(String textboxID);
-    void setLabelID(String labelID);
 
     // Business logic methods
 

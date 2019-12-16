@@ -14,4 +14,8 @@ public interface Constants {
     final String[] resourceValues  = {"resource", "agent", "employee", "group"};
     final String[] timestampValues = {"timestamp", "end date", "complete timestamp", "time:timestamp", "completion time"};
     final String[] StartTsValues   = {"start date", "start timestamp", "start time"};
+
+    final String popupID = "pop_";
+    final String textboxID = "txt_";
+    final String labelID = "lbl_";
 }
