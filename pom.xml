@@ -2274,29 +2274,4 @@
             </plugin>
         </plugins>
     </reporting>
-
-    <profiles>
-        <!-- The following profile activates when the ApromoreEE submodule is present.
-             It additionally requires a license for the ZK Enterprise Edition libraries. -->
-        <profile>
-            <id>enterprise</id>
-            <activation>
-                <file>
-                    <exists>Apromore-Enterprise-Plugins/pom.xml</exists>
-                </file>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>ZK EE</id>
-                    <url>https://maven.zkoss.org/repo/zk/ee</url>
-                </repository>
-            </repositories>
-            <modules>
-                <module>Apromore-Enterprise-Plugins</module>
-                <module>Apromore-OSGI-Bundles/zkcharts-osgi</module>
-                <!-- <module>Apromore-OSGI-Bundles/zkthemepack-osgi</module> -->
-            </modules>
-        </profile>
-    </profiles>
-
 </project>
