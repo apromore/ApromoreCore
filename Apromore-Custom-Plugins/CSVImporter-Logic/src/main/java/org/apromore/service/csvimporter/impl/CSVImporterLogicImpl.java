@@ -189,11 +189,12 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                 String notificationMessage = "Detected more than " + errorAcceptance * 100 + "% of the log with errors. Please make sure input file is a valid CSV file. \n" +
                         "\n Invalid rows: \n";
 
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < Math.min(5, invalidRows.size()); i++) {
                     notificationMessage = notificationMessage + invalidRows.get(i) + "\n";
                 }
                 LOGGER.error(errorMessage);
-                throw new InvalidCSVException(notificationMessage, invalidRows);
+
+//                throw new InvalidCSVException(notificationMessage, invalidRows);
 
             }
 

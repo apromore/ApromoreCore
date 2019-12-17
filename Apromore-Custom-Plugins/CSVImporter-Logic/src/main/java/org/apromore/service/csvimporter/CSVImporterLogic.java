@@ -36,4 +36,5 @@ public interface CSVImporterLogic {
      * @throws IOException if <var>reader</var> cannot read the CSV data
      */
     LogModel prepareXesModel(CSVReader reader, LogSample sample, double errorAcceptance) throws InvalidCSVException, IOException;
+
 }

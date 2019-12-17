@@ -6,6 +6,7 @@ import com.opencsv.enums.CSVReaderNullFieldIndicator;;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apromore.service.csvimporter.*;
@@ -319,6 +320,40 @@ public class CSVImporterLogicImplUnitTest {
         assertEquals(3, logModel.getRows().size());
         assertEquals(3, logModel.getErrorCount());
         assertEquals(3, logModel.getInvalidRows().size());
+
+    }
+
+
+    /** Test {@link CSVImporterLogic.prepareXesModel} against an invalid CSV log <code>test2-missing-columns.csv</code>. */
+    @Test
+    public void testPrepareXesModel_test9_differentiate_dates() throws Exception {
+
+        System.out.println("\n************************************\ntest9 - Differentiate dates");
+        ArrayList<String> dateFormats = new ArrayList();
+        String expectedFormat = null;
+        // Set up inputs and expected outputs
+        CSVReader csvReader = newCSVReader("/test9-differentiate-dates.csv", "utf-8", ',');
+//        String expectedXES = new String(ByteStreams.toByteArray(CSVImporterLogicImplUnitTest.class.getResourceAsStream("/test7-expected.xes")), Charset.forName("utf-8"));
+
+        // Perform the test
+        LogSample sample = csvImporterLogic.sampleCSV(csvReader, 100);
+        csvReader = newCSVReader("/test9-differentiate-dates.csv", "utf-8", ',');
+        LogModel logModel = csvImporterLogic.prepareXesModel(csvReader, sample, MAX_ERROR_FRACTION);
+
+        assertNotNull(logModel);
+
+        for(int i =0; i < logModel.getRows().size(); i++) {
+            dateFormats.add(logModel.getRows().get(i).getStartTimestamp().toString());
+        }
+        expectedFormat = Parse.determineFormatForArray(dateFormats, 1);
+        System.out.println("\nTHIS IS: " + expectedFormat + "\n");
+
+        System.out.println("\nA is : " + dateFormats.toString());
+
+        assertEquals("yyyy-dd-MM HH:mm:ss.SSS", expectedFormat);
+        assertEquals(13, logModel.getLineCount());
+        assertEquals(13, logModel.getRows().size());
+
 
     }
 

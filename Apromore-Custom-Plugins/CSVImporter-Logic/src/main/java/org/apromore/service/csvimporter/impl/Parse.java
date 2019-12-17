@@ -23,13 +23,10 @@ package org.apromore.service.csvimporter.impl;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.logging.Logger;
 
+import org.apromore.service.csvimporter.InvalidCSVException;
 import org.zkoss.zul.Messagebox;
 
 
@@ -85,14 +82,16 @@ public class Parse {
         put("^\\d{1,2}.\\d{1,2}.\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "dd.MM.yy HH:mm"); //19.3.10 8:05
         put("^\\d{1,2}.\\d{1,2}.\\d{2}\\s\\d{1,2}:\\d{1,2}$", "MM.dd.yy HH:mm"); //9.13.10 8:05
         put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy-MM-dd HH:mm:ss.SSS");//2011-11-11 03:05:12.522
+        put("^\\d{4}-\\d{2}-\\d{1,2}\\s\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy-dd-MM HH:mm:ss.SSS");//2011-11-11 03:05:12.522
         put("^\\d{4}-\\d{1,2}-\\d{1,2}[a-zA-Z]\\d{1,2}:\\d{2}:\\d{2}.\\d{3}[a-zA-Z]$", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");//2011-11-11T03:05:12.522Z
         put("^\\d{4}-\\d{1,2}-\\d{1,2}[a-zA-Z]\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy-MM-dd'T'HH:mm:ss.SSS");//2011-11-11T03:05:12.522
+        put("^\\d{4}-\\d{2}-\\d{1,2}[a-zA-Z]\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy-dd-MM'T'HH:mm:ss.SSS");//2011-11-11T03:05:12.522
         put("^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{2}:\\d{2}$", "yyyy-MM-dd'T'HH:mm:ss");//2011-11-11T03:05:12.522
         put("^\\d{4}/\\d{1,2}/\\d{1,2}T\\d{1,2}:\\d{2}:\\d{2}.\\d{3}$", "yyyy/MM/dd'T'HH:mm:ss.SSS");//2011/11/11T03:05:12.522
         put("^\\d{4}/\\d{1,2}/\\d{1,2}T\\d{1,2}:\\d{2}:\\d{2}$", "yyyy/MM/dd'T'HH:mm:ss");//2011/11/11T03:05:12.522
 
     }};
-	
+
 	public static Timestamp parseTimestamp(String theDate, String theFormate) {
 //	    Messagebox.show("Date: " + theDate + " Format: " + theFormate);
         try {
@@ -109,7 +108,7 @@ public class Parse {
 	}
 	
 	
-    public String determineDateFormat(String dateString) {
+    public static String determineDateFormat(String dateString) {
         for (String regexp : DATE_FORMAT_REGEXPS.keySet()) {
 //            LOGGER.info("Checking: " + dateString.toLowerCase() + " -- to -- : " + DATE_FORMAT_REGEXPS.get(regexp));
 //            LOGGER.severe("Trying: " + DATE_FORMAT_REGEXPS.get(regexp) + "want to match: " + dateString);
@@ -124,12 +123,49 @@ public class Parse {
                         return DATE_FORMAT_REGEXPS.get(regexp);
 
                 } catch (ParseException e) {
-                    LOGGER.severe(e.getMessage() + "Tried: " + DATE_FORMAT_REGEXPS.get(regexp));
+//                    LOGGER.severe(e.getMessage() + "Tried: " + DATE_FORMAT_REGEXPS.get(regexp));
                 }
 
             }
         }
         return null; // Unknown format.
+    }
+
+
+    public static String determineFormatForArray(ArrayList<String> dateString, int IncValue) {
+	    String currentFormat = null;
+	    for(int i=0; i < dateString.size(); i+=IncValue) {
+            String format = determineDateFormat(dateString.get(i)); // could be dd.MM.yyyy or MM.dd.yyyy
+            Timestamp validTS = parseTimestamp(dateString.get(i), format);
+//            System.out.println("format is: " + format);
+            if (validTS != null) {
+                currentFormat = format;
+                try {
+                    if (currentFormat != null) {
+                        // determine which one is right which one is wrong
+                        // hint: use sets to store all the possible formats, then parse them again.
+
+                        if (currentFormat != format) {
+                            Timestamp validTS2 = parseTimestamp(dateString.get(i - IncValue), currentFormat);
+//                                System.out.println("current is: " + currentFormat);
+                            if (validTS.getYear() > 0) {
+                                currentFormat = format;
+                            } else {
+                                continue;
+                            }
+                        }
+                    } else {
+                        currentFormat = format;
+                    }
+//                    return currentFormat;
+                } catch (Exception e) {
+                    // automatic parse might be inaccurate.
+                    e.printStackTrace();
+                    return currentFormat;
+                }
+            }
+        }
+        return currentFormat;
     }
 
 }

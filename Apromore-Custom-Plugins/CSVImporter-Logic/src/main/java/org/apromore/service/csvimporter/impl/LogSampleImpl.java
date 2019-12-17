@@ -164,6 +164,9 @@ class LogSampleImpl implements LogSample, Constants {
                     }
                     if (getPos(timestampValues, getHeader().get(j).toLowerCase())) {
                         // if its timestamp field
+
+
+                        //TODO this needs to use determineFormatForArray method from Parse.java
                         String format = parse.determineDateFormat((newLine.get(j))); // dd.MM.yyyy //MM.dd.yyyy
                         Timestamp validTS = Parse.parseTimestamp(newLine.get(j), format);
                         if (validTS != null) {
