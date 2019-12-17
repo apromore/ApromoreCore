@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+    apromore:
+        build: .
+        container_name: apromore
+        image: apromore/apromore:7.11
+        depends_on:
+            - apromoresql   
+        ports:
+            - "9000:9000"
+            
+    apromoresql:
+        container_name: apromoresql
+        image: mysql:5.7
+        command: --max_allowed_packet=2G
+        environment:
+            MYSQL_ROOT_PASSWORD: MAcri
+            MYSQL_DATABASE: apromore
+            MYSQL_USER: apromore
+            MYSQL_PASSWORD: MAcri
+        volumes:
+            - "./Supplements/database/mysql-data:/var/lib/mysql"
+        ports:
+            - "3306"
