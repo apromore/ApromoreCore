@@ -272,9 +272,10 @@ public class CSVImporterPortal implements FileImporterPlugin {
             return sample;
 
         } catch (InvalidCSVException | IOException | NullPointerException e ) {
-//            e.printStackTrace();
+            e.printStackTrace();
             Messagebox.show("Failed to display the log. Try different encoding.",
                     "Error", Messagebox.OK,Messagebox.ERROR);
+            window.detach();
             return null;
         }
     }
