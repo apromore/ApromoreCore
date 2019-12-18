@@ -135,7 +135,45 @@
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
     </fileset>
 
+    <fileset id="pickupRepoNix" dir=".">
+        <include name="Apromore-Assembly/Manager-Assembly/src/main/resources/100-manager.plan"/>
+        <include name="Apromore-Assembly/Portal-Assembly/src/main/resources/101-portal.plan"/>
+        <include name="Apromore-Assembly/Filestore-Assembly/src/main/resources/102-filestore.plan"/>
+        <include name="Apromore-Assembly/Editor-Assembly/src/main/resources/104-editor.plan"/>
+        
+        <include name="Apromore-Assembly/Custom-Plugins/custom-plugins-ce.plan"/>
 
+        <include name="Apromore-Custom-Plugins/Account-Portal-Plugin/target/account-portal-plugin-1.0.jar"/>
+
+        <include name="Apromore-Custom-Plugins/BIMP-Annotation-Logic/target/bimp-annotation-logic-1.0.jar"/>
+
+        <include name="Apromore-Custom-Plugins/BPMNDiagramImporter-Logic/target/bpmndiagramimporter-logic-1.1.jar"/>
+
+        <include name="Apromore-Custom-Plugins/Compare-Logic/target/compare-logic-1.1.jar"/>
+
+        <include name="Apromore-Custom-Plugins/CSVImporter-Logic/target/csvimporter-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/CSVImporter-Portal/target/csvimporter-portal-1.0.jar"/>
+
+        <include name="Apromore-Custom-Plugins/Log-Animation-Logic/target/log-animation-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin/target/log-animation-portal-plugin-1.0.war"/>
+		<include name="Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2/target/log-animation-portal-plugin2-1.0.war"/>
+
+        <include name="Apromore-Custom-Plugins/PerformanceMiner-Logic/target/perfmining-logic-1.0.jar"/>
+        <include name="Apromore-Custom-Plugins/PerformanceMiner-Portal-Plugin/target/perfmining-portal-plugin-1.0.jar"/>
+
+        <include name="Apromore-Custom-Plugins/ProDrift-Logic/target/prodrift-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/ProDrift-Portal-Plugin/target/prodrift-portal-plugin-1.1.jar"/>
+
+        <include name="Apromore-Custom-Plugins/StageMining-Logic/target/stagemining-logic-1.1.jar"/>
+        <include name="Apromore-Custom-Plugins/StageMining-Portal-Plugin/target/stagemining-portal-plugin-1.1.jar"/>
+		
+		<include name="Apromore-Custom-Plugins/Process-Discoverer-Logic/target/process-discoverer-logic-2.0.0.jar"/>
+		<include name="Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin/target/process-discoverer-portal-plugin-2.0.0.war"/>
+
+        <include name="Apromore-Core-Components/Apromore-BPMNEditor/target/apromore-bpmneditor-1.1.war"/>
+        <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
+
+    </fileset>
     <fileset id="plans-nix" dir="Apromore-nix/plans">
         <include name="account.plan"/>
         <include name="annotations.plan"/>
@@ -210,7 +248,7 @@
         </copy>
 
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
-            <fileset refid="pickupRepo"/>
+            <fileset refid="pickupRepoNix"/>
         </copy>
 
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
@@ -237,8 +275,6 @@
             </fileset>
         </copy>
 
-        <!-- PQL indexing bot -->
-        <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
     </target>
 
 </project>

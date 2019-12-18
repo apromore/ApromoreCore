@@ -1,4 +1,4 @@
-<plan name="org.apromore.root-enterprise" version="1.1" scoped="false" atomic="false" provisioning="auto"
+<plan name="org.apromore.root-nix" version="1.1" scoped="false" atomic="false" provisioning="auto"
         xmlns="http://www.eclipse.org/virgo/schema/plan"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
