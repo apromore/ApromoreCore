@@ -134,4 +134,111 @@
         <include name="Apromore-Custom-Plugins/Compare-Portal-Plugin2/target/compareBP-portal-plugin2-1.1.war"/>
         <include name="Apromore-Custom-Plugins/BIMP-Editor-Plugin2/target/bimp-editor-plugin2-1.0.war"/>
     </fileset>
+
+
+    <fileset id="plans-nix" dir="Apromore-nix/plans">
+        <include name="account.plan"/>
+        <include name="annotations.plan"/>
+        <include name="bpmneditor.plan"/>
+        <include name="csvimporter.plan"/>
+        <include name="plugin-canonisers.plan"/>
+        <include name="plugin-compare.plan"/>
+        <include name="plugin-log-animation.plan"/>
+        <include name="plugin-log-visualizer.plan"/>
+        <include name="plugin-merge.plan"/>
+        <include name="plugin-perfmining.plan"/>
+        <include name="plugin-process-discoverer.plan"/>
+        <include name="plugin-prodrift.plan"/>
+        <include name="plugin-similaritysearch.plan"/>
+        <include name="plugin-stagemining.plan"/>
+    </fileset>
+
+    <target name="start-virgo-nix" depends="deploy-virgo-nix">
+        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="startup.bat"/>
+            <arg line="-clean"/>
+        </exec>
+        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
+            <arg line="-clean"/>
+        </exec>
+    </target>
+
+    <target name="deploy-virgo-nix" depends="clean-virgo, setup-virgo, copy-virgo-nix"/>
+
+    <target name="copy-virgo-nix" depends="clean-virgo, create-repository-dirs">
+
+        <copy file="Apromore-nix/plans/apromore-nix.plan" tofile="${dir-virgo}/pickup/apromore-nix.plan" flatten="true" overwrite="true"/>
+
+        <copy file="${dir-sups}/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
+        <copy file="${dir-sups}/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
+        <copy file="${dir-sups}/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
+        <copy file="${dir-sups}/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
+
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset dir="${dir-osgi}">
+                <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
+                <include name="**/target/bpmntk-osgi-1.1.jar"/>
+                <include name="**/target/similaritysearch-osgi-1.1.jar"/>
+                <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
+                <include name="**/target/apm-verification-osgi-1.1.jar"/>
+                <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
+                <include name="**/target/prom-pnml-osgi-1.1.jar"/>
+                <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
+                <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
+                <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
+                <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
+            </fileset>
+
+            <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
+            <fileset dir="${dir-sups}/">
+                <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
+            </fileset>
+
+            <fileset refid="plans-nix"/>
+        </copy>
+
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset refid="usrRepo"/>
+        </copy>
+
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true" filtering="true">
+            <fileset refid="usrRepoText"/>
+        </copy>
+
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset refid="pickupRepo"/>
+        </copy>
+
+        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
+            <fileset dir="${dir-annotation}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-canoniser}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-logic-plugins}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+            </fileset>
+            <fileset dir="${dir-portal-plugins}">
+                <include name="**/target/*.jar"/>
+                <exclude name="**/target/*-sources.jar"/>
+                <exclude name="**/core/**/*.jar"/>
+                <exclude name="sample/target/*.jar"/>
+            </fileset>
+        </copy>
+
+        <!-- PQL indexing bot -->
+        <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
+    </target>
+
 </project>

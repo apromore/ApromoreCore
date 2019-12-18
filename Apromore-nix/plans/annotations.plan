@@ -1,0 +1,13 @@
+<plan name="org.apromore.annotations" version="1.0" scoped="false" atomic="true" provisioning="auto"
+        xmlns="http://www.eclipse.org/virgo/schema/plan"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.eclipse.org/virgo/schema/plan http://www.eclipse.org/virgo/schema/plan/eclipse-virgo-plan.xsd">
+
+    <artifact type="configuration" name="site" version="0" />
+    <artifact type="bundle" name="org.apromore.plugin.annotation-bpmn" version="[1.1.0, 2)" />
+    <artifact type="bundle" name="org.apromore.plugin.annotation-epml" version="[1.1.0, 2)" />
+    <artifact type="bundle" name="org.apromore.plugin.annotation-pnml" version="[1.1.0, 2)" />
+    <artifact type="bundle" name="org.apromore.plugin.annotation-yawl" version="[1.1.0, 2)" />
+    <artifact type="bundle" name="org.apromore.plugin.annotation-xpdl" version="[1.1.0, 2)" />
+
+</plan>
