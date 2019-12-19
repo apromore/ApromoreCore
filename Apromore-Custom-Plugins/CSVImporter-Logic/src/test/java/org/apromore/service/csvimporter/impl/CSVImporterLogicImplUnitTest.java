@@ -288,7 +288,7 @@ public class CSVImporterLogicImplUnitTest {
         assertEquals(2, logModel.getInvalidRows().size());
 
 
-        System.out.println("Error is: " + logModel.getInvalidRows().get(0));
+//        System.out.println("Error is: " + logModel.getInvalidRows().get(0));
 
         assertEquals("Row: 3, Warning: Start time stamp field is invalid. Copying end timestamp field into start timestamp",
                 logModel.getInvalidRows().get(1));

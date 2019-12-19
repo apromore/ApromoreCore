@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVImporterLogicImpl.class);
-    private static final Parse parse = new Parse();
 
     @Override
     public LogSample sampleCSV(CSVReader reader, int sampleSize) throws InvalidCSVException, IOException {
@@ -100,18 +99,22 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
                 lineCount++;
                 if (line != null && line.length > 2) {
                     try {
-                        otherTimestamps = new HashMap<String, Timestamp>();
-                        others = new HashMap<String, String>();
+                        otherTimestamps = new HashMap<>();
+                        others = new HashMap<>();
 
                         for (int p = 0; p <= line.length - 1; p++) {
                             if (sample.getOtherTimeStampsPos().get(p) != null) {
-                                otherTimestamps.put(header[p], parse.parseTimestamp(line[p], sample.getOtherTimeStampsPos().get(p)));
-                            } else if (p != sample.getHeads().get(caseid) && p != sample.getHeads().get(activity) && p != sample.getHeads().get(timestamp) && p != sample.getHeads().get(tsStart) && p != sample.getHeads().get(resource) && (sample.getIgnoredPos().isEmpty() || !sample.getIgnoredPos().contains(p))) {
+                                otherTimestamps.put(header[p], Parse.parseTimestamp(line[p], sample.getOtherTimeStampsPos().get(p)));
+                            } else if (p != sample.getHeads().get(caseid) && p != sample.getHeads().get(activity) &&
+                                    p != sample.getHeads().get(timestamp) && p != sample.getHeads().get(tsStart) &&
+                                    p != sample.getHeads().get(resource) && (sample.getIgnoredPos().isEmpty() ||
+                                    !sample.getIgnoredPos().contains(p))) {
                                 others.put(header[p], line[p]);
 
                                 if (header.length != line.length) {
-                                    invalidRows.add("Row: " + (lineCount) + ", Error: number of columns does not match number of headers. "
-                                            + "Number of headers: " + header.length + ", Number of columns: " + line.length + ".\n");
+                                    invalidRows.add("Row: " + (lineCount) + ", Error: number of columns does not match" +
+                                            " number of headers. " + "Number of headers: " + header.length + "," +
+                                            " Number of columns: " + line.length + ".\n");
                                     errorCount++;
                                     rowGTG = false;
                                     break;
@@ -120,10 +123,10 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
 
                             }
                         }
-                        Timestamp tStamp = parse.parseTimestamp(line[sample.getHeads().get(timestamp)], sample.getTimestampFormat());
+                        Timestamp tStamp = Parse.parseTimestamp(line[sample.getHeads().get(timestamp)], sample.getTimestampFormat());
 
                         if (sample.getHeads().get(tsStart) != -1) {
-                            startTimestamp = parse.parseTimestamp(line[sample.getHeads().get(tsStart)], sample.getStartTsFormat());
+                            startTimestamp = Parse.parseTimestamp(line[sample.getHeads().get(tsStart)], sample.getStartTsFormat());
                             if (startTimestamp == null) {
                                 if (tStamp != null) {
                                     startTimestamp = tStamp;
@@ -206,20 +209,6 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         }
     }
 
-    /**
-     * Gets the pos.
-     *
-     * @param col  the col: array which has possible names for each of the mandatory fields.
-     * @param elem the elem: one item of the CSV line array
-     * @return the pos: boolean value confirming if the elem is the required element.
-     */
-    private static boolean getPos(String[] col, String elem) {
-        if (col == timestampValues || col == StartTsValues) {
-            return Arrays.stream(col).anyMatch(elem.toLowerCase()::equals);
-        } else {
-            return Arrays.stream(col).anyMatch(elem.toLowerCase()::contains);
-        }
-    }
 
     /**
      * Check fields.
@@ -236,7 +225,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         for (int f = 0; f <= fieldsToCheck.length - 1; f++) {
             if (posMap.get(fieldsToCheck[f]) == -1) {
                 String mess = "No " + fieldsToCheck[f] + " defined!";
-                importMessage = (importMessage.length() == 0 ? importMessage.append(mess) : importMessage.append(", " + mess));
+                importMessage = (importMessage.length() == 0 ? importMessage.append(mess) : importMessage.append(", ").append(mess));
             }
         }
 

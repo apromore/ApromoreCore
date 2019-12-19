@@ -219,7 +219,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 newColumn.setLabel(sample.getHeader().get(i));
                 newColumn.setAlign("center");
                 myGrid.getColumns().appendChild(newColumn);
-                myGrid.getColumns().setSizable(true);  // TODO: this looks fishy
+//                myGrid.getColumns().setSizable(true);  // TODO: this looks fishy
             }
 
             Popup helpP = (Popup) window.getFellow("popUpHelp");
@@ -233,7 +233,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 sample.setOtherTimestamps();
             }
 
-            createPopUpTextBox(csvImporterLogic, sample.getHeader().size(), popUPBox, helpP, sample.getLines().get(0), sample);
+            createPopUpTextBox(sample.getHeader().size(), popUPBox, helpP, sample.getLines().get(0), sample);
             sample.openPopUp();
 
             Button setOtherAll = (Button) window.getFellow("setOtherAll");
@@ -280,7 +280,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
         }
     }
 
-    private static void createPopUpTextBox(CSVImporterLogic csvImporterLogic, int colNum, Div popUPBox, Popup helpP, List<String> sampleLine, LogSample sample){
+    private static void createPopUpTextBox(int colNum, Div popUPBox, Popup helpP, List<String> sampleLine, LogSample sample){
         for(int i = 0; i < colNum; i++){
             Window item = new Window();
             item.setId(LogSample.popupID + i);
@@ -371,7 +371,7 @@ public class CSVImporterPortal implements FileImporterPlugin {
                 "ISO-2022-CN (Chinese)"
             }));
 
-            setEncoding.addEventListener("onSelect", event -> { sample = displayCSVContent(csvImporterLogic, media, window); });
+            setEncoding.addEventListener("onSelect", event -> sample = displayCSVContent(csvImporterLogic, media, window));
 
             String[] allowedExtensions = {"csv", "xls", "xlsx"};
             if (!Arrays.asList(allowedExtensions).contains(media.getFormat())) {
