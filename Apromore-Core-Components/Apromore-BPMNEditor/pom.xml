@@ -59,7 +59,7 @@
                     <aggregations>
                         <aggregation>
                             <insertNewLine>false</insertNewLine>
-                            <output>${basedir}/target/Apromore-BPMNEditor-${project.version}/editor/apromore-editor.js</output>
+                            <output>${basedir}/target/apromore-bpmneditor-${project.version}/editor/apromore-editor.js</output>
                             <inputDir>${basedir}/src/main</inputDir>
                             <includes>
                                 <include>../../target/classes/site.properties.js</include>
@@ -79,8 +79,8 @@
                     </includes>
                     <jswarn>false</jswarn>
                     <nosuffix>false</nosuffix>
-                    <sourceDirectory>${basedir}/target/Apromore-BPMNEditor-${project.version}/editor</sourceDirectory>
-                    <outputDirectory>${basedir}/target/Apromore-BPMNEditor-${project.version}/editor</outputDirectory>
+                    <sourceDirectory>${basedir}/target/apromore-bpmneditor-${project.version}/editor</sourceDirectory>
+                    <outputDirectory>${basedir}/target/apromore-bpmneditor-${project.version}/editor</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -137,6 +137,7 @@
                     </archive>
                 </configuration>
             </plugin>
+            
         </plugins>
         
         <resources>
