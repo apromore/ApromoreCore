@@ -25,36 +25,34 @@
         Supports deployment of Apromore to Eclipse Virgo.
     </description>
 
+    <!-- This file isn't intended to be directly invoked; it's expected to be imported by other projects.
+         The importing project must set the ${dir} property to be the directory of the ApromoreCore checkout. -->
+
     <!-- Folders used to build and deploy dependencies for Apromore. -->
-    <property name="dir" location="${basedir}"/>
-    <property name="dir-sups" location="${basedir}/Supplements"/>
+    <!-- <property name="dir" location="${basedir}"/> -->
+    <property name="dir-sups" location="${dir}/Supplements"/>
     <property name="dir-sups-lib" location="${dir-sups}/libraries"/>
-    <property name="dir-extras" location="${basedir}/Apromore-Extras"/>
+    <property name="dir-extras" location="${dir}/Apromore-Extras"/>
     <property name="dir-extras-build-tools" location="${dir-extras}/Build-Tools"/>
     <property name="dir-extras-test-tools" location="${dir-extras}/Test-Tools"/>
 
     <!--  URL of the automatically downloaded and installed Eclipse Virgo -->
     <property name="virgo-url" value="https://github.com/apromore/ApromoreDev/blob/master/software/virgo-tomcat-server-3.6.4.RELEASE.zip?raw=true"/>
-    <property name="dir-deployment" location="${basedir}/Apromore-Assembly"/>
+    <property name="dir-deployment" location="${dir}/Apromore-Assembly"/>
     <property name="dir-virgo" location="${dir-deployment}/virgo-tomcat-server-3.6.4.RELEASE"/>
 
     <!-- Locations of all the plugins. as they should be separate to the Web App PAR. -->
-    <property name="dir-plugins" location="${basedir}/Apromore-Plugins/"/>
-    <property name="dir-annotation" location="${basedir}/Apromore-Plugins/plugin-annotation/"/>
-    <property name="dir-canoniser" location="${basedir}/Apromore-Plugins/plugin-canoniser/"/>
-    <property name="dir-editor-plugins" location="${basedir}/Apromore-Plugins/plugin-editor/"/>
-    <property name="dir-logic-plugins" location="${basedir}/Apromore-Plugins/plugin-logic/"/>
-    <property name="dir-portal-plugins" location="${basedir}/Apromore-Plugins/plugin-portal/"/>
-    <property name="dir-portal-templates" location="${basedir}/Apromore-Plugins/plugin-templates/"/>
-    <property name="dir-deploy" location="${basedir}/Apromore-Plugins/plugin-deployment/"/>
-    <property name="dir-osgi" location="${basedir}/Apromore-OSGI-Bundles/"/>
+    <property name="dir-plugins" location="${dir}/Apromore-Plugins/"/>
+    <property name="dir-annotation" location="${dir}/Apromore-Plugins/plugin-annotation/"/>
+    <property name="dir-canoniser" location="${dir}/Apromore-Plugins/plugin-canoniser/"/>
+    <property name="dir-editor-plugins" location="${dir}/Apromore-Plugins/plugin-editor/"/>
+    <property name="dir-logic-plugins" location="${dir}/Apromore-Plugins/plugin-logic/"/>
+    <property name="dir-portal-plugins" location="${dir}/Apromore-Plugins/plugin-portal/"/>
+    <property name="dir-portal-templates" location="${dir}/Apromore-Plugins/plugin-templates/"/>
+    <property name="dir-deploy" location="${dir}/Apromore-Plugins/plugin-deployment/"/>
+    <property name="dir-osgi" location="${dir}/Apromore-OSGI-Bundles/"/>
 
-    <import file="build-community.xml" as="community"/>
-    <import file="Apromore-Enterprise-Plugins/build-demo.xml" as="demo" optional="true"/>
-    <import file="Apromore-Enterprise-Plugins/build-enterprise.xml" as="enterprise" optional="true"/>
-    <import file="build-student.xml" as="student"/>
-
-    <fileset id="usrRepo" dir=".">
+    <fileset id="usrRepo" dir="${dir}">
         <include name="Apromore-Assembly/**/repository/usr/*.jar"/>
         <include name="Apromore-Assembly/**/repository/usr/*.war"/>
         <include name="git.properties"/>
@@ -71,7 +69,7 @@
         <include name="Apromore-Custom-Plugins/Log-Filter-Portal-Plugin/target/log-filter-portal-plugin-1.0.0.jar"/>
     </fileset>
 
-    <fileset id="usrRepoText" dir=".">
+    <fileset id="usrRepoText" dir="${dir}">
         <include name="site.properties"/>
     </fileset>
 
@@ -91,22 +89,22 @@
 
     <target name="configure-virgo">
         <copy todir="${dir-virgo}/bin" overwrite="true">
-            <fileset dir="Supplements/Virgo">
+            <fileset dir="${dir-sups}/Virgo">
                 <filename name="dmk.sh"/>
             </fileset>
         </copy>
         <copy todir="${dir-virgo}/bin" overwrite="true">
-            <fileset dir="Supplements/Virgo">
+            <fileset dir="${dir-sups}/Virgo">
                 <filename name="dmk.bat"/>
             </fileset>
         </copy>
         <copy todir="${dir-virgo}/repository/ext" overwrite="true">
-            <fileset dir="Supplements/Virgo">
+            <fileset dir="${dir-sups}/Virgo">
                 <filename name="org.eclipse.virgo.web.properties"/>
             </fileset>
         </copy>
         <copy todir="${dir-virgo}/configuration" overwrite="true">
-            <fileset dir="Supplements/Virgo">
+            <fileset dir="${dir-sups}/Virgo">
                 <include name="tomcat-server.xml"/>
                 <include name="java6-server.profile"/>
                 <include name="serviceability.xml"/>
@@ -142,7 +140,7 @@
     </target>
 
     <target name="dist-virgo" depends="deploy-virgo">
-        <zip destfile="Apromore.zip" includes="${dir-virgo}/*"/>
+        <zip destfile="${dir}/Apromore.zip" includes="${dir-virgo}/*"/>
     </target>
 
     <target name="deploy-virgo" depends="clean-virgo, setup-virgo, copy-virgo"/>
@@ -208,13 +206,13 @@
     </target>
 
     <target name="copy-virgo" depends="clean-virgo, create-repository-dirs">
-        <copy file="Supplements/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
-        <copy file="Supplements/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
-        <copy file="Supplements/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
-        <copy file="Supplements/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
-        <copy file="Supplements/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
-        <copy file="Supplements/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
-        <copy file="Supplements/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
+        <copy file="${dir-sups}/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
+        <copy file="${dir-sups}/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
+        <copy file="${dir-sups}/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
+        <copy file="${dir-sups}/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
 
         <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
             <fileset dir="${dir-osgi}">
@@ -237,7 +235,7 @@
             </fileset>
 
             <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
-            <fileset dir="Supplements/">
+            <fileset dir="${dir-sups}">
                 <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
             </fileset>
         </copy>
@@ -252,18 +250,18 @@
         </copy>
 
         <!-- Force the BPMN Miner plugin to be alphabetically after the iBPStruct plugin it depends upon -->
-        <copy file="Apromore-Custom-Plugins/BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
-        <copy file="Apromore-Custom-Plugins/BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
+        <copy file="${dir}/Apromore-Custom-Plugins/BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
+        <copy file="${dir}/Apromore-Custom-Plugins/BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
 
         <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
-        <copy file="Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
-        <copy file="Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
-        <copy file="Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin2-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
-        <copy file="Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
-        <copy file="Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
+        <copy file="${dir}/Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
+        <copy file="${dir}/Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
+        <copy file="${dir}/Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin2-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
+        <copy file="${dir}/Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
+        <copy file="${dir}/Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
 
         <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing
-        <copy file="Apromore-Custom-Plugins/PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
+        <copy file="${dir}/Apromore-Custom-Plugins/PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
         -->
 
         <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
@@ -308,7 +306,7 @@
         </copy>
 
         <!-- PQL indexing bot -->
-        <copy file="Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
+        <copy file="${dir}/Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
     </target>
 
     <target name="create-h2">
@@ -317,38 +315,38 @@
         </delete>
         <java classname="org.h2.tools.RunScript">
             <classpath>
-                <pathelement location="Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+                <pathelement location="${dir}/Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
             </classpath>
             <arg value="-url"/>
             <arg value="jdbc:h2:${dir-deployment}/Manager-Repository"/>
             <arg value="-script"/>
-            <arg file="Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-h2.sql"/>
+            <arg file="${dir}/Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-h2.sql"/>
         </java>
         <java classname="org.h2.tools.RunScript">
             <classpath>
-                <pathelement location="Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
+                <pathelement location="${dir}/Apromore-Assembly/Portal-Assembly/target/repository/usr/h2-1.2.128.jar"/>
             </classpath>
             <arg value="-url"/>
             <arg value="jdbc:h2:${dir-deployment}/Manager-Repository"/>
             <arg value="-script"/>
-            <arg file="Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-data.sql"/>
+            <arg file="${dir}/Apromore-Core-Components/Apromore-Manager/src/test/resources/database/db-data.sql"/>
         </java>
     </target>
 
     <target name="cpf-importer-uptodate">
-        <uptodate property="cpf-importer.uptodate" targetfile="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar">
-            <srcfiles dir="Supplements/cpfImporter/src/main"/>
+        <uptodate property="cpf-importer.uptodate" targetfile="${dir-sups}/cpfImporter/target/cpfImporter-1.1.one-jar.jar">
+            <srcfiles dir="${dir-sups}/cpfImporter/src/main"/>
         </uptodate>
     </target>
 
     <target name="cpf-importer" depends="cpf-importer-uptodate" unless="cpf-importer.uptodate">
-        <exec dir="Supplements/cpfImporter" executable="mvn">
+        <exec dir="${dir-sups}/cpfImporter" executable="mvn">
             <arg value="package"/>
         </exec>
     </target>
 
     <target name="install-sample-data" depends="cpf-importer">
-        <java jar="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
+        <java jar="${dir-sups}/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
             <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
 
             <!-- Configurable BPMN samples -->
@@ -381,7 +379,7 @@
             <arg value="94 Discretionary experience 4.bpmn"/>
 
             <!-- PQL samples -->
-            <!--<arg value="-from"/> <arg value="Supplements/samples/pql"/>-->
+            <!--<arg value="-from"/> <arg value="${dir-sups}/samples/pql"/>-->
             <!--<arg value="-to"/>   <arg value="pql"/>-->
             <!--<arg value="1.pnml"/>-->
             <!--<arg value="2.pnml"/>-->
@@ -395,15 +393,15 @@
             <!--<arg value="10.pnml"/>-->
 
             <!-- Log animation samples -->
-            <arg value="-from"/> <arg value="Supplements/samples/repairExample"/>
+            <arg value="-from"/> <arg value="${dir-sups}/samples/repairExample"/>
             <arg value="-to"/>   <arg value="repair"/>
             <arg value="repairExample.bpmn"/>
             <arg value="RepairExample20140901103825.mxml"/>
             <arg value="repairExample_complete_lifecycle_only.xes"/>
         </java>
-        <copy todir="Apromore-Assembly/Filestore-Repository" overwrite="yes" verbose="true">
+        <copy todir="${dir}/Apromore-Assembly/Filestore-Repository" overwrite="yes" verbose="true">
             <!-- Configurable BPMN samples -->
-            <fileset dir="Apromore-Extras/bpmncmap/src/test/resources">
+            <fileset dir="${dir}/Apromore-Extras/bpmncmap/src/test/resources">
                 <include name="*.cmap"/>
                 <include name="*.qml"/>
             </fileset>
@@ -411,11 +409,11 @@
     </target>
 
     <target name="install-comparison-data" depends="cpf-importer">
-        <java jar="Supplements/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
+        <java jar="${dir-sups}/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
             <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
 
             <!-- Model to model -->
-            <arg value="-from"/>    <arg value="Supplements/samples/model-to-model"/>
+            <arg value="-from"/>    <arg value="${dir-sups}/samples/model-to-model"/>
             <arg value="-to"/>      <arg value="Compare/Model to Model"/>
             <arg value="Model1.bpmn"/>
             <arg value="Model2.bpmn"/>

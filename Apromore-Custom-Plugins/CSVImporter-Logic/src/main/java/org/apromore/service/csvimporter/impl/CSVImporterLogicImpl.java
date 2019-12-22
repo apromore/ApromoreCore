@@ -88,7 +88,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             String resourceCol = null;
             String errorMessage = null;
 
-            for (Iterator<String[]> it = reader.iterator(); finishCount < 50; ) {
+            for (Iterator<String[]> it = reader.iterator(); finishCount < 50 && isValidLineCount(lineCount); ) {
                 String[] line = it.next();
                 boolean rowGTG = true;
                 if(line == null) {
@@ -209,6 +209,24 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
         }
     }
 
+    public boolean isValidLineCount(int lineCount) {
+        return true;
+    }
+
+    /**
+     * Gets the pos.
+     *
+     * @param col  the col: array which has possible names for each of the mandatory fields.
+     * @param elem the elem: one item of the CSV line array
+     * @return the pos: boolean value confirming if the elem is the required element.
+     */
+    private static boolean getPos(String[] col, String elem) {
+        if (col == timestampValues || col == StartTsValues) {
+            return Arrays.stream(col).anyMatch(elem.toLowerCase()::equals);
+        } else {
+            return Arrays.stream(col).anyMatch(elem.toLowerCase()::contains);
+        }
+    }
 
     /**
      * Check fields.
