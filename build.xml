@@ -139,61 +139,11 @@
         </delete>
     </target>
 
-    <target name="dist-virgo" depends="deploy-virgo">
-        <zip destfile="${dir}/Apromore.zip" includes="${dir-virgo}/*"/>
-    </target>
-
-    <target name="deploy-virgo" depends="clean-virgo, setup-virgo, copy-virgo"/>
-
     <target name="create-repository-dirs">
         <mkdir dir="${dir-deployment}/Editor-Repository"/>
         <mkdir dir="${dir-deployment}/Filestore-Repository"/>
         <mkdir dir="${dir-deployment}/Lucene-Repository"/>
         <mkdir dir="${dir-deployment}/Filestore-Repository"/>
-    </target>
-
-    <target name="clean-start-virgo" depends="configure-virgo">
-        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="startup.bat"/>
-            <arg line="-clean"/>
-        </exec>
-        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
-            <arg line="-clean"/>
-        </exec>
-    </target>
-
-    <target name="start-virgo" depends="deploy-virgo">
-        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="startup.bat"/>
-            <arg line="-clean"/>
-        </exec>
-        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
-            <arg line="-clean"/>
-        </exec>
-    </target>
-
-    <target name="debug-virgo" depends="configure-virgo, copy-virgo">
-        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="startup.bat"/>
-            <arg line="-clean -debug 8888"/>
-        </exec>
-        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
-            <arg line="-clean -debug"/>
-        </exec>
-    </target>
-
-    <target name="debug" depends="configure-virgo">
-        <exec dir="${dir-virgo}/bin/" executable="cmd" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="startup.bat"/>
-            <arg line="-clean -debug"/>
-        </exec>
-        <exec dir="${dir-virgo}/bin/" executable="./startup.sh" osfamily="unix">
-            <arg line="-clean -debug"/>
-        </exec>
     </target>
 
     <target name="stop-virgo" depends="setup-virgo">
@@ -203,110 +153,6 @@
         </exec>
         <exec dir="${dir-virgo}/bin/" executable="./shutdown.sh" osfamily="unix">
         </exec>
-    </target>
-
-    <target name="copy-virgo" depends="clean-virgo, create-repository-dirs">
-        <copy file="${dir-sups}/liblpsolve55.jnilib" tofile="${dir-virgo}/liblpsolve55.jnilib" overwrite="true"/>
-        <copy file="${dir-sups}/liblpsolve55.lib" tofile="${dir-virgo}/liblpsolve55.lib" overwrite="true"/>
-        <copy file="${dir-sups}/liblpsolve55d.lib" tofile="${dir-virgo}/liblpsolve55d.lib" overwrite="true"/>
-        <copy file="${dir-sups}/liblpsolve55j.jnilib" tofile="${dir-virgo}/liblpsolve55j.jnilib" overwrite="true"/>
-        <copy file="${dir-sups}/lpsolve55.lib" tofile="${dir-virgo}/lpsolve55.lib" overwrite="true"/>
-        <copy file="${dir-sups}/lpsolve55.dll" tofile="${dir-virgo}/lpsolve55.dll" overwrite="true"/>
-        <copy file="${dir-sups}/lpsolve55j.dll" tofile="${dir-virgo}/lpsolve55j.dll" overwrite="true"/>
-
-        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
-            <fileset dir="${dir-osgi}">
-                <include name="**/target/eclipse-collections-osgi-1.1.jar"/>
-                <include name="**/target/bpmntk-osgi-1.1.jar"/>
-                <include name="**/target/similaritysearch-osgi-1.1.jar"/>
-                <include name="**/target/eventstr-confchecking-osgi-1.1.jar"/>
-                <include name="**/target/apm-verification-osgi-1.1.jar"/>
-<!--                <include name="**/target/uma-bpdiff-osgi-1.1.jar"/>-->
-                <include name="**/target/pn-automata-conv-osgi-1.1.jar"/>
-                <include name="**/target/prom-pnml-osgi-1.1.jar"/>
-                <include name="**/target/ltl-to-automaton-osgi-1.1.jar"/>
-                <include name="**/target/declare-visualizer-osgi-1.1.jar"/>
-                <!--<include name="**/target/pnapi-bpdiff-osgi-1.1.jar"/>-->
-                <include name="**/target/raffaeleconforti-osgi-1.1.jar"/>
-                <include name="**/target/ltl-conf-check-osgi-1.1.jar"/>
-                <!-- the PQL subsystem will add this, so it normally won't need to be done explicitly
-                <include name="**/target/json-osgi-20090211.jar"/>
-                -->
-            </fileset>
-
-            <!-- This bundle is a dependency for the eventstr-confchecking-code-osgi bundle, which is in turn used by Compare-Logic -->
-            <fileset dir="${dir-sups}">
-                <include name="org.apache.servicemix.bundles.gwt-dev-2.6.0_1.jar"/>
-            </fileset>
-        </copy>
-        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true">
-            <fileset refid="usrRepo"/>
-        </copy>
-        <copy todir="${dir-virgo}/repository/usr" flatten="true" overwrite="true" filtering="true">
-            <fileset refid="usrRepoText"/>
-        </copy>
-        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
-            <fileset refid="pickupRepo"/>
-        </copy>
-
-        <!-- Force the BPMN Miner plugin to be alphabetically after the iBPStruct plugin it depends upon -->
-        <copy file="${dir}/Apromore-Custom-Plugins/BPMNMiner-Logic/target/bpmnminer-logic-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-logic-1.1.jar"/>
-        <copy file="${dir}/Apromore-Custom-Plugins/BPMNMiner-Portal-Plugin/target/bpmnminer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~bpmnminer-portal-plugin-1.1.jar"/>
-
-        <!-- Force the editor plugins to be alphabetically after the logic plugins they depends upon -->
-        <copy file="${dir}/Apromore-Plugins/plugin-editor/ibpstruct/target/ibpstruct-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~ibpstruct-editor-plugin-1.1.war"/>
-        <copy file="${dir}/Apromore-Plugins/plugin-editor/metrics/target/metrics-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin-1.1.war"/>
-        <copy file="${dir}/Apromore-Plugins/plugin-editor/metrics2/target/metrics-editor-plugin2-1.1.war" tofile="${dir-virgo}/pickup/~metrics-editor-plugin2-1.1.war"/>
-        <copy file="${dir}/Apromore-Plugins/plugin-editor/bebop/target/gbebop-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbebop-editor-plugin-1.1.war"/>
-        <copy file="${dir}/Apromore-Plugins/plugin-editor/bprove/target/gbprove-editor-plugin-1.1.war" tofile="${dir-virgo}/pickup/~gbprove-editor-plugin-1.1.war"/>
-
-        <!-- After creating the PQL tables in MySQL, uncomment this component to enable PQL indexing
-        <copy file="${dir}/Apromore-Custom-Plugins/PQL-Indexer-Portal-Plugin/target/pql-indexer-portal-plugin-1.1.jar" tofile="${dir-virgo}/pickup/~pql-indexer-portal-plugin-1.1.jar"/>
-        -->
-
-        <copy todir="${dir-virgo}/pickup" flatten="true" overwrite="true">
-            <fileset dir="${dir-annotation}">
-                <include name="**/target/*.jar"/>
-                <exclude name="**/target/*-sources.jar"/>
-                <exclude name="**/core/**/*.jar"/>
-            </fileset>
-            <fileset dir="${dir-canoniser}">
-                <include name="**/target/*.jar"/>
-                <exclude name="**/target/*-sources.jar"/>
-                <exclude name="**/core/**/*.jar"/>
-            </fileset>
-            <!--<fileset dir="${dir-portal-templates}">-->
-                <!--<include name="**/target/*.jar"/>-->
-                <!--<exclude name="**/target/*-sources.jar"/>-->
-                <!--<exclude name="**/core/**/*.jar"/>-->
-            <!--</fileset>-->
-            <fileset dir="${dir-logic-plugins}">
-                <include name="**/target/*.jar"/>
-                <exclude name="**/target/*-sources.jar"/>
-                <exclude name="**/core/**/*.jar"/>
-            </fileset>
-            <fileset dir="${dir-portal-plugins}">
-                <include name="**/target/*.jar"/>
-                <exclude name="**/target/*-sources.jar"/>
-                <exclude name="**/core/**/*.jar"/>
-                <exclude name="sample/target/*.jar"/>
-            </fileset>
-            <!--
-            <fileset dir="${dir-editor-plugins}">
-                <include name="**/target/*.war"/>
-                <exclude name="**/target/*-sources.jar"/>
-                <exclude name="**/core/**/*.jar"/>
-            </fileset>
-            -->
-            <!--<fileset dir="${dir-deploy}">-->
-                <!--<include name="**/target/*.jar"/>-->
-                <!--<exclude name="**/target/*-sources.jar"/>-->
-                <!--<exclude name="**/core/**/*.jar"/>-->
-            <!--</fileset>-->
-        </copy>
-
-        <!-- PQL indexing bot -->
-        <copy file="${dir}/Apromore-Extras/PQLBot/target/pql-bot-1.2.one-jar.jar" tofile="${dir-virgo}/pql-bot.jar" overwrite="true"/>
     </target>
 
     <target name="create-h2">
