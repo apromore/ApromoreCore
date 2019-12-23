@@ -89,7 +89,7 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             String resourceCol = null;
             String errorMessage = null;
 
-            for (Iterator<String[]> it = reader.iterator(); finishCount < 50; ) {
+            for (Iterator<String[]> it = reader.iterator(); finishCount < 50 && isValidLineCount(lineCount); ) {
                 String[] line = it.next();
                 boolean rowGTG = true;
                 if(line == null) {
@@ -203,6 +203,10 @@ public class CSVImporterLogicImpl implements CSVImporterLogic, Constants {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    public boolean isValidLineCount(int lineCount) {
+        return true;
     }
 
     /**
