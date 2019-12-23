@@ -28,6 +28,7 @@ import org.deckfour.xes.model.XEvent;
 import org.deckfour.xes.model.XTrace;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Set;
 
@@ -61,7 +62,7 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
                 greaterString = s.substring(3);
             }
             if(s.contains("@>=")) {
-                greaterEqualString = s.substring(2);
+                greaterEqualString = s.substring(3);
             }
 
             if(s.contains("@<|")) {
@@ -78,7 +79,11 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
             if(!greaterString.equals("")) intervalString += " is greater than " + greaterString;
             if(!greaterEqualString.equals("")) intervalString += " is at least " + greaterEqualString;
 
-            if(!greaterString.equals("") || !greaterEqualString.equals("")) intervalString += " and";
+            if(!greaterString.equals("") || !greaterEqualString.equals("")) {
+                if(!lessString.equals("") || !lessEqualString.equals("")) {
+                    intervalString += " and";
+                }
+            }
 
             if(!lessString.equals("")) intervalString += " is less than " + lessString;
             if(!lessEqualString.equals("")) intervalString += " is up to " + lessEqualString;
@@ -213,11 +218,41 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
     }
 
     private long millisecondsOfString(String intervalString) {
-        long input = Long.valueOf(intervalString.substring(0, intervalString.indexOf(" ")));
         String unitString = intervalString.substring(intervalString.indexOf(" ") + 1);
-        long unitValue = unitStringToLong(unitString);
-        long intervalValue = input * unitValue;
-        return intervalValue;
+        BigDecimal unitValue = new BigDecimal(unitStringToLong(unitString));
+
+        String inputString = intervalString.substring(0, intervalString.indexOf(" "));
+        BigDecimal inputValue = decimalTimeStringToBigDecimal(inputString, unitString);
+
+        BigDecimal intervalValue = inputValue.multiply(unitValue);
+        return intervalValue.longValue();
+    }
+
+    private BigDecimal decimalTimeStringToBigDecimal(String inputString, String unit) {
+        Long year = new Long(1000 * 60 * 60 * 24 * 365);
+        Long month = new Long(1000 * 60 * 60 * 24 * 31);
+        Long week = new Long(1000 * 60 * 60 * 24 * 7);
+        Long day = new Long(1000 * 60 * 60 * 24);
+        Long hour = new Long(1000 * 60 * 60);
+        Long minute = new Long(1000 * 60);
+        Long second = new Long(1000);
+        BigDecimal bdYear = new BigDecimal(year);
+        BigDecimal bdMonth = new BigDecimal(month);
+        BigDecimal bdWeek = new BigDecimal(week);
+        BigDecimal bdDay = new BigDecimal(day);
+        BigDecimal bdHour = new BigDecimal(hour);
+        BigDecimal bdMinute = new BigDecimal(minute);
+        BigDecimal bdSecond = new BigDecimal(second);
+        BigDecimal bdInputValue = new BigDecimal(inputString);
+        if(unit.equals("years")) return bdInputValue.multiply(bdYear);
+        else if(unit.equals("months")) return bdInputValue.multiply(bdMonth);
+        else if(unit.equals("weeks")) return bdInputValue.multiply(bdWeek);
+        else if(unit.equals("days")) return bdInputValue.multiply(bdDay);
+        else if(unit.equals("hours")) return bdInputValue.multiply(bdHour);
+        else if(unit.equals("minutes")) return bdInputValue.multiply(bdMinute);
+        else if(unit.equals("seconds")) return bdInputValue.multiply(bdSecond);
+        else return bdInputValue;
+
     }
 
     private long unitStringToLong(String s) { //2019-10-18
@@ -239,33 +274,3 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
 }
 
 
-//public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
-//
-//    public LogFilterCriterionDirectFollow(Action action, Containment containment, Level level, String label, String attribute, Set<String> value) {
-//        super(action, containment, level, label, attribute, value);
-//    }
-//
-//    @Override
-//    public boolean matchesCriterion(XTrace trace) {
-//        if(level == Level.TRACE) {
-//            String s = trace.get(0).getAttributes().get("concept:name").toString();
-////            if (value.contains("|> => " + s)) return true;
-//            if (value.contains("[Start] => " + s)) return true;
-//            for (int i = 0; i < trace.size() - 1; i++) {
-//                String event1 = trace.get(i).getAttributes().get("concept:name").toString();
-//                String event2 = trace.get(i + 1).getAttributes().get("concept:name").toString();
-//                if (value.contains(event1 + " => " + event2)) return true;
-//            }
-//            String e = trace.get(trace.size() - 1).getAttributes().get("concept:name").toString();
-////            return (value.contains(e + " => []"));
-//            return (value.contains(e + " => [End]"));
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean matchesCriterion(XEvent event) {
-//        return false;
-//    }
-//
-//}
