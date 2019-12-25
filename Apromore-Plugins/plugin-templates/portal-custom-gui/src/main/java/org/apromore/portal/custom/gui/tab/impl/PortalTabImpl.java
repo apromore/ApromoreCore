@@ -73,7 +73,7 @@ public class PortalTabImpl extends AbstractPortalTab {
         head.setSizable(true);
 
         Listheader imgHeader=new Listheader();
-        imgHeader.setWidth("25px");
+        imgHeader.setWidth("40px");
         imgHeader.setVisible(true);
         head.appendChild(imgHeader);
         list.appendChild(head);

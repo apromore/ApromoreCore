@@ -117,23 +117,10 @@
 }
 */
 
-.ap-portal-menu .z-menubar-horizontal li {
-  margin: 2px 0 0 0 !important;
-}
-
-.ap-portal-menu .z-menubar > ul > li.z-menuseparator {
-  /*flex: 1 1 auto;*/
-
-}
-
 
 .ap-portal-right-section .z-tabbox {
   /*border: 1px solid transparent !important;*/
   border: none;
-}
-
-.ap-portal-right-section .z-menubar ul {
-  padding-top: 2px;
 }
 
 /*.ap-portal-right-content .z-tabs {*/
@@ -145,10 +132,6 @@
 /*  border-bottom: 2px solid var(--ap-c-tab-bar-selected);*/
 /*}*/
 
-
-.ap-portal-right-section .z-menubar li {
-  line-height: 18px;
-}
 
 .ap-portal-right-section .z-tabpanel,
 .ap-portal-right-section .z-window {
@@ -200,15 +183,38 @@
 
 .ap-container-search .z-combobox-input {
   height: 22px;
-  border: 0;
 }
 
 .ap-container-search .z-combobox-button {
   height: 22px;
-  border: 0;
   min-height: 22px;
 }
 
+.ap-container-search .z-combobox-button,
+.ap-container-search .z-combobox-input {
+  border: 1px solid transparent;
+}
+
+.ap-container-search .z-combobox-button {
+  border-left: none;
+}
+
+.ap-container-search .z-combobox-input {
+  border-right: none;
+}
+
+.ap-container-search .z-combobox-input:focus {
+  border-color: var(--ap-c-grey-minor);
+}
+
+.ap-container-search .z-combobox-input:focus + .z-combobox-button {
+  border-color: var(--ap-c-grey-minor);
+}
+
+.ap-container-search .z-comboitem-selected {
+  color: white;
+  background-color: var(--ap-c-widget);
+}
 
 .ap-container-search button img {
   width: 24px;
@@ -216,47 +222,22 @@
 }
 
 .ap-navigation {
-  background-color: #f8f8f8;
+  background-color: white;
   border: 1px solid #f0f0f0 !important;
   border-radius: 7px;
 }
 
-.ap-navigation > *,
-.ap-navigation > * > * {
+.ap-nav-header {
+  padding: 5px;
   background-color: #f8f8f8;
 }
 
-.ap-navigation .z-tree {
-  background-color: transparent;
-}
-
-.ap-navigation .z-treerow .z-treecell-content {
-  min-height: 29px;
-}
-
-.ap-navigation .z-treerow .z-treecell-content > * {
-  vertical-align: top !important;
-}
-
-.ap-navigation .z-treecol-content, .z-treecell-content, .z-treefooter-content {
-  line-height: 14px;
-}
-
-.ap-navigation .z-treerow .z-treecell {
-  background-color: transparent;
-}
-
-.ap-navigation .z-treerow-selected .z-treecell {
-  background-color: rgb(232, 245, 255);
+.ap-portal-action-buttons td {
+  vertical-align: middle;
 }
 
 .ap-process-detail {
   border-radius: 7px;
-}
-
-.ap-portal .ap-navigation .z-tree-icon {
-  vertical-align: top !important;
-  padding-top: 5px !important;
 }
 
 .ap-portal-right-section .z-menubar ul li:last-child {
@@ -279,15 +260,25 @@
 }
 
 .ap-portal-action-buttons {
-  margin-top: 3px;
+  margin-top: 4px;
+}
+
+
+
+.ap-portal-action-buttons table td {
+  padding: 0 2px 0 2px;
+}
+
+.ap-portal-action-buttons .z-button:active {
+  background-color: transparent;
+}
+
+.ap-portal-action-buttons .z-button:focus {
+  background-color: transparent;
 }
 
 .ap-portal-action-buttons .z-button:hover {
   background-color: var(--ap-c-action-bg-hover);
-}
-
-.ap-portal-action-buttons table td {
-  padding: 0 4px 0 4px;
 }
 
 .ap-wrapper-process .z-window-content {
@@ -312,6 +303,10 @@
   height: 14px;
   font-size: 14px;
   font-family: FontAwesome;
+}
+
+.ap-listbox-process .z-listcell-content {
+  padding: 6px 5px 4px 5px;
 }
 
 .ap-listbox-process .ap-star-1 {
@@ -520,62 +515,11 @@
   background-color: var(--ap-c-scroll);
 }
 
-/* Portal Icons */
-
-.ap-portal [class^="ap-ico-"] > div:first-child {
-  --icon-height: 26px;
-  --bg-height: 20px;
-  box-sizing: border-box !important;
-  height: var(--icon-height) !important;
-  border: none !important;
-  margin: 0 4px !important;
-  background-size: auto var(--bg-height) !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-  background-origin: padding-box !important;
-  border-radius: 3px !important;
-  padding: 0 !important;
-  margin: 0 2px 0 0 !important;
-  cursor: pointer;
-  display: inline-block;
-
-  filter: var(--ap-filter-ico-static);
-}
-
-.ap-portal [class^="ap-ico-"] .z-image {
-  display: none;
-}
-
-.ap-portal .z-listitem-selected [class^="ap-ico-"] > div:first-child {
-  filter: none;
-}
-
-.ap-portal .ap-ico-folder > div:first-child {
-   background-image: url('../../common/img/icons/folder.svg') !important;
-   width: 26.390625px !important;
- }
-
-.ap-navigation .z-treerow-selected .ap-ico-folder > div:first-child {
-  background-image: url('../../common/img/icons/folder-open.svg') !important;
-  width: 28.5px !important;
-}
-
-.ap-portal .ap-ico-home > div:first-child {
-  background-image: url('../../common/img/icons/folder-home.svg') !important;
-  width: 26.390625px !important;
-}
-
-.ap-portal .ap-ico-process > div:first-child {
-  background-image: url('../../common/img/icons/bpmn-model.svg') !important;
-  width: 26px !important;
-}
-
-.ap-portal .ap-ico-log > div:first-child {
-  background-image: url('../../common/img/icons/log.svg') !important;
-  width: 26px !important;
-}
-
 img[src="img/icon/bpmn-22x22.png"] {
   background-image: url('../../common/img/icons/bpmn-model.svg') !important;
   width: 26px !important;
+}
+
+.z-menuitem-image {
+  filter: var(--ap-filter-ico-normal-dark);
 }

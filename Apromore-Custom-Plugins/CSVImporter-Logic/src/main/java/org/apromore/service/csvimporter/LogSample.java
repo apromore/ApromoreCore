@@ -3,6 +3,7 @@ package org.apromore.service.csvimporter;
 import java.util.List;
 import java.util.Map;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Window;
 
@@ -43,6 +44,10 @@ public interface LogSample {
     Div getPopUPBox();
 
     void setPopUPBox(Div popUPBox);
+
+    Button[] getFormatBtns();
+
+    void setFormatBtns(Button[] formatBtns);
 
 
     // Public methods

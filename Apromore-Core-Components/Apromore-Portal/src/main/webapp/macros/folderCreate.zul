@@ -23,7 +23,7 @@ for editing purpose
 and CreateProcessController.java for creating process purpose.
 -->
 
-<window width="400px" closable="false" position="center" id="winFolderCreate">
+<window width="400px" closable="false" position="center" id="winFolderCreate" title="Create folder">
     <vbox vflex="1">
         <grid sclass="ap-grid">
             <columns sizable="true">
@@ -41,7 +41,7 @@ and CreateProcessController.java for creating process purpose.
                     <checkbox id="checkboxGED" width="100%"/>
                 </row>
 -->
-                <row spans="3">
+                <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
                         <button id="btnSave" label="Save" iconSclass="z-icon-check-circle"></button>
                         <button id="btnCancel" label="Cancel" iconSclass="z-icon-times-circle"></button>

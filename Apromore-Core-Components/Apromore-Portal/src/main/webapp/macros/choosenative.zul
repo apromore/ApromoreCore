@@ -66,7 +66,7 @@
                 <row spans="3">
                     <label value="*: mandatory fields." />
                 </row>
-                <row spans="3">
+                <row spans="3"  sclass="ap-window-footer-actions">
                     <div align="center" sclass="ap-window-modal-actions">
                         <button label="OK" iconSclass="z-icon-check-circle" />
                         <button label="Cancel" iconSclass="z-icon-times-circle" />

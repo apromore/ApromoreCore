@@ -42,7 +42,7 @@ public class TabListitem extends Listitem {
     private ProcessSummaryType pst;
     private VersionSummaryType vst;
     private List<Boolean> attributesToShow;
-    private static final String imageProcess="img/icon/bpmn-22x22.png";
+    private static final String imageProcess="/themes/ap/common/img/icons/bpmn-model.svg";
 
     public TabListitem(ProcessSummaryType pst, VersionSummaryType vst, List<Boolean> attributesToShow){
         this.pst=pst;
@@ -83,6 +83,7 @@ public class TabListitem extends Listitem {
     private void buildListitem(){
         Listcell image=new Listcell();
         image.setImage(imageProcess);
+        image.setSclass("ap-ico-process");
         Listcell name=new Listcell();
         Listcell id=new Listcell();
         Listcell nativeType=new Listcell();

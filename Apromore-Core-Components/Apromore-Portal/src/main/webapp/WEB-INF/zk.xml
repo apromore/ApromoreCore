@@ -18,6 +18,11 @@
         <value>chiaroscuro_c</value>  <!-- atlantic, breeze, iceblue, iceblue_c, sapphire, silvertail, chiaroscuro_c -->
     </library-property>
 
+  <system-property>
+    <name>themex</name>
+    <value>themey</value>
+  </system-property>
+
   <library-property>
     <name>org.zkoss.util.label.web.location</name>
     <value>/WEB-INF/ui.properties</value>

@@ -42,5 +42,10 @@ body > .x-panel-editor-east {
   padding-right: 10px;
 }
 
+@media (max-height: 820px) {
+  .bjs-container .djs-palette {
+    width: 96px;
+  }
+}
 
 

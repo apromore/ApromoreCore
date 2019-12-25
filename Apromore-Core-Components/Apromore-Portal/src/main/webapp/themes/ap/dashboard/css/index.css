@@ -11,6 +11,10 @@ body {
     height: calc(100% - 34px) !important;
 }
 
+.ap-dash-listbox  .z-listbox {
+    border-width: 1px 0 0 0;
+}
+
 /* SVG Chart */
 .ap-dashboard svg,
 .ap-dashboard .highcharts-contextmenu {
@@ -30,6 +34,10 @@ body {
     height: var(--ap-menu-height);
 }
 
+.ap-dashboard-menu .z-north-body {
+    background-color: transparent !important;
+}
+
 .ap-dashboard .ap-slide-menu {
     border: none;
     padding: 3px 0 0 10px;
@@ -37,7 +45,7 @@ body {
 }
 
 .ap-dashboard-right-menu-c {
-    padding: 3px 0 0 0;
+    padding: 0;
     text-align: right;
 }
 
@@ -46,14 +54,16 @@ body {
     display: inline-block;
 }
 
+
+.ap-dashboard .highcharts-button-box {
+    height: 22px !important;
+}
+
 /* HACK */
 .ap-dashboard-right-menu .myMenu:last-child {
     display: none;
 }
 
-.nStyleblue ~ .z-north-splitter {
-    background-image: none !important;
-}
 /* HACK */
 
 .ap-dashboard-case-hint-c {
@@ -95,13 +105,25 @@ body {
 .ap-dashboard .ap-radio-c .z-radio:hover .z-radio-content {
     color: var(--ap-c-tab-text-hover);
 }
-
+.ap-dashboard .ap-radio-c .ap-icon:hover,
 .ap-dashboard .ap-radio-c .z-radio:hover .ap-icon {
     filter: var(--ap-c-tab-text-hover-filter) !important;
+    background-color: transparent !important;
 }
 
 .ap-slide-menu-c .slider {
     display: none;
+}
+
+.ap-slide-menu-bar {
+    padding: 0 !important;
+    cursor: none !important;
+    position: absolute;
+    background-color: var(--ap-c-tab-bar-selected);
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 0px;
 }
 
 /*.ap-radio-c input[type="radio"]:checked ~ .z-radio-content,*/

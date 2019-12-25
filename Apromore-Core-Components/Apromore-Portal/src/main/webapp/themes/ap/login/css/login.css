@@ -123,6 +123,10 @@ body > * {
     background-color: transparent;
 }
 
+.ap-login {
+    background-color: white !important;
+}
+
 .ap-login .main {
     position: absolute;
     left: 0;
@@ -281,7 +285,7 @@ body > * {
     box-shadow: none;
     outline-offset: 0px;
     outline: none;
-    border-radius: 0;
+    border-radius: 4px;
     font-size: 14px;
 }
 
@@ -289,7 +293,8 @@ body > * {
 .ap-form textarea:focus,
 .ap-form select:focus {
     /* border: 1px solid var(--ap-c-orange) !important; */
-    background-color: var(--ap-c-oceanic-light-5) !important;
+    background-color: var(--ap-c-orange-light-5) !important;
+    color: var(--ap-c-text-normal) !important;
 }
 
 .ap-form .button {

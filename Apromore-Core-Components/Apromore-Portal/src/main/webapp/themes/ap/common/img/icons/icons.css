@@ -8,7 +8,7 @@
     background-position: center !important;
     background-repeat: no-repeat !important;
     background-origin: padding-box !important;
-    background-color: transparent !important;
+    background-color: transparent;
     border-radius: 3px !important;
     padding: 0 !important;
     margin: 0 2px 0 0 !important;
@@ -28,8 +28,11 @@
 }
 
 .ap-icon:focus {
-    box-shadow: none !important;
+    background-color: var(--ap-c-action-bg-hover);
+    filter: none;
+    box-shadow: none;
 }
+
 .ap-icon-activity {
     background-image: url('activity.svg') !important;
     width: 26px !important;
@@ -108,6 +111,11 @@
 .ap-icon-cog {
     background-image: url('cog.svg') !important;
     width: 26px !important;
+}
+
+.ap-icon-cogs {
+    background-image: url('cogs.svg') !important;
+    width: 28.5px !important;
 }
 
 .ap-icon-dir-lr {
@@ -260,6 +268,41 @@
     width: 26px !important;
 }
 
+.ap-icon-meta-edit {
+    background-image: url('meta-edit.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-mine-dashboard {
+    background-image: url('mine-dashboard.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-mine-stage {
+    background-image: url('mine-stage.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-model-compare {
+    background-image: url('model-compare.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-model-discover {
+    background-image: url('model-discover.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-model-edit {
+    background-image: url('model-edit.svg') !important;
+    width: 28.5px !important;
+}
+
+.ap-icon-model-merge {
+    background-image: url('model-merge.svg') !important;
+    width: 27.40625px !important;
+}
+
 .ap-icon-pause {
     background-image: url('pause.svg') !important;
     width: 26px !important;
@@ -275,8 +318,18 @@
     width: 26px !important;
 }
 
+.ap-icon-play-circle {
+    background-image: url('play-circle.svg') !important;
+    width: 26px !important;
+}
+
 .ap-icon-play {
     background-image: url('play.svg') !important;
+    width: 26px !important;
+}
+
+.ap-icon-process-drift {
+    background-image: url('process-drift.svg') !important;
     width: 26px !important;
 }
 
@@ -343,6 +396,11 @@
 .ap-icon-speed {
     background-image: url('speed.svg') !important;
     width: 28.5px !important;
+}
+
+.ap-icon-stage-discover {
+    background-image: url('stage-discover.svg') !important;
+    width: 26px !important;
 }
 
 .ap-icon-step-backward {

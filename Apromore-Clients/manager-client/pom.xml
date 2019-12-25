@@ -57,6 +57,12 @@
             <version>2.27</version>
         </dependency>
 
+        <!-- Pro Drift Dependancies -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>prodrift-osgi</artifactId>
+        </dependency>
+
         <!-- Apromore WS Models -->
         <dependency>
             <groupId>org.apromore</groupId>

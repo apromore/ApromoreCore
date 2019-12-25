@@ -9,7 +9,7 @@
     position: absolute;
     top: 0;
     left: 260px;
-    padding: 6px 0 0 10px;
+    padding: 8px 0 0 10px;
     font-family: var(--ap-font-base);
     font-weight: normal;
     font-size: 14px;
@@ -93,10 +93,14 @@
     filter: none;
 }
 
-.ap-pd-log-charts {
-
+.ap-pd-log-charts .z-window-content {
+    padding: 8px;
 }
 
 .ap-pd-keys:hover + .z-html {
     display: block !important;
+}
+
+.ap-pd-options-c .z-hbox table {
+    /* width: 100% !important; */
 }

@@ -24,9 +24,8 @@ and CreateProcessController.java for creating process purpose.
 -->
 <zk xmlns:h="native">
     <window width="500px" closable="false" position="center">
-
-        <vbox vflex="1">
-            <grid sclass="ap-grid ap-form">
+        <vbox height="100%" spacing="0">
+            <grid sclass="ap-grid ap-form" height="100%">
                 <columns sizable="true">
                     <column width="30%"></column>
                     <column width="70%"></column>
@@ -63,14 +62,14 @@ and CreateProcessController.java for creating process purpose.
                         </radiogroup>
                     </row>
                     <row id="makePublic">
-                        <label value="Make Process Public"/>
+                        <label value="Make model Public"/>
                         <checkbox checked="false" tooltiptext="Tick this checkbox if you wish to make this Process available to all Users"/>
                     </row>
-                    <row spans="3">
-                        <label value="*: mandatory fields"/>
+                    <row spans="3" sclass="ap-footnotes">
+                        <label value="* mandatory fields" />
                     </row>
-                    <row spans="3">
-                        <div align="right" sclass="ap-window-modal-actions">
+                    <row spans="3" sclass="ap-window-footer-actions">
+                        <div align="right">
                             <button label="OK" iconSclass="z-icon-check-circle" width="85px" />
                             <button label="Cancel" iconSclass="z-icon-times-circle" width="85px" />
                             <button label="Cancel all" iconSclass="z-icon-times-circle" width="85px" visible="false" tooltiptext="Cancel edit of all remaining process models." />

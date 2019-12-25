@@ -77,11 +77,11 @@ public abstract class PluginCustomGui extends DefaultPortalPlugin {
         addListheader(listheaders, "Id",                "3em");
         addListheader(listheaders, "Original language", "10em");
         addListheader(listheaders, "Domain",            "5em");
-        addListheader(listheaders, "Ranking",           "6em");
+        addListheader(listheaders, "Rating",           "6em");
         addListheader(listheaders, "Latest version",    "9em");
         addListheader(listheaders, "Owner",             "5em");
 
-        addTab(tabName, "img/icon/bpmn-22x22.png", rows, listheaders, new ProcessTabItemExecutor(portalContext.getMainController()), portalContext);
+        addTab(tabName, "/themes/ap/common/img/icons/bpmn-model.svg", rows, listheaders, new ProcessTabItemExecutor(portalContext.getMainController()), portalContext);
     }
 
     private void addListheader(final List<Listheader> listheaders, String name, String width) {

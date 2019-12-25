@@ -25,18 +25,16 @@
 <?link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css" ?>
 <?link rel="stylesheet" type="text/css" href="css/font-awesome.css" ?>
 
+<?link rel="stylesheet" type="text/css" href='themes/${labels.theme}/common/css/index.css' ?>
+<?link rel="stylesheet" type="text/css" href='themes/${labels.theme}/login/css/login.css'  ?>
+
 <?script type="text/javascript" src="js/jquery.js"?>
 <?script type="text/javascript" src="js/bootstrap.js"?>
 
-<!--<?link rel="shortcut icon" href="img/favicon.ico" ?>-->
-<?link rel="shortcut icon" href="/themes/ap/common/img/brand/favicon.ico" ?>
+<?link rel="shortcut icon" href="themes/${labels.theme}/common/img/brand/favicon.ico" ?>
 
 <zk xmlns:h="xhtml" xmlns:n="native" xmlns="http://www.zkoss.org/2005/zul">
-    <custom-attributes theme="${labels.ap.theme}"/>
-    <!--    <custom-attributes theme="ap"/>-->
-    <h:link rel="stylesheet" type="text/css" href='/themes/${theme}/common/css/index.css' />
-    <h:link rel="stylesheet" type="text/css" href='/themes/${theme}/login/css/login.css'  />
-    <!--<h:script type="text/javascript" src="/themes/${theme}/login/js/login.js" />-->
+    <custom-attributes theme="${labels.theme}"/>
 
     <window id="login-main" border="none" sclass="ap-login ap-font-base">
         <h:script type="text/javascript">
@@ -109,20 +107,20 @@
                                     <h:h4 class="ap-form-heading">
                                         Login to Apromore
                                     </h:h4>
-                                    <h:form method="post" action="j_spring_security_check" name="login_form">
+                                    <h:form method="post" action="j_spring_security_check" name="login_form" data-t="form-login">
                                         <h:fieldset>
                                             <h:div class="controls">
-                                                <h:input type="text" name="j_username"
+                                                <h:input type="text" name="j_username" data-t="username"
                                                          placeholder="Your login or email"/>
                                             </h:div>
                                             <h:div class="controls controls-row">
-                                                <h:input type="password" name="j_password" placeholder="Your password"/>
+                                                <h:input type="password" name="j_password" data-t="password" placeholder="Your password"/>
                                             </h:div>
                                             <h:div class="controls controls-row split">
                                                 <h:a class="forgot-link button" href="#forgot" data-toggle="tab">Forgot
                                                     password?
                                                 </h:a>
-                                                <h:button class="signin-button button" type="submit">Sign in</h:button>
+                                                <h:button class="signin-button button" type="submit" data-t="submit-login">Sign in</h:button>
                                             </h:div>
                                             <h:div class="controls controls-row register">
                                                 <h:a href="#register" class="register-button button link-button"
@@ -137,7 +135,7 @@
                             <h:div class="tab-pane fade" id="forgot">
                                 <h:div class="ap-form">
                                     <h:h4 class="ap-form-heading">
-                                        Forgot your password
+                                        Forgot your password?
                                     </h:h4>
                                     <h:form method="post" action="register/resetPassword" name="reset_form">
                                         <h:fieldset>

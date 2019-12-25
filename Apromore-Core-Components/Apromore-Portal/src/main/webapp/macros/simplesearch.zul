@@ -21,7 +21,7 @@
 <!-- Controller is SimpleSearchController -->
 <window id="simplesearchwindow"
         sclass="ap-container-search"
-        style="margin: 4px 0 0 0;"
+        style="margin: 5px 10px 0 0;"
         hflex="1">
   <style>
     .z-button {

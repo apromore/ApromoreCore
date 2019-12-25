@@ -22,8 +22,12 @@
 <window id="importWindow" position="center" title="Import process models or logs"
         visible="true" sizable="true" width="600px"
         sclass="ap-csv-import-chooser"
+        closable="true"
         xmlns:w="http://www.zkoss.org/2005/zk/client"
         xmlns:h="http://www.w3.org/1999/xhtml">
+    <caption>
+        <toolbarbutton iconSclass="ap-icon ap-icon-help" href="https://apromore.org/import-logs-from-csv-files/" target="_blank" />
+    </caption>
     <vbox vflex="1">
         <grid sclass="ap-grid ap-form">
             <columns sizable="true">
@@ -39,13 +43,13 @@
                 </row>
                 <row spans="1,2">
                     <label value="Supported extensions"/>
-                    <label id="supportedExt" value=""/>
+                    <label id="supportedExt" value="" />
                 </row>
                 <row spans="1,2">
-                    <label value="Make File Public"/>
+                    <label value="Make file Public"/>
                     <checkbox id="public" />
                 </row>
-                <row spans="3">
+                <row spans="3" sclass="ap-window-footer-actions">
                     <div align="center">
                         <button id="okButtonImport" label="OK" width="85px" iconSclass="z-icon-check-circle" disabled="true" />
                         <button id="cancelButtonImport" label="Cancel" width="85px" iconSclass="z-icon-times-circle" >

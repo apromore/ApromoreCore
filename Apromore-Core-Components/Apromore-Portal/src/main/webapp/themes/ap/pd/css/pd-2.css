@@ -20,7 +20,7 @@ body {
     position: absolute;
     top: 0;
     left: 260px;
-    padding: 6px 0 0 10px;
+    padding: 8px 0 0 10px;
     font-family: var(--ap-font-base);
     font-weight: normal;
     font-size: 14px;
@@ -221,24 +221,16 @@ div.ap-pd-options {
     text-align: right;
 }
 
-.ap-pd-stats-main,
-.ap-pd-stats-time {
+.ap-pd-stats-main {
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: stretch;
     padding: 8px;
-    background-color: white;
-    border: 1px solid  var(--ap-border-color-light);
 }
 
-.ap-pd-stats-duration {
-    padding: 8px;
-    background-color: white;
-    border: 1px solid  var(--ap-border-color-light);
-}
 
-.ap-pd-stats-time > div,
+
 .ap-pd-stats-main > div {
     display: flex;
     flex-direction: row;
@@ -249,13 +241,6 @@ div.ap-pd-options {
 
 .ap-pd-stats-main > div > * {
     width: 70px;
-    flex: 1 1 auto;
-    display: block;
-    text-align: center;
-}
-
-.ap-pd-stats-time > div > * {
-    width: 140px;
     flex: 1 1 auto;
     display: block;
     text-align: center;
@@ -286,43 +271,110 @@ div.ap-pd-options {
     padding-right: 4px;
 }
 
-.ap-pd-stats-duration .ap-stat-head {
-    padding-bottom: 3px;
+.ap-stat-head {
+    margin: 6px;
 }
 
-.ap-pd-stats-duration .ap-stat-head .z-label {
-    font-size: 18px !important;
+.ap-stat-head .z-label {
+    font-size: 14px !important;
+    font-weight: 700;
     color: var(--ap-c-grey-minor);
 }
 
-.ap-pd-stats-time .start-time > span:last-child {
-    height: 1px;
-    box-sizing: border-box;
-    border-bottom: 1px solid var(--ap-c-grey-minor);
+.ap-pd-stats-duration {
+    padding: 8px;
 }
 
-.ap-pd-stats-time .end-time > span:first-child {
-    height: 1px;
-    box-sizing: border-box;
-    border-bottom: 1px solid var(--ap-c-grey-minor);
+.ap-pd-stats-time {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
 }
 
-.ap-pd-stats-time .start-time > *,
-.ap-pd-stats-time .end-time > * {
-    display: inline-block;
-    width: 50px;
+.ap-pd-stats-time > div {
+    flex: 0 0 auto;
+}
+
+.ap-pd-stats-time > div > * {
+    width: 100%;
+    text-align: center;
+}
+
+.ap-pd-stats-time > div.from-to {
     flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    height: 20px;
+    margin: 6px 0;
 }
 
-.ap-pd-stats-time .start-time > span:nth-child(2),
-.ap-pd-stats-time .end-time > span:nth-child(2) {
-    width: 70px !important;
-    flex: 0 0 auto !important;
+.ap-pd-stats-time > div.from-to > div {
+    flex: 0 0 auto;
+    width: 1px;
+    background-color: var(--ap-c-grey);
 }
 
 .ap-pd-stats-time .start-time,
 .ap-pd-stats-time .end-time {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+}
+
+.ap-pd-boxlet {
+    border: none !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 6px 0 rgba(127, 127, 127, 0.3) !important;
+    background-color: white !important;
+    padding: 6px !important;
+}
+
+.ap-pd-logstats {
+    background-color: transparent !important;
+}
+
+.ap-pd-logstats .z-window-content {
+    background-color: transparent !important;
+}
+
+.ap-pd-logstats .z-vlayout .z-vlayout-inner:first-child {
+    height: 24px;
+    vertical-align: middle;
+}
+
+.ap-pd-logstats .z-vlayout .z-vlayout-inner:first-child {
+    height: 24px;
+    vertical-align: middle;
+}
+
+.ap-pd-logstats .z-hlayout .z-vlayout .z-hlayout {
+    padding: 0;
+    text-align: center;
+}
+
+.ap-pd-logstats .z-label {
+    font-size: 12px;
+}
+
+.ap-pd-logstats .title {
+    font-weight: 700;
+    height: 16px;
+}
+
+.ap-pd-logstats .ap-icon {
+    width: 16px !important;
+    height: 16px !important;
+    background-size: auto 16px !important;
+}
+
+.ap-pd-logstats .ap-icon.dummy {
+    width: 1px !important;
+    filter: none !important;
+    background: none !important;
+}
+
+.ap-pd-logstats .ap-icon:focus,
+.ap-pd-logstats .ap-icon:hover {
+    background-color: transparent !important;
 }

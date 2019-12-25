@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700&display=swap');
+/* @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700&display=swap'); */
+@import url('../fonts/source-sans-pro/fonts.css');
 @import url('../fonts/gilroy-free/gilroy-free.css');
 
 :root {
@@ -8,6 +9,7 @@
     --ap-filter-ico-maroon: invert(27%) sepia(95%) saturate(1140%) hue-rotate(319deg) brightness(88%) contrast(87%);
     /* ---ap-c-grey */
     --ap-filter-ico-normal-dark: invert(27%) sepia(0%) saturate(0%) hue-rotate(56deg) brightness(95%) contrast(81%);
+    --ap-filter-ico-grey-minor: invert(63%) sepia(31%) saturate(0%) hue-rotate(228deg) brightness(101%) contrast(104%);;
     /* --ap-c-orange-light-3: #fdd69d; */
     --ap-filter-ico-normal-light: invert(82%) sepia(16%) saturate(924%) hue-rotate(340deg) brightness(106%) contrast(98%);
     --ap-filter-ico-black: none; /* keep black */
@@ -18,17 +20,21 @@
     --ap-c-line-sep: #f3f3f3;
     --ap-c-line-sep-selected: var(--ap-c-grey-light-5);
     --ap-c-grey-minor: var(--ap-c-grey-light-3);
+    --ap-c-line-grid: var(--ap-c-grey-light-5);
 
-    --ap-c-text-normal: var(--ap-c-grey-dark-3);
+    --ap-c-text-strong: black;
+    --ap-c-text-normal: var(--ap-c-grey-light-1);
     --ap-c-text-minor: var(--ap-c-grey-light-2);
 
     --ap-c-widget: var(--ap-c-oceanic-dark-1);
-    --ap-c-widget-hover: var(--ap-c-oceanic-light-1);
+    --ap-c-widget-hover: var(--ap-c-oceanic-dark-2);
     --ap-c-widget-active: var(--ap-c-oceanic-light-2);
 
+    --ap-c-bg-medium: #f0f0f0;
     --ap-c-bg-lighter: #f7f7f7;
     --ap-c-bg-lightest: #f9fcff;
 
+    --ap-c-button-text: white;
     --ap-c-button: var(--ap-c-soft-blue-dark-3);
     --ap-c-button-hover: var(--ap-c-oceanic-dark-1);
     --ap-c-button-active: var(--ap-c-soft-blue-dark-3);
@@ -67,11 +73,18 @@
     /* Typography */
     --ap-font-base: 'Source Sans Pro', sans-serif;
     --ap-font-brand: 'Gilroy-Light', sans-serif;
+    --ap-font-size-base: 16px;
 
     /* Shadow */
     /* --ap-box-shadow: 0 1px 3px 0 rgba(127, 127, 127, 0.5); */
     --ap-box-shadow: 0 2px 2px 0 rgba(127, 127, 127, 0.2);
+    --ap-box-shadow-darker: 0 0 10px 0 rgba(127, 127, 127, 0.5);
+    --ap-box-shadow-window: 0 0 12px 0px rgba(127, 127,127, 0.5);
 
+    /* Form input */
+    --ap-input-outline-normal: var(--ap-c-grey-light-4);
+    --ap-input-outline-focus: var(--ap-c-widget);
+    --ap-input-outline-hover: var(--ap-c-widget);
 
     /* Border */
     --ap-border-default: 1px solid var(--ap-c-grey-light-5);
@@ -171,6 +184,15 @@
 }
 
 /* Common third-party overriders */
+
+.highcharts-title {
+    font-family: var(--ap-font-base);
+}
+
+svg text, svg tspan {
+    font-family: var(--ap-font-base) !important;
+}
+
 .bjs-powered-by {
     z-index: 3020 !important;
 }

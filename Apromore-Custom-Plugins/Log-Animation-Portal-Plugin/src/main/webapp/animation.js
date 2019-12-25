@@ -30,7 +30,8 @@ var apPalette = [
     "#84c7e3",
     "#bb3a50",
     "#3ac16d",
-    "#f96100"
+    "#f96100",
+    "#FBA525"
 ]
 
 function switchPlayPause(e) {
@@ -341,6 +342,9 @@ AnimationController = {
     },
 
     reset: function(jsonRaw) {
+        jsonServer = JSON.parse(jsonRaw);
+        var logs = jsonServer.logs;
+
         svgDocument = this.canvas.getSVGContainer();
         svgDocumentG = this.canvas.getSVGViewport();
         // this.timelineSVG = $j("div#playback_controls > svg")[0];
@@ -348,17 +352,25 @@ AnimationController = {
         this.svgDocuments.clear();
         this.svgDocuments.push(svgDocument);
         this.svgDocuments.push(this.timelineSVG);
-        this.svgDocuments.push($j("div#progress_display svg")[0]);
+        let indicators = [];
+        $j('#progress_display').empty();
+        for (var i = 0; i < logs.length; i++) {
+            let log = logs[i]
+            let container = $j(`<div id="progress-c-${i}"></div>`);
+            let svg = $j(`<svg id="progressbar-${i}" xmlns="http://www.w3.org/2000/svg" viewBox="-10 0 20 40" ></svg>`);
+            let label = $j(`<div class="label">${log.filename}</div>`);
+            svg.appendTo(container);
+            label.appendTo(container);
+            container.appendTo('#progress_display');
+            indicators.push(svg);
+            this.svgDocuments.push(svg[0]);
+        }
 
         var tokenE = svgDocument.getElementById("progressAnimation");
         if (tokenE != null) {
             svgDocument.removeChild(tokenE);
             //tokenE.outerHTML = "";
         }
-
-        jsonServer = JSON.parse(jsonRaw);
-        var logs = jsonServer.logs;
-
         // Reconstruct this.logCases to correspond to the changed jsonServer value
         this.logCases = [];
 
@@ -386,19 +398,16 @@ AnimationController = {
         this.timeCoefficient = this.slotDataUnit/this.slotEngineUnit;
 
         //Recreate progress indicators
-        var progressIndicatorE = this.createProgressIndicators(logs, jsonServer.timeline);
-        $j("div#progress_display svg")[0].append(progressIndicatorE);
+        // var progressIndicatorE = this.createProgressIndicators(logs, jsonServer.timeline);
+        // $j("div#progress_display svg")[0].append(progressIndicatorE);
 
         // IVO: Add individual logs
-        function renderIndicators () {
-            var progParent = $j("body").first()
-            for(var i=0;i<logs.length;i++) {
-                let progSVG = $j(`<svg id="progressbar-${i}" xmlns="http://www.w3.org/2000/svg"></n:svg>`)
-                let progIndicator = this.createProgressIndicatorsForLog(
-                    i+1, logs[i], jsonServer.timeline, 0, 0)
-                progSVG.append(progIndicator)
-                progParent.append(progSVG);
-            }
+
+        for(var i=0;i<logs.length;i++) {
+            let progSVG = indicators[i];
+            let progIndicator = this.createProgressIndicatorsForLog(
+                i+1, logs[i], jsonServer.timeline, 0, 0)
+            progSVG.append(progIndicator);
         }
 
         let props = [
@@ -424,19 +433,17 @@ AnimationController = {
             $j(pId).hover(
                 (function (i) {
                     return function () {
-                        console.log('over' + i);
                         getProps(i)
                         let { top, left } = $j(pId).offset()
                         let bottom = `calc(100vh - ${top - 10}px)`
-                        left += 20
-                        console.log(bottom, $j(pId))
+                        left += 20;
+                        $j('#ap-animator-info-tip').attr('data-log-idx', i);
                         $j('#ap-animator-info-tip').css({ bottom, left })
                         $j('#ap-animator-info-tip').show();
                     }
                 })(i + 1),
                 (function (i) {
                     return function () {
-                        console.log('out' + i);
                         $j('#ap-animator-info-tip').hide();
                     }
                 })(i + 1)
@@ -453,6 +460,7 @@ AnimationController = {
         //var timelineElement = $j("#timeline")[0];
         var startTopX = 20;
         var startTopY = 18;
+        var showOtherLogsTimeSpan = false;
         for (var j=0; j<jsonServer.timeline.logs.length; j++) {
             var log = jsonServer.timeline.logs[j];
             var logInterval = document.createElementNS(svgNS,"line");
@@ -464,7 +472,7 @@ AnimationController = {
             timelineE.insertBefore(logInterval, timelineE.lastChild);
 
             //display date label at the two ends
-            if (log.startDatePos % 10 != 0) {
+            if (showOtherLogsTimeSpan && log.startDatePos % 10 != 0) {
                 var logDateTextE = document.createElementNS(svgNS,"text");
                 logDateTextE.setAttributeNS(null,"x", startTopX + 9 * log.startDatePos - 50);
                 logDateTextE.setAttributeNS(null,"y", startTopY + 8 + 7 * j + 5  + timelineOffset);
@@ -861,19 +869,19 @@ AnimationController = {
 
         pathE.appendChild(animateE);
 
-        var textE = document.createElementNS(svgNS,"text");
-        textE.setAttributeNS(null,"x", x);
-        textE.setAttributeNS(null,"y", y - 10);
-        textE.setAttributeNS(null,"text-anchor","middle");
-        var textNode = document.createTextNode(log.name);
-        textE.appendChild(textNode);
+        // var textE = document.createElementNS(svgNS,"text");
+        // textE.setAttributeNS(null,"x", x);
+        // textE.setAttributeNS(null,"y", y - 10);
+        // textE.setAttributeNS(null,"text-anchor","middle");
+        // var textNode = document.createTextNode(log.name);
+        // textE.appendChild(textNode);
 
-        var tooltip = document.createElementNS(svgNS,"title");
-        tooltip.appendChild(document.createTextNode(log.name));
-        textE.appendChild(tooltip);
+        // var tooltip = document.createElementNS(svgNS,"title");
+        // tooltip.appendChild(document.createTextNode(log.name));
+        // textE.appendChild(tooltip);
 
         pieE.appendChild(pathE);
-        pieE.appendChild(textE);
+        // pieE.appendChild(textE);
 
         return pieE;
     },

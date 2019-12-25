@@ -186,7 +186,7 @@ public class BPMNMinerController {
 //                        uploadFile((UploadEvent) event);
 //                    }
 //                });
-                Messagebox.show("Select one log for process discovery.");
+                Messagebox.show("Select one log for process discovery.", "Apromore", Messagebox.OK, Messagebox.NONE);
                 return;
             }else {
                 log = eventLogService.getXLog(selectedLogSummaryType.iterator().next().getId());
