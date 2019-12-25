@@ -26,6 +26,8 @@
 	<artifact type="plan" name="org.apromore.plugin.similaritysearch" version="[1.1.0,1.1.0]"/>
 	<artifact type="plan" name="org.apromore.plugin.merge" version="[1.1.0,1.1.0]"/>
 
+	<artifact type="plan" name="org.apromore.log-filter-ce" version="[1.0,1.0]"/>
+
 	<artifact type="plan" name="org.apromore.annotations" version="[1.0,1.0]"/>	
 	<artifact type="plan" name="org.apromore.bpmneditor" version="[1.0,1.0]"/>
 	
