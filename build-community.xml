@@ -189,6 +189,7 @@
         <include name="plugin-prodrift.plan"/>
         <include name="plugin-similaritysearch.plan"/>
         <include name="plugin-stagemining.plan"/>
+        <include name="log-filter-ce.plan"/>
     </fileset>
 
     <target name="start-virgo-nix" depends="deploy-virgo-nix">
