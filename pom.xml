@@ -124,10 +124,8 @@
         <module>Apromore-Custom-Plugins/Log-Filter-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Management-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
-		<module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin</module>
 
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/APQL-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/BEBoP-Logic</module>
         <module>Apromore-Custom-Plugins/BEBoP-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/BProVe-Logic</module>
@@ -141,11 +139,6 @@
         <module>Apromore-Custom-Plugins/BPMNMiner-Logic</module>
         <module>Apromore-Custom-Plugins/BPMNMiner-Portal-Plugin</module>
 
-        <module>Apromore-Custom-Plugins/Cmapper-Portal-Plugin</module>
-
-        <module>Apromore-Custom-Plugins/Compare-Logic</module>
-        <module>Apromore-Custom-Plugins/Compare-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/Compare-Portal-Plugin2</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Logic</module>
         <module>Apromore-Custom-Plugins/CSVImporter-Portal</module>
         <module>Apromore-Custom-Plugins/CSVExporter-Logic</module>
@@ -169,11 +162,6 @@
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2</module>
-        <!--
-        <module>Apromore-Custom-Plugins/Log-Visualizer-Logic</module>
-        <module>Apromore-Custom-Plugins/Log-Visualizer-Logic-WS</module>
-        <module>Apromore-Custom-Plugins/Log-Visualizer-Portal-Plugin</module>
-        -->
         <module>Apromore-Custom-Plugins/Metrics-Logic</module>
         <module>Apromore-Custom-Plugins/Metrics-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/PerformanceMiner-Logic</module>
@@ -182,26 +170,11 @@
         <module>Apromore-Custom-Plugins/Predictive-Monitor-Logic</module>
         <module>Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Predictor-Training-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/PQL-Indexer-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/PQL-Logic</module>
-        <module>Apromore-Custom-Plugins/PQL-Logic-WS</module>
-        <module>Apromore-Custom-Plugins/PQL-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/ProDrift-Logic</module>
-        <module>Apromore-Custom-Plugins/ProDrift-Portal-Plugin</module>
-        <module>Apromore-Custom-Plugins/Quaestio-Portal-Plugin</module>
         <!-- <module>Apromore-Custom-Plugins/Similarity-Clusters-Portal-Plugin</module> -->
-        <module>Apromore-Custom-Plugins/StageMining-Logic</module>
-        <module>Apromore-Custom-Plugins/StageMining-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Process-Discoverer-Logic</module>
         <module>Apromore-Custom-Plugins/Process-Discoverer-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/XES-Selection-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Theme-Selection-Portal-Plugin</module>
-
-        <!-- Applets -->
-        <module>Apromore-Extras/Cmapper</module>
-        <module>Apromore-Extras/Quaestio</module>
-        <module>Apromore-Extras/apql</module>
-        <module>Apromore-Extras/PQLBot</module>
 
         <!-- Clients that we can distribute -->
         <module>Apromore-Clients/manager-ws-model</module>
@@ -211,12 +184,10 @@
         <module>Apromore-Clients/portal-client</module>
 
         <!-- Web application bundles -->
-        <module>Apromore-Core-Components/Apromore-Editor</module>
         <module>Apromore-Core-Components/Apromore-FileStore</module>
         <module>Apromore-Core-Components/Apromore-Portal</module>
         <module>Apromore-Core-Components/Apromore-Manager</module>
         <module>Apromore-Core-Components/Apromore-Manager-WS</module>
-        <module>Apromore-Core-Components/Apromore-PQL-Indexer</module>
         <module>Apromore-Core-Components/Apromore-BPMNEditor</module>
 
         <!-- Assembles the Bundles and repositories -->
@@ -225,7 +196,7 @@
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
 
-        <module>Apromore-Assembly/PQL-Indexer-Assembly</module>
+        <!-- <module>Apromore-Assembly/PQL-Indexer-Assembly</module> -->
         <module>Apromore-Assembly/Predictive-Monitor-Assembly</module>
         <module>Apromore-Assembly/Custom-Plugins</module>
 
