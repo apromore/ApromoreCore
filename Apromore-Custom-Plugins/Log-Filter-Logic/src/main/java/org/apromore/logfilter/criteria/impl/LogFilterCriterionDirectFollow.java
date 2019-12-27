@@ -75,7 +75,7 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
 
         if(!greaterString.equals("") || !greaterEqualString.equals("") ||
                 !lessString.equals("") || !lessEqualString.equals("")) {
-            intervalString += " and time interval";
+            intervalString += " time interval";
             if(!greaterString.equals("")) intervalString += " is greater than " + greaterString;
             if(!greaterEqualString.equals("")) intervalString += " is at least " + greaterEqualString;
 
@@ -158,6 +158,7 @@ public class LogFilterCriterionDirectFollow extends AbstractLogFilterCriterion {
 
     @Override
     public String toString() {
+        if (attributeOption.equals("")) attributeOption = label;
         String displayString = super.getAction().toString().substring(0,1).toUpperCase() +
                 super.getAction().toString().substring(1).toLowerCase() +
                 " all traces where their events contain the Directly-follows relation of the \"" +

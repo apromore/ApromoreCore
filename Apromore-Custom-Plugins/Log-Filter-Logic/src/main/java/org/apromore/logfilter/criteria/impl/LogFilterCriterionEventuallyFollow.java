@@ -75,7 +75,7 @@ public class LogFilterCriterionEventuallyFollow extends AbstractLogFilterCriteri
 
         if(!greaterString.equals("") || !greaterEqualString.equals("") ||
                 !lessString.equals("") || !lessEqualString.equals("")) {
-            intervalString += " and time interval";
+            intervalString += " time interval";
             if(!greaterString.equals("")) intervalString += " is greater than " + greaterString;
             if(!greaterEqualString.equals("")) intervalString += " is at least " + greaterEqualString;
 
@@ -157,6 +157,7 @@ public class LogFilterCriterionEventuallyFollow extends AbstractLogFilterCriteri
 
     @Override
     public String toString() {
+        if (attributeOption.equals("")) attributeOption = label;
         String displayString = super.getAction().toString().substring(0,1).toUpperCase() +
                 super.getAction().toString().substring(1).toLowerCase() +
                 " all traces where their events contain the Eventually-follows relation of the \"" +
