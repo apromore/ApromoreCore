@@ -42,10 +42,6 @@
     <reference id="eventLogService" interface="org.apromore.service.EventLogService"/>
     <reference id="importerService" interface="org.apromore.service.bpmndiagramimporter.BPMNDiagramImporter"/>
 
-    <beans:bean id="xesFactoryName" class="java.lang.String">
-        <beans:constructor-arg type="String" value="${metrics.xesfactory}"/>
-    </beans:bean>
-
     <!-- Exposes the component as OSGi service -->
     <context:component-scan base-package="org.apromore.plugin.portal.metrics" />
     <service ref="plugin" interface="org.apromore.plugin.portal.PortalPlugin" auto-export="interfaces" />
