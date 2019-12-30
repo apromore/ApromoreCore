@@ -93,13 +93,10 @@
         <module>Apromore-OSGI-Bundles/ltl-conf-check-osgi</module>
         <module>Apromore-OSGI-Bundles/apm-verification-osgi</module>
         <module>Apromore-OSGI-Bundles/ini4j-osgi</module>
-        <module>Apromore-OSGI-Bundles/themis-osgi</module>
         <module>Apromore-OSGI-Bundles/json-osgi</module>
         <module>Apromore-OSGI-Bundles/jbpt-petri-osgi</module>
-        <module>Apromore-OSGI-Bundles/lucene-osgi</module>
         <!--<module>Apromore-OSGI-Bundles/pnapi-bpdiff-osgi</module>-->
         <module>Apromore-OSGI-Bundles/postgresql-osgi</module>
-        <module>Apromore-OSGI-Bundles/pql-osgi</module>
         <!--<module>Apromore-OSGI-Bundles/uma-bpdiff-osgi</module>-->
         <module>Apromore-OSGI-Bundles/prom-pnml-osgi</module>
         <module>Apromore-OSGI-Bundles/pn-automata-conv-osgi</module>
@@ -107,7 +104,6 @@
         <module>Apromore-OSGI-Bundles/declare-visualizer-osgi</module>
         <module>Apromore-OSGI-Bundles/raffaeleconforti-osgi</module>
         <module>Apromore-OSGI-Bundles/eventstr-confchecking-osgi</module>
-        <module>Apromore-OSGI-Bundles/prodrift-osgi</module>
 
 
         <!-- ZK Osgi -->
