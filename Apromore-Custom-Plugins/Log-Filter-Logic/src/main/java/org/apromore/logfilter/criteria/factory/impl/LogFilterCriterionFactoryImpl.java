@@ -68,9 +68,14 @@ public class LogFilterCriterionFactoryImpl implements LogFilterCriterionFactory 
                 return new LogFilterCriterionDurationMaxWaiting(action, containment, level, label, attribute, value);
             case CASE_UTILIZATION:
                 return new LogFilterCriterionCaseUtilization(action, containment, level, label, attribute, value);
-
+            case REWORK_REPETITION:
+                return new LogFilterCriterionRework(action, containment, level, label, attribute, value);
             default:
-                return new LogFilterCriterionAttribute(action, containment, level, label, attribute, value);
+                if (label.equals("rework:repetition")) {
+                    return new LogFilterCriterionRework(action, containment, level, label, attribute, value);
+                } else {
+                    return new LogFilterCriterionAttribute(action, containment, level, label, attribute, value);
+                }
         }
     }
     
