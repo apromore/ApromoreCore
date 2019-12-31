@@ -93,33 +93,53 @@ public class LogFilterCriterionRework extends AbstractLogFilterCriterion {
     @Override
     protected boolean matchesCriterion(XTrace trace) {
 
-        UnifiedMap<String, Integer> matchMap = new UnifiedMap<>();
+        UnifiedMap<String, Boolean> matchMap = new UnifiedMap<>();
+
+        UnifiedSet<String> matchedTraceActNames = new UnifiedSet<>();
 
         for (String s : valueNameSet) {
-            matchMap.put(s, 0);
+            matchMap.put(s, true);
         }
 
         UnifiedMap<String, Integer> actOccurMap = new UnifiedMap<>();
 
-        List<String> actNameList = getActivityNames(trace);
+        List<String> activities = getActivityNames(trace);
 
-        for (int i=0; i < actNameList.size(); i++) {
-            String actName = actNameList.get(i);
+        for (int i=0; i < activities.size(); i++) {
+            String actName = activities.get(i);
             if (valueNameSet.contains(actName)) {
+                matchedTraceActNames.add(actName);
                 if (actOccurMap.containsKey(actName)) {
                     int occurCount = actOccurMap.get(actName) + 1;
                     actOccurMap.put(actName, occurCount);
-                } else actOccurMap.put(actName, 1);
+                } else {
+                    actOccurMap.put(actName, 1);
+                }
             }
         }
 
-        System.out.println(actOccurMap);
+        if (matchedTraceActNames.size() != valueNameSet.size()) return false;
 
-        for (String s : matchMap.keySet()) {
-            if (matchMap.get(s) == 0){
-                return false;
+//        System.out.println(actOccurMap);
+
+        if (actOccurMap.size() > 0) {
+            for (String actName : actOccurMap.keySet()) {
+                int occur = actOccurMap.get(actName);
+                if (lessMap.containsKey(actName)) {
+                    if (occur >= lessMap.get(actName)) return false;
+                }
+                if (lessEqualMap.containsKey(actName)) {
+                    if (occur > lessEqualMap.get(actName)) return false;
+                }
+                if (greaterMap.containsKey(actName)) {
+                    if (occur <= greaterMap.get(actName)) return false;
+                }
+                if (greaterEqualMap.containsKey(actName)) {
+                    if (occur < greaterEqualMap.get(actName)) return false;
+                }
             }
         }
+
         return true;
     }
 
