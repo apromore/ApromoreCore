@@ -196,7 +196,7 @@
             <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
 
             <!-- Configurable BPMN samples -->
-            <arg value="-from"/>    <arg value="Apromore-Extras/bpmncmap/src/test/resources"/>
+            <arg value="-from"/>    <arg value="${dir-extras}/bpmncmap/src/test/resources"/>
             <arg value="-to"/>      <arg value="airport"/>
             <arg value="International departure.bpmn"/>
             <arg value="1 Terminal entry.bpmn"/>
@@ -245,94 +245,12 @@
             <arg value="RepairExample20140901103825.mxml"/>
             <arg value="repairExample_complete_lifecycle_only.xes"/>
         </java>
-        <copy todir="${dir}/Apromore-Assembly/Filestore-Repository" overwrite="yes" verbose="true">
+        <copy todir="${dir-deployment}/Filestore-Repository" overwrite="yes" verbose="true">
             <!-- Configurable BPMN samples -->
-            <fileset dir="${dir}/Apromore-Extras/bpmncmap/src/test/resources">
+            <fileset dir="${dir-extras}/bpmncmap/src/test/resources">
                 <include name="*.cmap"/>
                 <include name="*.qml"/>
             </fileset>
         </copy>
-    </target>
-
-    <target name="install-comparison-data" depends="cpf-importer">
-        <java jar="${dir-sups}/cpfImporter/target/cpfImporter-1.1.one-jar.jar" fork="yes">
-            <arg value="-manager"/> <arg value="http://localhost:9000/manager/services/manager"/>
-
-            <!-- Model to model -->
-            <arg value="-from"/>    <arg value="${dir-sups}/samples/model-to-model"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Model"/>
-            <arg value="Model1.bpmn"/>
-            <arg value="Model2.bpmn"/>
-
-            <!-- Model to log -->
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CAUSCONC-1"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CAUSCONC-1"/>
-            <arg value="bp3.bpmn"/>
-            <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CAUSCONC-2"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CAUSCONC-2"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog4.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-1"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-1"/>
-            <arg value="bp5.bpmn"/>
-            <arg value="bpLog4.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-2"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-2"/>
-            <arg value="bp3.bpmn"/>
-            <arg value="bpLog5.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-3"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-3"/>
-            <arg value="bp5.bpmn"/>
-            <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/CONFLICT-4"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/CONFLICT-4"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog5.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-1"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-1"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog12.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-2"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-2"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog2.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-3"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-3"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog3B.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKABS-4"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKABS-4"/>
-            <arg value="bp4.bpmn"/>
-            <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKRELOC-1"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKRELOC-1"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog10.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKSKIP-1"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSKIP-1"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog11.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKSKIP-2"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSKIP-2"/>
-            <arg value="bp6.bpmn"/>
-            <arg value="bpLog3.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/TASKSUB"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/TASKSUB"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog9.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/UNMREPETITION"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/UNMREPETITION"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog8.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/UNOBSACYCLICINTER"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/UNOBSACYCLICINTER"/>
-            <arg value="bp2.bpmn"/>
-            <arg value="bpLog2.xes"/>
-            <arg value="-from"/>    <arg value="Apromore-Custom-Plugins/Compare-Logic/src/test/resources/UNOBSCYCLICINTER"/>
-            <arg value="-to"/>      <arg value="Compare/Model to Log/UNOBSCYCLICINTER"/>
-            <arg value="bp.bpmn"/>
-            <arg value="bpLog.xes"/>
-        </java>
     </target>
 </project>
