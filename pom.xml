@@ -122,9 +122,6 @@
         <module>Apromore-Custom-Plugins/Log-Filter-Portal-Plugin-Generic</module>
 
         <module>Apromore-Custom-Plugins/Account-Portal-Plugin</module>
-        <!-- <module>Apromore-Custom-Plugins/BEBoP-Logic</module> -->
-        <!-- <module>Apromore-Custom-Plugins/BEBoP-Portal-Plugin</module> -->
-        <!-- <module>Apromore-Custom-Plugins/BProVe-Logic</module> -->
         <module>Apromore-Custom-Plugins/BIMP-Annotation-Logic</module>
         <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin</module>
         <module>Apromore-Custom-Plugins/BIMP-Editor-Plugin2</module>
@@ -158,10 +155,6 @@
         <module>Apromore-Custom-Plugins/Log-Animation-Logic</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin</module>
         <module>Apromore-Custom-Plugins/Log-Animation-Portal-Plugin2</module>
-        <!-- <module>Apromore-Custom-Plugins/Metrics-Logic</module> -->
-        <!-- <module>Apromore-Custom-Plugins/Metrics-Portal-Plugin</module> -->
-        <!-- <module>Apromore-Custom-Plugins/PerformanceMiner-Logic</module> -->
-        <!-- <module>Apromore-Custom-Plugins/PerformanceMiner-Portal-Plugin</module> -->
 
         <module>Apromore-Custom-Plugins/Predictive-Monitor-Logic</module>
         <module>Apromore-Custom-Plugins/Predictive-Monitor-Portal-Plugin</module>
@@ -176,23 +169,18 @@
         <module>Apromore-Clients/manager-ws-model</module>
         <module>Apromore-Clients/manager-client</module>
         <module>Apromore-Clients/manager-security</module>
-        <!-- <module>Apromore-Clients/filestore-client</module> -->
         <module>Apromore-Clients/portal-client</module>
 
         <!-- Web application bundles -->
-        <!-- <module>Apromore-Core-Components/Apromore-FileStore</module> -->
         <module>Apromore-Core-Components/Apromore-Portal</module>
         <module>Apromore-Core-Components/Apromore-Manager</module>
         <module>Apromore-Core-Components/Apromore-Manager-WS</module>
         <module>Apromore-Core-Components/Apromore-BPMNEditor</module>
 
         <!-- Assembles the Bundles and repositories -->
-        <module>Apromore-Assembly/Editor-Assembly</module>
-        <module>Apromore-Assembly/Filestore-Assembly</module>
         <module>Apromore-Assembly/Manager-Assembly</module>
         <module>Apromore-Assembly/Portal-Assembly</module>
 
-        <!-- <module>Apromore-Assembly/PQL-Indexer-Assembly</module> -->
         <module>Apromore-Assembly/Predictive-Monitor-Assembly</module>
         <module>Apromore-Assembly/Custom-Plugins</module>
 
